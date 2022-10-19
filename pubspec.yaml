@@ -37,6 +37,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
+  hycop: ^0.0.3
 
 dev_dependencies:
   flutter_test:
@@ -61,9 +62,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/hycop_config.json
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

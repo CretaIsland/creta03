@@ -4,11 +4,15 @@ import 'package:creta03/design_system/creta_color.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hycop/hycop.dart';
 import 'routes.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  //setupLogger();
+  setupLogger();
+  HycopFactory.serverType = ServerType.firebase;
+  HycopFactory.initAll();
+
   runApp(const ProviderScope(child: MainRouteApp()));
 }
 

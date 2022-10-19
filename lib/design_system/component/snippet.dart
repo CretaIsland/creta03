@@ -68,6 +68,12 @@ class Snippet {
             Routemaster.of(context).push(AppRoutes.buttonDemoPage);
           },
         ),
+        SpeedDialChild(
+          child: Icon(Icons.text_fields_outlined),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.textFieldDemoPage);
+          },
+        ),
       ],
     );
   }

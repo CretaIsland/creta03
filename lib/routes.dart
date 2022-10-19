@@ -3,6 +3,7 @@
 import 'package:routemaster/routemaster.dart';
 import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
+import 'design_system/demo_page/text_field_demo_page.dart';
 import 'pages/login_page.dart';
 import 'pages/intro_page.dart';
 
@@ -10,6 +11,7 @@ abstract class AppRoutes {
   static const String intro = '/intro';
   static const String fontDemoPage = '/fontDemoPage';
   static const String buttonDemoPage = '/buttonDemoPage';
+  static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String login = '/login';
 }
 
@@ -23,6 +25,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.login: (_) => TransitionPage(child: LoginPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
+    AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
   },
 );
 

@@ -46,121 +46,57 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   ],
                 ),
                 const SizedBox(height: 30),
+                // Btn_fill_Blue_I_menu
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Text('Btn_fill_Blue_I_menu   '),
                     CretaButton(
+                      width: 24,
+                      height: 24,
                       buttonStyle: CretaButtonStyle.simple,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.volume_up_outlined,
-                      onPressed: () {},
-                    ),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.simple,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.notifications_outlined,
-                      onPressed: () {},
-                    ),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.simple,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.add_outlined,
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.clickAnimate,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.volume_up_outlined,
-                      onPressed: () {},
-                    ),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.clickAnimate,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.notifications_outlined,
-                      onPressed: () {},
-                    ),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.clickAnimate,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.add_outlined,
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.hoverAnimate,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.volume_up_outlined,
-                      onPressed: () {},
-                    ),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.hoverAnimate,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.notifications_outlined,
-                      onPressed: () {},
-                    ),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.hoverAnimate,
-                      buttonType: CretaButtonType.iconOnly,
-                      iconData: Icons.add_outlined,
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CretaButton(
-                      buttonStyle: CretaButtonStyle.simple,
-                      buttonType: CretaButtonType.textOnly,
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
-                        child: Center(
-                          child: Text('스튜디오 바로가기',
-                              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[100]!)),
+                      buttonType: CretaButtonType.childSelected,
+                      buttonColor: CretaButtonColor.sky,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Icon(
+                          Icons.volume_up_outlined,
+                          size: 16,
+                          color: CretaColor.primary[400]!,
                         ),
                       ),
                       onPressed: () {},
                     ),
                     const SizedBox(width: 30),
                     CretaButton(
-                      buttonStyle: CretaButtonStyle.simple,
-                      buttonType: CretaButtonType.textOnly,
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
-                        child: Center(
-                          child: Text('스튜디오 바로가기',
-                              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[100]!)),
+                      width: 24,
+                      height: 24,
+                      buttonStyle: CretaButtonStyle.clickAnimate,
+                      buttonType: CretaButtonType.childSelected,
+                      buttonColor: CretaButtonColor.sky,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Icon(
+                          Icons.volume_up_outlined,
+                          size: 16,
+                          color: CretaColor.primary[400]!,
                         ),
                       ),
                       onPressed: () {},
                     ),
                     const SizedBox(width: 30),
                     CretaButton(
-                      buttonStyle: CretaButtonStyle.simple,
-                      buttonType: CretaButtonType.textOnly,
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
-                        child: Center(
-                          child: Text('스튜디오 바로가기',
-                              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[100]!)),
+                      width: 24,
+                      height: 24,
+                      buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonType: CretaButtonType.childSelected,
+                      buttonColor: CretaButtonColor.sky,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Icon(
+                          Icons.volume_up_outlined,
+                          size: 16,
+                          color: CretaColor.primary[400]!,
                         ),
                       ),
                       onPressed: () {},
@@ -168,43 +104,116 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   ],
                 ),
                 const SizedBox(height: 30),
+                // Btn_fill_gray_I_M
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Text('Btn_fill_Gray_I_M   '),
                     CretaButton(
+                      width: 32,
+                      height: 32,
+                      buttonStyle: CretaButtonStyle.simple,
+                      buttonType: CretaButtonType.child,
+                      buttonColor: CretaButtonColor.white,
+                      child: //CircleAvatar(
+                          //backgroundColor: Colors.transparent,
+                          //child:
+                          Icon(
+                        Icons.volume_up_outlined,
+                        size: 16,
+                        color: CretaColor.text[700]!,
+                      ),
+                      //),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 32,
+                      height: 32,
                       buttonStyle: CretaButtonStyle.clickAnimate,
-                      buttonType: CretaButtonType.textOnly,
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
-                        child: Center(
-                          child: Text('스튜디오 바로가기',
-                              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[100]!)),
+                      buttonType: CretaButtonType.child,
+                      buttonColor: CretaButtonColor.white,
+                      //child: CircleAvatar(
+                      //backgroundColor: Colors.transparent,
+                      child: Icon(
+                        Icons.volume_up_outlined,
+                        size: 16,
+                        color: CretaColor.text[700]!,
+                      ),
+                      //),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 32,
+                      height: 32,
+                      buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonType: CretaButtonType.child,
+                      buttonColor: CretaButtonColor.white,
+                      //child: CircleAvatar(
+                      //backgroundColor: Colors.transparent,
+                      child: Icon(
+                        Icons.volume_up_outlined,
+                        size: 16,
+                        color: CretaColor.text[700]!,
+                      ),
+                      //),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                // Btn_fill_gray_I_L
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Btn_fill_Gray_I_L   '),
+                    CretaButton(
+                      width: 36,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.simple,
+                      buttonType: CretaButtonType.child,
+                      buttonColor: CretaButtonColor.white,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Icon(
+                          Icons.volume_up_outlined,
+                          size: 20,
+                          color: CretaColor.text[700]!,
                         ),
                       ),
                       onPressed: () {},
                     ),
                     const SizedBox(width: 30),
                     CretaButton(
+                      width: 36,
+                      height: 36,
                       buttonStyle: CretaButtonStyle.clickAnimate,
-                      buttonType: CretaButtonType.textOnly,
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
-                        child: Center(
-                          child: Text('스튜디오 바로가기',
-                              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[100]!)),
+                      buttonType: CretaButtonType.child,
+                      buttonColor: CretaButtonColor.white,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Icon(
+                          Icons.volume_up_outlined,
+                          size: 20,
+                          color: CretaColor.text[700]!,
                         ),
                       ),
                       onPressed: () {},
                     ),
                     const SizedBox(width: 30),
                     CretaButton(
-                      buttonStyle: CretaButtonStyle.clickAnimate,
-                      buttonType: CretaButtonType.textOnly,
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
-                        child: Center(
-                          child: Text('스튜디오 바로가기',
-                              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[100]!)),
+                      width: 86,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonType: CretaButtonType.child,
+                      buttonColor: CretaButtonColor.white,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Icon(
+                          Icons.volume_up_outlined,
+                          size: 20,
+                          color: CretaColor.text[700]!,
                         ),
                       ),
                       onPressed: () {},
@@ -212,11 +221,353 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   ],
                 ),
                 const SizedBox(height: 30),
+                // Btn_fill_gray_IT_S
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Text('Btn_fill_gray_IT_S   '),
+                    CretaButton(
+                      width: 86,
+                      height: 29,
+                      buttonStyle: CretaButtonStyle.simple,
+                      buttonType: CretaButtonType.iconText,
+                      buttonColor: CretaButtonColor.white,
+                      icon: Icon(
+                        Icons.volume_up_outlined,
+                        size: 12,
+                        color: CretaColor.text[700]!,
+                      ),
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: Center(
+                          child: Text('Button',
+                              style: CretaFont.buttonSmall.copyWith(color: CretaColor.text[700]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 86,
+                      height: 29,
+                      buttonStyle: CretaButtonStyle.clickAnimate,
+                      buttonType: CretaButtonType.iconText,
+                      buttonColor: CretaButtonColor.white,
+                      icon: Icon(
+                        Icons.volume_up_outlined,
+                        size: 12,
+                        color: CretaColor.text[700]!,
+                      ),
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: Center(
+                          child: Text('Button',
+                              style: CretaFont.buttonSmall.copyWith(color: CretaColor.text[700]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 86,
+                      height: 29,
+                      buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonType: CretaButtonType.iconText,
+                      buttonColor: CretaButtonColor.white,
+                      icon: Icon(
+                        Icons.volume_up_outlined,
+                        size: 12,
+                        color: CretaColor.text[700]!,
+                      ),
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: Center(
+                          child: Text('Button',
+                              style: CretaFont.buttonSmall.copyWith(color: CretaColor.text[700]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                // Btn_fill_Blue_I_L
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Btn_fill_Blue_I_L   '),
+                    CretaButton(
+                      buttonStyle: CretaButtonStyle.simple,
+                      buttonType: CretaButtonType.iconOnly,
+                      icon: Icon(
+                        Icons.volume_up_outlined,
+                        size: 20,
+                        color: CretaColor.text[100]!,
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      buttonStyle: CretaButtonStyle.clickAnimate,
+                      buttonType: CretaButtonType.iconOnly,
+                      icon: Icon(
+                        Icons.volume_up_outlined,
+                        size: 20,
+                        color: CretaColor.text[100]!,
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
                     CretaButton(
                       buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonType: CretaButtonType.iconOnly,
+                      icon: Icon(
+                        Icons.volume_up_outlined,
+                        size: 20,
+                        color: CretaColor.text[100]!,
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                // Btn_fill_blue_T_M
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Btn_fill_blue_T_M   '),
+                    CretaButton(
+                      width: 72,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.simple,
+                      buttonType: CretaButtonType.textOnly,
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Center(
+                          child: Text('button',
+                              style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[100]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 72,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.clickAnimate,
+                      buttonType: CretaButtonType.textOnly,
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Center(
+                          child: Text('button',
+                              style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[100]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 72,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonType: CretaButtonType.textOnly,
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Center(
+                          child: Text('button',
+                              style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[100]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                // Btn_fill_blue_IT_L
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Btn_fill_blue_IT_L   '),
+                    CretaButton(
+                      width: 125,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.simple,
+                      buttonType: CretaButtonType.iconText,
+                      icon: Icon(
+                        Icons.add_outlined,
+                        size: 20,
+                        color: CretaColor.text[100]!,
+                      ),
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: Center(
+                          child: Text('button',
+                              style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 125,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.clickAnimate,
+                      buttonType: CretaButtonType.iconText,
+                      icon: Icon(
+                        Icons.add_outlined,
+                        size: 20,
+                        color: CretaColor.text[100]!,
+                      ),
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: Center(
+                          child: Text('button',
+                              style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 125,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonType: CretaButtonType.iconText,
+                      icon: Icon(
+                        Icons.add_outlined,
+                        size: 20,
+                        color: CretaColor.text[100]!,
+                      ),
+                      text: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: Center(
+                          child: Text('button',
+                              style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                // Btn_fill_blue_ITT_L
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Btn_fill_blue_ITT_L   '),
+                    CretaButton(
+                      width: 191,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.simple,
+                      buttonType: CretaButtonType.child,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add_outlined,
+                            size: 20,
+                            color: CretaColor.text[100]!,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: Center(
+                              child: Text('새크레타북',
+                                  style:
+                                      CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: Center(
+                              child: Text('새크레타북',
+                                  style: CretaFont.buttonSmall
+                                      .copyWith(color: CretaColor.primary[200]!)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 191,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.clickAnimate,
+                      buttonType: CretaButtonType.child,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add_outlined,
+                            size: 20,
+                            color: CretaColor.text[100]!,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: Center(
+                              child: Text('새크레타북',
+                                  style:
+                                      CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: Center(
+                              child: Text('새크레타북',
+                                  style: CretaFont.buttonSmall
+                                      .copyWith(color: CretaColor.primary[200]!)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 30),
+                    CretaButton(
+                      width: 191,
+                      height: 36,
+                      buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonType: CretaButtonType.child,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add_outlined,
+                            size: 20,
+                            color: CretaColor.text[100]!,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: Center(
+                              child: Text('새크레타북',
+                                  style:
+                                      CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                            child: Center(
+                              child: Text('새크레타북',
+                                  style: CretaFont.buttonSmall
+                                      .copyWith(color: CretaColor.primary[200]!)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                // Btn_fill_blue_T_EL
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Btn_fill_blue_T_EL   '),
+                    CretaButton(
+                      buttonStyle: CretaButtonStyle.simple,
                       buttonType: CretaButtonType.textOnly,
                       text: Padding(
                         padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
@@ -227,9 +578,9 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                       ),
                       onPressed: () {},
                     ),
-                    const SizedBox(width: 30),
+                    const SizedBox(width: 20),
                     CretaButton(
-                      buttonStyle: CretaButtonStyle.hoverAnimate,
+                      buttonStyle: CretaButtonStyle.clickAnimate,
                       buttonType: CretaButtonType.textOnly,
                       text: Padding(
                         padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
@@ -240,7 +591,7 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                       ),
                       onPressed: () {},
                     ),
-                    const SizedBox(width: 30),
+                    const SizedBox(width: 20),
                     CretaButton(
                       buttonStyle: CretaButtonStyle.hoverAnimate,
                       buttonType: CretaButtonType.textOnly,
