@@ -1,8 +1,10 @@
 // ignore_for_file: must_be_immutable, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import '../text_field/creta_search_bar.dart';
 import '../component/snippet.dart';
+import '../text_field/creta_text_field.dart';
 //import '../creta_font.dart';
 
 class TextFieldDemoPage extends StatefulWidget {
@@ -26,7 +28,80 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CretaSearchBar(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('TF_sarchbar'),
+                  SizedBox(width: 30),
+                  Text('CretaSearchBar()'),
+                  SizedBox(width: 30),
+                  CretaSearchBar(
+                      hintText: '플레이스홀더',
+                      onSearch: (value) {
+                        logger.finest('value=$value');
+                      }),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('TF_sarchbar_long'),
+                  SizedBox(width: 30),
+                  Text('CretaSearchBar.long()'),
+                  SizedBox(width: 30),
+                  CretaSearchBar.long(
+                      hintText: '플레이스홀더',
+                      onSearch: (value) {
+                        logger.finest('value=$value');
+                      }),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Textbox_short'),
+                  SizedBox(width: 30),
+                  Text('CretaTextFeild()'),
+                  SizedBox(width: 30),
+                  CretaTextField(
+                      hintText: '플레이스홀더',
+                      onEditComplete: (value) {
+                        logger.finest('value=$value');
+                      }),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Textbox_short_small'),
+                  SizedBox(width: 30),
+                  Text('CretaTextFeild.small()'),
+                  SizedBox(width: 30),
+                  CretaTextField.small(
+                      hintText: '플레이스홀더',
+                      onEditComplete: (value) {
+                        logger.finest('value=$value');
+                      }),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Textbox_long'),
+                  SizedBox(width: 30),
+                  Text('CretaTextFeild.long()'),
+                  SizedBox(width: 30),
+                  CretaTextField.long(
+                      hintText: '플레이스홀더',
+                      onEditComplete: (value) {
+                        logger.finest('value=$value');
+                      }),
+                ],
+              ),
             ],
           ),
         ),

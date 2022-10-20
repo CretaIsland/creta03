@@ -38,15 +38,15 @@ class CretaColor {
   static const MaterialColor text = MaterialColor(
     _text,
     <int, Color>{
-      100: Color(0xffFFFFFF),
-      200: Color(0xffF2F2F2),
-      300: Color(0xffE6E6E6),
-      400: Color(0xffCCCCCC),
-      500: Color(0xff999999),
-      600: Color(0xff808080),
-      700: Color(0xff666666),
-      800: Color(0xff4D4D4D),
-      900: Color(0xff333333),
+      100: Color(0xffF2F2F2),
+      200: Color(0xffE6E6E6),
+      300: Color(0xffCCCCCC),
+      400: Color(0xff999999),
+      500: Color(0xff808080),
+      600: Color(0xff666666),
+      700: Color(0xff4D4D4D),
+      800: Color(0xff333333),
+      900: Color(0xff1A1A1A),
     },
   );
 

@@ -1,8 +1,12 @@
-// ignore_for_file: must_be_immutable, prefer_const_constructors_in_immutables
+// ignore_for_file: must_be_immutable, prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:creta03/design_system/buttons/creta_checkbox.dart';
 import 'package:creta03/design_system/buttons/creta_text_button.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import '../buttons/creta_button.dart';
+import '../buttons/creta_radio_button.dart';
+import '../buttons/creta_tab_button.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -605,6 +609,58 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                       onPressed: () {},
                     ),
                   ],
+                ),
+                SizedBox(height: 30),
+                CretaTabButton(
+                  onEditComplete: (value) {},
+                ),
+                SizedBox(height: 30),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Radio    '),
+                      SizedBox(
+                        width: 300,
+                        child: CretaRadioButton(
+                          valueMap: {
+                            1: 'Jisoo',
+                            2: 'Lisa',
+                            3: 'Jennie',
+                            4: 'Rose',
+                          },
+                          defaultValue: 1,
+                          onSelected: (value) {
+                            logger.finest('selected value =$value');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Checkbox    '),
+                      SizedBox(
+                        width: 300,
+                        child: CretaCheckbox(
+                          valueMap: {
+                            1: 'Jisoo',
+                            2: 'Lisa',
+                            3: 'Jennie',
+                            4: 'Rose',
+                          },
+                          defaultValue: 1,
+                          onSelected: (value) {
+                            logger.finest('selected value =$value');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
