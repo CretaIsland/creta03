@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../design_system/component/snippet.dart';
+import '../design_system/creta_font.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -17,7 +18,12 @@ class _IntroPageState extends State<IntroPage> {
     return Snippet.CretaScaffold(
       title: 'Intro pagge',
       context: context,
-      child: Container(),
+      child: Center(
+        child: Text(
+          "Version 0.0.1",
+          style: CretaFont.headlineLarge,
+        ),
+      ),
     );
   }
 }
