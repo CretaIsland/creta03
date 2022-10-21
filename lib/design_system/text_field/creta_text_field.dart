@@ -1,11 +1,38 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, must_be_immutable
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 
+import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
+
+class LastClicked {
+  static CretaTextField? _textField;
+
+  static void set(CretaTextField t) {
+    _textField = t;
+  }
+
+  static void clear() {
+    _textField = null;
+  }
+
+  static void clickedOutSide(Offset current) {
+    if (_textField == null) {
+      return;
+    }
+    Rect? boxRect = _textField!.textFieldKey.globalPaintBounds!;
+    if (!boxRect.contains(current)) {
+      String value = _textField!.getValue();
+      logger.finest('lastClicked was textField=$value');
+      _textField!.onEditComplete(value);
+      clear();
+    }
+  }
+}
 
 class CretaTextField extends StatefulWidget {
   final double width;
@@ -14,57 +41,60 @@ class CretaTextField extends StatefulWidget {
   final String hintText;
   final int maxLines;
   final double radius;
+  Size? widgetSize;
+  final GlobalKey<CretaTextFieldState> textFieldKey;
 
-  const CretaTextField({
-    super.key,
+  CretaTextField({
+    required this.textFieldKey,
     required this.hintText,
     required this.onEditComplete,
     this.width = 332,
     this.height = 30,
     this.maxLines = 1,
     this.radius = 18,
-  });
+  }) : super(key: textFieldKey);
 
-  const CretaTextField.long({
-    super.key,
+  CretaTextField.long({
+    required this.textFieldKey,
     required this.hintText,
     required this.onEditComplete,
     this.width = 332,
     this.height = 158,
     this.maxLines = 10,
     this.radius = 5,
-  });
+  }) : super(key: textFieldKey);
 
-  const CretaTextField.small({
-    super.key,
+  CretaTextField.small({
+    required this.textFieldKey,
     required this.hintText,
     required this.onEditComplete,
     this.width = 160,
     this.height = 30,
     this.maxLines = 1,
     this.radius = 18,
-  });
+  }) : super(key: textFieldKey);
+
+  String getValue() {
+    return textFieldKey.currentState!.controller.text;
+  }
 
   @override
-  State<CretaTextField> createState() => _CretaTextFieldState();
+  State<CretaTextField> createState() => CretaTextFieldState();
 }
 
-class _CretaTextFieldState extends State<CretaTextField> {
+class CretaTextFieldState extends State<CretaTextField> {
   TextEditingController controller = TextEditingController();
   String searchValue = '';
   bool hover = false;
   bool clicked = false;
   @override
   Widget build(BuildContext context) {
+    widget.widgetSize = MediaQuery.of(context).size;
     return MouseRegion(
       onExit: (val) {
         setState(() {
           hover = false;
           clicked = false;
-          if (widget.maxLines > 1) {
-            searchValue = controller.text;
-            widget.onEditComplete(searchValue);
-          }
         });
       },
       onEnter: (val) {
@@ -98,12 +128,19 @@ class _CretaTextFieldState extends State<CretaTextField> {
             searchValue = value;
             logger.finest(context, 'onSubmitted $searchValue');
             widget.onEditComplete(searchValue);
+            LastClicked.clear();
           }),
+          // onEditingComplete: () {
+          //   searchValue = controller.text;
+          //   logger.finest(context, 'onEditingComplete $searchValue');
+          //   widget.onEditComplete(searchValue);
+          // },
           // onChanged: (value) {
-          //   searchValue = value;
-          //   logger.finest(context, 'onChanged $searchValue');
+          //   logger.finest(context, 'onChanged');
           // },
           onTap: () {
+            logger.finest('onTapped');
+            LastClicked.set(widget);
             setState(() {
               clicked = true;
             });

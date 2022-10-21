@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../buttons/creta_button.dart';
 import '../buttons/creta_radio_button.dart';
+import '../buttons/creta_radio_button2.dart';
+import '../buttons/creta_radio_button3.dart';
 import '../buttons/creta_tab_button.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
@@ -623,6 +625,54 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                       SizedBox(
                         width: 300,
                         child: CretaRadioButton(
+                          valueMap: {
+                            1: 'Jisoo',
+                            2: 'Lisa',
+                            3: 'Jennie',
+                            4: 'Rose',
+                          },
+                          defaultValue: 1,
+                          onSelected: (value) {
+                            logger.finest('selected value =$value');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Radio 2  '),
+                      SizedBox(
+                        width: 300,
+                        child: CretaRadioButton2(
+                          valueMap: {
+                            1: 'Jisoo',
+                            2: 'Lisa',
+                            3: 'Jennie',
+                            4: 'Rose',
+                          },
+                          defaultValue: 1,
+                          onSelected: (value) {
+                            logger.finest('selected value =$value');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Radio 2  '),
+                      SizedBox(
+                        width: 300,
+                        child: CretaRadioButton3(
                           valueMap: {
                             1: 'Jisoo',
                             2: 'Lisa',

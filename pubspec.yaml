@@ -43,6 +43,8 @@ dependencies:
   elegant_radio_button_group: ^0.0.1
   roundcheckbox: ^2.0.5
   flutter_awesome_select: ^6.5.0
+  radio_grouped_buttons: ^1.0.1
+  group_radio_button: ^1.2.0
 
 dev_dependencies:
   flutter_test:

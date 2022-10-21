@@ -53,7 +53,7 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                   CretaSearchBar.long(
                       hintText: '플레이스홀더',
                       onSearch: (value) {
-                        logger.finest('value=$value');
+                        logger.finest('alue=$value');
                       }),
                 ],
               ),
@@ -66,9 +66,10 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                   Text('CretaTextFeild()'),
                   SizedBox(width: 30),
                   CretaTextField(
+                      textFieldKey: GlobalKey(),
                       hintText: '플레이스홀더',
                       onEditComplete: (value) {
-                        logger.finest('value=$value');
+                        logger.finest('onEditComplete value=$value');
                       }),
                 ],
               ),
@@ -81,9 +82,10 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                   Text('CretaTextFeild.small()'),
                   SizedBox(width: 30),
                   CretaTextField.small(
+                      textFieldKey: GlobalKey(),
                       hintText: '플레이스홀더',
                       onEditComplete: (value) {
-                        logger.finest('value=$value');
+                        logger.finest('onEditComplete value=$value');
                       }),
                 ],
               ),
@@ -96,9 +98,10 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                   Text('CretaTextFeild.long()'),
                   SizedBox(width: 30),
                   CretaTextField.long(
+                      textFieldKey: GlobalKey(),
                       hintText: '플레이스홀더',
                       onEditComplete: (value) {
-                        logger.finest('value=$value');
+                        logger.finest('onEditComplete value=$value');
                       }),
                 ],
               ),

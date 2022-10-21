@@ -1,11 +1,30 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 import '../../routes.dart';
+import '../text_field/creta_text_field.dart';
+
+// get widgets Global Size and Position
+extension GlobalKeyExtension on GlobalKey {
+  Rect? get globalPaintBounds {
+    final renderObject = currentContext?.findRenderObject();
+    final translation = renderObject?.getTransformTo(null).getTranslation();
+    if (translation != null && renderObject?.paintBounds != null) {
+      final offset = Offset(translation.x, translation.y);
+      return renderObject!.paintBounds.shift(offset);
+    } else {
+      return null;
+    }
+  }
+}
 
 class Snippet {
+  static List<LogicalKeyboardKey> keys = [];
+
   static Widget CretaScaffold(
       {required String title, required BuildContext context, required Widget child}) {
     return Scaffold(
@@ -26,8 +45,26 @@ class Snippet {
           //   ],
           // ),
           Snippet.CretaDial(context),
-      body: child,
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onLongPressDown: ((details) {
+          logger.finest('onLongPressDown');
+          LastClicked.clickedOutSide(details.globalPosition);
+        }),
+        // onTapDown: ((details) {
+        //   logger.finest('clicked=${details.globalPosition}');
+        // }),
+        child: Container(
+          //color: Colors.amber,
+          child: child,
+        ),
+      ),
     );
+    // body: RawKeyboardListener(
+    //   onKey: keyEventHandler,
+    //   focusNode: FocusNode(),
+    //   child: child,
+    // ));
   }
 
   static PreferredSizeWidget CretaAppBar(String title) {
@@ -80,5 +117,31 @@ class Snippet {
 
   static Future<void> dummy(BuildContext context) async {
     Routemaster.of(context).push(AppRoutes.fontDemoPage);
+  }
+
+  static void keyEventHandler(RawKeyEvent event) {
+    final key = event.logicalKey;
+    logger.finest('key pressed $key');
+    if (event is RawKeyDownEvent) {
+      if (keys.contains(key)) return;
+      // textField 의 focus bug 때문에, delete  key 를 사용할 수 없다.
+      // if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
+      //   logHolder.log('delete pressed');
+      //   accManagerHolder!.removeACC(context);
+      // }
+      if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
+        logger.finest('tab pressed');
+      }
+      keys.add(key);
+      // Ctrl Key Area
+      if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
+          keys.contains(LogicalKeyboardKey.controlRight))) {
+        if (keys.contains(LogicalKeyboardKey.keyZ)) {
+          logger.finest('Ctrl+Z pressed');
+        }
+      }
+    } else {
+      keys.remove(key);
+    }
   }
 }
