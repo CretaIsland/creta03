@@ -61,11 +61,30 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Text('Textbox (free size)'),
+                  SizedBox(width: 30),
+                  Text('CretaTextFeild().'),
+                  SizedBox(width: 30),
+                  SizedBox(
+                    width: 400,
+                    child: CretaTextField(
+                        textFieldKey: GlobalKey(),
+                        hintText: '플레이스홀더',
+                        onEditComplete: (value) {
+                          logger.finest('onEditComplete value=$value');
+                        }),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Text('Textbox_short'),
                   SizedBox(width: 30),
-                  Text('CretaTextFeild()'),
+                  Text('CretaTextFeild().short()'),
                   SizedBox(width: 30),
-                  CretaTextField(
+                  CretaTextField.short(
                       textFieldKey: GlobalKey(),
                       hintText: '플레이스홀더',
                       onEditComplete: (value) {

@@ -1,22 +1,23 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:elegant_radio_button_group/elegant_radio_button_group.dart';
+import 'package:group_radio_button/group_radio_button.dart';
+import 'package:hycop/common/util/logger.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
 
 class CretaRadioButton extends StatefulWidget {
-  final Map<dynamic, String> valueMap; // value and title map
-  final void Function(dynamic value) onSelected;
-  final dynamic defaultValue;
-  final double density;
+  final Map<String, dynamic> valueMap; // title and value map
+  final void Function(String name, dynamic value) onSelected;
+  final dynamic defaultTitle;
+  final double spacebetween;
 
   const CretaRadioButton({
     super.key,
     required this.onSelected,
     required this.valueMap,
-    required this.defaultValue,
-    this.density = -4,
+    required this.defaultTitle,
+    this.spacebetween = 30,
   });
 
   @override
@@ -25,57 +26,52 @@ class CretaRadioButton extends StatefulWidget {
 
 class _CretaRadioButtonState extends State<CretaRadioButton> {
   TextEditingController controller = TextEditingController();
-  bool hover = false;
-  late dynamic selectedValue;
+  //bool hover = false;
+  late dynamic selectedTitle;
   @override
   void initState() {
     super.initState();
-    selectedValue = widget.defaultValue;
+    selectedTitle = widget.defaultTitle;
   }
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onExit: (val) {
-        setState(() {
-          hover = false;
-        });
-      },
-      onEnter: (val) {
-        setState(() {
-          hover = true;
-        });
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: widget.valueMap.keys.map((value) {
-          return ListTile(
-            dense: true,
-            minVerticalPadding: widget.density,
-            visualDensity: VisualDensity(vertical: widget.density, horizontal: widget.density),
-            horizontalTitleGap: 0,
-            contentPadding: EdgeInsets.symmetric(vertical: 0),
-            leading: ElegantRadioButton<int>(
-              fillColor: MaterialStateProperty.all(CretaColor.primary),
-              value: value,
-              visualDensity: VisualDensity(vertical: widget.density, horizontal: widget.density),
-              groupValue: selectedValue,
-              hoverColor: CretaColor.primary[100]!,
-              splashRadius: 12.0,
-              onChanged: (v) {
-                setState(() {
-                  selectedValue = v!;
-                  widget.onSelected(selectedValue);
-                });
-              },
-            ),
-            title: Text(
-              widget.valueMap[value]!,
-              style: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
-            ),
-          );
-        }).toList(),
+    return
+        // MouseRegion(
+        //   onExit: (val) {
+        //     setState(() {
+        //       hover = false;
+        //     });
+        //   },
+        //   onEnter: (val) {
+        //     setState(() {
+        //       hover = true;
+        //     });
+        //   },
+        //   child:
+        Container(
+      padding: EdgeInsets.all(10),
+      width: MediaQuery.of(context).size.width,
+      //height: 250,
+      child: RadioGroup<dynamic>.builder(
+        items: widget.valueMap.keys.toList(),
+        textStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
+        spacebetween: widget.spacebetween,
+        onChanged: (title) {
+          setState(() {
+            logger.finest("Button title $title");
+            selectedTitle = title;
+            widget.onSelected(selectedTitle, widget.valueMap[selectedTitle]!);
+          });
+        },
+        itemBuilder: (item) => RadioButtonBuilder(
+          item,
+        ),
+        //customShape: ShapeBorder(),
+        groupValue: selectedTitle,
+        activeColor: CretaColor.primary,
       ),
+      //),
     );
   }
 }

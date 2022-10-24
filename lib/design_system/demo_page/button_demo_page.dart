@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../buttons/creta_button.dart';
 import '../buttons/creta_radio_button.dart';
-import '../buttons/creta_radio_button2.dart';
-import '../buttons/creta_radio_button3.dart';
+//import '../buttons/creta_radio_button2.dart';
+//import '../buttons/creta_radio_button3.dart';
 import '../buttons/creta_tab_button.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
@@ -621,43 +621,22 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Radio    '),
+                      Text('Radio'),
+                      SizedBox(width: 30),
+                      Text('CretaRadioButton().'),
+                      SizedBox(width: 30),
                       SizedBox(
                         width: 300,
                         child: CretaRadioButton(
                           valueMap: {
-                            1: 'Jisoo',
-                            2: 'Lisa',
-                            3: 'Jennie',
-                            4: 'Rose',
+                            'Jisoo': 1,
+                            'Lisa': 2,
+                            'Jennie': 3,
+                            'Rose': 4,
                           },
-                          defaultValue: 1,
-                          onSelected: (value) {
-                            logger.finest('selected value =$value');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 30),
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Radio 2  '),
-                      SizedBox(
-                        width: 300,
-                        child: CretaRadioButton2(
-                          valueMap: {
-                            1: 'Jisoo',
-                            2: 'Lisa',
-                            3: 'Jennie',
-                            4: 'Rose',
-                          },
-                          defaultValue: 1,
-                          onSelected: (value) {
-                            logger.finest('selected value =$value');
+                          defaultTitle: 'Jennie',
+                          onSelected: (title, value) {
+                            logger.finest('selected $title=$value');
                           },
                         ),
                       ),
@@ -669,43 +648,21 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Radio 2  '),
-                      SizedBox(
-                        width: 300,
-                        child: CretaRadioButton3(
-                          valueMap: {
-                            1: 'Jisoo',
-                            2: 'Lisa',
-                            3: 'Jennie',
-                            4: 'Rose',
-                          },
-                          defaultValue: 1,
-                          onSelected: (value) {
-                            logger.finest('selected value =$value');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 30),
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Checkbox    '),
+                      Text('Checkbox'),
+                      SizedBox(width: 30),
+                      Text('CretaCheckbox().'),
+                      SizedBox(width: 30),
                       SizedBox(
                         width: 300,
                         child: CretaCheckbox(
                           valueMap: {
-                            1: 'Jisoo',
-                            2: 'Lisa',
-                            3: 'Jennie',
-                            4: 'Rose',
+                            'Jisoo': false,
+                            'Lisa': false,
+                            'Jennie': false,
+                            'Rose': true,
                           },
-                          defaultValue: 1,
-                          onSelected: (value) {
-                            logger.finest('selected value =$value');
+                          onSelected: (title, value, nvMap) {
+                            logger.finest('selected $title=$value');
                           },
                         ),
                       ),

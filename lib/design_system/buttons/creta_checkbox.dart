@@ -1,24 +1,23 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 //import 'package:flutter_awesome_select/flutter_awesome_select.dart';
-import 'package:roundcheckbox/roundcheckbox.dart';
+//import 'package:roundcheckbox/roundcheckbox.dart';
 
 import '../creta_color.dart';
 import '../creta_font.dart';
 
 class CretaCheckbox extends StatefulWidget {
-  final Map<dynamic, String> valueMap; // value and title map
-  final void Function(dynamic value) onSelected;
-  final dynamic defaultValue;
+  final Map<String, bool> valueMap; // value and title map
+  final void Function(String name, bool value, Map<String, bool> nvMap) onSelected;
   final double density;
 
   const CretaCheckbox({
     super.key,
     required this.onSelected,
     required this.valueMap,
-    required this.defaultValue,
-    this.density = -2,
+    this.density = 10,
   });
 
   @override
@@ -27,71 +26,142 @@ class CretaCheckbox extends StatefulWidget {
 
 class _CretaCheckboxState extends State<CretaCheckbox> {
   TextEditingController controller = TextEditingController();
-  bool hover = false;
-  late dynamic selectedValue;
+  late List<bool> hover;
+  String? selectedTitle;
   @override
   void initState() {
     super.initState();
-    selectedValue = widget.defaultValue;
+    hover = widget.valueMap.keys.map((value) {
+      return false;
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onExit: (val) {
-        setState(() {
-          hover = false;
-        });
-      },
-      onEnter: (val) {
-        setState(() {
-          hover = true;
-        });
-      },
-      // child: SmartSelect<int>.multiple(
-
-      // ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: widget.valueMap.keys.map((value) {
-          return ListTile(
-            dense: true,
-            minVerticalPadding: widget.density,
-            visualDensity: VisualDensity(vertical: widget.density, horizontal: widget.density),
-            horizontalTitleGap: 0,
-            contentPadding: EdgeInsets.symmetric(vertical: 0),
-            leading: RoundCheckBox(
-              animationDuration: Duration(milliseconds: 200),
-              size: 20,
-              isChecked: value == selectedValue,
-              checkedWidget: Icon(
-                Icons.check_circle_outline_outlined,
-                size: 20,
-                color: CretaColor.primary,
-              ),
-              uncheckedWidget: Icon(
-                Icons.circle_outlined,
-                size: 20,
-              ),
-              border: null,
-              borderColor: Colors.transparent,
-              checkedColor: Colors.transparent,
-              onTap: (v) {
+    int counter = 0;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: widget.valueMap.keys.map((title) {
+        int idx = counter % widget.valueMap.length;
+        counter++;
+        return Container(
+          color: hover[idx] ? CretaColor.text[200]! : null,
+          child: GestureDetector(
+            onLongPressDown: (details) {
+              setState(() {
+                if (widget.valueMap[title] != true) {
+                  logger.finest('onLongPressDown = $title');
+                  selectedTitle = title;
+                  widget.valueMap[title] = true;
+                } else {
+                  widget.valueMap[title] = false;
+                  logger.finest('onLongPressDown = null');
+                  selectedTitle = null;
+                }
+                widget.onSelected(title, widget.valueMap[title]!, widget.valueMap);
+              });
+            },
+            child: MouseRegion(
+              onExit: (val) {
                 setState(() {
-                  if (v!) {
-                    selectedValue = value;
-                    widget.onSelected(selectedValue);
-                  }
+                  hover[idx] = false;
                 });
               },
+              onEnter: (val) {
+                setState(() {
+                  hover[idx] = true;
+                });
+              },
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: widget.density / 2, bottom: widget.density / 2, left: 5),
+                child: Row(
+                  children: [
+                    widget.valueMap[title] == true
+                        ? Icon(
+                            Icons.check_circle_outline_outlined,
+                            size: 20,
+                            color: CretaColor.primary,
+                          )
+                        : Icon(
+                            Icons.circle_outlined,
+                            size: 20,
+                          ),
+                    SizedBox(width: widget.density),
+                    Text(
+                      title,
+                      style: CretaFont.bodySmall.copyWith(
+                        color: CretaColor.text[700]!,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            title: Text(
-              widget.valueMap[value]!,
-              style: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
-            ),
-          );
-        }).toList(),
-      ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
+
+
+// // 
+// MouseRegion(
+//             onExit = (val) {
+//               setState(() {
+//                 hover = false;
+//               });
+//             },
+//             onEnter = (val) {
+//               setState(() {
+//                 hover = true;
+//               });
+//             },
+//             child = 
+
+//   return ListTile(
+          //     dense: true,
+          //     minVerticalPadding: widget.density,
+          //     visualDensity: VisualDensity(vertical: widget.density, horizontal: widget.density),
+          //     horizontalTitleGap: 0,
+          //     contentPadding: EdgeInsets.symmetric(vertical: 0),
+          //     leading: Container(
+          //       color: CretaColor.text[200],
+          //       child: RoundCheckBox(
+          //         animationDuration: Duration(milliseconds: 200),
+          //         size: 20,
+          //         isChecked: value == selectedTitle,
+          //         checkedWidget: Icon(
+          //           Icons.check_circle_outline_outlined,
+          //           size: 20,
+          //           color: CretaColor.primary,
+          //         ),
+          //         uncheckedWidget: Icon(
+          //           Icons.circle_outlined,
+          //           size: 20,
+          //         ),
+          //         border: null,
+          //         borderColor: Colors.transparent,
+          //         checkedColor: Colors.transparent,
+          //         onTap: (v) {
+          //           setState(() {
+          //             if (v!) {
+          //               logger.finest('onTapped = $v');
+          //               selectedTitle = value;
+          //             } else {
+          //               logger.finest('onTapped = null');
+          //               selectedTitle = null;
+          //             }
+          //             widget.onSelected(selectedTitle);
+          //           });
+          //         },
+          //       ),
+          //     ),
+          //     title: Text(
+          //       widget.valueMap[value]!,
+          //       style: CretaFont.bodySmall.copyWith(
+          //         color: CretaColor.text[700]!,
+          //       ),
+          //     ),
+          //   );

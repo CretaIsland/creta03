@@ -48,6 +48,16 @@ class CretaTextField extends StatefulWidget {
     required this.textFieldKey,
     required this.hintText,
     required this.onEditComplete,
+    this.width = -1,
+    this.height = -1,
+    this.maxLines = 1,
+    this.radius = 18,
+  }) : super(key: textFieldKey);
+
+  CretaTextField.short({
+    required this.textFieldKey,
+    required this.hintText,
+    required this.onEditComplete,
     this.width = 332,
     this.height = 30,
     this.maxLines = 1,
@@ -102,51 +112,57 @@ class CretaTextFieldState extends State<CretaTextField> {
           hover = true;
         });
       },
-      child: SizedBox(
-        height: widget.height,
-        width: widget.width,
-        child: CupertinoTextField(
-          maxLines: widget.maxLines,
-          enabled: true,
-          autofocus: true,
-          decoration: BoxDecoration(
-            color: clicked
-                ? Colors.white
-                : hover
-                    ? CretaColor.text[200]!
-                    : CretaColor.text[100]!,
-            border: clicked ? Border.all(color: CretaColor.primary) : null,
-            borderRadius: BorderRadius.circular(widget.radius),
-          ),
-          padding: const EdgeInsetsDirectional.only(start: 18, end: 18, top: 5, bottom: 5),
-          controller: controller,
-          placeholder: clicked ? null : widget.hintText,
-          placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
-          style: CretaFont.bodySmall.copyWith(color: CretaColor.text[900]!),
-          suffixMode: OverlayVisibilityMode.always,
-          onSubmitted: ((value) {
-            searchValue = value;
-            logger.finest(context, 'onSubmitted $searchValue');
-            widget.onEditComplete(searchValue);
-            LastClicked.clear();
-          }),
-          // onEditingComplete: () {
-          //   searchValue = controller.text;
-          //   logger.finest(context, 'onEditingComplete $searchValue');
-          //   widget.onEditComplete(searchValue);
-          // },
-          // onChanged: (value) {
-          //   logger.finest(context, 'onChanged');
-          // },
-          onTap: () {
-            logger.finest('onTapped');
-            LastClicked.set(widget);
-            setState(() {
-              clicked = true;
-            });
-          },
-        ),
+      child: (widget.height > 0 && widget.width > 0)
+          ? SizedBox(
+              height: widget.height,
+              width: widget.width,
+              child: _cupertinoTextField(),
+            )
+          : _cupertinoTextField(),
+    );
+  }
+
+  Widget _cupertinoTextField() {
+    return CupertinoTextField(
+      maxLines: widget.maxLines,
+      enabled: true,
+      autofocus: true,
+      decoration: BoxDecoration(
+        color: clicked
+            ? Colors.white
+            : hover
+                ? CretaColor.text[200]!
+                : CretaColor.text[100]!,
+        border: clicked ? Border.all(color: CretaColor.primary) : null,
+        borderRadius: BorderRadius.circular(widget.radius),
       ),
+      padding: const EdgeInsetsDirectional.only(start: 18, end: 18, top: 5, bottom: 5),
+      controller: controller,
+      placeholder: clicked ? null : widget.hintText,
+      placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
+      style: CretaFont.bodySmall.copyWith(color: CretaColor.text[900]!),
+      suffixMode: OverlayVisibilityMode.always,
+      onSubmitted: ((value) {
+        searchValue = value;
+        logger.finest(context, 'onSubmitted $searchValue');
+        widget.onEditComplete(searchValue);
+        LastClicked.clear();
+      }),
+      // onEditingComplete: () {
+      //   searchValue = controller.text;
+      //   logger.finest(context, 'onEditingComplete $searchValue');
+      //   widget.onEditComplete(searchValue);
+      // },
+      // onChanged: (value) {
+      //   logger.finest(context, 'onChanged');
+      // },
+      onTap: () {
+        logger.finest('onTapped');
+        LastClicked.set(widget);
+        setState(() {
+          clicked = true;
+        });
+      },
     );
   }
 }
