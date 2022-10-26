@@ -45,6 +45,10 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
           surface: Colors.yellow,
           onSurface: CretaColor.text,
         ),
+        // sliderTheme: SliderThemeData(
+        //   activeTickMarkColor: Colors.amber,
+        //   showValueIndicator: ShowValueIndicator.never,
+        // ),
         scrollbarTheme: ScrollbarThemeData(
           thumbColor: MaterialStateProperty.all(CretaColor.primary),
         ),

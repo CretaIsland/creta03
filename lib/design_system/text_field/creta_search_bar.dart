@@ -35,42 +35,57 @@ class CretaSearchBar extends StatefulWidget {
 }
 
 class _CretaSearchBarState extends State<CretaSearchBar> {
-  TextEditingController controller = TextEditingController();
-  String searchValue = '';
-  bool hover = false;
-  bool clicked = false;
+  final TextEditingController _controller = TextEditingController();
+  FocusNode? _focusNode;
+  String _searchValue = '';
+  bool _hover = false;
+  bool _clicked = false;
+
+  @override
+  void initState() {
+    _focusNode = FocusNode();
+    _focusNode!.addListener(() {
+      if (_focusNode!.hasFocus) {
+        _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
       onExit: (val) {
         setState(() {
-          hover = false;
-          clicked = false;
+          _hover = false;
+          _clicked = false;
         });
       },
       onEnter: (val) {
         setState(() {
-          hover = true;
+          _hover = true;
         });
       },
       child: SizedBox(
         height: widget.height,
         width: widget.width,
         child: CupertinoSearchTextField(
+          focusNode: _focusNode,
+          //padding: EdgeInsetsDirectional.fromSTEB(18, top, end, bottom)
           enabled: true,
           autofocus: true,
           decoration: BoxDecoration(
-            color: clicked
+            color: _clicked
                 ? Colors.white
-                : hover
+                : _hover
                     ? CretaColor.text[200]!
                     : CretaColor.text[100]!,
-            border: clicked ? Border.all(color: CretaColor.primary) : null,
+            border: _clicked ? Border.all(color: CretaColor.primary) : null,
             borderRadius: BorderRadius.circular(24),
           ),
           padding: EdgeInsetsDirectional.all(0),
-          controller: controller,
-          placeholder: clicked ? null : widget.hintText,
+          controller: _controller,
+          placeholder: _clicked ? null : widget.hintText,
           placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
           prefixInsets: EdgeInsetsDirectional.only(start: 18),
           prefixIcon: Container(),
@@ -79,18 +94,18 @@ class _CretaSearchBarState extends State<CretaSearchBar> {
           suffixIcon: Icon(CupertinoIcons.search),
           suffixMode: OverlayVisibilityMode.always,
           onSubmitted: ((value) {
-            searchValue = value;
-            logger.finest(context, 'search $searchValue');
-            widget.onSearch(searchValue);
+            _searchValue = value;
+            logger.finest('search $_searchValue');
+            widget.onSearch(_searchValue);
           }),
           onSuffixTap: () {
-            searchValue = controller.text;
-            logger.finest(context, 'search $searchValue');
-            widget.onSearch(searchValue);
+            _searchValue = _controller.text;
+            logger.finest('search $_searchValue');
+            widget.onSearch(_searchValue);
           },
           onTap: () {
             setState(() {
-              clicked = true;
+              _clicked = true;
             });
           },
         ),

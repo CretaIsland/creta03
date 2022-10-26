@@ -69,6 +69,7 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                     width: 400,
                     child: CretaTextField(
                         textFieldKey: GlobalKey(),
+                        value: '',
                         hintText: '플레이스홀더',
                         onEditComplete: (value) {
                           logger.finest('onEditComplete value=$value');
@@ -86,6 +87,7 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                   SizedBox(width: 30),
                   CretaTextField.short(
                       textFieldKey: GlobalKey(),
+                      value: '',
                       hintText: '플레이스홀더',
                       onEditComplete: (value) {
                         logger.finest('onEditComplete value=$value');
@@ -102,6 +104,7 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                   SizedBox(width: 30),
                   CretaTextField.small(
                       textFieldKey: GlobalKey(),
+                      value: '',
                       hintText: '플레이스홀더',
                       onEditComplete: (value) {
                         logger.finest('onEditComplete value=$value');
@@ -118,7 +121,44 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                   SizedBox(width: 30),
                   CretaTextField.long(
                       textFieldKey: GlobalKey(),
+                      value: '',
                       hintText: '플레이스홀더',
+                      onEditComplete: (value) {
+                        logger.finest('onEditComplete value=$value');
+                      }),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Textbox_short'),
+                  SizedBox(width: 30),
+                  Text('CretaTextFeild.shortNumber()'),
+                  SizedBox(width: 30),
+                  CretaTextField.shortNumber(
+                      textFieldKey: GlobalKey(),
+                      value: '1',
+                      hintText: '1',
+                      maxNumber: 99,
+                      minNumber: 0,
+                      onEditComplete: (value) {
+                        logger.finest('onEditComplete value=$value');
+                      }),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Textbox_medium'),
+                  SizedBox(width: 30),
+                  Text('CretaTextFeild.colorText()'),
+                  SizedBox(width: 30),
+                  CretaTextField.colorText(
+                      textFieldKey: GlobalKey(),
+                      value: '#123456',
+                      hintText: '#000000',
                       onEditComplete: (value) {
                         logger.finest('onEditComplete value=$value');
                       }),
