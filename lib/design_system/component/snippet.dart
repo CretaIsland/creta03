@@ -93,22 +93,28 @@ class Snippet {
           },
         ),
         SpeedDialChild(
-          child: Icon(Icons.font_download),
+          child: Icon(Icons.text_fields_outlined),
           onTap: () {
             //Routemaster.of(context).push(AppRoutes.fontDemoPage);
             dummy(context);
           },
         ),
         SpeedDialChild(
-          child: Icon(Icons.smart_button),
+          child: Icon(Icons.radio_button_checked),
           onTap: () {
             Routemaster.of(context).push(AppRoutes.buttonDemoPage);
           },
         ),
         SpeedDialChild(
-          child: Icon(Icons.text_fields_outlined),
+          child: Icon(Icons.smart_button),
           onTap: () {
             Routemaster.of(context).push(AppRoutes.textFieldDemoPage);
+          },
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.menu_book),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.menuDemoPage);
           },
         ),
       ],

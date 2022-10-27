@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable, prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/design_system/buttons/creta_checkbox.dart';
+import 'package:creta03/design_system/buttons/creta_slider.dart';
 import 'package:creta03/design_system/buttons/creta_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -9,6 +10,8 @@ import '../buttons/creta_radio_button.dart';
 //import '../buttons/creta_radio_button2.dart';
 //import '../buttons/creta_radio_button3.dart';
 import '../buttons/creta_tab_button.dart';
+import '../buttons/creta_thick_choice.dart';
+import '../buttons/creta_toggle_button.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -669,6 +672,67 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                     ],
                   ),
                 ),
+                SizedBox(height: 30),
+                Center(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Slider'),
+                    SizedBox(width: 30),
+                    Text('CretaSlider().'),
+                    SizedBox(width: 30),
+                    SizedBox(
+                      height: 20,
+                      width: 164,
+                      child: CretaSlider(
+                        max: 100,
+                        min: 0,
+                        value: 50,
+                        onDragComplete: (value) {
+                          logger.finest('selected slider value=$value');
+                        },
+                      ),
+                    ),
+                  ],
+                )),
+                SizedBox(height: 30),
+                Center(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Thickness'),
+                    SizedBox(width: 30),
+                    Text('CretaThickChoice()'),
+                    SizedBox(width: 30),
+                    CretaThickChoice(
+                      valueList: [1, 2, 3, 4, 5],
+                      defaultValue: 2,
+                      onSelected: (value) {
+                        logger.finest('selected CretaThickChoice $value');
+                      },
+                    ),
+                    SizedBox(width: 30),
+                  ],
+                )),
+                SizedBox(height: 30),
+                Center(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Toggle'),
+                    SizedBox(width: 30),
+                    Text('CretaToggleButton()'),
+                    SizedBox(width: 30),
+                    CretaToggleButton(
+                      defaultValue: true,
+                      onSelected: (value) {
+                        logger.finest('toggled CretaToggleButton $value');
+                      },
+                    ),
+                    SizedBox(width: 30),
+                  ],
+                )),
+                SizedBox(height: 30),
               ],
             ),
           ),
