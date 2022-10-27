@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hycop/hycop.dart';
+import 'package:url_strategy/url_strategy.dart';
 import 'routes.dart';
 
-void main() {
+void main() async {
+  setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
   HycopFactory.serverType = ServerType.firebase;
-  HycopFactory.initAll();
+  await HycopFactory.initAll();
 
   runApp(const ProviderScope(child: MainRouteApp()));
 }

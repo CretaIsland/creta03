@@ -6,6 +6,7 @@ import 'design_system/demo_page/button_demo_page.dart';
 import 'design_system/demo_page/text_field_demo_page.dart';
 import 'pages/login_page.dart';
 import 'pages/intro_page.dart';
+import 'package:hycop/hycop.dart';
 
 abstract class AppRoutes {
   static const String intro = '/intro';
@@ -19,10 +20,16 @@ abstract class AppRoutes {
 //DrawerMenuPage menuWidget = DrawerMenuPage(key: menuKey);
 
 final routesLoggedOut = RouteMap(
-  onUnknownRoute: (_) => const Redirect(AppRoutes.intro),
+  onUnknownRoute: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+      ? const TransitionPage(child: IntroPage())
+      : const Redirect(AppRoutes.login),
   routes: {
-    AppRoutes.intro: (_) => TransitionPage(child: IntroPage()),
-    AppRoutes.login: (_) => TransitionPage(child: LoginPage()),
+    AppRoutes.intro: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? const TransitionPage(child: IntroPage())
+        : const Redirect(AppRoutes.login),
+    AppRoutes.login: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? const Redirect(AppRoutes.intro)
+        : const TransitionPage(child: LoginPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
