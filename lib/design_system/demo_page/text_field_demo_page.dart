@@ -132,7 +132,26 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Textbox_short'),
+                  Text('Textbox_xs'),
+                  SizedBox(width: 30),
+                  Text('CretaTextFeild.xshortNumber()'),
+                  SizedBox(width: 30),
+                  CretaTextField.xshortNumber(
+                      textFieldKey: GlobalKey(),
+                      value: '1',
+                      hintText: '1',
+                      maxNumber: 99,
+                      minNumber: 0,
+                      onEditComplete: (value) {
+                        logger.finest('onEditComplete value=$value');
+                      }),
+                ],
+              ),
+              SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Textbox_s'),
                   SizedBox(width: 30),
                   Text('CretaTextFeild.shortNumber()'),
                   SizedBox(width: 30),

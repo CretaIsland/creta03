@@ -5,9 +5,9 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter/gestures.dart';
 
+import '../design_system/buttons/creta_button_wrapper.dart';
 import '../routes.dart';
 import '../design_system/component/snippet.dart';
-import '../design_system/buttons/creta_button.dart';
 
 enum IntroPageType {
   none,
@@ -279,68 +279,48 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CretaButton(
-              text: Text(
-                'Log in',
-                style: const TextStyle(color: Colors.white),
-              ),
-              width: 200,
-              height: 30,
-              buttonStyle: CretaButtonStyle.hoverAnimate,
-              buttonType: CretaButtonType.textOnly,
+            child: BTN.fill_blue_ti_el(
+              text: 'Log in',
+              icon: Icons.arrow_forward_outlined,
               onPressed: _login,
+              width: 300,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CretaButton(
-              text: Text(
-                'Log in by Google',
-                style: const TextStyle(color: Colors.white),
-              ),
-              width: 200,
-              height: 30,
-              buttonStyle: CretaButtonStyle.hoverAnimate,
-              buttonType: CretaButtonType.textOnly,
+            child: BTN.fill_blue_ti_el(
+              text: 'Log in by Google',
+              icon: Icons.arrow_forward_outlined,
               onPressed: _loginByGoogle,
+              width: 300,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CretaButton(
-              text: Text(
-                'Reset Password',
-                style: const TextStyle(color: Colors.white),
-              ),
-              width: 200,
-              height: 30,
-              buttonStyle: CretaButtonStyle.hoverAnimate,
-              buttonType: CretaButtonType.textOnly,
+            child: BTN.fill_blue_ti_el(
+              text: 'Reset Password',
+              icon: Icons.arrow_forward_outlined,
               onPressed: () {
                 setState(() {
                   _isHidden = true;
                   _pageIndex = IntroPageType.resetPassword;
                 });
               },
+              width: 300,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CretaButton(
-              text: Text(
-                'Reset Password Confirm',
-                style: const TextStyle(color: Colors.white),
-              ),
-              width: 200,
-              height: 30,
-              buttonStyle: CretaButtonStyle.hoverAnimate,
-              buttonType: CretaButtonType.textOnly,
+            child: BTN.fill_blue_ti_el(
+              text: 'Reset Password Confirm',
+              icon: Icons.arrow_forward_outlined,
               onPressed: () {
                 setState(() {
                   _isHidden = true;
                   _pageIndex = IntroPageType.resetPasswordConfirm;
                 });
               },
+              width: 300,
             ),
           ),
           _errMsg.isNotEmpty
@@ -447,30 +427,20 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CretaButton(
-              text: Text(
-                'Sign up',
-                style: const TextStyle(color: Colors.white),
-              ),
-              width: 200,
-              height: 30,
-              buttonStyle: CretaButtonStyle.hoverAnimate,
-              buttonType: CretaButtonType.textOnly,
+            child: BTN.fill_blue_ti_el(
+              text: 'Sign up',
+              icon: Icons.arrow_forward_outlined,
               onPressed: _signup,
+              width: 300,
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CretaButton(
-              text: Text(
-                'Sign up by google',
-                style: const TextStyle(color: Colors.white),
-              ),
-              width: 200,
-              height: 30,
-              buttonStyle: CretaButtonStyle.hoverAnimate,
-              buttonType: CretaButtonType.textOnly,
+            child: BTN.fill_blue_ti_el(
+              text: 'Sign up by google',
+              icon: Icons.arrow_forward_outlined,
               onPressed: _signupByGoogle,
+              width: 300,
             ),
           ),
           _errMsg.isNotEmpty
@@ -514,21 +484,16 @@ class _LoginPageState extends State<LoginPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CretaButton(
-                text: Text(
-                  'Back',
-                  style: const TextStyle(color: Colors.white),
-                ),
-                width: 120,
-                height: 30,
-                buttonStyle: CretaButtonStyle.hoverAnimate,
-                buttonType: CretaButtonType.textOnly,
+              BTN.fill_blue_ti_el(
+                text: 'Back',
+                icon: Icons.arrow_forward_outlined,
                 onPressed: () {
                   setState(() {
                     _isHidden = true;
                     _pageIndex = IntroPageType.login;
                   });
                 },
+                width: 300,
               ),
             ],
           ),
@@ -565,16 +530,11 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CretaButton(
-              text: Text(
-                'Reset Password',
-                style: const TextStyle(color: Colors.white),
-              ),
-              width: 200,
-              height: 30,
-              buttonStyle: CretaButtonStyle.hoverAnimate,
-              buttonType: CretaButtonType.textOnly,
+            child: BTN.fill_blue_ti_el(
+              text: 'Reset Password',
+              icon: Icons.arrow_forward_outlined,
               onPressed: _resetPassword,
+              width: 300,
             ),
           ),
           _errMsg.isNotEmpty
@@ -596,21 +556,16 @@ class _LoginPageState extends State<LoginPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CretaButton(
-                text: Text(
-                  'Back',
-                  style: const TextStyle(color: Colors.white),
-                ),
-                width: 120,
-                height: 30,
-                buttonStyle: CretaButtonStyle.hoverAnimate,
-                buttonType: CretaButtonType.textOnly,
+              BTN.fill_blue_ti_el(
+                text: 'Back',
+                icon: Icons.arrow_forward_outlined,
                 onPressed: () {
                   setState(() {
                     _isHidden = true;
                     _pageIndex = IntroPageType.login;
                   });
                 },
+                width: 300,
               ),
             ],
           ),
@@ -680,16 +635,11 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CretaButton(
-              text: Text(
-                'Reset Password Confirm',
-                style: const TextStyle(color: Colors.white),
-              ),
-              width: 200,
-              height: 30,
-              buttonStyle: CretaButtonStyle.hoverAnimate,
-              buttonType: CretaButtonType.textOnly,
+            child: BTN.fill_blue_ti_el(
+              text: 'Reset Password Confirm',
+              icon: Icons.arrow_forward_outlined,
               onPressed: _resetPasswordConfirm,
+              width: 300,
             ),
           ),
           _errMsg.isNotEmpty
@@ -711,21 +661,16 @@ class _LoginPageState extends State<LoginPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CretaButton(
-                text: Text(
-                  'Back',
-                  style: const TextStyle(color: Colors.white),
-                ),
-                width: 200,
-                height: 30,
-                buttonStyle: CretaButtonStyle.hoverAnimate,
-                buttonType: CretaButtonType.textOnly,
+              BTN.fill_blue_ti_el(
+                text: 'Back',
+                icon: Icons.arrow_forward_outlined,
                 onPressed: () {
                   setState(() {
                     _isHidden = true;
                     _pageIndex = IntroPageType.login;
                   });
                 },
+                width: 300,
               ),
             ],
           ),

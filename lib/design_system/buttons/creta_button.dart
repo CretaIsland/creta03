@@ -12,23 +12,18 @@ enum CretaButtonType {
   childSelected,
 }
 
-enum CretaButtonStyle {
-  basic,
-  simple,
-  hoverAnimate,
-  clickAnimate,
-}
-
 enum CretaButtonColor {
   blue,
   sky,
   gray,
+  gray100,
+  gray200,
   white,
+  white300,
 }
 
 class CretaButton extends StatefulWidget {
   final CretaButtonType buttonType;
-  final CretaButtonStyle buttonStyle;
   final CretaButtonColor buttonColor;
   final Widget? text;
   final Icon? icon;
@@ -42,7 +37,6 @@ class CretaButton extends StatefulWidget {
 
   CretaButton({
     required this.buttonType,
-    required this.buttonStyle,
     required this.onPressed,
     this.buttonColor = CretaButtonColor.blue,
     this.text,
@@ -53,15 +47,27 @@ class CretaButton extends StatefulWidget {
     Key? key,
   }) : super(key: key) {
     if (buttonColor == CretaButtonColor.white) {
-      bgColor = Colors.transparent;
+      bgColor = Colors.white;
+      hoverColor = CretaColor.text[100]!;
+      clickColor = CretaColor.text[200]!;
+    } else if (buttonColor == CretaButtonColor.white300) {
+      bgColor = Colors.white;
+      hoverColor = CretaColor.text[300]!;
+      clickColor = CretaColor.text[400]!;
+    } else if (buttonColor == CretaButtonColor.gray100) {
+      bgColor = CretaColor.text[100]!;
       hoverColor = CretaColor.text[200]!;
-      clickColor = CretaColor.text[700]!;
+      clickColor = CretaColor.text[300]!;
+    } else if (buttonColor == CretaButtonColor.gray200) {
+      bgColor = CretaColor.text[200]!;
+      hoverColor = CretaColor.text[300]!;
+      clickColor = CretaColor.text[400]!;
     } else if (buttonColor == CretaButtonColor.gray) {
-      bgColor = CretaColor.text[400]!;
-      hoverColor = CretaColor.text[600]!;
-      clickColor = CretaColor.text[800]!;
+      bgColor = CretaColor.text[900]!.withOpacity(0.25);
+      hoverColor = CretaColor.text[900]!.withOpacity(0.40);
+      clickColor = CretaColor.text[900]!.withOpacity(0.60);
     } else if (buttonColor == CretaButtonColor.sky) {
-      bgColor = Colors.transparent;
+      bgColor = Colors.white;
       hoverColor = CretaColor.primary[200]!;
       clickColor = CretaColor.primary[300]!;
     } else {
@@ -83,7 +89,7 @@ class _CretaButtonState extends State<CretaButton> {
   Widget build(BuildContext context) {
     print('build $hover $clicked $selected');
     return GestureDetector(
-      onTapDown: (details) {
+      onLongPressDown: (details) {
         setState(() {
           clicked = true;
           if (widget.buttonType == CretaButtonType.childSelected) {
@@ -111,8 +117,20 @@ class _CretaButtonState extends State<CretaButton> {
             hover = true;
           });
         },
+        // child: Transform.scale(
+        //   scale: getScale(),
+        //   child: Container(
+        //     decoration: getDeco(),
+        //     width: widget.width ?? getWidth(),
+        //     height: widget.height ?? getHeight(),
+        //     child: Center(
+        //       child: getChild(),
+        //     ),
+        //   ),
+        // )
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
+          transformAlignment: AlignmentDirectional.center,
           transform: Matrix4.identity()..scale(getScale()),
           decoration: getDeco(),
           width: widget.width ?? getWidth(),
@@ -125,161 +143,16 @@ class _CretaButtonState extends State<CretaButton> {
     );
   }
 
-  Gradient? gradient() {
-    if (!hover &&
-        (widget.buttonType == CretaButtonType.childSelected ||
-            widget.bgColor == Colors.transparent)) {
-      // transparen 일때 이상현상이 나기 때문에...
-      print("not hover or it's childSelected");
-      return null;
-    }
-    return LinearGradient(
-        colors: gradientColors(), begin: Alignment.topLeft, end: Alignment.bottomRight);
-  }
-
-  List<Color> gradientColors() {
-    if (hover) {
-      if (clicked) {
-        if (widget.buttonColor == CretaButtonColor.white) {
-          return [
-            CretaColor.text[100]!,
-            CretaColor.text[100]!,
-            CretaColor.text[200]!,
-            CretaColor.text[200]!,
-            CretaColor.text[300]!,
-            CretaColor.text[300]!,
-            CretaColor.text[500]!,
-          ];
-        }
-        if (widget.buttonColor == CretaButtonColor.gray) {
-          return [
-            CretaColor.text[300]!,
-            CretaColor.text[300]!,
-            CretaColor.text[400]!,
-            CretaColor.text[400]!,
-            CretaColor.text[500]!,
-            CretaColor.text[500]!,
-            CretaColor.text[600]!,
-          ];
-        }
-        if (widget.buttonColor == CretaButtonColor.sky) {
-          return [
-            CretaColor.primary[100]!,
-            CretaColor.primary[100]!,
-            CretaColor.primary[200]!,
-            CretaColor.primary[200]!,
-            CretaColor.primary[300]!,
-            CretaColor.primary[300]!,
-            CretaColor.primary[400]!,
-          ];
-        }
-        return [
-          CretaColor.primary[300]!,
-          CretaColor.primary[300]!,
-          CretaColor.primary[400]!,
-          CretaColor.primary[400]!,
-          CretaColor.primary[500]!,
-          CretaColor.primary[500]!,
-          CretaColor.primary[600]!,
-        ];
-      }
-      print('hover gradient color is widget.hoverColor');
-      return [widget.hoverColor!, widget.hoverColor!];
-    }
-
-    return [widget.bgColor!, widget.bgColor!];
-  }
-
-  bool isAnimate() {
-    if (widget.buttonStyle == CretaButtonStyle.hoverAnimate) return true;
-    if (widget.buttonStyle == CretaButtonStyle.clickAnimate) return true;
-    return false;
-  }
-
   double getScale() {
-    if (clicked && widget.buttonStyle == CretaButtonStyle.clickAnimate) {
-      return 1.05;
-    }
-    if (hover && widget.buttonStyle == CretaButtonStyle.hoverAnimate) {
-      return 1.05;
-    }
-    return 1.0;
+    return clicked ? 0.9 : 1.0;
   }
 
   Decoration? getDeco() {
-    if (widget.buttonStyle == CretaButtonStyle.simple) {
-      if (widget.buttonType == CretaButtonType.childSelected) {
-        print('simple and childSelected');
-        return BoxDecoration(
-          border:
-              (clicked || selected) ? Border.all(width: 1, color: CretaColor.primary[300]!) : null,
-          gradient: gradient(),
-          //color: hover ? CretaColor.primary[200]! : Colors.transparent,
-          // color: hover
-          //     ? (clicked
-          //         ? selected
-          //             ? Colors.transparent
-          //             : CretaColor.primary[200]!
-          //         : CretaColor.primary[200]!)
-          //     : Colors.transparent,
-          borderRadius: BorderRadius.all(widget.buttonType == CretaButtonType.iconOnly
-              ? Radius.circular(36)
-              : Radius.circular(38)),
-        );
-      }
-      print(hover ? (clicked ? 'clicked' : 'hoverd') : 'nothing');
-      return BoxDecoration(
-        //color: hover ? (clicked ? widget.clickColor! : widget.hoverColor!) : widget.bgColor!,
-        gradient: gradient(),
-        borderRadius: BorderRadius.all(widget.buttonType == CretaButtonType.iconOnly
-            ? Radius.circular(36)
-            : Radius.circular(38)),
-      );
-    }
-    if (isAnimate()) {
-      return BoxDecoration(
-        border: selected ? Border.all(width: 1, color: CretaColor.primary[300]!) : null,
-        //gradient: RadialGradient(colors: gradientColors()),
-        //color: hover ? (clicked ? widget.clickColor! : widget.hoverColor!) : widget.bgColor!,
-        gradient: gradient(),
-        borderRadius: BorderRadius.all(widget.buttonType == CretaButtonType.iconOnly
-            ? Radius.circular(36)
-            : Radius.circular(38)),
-        boxShadow: clicked
-            ? [
-                BoxShadow(
-                  //color: Colors.grey.shade500,
-                  color: widget.clickColor!,
-                  offset: Offset(2, 2),
-                  blurRadius: 8,
-                  spreadRadius: 1,
-                ),
-                BoxShadow(
-                  //color: Colors.grey.shade500,
-                  color: widget.clickColor!,
-                  offset: Offset(-2, 2),
-                  blurRadius: 8,
-                  spreadRadius: 1,
-                ),
-                BoxShadow(
-                  //color: Colors.grey.shade500,
-                  color: widget.clickColor!,
-                  offset: Offset(2, -2),
-                  blurRadius: 8,
-                  spreadRadius: 1,
-                ),
-                BoxShadow(
-                  //color: Colors.grey.shade500,
-                  color: widget.clickColor!,
-                  offset: Offset(-2, -2),
-                  blurRadius: 8,
-                  spreadRadius: 1,
-                ),
-              ]
-            : null,
-      );
-    }
-    return null;
+    return BoxDecoration(
+      border: selected ? Border.all(width: 1, color: CretaColor.primary[300]!) : null,
+      color: hover ? (clicked ? widget.clickColor! : widget.hoverColor!) : widget.bgColor!,
+      borderRadius: BorderRadius.all(Radius.circular(36)),
+    );
   }
 
   Widget getChild() {
@@ -293,8 +166,13 @@ class _CretaButtonState extends State<CretaButton> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          widget.icon!,
-          widget.text!,
+          hover ? widget.icon! : Container(),
+          AnimatedPadding(
+            curve: Curves.easeOutQuad,
+            padding: EdgeInsetsDirectional.only(start: hover ? widget.width! / 14 : 0),
+            duration: Duration(milliseconds: 800),
+            child: widget.text!,
+          ),
         ],
       );
     }
@@ -302,8 +180,13 @@ class _CretaButtonState extends State<CretaButton> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          widget.text!,
-          widget.icon!,
+          AnimatedPadding(
+            curve: Curves.easeOutQuad,
+            padding: EdgeInsetsDirectional.only(end: hover ? widget.width! / 14 : 0),
+            duration: Duration(milliseconds: 800),
+            child: widget.text!,
+          ),
+          hover ? widget.icon! : Container(),
         ],
       );
     }

@@ -29,8 +29,8 @@ class CretaFont {
     fontSize: 14,
     color: CretaColor.text,
   );
-  static TextStyle titleMedium = headlineSmall.copyWith(fontSize: 20);
-  static TextStyle titleLarge = headlineSmall.copyWith(fontSize: 22);
+  static TextStyle titleMedium = headlineSmall.copyWith(fontSize: 16);
+  static TextStyle titleLarge = headlineSmall.copyWith(fontSize: 20);
 
   static TextStyle displaySmall = const TextStyle(
     fontFamily: fontFamily,

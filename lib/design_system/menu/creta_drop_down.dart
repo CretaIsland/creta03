@@ -6,12 +6,19 @@ import 'package:hycop/common/util/logger.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
 
+enum CretaDropDownType {
+  normal,
+  small,
+}
+
 class CretaDropDown extends StatefulWidget {
   final List<String> items;
   final String defaultValue;
   final void Function(String value) onSelected;
   final double width;
   final double height;
+  final CretaDropDownType dropDownType;
+
   const CretaDropDown({
     super.key,
     required this.items,
@@ -19,6 +26,17 @@ class CretaDropDown extends StatefulWidget {
     required this.onSelected,
     this.width = 93,
     this.height = 30,
+    this.dropDownType = CretaDropDownType.normal,
+  });
+
+  const CretaDropDown.small({
+    super.key,
+    required this.items,
+    required this.defaultValue,
+    required this.onSelected,
+    this.width = 74,
+    this.height = 28,
+    this.dropDownType = CretaDropDownType.small,
   });
 
   @override
@@ -78,8 +96,11 @@ class _CretaDropDownState extends State<CretaDropDown> {
                   value: item,
                   child: Text(
                     item,
-                    style: CretaFont.bodySmall
-                        .copyWith(overflow: TextOverflow.ellipsis, color: CretaColor.text[700]!),
+                    style: widget.dropDownType == CretaDropDownType.normal
+                        ? CretaFont.bodySmall
+                            .copyWith(overflow: TextOverflow.ellipsis, color: CretaColor.text[700]!)
+                        : CretaFont.bodyESmall.copyWith(
+                            overflow: TextOverflow.ellipsis, color: CretaColor.text[700]!),
                   ),
                 );
               }).toList(),

@@ -43,6 +43,22 @@ class _MenuDemoPageState extends State<MenuDemoPage> {
                 ],
               ),
               SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('DropDown_s'),
+                  SizedBox(width: 30),
+                  Text('CretaDropDown.small()'),
+                  SizedBox(width: 30),
+                  CretaDropDown.small(
+                      items: ['제니', '지수', '로제', '리사'],
+                      defaultValue: '지수',
+                      onSelected: (value) {
+                        logger.finest('value=$value');
+                      }),
+                ],
+              ),
+              SizedBox(height: 30),
             ],
           ),
         ),

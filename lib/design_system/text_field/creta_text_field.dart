@@ -75,7 +75,7 @@ class CretaTextField extends StatefulWidget {
     this.minNumber = 0,
   }) : super(key: textFieldKey);
 
-  CretaTextField.shortNumber({
+  CretaTextField.xshortNumber({
     required this.textFieldKey,
     required this.value,
     required this.hintText,
@@ -88,6 +88,22 @@ class CretaTextField extends StatefulWidget {
     this.limit = 3,
     this.selectAtInit = true,
     this.maxNumber = 100,
+    this.minNumber = 0,
+  }) : super(key: textFieldKey);
+
+  CretaTextField.shortNumber({
+    required this.textFieldKey,
+    required this.value,
+    required this.hintText,
+    required this.onEditComplete,
+    this.width = 56,
+    this.height = 22,
+    this.maxLines = 1,
+    this.radius = 3,
+    this.textType = CretaTextFieldType.number,
+    this.limit = 4,
+    this.selectAtInit = true,
+    this.maxNumber = 9999,
     this.minNumber = 0,
   }) : super(key: textFieldKey);
 
@@ -271,8 +287,8 @@ class CretaTextFieldState extends State<CretaTextField> {
             ]
           : widget.textType == CretaTextFieldType.color
               ? [
-                  LengthLimitingTextInputFormatter(widget.limit),
-                  FilteringTextInputFormatter.allow(RegExp('^[0-9#A-Za-z]{0,${widget.limit}}\$')),
+                  //LengthLimitingTextInputFormatter(widget.limit),
+                  FilteringTextInputFormatter.allow(RegExp('^[0-9#A-Fa-f]{0,${widget.limit}}\$')),
                 ]
               : null,
       maxLines: widget.maxLines,
