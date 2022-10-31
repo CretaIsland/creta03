@@ -223,9 +223,9 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                     const SizedBox(width: 30),
                     Column(
                       children: [
-                        const Text('fill_gray_t_profile   '),
+                        const Text('fill_gray_l_profile   '),
                         const SizedBox(height: 20),
-                        BTN.fill_gray_t_profile(
+                        BTN.fill_gray_l_profile(
                           image: NetworkImage(
                               'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                           text: '사용자 닉네임',
@@ -328,6 +328,258 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   ],
                 ),
                 Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('fill_blue_it_m_animation'),
+                        const SizedBox(height: 20),
+                        BTN.fill_blue_it_m_animation(
+                          image: NetworkImage(
+                              'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                          text: '발행하기',
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 30),
+                    Column(
+                      children: [
+                        const Text('fill_blue_it_l'),
+                        const SizedBox(height: 20),
+                        BTN.fill_blue_it_l(
+                          icon: Icons.add_outlined,
+                          text: '새크레타북',
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 30),
+                  ],
+                ),
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('fill_blue_itt_l'),
+                        const SizedBox(height: 20),
+                        BTN.fill_blue_itt_l(
+                          text: "새크레타북",
+                          subText: "새크레타북",
+                          icon: Icons.add_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('fill_purple_it_m_animation'),
+                        const SizedBox(height: 20),
+                        BTN.fill_purple_it_m_animation(
+                          image: NetworkImage(
+                              'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                          text: '발행하기',
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('fill_black_i_l'),
+                        const SizedBox(height: 20),
+                        BTN.fill_black_i_l(
+                          icon: Icons.notifications_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('fill_black_iti_l   '),
+                        const SizedBox(height: 20),
+                        BTN.fill_black_iti_l(
+                          image: NetworkImage(
+                              'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                          text: '사용자 닉네임',
+                          icon: Icons.arrow_drop_down_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('expand_circle_up'),
+                        const SizedBox(height: 20),
+                        BTN.expand_circle_up(
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Column(
+                      children: [
+                        const Text('expand_circle_down'),
+                        const SizedBox(height: 20),
+                        BTN.expand_circle_down(
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Column(
+                      children: [
+                        const Text('line_i_m'),
+                        const SizedBox(height: 20),
+                        BTN.line_i_m(
+                          icon: Icons.volume_off_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('line_gray_t_m'),
+                    const SizedBox(height: 20),
+                    BTN.line_gray_t_m(
+                      text: '해시태그',
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+
+                Divider(),
+                Column(
+                  children: [
+                    const Text('line_gray_ti_m'),
+                    const SizedBox(height: 20),
+                    BTN.line_gray_ti_m(
+                      icon: Icons.close_outlined,
+                      text: '해시태그',
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+
+                Divider(),
+
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('Thickness --> CretaThickChoice()'),
+                        const SizedBox(height: 20),
+                        CretaThickChoice(
+                          valueList: [1, 2, 3, 4, 5],
+                          defaultValue: 2,
+                          onSelected: (value) {
+                            logger.finest('selected CretaThickChoice $value');
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Column(
+                      children: [
+                        const Text('fill_blue_i_menu'),
+                        const SizedBox(height: 20),
+                        BTN.fill_blue_i_menu(
+                          icon: Icons.volume_up_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Column(
+                      children: [
+                        const Text('line_blue_i_m'),
+                        const SizedBox(height: 20),
+                        BTN.line_blue_i_m(
+                          icon: Icons.volume_off_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                Divider(),
+                Column(
+                  children: [
+                    const Text('line_blue_t_m'),
+                    const SizedBox(height: 20),
+                    BTN.line_blue_t_m(
+                      text: 'button',
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('line_blue_it_m_animation'),
+                    const SizedBox(height: 20),
+                    BTN.line_blue_it_m_animation(
+                      image: NetworkImage(
+                          'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                      text: '발행하기',
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
                 Divider(
                   thickness: 5,
                   color: Colors.red,
@@ -337,10 +589,6 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   const SizedBox(height: 30),
                   const Text('btn_fill_blue_i_menu   '),
                   const SizedBox(width: 30),
-                  BTN.fill_blue_i_menu(
-                    icon: Icons.volume_up_outlined,
-                    onPressed: () {},
-                  ),
                 ]),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -448,49 +696,7 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                // Btn_fill_blue_ITT_L
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Btn_fill_blue_ITT_L   '),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      width: 191,
-                      height: 36,
-                      buttonType: CretaButtonType.child,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add_outlined,
-                            size: 20,
-                            color: CretaColor.text[100]!,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                            child: Center(
-                              child: Text('새크레타북',
-                                  style:
-                                      CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                            child: Center(
-                              child: Text('새크레타북',
-                                  style: CretaFont.buttonSmall
-                                      .copyWith(color: CretaColor.primary[200]!)),
-                            ),
-                          ),
-                        ],
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
+
                 const SizedBox(height: 30),
                 // Btn_fill_blue_T_EL
                 Row(

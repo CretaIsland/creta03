@@ -1,5 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
-
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../creta_color.dart';
@@ -86,8 +86,9 @@ class BTN {
     return CretaButton(
       width: 24,
       height: 24,
-      buttonType: CretaButtonType.childSelected,
+      buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.sky,
+      isSelectedWidget: true,
       onPressed: onPressed,
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
@@ -317,11 +318,8 @@ class BTN {
       height: 36,
       buttonType: CretaButtonType.textOnly,
       buttonColor: CretaButtonColor.white,
-      text: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-        child: Center(
-          child: Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)),
-        ),
+      text: Center(
+        child: Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)),
       ),
       onPressed: onPressed,
     );
@@ -348,7 +346,7 @@ class BTN {
     );
   }
 
-  static CretaButton fill_gray_t_profile({
+  static CretaButton fill_gray_l_profile({
     required String text,
     required String subText,
     required ImageProvider image,
@@ -526,6 +524,348 @@ class BTN {
         color: Colors.white,
       ),
       onPressed: onPressed,
+    );
+  }
+
+  static CretaButton fill_blue_it_m_animation({
+    required String text,
+    required ImageProvider image,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 101,
+      height: 38,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.blue,
+      child: Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 6.0),
+            child: CircleAvatar(
+              radius: 13,
+              backgroundImage: image,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(6, 0, 0, 3),
+            child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
+          ),
+        ],
+      ),
+      onPressed: () {},
+    );
+  }
+
+  static CretaButton fill_blue_it_l({
+    required IconData icon,
+    required String text,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 125,
+      height: 36,
+      buttonType: CretaButtonType.iconText,
+      buttonColor: CretaButtonColor.blue,
+      icon: Icon(
+        icon,
+        size: 20,
+        color: Colors.white,
+      ),
+      text: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+        child: Center(
+          child: Text(text, style: CretaFont.buttonLarge.copyWith(color: Colors.white)),
+        ),
+      ),
+      onPressed: () {},
+    );
+  }
+
+  static CretaButton fill_blue_itt_l({
+    required IconData icon,
+    required String text,
+    required String subText,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 191,
+      height: 36,
+      buttonType: CretaButtonType.child,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.add_outlined,
+            size: 20,
+            color: CretaColor.text[100]!,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+            child: Center(
+              child:
+                  Text(text, style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+            child: Center(
+              child: Text(subText,
+                  style: CretaFont.buttonSmall.copyWith(color: CretaColor.primary[200]!)),
+            ),
+          ),
+        ],
+      ),
+      onPressed: () {},
+    );
+  }
+
+  static CretaButton fill_purple_it_m_animation({
+    required String text,
+    required ImageProvider image,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 101,
+      height: 38,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.purple,
+      child: Row(
+        //mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 6.0),
+            child: CircleAvatar(
+              radius: 13,
+              backgroundImage: image,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(6, 0, 0, 3),
+            child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
+          ),
+        ],
+      ),
+      onPressed: () {},
+    );
+  }
+
+  static CretaButton fill_black_i_l({
+    required IconData icon,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 36,
+      height: 36,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.black,
+      onPressed: onPressed,
+      child: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        child: Icon(
+          icon,
+          size: 20,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  static CretaButton fill_black_iti_l({
+    required String text,
+    required IconData icon,
+    required ImageProvider image,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 166,
+      height: 40,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.black,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: CircleAvatar(
+              radius: 12,
+              backgroundImage: image,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Center(
+              child: Text(text, style: CretaFont.buttonLarge.copyWith(color: Colors.white)),
+            ),
+          ),
+          Icon(
+            icon,
+            size: 20,
+            color: Colors.white,
+          ),
+        ],
+      ),
+      onPressed: () {},
+    );
+  }
+
+  static CretaButton expand_circle_up({
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 20,
+      height: 20,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.white,
+      onPressed: onPressed,
+      child: Transform.rotate(
+        angle: 180 * math.pi / 180,
+        child: Icon(
+          Icons.expand_circle_down_outlined,
+          size: 16,
+          color: CretaColor.text[700]!,
+        ),
+      ),
+    );
+  }
+
+  static CretaButton expand_circle_down({
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 20,
+      height: 20,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.white,
+      onPressed: onPressed,
+      child: Icon(
+        Icons.expand_circle_down_outlined,
+        size: 16,
+        color: CretaColor.text[700]!,
+      ),
+    );
+  }
+
+  static CretaButton line_i_m({
+    required IconData icon,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 32,
+      height: 32,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.white,
+      decoType: CretaButtonDeco.line,
+      onPressed: onPressed,
+      child: Icon(
+        icon,
+        size: 16,
+        color: CretaColor.text[700]!,
+      ),
+    );
+  }
+
+  static CretaButton line_gray_t_m({
+    required String text,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 72,
+      height: 36,
+      buttonType: CretaButtonType.textOnly,
+      buttonColor: CretaButtonColor.white,
+      decoType: CretaButtonDeco.line,
+      isSelectedWidget: true,
+      textString: text,
+      textStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
+      onPressed: onPressed,
+    );
+  }
+
+  static CretaButton line_gray_ti_m({
+    required IconData icon,
+    required String text,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 96,
+      height: 32,
+      buttonType: CretaButtonType.textIcon,
+      buttonColor: CretaButtonColor.white,
+      decoType: CretaButtonDeco.line,
+      isSelectedWidget: true,
+      textString: text,
+      textStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
+      icon: Icon(
+        icon,
+        size: 16,
+        color: CretaColor.text[700]!,
+      ),
+      onPressed: () {},
+    );
+  }
+
+  static CretaButton line_blue_i_m({
+    required IconData icon,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 32,
+      height: 32,
+      buttonType: CretaButtonType.iconOnly,
+      buttonColor: CretaButtonColor.transparent,
+      decoType: CretaButtonDeco.line,
+      iconData: icon,
+      iconSize: 16,
+      onPressed: () {},
+    );
+  }
+
+  static CretaButton line_blue_t_m({
+    required String text,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 72,
+      height: 36,
+      buttonType: CretaButtonType.textOnly,
+      buttonColor: CretaButtonColor.sky,
+      decoType: CretaButtonDeco.line,
+      isSelectedWidget: true,
+      textString: text,
+      textStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
+      onPressed: onPressed,
+    );
+  }
+
+  static CretaButton line_blue_it_m_animation({
+    required String text,
+    required ImageProvider image,
+    required void Function() onPressed,
+  }) {
+    return CretaButton(
+      width: 101,
+      height: 38,
+      buttonType: CretaButtonType.imageText,
+      buttonColor: CretaButtonColor.transparent,
+      decoType: CretaButtonDeco.line,
+      image: Padding(
+        padding: const EdgeInsets.only(left: 6.0),
+        child: CircleAvatar(
+          radius: 13,
+          backgroundImage: image,
+        ),
+      ),
+      textString: text,
+      textStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.primary),
+
+      // Padding(
+      //   padding: const EdgeInsets.fromLTRB(6, 0, 0, 3),
+      //   child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
+      // ),
+
+      onPressed: () {},
     );
   }
 }

@@ -74,9 +74,9 @@ class _CretaThickChoiceState extends State<CretaThickChoice> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: selectedValue == value
-                        ? CretaColor.primary
+                        ? CretaColor.primary[200]!
                         : hover[idx]
-                            ? CretaColor.primary[200]!
+                            ? CretaColor.primary[100]!
                             : Colors.white,
                     borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
                   ),

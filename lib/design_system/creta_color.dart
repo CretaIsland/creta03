@@ -4,6 +4,7 @@ class CretaColor {
   static const int _primary = 0xff5A8EF2;
   static const int _secondary = 0xffAD69F1;
   static const int _text = 0xff1A1A1A;
+  static const int _red = 0xffFA681F;
 
   static const MaterialColor primary = MaterialColor(
     _primary,
@@ -50,6 +51,14 @@ class CretaColor {
     },
   );
 
+  static const MaterialColor red = MaterialColor(
+    _red,
+    <int, Color>{
+      500: Color(_red),
+      600: Color(0xffE04E05),
+      700: Color(0xffAF3D04),
+    },
+  );
   static const stateCritical = Color(0xffFA681F);
   static const stateWarining = Color(0xffFBC559);
   static const stateNormal = Color(0xff6BDEC9);
