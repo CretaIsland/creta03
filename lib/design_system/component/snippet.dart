@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:hycop/common/util/logger.dart';
+//import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:hycop/hycop.dart';
 import '../../routes.dart';
 import '../text_field/creta_text_field.dart';
 
@@ -25,10 +26,9 @@ extension GlobalKeyExtension on GlobalKey {
 class Snippet {
   static List<LogicalKeyboardKey> keys = [];
 
-  static Widget CretaScaffold(
-      {required String title, required BuildContext context, required Widget child}) {
+  static Widget CretaScaffold({required String title, required BuildContext context, required Widget child}) {
     return Scaffold(
-      appBar: Snippet.CretaAppBar(title),
+      appBar: Snippet.CretaAppBar(context, title),
       floatingActionButton:
           // Row(
           //   children: [
@@ -67,11 +67,47 @@ class Snippet {
     // ));
   }
 
-  static PreferredSizeWidget CretaAppBar(String title) {
+  static PreferredSizeWidget CretaAppBar(BuildContext context, String title) {
     return AppBar(
       // Here we take the value from the MyHomePage object that was created by
       // the App.build method, and use it to set our appbar title.
       title: Text(title),
+      actions: AccountManager.currentLoginUser.isLoginedUser
+          ? [
+              ElevatedButton.icon(
+                onPressed: () {
+                  Routemaster.of(context).push(AppRoutes.intro);
+                },
+                icon: Icon(
+                  Icons.person,
+                  //size: 24.0,
+                ),
+                label: Text('+ 새 크레타북'),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  AccountManager.logout().then((value) { Routemaster.of(context).push(AppRoutes.intro); });
+                  //Routemaster.of(context).push(AppRoutes.intro);
+                },
+                icon: Icon(
+                  Icons.person,
+                  //size: 24.0,
+                ),
+                label: Text(AccountManager.currentLoginUser.name),
+              )
+            ]
+          : [
+              ElevatedButton.icon(
+                onPressed: () {
+                  Routemaster.of(context).push(AppRoutes.login);
+                },
+                icon: Icon(
+                  Icons.person,
+                  //size: 24.0,
+                ),
+                label: Text('Log in'),
+              ),
+            ],
     );
   }
 
@@ -140,8 +176,7 @@ class Snippet {
       }
       keys.add(key);
       // Ctrl Key Area
-      if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
-          keys.contains(LogicalKeyboardKey.controlRight))) {
+      if ((keys.contains(LogicalKeyboardKey.controlLeft) || keys.contains(LogicalKeyboardKey.controlRight))) {
         if (keys.contains(LogicalKeyboardKey.keyZ)) {
           logger.finest('Ctrl+Z pressed');
         }

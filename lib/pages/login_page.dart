@@ -9,6 +9,8 @@ import '../design_system/buttons/creta_button_wrapper.dart';
 import '../routes.dart';
 import '../design_system/component/snippet.dart';
 
+import 'dart:js' as js;
+
 enum IntroPageType {
   none,
   login,
@@ -49,6 +51,21 @@ class _LoginPageState extends State<LoginPage> {
   final _resetPasswordConfirmEmailTextEditingController = TextEditingController();
   final _resetPasswordConfirmSecretTextEditingController = TextEditingController();
   final _resetPasswordConfirmNewPasswordTextEditingController = TextEditingController();
+
+  void _resetFormField() {
+    _loginEmailTextEditingController.text = '';
+    _loginPasswordTextEditingController.text = '';
+
+    _signinNameTextEditingController.text = '';
+    _signinEmailTextEditingController.text = '';
+    _signinPasswordTextEditingController.text = '';
+
+    _resetPasswordEmailTextEditingController.text = '';
+
+    _resetPasswordConfirmEmailTextEditingController.text = '';
+    _resetPasswordConfirmSecretTextEditingController.text = '';
+    _resetPasswordConfirmNewPasswordTextEditingController.text = '';
+  }
 
   Future<void> _login() async {
     logger.finest('_login pressed');
@@ -225,6 +242,19 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  bool addPasswordCss = false;
+  FocusNode passwordFocusNode = FocusNode();
+  void fixEdgePasswordRevealButton(FocusNode focusNode) {
+    focusNode.unfocus();
+    if (addPasswordCss) return;
+    addPasswordCss = true; // 한번만 실행
+    Future.microtask(() {
+      focusNode.requestFocus();
+      // 자바스크립트 호출
+      dynamic ret = js.context.callMethod("fixPasswordCss", []); // index.html에서 fixPasswordCss 참조
+    });
+  }
+
   bool _isHidden = true;
 
   Widget _loginPage() {
@@ -235,7 +265,7 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text('Welcome to HyCop ! 👋🏻', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text('Welcome to Creta ! 👋🏻', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(
             height: 20,
           ),
@@ -253,23 +283,28 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(150.0, 0.0, 150.0, 0.0),
-            child: TextFormField(
+            child: TextField(
+              onChanged: (_) async {
+                fixEdgePasswordRevealButton(passwordFocusNode);
+              },
               obscureText: _isHidden,
               controller: _loginPasswordTextEditingController,
               decoration: InputDecoration(
                 hintText: 'Password',
                 border: UnderlineInputBorder(),
                 prefixIcon: Icon(Icons.password),
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isHidden = !_isHidden;
-                    });
-                  },
-                  child: Icon(
-                    _isHidden ? Icons.visibility : Icons.visibility_off,
-                  ),
-                ),
+                suffixIcon: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isHidden = !_isHidden;
+                        });
+                      },
+                      child: Icon(
+                        _isHidden ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    )),
               ),
               //style: const TextStyle(fontSize: 12.0),
             ), //TextFormField(controller: _loginPasswordTextEditingController),
@@ -304,6 +339,7 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   _isHidden = true;
                   _pageIndex = IntroPageType.resetPassword;
+                  _resetFormField();
                 });
               },
               width: 300,
@@ -318,6 +354,7 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   _isHidden = true;
                   _pageIndex = IntroPageType.resetPasswordConfirm;
+                  _resetFormField();
                 });
               },
               width: 300,
@@ -352,6 +389,7 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         _isHidden = true;
                         _pageIndex = IntroPageType.signup;
+                        _resetFormField();
                       });
                     },
                 )
@@ -403,13 +441,18 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(150.0, 0.0, 150.0, 0.0),
             child: TextFormField(
+              onChanged: (_) async {
+                fixEdgePasswordRevealButton(passwordFocusNode);
+              },
               obscureText: _isHidden,
               controller: _signinPasswordTextEditingController,
               decoration: InputDecoration(
                 hintText: 'Password',
                 border: UnderlineInputBorder(),
                 prefixIcon: Icon(Icons.password),
-                suffixIcon: GestureDetector(
+                suffixIcon: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
                   onTap: () {
                     setState(() {
                       _isHidden = !_isHidden;
@@ -418,7 +461,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Icon(
                     _isHidden ? Icons.visibility : Icons.visibility_off,
                   ),
-                ),
+                )),
               ),
             ),
           ),
@@ -472,6 +515,7 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         _isHidden = true;
                         _pageIndex = IntroPageType.login;
+                        _resetFormField();
                       });
                     },
                 )
@@ -491,6 +535,7 @@ class _LoginPageState extends State<LoginPage> {
                   setState(() {
                     _isHidden = true;
                     _pageIndex = IntroPageType.login;
+                    _resetFormField();
                   });
                 },
                 width: 300,
@@ -563,6 +608,7 @@ class _LoginPageState extends State<LoginPage> {
                   setState(() {
                     _isHidden = true;
                     _pageIndex = IntroPageType.login;
+                    _resetFormField();
                   });
                 },
                 width: 300,
@@ -611,13 +657,18 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(150.0, 0.0, 150.0, 0.0),
             child: TextFormField(
+              onChanged: (_) async {
+                fixEdgePasswordRevealButton(passwordFocusNode);
+              },
               obscureText: _isHidden,
               controller: _resetPasswordConfirmNewPasswordTextEditingController,
               decoration: InputDecoration(
                 hintText: 'New Password',
                 border: UnderlineInputBorder(),
                 prefixIcon: Icon(Icons.password),
-                suffixIcon: GestureDetector(
+                suffixIcon: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
                   onTap: () {
                     setState(() {
                       _isHidden = !_isHidden;
@@ -626,7 +677,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Icon(
                     _isHidden ? Icons.visibility : Icons.visibility_off,
                   ),
-                ),
+                )),
               ),
             ),
           ),
@@ -668,6 +719,7 @@ class _LoginPageState extends State<LoginPage> {
                   setState(() {
                     _isHidden = true;
                     _pageIndex = IntroPageType.login;
+                    _resetFormField();
                   });
                 },
                 width: 300,
