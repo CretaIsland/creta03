@@ -4,7 +4,7 @@ import 'package:creta03/design_system/buttons/creta_checkbox.dart';
 import 'package:creta03/design_system/buttons/creta_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
-import '../buttons/creta_button.dart';
+//import '../buttons/creta_button.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../buttons/creta_radio_button.dart';
 //import '../buttons/creta_radio_button2.dart';
@@ -13,8 +13,8 @@ import '../buttons/creta_tab_button.dart';
 import '../buttons/creta_thick_choice.dart';
 import '../buttons/creta_toggle_button.dart';
 import '../component/snippet.dart';
-import '../creta_color.dart';
-import '../creta_font.dart';
+//import '../creta_color.dart';
+//import '../creta_font.dart';
 
 class ButtonDemoPage extends StatefulWidget {
   ButtonDemoPage({super.key});
@@ -580,143 +580,218 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                     ),
                   ],
                 ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('line_blue_iti_m'),
+                    const SizedBox(height: 20),
+                    BTN.line_blue_iti_m(
+                      image: NetworkImage(
+                          'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                      text: 'button',
+                      icon: Icons.add_outlined,
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Column(
+                  children: [
+                    const Text('line_red_it_m_animation'),
+                    const SizedBox(height: 20),
+                    BTN.line_red_it_m_animation(
+                      image: NetworkImage(
+                          'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                      text: '발행하기',
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('line_purple_iti_m'),
+                    const SizedBox(height: 20),
+                    BTN.line_purple_iti_m(
+                      image: NetworkImage(
+                          'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                      text: 'button',
+                      icon: Icons.add_outlined,
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('opacity_gray_i_s'),
+                        const SizedBox(height: 20),
+                        BTN.opacity_gray_i_s(
+                          icon: Icons.arrow_forward_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 30),
+                    Column(
+                      children: [
+                        const Text('opacity_gray_i_l'),
+                        const SizedBox(height: 20),
+                        BTN.opacity_gray_i_l(
+                          icon: Icons.arrow_forward_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 30),
+                    Column(
+                      children: [
+                        const Text('opacity_gray_i_el'),
+                        const SizedBox(height: 20),
+                        BTN.opacity_gray_i_el(
+                          icon: Icons.play_arrow,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        const Text('opacity_gray_it_s'),
+                        const SizedBox(height: 20),
+                        BTN.opacity_gray_it_s(
+                          icon: Icons.arrow_forward_outlined,
+                          text: 'Button',
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 30),
+                    Column(
+                      children: [
+                        const Text('opacity_gray_it_m'),
+                        const SizedBox(height: 20),
+                        BTN.opacity_gray_it_m(
+                          text: 'Button',
+                          icon: Icons.arrow_forward_outlined,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('opacity_gray_ti_m'),
+                    const SizedBox(height: 20),
+                    BTN.opacity_gray_ti_m(
+                      text: 'Button',
+                      icon: Icons.arrow_forward_outlined,
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Column(
+                  children: [
+                    const Text('floating_l'),
+                    const SizedBox(height: 20),
+                    BTN.floating_l(
+                      icon: Icons.add_outlined,
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('floating_it_l'),
+                    const SizedBox(height: 20),
+                    BTN.floating_it_l(
+                      icon: Icons.add_outlined,
+                      text: 'button',
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('floating_iti_l'),
+                    const SizedBox(height: 20),
+                    BTN.floating_iti_l(
+                      icon1: Icons.remove_outlined,
+                      icon2: Icons.add_outlined,
+                      text: 'button',
+                      onPressed1: () {},
+                      onPressed2: () {},
+                    ),
+                  ],
+                ),
+                Divider(
+                  thickness: 5,
+                  color: Colors.amber,
+                ),
+                Column(
+                  children: [
+                    const Text('fill_color_t_m'),
+                    const SizedBox(height: 20),
+                    BTN.fill_color_t_m(
+                      text: 'button',
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('fill_color_it_m'),
+                    const SizedBox(height: 20),
+                    BTN.fill_color_it_m(
+                      text: '링크 복사',
+                      onPressed: () {},
+                      iconData: Icons.link_outlined,
+                    ),
+                  ],
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    const Text('fill_color_ic_el'),
+                    const SizedBox(height: 20),
+                    BTN.fill_color_ic_el(
+                      text: '시청기록',
+                      onPressed: () {},
+                      iconData: Icons.menu_outlined,
+                    ),
+                  ],
+                ),
                 Divider(
                   thickness: 5,
                   color: Colors.red,
                 ),
 
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const SizedBox(height: 30),
-                  const Text('btn_fill_blue_i_menu   '),
-                  const SizedBox(width: 30),
-                ]),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Btn_fill_gray_IT_S   '),
-                    const SizedBox(width: 30),
-                    BTN.fill_gray_it_s(
-                      icon: Icons.arrow_forward_outlined,
-                      text: 'Button',
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-
-                // Btn_fill_gray_T_M
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Btn_fill_gray_T_M   '),
-                    const SizedBox(width: 30),
-                    BTN.fill_gray_t_m(text: 'Button', onPressed: () {}),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                // Btn_fill_opacity_gray_IT_S
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Btn_opacity_fill_gray_IT_S   '),
-                    const SizedBox(width: 30),
-                    BTN.fill_opacity_gray_it_s(
-                      icon: Icons.arrow_forward_outlined,
-                      text: 'Button',
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 30),
-
-                // Btn_fill_Blue_I_L
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Btn_fill_Blue_I_L   '),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      buttonType: CretaButtonType.iconOnly,
-                      icon: Icon(
-                        Icons.volume_up_outlined,
-                        size: 20,
-                        color: CretaColor.text[100]!,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                // Btn_fill_blue_T_M
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Btn_fill_blue_T_M   '),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      width: 72,
-                      height: 36,
-                      buttonType: CretaButtonType.textOnly,
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        child: Center(
-                          child: Text('button',
-                              style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[100]!)),
-                        ),
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                // Btn_fill_blue_IT_L
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Btn_fill_blue_IT_L   '),
-                    const SizedBox(width: 30),
-                    CretaButton(
-                      width: 125,
-                      height: 36,
-                      buttonType: CretaButtonType.iconText,
-                      icon: Icon(
-                        Icons.add_outlined,
-                        size: 20,
-                        color: CretaColor.text[100]!,
-                      ),
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                        child: Center(
-                          child: Text('button',
-                              style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[100]!)),
-                        ),
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 30),
-                // Btn_fill_blue_T_EL
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Btn_fill_blue_T_EL   '),
-                    const SizedBox(width: 20),
-                    CretaButton(
-                      buttonType: CretaButtonType.textOnly,
-                      text: Padding(
-                        padding: const EdgeInsets.fromLTRB(32, 14, 32, 18),
-                        child: Center(
-                          child: Text('스튜디오 바로가기',
-                              style: CretaFont.titleLarge.copyWith(color: CretaColor.text[100]!)),
-                        ),
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
                 SizedBox(height: 30),
                 CretaTabButton(
                   onEditComplete: (value) {},
