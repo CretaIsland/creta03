@@ -26,7 +26,8 @@ extension GlobalKeyExtension on GlobalKey {
 class Snippet {
   static List<LogicalKeyboardKey> keys = [];
 
-  static Widget CretaScaffold({required String title, required BuildContext context, required Widget child}) {
+  static Widget CretaScaffold(
+      {required String title, required BuildContext context, required Widget child}) {
     return Scaffold(
       appBar: Snippet.CretaAppBar(context, title),
       floatingActionButton:
@@ -86,7 +87,9 @@ class Snippet {
               ),
               ElevatedButton.icon(
                 onPressed: () {
-                  AccountManager.logout().then((value) { Routemaster.of(context).push(AppRoutes.intro); });
+                  AccountManager.logout().then((value) {
+                    Routemaster.of(context).push(AppRoutes.intro);
+                  });
                   //Routemaster.of(context).push(AppRoutes.intro);
                 },
                 icon: Icon(
@@ -153,6 +156,13 @@ class Snippet {
             Routemaster.of(context).push(AppRoutes.menuDemoPage);
           },
         ),
+        SpeedDialChild(
+          label: 'Studio Book',
+          child: Icon(Icons.stadium),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+          },
+        ),
       ],
     );
   }
@@ -176,7 +186,8 @@ class Snippet {
       }
       keys.add(key);
       // Ctrl Key Area
-      if ((keys.contains(LogicalKeyboardKey.controlLeft) || keys.contains(LogicalKeyboardKey.controlRight))) {
+      if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
+          keys.contains(LogicalKeyboardKey.controlRight))) {
         if (keys.contains(LogicalKeyboardKey.keyZ)) {
           logger.finest('Ctrl+Z pressed');
         }

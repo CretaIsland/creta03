@@ -7,6 +7,7 @@ import 'design_system/demo_page/menu_demo_page.dart';
 import 'design_system/demo_page/text_field_demo_page.dart';
 import 'pages/login_page.dart';
 import 'pages/intro_page.dart';
+import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
 
 abstract class AppRoutes {
@@ -15,6 +16,7 @@ abstract class AppRoutes {
   static const String fontDemoPage = '/fontDemoPage';
   static const String buttonDemoPage = '/buttonDemoPage';
   static const String textFieldDemoPage = '/textFieldDemoPage';
+  static const String studioBookMainPage = '/studio/bookMainPage';
   static const String login = '/login';
 }
 
@@ -36,6 +38,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
+    AppRoutes.studioBookMainPage: (_) => TransitionPage(child: BookMainPage()),
   },
 );
 
