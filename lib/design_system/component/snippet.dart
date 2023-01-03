@@ -8,6 +8,8 @@ import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../routes.dart';
 import '../text_field/creta_text_field.dart';
+import '../buttons/creta_button_wrapper.dart';
+import '../menu/creta_drop_down.dart';
 
 // get widgets Global Size and Position
 extension GlobalKeyExtension on GlobalKey {
@@ -67,6 +69,143 @@ class Snippet {
     // ));
   }
 
+  static Widget CretaScaffoldOfCommunity(
+      {required Widget title, required BuildContext context, required Widget child}) {
+    return Scaffold(
+      appBar: Snippet.CretaAppBarOfCommunity(context, title),
+      floatingActionButton:
+          // Row(
+          //   children: [
+          //     ElevatedButton(
+          //         onPressed: () {
+          //           Routemaster.of(context).push(AppRoutes.intro);
+          //         },
+          //         child: Icon(Icons.house)),
+          //     ElevatedButton(
+          //         onPressed: () {
+          //           Routemaster.of(context).push(AppRoutes.buttonDemoPage);
+          //         },
+          //         child: Icon(Icons.smart_button))
+          //   ],
+          // ),
+          Snippet.CretaDial(context),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onLongPressDown: ((details) {
+          logger.finest('onLongPressDown');
+          LastClicked.clickedOutSide(details.globalPosition);
+        }),
+        // onTapDown: ((details) {
+        //   logger.finest('clicked=${details.globalPosition}');
+        // }),
+        child: Container(
+          //color: Colors.amber,
+          child: child,
+        ),
+      ),
+    );
+    // body: RawKeyboardListener(
+    //   onKey: keyEventHandler,
+    //   focusNode: FocusNode(),
+    //   child: child,
+    // ));
+  }
+
+  static PreferredSizeWidget CretaAppBarOfCommunity(BuildContext context, Widget title) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      shadowColor: Colors.grey[500],
+      // Here we take the value from the MyHomePage object that was created by
+      // the App.build method, and use it to set our appbar title.
+      title: title,
+      toolbarHeight: 60,
+      actions: [
+        SizedBox(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 125,
+                height: 36,
+                child: BTN.fill_blue_it_l(
+                    icon: Icons.add,
+                    text: '새 크레타북',
+                    onPressed: () {
+                      Routemaster.of(context).push(AppRoutes.intro);
+                    }),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 44,
+                height: 36,
+                child: Icon(
+                  Icons.notifications_outlined,
+                  color: Colors.grey[700],
+                  size: 20,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // user info
+        SizedBox(
+          child:
+          // Column(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          Center(child:
+              SizedBox(
+                //width: 166,
+                height: 40,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          // crop
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                       // color: Colors.grey[700],
+                        child:Container(color:Colors.grey[700], ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    CretaDropDown(
+                        width: 130,
+                        height: 40,
+                        items: const ['사용자 닉네임', '사용자 닉네임1', '사용자 닉네임2', '사용자 닉네임3'],
+                        defaultValue: '사용자 닉네임',
+                        onSelected: (value) {
+                          //logger.finest('value=$value');
+                        }),
+                    SizedBox(
+                      width: 40,
+                    ),
+                  ],
+                ),
+              ),
+            //],
+          ),
+        ),
+        // user's dropdown menu
+      ],
+    );
+  }
+
   static PreferredSizeWidget CretaAppBar(BuildContext context, String title) {
     return AppBar(
       // Here we take the value from the MyHomePage object that was created by
@@ -86,7 +225,9 @@ class Snippet {
               ),
               ElevatedButton.icon(
                 onPressed: () {
-                  AccountManager.logout().then((value) { Routemaster.of(context).push(AppRoutes.intro); });
+                  AccountManager.logout().then((value) {
+                    Routemaster.of(context).push(AppRoutes.intro);
+                  });
                   //Routemaster.of(context).push(AppRoutes.intro);
                 },
                 icon: Icon(
@@ -185,4 +326,356 @@ class Snippet {
       keys.remove(key);
     }
   }
+
+  static Widget CretaLeftMenuView(List<CretaMenuItem> menuItem, double height) {
+
+    double userMenuHeight = height - CretaComponentLocation.TabBar.padding.top  - CretaComponentLocation.TabBar.padding.bottom;
+    if (userMenuHeight > CretaComponentLocation.UserMenuInTabBar.height) {
+      userMenuHeight = CretaComponentLocation.UserMenuInTabBar.height;
+    }
+
+    return Container(
+      width: CretaComponentLocation.TabBar.width,
+      height: height,
+      color: Colors.grey[100],
+      padding: CretaComponentLocation.TabBar.padding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        //mainAxisAlignment: MainAxisAlignment.start,
+        children: [ Expanded(child:
+        ListView.builder(
+            padding: CretaComponentLocation.ListInTabBar.padding,
+            itemCount: 1,
+            itemBuilder: (context, index) {
+              return Wrap(
+                direction: Axis.vertical,
+                spacing: 8, // <-- Spacing between children
+                children: <Widget>[
+                  ...menuItem
+                      .map((item) => BTN.fill_color_ic_el(
+                    caption: item.caption,
+                    icon: Icon(item.iconData),
+                    onPressed: item.onPressed() ?? () {},
+                    normalButtonTextColor: item.selected ? Colors.blue[400] : null,
+                    normalButtonBgColor: item.selected ? Colors.white : null,
+                  )
+                  ).toList(),
+                ],
+              );
+            }),),
+
+          //빈공간
+          //SizedBox(height:32,),
+          // Expanded(
+          //   child: Container(),
+          // ),
+
+          //하단 사용자 메뉴
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              // crop
+              borderRadius: BorderRadius.circular(19.2),
+            ),
+            clipBehavior: Clip.antiAlias, // crop method
+            width: CretaComponentLocation.UserMenuInTabBar.width,
+            height: userMenuHeight,//CretaComponentLocation.UserMenuInTabBar.height,
+            padding: CretaComponentLocation.UserMenuInTabBar.padding,
+            child: Expanded(child:ListView.builder(
+                //padding: EdgeInsets.fromLTRB(leftMenuViewLeftPane, leftMenuViewTopPane, 0, 0),
+                itemCount: 1,
+                itemBuilder: (context, index) {
+                  return
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BTN.fill_gray_l_profile(
+                          text: '사용자 닉네임',
+                          subText: '요금제 정보',
+                          image: AssetImage('assets/creta_default.png'),
+                          onPressed: () {},
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        BTN.fill_blue_ti_el(
+                            icon: Icons.arrow_forward_outlined,
+                            text: '내 크레타북 관리',
+                            onPressed: () {},
+                        ),
+                      ],
+                    );
+                }),),
+            //);},)
+          ),
+        ],),);
+          //
+          // SingleChildScrollView(
+          //   scrollDirection: Axis.vertical,
+          //   padding: const EdgeInsets.fromLTRB(_leftMenuViewLeftPane, _leftMenuViewTopPane, 0, _leftMenuViewBottomPane),
+          //   child: Expanded(
+          //     child: Wrap(
+          //     direction: Axis.vertical,
+          //     spacing: 8, // <-- Spacing between children
+          //     children: <Widget>[
+          //       ...menuItem
+          //           .map((item) => BTN.fill_color_ic_el(
+          //         caption: item.caption,
+          //         icon: Icon(item.iconData),
+          //         onPressed: item.onPressed() ?? () {},
+          //         normalButtonTextColor: item.selected ? Colors.blue[400] : null,
+          //         normalButtonBgColor: item.selected ? Colors.white : null,
+          //       )
+          //       ).toList(),
+          //     ],
+          //   ),
+          //   ),
+          // ),
+          //
+          // Expanded(
+          //   child: Container(),
+          // ),
+          // 하단 사용자 메뉴
+          // Container(
+          //   decoration: BoxDecoration(
+          //     color: Colors.grey[200],
+          //     // crop
+          //     borderRadius: BorderRadius.circular(19.2),
+          //   ),
+          //   clipBehavior: Clip.antiAlias, // crop method
+          //   width: _leftMenuViewBigButtonWidth,
+          //   height: 192,
+          //   child: Center(
+          //     child: Column(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         BTN.fill_gray_l_profile(
+          //           text: '사용자 닉네임',
+          //           subText: '요금제 정보',
+          //           image: AssetImage('assets/creta_default.png'),
+          //           onPressed: () {},
+          //         ),
+          //         SizedBox(
+          //           height: 20,
+          //         ),
+          //         BTN.fill_blue_ti_el(
+          //             icon: Icons.arrow_forward_outlined,
+          //             text: '내 크레타북 관리',
+          //             onPressed: () {},
+          //             width: _leftMenuViewMiddleButtonWidth),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+  //      ],),
+//    );
+
+
+    //
+          // // 왼쪽 빈공간
+          // SizedBox(
+          //   width: _leftMenuViewLeftPane,
+          // ),
+          // Column(
+          //   children: [
+          //     // 상단 빈공간
+          //     SizedBox(
+          //       height: _leftMenuViewTopPane,
+          //     ),
+          //     SingleChildScrollView(
+          //       //padding: const EdgeInsets.all(20.0),
+          //       child:
+          //       Wrap(
+          //       direction: Axis.vertical,
+          //       spacing: 8, // <-- Spacing between children
+          //       children: <Widget>[
+          //         ...menuItem
+          //             .map((item) => BTN.fill_color_ic_el(
+          //              caption: item.caption,
+          //              icon: Icon(item.iconData),
+          //              onPressed: item.onPressed() ?? () {},
+          //           normalButtonTextColor: item.selected ? Colors.blue[400] : null,
+          //           normalButtonBgColor: item.selected ? Colors.white : null,
+          //            )
+          //         ).toList(),
+          //       ],
+          //     ),),
+          //     // 빈공간 채우기
+          //     Expanded(
+          //       child: Container(),
+          //     ),
+          //     // 하단 사용자 메뉴
+          //     Container(
+          //       decoration: BoxDecoration(
+          //         color: Colors.grey[200],
+          //         // crop
+          //         borderRadius: BorderRadius.circular(19.2),
+          //       ),
+          //       clipBehavior: Clip.antiAlias, // crop method
+          //       width: _leftMenuViewBigButtonWidth,
+          //       height: 192,
+          //       child: Center(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center,
+          //           children: [
+          //             BTN.fill_gray_l_profile(
+          //               text: '사용자 닉네임',
+          //               subText: '요금제 정보',
+          //               image: AssetImage('assets/creta_default.png'),
+          //               onPressed: () {},
+          //             ),
+          //             SizedBox(
+          //               height: 20,
+          //             ),
+          //             BTN.fill_blue_ti_el(
+          //                 icon: Icons.arrow_forward_outlined,
+          //                 text: '내 크레타북 관리',
+          //                 onPressed: () {},
+          //                 width: _leftMenuViewMiddleButtonWidth),
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //     SizedBox(
+          //       height: _leftMenuViewBottomPane,
+          //     ),
+          //   ],
+          // ),
+        //],
+      // Row(children: [
+      //   SizedBox(
+      //     width: _leftViewLeftPane,
+      //   ),
+      //   Column(
+      //     children: [
+      //       SizedBox(
+      //         height: _leftViewTopPane,
+      //       ),
+      //       BTN.fill_color_ic_el(
+      //         caption: '커뮤니티 홈',
+      //         icon: Icon(Icons.home_outlined),
+      //         onPressed: () {},
+      //         normalButtonBgColor: Colors.white,
+      //         normalButtonTextColor: Colors.blue[400],
+      //       ),
+      //       SizedBox(
+      //         height: 8,
+      //       ),
+      //       BTN.fill_color_ic_el(
+      //         caption: '구독목록',
+      //         icon: Icon(Icons.local_library_outlined),
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox(
+      //         height: 8,
+      //       ),
+      //       BTN.fill_color_ic_el(
+      //         caption: '시청기록',
+      //         icon: Icon(Icons.article_outlined),
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox(
+      //         height: 8,
+      //       ),
+      //       BTN.fill_color_ic_el(
+      //         caption: '좋아요',
+      //         icon: Icon(Icons.favorite_outline),
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox(
+      //         height: 8,
+      //       ),
+      //       BTN.fill_color_ic_el(
+      //         caption: '재생목록',
+      //         icon: Icon(Icons.playlist_play),
+      //         onPressed: () {},
+      //       ),
+      //       // 빈공간 채우기
+      //       Expanded(
+      //         child: Container(),
+      //       ),
+      //       // 하단 사용자 메뉴
+      //       Container(
+      //         decoration: BoxDecoration(
+      //           color: Colors.grey[200],
+      //           // crop
+      //           borderRadius: BorderRadius.circular(19.2),
+      //         ),
+      //         clipBehavior: Clip.antiAlias, // crop method
+      //         width: _leftViewBigButtonWidth,
+      //         height: 192,
+      //         child: Center(
+      //           child: Column(
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: [
+      //               BTN.fill_gray_l_profile(
+      //                 text: '사용자 닉네임',
+      //                 subText: '요금제 정보',
+      //                 image: AssetImage('assets/creta_default.png'),
+      //                 onPressed: () {},
+      //               ),
+      //               SizedBox(
+      //                 height: 20,
+      //               ),
+      //               BTN.fill_blue_ti_el(
+      //                   icon: Icons.arrow_forward_outlined,
+      //                   text: '내 크레타북 관리',
+      //                   onPressed: () {},
+      //                   width: _leftViewMiddleButtonWidth),
+      //             ],
+      //           ),
+      //         ),
+      //       ),
+      //       SizedBox(
+      //         height: _leftViewBottomPane,
+      //       ),
+      //     ],
+      //   ),
+      // ]),
+    //),);
+  }
+
+}
+
+class CretaMenuItem {
+  final String caption;
+  final IconData? iconData;
+  final Function onPressed;
+  final bool selected;
+
+  CretaMenuItem({
+    required this.caption,
+    required this.onPressed,
+    this.selected = false,
+    this.iconData,
+  });
+}
+
+class CretaComponentLocation {
+
+  EdgeInsets margin; // 바깥여백
+  EdgeInsets padding; // 안쪽여백
+  double width;
+  double height;
+
+  static const EdgeInsets noSpace = EdgeInsets.all(0);
+
+  CretaComponentLocation({this.margin = noSpace, this.padding = noSpace, this.width = double.infinity, this.height = double.infinity});
+
+  // 각 컴포넌트 좌표 & 크기
+  static CretaComponentLocation BarTop = CretaComponentLocation(height: 60,);
+  static CretaComponentLocation TabBar = CretaComponentLocation(
+    padding : EdgeInsets.fromLTRB(32, 40, 32, 40),
+    width: 310.0,
+  );
+  static CretaComponentLocation ListInTabBar = CretaComponentLocation(
+    padding : EdgeInsets.fromLTRB(0, 0, 0, 40),
+    width: 246.0,
+  );
+  static CretaComponentLocation UserMenuInTabBar = CretaComponentLocation(
+    padding : EdgeInsets.fromLTRB(16, 20, 16, 20),
+    width: 246.0,
+    height: 192.0,
+  );
+
 }

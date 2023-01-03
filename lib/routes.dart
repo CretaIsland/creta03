@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
@@ -7,6 +8,7 @@ import 'design_system/demo_page/menu_demo_page.dart';
 import 'design_system/demo_page/text_field_demo_page.dart';
 import 'pages/login_page.dart';
 import 'pages/intro_page.dart';
+import 'pages/community_home_page.dart';
 import 'package:hycop/hycop.dart';
 
 abstract class AppRoutes {
@@ -16,6 +18,8 @@ abstract class AppRoutes {
   static const String buttonDemoPage = '/buttonDemoPage';
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String login = '/login';
+  static const String communityHome = '/communityHome';
+  static const String subscriptionList = '/subscriptionList';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();
@@ -36,6 +40,8 @@ final routesLoggedOut = RouteMap(
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
+    AppRoutes.communityHome: (_) => TransitionPage(child: CommunityHomePage()),
+    AppRoutes.subscriptionList: (_) => TransitionPage(child: Container()),
   },
 );
 

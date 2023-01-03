@@ -868,4 +868,171 @@ class BTN {
       onPressed: () {},
     );
   }
+
+
+  static Widget fill_color_ic_el({
+    required String caption,
+    required Icon? icon,
+    required void Function() onPressed,
+    double width = 246,
+    double height = 56,
+    Color? normalButtonTextColor,
+    Color? hoverButtonTextColor,
+    Color? selectedButtonTextColor,
+    Color? normalButtonBgColor,
+    Color? hoverButtonBgColor,
+    Color? selectedButtonBgColor,
+  }) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                (Set<MaterialState> states) {
+              if (states.contains(MaterialState.hovered)) return hoverButtonBgColor ?? const Color.fromARGB(255, 249, 249, 249);
+              return normalButtonBgColor ?? Colors.grey[100];
+            },
+          ),
+          elevation: MaterialStateProperty.all<double>(0.0),
+          shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+                (Set<MaterialState> states) {
+              if (states.contains(MaterialState.hovered)) return hoverButtonTextColor ?? Colors.blue[400];
+              return normalButtonTextColor ?? Colors.grey[700];
+            },
+          ),
+          backgroundColor: MaterialStateProperty.all<Color>(normalButtonBgColor ?? Colors.grey[100]!),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(38.0), side: BorderSide(color: normalButtonBgColor ?? Colors.grey[100]!))),
+        ),
+        onPressed: () => onPressed(),
+        child: SizedBox(
+            width: double.infinity,
+            height: 24,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  width: 20,
+                ),
+                icon ?? Container(),
+                const SizedBox(
+                  width: 12,
+                ),
+                Text(
+                  caption,
+                  style: const TextStyle(
+                    //color: Colors.blue[400],
+                    fontSize: 20,
+                    fontFamily: 'Pretendard',
+                  ),
+                ),
+              ],
+            )),
+      ),
+    );
+  }
+
+  static Widget opacity_gray_it_s({
+    required String caption,
+    required Icon? icon,
+    required void Function() onPressed,
+    double width = 91,
+    double height = 29,
+    double opacity = 0.25,
+  }) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => onPressed(),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Stack(
+            children: [
+              Opacity(
+                opacity: opacity,
+                child: SizedBox(
+                  width: width,
+                  height: height,
+                  child: FloatingActionButton.extended(
+                    onPressed: () => onPressed(),
+                    label: Container(),
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: width,
+                height: height,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    icon ?? Container(),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      caption,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w100,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget opacity_gray_i_s({
+    required Icon icon,
+    required void Function() onPressed,
+    double width = 29,
+    double height = 29,
+    double opacity = 0.25,
+  }) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => onPressed(),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Stack(
+            children: [
+              Opacity(
+                opacity: opacity,
+                child: SizedBox(
+                  width: width,
+                  height: height,
+                  child: FloatingActionButton.extended(
+                    onPressed: () => onPressed(),
+                    label: Container(),
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: width,
+                height: height,
+                child: Center(
+                  child: icon,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -8,8 +8,7 @@ import 'package:flutter/gestures.dart';
 import '../design_system/buttons/creta_button_wrapper.dart';
 import '../routes.dart';
 import '../design_system/component/snippet.dart';
-
-import 'dart:js' as js;
+import '../common/cross_common_job.dart';
 
 enum IntroPageType {
   none,
@@ -248,11 +247,8 @@ class _LoginPageState extends State<LoginPage> {
     focusNode.unfocus();
     if (addPasswordCss) return;
     addPasswordCss = true; // 한번만 실행
-    Future.microtask(() {
-      focusNode.requestFocus();
-      // 자바스크립트 호출
-      dynamic ret = js.context.callMethod("fixPasswordCss", []); // index.html에서 fixPasswordCss 참조
-    });
+    CrossCommonJob ccj = CrossCommonJob();
+    ccj.fixEdgePasswordRevealButton(focusNode);
   }
 
   bool _isHidden = true;

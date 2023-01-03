@@ -49,6 +49,8 @@ dependencies:
   dropdown_button2: ^1.8.9
   url_strategy: ^0.2.0
   # flutter_xlider: ^3.4.0
+  http: ^0.13.5
+  universal_html: ^2.0.8
 
 dev_dependencies:
   flutter_test:
@@ -75,7 +77,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/hycop_config.json
-    
+    - assets/creta_logo_blue.png
+    - assets/creta_default.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -123,4 +126,3 @@ flutter:
           weight: 800
         - asset: fonts/Pretendard/Pretendard-Black.otf
           weight: 900
-    
