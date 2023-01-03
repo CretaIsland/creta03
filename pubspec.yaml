@@ -49,6 +49,7 @@ dependencies:
   dropdown_button2: ^1.8.9
   url_strategy: ^0.2.0
   # flutter_xlider: ^3.4.0
+  flutter_vector_icons: ^2.0.0
   http: ^0.13.5
   universal_html: ^2.0.8
 

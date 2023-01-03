@@ -27,7 +27,9 @@ enum CretaButtonColor {
   gray200,
   white,
   white300,
+  whiteShadow,
   purple,
+  skypurple,
   black,
   red,
   transparent,
@@ -96,6 +98,13 @@ class CretaButton extends StatefulWidget {
       bgColor = Colors.white;
       hoverColor = CretaColor.text[300]!;
       clickColor = CretaColor.text[400]!;
+    } else if (buttonColor == CretaButtonColor.whiteShadow) {
+      bgColor = Colors.white;
+      hoverColor = Colors.white;
+      clickColor = Colors.white;
+      fgColor = CretaColor.text[700];
+      fgHoverColor = CretaColor.text[700];
+      fgClickColor = CretaColor.text[200];
     } else if (buttonColor == CretaButtonColor.gray100) {
       bgColor = CretaColor.text[100]!;
       hoverColor = CretaColor.text[200]!;
@@ -117,14 +126,31 @@ class CretaButton extends StatefulWidget {
       bgColor = CretaColor.secondary;
       hoverColor = CretaColor.secondary[500]!;
       clickColor = CretaColor.secondary[600]!;
+    } else if (buttonColor == CretaButtonColor.skypurple) {
+      bgColor = Colors.white;
+      hoverColor = CretaColor.secondary[200]!;
+      clickColor = CretaColor.secondary[300]!;
+      selectColor = CretaColor.secondary[400]!;
+      // bgColor = Colors.transparent;
+      // hoverColor = Colors.transparent;
+      // clickColor = Colors.transparent;
+      // fgColor = Colors.white;
+      // fgHoverColor = CretaColor.secondary[200]!;
+      // fgClickColor = CretaColor.secondary[300]!;
     } else if (buttonColor == CretaButtonColor.black) {
       bgColor = CretaColor.text[700]!;
       hoverColor = CretaColor.text[600]!;
       clickColor = CretaColor.text[500]!;
     } else if (buttonColor == CretaButtonColor.red) {
-      bgColor = CretaColor.red;
-      hoverColor = CretaColor.red[600]!;
-      clickColor = CretaColor.red[700]!;
+      // bgColor = CretaColor.red;
+      // hoverColor = CretaColor.red[600]!;
+      // clickColor = CretaColor.red[700]!;
+      bgColor = Colors.transparent;
+      hoverColor = Colors.transparent;
+      clickColor = Colors.transparent;
+      fgColor = CretaColor.red;
+      fgHoverColor = CretaColor.red[600];
+      fgClickColor = CretaColor.red[700];
     } else if (buttonColor == CretaButtonColor.transparent) {
       bgColor = Colors.transparent;
       hoverColor = Colors.transparent;
@@ -206,6 +232,47 @@ class _CretaButtonState extends State<CretaButton> {
     return clicked ? 0.9 : 1.0;
   }
 
+  List<BoxShadow>? _getShadow() {
+    if (widget.decoType != CretaButtonDeco.shadow) {
+      return null;
+    }
+    double spreadRadius = 1;
+    if (clicked) {
+      spreadRadius = -1;
+    }
+    return [
+      //LTRB
+      BoxShadow(
+        //color: Colors.grey.shade500,
+        color: widget.fgClickColor!,
+        offset: Offset(-2, -2),
+        blurRadius: 8,
+        spreadRadius: spreadRadius,
+      ),
+      BoxShadow(
+        //color: Colors.grey.shade500,
+        color: widget.fgClickColor!,
+        offset: Offset(2, -2),
+        blurRadius: 8,
+        spreadRadius: spreadRadius,
+      ),
+      BoxShadow(
+        //color: Colors.grey.shade500,
+        color: widget.fgClickColor!,
+        offset: Offset(-2, 2),
+        blurRadius: 8,
+        spreadRadius: spreadRadius,
+      ),
+      BoxShadow(
+        //color: Colors.grey.shade500,
+        color: widget.fgClickColor!,
+        offset: Offset(2, 2),
+        blurRadius: 8,
+        spreadRadius: spreadRadius,
+      ),
+    ];
+  }
+
   Border? _getBorder() {
     if (selected) {
       if (widget.decoType == CretaButtonDeco.fill) {
@@ -222,6 +289,9 @@ class _CretaButtonState extends State<CretaButton> {
       if (widget.buttonColor == CretaButtonColor.purple) {
         return Border.all(width: 1, color: CretaColor.secondary);
       }
+      if (widget.buttonColor == CretaButtonColor.skypurple) {
+        return Border.all(width: 1, color: CretaColor.secondary);
+      }
       if (widget.buttonColor == CretaButtonColor.red) {
         return Border.all(width: 1, color: CretaColor.red);
       }
@@ -235,6 +305,7 @@ class _CretaButtonState extends State<CretaButton> {
   Decoration? _getDeco() {
     return BoxDecoration(
       border: _getBorder(),
+      boxShadow: _getShadow(),
       color: _getColor(),
       borderRadius: BorderRadius.all(Radius.circular(36)),
     );
@@ -271,7 +342,7 @@ class _CretaButtonState extends State<CretaButton> {
       return Padding(
         padding: const EdgeInsets.fromLTRB(6, 0, 0, 3),
         child: Text(widget.textString!,
-            style: widget.buttonColor == CretaButtonColor.transparent
+            style: _isTransparent()
                 ? widget.textStyle!.copyWith(
                     color: _getFgColor(),
                   )
@@ -281,9 +352,22 @@ class _CretaButtonState extends State<CretaButton> {
     return widget.text!;
   }
 
+  bool _isTransparent() {
+    if (widget.buttonColor == CretaButtonColor.transparent) return true;
+    if (widget.decoType == CretaButtonDeco.line) {
+      if (widget.buttonColor == CretaButtonColor.red) {
+        return true;
+      }
+      if (widget.buttonColor == CretaButtonColor.skypurple) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Icon _getIcon() {
     if (widget.iconData != null && widget.iconSize != null) {
-      if (widget.buttonColor == CretaButtonColor.transparent) {
+      if (_isTransparent()) {
         return Icon(
           widget.iconData!,
           color: _getFgColor(),

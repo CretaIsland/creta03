@@ -7,7 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
-import '../design_system/buttons/creta_button_wrapper.dart';
+//import '../design_system/buttons/creta_button_wrapper.dart';
 import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_drop_down.dart';
 import '../design_system/text_field/creta_search_bar.dart';
@@ -460,7 +460,7 @@ class _CommunityHomePageState extends State<CommunityHomePage> {
   }
 
   Widget _getLeftPane(double height) {
-    return Snippet.CretaLeftMenuView(_leftMenuItemList, height);
+    return Snippet.CretaTabBar(_leftMenuItemList, height);
   }
 
   Widget _getRightBannerPane(double width, double height) {
@@ -750,14 +750,58 @@ class CretaBookItemState extends State<CretaBookItem> {
                                       width: 9,
                                     ),
                                     // 편집하기 버튼
-                                    BTN.opacity_gray_it_s(
-                                      caption: '편집하기',
-                                      icon: Icon(
-                                        Icons.edit_outlined,
-                                        size: 12.0,
-                                        color: Colors.white,
+                                    MouseRegion(
+                                      cursor: SystemMouseCursors.click,
+                                      child: GestureDetector(
+                                        onTap: () => _editItem(),
+                                        child: SizedBox(
+                                          width: 91,
+                                          height: 29,
+                                          child: Stack(
+                                            children: [
+                                              Opacity(
+                                                opacity: 0.25,
+                                                child: SizedBox(
+                                                  width: 91,
+                                                  height: 29,
+                                                  child: FloatingActionButton.extended(
+                                                    onPressed: () => _editItem(),
+                                                    label: Container(),
+                                                    foregroundColor: Colors.white,
+                                                    backgroundColor: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 91,
+                                                height: 29,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: const [
+                                                  Icon(
+                                                       Icons.edit_outlined,
+                                                       size: 12.0,
+                                                       color: Colors.white,
+                                                     ),
+                                                    SizedBox(
+                                                      width: 8,
+                                                    ),
+                                                    Text(
+                                                      '편집하기',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 11,
+                                                        fontFamily: 'Pretendard',
+                                                        fontWeight: FontWeight.w100,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      onPressed: _editItem,
                                     ),
 
                                     // 빈공간 채우기
@@ -766,13 +810,42 @@ class CretaBookItemState extends State<CretaBookItem> {
                                     ),
 
                                     // 추가 버튼
-                                    BTN.opacity_gray_i_s(
-                                      icon: Icon(
-                                        Icons.add,
-                                        size: 12.0,
-                                        color: Colors.white,
+                                    MouseRegion(
+                                      cursor: SystemMouseCursors.click,
+                                      child: GestureDetector(
+                                        onTap: () => _popupMenuOpen(),
+                                        child: SizedBox(
+                                          width: 29,
+                                          height: 29,
+                                          child: Stack(
+                                            children: [
+                                              Opacity(
+                                                opacity: 0.25,
+                                                child: SizedBox(
+                                                  width: 29,
+                                                  height: 29,
+                                                  child: FloatingActionButton.extended(
+                                                    onPressed: () => _popupMenuOpen(),
+                                                    label: Container(),
+                                                    foregroundColor: Colors.white,
+                                                    backgroundColor: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 29,
+                                                height: 29,
+                                                child: Center(
+                                                  child: Icon(Icons.add,
+                                                    size: 12.0,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      onPressed: _popupMenuOpen,
                                     ),
 
                                     // 빈공간

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_web_libraries_in_flutter
 
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -449,15 +449,15 @@ class _LoginPageState extends State<LoginPage> {
                 suffixIcon: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isHidden = !_isHidden;
-                    });
-                  },
-                  child: Icon(
-                    _isHidden ? Icons.visibility : Icons.visibility_off,
-                  ),
-                )),
+                      onTap: () {
+                        setState(() {
+                          _isHidden = !_isHidden;
+                        });
+                      },
+                      child: Icon(
+                        _isHidden ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    )),
               ),
             ),
           ),
@@ -665,15 +665,15 @@ class _LoginPageState extends State<LoginPage> {
                 suffixIcon: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isHidden = !_isHidden;
-                    });
-                  },
-                  child: Icon(
-                    _isHidden ? Icons.visibility : Icons.visibility_off,
-                  ),
-                )),
+                      onTap: () {
+                        setState(() {
+                          _isHidden = !_isHidden;
+                        });
+                      },
+                      child: Icon(
+                        _isHidden ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    )),
               ),
             ),
           ),
