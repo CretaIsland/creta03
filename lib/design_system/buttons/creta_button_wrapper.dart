@@ -6,6 +6,7 @@ import '../creta_color.dart';
 import '../creta_font.dart';
 import 'creta_button.dart';
 import 'creta_double_button.dart';
+import 'creta_elibated_button.dart';
 import 'creta_text_button.dart';
 
 class BTN {
@@ -824,20 +825,24 @@ class BTN {
     );
   }
 
-  static CretaButton line_blue_t_m({
+  static CretaElevatedButton line_blue_t_m({
     required String text,
     required void Function() onPressed,
   }) {
-    return CretaButton(
-      width: 72,
-      height: 36,
-      buttonType: CretaButtonType.textOnly,
-      buttonColor: CretaButtonColor.sky,
-      decoType: CretaButtonDeco.line,
-      isSelectedWidget: true,
-      textString: text,
-      textStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
+    return CretaElevatedButton(
+      height: 32,
+      radius: 30,
       onPressed: onPressed,
+      caption: text,
+      captionStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]!),
+      bgColor: Colors.white,
+      bgHoverColor: CretaColor.primary[100]!,
+      bgHoverSelectedColor: CretaColor.primary[300]!,
+      bgSelectedColor: CretaColor.primary[400]!,
+      fgColor: CretaColor.primary[400]!,
+      fgSelectedColor: Colors.white,
+      borderColor: CretaColor.primary[400]!,
+      borderSelectedColor: CretaColor.primary[400]!,
     );
   }
 

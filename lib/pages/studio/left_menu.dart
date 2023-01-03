@@ -1,0 +1,85 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta03/pages/studio/left_menu_frame.dart';
+import 'package:flutter/material.dart';
+
+import '../../creta_strings.dart';
+import 'studio_constant.dart';
+
+class LeftMenu extends StatefulWidget {
+  final LeftMenuEnum selectedStick;
+  final void Function() onClose;
+  const LeftMenu({super.key, required this.selectedStick, required this.onClose});
+
+  @override
+  State<LeftMenu> createState() => _LeftMenuState();
+}
+
+class _LeftMenuState extends State<LeftMenu> {
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double closeIconSize = 20.0;
+    return Container(
+      margin: const EdgeInsets.only(top: LayoutConst.layoutMargin),
+      height: height,
+      width: LayoutConst.leftMenuWidth,
+      color: Colors.white,
+      child: Stack(
+        children: [
+          Positioned(
+              left: LayoutConst.leftMenuWidth - 2 * closeIconSize - 6,
+              top: 6,
+              child: IconButton(
+                iconSize: closeIconSize,
+                icon: Icon(Icons.keyboard_double_arrow_left_outlined),
+                onPressed: () {
+                  widget.onClose();
+                },
+              )),
+          Positioned(
+              left: 28,
+              top: 24,
+              child: Text(CretaStrings.menuStick[widget.selectedStick.index],
+                  style: CretaFont.titleLarge)),
+          Positioned(
+            top: 76,
+            left: 10,
+            width: LayoutConst.leftMenuWidth - 10 * 2,
+            child: eachWidget(widget.selectedStick),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget eachWidget(LeftMenuEnum selected) {
+    switch (selected) {
+      case LeftMenuEnum.Template:
+        return Container();
+      case LeftMenuEnum.Page:
+        return Container();
+      case LeftMenuEnum.Frame:
+        return LeftMenuFrame();
+      case LeftMenuEnum.Storage:
+        return Container();
+      case LeftMenuEnum.Image:
+        return Container();
+      case LeftMenuEnum.Video:
+        return Container();
+      case LeftMenuEnum.Text:
+        return Container();
+      case LeftMenuEnum.Figure:
+        return Container();
+      case LeftMenuEnum.Widget:
+        return Container();
+      case LeftMenuEnum.Camera:
+        return Container();
+      case LeftMenuEnum.Comment:
+        return Container();
+      default:
+        return Container();
+    }
+  }
+}

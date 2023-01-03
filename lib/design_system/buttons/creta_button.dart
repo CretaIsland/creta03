@@ -213,16 +213,18 @@ class _CretaButtonState extends State<CretaButton> {
         //     ),
         //   ),
         // )
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          transformAlignment: AlignmentDirectional.center,
-          transform: Matrix4.identity()..scale(_getScale()),
-          decoration: _getDeco(),
-          width: widget.width ?? _getWidth(),
-          height: widget.height ?? _getHeight(),
-          //child: Center(
-          child: _getChild(),
-          //),
+        child: SizedBox(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            transformAlignment: AlignmentDirectional.center,
+            transform: Matrix4.identity()..scale(_getScale()),
+            decoration: _getDeco(),
+            width: widget.width ?? _getWidth(),
+            height: widget.height ?? _getHeight(),
+            //child: Center(
+            child: _getChild(),
+            //),
+          ),
         ),
       ),
     );
