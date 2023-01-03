@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'dart:async';
+//import 'dart:async';
 import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -10,6 +10,7 @@ import 'package:hycop/common/util/logger.dart';
 //import '../design_system/buttons/creta_button_wrapper.dart';
 import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_drop_down.dart';
+import '../design_system/menu/creta_popup_menu.dart';
 import '../design_system/text_field/creta_search_bar.dart';
 //import '../design_system/creta_color.dart';
 
@@ -47,106 +48,6 @@ class CretaBookData {
   String userNickname;
   bool favorites;
   GlobalKey globalKey;
-}
-
-Widget createCretaPopupMenu(
-    BuildContext context, double x, double y, double width, List<CretaMenuItem> menuItem, CretaBookData cretaBookData) {
-  return Stack(
-    children: [
-      Positioned(
-        left: x,
-        top: y,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            // shadow
-            borderRadius: BorderRadius.circular(16.4),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black,
-                //offset: Offset(0.0, 20.0),
-                spreadRadius: -10.0,
-                blurRadius: 20.0,
-              )
-            ],
-          ),
-
-          // decoration: BoxDecoration(
-          //   color: Colors.white,
-          //   // crop
-          //   borderRadius: BorderRadius.circular(16.4),
-          // ),
-          // clipBehavior: Clip.antiAlias, // crop method
-
-          padding: EdgeInsets.all(8),
-          child: Wrap(
-            direction: Axis.vertical,
-            spacing: 4, // <-- Spacing between children
-            children: <Widget>[
-              ...menuItem
-                  .map((item) => SizedBox(
-                        width: width,
-                        height: 32,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.hovered)) {
-                                  return Color.fromARGB(255, 242, 242, 242);
-                                }
-                                return Colors.white; // Defer to the widget's default.
-                              },
-                            ),
-                            elevation: MaterialStateProperty.all<double>(0.0),
-                            shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                            foregroundColor: MaterialStateProperty.all<Color>(Colors.grey[700]!),
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: Colors.white))),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            item.onPressed(item.caption);
-                          },
-                          child: Text(
-                            item.caption,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontFamily: 'Pretendard',
-                            ),
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ],
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-Future<void> showMenu(BuildContext context, GlobalKey globalKey, List<CretaMenuItem> popupMenu, CretaBookData cretaBookData,
-    Function? initFunc) async {
-  await showDialog<String>(
-    context: context,
-    barrierDismissible: true, // Dialog를 제외한 다른 화면 터치 x
-    barrierColor: null,
-    builder: (BuildContext context) {
-      if (initFunc != null) initFunc();
-
-      final RenderBox renderBox = globalKey.currentContext!.findRenderObject() as RenderBox;
-      final position = renderBox.localToGlobal(Offset.zero);
-      final size = renderBox.size;
-
-      double x = position.dx + size.width - 70;
-      double y = position.dy + 40;
-
-      return createCretaPopupMenu(context, x, y, 114, popupMenu, cretaBookData);
-    },
-  );
-
-  return Future.value();
 }
 
 var _imageUrlList = [
@@ -552,6 +453,9 @@ class _CommunityHomePageState extends State<CommunityHomePage> {
     int columnCount = (width - _rightViewLeftPane - _rightViewRightPane) ~/ _itemDefaultWidth;
     if (columnCount == 0) columnCount = 1;
 
+    double itemWidth = -1;
+    double itemHeight = -1;
+
     return Container(
       color: Colors.white,
       child: GridView.builder(
@@ -566,10 +470,25 @@ class _CommunityHomePageState extends State<CommunityHomePage> {
           crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
-          return CretaBookItem(
-            key: _imageUrlList[index].globalKey,
-            cretaBookData: _imageUrlList[index],
-          );
+          return (itemWidth >= 0 && itemHeight >= 0)
+              ? CretaBookItem(
+                  key: _imageUrlList[index].globalKey,
+                  cretaBookData: _imageUrlList[index],
+                  width: itemWidth,
+                  height: itemHeight,
+                )
+              : LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    itemWidth = constraints.maxWidth;
+                    itemHeight = constraints.maxHeight;
+                    return CretaBookItem(
+                      key: _imageUrlList[index].globalKey,
+                      cretaBookData: _imageUrlList[index],
+                      width: itemWidth,
+                      height: itemHeight,
+                    );
+                  },
+                );
         },
       ),
     );
@@ -580,31 +499,31 @@ class _CommunityHomePageState extends State<CommunityHomePage> {
     double height = MediaQuery.of(context).size.height;
     return SizedBox(
         child: Row(
-          children: [
-            // 왼쪽 메뉴
-            _getLeftPane(height - CretaComponentLocation.BarTop.height),
-            // 오른쪽 컨텐츠
-            Container(
-              width: width - CretaComponentLocation.TabBar.width,
-              height: height,
-              color: Colors.white,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: width - CretaComponentLocation.TabBar.width,
-                    height: height,
-                    child: _getRightItemPane(width - CretaComponentLocation.TabBar.width, height),
-                  ),
-                  SizedBox(
-                    width: width - CretaComponentLocation.TabBar.width - _scrollbarWidth,
-                    height: headerSize,
-                    child: _getRightBannerPane(width - CretaComponentLocation.TabBar.width, headerSize),
-                  ),
-                ],
+      children: [
+        // 왼쪽 메뉴
+        _getLeftPane(height - CretaComponentLocation.BarTop.height),
+        // 오른쪽 컨텐츠
+        Container(
+          width: width - CretaComponentLocation.TabBar.width,
+          height: height,
+          color: Colors.white,
+          child: Stack(
+            children: [
+              SizedBox(
+                width: width - CretaComponentLocation.TabBar.width,
+                height: height,
+                child: _getRightItemPane(width - CretaComponentLocation.TabBar.width, height),
               ),
-            ),
-          ],
-        ));
+              SizedBox(
+                width: width - CretaComponentLocation.TabBar.width - _scrollbarWidth,
+                height: headerSize,
+                child: _getRightBannerPane(width - CretaComponentLocation.TabBar.width, headerSize),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ));
   }
 
   @override
@@ -637,8 +556,15 @@ class _CommunityHomePageState extends State<CommunityHomePage> {
 
 class CretaBookItem extends StatefulWidget {
   final CretaBookData cretaBookData;
+  final double width;
+  final double height;
 
-  const CretaBookItem({super.key, required this.cretaBookData,});
+  const CretaBookItem({
+    required super.key,
+    required this.cretaBookData,
+    required this.width,
+    required this.height,
+  });
 
   @override
   CretaBookItemState createState() => CretaBookItemState();
@@ -648,36 +574,79 @@ class CretaBookItemState extends State<CretaBookItem> {
   bool mouseOver = false;
   bool popmenuOpen = false;
 
-  late List<CretaMenuItem> _popupMenu;
+  late List<CretaMenuItem> _popupMenuList;
 
-  void _editItem() {
-    popupMenuFunc(widget.cretaBookData.title);
-  }
-
-  void popupMenuFunc(String id) {
-    logger.finest('popupMenuFunc($id)');
-  }
-
-  void _popupMenuOpen() {
-    showMenu(context, widget.cretaBookData.globalKey, _popupMenu, widget.cretaBookData, setPopmenuOpen).then((value) {
-      logger.finest('clicked(추가 끝)');
+  void _openPopupMenu() {
+    CretaPopupMenu.showMenu(
+            context: context,
+            globalKey: widget.cretaBookData.globalKey,
+            popupMenu: _popupMenuList,
+            initFunc: setPopmenuOpen)
+        .then((value) {
+      logger.finest('팝업메뉴 닫기');
       setState(() {
         popmenuOpen = false;
       });
     });
   }
 
+  void _editItem() {
+    logger.finest('편집하기(${widget.cretaBookData.title})');
+  }
+
+  void _doPopupMenuPlay() {
+    logger.finest('재생하기(${widget.cretaBookData.title})');
+  }
+
+  void _doPopupMenuEdit() {
+    logger.finest('편집하기(${widget.cretaBookData.title})');
+  }
+
+  void _doPopupMenuAddToPlayList() {
+    logger.finest('재생목록에 추가(${widget.cretaBookData.title})');
+  }
+
+  void _doPopupMenuShare() {
+    logger.finest('공유하기(${widget.cretaBookData.title})');
+  }
+
+  void _doPopupMenuDownload() {
+    logger.finest('다운로드(${widget.cretaBookData.title})');
+  }
+
+  void _doPopupMenuCopy() {
+    logger.finest('복사하기(${widget.cretaBookData.title})');
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _popupMenu = [
-      CretaMenuItem(caption: '재생하기', onPressed: popupMenuFunc, ),
-      CretaMenuItem(caption: '편집하기', onPressed: popupMenuFunc,),
-      CretaMenuItem(caption: '재생목록에 추가', onPressed: popupMenuFunc,),
-      CretaMenuItem(caption: '공유하기', onPressed: popupMenuFunc,),
-      CretaMenuItem(caption: '다운로드', onPressed: popupMenuFunc,),
-      CretaMenuItem(caption: '복사하기', onPressed: popupMenuFunc,),
+    _popupMenuList = [
+      CretaMenuItem(
+        caption: '재생하기',
+        onPressed: _doPopupMenuPlay,
+      ),
+      CretaMenuItem(
+        caption: '편집하기',
+        onPressed: _doPopupMenuEdit,
+      ),
+      CretaMenuItem(
+        caption: '재생목록에 추가',
+        onPressed: _doPopupMenuAddToPlayList,
+      ),
+      CretaMenuItem(
+        caption: '공유하기',
+        onPressed: _doPopupMenuShare,
+      ),
+      CretaMenuItem(
+        caption: '다운로드',
+        onPressed: _doPopupMenuDownload,
+      ),
+      CretaMenuItem(
+        caption: '복사하기',
+        onPressed: _doPopupMenuCopy,
+      ),
     ];
   }
 
@@ -687,6 +656,185 @@ class CretaBookItemState extends State<CretaBookItem> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> overlayMenu = !(mouseOver || popmenuOpen)
+        ? [
+            Container(),
+          ]
+        : [
+            Positioned(
+              left: 8,
+              top: 8,
+              // BTN.opacity_gray_it_s
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _editItem(),
+                  child: SizedBox(
+                    width: 91,
+                    height: 29,
+                    child: Stack(
+                      children: [
+                        Opacity(
+                          opacity: 0.25,
+                          child: SizedBox(
+                            width: 91,
+                            height: 29,
+                            child: FloatingActionButton.extended(
+                              onPressed: () => _editItem(),
+                              label: Container(),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 91,
+                          height: 29,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 12.0,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                '편집하기',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontFamily: 'Pretendard',
+                                  fontWeight: FontWeight.w100,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: widget.width - 68,
+              top: 8,
+              //BTN.opacity_gray_i_s
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _openPopupMenu(),
+                  child: SizedBox(
+                    width: 29,
+                    height: 29,
+                    child: Stack(
+                      children: [
+                        Opacity(
+                          opacity: 0.25,
+                          child: SizedBox(
+                            width: 28,
+                            height: 28,
+                            child: FloatingActionButton.extended(
+                              onPressed: () => _openPopupMenu(),
+                              label: Container(),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 29,
+                          height: 29,
+                          child: Center(
+                            child: Icon(
+                              Icons.add,
+                              size: 12.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: widget.width - 36,
+              top: 8,
+              child: Stack(
+                children: [
+                  Opacity(
+                    opacity: 0.25,
+                    child: SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: FloatingActionButton.extended(
+                        onPressed: () {},
+                        label: Text(
+                          '',
+                          style: TextStyle(
+                            fontSize: 10,
+                          ),
+                        ),
+                        // icon: Icon(
+                        //   Icons.menu,
+                        //   size: 12.0,
+                        // ),
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black,
+                      ),
+                    ),
+                  ),
+                  PopupMenuButton<PopupMenuSampleItem>(
+                    tooltip: '',
+                    offset: Offset(100, 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    child: SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: Icon(
+                        Icons.menu,
+                        size: 12.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    //initialValue: selectedMenu,
+                    // Callback that sets the selected popup menu item.
+                    onSelected: (PopupMenuSampleItem item) {
+                      setState(() {
+                        //selectedMenu = item;
+                        popmenuOpen = false;
+                      });
+                    },
+                    onCanceled: () {
+                      setState(() {
+                        popmenuOpen = false;
+                      });
+                    },
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<PopupMenuSampleItem>>[
+                      const PopupMenuItem<PopupMenuSampleItem>(
+                        value: PopupMenuSampleItem.itemOne,
+                        child: Text('Item 1'),
+                      ),
+                      const PopupMenuItem<PopupMenuSampleItem>(
+                        value: PopupMenuSampleItem.itemTwo,
+                        child: Text('Item 2'),
+                      ),
+                      const PopupMenuItem<PopupMenuSampleItem>(
+                        value: PopupMenuSampleItem.itemThree,
+                        child: Text('Item 3'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ];
+
     return MouseRegion(
       onEnter: (value) {
         setState(() {
@@ -698,327 +846,92 @@ class CretaBookItemState extends State<CretaBookItem> {
           mouseOver = false;
         });
       },
-      child: SizedBox(
-        // decoration: BoxDecoration(
-        //   // create shadow
-        //   borderRadius: BorderRadius.circular(20.0),
-        //   boxShadow: const [
-        //     BoxShadow(
-        //       color: Colors.black38,
-        //       offset: Offset(0.0, 20.0),
-        //       spreadRadius: -10.0,
-        //       blurRadius: 20.0,
-        //     )
-        //   ],
-        // ),
-        child: Container(
-          decoration: BoxDecoration(
-            // crop
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          clipBehavior: Clip.antiAlias, // crop method
-          child: Column(
-            children: [
-              Expanded(
-                child: Container(
-                  color: Colors.white,
-                  child: Stack(
-                    children: [
-                      // 콘텐츠 프리뷰 이미지
-                      Image.network(
-                        //width: 200,
-                        //  height: 100,
-                        width: double.maxFinite,
-                        widget.cretaBookData.imageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                      // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
-                      !(mouseOver || popmenuOpen)
-                          ? Container()
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                // 상단 빈공간
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                // 버튼 공간
-                                Row(
-                                  children: [
-                                    // 왼쪽 빈공간
-                                    SizedBox(
-                                      width: 9,
-                                    ),
-                                    // 편집하기 버튼
-                                    MouseRegion(
-                                      cursor: SystemMouseCursors.click,
-                                      child: GestureDetector(
-                                        onTap: () => _editItem(),
-                                        child: SizedBox(
-                                          width: 91,
-                                          height: 29,
-                                          child: Stack(
-                                            children: [
-                                              Opacity(
-                                                opacity: 0.25,
-                                                child: SizedBox(
-                                                  width: 91,
-                                                  height: 29,
-                                                  child: FloatingActionButton.extended(
-                                                    onPressed: () => _editItem(),
-                                                    label: Container(),
-                                                    foregroundColor: Colors.white,
-                                                    backgroundColor: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 91,
-                                                height: 29,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: const [
-                                                  Icon(
-                                                       Icons.edit_outlined,
-                                                       size: 12.0,
-                                                       color: Colors.white,
-                                                     ),
-                                                    SizedBox(
-                                                      width: 8,
-                                                    ),
-                                                    Text(
-                                                      '편집하기',
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 11,
-                                                        fontFamily: 'Pretendard',
-                                                        fontWeight: FontWeight.w100,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    // 빈공간 채우기
-                                    Expanded(
-                                      child: SizedBox(),
-                                    ),
-
-                                    // 추가 버튼
-                                    MouseRegion(
-                                      cursor: SystemMouseCursors.click,
-                                      child: GestureDetector(
-                                        onTap: () => _popupMenuOpen(),
-                                        child: SizedBox(
-                                          width: 29,
-                                          height: 29,
-                                          child: Stack(
-                                            children: [
-                                              Opacity(
-                                                opacity: 0.25,
-                                                child: SizedBox(
-                                                  width: 29,
-                                                  height: 29,
-                                                  child: FloatingActionButton.extended(
-                                                    onPressed: () => _popupMenuOpen(),
-                                                    label: Container(),
-                                                    foregroundColor: Colors.white,
-                                                    backgroundColor: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 29,
-                                                height: 29,
-                                                child: Center(
-                                                  child: Icon(Icons.add,
-                                                    size: 12.0,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    // 빈공간
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-
-                                    // 메뉴 버튼
-                                    Stack(
-                                      children: [
-                                        Opacity(
-                                          opacity: 0.25,
-                                          child: SizedBox(
-                                            width: 28,
-                                            height: 28,
-                                            child: FloatingActionButton.extended(
-                                              onPressed: () {},
-                                              label: Text(
-                                                '',
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                              // icon: Icon(
-                                              //   Icons.menu,
-                                              //   size: 12.0,
-                                              // ),
-                                              foregroundColor: Colors.white,
-                                              backgroundColor: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        PopupMenuButton<PopupMenuSampleItem>(
-                                          tooltip: '',
-                                          offset: Offset(100, 10),
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                          child: SizedBox(
-                                            width: 28,
-                                            height: 28,
-                                            child: Icon(
-                                              Icons.menu,
-                                              size: 12.0,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          //initialValue: selectedMenu,
-                                          // Callback that sets the selected popup menu item.
-                                          onSelected: (PopupMenuSampleItem item) {
-                                            setState(() {
-                                              //selectedMenu = item;
-                                              popmenuOpen = false;
-                                            });
-                                          },
-                                          onCanceled: () {
-                                            setState(() {
-                                              popmenuOpen = false;
-                                            });
-                                          },
-                                          itemBuilder: (BuildContext context) => <PopupMenuEntry<PopupMenuSampleItem>>[
-                                            const PopupMenuItem<PopupMenuSampleItem>(
-                                              value: PopupMenuSampleItem.itemOne,
-                                              child: Text('Item 1'),
-                                            ),
-                                            const PopupMenuItem<PopupMenuSampleItem>(
-                                              value: PopupMenuSampleItem.itemTwo,
-                                              child: Text('Item 2'),
-                                            ),
-                                            const PopupMenuItem<PopupMenuSampleItem>(
-                                              value: PopupMenuSampleItem.itemThree,
-                                              child: Text('Item 3'),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-
-                                    // 오른쪽 여백
-                                    SizedBox(
-                                      width: 9,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                    ],
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          // crop
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        clipBehavior: Clip.antiAlias, // crop method
+        child: Column(
+          children: [
+            Container(
+              width: widget.width,
+              height: widget.height - _itemDescriptionHeight,
+              color: Colors.white,
+              child: Stack(
+                children: [
+                  // 콘텐츠 프리뷰 이미지
+                  Image.network(
+                    //width: 200,
+                    //  height: 100,
+                    width: double.maxFinite,
+                    widget.cretaBookData.imageUrl,
+                    fit: BoxFit.cover,
                   ),
-                ),
+                  // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
+                  ...overlayMenu,
+                ],
               ),
-              Container(
-                height: _itemDescriptionHeight,
-                color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Expanded(
+            ),
+            Container(
+              height: _itemDescriptionHeight,
+              color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
+              child: Stack(
+                children: [
+                  Positioned(
+                      left: widget.width - 37,
+                      top: 17,
                       child: Container(
+                        width: 20,
+                        height: 20,
                         color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 7,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-                                    child: Text(
-                                      widget.cretaBookData.title,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey[700],
-                                        fontFamily: 'Pretendard',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 3,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-                                    child: Text(
-                                      widget.cretaBookData.userNickname,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.grey[500],
-                                        fontFamily: 'Pretendard',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                        child: Icon(
+                          Icons.favorite_outline,
+                          size: 20.0,
+                          color: Colors.grey[700],
+                        ),
+                      )),
+                  Positioned(
+                    left: 15,
+                    top: 7,
+                    child: Container(
+                        width: widget.width - 45 - 15,
+                        color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
+                        child: Text(
+                          widget.cretaBookData.title,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                            fontFamily: 'Pretendard',
+                          ),
+                        )),
+                  ),
+                  Positioned(
+                    left: 16,
+                    top: 29,
+                    child: Container(
+                      width: widget.width - 45 - 15,
+                      color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
+                      child: Text(
+                        widget.cretaBookData.userNickname,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey[500],
+                          fontFamily: 'Pretendard',
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 4,
-                    ),
-                    Container(
-                      width: 20,
-                      height: 20,
-                      color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-                      child: Icon(
-                        Icons.favorite_outline,
-                        size: 20.0,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
