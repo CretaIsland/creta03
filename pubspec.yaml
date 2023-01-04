@@ -54,6 +54,7 @@ dependencies:
   image_network: ^2.4.1
   http: ^0.13.5
   universal_html: ^2.0.8
+  cross_scroll: ^0.0.75
 
 dev_dependencies:
   flutter_test:
