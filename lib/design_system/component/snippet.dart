@@ -304,6 +304,13 @@ class Snippet {
             Routemaster.of(context).push(AppRoutes.studioBookMainPage);
           },
         ),
+        SpeedDialChild(
+          label: 'Community Home',
+          child: Icon(Icons.explore),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.communityHome);
+          },
+        ),
       ],
     );
   }
