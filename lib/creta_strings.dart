@@ -25,4 +25,6 @@ class CretaStrings {
   ];
 
   static const String latelyUsedFrame = "최근 사용한 프레임";
+
+  static const String autoScale = "자동맞춤";
 }

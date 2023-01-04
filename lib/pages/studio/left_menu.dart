@@ -1,11 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/pages/studio/left_menu_frame.dart';
 import 'package:flutter/material.dart';
 
 import '../../creta_strings.dart';
+import '../../design_system/creta_font.dart';
 import 'studio_constant.dart';
+import 'studio_snippet.dart';
 
 class LeftMenu extends StatefulWidget {
   final LeftMenuEnum selectedStick;
@@ -25,7 +26,10 @@ class _LeftMenuState extends State<LeftMenu> {
       margin: const EdgeInsets.only(top: LayoutConst.layoutMargin),
       height: height,
       width: LayoutConst.leftMenuWidth,
-      color: Colors.white,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: StudioSnippet.basicShadow(),
+      ),
       child: Stack(
         children: [
           Positioned(

@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import 'studio_constant.dart';
 import '../../creta_strings.dart';
+import 'studio_snippet.dart';
 
 // ignore: must_be_immutable
 class StickMenu extends StatefulWidget {
@@ -44,6 +46,7 @@ class _StickMenuState extends State<StickMenu> {
 
   @override
   void initState() {
+    logger.finest('StickMenu::initState');
     super.initState();
     for (int i = 0; i < icon.length; i++) {
       selected.add(false);
@@ -54,54 +57,42 @@ class _StickMenuState extends State<StickMenu> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    return Stack(
-      children: [
-        Container(color: LayoutConst.studioBGColor),
-        Container(
-            margin: EdgeInsets.only(top: LayoutConst.layoutMargin, right: LayoutConst.layoutMargin),
-            height: height,
-            width: LayoutConst.menuStickWidth,
-            decoration: BoxDecoration(color: LayoutConst.menuStickBGColor, //Color(0xff332A7C),
-                //borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: LayoutConst.studioBGColor.withOpacity(0.6),
-                    spreadRadius: 3,
-                    blurRadius: 16,
-                    offset: const Offset(-8, 0),
-                  ),
-                  BoxShadow(
-                    color: LayoutConst.studioBGColor.withOpacity(0.6),
-                    spreadRadius: 3,
-                    blurRadius: 16,
-                    offset: const Offset(0, -8),
-                  ),
-                ]),
-            child: Stack(
-              children: [
-                Positioned(
-                    top: 24,
-                    child: Column(
-                      children: icon.map((e) {
-                        int idx = icon.indexOf(e);
-                        return NavBarItem(
-                          icon: e,
-                          title: CretaStrings.menuStick[idx],
-                          onTap: () {
-                            widget.initSelected = LeftMenuEnum.values[idx];
-                            widget.selectFunction(LeftMenuEnum.values[idx]);
-                            setState(() {
-                              select(idx);
-                            });
-                          },
-                          selected: selected[idx],
-                        );
-                      }).toList(),
-                    ))
-              ],
-            )),
-      ],
-    );
+    if (widget.initSelected == LeftMenuEnum.None) {
+      for (int i = 0; i < selected.length; i++) {
+        selected[i] = false;
+      }
+    }
+    return Container(
+        margin: EdgeInsets.only(top: LayoutConst.layoutMargin, right: LayoutConst.layoutMargin),
+        height: height,
+        width: LayoutConst.menuStickWidth,
+        decoration: BoxDecoration(
+          color: LayoutConst.menuStickBGColor,
+          boxShadow: StudioSnippet.basicShadow(),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+                top: 24,
+                child: Column(
+                  children: icon.map((e) {
+                    int idx = icon.indexOf(e);
+                    return NavBarItem(
+                      icon: e,
+                      title: CretaStrings.menuStick[idx],
+                      onTap: () {
+                        widget.initSelected = LeftMenuEnum.values[idx];
+                        widget.selectFunction(LeftMenuEnum.values[idx]);
+                        setState(() {
+                          select(idx);
+                        });
+                      },
+                      selected: selected[idx],
+                    );
+                  }).toList(),
+                ))
+          ],
+        ));
   }
 }
 

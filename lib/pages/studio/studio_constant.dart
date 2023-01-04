@@ -28,6 +28,9 @@ class LayoutConst {
   // left menu
   static const double leftMenuWidth = 420;
 
+  // bottom Menu bar
+  static const double bottomMenuBarHeight = 68;
+
   static const double layoutMargin = 4;
   static Color studioBGColor = CretaColor.text[200]!;
   static const Color menuStickBGColor = Colors.white;

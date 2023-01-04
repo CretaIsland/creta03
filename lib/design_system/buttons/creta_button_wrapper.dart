@@ -1185,7 +1185,7 @@ class BTN {
         iconSize: 20,
         clickColor: CretaColor.text[200]!,
         hoverColor: CretaColor.text[100]!,
-        text: Text('button', style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)));
+        text: Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)));
   }
 
   static CretaTextButton fill_color_t_m({

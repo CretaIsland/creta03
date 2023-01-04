@@ -6,6 +6,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
+import '../../common/creta_constant.dart';
 import '../../routes.dart';
 import '../text_field/creta_text_field.dart';
 import '../buttons/creta_button_wrapper.dart';
@@ -58,10 +59,7 @@ class Snippet {
         // onTapDown: ((details) {
         //   logger.finest('clicked=${details.globalPosition}');
         // }),
-        child: Container(
-          //color: Colors.amber,
-          child: child,
-        ),
+        child: child,
       ),
     );
     // body: RawKeyboardListener(
@@ -159,47 +157,49 @@ class Snippet {
         // user info
         SizedBox(
           child:
-          // Column(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          Center(child:
-              SizedBox(
-                //width: 166,
-                height: 40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 24,
-                      height: 24,
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              Center(
+            child: SizedBox(
+              //width: 166,
+              height: 40,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        // crop
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      clipBehavior: Clip.hardEdge,
+                      // color: Colors.grey[700],
                       child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          // crop
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                       // color: Colors.grey[700],
-                        child:Container(color:Colors.grey[700], ),
+                        color: Colors.grey[700],
                       ),
                     ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    CretaDropDown(
-                        width: 130,
-                        height: 40,
-                        items: const ['사용자 닉네임', '사용자 닉네임1', '사용자 닉네임2', '사용자 닉네임3'],
-                        defaultValue: '사용자 닉네임',
-                        onSelected: (value) {
-                          //logger.finest('value=$value');
-                        }),
-                    SizedBox(
-                      width: 40,
-                    ),
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  CretaDropDown(
+                      width: 130,
+                      height: 40,
+                      items: const ['사용자 닉네임', '사용자 닉네임1', '사용자 닉네임2', '사용자 닉네임3'],
+                      defaultValue: '사용자 닉네임',
+                      onSelected: (value) {
+                        //logger.finest('value=$value');
+                      }),
+                  SizedBox(
+                    width: 40,
+                  ),
+                ],
               ),
+            ),
             //],
           ),
         ),
@@ -212,6 +212,7 @@ class Snippet {
     return AppBar(
       // Here we take the value from the MyHomePage object that was created by
       // the App.build method, and use it to set our appbar title.
+      toolbarHeight: CretaConstant.appbarHeight,
       title: Text(title),
       actions: AccountManager.currentLoginUser.isLoginedUser
           ? [
@@ -338,8 +339,9 @@ class Snippet {
   }
 
   static Widget CretaTabBar(List<CretaMenuItem> menuItem, double height) {
-
-    double userMenuHeight = height - CretaComponentLocation.TabBar.padding.top  - CretaComponentLocation.TabBar.padding.bottom;
+    double userMenuHeight = height -
+        CretaComponentLocation.TabBar.padding.top -
+        CretaComponentLocation.TabBar.padding.bottom;
     if (userMenuHeight > CretaComponentLocation.UserMenuInTabBar.height) {
       userMenuHeight = CretaComponentLocation.UserMenuInTabBar.height;
     }
@@ -352,73 +354,86 @@ class Snippet {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         //mainAxisAlignment: MainAxisAlignment.start,
-        children: [ Expanded(
-          child:
-          ListView.builder(
-              padding: CretaComponentLocation.ListInTabBar.padding,
-              itemCount: 1,
-              itemBuilder: (context, index) {
-                return Wrap(
-                  direction: Axis.vertical,
-                  spacing: 8, // <-- Spacing between children
-                  children: <Widget>[
-                    ...menuItem
-                        .map((item) =>
-                    // BTN.fill_color_ic_el
-                    SizedBox(
-                      width: 246,
-                      height: 56,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                                (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.hovered)) return const Color.fromARGB(255, 249, 249, 249);
-                              return (item.selected ? Colors.white : Colors.grey[100]);
-                            },
-                          ),
-                          elevation: MaterialStateProperty.all<double>(0.0),
-                          shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                          foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-                                (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.hovered)) return Colors.blue[400];
-                              return (item.selected ? Colors.blue[400] : Colors.grey[700]);
-                            },
-                          ),
-                          backgroundColor: MaterialStateProperty.all<Color>(item.selected ? Colors.white : Colors.grey[100]!),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(38.0), side: BorderSide(color: item.selected ? Colors.white : Colors.grey[100]!))),
-                        ),
-                        onPressed: () => item.onPressed(),
-                        child: SizedBox(
-                            width: double.infinity,
-                            height: 24,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Icon(item.iconData),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                Text(
-                                  item.caption,
-                                  style: const TextStyle(
-                                    //color: Colors.blue[400],
-                                    fontSize: 20,
-                                    fontFamily: 'Pretendard',
+        children: [
+          Expanded(
+            child: ListView.builder(
+                padding: CretaComponentLocation.ListInTabBar.padding,
+                itemCount: 1,
+                itemBuilder: (context, index) {
+                  return Wrap(
+                    direction: Axis.vertical,
+                    spacing: 8, // <-- Spacing between children
+                    children: <Widget>[
+                      ...menuItem
+                          .map((item) =>
+                              // BTN.fill_color_ic_el
+                              SizedBox(
+                                width: 246,
+                                height: 56,
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                      (Set<MaterialState> states) {
+                                        if (states.contains(MaterialState.hovered)) {
+                                          return const Color.fromARGB(255, 249, 249, 249);
+                                        }
+                                        return (item.selected ? Colors.white : Colors.grey[100]);
+                                      },
+                                    ),
+                                    elevation: MaterialStateProperty.all<double>(0.0),
+                                    shadowColor:
+                                        MaterialStateProperty.all<Color>(Colors.transparent),
+                                    foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+                                      (Set<MaterialState> states) {
+                                        if (states.contains(MaterialState.hovered)) {
+                                          return Colors.blue[400];
+                                        }
+                                        return (item.selected
+                                            ? Colors.blue[400]
+                                            : Colors.grey[700]);
+                                      },
+                                    ),
+                                    backgroundColor: MaterialStateProperty.all<Color>(
+                                        item.selected ? Colors.white : Colors.grey[100]!),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(38.0),
+                                            side: BorderSide(
+                                                color: item.selected
+                                                    ? Colors.white
+                                                    : Colors.grey[100]!))),
                                   ),
+                                  onPressed: () => item.onPressed(),
+                                  child: SizedBox(
+                                      width: double.infinity,
+                                      height: 24,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          Icon(item.iconData),
+                                          const SizedBox(
+                                            width: 12,
+                                          ),
+                                          Text(
+                                            item.caption,
+                                            style: const TextStyle(
+                                              //color: Colors.blue[400],
+                                              fontSize: 20,
+                                              fontFamily: 'Pretendard',
+                                            ),
+                                          ),
+                                        ],
+                                      )),
                                 ),
-                              ],
-                            )),
-                      ),
-                    )
-                    ).toList(),
-                  ],
-                );
-              }),
-        ),
+                              ))
+                          .toList(),
+                    ],
+                  );
+                }),
+          ),
 
           //하단 사용자 메뉴
           Container(
@@ -429,40 +444,40 @@ class Snippet {
             ),
             clipBehavior: Clip.antiAlias, // crop method
             width: CretaComponentLocation.UserMenuInTabBar.width,
-            height: userMenuHeight,//CretaComponentLocation.UserMenuInTabBar.height,
+            height: userMenuHeight, //CretaComponentLocation.UserMenuInTabBar.height,
             padding: CretaComponentLocation.UserMenuInTabBar.padding,
             child: ListView.builder(
-              //padding: EdgeInsets.fromLTRB(leftMenuViewLeftPane, leftMenuViewTopPane, 0, 0),
+                //padding: EdgeInsets.fromLTRB(leftMenuViewLeftPane, leftMenuViewTopPane, 0, 0),
                 itemCount: 1,
                 itemBuilder: (context, index) {
-                  return
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        BTN.fill_gray_l_profile(
-                          text: '사용자 닉네임',
-                          subText: '요금제 정보',
-                          image: AssetImage('assets/creta_default.png'),
-                          onPressed: () {},
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        BTN.fill_blue_ti_el(
-                          icon: Icons.arrow_forward_outlined,
-                          text: '내 크레타북 관리',
-                          onPressed: () {},
-                        ),
-                      ],
-                    );
-                }),),
-        ],),);
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BTN.fill_gray_l_profile(
+                        text: '사용자 닉네임',
+                        subText: '요금제 정보',
+                        image: AssetImage('assets/creta_default.png'),
+                        onPressed: () {},
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      BTN.fill_blue_ti_el(
+                        icon: Icons.arrow_forward_outlined,
+                        text: '내 크레타북 관리',
+                        onPressed: () {},
+                      ),
+                    ],
+                  );
+                }),
+          ),
+        ],
+      ),
+    );
   }
-
 }
 
 class CretaComponentLocation {
-
   EdgeInsets margin; // 바깥여백
   EdgeInsets padding; // 안쪽여백
   double width;
@@ -470,22 +485,27 @@ class CretaComponentLocation {
 
   static const EdgeInsets noSpace = EdgeInsets.all(0);
 
-  CretaComponentLocation({this.margin = noSpace, this.padding = noSpace, this.width = double.infinity, this.height = double.infinity});
+  CretaComponentLocation(
+      {this.margin = noSpace,
+      this.padding = noSpace,
+      this.width = double.infinity,
+      this.height = double.infinity});
 
   // 각 컴포넌트 좌표 & 크기
-  static CretaComponentLocation BarTop = CretaComponentLocation(height: 60,);
+  static CretaComponentLocation BarTop = CretaComponentLocation(
+    height: 60,
+  );
   static CretaComponentLocation TabBar = CretaComponentLocation(
-    padding : EdgeInsets.fromLTRB(32, 40, 32, 40),
+    padding: EdgeInsets.fromLTRB(32, 40, 32, 40),
     width: 310.0,
   );
   static CretaComponentLocation ListInTabBar = CretaComponentLocation(
-    padding : EdgeInsets.fromLTRB(0, 0, 0, 40),
+    padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
     width: 246.0,
   );
   static CretaComponentLocation UserMenuInTabBar = CretaComponentLocation(
-    padding : EdgeInsets.fromLTRB(16, 20, 16, 20),
+    padding: EdgeInsets.fromLTRB(16, 20, 16, 20),
     width: 246.0,
     height: 192.0,
   );
-
 }
