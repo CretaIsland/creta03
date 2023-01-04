@@ -13,8 +13,7 @@ import '../design_system/menu/creta_drop_down.dart';
 import '../design_system/menu/creta_popup_menu.dart';
 import '../design_system/text_field/creta_search_bar.dart';
 //import '../design_system/creta_color.dart';
-import 'package:image_network/image_network.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'community_home_page.dart';
 
 const double _rightViewTopPane = 40;
 const double _rightViewLeftPane = 40;
@@ -34,25 +33,7 @@ const double _itemDescriptionHeight = 56;
 enum PopupMenuSampleItem { itemOne, itemTwo, itemThree }
 
 ///////////////////////////////////////////////////////
-class CretaBookData {
-  CretaBookData({
-    required this.imageUrl,
-    required this.imageSize,
-    required this.title,
-    required this.userNickname,
-    required this.favorites,
-    required this.globalKey,
-  });
-
-  String imageUrl;
-  double imageSize;
-  String title;
-  String userNickname;
-  bool favorites;
-  GlobalKey globalKey;
-}
-
-var _imageUrlList = [
+var _cretaBookList = [
   CretaBookData(
     imageUrl:
         'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/99820741428583-2df54399-e5c3-414f-902b-7df5f66b3659.jpg',
@@ -326,14 +307,14 @@ var _imageUrlList = [
 ];
 
 //////////////////////////////////////////////////////////////////////
-class CommunityHomePage extends StatefulWidget {
-  const CommunityHomePage({super.key});
+class SubscriptionListPage extends StatefulWidget {
+  const SubscriptionListPage({super.key});
 
   @override
-  State<CommunityHomePage> createState() => _CommunityHomePageState();
+  State<SubscriptionListPage> createState() => _SubscriptionListPageState();
 }
 
-class _CommunityHomePageState extends State<CommunityHomePage> {
+class _SubscriptionListPageState extends State<SubscriptionListPage> {
   late ScrollController _controller;
   late List<CretaMenuItem> _leftMenuItemList;
 
@@ -355,192 +336,94 @@ class _CommunityHomePageState extends State<CommunityHomePage> {
   double headerSize = _rightViewBannerMaxHeight;
   double scrollOffset = 0;
   void _scrollListener() {
-    setState(() {
-      scrollOffset = _controller.offset;
-      headerSize = _rightViewBannerMaxHeight - _controller.offset;
-      if (headerSize < _rightViewBannerMinHeight) headerSize = _rightViewBannerMinHeight;
-    });
+    print('offet=${_controller.offset}, max=${_controller.position.maxScrollExtent}');
+    // setState(() {
+    //   scrollOffset = _controller.offset;
+    //   headerSize = _rightViewBannerMaxHeight - _controller.offset;
+    //   if (headerSize < _rightViewBannerMinHeight) headerSize = _rightViewBannerMinHeight;
+    // });
   }
 
   Widget _getLeftPane(double height) {
     return Snippet.CretaTabBar(_leftMenuItemList, height);
   }
 
-  Widget _getRightBannerPane(double width, double height) {
-    return Listener(
-      onPointerSignal: (PointerSignalEvent event) {
-        if (event is PointerScrollEvent) {
-          //print('x: ${event.position.dx}, y: ${event.position.dy}');
-          //print('scroll delta: ${event.scrollDelta}');
-          scrollOffset += event.scrollDelta.dy;
-          if (scrollOffset < 0) scrollOffset = 0;
-          if (scrollOffset > _controller.position.maxScrollExtent) scrollOffset = _controller.position.maxScrollExtent;
-          _controller.animateTo(scrollOffset, duration: Duration(milliseconds: 1), curve: Curves.easeIn);
-        }
-      },
-      child: Container(
-        width: width,
-        height: height,
-        color: Colors.white,
-        child: Stack(
-          children: [
-            Positioned(
-              top: _rightViewTopPane,
-              left: _rightViewLeftPane,
-              child: Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
-                clipBehavior: Clip.antiAlias,
-                width: width - _rightViewLeftPane - _rightViewRightPane,
-                height: height - _rightViewTopPane - _rightViewToolbarHeight,
-                child:
-                //Image.network(
-                //  'https://static.coupangcdn.com/za/cmg_paperboy/image/1671771512787/PC_C1-Recovered.jpg',
-                //  fit: BoxFit.cover,
-                //),
-                ImageNetwork(
-                  width: width - _rightViewLeftPane - _rightViewRightPane,
-                  height: height - _rightViewTopPane - _rightViewToolbarHeight,
-                  image: 'https://static.coupangcdn.com/za/cmg_paperboy/image/1671771512787/PC_C1-Recovered.jpg',
-                  imageCache: CachedNetworkImageProvider('https://static.coupangcdn.com/za/cmg_paperboy/image/1671771512787/PC_C1-Recovered.jpg'),
-                  duration: 1500,
-                  curve: Curves.easeIn,
-                  onPointer: true,
-                  debugPrint: false,
-                  fullScreen: false,
-                  fitAndroidIos: BoxFit.cover,
-                  fitWeb: BoxFitWeb.cover,
-                  onLoading: const CircularProgressIndicator(
-                    color: Colors.indigoAccent,
-                  ),
-                  onError: const Icon(
-                    Icons.error,
-                    color: Colors.red,
+  Widget _getRightItemPane(double width, double height) {
+    return Scrollbar(
+      thumbVisibility: true,
+      controller: _controller,
+      child:
+      ListView(
+        controller: _controller,
+        // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
+        scrollDirection: Axis.horizontal,
+        // 컨테이너들을 ListView의 자식들로 추가
+        children: <Widget>[
+          Container(width: 164, height: height, color: Colors.red,),
+          Container(width: 164, height: height, color: Colors.blue,),
+          Container(width: 164, height: height, color: Colors.green,),
+          Container(width: 164, height: height, color: Colors.red,),
+          Container(width: 164, height: height, color: Colors.blue,),
+          Container(width: 164, height: height, color: Colors.green,),
+          Container(width: 164, height: height, color: Colors.red,),
+          Container(width: 164, height: height, color: Colors.blue,),
+          Container(width: 164, height: height, color: Colors.green,),
+          // Wrap(
+          //   direction: Axis.horizontal,
+          //   spacing: 4, // <-- Spacing between children
+          //   children: <Widget>[
+              ..._cretaBookList
+                  .map((item) => SizedBox(
+                width: 62,
+                height: height - 100,
+                child: Container(
+                  color: Colors.blue,
+                  child: Wrap(
+                    runSpacing: 30,
+                    direction: Axis.vertical,
+                    alignment: WrapAlignment.center,
+                    children: item.title.split("").map((string) => Text(string, style: TextStyle(fontSize: 3))).toList(),
                   ),
                 ),
-              ),
-            ),
-            Positioned(
-              top: height - 57,
-              left: _rightViewLeftPane,
-              child: CretaDropDown(
-                  width: 104,
-                  height: 36,
-                  items: const ['용도선택', '용도선택1', '용도선택2', '용도선택3'],
-                  defaultValue: '용도선택',
-                  onSelected: (value) {
-                    //logger.finest('value=$value');
-                  }),
-            ),
-            Positioned(
-              top: height - 57,
-              left: _rightViewLeftPane + 116,
-              child: CretaDropDown(
-                  width: 104,
-                  height: 36,
-                  items: const ['권한', '권한1', '권한2', '권한3'],
-                  defaultValue: '권한',
-                  onSelected: (value) {
-                    //logger.finest('value=$value');
-                  }),
-            ),
-            Positioned(
-              top: height - 57,
-              left: width - _rightViewRightPane - 134 - 246 - 2,
-              child: CretaSearchBar(
-                hintText: '검색어를 입력하세요',
-                onSearch: (value) {},
-                width: 246,
-                height: 32,
-              ),
-            ),
-            // 최신크레타북 콤보 추가
-            Positioned(
-              top: height - 57,
-              left: width - _rightViewRightPane - 134,
-              child: CretaDropDown(
-                  width: 134,
-                  height: 36,
-                  items: const ['최신 크레타북', '최신 크레타북1', '최신 크레타북2', '최신 크레타북3'],
-                  defaultValue: '최신 크레타북',
-                  onSelected: (value) {
-                    //logger.finest('value=$value');
-                  }),
-            ),
-          ],
-        ),
-      ),
+              )).toList(),
+//            ],
+  //        ),
+      ],),
     );
   }
 
-  Widget _getRightItemPane(double width, double height) {
-    int columnCount = (width - _rightViewLeftPane - _rightViewRightPane) ~/ _itemDefaultWidth;
-    if (columnCount == 0) columnCount = 1;
-
-    double itemWidth = -1;
-    double itemHeight = -1;
-
+  Widget _getRightMenuPane(double width, double height) {
     return Container(
-      color: Colors.white,
-      child: GridView.builder(
-        controller: _controller,
-        padding: EdgeInsets.fromLTRB(
-            _rightViewLeftPane, _rightViewBannerMaxHeight, _rightViewRightPane, _rightViewBottomPane),
-        itemCount: _imageUrlList.length, //item 개수
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-          childAspectRatio: _itemDefaultWidth / _itemDefaultHeight, // 가로÷세로 비율
-          mainAxisSpacing: _rightViewItemGapX, //item간 수평 Padding
-          crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return (itemWidth >= 0 && itemHeight >= 0)
-              ? CretaBookItem(
-                  key: _imageUrlList[index].globalKey,
-                  cretaBookData: _imageUrlList[index],
-                  width: itemWidth,
-                  height: itemHeight,
-                )
-              : LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    itemWidth = constraints.maxWidth;
-                    itemHeight = constraints.maxHeight;
-                    return CretaBookItem(
-                      key: _imageUrlList[index].globalKey,
-                      cretaBookData: _imageUrlList[index],
-                      width: itemWidth,
-                      height: itemHeight,
-                    );
-                  },
-                );
-        },
-      ),
+      width: width,
+      height: height,
+      color: Colors.grey,
     );
   }
 
   Widget _mainPage() {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    double height = MediaQuery.of(context).size.height - CretaComponentLocation.BarTop.height;
     return SizedBox(
         child: Row(
       children: [
         // 왼쪽 메뉴
-        _getLeftPane(height - CretaComponentLocation.BarTop.height),
+        _getLeftPane(height),
         // 오른쪽 컨텐츠
         Container(
           width: width - CretaComponentLocation.TabBar.width,
           height: height,
           color: Colors.white,
-          child: Stack(
+          child: Row(
             children: [
               SizedBox(
-                width: width - CretaComponentLocation.TabBar.width,
+                width: width - CretaComponentLocation.TabBar.width - 346,
                 height: height,
-                child: _getRightItemPane(width - CretaComponentLocation.TabBar.width, height),
+                child: _getRightItemPane(width - CretaComponentLocation.TabBar.width - 346, height),
               ),
               SizedBox(
-                width: width - CretaComponentLocation.TabBar.width - _scrollbarWidth,
-                height: headerSize,
-                child: _getRightBannerPane(width - CretaComponentLocation.TabBar.width, headerSize),
+                width: 346,
+                height: height,
+                child: _getRightMenuPane(346, height),
               ),
             ],
           ),
@@ -577,12 +460,12 @@ class _CommunityHomePageState extends State<CommunityHomePage> {
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-class CretaBookItem extends StatefulWidget {
+class CretaBookItemV extends StatefulWidget {
   final CretaBookData cretaBookData;
   final double width;
   final double height;
 
-  const CretaBookItem({
+  const CretaBookItemV({
     required super.key,
     required this.cretaBookData,
     required this.width,
@@ -593,7 +476,7 @@ class CretaBookItem extends StatefulWidget {
   CretaBookItemState createState() => CretaBookItemState();
 }
 
-class CretaBookItemState extends State<CretaBookItem> {
+class CretaBookItemVState extends State<CretaBookItemV> {
   bool mouseOver = false;
   bool popmenuOpen = false;
 
@@ -886,32 +769,12 @@ class CretaBookItemState extends State<CretaBookItem> {
               child: Stack(
                 children: [
                   // 콘텐츠 프리뷰 이미지
-                  // Image.network(
-                  //   //width: 200,
-                  //   //  height: 100,
-                  //   width: double.maxFinite,
-                  //   widget.cretaBookData.imageUrl,
-                  //   fit: BoxFit.cover,
-                  // ),
-                  ImageNetwork(
-                    width: widget.width,
-                    height: widget.height - _itemDescriptionHeight,
-                    image: widget.cretaBookData.imageUrl,
-                    imageCache: CachedNetworkImageProvider(widget.cretaBookData.imageUrl),
-                    duration: 1500,
-                    curve: Curves.easeIn,
-                    onPointer: true,
-                    debugPrint: false,
-                    fullScreen: false,
-                    fitAndroidIos: BoxFit.cover,
-                    fitWeb: BoxFitWeb.cover,
-                    onLoading: const CircularProgressIndicator(
-                      color: Colors.indigoAccent,
-                    ),
-                    onError: const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    ),
+                  Image.network(
+                    //width: 200,
+                    //  height: 100,
+                    width: double.maxFinite,
+                    widget.cretaBookData.imageUrl,
+                    fit: BoxFit.cover,
                   ),
                   // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
                   ...overlayMenu,

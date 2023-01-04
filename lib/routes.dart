@@ -11,6 +11,7 @@ import 'pages/intro_page.dart';
 import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
 import 'pages/community_home_page.dart';
+import 'pages/subscription_list_page.dart';
 
 abstract class AppRoutes {
   static const String intro = '/intro';
@@ -44,7 +45,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (_) => TransitionPage(child: BookMainPage()),
     AppRoutes.communityHome: (_) => TransitionPage(child: CommunityHomePage()),
-    AppRoutes.subscriptionList: (_) => TransitionPage(child: Container()),
+    AppRoutes.subscriptionList: (_) => TransitionPage(child: SubscriptionListPage()),
   },
 );
 
