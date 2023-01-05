@@ -69,7 +69,7 @@ class _BookMainPageState extends State<BookMainPage> {
                           });
                         },
                       ),
-                bottomMenuBar(),
+                bottomMenuBar(selectedStick == LeftMenuEnum.None ? 0 : LayoutConst.leftMenuWidth),
               ]),
             ),
           ],
@@ -113,14 +113,14 @@ class _BookMainPageState extends State<BookMainPage> {
     );
   }
 
-  Widget bottomMenuBar() {
+  Widget bottomMenuBar(double leftOffset) {
     return Positioned(
       top: StudioVariables.workHeight - LayoutConst.bottomMenuBarHeight,
-      left: 0,
+      left: leftOffset,
       child: Center(
         child: Container(
           height: LayoutConst.bottomMenuBarHeight,
-          width: StudioVariables.workWidth,
+          width: StudioVariables.workWidth - leftOffset,
           color: Colors.red.withOpacity(0.1),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

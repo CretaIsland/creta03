@@ -1,3 +1,3 @@
 class CretaConstant {
-  static const double appbarHeight = 80;
+  static const double appbarHeight = 60;
 }
