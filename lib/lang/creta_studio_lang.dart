@@ -27,4 +27,6 @@ class CretaStudioLang {
   static const String latelyUsedFrame = "최근 사용한 프레임";
 
   static const String autoScale = "자동맞춤";
+
+  static const String defaultBookName = "이름없는 크레타북";
 }

@@ -20,7 +20,7 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-      title: 'TextField Demo pagge',
+      title: Snippet.logo('TextField Demo'),
       context: context,
       child: Center(
         child: SingleChildScrollView(

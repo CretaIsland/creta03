@@ -26,6 +26,7 @@ class CretaScaleButton extends StatefulWidget {
   Color? hoverColor;
   Color? fgColor;
   Color? bgColor;
+  final bool hasShadow;
 
   CretaScaleButton({
     super.key,
@@ -44,6 +45,7 @@ class CretaScaleButton extends StatefulWidget {
     this.hoverColor,
     this.bgColor = Colors.white,
     this.fgColor = CretaColor.text,
+    this.hasShadow = true,
   }) {
     clickColor ??= CretaColor.text[200]!;
     hoverColor ??= CretaColor.text[100]!;
@@ -199,10 +201,17 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
 
   Decoration? _getDeco() {
     return BoxDecoration(
-      //border: _getBorder(),
-      boxShadow: _getShadow(),
+      border: widget.hasShadow ? null : _getBorder(),
+      boxShadow: widget.hasShadow ? _getShadow() : null,
       color: widget.bgColor!,
       borderRadius: BorderRadius.all(Radius.circular(36)),
+    );
+  }
+
+  Border? _getBorder() {
+    return Border.all(
+      width: 2,
+      color: widget.shadowColor!,
     );
   }
 

@@ -1,20 +1,42 @@
 import 'package:flutter/material.dart';
 
+enum ShadowDirection {
+  rightBottum,
+  leftTop,
+  rightTop,
+  leftBottom,
+}
+
 class StudioSnippet {
-  static List<BoxShadow> basicShadow() {
+  static List<BoxShadow> basicShadow(
+      {ShadowDirection direction = ShadowDirection.rightBottum,
+      double offset = 4,
+      Color color = Colors.grey,
+      double opacity = 0.2}) {
+    Offset value = Offset.zero;
+
+    switch (direction) {
+      case ShadowDirection.rightBottum:
+        value = Offset(offset, offset);
+        break;
+      case ShadowDirection.leftTop:
+        value = Offset(-offset, -offset);
+        break;
+      case ShadowDirection.rightTop:
+        value = Offset(-offset, offset);
+        break;
+      case ShadowDirection.leftBottom:
+        value = Offset(offset, -offset);
+        break;
+    }
+
     return [
       BoxShadow(
-        color: Colors.grey[200]!,
-        spreadRadius: 4,
-        blurRadius: 4,
-        offset: const Offset(-4, 0),
-      ),
-      BoxShadow(
-        color: Colors.grey[200]!,
-        spreadRadius: 4,
-        blurRadius: 4,
-        offset: const Offset(0, -4),
-      ),
+        color: color.withOpacity(opacity),
+        spreadRadius: offset / 2,
+        blurRadius: offset / 2,
+        offset: value,
+      )
     ];
   }
 }

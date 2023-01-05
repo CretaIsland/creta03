@@ -17,7 +17,7 @@ class _FontDemoPageState extends State<FontDemoPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-      title: 'Font Demo pagge',
+      title: Snippet.logo('Font Demo'),
       context: context,
       child: Center(
         child: SingleChildScrollView(

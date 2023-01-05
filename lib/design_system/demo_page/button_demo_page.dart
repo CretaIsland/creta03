@@ -29,7 +29,7 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-        title: 'Button Demo pagge',
+        title: Snippet.logo('Button Demo'),
         context: context,
         child: Center(
           child: SingleChildScrollView(

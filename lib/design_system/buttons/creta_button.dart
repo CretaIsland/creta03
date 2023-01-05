@@ -21,6 +21,7 @@ enum CretaButtonDeco {
 
 enum CretaButtonColor {
   blue,
+  blueAndWhite,
   sky,
   gray,
   gray100,
@@ -64,6 +65,8 @@ class CretaButton extends StatefulWidget {
   Color? fgHoverColor;
   Color? fgClickColor;
 
+  final bool hasShadow;
+
   CretaButton({
     required this.buttonType,
     required this.onPressed,
@@ -80,6 +83,7 @@ class CretaButton extends StatefulWidget {
     this.width,
     this.height,
     this.isSelectedWidget = false,
+    this.hasShadow = true,
     Key? key,
   }) : super(key: key) {
     _setColor();
@@ -158,6 +162,10 @@ class CretaButton extends StatefulWidget {
       fgColor = CretaColor.primary;
       fgHoverColor = CretaColor.primary[500];
       fgClickColor = CretaColor.primary[600];
+    } else if (buttonColor == CretaButtonColor.blueAndWhite) {
+      bgColor = CretaColor.primary[400]!;
+      hoverColor = CretaColor.primary[200]!;
+      clickColor = CretaColor.primary[600]!;
     } else {
       bgColor = CretaColor.primary[400]!;
       hoverColor = CretaColor.primary[500]!;
@@ -231,7 +239,7 @@ class _CretaButtonState extends State<CretaButton> {
   }
 
   double _getScale() {
-    return clicked ? 0.9 : 1.0;
+    return clicked ? 0.8 : 1.0;
   }
 
   List<BoxShadow>? _getShadow() {
@@ -300,6 +308,7 @@ class _CretaButtonState extends State<CretaButton> {
       if (widget.buttonColor == CretaButtonColor.transparent) {
         return Border.all(width: 1, color: CretaColor.primary[500]!);
       }
+      return Border.all(width: 2, color: widget.fgClickColor!);
     }
     return null;
   }
@@ -307,7 +316,7 @@ class _CretaButtonState extends State<CretaButton> {
   Decoration? _getDeco() {
     return BoxDecoration(
       border: _getBorder(),
-      boxShadow: _getShadow(),
+      boxShadow: widget.hasShadow ? _getShadow() : null,
       color: _getColor(),
       borderRadius: BorderRadius.all(Radius.circular(36)),
     );
