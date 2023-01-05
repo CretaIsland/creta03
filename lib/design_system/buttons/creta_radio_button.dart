@@ -56,7 +56,7 @@ class _CretaRadioButtonState extends State<CretaRadioButton> {
       child: RadioGroup<dynamic>.builder(
         items: widget.valueMap.keys.toList(),
         textStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
-        spacebetween: widget.spacebetween,
+        //spacebetween: widget.spacebetween,
         onChanged: (title) {
           setState(() {
             logger.finest("Button title $title");

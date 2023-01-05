@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../creta_strings.dart';
+import '../../lang/creta_studio_lang.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
@@ -22,7 +22,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> {
         Wrap(
           direction: Axis.horizontal,
           alignment: WrapAlignment.start,
-          children: CretaStrings.frameKind.map((e) {
+          children: CretaStudioLang.frameKind.map((e) {
             return Padding(
               padding: const EdgeInsets.all(2.0),
               child: BTN.line_blue_t_m(text: e, onPressed: () {}),
@@ -36,7 +36,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 12.0),
-              child: Text(CretaStrings.latelyUsedFrame, style: CretaFont.titleSmall),
+              child: Text(CretaStudioLang.latelyUsedFrame, style: CretaFont.titleSmall),
             ),
             IconButton(
                 onPressed: () {},

@@ -1,5 +1,5 @@
-class CretaStrings {
-  static const List<String> menuStick = [
+class CretaStudioLang {
+  static List<String> menuStick = [
     "템플릿",
     "페이지",
     "프레임",

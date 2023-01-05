@@ -3,7 +3,7 @@
 import 'package:creta03/pages/studio/left_menu_frame.dart';
 import 'package:flutter/material.dart';
 
-import '../../creta_strings.dart';
+import '../../lang/creta_studio_lang.dart';
 import '../../design_system/creta_font.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
@@ -45,7 +45,7 @@ class _LeftMenuState extends State<LeftMenu> {
           Positioned(
               left: 28,
               top: 24,
-              child: Text(CretaStrings.menuStick[widget.selectedStick.index],
+              child: Text(CretaStudioLang.menuStick[widget.selectedStick.index],
                   style: CretaFont.titleLarge)),
           Positioned(
             top: 76,

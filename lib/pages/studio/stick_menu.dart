@@ -2,10 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+
+import '../../lang/creta_studio_lang.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import 'studio_constant.dart';
-import '../../creta_strings.dart';
 import 'studio_snippet.dart';
 
 // ignore: must_be_immutable
@@ -79,7 +80,7 @@ class _StickMenuState extends State<StickMenu> {
                     int idx = icon.indexOf(e);
                     return NavBarItem(
                       icon: e,
-                      title: CretaStrings.menuStick[idx],
+                      title: CretaStudioLang.menuStick[idx],
                       onTap: () {
                         widget.initSelected = LeftMenuEnum.values[idx];
                         widget.selectFunction(LeftMenuEnum.values[idx]);

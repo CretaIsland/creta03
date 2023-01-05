@@ -3,10 +3,10 @@
 
 // ignore_for_file: prefer_const_constructors, prefer_final_fields, must_be_immutable
 
-import 'package:creta03/creta_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../pages/studio/studio_variables.dart';
+import '../../lang/creta_studio_lang.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
 
@@ -66,8 +66,8 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
   @override
   Widget build(BuildContext context) {
     if (StudioVariables.autoScale == true) {
-      _scaleText = CretaStrings.autoScale;
-    } else if (_scaleText.isEmpty || _scaleText == CretaStrings.autoScale) {
+      _scaleText = CretaStudioLang.autoScale;
+    } else if (_scaleText.isEmpty || _scaleText == CretaStudioLang.autoScale) {
       _scaleText = "${(widget.defaultScale * 100).round()}%";
       StudioVariables.scale = widget.defaultScale;
     }
