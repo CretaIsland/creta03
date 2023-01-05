@@ -1132,7 +1132,7 @@ class BTN {
       width: 36,
       height: 36,
       buttonType: CretaButtonType.iconOnly,
-      decoType: hasShadow ? CretaButtonDeco.shadow : CretaButtonDeco.line,
+      //decoType: hasShadow ? CretaButtonDeco.shadow : CretaButtonDeco.line,
       buttonColor: CretaButtonColor.whiteShadow,
       icon: Icon(
         icon,

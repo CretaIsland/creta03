@@ -2,10 +2,14 @@
 
 //import 'dart:ui';
 
+import 'package:creta03/lang/creta_studio_lang.dart';
+import 'package:creta03/model/connected_user_model.dart';
+import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../common/creta_constant.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/buttons/creta_scale_button.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_font.dart';
@@ -112,26 +116,22 @@ class _BookMainPageState extends State<BookMainPage> {
                   width: 20,
                 ),
                 Icon(Icons.menu_outlined),
-                SizedBox(
-                  width: 17,
+                SizedBox(width: 8),
+                CretaLabelTextEditor(
+                  height: 32,
+                  width: 300,
+                  text: widget.model.name,
+                  textStyle: CretaFont.titleSmall,
                 ),
-                Container(
-                    width: 300,
-                    color: Colors.grey.withOpacity(0.2),
-                    child: GestureDetector(
-                        onTap: () {
-                          logger.finest("book name clicked");
-                          setState(() {});
-                        },
-                        child: Text(widget.model.name, style: CretaFont.titleSmall))),
               ],
             ),
             Visibility(
-              visible: StudioVariables.workWidth > LayoutConst.minWorkWidth ? true : false,
+              visible: StudioVariables.workWidth > 725 ? true : false,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  VerticalDivider(),
                   CretaScaleButton(
                     onPressedMinus: () {},
                     onPressedPlus: () {},
@@ -139,33 +139,25 @@ class _BookMainPageState extends State<BookMainPage> {
                     defaultScale: widthRatio,
                     hasShadow: false,
                   ),
-                  SizedBox(
-                    width: 17,
-                  ),
+                  SizedBox(width: 8),
                   BTN.floating_l(
                     icon: Icons.volume_off_outlined,
                     onPressed: () {},
                     hasShadow: false,
                   ),
-                  SizedBox(
-                    width: 17,
-                  ),
+                  SizedBox(width: 8),
                   BTN.floating_l(
                     icon: Icons.pause_outlined,
                     onPressed: () {},
                     hasShadow: false,
                   ),
-                  SizedBox(
-                    width: 34,
-                  ),
+                  VerticalDivider(),
                   BTN.floating_l(
                     icon: Icons.undo_outlined,
                     onPressed: () {},
                     hasShadow: false,
                   ),
-                  SizedBox(
-                    width: 17,
-                  ),
+                  SizedBox(width: 8),
                   BTN.floating_l(
                     icon: Icons.redo_outlined,
                     onPressed: () {},
@@ -174,10 +166,66 @@ class _BookMainPageState extends State<BookMainPage> {
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [],
+            Visibility(
+              visible: StudioVariables.workWidth > 1032 ? true : false,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: SampleData.connectedUserList.map((e) {
+                  return SizedBox(
+                    width: 34,
+                    height: 34,
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: CircleAvatar(
+                        //radius: 28,
+                        backgroundColor: e.state == ActiveState.active ? Colors.red : Colors.grey,
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: CircleAvatar(
+                            //radius: 25,
+                            backgroundImage: e.image,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            Visibility(
+              visible: StudioVariables.workWidth > LayoutConst.minWorkWidth ? true : false,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  VerticalDivider(),
+                  BTN.floating_l(
+                    icon: Icons.person_add_outlined,
+                    onPressed: () {},
+                    hasShadow: false,
+                  ),
+                  SizedBox(width: 8),
+                  BTN.floating_l(
+                    icon: Icons.file_download_outlined,
+                    onPressed: () {},
+                    hasShadow: false,
+                  ),
+                  SizedBox(width: 8),
+                  BTN.floating_l(
+                    icon: Icons.smart_display_outlined,
+                    onPressed: () {},
+                    hasShadow: false,
+                  ),
+                  SizedBox(width: 8),
+                  BTN.line_blue_it_m_animation(
+                      text: CretaStudioLang.publish,
+                      image: NetworkImage(
+                          'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                      onPressed: () {}),
+                  SizedBox(width: 20),
+                ],
+              ),
             ),
           ],
         ));
@@ -245,14 +293,14 @@ class _BookMainPageState extends State<BookMainPage> {
                     defaultScale: widthRatio,
                   ),
                   SizedBox(
-                    width: 17,
+                    width: 8,
                   ),
                   BTN.floating_l(
                     icon: Icons.volume_off_outlined,
                     onPressed: () {},
                   ),
                   SizedBox(
-                    width: 17,
+                    width: 8,
                   ),
                   BTN.floating_l(
                     icon: Icons.pause_outlined,
@@ -269,7 +317,7 @@ class _BookMainPageState extends State<BookMainPage> {
                     onPressed: () {},
                   ),
                   SizedBox(
-                    width: 17,
+                    width: 8,
                   ),
                   BTN.floating_l(
                     icon: Icons.redo_outlined,
