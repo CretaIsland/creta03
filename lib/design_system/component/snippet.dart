@@ -8,6 +8,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
+import '../../lang/creta_studio_lang.dart';
 import '../../routes.dart';
 import '../creta_font.dart';
 import '../text_field/creta_text_field.dart';
@@ -190,6 +191,7 @@ class Snippet {
           child: SizedBox(
             height: 36,
             child: BTN.fill_blue_i_l(
+              tooltip: CretaStudioLang.tooltipNoti,
               onPressed: () {},
               icon: Icons.notifications_outlined,
             ),
@@ -487,6 +489,21 @@ class Snippet {
           ),
         ],
       ),
+    );
+  }
+
+  static Widget TooltipWrapper({
+    required String tooltip,
+    required Color fgColor,
+    required Color bgColor,
+    required Widget child,
+  }) {
+    return Tooltip(
+      textStyle: CretaFont.bodyESmall.copyWith(color: fgColor),
+      decoration: BoxDecoration(
+          color: bgColor.withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(24))),
+      message: tooltip,
+      child: child,
     );
   }
 }

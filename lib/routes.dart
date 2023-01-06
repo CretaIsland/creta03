@@ -5,13 +5,12 @@ import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
 import 'design_system/demo_page/menu_demo_page.dart';
 import 'design_system/demo_page/text_field_demo_page.dart';
-import 'lang/creta_studio_lang.dart';
-import 'model/book_model.dart';
 import 'pages/login_page.dart';
 import 'pages/intro_page.dart';
 import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
 import 'pages/community_home_page.dart';
+import 'pages/studio/sample_data.dart';
 import 'pages/subscription_list_page.dart';
 
 abstract class AppRoutes {
@@ -45,7 +44,8 @@ final routesLoggedOut = RouteMap(
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (_) => TransitionPage(
-        child: BookMainPage(model: BookModel(name: CretaStudioLang.defaultBookName))),
+          child: BookMainPage(model: SampleData.sampleBook),
+        ),
     AppRoutes.communityHome: (_) => TransitionPage(child: CommunityHomePage()),
     AppRoutes.subscriptionList: (_) => TransitionPage(child: SubscriptionListPage()),
   },

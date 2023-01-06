@@ -2,16 +2,13 @@
 
 import 'package:flutter/material.dart';
 //import 'dart:async';
-import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 //import '../design_system/buttons/creta_button_wrapper.dart';
 import '../design_system/component/snippet.dart';
-import '../design_system/menu/creta_drop_down.dart';
 import '../design_system/menu/creta_popup_menu.dart';
-import '../design_system/text_field/creta_search_bar.dart';
 //import '../design_system/creta_color.dart';
 import 'community_home_page.dart';
 
@@ -172,7 +169,8 @@ var _cretaBookList = [
   CretaBookData(
     imageUrl:
         'https://thumbnail6.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/399033406503243-2d2b10ef-dcc7-4a2e-ab92-cd2d1e28b7b1.jpg',
-    title: '[#스트리트푸드파이터] 러시아와 중국의 오묘한 조화가 이루어지는 하얼빈 요리! 백종원도 현지 가야만 맛볼 수 있는 꿔바로우가 최초로 탄생한 식당 | #편집자는',
+    title:
+        '[#스트리트푸드파이터] 러시아와 중국의 오묘한 조화가 이루어지는 하얼빈 요리! 백종원도 현지 가야만 맛볼 수 있는 꿔바로우가 최초로 탄생한 식당 | #편집자는',
     userNickname: '디글 :Diggle',
     imageSize: 0,
     favorites: false,
@@ -325,18 +323,26 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
     _controller.addListener(_scrollListener);
 
     _leftMenuItemList = [
-      CretaMenuItem(caption: '커뮤니티 홈', iconData: Icons.home_outlined, onPressed: () {}, selected: true),
-      CretaMenuItem(caption: '구독목록', iconData: Icons.local_library_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '시청기록', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '좋아요', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '재생목록', iconData: Icons.playlist_play, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '커뮤니티 홈', iconData: Icons.home_outlined, onPressed: () {}, selected: true),
+      CretaMenuItem(
+          caption: '구독목록',
+          iconData: Icons.local_library_outlined,
+          onPressed: () {},
+          selected: false),
+      CretaMenuItem(
+          caption: '시청기록', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '좋아요', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '재생목록', iconData: Icons.playlist_play, onPressed: () {}, selected: false),
     ];
   }
 
   double headerSize = _rightViewBannerMaxHeight;
   double scrollOffset = 0;
   void _scrollListener() {
-    print('offet=${_controller.offset}, max=${_controller.position.maxScrollExtent}');
+    //print('offet=${_controller.offset}, max=${_controller.position.maxScrollExtent}');
     // setState(() {
     //   scrollOffset = _controller.offset;
     //   headerSize = _rightViewBannerMaxHeight - _controller.offset;
@@ -352,43 +358,83 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
     return Scrollbar(
       thumbVisibility: true,
       controller: _controller,
-      child:
-      ListView(
+      child: ListView(
         controller: _controller,
         // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
         scrollDirection: Axis.horizontal,
         // 컨테이너들을 ListView의 자식들로 추가
         children: <Widget>[
-          Container(width: 164, height: height, color: Colors.red,),
-          Container(width: 164, height: height, color: Colors.blue,),
-          Container(width: 164, height: height, color: Colors.green,),
-          Container(width: 164, height: height, color: Colors.red,),
-          Container(width: 164, height: height, color: Colors.blue,),
-          Container(width: 164, height: height, color: Colors.green,),
-          Container(width: 164, height: height, color: Colors.red,),
-          Container(width: 164, height: height, color: Colors.blue,),
-          Container(width: 164, height: height, color: Colors.green,),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.red,
+          ),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.blue,
+          ),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.green,
+          ),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.red,
+          ),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.blue,
+          ),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.green,
+          ),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.red,
+          ),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.blue,
+          ),
+          Container(
+            width: 164,
+            height: height,
+            color: Colors.green,
+          ),
           // Wrap(
           //   direction: Axis.horizontal,
           //   spacing: 4, // <-- Spacing between children
           //   children: <Widget>[
-              ..._cretaBookList
-                  .map((item) => SizedBox(
-                width: 62,
-                height: height - 100,
-                child: Container(
-                  color: Colors.blue,
-                  child: Wrap(
-                    runSpacing: 30,
-                    direction: Axis.vertical,
-                    alignment: WrapAlignment.center,
-                    children: item.title.split("").map((string) => Text(string, style: TextStyle(fontSize: 3))).toList(),
-                  ),
-                ),
-              )).toList(),
+          ..._cretaBookList
+              .map((item) => SizedBox(
+                    width: 62,
+                    height: height - 100,
+                    child: Container(
+                      color: Colors.blue,
+                      child: Wrap(
+                        runSpacing: 30,
+                        direction: Axis.vertical,
+                        alignment: WrapAlignment.center,
+                        children: item.title
+                            .split("")
+                            .map((string) => Text(string, style: TextStyle(fontSize: 3)))
+                            .toList(),
+                      ),
+                    ),
+                  ))
+              .toList(),
 //            ],
-  //        ),
-      ],),
+          //        ),
+        ],
+      ),
     );
   }
 

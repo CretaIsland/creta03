@@ -452,11 +452,10 @@ class BTN {
     );
   }
 
-  static CretaButton fill_blue_i_l({
-    required IconData icon,
-    required void Function() onPressed,
-  }) {
+  static CretaButton fill_blue_i_l(
+      {required IconData icon, required void Function() onPressed, String? tooltip}) {
     return CretaButton(
+      tooltip: tooltip,
       width: 36,
       height: 36,
       buttonType: CretaButtonType.iconOnly,
@@ -1122,12 +1121,13 @@ class BTN {
     );
   }
 
-  static CretaButton floating_l({
-    required IconData icon,
-    required void Function() onPressed,
-    bool hasShadow = true,
-  }) {
+  static CretaButton floating_l(
+      {required IconData icon,
+      required void Function() onPressed,
+      bool hasShadow = true,
+      String? tooltip}) {
     return CretaButton(
+      tooltip: tooltip,
       hasShadow: hasShadow,
       width: 36,
       height: 36,

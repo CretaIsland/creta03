@@ -3,7 +3,16 @@
 import 'package:creta03/model/connected_user_model.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../lang/creta_studio_lang.dart';
+import '../../model/book_model.dart';
+
 class SampleData {
+  static BookModel sampleBook = BookModel(
+    name: CretaStudioLang.defaultBookName,
+    width: 1920,
+    height: 1080,
+  );
+
   static List<ConnectedUserModel> connectedUserList = [
     ConnectedUserModel(
         name: "홍길동",

@@ -3,6 +3,8 @@
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:flutter/material.dart';
 
+import '../component/snippet.dart';
+
 enum CretaButtonType {
   iconOnly,
   textOnly,
@@ -65,6 +67,7 @@ class CretaButton extends StatefulWidget {
   Color? fgHoverColor;
   Color? fgClickColor;
 
+  final String? tooltip;
   final bool hasShadow;
 
   CretaButton({
@@ -82,6 +85,7 @@ class CretaButton extends StatefulWidget {
     this.child,
     this.width,
     this.height,
+    this.tooltip,
     this.isSelectedWidget = false,
     this.hasShadow = true,
     Key? key,
@@ -104,7 +108,7 @@ class CretaButton extends StatefulWidget {
       clickColor = CretaColor.text[400]!;
     } else if (buttonColor == CretaButtonColor.whiteShadow) {
       bgColor = Colors.white;
-      hoverColor = Colors.white;
+      hoverColor = CretaColor.text[200]!;
       clickColor = Colors.white;
       fgColor = CretaColor.text[700];
       fgHoverColor = CretaColor.text[700];
@@ -180,7 +184,19 @@ class _CretaButtonState extends State<CretaButton> {
   bool selected = false;
   @override
   Widget build(BuildContext context) {
-    print('build $hover $clicked $selected');
+    //print('build $hover $clicked $selected');
+    if (widget.tooltip != null) {
+      return Snippet.TooltipWrapper(
+        fgColor: widget.fgColor != null ? widget.fgColor! : Colors.white,
+        bgColor: widget.bgColor != null ? widget.bgColor! : Colors.grey,
+        tooltip: widget.tooltip!,
+        child: _myButton(),
+      );
+    }
+    return _myButton();
+  }
+
+  Widget _myButton() {
     return GestureDetector(
       onLongPressDown: (details) {
         setState(() {
@@ -199,14 +215,14 @@ class _CretaButtonState extends State<CretaButton> {
       child: MouseRegion(
         onExit: (val) {
           setState(() {
-            print('hover is false');
+            //print('hover is false');
             hover = false;
             clicked = false;
           });
         },
         onEnter: (val) {
           setState(() {
-            print('hover is true');
+            //print('hover is true');
             hover = true;
           });
         },
@@ -239,7 +255,7 @@ class _CretaButtonState extends State<CretaButton> {
   }
 
   double _getScale() {
-    return clicked ? 0.8 : 1.0;
+    return clicked ? ((widget.height != null && widget.height! > 40.0) ? 0.8 : 0.6) : 1.0;
   }
 
   List<BoxShadow>? _getShadow() {
