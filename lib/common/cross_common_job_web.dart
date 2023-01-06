@@ -26,6 +26,12 @@ class CrossCommonJobWeb implements CrossCommonJob {
     // sqflite do not support for web
     return false;
   }
+
+  final _isCanvasKit = js.context['flutterCanvasKit'] != null;
+  @override
+  bool isInUsingCanvaskit() {
+    return _isCanvasKit;
+  }
 }
 
 CrossCommonJob getCrossCommonJob() => CrossCommonJobWeb();

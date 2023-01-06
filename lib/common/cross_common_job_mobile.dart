@@ -43,6 +43,11 @@ class CrossCommonJobMobile implements CrossCommonJob {
     }
     return false;
   }
+
+  @override
+  bool isInUsingCanvaskit() {
+    return false;
+  }
 }
 
 CrossCommonJob getCrossCommonJob() => CrossCommonJobMobile();

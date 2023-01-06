@@ -12,6 +12,7 @@ import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
 import 'pages/community_home_page.dart';
 import 'pages/subscription_list_page.dart';
+import 'pages/play_list/play_list_page.dart';
 
 abstract class AppRoutes {
   static const String intro = '/intro';
@@ -23,6 +24,7 @@ abstract class AppRoutes {
   static const String login = '/login';
   static const String communityHome = '/communityHome';
   static const String subscriptionList = '/subscriptionList';
+  static const String playList = '/playList';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();
@@ -46,6 +48,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.studioBookMainPage: (_) => TransitionPage(child: BookMainPage()),
     AppRoutes.communityHome: (_) => TransitionPage(child: CommunityHomePage()),
     AppRoutes.subscriptionList: (_) => TransitionPage(child: SubscriptionListPage()),
+    AppRoutes.playList: (_) => TransitionPage(child: PlayListPage()),
   },
 );
 

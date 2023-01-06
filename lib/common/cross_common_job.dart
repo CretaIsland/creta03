@@ -8,6 +8,7 @@ abstract class CrossCommonJob {
   void changeHttpWithCredentials(http.Client client);
   void fixEdgePasswordRevealButton(FocusNode focusNode);
   bool isSupportLocalStorage();
+  bool isInUsingCanvaskit();
 
   factory CrossCommonJob() => getCrossCommonJob();
 }
