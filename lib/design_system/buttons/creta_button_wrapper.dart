@@ -398,13 +398,15 @@ class BTN {
     required String text,
     required IconData icon,
     required ImageProvider image,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Color fgColor = Colors.white,
     required void Function() onPressed,
   }) {
     return CretaButton(
       width: 166,
       height: 40,
       buttonType: CretaButtonType.child,
-      buttonColor: CretaButtonColor.white,
+      buttonColor: buttonColor,
       child: Row(
         children: [
           Padding(
@@ -417,14 +419,15 @@ class BTN {
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Center(
-              child:
-                  Text(text, style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]!)),
+              child: Text(text,
+                  overflow: TextOverflow.ellipsis,
+                  style: CretaFont.buttonLarge.copyWith(color: fgColor)),
             ),
           ),
           Icon(
             icon,
             size: 20,
-            color: CretaColor.text[700]!,
+            color: fgColor,
           ),
         ],
       ),
@@ -449,11 +452,10 @@ class BTN {
     );
   }
 
-  static CretaButton fill_blue_i_l({
-    required IconData icon,
-    required void Function() onPressed,
-  }) {
+  static CretaButton fill_blue_i_l(
+      {required IconData icon, required void Function() onPressed, String? tooltip}) {
     return CretaButton(
+      tooltip: tooltip,
       width: 36,
       height: 36,
       buttonType: CretaButtonType.iconOnly,
@@ -1119,15 +1121,18 @@ class BTN {
     );
   }
 
-  static CretaButton floating_l({
-    required IconData icon,
-    required void Function() onPressed,
-  }) {
+  static CretaButton floating_l(
+      {required IconData icon,
+      required void Function() onPressed,
+      bool hasShadow = true,
+      String? tooltip}) {
     return CretaButton(
+      tooltip: tooltip,
+      hasShadow: hasShadow,
       width: 36,
       height: 36,
       buttonType: CretaButtonType.iconOnly,
-      decoType: CretaButtonDeco.shadow,
+      //decoType: hasShadow ? CretaButtonDeco.shadow : CretaButtonDeco.line,
       buttonColor: CretaButtonColor.whiteShadow,
       icon: Icon(
         icon,

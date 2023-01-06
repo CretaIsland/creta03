@@ -8,6 +8,7 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
+import 'studio_variables.dart';
 
 // ignore: must_be_immutable
 class StickMenu extends StatefulWidget {
@@ -57,43 +58,45 @@ class _StickMenuState extends State<StickMenu> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
+    //double height = MediaQuery.of(context).size.height;
+    if (StudioVariables.workHeight < 1) {
+      return Container();
+    }
+
     if (widget.initSelected == LeftMenuEnum.None) {
       for (int i = 0; i < selected.length; i++) {
         selected[i] = false;
       }
     }
     return Container(
-        margin: EdgeInsets.only(top: LayoutConst.layoutMargin, right: LayoutConst.layoutMargin),
-        height: height,
-        width: LayoutConst.menuStickWidth,
-        decoration: BoxDecoration(
-          color: LayoutConst.menuStickBGColor,
-          boxShadow: StudioSnippet.basicShadow(),
+      margin: EdgeInsets.only(top: LayoutConst.layoutMargin, right: LayoutConst.layoutMargin),
+      height: StudioVariables.workHeight,
+      width: LayoutConst.menuStickWidth,
+      decoration: BoxDecoration(
+        color: LayoutConst.menuStickBGColor,
+        boxShadow: StudioSnippet.basicShadow(),
+      ),
+      padding: EdgeInsets.only(top: 12),
+      child: SingleChildScrollView(
+        child: Column(
+          children: icon.map((e) {
+            int idx = icon.indexOf(e);
+            return NavBarItem(
+              icon: e,
+              title: CretaStudioLang.menuStick[idx],
+              onTap: () {
+                widget.initSelected = LeftMenuEnum.values[idx];
+                widget.selectFunction(LeftMenuEnum.values[idx]);
+                setState(() {
+                  select(idx);
+                });
+              },
+              selected: selected[idx],
+            );
+          }).toList(),
         ),
-        child: Stack(
-          children: [
-            Positioned(
-                top: 24,
-                child: Column(
-                  children: icon.map((e) {
-                    int idx = icon.indexOf(e);
-                    return NavBarItem(
-                      icon: e,
-                      title: CretaStudioLang.menuStick[idx],
-                      onTap: () {
-                        widget.initSelected = LeftMenuEnum.values[idx];
-                        widget.selectFunction(LeftMenuEnum.values[idx]);
-                        setState(() {
-                          select(idx);
-                        });
-                      },
-                      selected: selected[idx],
-                    );
-                  }).toList(),
-                ))
-          ],
-        ));
+      ),
+    );
   }
 }
 

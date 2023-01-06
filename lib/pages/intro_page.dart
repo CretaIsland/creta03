@@ -16,7 +16,7 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-      title: 'Intro pagge',
+      title: Snippet.logo('Intro page'),
       context: context,
       child: Center(
         child: Text(

@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 //import 'dart:async';
-//import 'dart:math';
 import 'dart:ui';
 //import 'package:hycop/hycop.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -31,7 +30,6 @@ import 'community_home_page.dart';
 // const double _itemDefaultHeight = 256.0;
 const double _itemDescriptionHeight = 56;
 
-
 class SubscriptionListPage extends StatefulWidget {
   const SubscriptionListPage({super.key});
 
@@ -50,11 +48,19 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
     _controller.addListener(_scrollListener);
 
     _leftMenuItemList = [
-      CretaMenuItem(caption: '커뮤니티 홈', iconData: Icons.home_outlined, onPressed: () {}, selected: true),
-      CretaMenuItem(caption: '구독목록', iconData: Icons.local_library_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '시청기록', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '좋아요', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '재생목록', iconData: Icons.playlist_play, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '커뮤니티 홈', iconData: Icons.home_outlined, onPressed: () {}, selected: true),
+      CretaMenuItem(
+          caption: '구독목록',
+          iconData: Icons.local_library_outlined,
+          onPressed: () {},
+          selected: false),
+      CretaMenuItem(
+          caption: '시청기록', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '좋아요', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '재생목록', iconData: Icons.playlist_play, onPressed: () {}, selected: false),
     ];
   }
 
@@ -101,8 +107,7 @@ class _SubscriptionListPageState extends State<SubscriptionListPage> {
     return Scrollbar(
       thumbVisibility: true,
       controller: _controller,
-      child:
-      ListView(
+      child: ListView(
         controller: _controller,
         // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
         scrollDirection: Axis.horizontal,

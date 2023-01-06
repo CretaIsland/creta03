@@ -747,7 +747,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Snippet.CretaScaffold(
-      title: 'Login page',
+      title: Snippet.logo('Login page'),
       context: context,
       child: _selectPage(),
     );

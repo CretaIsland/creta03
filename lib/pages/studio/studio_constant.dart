@@ -20,6 +20,12 @@ enum LeftMenuEnum {
 }
 
 class LayoutConst {
+  //
+  static const double minWorkWidth = 465;
+
+  // top menu
+  static const double topMenuBarHeight = 52;
+
   // stick menu
   static const double menuStickWidth = 80.0;
   static const double menuStickIconAreaHeight = 72.0;

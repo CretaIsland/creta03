@@ -1,5 +1,6 @@
-// ignore_for_file: non_constant_identifier_names, prefer_const_constructors
+// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -7,7 +8,9 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
+import '../../lang/creta_studio_lang.dart';
 import '../../routes.dart';
+import '../creta_font.dart';
 import '../text_field/creta_text_field.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../menu/creta_drop_down.dart';
@@ -31,84 +34,36 @@ class Snippet {
   static List<LogicalKeyboardKey> keys = [];
 
   static Widget CretaScaffold(
-      {required String title, required BuildContext context, required Widget child}) {
+      {required Widget title, required BuildContext context, required Widget child}) {
     return Scaffold(
-      appBar: Snippet.CretaAppBar(context, title),
-      floatingActionButton:
-          // Row(
-          //   children: [
-          //     ElevatedButton(
-          //         onPressed: () {
-          //           Routemaster.of(context).push(AppRoutes.intro);
-          //         },
-          //         child: Icon(Icons.house)),
-          //     ElevatedButton(
-          //         onPressed: () {
-          //           Routemaster.of(context).push(AppRoutes.buttonDemoPage);
-          //         },
-          //         child: Icon(Icons.smart_button))
-          //   ],
-          // ),
-          Snippet.CretaDial(context),
+      appBar: Snippet.CretaAppBarOfStudio(context, title),
+      floatingActionButton: Snippet.CretaDial(context),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onLongPressDown: ((details) {
-          logger.finest('onLongPressDown');
           LastClicked.clickedOutSide(details.globalPosition);
         }),
-        // onTapDown: ((details) {
-        //   logger.finest('clicked=${details.globalPosition}');
-        // }),
         child: child,
       ),
     );
-    // body: RawKeyboardListener(
-    //   onKey: keyEventHandler,
-    //   focusNode: FocusNode(),
-    //   child: child,
-    // ));
   }
 
   static Widget CretaScaffoldOfCommunity(
       {required Widget title, required BuildContext context, required Widget child}) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfCommunity(context, title),
-      floatingActionButton:
-          // Row(
-          //   children: [
-          //     ElevatedButton(
-          //         onPressed: () {
-          //           Routemaster.of(context).push(AppRoutes.intro);
-          //         },
-          //         child: Icon(Icons.house)),
-          //     ElevatedButton(
-          //         onPressed: () {
-          //           Routemaster.of(context).push(AppRoutes.buttonDemoPage);
-          //         },
-          //         child: Icon(Icons.smart_button))
-          //   ],
-          // ),
-          Snippet.CretaDial(context),
+      floatingActionButton: Snippet.CretaDial(context),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onLongPressDown: ((details) {
           logger.finest('onLongPressDown');
           LastClicked.clickedOutSide(details.globalPosition);
         }),
-        // onTapDown: ((details) {
-        //   logger.finest('clicked=${details.globalPosition}');
-        // }),
         child: Container(
-          //color: Colors.amber,
           child: child,
         ),
       ),
     );
-    // body: RawKeyboardListener(
-    //   onKey: keyEventHandler,
-    //   focusNode: FocusNode(),
-    //   child: child,
-    // ));
   }
 
   static PreferredSizeWidget CretaAppBarOfCommunity(BuildContext context, Widget title) {
@@ -208,10 +163,64 @@ class Snippet {
     );
   }
 
+  static Widget logo(String title) {
+    return Row(children: [
+      // SizedBox(
+      //   width: 24,
+      // ),
+      Image(
+        image: AssetImage('assets/logo_en.png'),
+        height: 20,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 6.0, top: 6.0),
+        child: Text(
+          title,
+          style: CretaFont.titleSmall.copyWith(color: Colors.white),
+        ),
+      ),
+    ]);
+  }
+
+  static PreferredSizeWidget CretaAppBarOfStudio(BuildContext context, Widget title) {
+    return AppBar(
+      toolbarHeight: CretaConstant.appbarHeight,
+      title: title,
+      actions: [
+        Center(
+          child: SizedBox(
+            height: 36,
+            child: BTN.fill_blue_i_l(
+              tooltip: CretaStudioLang.tooltipNoti,
+              onPressed: () {},
+              icon: Icons.notifications_outlined,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 6,
+        ),
+        Center(
+          child: SizedBox(
+            height: 40,
+            child: BTN.fill_gray_iti_l(
+              buttonColor: CretaButtonColor.blue,
+              text: "Tuttle Rabbit",
+              icon: Icons.arrow_drop_down_outlined,
+              image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+              onPressed: () {},
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+      ],
+    );
+  }
+
   static PreferredSizeWidget CretaAppBar(BuildContext context, String title) {
     return AppBar(
-      // Here we take the value from the MyHomePage object that was created by
-      // the App.build method, and use it to set our appbar title.
       toolbarHeight: CretaConstant.appbarHeight,
       title: Text(title),
       actions: AccountManager.currentLoginUser.isLoginedUser
@@ -494,6 +503,21 @@ class Snippet {
           ),
         ],
       ),
+    );
+  }
+
+  static Widget TooltipWrapper({
+    required String tooltip,
+    required Color fgColor,
+    required Color bgColor,
+    required Widget child,
+  }) {
+    return Tooltip(
+      textStyle: CretaFont.bodyESmall.copyWith(color: fgColor),
+      decoration: BoxDecoration(
+          color: bgColor.withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(24))),
+      message: tooltip,
+      child: child,
     );
   }
 }

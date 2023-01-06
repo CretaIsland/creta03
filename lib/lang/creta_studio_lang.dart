@@ -27,4 +27,18 @@ class CretaStudioLang {
   static const String latelyUsedFrame = "최근 사용한 프레임";
 
   static const String autoScale = "자동맞춤";
+
+  static const String defaultBookName = "이름없는 크레타북";
+
+  static const String publish = "발행하기";
+
+  static const String tooltipNoti = '알림이 있습니다';
+  static const String tooltipVolume = '작업하는 동안 소리를 끄거나 켭니다';
+  static const String tooltipPause = '작업하는 동안 동영상을 정지하거나 플레이합니다';
+  static const String tooltipUndo = '취소';
+  static const String tooltipRedo = '복원';
+  static const String tooltipDownload = '다운로드';
+  static const String tooltipInvite = '초대하기';
+  static const String tooltipPlay = '미리보기';
+  static const String tooltipScale = '배율조정';
 }
