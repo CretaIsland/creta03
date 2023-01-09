@@ -16,6 +16,8 @@ void main() async {
   await HycopFactory.initAll();
 
   runApp(const ProviderScope(child: MainRouteApp()));
+  //runApp(const ProviderScope(child: MainRouteApp()));
+  //runApp(MyApp());
 }
 
 class MainRouteApp extends ConsumerStatefulWidget {

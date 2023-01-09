@@ -112,7 +112,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
       onPressed: () {
         setState(() {
           logger.finest('middle button pressed ${StudioVariables.autoScale}');
-          StudioVariables.autoScale = true;
+          StudioVariables.autoScale = !StudioVariables.autoScale;
           StudioVariables.scale = StudioVariables.fitScale;
           StudioVariables.showScale = !StudioVariables.showScale;
         });
@@ -219,7 +219,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
   }
 
   void _plusScale(int variant) {
-    if (StudioVariables.scale < 20.0) {
+    if (StudioVariables.scale < 9.0) {
       int percent = (StudioVariables.scale * 100).round();
       percent += (variant - (percent % variant));
       StudioVariables.scale = percent / 100.0;

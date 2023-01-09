@@ -40,4 +40,7 @@ class LayoutConst {
   static const double layoutMargin = 4;
   static Color studioBGColor = CretaColor.text[200]!;
   static const Color menuStickBGColor = Colors.white;
+
+  static const double maxPageSize = 1920 * 8;
+  static const double minPageSize = 320;
 }

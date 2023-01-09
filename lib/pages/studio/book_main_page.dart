@@ -14,6 +14,7 @@ import '../../design_system/buttons/creta_scale_button.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
+import '../../design_system/component/cross_scrollbar.dart';
 import 'left_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
@@ -31,11 +32,16 @@ class BookMainPage extends StatefulWidget {
 
 class _BookMainPageState extends State<BookMainPage> {
   final ScrollController controller = ScrollController();
+  final ScrollController horizontalScroll = ScrollController();
+  final ScrollController verticalScroll = ScrollController();
+
   double pageWidth = 0;
   double pageHeight = 0;
   double physicalRatio = 0;
   double widthRatio = 0;
   double heightRatio = 0;
+  double applyScale = 1;
+  bool scaleChanged = false;
 
   LeftMenuEnum selectedStick = LeftMenuEnum.None;
   @override
@@ -57,10 +63,12 @@ class _BookMainPageState extends State<BookMainPage> {
         StudioVariables.displayHeight - CretaConstant.appbarHeight - LayoutConst.topMenuBarHeight;
     StudioVariables.workRatio = StudioVariables.workHeight / StudioVariables.workWidth;
 
-    double applyScale = StudioVariables.scale / StudioVariables.fitScale;
-
-    StudioVariables.virtualWidth = StudioVariables.workWidth * applyScale;
-    StudioVariables.virtualHeight = StudioVariables.workHeight * applyScale;
+    applyScale = StudioVariables.scale / StudioVariables.fitScale;
+    if (StudioVariables.autoScale == true || scaleChanged == true) {
+      StudioVariables.virtualWidth = StudioVariables.workWidth * applyScale;
+      StudioVariables.virtualHeight = StudioVariables.workHeight * applyScale;
+    }
+    scaleChanged = false;
 
     StudioVariables.availWidth = StudioVariables.virtualWidth * 0.9;
     StudioVariables.availHeight = StudioVariables.virtualHeight * 0.9;
@@ -106,27 +114,39 @@ class _BookMainPageState extends State<BookMainPage> {
                 initSelected: selectedStick,
               ),
               Expanded(
-                child: Stack(children: [
-                  _drawPage(context),
-                  selectedStick == LeftMenuEnum.None
-                      ? Container(width: 0, height: 0, color: Colors.transparent)
-                      : LeftMenu(
-                          selectedStick: selectedStick,
-                          onClose: () {
-                            setState(() {
-                              selectedStick = LeftMenuEnum.None;
-                            });
-                          },
-                        ),
-                  // bottomMenuBar(
-                  //     selectedStick == LeftMenuEnum.None ? 0 : LayoutConst.leftMenuWidth),
-                ]),
+                child: _workArea(),
               ),
+              // StudioVariables.autoScale == true
+              //     ? Expanded(
+              //         child: _workArea(),
+              //       )
+              //     : SizedBox(
+              //         width: StudioVariables.workWidth,
+              //         child: _workArea(),
+              //       )
             ],
           ),
         ),
       ],
     );
+  }
+
+  Widget _workArea() {
+    return Stack(children: [
+      _scrollArea(context),
+      selectedStick == LeftMenuEnum.None
+          ? Container(width: 0, height: 0, color: Colors.transparent)
+          : LeftMenu(
+              selectedStick: selectedStick,
+              onClose: () {
+                setState(() {
+                  selectedStick = LeftMenuEnum.None;
+                });
+              },
+            ),
+      // bottomMenuBar(
+      //     selectedStick == LeftMenuEnum.None ? 0 : LayoutConst.leftMenuWidth),
+    ]);
   }
 
   Widget _topMenu() {
@@ -172,13 +192,20 @@ class _BookMainPageState extends State<BookMainPage> {
                   VerticalDivider(),
                   CretaScaleButton(
                     onPressedMinus: () {
-                      setState(() {});
+                      setState(() {
+                        scaleChanged = true;
+                      });
                     },
                     onPressedPlus: () {
-                      setState(() {});
+                      setState(() {
+                        scaleChanged = true;
+                      });
                     },
                     onPressedAutoScale: () {
-                      setState(() {});
+                      setState(() {
+                        scaleChanged = StudioVariables.autoScale;
+                        logger.finest("scaleChanged=$scaleChanged");
+                      });
                     },
                     hasShadow: false,
                     tooltip: CretaStudioLang.tooltipScale,
@@ -291,6 +318,19 @@ class _BookMainPageState extends State<BookMainPage> {
             ),
           ],
         ));
+  }
+
+  Widget _scrollArea(BuildContext context) {
+    // if (StudioVariables.autoScale == true ||
+    //     StudioVariables.scale - StudioVariables.fitScale <= 0) {
+    if (StudioVariables.autoScale == true) {
+      return _drawPage(context);
+    }
+    return CrossScrollBar(
+      key: GlobalKey(),
+      width: StudioVariables.virtualWidth,
+      child: _drawPage(context),
+    );
   }
 
   Widget _drawPage(BuildContext context) {
