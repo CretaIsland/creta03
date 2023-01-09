@@ -452,20 +452,28 @@ class _CommunityHomePageState extends State<CommunityHomePage> {
                     color: Colors.orange,
                   ),
                 ) :
-                Image.network(
-                  bannerUrl,
+                // Image.network(
+                //   bannerUrl,
+                //   fit: BoxFit.cover,
+                //   loadingBuilder: (context, child, loadingProgress) {
+                //     if(loadingProgress == null){
+                //       return child;
+                //     }
+                //     return Center(
+                //       child: CircularProgressIndicator(
+                //         value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
+                //       ),
+                //     );
+                //   },
+                //   errorBuilder: (context, exception, stackTrack) => Center(
+                //     child: Icon(Icons.error, color: Colors.red, size: 40,),
+                //   ),
+                // ),
+                CachedNetworkImage(
+                  imageUrl: bannerUrl,
                   fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if(loadingProgress == null){
-                      return child;
-                    }
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, exception, stackTrack) => Center(
+                  placeholder: (context, url) => const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Center(
                     child: Icon(Icons.error, color: Colors.red, size: 40,),
                   ),
                 ),
@@ -959,23 +967,31 @@ class CretaBookItemState extends State<CretaBookItem> {
                       color: Colors.orange,
                     ),
                   ) :
-                  Image.network(
-                    //width: 200,
-                    //height: 100,
-                    width: double.maxFinite,
-                    widget.cretaBookData.imageUrl,
+                  // Image.network(
+                  //   //width: 200,
+                  //   //height: 100,
+                  //   width: double.maxFinite,
+                  //   widget.cretaBookData.imageUrl,
+                  //   fit: BoxFit.cover,
+                  //   loadingBuilder: (context, child, loadingProgress) {
+                  //     if(loadingProgress == null){
+                  //       return child;
+                  //     }
+                  //     return Center(
+                  //       child: CircularProgressIndicator(
+                  //         value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
+                  //       ),
+                  //     );
+                  //   },
+                  //   errorBuilder: (context, exception, stackTrack) => Center(
+                  //     child: Icon(Icons.error, color: Colors.red, size: 40,),
+                  //   ),
+                  // ),
+                  CachedNetworkImage(
+                    imageUrl: widget.cretaBookData.imageUrl,
                     fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if(loadingProgress == null){
-                        return child;
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, exception, stackTrack) => Center(
+                    placeholder: (context, url) => const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Center(
                       child: Icon(Icons.error, color: Colors.red, size: 40,),
                     ),
                   ),

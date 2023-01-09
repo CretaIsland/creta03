@@ -25,13 +25,12 @@ const double _rightViewItemGapX = 20;
 const double _rightViewItemGapY = 20;
 const double _scrollbarWidth = 13;
 //const double _rightViewBannerMaxHeight = 436;
-const double _rightViewBannerMinHeight = 188;
+const double _rightViewBannerMinHeight = 196;
 const double _rightViewToolbarHeight = 76;
 
 const double _itemDefaultWidth = 290.0;
 const double _itemDefaultHeight = 256.0;
 const double _itemDescriptionHeight = 56;
-
 
 class PlayListPage extends StatefulWidget {
   const PlayListPage({super.key});
@@ -57,6 +56,10 @@ class _PlayListPageState extends State<PlayListPage> {
       CretaMenuItem(caption: '좋아요', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
       CretaMenuItem(caption: '재생목록', iconData: Icons.playlist_play, onPressed: () {}, selected: true),
     ];
+
+    for(int i=0; i<10; i++) {
+      _controllers.add(ScrollController());
+    }
   }
 
   // double headerSize = _rightViewBannerMaxHeight;
@@ -75,111 +78,116 @@ class _PlayListPageState extends State<PlayListPage> {
 
   Widget _getRightBannerPane(double width, double height) {
     return
-      // Listener(
-      // onPointerSignal: (PointerSignalEvent event) {
-      //   if (event is PointerScrollEvent) {
-      //     //print('x: ${event.position.dx}, y: ${event.position.dy}');
-      //     //print('scroll delta: ${event.scrollDelta}');
-      //     scrollOffset += event.scrollDelta.dy;
-      //     if (scrollOffset < 0) scrollOffset = 0;
-      //     if (scrollOffset > _controller.position.maxScrollExtent) scrollOffset = _controller.position.maxScrollExtent;
-      //     _controller.animateTo(scrollOffset, duration: Duration(milliseconds: 1), curve: Curves.easeIn);
-      //   }
-      // },
-      // child:
-      Container(
-        width: width,
-        height: height,
-        color: Colors.white,
-        child: Stack(
-          children: [
-            Positioned(
-              top: _rightViewTopPane,
-              left: _rightViewLeftPane,
+        // Listener(
+        // onPointerSignal: (PointerSignalEvent event) {
+        //   if (event is PointerScrollEvent) {
+        //     //print('x: ${event.position.dx}, y: ${event.position.dy}');
+        //     //print('scroll delta: ${event.scrollDelta}');
+        //     scrollOffset += event.scrollDelta.dy;
+        //     if (scrollOffset < 0) scrollOffset = 0;
+        //     if (scrollOffset > _controller.position.maxScrollExtent) scrollOffset = _controller.position.maxScrollExtent;
+        //     _controller.animateTo(scrollOffset, duration: Duration(milliseconds: 1), curve: Curves.easeIn);
+        //   }
+        // },
+        // child:
+        Container(
+      width: width,
+      height: height,
+      color: Colors.white,
+      child: Stack(
+        children: [
+          Positioned(
+            top: _rightViewTopPane,
+            left: _rightViewLeftPane,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7.2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 3,
+                    blurRadius: 3,
+                    offset: Offset(0, 1), // changes position of shadow
+                  ),
+                ],
+              ),
+              clipBehavior: Clip.antiAlias,
+              width: width - _rightViewLeftPane - _rightViewRightPane,
+              height: height - _rightViewTopPane - _rightViewToolbarHeight,
               child: Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
-                clipBehavior: Clip.antiAlias,
-                width: width - _rightViewLeftPane - _rightViewRightPane,
-                height: height - _rightViewTopPane - _rightViewToolbarHeight,
-                child:
-                //Image.network(
-                //  'https://static.coupangcdn.com/za/cmg_paperboy/image/1671771512787/PC_C1-Recovered.jpg',
-                //  fit: BoxFit.cover,
-                //),
-                ImageNetwork(
-                  width: width - _rightViewLeftPane - _rightViewRightPane,
-                  height: height - _rightViewTopPane - _rightViewToolbarHeight,
-                  image: 'https://static.coupangcdn.com/za/cmg_paperboy/image/1671771512787/PC_C1-Recovered.jpg',
-                  imageCache: CachedNetworkImageProvider('https://static.coupangcdn.com/za/cmg_paperboy/image/1671771512787/PC_C1-Recovered.jpg'),
-                  duration: 1500,
-                  curve: Curves.easeIn,
-                  onPointer: true,
-                  debugPrint: false,
-                  fullScreen: false,
-                  fitAndroidIos: BoxFit.cover,
-                  fitWeb: BoxFitWeb.cover,
-                  onLoading: const CircularProgressIndicator(
-                    color: Colors.indigoAccent,
-                  ),
-                  onError: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
+                width: width,
+                height: height,
+                color: Colors.white,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 41,
+                      top: 30,
+                      child: Icon(
+                        Icons.playlist_play,
+                        size: 20,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    Positioned(
+                      left: 72,
+                      top: 27,
+                      child: Text(
+                        '재생목록',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 22,
+                          color: Colors.grey[800],
+                          fontFamily: 'Pretendard',
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 173,
+                      top: 31,
+                      child: Text(
+                        '사용자 닉네임님이 만든 재생목록입니다.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[700],
+                          fontFamily: 'Pretendard',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Positioned(
-              top: height - 57,
-              left: _rightViewLeftPane,
-              child: CretaDropDown(
-                  width: 104,
-                  height: 36,
-                  items: const ['용도선택', '용도선택1', '용도선택2', '용도선택3'],
-                  defaultValue: '용도선택',
-                  onSelected: (value) {
-                    //logger.finest('value=$value');
-                  }),
+          ),
+          Positioned(
+            top: height - 56,
+            left: _rightViewLeftPane - 7,
+            child: CretaDropDown(
+                width: 91,
+                height: 36,
+                items: const ['최신순', '최신순1', '최신순2', '최신순3'],
+                defaultValue: '최신순',
+                onSelected: (value) {
+                  //logger.finest('value=$value');
+                }),
+          ),
+          Positioned(
+            top: height - 54,
+            left: width - _rightViewRightPane - 246,
+            child: CretaSearchBar(
+              hintText: '검색어를 입력하세요',
+              onSearch: (value) {},
+              width: 246,
+              height: 32,
             ),
-            Positioned(
-              top: height - 57,
-              left: _rightViewLeftPane + 116,
-              child: CretaDropDown(
-                  width: 104,
-                  height: 36,
-                  items: const ['권한', '권한1', '권한2', '권한3'],
-                  defaultValue: '권한',
-                  onSelected: (value) {
-                    //logger.finest('value=$value');
-                  }),
-            ),
-            Positioned(
-              top: height - 57,
-              left: width - _rightViewRightPane - 134 - 246 - 2,
-              child: CretaSearchBar(
-                hintText: '검색어를 입력하세요',
-                onSearch: (value) {},
-                width: 246,
-                height: 32,
-              ),
-            ),
-            // 최신크레타북 콤보 추가
-            Positioned(
-              top: height - 57,
-              left: width - _rightViewRightPane - 134,
-              child: CretaDropDown(
-                  width: 134,
-                  height: 36,
-                  items: const ['최신 크레타북', '최신 크레타북1', '최신 크레타북2', '최신 크레타북3'],
-                  defaultValue: '최신 크레타북',
-                  onSelected: (value) {
-                    //logger.finest('value=$value');
-                  }),
-            ),
-          ],
-        ),
+          ),
+        ],
+      ),
       //),
     );
   }
+
+  List<ScrollController> _controllers = [];
 
   Widget _getRightItemPane(double width, double height) {
     int columnCount = (width - _rightViewLeftPane - _rightViewRightPane) ~/ _itemDefaultWidth;
@@ -190,39 +198,105 @@ class _PlayListPageState extends State<PlayListPage> {
 
     return Container(
       color: Colors.white,
-      child: GridView.builder(
-        //controller: _controller,
-        padding: EdgeInsets.fromLTRB(
-            _rightViewLeftPane, _rightViewBannerMinHeight, _rightViewRightPane, _rightViewBottomPane),
-        itemCount: cretaBookList.length, //item 개수
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-          childAspectRatio: _itemDefaultWidth / _itemDefaultHeight, // 가로÷세로 비율
-          mainAxisSpacing: _rightViewItemGapX, //item간 수평 Padding
-          crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return (itemWidth >= 0 && itemHeight >= 0)
-              ? CretaBookItem(
-                  key: cretaBookList[index].globalKey,
-                  cretaBookData: cretaBookList[index],
-                  width: itemWidth,
-                  height: itemHeight,
-                )
-              : LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    itemWidth = constraints.maxWidth;
-                    itemHeight = constraints.maxHeight;
-                    return CretaBookItem(
-                      key: cretaBookList[index].globalKey,
-                      cretaBookData: cretaBookList[index],
-                      width: itemWidth,
-                      height: itemHeight,
-                    );
-                  },
-                );
-        },
-      ),
+      child: ListView.builder(
+          padding: EdgeInsets.fromLTRB(
+              _rightViewLeftPane, _rightViewBannerMinHeight, _rightViewRightPane, _rightViewBottomPane),
+          itemCount: 10,
+          itemExtent: 204,
+          itemBuilder: (context, index) {
+            return Container(
+              width: width,
+              height: 204,
+              color: Colors.white,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7.2),
+                        color: Colors.blue[100],
+                      ),
+                      width: width,
+                      //height: 184,
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        child: Scrollbar(
+                          thumbVisibility: false,
+                          controller: _controllers[index],
+                          child: ListView(
+                            controller: _controllers[index],
+                            // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
+                            scrollDirection: Axis.horizontal,
+                            // 컨테이너들을 ListView의 자식들로 추가
+                            children: <Widget>[
+                              Wrap(
+                                direction: Axis.horizontal,
+                                spacing: 20, // <-- Spacing between children
+                                children: <Widget>[
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                  Container(
+                                    width: 187,
+                                    height: 144,
+                                    color: Colors.red[100],
+                                  ),
+                                ],
+                              )
+                            ],),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            );
+          }),
     );
   }
 
