@@ -929,7 +929,6 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
               dropDownButtonOpened = false;
             });
           });
-
           dropDownButtonOpened = !dropDownButtonOpened;
         });
       },
