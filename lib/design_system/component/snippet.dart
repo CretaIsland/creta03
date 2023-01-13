@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
+import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -34,10 +35,13 @@ class Snippet {
   static List<LogicalKeyboardKey> keys = [];
 
   static Widget CretaScaffold(
-      {required Widget title, required BuildContext context, required Widget child}) {
+      {required Widget title,
+      required BuildContext context,
+      required Widget child,
+      Widget? floatingActionButton}) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfStudio(context, title),
-      floatingActionButton: Snippet.CretaDial(context),
+      floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onLongPressDown: ((details) {
@@ -205,7 +209,7 @@ class Snippet {
             height: 40,
             child: BTN.fill_gray_iti_l(
               buttonColor: CretaButtonColor.blue,
-              text: "Tuttle Rabbit",
+              text: SampleData.userName,
               icon: Icons.arrow_drop_down_outlined,
               image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
               onPressed: () {},
@@ -314,6 +318,13 @@ class Snippet {
           },
         ),
         SpeedDialChild(
+          label: 'Studio Book List',
+          child: Icon(Icons.list_alt_outlined),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.studioBookListPage);
+          },
+        ),
+        SpeedDialChild(
           label: 'Community Home',
           child: Icon(Icons.explore),
           onTap: () {
@@ -349,7 +360,7 @@ class Snippet {
       if (keys.contains(key)) return;
       // textField 의 focus bug 때문에, delete  key 를 사용할 수 없다.
       // if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
-      //   logHolder.log('delete pressed');
+      //   logger.finest('delete pressed');
       //   accManagerHolder!.removeACC(context);
       // }
       if (event.isKeyPressed(LogicalKeyboardKey.tab)) {

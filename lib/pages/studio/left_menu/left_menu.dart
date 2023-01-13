@@ -1,16 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/pages/studio/left_menu_frame.dart';
 import 'package:flutter/material.dart';
 
-import '../../lang/creta_studio_lang.dart';
-import '../../design_system/creta_font.dart';
-import 'studio_constant.dart';
-import 'studio_snippet.dart';
+import 'left_menu_frame.dart';
+import '../../../lang/creta_studio_lang.dart';
+import '../../../design_system/creta_font.dart';
+import '../studio_constant.dart';
+import '../studio_snippet.dart';
+import 'left_menu_page.dart';
 
 class LeftMenu extends StatefulWidget {
   final LeftMenuEnum selectedStick;
-  final void Function() onClose;
+  final Function onClose;
   const LeftMenu({super.key, required this.selectedStick, required this.onClose});
 
   @override
@@ -49,8 +50,8 @@ class _LeftMenuState extends State<LeftMenu> {
                   style: CretaFont.titleLarge)),
           Positioned(
             top: 76,
-            left: 10,
-            width: LayoutConst.leftMenuWidth - 10 * 2,
+            left: 0,
+            width: LayoutConst.leftMenuWidth,
             child: eachWidget(widget.selectedStick),
           )
         ],
@@ -63,7 +64,7 @@ class _LeftMenuState extends State<LeftMenu> {
       case LeftMenuEnum.Template:
         return Container();
       case LeftMenuEnum.Page:
-        return Container();
+        return LeftMenuPage();
       case LeftMenuEnum.Frame:
         return LeftMenuFrame();
       case LeftMenuEnum.Storage:

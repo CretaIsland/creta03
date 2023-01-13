@@ -34,6 +34,9 @@ class LayoutConst {
   // left menu
   static const double leftMenuWidth = 420;
 
+  // stick page
+  static const double leftPageWidth = 210;
+
   // bottom Menu bar
   static const double bottomMenuBarHeight = 68;
 

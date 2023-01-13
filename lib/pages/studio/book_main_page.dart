@@ -15,7 +15,7 @@ import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
-import 'left_menu.dart';
+import 'left_menu/left_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
@@ -73,9 +73,9 @@ class _BookMainPageState extends State<BookMainPage> {
     StudioVariables.availWidth = StudioVariables.virtualWidth * 0.9;
     StudioVariables.availHeight = StudioVariables.virtualHeight * 0.9;
 
-    widthRatio = StudioVariables.availWidth / widget.model.width;
-    heightRatio = StudioVariables.availHeight / widget.model.height;
-    physicalRatio = widget.model.height / widget.model.width;
+    widthRatio = StudioVariables.availWidth / widget.model.width.value;
+    heightRatio = StudioVariables.availHeight / widget.model.height.value;
+    physicalRatio = widget.model.height.value / widget.model.width.value;
 
     if (widthRatio < heightRatio) {
       pageWidth = StudioVariables.availWidth;
@@ -175,7 +175,7 @@ class _BookMainPageState extends State<BookMainPage> {
                   CretaLabelTextEditor(
                     height: 32,
                     width: 300,
-                    text: widget.model.name,
+                    text: widget.model.name.value,
                     textStyle: CretaFont.titleSmall,
                   ),
                 ],

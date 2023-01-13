@@ -5,13 +5,33 @@ import 'package:flutter/cupertino.dart';
 
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
+import '../../model/page_model.dart';
 
 class SampleData {
-  static BookModel sampleBook = BookModel(
-    name: CretaStudioLang.defaultBookName,
-    width: 1920,
-    height: 1080,
-  );
+  static BookModel sampleBook = BookModel();
+
+  static String userName = "Turtle Rabbit";
+
+  static initSample() {
+    sampleBook.name
+        .set(CretaStudioLang.defaultBookName, save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.width.set(1920, save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.height.set(1080, save: false, noUndo: true, dontChangeBookTime: true);
+  }
+
+  static List<PageModel> samplePageList = [
+    PageModel.makeSample("page 1", sampleBook.mid),
+    PageModel.makeSample("page 2", sampleBook.mid),
+    PageModel.makeSample("page 3", sampleBook.mid),
+    PageModel.makeSample("page 4", sampleBook.mid),
+    PageModel.makeSample("page 5", sampleBook.mid),
+    PageModel.makeSample("page 6", sampleBook.mid),
+    PageModel.makeSample("page 7", sampleBook.mid),
+    PageModel.makeSample("page 8", sampleBook.mid),
+    PageModel.makeSample("page 9", sampleBook.mid),
+    PageModel.makeSample("page 10", sampleBook.mid),
+    PageModel.makeSample("page 11", sampleBook.mid),
+  ];
 
   static List<ConnectedUserModel> connectedUserList = [
     ConnectedUserModel(

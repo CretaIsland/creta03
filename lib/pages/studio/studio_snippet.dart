@@ -39,4 +39,33 @@ class StudioSnippet {
       )
     ];
   }
+
+  static fullShadow({double offset = 4, Color color = Colors.grey, double opacity = 0.2}) {
+    return [
+      BoxShadow(
+        color: color.withOpacity(opacity),
+        spreadRadius: offset / 2,
+        blurRadius: offset / 2,
+        offset: Offset(offset, offset),
+      ),
+      BoxShadow(
+        color: color.withOpacity(opacity),
+        spreadRadius: offset / 2,
+        blurRadius: offset / 2,
+        offset: Offset(-offset, -offset),
+      ),
+      BoxShadow(
+        color: color.withOpacity(opacity),
+        spreadRadius: offset / 2,
+        blurRadius: offset / 2,
+        offset: Offset(offset, -offset),
+      ),
+      BoxShadow(
+        color: color.withOpacity(opacity),
+        spreadRadius: offset / 2,
+        blurRadius: offset / 2,
+        offset: Offset(-offset, offset),
+      )
+    ];
+  }
 }

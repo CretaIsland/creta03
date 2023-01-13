@@ -44,7 +44,7 @@ class CretaButton extends StatefulWidget {
   final CretaButtonDeco decoType;
   final Widget? text;
   final Icon? icon;
-  final void Function() onPressed;
+  final Function onPressed;
   final double? width;
   final double? height;
   final Widget? child;

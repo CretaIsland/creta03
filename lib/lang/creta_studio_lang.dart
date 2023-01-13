@@ -24,6 +24,14 @@ class CretaStudioLang {
     "사용자정의",
   ];
 
+  static const String myCretaBook = "내 크레타북";
+  static const String sharedCretaBook = "공유 크레타북";
+  static const String teamCretaBook = "팀북";
+
+  static const String myCretaBookDesc = " 님의 크레타북 입니다";
+  static const String sharedCretaBookDesc = " 님이 공유받은 크레타북입니다";
+  static const String teamCretaBookDesc = " 팀의 크레타북 입니다";
+
   static const String latelyUsedFrame = "최근 사용한 프레임";
 
   static const String autoScale = "자동맞춤";
@@ -41,4 +49,6 @@ class CretaStudioLang {
   static const String tooltipInvite = '초대하기';
   static const String tooltipPlay = '미리보기';
   static const String tooltipScale = '배율조정';
+
+  static const String gotoCommunity = '커뮤니티로 이동';
 }

@@ -17,9 +17,9 @@ class CretaScaleButton extends StatefulWidget {
   Color? shadowColor;
   final IconData icon1;
   final IconData icon2;
-  final void Function() onPressedMinus;
-  final void Function() onPressedPlus;
-  final void Function() onPressedAutoScale;
+  final Function onPressedMinus;
+  final Function onPressedPlus;
+  final Function onPressedAutoScale;
   TextStyle? textStyle;
   final double iconSize;
   Color? clickColor;
@@ -128,7 +128,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
     );
   }
 
-  Widget _buttonMinus(int scaleVariant, void Function() onPressed) {
+  Widget _buttonMinus(int scaleVariant, Function onPressed) {
     int idx = scaleVariant == 10 ? 0 : 1;
     return Container(
       width: _isClickedMinus[idx] ? widget.iconSize : widget.iconSize * 1.2,
@@ -173,7 +173,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
     );
   }
 
-  Widget _buttonPlus(int scaleVariant, void Function() onPressed) {
+  Widget _buttonPlus(int scaleVariant, Function onPressed) {
     int idx = scaleVariant == 10 ? 0 : 1;
     return Container(
       width: _isClickedPlus[idx] ? widget.iconSize : widget.iconSize * 1.2,

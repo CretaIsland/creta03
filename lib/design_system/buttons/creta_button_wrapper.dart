@@ -12,7 +12,7 @@ import 'creta_text_button.dart';
 class BTN {
   static CretaButton fill_gray_i_xs({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 20,
@@ -30,7 +30,7 @@ class BTN {
 
   static CretaButton fill_gray_i_s({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 28,
@@ -48,7 +48,7 @@ class BTN {
 
   static CretaButton fill_gray_100_i_s({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 28,
@@ -66,7 +66,7 @@ class BTN {
 
   static CretaButton fill_gray_200_i_s({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 32,
@@ -84,7 +84,7 @@ class BTN {
 
   static CretaButton fill_blue_i_menu({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 24,
@@ -106,7 +106,7 @@ class BTN {
 
   static CretaButton fill_gray_i_m({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 32,
@@ -124,7 +124,7 @@ class BTN {
 
   static CretaButton fill_gray_i_l({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 36,
@@ -146,7 +146,7 @@ class BTN {
   static CretaButton fill_gray_ti_s({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 86,
@@ -171,7 +171,7 @@ class BTN {
   static CretaButton fill_gray_ti_m({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 96,
@@ -196,7 +196,7 @@ class BTN {
   static CretaButton fill_gray_ti_l({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 104,
@@ -221,7 +221,7 @@ class BTN {
   static CretaButton fill_gray_it_s({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 86,
@@ -246,7 +246,7 @@ class BTN {
   static CretaButton fill_gray_it_m({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 96,
@@ -271,7 +271,7 @@ class BTN {
   static CretaButton fill_gray_it_l({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 106,
@@ -295,7 +295,7 @@ class BTN {
 
   static CretaButton fill_gray_t_es({
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 87,
@@ -314,7 +314,7 @@ class BTN {
 
   static CretaButton fill_gray_t_m({
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 72,
@@ -331,7 +331,7 @@ class BTN {
   static CretaButton fill_opacity_gray_it_s({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 86,
@@ -353,7 +353,7 @@ class BTN {
     required String text,
     required String subText,
     required ImageProvider image,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 219,
@@ -400,7 +400,7 @@ class BTN {
     required ImageProvider image,
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color fgColor = Colors.white,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 166,
@@ -437,7 +437,7 @@ class BTN {
 
   static CretaButton fill_blue_i_m({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 32,
@@ -453,7 +453,7 @@ class BTN {
   }
 
   static CretaButton fill_blue_i_l(
-      {required IconData icon, required void Function() onPressed, String? tooltip}) {
+      {required IconData icon, required Function onPressed, String? tooltip}) {
     return CretaButton(
       tooltip: tooltip,
       width: 36,
@@ -470,7 +470,7 @@ class BTN {
 
   static CretaButton fill_blue_t_m({
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 72,
@@ -489,7 +489,7 @@ class BTN {
 
   static CretaButton fill_blue_t_el({
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 179,
@@ -509,7 +509,7 @@ class BTN {
   static CretaButton fill_blue_ti_el({
     required String text,
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
     double width = 207,
   }) {
     return CretaButton(
@@ -535,7 +535,7 @@ class BTN {
   static CretaButton fill_blue_it_m_animation({
     required String text,
     required ImageProvider image,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 101,
@@ -566,7 +566,7 @@ class BTN {
   static CretaButton fill_blue_it_l({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 125,
@@ -592,7 +592,7 @@ class BTN {
     required IconData icon,
     required String text,
     required String subText,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 191,
@@ -629,7 +629,7 @@ class BTN {
   static CretaButton fill_purple_it_m_animation({
     required String text,
     required ImageProvider image,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 101,
@@ -659,7 +659,7 @@ class BTN {
 
   static CretaButton fill_black_i_l({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 36,
@@ -682,7 +682,7 @@ class BTN {
     required String text,
     required IconData icon,
     required ImageProvider image,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 166,
@@ -716,7 +716,7 @@ class BTN {
   }
 
   static CretaButton expand_circle_up({
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 20,
@@ -736,7 +736,7 @@ class BTN {
   }
 
   static CretaButton expand_circle_down({
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 20,
@@ -754,7 +754,7 @@ class BTN {
 
   static CretaButton line_i_m({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 32,
@@ -773,7 +773,7 @@ class BTN {
 
   static CretaButton line_gray_t_m({
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 72,
@@ -791,7 +791,7 @@ class BTN {
   static CretaButton line_gray_ti_m({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 96,
@@ -813,7 +813,7 @@ class BTN {
 
   static CretaButton line_blue_i_m({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 32,
@@ -829,7 +829,7 @@ class BTN {
 
   static CretaElevatedButton line_blue_t_m({
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaElevatedButton(
       height: 32,
@@ -851,7 +851,7 @@ class BTN {
   static CretaButton line_blue_it_m_animation({
     required String text,
     required ImageProvider image,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 101,
@@ -882,7 +882,7 @@ class BTN {
     required String text,
     required IconData icon,
     required ImageProvider image,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 120,
@@ -921,7 +921,7 @@ class BTN {
   static CretaButton line_red_it_m_animation({
     required String text,
     required ImageProvider image,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 101,
@@ -952,7 +952,7 @@ class BTN {
     required String text,
     required IconData icon,
     required ImageProvider image,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 120,
@@ -991,7 +991,7 @@ class BTN {
 
   static CretaButton opacity_gray_i_s({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 28,
@@ -1010,7 +1010,7 @@ class BTN {
 
   static CretaButton opacity_gray_i_l({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 36,
@@ -1029,7 +1029,7 @@ class BTN {
 
   static CretaButton opacity_gray_i_el({
     required IconData icon,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 76,
@@ -1049,7 +1049,7 @@ class BTN {
   static CretaButton opacity_gray_it_s({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 86,
@@ -1074,7 +1074,7 @@ class BTN {
   static CretaButton opacity_gray_it_m({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 96,
@@ -1099,7 +1099,7 @@ class BTN {
   static CretaButton opacity_gray_ti_m({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 96,
@@ -1123,7 +1123,7 @@ class BTN {
 
   static CretaButton floating_l(
       {required IconData icon,
-      required void Function() onPressed,
+      required Function onPressed,
       bool hasShadow = true,
       String? tooltip}) {
     return CretaButton(
@@ -1146,7 +1146,7 @@ class BTN {
   static CretaButton floating_it_l({
     required IconData icon,
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaButton(
       width: 106,
@@ -1176,8 +1176,8 @@ class BTN {
     required IconData icon1,
     required IconData icon2,
     required String text,
-    required void Function() onPressed1,
-    required void Function() onPressed2,
+    required Function onPressed1,
+    required Function onPressed2,
   }) {
     return CretaDoubleButton(
         width: 134,
@@ -1195,7 +1195,7 @@ class BTN {
 
   static CretaTextButton fill_color_t_m({
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
   }) {
     return CretaTextButton(
         width: 58,
@@ -1210,7 +1210,7 @@ class BTN {
 
   static CretaTextButton fill_color_it_m({
     required String text,
-    required void Function() onPressed,
+    required Function onPressed,
     required IconData iconData,
   }) {
     return CretaTextButton(
@@ -1228,11 +1228,11 @@ class BTN {
 
   static CretaTextButton fill_color_ic_el({
     required String text,
-    required void Function() onPressed,
-    required IconData iconData,
+    required Function onPressed,
+    IconData? iconData,
   }) {
     return CretaTextButton(
-        width: 226,
+        width: 246,
         height: 56,
         onPressed: onPressed,
         fgColor: CretaColor.text[700]!,
