@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 //import 'dart:async';
-//import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:routemaster/routemaster.dart';
@@ -41,7 +41,7 @@ class PlayListPage extends StatefulWidget {
 }
 
 class _PlayListPageState extends State<PlayListPage> {
-  //late ScrollController _controller;
+  late ScrollController _controller;
   late List<CretaMenuItem> _leftMenuItemList;
   late List<CretaMenuItem> _dropDownMenuItemList;
 
@@ -50,8 +50,8 @@ class _PlayListPageState extends State<PlayListPage> {
   @override
   void initState() {
     super.initState();
-    //_controller = ScrollController();
-    //_controller.addListener(_scrollListener);
+    _controller = ScrollController();
+    _controller.addListener(_scrollListener);
 
     _cretaPlayList = [
       CretaPlayListData(
@@ -155,14 +155,14 @@ class _PlayListPageState extends State<PlayListPage> {
   }
 
   // double headerSize = _rightViewBannerMaxHeight;
-  // double scrollOffset = 0;
-  // void _scrollListener() {
-  //   setState(() {
-  //     scrollOffset = _controller.offset;
-  //     headerSize = _rightViewBannerMaxHeight - _controller.offset;
-  //     if (headerSize < _rightViewBannerMinHeight) headerSize = _rightViewBannerMinHeight;
-  //   });
-  // }
+  double scrollOffset = 0;
+  void _scrollListener() {
+    setState(() {
+      scrollOffset = _controller.offset;
+      //headerSize = _rightViewBannerMaxHeight - _controller.offset;
+      //if (headerSize < _rightViewBannerMinHeight) headerSize = _rightViewBannerMinHeight;
+    });
+  }
 
   Widget _getLeftPane(double height) {
     return Snippet.CretaTabBar(_leftMenuItemList, height);
@@ -172,188 +172,187 @@ class _PlayListPageState extends State<PlayListPage> {
   GlobalKey dropDownButtonKey = GlobalKey();
 
   Widget _getRightBannerPane(double width, double height) {
-    //return Listener(
-    // onPointerSignal: (PointerSignalEvent event) {
-    //   if (event is PointerScrollEvent) {
-    //     //print('x: ${event.position.dx}, y: ${event.position.dy}');
-    //     //print('scroll delta: ${event.scrollDelta}');
-    //     scrollOffset += event.scrollDelta.dy;
-    //     if (scrollOffset < 0) scrollOffset = 0;
-    //     if (scrollOffset > _controller.position.maxScrollExtent) scrollOffset = _controller.position.maxScrollExtent;
-    //     _controller.animateTo(scrollOffset, duration: Duration(milliseconds: 1), curve: Curves.easeIn);
-    //   }
-    // },
-    // child:
-    return Container(
-      width: width,
-      height: height,
-      color: Colors.white,
-      child: Stack(
-        children: [
-          Positioned(
-            top: _rightViewTopPane,
-            left: _rightViewLeftPane,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 3,
-                    blurRadius: 3,
-                    offset: Offset(0, 1), // changes position of shadow
-                  ),
-                ],
-              ),
-              clipBehavior: Clip.antiAlias,
-              width: width - _rightViewLeftPane - _rightViewRightPane,
-              height: height - _rightViewTopPane - _rightViewToolbarHeight,
+    return Listener(
+      onPointerSignal: (PointerSignalEvent event) {
+        if (event is PointerScrollEvent) {
+          //print('x: ${event.position.dx}, y: ${event.position.dy}');
+          //print('scroll delta: ${event.scrollDelta}');
+          scrollOffset += event.scrollDelta.dy;
+          if (scrollOffset < 0) scrollOffset = 0;
+          if (scrollOffset > _controller.position.maxScrollExtent) scrollOffset = _controller.position.maxScrollExtent;
+          _controller.animateTo(scrollOffset, duration: Duration(milliseconds: 1), curve: Curves.easeIn);
+        }
+      },
+      child: Container(
+        width: width,
+        height: height,
+        color: Colors.white,
+        child: Stack(
+          children: [
+            Positioned(
+              top: _rightViewTopPane,
+              left: _rightViewLeftPane,
               child: Container(
-                width: width,
-                height: height,
-                color: Colors.white,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 41,
-                      top: 30,
-                      child: Icon(
-                        Icons.playlist_play,
-                        size: 20,
-                        color: Colors.grey[800],
-                      ),
-                    ),
-                    Positioned(
-                      left: 72,
-                      top: 27,
-                      child: Text(
-                        '재생목록',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 22,
-                          color: Colors.grey[800],
-                          fontFamily: 'Pretendard',
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 173,
-                      top: 31,
-                      child: Text(
-                        '사용자 닉네임님이 만든 재생목록입니다.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[700],
-                          fontFamily: 'Pretendard',
-                        ),
-                      ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(7.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 3,
+                      blurRadius: 3,
+                      offset: Offset(0, 1), // changes position of shadow
                     ),
                   ],
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: height - 56,
-            left: _rightViewLeftPane - 7,
-            child: CretaDropDown(
-                width: 91,
-                height: 36,
-                items: const ['최신순', '최신순1', '최신순2', '최신순3', '최신순4'],
-                defaultValue: '최신순',
-                onSelected: (value) {
-                  //logger.finest('value=$value');
-                }),
-          ),
-          Positioned(
-            top: height - 56,
-            left: _rightViewLeftPane + 107,
-            child: ElevatedButton(
-              key: dropDownButtonKey,
-              style: ButtonStyle(
-                overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.hovered)) {
-                      return Colors.white;
-                    }
-                    return Colors.white; //Colors.grey[100];
-                  },
-                ),
-                elevation: MaterialStateProperty.all<double>(0.0),
-                shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.hovered) || dropDownButtonOpened) {
-                      return Color.fromARGB(255, 89, 89, 89);
-                    }
-                    return Color.fromARGB(255, 140, 140, 140);
-                  },
-                ),
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                shape: MaterialStateProperty.resolveWith<OutlinedBorder?>(
-                  (Set<MaterialState> states) {
-                    return RoundedRectangleBorder(
-                        borderRadius: dropDownButtonOpened
-                            ? BorderRadius.only(topLeft: Radius.circular(8.0), topRight: Radius.circular(8.0))
-                            : BorderRadius.circular(8.0),
-                        side: BorderSide(
-                            color: (states.contains(MaterialState.hovered) || dropDownButtonOpened)
-                                ? Color.fromARGB(255, 89, 89, 89)
-                                : Colors.white));
-                  },
-                ),
-              ),
-              onPressed: () {
-                setState(() {
-                  CretaDropDownMenu.showMenu(
-                      context: context,
-                      globalKey: dropDownButtonKey,
-                      popupMenu: _dropDownMenuItemList,
-                      initFunc: () {
-                        dropDownButtonOpened = true;
-                      }).then((value) {
-                    logger.finest('팝업메뉴 닫기');
-                    setState(() {
-                      dropDownButtonOpened = false;
-                    });
-                  });
-
-                  dropDownButtonOpened = !dropDownButtonOpened;
-                });
-              },
-              child: SizedBox(
-                  width: 100,
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                clipBehavior: Clip.antiAlias,
+                width: width - _rightViewLeftPane - _rightViewRightPane,
+                height: height - _rightViewTopPane - _rightViewToolbarHeight,
+                child: Container(
+                  width: width,
+                  height: height,
+                  color: Colors.white,
+                  child: Stack(
                     children: [
-                      Text(
-                        '최신순',
-                        style: TextStyle(
-                          //color: Colors.grey[700],
-                          fontSize: 20,
-                          fontFamily: 'Pretendard',
+                      Positioned(
+                        left: 41,
+                        top: 30,
+                        child: Icon(
+                          Icons.playlist_play,
+                          size: 20,
+                          color: Colors.grey[800],
                         ),
                       ),
-                      Expanded(child: Container()),
-                      Icon(Icons.keyboard_arrow_down),
+                      Positioned(
+                        left: 72,
+                        top: 27,
+                        child: Text(
+                          '재생목록',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 22,
+                            color: Colors.grey[800],
+                            fontFamily: 'Pretendard',
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 173,
+                        top: 31,
+                        child: Text(
+                          '사용자 닉네임님이 만든 재생목록입니다.',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                            fontFamily: 'Pretendard',
+                          ),
+                        ),
+                      ),
                     ],
-                  )),
+                  ),
+                ),
+              ),
             ),
-          ),
-          Positioned(
-            top: height - 54,
-            left: width - _rightViewRightPane - 246,
-            child: CretaSearchBar(
-              hintText: '검색어를 입력하세요',
-              onSearch: (value) {},
-              width: 246,
-              height: 32,
+            Positioned(
+              top: height - 56,
+              left: _rightViewLeftPane - 7,
+              child: CretaDropDown(
+                  width: 91,
+                  height: 36,
+                  items: const ['최신순', '최신순1', '최신순2', '최신순3', '최신순4'],
+                  defaultValue: '최신순',
+                  onSelected: (value) {
+                    //logger.finest('value=$value');
+                  }),
             ),
-          ),
-        ],
+            Positioned(
+              top: height - 56,
+              left: _rightViewLeftPane + 107,
+              child: ElevatedButton(
+                key: dropDownButtonKey,
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.hovered)) {
+                        return Colors.white;
+                      }
+                      return Colors.white; //Colors.grey[100];
+                    },
+                  ),
+                  elevation: MaterialStateProperty.all<double>(0.0),
+                  shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                  foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.hovered) || dropDownButtonOpened) {
+                        return Color.fromARGB(255, 89, 89, 89);
+                      }
+                      return Color.fromARGB(255, 140, 140, 140);
+                    },
+                  ),
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  shape: MaterialStateProperty.resolveWith<OutlinedBorder?>(
+                    (Set<MaterialState> states) {
+                      return RoundedRectangleBorder(
+                          borderRadius: dropDownButtonOpened
+                              ? BorderRadius.only(topLeft: Radius.circular(8.0), topRight: Radius.circular(8.0))
+                              : BorderRadius.circular(8.0),
+                          side: BorderSide(
+                              color: (states.contains(MaterialState.hovered) || dropDownButtonOpened)
+                                  ? Color.fromARGB(255, 89, 89, 89)
+                                  : Colors.white));
+                    },
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    CretaDropDownMenu.showMenu(
+                        context: context,
+                        globalKey: dropDownButtonKey,
+                        popupMenu: _dropDownMenuItemList,
+                        initFunc: () {
+                          dropDownButtonOpened = true;
+                        }).then((value) {
+                      logger.finest('팝업메뉴 닫기');
+                      setState(() {
+                        dropDownButtonOpened = false;
+                      });
+                    });
+
+                    dropDownButtonOpened = !dropDownButtonOpened;
+                  });
+                },
+                child: SizedBox(
+                    width: 100,
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          '최신순',
+                          style: TextStyle(
+                            //color: Colors.grey[700],
+                            fontSize: 20,
+                            fontFamily: 'Pretendard',
+                          ),
+                        ),
+                        Expanded(child: Container()),
+                        Icon(Icons.keyboard_arrow_down),
+                      ],
+                    )),
+              ),
+            ),
+            Positioned(
+              top: height - 54,
+              left: width - _rightViewRightPane - 246,
+              child: CretaSearchBar(
+                hintText: '검색어를 입력하세요',
+                onSearch: (value) {},
+                width: 246,
+                height: 32,
+              ),
+            ),
+          ],
+        ),
       ),
-      //),
     );
   }
 
@@ -369,13 +368,14 @@ class _PlayListPageState extends State<PlayListPage> {
     return Container(
       color: Colors.white,
       child: ListView.builder(
-          padding: EdgeInsets.fromLTRB(
-              _rightViewLeftPane, _rightViewBannerMinHeight, _rightViewRightPane, _rightViewBottomPane),
-          itemCount: _cretaPlayList.length,
-          itemExtent: 204,
-          itemBuilder: (context, index) {
-            return CretaPlayListItem(key: _cretaPlayList[index].globalKey, cretaPlayListData: _cretaPlayList[index], width: width);
-          }),
+        controller: _controller,
+        padding: EdgeInsets.fromLTRB(
+            _rightViewLeftPane, _rightViewBannerMinHeight, _rightViewRightPane, _rightViewBottomPane),
+        itemCount: _cretaPlayList.length,
+        itemExtent: 204,
+        itemBuilder: (context, index) {
+          return CretaPlayListItem(key: _cretaPlayList[index].globalKey, cretaPlayListData: _cretaPlayList[index], width: width);
+        }),
     );
   }
 
