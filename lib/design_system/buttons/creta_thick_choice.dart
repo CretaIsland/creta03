@@ -169,7 +169,7 @@ class _CretaThickChoiceState extends State<CretaThickChoice> {
 
 // class CretaThickChoice extends StatefulWidget {
 //   final double thickness;
-//   final void Function() onPressed;
+//   final Function onPressed;
 
 //   CretaThickChoice({
 //     required this.onPressed,

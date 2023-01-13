@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,8 @@ void main() async {
   setupLogger();
   HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
+
+  SampleData.initSample();
 
   runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(const ProviderScope(child: MainRouteApp()));

@@ -12,8 +12,8 @@ class CretaDoubleButton extends StatefulWidget {
   final Color shadowColor;
   final IconData icon1;
   final IconData icon2;
-  final void Function() onPressed1;
-  final void Function() onPressed2;
+  final Function onPressed1;
+  final Function onPressed2;
   final Text text;
   final double iconSize;
   final Color clickColor;
@@ -67,7 +67,7 @@ class _CretaDoubleButtonState extends State<CretaDoubleButton> {
         ));
   }
 
-  Widget _button1(IconData iconData, void Function() onPressed) {
+  Widget _button1(IconData iconData, Function onPressed) {
     return Container(
       width: _isClicked1 ? widget.iconSize : widget.iconSize * 1.2,
       height: _isClicked1 ? widget.iconSize : widget.iconSize * 1.2,
@@ -112,7 +112,7 @@ class _CretaDoubleButtonState extends State<CretaDoubleButton> {
     );
   }
 
-  Widget _button2(IconData iconData, void Function() onPressed) {
+  Widget _button2(IconData iconData, Function onPressed) {
     return Container(
       width: _isClicked2 ? widget.iconSize : widget.iconSize * 1.2,
       height: _isClicked2 ? widget.iconSize : widget.iconSize * 1.2,

@@ -7,7 +7,7 @@ class CretaMenuItem {
   final String caption;
   final IconData? iconData;
   final Function onPressed;
-  final bool selected;
+  bool selected;
 
   CretaMenuItem({
     required this.caption,
@@ -18,9 +18,13 @@ class CretaMenuItem {
 }
 
 class CretaPopupMenu {
-
   static Widget _createPopupMenu(
-      BuildContext context, double x, double y, double width, List<CretaMenuItem> menuItem,) {
+    BuildContext context,
+    double x,
+    double y,
+    double width,
+    List<CretaMenuItem> menuItem,
+  ) {
     return Stack(
       children: [
         Positioned(
@@ -47,38 +51,40 @@ class CretaPopupMenu {
               children: <Widget>[
                 ...menuItem
                     .map((item) => SizedBox(
-                  width: width,
-                  height: 32,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.hovered)) {
-                            return Color.fromARGB(255, 242, 242, 242);
-                          }
-                          return Colors.white;
-                        },
-                      ),
-                      elevation: MaterialStateProperty.all<double>(0.0),
-                      shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.grey[700]!),
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: Colors.white))),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      item.onPressed();
-                    },
-                    child: Text(
-                      item.caption,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: 'Pretendard',
-                      ),
-                    ),
-                  ),
-                ))
+                          width: width,
+                          height: 32,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.hovered)) {
+                                    return Color.fromARGB(255, 242, 242, 242);
+                                  }
+                                  return Colors.white;
+                                },
+                              ),
+                              elevation: MaterialStateProperty.all<double>(0.0),
+                              shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                              foregroundColor: MaterialStateProperty.all<Color>(Colors.grey[700]!),
+                              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      side: BorderSide(color: Colors.white))),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              item.onPressed();
+                            },
+                            child: Text(
+                              item.caption,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: 'Pretendard',
+                              ),
+                            ),
+                          ),
+                        ))
                     .toList(),
               ],
             ),
@@ -88,8 +94,11 @@ class CretaPopupMenu {
     );
   }
 
-  static Future<void> showMenu({required BuildContext context, required GlobalKey globalKey,
-    required List<CretaMenuItem> popupMenu, Function? initFunc}) async {
+  static Future<void> showMenu(
+      {required BuildContext context,
+      required GlobalKey globalKey,
+      required List<CretaMenuItem> popupMenu,
+      Function? initFunc}) async {
     await showDialog(
       context: context,
       barrierDismissible: true, // Dialog를 제외한 다른 화면 터치 x
@@ -104,11 +113,16 @@ class CretaPopupMenu {
         double x = position.dx + size.width - 70;
         double y = position.dy + 40;
 
-        return _createPopupMenu(context, x, y, 114, popupMenu,);
+        return _createPopupMenu(
+          context,
+          x,
+          y,
+          114,
+          popupMenu,
+        );
       },
     );
 
     return Future.value();
   }
-
 }

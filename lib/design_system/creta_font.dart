@@ -15,7 +15,7 @@ class CretaFont {
   static const FontWeight black = FontWeight.w900;
 
   static TextStyle headlineSmall = const TextStyle(
-    fontFamily: 'fontFamily',
+    fontFamily: fontFamily,
     fontWeight: light,
     fontSize: 26,
     color: CretaColor.text,
@@ -31,6 +31,7 @@ class CretaFont {
   );
   static TextStyle titleMedium = headlineSmall.copyWith(fontSize: 16);
   static TextStyle titleLarge = headlineSmall.copyWith(fontSize: 20);
+  static TextStyle titleELarge = headlineSmall.copyWith(fontSize: 22);
 
   static TextStyle displaySmall = const TextStyle(
     fontFamily: fontFamily,

@@ -12,7 +12,7 @@ enum FlutterButtonType {
 
 class CretaTextButton extends StatefulWidget {
   final String text;
-  final void Function() onPressed;
+  final Function onPressed;
   final double width;
   final double height;
   final Color fgColor;
