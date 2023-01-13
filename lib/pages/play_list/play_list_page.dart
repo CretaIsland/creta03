@@ -142,11 +142,9 @@ class _PlayListPageState extends State<PlayListPage> {
     ];
 
     _dropDownMenuItemList = [
-      CretaMenuItem(caption: '최신순', iconData: Icons.local_library_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '최신순1', iconData: Icons.article_outlined, onPressed: () {}, selected: true),
-      CretaMenuItem(caption: '최신순2', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '최신순3', iconData: Icons.playlist_play, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '최신순4', iconData: Icons.playlist_play, onPressed: () {}, selected: false),
+      CretaMenuItem(caption: '최신순', iconData: Icons.local_library_outlined, onPressed: () {}, selected: true),
+      CretaMenuItem(caption: '이름순', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
+      CretaMenuItem(caption: '등록일순', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
     ];
 
     for (int i = 0; i < 10; i++) {
@@ -258,7 +256,7 @@ class _PlayListPageState extends State<PlayListPage> {
               child: CretaDropDown(
                   width: 91,
                   height: 36,
-                  items: const ['최신순', '최신순1', '최신순2', '최신순3', '최신순4'],
+                  items: const ['최신순', '이름순', '등록일순',],
                   defaultValue: '최신순',
                   onSelected: (value) {
                     //logger.finest('value=$value');
@@ -267,77 +265,10 @@ class _PlayListPageState extends State<PlayListPage> {
             Positioned(
               top: height - 56,
               left: _rightViewLeftPane + 107,
-              child: ElevatedButton(
-                key: dropDownButtonKey,
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.hovered)) {
-                        return Colors.white;
-                      }
-                      return Colors.white; //Colors.grey[100];
-                    },
-                  ),
-                  elevation: MaterialStateProperty.all<double>(0.0),
-                  shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                  foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.hovered) || dropDownButtonOpened) {
-                        return Color.fromARGB(255, 89, 89, 89);
-                      }
-                      return Color.fromARGB(255, 140, 140, 140);
-                    },
-                  ),
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                  shape: MaterialStateProperty.resolveWith<OutlinedBorder?>(
-                    (Set<MaterialState> states) {
-                      return RoundedRectangleBorder(
-                          borderRadius: dropDownButtonOpened
-                              ? BorderRadius.only(topLeft: Radius.circular(8.0), topRight: Radius.circular(8.0))
-                              : BorderRadius.circular(8.0),
-                          side: BorderSide(
-                              color: (states.contains(MaterialState.hovered) || dropDownButtonOpened)
-                                  ? Color.fromARGB(255, 89, 89, 89)
-                                  : Colors.white));
-                    },
-                  ),
-                ),
-                onPressed: () {
-                  setState(() {
-                    CretaDropDownMenu.showMenu(
-                        context: context,
-                        globalKey: dropDownButtonKey,
-                        popupMenu: _dropDownMenuItemList,
-                        initFunc: () {
-                          dropDownButtonOpened = true;
-                        }).then((value) {
-                      logger.finest('팝업메뉴 닫기');
-                      setState(() {
-                        dropDownButtonOpened = false;
-                      });
-                    });
-
-                    dropDownButtonOpened = !dropDownButtonOpened;
-                  });
-                },
-                child: SizedBox(
-                    width: 100,
-                    height: 40,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          '최신순',
-                          style: TextStyle(
-                            //color: Colors.grey[700],
-                            fontSize: 20,
-                            fontFamily: 'Pretendard',
-                          ),
-                        ),
-                        Expanded(child: Container()),
-                        Icon(Icons.keyboard_arrow_down),
-                      ],
-                    )),
+              child: CretaDropDownButton(
+                width: 100,
+                height: 40,
+                dropDownMenuItemList: _dropDownMenuItemList
               ),
             ),
             Positioned(
@@ -359,12 +290,6 @@ class _PlayListPageState extends State<PlayListPage> {
   final List<ScrollController> _controllers = [];
 
   Widget _getRightItemPane(double width, double height) {
-    // int columnCount = (width - _rightViewLeftPane - _rightViewRightPane) ~/ _itemDefaultWidth;
-    // if (columnCount == 0) columnCount = 1;
-    //
-    // double itemWidth = -1;
-    // double itemHeight = -1;
-
     return Container(
       color: Colors.white,
       child: ListView.builder(
@@ -925,5 +850,106 @@ class CretaDropDownMenu {
     );
 
     return Future.value();
+  }
+}
+
+class CretaDropDownButton extends StatefulWidget {
+  final double width;
+  final double height;
+  final List<CretaMenuItem> dropDownMenuItemList;
+
+  const CretaDropDownButton({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.dropDownMenuItemList,
+  });
+
+  @override
+  State<CretaDropDownButton> createState() => _CretaDropDownButtonState();
+}
+
+class _CretaDropDownButtonState extends State<CretaDropDownButton> {
+  final GlobalKey dropDownButtonKey = GlobalKey();
+  bool dropDownButtonOpened = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      key: dropDownButtonKey,
+      style: ButtonStyle(
+        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.hovered)) {
+              return Colors.white;
+            }
+            return Colors.white; //Colors.grey[100];
+          },
+        ),
+        elevation: MaterialStateProperty.all<double>(0.0),
+        shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+        foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.hovered) || dropDownButtonOpened) {
+              return Color.fromARGB(255, 89, 89, 89);
+            }
+            return Color.fromARGB(255, 140, 140, 140);
+          },
+        ),
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+        shape: MaterialStateProperty.resolveWith<OutlinedBorder?>(
+              (Set<MaterialState> states) {
+            return RoundedRectangleBorder(
+                borderRadius: dropDownButtonOpened
+                    ? BorderRadius.only(topLeft: Radius.circular(8.0), topRight: Radius.circular(8.0))
+                    : BorderRadius.circular(8.0),
+                side: BorderSide(
+                    color: (states.contains(MaterialState.hovered) || dropDownButtonOpened)
+                        ? Color.fromARGB(255, 89, 89, 89)
+                        : Colors.white));
+          },
+        ),
+      ),
+      onPressed: () {
+        setState(() {
+          CretaDropDownMenu.showMenu(
+              context: context,
+              globalKey: dropDownButtonKey,
+              popupMenu: widget.dropDownMenuItemList,
+              initFunc: () {
+                dropDownButtonOpened = true;
+              }).then((value) {
+            logger.finest('팝업메뉴 닫기');
+            setState(() {
+              dropDownButtonOpened = false;
+            });
+          });
+          dropDownButtonOpened = !dropDownButtonOpened;
+        });
+      },
+      child: SizedBox(
+          width: widget.width,
+          height: widget.height,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                '최신순',
+                style: TextStyle(
+                  //color: Colors.grey[700],
+                  fontSize: 20,
+                  fontFamily: 'Pretendard',
+                ),
+              ),
+              Expanded(child: Container()),
+              Icon(Icons.keyboard_arrow_down),
+            ],
+          )),
+    );
   }
 }
