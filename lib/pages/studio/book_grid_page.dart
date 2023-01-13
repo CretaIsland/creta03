@@ -2,6 +2,8 @@
 
 import 'dart:math';
 
+import 'package:creta03/design_system/menu/creta_drop_down_button.dart';
+import 'package:creta03/design_system/text_field/creta_search_bar.dart';
 import 'package:creta03/pages/studio/studio_snippet.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +21,7 @@ import '../../design_system/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
 //import '../../lang/creta_lang.dart';
+import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
 //import '../play_list/play_list_page.dart';
@@ -55,7 +58,8 @@ class _BookListPageState extends State<BookListPage> {
   Size gridArea = Size.zero;
 
   late List<CretaMenuItem> _leftMenuItemList;
-  //late List<CretaMenuItem> _dropDownMenuItemList;
+  late List<CretaMenuItem> _dropDownMenuItemList1;
+  late List<CretaMenuItem> _dropDownMenuItemList2;
 
   bool dropDownButtonOpened = false;
   GlobalKey dropDownButtonKey = GlobalKey();
@@ -74,12 +78,20 @@ class _BookListPageState extends State<BookListPage> {
       CretaMenuItem(caption: CretaStudioLang.teamCretaBook, onPressed: () {}, selected: false),
     ];
 
-    // _dropDownMenuItemList = [
-    //   CretaMenuItem(caption: CretaLang.orderByList1[0], onPressed: () {}, selected: false),
-    //   CretaMenuItem(caption: CretaLang.orderByList1[1], onPressed: () {}, selected: true),
-    //   CretaMenuItem(caption: CretaLang.orderByList1[2], onPressed: () {}, selected: false),
-    //   CretaMenuItem(caption: CretaLang.orderByList1[3], onPressed: () {}, selected: false),
-    // ];
+    _dropDownMenuItemList1 = [
+      CretaMenuItem(caption: CretaLang.orderByList1[0], onPressed: () {}, selected: true),
+      CretaMenuItem(caption: CretaLang.orderByList1[1], onPressed: () {}, selected: false),
+      CretaMenuItem(caption: CretaLang.orderByList1[2], onPressed: () {}, selected: false),
+      CretaMenuItem(caption: CretaLang.orderByList1[3], onPressed: () {}, selected: false),
+      CretaMenuItem(caption: CretaLang.orderByList1[4], onPressed: () {}, selected: false),
+    ];
+
+    _dropDownMenuItemList2 = [
+      CretaMenuItem(caption: CretaLang.orderByList2[0], onPressed: () {}, selected: false),
+      CretaMenuItem(caption: CretaLang.orderByList2[1], onPressed: () {}, selected: true),
+      CretaMenuItem(caption: CretaLang.orderByList2[2], onPressed: () {}, selected: false),
+      CretaMenuItem(caption: CretaLang.orderByList2[3], onPressed: () {}, selected: false),
+    ];
   }
 
   @override
@@ -182,7 +194,7 @@ class _BookListPageState extends State<BookListPage> {
           SizedBox(height: 20),
           Container(
             height: 36,
-            color: Colors.amber,
+            color: Colors.white,
             child: _filterPane(),
           ),
         ],
@@ -192,8 +204,23 @@ class _BookListPageState extends State<BookListPage> {
 
   Widget _filterPane() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CretaDropDownButton(
+                /*width: 100,*/ height: 36, dropDownMenuItemList: _dropDownMenuItemList1),
+            CretaDropDownButton(
+                /*width: 100,*/ height: 36, dropDownMenuItemList: _dropDownMenuItemList2),
+          ],
+        ),
+        CretaSearchBar(
+          hintText: '검색어를 입력하세요',
+          onSearch: (value) {},
+          width: 246,
+          height: 32,
+        )
       ],
     );
   }
