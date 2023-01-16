@@ -1,6 +1,7 @@
 class CretaLang {
   static const String billInfo = '요금제 정보';
   static const String searchBar = '검색어를 입력하세요';
+  static const String all = '전체';
 
   static const List<String> orderByList1 = [
     "용도별(전체)",

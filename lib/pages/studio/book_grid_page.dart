@@ -2,9 +2,6 @@
 
 import 'dart:math';
 
-import 'package:creta03/design_system/menu/creta_drop_down_button.dart';
-import 'package:creta03/design_system/text_field/creta_search_bar.dart';
-import 'package:creta03/pages/studio/studio_snippet.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,25 +11,14 @@ import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
-import '../../design_system/component/creta_leftbar.dart';
+import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/snippet.dart';
-//import '../../design_system/menu/creta_drop_down.dart';
-import '../../design_system/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
-//import '../../design_system/text_field/creta_search_bar.dart';
-//import '../../lang/creta_lang.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
-//import '../play_list/play_list_page.dart';
 import 'book_grid_widget.dart';
 import 'sample_data.dart';
-
-// const double _rightViewTopPane = 40;
-// const double _rightViewLeftPane = 40;
-// const double _rightViewRightPane = 40;
-const double _rightViewBannerMinHeight = 196;
-//const double _rightViewToolbarHeight = 76;
 
 class BookListPage extends StatefulWidget {
   final VoidCallback? openDrawer;
@@ -43,19 +29,10 @@ class BookListPage extends StatefulWidget {
   State<BookListPage> createState() => _BookListPageState();
 }
 
-class _BookListPageState extends State<BookListPage> {
+class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin {
   GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
-  //final String _bookModelStr = '';
   int counter = 0;
   final Random random = Random();
-
-  double displayWidth = 0;
-  double displayHeight = 0;
-  Size availArea = Size.zero;
-  Size leftBarArea = Size.zero;
-  Size rightPaneArea = Size.zero;
-  Size topBannerArea = Size.zero;
-  Size gridArea = Size.zero;
 
   late List<CretaMenuItem> _leftMenuItemList;
   late List<CretaMenuItem> _dropDownMenuItemList1;
@@ -67,9 +44,9 @@ class _BookListPageState extends State<BookListPage> {
   @override
   void initState() {
     super.initState();
+    HycopFactory.realtime!.start();
     bookManagerHolder = BookManager();
     logger.info('initState');
-    //HycopFactory.initAll();
     HycopFactory.realtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
 
     _leftMenuItemList = [
@@ -106,20 +83,9 @@ class _BookListPageState extends State<BookListPage> {
     if (mounted) super.setState(fn);
   }
 
-  void _resize() {
-    displayWidth = MediaQuery.of(context).size.width;
-    displayHeight = MediaQuery.of(context).size.height;
-    availArea = Size(displayWidth, displayHeight - CretaComponentLocation.BarTop.height);
-    leftBarArea = Size(CretaComponentLocation.TabBar.width, availArea.height);
-    rightPaneArea = Size(displayWidth - leftBarArea.width, availArea.height);
-    topBannerArea = Size(rightPaneArea.width, _rightViewBannerMinHeight);
-    gridArea = Size(rightPaneArea.width, rightPaneArea.height - _rightViewBannerMinHeight);
-  }
-
   @override
   Widget build(BuildContext context) {
-    HycopFactory.realtime!.start();
-    _resize();
+    resize(context);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<BookManager>.value(
@@ -133,305 +99,16 @@ class _BookListPageState extends State<BookListPage> {
             onPressed: insertItem,
             child: const Icon(Icons.add),
           ),
-          child: _mainPage()),
+          child: mainPage(context,
+              gotoButtonPressed: () {},
+              gotoButtonTitle: CretaStudioLang.gotoCommunity,
+              leftMenuItemList: _leftMenuItemList,
+              bannerTitle: CretaStudioLang.sharedCretaBook,
+              bannerDescription: CretaStudioLang.sharedCretaBookDesc,
+              listOfListFilter: [_dropDownMenuItemList1, _dropDownMenuItemList2],
+              mainWidget: _getBookData())),
     );
   }
-
-  Widget _mainPage() {
-    return Row(
-      children: [
-        CretaLeftBar(
-          width: leftBarArea.width,
-          height: leftBarArea.height,
-          menuItem: _leftMenuItemList,
-          gotoButtonPressed: () {},
-          gotoButtonTitle: CretaStudioLang.gotoCommunity,
-        ),
-        Container(
-          width: rightPaneArea.width,
-          height: rightPaneArea.height,
-          color: Colors.white,
-          child: Column(
-            children: [
-              Container(
-                  width: topBannerArea.width,
-                  height: topBannerArea.height,
-                  color: Colors.white,
-                  child: //_getRightBannerPane(_rightViewBannedisplayWidth - CretaComponentLocation.TabBar.widthrMinHeight),
-                      topBannerPane()),
-              Container(
-                color: Colors.amber,
-                width: gridArea.width,
-                height: gridArea.height,
-                child: _getBookData(),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget topBannerPane() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(40, 40, 40, 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            height: 76,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(7.2),
-              boxShadow: StudioSnippet.fullShadow(),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: _titlePane(
-              title: CretaStudioLang.sharedCretaBook,
-              description: CretaStudioLang.sharedCretaBookDesc,
-            ),
-          ),
-          SizedBox(height: 20),
-          Container(
-            height: 36,
-            color: Colors.white,
-            child: _filterPane(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _filterPane() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CretaDropDownButton(
-                /*width: 100,*/ height: 36, dropDownMenuItemList: _dropDownMenuItemList1),
-            CretaDropDownButton(
-                /*width: 100,*/ height: 36, dropDownMenuItemList: _dropDownMenuItemList2),
-          ],
-        ),
-        CretaSearchBar(
-          hintText: '검색어를 입력하세요',
-          onSearch: (value) {},
-          width: 246,
-          height: 32,
-        )
-      ],
-    );
-  }
-
-  Widget _titlePane({Widget? icon, required String title, required String description}) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 28),
-      child: Row(
-        children: [
-          icon ?? Container(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(title, style: CretaFont.titleELarge),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(
-              '${SampleData.userName} $description',
-              style: CretaFont.bodyMedium,
-              overflow: TextOverflow.fade,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Widget _getRightBannerPane(double width, double height) {
-  //   return Container(
-  //     width: width,
-  //     height: height,
-  //     color: Colors.white,
-  //     child: Stack(
-  //       children: [
-  //         Positioned(
-  //           top: _rightViewTopPane,
-  //           left: _rightViewLeftPane,
-  //           child: Container(
-  //             decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.circular(7.2),
-  //               boxShadow: [
-  //                 BoxShadow(
-  //                   color: Colors.grey.withOpacity(0.2),
-  //                   spreadRadius: 3,
-  //                   blurRadius: 3,
-  //                   offset: Offset(0, 1), // changes position of shadow
-  //                 ),
-  //               ],
-  //             ),
-  //             clipBehavior: Clip.antiAlias,
-  //             width: width - _rightViewLeftPane - _rightViewRightPane,
-  //             height: height - _rightViewTopPane - _rightViewToolbarHeight,
-  //             child: Container(
-  //               width: width,
-  //               height: height,
-  //               color: Colors.white,
-  //               child: Stack(
-  //                 children: [
-  //                   Positioned(
-  //                     left: 41,
-  //                     top: 30,
-  //                     child: Icon(
-  //                       Icons.playlist_play,
-  //                       size: 20,
-  //                       color: Colors.grey[800],
-  //                     ),
-  //                   ),
-  //                   Positioned(
-  //                     left: 72,
-  //                     top: 27,
-  //                     child: Text(
-  //                       '재생목록',
-  //                       style: TextStyle(
-  //                         fontWeight: FontWeight.w600,
-  //                         fontSize: 22,
-  //                         color: Colors.grey[800],
-  //                         fontFamily: 'Pretendard',
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   Positioned(
-  //                     left: 173,
-  //                     top: 31,
-  //                     child: Text(
-  //                       '사용자 닉네임님이 만든 재생목록입니다.',
-  //                       style: TextStyle(
-  //                         fontSize: 16,
-  //                         color: Colors.grey[700],
-  //                         fontFamily: 'Pretendard',
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         // Positioned(
-  //         //   top: height - 56,
-  //         //   left: _rightViewLeftPane - 7,
-  //         //   child: CretaDropDown(
-  //         //       width: 91,
-  //         //       height: 36,
-  //         //       items: const ['최신순', '최신순1', '최신순2', '최신순3', '최신순4'],
-  //         //       defaultValue: '최신순',
-  //         //       onSelected: (value) {
-  //         //         //logger.finest('value=$value');
-  //         //       }),
-  //         // ),
-  //         Positioned(
-  //           top: height - 56,
-  //           left: _rightViewLeftPane + 107,
-  //           child: ElevatedButton(
-  //             key: dropDownButtonKey,
-  //             style: ButtonStyle(
-  //               overlayColor: MaterialStateProperty.resolveWith<Color?>(
-  //                 (Set<MaterialState> states) {
-  //                   if (states.contains(MaterialState.hovered)) {
-  //                     return Colors.white;
-  //                   }
-  //                   return Colors.white; //Colors.grey[100];
-  //                 },
-  //               ),
-  //               elevation: MaterialStateProperty.all<double>(0.0),
-  //               shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-  //               foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-  //                 (Set<MaterialState> states) {
-  //                   if (states.contains(MaterialState.hovered) || dropDownButtonOpened) {
-  //                     return Color.fromARGB(255, 89, 89, 89);
-  //                   }
-  //                   return Color.fromARGB(255, 140, 140, 140);
-  //                 },
-  //               ),
-  //               backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-  //               shape: MaterialStateProperty.resolveWith<OutlinedBorder?>(
-  //                 (Set<MaterialState> states) {
-  //                   return RoundedRectangleBorder(
-  //                       borderRadius: dropDownButtonOpened
-  //                           ? BorderRadius.only(
-  //                               topLeft: Radius.circular(8.0), topRight: Radius.circular(8.0))
-  //                           : BorderRadius.circular(8.0),
-  //                       side: BorderSide(
-  //                           color: (states.contains(MaterialState.hovered) || dropDownButtonOpened)
-  //                               ? Color.fromARGB(255, 89, 89, 89)
-  //                               : Colors.white));
-  //                 },
-  //               ),
-  //             ),
-  //             onPressed: () {
-  //               setState(() {
-  //                 CretaDropDownMenu.showMenu(
-  //                     context: context,
-  //                     globalKey: dropDownButtonKey,
-  //                     popupMenu: _dropDownMenuItemList,
-  //                     initFunc: () {
-  //                       dropDownButtonOpened = true;
-  //                     }).then((value) {
-  //                   logger.finest('팝업메뉴 닫기');
-  //                   setState(() {
-  //                     dropDownButtonOpened = false;
-  //                   });
-  //                 });
-
-  //                 dropDownButtonOpened = !dropDownButtonOpened;
-  //               });
-  //             },
-  //             child: SizedBox(
-  //                 width: 100,
-  //                 height: 40,
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.start,
-  //                   children: [
-  //                     Text(
-  //                       CretaLang.orderByList1[0],
-  //                       style: CretaFont.buttonLarge,
-  //                     ),
-  //                     Expanded(child: Container()),
-  //                     Icon(Icons.keyboard_arrow_down),
-  //                   ],
-  //                 )),
-  //           ),
-  //         ),
-  //         Positioned(
-  //           top: height - 54,
-  //           left: width - _rightViewRightPane - 246,
-  //           child: CretaSearchBar(
-  //             hintText: CretaLang.searchBar,
-  //             onSearch: (value) {},
-  //             width: 246,
-  //             height: 32,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //     //),
-  //   );
-  // }
-
-  // Widget _getRightItemPane(double width, double height) {
-  //   return Container(
-  //     color: Colors.white,
-  //     child: ListView.builder(
-  //         padding: EdgeInsets.fromLTRB(
-  //             _rightViewLeftPane, _rightViewBannerMinHeight, _rightViewRightPane, _rightViewBottomPane),
-  //         itemCount: _cretaPlayList.length,
-  //         itemExtent: 204,
-  //         itemBuilder: (context, index) {
-  //           return CretaPlayListItem(key: _cretaPlayList[index].globalKey, cretaPlayListData: _cretaPlayList[index], width: width);
-  //         }),
-  //   );
-  // }
 
   Widget _getBookData() {
     return FutureBuilder<List<AbsExModel>>(
