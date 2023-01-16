@@ -7,6 +7,8 @@ import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hycop/hycop.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'common/creta_constant.dart';
+import 'common/cross_common_job.dart';
 import 'routes.dart';
 
 void main() async {
@@ -31,6 +33,15 @@ class MainRouteApp extends ConsumerStatefulWidget {
 }
 
 class _MainRouteAppState extends ConsumerState<MainRouteApp> {
+  @override
+  void initState() {
+    super.initState();
+    CrossCommonJob ccj = CrossCommonJob();
+    CretaVariables.isCanvaskit = ccj.isInUsingCanvaskit();
+
+    HycopFactory.realtime!.start();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(

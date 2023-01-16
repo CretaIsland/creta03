@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../lang/creta_lang.dart';
 import '../../pages/studio/sample_data.dart';
+import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
 import '../creta_font.dart';
 import '../menu/creta_drop_down_button.dart';
@@ -38,7 +39,7 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
       height: widget.height,
       color: widget.color,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(40, 40, 40, 20),
+        padding: LayoutConst.cretaTopPadding,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

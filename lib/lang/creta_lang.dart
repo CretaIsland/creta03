@@ -17,4 +17,11 @@ class CretaLang {
     "인기순",
     "적합도순",
   ];
+
+  static const String edit = '편집하기';
+  static const String play = '재생하기';
+  static const String addToPlayList = '재생목록에 추가';
+  static const String share = '공유하기';
+  static const String download = '다운로드';
+  static const String copy = '복사하기';
 }

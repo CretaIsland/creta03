@@ -6,3 +6,7 @@ class CretaConstant {
   static const String framePrefix = 'Frame=';
   static const String contentsPrefix = 'Con=';
 }
+
+class CretaVariables {
+  static bool isCanvaskit = true;
+}

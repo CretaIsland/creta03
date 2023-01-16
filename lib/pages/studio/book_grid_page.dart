@@ -2,11 +2,12 @@
 
 import 'dart:math';
 
+import 'package:creta03/model/creta_model.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../data_io/book_manager.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
@@ -17,8 +18,10 @@ import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
+import 'book_grid_item.dart';
 import 'book_grid_widget.dart';
 import 'sample_data.dart';
+import 'studio_constant.dart';
 
 class BookListPage extends StatefulWidget {
   final VoidCallback? openDrawer;
@@ -41,10 +44,13 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
   bool dropDownButtonOpened = false;
   GlobalKey dropDownButtonKey = GlobalKey();
 
+  late ScrollController _controller;
+
   @override
   void initState() {
     super.initState();
-    HycopFactory.realtime!.start();
+    _controller = ScrollController();
+
     bookManagerHolder = BookManager();
     logger.info('initState');
     HycopFactory.realtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
@@ -85,7 +91,6 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
 
   @override
   Widget build(BuildContext context) {
-    resize(context);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<BookManager>.value(
@@ -106,68 +111,100 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
               bannerTitle: CretaStudioLang.sharedCretaBook,
               bannerDescription: CretaStudioLang.sharedCretaBookDesc,
               listOfListFilter: [_dropDownMenuItemList1, _dropDownMenuItemList2],
-              mainWidget: _getBookData())),
+              mainWidget: _bookGrid(context))),
     );
   }
 
-  Widget _getBookData() {
-    return FutureBuilder<List<AbsExModel>>(
-        future: bookManagerHolder!.getListFromDB(AccountManager.currentLoginUser.email),
-        builder: (context, AsyncSnapshot<List<AbsExModel>> snapshot) {
-          if (snapshot.hasError) {
-            //error가 발생하게 될 경우 반환하게 되는 부분
-            logger.severe("data fetch error");
-            return const Center(child: Text('data fetch error'));
-          }
-          if (snapshot.hasData == false) {
-            logger.severe("No data founded(${AccountManager.currentLoginUser.email})");
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            logger.finest("book founded ${snapshot.data!.length}");
-            // if (snapshot.data!.isEmpty) {
-            //   return const Center(child: Text('no book founded'));
-            // }
-            return Consumer<BookManager>(builder: (context, bookManager, child) {
-              listKey = GlobalKey<AnimatedListState>();
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    //color: Colors.amber,
-                    height: 50,
-                    //width: 100,
-                    child: Text(
-                      '${bookManager.modelList.length} data founded(${AccountManager.currentLoginUser.email})',
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                  ),
-                  Expanded(
-                    child: AnimatedList(
-                      key: listKey,
-                      initialItemCount: bookManager.modelList.length,
-                      itemBuilder: (context, index, animation) {
-                        if (index >= bookManager.modelList.length) {
-                          return Container();
-                        }
-                        return BookListWidget(
-                          item: bookManager.modelList[index] as BookModel,
-                          animation: animation,
-                          onDeleteClicked: () => removeItem(bookManager, index),
-                          onSaveClicked: () => saveItem(bookManager, index),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              );
-            });
-          }
-          return Container();
-        });
+  Widget _bookGrid(BuildContext context) {
+    return CretaModelSnippet.getData(
+      context,
+      holder: bookManagerHolder!,
+      userId: AccountManager.currentLoginUser.email,
+      consumerFunc: consumerFunc2,
+    );
+  }
+
+  Widget consumerFunc2(BuildContext context, List<AbsExModel>? data) {
+    return Consumer<BookManager>(builder: (context, bookManager, child) {
+      listKey = GlobalKey<AnimatedListState>();
+      int columnCount =
+          (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
+      if (columnCount == 0) columnCount = 1;
+
+      double itemWidth = -1;
+      double itemHeight = -1;
+      return GridView.builder(
+        controller: _controller,
+        padding: LayoutConst.cretaPadding,
+        itemCount: bookManager.modelList.length, //item 개수
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
+          childAspectRatio:
+              LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
+          mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
+          crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return (itemWidth >= 0 && itemHeight >= 0)
+              ? BookGridItem(
+                  key: (bookManager.modelList[index] as CretaModel).key,
+                  bookModel: bookManager.modelList[index] as BookModel,
+                  width: itemWidth,
+                  height: itemHeight,
+                )
+              : LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    itemWidth = constraints.maxWidth;
+                    itemHeight = constraints.maxHeight;
+                    return BookGridItem(
+                      key: (bookManager.modelList[index] as BookModel).key,
+                      bookModel: bookManager.modelList[index] as BookModel,
+                      width: itemWidth,
+                      height: itemHeight,
+                    );
+                  },
+                );
+        },
+      );
+    });
+  }
+
+  Widget consumerFunc(BuildContext context, List<AbsExModel>? data) {
+    return Consumer<BookManager>(builder: (context, bookManager, child) {
+      listKey = GlobalKey<AnimatedListState>();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            //color: Colors.amber,
+            height: 50,
+            //width: 100,
+            child: Text(
+              '${bookManager.modelList.length} data founded(${AccountManager.currentLoginUser.email})',
+              style: const TextStyle(fontSize: 24),
+            ),
+          ),
+          Expanded(
+            child: AnimatedList(
+              key: listKey,
+              initialItemCount: bookManager.modelList.length,
+              itemBuilder: (context, index, animation) {
+                if (index >= bookManager.modelList.length) {
+                  return Container();
+                }
+                return BookListWidget(
+                  item: bookManager.modelList[index] as BookModel,
+                  animation: animation,
+                  onDeleteClicked: () => removeItem(bookManager, index),
+                  onSaveClicked: () => saveItem(bookManager, index),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    });
   }
 
   void removeItem(BookManager bookManager, int index) async {

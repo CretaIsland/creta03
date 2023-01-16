@@ -46,4 +46,21 @@ class LayoutConst {
 
   static const double maxPageSize = 1920 * 8;
   static const double minPageSize = 320;
+
+  static const double cretaPaddingPixel = 40;
+  static EdgeInsetsGeometry cretaPadding = const EdgeInsets.fromLTRB(
+    LayoutConst.cretaPaddingPixel,
+    LayoutConst.cretaPaddingPixel,
+    LayoutConst.cretaPaddingPixel,
+    LayoutConst.cretaPaddingPixel,
+  );
+  static EdgeInsetsGeometry cretaTopPadding = const EdgeInsets.fromLTRB(
+    LayoutConst.cretaPaddingPixel,
+    LayoutConst.cretaPaddingPixel,
+    LayoutConst.cretaPaddingPixel,
+    LayoutConst.cretaPaddingPixel / 2,
+  );
+  static const Size bookThumbSize = Size(290.0, 256.0);
+  static const double bookThumbSpacing = cretaPaddingPixel / 2;
+  static const double bookDescriptionHeight = 56;
 }
