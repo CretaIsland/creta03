@@ -515,6 +515,21 @@ class Snippet {
       ),
     );
   }
+
+  static Widget TooltipWrapper({
+    required String tooltip,
+    required Color fgColor,
+    required Color bgColor,
+    required Widget child,
+  }) {
+    return Tooltip(
+      textStyle: CretaFont.bodyESmall.copyWith(color: fgColor),
+      decoration: BoxDecoration(
+          color: bgColor.withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(24))),
+      message: tooltip,
+      child: child,
+    );
+  }
 }
 
 class CretaComponentLocation {

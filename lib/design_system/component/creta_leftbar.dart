@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
+import 'package:url_launcher/link.dart';
 import '../../lang/creta_lang.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../buttons/creta_tapbar_button.dart';
@@ -29,11 +30,26 @@ class CretaLeftBar extends StatefulWidget {
 }
 
 class _CretaLeftBarState extends State<CretaLeftBar> {
+  Widget _getCretaTapBarButton(CretaMenuItem item) {
+    return CretaTapBarButton(
+        selected: item.selected,
+        caption: item.caption,
+        onPressed: () {
+          setState(() {
+            for (var ele in widget.menuItem) {
+              ele.selected = false;
+            }
+            item.selected = true;
+            logger.finest('selected chaged');
+          });
+          item.onPressed();
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    double userMenuHeight = widget.height -
-        CretaComponentLocation.TabBar.padding.top -
-        CretaComponentLocation.TabBar.padding.bottom;
+    double userMenuHeight =
+        widget.height - CretaComponentLocation.TabBar.padding.top - CretaComponentLocation.TabBar.padding.bottom;
     if (userMenuHeight > CretaComponentLocation.UserMenuInTabBar.height) {
       userMenuHeight = CretaComponentLocation.UserMenuInTabBar.height;
     }
@@ -55,19 +71,13 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                     direction: Axis.vertical,
                     spacing: 8, // <-- Spacing between children
                     children: widget.menuItem
-                        .map((item) => CretaTapBarButton(
-                            selected: item.selected,
-                            caption: item.caption,
-                            onPressed: () {
-                              setState(() {
-                                for (var ele in widget.menuItem) {
-                                  ele.selected = false;
-                                }
-                                item.selected = true;
-                                logger.finest('selected chaged');
-                              });
-                              item.onPressed();
-                            }))
+                        .map((item) => (item.linkUrl == null)
+                            ? _getCretaTapBarButton(item)
+                            : Link(
+                                uri: Uri.parse(item.linkUrl!),
+                                builder: (context, function) {
+                                  return _getCretaTapBarButton(item);
+                                }))
                         .toList(),
                   );
                 }),

@@ -10,10 +10,11 @@ import 'pages/intro_page.dart';
 import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
-import 'pages/community_home_page.dart';
+//import 'pages/community_home_page.dart';
 import 'pages/studio/sample_data.dart';
-import 'pages/subscription_list_page.dart';
-import 'pages/play_list/play_list_page.dart';
+//import 'pages/subscription_list_page.dart';
+//import 'pages/play_list/play_list_page.dart';
+import 'pages/community/community_page.dart';
 
 abstract class AppRoutes {
   static const String intro = '/intro';
@@ -53,9 +54,9 @@ final routesLoggedOut = RouteMap(
     AppRoutes.studioBookListPage: (_) => TransitionPage(
           child: BookListPage(),
         ),
-    AppRoutes.communityHome: (_) => TransitionPage(child: CommunityHomePage()),
-    AppRoutes.subscriptionList: (_) => TransitionPage(child: SubscriptionListPage()),
-    AppRoutes.playList: (_) => TransitionPage(child: PlayListPage()),
+    AppRoutes.communityHome: (_) => TransitionPage(child: CommunityPage(subPageUrl: AppRoutes.communityHome,),),
+    AppRoutes.subscriptionList: (_) => TransitionPage(child: CommunityPage(subPageUrl: AppRoutes.subscriptionList,),),
+    AppRoutes.playList: (_) => TransitionPage(child: CommunityPage(subPageUrl: AppRoutes.playList,),),
   },
 );
 

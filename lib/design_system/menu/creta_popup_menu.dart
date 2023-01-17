@@ -8,12 +8,14 @@ class CretaMenuItem {
   final IconData? iconData;
   final Function onPressed;
   bool selected;
+  String? linkUrl;
 
   CretaMenuItem({
     required this.caption,
     required this.onPressed,
     this.selected = false,
     this.iconData,
+    this.linkUrl,
   });
 }
 
