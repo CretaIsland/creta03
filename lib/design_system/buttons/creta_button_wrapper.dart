@@ -164,7 +164,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonSmall.copyWith(color: CretaColor.text[700]!)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -189,7 +189,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonSmall.copyWith(color: CretaColor.text[700]!)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -214,7 +214,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]!)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -239,7 +239,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonSmall.copyWith(color: CretaColor.text[700]!)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -264,7 +264,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -289,7 +289,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]!)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -345,7 +345,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonSmall.copyWith(color: Colors.white)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -360,6 +360,7 @@ class BTN {
       height: 76,
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.white300,
+      onPressed: onPressed,
       child: Row(
         children: [
           Padding(
@@ -390,7 +391,6 @@ class BTN {
           ),
         ],
       ),
-      onPressed: () {},
     );
   }
 
@@ -407,6 +407,7 @@ class BTN {
       height: 40,
       buttonType: CretaButtonType.child,
       buttonColor: buttonColor,
+      onPressed: onPressed,
       child: Row(
         children: [
           Padding(
@@ -431,7 +432,6 @@ class BTN {
           ),
         ],
       ),
-      onPressed: () {},
     );
   }
 
@@ -448,7 +448,7 @@ class BTN {
         size: 16,
         color: CretaColor.text[100]!,
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -464,7 +464,7 @@ class BTN {
         size: 20,
         color: CretaColor.text[100]!,
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -542,6 +542,7 @@ class BTN {
       height: 38,
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.blue,
+      onPressed: onPressed,
       child: Row(
         //mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -559,7 +560,6 @@ class BTN {
           ),
         ],
       ),
-      onPressed: () {},
     );
   }
 
@@ -584,7 +584,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonLarge.copyWith(color: Colors.white)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -598,6 +598,7 @@ class BTN {
       width: 191,
       height: 36,
       buttonType: CretaButtonType.child,
+      onPressed: onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -622,7 +623,6 @@ class BTN {
           ),
         ],
       ),
-      onPressed: () {},
     );
   }
 
@@ -636,6 +636,7 @@ class BTN {
       height: 38,
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.purple,
+      onPressed: onPressed,
       child: Row(
         //mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -653,7 +654,6 @@ class BTN {
           ),
         ],
       ),
-      onPressed: () {},
     );
   }
 
@@ -689,6 +689,7 @@ class BTN {
       height: 40,
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.black,
+      onPressed: onPressed,
       child: Row(
         children: [
           Padding(
@@ -711,7 +712,6 @@ class BTN {
           ),
         ],
       ),
-      onPressed: () {},
     );
   }
 
@@ -807,7 +807,7 @@ class BTN {
         size: 16,
         color: CretaColor.text[700]!,
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -823,7 +823,7 @@ class BTN {
       decoType: CretaButtonDeco.line,
       iconData: icon,
       iconSize: 16,
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -874,7 +874,7 @@ class BTN {
       //   child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
       // ),
 
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -890,6 +890,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.sky,
       decoType: CretaButtonDeco.line,
+      onPressed: onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -914,7 +915,6 @@ class BTN {
           ),
         ],
       ),
-      onPressed: () {},
     );
   }
 
@@ -944,7 +944,7 @@ class BTN {
       //   child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
       // ),
 
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -960,6 +960,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.skypurple,
       decoType: CretaButtonDeco.line,
+      onPressed: onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -985,7 +986,6 @@ class BTN {
           ),
         ],
       ),
-      onPressed: () {},
     );
   }
 
@@ -1067,7 +1067,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonSmall.copyWith(color: Colors.white)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -1092,7 +1092,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -1117,7 +1117,7 @@ class BTN {
           child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -1139,7 +1139,7 @@ class BTN {
         size: 20,
         color: CretaColor.text[700]!,
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 
@@ -1168,7 +1168,7 @@ class BTN {
               )),
         ),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 

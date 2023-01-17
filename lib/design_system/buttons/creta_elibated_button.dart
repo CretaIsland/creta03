@@ -22,6 +22,8 @@ class CretaElevatedButton extends StatefulWidget {
   final double height;
   final double radius;
 
+  final bool isVertical;
+
   CretaElevatedButton({
     super.key,
     required this.onPressed,
@@ -38,6 +40,7 @@ class CretaElevatedButton extends StatefulWidget {
     this.borderSelectedColor = Colors.blue,
     this.height = 24,
     this.radius = 36,
+    this.isVertical = false,
   });
 
   @override
@@ -86,21 +89,36 @@ class _CretaElevatedButtonState extends State<CretaElevatedButton> {
       },
       child: SizedBox(
           //width: double.infinity,
+          //color: Colors.amber,
           height: widget.height,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              widget.icon != null ? widget.icon! : Container(),
-              widget.caption != null && widget.captionStyle != null
-                  ? Text(
-                      widget.caption!,
-                      style: widget.captionStyle!
-                          .copyWith(color: (selected ? widget.fgSelectedColor : widget.fgColor)),
-                    )
-                  : Container(),
-            ],
-          )),
+          child: widget.isVertical
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    widget.icon != null ? widget.icon! : Container(),
+                    widget.caption != null && widget.captionStyle != null
+                        ? Text(
+                            widget.caption!,
+                            style: widget.captionStyle!.copyWith(
+                                color: (selected ? widget.fgSelectedColor : widget.fgColor)),
+                          )
+                        : Container(),
+                  ],
+                )
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    widget.icon != null ? widget.icon! : Container(),
+                    widget.caption != null && widget.captionStyle != null
+                        ? Text(
+                            widget.caption!,
+                            style: widget.captionStyle!.copyWith(
+                                color: (selected ? widget.fgSelectedColor : widget.fgColor)),
+                          )
+                        : Container(),
+                  ],
+                )),
     );
   }
 }

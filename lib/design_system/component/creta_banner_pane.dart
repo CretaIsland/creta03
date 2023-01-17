@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../lang/creta_lang.dart';
-import '../../pages/studio/sample_data.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
 import '../creta_font.dart';
@@ -95,7 +95,7 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
   }
 
   Widget _titlePane({Widget? icon, required String title, required String description}) {
-    String desc = '${SampleData.userName} $description';
+    String desc = '${AccountManager.currentLoginUser.name} $description';
     double titleWidth = title.length * CretaFont.titleELarge.fontSize! * 1.2 + 12 * 2 + 80;
     double descWidth = desc.length * CretaFont.bodyMedium.fontSize! * 1.2 + 12 * 2;
     return Padding(

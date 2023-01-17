@@ -49,6 +49,9 @@ class CretaStudioLang {
   static const String tooltipInvite = '초대하기';
   static const String tooltipPlay = '미리보기';
   static const String tooltipScale = '배율조정';
+  static const String tooltipDelete = '삭제하기';
 
   static const String gotoCommunity = '커뮤니티로 이동';
+
+  static const String newBook = '새 크라타북 만들기';
 }

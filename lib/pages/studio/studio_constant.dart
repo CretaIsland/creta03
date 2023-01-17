@@ -50,9 +50,9 @@ class LayoutConst {
   static const double cretaPaddingPixel = 40;
   static EdgeInsetsGeometry cretaPadding = const EdgeInsets.fromLTRB(
     LayoutConst.cretaPaddingPixel,
+    0,
     LayoutConst.cretaPaddingPixel,
-    LayoutConst.cretaPaddingPixel,
-    LayoutConst.cretaPaddingPixel,
+    LayoutConst.cretaPaddingPixel / 2,
   );
   static EdgeInsetsGeometry cretaTopPadding = const EdgeInsets.fromLTRB(
     LayoutConst.cretaPaddingPixel,

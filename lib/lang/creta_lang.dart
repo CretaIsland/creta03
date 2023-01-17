@@ -24,4 +24,10 @@ class CretaLang {
   static const String share = '공유하기';
   static const String download = '다운로드';
   static const String copy = '복사하기';
+
+  static String yearBefore = '년 전';
+  static String monthBefore = '달 전';
+  static String dayBefore = '일 전';
+  static String hourBefore = '시간 전';
+  static String minBefore = '분 전';
 }

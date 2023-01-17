@@ -12,6 +12,7 @@ import 'creta_model.dart';
 // ignore: camel_case_types
 class BookModel extends CretaModel {
   String creator = '';
+  String creatorName = '';
   late UndoAble<String> name;
   late UndoAble<int> width;
   late UndoAble<int> height;
@@ -31,6 +32,7 @@ class BookModel extends CretaModel {
   List<Object?> get props => [
         ...super.props,
         creator,
+        creatorName,
         name,
         width,
         height,
@@ -59,13 +61,18 @@ class BookModel extends CretaModel {
     description = UndoAble<String>("You could do it simple and plain", mid);
   }
 
-  BookModel.withName(String nameStr, this.creator) : super(type: ExModelType.book, parent: '') {
+  BookModel.withName(String nameStr,
+      {required this.creator,
+      required this.creatorName,
+      required String imageUrl,
+      double imageRatio = 1080 / 1920})
+      : super(type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     width = UndoAble<int>(0, mid);
     height = UndoAble<int>(0, mid);
-    thumbnailUrl = UndoAble<String>('', mid);
-    thumbnailType = UndoAble<ContentsType>(ContentsType.none, mid);
-    thumbnailAspectRatio = UndoAble<double>(1, mid);
+    thumbnailUrl = UndoAble<String>(imageUrl, mid);
+    thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid);
+    thumbnailAspectRatio = UndoAble<double>(imageRatio, mid);
     isSilent = UndoAble<bool>(false, mid);
     isAutoPlay = UndoAble<bool>(false, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
@@ -78,6 +85,7 @@ class BookModel extends CretaModel {
     super.copyFrom(src, newMid: newMid, pMid: pMid);
     BookModel srcBook = src as BookModel;
     creator = src.creator;
+    creatorName = src.creatorName;
     name = UndoAble<String>(srcBook.name.value, mid);
     width = UndoAble<int>(srcBook.width.value, mid);
     height = UndoAble<int>(srcBook.height.value, mid);
@@ -97,7 +105,8 @@ class BookModel extends CretaModel {
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);
-    creator = map["creator"] ?? (map["userId"] ?? '');
+    creator = map["creator"] ?? (map["creator"] ?? '');
+    creatorName = map["creatorName"] ?? (map["creatorName"] ?? '');
     width.set(map["width"] ?? 0, save: false, noUndo: true);
     height.set(map["height"] ?? 0, save: false, noUndo: true);
     isSilent.set(map["isSilent"] ?? false, save: false, noUndo: true);
@@ -117,6 +126,7 @@ class BookModel extends CretaModel {
       ..addEntries({
         "name": name.value,
         "creator": creator,
+        "creatorName": creatorName,
         "width": width.value,
         "height": height.value,
         "isSilent": isSilent.value,
