@@ -19,8 +19,6 @@ import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
 import 'book_grid_item.dart';
-import 'book_grid_widget.dart';
-import 'sample_data.dart';
 import 'studio_constant.dart';
 
 class BookListPage extends StatefulWidget {
@@ -33,7 +31,6 @@ class BookListPage extends StatefulWidget {
 }
 
 class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin {
-  GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   int counter = 0;
   final Random random = Random();
 
@@ -75,6 +72,8 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
       CretaMenuItem(caption: CretaLang.orderByList2[2], onPressed: () {}, selected: false),
       CretaMenuItem(caption: CretaLang.orderByList2[3], onPressed: () {}, selected: false),
     ];
+
+    //bookManagerHolder!.getListFromDB(AccountManager.currentLoginUser.email);
   }
 
   @override
@@ -100,10 +99,6 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
       child: Snippet.CretaScaffold(
           title: Snippet.logo('studio'),
           context: context,
-          floatingActionButton: FloatingActionButton(
-            onPressed: insertItem,
-            child: const Icon(Icons.add),
-          ),
           child: mainPage(context,
               gotoButtonPressed: () {},
               gotoButtonTitle: CretaStudioLang.gotoCommunity,
@@ -118,25 +113,74 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
   Widget _bookGrid(BuildContext context) {
     return CretaModelSnippet.getData(
       context,
-      holder: bookManagerHolder!,
+      manager: bookManagerHolder!,
       userId: AccountManager.currentLoginUser.email,
-      consumerFunc: consumerFunc2,
+      consumerFunc: consumerFunc,
     );
   }
 
-  Widget consumerFunc2(BuildContext context, List<AbsExModel>? data) {
+  // Widget consumerFunc2(BuildContext context, List<AbsExModel>? data) {
+  //   logger.finest('consumerFunc2');
+  //   return Consumer<BookManager>(builder: (context, bookManager, child) {
+  //     logger.finest('Consumer');
+  //     int columnCount =
+  //         (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
+  //     if (columnCount == 0) columnCount = 1;
+
+  //     double itemWidth = -1;
+  //     double itemHeight = -1;
+  //     return GridView.builder(
+  //       controller: _controller,
+  //       padding: LayoutConst.cretaPadding,
+  //       itemCount: bookManager.modelList.length + 1, //item 개수
+  //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //         crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
+  //         childAspectRatio:
+  //             LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
+  //         mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
+  //         crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+  //       ),
+  //       itemBuilder: (BuildContext context, int index) {
+  //         logger.finest('run $itemWidth, $itemHeight');
+  //         return (itemWidth >= 0 && itemHeight >= 0)
+  //             ? BookGridItem(
+  //                 index: index,
+  //                 key: (bookManager.modelList[index - 1] as CretaModel).key,
+  //                 bookModel: bookManager.modelList[index - 1] as BookModel,
+  //                 width: itemWidth,
+  //                 height: itemHeight,
+  //               )
+  //             : LayoutBuilder(
+  //                 builder: (BuildContext context, BoxConstraints constraints) {
+  //                   itemWidth = constraints.maxWidth;
+  //                   itemHeight = constraints.maxHeight;
+  //                   logger.finest('first data, $itemWidth, $itemHeight');
+  //                   return BookGridItem(
+  //                     index: index,
+  //                     key: GlobalKey(),
+  //                     // bookModel: bookManager.modelList[index] as BookModel,
+  //                     width: itemWidth,
+  //                     height: itemHeight,
+  //                   );
+  //                 },
+  //               );
+  //       },
+  //     );
+  //   });
+  // }
+
+  Widget consumerFunc(BuildContext context, List<AbsExModel>? data) {
+    logger.finest('consumerFunc');
     return Consumer<BookManager>(builder: (context, bookManager, child) {
-      listKey = GlobalKey<AnimatedListState>();
+      logger.finest('Consumer  ${bookManager.modelList.length + 1}');
       int columnCount =
           (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
       if (columnCount == 0) columnCount = 1;
 
-      double itemWidth = -1;
-      double itemHeight = -1;
       return GridView.builder(
         controller: _controller,
         padding: LayoutConst.cretaPadding,
-        itemCount: bookManager.modelList.length, //item 개수
+        itemCount: bookManager.modelList.length + 1, //item 개수
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
           childAspectRatio:
@@ -145,104 +189,27 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
           crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
-          return (itemWidth >= 0 && itemHeight >= 0)
-              ? BookGridItem(
-                  key: (bookManager.modelList[index] as CretaModel).key,
-                  bookModel: bookManager.modelList[index] as BookModel,
-                  width: itemWidth,
-                  height: itemHeight,
-                )
-              : LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    itemWidth = constraints.maxWidth;
-                    itemHeight = constraints.maxHeight;
-                    return BookGridItem(
-                      key: (bookManager.modelList[index] as BookModel).key,
-                      bookModel: bookManager.modelList[index] as BookModel,
-                      width: itemWidth,
-                      height: itemHeight,
-                    );
-                  },
-                );
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              double itemWidth = constraints.maxWidth;
+              double itemHeight = constraints.maxHeight;
+              //logger.finest('first data, $itemWidth, $itemHeight');
+              return BookGridItem(
+                index: index - 1,
+                key: index > 0 ? (bookManager.modelList[index - 1] as CretaModel).key : GlobalKey(),
+                bookModel: index > 0 ? bookManager.modelList[index - 1] as BookModel : null,
+                width: itemWidth,
+                height: itemHeight,
+              );
+            },
+          );
         },
       );
     });
   }
 
-  Widget consumerFunc(BuildContext context, List<AbsExModel>? data) {
-    return Consumer<BookManager>(builder: (context, bookManager, child) {
-      listKey = GlobalKey<AnimatedListState>();
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            //color: Colors.amber,
-            height: 50,
-            //width: 100,
-            child: Text(
-              '${bookManager.modelList.length} data founded(${AccountManager.currentLoginUser.email})',
-              style: const TextStyle(fontSize: 24),
-            ),
-          ),
-          Expanded(
-            child: AnimatedList(
-              key: listKey,
-              initialItemCount: bookManager.modelList.length,
-              itemBuilder: (context, index, animation) {
-                if (index >= bookManager.modelList.length) {
-                  return Container();
-                }
-                return BookListWidget(
-                  item: bookManager.modelList[index] as BookModel,
-                  animation: animation,
-                  onDeleteClicked: () => removeItem(bookManager, index),
-                  onSaveClicked: () => saveItem(bookManager, index),
-                );
-              },
-            ),
-          ),
-        ],
-      );
-    });
-  }
-
-  void removeItem(BookManager bookManager, int index) async {
-    BookModel removedItem = bookManager.modelList[index] as BookModel;
-    await bookManager.removeToDB(removedItem.mid);
-    listKey.currentState?.removeItem(
-      index,
-      (context, animation) => BookListWidget(
-        item: removedItem,
-        animation: animation,
-        onDeleteClicked: () {},
-        onSaveClicked: () {},
-      ),
-      duration: const Duration(milliseconds: 600),
-    );
-    bookManager.modelList.remove(removedItem);
-    bookManager.notify();
-  }
-
   void saveItem(BookManager bookManager, int index) async {
     BookModel savedItem = bookManager.modelList[index] as BookModel;
     await bookManager.setToDB(savedItem);
-  }
-
-  void insertItem() async {
-    int randomNumber = random.nextInt(1000);
-    BookModel book = BookModel.withName(
-        '${SampleData.connectedUserList[randomNumber % SampleData.connectedUserList.length].name}_$randomNumber',
-        AccountManager.currentLoginUser.email);
-
-    book.hashTag.set('#$randomNumber tag...');
-
-    await bookManagerHolder!.createToDB(book);
-    bookManagerHolder!.modelList.insert(0, book);
-    listKey.currentState?.insertItem(
-      0,
-      duration: const Duration(microseconds: 600),
-    );
-    bookManagerHolder!.notify();
   }
 }

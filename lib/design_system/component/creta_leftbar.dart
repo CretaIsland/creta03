@@ -1,6 +1,6 @@
-import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import '../../lang/creta_lang.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../buttons/creta_tapbar_button.dart';
@@ -92,7 +92,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       BTN.fill_gray_l_profile(
-                        text: SampleData.userName,
+                        text: AccountManager.currentLoginUser.name,
                         subText: CretaLang.billInfo,
                         image: const AssetImage('assets/creta_default.png'),
                         onPressed: () {},

@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
-import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -209,7 +208,7 @@ class Snippet {
             height: 40,
             child: BTN.fill_gray_iti_l(
               buttonColor: CretaButtonColor.blue,
-              text: SampleData.userName,
+              text: AccountManager.currentLoginUser.name,
               icon: Icons.arrow_drop_down_outlined,
               image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
               onPressed: () {},

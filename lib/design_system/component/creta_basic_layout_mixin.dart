@@ -67,7 +67,7 @@ mixin CretaBasicLayoutMixin {
                   : Container(),
               gridArea.height > gridMinArea.height && gridArea.width > gridMinArea.width
                   ? Container(
-                      color: Colors.amber,
+                      color: Colors.white,
                       width: gridArea.width,
                       height: gridArea.height,
                       child: mainWidget,
