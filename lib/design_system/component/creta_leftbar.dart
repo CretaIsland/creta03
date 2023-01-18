@@ -76,7 +76,10 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                             : Link(
                                 uri: Uri.parse(item.linkUrl!),
                                 builder: (context, function) {
-                                  return _getCretaTapBarButton(item);
+                                  return InkWell(
+                                    onTap: () => {},
+                                    child: _getCretaTapBarButton(item),
+                                  );
                                 }))
                         .toList(),
                   );

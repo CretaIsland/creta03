@@ -51,6 +51,7 @@ dependencies:
   # flutter_xlider: ^3.4.0
   flutter_vector_icons: ^2.0.0
   cached_network_image: ^3.2.3
+  url_launcher: ^6.1.7
   image_network: ^2.4.1
   http: ^0.13.5
   universal_html: ^2.0.8
