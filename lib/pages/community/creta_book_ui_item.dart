@@ -61,10 +61,7 @@ class CretaBookItemState extends State<CretaBookItem> {
 
   void _openPopupMenu() {
     CretaPopupMenu.showMenu(
-        context: context,
-        globalKey: widget.cretaBookData.key,
-        popupMenu: _popupMenuList,
-        initFunc: setPopmenuOpen)
+            context: context, globalKey: widget.cretaBookData.key, popupMenu: _popupMenuList, initFunc: setPopmenuOpen)
         .then((value) {
       logger.finest('팝업메뉴 닫기');
       setState(() {
@@ -137,13 +134,12 @@ class CretaBookItemState extends State<CretaBookItem> {
     popmenuOpen = true;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> overlayMenu = !(mouseOver || popmenuOpen)
-        ? [
-      Container(),
-    ]
-        : [
+  List<Widget> _getOverlayMenu() {
+    if (!(mouseOver || popmenuOpen)) {
+      return [];
+    }
+
+    return [
       Positioned(
         left: 8,
         top: 8,
@@ -285,7 +281,10 @@ class CretaBookItemState extends State<CretaBookItem> {
         ),
       ),
     ];
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return MouseRegion(
       onEnter: (value) {
         setState(() {
@@ -313,58 +312,72 @@ class CretaBookItemState extends State<CretaBookItem> {
               color: Colors.white,
               child: Stack(
                 children: [
-                  isInUsingCanvaskit ?
-                  // 콘텐츠 프리뷰 이미지
-                  ImageNetwork(
-                    width: widget.width,
-                    height: widget.height - _itemDescriptionHeight,
-                    image: widget.cretaBookData.thumbnailUrl,
-                    imageCache: CachedNetworkImageProvider(widget.cretaBookData.thumbnailUrl),
-                    duration: 1500,
-                    curve: Curves.easeIn,
-                    //onPointer: true,
-                    debugPrint: false,
-                    fullScreen: false,
-                    fitAndroidIos: BoxFit.cover,
-                    fitWeb: BoxFitWeb.cover,
-                    onLoading: const CircularProgressIndicator(
-                      color: Colors.indigoAccent,
-                    ),
-                    onError: const Icon(
-                      Icons.error,
-                      color: Colors.orange,
-                    ),
-                  ) :
-                  // Image.network(
-                  //   //width: 200,
-                  //   //height: 100,
-                  //   width: double.maxFinite,
-                  //   widget.cretaBookData.imageUrl,
-                  //   fit: BoxFit.cover,
-                  //   loadingBuilder: (context, child, loadingProgress) {
-                  //     if(loadingProgress == null){
-                  //       return child;
-                  //     }
-                  //     return Center(
-                  //       child: CircularProgressIndicator(
-                  //         value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
-                  //       ),
-                  //     );
-                  //   },
-                  //   errorBuilder: (context, exception, stackTrack) => Center(
-                  //     child: Icon(Icons.error, color: Colors.red, size: 40,),
-                  //   ),
-                  // ),
-                  CachedNetworkImage(
-                    imageUrl: widget.cretaBookData.thumbnailUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Center(
-                      child: Icon(Icons.error, color: Colors.red, size: 40,),
-                    ),
-                  ),
+                  isInUsingCanvaskit
+                      ?
+                      // 콘텐츠 프리뷰 이미지
+                      ImageNetwork(
+                          width: widget.width,
+                          height: widget.height - _itemDescriptionHeight,
+                          image: widget.cretaBookData.thumbnailUrl,
+                          imageCache: CachedNetworkImageProvider(widget.cretaBookData.thumbnailUrl),
+                          duration: 1500,
+                          curve: Curves.easeIn,
+                          //onPointer: true,
+                          debugPrint: false,
+                          fullScreen: false,
+                          fitAndroidIos: BoxFit.cover,
+                          fitWeb: BoxFitWeb.cover,
+                          onLoading: const CircularProgressIndicator(
+                            color: Colors.indigoAccent,
+                          ),
+                          onError: const Icon(
+                            Icons.error,
+                            color: Colors.orange,
+                          ),
+                        )
+                      :
+                      // Image.network(
+                      //   //width: 200,
+                      //   //height: 100,
+                      //   width: double.maxFinite,
+                      //   widget.cretaBookData.imageUrl,
+                      //   fit: BoxFit.cover,
+                      //   loadingBuilder: (context, child, loadingProgress) {
+                      //     if(loadingProgress == null){
+                      //       return child;
+                      //     }
+                      //     return Center(
+                      //       child: CircularProgressIndicator(
+                      //         value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
+                      //       ),
+                      //     );
+                      //   },
+                      //   errorBuilder: (context, exception, stackTrack) => Center(
+                      //     child: Icon(Icons.error, color: Colors.red, size: 40,),
+                      //   ),
+                      // ),
+                      CachedNetworkImage(
+                          width: widget.width,
+                          height: widget.height - _itemDescriptionHeight,
+                          imageUrl: widget.cretaBookData.thumbnailUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Center(
+                            child: SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Center(
+                            child: Icon(
+                              Icons.error,
+                              color: Colors.red,
+                              size: 40,
+                            ),
+                          ),
+                        ),
                   // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
-                  ...overlayMenu,
+                  ..._getOverlayMenu(),
                 ],
               ),
             ),
