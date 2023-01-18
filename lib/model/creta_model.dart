@@ -3,17 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
+
+import '../data_io/creta_manager.dart';
 
 class CretaModelSnippet {
   static FutureBuilder<List<AbsExModel>> getData(
     BuildContext context, {
-    required AbsExModelManager manager,
+    required CretaManager manager,
     required String userId,
     required Widget Function(BuildContext, List<AbsExModel>?) consumerFunc,
   }) {
     return FutureBuilder<List<AbsExModel>>(
-        future: manager.getListFromDB(userId),
+        //future: manager.getListFromDB(userId),
+        future: manager.isGetListFromDBComplete(),
         builder: (context, AsyncSnapshot<List<AbsExModel>> snapshot) {
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분

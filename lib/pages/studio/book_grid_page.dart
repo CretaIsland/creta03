@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/window_resize_lisnter.dart';
 import '../../data_io/book_manager.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -33,6 +34,8 @@ class BookListPage extends StatefulWidget {
 class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin {
   int counter = 0;
   final Random random = Random();
+  late WindowResizeListner sizeListener;
+  BookManager? bookManagerHolder;
 
   late List<CretaMenuItem> _leftMenuItemList;
   late List<CretaMenuItem> _dropDownMenuItemList1;
@@ -45,12 +48,11 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
 
   @override
   void initState() {
-    super.initState();
-    _controller = ScrollController();
+    logger.info('initState start');
 
-    bookManagerHolder = BookManager();
-    logger.info('initState');
-    HycopFactory.realtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
+    super.initState();
+
+    _controller = ScrollController();
 
     _leftMenuItemList = [
       CretaMenuItem(caption: CretaStudioLang.myCretaBook, onPressed: () {}, selected: true),
@@ -73,13 +75,25 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
       CretaMenuItem(caption: CretaLang.orderByList2[3], onPressed: () {}, selected: false),
     ];
 
-    //bookManagerHolder!.getListFromDB(AccountManager.currentLoginUser.email);
+    bookManagerHolder = BookManager();
+    HycopFactory.realtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
+
+    bookManagerHolder!.getListFromDB(AccountManager.currentLoginUser.email);
+    logger.info('initState end');
+
+    sizeListener = WindowResizeListner(
+        resizeDuration: 100,
+        onReizeComplete: () {
+          setState(() {});
+        });
+    WidgetsBinding.instance.addObserver(sizeListener);
   }
 
   @override
   void dispose() {
     logger.finest('_BookListPageState dispose');
     super.dispose();
+    WidgetsBinding.instance.removeObserver(sizeListener);
     //HycopFactory.myRealtime!.stop();
   }
 
@@ -106,11 +120,15 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
               bannerTitle: CretaStudioLang.sharedCretaBook,
               bannerDescription: CretaStudioLang.sharedCretaBookDesc,
               listOfListFilter: [_dropDownMenuItemList1, _dropDownMenuItemList2],
+              //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
               mainWidget: _bookGrid(context))),
     );
   }
 
   Widget _bookGrid(BuildContext context) {
+    if (sizeListener.isResizing()) {
+      return Container();
+    }
     return CretaModelSnippet.getData(
       context,
       manager: bookManagerHolder!,
@@ -119,63 +137,17 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
     );
   }
 
-  // Widget consumerFunc2(BuildContext context, List<AbsExModel>? data) {
-  //   logger.finest('consumerFunc2');
-  //   return Consumer<BookManager>(builder: (context, bookManager, child) {
-  //     logger.finest('Consumer');
-  //     int columnCount =
-  //         (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
-  //     if (columnCount == 0) columnCount = 1;
-
-  //     double itemWidth = -1;
-  //     double itemHeight = -1;
-  //     return GridView.builder(
-  //       controller: _controller,
-  //       padding: LayoutConst.cretaPadding,
-  //       itemCount: bookManager.modelList.length + 1, //item 개수
-  //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //         crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-  //         childAspectRatio:
-  //             LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
-  //         mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
-  //         crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
-  //       ),
-  //       itemBuilder: (BuildContext context, int index) {
-  //         logger.finest('run $itemWidth, $itemHeight');
-  //         return (itemWidth >= 0 && itemHeight >= 0)
-  //             ? BookGridItem(
-  //                 index: index,
-  //                 key: (bookManager.modelList[index - 1] as CretaModel).key,
-  //                 bookModel: bookManager.modelList[index - 1] as BookModel,
-  //                 width: itemWidth,
-  //                 height: itemHeight,
-  //               )
-  //             : LayoutBuilder(
-  //                 builder: (BuildContext context, BoxConstraints constraints) {
-  //                   itemWidth = constraints.maxWidth;
-  //                   itemHeight = constraints.maxHeight;
-  //                   logger.finest('first data, $itemWidth, $itemHeight');
-  //                   return BookGridItem(
-  //                     index: index,
-  //                     key: GlobalKey(),
-  //                     // bookModel: bookManager.modelList[index] as BookModel,
-  //                     width: itemWidth,
-  //                     height: itemHeight,
-  //                   );
-  //                 },
-  //               );
-  //       },
-  //     );
-  //   });
-  // }
-
   Widget consumerFunc(BuildContext context, List<AbsExModel>? data) {
     logger.finest('consumerFunc');
+
     return Consumer<BookManager>(builder: (context, bookManager, child) {
       logger.finest('Consumer  ${bookManager.modelList.length + 1}');
       int columnCount =
           (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
       if (columnCount == 0) columnCount = 1;
+
+      double itemWidth = -1;
+      double itemHeight = -1;
 
       return GridView.builder(
         controller: _controller,
@@ -189,20 +161,34 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
           crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
-          return LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              double itemWidth = constraints.maxWidth;
-              double itemHeight = constraints.maxHeight;
-              //logger.finest('first data, $itemWidth, $itemHeight');
-              return BookGridItem(
-                index: index - 1,
-                key: index > 0 ? (bookManager.modelList[index - 1] as CretaModel).key : GlobalKey(),
-                bookModel: index > 0 ? bookManager.modelList[index - 1] as BookModel : null,
-                width: itemWidth,
-                height: itemHeight,
-              );
-            },
-          );
+          return (itemWidth >= 0 && itemHeight >= 0)
+              ? BookGridItem(
+                  bookManager: bookManager,
+                  index: index - 1,
+                  key: index > 0
+                      ? (bookManager.modelList[index - 1] as CretaModel).key
+                      : GlobalKey(),
+                  bookModel: index > 0 ? bookManager.modelList[index - 1] as BookModel : null,
+                  width: itemWidth,
+                  height: itemHeight,
+                )
+              : LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    itemWidth = constraints.maxWidth;
+                    itemHeight = constraints.maxHeight;
+                    //logger.finest('first data, $itemWidth, $itemHeight');
+                    return BookGridItem(
+                      bookManager: bookManager,
+                      index: index - 1,
+                      key: index > 0
+                          ? (bookManager.modelList[index - 1] as CretaModel).key
+                          : GlobalKey(),
+                      bookModel: index > 0 ? bookManager.modelList[index - 1] as BookModel : null,
+                      width: itemWidth,
+                      height: itemHeight,
+                    );
+                  },
+                );
         },
       );
     });

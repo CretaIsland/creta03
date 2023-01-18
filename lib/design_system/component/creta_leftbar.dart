@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
@@ -48,8 +50,9 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
 
   @override
   Widget build(BuildContext context) {
-    double userMenuHeight =
-        widget.height - CretaComponentLocation.TabBar.padding.top - CretaComponentLocation.TabBar.padding.bottom;
+    double userMenuHeight = widget.height -
+        CretaComponentLocation.TabBar.padding.top -
+        CretaComponentLocation.TabBar.padding.bottom;
     if (userMenuHeight > CretaComponentLocation.UserMenuInTabBar.height) {
       userMenuHeight = CretaComponentLocation.UserMenuInTabBar.height;
     }
