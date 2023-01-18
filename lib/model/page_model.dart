@@ -1,5 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-import 'package:creta03/data_io/book_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -8,7 +7,6 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:hycop/hycop/utils/hycop_utils.dart';
 
 import '../lang/creta_studio_lang.dart';
-import 'book_model.dart';
 import 'creta_model.dart';
 import 'frame_model.dart';
 
@@ -123,10 +121,10 @@ class PageModel extends CretaModel {
     while (key.currentContext == null) {
       await Future.delayed(const Duration(milliseconds: 10));
     }
-    AbsExModel? book = bookManagerHolder?.getModel(parentMid.value);
-    if (book != null) {
-      (book as BookModel).getRealSize();
-    }
+    //AbsExModel? book = bookManagerHolder?.getModel(parentMid.value);
+    // if (book != null) {
+    //   (book as BookModel).getRealSize();
+    // }
     logger.finest('page build complete !!!');
     return true;
   }

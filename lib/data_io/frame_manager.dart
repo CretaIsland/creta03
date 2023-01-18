@@ -1,11 +1,11 @@
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
 import '../model/frame_model.dart';
+import 'creta_manager.dart';
 
 FrameManager? frameManagerHolder;
 
-class FrameManager extends AbsExModelManager {
+class FrameManager extends CretaManager {
   FrameManager() : super('hycop_frame');
   @override
   AbsExModel newModel() => FrameModel();

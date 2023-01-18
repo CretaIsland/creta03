@@ -58,6 +58,7 @@ dependencies:
   cross_scroll: ^0.0.75
   firebase_core_platform_interface: 4.5.1
   adaptive_scrollbar: ^2.1.2
+  mutex: ^3.0.1
 
 dev_dependencies:
   flutter_test:

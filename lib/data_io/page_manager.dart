@@ -1,11 +1,11 @@
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
 import '../model/page_model.dart';
+import 'creta_manager.dart';
 
 PageManager? pageManagerHolder;
 
-class PageManager extends AbsExModelManager {
+class PageManager extends CretaManager {
   PageManager() : super('hycop_page');
   @override
   AbsExModel newModel() => PageModel();
