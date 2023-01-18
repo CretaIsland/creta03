@@ -14,6 +14,7 @@ import '../../common/creta_utils.dart';
 import '../../data_io/book_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_elibated_button.dart';
+import '../../design_system/component/custom_image.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
@@ -165,18 +166,20 @@ class BookGridItemState extends State<BookGridItem> {
                 color: CretaColor.secondary,
               ),
             )
-          : CachedNetworkImage(
-              imageUrl: widget.bookModel!.thumbnailUrl.value,
-              fit: BoxFit.fill,
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Center(
-                child: Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 40,
-                ),
-              ),
-            ),
+          : CustomImage(
+              width: widget.width,
+              height: widget.height,
+              image: widget.bookModel!.thumbnailUrl.value),
+      //     fit: BoxFit.fill,
+      //     placeholder: (context, url) => const CircularProgressIndicator(),
+      //     errorWidget: (context, url, error) => const Center(
+      //       child: Icon(
+      //         Icons.error,
+      //         color: Colors.red,
+      //         size: 40,
+      //       ),
+      //     ),
+      //   ),
     );
   }
 

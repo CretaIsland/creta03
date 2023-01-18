@@ -52,11 +52,23 @@ final routesLoggedOut = RouteMap(
           child: BookMainPage(model: SampleData.sampleBook),
         ),
     AppRoutes.studioBookListPage: (_) => TransitionPage(
-          child: BookListPage(),
+          child: BookGridPage(),
         ),
-    AppRoutes.communityHome: (_) => TransitionPage(child: CommunityPage(subPageUrl: AppRoutes.communityHome,),),
-    AppRoutes.subscriptionList: (_) => TransitionPage(child: CommunityPage(subPageUrl: AppRoutes.subscriptionList,),),
-    AppRoutes.playList: (_) => TransitionPage(child: CommunityPage(subPageUrl: AppRoutes.playList,),),
+    AppRoutes.communityHome: (_) => TransitionPage(
+          child: CommunityPage(
+            subPageUrl: AppRoutes.communityHome,
+          ),
+        ),
+    AppRoutes.subscriptionList: (_) => TransitionPage(
+          child: CommunityPage(
+            subPageUrl: AppRoutes.subscriptionList,
+          ),
+        ),
+    AppRoutes.playList: (_) => TransitionPage(
+          child: CommunityPage(
+            subPageUrl: AppRoutes.playList,
+          ),
+        ),
   },
 );
 

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/window_resize_lisnter.dart';
+//import '../../common/window_resize_lisnter.dart';
 import '../../data_io/book_manager.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -22,20 +22,22 @@ import '../../model/book_model.dart';
 import 'book_grid_item.dart';
 import 'studio_constant.dart';
 
-class BookListPage extends StatefulWidget {
+// ignore: must_be_immutable
+class BookGridPage extends StatefulWidget {
   final VoidCallback? openDrawer;
 
-  const BookListPage({Key? key, this.openDrawer}) : super(key: key);
+  const BookGridPage({Key? key, this.openDrawer}) : super(key: key);
 
   @override
-  State<BookListPage> createState() => _BookListPageState();
+  State<BookGridPage> createState() => _BookGridPageState();
 }
 
-class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin {
+class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin {
   int counter = 0;
   final Random random = Random();
-  late WindowResizeListner sizeListener;
+  //late WindowResizeListner sizeListener;
   BookManager? bookManagerHolder;
+  bool _onceDBGetComplete = false;
 
   late List<CretaMenuItem> _leftMenuItemList;
   late List<CretaMenuItem> _dropDownMenuItemList1;
@@ -76,24 +78,25 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
     ];
 
     bookManagerHolder = BookManager();
+    bookManagerHolder!.configEvent(applyModify: false, notifyModify: false);
+    bookManagerHolder!.getListFromDB(AccountManager.currentLoginUser.email);
     HycopFactory.realtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
 
-    bookManagerHolder!.getListFromDB(AccountManager.currentLoginUser.email);
+    // sizeListener = WindowResizeListner(
+    //     resizeDuration: 100,
+    //     onReizeComplete: () {
+    //       //setState(() {});
+    //     });
+    // WidgetsBinding.instance.addObserver(sizeListener);
     logger.info('initState end');
-
-    sizeListener = WindowResizeListner(
-        resizeDuration: 100,
-        onReizeComplete: () {
-          setState(() {});
-        });
-    WidgetsBinding.instance.addObserver(sizeListener);
   }
 
   @override
   void dispose() {
-    logger.finest('_BookListPageState dispose');
+    logger.finest('_BookGridPageState dispose');
     super.dispose();
-    WidgetsBinding.instance.removeObserver(sizeListener);
+    //WidgetsBinding.instance.removeObserver(sizeListener);
+    HycopFactory.realtime!.removeListener('creta_book');
     //HycopFactory.myRealtime!.stop();
   }
 
@@ -126,72 +129,78 @@ class _BookListPageState extends State<BookListPage> with CretaBasicLayoutMixin 
   }
 
   Widget _bookGrid(BuildContext context) {
-    if (sizeListener.isResizing()) {
-      return Container();
+    // if (sizeListener.isResizing()) {
+    //   return consumerFunc(context, null);
+    // }
+    if (_onceDBGetComplete) {
+      return consumerFunc(context, null);
     }
-    return CretaModelSnippet.getData(
+    var retval = CretaModelSnippet.getData(
       context,
       manager: bookManagerHolder!,
       userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
     );
+    _onceDBGetComplete = true;
+    return retval;
   }
 
   Widget consumerFunc(BuildContext context, List<AbsExModel>? data) {
     logger.finest('consumerFunc');
-
     return Consumer<BookManager>(builder: (context, bookManager, child) {
       logger.finest('Consumer  ${bookManager.modelList.length + 1}');
-      int columnCount =
-          (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
-      if (columnCount == 0) columnCount = 1;
-
-      double itemWidth = -1;
-      double itemHeight = -1;
-
-      return GridView.builder(
-        controller: _controller,
-        padding: LayoutConst.cretaPadding,
-        itemCount: bookManager.modelList.length + 1, //item 개수
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-          childAspectRatio:
-              LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
-          mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
-          crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return (itemWidth >= 0 && itemHeight >= 0)
-              ? BookGridItem(
-                  bookManager: bookManager,
-                  index: index - 1,
-                  key: index > 0
-                      ? (bookManager.modelList[index - 1] as CretaModel).key
-                      : GlobalKey(),
-                  bookModel: index > 0 ? bookManager.modelList[index - 1] as BookModel : null,
-                  width: itemWidth,
-                  height: itemHeight,
-                )
-              : LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    itemWidth = constraints.maxWidth;
-                    itemHeight = constraints.maxHeight;
-                    //logger.finest('first data, $itemWidth, $itemHeight');
-                    return BookGridItem(
-                      bookManager: bookManager,
-                      index: index - 1,
-                      key: index > 0
-                          ? (bookManager.modelList[index - 1] as CretaModel).key
-                          : GlobalKey(),
-                      bookModel: index > 0 ? bookManager.modelList[index - 1] as BookModel : null,
-                      width: itemWidth,
-                      height: itemHeight,
-                    );
-                  },
-                );
-        },
-      );
+      return _gridViewer(bookManager);
     });
+  }
+
+  Widget _gridViewer(BookManager bookManager) {
+    int columnCount =
+        (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
+    if (columnCount == 0) columnCount = 1;
+
+    double itemWidth = -1;
+    double itemHeight = -1;
+
+    return GridView.builder(
+      controller: _controller,
+      padding: LayoutConst.cretaPadding,
+      itemCount: bookManager.modelList.length + 1, //item 개수
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
+        childAspectRatio:
+            LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
+        mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
+        crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        return (itemWidth >= 0 && itemHeight >= 0)
+            ? BookGridItem(
+                bookManager: bookManager,
+                index: index - 1,
+                key: index > 0 ? (bookManager.modelList[index - 1] as CretaModel).key : GlobalKey(),
+                bookModel: index > 0 ? bookManager.modelList[index - 1] as BookModel : null,
+                width: itemWidth,
+                height: itemHeight,
+              )
+            : LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  itemWidth = constraints.maxWidth;
+                  itemHeight = constraints.maxHeight;
+                  //logger.finest('first data, $itemWidth, $itemHeight');
+                  return BookGridItem(
+                    bookManager: bookManager,
+                    index: index - 1,
+                    key: index > 0
+                        ? (bookManager.modelList[index - 1] as CretaModel).key
+                        : GlobalKey(),
+                    bookModel: index > 0 ? bookManager.modelList[index - 1] as BookModel : null,
+                    width: itemWidth,
+                    height: itemHeight,
+                  );
+                },
+              );
+      },
+    );
   }
 
   void saveItem(BookManager bookManager, int index) async {

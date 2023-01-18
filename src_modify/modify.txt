@@ -2,3 +2,9 @@
 # dispose error 수정
 cp src_modify\speed_dial.daxt  D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\flutter_speed_dial-6.2.0\lib\src\speed_dial.dart 
 
+# hycop 수정
+# removeListner 추가
+cp  src_modify\abs_realtime.daxt D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\hycop-0.0.5\lib\hycop\realtime\abs_realtime.dart
+
+
+
