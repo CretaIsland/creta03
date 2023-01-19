@@ -334,7 +334,5 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> with Co
   }
 
   @override
-  Widget build(BuildContext context) {
-    return mainPage(Size(widget.pageWidth, widget.pageHeight));
-  }
+  Widget build(BuildContext context) => mainPage(Size(widget.pageWidth, widget.pageHeight));
 }
