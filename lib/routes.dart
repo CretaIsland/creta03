@@ -25,9 +25,9 @@ abstract class AppRoutes {
   static const String studioBookMainPage = '/studio/bookMainPage';
   static const String studioBookListPage = '/studio/bookListPage';
   static const String login = '/login';
-  static const String communityHome = '/communityHome';
-  static const String subscriptionList = '/subscriptionList';
-  static const String playList = '/playList';
+  static const String communityHome = '/community/home';
+  static const String subscriptionList = '/community/subscriptionList';
+  static const String playList = '/community/playList';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();

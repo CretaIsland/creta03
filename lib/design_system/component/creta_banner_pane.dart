@@ -34,17 +34,19 @@ class CretaBannerPane extends StatefulWidget {
 class _CretaBannerPaneState extends State<CretaBannerPane> {
   @override
   Widget build(BuildContext context) {
+    double internalWidth = widget.width - LayoutConst.cretaTopTitlePaddingLT.width - LayoutConst.cretaTopTitlePaddingRB.width;
     return Container(
       width: widget.width,
       height: widget.height,
       color: widget.color,
-      child: Padding(
-        padding: LayoutConst.cretaTopPadding,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              height: 76,
+      child: Stack(
+        children: [
+          Positioned(
+            left: LayoutConst.cretaTopTitlePaddingLT.width,
+            top: LayoutConst.cretaTopTitlePaddingLT.height,
+            child: Container(
+              width: internalWidth,
+              height: LayoutConst.cretaTopTitleHeight,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(7.2),
@@ -56,16 +58,52 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
                 description: widget.description,
               ),
             ),
-            const SizedBox(height: 20),
-            Container(
-              height: 36,
+          ),
+          Positioned(
+            left: LayoutConst.cretaTopFilterPaddingLT.width,
+            top: LayoutConst.cretaTopFilterPaddingLT.height,
+            child: Container(
+              width: internalWidth,
+              height: LayoutConst.cretaTopFilterHeight,
               color: Colors.white,
               child: _filterPane(),
-            )
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
+    // return Container(
+    //   width: widget.width,
+    //   height: widget.height,
+    //   color: widget.color,
+    //   child: Padding(
+    //     padding: LayoutConst.cretaTopPadding,
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.start,
+    //       children: [
+    //         Container(
+    //           height: 76,
+    //           decoration: BoxDecoration(
+    //             color: Colors.white,
+    //             borderRadius: BorderRadius.circular(7.2),
+    //             boxShadow: StudioSnippet.fullShadow(),
+    //           ),
+    //           clipBehavior: Clip.antiAlias,
+    //           child: _titlePane(
+    //             title: widget.title,
+    //             description: widget.description,
+    //           ),
+    //         ),
+    //         const SizedBox(height: 20),
+    //         Container(
+    //           height: 36,
+    //           color: Colors.white,
+    //           child: _filterPane(),
+    //         )
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 
   Widget _filterPane() {

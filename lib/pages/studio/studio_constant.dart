@@ -63,4 +63,12 @@ class LayoutConst {
   static const Size bookThumbSize = Size(290.0 / 1.25, 256.0 / 1.25);
   static const double bookThumbSpacing = cretaPaddingPixel / 2;
   static const double bookDescriptionHeight = 56;
+
+  static const double cretaTopTitleHeight = 76;
+  static const double cretaTopTitleFilterHeightGap = 20;
+  static const double cretaTopFilterHeight = 36;
+  static const Size cretaTopTitlePaddingLT = Size(cretaPaddingPixel, cretaPaddingPixel);
+  static const Size cretaTopTitlePaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel);
+  static const Size cretaTopFilterPaddingLT = Size(cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
+  static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
 }
