@@ -14,7 +14,8 @@ class CretaLang {
   static const List<String> orderByList2 = [
     "최신순",
     "이름순",
-    "인기순",
+    "좋아요순",
+    "조회수순",
   ];
 
   static const String edit = '편집하기';
