@@ -24,7 +24,8 @@ class BookModel extends CretaModel {
   late UndoAble<String> thumbnailUrl;
   late UndoAble<ContentsType> thumbnailType;
   late UndoAble<double> thumbnailAspectRatio;
-  late UndoAble<int> viewCount;
+  int viewCount = 0;
+  int likeCount = 0;
 
   Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
 
@@ -44,7 +45,8 @@ class BookModel extends CretaModel {
         thumbnailUrl,
         thumbnailType,
         thumbnailAspectRatio,
-        viewCount
+        viewCount,
+        likeCount,
       ];
   BookModel() : super(type: ExModelType.book, parent: '') {
     name = UndoAble<String>('', mid);
@@ -57,16 +59,20 @@ class BookModel extends CretaModel {
     isAutoPlay = UndoAble<bool>(false, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
     isReadOnly = UndoAble<bool>(false, mid);
-    viewCount = UndoAble<int>(0, mid);
+    viewCount = 0;
+    likeCount = 0;
     description = UndoAble<String>("You could do it simple and plain", mid);
   }
 
-  BookModel.withName(String nameStr,
-      {required this.creator,
-      required this.creatorName,
-      required String imageUrl,
-      double imageRatio = 1080 / 1920})
-      : super(type: ExModelType.book, parent: '') {
+  BookModel.withName(
+    String nameStr, {
+    required this.creator,
+    required this.creatorName,
+    required String imageUrl,
+    double imageRatio = 1080 / 1920,
+    int likeNo = 0,
+    int viewNo = 0,
+  }) : super(type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     width = UndoAble<int>(0, mid);
     height = UndoAble<int>(0, mid);
@@ -77,7 +83,8 @@ class BookModel extends CretaModel {
     isAutoPlay = UndoAble<bool>(false, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
     isReadOnly = UndoAble<bool>(false, mid);
-    viewCount = UndoAble<int>(0, mid);
+    viewCount = likeNo;
+    likeCount = viewNo;
     description = UndoAble<String>("You could do it simple and plain", mid);
   }
   @override
@@ -96,7 +103,8 @@ class BookModel extends CretaModel {
     isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid);
     bookType = UndoAble<BookType>(srcBook.bookType.value, mid);
     isReadOnly = UndoAble<bool>(srcBook.isReadOnly.value, mid);
-    viewCount = UndoAble<int>(srcBook.viewCount.value, mid);
+    viewCount = srcBook.viewCount;
+    likeCount = srcBook.likeCount;
     description = UndoAble<String>(srcBook.description.value, mid);
     logger.finest('BookCopied($mid)');
   }
@@ -117,7 +125,8 @@ class BookModel extends CretaModel {
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
     thumbnailType.set(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);
     thumbnailAspectRatio.set((map["thumbnailAspectRatio"] ?? 1), save: false, noUndo: true);
-    viewCount.set((map["viewCount"] ?? 0), save: false, noUndo: true);
+    viewCount = (map["viewCount"] ?? 0);
+    likeCount = (map["likeCount"] ?? 0);
   }
 
   @override
@@ -137,7 +146,8 @@ class BookModel extends CretaModel {
         "thumbnailUrl": thumbnailUrl.value,
         "thumbnailType": thumbnailType.value.index,
         "thumbnailAspectRatio": thumbnailAspectRatio.value,
-        "viewCount": viewCount.value,
+        "viewCount": viewCount,
+        "likeCount": likeCount,
       }.entries);
   }
 

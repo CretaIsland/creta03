@@ -2,14 +2,11 @@
 
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
-import 'package:image_network/image_network.dart';
 
-import '../../common/creta_constant.dart';
 import '../../common/creta_utils.dart';
 import '../../data_io/book_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -21,6 +18,7 @@ import '../../model/book_model.dart';
 import '../../model/connected_user_model.dart';
 import 'sample_data.dart';
 import 'studio_constant.dart';
+import 'studio_snippet.dart';
 
 class BookGridItem extends StatefulWidget {
   final int index;
@@ -47,29 +45,51 @@ class BookGridItemState extends State<BookGridItem> {
   int counter = 0;
   final Random random = Random();
 
+  double aWidth = 0;
+  double aHeight = 0;
+
   @override
   void initState() {
     super.initState();
+    aWidth = widget.width;
+    aHeight = widget.height;
   }
 
   @override
   Widget build(BuildContext context) {
+    //double margin = mouseOver ? 0 : LayoutConst.bookThumbSpacing / 2;
+    //double margin = 0;
+
+    // if (mouseOver) {
+    //   aWidth = widget.width + 10;
+    //   aHeight = widget.height + 10;
+    // } else {
+    //   aWidth = widget.width;
+    //   aHeight = widget.height;
+    // }
+
     return MouseRegion(
       onEnter: (value) {
         setState(() {
           mouseOver = true;
+          //logger.finest('mouse over');
         });
+      },
+      onHover: (event) {
+        //logger.finest('onHover');
       },
       onExit: (value) {
         setState(() {
           mouseOver = false;
         });
       },
-      child: Container(
-        width: widget.width,
-        height: widget.height,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInCubic,
+        width: aWidth,
+        height: aHeight,
         decoration: BoxDecoration(
-          //boxShadow: StudioSnippet.basicShadow(offset: 2), // crop
+          boxShadow: mouseOver ? StudioSnippet.basicShadow(offset: 4) : null,
           borderRadius: BorderRadius.circular(20.0),
         ),
         clipBehavior: Clip.antiAlias, // crop method
@@ -81,7 +101,7 @@ class BookGridItemState extends State<BookGridItem> {
   Widget _drawInsertButton() {
     return CretaElevatedButton(
       isVertical: true,
-      height: widget.height,
+      height: aHeight,
       bgHoverColor: CretaColor.text[100]!,
       bgHoverSelectedColor: CretaColor.text[100]!,
       bgSelectedColor: CretaColor.text[100]!,
@@ -101,16 +121,25 @@ class BookGridItemState extends State<BookGridItem> {
   }
 
   Widget _drawBook() {
-    return Column(
-      children: [
-        Stack(
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          //boxShadow: StudioSnippet.basicShadow(offset: 2), // crop
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _thumnailArea(),
-            _controllArea(),
+            Stack(
+              children: [
+                _thumnailArea(),
+                _controllArea(),
+              ],
+            ),
+            _bottomArea(),
           ],
         ),
-        _bottomArea(),
-      ],
+      ),
     );
   }
 
@@ -118,9 +147,9 @@ class BookGridItemState extends State<BookGridItem> {
     if (mouseOver) {
       return Container(
         alignment: AlignmentDirectional.topEnd,
-        width: widget.width,
-        height: widget.height - LayoutConst.bookDescriptionHeight,
-        color: CretaColor.text[200]!.withOpacity(0.3),
+        width: aWidth,
+        height: aHeight - LayoutConst.bookDescriptionHeight,
+        color: CretaColor.text[200]!.withOpacity(0.2),
         child: Padding(
           padding: const EdgeInsets.only(top: 8.0, right: 8),
           child: BTN.floating_l(
@@ -139,61 +168,34 @@ class BookGridItemState extends State<BookGridItem> {
   }
 
   Widget _thumnailArea() {
-    return Container(
-      width: widget.width,
-      height: widget.height - LayoutConst.bookDescriptionHeight,
-      color: Colors.white,
-      child: CretaVariables.isCanvaskit
-          ?
-          // 콘텐츠 프리뷰 이미지
-          ImageNetwork(
-              width: widget.width,
-              height: widget.height - LayoutConst.bookDescriptionHeight,
-              image: widget.bookModel!.thumbnailUrl.value,
-              imageCache: CachedNetworkImageProvider(widget.bookModel!.thumbnailUrl.value),
-              duration: 1500,
-              curve: Curves.easeIn,
-              //onPointer: true,
-              debugPrint: false,
-              fullScreen: false,
-              fitAndroidIos: BoxFit.cover,
-              fitWeb: BoxFitWeb.cover,
-              onLoading: const CircularProgressIndicator(
-                color: CretaColor.primary,
-              ),
-              onError: const Icon(
-                Icons.error,
-                color: CretaColor.secondary,
-              ),
-            )
-          : CustomImage(
-              width: widget.width,
-              height: widget.height,
-              image: widget.bookModel!.thumbnailUrl.value),
-      //     fit: BoxFit.fill,
-      //     placeholder: (context, url) => const CircularProgressIndicator(),
-      //     errorWidget: (context, url, error) => const Center(
-      //       child: Icon(
-      //         Icons.error,
-      //         color: Colors.red,
-      //         size: 40,
-      //       ),
-      //     ),
-      //   ),
+    int randomNumber = random.nextInt(1000);
+    int duration = widget.index == 0 ? 500 : 500 + randomNumber;
+
+    return SizedBox(
+      width: aWidth,
+      height: aHeight - LayoutConst.bookDescriptionHeight,
+      child: CustomImage(
+          hasMouseOverEffect: true,
+          duration: duration,
+          width: aWidth,
+          height: aHeight,
+          image: widget.bookModel!.thumbnailUrl.value),
     );
   }
 
   Widget _bottomArea() {
     return Container(
+      //width: aWidth,
       height: LayoutConst.bookDescriptionHeight,
       color: (mouseOver) ? Colors.grey[100] : Colors.white,
       padding: const EdgeInsets.all(8),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
                 flex: 7,
@@ -242,7 +244,9 @@ class BookGridItemState extends State<BookGridItem> {
     BookModel book = BookModel.withName('${model.name}_$randomNumber',
         creator: AccountManager.currentLoginUser.email,
         creatorName: AccountManager.currentLoginUser.name,
-        imageUrl: model.imageUrl);
+        imageUrl: model.imageUrl,
+        viewNo: randomNumber,
+        likeNo: 1000 - randomNumber);
 
     book.hashTag.set('#$randomNumber tag...');
 

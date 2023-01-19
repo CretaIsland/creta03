@@ -31,7 +31,15 @@ class CustomImage extends StatefulWidget {
   final double width;
   final double height;
   final String image;
-  const CustomImage({super.key, required this.width, required this.height, required this.image});
+  final int duration;
+  final bool hasMouseOverEffect;
+  const CustomImage(
+      {super.key,
+      required this.width,
+      required this.height,
+      required this.image,
+      this.hasMouseOverEffect = false,
+      this.duration = 700});
 
   @override
   State<CustomImage> createState() => _CustomImageState();
@@ -51,7 +59,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
   void initState() {
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: Duration(milliseconds: widget.duration),
     );
 
     _animation = SizeTween(
@@ -79,6 +87,10 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    return _valueListner();
+  }
+
+  Widget _valueListner() {
     return ValueListenableBuilder(
       valueListenable: _imageValueNotifier,
       builder: ((context, value, child) {
@@ -113,10 +125,5 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
               );
       }),
     );
-    // return SizedBox(
-    //   width: widget.width,
-    //   height: widget.height,
-    //   child: Image.network(widget.image),
-    // );
   }
 }

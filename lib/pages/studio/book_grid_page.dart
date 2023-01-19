@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 
 //import '../../common/window_resize_lisnter.dart';
 import '../../data_io/book_manager.dart';
-import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
@@ -56,6 +55,12 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
 
     _controller = ScrollController();
 
+    bookManagerHolder = BookManager();
+    bookManagerHolder!.configEvent(notifyModify: false);
+    bookManagerHolder!
+        .getListFromDB(AccountManager.currentLoginUser.email)
+        .then((value) => bookManagerHolder!.addRealTimeListen());
+
     _leftMenuItemList = [
       CretaMenuItem(caption: CretaStudioLang.myCretaBook, onPressed: () {}, selected: true),
       CretaMenuItem(caption: CretaStudioLang.sharedCretaBook, onPressed: () {}, selected: false),
@@ -71,16 +76,36 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     ];
 
     _dropDownMenuItemList2 = [
-      CretaMenuItem(caption: CretaLang.orderByList2[0], onPressed: () {}, selected: false),
-      CretaMenuItem(caption: CretaLang.orderByList2[1], onPressed: () {}, selected: true),
-      CretaMenuItem(caption: CretaLang.orderByList2[2], onPressed: () {}, selected: false),
-      CretaMenuItem(caption: CretaLang.orderByList2[3], onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: CretaLang.orderByList2[0],
+          onPressed: () {
+            bookManagerHolder!
+                .toSorted('updateTime', descending: true, onModelSorted: onModelSorted);
+          },
+          selected: true),
+      CretaMenuItem(
+          caption: CretaLang.orderByList2[1],
+          onPressed: () {
+            bookManagerHolder!.toSorted('name', onModelSorted: onModelSorted);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaLang.orderByList2[2],
+          onPressed: () {
+            bookManagerHolder!
+                .toSorted('likeCount', descending: true, onModelSorted: onModelSorted);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaLang.orderByList2[3],
+          onPressed: () {
+            bookManagerHolder!
+                .toSorted('viewCount', descending: true, onModelSorted: onModelSorted);
+          },
+          selected: false),
     ];
 
-    bookManagerHolder = BookManager();
-    bookManagerHolder!.configEvent(applyModify: false, notifyModify: false);
-    bookManagerHolder!.getListFromDB(AccountManager.currentLoginUser.email);
-    HycopFactory.realtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
+    //HycopFactory.realtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
 
     // sizeListener = WindowResizeListner(
     //     resizeDuration: 100,
@@ -91,12 +116,17 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     logger.info('initState end');
   }
 
+  void onModelSorted(String sortedAttribute) {
+    setState(() {});
+  }
+
   @override
   void dispose() {
     logger.finest('_BookGridPageState dispose');
     super.dispose();
     //WidgetsBinding.instance.removeObserver(sizeListener);
-    HycopFactory.realtime!.removeListener('creta_book');
+    //HycopFactory.realtime!.removeListener('creta_book');
+    bookManagerHolder?.removeRealTimeListen();
     //HycopFactory.myRealtime!.stop();
   }
 

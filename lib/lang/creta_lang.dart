@@ -15,7 +15,6 @@ class CretaLang {
     "최신순",
     "이름순",
     "인기순",
-    "적합도순",
   ];
 
   static const String edit = '편집하기';
