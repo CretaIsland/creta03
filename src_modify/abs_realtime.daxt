@@ -19,9 +19,14 @@ abstract class AbsRealtime {
   static void setFirebaseApp(FirebaseApp fb) => _fbRTApp = fb;
 
   String lastUpdateTime = HycopUtils.dateTimeToDB(DateTime.now()); // used only firebase
+  String collcetion_prefix = 'hycop';
 
   Future<void> initialize();
   Future<void> start();
+  void setPrefix(String prefix) {
+    collcetion_prefix = prefix;
+  }
+
   void stop();
   void clearListener() {
     logger.fine('clearListener()');
@@ -55,7 +60,7 @@ abstract class AbsRealtime {
   }) {
     Map<String, dynamic> input = {};
     input['directive'] = directive;
-    input['collectionId'] = HycopUtils.collectionFromMid(mid, 'hycop');
+    input['collectionId'] = HycopUtils.collectionFromMid(mid, collcetion_prefix);
     input['mid'] = mid; //'book=3ecb527f-4f5e-4350-8705-d5742781451b';
     input['userId'] = AccountManager.currentLoginUser.email;
     input['deviceId'] = myDeviceId;

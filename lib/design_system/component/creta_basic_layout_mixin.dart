@@ -36,6 +36,7 @@ mixin CretaBasicLayoutMixin {
     required String bannerDescription,
     required List<List<CretaMenuItem>> listOfListFilter,
     required Widget mainWidget,
+    void Function(String)? onSearch,
     Size gridMinArea = const Size(300, 300),
   }) {
     resize(context);
@@ -63,6 +64,7 @@ mixin CretaBasicLayoutMixin {
                       title: bannerTitle,
                       description: bannerDescription,
                       listOfListFilter: listOfListFilter,
+                      onSearch: onSearch,
                     )
                   : Container(),
               gridArea.height > gridMinArea.height && gridArea.width > gridMinArea.width

@@ -7,6 +7,8 @@ class CretaMenuItem {
   final String caption;
   final IconData? iconData;
   final Function onPressed;
+  String? referencedAttr;
+  bool? isDescending;
   bool selected;
   String? linkUrl;
 
@@ -16,6 +18,8 @@ class CretaMenuItem {
     this.selected = false,
     this.iconData,
     this.linkUrl,
+    this.referencedAttr,
+    this.isDescending,
   });
 }
 

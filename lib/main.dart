@@ -40,6 +40,7 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
     CretaVariables.isCanvaskit = ccj.isInUsingCanvaskit();
 
     HycopFactory.realtime!.start();
+    HycopFactory.realtime!.setPrefix('creta');
   }
 
   @override

@@ -18,6 +18,7 @@ class CretaBannerPane extends StatefulWidget {
   final String title;
   final String description;
   final List<List<CretaMenuItem>> listOfListFilter;
+  final void Function(String)? onSearch;
   const CretaBannerPane(
       {super.key,
       required this.width,
@@ -25,7 +26,8 @@ class CretaBannerPane extends StatefulWidget {
       required this.color,
       required this.title,
       required this.description,
-      required this.listOfListFilter});
+      required this.listOfListFilter,
+      this.onSearch});
 
   @override
   State<CretaBannerPane> createState() => _CretaBannerPaneState();
@@ -34,7 +36,9 @@ class CretaBannerPane extends StatefulWidget {
 class _CretaBannerPaneState extends State<CretaBannerPane> {
   @override
   Widget build(BuildContext context) {
-    double internalWidth = widget.width - LayoutConst.cretaTopTitlePaddingLT.width - LayoutConst.cretaTopTitlePaddingRB.width;
+    double internalWidth = widget.width -
+        LayoutConst.cretaTopTitlePaddingLT.width -
+        LayoutConst.cretaTopTitlePaddingRB.width;
     return Container(
       width: widget.width,
       height: widget.height,
@@ -123,7 +127,9 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
         widget.width > 700
             ? CretaSearchBar(
                 hintText: CretaLang.searchBar,
-                onSearch: (value) {},
+                onSearch: (value) {
+                  widget.onSearch?.call(value);
+                },
                 width: 246,
                 height: 32,
               )
