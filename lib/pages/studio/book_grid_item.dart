@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:creta03/lang/creta_studio_lang.dart';
+import 'package:creta03/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
@@ -128,7 +129,7 @@ class BookGridItemState extends State<BookGridItem> {
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          //mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Stack(
               children: [
@@ -246,7 +247,8 @@ class BookGridItemState extends State<BookGridItem> {
         creatorName: AccountManager.currentLoginUser.name,
         imageUrl: model.imageUrl,
         viewNo: randomNumber,
-        likeNo: 1000 - randomNumber);
+        likeNo: 1000 - randomNumber,
+        bookTypeVal: BookType.fromInt(randomNumber % 4 + 1));
 
     book.hashTag.set('#$randomNumber tag...');
 

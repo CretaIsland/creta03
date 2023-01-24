@@ -21,6 +21,13 @@ abstract class CretaManager extends AbsExModelManager {
   void lock() => _lock.acquire();
   void unlock() => _lock.release();
 
+  String _currentSearchStr = '';
+  List<String> _currentLikeAttrList = [];
+  void clearSearch() {
+    _currentSearchStr = '';
+    _currentLikeAttrList.clear();
+  }
+
   //
   //  [ 소팅 관련
   //
@@ -85,6 +92,9 @@ abstract class CretaManager extends AbsExModelManager {
     query['creator'] = userId;
     query['isRemoved'] = false;
     queryFromDB(query).then((value) {
+      if (_currentLikeAttrList.isNotEmpty && _currentSearchStr.isNotEmpty) {
+        _search(_currentLikeAttrList, _currentSearchStr);
+      }
       onModelFiltered?.call();
     });
   }
@@ -96,8 +106,12 @@ abstract class CretaManager extends AbsExModelManager {
   void onSearch(String value, Function afterSearch) {}
 
   void search(List<String> likeAttrList, String searchStr, Function afterSearch) {
-    queryFromDB(_currentQuery).then((value) {
+    logger.finest('search ${_currentQuery.toString()}');
+    queryFromDB({..._currentQuery}).then((value) {
       _search(likeAttrList, searchStr);
+      _currentLikeAttrList.clear();
+      _currentLikeAttrList.addAll(likeAttrList);
+      _currentSearchStr = searchStr;
       afterSearch.call();
     });
   }
@@ -120,10 +134,10 @@ abstract class CretaManager extends AbsExModelManager {
         }
       }
     }
-    if (resultList.isEmpty) {
-      unlock();
-      return;
-    }
+    // if (resultList.isEmpty) {
+    //   unlock();
+    //   return;
+    // }
     modelList.clear();
     for (var ele in resultList) {
       modelList.add(ele);
@@ -164,7 +178,7 @@ abstract class CretaManager extends AbsExModelManager {
   }
 
   Future<List<AbsExModel>> queryFromDB(Map<String, dynamic> query) async {
-    logger.finest('my override getListFromDB');
+    logger.finest('my queryFromDB(${query.toString()})');
     lock();
     isFetched = false;
 
@@ -187,6 +201,7 @@ abstract class CretaManager extends AbsExModelManager {
       isFetched = true;
       _currentQuery.clear();
       _currentQuery.addAll(query);
+      logger.finest('query=${query.toString()},_currentQuery=${_currentQuery.toString()}');
       unlock();
       return retval;
     } catch (e) {

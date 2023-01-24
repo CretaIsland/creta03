@@ -72,6 +72,7 @@ class BookModel extends CretaModel {
     double imageRatio = 1080 / 1920,
     int likeNo = 0,
     int viewNo = 0,
+    BookType bookTypeVal = BookType.presentaion,
   }) : super(type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     width = UndoAble<int>(0, mid);
@@ -81,7 +82,7 @@ class BookModel extends CretaModel {
     thumbnailAspectRatio = UndoAble<double>(imageRatio, mid);
     isSilent = UndoAble<bool>(false, mid);
     isAutoPlay = UndoAble<bool>(false, mid);
-    bookType = UndoAble<BookType>(BookType.presentaion, mid);
+    bookType = UndoAble<BookType>(bookTypeVal, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = likeNo;
     likeCount = viewNo;
