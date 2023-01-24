@@ -36,17 +36,34 @@ class SampleData {
 
   static List<ConnectedUserModel> connectedUserList = [
     ConnectedUserModel(
-        name: "홍길동", imageUrl: "https://picsum.photos/200/?random=1", state: ActiveState.active),
-    ConnectedUserModel(name: "장길산", imageUrl: "https://picsum.photos/200/?random=2"),
+        email: 'abc@sqisoft.com',
+        name: "홍길동",
+        imageUrl: "https://picsum.photos/200/?random=1",
+        state: ActiveState.active),
     ConnectedUserModel(
-        name: "임꺽정", imageUrl: "https://picsum.photos/200/?random=3", state: ActiveState.active),
-    ConnectedUserModel(name: "전우치", imageUrl: "https://picsum.photos/200/?random=4"),
-    ConnectedUserModel(name: "심청", imageUrl: "https://picsum.photos/200/?random=5"),
+        email: 'def@sqisoft.com', name: "장길산", imageUrl: "https://picsum.photos/200/?random=2"),
     ConnectedUserModel(
-        name: "마루치", imageUrl: "https://picsum.photos/200/?random=6", state: ActiveState.active),
-    ConnectedUserModel(name: "아라치", imageUrl: "https://picsum.photos/200/?random=7"),
-    ConnectedUserModel(name: "김삿갓", imageUrl: "https://picsum.photos/200/?random=8"),
+        email: 'hij@sqisoft.com',
+        name: "임꺽정",
+        imageUrl: "https://picsum.photos/200/?random=3",
+        state: ActiveState.active),
     ConnectedUserModel(
-        name: "황진이", imageUrl: "https://picsum.photos/200/?random=9", state: ActiveState.active),
+        email: 'klm@sqisoft.com', name: "전우치", imageUrl: "https://picsum.photos/200/?random=4"),
+    ConnectedUserModel(
+        email: 'opq@sqisoft.com', name: "심청", imageUrl: "https://picsum.photos/200/?random=5"),
+    ConnectedUserModel(
+        email: 'rst@sqisoft.com',
+        name: "마루치",
+        imageUrl: "https://picsum.photos/200/?random=6",
+        state: ActiveState.active),
+    ConnectedUserModel(
+        email: 'uvw@sqisoft.com', name: "아라치", imageUrl: "https://picsum.photos/200/?random=7"),
+    ConnectedUserModel(
+        email: 'xyz@sqisoft.com', name: "김삿갓", imageUrl: "https://picsum.photos/200/?random=8"),
+    ConnectedUserModel(
+        email: '123@sqisoft.com',
+        name: "황진이",
+        imageUrl: "https://picsum.photos/200/?random=9",
+        state: ActiveState.active),
   ];
 }

@@ -52,12 +52,12 @@ class BookGridItemState extends State<BookGridItem> {
   @override
   void initState() {
     super.initState();
-    aWidth = widget.width;
-    aHeight = widget.height;
   }
 
   @override
   Widget build(BuildContext context) {
+    aWidth = widget.width;
+    aHeight = widget.height;
     //double margin = mouseOver ? 0 : LayoutConst.bookThumbSpacing / 2;
     //double margin = 0;
 
@@ -129,11 +129,12 @@ class BookGridItemState extends State<BookGridItem> {
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Stack(
               children: [
                 _thumnailArea(),
+                _descArea(),
                 _controllArea(),
               ],
             ),
@@ -162,6 +163,46 @@ class BookGridItemState extends State<BookGridItem> {
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipDelete,
           ),
+        ),
+      );
+    }
+    return Container();
+  }
+
+  Widget _descArea() {
+    if (mouseOver) {
+      return Container(
+        alignment: AlignmentDirectional.topStart,
+        width: aWidth,
+        height: aHeight - LayoutConst.bookDescriptionHeight,
+        color: Colors.transparent,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 8),
+              child: Text(
+                widget.bookModel!.owners.toString(),
+                overflow: TextOverflow.fade,
+                style: CretaFont.bodyESmall.copyWith(color: Colors.white),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 8),
+              child: Text(
+                widget.bookModel!.readers.toString(),
+                overflow: TextOverflow.fade,
+                style: CretaFont.bodyESmall.copyWith(color: Colors.white),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 8),
+              child: Text(
+                widget.bookModel!.writers.toString(),
+                overflow: TextOverflow.fade,
+                style: CretaFont.bodyESmall.copyWith(color: Colors.white),
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -238,9 +279,10 @@ class BookGridItemState extends State<BookGridItem> {
   }
 
   void insertItem() async {
+    int len = SampleData.connectedUserList.length;
     int randomNumber = random.nextInt(1000);
-    ConnectedUserModel model =
-        SampleData.connectedUserList[randomNumber % SampleData.connectedUserList.length];
+    int modelIdx = randomNumber % len;
+    ConnectedUserModel model = SampleData.connectedUserList[modelIdx];
 
     BookModel book = BookModel.withName('${model.name}_$randomNumber',
         creator: AccountManager.currentLoginUser.email,
@@ -248,7 +290,20 @@ class BookGridItemState extends State<BookGridItem> {
         imageUrl: model.imageUrl,
         viewNo: randomNumber,
         likeNo: 1000 - randomNumber,
-        bookTypeVal: BookType.fromInt(randomNumber % 4 + 1));
+        bookTypeVal: BookType.fromInt(randomNumber % 4 + 1),
+        ownerList: [
+          SampleData.connectedUserList[modelIdx].email,
+        ],
+        readerList: [
+          SampleData.connectedUserList[(modelIdx + 1) % len].email,
+          SampleData.connectedUserList[(modelIdx + 2) % len].email,
+          SampleData.connectedUserList[(modelIdx + 3) % len].email,
+        ],
+        writerList: [
+          SampleData.connectedUserList[(modelIdx + 4) % len].email,
+          SampleData.connectedUserList[(modelIdx + 5) % len].email,
+          SampleData.connectedUserList[(modelIdx + 6) % len].email,
+        ]);
 
     book.hashTag.set('#$randomNumber tag...');
 

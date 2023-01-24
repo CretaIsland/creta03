@@ -1,10 +1,13 @@
 // ignore_for_file: must_be_immutable, prefer_const_constructors
 
+//import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
+import '../common/creta_utils.dart';
 import '../pages/studio/studio_constant.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
@@ -26,6 +29,9 @@ class BookModel extends CretaModel {
   late UndoAble<double> thumbnailAspectRatio;
   int viewCount = 0;
   int likeCount = 0;
+  List<String> owners = [];
+  List<String> readers = [];
+  List<String> writers = [];
 
   Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
 
@@ -47,6 +53,9 @@ class BookModel extends CretaModel {
         thumbnailAspectRatio,
         viewCount,
         likeCount,
+        owners,
+        readers,
+        writers,
       ];
   BookModel() : super(type: ExModelType.book, parent: '') {
     name = UndoAble<String>('', mid);
@@ -61,6 +70,9 @@ class BookModel extends CretaModel {
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = 0;
     likeCount = 0;
+    owners = [];
+    readers = [];
+    writers = [];
     description = UndoAble<String>("You could do it simple and plain", mid);
   }
 
@@ -73,6 +85,9 @@ class BookModel extends CretaModel {
     int likeNo = 0,
     int viewNo = 0,
     BookType bookTypeVal = BookType.presentaion,
+    List<String> ownerList = const [],
+    List<String> readerList = const [],
+    List<String> writerList = const [],
   }) : super(type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     width = UndoAble<int>(0, mid);
@@ -87,6 +102,9 @@ class BookModel extends CretaModel {
     viewCount = likeNo;
     likeCount = viewNo;
     description = UndoAble<String>("You could do it simple and plain", mid);
+    owners = [...ownerList];
+    readers = [...readerList];
+    writers = [...writerList];
   }
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
@@ -107,6 +125,9 @@ class BookModel extends CretaModel {
     viewCount = srcBook.viewCount;
     likeCount = srcBook.likeCount;
     description = UndoAble<String>(srcBook.description.value, mid);
+    owners = [...srcBook.owners];
+    readers = [...srcBook.readers];
+    writers = [...srcBook.writers];
     logger.finest('BookCopied($mid)');
   }
 
@@ -126,6 +147,10 @@ class BookModel extends CretaModel {
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
     thumbnailType.set(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);
     thumbnailAspectRatio.set((map["thumbnailAspectRatio"] ?? 1), save: false, noUndo: true);
+    owners = CretaUtils.jsonStringToList(map["owners"] ?? '');
+    readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
+    writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
+
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);
   }
@@ -149,6 +174,9 @@ class BookModel extends CretaModel {
         "thumbnailAspectRatio": thumbnailAspectRatio.value,
         "viewCount": viewCount,
         "likeCount": likeCount,
+        "owners": CretaUtils.listToString(owners),
+        "readers": CretaUtils.listToString(readers),
+        "writers": CretaUtils.listToString(writers),
       }.entries);
   }
 

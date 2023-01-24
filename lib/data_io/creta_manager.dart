@@ -253,12 +253,10 @@ abstract class CretaManager extends AbsExModelManager {
         dynamic data = dataMap[key];
         if (data == null) {
           isFilteredOut = true;
-          unlock();
           return;
         }
         if (data != value) {
           isFilteredOut = true;
-          unlock();
           return;
         }
       });
@@ -305,6 +303,7 @@ abstract class CretaManager extends AbsExModelManager {
       }
     }
     unlock();
+    return;
   }
 
   void addRealTimeListen() {

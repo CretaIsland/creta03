@@ -9,12 +9,14 @@ enum ActiveState {
 
 class ConnectedUserModel {
   late String name;
+  late String email;
   late ImageProvider image;
   late ActiveState state;
   late String imageUrl;
 
   ConnectedUserModel({
     required this.name,
+    required this.email,
     required this.imageUrl,
     this.state = ActiveState.idle,
   }) {
