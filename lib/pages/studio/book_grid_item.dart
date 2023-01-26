@@ -7,6 +7,7 @@ import 'package:creta03/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
+import 'package:routemaster/routemaster.dart';
 
 import '../../common/creta_utils.dart';
 import '../../data_io/book_manager.dart';
@@ -17,6 +18,8 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
 import '../../model/connected_user_model.dart';
+import '../../routes.dart';
+import 'book_main_page.dart';
 import 'sample_data.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
@@ -85,38 +88,37 @@ class BookGridItemState extends State<BookGridItem> {
         });
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInCubic,
-        width: aWidth,
-        height: aHeight,
-        decoration: BoxDecoration(
-          boxShadow: mouseOver ? StudioSnippet.basicShadow(offset: 4) : null,
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        clipBehavior: Clip.antiAlias, // crop method
-        child: (widget.bookModel == null && widget.index < 0)
-            ? _drawInsertButton()
-            : widget.bookManager.getLength() <= widget.index
-                ? _drawCount()
-                : _drawBook(),
-      ),
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInCubic,
+          width: aWidth,
+          height: aHeight,
+          decoration: BoxDecoration(
+            boxShadow: mouseOver ? StudioSnippet.basicShadow(offset: 4) : null,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          clipBehavior: Clip.antiAlias, // crop method
+          child: (widget.bookModel == null && widget.index < 0) ? _drawInsertButton() : _drawBook()
+          // : widget.bookManager.getLength() <= widget.index && widget.bookManager.isNotEnd()
+          //     ? _drawCount()
+          //     : _drawBook(),
+          ),
     );
   }
 
-  Widget _drawCount() {
-    return Container(
-      width: 100,
-      height: 100,
-      color: CretaColor.text[100]!.withOpacity(0.2),
-      child: Center(
-        child: Text(
-          '${widget.bookManager.getLength()} \nCreta Book founded',
-          style: CretaFont.bodyLarge,
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
+  // Widget _drawCount() {
+  //   return Container(
+  //     width: 100,
+  //     height: 100,
+  //     color: CretaColor.text[100]!.withOpacity(0.2),
+  //     child: Center(
+  //       child: Text(
+  //         '${widget.bookManager.getLength()} \nCreta Book founded \n Press this button to more ...',
+  //         style: CretaFont.bodyLarge,
+  //         textAlign: TextAlign.center,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _drawInsertButton() {
     return CretaElevatedButton(
@@ -166,24 +168,64 @@ class BookGridItemState extends State<BookGridItem> {
 
   Widget _controllArea() {
     if (mouseOver) {
-      return Container(
-        alignment: AlignmentDirectional.topEnd,
-        width: aWidth,
-        height: aHeight - LayoutConst.bookDescriptionHeight,
-        color: CretaColor.text[200]!.withOpacity(0.2),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 8.0, right: 8),
-          child: BTN.floating_l(
-            icon: Icons.delete_outline,
-            onPressed: () {
-              logger.finest('delete pressed');
-              removeItem(widget.index);
-            },
-            hasShadow: false,
-            tooltip: CretaStudioLang.tooltipDelete,
+      return InkWell(
+        onTap: () async {
+          //Get.offAllNamed("${AppRoutes.studioBookMainPage}?${CretaManager.bookPrefix}${widget.bookModel!.name.value}");
+          BookMainPage.selectedMid = widget.bookModel!.mid;
+          Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+        },
+        onDoubleTap: () {
+          logger.finest('${widget.bookModel!.name.value} double clicked');
+          AppRoutes.launchTab('${AppRoutes.studioBookMainPage}?${widget.bookModel!.mid}');
+        },
+        child: Container(
+          alignment: AlignmentDirectional.topEnd,
+          width: aWidth,
+          height: aHeight - LayoutConst.bookDescriptionHeight,
+          color: CretaColor.text[200]!.withOpacity(0.2),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0, right: 8),
+            child: BTN.floating_l(
+              icon: Icons.delete_outline,
+              onPressed: () {
+                logger.finest('delete pressed');
+                removeItem(widget.index);
+              },
+              hasShadow: false,
+              tooltip: CretaStudioLang.tooltipDelete,
+            ),
           ),
         ),
       );
+
+      // return Link(
+      //     uri: Uri.parse(AppRoutes.studioBookMainPage),
+      //     builder: (context, function) {
+      //       return InkWell(
+      //         onTap: () {
+      //           logger.finest('${widget.bookModel!.name.value} clicked');
+      //           Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+      //         },
+      //         child: Container(
+      //           alignment: AlignmentDirectional.topEnd,
+      //           width: aWidth,
+      //           height: aHeight - LayoutConst.bookDescriptionHeight,
+      //           color: CretaColor.text[200]!.withOpacity(0.2),
+      //           child: Padding(
+      //             padding: const EdgeInsets.only(top: 8.0, right: 8),
+      //             child: BTN.floating_l(
+      //               icon: Icons.delete_outline,
+      //               onPressed: () {
+      //                 logger.finest('delete pressed');
+      //                 removeItem(widget.index);
+      //               },
+      //               hasShadow: false,
+      //               tooltip: CretaStudioLang.tooltipDelete,
+      //             ),
+      //           ),
+      //         ),
+      //       );
+      //     });
     }
     return Container();
   }

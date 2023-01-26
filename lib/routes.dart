@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:routemaster/routemaster.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
 import 'design_system/demo_page/menu_demo_page.dart';
@@ -11,12 +12,35 @@ import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
 //import 'pages/community_home_page.dart';
-import 'pages/studio/sample_data.dart';
+//import 'pages/studio/sample_data.dart';
 //import 'pages/subscription_list_page.dart';
 //import 'pages/play_list/play_list_page.dart';
 import 'pages/community/community_page.dart';
 
 abstract class AppRoutes {
+  static Future<bool> launchTab(String url, {bool isHttps = false}) async {
+    String base = '';
+    try {
+      final String origin = Uri.base.origin;
+      base = origin;
+    } catch (e) {
+      base = isHttps ? "https://" : "http://";
+      final String host = Uri.base.host;
+      final int port = Uri.base.port;
+      base += "$host:$port";
+    }
+    final String finalUrl = '$base$url';
+    Uri uri = Uri.parse(finalUrl);
+    logger.finest('$finalUrl clicked');
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+      return true;
+    }
+    logger.severe('$finalUrl connect failed');
+    return false;
+  }
+
   static const String intro = '/intro';
   static const String menuDemoPage = '/menuDemoPage';
   static const String fontDemoPage = '/fontDemoPage';
@@ -48,9 +72,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
-    AppRoutes.studioBookMainPage: (_) => TransitionPage(
-          child: BookMainPage(model: SampleData.sampleBook),
-        ),
+    AppRoutes.studioBookMainPage: (_) => TransitionPage(child: BookMainPage()),
     AppRoutes.studioBookListPage: (_) => TransitionPage(
           child: BookGridPage(),
         ),

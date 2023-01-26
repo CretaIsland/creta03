@@ -90,8 +90,8 @@ class BookModel extends CretaModel {
     List<String> writerList = const [],
   }) : super(type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
-    width = UndoAble<int>(0, mid);
-    height = UndoAble<int>(0, mid);
+    width = UndoAble<int>(1920, mid);
+    height = UndoAble<int>(1080, mid);
     thumbnailUrl = UndoAble<String>(imageUrl, mid);
     thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid);
     thumbnailAspectRatio = UndoAble<double>(imageRatio, mid);

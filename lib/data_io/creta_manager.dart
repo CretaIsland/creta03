@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
 import 'dart:io';
+import 'package:hycop/hycop/enum/model_enums.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/utils/hycop_exceptions.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
@@ -20,15 +22,24 @@ enum DBState {
 }
 
 abstract class CretaManager extends AbsExModelManager {
-  CretaManager(String tableName) : super(tableName);
+  static const int maxTotalLimit = 500;
+  static const int maxPageLimit = 100;
+  static const int defaultPageLimit = 50;
+
+  static String modelPrefix(ExModelType type) {
+    return '${type.name}=';
+  }
+
+  late String instanceId;
+  CretaManager(String tableName) : super(tableName) {
+    instanceId = const Uuid().v4();
+    logger.finest('CretaManager instance created ()');
+  }
 
   final _lock = Mutex();
   void lock() => _lock.acquire();
   void unlock() => _lock.release();
 
-  static const int maxTotalLimit = 500;
-  static const int maxPageLimit = 100;
-  static const int defaultPageLimit = 50;
   int _pageCount = 0;
   int _totaltFetchedCount = 0;
   int _lastFetchedCount = 0;
@@ -208,6 +219,10 @@ abstract class CretaManager extends AbsExModelManager {
   // [ get DB  관련
   //
 
+  bool isNotEnd() {
+    return _lastLimit == modelList.length;
+  }
+
   Future<List<AbsExModel>> isGetListFromDBComplete() async {
     return await _lock.protect(() async {
       while (_dbState == DBState.querying) {
@@ -215,6 +230,19 @@ abstract class CretaManager extends AbsExModelManager {
       }
       return modelList;
     });
+  }
+
+  @override
+  Future<AbsExModel> getFromDB(String mid) async {
+    logger.finest('my getFromDB($mid)');
+    lock();
+    _dbState = DBState.querying;
+    AbsExModel retval = await super.getFromDB(mid);
+    _dbState = DBState.idle;
+    modelList.clear();
+    modelList.add(retval);
+    unlock();
+    return retval;
   }
 
   Future<List<AbsExModel>> myDataOnly(String userId,
@@ -320,7 +348,8 @@ abstract class CretaManager extends AbsExModelManager {
     if (_dbState == DBState.idle &&
         _lastFetchedCount >= _lastLimit &&
         _totaltFetchedCount <= CretaManager.maxTotalLimit) {
-      await queryFromDB({..._currentQuery}, isNew: false);
+      await queryFromDB({..._currentQuery},
+          limit: _lastLimit == 0 ? CretaManager.defaultPageLimit : _lastLimit, isNew: false);
       return true;
     }
     return false;
@@ -334,6 +363,15 @@ abstract class CretaManager extends AbsExModelManager {
       return await next();
     }
     return false;
+  }
+
+  @override
+  Future<void> createToDB(AbsExModel model) async {
+    lock();
+    _dbState = DBState.querying;
+    await super.createToDB(model);
+    _dbState = DBState.idle;
+    unlock();
   }
 
   //
@@ -421,11 +459,11 @@ abstract class CretaManager extends AbsExModelManager {
   }
 
   void addRealTimeListen() {
-    HycopFactory.realtime!.addListener(collectionId, realTimeCallback);
+    HycopFactory.realtime!.addListener(instanceId, collectionId, realTimeCallback);
   }
 
   void removeRealTimeListen() {
-    HycopFactory.realtime!.removeListener(collectionId);
+    HycopFactory.realtime!.removeListener(instanceId, collectionId);
   }
 
   void insert(CretaModel model) {
