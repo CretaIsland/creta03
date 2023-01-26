@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -33,7 +35,7 @@ class CustomImage extends StatefulWidget {
   final String image;
   final int duration;
   final bool hasMouseOverEffect;
-  const CustomImage(
+  CustomImage(
       {super.key,
       required this.width,
       required this.height,
@@ -83,6 +85,18 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
       },
     ));
     super.initState();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
+  void dispose() {
+    _controller.stop();
+    super.dispose();
+    //_controller.dispose();
   }
 
   @override

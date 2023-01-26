@@ -105,6 +105,7 @@ class BookModel extends CretaModel {
     owners = [...ownerList];
     readers = [...readerList];
     writers = [...writerList];
+    logger.finest('owners=${owners.toString()}');
   }
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {

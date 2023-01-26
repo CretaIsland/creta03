@@ -1,18 +1,23 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:hycop/hycop/utils/hycop_exceptions.dart';
-import 'package:uuid/uuid.dart';
+import 'package:hycop/hycop/database/abs_database.dart';
 //import 'package:sortedmap/sortedmap.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:mutex/mutex.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
-import 'package:sortedmap/sortedmap.dart';
 
 import '../design_system/menu/creta_popup_menu.dart';
 import '../model/creta_model.dart';
+
+enum DBState {
+  idle,
+  querying,
+}
 
 abstract class CretaManager extends AbsExModelManager {
   CretaManager(String tableName) : super(tableName);
@@ -21,62 +26,113 @@ abstract class CretaManager extends AbsExModelManager {
   void lock() => _lock.acquire();
   void unlock() => _lock.release();
 
+  static const int maxTotalLimit = 500;
+  static const int maxPageLimit = 100;
+  static const int defaultPageLimit = 50;
+  int _pageCount = 0;
+  int _totaltFetchedCount = 0;
+  int _lastFetchedCount = 0;
+  int _lastLimit = 0;
+  List<Object>? _lastSortedObjectList;
+  Map<String, OrderDirection> _currentSortAttr = {};
+
+  DBState _dbState = DBState.idle;
+  Map<String, dynamic> _currentQuery = {};
+
   String _currentSearchStr = '';
   List<String> _currentLikeAttrList = [];
-  void clearSearch() {
+  void clearAll() {
     _currentSearchStr = '';
     _currentLikeAttrList.clear();
+    _currentQuery.clear();
+    clearPage();
   }
+
+  void clearPage() {
+    _currentSortAttr.clear();
+    if (_lastSortedObjectList != null) {
+      _lastSortedObjectList!.clear();
+      _lastSortedObjectList = null;
+    }
+    _dbState = DBState.idle;
+    _pageCount = 0;
+    lock();
+    modelList.clear();
+    unlock();
+  }
+
+  bool isApplyCreate = true;
+  bool isApplyDelete = true;
+  bool isApplyModify = true;
+  bool isNotifyCreate = true;
+  bool isNotifyDelete = true;
+  bool isNotifyModify = true;
 
   //
   //  [ 소팅 관련
   //
+  // void toSorted(String sortAttrName, {bool descending = false, Function? onModelSorted}) {
+  //   SortedMap<String, CretaModel> sortedMap = SortedMap<String, CretaModel>();
+  //   //sortedMap.clear();
+  //   lock();
+
+  //   for (AbsExModel ele in modelList) {
+  //     //Map<String, dynamic> map = ele.toMap();
+  //     // map.forEach((key, value) {
+  //     //   logger.finest('key=$key');
+  //     // });
+  //     dynamic val = ele.toMap()[sortAttrName];
+  //     if (val == null) {
+  //       logger.severe('attribute ($sortAttrName) does not exist in colection ($collectionId)');
+  //       continue;
+  //     }
+  //     String strVal = '';
+  //     if (val is num) {
+  //       strVal = val.toString().padLeft(20, '0');
+  //     } else if (val is DateTime) {
+  //       strVal = val.millisecondsSinceEpoch.toString();
+  //     } else {
+  //       strVal = val.toString();
+  //     }
+  //     // uniq key 로 만들기위해 뒤에 uid를 붙인다.
+  //     strVal += const Uuid().v4();
+
+  //     sortedMap[strVal] = ele as CretaModel;
+  //     logger.finest('${ele.key} , $strVal added');
+  //     _currentSortAttr[sortAttrName] =
+  //         descending ? OrderDirection.descending : OrderDirection.ascending;
+  //   }
+  //   if (sortedMap.isEmpty) {
+  //     unlock();
+  //     return;
+  //   }
+  //   modelList.clear();
+  //   if (descending) {
+  //     for (var ele in sortedMap.values.toList().reversed) {
+  //       modelList.add(ele);
+  //     }
+  //   } else {
+  //     for (var ele in sortedMap.values) {
+  //       modelList.add(ele);
+  //     }
+  //   }
+  //   unlock();
+  //   if (onModelSorted != null) onModelSorted();
+  //   return;
+  // }
+
   void toSorted(String sortAttrName, {bool descending = false, Function? onModelSorted}) {
-    SortedMap<String, CretaModel> sortedMap = SortedMap<String, CretaModel>();
-    //sortedMap.clear();
-    lock();
+    logger.finest('toFiltered');
+    _currentSortAttr.clear();
+    _currentSortAttr[sortAttrName] =
+        descending ? OrderDirection.descending : OrderDirection.ascending;
 
-    for (AbsExModel ele in modelList) {
-      //Map<String, dynamic> map = ele.toMap();
-      // map.forEach((key, value) {
-      //   logger.finest('key=$key');
-      // });
-      dynamic val = ele.toMap()[sortAttrName];
-      if (val == null) {
-        logger.severe('attribute ($sortAttrName) does not exist in colection ($collectionId)');
-        continue;
+    queryFromDB({..._currentQuery}).then((value) {
+      if (_currentLikeAttrList.isNotEmpty && _currentSearchStr.isNotEmpty) {
+        _search(_currentLikeAttrList, _currentSearchStr);
       }
-      String strVal = '';
-      if (val is num) {
-        strVal = val.toString().padLeft(20, '0');
-      } else if (val is DateTime) {
-        strVal = val.millisecondsSinceEpoch.toString();
-      } else {
-        strVal = val.toString();
-      }
-      // uniq key 로 만들기위해 뒤에 uid를 붙인다.
-      strVal += const Uuid().v4();
-
-      sortedMap[strVal] = ele as CretaModel;
-      logger.finest('${ele.key} , $strVal added');
-    }
-    if (sortedMap.isEmpty) {
-      unlock();
-      return;
-    }
-    modelList.clear();
-    if (descending) {
-      for (var ele in sortedMap.values.toList().reversed) {
-        modelList.add(ele);
-      }
-    } else {
-      for (var ele in sortedMap.values) {
-        modelList.add(ele);
-      }
-    }
-    unlock();
-    if (onModelSorted != null) onModelSorted();
-    return;
+      onModelSorted?.call();
+    });
   }
 
   List<CretaMenuItem> getSortMenu(Function? onModelSorted) {
@@ -151,80 +207,138 @@ abstract class CretaManager extends AbsExModelManager {
   //
   // [ get DB  관련
   //
-  bool isFetched = false;
-  Map<String, dynamic> _currentQuery = {};
 
   Future<List<AbsExModel>> isGetListFromDBComplete() async {
     return await _lock.protect(() async {
-      while (!isFetched) {
+      while (_dbState == DBState.querying) {
         sleep(const Duration(milliseconds: 100));
       }
       return modelList;
     });
   }
 
-  @override
-  Future<List<AbsExModel>> getListFromDB(String userId) async {
-    logger.finest('my override getListFromDB');
-    lock();
-    isFetched = false;
-    final retval = await super.getListFromDB(userId);
-    _currentQuery.clear();
-    _currentQuery['creator'] = userId;
-    _currentQuery['isRemoved'] = false;
-    isFetched = true;
-    unlock();
+  Future<List<AbsExModel>> myDataOnly(String userId,
+      {int limit = CretaManager.defaultPageLimit}) async {
+    logger.finest('my override myDataOnly');
+    Map<String, dynamic> query = {};
+    query['creator'] = userId;
+    query['isRemoved'] = false;
+    final retval = await queryFromDB(query, limit: limit);
     return retval;
   }
 
-  Future<List<AbsExModel>> queryFromDB(Map<String, dynamic> query) async {
+  Future<List<AbsExModel>> queryFromDB(
+    Map<String, dynamic> query, {
+    int limit = CretaManager.defaultPageLimit,
+    Map<String, OrderDirection>? orderBy,
+    bool isNew = true,
+  }) async {
     logger.finest('my queryFromDB(${query.toString()})');
     lock();
-    isFetched = false;
+    _dbState = DBState.querying;
 
-    modelList.clear();
+    if (limit > CretaManager.maxPageLimit) {
+      limit = CretaManager.maxPageLimit;
+    }
+    _lastLimit = limit;
+
+    Map<String, OrderDirection> copyOrderBy = {};
+    if (orderBy == null || orderBy.isEmpty) {
+      if (_currentSortAttr.isNotEmpty) {
+        copyOrderBy = Map.from(_currentSortAttr);
+      }
+    } else {
+      copyOrderBy = Map.from(orderBy);
+    }
+    copyOrderBy['updateTime'] = OrderDirection.descending;
+
+    if (isNew) {
+      modelList.clear();
+    }
     try {
-      List resultList = await HycopFactory.dataBase!.queryData(
+      if (_lastSortedObjectList != null) {
+        logger.finest('_lastSortedObjectList = ${_lastSortedObjectList.toString()}');
+      }
+
+      List resultList = await HycopFactory.dataBase!.queryPage(
         collectionId,
         where: query,
-        orderBy: 'updateTime',
-        //limit: 2,
+        orderBy: copyOrderBy,
+        limit: limit,
         //offset: 1, // appwrite only
-        //startAfter: [DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
+        startAfter: isNew
+            ? null
+            : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
       );
-      var retval = resultList.map((ele) {
+      List<AbsExModel> retval = resultList.map((ele) {
         AbsExModel model = newModel();
         model.fromMap(ele);
         modelList.add(model);
         return model;
       }).toList();
-      isFetched = true;
+
+      _lastFetchedCount = retval.length;
+
+      if (_lastSortedObjectList != null) {
+        _lastSortedObjectList!.clear();
+      } else {
+        _lastSortedObjectList = [];
+      }
+
+      for (var ele in copyOrderBy.keys) {
+        dynamic sortAttr = modelList.last.toMap()[ele];
+        if (sortAttr != null) {
+          _lastSortedObjectList!.add(sortAttr);
+        }
+      }
+
+      if (isNew == false) {
+        _pageCount++;
+        _totaltFetchedCount += _lastFetchedCount;
+      } else {
+        _pageCount = 1;
+        _totaltFetchedCount = _lastFetchedCount;
+      }
+      logger.finest(
+          'data fetched count= $_lastFetchedCount, page=$_pageCount, total=$_totaltFetchedCount');
+
       _currentQuery.clear();
       _currentQuery.addAll(query);
       logger.finest('query=${query.toString()},_currentQuery=${_currentQuery.toString()}');
+      _dbState = DBState.idle;
       unlock();
       return retval;
     } catch (e) {
       logger.severe('databaseError', e);
+      _dbState = DBState.idle;
       unlock();
       throw HycopException(message: 'databaseError', exception: e as Exception);
     }
   }
 
-  //
-  //  get DB  관련  ]
-  //
+  Future<bool> next() async {
+    if (_dbState == DBState.idle &&
+        _lastFetchedCount >= _lastLimit &&
+        _totaltFetchedCount <= CretaManager.maxTotalLimit) {
+      await queryFromDB({..._currentQuery}, isNew: false);
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> scrollListener(ScrollController controller) async {
+    double scrollOffset = controller.offset;
+    double nextPageTrigger = 0.8 * controller.position.maxScrollExtent;
+    if (controller.position.pixels > nextPageTrigger) {
+      logger.finest('end of page($scrollOffset, ${controller.position.pixels}, $nextPageTrigger)');
+      return await next();
+    }
+    return false;
+  }
 
   //
   //  [ 이벤트 필터링 관련
   //
-
-  bool isApplyCreate = true;
-  bool isApplyDelete = true;
-  bool isApplyModify = true;
-  bool isNotifyCreate = true;
-  bool isNotifyDelete = true;
-  bool isNotifyModify = true;
 
   void configEvent(
       {bool applyCreate = true,

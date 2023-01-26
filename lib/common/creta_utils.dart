@@ -32,14 +32,15 @@ class CretaUtils {
   }
 
   static String listToString(List<String> list) {
+    logger.finest('listToString=[${list.toString()}]');
     String retval = '';
-    list.map((e) {
+    for (var e in list) {
       if (retval.isNotEmpty) {
         retval += ',';
       }
       retval += "'$e'";
-    });
-
+    }
+    logger.finest('listToString=[$retval]');
     return '[$retval]';
   }
 }

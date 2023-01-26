@@ -94,7 +94,26 @@ class BookGridItemState extends State<BookGridItem> {
           borderRadius: BorderRadius.circular(20.0),
         ),
         clipBehavior: Clip.antiAlias, // crop method
-        child: widget.bookModel == null ? _drawInsertButton() : _drawBook(),
+        child: (widget.bookModel == null && widget.index < 0)
+            ? _drawInsertButton()
+            : widget.bookManager.getLength() <= widget.index
+                ? _drawCount()
+                : _drawBook(),
+      ),
+    );
+  }
+
+  Widget _drawCount() {
+    return Container(
+      width: 100,
+      height: 100,
+      color: CretaColor.text[100]!.withOpacity(0.2),
+      child: Center(
+        child: Text(
+          '${widget.bookManager.getLength()} \nCreta Book founded',
+          style: CretaFont.bodyLarge,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -181,6 +200,22 @@ class BookGridItemState extends State<BookGridItem> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0, left: 8),
               child: Text(
+                widget.bookModel!.viewCount.toString(),
+                overflow: TextOverflow.fade,
+                style: CretaFont.bodyESmall.copyWith(color: Colors.red),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 8),
+              child: Text(
+                widget.bookModel!.likeCount.toString(),
+                overflow: TextOverflow.fade,
+                style: CretaFont.bodyESmall.copyWith(color: Colors.amber),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 8),
+              child: Text(
                 widget.bookModel!.owners.toString(),
                 overflow: TextOverflow.fade,
                 style: CretaFont.bodyESmall.copyWith(color: Colors.white),
@@ -217,6 +252,7 @@ class BookGridItemState extends State<BookGridItem> {
       width: aWidth,
       height: aHeight - LayoutConst.bookDescriptionHeight,
       child: CustomImage(
+          key: UniqueKey(),
           hasMouseOverEffect: true,
           duration: duration,
           width: aWidth,

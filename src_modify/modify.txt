@@ -5,6 +5,9 @@ cp src_modify\speed_dial.daxt  D:\Flutter\src\flutter\.pub-cache\hosted\pub.dart
 # hycop 수정
 # removeListner 추가,   setPrefix 추가
 cp  src_modify\abs_realtime.daxt D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\hycop-0.0.5\lib\hycop\realtime\abs_realtime.dart
-
+#  2023.01.26 queryPage 함수 추가 
+cp src_modify\abs_database.daxt  D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\hycop-0.0.5\lib\hycop\database\abs_database.dart
+cp src_modify\firebase_database.daxt  D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\hycop-0.0.5\lib\hycop\database\firebase_database.dart
+cp src_modify\appwrite_database.daxt  D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\hycop-0.0.5\lib\hycop\database\appwrite_database.dart
 
 

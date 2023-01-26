@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
+// ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_final_fields
 
 import 'dart:math';
 
@@ -30,12 +30,23 @@ class BookGridPage extends StatefulWidget {
   State<BookGridPage> createState() => _BookGridPageState();
 }
 
+enum SelectedPage {
+  none,
+  myPage,
+  sharedPage,
+  teamPage,
+  end;
+}
+
 class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin {
   int counter = 0;
   final Random random = Random();
   //late WindowResizeListner sizeListener;
   BookManager? bookManagerHolder;
   bool _onceDBGetComplete = false;
+
+  // ignore: unused_field
+  SelectedPage _selectedPage = SelectedPage.myPage;
 
   late List<CretaMenuItem> _leftMenuItemList;
   late List<CretaMenuItem> _dropDownMenuItemList1;
@@ -53,31 +64,54 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     super.initState();
 
     _controller = ScrollController();
+    _controller.addListener(_scrollListener);
 
     bookManagerHolder = BookManager();
     bookManagerHolder!.configEvent(notifyModify: false);
+    bookManagerHolder!.clearAll();
     bookManagerHolder!
-        .getListFromDB(AccountManager.currentLoginUser.email)
+        .myDataOnly(AccountManager.currentLoginUser.email)
         .then((value) => bookManagerHolder!.addRealTimeListen());
 
     _leftMenuItemList = [
-      CretaMenuItem(caption: CretaStudioLang.myCretaBook, onPressed: () {}, selected: true),
-      CretaMenuItem(caption: CretaStudioLang.sharedCretaBook, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: CretaStudioLang.teamCretaBook, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: CretaStudioLang.myCretaBook,
+          onPressed: () {
+            setState(() {
+              _selectedPage = SelectedPage.myPage;
+            });
+          },
+          selected: true),
+      CretaMenuItem(
+          caption: CretaStudioLang.sharedCretaBook,
+          onPressed: () {
+            setState(() {
+              _selectedPage = SelectedPage.sharedPage;
+            });
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaStudioLang.teamCretaBook,
+          onPressed: () {
+            setState(() {
+              _selectedPage = SelectedPage.teamPage;
+            });
+          },
+          selected: false),
     ];
 
     _dropDownMenuItemList1 = bookManagerHolder!.getFilterMenu((() => setState(() {})));
     _dropDownMenuItemList2 = bookManagerHolder!.getSortMenu((() => setState(() {})));
 
-    //HycopFactory.realtime!.addListener("creta_book", bookManagerHolder!.realTimeCallback);
-
-    // sizeListener = WindowResizeListner(
-    //     resizeDuration: 100,
-    //     onReizeComplete: () {
-    //       //setState(() {});
-    //     });
-    // WidgetsBinding.instance.addObserver(sizeListener);
     logger.info('initState end');
+  }
+
+  void _scrollListener() {
+    bookManagerHolder!.scrollListener(_controller).then((needUpdate) {
+      if (needUpdate) {
+        setState(() {});
+      }
+    });
   }
 
   void onModelSorted(String sortedAttribute) {
@@ -91,6 +125,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     //WidgetsBinding.instance.removeObserver(sizeListener);
     //HycopFactory.realtime!.removeListener('creta_book');
     bookManagerHolder?.removeRealTimeListen();
+    _controller.dispose();
     //HycopFactory.myRealtime!.stop();
   }
 
@@ -115,8 +150,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
             gotoButtonPressed: () {},
             gotoButtonTitle: CretaStudioLang.gotoCommunity,
             leftMenuItemList: _leftMenuItemList,
-            bannerTitle: CretaStudioLang.sharedCretaBook,
-            bannerDescription: CretaStudioLang.sharedCretaBookDesc,
+            bannerTitle: CretaStudioLang.myCretaBook,
+            bannerDescription: CretaStudioLang.myCretaBookDesc,
             listOfListFilter: [_dropDownMenuItemList1, _dropDownMenuItemList2],
             //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
             onSearch: (value) {
@@ -153,12 +188,29 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   }
 
   Widget _gridViewer(BookManager bookManager) {
+    double itemWidth = -1;
+    double itemHeight = -1;
+
     int columnCount =
         (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
     if (columnCount == 0) columnCount = 1;
 
-    double itemWidth = -1;
-    double itemHeight = -1;
+    bool isValidIndex(int index) {
+      return index > 0 && index - 1 < bookManager.getLength();
+    }
+
+    Widget bookGridItem(int index) {
+      return BookGridItem(
+        bookManager: bookManager,
+        index: index - 1,
+        key: isValidIndex(index)
+            ? (bookManager.findByIndex(index - 1) as CretaModel).key
+            : GlobalKey(),
+        bookModel: isValidIndex(index) ? bookManager.findByIndex(index - 1) as BookModel : null,
+        width: itemWidth,
+        height: itemHeight,
+      );
+    }
 
     return GridView.builder(
       controller: _controller,
@@ -173,31 +225,13 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       ),
       itemBuilder: (BuildContext context, int index) {
         return (itemWidth >= 0 && itemHeight >= 0)
-            ? BookGridItem(
-                bookManager: bookManager,
-                index: index - 1,
-                key: index > 0
-                    ? (bookManager.findByIndex(index - 1) as CretaModel).key
-                    : GlobalKey(),
-                bookModel: index > 0 ? bookManager.findByIndex(index - 1) as BookModel : null,
-                width: itemWidth,
-                height: itemHeight,
-              )
+            ? bookGridItem(index)
             : LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   itemWidth = constraints.maxWidth;
                   itemHeight = constraints.maxHeight;
                   //logger.finest('first data, $itemWidth, $itemHeight');
-                  return BookGridItem(
-                    bookManager: bookManager,
-                    index: index - 1,
-                    key: index > 0
-                        ? (bookManager.findByIndex(index - 1) as CretaModel).key
-                        : GlobalKey(),
-                    bookModel: index > 0 ? bookManager.findByIndex(index - 1) as BookModel : null,
-                    width: itemWidth,
-                    height: itemHeight,
-                  );
+                  return bookGridItem(index);
                 },
               );
       },
