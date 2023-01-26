@@ -63,8 +63,14 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
 
     super.initState();
 
-    _controller = ScrollController();
-    _controller.addListener(_scrollListener);
+    //_controller = ScrollController();
+    //_controller.addListener(_scrollListener);
+    _controller = getBannerScrollController;
+    setUsingBannerScrollBar(
+      scrollChangedCallback: _scrollListener,
+      // bannerMaxHeight: 196 + 200,
+      // bannerMinHeight: 196,
+    );
 
     bookManagerHolder = BookManager();
     bookManagerHolder!.configEvent(notifyModify: false);
@@ -106,9 +112,9 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     logger.info('initState end');
   }
 
-  void _scrollListener() {
+  void _scrollListener(bool bannerSizeChanged) {
     bookManagerHolder!.scrollListener(_controller).then((needUpdate) {
-      if (needUpdate) {
+      if (needUpdate || bannerSizeChanged) {
         setState(() {});
       }
     });

@@ -328,6 +328,10 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> with Co
           _dropDownMenuItemList1,
           _dropDownMenuItemList2,
         ],
+        onSearch: (val) => {},
+        listOfListFilterOnRight: [
+          _dropDownMenuItemList1,
+        ],
       ),
       //),
     ];
