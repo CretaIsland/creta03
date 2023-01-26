@@ -40,16 +40,23 @@ abstract class AbsRealtime {
   });
 
   @protected
-  Map<String, void Function(String directive, String userId, Map<String, dynamic> dataModel)>
+  Map<
+          String,
+          Map<String,
+              void Function(String directive, String userId, Map<String, dynamic> dataModel)>>
       listenerMap = {};
 
-  void addListener(String collectionId,
+  void addListener(String listenerId, String collectionId,
       void Function(String directive, String userId, Map<String, dynamic> dataModel) listener) {
-    listenerMap[collectionId] = listener;
+    if (listenerMap[listenerId] == null) {
+      listenerMap[listenerId] = {};
+    }
+    var map = listenerMap[listenerId]!;
+    map[collectionId] = listener;
   }
 
-  void removeListener(String collectionId) {
-    listenerMap.remove(collectionId);
+  void removeListener(String listenerId, String collectionId) {
+    listenerMap[listenerId]?.remove(collectionId);
   }
 
   @protected
@@ -87,6 +94,9 @@ abstract class AbsRealtime {
     logger.finest('$lastUpdateTime,$directive,$collectionId,$userId');
 
     Map<String, dynamic> dataMap = json.decode(delta) as Map<String, dynamic>;
-    listenerMap[collectionId]?.call(directive, userId, dataMap);
+
+    for (var ele in listenerMap.values) {
+      ele[collectionId]?.call(directive, userId, dataMap);
+    }
   }
 }

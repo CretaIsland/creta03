@@ -6,6 +6,7 @@ import 'package:creta03/model/creta_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:provider/provider.dart';
+import 'package:routemaster/routemaster.dart';
 
 //import '../../common/window_resize_lisnter.dart';
 import '../../data_io/book_manager.dart';
@@ -17,6 +18,7 @@ import '../../design_system/component/snippet.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
+import '../../routes.dart';
 import 'book_grid_item.dart';
 import 'studio_constant.dart';
 
@@ -70,7 +72,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     bookManagerHolder!.configEvent(notifyModify: false);
     bookManagerHolder!.clearAll();
     bookManagerHolder!
-        .myDataOnly(AccountManager.currentLoginUser.email)
+        .myDataOnly(AccountManager.currentLoginUser.email, limit: 10)
         .then((value) => bookManagerHolder!.addRealTimeListen());
 
     _leftMenuItemList = [
@@ -147,7 +149,9 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           context: context,
           child: mainPage(
             context,
-            gotoButtonPressed: () {},
+            gotoButtonPressed: () {
+              Routemaster.of(context).push(AppRoutes.communityHome);
+            },
             gotoButtonTitle: CretaStudioLang.gotoCommunity,
             leftMenuItemList: _leftMenuItemList,
             bannerTitle: CretaStudioLang.myCretaBook,

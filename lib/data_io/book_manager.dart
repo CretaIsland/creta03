@@ -1,6 +1,7 @@
 import 'package:hycop/hycop.dart';
 import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
+import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import 'creta_manager.dart';
@@ -87,4 +88,22 @@ class BookManager extends CretaManager {
   void onSearch(String value, Function afterSearch) {
     search(['name', 'hashTag'], value, afterSearch);
   }
+
+  Future<BookModel> createDefault({
+    int width = 1920,
+    int height = 1080,
+  }) async {
+    BookModel defaultBook = BookModel.withName(CretaStudioLang.defaultBookName,
+        creator: AccountManager.currentLoginUser.email,
+        creatorName: AccountManager.currentLoginUser.name,
+        imageUrl: "https://picsum.photos/200/?random=1");
+    defaultBook.width.set(width, save: false, noUndo: true, dontChangeBookTime: true);
+    defaultBook.height.set(height, save: false, noUndo: true, dontChangeBookTime: true);
+
+    await createToDB(defaultBook);
+    insert(defaultBook);
+    return defaultBook;
+  }
+
+  String prefix() => CretaManager.modelPrefix(ExModelType.book);
 }

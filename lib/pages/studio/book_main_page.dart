@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps, depend_on_referenced_packages
 
 //import 'dart:ui';
 
@@ -6,8 +6,12 @@ import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/model/connected_user_model.dart';
 import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import '../../common/creta_constant.dart';
+import '../../data_io/book_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/buttons/creta_scale_button.dart';
@@ -15,22 +19,27 @@ import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
+import '../../model/creta_model.dart';
 import 'left_menu/left_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
 
+// ignore: must_be_immutable
 class BookMainPage extends StatefulWidget {
-  final BookModel model;
-
-  const BookMainPage({super.key, required this.model});
+  static String selectedMid = '';
+  const BookMainPage({super.key});
 
   @override
   State<BookMainPage> createState() => _BookMainPageState();
 }
 
 class _BookMainPageState extends State<BookMainPage> {
+  BookManager? bookManagerHolder;
+  late BookModel _model;
+  bool _onceDBGetComplete = false;
+
   final ScrollController controller = ScrollController();
   final ScrollController horizontalScroll = ScrollController();
   final ScrollController verticalScroll = ScrollController();
@@ -44,60 +53,98 @@ class _BookMainPageState extends State<BookMainPage> {
   bool scaleChanged = false;
 
   LeftMenuEnum selectedStick = LeftMenuEnum.None;
+
   @override
-  Widget build(BuildContext context) {
-    _resize();
-    return Snippet.CretaScaffold(
-      title: Snippet.logo('studio'),
-      context: context,
-      child: _mainPage(),
-    );
+  void initState() {
+    super.initState();
+    logger.finest("---_BookMainPageState-----------------------------------------");
+
+    bookManagerHolder = BookManager();
+    bookManagerHolder!.configEvent(notifyModify: false);
+    bookManagerHolder!.clearAll();
+
+    String url = Uri.base.origin;
+    String query = Uri.base.query;
+
+    logger.finest("url=$url-------------------------------");
+    logger.finest("query=$query-------------------------------");
+
+    int pos = query.indexOf('&');
+    String mid = pos > 0 ? query.substring(0, pos) : query;
+    logger.finest("mid=$mid-------------------------------");
+
+    if (mid.isEmpty) {
+      mid = BookMainPage.selectedMid;
+    }
+
+    if (mid.isNotEmpty) {
+      bookManagerHolder!.getFromDB(mid).then((value) {
+        bookManagerHolder!.addRealTimeListen();
+        if (bookManagerHolder!.getLength() > 0) {
+          _onceDBGetComplete = true;
+        }
+        return value;
+      });
+    } else {
+      bookManagerHolder!.createDefault().then((value) {
+        _onceDBGetComplete = true;
+        return value;
+      });
+    }
   }
 
-  void _resize() {
-    StudioVariables.displayWidth = MediaQuery.of(context).size.width;
-    StudioVariables.displayHeight = MediaQuery.of(context).size.height;
+  @override
+  void dispose() {
+    super.dispose();
+    bookManagerHolder?.removeRealTimeListen();
+    controller.dispose();
+    verticalScroll.dispose();
+    horizontalScroll.dispose();
+  }
 
-    StudioVariables.workWidth = StudioVariables.displayWidth - LayoutConst.menuStickWidth;
-    StudioVariables.workHeight =
-        StudioVariables.displayHeight - CretaConstant.appbarHeight - LayoutConst.topMenuBarHeight;
-    StudioVariables.workRatio = StudioVariables.workHeight / StudioVariables.workWidth;
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<BookManager>.value(
+            value: bookManagerHolder!,
+          ),
+        ],
+        child: Snippet.CretaScaffold(
+          title: Snippet.logo('studio'),
+          context: context,
+          child: _waitBook(),
+        ));
+  }
 
-    applyScale = StudioVariables.scale / StudioVariables.fitScale;
-    if (StudioVariables.autoScale == true || scaleChanged == true) {
-      StudioVariables.virtualWidth = StudioVariables.workWidth * applyScale;
-      StudioVariables.virtualHeight = StudioVariables.workHeight * applyScale;
+  Widget _waitBook() {
+    // if (sizeListener.isResizing()) {
+    //   return consumerFunc(context, null);
+    // }
+    if (_onceDBGetComplete) {
+      return consumerFunc(context, null);
     }
-    scaleChanged = false;
+    var retval = CretaModelSnippet.getData(
+      context,
+      manager: bookManagerHolder!,
+      userId: AccountManager.currentLoginUser.email,
+      consumerFunc: consumerFunc,
+    );
+    _onceDBGetComplete = true;
+    return retval;
+  }
 
-    StudioVariables.availWidth = StudioVariables.virtualWidth * 0.9;
-    StudioVariables.availHeight = StudioVariables.virtualHeight * 0.9;
-
-    widthRatio = StudioVariables.availWidth / widget.model.width.value;
-    heightRatio = StudioVariables.availHeight / widget.model.height.value;
-    physicalRatio = widget.model.height.value / widget.model.width.value;
-
-    if (widthRatio < heightRatio) {
-      pageWidth = StudioVariables.availWidth;
-      pageHeight = pageWidth * physicalRatio;
-      if (StudioVariables.autoScale == true) {
-        StudioVariables.fitScale = widthRatio; // 화면에 꽉찾을때의 최적의 값
-        StudioVariables.scale = widthRatio;
-      }
-    } else {
-      pageHeight = StudioVariables.availHeight;
-      pageWidth = pageHeight / physicalRatio;
-      if (StudioVariables.autoScale == true) {
-        StudioVariables.fitScale = heightRatio; // 화면에 꽉찾을때의 최적의 값
-        StudioVariables.scale = heightRatio;
-      }
-    }
-
-    logger.fine(
-        "height=${StudioVariables.workHeight}, width=${StudioVariables.workWidth}, scale=${StudioVariables.fitScale}}");
+  Widget consumerFunc(BuildContext context, List<AbsExModel>? bookList) {
+    logger.finest('consumerFunc');
+    return Consumer<BookManager>(builder: (context, bookManager, child) {
+      logger.finest('Consumer  ${bookManager.getLength()}');
+      _model = bookManager.modelList.first as BookModel;
+      return _mainPage();
+    });
   }
 
   Widget _mainPage() {
+    _resize();
     if (StudioVariables.workHeight < 1) {
       return Container();
     }
@@ -129,6 +176,49 @@ class _BookMainPageState extends State<BookMainPage> {
         ),
       ],
     );
+  }
+
+  void _resize() {
+    StudioVariables.displayWidth = MediaQuery.of(context).size.width;
+    StudioVariables.displayHeight = MediaQuery.of(context).size.height;
+
+    StudioVariables.workWidth = StudioVariables.displayWidth - LayoutConst.menuStickWidth;
+    StudioVariables.workHeight =
+        StudioVariables.displayHeight - CretaConstant.appbarHeight - LayoutConst.topMenuBarHeight;
+    StudioVariables.workRatio = StudioVariables.workHeight / StudioVariables.workWidth;
+
+    applyScale = StudioVariables.scale / StudioVariables.fitScale;
+    if (StudioVariables.autoScale == true || scaleChanged == true) {
+      StudioVariables.virtualWidth = StudioVariables.workWidth * applyScale;
+      StudioVariables.virtualHeight = StudioVariables.workHeight * applyScale;
+    }
+    scaleChanged = false;
+
+    StudioVariables.availWidth = StudioVariables.virtualWidth * 0.9;
+    StudioVariables.availHeight = StudioVariables.virtualHeight * 0.9;
+
+    widthRatio = StudioVariables.availWidth / _model.width.value;
+    heightRatio = StudioVariables.availHeight / _model.height.value;
+    physicalRatio = _model.height.value / _model.width.value;
+
+    if (widthRatio < heightRatio) {
+      pageWidth = StudioVariables.availWidth;
+      pageHeight = pageWidth * physicalRatio;
+      if (StudioVariables.autoScale == true) {
+        StudioVariables.fitScale = widthRatio; // 화면에 꽉찾을때의 최적의 값
+        StudioVariables.scale = widthRatio;
+      }
+    } else {
+      pageHeight = StudioVariables.availHeight;
+      pageWidth = pageHeight / physicalRatio;
+      if (StudioVariables.autoScale == true) {
+        StudioVariables.fitScale = heightRatio; // 화면에 꽉찾을때의 최적의 값
+        StudioVariables.scale = heightRatio;
+      }
+    }
+
+    logger.fine(
+        "height=${StudioVariables.workHeight}, width=${StudioVariables.workWidth}, scale=${StudioVariables.fitScale}}");
   }
 
   Widget _workArea() {
@@ -175,7 +265,7 @@ class _BookMainPageState extends State<BookMainPage> {
                   CretaLabelTextEditor(
                     height: 32,
                     width: 300,
-                    text: widget.model.name.value,
+                    text: _model.name.value,
                     textStyle: CretaFont.titleSmall,
                   ),
                 ],

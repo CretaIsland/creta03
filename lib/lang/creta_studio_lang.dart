@@ -36,7 +36,7 @@ class CretaStudioLang {
 
   static const String autoScale = "자동맞춤";
 
-  static const String defaultBookName = "이름없는 크레타북";
+  static const String defaultBookName = "이름없는 크레타북 A";
 
   static const String publish = "발행하기";
 
