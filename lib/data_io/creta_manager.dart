@@ -43,7 +43,7 @@ abstract class CretaManager extends AbsExModelManager {
   int _pageCount = 0;
   int _totaltFetchedCount = 0;
   int _lastFetchedCount = 0;
-  int _lastLimit = 0;
+  int _lastLimit = CretaManager.defaultPageLimit;
   List<Object>? _lastSortedObjectList;
   Map<String, OrderDirection> _currentSortAttr = {};
 
@@ -166,6 +166,16 @@ abstract class CretaManager extends AbsExModelManager {
     });
   }
 
+  void reGet(String userId, {Function? onModelFiltered}) {
+    logger.finest('reGet');
+    queryFromDB({..._currentQuery}).then((value) {
+      if (_currentLikeAttrList.isNotEmpty && _currentSearchStr.isNotEmpty) {
+        _search(_currentLikeAttrList, _currentSearchStr);
+      }
+      onModelFiltered?.call();
+    });
+  }
+
   List<CretaMenuItem> getFilterMenu(Function? onModelFiltered) {
     return [];
   }
@@ -223,6 +233,11 @@ abstract class CretaManager extends AbsExModelManager {
     return _lastLimit == modelList.length;
   }
 
+  bool isShort() {
+    logger.finest('limit=$_lastLimit, modelList=${modelList.length}');
+    return _lastLimit > modelList.length;
+  }
+
   Future<List<AbsExModel>> isGetListFromDBComplete() async {
     return await _lock.protect(() async {
       while (_dbState == DBState.querying) {
@@ -245,8 +260,7 @@ abstract class CretaManager extends AbsExModelManager {
     return retval;
   }
 
-  Future<List<AbsExModel>> myDataOnly(String userId,
-      {int limit = CretaManager.defaultPageLimit}) async {
+  Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
     logger.finest('my override myDataOnly');
     Map<String, dynamic> query = {};
     query['creator'] = userId;
@@ -257,7 +271,7 @@ abstract class CretaManager extends AbsExModelManager {
 
   Future<List<AbsExModel>> queryFromDB(
     Map<String, dynamic> query, {
-    int limit = CretaManager.defaultPageLimit,
+    int? limit,
     Map<String, OrderDirection>? orderBy,
     bool isNew = true,
   }) async {
@@ -265,6 +279,9 @@ abstract class CretaManager extends AbsExModelManager {
     lock();
     _dbState = DBState.querying;
 
+    if (limit == null || limit == 0) {
+      limit = _lastLimit;
+    }
     if (limit > CretaManager.maxPageLimit) {
       limit = CretaManager.maxPageLimit;
     }
@@ -359,7 +376,8 @@ abstract class CretaManager extends AbsExModelManager {
     double scrollOffset = controller.offset;
     double nextPageTrigger = 0.8 * controller.position.maxScrollExtent;
     if (controller.position.pixels > nextPageTrigger) {
-      logger.finest('end of page($scrollOffset, ${controller.position.pixels}, $nextPageTrigger)');
+      logger.finest(
+          'end of page(model count=${modelList.length},$scrollOffset, ${controller.position.pixels}, $nextPageTrigger)');
       return await next();
     }
     return false;

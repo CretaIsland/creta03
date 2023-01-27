@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:url_launcher/link.dart';
 
 import '../../common/creta_utils.dart';
 import '../../data_io/book_manager.dart';
@@ -167,36 +168,49 @@ class BookGridItemState extends State<BookGridItem> {
   }
 
   Widget _controllArea() {
+    String url = '${AppRoutes.studioBookMainPage}?${widget.bookModel!.mid}';
     if (mouseOver) {
-      return InkWell(
-        onTap: () async {
-          //Get.offAllNamed("${AppRoutes.studioBookMainPage}?${CretaManager.bookPrefix}${widget.bookModel!.name.value}");
-          BookMainPage.selectedMid = widget.bookModel!.mid;
-          Routemaster.of(context).push(AppRoutes.studioBookMainPage);
-        },
-        onDoubleTap: () {
-          logger.finest('${widget.bookModel!.name.value} double clicked');
-          AppRoutes.launchTab('${AppRoutes.studioBookMainPage}?${widget.bookModel!.mid}');
-        },
-        child: Container(
-          alignment: AlignmentDirectional.topEnd,
-          width: aWidth,
-          height: aHeight - LayoutConst.bookDescriptionHeight,
-          color: CretaColor.text[200]!.withOpacity(0.2),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8.0, right: 8),
-            child: BTN.floating_l(
-              icon: Icons.delete_outline,
-              onPressed: () {
-                logger.finest('delete pressed');
-                removeItem(widget.index);
+      return Link(
+          uri: Uri.parse(url),
+          builder: (context, function) {
+            return InkWell(
+              onTap: () async {
+                //Get.offAllNamed("${AppRoutes.studioBookMainPage}?${CretaManager.bookPrefix}${widget.bookModel!.name.value}");
+                BookMainPage.selectedMid = widget.bookModel!.mid;
+                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
               },
-              hasShadow: false,
-              tooltip: CretaStudioLang.tooltipDelete,
-            ),
-          ),
-        ),
-      );
+              onDoubleTap: () {
+                logger.finest('${widget.bookModel!.name.value} double clicked');
+                AppRoutes.launchTab(url);
+              },
+              child: Container(
+                alignment: AlignmentDirectional.topEnd,
+                width: aWidth,
+                height: aHeight - LayoutConst.bookDescriptionHeight,
+                color: CretaColor.text[200]!.withOpacity(0.2),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0, right: 8),
+                  child: BTN.floating_l(
+                    icon: Icons.delete_outline,
+                    onPressed: () {
+                      logger.finest('delete pressed');
+                      removeItem(widget.index).then((value) {
+                        if (widget.bookManager.isShort()) {
+                          widget.bookManager.reGet(AccountManager.currentLoginUser.email,
+                              onModelFiltered: () {
+                            widget.bookManager.notify();
+                          });
+                        }
+                        return null;
+                      });
+                    },
+                    hasShadow: false,
+                    tooltip: CretaStudioLang.tooltipDelete,
+                  ),
+                ),
+              ),
+            );
+          });
 
       // return Link(
       //     uri: Uri.parse(AppRoutes.studioBookMainPage),
@@ -389,7 +403,7 @@ class BookGridItemState extends State<BookGridItem> {
     widget.bookManager.insert(book);
   }
 
-  void removeItem(int index) async {
+  Future<void> removeItem(int index) async {
     BookModel? removedItem = widget.bookManager.findByIndex(index) as BookModel?;
     if (removedItem != null) {
       await widget.bookManager.removeToDB(removedItem.mid);

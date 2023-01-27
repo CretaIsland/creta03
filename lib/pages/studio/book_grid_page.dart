@@ -72,7 +72,9 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     bookManagerHolder!.configEvent(notifyModify: false);
     bookManagerHolder!.clearAll();
     bookManagerHolder!
-        .myDataOnly(AccountManager.currentLoginUser.email, limit: 10)
+        .myDataOnly(
+          AccountManager.currentLoginUser.email,
+        )
         .then((value) => bookManagerHolder!.addRealTimeListen());
 
     _leftMenuItemList = [
