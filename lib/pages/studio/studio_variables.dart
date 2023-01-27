@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class StudioVariables {
   static double fitScale = 1.0;
   static double scale = 1.0;
@@ -6,6 +8,8 @@ class StudioVariables {
 
   static double displayWidth = 1920;
   static double displayHeight = 961;
+  static Size displaySize = Size.zero;
+
   static double workWidth = 1920 - 80;
   static double workHeight = 961;
   static double workRatio = 1;

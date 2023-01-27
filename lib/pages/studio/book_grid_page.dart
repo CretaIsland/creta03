@@ -15,6 +15,7 @@ import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/snippet.dart';
+import '../../design_system/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
@@ -77,6 +78,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     bookManagerHolder = BookManager();
     bookManagerHolder!.configEvent(notifyModify: false);
     bookManagerHolder!.clearAll();
+
     bookManagerHolder!
         .myDataOnly(
           AccountManager.currentLoginUser.email,
@@ -117,7 +119,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   }
 
   void _scrollListener(bool bannerSizeChanged) {
-    bookManagerHolder!.scrollListener(_controller).then((needUpdate) {
+    bookManagerHolder!.showNext(_controller).then((needUpdate) {
       if (needUpdate || bannerSizeChanged) {
         setState(() {});
       }
@@ -212,6 +214,27 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     }
 
     Widget bookGridItem(int index) {
+      if (index > bookManager.getLength()) {
+        if (bookManager.isShort()) {
+          return SizedBox(
+            width: itemWidth,
+            height: itemHeight,
+            child: Center(
+              child: TextButton(
+                onPressed: () {
+                  bookManager.next().then((value) => setState(() {}));
+                },
+                child: Text(
+                  "more...",
+                  style: CretaFont.displaySmall,
+                ),
+              ),
+            ),
+          );
+        }
+        return Container();
+      }
+
       return BookGridItem(
         bookManager: bookManager,
         index: index - 1,
@@ -230,7 +253,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       child: GridView.builder(
         controller: _controller,
         padding: LayoutConst.cretaPadding,
-        itemCount: bookManager.getLength() + 1, //item 개수
+        itemCount: bookManager.getLength() + 2, //item 개수
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
           childAspectRatio:

@@ -1,9 +1,18 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../lang/creta_lang.dart';
+import '../pages/studio/studio_variables.dart';
 
 class CretaUtils {
+  static Size getDisplaySize(BuildContext context) {
+    StudioVariables.displayWidth = MediaQuery.of(context).size.width;
+    StudioVariables.displayHeight = MediaQuery.of(context).size.height;
+    StudioVariables.displaySize = Size(StudioVariables.displayWidth, StudioVariables.displayHeight);
+    return StudioVariables.displaySize;
+  }
+
   static String dateToDurationString(DateTime updateTime) {
     Duration duration = DateTime.now().difference(updateTime);
     if (duration.inDays >= 365) {

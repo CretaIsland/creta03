@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 
 import '../../design_system/creta_color.dart';
-import '../../design_system/component/creta_banner_pane.dart';
 
 enum LeftMenuEnum {
   Template,
@@ -48,10 +47,12 @@ class LayoutConst {
   static const double maxPageSize = 1920 * 8;
   static const double minPageSize = 320;
 
+  static const double cretaBannerMinHeight = 196;
+
   static const double cretaPaddingPixel = 40;
   static EdgeInsetsGeometry cretaPadding = const EdgeInsets.fromLTRB(
     LayoutConst.cretaPaddingPixel,
-    cretaBannerMinHeight,
+    LayoutConst.cretaBannerMinHeight,
     LayoutConst.cretaPaddingPixel,
     LayoutConst.cretaPaddingPixel / 2,
   );
@@ -71,6 +72,7 @@ class LayoutConst {
   static const double cretaTopFilterHeight = 36;
   static const Size cretaTopTitlePaddingLT = Size(cretaPaddingPixel, cretaPaddingPixel);
   static const Size cretaTopTitlePaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel);
-  static const Size cretaTopFilterPaddingLT = Size(cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
+  static const Size cretaTopFilterPaddingLT = Size(
+      cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
   static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
 }

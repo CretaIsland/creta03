@@ -195,7 +195,7 @@ class BookGridItemState extends State<BookGridItem> {
                     onPressed: () {
                       logger.finest('delete pressed');
                       removeItem(widget.index).then((value) {
-                        if (widget.bookManager.isShort()) {
+                        if (widget.bookManager.isShort(offset: 1)) {
                           widget.bookManager.reGet(AccountManager.currentLoginUser.email,
                               onModelFiltered: () {
                             widget.bookManager.notify();

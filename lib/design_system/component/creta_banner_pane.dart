@@ -9,7 +9,7 @@ import '../menu/creta_drop_down_button.dart';
 import '../menu/creta_popup_menu.dart';
 import '../text_field/creta_search_bar.dart';
 
-const double cretaBannerMinHeight = 196;
+//const double cretaBannerMinHeight = 196;
 
 class CretaBannerPane extends StatefulWidget {
   final double width;
@@ -46,7 +46,8 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
         LayoutConst.cretaTopTitlePaddingLT.width -
         LayoutConst.cretaTopTitlePaddingRB.width;
     return Container(
-      width: widget.width - ((widget.scrollbarOnRight ?? false) ? LayoutConst.cretaScrollbarWidth : 0),
+      width:
+          widget.width - ((widget.scrollbarOnRight ?? false) ? LayoutConst.cretaScrollbarWidth : 0),
       height: widget.height,
       color: widget.color,
       child: Stack(
@@ -134,27 +135,31 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
           children: [
             widget.width > 700 && widget.onSearch != null && !(widget.isSearchbarInBanner ?? false)
                 ? CretaSearchBar(
-              hintText: CretaLang.searchBar,
-              onSearch: (value) {
-                widget.onSearch?.call(value);
-              },
-              width: 246,
-              height: 32,
-            )
+                    hintText: CretaLang.searchBar,
+                    onSearch: (value) {
+                      widget.onSearch?.call(value);
+                    },
+                    width: 246,
+                    height: 32,
+                  )
                 : Container(),
             widget.width > 500 && widget.listOfListFilterOnRight != null
                 ? Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(width: 8,),
-                ...widget.listOfListFilterOnRight!
-                    .map(
-                      (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
-                )
-                    .toList(),
-              ],
-            )
-                : Container(width: 0,),
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 8,
+                      ),
+                      ...widget.listOfListFilterOnRight!
+                          .map(
+                            (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
+                          )
+                          .toList(),
+                    ],
+                  )
+                : Container(
+                    width: 0,
+                  ),
           ],
         ),
       ],
@@ -166,7 +171,9 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
     double titleWidth = title.length * CretaFont.titleELarge.fontSize! * 1.2 + 12 * 2 + 80;
     double descWidth = desc.length * CretaFont.bodyMedium.fontSize! * 1.2 + 12 * 2;
     return Padding(
-      padding: const EdgeInsets.only(left: 28,),
+      padding: const EdgeInsets.only(
+        left: 28,
+      ),
       child: Row(
         children: [
           icon ?? Container(),
@@ -190,16 +197,18 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
                   ),
                 )
               : Container(),
-          Expanded(child: Container(),),
+          Expanded(
+            child: Container(),
+          ),
           widget.width > 600 && (widget.isSearchbarInBanner ?? false)
               ? CretaSearchBar(
-            hintText: CretaLang.searchBar,
-            onSearch: (value) {
-              widget.onSearch?.call(value);
-              },
-            width: 246,
-            height: 32,
-          )
+                  hintText: CretaLang.searchBar,
+                  onSearch: (value) {
+                    widget.onSearch?.call(value);
+                  },
+                  width: 246,
+                  height: 32,
+                )
               : Container(),
         ],
       ),

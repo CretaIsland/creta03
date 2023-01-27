@@ -13,8 +13,11 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
 
+import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_popup_menu.dart';
 import '../model/creta_model.dart';
+import '../pages/studio/studio_constant.dart';
+import '../pages/studio/studio_variables.dart';
 
 enum DBState {
   idle,
@@ -23,7 +26,7 @@ enum DBState {
 
 abstract class CretaManager extends AbsExModelManager {
   static const int maxTotalLimit = 500;
-  static const int maxPageLimit = 100;
+  static const int maxPageLimit = 200;
   static const int defaultPageLimit = 50;
 
   static String modelPrefix(ExModelType type) {
@@ -167,6 +170,10 @@ abstract class CretaManager extends AbsExModelManager {
   }
 
   void reGet(String userId, {Function? onModelFiltered}) {
+    int proper = properLimit();
+    if (_lastLimit < proper) {
+      _lastLimit = proper;
+    }
     logger.finest('reGet');
     queryFromDB({..._currentQuery}).then((value) {
       if (_currentLikeAttrList.isNotEmpty && _currentSearchStr.isNotEmpty) {
@@ -233,9 +240,36 @@ abstract class CretaManager extends AbsExModelManager {
     return _lastLimit == modelList.length;
   }
 
-  bool isShort() {
+  bool isShort({int offset = 0}) {
     logger.finest('limit=$_lastLimit, modelList=${modelList.length}');
-    return _lastLimit > modelList.length;
+    int proper = properLimit();
+    int modelLen = modelList.length + offset;
+    return _lastLimit <= modelLen && proper > modelLen;
+  }
+
+  int properLimit() {
+    if (StudioVariables.displaySize.width == 0 || StudioVariables.displaySize.height == 0) {
+      return _lastLimit == 0 ? CretaManager.defaultPageLimit : _lastLimit;
+    }
+    double availWidth = StudioVariables.displaySize.width - CretaComponentLocation.TabBar.width;
+    double availHeight = StudioVariables.displaySize.height - LayoutConst.cretaBannerMinHeight;
+
+    double square = availHeight * availWidth;
+    if (square <= 0) {
+      return _lastLimit == 0 ? CretaManager.defaultPageLimit : _lastLimit;
+    }
+    double gridSize = (LayoutConst.bookThumbSize.width + LayoutConst.cretaPaddingPixel) *
+        (LayoutConst.bookThumbSize.height + LayoutConst.cretaPaddingPixel);
+
+    int retval = (square / gridSize).ceil();
+    if (retval < 10) {
+      retval = 10;
+    }
+    if (retval > CretaManager.maxPageLimit) {
+      retval = CretaManager.maxPageLimit;
+    }
+    logger.finest('properLimit=$retval');
+    return retval;
   }
 
   Future<List<AbsExModel>> isGetListFromDBComplete() async {
@@ -275,7 +309,6 @@ abstract class CretaManager extends AbsExModelManager {
     Map<String, OrderDirection>? orderBy,
     bool isNew = true,
   }) async {
-    logger.finest('my queryFromDB(${query.toString()})');
     lock();
     _dbState = DBState.querying;
 
@@ -286,6 +319,7 @@ abstract class CretaManager extends AbsExModelManager {
       limit = CretaManager.maxPageLimit;
     }
     _lastLimit = limit;
+    logger.finest('my queryFromDB(${query.toString()}, $isNew, $limit)');
 
     Map<String, OrderDirection> copyOrderBy = {};
     if (orderBy == null || orderBy.isEmpty) {
@@ -365,6 +399,10 @@ abstract class CretaManager extends AbsExModelManager {
     if (_dbState == DBState.idle &&
         _lastFetchedCount >= _lastLimit &&
         _totaltFetchedCount <= CretaManager.maxTotalLimit) {
+      int proper = properLimit();
+      if (_lastLimit < proper) {
+        _lastLimit = proper;
+      }
       await queryFromDB({..._currentQuery},
           limit: _lastLimit == 0 ? CretaManager.defaultPageLimit : _lastLimit, isNew: false);
       return true;
@@ -372,7 +410,7 @@ abstract class CretaManager extends AbsExModelManager {
     return false;
   }
 
-  Future<bool> scrollListener(ScrollController controller) async {
+  Future<bool> showNext(ScrollController controller) async {
     double scrollOffset = controller.offset;
     double nextPageTrigger = 0.8 * controller.position.maxScrollExtent;
     if (controller.position.pixels > nextPageTrigger) {

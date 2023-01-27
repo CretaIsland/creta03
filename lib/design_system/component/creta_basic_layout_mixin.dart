@@ -2,6 +2,8 @@ import 'package:creta03/design_system/menu/creta_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
+import '../../common/creta_utils.dart';
+import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_banner_pane.dart';
 import 'creta_leftbar.dart';
@@ -9,9 +11,9 @@ import 'snippet.dart';
 
 mixin CretaBasicLayoutMixin {
   final ScrollController _bannerScrollController = ScrollController();
-  double _bannerHeight = cretaBannerMinHeight;
-  double _topPaneMaxHeight = cretaBannerMinHeight;
-  double _topPaneMinHeight = cretaBannerMinHeight;
+  double _bannerHeight = LayoutConst.cretaBannerMinHeight;
+  double _topPaneMaxHeight = LayoutConst.cretaBannerMinHeight;
+  double _topPaneMinHeight = LayoutConst.cretaBannerMinHeight;
   double _scrollOffset = 0;
   bool _usingBannerScrollbar = false;
   void Function(bool)? _scrollChangedCallback;
@@ -21,8 +23,8 @@ mixin CretaBasicLayoutMixin {
 
   void setUsingBannerScrollBar({
     required void Function(bool bannerSizeChanged) scrollChangedCallback,
-    double bannerMaxHeight = cretaBannerMinHeight,
-    double bannerMinHeight = cretaBannerMinHeight,
+    double bannerMaxHeight = LayoutConst.cretaBannerMinHeight,
+    double bannerMinHeight = LayoutConst.cretaBannerMinHeight,
   }) {
     _bannerHeight = bannerMaxHeight;
     _topPaneMaxHeight = bannerMaxHeight;
@@ -50,14 +52,13 @@ mixin CretaBasicLayoutMixin {
   Size gridArea = Size.zero;
 
   void resize(BuildContext context) {
-    StudioVariables.displayWidth = MediaQuery.of(context).size.width;
-    StudioVariables.displayHeight = MediaQuery.of(context).size.height;
-    availArea =
-        Size(StudioVariables.displayWidth, StudioVariables.displayHeight - CretaComponentLocation.BarTop.height);
+    CretaUtils.getDisplaySize(context);
+    availArea = Size(StudioVariables.displayWidth,
+        StudioVariables.displayHeight - CretaComponentLocation.BarTop.height);
     leftBarArea = Size(CretaComponentLocation.TabBar.width, availArea.height);
     rightPaneArea = Size(StudioVariables.displayWidth - leftBarArea.width, availArea.height);
     topBannerArea = Size(rightPaneArea.width, _bannerHeight);
-    gridArea = Size(rightPaneArea.width, rightPaneArea.height - cretaBannerMinHeight);
+    gridArea = Size(rightPaneArea.width, rightPaneArea.height - LayoutConst.cretaBannerMinHeight);
     // logger.finest(
     //     'displayWidth=${StudioVariables.displayWidth}, displayHeight=${StudioVariables.displayHeight}');
     // logger.finest('topBannerArea=${topBannerArea.width}, ${topBannerArea.height}');
@@ -152,7 +153,8 @@ mixin CretaBasicLayoutMixin {
                 )
               : Column(
                   children: [
-                    StudioVariables.displayHeight > topBannerArea.height + CretaComponentLocation.BarTop.height
+                    StudioVariables.displayHeight >
+                            topBannerArea.height + CretaComponentLocation.BarTop.height
                         ? getBannerPane(
                             width: topBannerArea.width,
                             height: topBannerArea.height,
