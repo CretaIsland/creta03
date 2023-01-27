@@ -65,8 +65,14 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
 
     super.initState();
 
-    _controller = ScrollController();
-    _controller.addListener(_scrollListener);
+    //_controller = ScrollController();
+    //_controller.addListener(_scrollListener);
+    _controller = getBannerScrollController;
+    setUsingBannerScrollBar(
+      scrollChangedCallback: _scrollListener,
+      // bannerMaxHeight: 196 + 200,
+      // bannerMinHeight: 196,
+    );
 
     bookManagerHolder = BookManager();
     bookManagerHolder!.configEvent(notifyModify: false);
@@ -110,9 +116,9 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     logger.info('initState end');
   }
 
-  void _scrollListener() {
+  void _scrollListener(bool bannerSizeChanged) {
     bookManagerHolder!.scrollListener(_controller).then((needUpdate) {
-      if (needUpdate) {
+      if (needUpdate || bannerSizeChanged) {
         setState(() {});
       }
     });
@@ -218,29 +224,33 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       );
     }
 
-    return GridView.builder(
+    return Scrollbar(
+      thumbVisibility: true,
       controller: _controller,
-      padding: LayoutConst.cretaPadding,
-      itemCount: bookManager.getLength() + 1, //item 개수
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-        childAspectRatio:
-            LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
-        mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
-        crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+      child: GridView.builder(
+        controller: _controller,
+        padding: LayoutConst.cretaPadding,
+        itemCount: bookManager.getLength() + 1, //item 개수
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
+          childAspectRatio:
+              LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
+          mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
+          crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return (itemWidth >= 0 && itemHeight >= 0)
+              ? bookGridItem(index)
+              : LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    itemWidth = constraints.maxWidth;
+                    itemHeight = constraints.maxHeight;
+                    //logger.finest('first data, $itemWidth, $itemHeight');
+                    return bookGridItem(index);
+                  },
+                );
+        },
       ),
-      itemBuilder: (BuildContext context, int index) {
-        return (itemWidth >= 0 && itemHeight >= 0)
-            ? bookGridItem(index)
-            : LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  itemWidth = constraints.maxWidth;
-                  itemHeight = constraints.maxHeight;
-                  //logger.finest('first data, $itemWidth, $itemHeight');
-                  return bookGridItem(index);
-                },
-              );
-      },
     );
   }
 
