@@ -47,7 +47,7 @@ class CretaUtils {
       if (retval.isNotEmpty) {
         retval += ',';
       }
-      retval += "'$e'";
+      retval += '"$e"';
     }
     logger.finest('listToString=[$retval]');
     return '[$retval]';

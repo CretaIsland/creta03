@@ -1,0 +1,574 @@
+# creta02
+
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
+
+####
+####  When love and skil work together, expect a masterpiece
+####  - John Ruskin - 
+####
+
+기본 환경 설정
+
+# project 환경변수의 설정
+# 다음과 같은 Project 환경 변수를 공통으로 설정해주자
+
+CRETA_HOME  D:/Flutter/project/creta02   <-- 사람마다 path 는 다르겠지>
+
+# appwrite 설치시는 다음의 디렉토리에서 설치해주자. (appwrite cli 설치 위치)
+
+%CRETA_HOME%/3rdpary/appwrite
+
+# python 사용을 위해서는 
+# python 3.1 을 설치해주자
+# 파이손 path 환경 변수를 설정해주자
+
+PYTHONPATH   %CRETA_HOME%\3rdparty\appwrite\sdk-for-python;C:\Python310\Lib;
+
+##
+## skpark
+## run way
+## build directory configuration
+flutter config --build-dir=../release/cretaTest04  
+
+#visual code 를 재기동한다.
+
+## creta_main.dart 에서 version 번호를 바꾸는 것을 잊지말자.  ver 0.98
+
+## flutter run -d web-server --web-renderer html
+flutter run -d chrome --web-renderer html
+# or
+flutter run -d chrome --web-renderer canvaskit
+
+
+
+
+## build and release process
+flutter build web --web-renderer html --release --base-href="/cretaTest04/"
+# or
+flutter build web --web-renderer canvaskit --release --base-href="/cretaTest04/"
+
+## first time after create repository
+cd ../release/cretaTest04/web
+echo "# cretaTest04" >> README.md
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/CretaIsland/cretaTest04.git
+git push -u origin main
+
+## GitHub 페이지에서 Settings 에서 GitHub pages 'click it out here' 를 누른다.
+# Source choice 박스에서 main 을 고른뒤 save 를 눌러주면 웹페이지가 생기다.
+# https://CretaIsland.github.io/cretaTest04/
+
+# for windows configuration
+
+flutter config --enable-windows-desktop 
+flutter create --platforms=windows . 
+# you need to install Xcode or VisualStudio or gcc toolchains.
+flutter run -d windows
+flutter build windows
+
+
+
+
+
+#npm install firebase
+#npm install -g firebase-tools
+#flutter build web --web-renderer html --release --base-href="/accTest0390/"
+#flutter build web --web-renderer canvaskit --release --base-href="/accTest0390/"
+
+#############################################
+### Flutter 소스 코드 변경건 
+#############################################
+## Youtube 관련 수정
+copy D:\Flutter\project\creta00\source_modify\youtube_value_builder.daxt  D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\youtube_player_iframe-2.2.0\lib\src\helpers\youtube_value_builder.dart
+
+## text ticker 관련 수정 
+copy D:\Flutter\project\creta00\source_modify\scroll_loop_auto_scroll.daxt
+D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\scroll_loop_auto_scroll-0.0.5\lib\scroll_loop_auto_scroll.dart
+
+## effect 관련 수정
+copy D:\Flutter\project\creta00\source_modify\vitality.daxt D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\vitality-1.0.2\lib\vitality.dart
+
+copy D:\Flutter\project\creta00\source_modify\flutter_web_auth.daxt  D:\Flutter\src\flutter\.pub-cache\hosted\pub.dartlang.org\flutter_web_auth-0.4.1\lib\flutter_web_auth.daxt
+
+#############################################
+### Flutter Web fireStore dataabse 사용하기
+#############################################
+
+1. Firebase 웹페이지에서 할일
+
+-  console.firebase.google.com  엦 접속
+
+* [+ project 추가]
+* 프로젝트 이름 "creta02"  [계속]
+* 애널리틱스 사용설정 안함 [프로젝트 만들기]
+* 앱에 Firebase 추가하여 시작하기
+* [Web 아이콘버튼]
+* 앱등록,  앱 닉네임
+creta02 
+Firebase 호스팅 체크박스는 일단 건너뛰어 봄.
+[앱등록]
+
+#npm install firebase
+#npm install -g firebase-tools
+
+한 후에..
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAy4Bvw7VBBklphDa9H1sbLZLLB9WE5Qk0",
+  authDomain: "creta00-4c349.firebaseapp.com",
+  projectId: "creta00-4c349",
+  storageBucket: "creta00-4c349.appspot.com",
+  messagingSenderId: "1022332856313",
+  appId: "1:1022332856313:web:872be7560e0a039fb0bf28"
+};
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBe_K6-NX9-lzYNjQCPOFWbaOUubXqWVHg",
+  authDomain: "creta02-ef955.firebaseapp.com",
+  projectId: "creta02-ef955",
+  storageBucket: "creta02-ef955.appspot.com",
+  messagingSenderId: "878607742856",
+  appId: "1:878607742856:web:87e91c3185d1a79980ec3d"
+};
+
+부분을 복사한다.
+
+
+
+- 테이블 만들기
+
+[콘솔로 이동]
+
+프로젝트가 없다면 [프로젝트 추가]
+프로젝트 이름 입력
+애널리틱스 사용안함
+[프로젝트 만들기]-계속
+App에 Firebase 추가하여 시작하기
+앱등록후,  config 정보 복사해둘것
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCjdF1PEHKCvrEpaRzOqSZHSyunQOB4p9A",
+  authDomain: "hycop-center.firebaseapp.com",
+  projectId: "hycop-center",
+  storageBucket: "hycop-center.appspot.com",
+  messagingSenderId: "609138722632",
+  appId: "1:609138722632:web:400f2176f150bc186fd57d"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+
+좌측 메뉴 증에 [Firestore Database] 선택
+[데이터베이스 만들기]
+
+일단 [테스트모드에서 시작] 선택 (30일후 보안 정책을 결정해주면 됨)
+
+[시작]
+
+Cloud Firestore 위치  "asia-northeast3"  
+[사용설정]
+
+[+컬렉션 시작]
+
+컬렉션 ID :  creta_user
+
+데이터베이스를 만든다.
+만들다가 오류가 나는 것은  Project home 으로 나갔다가 다시 들어와보면 만들어져 있다.
+
+
+
+1.  yaml 에 다음을 추가
+
+
+firebase_core: ^1.13.1
+cloud_firestore: ^3.1.10
+cloud_firestore_web: ^2.6.10
+
+2. create_db.dart
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:creta02/common/util/logger.dart';
+
+// 아까 복사한 부분을 이용해서 만든다.
+class FirebaseConfig {
+  static const String apiKey = "AIzaSyAy4Bvw7VBBklphDa9H1sbLZLLB9WE5Qk0";
+  static const String authDomain = "creta00-4c349.firebaseapp.com";
+  static const String projectId = "creta00-4c349";
+  static const String storageBucket = "creta00-4c349.appspot.com";
+  static const String messagingSenderId = "1022332856313";
+  static const String appId = "1:1022332856313:web:872be7560e0a039fb0bf28";
+}
+
+class CretaDB {
+  final List resultList = [];
+  late CollectionReference collectionRef;
+
+  CretaDB(String collectionId) {
+    collectionRef = FirebaseFirestore.instanceFor(app:AbsDatabase.fbDBConn!).collection(collectionId);
+  }
+
+  Future<List> getData(String? key) async {
+    try {
+      if (key != null) {
+        DocumentSnapshot<Object?> result = await collectionRef.doc(key).get();
+        if (result.data() != null) {
+          resultList.add(result);
+        }
+      } else {
+        await collectionRef.get().then((snapshot) {
+          for (var result in snapshot.docs) {
+            resultList.add(result);
+          }
+        });
+      }
+      return resultList;
+    } catch (e) {
+      logHolder.log("GET DB ERROR : $e");
+      return resultList;
+    }
+  }
+}
+
+
+2.  main.dart 수정
+
+import 'package:firebase_core/firebase_core.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); //for firebase
+  await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: FirebaseConfig.apiKey,
+          appId: FirebaseConfig.appId,
+          messagingSenderId: FirebaseConfig.messagingSenderId,
+          projectId: FirebaseConfig.projectId)); // for firebase
+  runApp(const MyApp());
+}
+
+3  web/index.html 수정
+
+body 바로 아래...
+
+<body>
+
+  <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"</script>
+  <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore.js"</script>
+  <script> src="https://www.gstatic.com/firebasejs/9.0.2/firebase-storage.js"</script>
+  
+
+
+##############################
+## DB 별 인덱스 잡는 법
+###############################
+1. firebase
+ : where 조건절과 order by 에 사용된  attribute 를 복합 index 로 잡는다.
+ 예를 들어 다음과 같은 Query 라면
+  where attr1 = 'abc' and attr2 = 'cdf' order by updateTime desc;
+  인덱스는 다음과 같이 하나의 복합 인덱스로 잡아야 한다.
+   
+   index = attr1 ASC + attr2 ASC + updateTime desc
+
+ : 리얼타임에서는 따로 인덱스가 메뉴가 없고, Rule 에 다음과 같이 추가해주어야 한다.
+   (아래 룰에서 creta_delta 부분만 참고)
+ {
+  "rules": {
+    ".read": "true",  // 2022-7-14
+    ".write": "true",  // 2022-7-14
+    "creta_delta": {
+    	".indexOn": ["updateTime"]
+    }
+  }
+}
+
+2. appwrite 
+ : where 조건절과 order by 에 사용된  attribute 를 각각 별도의 index 로 잡는다.
+ 예를 들어 다음과 같은 Query 라면
+  where attr1 = 'abc' and attr2 = 'cdf' order by updateTime desc;
+ 
+  index1 = attr1 ASC + attr2 ASC
+  index2 = updateTime desc
+
+  이렇게 2개의 index 를 잡는다.
+
+
+##############################
+## appwrite cli 사용법
+###############################
+
+1. 윈도우즈용 cli 실행파일 다운로드
+
+https://github.com/appwrite/sdk-for-cli/releases/tag/0.18.4
+
+요기서, appwrite-cli-win-x64.exe 를 다운로드 받는다.
+이것은 설치파일이 아니고, 그냥 cli 실행파일이다.
+파일 이름을  appwrite.exe 로 바꾸어즈고 바로 사용할 수 있다.
+
+2. initialize 
+처음 DB 접속 정보를 설정해준다.
+
+./appwrite init project
+
+
+endpoint http://ec2-3-37-163-220.ap-northeast-2.compute.amazonaws.com:9090/v1
+
+라고 해주면, projectId, id/pwd 를 물어보는데 묻는 질문에 성실하게 대답해준다.
+처음 설치시 한번만 해주면 된다.
+이 결과로  appwrite.json 파일이 생기게 된다.
+
+3. collection 정보를 json 형태로 보기
+
+./appwrite --help 해보면 대충 알수 있다.
+
+./appwrite databases listCollections --databaseId 62d79f2e5fda513f4807 --json
+
+현재 Collection 정보를 json 형태로 리스트업해서 보여준다.
+
+4. Create Collection 하기
+
+Create Collection 을  Command line 명령으로 하려면 매우 힘드므로
+collection 정보를 appwrite.json 파일에 써놓고
+appwrite.json 파일에 써 놓고, 이를 deploy 하는 방식으로 진행한다.
+
+./appwrite deploy collection --all
+
+기존에 collection 이 이미 있는 경우, 데이터가 모두 날아가게 된다는 점에 유의한다.
+다만, field 가 추가되는 경우는 안날아가는 것 같다.
+collection 을 특정한 것만 create 하고 싶으면  --all 옵션을 뺀다.
+
+현 project 의  database/appwrite/ 폴더 밑에 있는 appwrite.json 파일을 참고한다.
+
+5. alter table 하기
+
+다음과 같이 field 를 추가할 수 있다. (test 라는  field 추가 예제)
+
+./appwrite databases createStringAttribute --databaseId  62d79f2e5fda513f4807  --collectionId creta_book --key  test  --size 128  --required false
+
+
+#############################
+# appwrite 환경 변수 설정
+##############################
+
+처음에 Appwrite 를 설치했던, 폴더에 appwrite 라는 폴더가 생겨있다.
+여기에 보면 env 라는 파일이 있는데,  이 파일을 메모장으로 열어서
+고치면 된다.
+고친후,  Appwrite 를 도커에서 재기동시켜야 한다.
+
+환경변수
+--------------------------------------------
+1) API 호출량의 일일 limit 가 걸려있는것을 해제하려면
+
+_APP_OPTIONS_ABUSE=disable
+
+로 설정해야 한다.
+
+
+#### 
+#### appwrite function start
+####
+
+#### 1.먼저 python 개발환경을 잡아준다.
+
+# python 으로 appwrite database 조회는 다음 web site 를 참조 : 
+# https://dev.to/robimez/python-in-appwrite-378h
+
+#python 3.1 이상 설치하고,
+#PYTHONPATH  <python 설치위치>/Lib 환경변수 추가하고
+# appwrite 설치 디레토리에  appwrite 의 sdk-for-python 을 git clone 으로 설치합니다.
+# https://github.com/orgs/appwrite/repositories 요기서 찾습니다.
+
+# 그다음 PYTHONPATH 에  sdk-for-python path 을 추가해줍니다.
+# 그다음 requests 패키지를 다음과 같은 명령으로 설치한다. (관리자권한으로 powershell 을 열어서 해야한다.)
+pip3 install requests
+
+#### 2. git 을 최신버전으로 업그레이드 해준다.
+git upgrade
+
+#### 3. appwrite cli 로 initilize 한다. (함수당 한번만 해야함. 또 하면 날라감)  
+# appwrite cli 가 설치된 디렉토리에서 파워쉘을 연다.
+# 다음과 같이  function 을 init 해준다.
+
+cd %CRETA_HOME%/3rdpary/appwrite
+.\appwrite init function
+
+# 묻은 말에 대답해준다.
+# 여기서는 removeDelta 이라는 함수를 만든다고 했다.  그리고 python 을 쓰겠다고 했다.
+# appwrite.json 파일에 removeDelta function 이 포함된 것을 볼 수 있다.
+# function/removeDelta/src 이라는 폴더가 생기고, index.py 가 생긴것을 볼 수 있다.
+
+#### 4. index.py 를 원하는데로 고쳐준다.
+# 현재는 example 을 만들어 놨다.
+# where 조건절을 쓸경우, 인덱스를 만들어줘야 한다는 것일 잊지 말자.
+# 다음과 같이 copy 해서 사용할 수 있다.
+copy index_removeDelta_example.py  functions/myTest/src/index.py
+
+#### 5.python 으로 테스트
+# 잘되는지 python 으로 테스트 해주자.
+cd functions/removeDelta/src
+python index.py 
+
+# 이때 index.py 에 다음과 같은 절을 추가했기 때문에 가능한 것이다.
+# 새로 함수를 만들때는 아래와 같은 절을 추가해주자
+ex) if __name__ == "__main__":
+  main('','')
+# 또한 endPoint 는  localhost 를 인식하지 못하므로 반드시 ip Address 로 바꾸어 적어주어야 한다.
+
+#### 6. Deploy 
+# 다음과 같이 이를 deploy 한다.
+cd ../../..
+.\appwrite deploy function
+
+# json 파일에 적혀있는 removeDelta 함수가 시스템에 등록되게 한다.
+# 그러면 대쉬보드에서 새 함수가 적용된 것이다.
+
+#### 7. 권한 주기
+# 새 함수가 등록되면, 권한을 주어야 한다.
+# Appwrite console 에서, 해당 함수의 Settings 메뉴로 들어가서, 
+# Execute Access 에 "role:all" 을 추가해주어야 한다.
+
+#### 8. console 에서 실행해 보기
+# appwrite console 에서 function 메뉴에서 execute 해서 실행해 볼 수 있다.
+# 이때, 파라메터를 넣는것을 잊지말자.
+# removeDelta 함수의 파라메터는 다음과 같다.
+{"text":"helloworld2","projectId":"62d79f0b36f4029ce40f","databaseId":"62d79f2e5fda513f4807",
+"endPoint":"http://192.168.10.3/v1","apiKey":"163c3964999075adc6b7317f211855832ebb6d464520446280af0f8bbb9e642ffdcd2588a5141ce3ea0011c5780ce10986ed57b742fdb6a641e2ecf7310512cd5349e61385f856eb4789e718d750e2451c1b1519dd20cdf557b5edc1ae066e28430f5cc3e157abc4a13ad6aa112a48b07ce707341edfdc41d2572e95b4728905"}
+
+#### 9. 이제 hyCop 에서 이 함수를 호출하기
+# 참조 https://appwrite.io/docs/functions
+
+
+#### 10. scheduling
+# functions 의 해당 function 의 Settings 에서 아래쪽에 Schedule 항목에 cron syntax 로 적어준다
+# cron syntax
+min(0~59) hour(0~23) day(1~31) month(1~12) week(0~6)
+# removeDelta 의 경우 hour 0 min 01 로 놓으면 새벽 0시 01 분에 동작하게 된다.
+
+#### Node js 로 함수 만들기
+
+1. 과정
+https://appwrite.io/docs/functions?keyword=appwrite&utm_source=google&utm_medium=cpc&utm_term=appwrite&utm_campaign=HD-Appwrite-Search-NA-Brand&gclid=CjwKCAjwpqCZBhAbEiwAa7pXeR8Vla5CrrSGPxP3yzS6GfLs_OxknRnIZSz95MTQLTzZS3Vt_wP7PhoCYfMQAvD_BwE
+
+2. database 접근
+
+https://appwrite.io/docs/server/databases
+
+
+#### 
+#### appwrite function end
+####
+
+#### 
+#### Firebase Cloud function start
+####
+
+#### 1. cli 의 설치
+# https://firebase.google.com/docs/cli?authuser=4#install-cli-windows
+# 이름을 firebase.exe 로 바꾸어준다. 반드시 C: 드라이브에 옮겨놔야 한다. 
+# C:\Users\<자기유저이름>\firebase  폴더를 만들고, 여기에 옮겨준다.
+
+move firebase-tools-instant-win.exe  C:\Users\<자기유저이름>\firebase\firebase.exe
+
+# C:\Users\<자기유저이름>\firebase 를 PATH 환경변수에 더해준다.
+
+#### 2. 시작하기
+# https://firebase.google.com/docs/functions/get-started?authuser=4
+
+cd %CRETA_HOME%/3rdpary/firebase
+firebase login  <-- cretacreates@gmail.com 계정으로 로그인한다.>
+firebase init firestore  <-- 처음 한번만 하는것 같다. 기존에 만들어진 Project 로 로그인한다.>
+firebase init functions  <-- functions/index.js 가 만들어진다.>
+
+# functions/index.js 가 코딩을 하는 곳이다.
+# appwrite 와는 달리, 모든 function 을 이 파일 한곳에 때려 박는거 같다.
+# https://firebase.google.com/docs/firestore/quickstart
+# "Cloud Functions에서 초기화" 내용을  index.js 에 넣는다.
+# onRequest, onCall,  schedule,  onChanged(onWrite 등) 등이 있다.
+
+#### 3. 테스트 해보기
+firebase emulators:start
+
+# 를 하면, 포트번호가 쫑난다는 에러가 나는 것이 보통이다.
+# 시키는대로,  firebase.json 파일에 다음 라인을 추가해 준다.
+, 
+"emulators": {
+    "firestore": {
+      "host": "localhost",
+      "port": "4000"
+    }
+  }
+
+# 다시 시도하면  URL 을 뱉어내는데, 이 URL 로 테스트해 볼 수 있다.
+# 단, onRequest 함수만 테스트해볼 수 있다.
+
+#### 4. 배포
+
+firebase deploy --only functions
+firebase deploy --only functions:removeDelta
+
+Error: Failed to fetch Run service undefined
+위와 같은 에러가 난다면
+
+npm install -g firebase-tools --force
+npm audit fix
+
+이렇게 해서 firebase version 을 업그레이드 해준다
+version 보는 법 : firebase --version
+
+# 겁나게 오래걸림...다음과 같은 url 이 나올때까지 기다려야함
+
+Function URL (addMessage(us-central1)): https://us-central1-creta01-ef955.cloudfunctions.net/addMessage
+
+# 로그는  Google Cloud Console 로그탐색기에서 찾을 수 있음
+
+
+#### 5. 앱에서의 함수 호출
+# flutter api 
+# https://pub.dev/documentation/cloud_functions/latest/
+# https://firebase.google.com/docs/functions/callable?authuser=4
+# 페이지 중간에...관리자 인증 정보라는 것을 설정해 본다.
+
+# Google Cloud Console의 서비스 계정 창을 엽니다.
+# App Engine 기본 서비스 계정이 선택되어 있는지 확인하고 오른쪽에 있는 옵션 메뉴에서 키 만들기를 선택합니다.
+# 메시지가 나타나면 키 유형으로 JSON을 선택하고 만들기를 클릭합니다.
+# Google 기본 사용자 인증 정보가 다운로드된 키를 가리키도록 설정합니다.
+
+set GOOGLE_APPLICATION_CREDENTIALS=path\to\key.json
+firebase emulators:start
+
+# 이 단계를 완료하면 함수 테스트에서 Admin SDK를 사용하여 Firebase 및 Google API에 액세스할 수 # 있습니다. 예를 들어 인증 트리거를 테스트할 때 에뮬레이션된 함수에서 admin.auth().
+# getUserByEmail(email)을 호출할 수 있습니다.
+
+#### 7. Realtime 을 쓰려면 추가 Setting을 해야한다.
+# 프로젝트 셋팅에서  기본GCP 리소스 위치를  asia-northeast2 로 잡아준다. (pubub 을 쓰려면...)
+# 리얼타임 데이터베이스-규칙에서,  아래와 같이 index 를 잡아주어야 Query 효과적으로 동작한다고 # 한다.
+{
+  "rules": {
+    ".read": "true",  // 2022-7-14
+    ".write": "true",  // 2022-7-14
+    "creta_delta": {
+    	".indexOn": ["updateTime"]
+    }
+  }
+}

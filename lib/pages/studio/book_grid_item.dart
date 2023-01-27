@@ -252,6 +252,7 @@ class BookGridItemState extends State<BookGridItem> {
         height: aHeight - LayoutConst.bookDescriptionHeight,
         color: Colors.transparent,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 8.0, left: 8),

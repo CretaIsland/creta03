@@ -1,0 +1,44 @@
+{
+    "FirebaseConfig" : {
+        "dbConnInfo" : {
+            "apiKey" : "AIzaSyBiPFiDRpywm06KftPPDu0T7d1eowrHYEE",
+            "authDomain" : "hycop-example.firebaseapp.com",
+            "databaseURL" : "https://hycop-example-default-rtdb.firebaseio.com",
+            "projectId" : "hycop-example",
+            "storageBucket" : "hycop-example.appspot.com",
+            "messagingSenderId" : "724689601871",
+            "appId" : "1:724689601871:web:2cc3542344ad1feba1b13a"           
+        },
+        "storageConnInfo" : {
+            "apiKey" : "AIzaSyBiPFiDRpywm06KftPPDu0T7d1eowrHYEE",
+            "appId" : "1:724689601871:web:2cc3542344ad1feba1b13a",
+            "projectId" : "hycop-example",
+            "storageURL" : "hycop-example.appspot.com",
+            "messagingSenderId" : "724689601871"
+        },
+        "socketConnInfo" : {
+            "serverUrl" : "https://hycop-socket.tk",
+            "serverPort" : "443"
+        }
+    },
+    "AppwriteConfig" : {
+        "dbConnInfo" : {
+            "apiKey" : "ad29cfe75ce0759fcfb0d8c0ca0d3832011871550bf5b17910c54ba0e2819ee65ba15404d778e64a0224a4744085e1a26612e9fcf6c675149827371282bddfb4a5b127002792c58e07b8c633de32b6e5ba039e60aeab3a63d1a9ff8f8cdcec728490fda66f3a7b5cef66e1390123c1b2f5d57a00d4235d2d07c2e3c7318b2646",
+            "databaseURL" : "https://appwrite-test.tk/v1",
+            "projectId" : "hycopTest",
+            "appId" : "hycopTestDB" 
+        },
+        "storageConnInfo" : {
+            "storageURL" : "https://appwrite-test.tk/v1",
+            "projectId" : "hycopTest",
+            "apiKey" : "ad29cfe75ce0759fcfb0d8c0ca0d3832011871550bf5b17910c54ba0e2819ee65ba15404d778e64a0224a4744085e1a26612e9fcf6c675149827371282bddfb4a5b127002792c58e07b8c633de32b6e5ba039e60aeab3a63d1a9ff8f8cdcec728490fda66f3a7b5cef66e1390123c1b2f5d57a00d4235d2d07c2e3c7318b2646"
+        },
+        "socketConnInfo" : {
+            "serverUrl" : "https://hycop-socket.tk",
+            "serverPort" : "443"
+        }
+    },
+    "AssetConfig" : {
+        "savePeriod" : 1000
+    }
+}
