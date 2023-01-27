@@ -63,6 +63,31 @@ mixin CretaBasicLayoutMixin {
     // logger.finest('topBannerArea=${topBannerArea.width}, ${topBannerArea.height}');
   }
 
+  Widget getBannerPane({
+    required double width,
+    required double height,
+    String? title,
+    String? description,
+    List<List<CretaMenuItem>>? listOfListFilter,
+    bool? isSearchbarInBanner,
+    bool? scrollbarOnRight,
+    List<List<CretaMenuItem>>? listOfListFilterOnRight,
+    void Function(String)? onSearch,
+  }) {
+    return CretaBannerPane(
+      width: width,
+      height: height,
+      color: Colors.white,
+      title: title ?? '',
+      description: description ?? '',
+      listOfListFilter: listOfListFilter ?? [],
+      isSearchbarInBanner: isSearchbarInBanner,
+      scrollbarOnRight: scrollbarOnRight,
+      listOfListFilterOnRight: listOfListFilterOnRight,
+      onSearch: onSearch,
+    );
+  }
+
   Widget mainPage(
     BuildContext context, {
     required List<CretaMenuItem> leftMenuItemList,
@@ -111,10 +136,9 @@ mixin CretaBasicLayoutMixin {
                         height: rightPaneArea.height,
                         child: mainWidget,
                       ),
-                      CretaBannerPane(
+                      getBannerPane(
                         width: topBannerArea.width,
                         height: topBannerArea.height,
-                        color: Colors.white,
                         title: bannerTitle,
                         description: bannerDescription,
                         listOfListFilter: listOfListFilter,
@@ -129,10 +153,9 @@ mixin CretaBasicLayoutMixin {
               : Column(
                   children: [
                     StudioVariables.displayHeight > topBannerArea.height + CretaComponentLocation.BarTop.height
-                        ? CretaBannerPane(
+                        ? getBannerPane(
                             width: topBannerArea.width,
                             height: topBannerArea.height,
-                            color: Colors.white,
                             title: bannerTitle,
                             description: bannerDescription,
                             listOfListFilter: listOfListFilter,
