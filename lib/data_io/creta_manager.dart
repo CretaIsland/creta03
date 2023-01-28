@@ -51,7 +51,7 @@ abstract class CretaManager extends AbsExModelManager {
   Map<String, OrderDirection> _currentSortAttr = {};
 
   DBState _dbState = DBState.idle;
-  Map<String, dynamic> _currentQuery = {};
+  Map<String, QueryValue> _currentQuery = {};
 
   String _currentSearchStr = '';
   List<String> _currentLikeAttrList = [];
@@ -155,12 +155,12 @@ abstract class CretaManager extends AbsExModelManager {
 
   void toFiltered(String? name, dynamic value, String userId, {Function? onModelFiltered}) {
     logger.finest('toFiltered');
-    Map<String, dynamic> query = {};
+    Map<String, QueryValue> query = {};
     if (name != null && value != null) {
-      query[name] = value;
+      query[name] = QueryValue(value: value);
     }
-    query['creator'] = userId;
-    query['isRemoved'] = false;
+    query['creator'] = QueryValue(value: userId);
+    query['isRemoved'] = QueryValue(value: false);
     queryFromDB(query).then((value) {
       if (_currentLikeAttrList.isNotEmpty && _currentSearchStr.isNotEmpty) {
         _search(_currentLikeAttrList, _currentSearchStr);
@@ -296,15 +296,15 @@ abstract class CretaManager extends AbsExModelManager {
 
   Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
     logger.finest('my override myDataOnly');
-    Map<String, dynamic> query = {};
-    query['creator'] = userId;
-    query['isRemoved'] = false;
+    Map<String, QueryValue> query = {};
+    query['creator'] = QueryValue(value: userId);
+    query['isRemoved'] = QueryValue(value: false);
     final retval = await queryFromDB(query, limit: limit);
     return retval;
   }
 
   Future<List<AbsExModel>> queryFromDB(
-    Map<String, dynamic> query, {
+    Map<String, QueryValue> query, {
     int? limit,
     Map<String, OrderDirection>? orderBy,
     bool isNew = true,
@@ -554,5 +554,4 @@ abstract class CretaManager extends AbsExModelManager {
   //
   //  realtime 이벤트 관련 end ]
   //
-
 }

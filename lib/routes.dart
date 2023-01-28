@@ -47,7 +47,9 @@ abstract class AppRoutes {
   static const String buttonDemoPage = '/buttonDemoPage';
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String studioBookMainPage = '/studio/bookMainPage';
-  static const String studioBookListPage = '/studio/bookListPage';
+  static const String studioBookMyPage = '/studio/bookMyPage';
+  static const String studioBookSharedPage = '/studio/bookMySharedPage';
+  static const String studioBookTeamPage = '/studio/bookMyTeamPage';
   static const String login = '/login';
   static const String communityHome = '/community/home';
   static const String subscriptionList = '/community/subscriptionList';
@@ -73,8 +75,14 @@ final routesLoggedOut = RouteMap(
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (_) => TransitionPage(child: BookMainPage()),
-    AppRoutes.studioBookListPage: (_) => TransitionPage(
-          child: BookGridPage(),
+    AppRoutes.studioBookMyPage: (_) => TransitionPage(
+          child: BookGridPage(selectedPage: SelectedPage.myPage),
+        ),
+    AppRoutes.studioBookSharedPage: (_) => TransitionPage(
+          child: BookGridPage(selectedPage: SelectedPage.sharedPage),
+        ),
+    AppRoutes.studioBookTeamPage: (_) => TransitionPage(
+          child: BookGridPage(selectedPage: SelectedPage.teamPage),
         ),
     AppRoutes.communityHome: (_) => TransitionPage(
           child: CommunityPage(

@@ -23,22 +23,23 @@ import '../../routes.dart';
 import 'book_grid_item.dart';
 import 'studio_constant.dart';
 
-// ignore: must_be_immutable
-class BookGridPage extends StatefulWidget {
-  final VoidCallback? openDrawer;
-
-  const BookGridPage({Key? key, this.openDrawer}) : super(key: key);
-
-  @override
-  State<BookGridPage> createState() => _BookGridPageState();
-}
-
 enum SelectedPage {
   none,
   myPage,
   sharedPage,
   teamPage,
   end;
+}
+
+// ignore: must_be_immutable
+class BookGridPage extends StatefulWidget {
+  final VoidCallback? openDrawer;
+  final SelectedPage selectedPage;
+
+  const BookGridPage({Key? key, required this.selectedPage, this.openDrawer}) : super(key: key);
+
+  @override
+  State<BookGridPage> createState() => _BookGridPageState();
 }
 
 class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin {
@@ -49,7 +50,6 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   bool _onceDBGetComplete = false;
 
   // ignore: unused_field
-  SelectedPage _selectedPage = SelectedPage.myPage;
 
   late List<CretaMenuItem> _leftMenuItemList;
   late List<CretaMenuItem> _dropDownMenuItemList1;
@@ -89,25 +89,19 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       CretaMenuItem(
           caption: CretaStudioLang.myCretaBook,
           onPressed: () {
-            setState(() {
-              _selectedPage = SelectedPage.myPage;
-            });
+            Routemaster.of(context).push(AppRoutes.studioBookMyPage);
           },
           selected: true),
       CretaMenuItem(
           caption: CretaStudioLang.sharedCretaBook,
           onPressed: () {
-            setState(() {
-              _selectedPage = SelectedPage.sharedPage;
-            });
+            Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
           },
           selected: false),
       CretaMenuItem(
           caption: CretaStudioLang.teamCretaBook,
           onPressed: () {
-            setState(() {
-              _selectedPage = SelectedPage.teamPage;
-            });
+            Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
           },
           selected: false),
     ];
@@ -164,8 +158,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
             },
             gotoButtonTitle: CretaStudioLang.gotoCommunity,
             leftMenuItemList: _leftMenuItemList,
-            bannerTitle: CretaStudioLang.myCretaBook,
-            bannerDescription: CretaStudioLang.myCretaBookDesc,
+            bannerTitle: getBookTitle(),
+            bannerDescription: getBookDesc(),
             listOfListFilter: [_dropDownMenuItemList1, _dropDownMenuItemList2],
             //mainWidget: sizeListener.isResizing() ? Container() : _bookGrid(context))),
             onSearch: (value) {
@@ -174,6 +168,32 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
             mainWidget: _bookGrid(context),
           )),
     );
+  }
+
+  String getBookTitle() {
+    switch (widget.selectedPage) {
+      case SelectedPage.myPage:
+        return CretaStudioLang.myCretaBook;
+      case SelectedPage.sharedPage:
+        return CretaStudioLang.sharedCretaBook;
+      case SelectedPage.teamPage:
+        return CretaStudioLang.teamCretaBook;
+      default:
+        return CretaStudioLang.myCretaBook;
+    }
+  }
+
+  String getBookDesc() {
+    switch (widget.selectedPage) {
+      case SelectedPage.myPage:
+        return CretaStudioLang.myCretaBookDesc;
+      case SelectedPage.sharedPage:
+        return CretaStudioLang.sharedCretaBookDesc;
+      case SelectedPage.teamPage:
+        return CretaStudioLang.teamCretaBookDesc;
+      default:
+        return CretaStudioLang.myCretaBook;
+    }
   }
 
   Widget _bookGrid(BuildContext context) {

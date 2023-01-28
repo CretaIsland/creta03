@@ -320,7 +320,7 @@ class Snippet {
           label: 'Studio Book List',
           child: Icon(Icons.list_alt_outlined),
           onTap: () {
-            Routemaster.of(context).push(AppRoutes.studioBookListPage);
+            Routemaster.of(context).push(AppRoutes.studioBookMyPage);
           },
         ),
         SpeedDialChild(
