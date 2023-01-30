@@ -105,5 +105,14 @@ class BookManager extends CretaManager {
     return defaultBook;
   }
 
+  Future<List<AbsExModel>> sharedData(String userId, {int? limit}) async {
+    logger.finest('sharedData');
+    Map<String, QueryValue> query = {};
+    query['shares'] = QueryValue(value: userId, operType: OperType.arrayContains);
+    query['isRemoved'] = QueryValue(value: false);
+    final retval = await queryFromDB(query, limit: limit);
+    return retval;
+  }
+
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
 }

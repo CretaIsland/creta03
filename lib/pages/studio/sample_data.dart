@@ -41,14 +41,14 @@ class SampleData {
         imageUrl: "https://picsum.photos/200/?random=1",
         state: ActiveState.active),
     ConnectedUserModel(
-        email: 'def@sqisoft.com', name: "장길산", imageUrl: "https://picsum.photos/200/?random=2"),
+        email: 'creta@sqisoft.com', name: "장길산", imageUrl: "https://picsum.photos/200/?random=2"),
     ConnectedUserModel(
         email: 'hij@sqisoft.com',
         name: "임꺽정",
         imageUrl: "https://picsum.photos/200/?random=3",
         state: ActiveState.active),
     ConnectedUserModel(
-        email: 'klm@sqisoft.com', name: "전우치", imageUrl: "https://picsum.photos/200/?random=4"),
+        email: 'skpark@sqisoft.com', name: "전우치", imageUrl: "https://picsum.photos/200/?random=4"),
     ConnectedUserModel(
         email: 'opq@sqisoft.com', name: "심청", imageUrl: "https://picsum.photos/200/?random=5"),
     ConnectedUserModel(
@@ -57,11 +57,11 @@ class SampleData {
         imageUrl: "https://picsum.photos/200/?random=6",
         state: ActiveState.active),
     ConnectedUserModel(
-        email: 'uvw@sqisoft.com', name: "아라치", imageUrl: "https://picsum.photos/200/?random=7"),
+        email: 'skpark@sqisoft.com', name: "아라치", imageUrl: "https://picsum.photos/200/?random=7"),
     ConnectedUserModel(
         email: 'xyz@sqisoft.com', name: "김삿갓", imageUrl: "https://picsum.photos/200/?random=8"),
     ConnectedUserModel(
-        email: '123@sqisoft.com',
+        email: 'skpark@sqisoft.com',
         name: "황진이",
         imageUrl: "https://picsum.photos/200/?random=9",
         state: ActiveState.active),

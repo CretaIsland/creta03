@@ -32,6 +32,7 @@ class BookModel extends CretaModel {
   List<String> owners = [];
   List<String> readers = [];
   List<String> writers = [];
+  List<String> shares = [];
 
   Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
 
@@ -56,6 +57,7 @@ class BookModel extends CretaModel {
         owners,
         readers,
         writers,
+        shares,
       ];
   BookModel() : super(type: ExModelType.book, parent: '') {
     name = UndoAble<String>('', mid);
@@ -73,6 +75,7 @@ class BookModel extends CretaModel {
     owners = [];
     readers = [];
     writers = [];
+    shares = [];
     description = UndoAble<String>("You could do it simple and plain", mid);
   }
 
@@ -105,6 +108,7 @@ class BookModel extends CretaModel {
     owners = [...ownerList];
     readers = [...readerList];
     writers = [...writerList];
+    shares = [...ownerList, ...writerList, ...readerList];
     logger.finest('owners=${owners.toString()}');
   }
   @override
@@ -129,6 +133,7 @@ class BookModel extends CretaModel {
     owners = [...srcBook.owners];
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];
+    shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
     logger.finest('BookCopied($mid)');
   }
 
@@ -151,6 +156,7 @@ class BookModel extends CretaModel {
     owners = CretaUtils.jsonStringToList(map["owners"] ?? '');
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
+    //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
 
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);
@@ -178,6 +184,7 @@ class BookModel extends CretaModel {
         "owners": CretaUtils.listToString(owners),
         "readers": CretaUtils.listToString(readers),
         "writers": CretaUtils.listToString(writers),
+        "shares": shares, //DB 에 쓰기는 쓴다, 검색용이다.
       }.entries);
   }
 

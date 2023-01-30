@@ -79,11 +79,19 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     bookManagerHolder!.configEvent(notifyModify: false);
     bookManagerHolder!.clearAll();
 
-    bookManagerHolder!
-        .myDataOnly(
-          AccountManager.currentLoginUser.email,
-        )
-        .then((value) => bookManagerHolder!.addRealTimeListen());
+    if (widget.selectedPage == SelectedPage.myPage) {
+      bookManagerHolder!
+          .myDataOnly(
+            AccountManager.currentLoginUser.email,
+          )
+          .then((value) => bookManagerHolder!.addRealTimeListen());
+    } else if (widget.selectedPage == SelectedPage.sharedPage) {
+      bookManagerHolder!
+          .sharedData(
+            AccountManager.currentLoginUser.email,
+          )
+          .then((value) => bookManagerHolder!.addRealTimeListen());
+    }
 
     _leftMenuItemList = [
       CretaMenuItem(
@@ -95,6 +103,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       CretaMenuItem(
           caption: CretaStudioLang.sharedCretaBook,
           onPressed: () {
+            Routemaster.of(context).pop();
             Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
           },
           selected: false),

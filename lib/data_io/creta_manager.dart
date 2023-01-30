@@ -295,11 +295,13 @@ abstract class CretaManager extends AbsExModelManager {
   }
 
   Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
-    logger.finest('my override myDataOnly');
+    logger.finest('myDataOnly');
     Map<String, QueryValue> query = {};
     query['creator'] = QueryValue(value: userId);
     query['isRemoved'] = QueryValue(value: false);
+    logger.finest('myDataOnly 1');
     final retval = await queryFromDB(query, limit: limit);
+    logger.finest('myDataOnly end');
     return retval;
   }
 
@@ -349,6 +351,19 @@ abstract class CretaManager extends AbsExModelManager {
             ? null
             : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
       );
+      // if (resultList.isEmpty) {
+      //   logger.severe('no data founded...');
+      //   _lastFetchedCount = 0;
+      //   if (_lastSortedObjectList != null) {
+      //     _lastSortedObjectList!.clear();
+      //   } else {
+      //     _lastSortedObjectList = [];
+      //   }
+      //   _dbState = DBState.idle;
+      //   unlock();
+      //   return [];
+      // }
+
       List<AbsExModel> retval = resultList.map((ele) {
         AbsExModel model = newModel();
         model.fromMap(ele);

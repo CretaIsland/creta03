@@ -63,6 +63,12 @@ class FirebaseDatabase extends AbsDatabase {
 
     CollectionReference collectionRef = _db!.collection(collectionId);
     await collectionRef.doc(mid).set(data, SetOptions(merge: false));
+    for (MapEntry e in data.entries) {
+      if (e.value is List) {
+        logger.finest('${e.key.toString()} is List type');
+        await collectionRef.doc(mid).update({e.key.toString(): FieldValue.arrayUnion(e.value)});
+      }
+    }
     logger.finest('$mid saved');
   }
 
@@ -70,9 +76,16 @@ class FirebaseDatabase extends AbsDatabase {
   Future<void> createData(String collectionId, String mid, Map<dynamic, dynamic> data) async {
     await initialize();
 
-    logger.finest('createData $mid!');
+    logger.finest('createData... $mid!');
     CollectionReference collectionRef = _db!.collection(collectionId);
     await collectionRef.doc(mid).set(data, SetOptions(merge: false));
+    for (MapEntry e in data.entries) {
+      if (e.value is List) {
+        logger.finest('${e.key.toString()} is List type');
+        await collectionRef.doc(mid).update({e.key.toString(): FieldValue.arrayUnion(e.value)});
+      }
+    }
+
     //await collectionRef.add(data);
     logger.finest('$mid! created');
   }
@@ -146,6 +159,7 @@ class FirebaseDatabase extends AbsDatabase {
       case OperType.isNotEqualTo:
         return query.where(mid, isNotEqualTo: value.value);
       case OperType.arrayContains:
+        logger.finest('query=${mid} arrayContains ${value.value}');
         return query.where(mid, arrayContains: value.value);
     }
   }
@@ -181,6 +195,10 @@ class FirebaseDatabase extends AbsDatabase {
     if (startAfter != null && startAfter.isNotEmpty) query = query.startAfter(startAfter);
 
     return await query.get().then((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        logger.finest('no data founded');
+        return [];
+      }
       return snapshot.docs.map((doc) {
         //logger.finest(doc.data()!.toString());
         return doc.data()! as Map<String, dynamic>;

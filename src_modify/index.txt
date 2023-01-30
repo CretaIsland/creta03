@@ -1,0 +1,19 @@
+# cretor query
+creta_book	bookType 오름차순 creator 오름차순 isRemoved 오름차순 likeCount 내림차순 updateTime 내림차순 
+creta_book	bookType 오름차순 creator 오름차순 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
+creta_book	creator 오름차순 isRemoved 오름차순 updateTime 내림차순 	
+creta_book	creator 오름차순 isRemoved 오름차순 likeCount 내림차순 updateTime 내림차순 	
+creta_book	bookType 오름차순 creator 오름차순 isRemoved 오름차순 updateTime 내림차순 
+creta_book	bookType 오름차순 creator 오름차순 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
+creta_book	creator 오름차순 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
+creta_book	creator 오름차순 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
+
+#shares query
+creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 likeCount 내림차순 updateTime 내림차순 
+creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
+#creta_book	shares 배열 isRemoved 오름차순 updateTime 내림차순 	
+creta_book	shares 배열 isRemoved 오름차순 likeCount 내림차순 updateTime 내림차순 	
+creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 updateTime 내림차순 
+creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
+creta_book	shares 배열 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
+creta_book	shares 배열 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	

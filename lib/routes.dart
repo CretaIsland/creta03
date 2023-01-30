@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'design_system/demo_page/font_demo_page.dart';
@@ -76,13 +77,13 @@ final routesLoggedOut = RouteMap(
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (_) => TransitionPage(child: BookMainPage()),
     AppRoutes.studioBookMyPage: (_) => TransitionPage(
-          child: BookGridPage(selectedPage: SelectedPage.myPage),
+          child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
         ),
     AppRoutes.studioBookSharedPage: (_) => TransitionPage(
-          child: BookGridPage(selectedPage: SelectedPage.sharedPage),
+          child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.sharedPage),
         ),
     AppRoutes.studioBookTeamPage: (_) => TransitionPage(
-          child: BookGridPage(selectedPage: SelectedPage.teamPage),
+          child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.teamPage),
         ),
     AppRoutes.communityHome: (_) => TransitionPage(
           child: CommunityPage(
