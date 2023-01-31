@@ -141,8 +141,8 @@ class BookModel extends CretaModel {
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);
-    creator = map["creator"] ?? (map["creator"] ?? '');
-    creatorName = map["creatorName"] ?? (map["creatorName"] ?? '');
+    creator = map["creator"] ?? '';
+    creatorName = map["creatorName"] ?? '';
     width.set(map["width"] ?? 0, save: false, noUndo: true);
     height.set(map["height"] ?? 0, save: false, noUndo: true);
     isSilent.set(map["isSilent"] ?? false, save: false, noUndo: true);

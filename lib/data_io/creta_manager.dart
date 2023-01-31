@@ -351,18 +351,18 @@ abstract class CretaManager extends AbsExModelManager {
             ? null
             : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
       );
-      // if (resultList.isEmpty) {
-      //   logger.severe('no data founded...');
-      //   _lastFetchedCount = 0;
-      //   if (_lastSortedObjectList != null) {
-      //     _lastSortedObjectList!.clear();
-      //   } else {
-      //     _lastSortedObjectList = [];
-      //   }
-      //   _dbState = DBState.idle;
-      //   unlock();
-      //   return [];
-      // }
+      if (resultList.isEmpty) {
+        logger.severe('no data founded...');
+        _lastFetchedCount = 0;
+        if (_lastSortedObjectList != null) {
+          _lastSortedObjectList!.clear();
+        } else {
+          _lastSortedObjectList = [];
+        }
+        _dbState = DBState.idle;
+        unlock();
+        return [];
+      }
 
       List<AbsExModel> retval = resultList.map((ele) {
         AbsExModel model = newModel();

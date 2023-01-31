@@ -6,7 +6,14 @@ import '../creta_color.dart';
 class CrossScrollBar extends StatefulWidget {
   final Widget child;
   final double width;
-  const CrossScrollBar({super.key, required this.child, required this.width});
+  final double marginX;
+  final double marginY;
+  const CrossScrollBar(
+      {super.key,
+      required this.child,
+      required this.marginX,
+      required this.marginY,
+      required this.width});
 
   @override
   State<CrossScrollBar> createState() => _CrossScrollBarState();
@@ -48,30 +55,33 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
         sliderDecoration: _barDeco(),
         sliderActiveDecoration: _barDeco(),
         underColor: Colors.transparent,
-        child: CustomScrollView(
-          controller: horizontalScroll,
-          scrollDirection: Axis.horizontal,
-          slivers: [
-            SliverList(
-                delegate: SliverChildBuilderDelegate(
-              childCount: 1,
-              (context, index) {
-                return SizedBox(
-                  width: widget.width,
-                  child: CustomScrollView(
-                    controller: verticalScroll,
-                    slivers: [
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(childCount: 1, (context, index) {
-                          return widget.child;
-                        }),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ))
-          ],
+        child: Padding(
+          padding: EdgeInsets.only(left: widget.marginX, top: widget.marginY),
+          child: CustomScrollView(
+            controller: horizontalScroll,
+            scrollDirection: Axis.horizontal,
+            slivers: [
+              SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                childCount: 1,
+                (context, index) {
+                  return SizedBox(
+                    width: widget.width,
+                    child: CustomScrollView(
+                      controller: verticalScroll,
+                      slivers: [
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(childCount: 1, (context, index) {
+                            return widget.child;
+                          }),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ))
+            ],
+          ),
         ),
         // child: SingleChildScrollView(
         //   controller: horizontalScroll,

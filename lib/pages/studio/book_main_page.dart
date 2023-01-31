@@ -222,21 +222,23 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _workArea() {
-    return Stack(children: [
-      _scrollArea(context),
-      selectedStick == LeftMenuEnum.None
-          ? Container(width: 0, height: 0, color: Colors.transparent)
-          : LeftMenu(
-              selectedStick: selectedStick,
-              onClose: () {
-                setState(() {
-                  selectedStick = LeftMenuEnum.None;
-                });
-              },
-            ),
-      // bottomMenuBar(
-      //     selectedStick == LeftMenuEnum.None ? 0 : LayoutConst.leftMenuWidth),
-    ]);
+    return Stack(
+      children: [
+        _scrollArea(context),
+        selectedStick == LeftMenuEnum.None
+            ? Container(width: 0, height: 0, color: Colors.transparent)
+            : LeftMenu(
+                selectedStick: selectedStick,
+                onClose: () {
+                  setState(() {
+                    selectedStick = LeftMenuEnum.None;
+                  });
+                },
+              ),
+        // bottomMenuBar(
+        //     selectedStick == LeftMenuEnum.None ? 0 : LayoutConst.leftMenuWidth),
+      ],
+    );
   }
 
   Widget _topMenu() {
@@ -416,29 +418,33 @@ class _BookMainPageState extends State<BookMainPage> {
     if (StudioVariables.autoScale == true) {
       return _drawPage(context);
     }
+    double marginX = (StudioVariables.workWidth - StudioVariables.virtualWidth) / 2;
+    double marginY = (StudioVariables.workHeight - StudioVariables.virtualHeight) / 2;
+    if (marginX < 0) marginX = 0;
+    if (marginY < 0) marginY = 0;
     return CrossScrollBar(
       key: GlobalKey(),
       width: StudioVariables.virtualWidth,
+      marginX: marginX,
+      marginY: marginY,
       child: _drawPage(context),
     );
   }
 
   Widget _drawPage(BuildContext context) {
-    return Center(
-      child: Container(
-        width: StudioVariables.virtualWidth,
-        height: StudioVariables.virtualHeight,
-        //color: LayoutConst.studioBGColor,
-        color: Colors.amber,
-        child: Center(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: StudioSnippet.basicShadow(),
-            ),
-            width: pageWidth,
-            height: pageHeight,
+    return Container(
+      width: StudioVariables.virtualWidth,
+      height: StudioVariables.virtualHeight,
+      color: LayoutConst.studioBGColor,
+      //color: Colors.amber,
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: StudioSnippet.basicShadow(),
           ),
+          width: pageWidth,
+          height: pageHeight,
         ),
       ),
     );

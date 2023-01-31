@@ -91,6 +91,12 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
             AccountManager.currentLoginUser.email,
           )
           .then((value) => bookManagerHolder!.addRealTimeListen());
+    } else if (widget.selectedPage == SelectedPage.teamPage) {
+      bookManagerHolder!
+          .myDataOnly(
+            'dummy',
+          )
+          .then((value) => bookManagerHolder!.addRealTimeListen());
     }
 
     _leftMenuItemList = [
@@ -99,20 +105,20 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           onPressed: () {
             Routemaster.of(context).push(AppRoutes.studioBookMyPage);
           },
-          selected: true),
+          selected: widget.selectedPage == SelectedPage.myPage),
       CretaMenuItem(
           caption: CretaStudioLang.sharedCretaBook,
           onPressed: () {
             Routemaster.of(context).pop();
             Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
           },
-          selected: false),
+          selected: widget.selectedPage == SelectedPage.sharedPage),
       CretaMenuItem(
           caption: CretaStudioLang.teamCretaBook,
           onPressed: () {
             Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
           },
-          selected: false),
+          selected: widget.selectedPage == SelectedPage.teamPage),
     ];
 
     _dropDownMenuItemList1 = bookManagerHolder!.getFilterMenu((() => setState(() {})));

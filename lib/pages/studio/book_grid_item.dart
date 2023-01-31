@@ -273,7 +273,11 @@ class BookGridItemState extends State<BookGridItem> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0, left: 8),
               child: Text(
-                widget.bookModel!.shares.toString(),
+                [
+                  ...widget.bookModel!.owners,
+                  ...widget.bookModel!.writers,
+                  ...widget.bookModel!.readers
+                ].toString(),
                 overflow: TextOverflow.fade,
                 style: CretaFont.bodyESmall.copyWith(color: Colors.white),
               ),

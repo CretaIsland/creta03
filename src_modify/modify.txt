@@ -16,4 +16,7 @@ cp src_modify\abs_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pu
 // 2023.01.30 
 cp src_modify\firebase_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\firebase_database.dart
 
+// 2023.01.31 
+cp src_modify\model_enums.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\enum\model_enums.dart
+
 
