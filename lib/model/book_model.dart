@@ -164,6 +164,7 @@ class BookModel extends CretaModel {
 
   @override
   Map<String, dynamic> toMap() {
+    shares = [...owners, ...writers, ...readers];
     return super.toMap()
       ..addEntries({
         "name": name.value,

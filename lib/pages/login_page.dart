@@ -261,7 +261,8 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text('Welcome to Creta ! 👋🏻', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text('Welcome to Creta ! 👋🏻  Ver 0.01',
+              style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(
             height: 20,
           ),

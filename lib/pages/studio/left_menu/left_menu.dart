@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'left_menu_frame.dart';
@@ -30,10 +28,12 @@ class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin
       reverseDuration: Duration(milliseconds: 200),
       vsync: this,
     );
-    Timer(Duration(microseconds: 100), () {
+    // Timer(Duration(microseconds: 100), () {
+    //   _animationController.forward();
+    // });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _animationController.forward();
     });
-
     super.initState();
   }
 
