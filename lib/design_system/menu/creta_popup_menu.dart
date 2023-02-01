@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class CretaMenuItem {
   final String caption;
   final IconData? iconData;
-  final Function onPressed;
+  Function? onPressed;
   String? referencedAttr;
   bool? isDescending;
   bool selected;
@@ -80,7 +80,7 @@ class CretaPopupMenu {
                             ),
                             onPressed: () {
                               Navigator.pop(context);
-                              item.onPressed();
+                              item.onPressed?.call();
                             },
                             child: Text(
                               item.caption,

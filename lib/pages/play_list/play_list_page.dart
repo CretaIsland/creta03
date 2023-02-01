@@ -785,7 +785,7 @@ class CretaDropDownMenu {
                             ),
                             onPressed: () {
                               Navigator.pop(context);
-                              item.onPressed();
+                              item.onPressed?.call();
                             },
                             child: Row(
                               children: [

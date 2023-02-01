@@ -193,7 +193,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
                                   }
                                 }
                                 item.selected = true;
-                                item.onPressed();
+                                item.onPressed?.call();
                               });
                               Navigator.pop(context);
                             },

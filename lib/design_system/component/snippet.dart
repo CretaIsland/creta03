@@ -443,7 +443,7 @@ class Snippet {
                                                     ? Colors.white
                                                     : Colors.grey[100]!))),
                                   ),
-                                  onPressed: () => item.onPressed(),
+                                  onPressed: () => item.onPressed?.call(),
                                   child: SizedBox(
                                       width: double.infinity,
                                       height: 24,

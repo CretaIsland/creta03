@@ -44,7 +44,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
             item.selected = true;
             logger.finest('selected chaged');
           });
-          item.onPressed();
+          item.onPressed?.call();
         });
   }
 

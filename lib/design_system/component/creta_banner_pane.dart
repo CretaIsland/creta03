@@ -18,6 +18,7 @@ class CretaBannerPane extends StatefulWidget {
   final String title;
   final String description;
   final List<List<CretaMenuItem>> listOfListFilter;
+  final Widget Function(Size)? titlePane;
   final bool? isSearchbarInBanner;
   final void Function(String)? onSearch;
   final List<List<CretaMenuItem>>? listOfListFilterOnRight;
@@ -30,6 +31,7 @@ class CretaBannerPane extends StatefulWidget {
       required this.title,
       required this.description,
       required this.listOfListFilter,
+      this.titlePane,
       this.isSearchbarInBanner,
       this.listOfListFilterOnRight,
       this.scrollbarOnRight,
@@ -42,12 +44,12 @@ class CretaBannerPane extends StatefulWidget {
 class _CretaBannerPaneState extends State<CretaBannerPane> {
   @override
   Widget build(BuildContext context) {
-    double internalWidth = widget.width -
-        LayoutConst.cretaTopTitlePaddingLT.width -
-        LayoutConst.cretaTopTitlePaddingRB.width;
+    double internalWidth =
+        widget.width - LayoutConst.cretaTopTitlePaddingLT.width - LayoutConst.cretaTopTitlePaddingRB.width;
+    double heightDelta = widget.height -
+        (LayoutConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight + LayoutConst.cretaTopFilterHeight);
     return Container(
-      width:
-          widget.width - ((widget.scrollbarOnRight ?? false) ? LayoutConst.cretaScrollbarWidth : 0),
+      width: widget.width - ((widget.scrollbarOnRight ?? false) ? LayoutConst.cretaScrollbarWidth : 0),
       height: widget.height,
       color: widget.color,
       child: Stack(
@@ -57,25 +59,27 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
             top: LayoutConst.cretaTopTitlePaddingLT.height,
             child: Container(
               width: internalWidth,
-              height: LayoutConst.cretaTopTitleHeight,
+              height: LayoutConst.cretaTopTitleHeight + heightDelta,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(7.2),
                 boxShadow: StudioSnippet.fullShadow(),
               ),
               clipBehavior: Clip.antiAlias,
-              child: _titlePane(
-                title: widget.title,
-                description: widget.description,
-              ),
+              child: widget.titlePane != null
+                  ? widget.titlePane!.call(Size(internalWidth, LayoutConst.cretaTopTitleHeight + heightDelta))
+                  : _titlePane(
+                      title: widget.title,
+                      description: widget.description,
+                    ),
             ),
           ),
           Positioned(
             left: LayoutConst.cretaTopFilterPaddingLT.width,
-            top: LayoutConst.cretaTopFilterPaddingLT.height,
+            top: LayoutConst.cretaTopFilterPaddingLT.height + heightDelta,
             child: Container(
               width: internalWidth,
-              height: LayoutConst.cretaTopFilterHeight,
+              height: LayoutConst.cretaTopFilterItemHeight,
               color: Colors.white,
               child: _filterPane(),
             ),
@@ -83,38 +87,6 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
         ],
       ),
     );
-    // return Container(
-    //   width: widget.width,
-    //   height: widget.height,
-    //   color: widget.color,
-    //   child: Padding(
-    //     padding: LayoutConst.cretaTopPadding,
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.start,
-    //       children: [
-    //         Container(
-    //           height: 76,
-    //           decoration: BoxDecoration(
-    //             color: Colors.white,
-    //             borderRadius: BorderRadius.circular(7.2),
-    //             boxShadow: StudioSnippet.fullShadow(),
-    //           ),
-    //           clipBehavior: Clip.antiAlias,
-    //           child: _titlePane(
-    //             title: widget.title,
-    //             description: widget.description,
-    //           ),
-    //         ),
-    //         const SizedBox(height: 20),
-    //         Container(
-    //           height: 36,
-    //           color: Colors.white,
-    //           child: _filterPane(),
-    //         )
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 
   Widget _filterPane() {

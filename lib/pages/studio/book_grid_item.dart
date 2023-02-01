@@ -153,12 +153,14 @@ class BookGridItemState extends State<BookGridItem> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Stack(
-              children: [
-                _thumnailArea(),
-                _descArea(),
-                _controllArea(),
-              ],
+            ClipRect(
+              child: Stack(
+                children: [
+                  _thumnailArea(),
+                  _descArea(),
+                  _controllArea(),
+                ],
+              ),
             ),
             _bottomArea(),
           ],

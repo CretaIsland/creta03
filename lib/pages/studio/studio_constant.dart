@@ -67,9 +67,10 @@ class LayoutConst {
   static const double bookDescriptionHeight = 56;
 
   static const double cretaScrollbarWidth = 13;
-  static const double cretaTopTitleHeight = 76;
+  static const double cretaTopTitleHeight = 80;
   static const double cretaTopTitleFilterHeightGap = 20;
-  static const double cretaTopFilterHeight = 36;
+  static const double cretaTopFilterHeight = 76;
+  static const double cretaTopFilterItemHeight = 36;
   static const Size cretaTopTitlePaddingLT = Size(cretaPaddingPixel, cretaPaddingPixel);
   static const Size cretaTopTitlePaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel);
   static const Size cretaTopFilterPaddingLT = Size(
