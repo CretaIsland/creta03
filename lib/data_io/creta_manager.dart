@@ -321,7 +321,7 @@ abstract class CretaManager extends AbsExModelManager {
       limit = CretaManager.maxPageLimit;
     }
     _lastLimit = limit;
-    logger.finest('my queryFromDB(${query.toString()}, $isNew, $limit)');
+    logger.finest('my queryFromDB($collectionId, ${query.toString()}, $isNew, $limit)');
 
     Map<String, OrderDirection> copyOrderBy = {};
     if (orderBy == null || orderBy.isEmpty) {

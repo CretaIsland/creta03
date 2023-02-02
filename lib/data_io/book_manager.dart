@@ -89,17 +89,20 @@ class BookManager extends CretaManager {
     search(['name', 'hashTag'], value, afterSearch);
   }
 
-  Future<BookModel> createDefault({
+  BookModel createDefault({
     int width = 1920,
     int height = 1080,
-  }) async {
+  }) {
     BookModel defaultBook = BookModel.withName(CretaStudioLang.defaultBookName,
         creator: AccountManager.currentLoginUser.email,
         creatorName: AccountManager.currentLoginUser.name,
         imageUrl: "https://picsum.photos/200/?random=1");
     defaultBook.width.set(width, save: false, noUndo: true, dontChangeBookTime: true);
     defaultBook.height.set(height, save: false, noUndo: true, dontChangeBookTime: true);
+    return defaultBook;
+  }
 
+  Future<BookModel> saveDefault(BookModel defaultBook) async {
     await createToDB(defaultBook);
     insert(defaultBook);
     return defaultBook;

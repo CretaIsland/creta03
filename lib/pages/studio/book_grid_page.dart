@@ -218,7 +218,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     if (_onceDBGetComplete) {
       return consumerFunc(context, null);
     }
-    var retval = CretaModelSnippet.getData(
+    var retval = CretaModelSnippet.waitData(
       context,
       manager: bookManagerHolder!,
       userId: AccountManager.currentLoginUser.email,

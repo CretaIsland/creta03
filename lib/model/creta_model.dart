@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../data_io/creta_manager.dart';
+import '../design_system/creta_color.dart';
 
 class CretaModelSnippet {
-  static FutureBuilder<List<AbsExModel>> getData(
+  static FutureBuilder<List<AbsExModel>> waitData(
     BuildContext context, {
     required CretaManager manager,
     required String userId,
@@ -23,9 +25,12 @@ class CretaModelSnippet {
             return const Center(child: Text('data fetch error'));
           }
           if (snapshot.hasData == false) {
-            logger.severe("No data founded($userId)");
-            return const Center(
-              child: CircularProgressIndicator(),
+            logger.finest("wait data ...($userId)");
+            return Center(
+              child: LoadingAnimationWidget.fourRotatingDots(
+                color: CretaColor.primary,
+                size: 40.0,
+              ),
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {

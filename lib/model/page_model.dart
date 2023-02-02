@@ -6,7 +6,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:hycop/hycop/utils/hycop_utils.dart';
 
-import '../lang/creta_studio_lang.dart';
+import 'app_enums.dart';
 import 'creta_model.dart';
 import 'frame_model.dart';
 
@@ -20,6 +20,7 @@ class PageModel extends CretaModel {
   late UndoAble<Color> bgColor;
   late UndoAble<bool> isUsed;
   late UndoAble<bool> isCircle;
+  late UndoAble<PageTransition> pageTransition;
 
   List<FrameModel> frameList = []; // db get 전용
 
@@ -41,15 +42,18 @@ class PageModel extends CretaModel {
     isCircle = UndoAble<bool>(false, mid);
     isUsed = UndoAble<bool>(false, mid);
     description = UndoAble<String>("You could do it simple and plain", mid);
+    pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
   }
 
-  PageModel.makeSample(String nameStr, String pid) : super(type: ExModelType.page, parent: pid) {
-    name = UndoAble<String>(nameStr, mid);
+  PageModel.makeSample(double pageNo, String pid) : super(type: ExModelType.page, parent: pid) {
+    order = UndoAble<double>(pageNo, mid);
+    name = UndoAble<String>(pageNo.toString(), mid);
     description = UndoAble<String>('', mid);
     isCircle = UndoAble<bool>(false, mid);
     isUsed = UndoAble<bool>(false, mid);
     shortCut = UndoAble<String>('', mid);
     bgColor = UndoAble<Color>(Colors.transparent, mid);
+    pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
   }
 
   PageModel.withName(String nameStr) : super(type: ExModelType.page, parent: '') {
@@ -59,6 +63,7 @@ class PageModel extends CretaModel {
     isUsed = UndoAble<bool>(false, mid);
     shortCut = UndoAble<String>('', mid);
     bgColor = UndoAble<Color>(Colors.transparent, mid);
+    pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
   }
 
   @override
@@ -71,6 +76,7 @@ class PageModel extends CretaModel {
     bgColor = UndoAble<Color>(srcPage.bgColor.value, mid);
     isUsed = UndoAble<bool>(srcPage.isUsed.value, mid);
     isCircle = UndoAble<bool>(srcPage.isCircle.value, mid);
+    pageTransition = UndoAble<PageTransition>(srcPage.pageTransition.value, mid);
   }
 
   @override
@@ -82,6 +88,8 @@ class PageModel extends CretaModel {
     shortCut.set(map["shortCut"] ?? '', save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
     bgColor.set(HycopUtils.stringToColor(map["bgColor"]), save: false, noUndo: true);
+    pageTransition.set(PageTransition.fromInt(map["pageTransition"] ?? 0),
+        save: false, noUndo: true);
   }
 
   @override
@@ -94,37 +102,14 @@ class PageModel extends CretaModel {
         "bgColor": bgColor.value.toString(),
         "isUsed": isUsed.value,
         "isCircle": isCircle.value,
+        "pageTransition": pageTransition.value.index,
       }.entries);
-  }
-
-  String getDescription() {
-    if (description.value.isEmpty) {
-      return '${CretaStudioLang.defaultBookName} ${mid.substring(mid.length - 4)}';
-    }
-    return description.value;
-  }
-
-  void printIt() {
-    logger.finest(
-        'id=[$mid],pageNo=[$order.value],description=[$description.value],shortCut=[$shortCut.value], bgColor=[$bgColor.value]');
-  }
-
-  Offset getPosition() {
-    if (key.currentContext != null) {
-      RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
-      origin = box.localToGlobal(Offset.zero); //this is global position
-    }
-    return origin; // 보관된 origin 값을 리턴한다.
   }
 
   Future<bool> waitPageBuild() async {
     while (key.currentContext == null) {
       await Future.delayed(const Duration(milliseconds: 10));
     }
-    //AbsExModel? book = bookManagerHolder?.getModel(parentMid.value);
-    // if (book != null) {
-    //   (book as BookModel).getRealSize();
-    // }
     logger.finest('page build complete !!!');
     return true;
   }

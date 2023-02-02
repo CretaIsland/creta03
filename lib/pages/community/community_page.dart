@@ -50,7 +50,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   void initState() {
     super.initState();
 
-    print('_CommunityPageState@initState');
+    //print('_CommunityPageState@initState');
 
     CrossCommonJob ccj = CrossCommonJob();
     _isInUsingCanvaskit = ccj.isInUsingCanvaskit();
@@ -117,24 +117,43 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     }
 
     _dropDownMenuItemList1 = [
-      CretaMenuItem(caption: '용도선택', iconData: Icons.type_specimen, onPressed: () {}, selected: true),
-      CretaMenuItem(caption: '최신순', iconData: Icons.local_library_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '이름순', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '등록일순', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '용도선택', iconData: Icons.type_specimen, onPressed: () {}, selected: true),
+      CretaMenuItem(
+          caption: '최신순',
+          iconData: Icons.local_library_outlined,
+          onPressed: () {},
+          selected: false),
+      CretaMenuItem(
+          caption: '이름순', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '등록일순', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
     ];
 
     _dropDownMenuItemList2 = [
       CretaMenuItem(caption: '권한', iconData: Icons.power, onPressed: () {}, selected: true),
-      CretaMenuItem(caption: '관리자', iconData: Icons.local_library_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '편집자', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '시청자', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '관리자',
+          iconData: Icons.local_library_outlined,
+          onPressed: () {},
+          selected: false),
+      CretaMenuItem(
+          caption: '편집자', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '시청자', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
     ];
 
     _dropDownMenuItemList3 = [
       CretaMenuItem(caption: '최신 크레타북', iconData: Icons.power, onPressed: () {}, selected: true),
-      CretaMenuItem(caption: '이름순', iconData: Icons.local_library_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '등록일순', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
-      CretaMenuItem(caption: '조회순', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '이름순',
+          iconData: Icons.local_library_outlined,
+          onPressed: () {},
+          selected: false),
+      CretaMenuItem(
+          caption: '등록일순', iconData: Icons.article_outlined, onPressed: () {}, selected: false),
+      CretaMenuItem(
+          caption: '조회순', iconData: Icons.favorite_outline, onPressed: () {}, selected: false),
     ];
   }
 

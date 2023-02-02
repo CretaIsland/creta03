@@ -34,3 +34,13 @@ enum BookSort {
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static BookSort fromInt(int? val) => BookSort.values[validCheck(val ?? none.index)];
 }
+
+enum PageTransition {
+  none,
+  fadeIn,
+  fadeOut,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static PageTransition fromInt(int? val) => PageTransition.values[validCheck(val ?? none.index)];
+}

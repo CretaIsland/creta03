@@ -17,3 +17,5 @@ creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 updateTime
 creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
 creta_book	shares 배열 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
 creta_book	shares 배열 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
+
+creta_page	isRemoved 오름차순 parentMId 오름차순 updateTime 내림차순

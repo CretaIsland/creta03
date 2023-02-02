@@ -118,13 +118,15 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
         });
         widget.onPressedAutoScale.call();
       },
-      child: Padding(
-        padding: EdgeInsets.only(bottom: ((StudioVariables.showScale == false) ? 4 : 2)),
-        child: Text(
-          StudioVariables.showScale == false ? CretaStudioLang.autoScale : _scaleText,
-          style: widget.textStyle,
-        ),
+      child: //Padding(
+          //padding: EdgeInsets.only(bottom: ((StudioVariables.showScale == false) ? 4 : 2)),
+          //padding: EdgeInsets.only(bottom: 2),
+          //child:
+          Text(
+        StudioVariables.showScale == false ? CretaStudioLang.autoScale : _scaleText,
+        style: widget.textStyle,
       ),
+      //),
     );
   }
 

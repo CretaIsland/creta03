@@ -2,16 +2,17 @@
 
 //import 'dart:ui';
 
-import 'package:creta03/lang/creta_studio_lang.dart';
-import 'package:creta03/model/connected_user_model.dart';
-import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
+import 'package:creta03/lang/creta_studio_lang.dart';
+import 'package:creta03/model/connected_user_model.dart';
+import 'package:creta03/pages/studio/sample_data.dart';
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
+import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/buttons/creta_scale_button.dart';
@@ -37,6 +38,7 @@ class BookMainPage extends StatefulWidget {
 
 class _BookMainPageState extends State<BookMainPage> {
   BookManager? bookManagerHolder;
+  PageManager? pageManagerHolder;
   late BookModel _model;
   bool _onceDBGetComplete = false;
 
@@ -78,19 +80,44 @@ class _BookMainPageState extends State<BookMainPage> {
     }
 
     if (mid.isNotEmpty) {
-      bookManagerHolder!.getFromDB(mid).then((value) {
+      bookManagerHolder!.getFromDB(mid).then((value) async {
         bookManagerHolder!.addRealTimeListen();
         if (bookManagerHolder!.getLength() > 0) {
+          pageManagerHolder =
+              PageManager(bookModel: bookManagerHolder!.modelList.first as BookModel);
+          pageManagerHolder!.clearAll();
+
+          await _getPages();
           _onceDBGetComplete = true;
         }
         return value;
       });
     } else {
-      bookManagerHolder!.createDefault().then((value) {
+      BookModel defaultBook = bookManagerHolder!.createDefault();
+      mid = defaultBook.mid;
+      pageManagerHolder = PageManager(bookModel: defaultBook);
+      pageManagerHolder!.clearAll();
+      bookManagerHolder!.saveDefault(defaultBook).then((value) async {
         _onceDBGetComplete = true;
+        await _getPages();
         return value;
-      });
+      }) as BookModel;
     }
+  }
+
+  Future<int> _getPages() async {
+    int pageCount = 0;
+    try {
+      pageCount = await pageManagerHolder!.getPages();
+      if (pageCount == 0) {
+        await pageManagerHolder!.createNextPage();
+        pageCount = 1;
+      }
+    } catch (e) {
+      await pageManagerHolder!.createNextPage();
+      pageCount = 1;
+    }
+    return pageCount;
   }
 
   @override
@@ -124,7 +151,7 @@ class _BookMainPageState extends State<BookMainPage> {
     if (_onceDBGetComplete) {
       return consumerFunc(context, null);
     }
-    var retval = CretaModelSnippet.getData(
+    var retval = CretaModelSnippet.waitData(
       context,
       manager: bookManagerHolder!,
       userId: AccountManager.currentLoginUser.email,
@@ -148,33 +175,40 @@ class _BookMainPageState extends State<BookMainPage> {
     if (StudioVariables.workHeight < 1) {
       return Container();
     }
-    return Column(
-      children: [
-        _topMenu(),
-        Container(
-          color: LayoutConst.studioBGColor,
-          height: StudioVariables.workHeight,
-          child: Row(
-            children: [
-              StickMenu(
-                selectFunction: _showLeftMenu,
-                initSelected: selectedStick,
-              ),
-              Expanded(
-                child: _workArea(),
-              ),
-              // StudioVariables.autoScale == true
-              //     ? Expanded(
-              //         child: _workArea(),
-              //       )
-              //     : SizedBox(
-              //         width: StudioVariables.workWidth,
-              //         child: _workArea(),
-              //       )
-            ],
-          ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PageManager>.value(
+          value: pageManagerHolder!,
         ),
       ],
+      child: Column(
+        children: [
+          _topMenu(),
+          Container(
+            color: LayoutConst.studioBGColor,
+            height: StudioVariables.workHeight,
+            child: Row(
+              children: [
+                StickMenu(
+                  selectFunction: _showLeftMenu,
+                  initSelected: selectedStick,
+                ),
+                Expanded(
+                  child: _workArea(),
+                ),
+                // StudioVariables.autoScale == true
+                //     ? Expanded(
+                //         child: _workArea(),
+                //       )
+                //     : SizedBox(
+                //         width: StudioVariables.workWidth,
+                //         child: _workArea(),
+                //       )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

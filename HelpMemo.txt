@@ -13,6 +13,8 @@ flutter run -d chrome --web-renderer canvaskit
 # 초기에 한번, 빌드 위치를 잡아준다.  이미 잡았다면, 기존 빌드 폴더가 무효가 되므로 주의한다.
 cd example
 flutter config --build-dir=../release/creta03_v0  
+
+
 # 그리고 VCode 를 다시 시작해야 한다. 다시 시작한 후에는 반드시 
 # 실행을 한번 해준다.
 #flutter run -d chrome --web-renderer html
@@ -39,7 +41,7 @@ git init
 git add .
 git commit -m "first commit"
 git branch -M main
-git remote add origin https://github.com/CretaIsland/creta_v0.git
+git remote add origin https://cretaisland.github.io/creta03_v0/
 git push -u origin main
 
 # GitHub repository 에서  Settings - 좌측 세로 메뉴에서 Pages
@@ -47,7 +49,16 @@ git push -u origin main
 # 한 5분 정도 기다린 다음 page 를 refresh 하면 아래와 같은 페이지 주소가 나온다.
 # 릴리즈 된것이다.
 
-https://skpark33.github.io/creta_v1/
+https://cretaisland.github.io/creta03_v0
+
+
+그런데, 만약 page 가 동작하지 않는다면, 
+3.7 이 되기 전에는,  ./release/creta03_v0/web 폴더에 flutter.js 파일이 자동으로 생겼었는데, 이제는 안생긴다.
+그래서 손으로 가져다 놓고, 다시 commit 해야 한다.
+
+cp D:\Flutter\project\release\cretaTest04\web\flutter.js  D:\Flutter\project\release\creta03_v0\web\.
+git commit -m "first commit"
+git push -u origin main
 
 # ############################
 # Packaging
