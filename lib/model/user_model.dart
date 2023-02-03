@@ -25,7 +25,7 @@ class UserModel extends CretaModel {
         password,
       ];
 
-  UserModel() : super(type: ExModelType.user, parent: '') {
+  UserModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
     name = '';
     email = '';
     imageUrl = '';
@@ -39,7 +39,7 @@ class UserModel extends CretaModel {
       required this.imageUrl,
       required this.nickName,
       this.password = ''})
-      : super(type: ExModelType.user, parent: '');
+      : super(pmid: '', type: ExModelType.user, parent: '');
 
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {

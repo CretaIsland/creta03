@@ -7,5 +7,5 @@ UserManager? pageManagerHolder;
 class UserManager extends CretaManager {
   UserManager() : super('creta_page');
   @override
-  AbsExModel newModel() => PageModel();
+  AbsExModel newModel(String mid) => PageModel(mid);
 }

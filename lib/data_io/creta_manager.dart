@@ -365,7 +365,7 @@ abstract class CretaManager extends AbsExModelManager {
       }
 
       List<AbsExModel> retval = resultList.map((ele) {
-        AbsExModel model = newModel();
+        AbsExModel model = newModel(ele['mid'] ?? '');
         model.fromMap(ele);
         modelList.add(model);
         return model;
@@ -492,7 +492,8 @@ abstract class CretaManager extends AbsExModelManager {
     }
 
     if (isApplyCreate && directive == 'create') {
-      AbsExModel model = newModel();
+      String mid = dataMap["mid"] ?? '';
+      AbsExModel model = newModel(mid);
       model.fromMap(dataMap);
       modelList.insert(0, model);
       logger.finest('${model.mid} realtime added');

@@ -3,20 +3,5 @@
 //cp   C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\abs_database.dart src_modify\abs_database.daxt
 
 ###### skpark modify ########
-# dispose error 수정
-cp src_modify\speed_dial.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_speed_dial-6.2.0\lib\src\speed_dial.dart 
-
-
-// 2023.01.28 
-cp src_modify\appwrite_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\appwrite_database.dart
-cp src_modify\firebase_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\firebase_database.dart
-cp src_modify\abs_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\abs_database.dart
-
-
-// 2023.01.30 
-cp src_modify\firebase_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\firebase_database.dart
-
-// 2023.01.31 
-cp src_modify\model_enums.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\enum\model_enums.dart
 
 

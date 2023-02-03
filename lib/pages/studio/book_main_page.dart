@@ -3,6 +3,7 @@
 //import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/undo/save_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -95,14 +96,18 @@ class _BookMainPageState extends State<BookMainPage> {
     } else {
       BookModel defaultBook = bookManagerHolder!.createDefault();
       mid = defaultBook.mid;
+
       pageManagerHolder = PageManager(bookModel: defaultBook);
       pageManagerHolder!.clearAll();
+
       bookManagerHolder!.saveDefault(defaultBook).then((value) async {
         _onceDBGetComplete = true;
         await _getPages();
         return value;
       }) as BookModel;
     }
+
+    saveManagerHolder?.runSaveTimer();
   }
 
   Future<int> _getPages() async {
@@ -124,6 +129,9 @@ class _BookMainPageState extends State<BookMainPage> {
   void dispose() {
     super.dispose();
     bookManagerHolder?.removeRealTimeListen();
+    saveManagerHolder?.stopTimer();
+    saveManagerHolder?.unregisterManager('page');
+    saveManagerHolder?.unregisterManager('book');
     controller.dispose();
     verticalScroll.dispose();
     horizontalScroll.dispose();

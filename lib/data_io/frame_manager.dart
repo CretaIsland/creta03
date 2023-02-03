@@ -7,5 +7,5 @@ FrameManager? frameManagerHolder;
 class FrameManager extends CretaManager {
   FrameManager() : super('hycop_frame');
   @override
-  AbsExModel newModel() => FrameModel();
+  AbsExModel newModel(String mid) => FrameModel(mid);
 }

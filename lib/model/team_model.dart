@@ -17,13 +17,13 @@ class TeamModel extends CretaModel {
         name,
       ];
 
-  TeamModel() : super(type: ExModelType.user, parent: '') {
+  TeamModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
     name = '';
   }
 
   TeamModel.withName({
     required this.name,
-  }) : super(type: ExModelType.user, parent: '');
+  }) : super(pmid: '', type: ExModelType.user, parent: '');
 
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {

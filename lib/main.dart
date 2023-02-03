@@ -41,6 +41,8 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
 
     HycopFactory.realtime!.start();
     HycopFactory.realtime!.setPrefix('creta');
+
+    saveManagerHolder = SaveManager();
   }
 
   @override

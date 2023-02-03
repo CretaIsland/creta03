@@ -21,6 +21,7 @@ enum LeftMenuEnum {
 
 class LayoutConst {
   //
+  static const double maxPageCount = 99;
   static const double minWorkWidth = 465;
 
   // top menu

@@ -48,5 +48,6 @@ class CretaModelSnippet {
 class CretaModel extends AbsExModel {
   final GlobalKey key = GlobalKey();
 
-  CretaModel({required super.type, required super.parent});
+  CretaModel({required String pmid, required super.type, required super.parent})
+      : super(pmid: pmid);
 }

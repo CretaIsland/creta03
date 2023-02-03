@@ -7,5 +7,5 @@ TeamManager? pageManagerHolder;
 class TeamManager extends CretaManager {
   TeamManager() : super('creta_page');
   @override
-  AbsExModel newModel() => PageModel();
+  AbsExModel newModel(String mid) => PageModel(mid);
 }

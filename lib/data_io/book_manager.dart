@@ -7,10 +7,12 @@ import '../model/book_model.dart';
 import 'creta_manager.dart';
 
 class BookManager extends CretaManager {
-  BookManager() : super('creta_book');
+  BookManager() : super('creta_book') {
+    saveManagerHolder?.registerManager('book', this);
+  }
 
   @override
-  AbsExModel newModel() => BookModel();
+  AbsExModel newModel(String mid) => BookModel(mid);
 
   @override
   List<CretaMenuItem> getSortMenu(Function? onModelSorted) {

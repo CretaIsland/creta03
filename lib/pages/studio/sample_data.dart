@@ -8,7 +8,7 @@ import '../../model/book_model.dart';
 import '../../model/page_model.dart';
 
 class SampleData {
-  static BookModel sampleBook = BookModel();
+  static BookModel sampleBook = BookModel('');
 
   static initSample() {
     sampleBook.name

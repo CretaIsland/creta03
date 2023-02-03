@@ -23,7 +23,7 @@ class FrameModel extends CretaModel {
 
   @override
   List<Object?> get props => [...super.props, name, width, height, posX, posY, angle, bgColor];
-  FrameModel() : super(type: ExModelType.frame, parent: '') {
+  FrameModel(String pmid) : super(pmid: pmid, type: ExModelType.frame, parent: '') {
     name = UndoAble<String>('', mid);
     bgUrl = UndoAble<String>('', mid);
     width = UndoAble<double>(0, mid);
@@ -34,7 +34,7 @@ class FrameModel extends CretaModel {
     bgColor = UndoAble<Color>(Colors.transparent, mid);
   }
 
-  FrameModel.withName(String nameStr) : super(type: ExModelType.frame, parent: '') {
+  FrameModel.withName(String nameStr) : super(pmid: '', type: ExModelType.frame, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     bgUrl = UndoAble<String>('', mid);
     width = UndoAble<double>(200, mid);

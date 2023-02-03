@@ -59,7 +59,7 @@ class BookModel extends CretaModel {
         writers,
         shares,
       ];
-  BookModel() : super(type: ExModelType.book, parent: '') {
+  BookModel(String pmid) : super(pmid: pmid, type: ExModelType.book, parent: '') {
     name = UndoAble<String>('', mid);
     width = UndoAble<int>(0, mid);
     height = UndoAble<int>(0, mid);
@@ -91,7 +91,7 @@ class BookModel extends CretaModel {
     List<String> ownerList = const [],
     List<String> readerList = const [],
     List<String> writerList = const [],
-  }) : super(type: ExModelType.book, parent: '') {
+  }) : super(pmid: '', type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     width = UndoAble<int>(1920, mid);
     height = UndoAble<int>(1080, mid);

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_final_fields
 
+import 'package:flutter/material.dart';
+import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
@@ -14,9 +16,12 @@ class PageManager extends CretaManager {
   double lastOrder = 0;
   String _selectedMid = '';
 
-  PageManager({required this.bookModel}) : super('creta_page');
+  PageManager({required this.bookModel}) : super('creta_page') {
+    saveManagerHolder?.registerManager('page', this);
+  }
+
   @override
-  AbsExModel newModel() => PageModel();
+  AbsExModel newModel(String mid) => PageModel(mid);
 
   bool isPageSelected(String mid) {
     //rlogHolder.log('isPageSelected($mid)');
@@ -24,10 +29,10 @@ class PageManager extends CretaManager {
   }
 
   Future<PageModel> createNextPage() async {
-    PageModel defaultPage = PageModel.makeSample(lastOrder, bookModel.mid);
+    updateLastOrder();
+    PageModel defaultPage = PageModel.makeSample(++lastOrder, bookModel.mid);
     await createToDB(defaultPage);
     insert(defaultPage);
-    updateLastOrder();
     _selectedMid = defaultPage.mid;
     return defaultPage;
   }
@@ -49,6 +54,39 @@ class PageManager extends CretaManager {
       if (ele.order.value > lastOrder) {
         lastOrder = ele.order.value;
       }
+    }
+    unlock();
+  }
+
+  Future<void> setSelectedIndex(BuildContext context, String mid) async {
+    _selectedMid = mid;
+    notify();
+    //setAsPage(); //setAsPage contain notify();
+    // PageModel? page = getSelected();
+    // if (page != null) {
+    //   await page.waitPageBuild(); // 페이지가 완전히 빌드 될때까지 기둘린다.
+    //   notify();
+    //   // ignore: use_build_context_synchronously
+    //   accManagerHolder!.showPages(context, mid); // page 가 완전히 노출된 후에 ACC 를 그린다.
+    // }
+  }
+
+  PageModel? getSelected() {
+    if (_selectedMid.isEmpty) {
+      return null;
+    }
+    for (var ele in modelList) {
+      if (ele.mid == _selectedMid) {
+        return ele as PageModel;
+      }
+    }
+    return null;
+  }
+
+  void printLog() {
+    lock();
+    for (var ele in modelList) {
+      logger.finer('${ele.mid}, isRemoved=${ele.isRemoved.value}');
     }
     unlock();
   }

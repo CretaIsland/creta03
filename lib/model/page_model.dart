@@ -6,6 +6,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:hycop/hycop/utils/hycop_utils.dart';
 
+import '../lang/creta_studio_lang.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
 import 'frame_model.dart';
@@ -35,7 +36,7 @@ class PageModel extends CretaModel {
         isCircle,
       ];
 
-  PageModel() : super(type: ExModelType.page, parent: '') {
+  PageModel(String pmid) : super(pmid: pmid, type: ExModelType.page, parent: '') {
     name = UndoAble<String>('', mid);
     shortCut = UndoAble<String>('', mid);
     bgColor = UndoAble<Color>(Colors.white, mid);
@@ -45,18 +46,22 @@ class PageModel extends CretaModel {
     pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
   }
 
-  PageModel.makeSample(double pageNo, String pid) : super(type: ExModelType.page, parent: pid) {
-    order = UndoAble<double>(pageNo, mid);
-    name = UndoAble<String>(pageNo.toString(), mid);
+  PageModel.makeSample(double porder, String pid)
+      : super(pmid: '', type: ExModelType.page, parent: pid) {
+    order = UndoAble<double>(porder, mid);
+    name = UndoAble<String>(CretaStudioLang.noNamepage, mid);
     description = UndoAble<String>('', mid);
     isCircle = UndoAble<bool>(false, mid);
     isUsed = UndoAble<bool>(false, mid);
     shortCut = UndoAble<String>('', mid);
     bgColor = UndoAble<Color>(Colors.transparent, mid);
     pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
+
+    logger.finest('mid=$mid');
+    isRemoved.printMid();
   }
 
-  PageModel.withName(String nameStr) : super(type: ExModelType.page, parent: '') {
+  PageModel.withName(String nameStr) : super(pmid: '', type: ExModelType.page, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     description = UndoAble<String>('', mid);
     isCircle = UndoAble<bool>(false, mid);
