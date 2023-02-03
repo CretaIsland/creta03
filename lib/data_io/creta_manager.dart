@@ -29,6 +29,8 @@ abstract class CretaManager extends AbsExModelManager {
   static const int maxPageLimit = 200;
   static const int defaultPageLimit = 50;
 
+  List<AbsExModel> _avaliModelList = [];
+
   static String modelPrefix(ExModelType type) {
     return '${type.name}=';
   }
@@ -538,9 +540,9 @@ abstract class CretaManager extends AbsExModelManager {
     HycopFactory.realtime!.removeListener(instanceId, collectionId);
   }
 
-  void insert(CretaModel model) {
+  void insert(CretaModel model, {int postion = 0}) {
     lock();
-    modelList.insert(0, model);
+    modelList.insert(postion, model);
     notify();
     unlock();
   }
@@ -567,6 +569,42 @@ abstract class CretaManager extends AbsExModelManager {
     unlock();
     return retval;
   }
+
+  int getAvailLength() {
+    int retval = 0;
+    lock();
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      retval++;
+    }
+    unlock();
+    return retval;
+  }
+
+  List<AbsExModel> getAvailModelList() {
+    lock();
+    _avaliModelList.clear();
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      _avaliModelList.add(ele);
+    }
+    unlock();
+    return _avaliModelList;
+  }
+
+  void replace(int index, CretaModel model) {
+    lock();
+    if (index < 0 || index >= modelList.length) {
+      return;
+    }
+    modelList[index] = model;
+    unlock();
+  }
+
   //
   //  realtime 이벤트 관련 end ]
   //

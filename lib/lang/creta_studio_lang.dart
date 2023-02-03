@@ -54,5 +54,6 @@ class CretaStudioLang {
   static const String gotoCommunity = '커뮤니티로 이동';
 
   static const String newBook = '새 크라타북 만들기';
+  static const String newPage = '새 페이지 추가';
   static const String noNamepage = '이름없는 페이지';
 }

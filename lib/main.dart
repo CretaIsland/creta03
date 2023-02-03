@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/pages/studio/sample_data.dart';
@@ -7,6 +7,7 @@ import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hycop/hycop.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:logging/logging.dart';
 import 'common/creta_constant.dart';
 import 'common/cross_common_job.dart';
 import 'routes.dart';
@@ -15,6 +16,7 @@ void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
+  Logger.root.level = Level.FINER;
   HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
 

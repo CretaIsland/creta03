@@ -32,7 +32,7 @@ class PageManager extends CretaManager {
     updateLastOrder();
     PageModel defaultPage = PageModel.makeSample(++lastOrder, bookModel.mid);
     await createToDB(defaultPage);
-    insert(defaultPage);
+    insert(defaultPage, postion: getAvailLength());
     _selectedMid = defaultPage.mid;
     return defaultPage;
   }
@@ -42,7 +42,9 @@ class PageManager extends CretaManager {
     Map<String, QueryValue> query = {};
     query['parentMid'] = QueryValue(value: bookModel.mid);
     query['isRemoved'] = QueryValue(value: false);
-    await queryFromDB(query, limit: limit);
+    Map<String, OrderDirection> orderBy = {};
+    orderBy['order'] = OrderDirection.ascending;
+    await queryFromDB(query, orderBy: orderBy, limit: limit);
     logger.finest('getPages ${modelList.length}');
     updateLastOrder();
     return modelList.length;

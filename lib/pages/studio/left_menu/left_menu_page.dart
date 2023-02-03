@@ -1,13 +1,17 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data_io/page_manager.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
+import '../../../lang/creta_studio_lang.dart';
 import '../../../model/page_model.dart';
 import '../studio_constant.dart';
 import '../studio_variables.dart';
@@ -22,6 +26,7 @@ class LeftMenuPage extends StatefulWidget {
 class _LeftMenuPageState extends State<LeftMenuPage> {
   PageManager? _pageManager;
   final ScrollController _scrollController = ScrollController(initialScrollOffset: 0.0);
+  final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
   final double verticalPadding = 14;
   final double horizontalPadding = 24;
@@ -29,10 +34,25 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   final double headerHeight = 36;
   final double menuBarHeight = 36;
 
+  int _pageCount = 0;
+
+  // void _scrollListener() {
+  //   setState(() {
+  //     scrollOffset = _scrollController.offset;
+  //   });
+  // }
+
+  @override
+  void initState() {
+    //_scrollController.addListener(_scrollListener);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<PageManager>(builder: (context, pageManager, child) {
-      logger.finest('Consumer  ${pageManager.getLength()}');
+      _pageCount = pageManager.getAvailLength();
+      logger.finest('Consumer  $_pageCount');
       _pageManager = pageManager;
       return Column(
         children: [
@@ -54,6 +74,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
               icon: Icons.add_outlined,
               onPressed: (() {
                 _pageManager!.createNextPage();
+                _scrollController
+                    .jumpTo(_scrollController.position.maxScrollExtent + cardHeight * 2);
               })),
           //BTN.fill_gray_100_i_s(icon: Icons.delete_outlined, onPressed: (() {})),
           BTN.fill_gray_100_i_s(icon: Icons.account_tree_outlined, onPressed: (() {})),
@@ -63,14 +85,47 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   Widget _pageView() {
-    return SizedBox(
-      //padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
       height: StudioVariables.workHeight,
       child: ReorderableListView(
         buildDefaultDragHandles: false,
         scrollController: _scrollController,
-        children: _cardList(),
-        onReorder: (oldIndex, newIndex) => setState(() {}),
+        children: [
+          ..._cardList(),
+          _addCard(),
+          _emptyCard(),
+        ],
+        onReorder: (oldIndexVal, newIndexVal) {
+          int oldIndex = oldIndexVal;
+          int newIndex =
+              oldIndexVal < newIndexVal && newIndexVal > 1 ? newIndexVal - 1 : newIndexVal;
+          logger.finer('oldIndex=$oldIndex, newIndex=$newIndex');
+          List<AbsExModel> avaiList = _pageManager!.getAvailModelList();
+          PageModel aOld = avaiList[oldIndex] as PageModel;
+          PageModel aNew = avaiList[newIndex] as PageModel;
+
+          // if (newIndex == 0) {
+          //   // 제일앞에 것보다 order 가 작아야 하다.
+          //   double firstOrder = aNew.order.value - StudioConst.orderVar;
+
+          // }
+
+          PageModel tmp = PageModel(aOld.mid);
+          tmp.copyFrom(aOld, newMid: aOld.mid, pMid: aOld.parentMid.value);
+
+          double oldOrder = tmp.order.value;
+          double newOrder = aNew.order.value;
+
+          mychangeStack.startTrans();
+          aNew.order.set(oldOrder);
+          tmp.order.set(newOrder);
+          mychangeStack.endTrans();
+          setState(() {
+            _pageManager!.replace(oldIndex, aNew);
+            _pageManager!.replace(newIndex, tmp);
+          });
+        },
       ),
     );
   }
@@ -152,40 +207,29 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   Widget eachCard(int pageIndex, PageModel model) {
-    logger.finest('eachCard($pageIndex)');
+    //logger.finest('eachCard($pageIndex)');
     return ReorderableDragStartListener(
       key: ValueKey(model.mid),
       index: pageIndex,
-      child: GestureDetector(
-        key: ValueKey(model.mid),
-        onTapDown: (details) {
-          //setState(() {
-          logger.finest('selected = ${model.mid}');
-          _pageManager!.setSelectedIndex(context, model.mid);
-          //});
-        },
-        onDoubleTapDown: (details) {
-          logger.finest('double clicked = $model.id');
-          logger.finest('dx=${details.localPosition.dx}, dy=${details.localPosition.dx}');
-        },
-        child: Column(children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding),
-            height: cardHeight,
-            child: Column(
-              children: [
-                _header(pageIndex, model),
-                _body(pageIndex, model),
-              ],
-            ),
+      child: Column(children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding),
+          //height: pageIndex == _pageCount - 1 ? cardHeight * 3 : cardHeight,
+          height: cardHeight,
+          child: Column(
+            children: [
+              _header(pageIndex, model),
+              _body(pageIndex, model),
+              //pageIndex == _pageCount - 1 ? _emptyCard() : Container(),
+            ],
           ),
-        ]),
-      ),
+        ),
+      ]),
+      //),
     );
   }
 
   Widget _header(int pageIndex, PageModel model) {
-    String pageNo = '${(pageIndex + 1).toString().padLeft(2, '0')} ${model.name.value}';
     return SizedBox(
       //color: Colors.amber,
       height: headerHeight,
@@ -193,9 +237,26 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              pageNo,
-              style: CretaFont.titleSmall,
+            Row(
+              children: [
+                Text(
+                  (pageIndex + 1).toString().padLeft(2, '0'),
+                  style: CretaFont.titleSmall,
+                ),
+                const SizedBox(width: 10),
+                CretaLabelTextEditor(
+                  textFieldKey: textFieldKey,
+                  text: model.name.value,
+                  textStyle: CretaFont.titleSmall,
+                  width: 200,
+                  height: 20,
+                  onEditComplete: (value) {
+                    setState(() {
+                      model.name.set(value);
+                    });
+                  },
+                ),
+              ],
             ),
             Row(
               children: [
@@ -205,18 +266,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                     // Copy Page
                   },
                 ),
-                // BTN.fill_gray_i_m(
-                //   icon: model.isCircle.value ? Icons.autorenew : Icons.push_pin_outlined,
-                //   onPressed: () {
-                //     setState(() {
-                //       model.isCircle.set(!model.isCircle.value);
-                //     });
-                //   },
-                // ),
                 BTN.fill_gray_i_m(
-                  icon: Icons.visibility_outlined,
+                  icon: model.isShow.value
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
                   onPressed: () {
-                    // Visible Page
+                    model.isShow.set(!(model.isShow.value));
+                    _pageManager!.notify();
                   },
                 ),
                 BTN.fill_gray_i_m(
@@ -236,61 +292,163 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   Widget _body(int pageIndex, PageModel model) {
     double bodyHeight = cardHeight - headerHeight;
     double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
-
+    //logger.finest('_body($bodyHeight, $bodyWidth)');
     double pageRatio = _pageManager!.bookModel.getRatio();
     double width = 0;
     double height = 0;
     double pageHeight = 0;
     double pageWidth = 0;
-    return Container(
-      // 실제 페이지를 그리는 부분
-      height: bodyHeight,
-      width: bodyWidth,
-      decoration: BoxDecoration(
-        border: Border.all(
-            width: 2,
-            color: _pageManager!.isPageSelected(model.mid)
-                ? CretaColor.primary
-                : CretaColor.text[300]!),
-      ),
-      child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-        width = constraints.maxWidth;
-        height = constraints.maxHeight;
-        if (pageRatio > 1) {
-          // 세로형
-          pageHeight = height;
-          pageWidth = pageHeight * (1 / pageRatio);
-        } else {
-          // 가로형
-          pageWidth = width;
-          pageHeight = pageWidth * pageRatio;
-          if (pageHeight > height) {
-            // 화면에서 page 를 표시하는 영역은 항상 가로형으로 항상 세로는
-            // 가로보다 작다.  이러다 보니, 세로 사이지그 화면의 영역을 오버하는
-            // 경우가 생기게 된다.  그러나 세로형의 경우는 이런 일이 발생하지 않는다.
+    return GestureDetector(
+      key: ValueKey(model.mid),
+      onTapDown: (details) {
+        //setState(() {
+        logger.finest('selected = ${model.mid}');
+        _pageManager!.setSelectedIndex(context, model.mid);
+        //});
+      },
+      onDoubleTapDown: (details) {
+        logger.finest('double clicked = $model.id');
+        logger.finest('dx=${details.localPosition.dx}, dy=${details.localPosition.dx}');
+      },
+      child: Container(
+        // 실제 페이지를 그리는 부분
+        height: bodyHeight,
+        width: bodyWidth,
+        decoration: BoxDecoration(
+          border: Border.all(
+              width: 2,
+              color: _pageManager!.isPageSelected(model.mid)
+                  ? CretaColor.primary
+                  : CretaColor.text[300]!),
+        ),
+        child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+          width = constraints.maxWidth;
+          height = constraints.maxHeight;
+          if (pageRatio > 1) {
+            // 세로형
             pageHeight = height;
             pageWidth = pageHeight * (1 / pageRatio);
+          } else {
+            // 가로형
+            pageWidth = width;
+            pageHeight = pageWidth * pageRatio;
+            if (pageHeight > height) {
+              // 화면에서 page 를 표시하는 영역은 항상 가로형으로 항상 세로는
+              // 가로보다 작다.  이러다 보니, 세로 사이지그 화면의 영역을 오버하는
+              // 경우가 생기게 된다.  그러나 세로형의 경우는 이런 일이 발생하지 않는다.
+              pageHeight = height;
+              pageWidth = pageHeight * (1 / pageRatio);
+            }
           }
-        }
-        logger.finest("pl:width=$width, height=$height, ratio=$pageRatio");
-        logger.finest("pl:pageWidth=$pageWidth, pageHeight=$pageHeight");
+          //logger.finest("pl:width=$width, height=$height, ratio=$pageRatio");
+          //logger.finest("pl:pageWidth=$pageWidth, pageHeight=$pageHeight");
 
-        return SafeArea(
-          child: Container(
-            height: pageHeight,
-            width: pageWidth,
-            color: _pageManager!.isPageSelected(model.mid)
-                ? CretaColor.text[200]!
-                : CretaColor.text[100]!,
-            child: Center(
-              child: Text(
-                model.order.value.toString(),
-                style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]!),
+          return SafeArea(
+            child: Container(
+              height: pageHeight,
+              width: pageWidth,
+              color: _pageManager!.isPageSelected(model.mid)
+                  ? CretaColor.text[200]!
+                  : CretaColor.text[100]!,
+              child: Center(
+                child: Text(
+                  model.order.value.toString(),
+                  style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]!),
+                ),
               ),
             ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _addCard() {
+    double bodyHeight = cardHeight - headerHeight;
+    double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
+    //logger.finest('addCard($bodyHeight,$bodyWidth)');
+    return Column(
+      key: UniqueKey(),
+      children: [
+        SizedBox(
+          height: headerHeight + verticalPadding,
+        ),
+        Container(
+          // 실제 페이지를 그리는 부분
+          height: bodyHeight,
+          width: bodyWidth,
+          decoration: BoxDecoration(
+            border: Border.all(width: 2, color: CretaColor.text[300]!),
           ),
-        );
-      }),
+          child: Center(
+            child: _addButton(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _emptyCard() {
+    double bodyHeight = cardHeight - headerHeight;
+    double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
+    logger.finest('emptyCard($bodyHeight,$bodyWidth)');
+    return SizedBox(
+      key: UniqueKey(),
+      height: bodyHeight,
+      width: bodyWidth,
+    );
+  }
+
+  Widget _addButton() {
+    return ElevatedButton(
+      style: ButtonStyle(
+        elevation: MaterialStateProperty.all<double>(0.0),
+        shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.hovered)) {
+              return CretaColor.text[200]!;
+            }
+            return CretaColor.text[100]!;
+          },
+        ),
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+        // foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+        //   (Set<MaterialState> states) {
+        //     //if (states.contains(MaterialState.hovered)) return widget.fgColor;
+        //     return (selected ? widget.fgSelectedColor : widget.fgColor);
+        //   },
+        // ),
+        shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
+        // shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        //   RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(96),
+        //     //side: BorderSide(color: selected ? Colors.white : widget.borderColor),
+        //   ),
+        // ),
+      ),
+      onPressed: () {
+        setState(() {
+          _pageManager!.createNextPage();
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.add_outlined,
+              size: 96,
+              color: CretaColor.primary,
+            ),
+            Text(
+              CretaStudioLang.newPage,
+              style: CretaFont.bodyMedium,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

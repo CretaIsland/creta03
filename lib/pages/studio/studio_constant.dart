@@ -19,6 +19,10 @@ enum LeftMenuEnum {
   None,
 }
 
+class StudioConst {
+  static const double orderVar = 0.000000001;
+}
+
 class LayoutConst {
   //
   static const double maxPageCount = 99;

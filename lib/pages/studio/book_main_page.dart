@@ -42,6 +42,7 @@ class _BookMainPageState extends State<BookMainPage> {
   PageManager? pageManagerHolder;
   late BookModel _model;
   bool _onceDBGetComplete = false;
+  final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
   final ScrollController controller = ScrollController();
   final ScrollController horizontalScroll = ScrollController();
@@ -140,16 +141,17 @@ class _BookMainPageState extends State<BookMainPage> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<BookManager>.value(
-            value: bookManagerHolder!,
-          ),
-        ],
-        child: Snippet.CretaScaffold(
-          title: Snippet.logo('studio'),
-          context: context,
-          child: _waitBook(),
-        ));
+      providers: [
+        ChangeNotifierProvider<BookManager>.value(
+          value: bookManagerHolder!,
+        ),
+      ],
+      child: Snippet.CretaScaffold(
+        title: Snippet.logo('studio'),
+        context: context,
+        child: _waitBook(),
+      ),
+    );
   }
 
   Widget _waitBook() {
@@ -307,10 +309,16 @@ class _BookMainPageState extends State<BookMainPage> {
                   Icon(Icons.menu_outlined),
                   SizedBox(width: 8),
                   CretaLabelTextEditor(
+                    textFieldKey: textFieldKey,
                     height: 32,
                     width: 300,
                     text: _model.name.value,
                     textStyle: CretaFont.titleSmall,
+                    onEditComplete: (value) {
+                      setState(() {
+                        _model.name.set(value);
+                      });
+                    },
                   ),
                 ],
               ),
