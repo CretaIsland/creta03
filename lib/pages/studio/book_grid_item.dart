@@ -15,15 +15,17 @@ import '../../data_io/book_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_elibated_button.dart';
 import '../../design_system/component/custom_image.dart';
+import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
+import '../../design_system/menu/creta_popup_menu.dart';
+import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../model/connected_user_model.dart';
 import '../../routes.dart';
 import 'book_main_page.dart';
 import 'sample_data.dart';
 import 'studio_constant.dart';
-import 'studio_snippet.dart';
 
 class BookGridItem extends StatefulWidget {
   final int index;
@@ -31,24 +33,27 @@ class BookGridItem extends StatefulWidget {
   final double width;
   final double height;
   final BookManager bookManager;
+  final GlobalKey<BookGridItemState> itemKey;
 
   const BookGridItem({
-    required super.key,
+    required this.itemKey,
     required this.bookManager,
     required this.index,
     this.bookModel,
     required this.width,
     required this.height,
-  });
+  }) : super(key: itemKey);
 
   @override
   BookGridItemState createState() => BookGridItemState();
 }
 
 class BookGridItemState extends State<BookGridItem> {
+  late List<CretaMenuItem> _popupMenuList;
   bool mouseOver = false;
   int counter = 0;
   final Random random = Random();
+  bool dropDownButtonOpened = false;
 
   double aWidth = 0;
   double aHeight = 0;
@@ -56,6 +61,33 @@ class BookGridItemState extends State<BookGridItem> {
   @override
   void initState() {
     super.initState();
+
+    _popupMenuList = [
+      CretaMenuItem(
+        caption: CretaLang.play,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.edit,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.addToPlayList,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.share,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.download,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.copy,
+        onPressed: () {},
+      ),
+    ];
   }
 
   @override
@@ -94,7 +126,7 @@ class BookGridItemState extends State<BookGridItem> {
           width: aWidth,
           height: aHeight,
           decoration: BoxDecoration(
-            boxShadow: mouseOver ? StudioSnippet.basicShadow(offset: 4) : null,
+            //boxShadow: mouseOver ? StudioSnippet.basicShadow(offset: 4) : null,
             borderRadius: BorderRadius.circular(20.0),
           ),
           clipBehavior: Clip.antiAlias, // crop method
@@ -157,7 +189,7 @@ class BookGridItemState extends State<BookGridItem> {
               child: Stack(
                 children: [
                   _thumnailArea(),
-                  _descArea(),
+                  //_descArea(),
                   _controllArea(),
                 ],
               ),
@@ -186,62 +218,90 @@ class BookGridItemState extends State<BookGridItem> {
                 AppRoutes.launchTab(url);
               },
               child: Container(
+                padding: const EdgeInsets.only(top: 8.0, right: 8),
                 alignment: AlignmentDirectional.topEnd,
-                width: aWidth,
+                decoration: Snippet.gradationShadowDeco(),
+                //width: aWidth,
                 height: aHeight - LayoutConst.bookDescriptionHeight,
-                color: CretaColor.text[200]!.withOpacity(0.2),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0, right: 8),
-                  child: BTN.floating_l(
-                    icon: Icons.delete_outline,
-                    onPressed: () {
-                      logger.finest('delete pressed');
-                      removeItem(widget.index).then((value) {
-                        if (widget.bookManager.isShort(offset: 1)) {
-                          widget.bookManager.reGet(AccountManager.currentLoginUser.email,
-                              onModelFiltered: () {
-                            widget.bookManager.notify();
+                //color: CretaColor.text[200]!.withOpacity(0.2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      Icons.favorite_border_outlined,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Text(
+                        widget.bookModel!.likeCount.toString(),
+                        overflow: TextOverflow.fade,
+                        style: CretaFont.buttonSmall.copyWith(color: Colors.white),
+                      ),
+                    ),
+                    Icon(
+                      Icons.visibility_outlined,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Text(
+                        widget.bookModel!.viewCount.toString(),
+                        overflow: TextOverflow.fade,
+                        style: CretaFont.buttonSmall.copyWith(color: Colors.white),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: BTN.opacity_gray_i_s(
+                        icon: Icons.delete_outline,
+                        onPressed: () {
+                          logger.finest('delete pressed');
+                          removeItem(widget.index).then((value) {
+                            if (widget.bookManager.isShort(offset: 1)) {
+                              widget.bookManager.reGet(AccountManager.currentLoginUser.email,
+                                  onModelFiltered: () {
+                                widget.bookManager.notify();
+                              });
+                            }
+                            return null;
                           });
-                        }
-                        return null;
-                      });
-                    },
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipDelete,
-                  ),
+                        },
+                        tooltip: CretaStudioLang.tooltipDelete,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0),
+                      child: BTN.opacity_gray_i_s(
+                        icon: Icons.menu_outlined,
+                        onPressed: () {
+                          logger.finest('menu pressed');
+                          setState(() {
+                            CretaPopupMenu.showMenu(
+                                context: context,
+                                globalKey: widget.itemKey,
+                                popupMenu: _popupMenuList,
+                                initFunc: () {
+                                  dropDownButtonOpened = true;
+                                }).then((value) {
+                              logger.finest('팝업메뉴 닫기');
+                              setState(() {
+                                dropDownButtonOpened = false;
+                              });
+                            });
+                            dropDownButtonOpened = !dropDownButtonOpened;
+                          });
+                        },
+                        tooltip: CretaStudioLang.tooltipDelete,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           });
-
-      // return Link(
-      //     uri: Uri.parse(AppRoutes.studioBookMainPage),
-      //     builder: (context, function) {
-      //       return InkWell(
-      //         onTap: () {
-      //           logger.finest('${widget.bookModel!.name.value} clicked');
-      //           Routemaster.of(context).push(AppRoutes.studioBookMainPage);
-      //         },
-      //         child: Container(
-      //           alignment: AlignmentDirectional.topEnd,
-      //           width: aWidth,
-      //           height: aHeight - LayoutConst.bookDescriptionHeight,
-      //           color: CretaColor.text[200]!.withOpacity(0.2),
-      //           child: Padding(
-      //             padding: const EdgeInsets.only(top: 8.0, right: 8),
-      //             child: BTN.floating_l(
-      //               icon: Icons.delete_outline,
-      //               onPressed: () {
-      //                 logger.finest('delete pressed');
-      //                 removeItem(widget.index);
-      //               },
-      //               hasShadow: false,
-      //               tooltip: CretaStudioLang.tooltipDelete,
-      //             ),
-      //           ),
-      //         ),
-      //       );
-      //     });
     }
     return Container();
   }
@@ -256,22 +316,6 @@ class BookGridItemState extends State<BookGridItem> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, left: 8),
-              child: Text(
-                widget.bookModel!.viewCount.toString(),
-                overflow: TextOverflow.fade,
-                style: CretaFont.bodyESmall.copyWith(color: Colors.red),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, left: 8),
-              child: Text(
-                widget.bookModel!.likeCount.toString(),
-                overflow: TextOverflow.fade,
-                style: CretaFont.bodyESmall.copyWith(color: Colors.amber),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0, left: 8),
               child: Text(

@@ -6,6 +6,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 import '../model/book_model.dart';
+import '../model/creta_model.dart';
 import '../model/page_model.dart';
 import 'creta_manager.dart';
 
@@ -18,6 +19,13 @@ class PageManager extends CretaManager {
 
   PageManager({required this.bookModel}) : super('creta_page') {
     saveManagerHolder?.registerManager('page', this);
+  }
+
+  @override
+  CretaModel cloneModel(CretaModel src) {
+    PageModel retval = newModel(src.mid) as PageModel;
+    src.copyTo(retval);
+    return retval;
   }
 
   @override

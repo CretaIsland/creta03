@@ -1,9 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data_io/page_manager.dart';
@@ -12,6 +10,7 @@ import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
+import '../../../model/creta_model.dart';
 import '../../../model/page_model.dart';
 import '../studio_constant.dart';
 import '../studio_variables.dart';
@@ -25,7 +24,7 @@ class LeftMenuPage extends StatefulWidget {
 
 class _LeftMenuPageState extends State<LeftMenuPage> {
   PageManager? _pageManager;
-  final ScrollController _scrollController = ScrollController(initialScrollOffset: 0.0);
+  late ScrollController _scrollController;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
   final double verticalPadding = 14;
@@ -45,7 +44,15 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   @override
   void initState() {
     //_scrollController.addListener(_scrollListener);
+    logger.finer('_LeftMenuPageState.initState');
+    _scrollController = ScrollController(initialScrollOffset: 0.0);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    //_scrollController.stop();
+    super.dispose();
   }
 
   @override
@@ -54,6 +61,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       _pageCount = pageManager.getAvailLength();
       logger.finest('Consumer  $_pageCount');
       _pageManager = pageManager;
+      pageManager.reOrdering();
       return Column(
         children: [
           _menuBar(),
@@ -75,7 +83,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
               onPressed: (() {
                 _pageManager!.createNextPage();
                 _scrollController
-                    .jumpTo(_scrollController.position.maxScrollExtent + cardHeight * 2);
+                    .jumpTo(_scrollController.position.maxScrollExtent + cardHeight * 3);
               })),
           //BTN.fill_gray_100_i_s(icon: Icons.delete_outlined, onPressed: (() {})),
           BTN.fill_gray_100_i_s(icon: Icons.account_tree_outlined, onPressed: (() {})),
@@ -96,35 +104,14 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           _addCard(),
           _emptyCard(),
         ],
-        onReorder: (oldIndexVal, newIndexVal) {
-          int oldIndex = oldIndexVal;
-          int newIndex =
-              oldIndexVal < newIndexVal && newIndexVal > 1 ? newIndexVal - 1 : newIndexVal;
-          logger.finer('oldIndex=$oldIndex, newIndex=$newIndex');
-          List<AbsExModel> avaiList = _pageManager!.getAvailModelList();
-          PageModel aOld = avaiList[oldIndex] as PageModel;
-          PageModel aNew = avaiList[newIndex] as PageModel;
-
-          // if (newIndex == 0) {
-          //   // 제일앞에 것보다 order 가 작아야 하다.
-          //   double firstOrder = aNew.order.value - StudioConst.orderVar;
-
-          // }
-
-          PageModel tmp = PageModel(aOld.mid);
-          tmp.copyFrom(aOld, newMid: aOld.mid, pMid: aOld.parentMid.value);
-
-          double oldOrder = tmp.order.value;
-          double newOrder = aNew.order.value;
-
-          mychangeStack.startTrans();
-          aNew.order.set(oldOrder);
-          tmp.order.set(newOrder);
-          mychangeStack.endTrans();
-          setState(() {
-            _pageManager!.replace(oldIndex, aNew);
-            _pageManager!.replace(newIndex, tmp);
-          });
+        onReorder: (oldIndex, newIndex) {
+          logger.fine('oldIndex=$oldIndex, newIndex=$newIndex');
+          CretaModel? target = _pageManager!.getNthModel(oldIndex);
+          if (target != null) {
+            setState(() {
+              target.order.set(_pageManager!.getBetweenOrder(newIndex));
+            });
+          }
         },
       ),
     );
@@ -186,17 +173,15 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   // }
 
   List<Widget> _cardList() {
-    if (_pageManager!.modelList.isEmpty) {
+    if (_pageManager!.getAvailLength() == 0) {
       logger.finest('_pageManager!.modelList is empty');
       return [];
     }
     int count = 0;
     List<Widget> retval = [];
-    for (var ele in _pageManager!.modelList) {
+    List<CretaModel> orderList = _pageManager!.copyOrderMap();
+    for (var ele in orderList) {
       PageModel page = ele as PageModel;
-      if (page.isRemoved.value == true) {
-        continue;
-      }
       retval.add(eachCard(count, page));
       count++;
       if (count == 99) {

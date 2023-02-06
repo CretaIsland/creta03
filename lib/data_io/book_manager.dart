@@ -4,6 +4,7 @@ import '../lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
+import '../model/creta_model.dart';
 import 'creta_manager.dart';
 
 class BookManager extends CretaManager {
@@ -13,6 +14,13 @@ class BookManager extends CretaManager {
 
   @override
   AbsExModel newModel(String mid) => BookModel(mid);
+
+  @override
+  CretaModel cloneModel(CretaModel src) {
+    BookModel retval = newModel(src.mid) as BookModel;
+    src.copyTo(retval);
+    return retval;
+  }
 
   @override
   List<CretaMenuItem> getSortMenu(Function? onModelSorted) {

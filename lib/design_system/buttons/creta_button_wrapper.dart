@@ -992,8 +992,10 @@ class BTN {
   static CretaButton opacity_gray_i_s({
     required IconData icon,
     required Function onPressed,
+    String? tooltip,
   }) {
     return CretaButton(
+      tooltip: tooltip,
       width: 28,
       height: 28,
       buttonType: CretaButtonType.child,

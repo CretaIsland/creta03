@@ -85,8 +85,7 @@ class _BookMainPageState extends State<BookMainPage> {
       bookManagerHolder!.getFromDB(mid).then((value) async {
         bookManagerHolder!.addRealTimeListen();
         if (bookManagerHolder!.getLength() > 0) {
-          pageManagerHolder =
-              PageManager(bookModel: bookManagerHolder!.modelList.first as BookModel);
+          pageManagerHolder = PageManager(bookModel: bookManagerHolder!.onlyOne()! as BookModel);
           pageManagerHolder!.clearAll();
 
           await _getPages();
@@ -175,7 +174,7 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.finest('consumerFunc');
     return Consumer<BookManager>(builder: (context, bookManager, child) {
       logger.finest('Consumer  ${bookManager.getLength()}');
-      _model = bookManager.modelList.first as BookModel;
+      _model = bookManager.onlyOne()! as BookModel;
       return _mainPage();
     });
   }

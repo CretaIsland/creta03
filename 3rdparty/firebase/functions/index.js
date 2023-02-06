@@ -60,7 +60,8 @@ function _removeDelta()
 }
 
 exports.cleanBin_schedule = functions.pubsub.schedule('every 24 hours').onRun((context) => {
-    return _cleanBin('creta_book');
+    _cleanBin('creta_book');
+    return _cleanBin('creta_page');
 });
 
 exports.cleanBin_req = functions.https.onRequest(async (req, res) => {

@@ -20,7 +20,7 @@ enum LeftMenuEnum {
 }
 
 class StudioConst {
-  static const double orderVar = 0.000000001;
+  static const double orderVar = 0.0000001;
 }
 
 class LayoutConst {
@@ -67,7 +67,7 @@ class LayoutConst {
     LayoutConst.cretaPaddingPixel,
     LayoutConst.cretaPaddingPixel / 2,
   );
-  static const Size bookThumbSize = Size(290.0 / 1.25, 256.0 / 1.25);
+  static const Size bookThumbSize = Size(290.0, 256.0);
   static const double bookThumbSpacing = cretaPaddingPixel / 2;
   static const double bookDescriptionHeight = 56;
 

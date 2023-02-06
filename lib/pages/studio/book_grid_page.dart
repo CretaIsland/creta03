@@ -273,9 +273,10 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       return BookGridItem(
         bookManager: bookManager,
         index: index - 1,
-        key: isValidIndex(index)
-            ? (bookManager.findByIndex(index - 1) as CretaModel).key
-            : GlobalKey(),
+        itemKey: GlobalKey<BookGridItemState>(),
+        // key: isValidIndex(index)
+        //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+        //     : GlobalKey(),
         bookModel: isValidIndex(index) ? bookManager.findByIndex(index - 1) as BookModel : null,
         width: itemWidth,
         height: itemHeight,

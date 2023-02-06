@@ -59,7 +59,8 @@ dependencies:
   adaptive_scrollbar: ^2.1.2
   mutex: ^3.0.1
   loading_animation_widget: ^1.2.0+4
-  sortedmap: ^0.5.1
+  #sortedmap: ^0.5.2
+  deep_collection: ^1.0.2
   get: ^4.6.5
 
 

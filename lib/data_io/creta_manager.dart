@@ -2,6 +2,8 @@
 
 import 'dart:io';
 import 'package:hycop/hycop/enum/model_enums.dart';
+import 'package:deep_collection/deep_collection.dart';
+//import 'package:sortedmap/sortedmap.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/utils/hycop_exceptions.dart';
@@ -29,7 +31,10 @@ abstract class CretaManager extends AbsExModelManager {
   static const int maxPageLimit = 200;
   static const int defaultPageLimit = 50;
 
-  List<AbsExModel> _avaliModelList = [];
+  CretaModel cloneModel(CretaModel src);
+
+  //SortedMap<double, CretaModel> _orderMap = SortedMap<double, CretaModel>();
+  Map<double, CretaModel> _orderMap = {};
 
   static String modelPrefix(ExModelType type) {
     return '${type.name}=';
@@ -293,6 +298,7 @@ abstract class CretaManager extends AbsExModelManager {
     modelList.clear();
     modelList.add(retval);
     unlock();
+    //reOrdering();
     return retval;
   }
 
@@ -363,6 +369,7 @@ abstract class CretaManager extends AbsExModelManager {
         }
         _dbState = DBState.idle;
         unlock();
+        //reOrdering();
         return [];
       }
 
@@ -403,6 +410,7 @@ abstract class CretaManager extends AbsExModelManager {
       logger.finest('query=${query.toString()},_currentQuery=${_currentQuery.toString()}');
       _dbState = DBState.idle;
       unlock();
+      //reOrdering();
       return retval;
     } catch (e) {
       logger.severe('databaseError', e);
@@ -445,6 +453,7 @@ abstract class CretaManager extends AbsExModelManager {
     await super.createToDB(model);
     _dbState = DBState.idle;
     unlock();
+    //reOrdering();
   }
 
   //
@@ -470,8 +479,6 @@ abstract class CretaManager extends AbsExModelManager {
   void realTimeCallback(String directive, String userId, Map<String, dynamic> dataMap) {
     logger.finest('realTimeCallback invoker($directive, $userId)');
 
-    lock();
-
     bool isFilteredOut = false;
     if (_currentQuery.isNotEmpty) {
       _currentQuery.forEach((key, value) {
@@ -489,7 +496,6 @@ abstract class CretaManager extends AbsExModelManager {
 
     if (isFilteredOut) {
       logger.finest('${dataMap["mid"] ?? ''} filter out');
-      unlock();
       return;
     }
 
@@ -497,13 +503,12 @@ abstract class CretaManager extends AbsExModelManager {
       String mid = dataMap["mid"] ?? '';
       AbsExModel model = newModel(mid);
       model.fromMap(dataMap);
-      modelList.insert(0, model);
+      insert(model as CretaModel, postion: 0);
       logger.finest('${model.mid} realtime added');
       if (isNotifyCreate) notifyListeners();
     } else if (isApplyModify && directive == 'set') {
       String mid = dataMap["mid"] ?? '';
       if (mid.isEmpty) {
-        unlock();
         return;
       }
       for (AbsExModel model in modelList) {
@@ -517,18 +522,16 @@ abstract class CretaManager extends AbsExModelManager {
       String mid = dataMap["mid"] ?? '';
       logger.finest('removed mid = $mid');
       if (mid.isEmpty) {
-        unlock();
         return;
       }
       for (AbsExModel model in modelList) {
         if (model.mid == mid) {
-          modelList.remove(model);
+          remove(model as CretaModel);
           logger.finest('${model.mid} realtime removed');
           if (isNotifyDelete) notifyListeners();
         }
       }
     }
-    unlock();
     return;
   }
 
@@ -545,6 +548,7 @@ abstract class CretaManager extends AbsExModelManager {
     modelList.insert(postion, model);
     notify();
     unlock();
+    //reOrdering();
   }
 
   void remove(CretaModel removedItem) {
@@ -552,6 +556,7 @@ abstract class CretaManager extends AbsExModelManager {
     modelList.remove(removedItem);
     notify();
     unlock();
+    //reOrdering();
   }
 
   CretaModel? findByIndex(int index) {
@@ -573,39 +578,117 @@ abstract class CretaManager extends AbsExModelManager {
   int getAvailLength() {
     int retval = 0;
     lock();
+    retval = _orderMap.length;
+    unlock();
+    return retval;
+  }
+
+  void reOrdering() {
+    lock();
+    _orderMap.clear();
     for (var ele in modelList) {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      retval++;
+      _orderMap[ele.order.value] = ele as CretaModel;
+    }
+    logger.fine('reOrdering  ${_orderMap.length}');
+
+    unlock();
+    return;
+  }
+
+  CretaModel? getNthModel(int index) {
+    int count = 0;
+    lock();
+    for (MapEntry e in _orderMap.deepSortByKey().entries) {
+      if (count == index) {
+        unlock();
+        return e.value;
+      }
+      count++;
+    }
+    unlock();
+    return null;
+  }
+
+  //CretaModel? getOrderedModel(double order) => _orderMap[order];
+
+  double getMaxOrder() {
+    if (_orderMap.isEmpty) return 1;
+    double retval = 0;
+    lock();
+    for (var ele in modelList) {
+      if (ele.order.value > retval) {
+        retval = ele.order.value;
+      }
     }
     unlock();
     return retval;
   }
 
-  List<AbsExModel> getAvailModelList() {
+  double getMinOrder() {
+    if (_orderMap.isEmpty) return 1;
+    double retval = 1;
     lock();
-    _avaliModelList.clear();
     for (var ele in modelList) {
-      if (ele.isRemoved.value == true) {
-        continue;
+      if (ele.order.value < retval) {
+        retval = ele.order.value;
       }
-      _avaliModelList.add(ele);
     }
     unlock();
-    return _avaliModelList;
+    return retval;
   }
 
-  void replace(int index, CretaModel model) {
+  double getBetweenOrder(int nth) {
+    if (nth < 0) return getMinOrder();
+    if (nth == 0) {
+      double min = getMinOrder();
+      if (min > 2) {
+        return min - 1;
+      }
+      return min - StudioConst.orderVar;
+    }
+    int len = _orderMap.length;
+    if (len == 0) return 1;
+    if (nth >= len) {
+      logger.severe('1. this cant be happen $nth, $len');
+      return getMaxOrder() + 1;
+    }
+
+    // nth 는 0보다는 크고, len 보다는 작은 수다.
+    int count = 0;
+    double firstValue = -1;
+    double secondValue = -1;
     lock();
-    if (index < 0 || index >= modelList.length) {
-      return;
+    for (MapEntry e in _orderMap.deepSortByKey().entries) {
+      if (count == nth - 1) {
+        firstValue = e.value.order.value;
+      } else if (count == nth) {
+        secondValue = e.value.order.value;
+        unlock();
+        return (firstValue + secondValue) / 2.0;
+      }
+      count++;
     }
-    modelList[index] = model;
     unlock();
+    // 있을수 없다,. 에러다.
+    logger.severe('3. this cant be happen $nth, $len');
+    return getMaxOrder() + 1;
   }
 
-  //
-  //  realtime 이벤트 관련 end ]
-  //
+  List<CretaModel> copyOrderMap() {
+    List<CretaModel> retval = [];
+    lock();
+    for (var e in _orderMap.deepSortByKey().values) {
+      retval.add(e);
+    }
+    unlock();
+    return retval;
+  }
+
+  AbsExModel? onlyOne() {
+    if (modelList.isEmpty) return null;
+    return modelList.first;
+  }
 }

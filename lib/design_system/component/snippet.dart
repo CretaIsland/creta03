@@ -530,6 +530,29 @@ class Snippet {
       child: child,
     );
   }
+
+  static BoxDecoration gradationShadowDeco(
+      {Color color = Colors.black,
+      AlignmentGeometry begin = Alignment.topCenter,
+      AlignmentGeometry end = Alignment.bottomCenter}) {
+    return BoxDecoration(
+      //color: Colors.black.withOpacity(0.4),
+      gradient: LinearGradient(begin: begin, end: end, colors: [
+        color.withOpacity(0.6),
+        color.withOpacity(0.5),
+        color.withOpacity(0.3),
+        color.withOpacity(0.2),
+        color.withOpacity(0.1),
+        color.withOpacity(0.0),
+        color.withOpacity(0.0),
+        color.withOpacity(0.1),
+        color.withOpacity(0.2),
+        color.withOpacity(0.3),
+        color.withOpacity(0.5),
+        color.withOpacity(0.6),
+      ]),
+    );
+  }
 }
 
 class CretaComponentLocation {
