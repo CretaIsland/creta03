@@ -135,6 +135,23 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
   }
 
   Widget _getChild() {
+    if (widget.iconData != null && widget.caption.isNotEmpty) {
+      return Container(
+        padding: EdgeInsets.only(left: widget.width / 8),
+        alignment: AlignmentDirectional.centerStart,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(widget.iconData!, color: _getfgColor(), size: 20),
+            SizedBox(width: 12),
+            Text(
+              widget.caption,
+              style: CretaFont.titleLarge.copyWith(color: _getfgColor(), fontWeight: CretaFont.medium),
+            ),
+          ],
+        ),
+      );
+    }
     if ((widget.iconData != null)) {
       if (widget.isIconText == true) {
         return Row(

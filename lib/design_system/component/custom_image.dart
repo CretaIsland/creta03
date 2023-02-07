@@ -101,7 +101,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return _valueListner();
+    return ClipRect(child: _valueListner());
   }
 
   Widget _valueListner() {
