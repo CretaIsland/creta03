@@ -35,7 +35,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
   double iconSize = 24;
   @override
   void initState() {
-    widget.textStyle ??= CretaFont.buttonLarge;
+    widget.textStyle ??= CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium);
     fontSize ??= widget.textStyle!.fontSize;
     iconSize = widget.iconSize ?? iconSize;
     super.initState();
@@ -96,6 +96,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
 
   ButtonStyle _buttonStyle(bool isSelected) {
     return ButtonStyle(
+      textStyle: MaterialStateProperty.all<TextStyle>(CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium)),
       overlayColor: MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
           if (states.contains(MaterialState.hovered)) {

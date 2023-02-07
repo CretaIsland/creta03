@@ -90,16 +90,19 @@ final routesLoggedOut = RouteMap(
         ),
     AppRoutes.communityHome: (_) => TransitionPage(
           child: CommunityPage(
+            key: GlobalKey(),
             subPageUrl: AppRoutes.communityHome,
           ),
         ),
     AppRoutes.subscriptionList: (_) => TransitionPage(
           child: CommunityPage(
+            key: GlobalKey(),
             subPageUrl: AppRoutes.subscriptionList,
           ),
         ),
     AppRoutes.playList: (_) => TransitionPage(
           child: CommunityPage(
+            key: GlobalKey(),
             subPageUrl: AppRoutes.playList,
           ),
         ),

@@ -34,6 +34,7 @@ class CretaLeftBar extends StatefulWidget {
 class _CretaLeftBarState extends State<CretaLeftBar> {
   Widget _getCretaTapBarButton(CretaMenuItem item) {
     return CretaTapBarButton(
+        iconData: item.iconData,
         selected: item.selected,
         caption: item.caption,
         onPressed: () {
