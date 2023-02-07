@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_final_fields
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -69,7 +69,6 @@ class _StickMenuState extends State<StickMenu> {
       }
     }
     return Container(
-      //margin: EdgeInsets.only(top: LayoutConst.layoutMargin, right: LayoutConst.layoutMargin),
       margin: EdgeInsets.only(right: LayoutConst.layoutMargin),
       height: StudioVariables.workHeight,
       width: LayoutConst.menuStickWidth,
@@ -78,8 +77,10 @@ class _StickMenuState extends State<StickMenu> {
         boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.rightBottum),
       ),
       padding: EdgeInsets.only(top: 12),
-      child: SingleChildScrollView(
-        child: Column(
+      child: //SingleChildScrollView(
+          ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기,
+        child: ListView(
           children: icon.map((e) {
             int idx = icon.indexOf(e);
             return NavBarItem(
@@ -88,6 +89,7 @@ class _StickMenuState extends State<StickMenu> {
               onTap: () {
                 widget.initSelected = LeftMenuEnum.values[idx];
                 widget.selectFunction(LeftMenuEnum.values[idx]);
+                logger.fine('onTap ${widget.initSelected.toString()}, $idx');
                 setState(() {
                   select(idx);
                 });
@@ -101,6 +103,7 @@ class _StickMenuState extends State<StickMenu> {
   }
 }
 
+// ignore: must_be_immutable
 class NavBarItem extends StatefulWidget {
   final IconData icon;
   final String title;
@@ -119,7 +122,8 @@ class NavBarItem extends StatefulWidget {
 }
 
 class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
-  bool hovered = false;
+  bool _hovered = false;
+  bool _selected = false;
 
   @override
   void initState() {
@@ -128,24 +132,32 @@ class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    _selected = widget.selected;
+    logger.fine('build NavBarItem $_selected');
     return GestureDetector(
       onTap: () {
         widget.onTap();
+        setState(() {
+          //_selected = !_selected;
+        });
       },
       child: MouseRegion(
         onEnter: (value) {
           setState(() {
-            hovered = true;
+            _hovered = true;
           });
         },
         onExit: (value) {
           setState(() {
-            hovered = false;
+            _hovered = false;
           });
         },
         child: Container(
           width: LayoutConst.menuStickWidth,
-          color: widget.selected ? LayoutConst.studioBGColor : Colors.transparent,
+          decoration: BoxDecoration(
+            color: _selected ? CretaColor.primary[100] : Colors.transparent,
+            border: _selected ? Border.all(width: 1, color: CretaColor.primary) : null,
+          ),
           child: Stack(
             children: [
               SizedBox(
@@ -158,14 +170,16 @@ class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
                       Icon(
                         widget.icon,
                         color:
-                            hovered ? CretaColor.text[900] : CretaColor.text[700], //_color.value,
-                        size: hovered
+                            _selected ? CretaColor.primary : CretaColor.text[700], //_color.value,
+                        size: _hovered
                             ? LayoutConst.menuStickIconSize + 4
                             : LayoutConst.menuStickIconSize,
                       ),
                       Text(
                         widget.title,
-                        style: CretaFont.titleSmall,
+                        style: CretaFont.titleSmall.copyWith(
+                          color: _selected ? CretaColor.primary : CretaColor.text[700],
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ],

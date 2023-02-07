@@ -194,32 +194,37 @@ class _BookMainPageState extends State<BookMainPage> {
           value: pageManagerHolder!,
         ),
       ],
-      child: Column(
+      child: Stack(
         children: [
-          _topMenu(),
-          Container(
-            color: LayoutConst.studioBGColor,
-            height: StudioVariables.workHeight,
-            child: Row(
-              children: [
-                StickMenu(
-                  selectFunction: _showLeftMenu,
-                  initSelected: selectedStick,
+          Column(
+            children: [
+              SizedBox(height: LayoutConst.topMenuBarHeight),
+              Container(
+                color: LayoutConst.studioBGColor,
+                height: StudioVariables.workHeight,
+                child: Row(
+                  children: [
+                    StickMenu(
+                      selectFunction: _showLeftMenu,
+                      initSelected: selectedStick,
+                    ),
+                    Expanded(
+                      child: _workArea(),
+                    ),
+                    // StudioVariables.autoScale == true
+                    //     ? Expanded(
+                    //         child: _workArea(),
+                    //       )
+                    //     : SizedBox(
+                    //         width: StudioVariables.workWidth,
+                    //         child: _workArea(),
+                    //       )
+                  ],
                 ),
-                Expanded(
-                  child: _workArea(),
-                ),
-                // StudioVariables.autoScale == true
-                //     ? Expanded(
-                //         child: _workArea(),
-                //       )
-                //     : SizedBox(
-                //         width: StudioVariables.workWidth,
-                //         child: _workArea(),
-                //       )
-              ],
-            ),
+              ),
+            ],
           ),
+          _topMenu(),
         ],
       ),
     );

@@ -39,7 +39,6 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
         iconData: item.iconData,
         selected: item.selected,
         caption: item.caption,
-        iconData: item.iconData,
         iconSize: item.iconSize,
         isIconText: item.isIconText,
         onPressed: () {

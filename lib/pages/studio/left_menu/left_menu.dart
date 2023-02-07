@@ -55,12 +55,12 @@ class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin
       child: FadeTransition(
         opacity: _animationController,
         child: Container(
-          margin: const EdgeInsets.only(top: LayoutConst.layoutMargin),
+          //margin: const EdgeInsets.only(top: LayoutConst.layoutMargin),
           height: height,
           width: LayoutConst.leftMenuWidth,
           decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: StudioSnippet.basicShadow(),
+            boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.rightBottum),
           ),
           child: Stack(
             children: [
