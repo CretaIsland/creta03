@@ -75,6 +75,7 @@ class CretaTextField extends LastClickable {
   final int minNumber;
   final int maxNumber;
   final TextEditingController? controller;
+  final TextAlign align;
 
   CretaTextField({
     required this.textFieldKey,
@@ -91,6 +92,7 @@ class CretaTextField extends LastClickable {
     this.selectAtInit = false,
     this.maxNumber = 100,
     this.minNumber = 0,
+    this.align = TextAlign.start,
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -108,6 +110,7 @@ class CretaTextField extends LastClickable {
     this.selectAtInit = true,
     this.maxNumber = 100,
     this.minNumber = 0,
+    this.align = TextAlign.end,
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -125,6 +128,7 @@ class CretaTextField extends LastClickable {
     this.selectAtInit = true,
     this.maxNumber = 9999,
     this.minNumber = 0,
+    this.align = TextAlign.end,
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -142,6 +146,7 @@ class CretaTextField extends LastClickable {
     this.selectAtInit = true,
     this.maxNumber = 100,
     this.minNumber = 0,
+    this.align = TextAlign.end,
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -159,6 +164,7 @@ class CretaTextField extends LastClickable {
     this.selectAtInit = false,
     this.maxNumber = 100,
     this.minNumber = 0,
+    this.align = TextAlign.start,
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -176,6 +182,7 @@ class CretaTextField extends LastClickable {
     this.selectAtInit = false,
     this.maxNumber = 100,
     this.minNumber = 0,
+    this.align = TextAlign.start,
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -193,6 +200,7 @@ class CretaTextField extends LastClickable {
     this.selectAtInit = false,
     this.maxNumber = 100,
     this.minNumber = 0,
+    this.align = TextAlign.start,
   }) : super(key: textFieldKey);
 
   @override
@@ -311,6 +319,7 @@ class CretaTextFieldState extends State<CretaTextField> {
 
   Widget _cupertinoTextField() {
     return CupertinoTextField(
+      textAlign: widget.align,
       keyboardType:
           widget.textType == CretaTextFieldType.number ? TextInputType.number : TextInputType.none,
       focusNode: _focusNode,

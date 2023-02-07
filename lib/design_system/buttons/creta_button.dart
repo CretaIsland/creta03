@@ -12,6 +12,7 @@ enum CretaButtonType {
   textIcon,
   imageText,
   child,
+  iconTextFix,
 }
 
 enum CretaButtonDeco {
@@ -245,6 +246,7 @@ class _CretaButtonState extends State<CretaButton> {
             decoration: _getDeco(),
             width: widget.width ?? _getWidth(),
             height: widget.height ?? _getHeight(),
+            clipBehavior: Clip.antiAlias,
             //child: Center(
             child: _getChild(),
             //),
@@ -357,7 +359,7 @@ class _CretaButtonState extends State<CretaButton> {
           );
         }
         return Padding(
-          padding: const EdgeInsets.fromLTRB(6, 0, 0, 3),
+          padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
           child: Text(widget.textString!, style: widget.textStyle!.copyWith(color: Colors.white)),
         );
       }
@@ -367,7 +369,7 @@ class _CretaButtonState extends State<CretaButton> {
         );
       }
       return Padding(
-        padding: const EdgeInsets.fromLTRB(6, 0, 0, 3),
+        padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
         child: Text(widget.textString!,
             style: _isTransparent()
                 ? widget.textStyle!.copyWith(
@@ -425,6 +427,21 @@ class _CretaButtonState extends State<CretaButton> {
             curve: Curves.easeOutQuad,
             padding: EdgeInsetsDirectional.only(start: hover ? widget.width! / 14 : 0),
             duration: Duration(milliseconds: 800),
+            child: _getText(),
+          ),
+        ],
+      );
+    }
+    if (widget.buttonType == CretaButtonType.iconTextFix) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: _getIcon(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
             child: _getText(),
           ),
         ],

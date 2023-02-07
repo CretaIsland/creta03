@@ -91,6 +91,7 @@ class BookModel extends CretaModel {
     List<String> ownerList = const [],
     List<String> readerList = const [],
     List<String> writerList = const [],
+    String? desc,
   }) : super(pmid: '', type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     width = UndoAble<int>(1920, mid);
@@ -109,6 +110,9 @@ class BookModel extends CretaModel {
     readers = [...readerList];
     writers = [...writerList];
     shares = [...ownerList, ...writerList, ...readerList];
+    if (desc != null) {
+      description = UndoAble<String>(desc, mid);
+    }
     logger.finest('owners=${owners.toString()}');
   }
   @override

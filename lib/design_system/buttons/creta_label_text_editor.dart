@@ -13,6 +13,7 @@ class CretaLabelTextEditor extends StatefulWidget {
   final GlobalKey<CretaLabelTextEditorState> textFieldKey;
   final void Function(String value) onEditComplete;
   final int? maxLine;
+  final TextAlign align;
 
   CretaLabelTextEditor({
     required this.textFieldKey,
@@ -23,6 +24,7 @@ class CretaLabelTextEditor extends StatefulWidget {
     required this.textStyle,
     required this.onEditComplete,
     this.maxLine,
+    this.align = TextAlign.left,
   });
 
   @override
@@ -99,6 +101,7 @@ class CretaLabelTextEditorState extends State<CretaLabelTextEditor> {
                 maxLines: widget.maxLine ?? 1,
                 style: widget.textStyle,
                 overflow: TextOverflow.ellipsis,
+                textAlign: widget.align,
               ),
             ),
       //),

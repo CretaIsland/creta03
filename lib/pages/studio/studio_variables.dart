@@ -4,7 +4,6 @@ class StudioVariables {
   static double fitScale = 1.0;
   static double scale = 1.0;
   static bool autoScale = true;
-  static bool showScale = false;
 
   static double displayWidth = 1920;
   static double displayHeight = 961;

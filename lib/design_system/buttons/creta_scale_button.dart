@@ -3,10 +3,10 @@
 
 // ignore_for_file: prefer_const_constructors, prefer_final_fields, must_be_immutable, unnecessary_brace_in_string_interps
 
+import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../pages/studio/studio_variables.dart';
-import '../../lang/creta_studio_lang.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -17,9 +17,8 @@ class CretaScaleButton extends StatefulWidget {
   Color? shadowColor;
   final IconData icon1;
   final IconData icon2;
-  final Function onPressedMinus;
-  final Function onPressedPlus;
-  final Function onPressedAutoScale;
+  final Function onManualScale;
+  final Function onAutoScale;
   TextStyle? textStyle;
   final double iconSize;
   Color? clickColor;
@@ -36,9 +35,8 @@ class CretaScaleButton extends StatefulWidget {
     this.shadowColor,
     this.icon1 = Icons.remove_outlined,
     this.icon2 = Icons.add_outlined,
-    required this.onPressedMinus,
-    required this.onPressedPlus,
-    required this.onPressedAutoScale,
+    required this.onManualScale,
+    required this.onAutoScale,
     this.textStyle,
     this.iconSize = 20,
     this.clickColor,
@@ -59,10 +57,14 @@ class CretaScaleButton extends StatefulWidget {
 }
 
 class _CretaScaleButtonState extends State<CretaScaleButton> {
-  List<bool> _isClickedMinus = [false, false];
-  List<bool> _isHoverMinus = [false, false];
-  List<bool> _isClickedPlus = [false, false];
-  List<bool> _isHoverPlus = [false, false];
+  bool _isClickedMinus = false;
+  bool _isHoverMinus = false;
+  bool _isClickedPlus = false;
+  bool _isHoverPlus = false;
+  bool _isClickedAuto = false;
+  bool _isHoverAuto = false;
+
+  List<double> scalePlot = [10, 25, 50, 75, 100, 125, 150, 200, 250, 300];
 
   String _scaleText = '';
 
@@ -74,21 +76,8 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
 
   @override
   Widget build(BuildContext context) {
-    _scaleText = "${(StudioVariables.scale * 100).round()}%";
+    _scaleText = "${(StudioVariables.scale * 100).round()}";
     logger.fine('scaleText=$_scaleText');
-
-    if (widget.tooltip != null) {
-      return Snippet.TooltipWrapper(
-        tooltip: widget.tooltip!,
-        bgColor: widget.bgColor!,
-        fgColor: widget.fgColor!,
-        child: _fiveButtons(),
-      );
-    }
-    return _fiveButtons();
-  }
-
-  Widget _fiveButtons() {
     return Container(
         padding: EdgeInsets.only(left: 4, right: 4),
         decoration: _getDeco(),
@@ -97,149 +86,209 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            //_button5xMinus('-50', widget.onPressedMinus),
-            _buttonMinus(50, widget.onPressedMinus),
-            _buttonMinus(10, widget.onPressedMinus),
-            _buttonAuto(),
-            _buttonPlus(10, widget.onPressedPlus),
-            _buttonPlus(50, widget.onPressedPlus),
+            _buttonMinus(),
+            _scaleTextField(),
+            _buttonPlus(),
+            widget.tooltip != null
+                ? Snippet.TooltipWrapper(
+                    tooltip: widget.tooltip!,
+                    bgColor: widget.bgColor!,
+                    fgColor: widget.fgColor!,
+                    child: _buttonAuto())
+                : _buttonAuto(),
           ],
         ));
   }
 
   Widget _buttonAuto() {
-    return TextButton(
-      onPressed: () {
-        setState(() {
-          logger.finest('middle button pressed ${StudioVariables.autoScale}');
-          StudioVariables.autoScale = !StudioVariables.autoScale;
-          StudioVariables.scale = StudioVariables.fitScale;
-          StudioVariables.showScale = !StudioVariables.showScale;
-        });
-        widget.onPressedAutoScale.call();
-      },
-      child: //Padding(
-          //padding: EdgeInsets.only(bottom: ((StudioVariables.showScale == false) ? 4 : 2)),
-          //padding: EdgeInsets.only(bottom: 2),
-          //child:
-          Text(
-        StudioVariables.showScale == false ? CretaStudioLang.autoScale : _scaleText,
-        style: widget.textStyle,
-      ),
-      //),
-    );
-  }
-
-  Widget _buttonMinus(int scaleVariant, Function onPressed) {
-    int idx = scaleVariant == 10 ? 0 : 1;
     return Container(
-      width: _isClickedMinus[idx] ? widget.iconSize : widget.iconSize * 1.2,
-      height: _isClickedMinus[idx] ? widget.iconSize : widget.iconSize * 1.2,
-      decoration: BoxDecoration(
-          color: _isClickedMinus[idx]
-              ? widget.clickColor
-              : _isHoverMinus[idx]
-                  ? widget.hoverColor
-                  : widget.bgColor,
-          shape: BoxShape.circle),
-      child: GestureDetector(
-        onLongPressDown: (details) {
-          setState(() {
-            _isClickedMinus[idx] = true;
-          });
-        },
-        onTapUp: (details) {
-          setState(() {
-            _isClickedMinus[idx] = false;
-            _minusScale(scaleVariant);
-          });
-          onPressed.call();
-        },
-        child: MouseRegion(
-          onExit: (val) {
+        width: _isClickedAuto ? widget.iconSize : widget.iconSize * 1.2,
+        height: _isClickedAuto ? widget.iconSize : widget.iconSize * 1.2,
+        decoration: BoxDecoration(
+            color: _isClickedAuto
+                ? widget.clickColor
+                : _isHoverAuto
+                    ? widget.hoverColor
+                    : widget.bgColor,
+            shape: BoxShape.circle),
+        child: GestureDetector(
+          onLongPressDown: (details) {
             setState(() {
-              _isHoverMinus[idx] = false;
-              _isClickedMinus[idx] = false;
+              _isClickedAuto = true;
             });
           },
-          onEnter: (val) {
+          onTapUp: (details) {
             setState(() {
-              _isHoverMinus[idx] = true;
+              _isClickedAuto = false;
+              StudioVariables.autoScale = true;
+              StudioVariables.scale = StudioVariables.fitScale;
             });
+            widget.onAutoScale.call();
           },
-          child: Center(
-              child: Text('-${scaleVariant}',
-                  style: CretaFont.bodyESmall.copyWith(color: widget.fgColor))),
-        ),
-      ),
-    );
+          child: MouseRegion(
+            onExit: (val) {
+              setState(() {
+                _isHoverAuto = false;
+                _isClickedMinus = false;
+              });
+            },
+            onEnter: (val) {
+              setState(() {
+                _isHoverAuto = true;
+              });
+            },
+            child: Center(
+              child: Icon(StudioVariables.autoScale
+                  ? Icons.fullscreen_outlined
+                  : Icons.fullscreen_exit_outlined),
+            ),
+          ),
+        ));
   }
 
-  Widget _buttonPlus(int scaleVariant, Function onPressed) {
-    int idx = scaleVariant == 10 ? 0 : 1;
+  Widget _scaleTextField() {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CretaTextField.xshortNumber(
+              limit: 3,
+              width: 36,
+              textFieldKey: GlobalKey(),
+              value: _scaleText,
+              hintText: _scaleText,
+              onEditComplete: (valStr) {
+                double max = StudioVariables.scale * 100 > scalePlot[scalePlot.length - 1]
+                    ? StudioVariables.scale * 100
+                    : scalePlot[scalePlot.length - 1];
+                double min = scalePlot[0];
+                double val = double.parse(valStr);
+                if (val < min) {
+                  val = min;
+                } else if (val > max) {
+                  val = max;
+                }
+                setState(() {
+                  logger.finest('onEditComplete button pressed ${StudioVariables.scale}');
+                  StudioVariables.autoScale = false;
+                  StudioVariables.scale = val / 100.0;
+                });
+                widget.onManualScale.call();
+              }),
+          Text('%', style: CretaFont.buttonLarge),
+        ]);
+  }
+
+  Widget _buttonMinus() {
     return Container(
-      width: _isClickedPlus[idx] ? widget.iconSize : widget.iconSize * 1.2,
-      height: _isClickedPlus[idx] ? widget.iconSize : widget.iconSize * 1.2,
-      decoration: BoxDecoration(
-          color: _isClickedPlus[idx]
-              ? widget.clickColor
-              : _isHoverPlus[idx]
-                  ? widget.hoverColor
-                  : widget.bgColor,
-          shape: BoxShape.circle),
-      child: GestureDetector(
-        onLongPressDown: (details) {
-          setState(() {
-            _isClickedPlus[idx] = true;
-          });
-        },
-        onTapUp: (details) {
-          setState(() {
-            _isClickedPlus[idx] = false;
-            _plusScale(scaleVariant);
-          });
-          onPressed.call();
-        },
-        child: MouseRegion(
-          onExit: (val) {
+        width: _isClickedMinus ? widget.iconSize : widget.iconSize * 1.2,
+        height: _isClickedMinus ? widget.iconSize : widget.iconSize * 1.2,
+        decoration: BoxDecoration(
+            color: _isClickedMinus
+                ? widget.clickColor
+                : _isHoverMinus
+                    ? widget.hoverColor
+                    : widget.bgColor,
+            shape: BoxShape.circle),
+        child: GestureDetector(
+          onLongPressDown: (details) {
             setState(() {
-              _isHoverPlus[idx] = false;
-              _isClickedPlus[idx] = false;
+              _isClickedMinus = true;
             });
           },
-          onEnter: (val) {
+          onTapUp: (details) {
             setState(() {
-              _isHoverPlus[idx] = true;
+              _isClickedMinus = false;
+              _minusScale();
+            });
+            widget.onManualScale.call();
+          },
+          child: MouseRegion(
+            onExit: (val) {
+              setState(() {
+                _isHoverMinus = false;
+                _isClickedMinus = false;
+              });
+            },
+            onEnter: (val) {
+              setState(() {
+                _isHoverMinus = true;
+              });
+            },
+            child: Center(
+              child: Icon(widget.icon1),
+            ),
+          ),
+        ));
+  }
+
+  Widget _buttonPlus() {
+    return Container(
+        width: _isClickedPlus ? widget.iconSize : widget.iconSize * 1.2,
+        height: _isClickedPlus ? widget.iconSize : widget.iconSize * 1.2,
+        decoration: BoxDecoration(
+            color: _isClickedPlus
+                ? widget.clickColor
+                : _isHoverPlus
+                    ? widget.hoverColor
+                    : widget.bgColor,
+            shape: BoxShape.circle),
+        child: GestureDetector(
+          onLongPressDown: (details) {
+            setState(() {
+              _isClickedPlus = true;
             });
           },
-          child: Center(
-              child: Text('+${scaleVariant}',
-                  style: CretaFont.bodyESmall.copyWith(color: widget.fgColor))),
-        ),
-      ),
-    );
+          onTapUp: (details) {
+            setState(() {
+              _isClickedPlus = false;
+              _plusScale();
+            });
+            widget.onManualScale.call();
+          },
+          child: MouseRegion(
+            onExit: (val) {
+              setState(() {
+                _isHoverPlus = false;
+                _isClickedPlus = false;
+              });
+            },
+            onEnter: (val) {
+              setState(() {
+                _isHoverPlus = true;
+              });
+            },
+            child: Center(child: Icon(widget.icon2)),
+          ),
+        ));
   }
 
-  void _plusScale(int variant) {
-    if (StudioVariables.scale < 9.0) {
-      int percent = (StudioVariables.scale * 100).round();
-      percent += (variant - (percent % variant));
-      StudioVariables.scale = percent / 100.0;
-      StudioVariables.autoScale = false;
-      StudioVariables.showScale = true;
+  void _plusScale() {
+    int index = 0;
+    for (double ele in scalePlot) {
+      if (ele > StudioVariables.scale * 100) {
+        break;
+      }
+      index++;
     }
+    if (scalePlot[index] > StudioVariables.scale * 100) {
+      StudioVariables.scale = scalePlot[index] / 100;
+    }
+    StudioVariables.autoScale = false;
   }
 
-  void _minusScale(int variant) {
-    if (StudioVariables.scale > (variant / 100)) {
-      int percent = (StudioVariables.scale * 100).round();
-      int remain = (percent % variant);
-      if (remain == 0) remain = variant;
-      percent -= remain;
-      StudioVariables.scale = percent / 100.0;
-      StudioVariables.autoScale = false;
-      StudioVariables.showScale = true;
+  void _minusScale() {
+    int index = scalePlot.length - 1;
+    for (double ele in scalePlot.reversed) {
+      if (ele < StudioVariables.scale * 100) {
+        break;
+      }
+      index--;
     }
+    if (scalePlot[index] < StudioVariables.scale * 100) {
+      StudioVariables.scale = scalePlot[index] / 100;
+    }
+    StudioVariables.autoScale = false;
   }
 
   Decoration? _getDeco() {

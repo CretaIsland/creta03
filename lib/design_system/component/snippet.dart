@@ -33,13 +33,15 @@ extension GlobalKeyExtension on GlobalKey {
 class Snippet {
   static List<LogicalKeyboardKey> keys = [];
 
-  static Widget CretaScaffold(
-      {required Widget title,
-      required BuildContext context,
-      required Widget child,
-      Widget? floatingActionButton}) {
+  static Widget CretaScaffold({
+    required Widget title,
+    required BuildContext context,
+    required Widget child,
+    Widget? floatingActionButton,
+    Widget? additionals,
+  }) {
     return Scaffold(
-      appBar: Snippet.CretaAppBarOfStudio(context, title),
+      appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
       floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -185,11 +187,16 @@ class Snippet {
     ]);
   }
 
-  static PreferredSizeWidget CretaAppBarOfStudio(BuildContext context, Widget title) {
+  static PreferredSizeWidget CretaAppBarOfStudio(
+      BuildContext context, Widget title, Widget? additionals) {
     return AppBar(
       toolbarHeight: CretaConstant.appbarHeight,
       title: title,
       actions: [
+        Center(
+          child: additionals ?? Container(),
+        ),
+        SizedBox(width: 15),
         Center(
           child: SizedBox(
             height: 36,
@@ -201,7 +208,7 @@ class Snippet {
           ),
         ),
         SizedBox(
-          width: 6,
+          width: 10,
         ),
         Center(
           child: SizedBox(
@@ -220,6 +227,58 @@ class Snippet {
         ),
       ],
     );
+  }
+
+  static PreferredSizeWidget MyCretaAppBarOfStudio(BuildContext context, Widget title) {
+    return PreferredSize(
+        preferredSize: Size.fromHeight(CretaConstant.appbarHeight),
+        child: Row(
+          children: [
+            title,
+            Center(
+              child: SizedBox(
+                height: 36,
+                width: 200,
+                child: BTN.fill_gray_it_l(
+                  text: CretaStudioLang.newBook,
+                  onPressed: () {
+                    Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+                  },
+                  icon: Icons.add_outlined,
+                ),
+              ),
+            ),
+            Center(
+              child: SizedBox(
+                height: 36,
+                child: BTN.fill_blue_i_l(
+                  tooltip: CretaStudioLang.tooltipNoti,
+                  onPressed: () {},
+                  icon: Icons.notifications_outlined,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 6,
+            ),
+            Center(
+              child: SizedBox(
+                height: 40,
+                child: BTN.fill_gray_iti_l(
+                  buttonColor: CretaButtonColor.blue,
+                  text: AccountManager.currentLoginUser.name,
+                  icon: Icons.arrow_drop_down_outlined,
+                  image:
+                      NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+          ],
+        ));
   }
 
   static PreferredSizeWidget CretaAppBar(BuildContext context, String title) {

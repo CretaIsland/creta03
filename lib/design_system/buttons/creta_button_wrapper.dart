@@ -276,7 +276,7 @@ class BTN {
     return CretaButton(
       width: 106,
       height: 36,
-      buttonType: CretaButtonType.iconText,
+      buttonType: CretaButtonType.iconTextFix,
       buttonColor: CretaButtonColor.white,
       icon: Icon(
         icon,
@@ -860,7 +860,7 @@ class BTN {
       buttonColor: CretaButtonColor.transparent,
       decoType: CretaButtonDeco.line,
       image: Padding(
-        padding: const EdgeInsets.only(left: 6.0),
+        padding: const EdgeInsets.only(left: 6.0, right: 6.0),
         child: CircleAvatar(
           radius: 13,
           backgroundImage: image,

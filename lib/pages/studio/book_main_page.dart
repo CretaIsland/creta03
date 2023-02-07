@@ -18,6 +18,7 @@ import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/buttons/creta_scale_button.dart';
 import '../../design_system/component/snippet.dart';
+import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
@@ -55,6 +56,8 @@ class _BookMainPageState extends State<BookMainPage> {
   double heightRatio = 0;
   double applyScale = 1;
   bool scaleChanged = false;
+
+  double padding = 16;
 
   LeftMenuEnum selectedStick = LeftMenuEnum.None;
 
@@ -101,10 +104,11 @@ class _BookMainPageState extends State<BookMainPage> {
       pageManagerHolder!.clearAll();
 
       bookManagerHolder!.saveDefault(defaultBook).then((value) async {
-        _onceDBGetComplete = true;
+        bookManagerHolder!.addRealTimeListen();
         await _getPages();
+        _onceDBGetComplete = true;
         return value;
-      }) as BookModel;
+      });
     }
 
     saveManagerHolder?.runSaveTimer();
@@ -260,6 +264,11 @@ class _BookMainPageState extends State<BookMainPage> {
       }
     }
 
+    padding = 16 * (StudioVariables.displayWidth / 1920);
+    if (padding < 2) {
+      padding = 2;
+    }
+
     logger.fine(
         "height=${StudioVariables.workHeight}, width=${StudioVariables.workWidth}, scale=${StudioVariables.fitScale}}");
   }
@@ -278,8 +287,6 @@ class _BookMainPageState extends State<BookMainPage> {
                   });
                 },
               ),
-        // bottomMenuBar(
-        //     selectedStick == LeftMenuEnum.None ? 0 : LayoutConst.leftMenuWidth),
       ],
     );
   }
@@ -291,174 +298,257 @@ class _BookMainPageState extends State<BookMainPage> {
           boxShadow: StudioSnippet.basicShadow(),
         ),
         height: LayoutConst.topMenuBarHeight,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
+          alignment: AlignmentDirectional.center,
           children: [
-            Visibility(
-              // 제목
-              visible: StudioVariables.workHeight > 1 ? true : false,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Icon(Icons.menu_outlined),
-                  SizedBox(width: 8),
-                  CretaLabelTextEditor(
-                    textFieldKey: textFieldKey,
-                    height: 32,
-                    width: 300,
-                    text: _model.name.value,
-                    textStyle: CretaFont.titleSmall,
-                    onEditComplete: (value) {
-                      setState(() {
-                        _model.name.set(value);
-                      });
-                    },
-                  ),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _controllers(),
+                Row(
+                  children: [
+                    _avartars(),
+                    SizedBox(width: padding * 2.5),
+                    _trailButtons(),
+                  ],
+                ),
+              ],
             ),
-            Visibility(
-              // Scale, Undo
-              visible:
-                  StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  VerticalDivider(),
-                  CretaScaleButton(
-                    onPressedMinus: () {
-                      setState(() {
-                        scaleChanged = true;
-                      });
-                    },
-                    onPressedPlus: () {
-                      setState(() {
-                        scaleChanged = true;
-                      });
-                    },
-                    onPressedAutoScale: () {
-                      setState(() {
-                        scaleChanged = StudioVariables.autoScale;
-                        logger.finest("scaleChanged=$scaleChanged");
-                      });
-                    },
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipScale,
-                  ),
-                  SizedBox(width: 8),
-                  BTN.floating_l(
-                    icon: Icons.volume_off_outlined,
-                    onPressed: () {},
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipVolume,
-                  ),
-                  SizedBox(width: 8),
-                  BTN.floating_l(
-                    icon: Icons.pause_outlined,
-                    onPressed: () {},
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipPause,
-                  ),
-                  BTN.floating_l(
-                    icon: Icons.undo_outlined,
-                    onPressed: () {},
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipUndo,
-                  ),
-                  SizedBox(width: 8),
-                  BTN.floating_l(
-                    icon: Icons.redo_outlined,
-                    onPressed: () {},
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipRedo,
-                  ),
-                  VerticalDivider(),
-                ],
+            _titles(),
+          ],
+        ));
+  }
+
+  Widget _controllers() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: padding * 1.75,
+        ),
+        Icon(Icons.menu_outlined),
+        SizedBox(width: padding),
+        Visibility(
+          // Scale, Undo
+          visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
+          child: Row(
+            children: [
+              BTN.floating_l(
+                icon: Icons.undo_outlined,
+                onPressed: () {},
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipUndo,
               ),
-            ),
-            Visibility(
-              // 아바타
-              visible:
-                  StudioVariables.workHeight > 1 && StudioVariables.workWidth > 1100 ? true : false,
-              child: Row(
+              SizedBox(width: padding / 2),
+              BTN.floating_l(
+                icon: Icons.redo_outlined,
+                onPressed: () {},
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipRedo,
+              ),
+              SizedBox(width: padding),
+              CretaScaleButton(
+                width: 157,
+                onManualScale: () {
+                  setState(() {
+                    scaleChanged = true;
+                  });
+                },
+                onAutoScale: () {
+                  setState(() {
+                    scaleChanged = true;
+                  });
+                },
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipScale,
+              ),
+              SizedBox(width: padding),
+              BTN.floating_l(
+                icon: Icons.volume_off_outlined,
+                onPressed: () {},
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipVolume,
+              ),
+              SizedBox(width: padding),
+              BTN.floating_l(
+                icon: Icons.pause_outlined,
+                onPressed: () {},
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipPause,
+              ),
+
+              //VerticalDivider(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _titles() {
+    return Visibility(
+      // 제목
+      visible: StudioVariables.workHeight > 1 ? true : false,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CretaLabelTextEditor(
+            textFieldKey: textFieldKey,
+            height: 32,
+            width: StudioVariables.displayWidth * 0.25,
+            text: _model.name.value,
+            textStyle: CretaFont.titleMedium.copyWith(),
+            align: TextAlign.center,
+            onEditComplete: (value) {
+              setState(() {
+                _model.name.set(value);
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _avartars() {
+    return Visibility(
+        // 아바타
+        visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
+        child: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 1300
+            ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: SampleData.connectedUserList.map((e) {
-                  return Snippet.TooltipWrapper(
-                    tooltip: e.name,
-                    bgColor: (e.state == ActiveState.active ? Colors.red : Colors.grey),
-                    fgColor: Colors.white,
-                    child: SizedBox(
-                      width: 34,
-                      height: 34,
-                      child: Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: CircleAvatar(
-                          //radius: 28,
-                          backgroundColor: e.state == ActiveState.active ? Colors.red : Colors.grey,
-                          child: Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: CircleAvatar(
-                              //radius: 25,
-                              backgroundImage: e.image,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+                  return _eachAvartar(e);
                 }).toList(),
+              )
+            : _standForAvartar(SampleData.connectedUserList));
+  }
+
+  Widget _eachAvartar(ConnectedUserModel? user) {
+    if (user == null) {
+      return Container();
+    }
+    return Snippet.TooltipWrapper(
+      tooltip: user.name,
+      bgColor: (user.state == ActiveState.active ? Colors.red : Colors.grey),
+      fgColor: Colors.white,
+      child: SizedBox(
+        width: 34,
+        height: 34,
+        child: Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: CircleAvatar(
+            //radius: 28,
+            backgroundColor: user.state == ActiveState.active ? Colors.red : Colors.grey,
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: CircleAvatar(
+                //radius: 25,
+                backgroundImage: user.image,
               ),
             ),
-            Visibility(
-              //  발행하기 등
-              visible: StudioVariables.workHeight > 1 &&
-                      StudioVariables.workWidth > LayoutConst.minWorkWidth
-                  ? true
-                  : false,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  VerticalDivider(),
-                  BTN.floating_l(
-                    icon: Icons.person_add_outlined,
-                    onPressed: () {},
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipInvite,
-                  ),
-                  SizedBox(width: 8),
-                  BTN.floating_l(
-                    icon: Icons.file_download_outlined,
-                    onPressed: () {},
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipDownload,
-                  ),
-                  SizedBox(width: 8),
-                  BTN.floating_l(
-                    icon: Icons.smart_display_outlined,
-                    onPressed: () {},
-                    hasShadow: false,
-                    tooltip: CretaStudioLang.tooltipPlay,
-                  ),
-                  SizedBox(width: 8),
-                  BTN.line_blue_it_m_animation(
-                      text: CretaStudioLang.publish,
-                      image: NetworkImage(
-                          'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                      onPressed: () {}),
-                  SizedBox(width: 20),
-                ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _standForAvartar(List<ConnectedUserModel> userList) {
+    if (userList.isEmpty) {
+      return Container();
+    }
+
+    if (userList.length == 1) {
+      return _eachAvartar(userList.first);
+    }
+
+    String name = '';
+    for (var ele in userList) {
+      if (name.isNotEmpty) {
+        name += ',';
+      }
+      name += ele.name;
+    }
+    String count = userList.length.toString();
+    Color bgColor = Colors.grey;
+    for (var ele in userList) {
+      if (ele.state == ActiveState.active) {
+        bgColor = Colors.red;
+        break;
+      }
+    }
+    return Snippet.TooltipWrapper(
+      tooltip: name,
+      bgColor: bgColor,
+      fgColor: Colors.white,
+      child: SizedBox(
+        width: 34,
+        height: 34,
+        child: Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: CircleAvatar(
+            //radius: 28,
+            backgroundColor: bgColor,
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: CircleAvatar(
+                backgroundColor: CretaColor.primary,
+                //radius: 25,
+                //backgroundImage: userList.first.image,
+                child: Text(count, style: CretaFont.bodySmall.copyWith(color: Colors.white)),
               ),
             ),
-          ],
-        ));
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _trailButtons() {
+    return Visibility(
+      //  발행하기 등
+      visible:
+          StudioVariables.workHeight > 1 && StudioVariables.workWidth > LayoutConst.minWorkWidth
+              ? true
+              : false,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          //VerticalDivider(),
+          BTN.floating_l(
+            icon: Icons.person_add_outlined,
+            onPressed: () {},
+            hasShadow: false,
+            tooltip: CretaStudioLang.tooltipInvite,
+          ),
+          SizedBox(width: padding),
+          BTN.floating_l(
+            icon: Icons.file_download_outlined,
+            onPressed: () {},
+            hasShadow: false,
+            tooltip: CretaStudioLang.tooltipDownload,
+          ),
+          SizedBox(width: padding),
+          BTN.floating_l(
+            icon: Icons.smart_display_outlined,
+            onPressed: () {},
+            hasShadow: false,
+            tooltip: CretaStudioLang.tooltipPlay,
+          ),
+          SizedBox(width: padding),
+          BTN.line_blue_it_m_animation(
+              text: CretaStudioLang.publish,
+              image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+              onPressed: () {}),
+          SizedBox(width: padding * 2.5),
+        ],
+      ),
+    );
   }
 
   Widget _scrollArea(BuildContext context) {
@@ -494,63 +584,6 @@ class _BookMainPageState extends State<BookMainPage> {
           ),
           width: pageWidth,
           height: pageHeight,
-        ),
-      ),
-    );
-  }
-
-  Widget bottomMenuBar(double leftOffset) {
-    return Positioned(
-      top: StudioVariables.workHeight - LayoutConst.bottomMenuBarHeight,
-      left: leftOffset,
-      child: Center(
-        child: Container(
-          height: LayoutConst.bottomMenuBarHeight,
-          width: StudioVariables.workWidth - leftOffset,
-          color: Colors.grey.withOpacity(0.2),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 8,
-                  ),
-                  BTN.floating_l(
-                    icon: Icons.volume_off_outlined,
-                    onPressed: () {},
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  BTN.floating_l(
-                    icon: Icons.pause_outlined,
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  BTN.floating_l(
-                    icon: Icons.undo_outlined,
-                    onPressed: () {},
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  BTN.floating_l(
-                    icon: Icons.redo_outlined,
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ],
-          ),
         ),
       ),
     );

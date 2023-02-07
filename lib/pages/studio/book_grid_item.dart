@@ -23,6 +23,7 @@ import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../model/connected_user_model.dart';
 import '../../routes.dart';
+import 'book_grid_page.dart';
 import 'book_main_page.dart';
 import 'sample_data.dart';
 import 'studio_constant.dart';
@@ -34,6 +35,7 @@ class BookGridItem extends StatefulWidget {
   final double height;
   final BookManager bookManager;
   final GlobalKey<BookGridItemState> itemKey;
+  final SelectedPage selectedPage;
 
   const BookGridItem({
     required this.itemKey,
@@ -42,6 +44,7 @@ class BookGridItem extends StatefulWidget {
     this.bookModel,
     required this.width,
     required this.height,
+    required this.selectedPage,
   }) : super(key: itemKey);
 
   @override
@@ -189,7 +192,6 @@ class BookGridItemState extends State<BookGridItem> {
               child: Stack(
                 children: [
                   _thumnailArea(),
-                  //_descArea(),
                   _controllArea(),
                 ],
               ),
@@ -220,81 +222,104 @@ class BookGridItemState extends State<BookGridItem> {
               child: Container(
                 padding: const EdgeInsets.only(top: 8.0, right: 8),
                 alignment: AlignmentDirectional.topEnd,
-                decoration: Snippet.gradationShadowDeco(),
+                decoration: mouseOver
+                    ? Snippet.gradationShadowDeco()
+                    : BoxDecoration(
+                        color: Colors.transparent,
+                      ),
                 //width: aWidth,
                 height: aHeight - LayoutConst.bookDescriptionHeight,
                 //color: CretaColor.text[200]!.withOpacity(0.2),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.favorite_border_outlined,
-                      color: Colors.white,
-                      size: 12,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Text(
-                        widget.bookModel!.likeCount.toString(),
-                        overflow: TextOverflow.fade,
-                        style: CretaFont.buttonSmall.copyWith(color: Colors.white),
-                      ),
-                    ),
-                    Icon(
-                      Icons.visibility_outlined,
-                      color: Colors.white,
-                      size: 12,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Text(
-                        widget.bookModel!.viewCount.toString(),
-                        overflow: TextOverflow.fade,
-                        style: CretaFont.buttonSmall.copyWith(color: Colors.white),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: BTN.opacity_gray_i_s(
-                        icon: Icons.delete_outline,
-                        onPressed: () {
-                          logger.finest('delete pressed');
-                          removeItem(widget.index).then((value) {
-                            if (widget.bookManager.isShort(offset: 1)) {
-                              widget.bookManager.reGet(AccountManager.currentLoginUser.email,
-                                  onModelFiltered: () {
-                                widget.bookManager.notify();
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.favorite_border_outlined,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Text(
+                            widget.bookModel!.likeCount.toString(),
+                            overflow: TextOverflow.fade,
+                            style: CretaFont.buttonSmall.copyWith(color: Colors.white),
+                          ),
+                        ),
+                        Icon(
+                          Icons.visibility_outlined,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Text(
+                            widget.bookModel!.viewCount.toString(),
+                            overflow: TextOverflow.fade,
+                            style: CretaFont.buttonSmall.copyWith(color: Colors.white),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: BTN.opacity_gray_i_s(
+                            icon: Icons.delete_outline,
+                            onPressed: () {
+                              logger.finest('delete pressed');
+                              removeItem(widget.index).then((value) {
+                                if (widget.bookManager.isShort(offset: 1)) {
+                                  widget.bookManager.reGet(AccountManager.currentLoginUser.email,
+                                      onModelFiltered: () {
+                                    widget.bookManager.notify();
+                                  });
+                                }
+                                return null;
                               });
-                            }
-                            return null;
-                          });
-                        },
-                        tooltip: CretaStudioLang.tooltipDelete,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4.0),
-                      child: BTN.opacity_gray_i_s(
-                        icon: Icons.menu_outlined,
-                        onPressed: () {
-                          logger.finest('menu pressed');
-                          setState(() {
-                            CretaPopupMenu.showMenu(
-                                context: context,
-                                globalKey: widget.itemKey,
-                                popupMenu: _popupMenuList,
-                                initFunc: () {
-                                  dropDownButtonOpened = true;
-                                }).then((value) {
-                              logger.finest('팝업메뉴 닫기');
+                            },
+                            tooltip: CretaStudioLang.tooltipDelete,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: BTN.opacity_gray_i_s(
+                            icon: Icons.menu_outlined,
+                            onPressed: () {
+                              logger.finest('menu pressed');
                               setState(() {
-                                dropDownButtonOpened = false;
+                                CretaPopupMenu.showMenu(
+                                    context: context,
+                                    globalKey: widget.itemKey,
+                                    popupMenu: _popupMenuList,
+                                    initFunc: () {
+                                      dropDownButtonOpened = true;
+                                    }).then((value) {
+                                  logger.finest('팝업메뉴 닫기');
+                                  setState(() {
+                                    dropDownButtonOpened = false;
+                                  });
+                                });
+                                dropDownButtonOpened = !dropDownButtonOpened;
                               });
-                            });
-                            dropDownButtonOpened = !dropDownButtonOpened;
-                          });
-                        },
-                        tooltip: CretaStudioLang.tooltipDelete,
+                            },
+                            tooltip: CretaStudioLang.tooltipDelete,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0, left: 8),
+                      child: Text(
+                        widget.bookModel!.description.value,
+                        // [
+                        //   ...widget.bookModel!.owners,
+                        //   ...widget.bookModel!.writers,
+                        //   ...widget.bookModel!.readers
+                        // ].toString(),
+                        overflow: TextOverflow.fade,
+                        style: CretaFont.bodyESmall.copyWith(color: Colors.white),
                       ),
                     ),
                   ],
@@ -302,35 +327,6 @@ class BookGridItemState extends State<BookGridItem> {
               ),
             );
           });
-    }
-    return Container();
-  }
-
-  Widget _descArea() {
-    if (mouseOver) {
-      return Container(
-        alignment: AlignmentDirectional.topStart,
-        width: aWidth,
-        height: aHeight - LayoutConst.bookDescriptionHeight,
-        color: Colors.transparent,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, left: 8),
-              child: Text(
-                [
-                  ...widget.bookModel!.owners,
-                  ...widget.bookModel!.writers,
-                  ...widget.bookModel!.readers
-                ].toString(),
-                overflow: TextOverflow.fade,
-                style: CretaFont.bodyESmall.copyWith(color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      );
     }
     return Container();
   }
@@ -377,18 +373,20 @@ class BookGridItemState extends State<BookGridItem> {
                       style: CretaFont.bodyMedium,
                     )),
               ),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  color: (mouseOver) ? Colors.grey[100] : Colors.white,
-                  child: Text(
-                    widget.bookModel!.creatorName,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.right,
-                    style: CretaFont.buttonMedium,
-                  ),
-                ),
-              ),
+              widget.selectedPage != SelectedPage.myPage
+                  ? Expanded(
+                      flex: 3,
+                      child: Container(
+                        color: (mouseOver) ? Colors.grey[100] : Colors.white,
+                        child: Text(
+                          widget.bookModel!.creatorName,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.right,
+                          style: CretaFont.buttonMedium,
+                        ),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
           Container(
@@ -411,26 +409,29 @@ class BookGridItemState extends State<BookGridItem> {
     int modelIdx = randomNumber % len;
     ConnectedUserModel model = SampleData.connectedUserList[modelIdx];
 
-    BookModel book = BookModel.withName('${model.name}_$randomNumber',
-        creator: AccountManager.currentLoginUser.email,
-        creatorName: AccountManager.currentLoginUser.name,
-        imageUrl: model.imageUrl,
-        viewNo: randomNumber,
-        likeNo: 1000 - randomNumber,
-        bookTypeVal: BookType.fromInt(randomNumber % 4 + 1),
-        ownerList: [
-          SampleData.connectedUserList[modelIdx].email,
-        ],
-        readerList: [
-          SampleData.connectedUserList[(modelIdx + 1) % len].email,
-          SampleData.connectedUserList[(modelIdx + 2) % len].email,
-          SampleData.connectedUserList[(modelIdx + 3) % len].email,
-        ],
-        writerList: [
-          SampleData.connectedUserList[(modelIdx + 4) % len].email,
-          SampleData.connectedUserList[(modelIdx + 5) % len].email,
-          SampleData.connectedUserList[(modelIdx + 6) % len].email,
-        ]);
+    BookModel book = BookModel.withName(
+      '${model.name}_$randomNumber',
+      creator: AccountManager.currentLoginUser.email,
+      creatorName: AccountManager.currentLoginUser.name,
+      imageUrl: model.imageUrl,
+      viewNo: randomNumber,
+      likeNo: 1000 - randomNumber,
+      bookTypeVal: BookType.fromInt(randomNumber % 4 + 1),
+      ownerList: [
+        SampleData.connectedUserList[modelIdx].email,
+      ],
+      readerList: [
+        SampleData.connectedUserList[(modelIdx + 1) % len].email,
+        SampleData.connectedUserList[(modelIdx + 2) % len].email,
+        SampleData.connectedUserList[(modelIdx + 3) % len].email,
+      ],
+      writerList: [
+        SampleData.connectedUserList[(modelIdx + 4) % len].email,
+        SampleData.connectedUserList[(modelIdx + 5) % len].email,
+        SampleData.connectedUserList[(modelIdx + 6) % len].email,
+      ],
+      desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
+    );
 
     book.hashTag.set('#$randomNumber tag...');
 

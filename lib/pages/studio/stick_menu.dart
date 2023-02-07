@@ -69,12 +69,13 @@ class _StickMenuState extends State<StickMenu> {
       }
     }
     return Container(
-      margin: EdgeInsets.only(top: LayoutConst.layoutMargin, right: LayoutConst.layoutMargin),
+      //margin: EdgeInsets.only(top: LayoutConst.layoutMargin, right: LayoutConst.layoutMargin),
+      margin: EdgeInsets.only(right: LayoutConst.layoutMargin),
       height: StudioVariables.workHeight,
       width: LayoutConst.menuStickWidth,
       decoration: BoxDecoration(
         color: LayoutConst.menuStickBGColor,
-        boxShadow: StudioSnippet.basicShadow(),
+        boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.rightBottum),
       ),
       padding: EdgeInsets.only(top: 12),
       child: SingleChildScrollView(

@@ -20,6 +20,7 @@ class CretaTapBarButton extends StatefulWidget {
   Color? fgColor;
   Color? fgClickColor;
   Color? fgHoverColor;
+  final bool isIconText;
 
   CretaTapBarButton({
     super.key,
@@ -36,6 +37,7 @@ class CretaTapBarButton extends StatefulWidget {
     this.fgHoverColor,
     this.iconData,
     this.iconSize,
+    this.isIconText = false,
   }) {
     bgColor ??= CretaColor.text[100]!;
     bgClickColor ??= Colors.white;
@@ -134,6 +136,25 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
 
   Widget _getChild() {
     if ((widget.iconData != null)) {
+      if (widget.isIconText == true) {
+        return Row(
+          children: [
+            Container(
+              padding: EdgeInsets.only(left: widget.width / 8),
+              alignment: AlignmentDirectional.centerStart,
+              child: Icon(widget.iconData!, color: CretaColor.primary),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: widget.width / 8),
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                widget.caption,
+                style: CretaFont.titleLarge.copyWith(color: _getfgColor()),
+              ),
+            ),
+          ],
+        );
+      }
       return Container(
         padding: EdgeInsets.only(left: widget.width / 8),
         alignment: AlignmentDirectional.centerStart,

@@ -13,6 +13,7 @@ import '../../data_io/book_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
+import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_font.dart';
@@ -28,6 +29,7 @@ enum SelectedPage {
   myPage,
   sharedPage,
   teamPage,
+  trashCanPage,
   end;
 }
 
@@ -101,24 +103,44 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
 
     _leftMenuItemList = [
       CretaMenuItem(
-          caption: CretaStudioLang.myCretaBook,
-          onPressed: () {
-            Routemaster.of(context).push(AppRoutes.studioBookMyPage);
-          },
-          selected: widget.selectedPage == SelectedPage.myPage),
+        caption: CretaStudioLang.myCretaBook,
+        onPressed: () {
+          Routemaster.of(context).push(AppRoutes.studioBookMyPage);
+        },
+        selected: widget.selectedPage == SelectedPage.myPage,
+        iconData: Icons.import_contacts_outlined,
+        iconSize: 20,
+        isIconText: true,
+      ),
       CretaMenuItem(
-          caption: CretaStudioLang.sharedCretaBook,
-          onPressed: () {
-            Routemaster.of(context).pop();
-            Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
-          },
-          selected: widget.selectedPage == SelectedPage.sharedPage),
+        caption: CretaStudioLang.sharedCretaBook,
+        onPressed: () {
+          Routemaster.of(context).pop();
+          Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
+        },
+        selected: widget.selectedPage == SelectedPage.sharedPage,
+        iconData: Icons.share_outlined,
+        iconSize: 20,
+        isIconText: true,
+      ),
       CretaMenuItem(
-          caption: CretaStudioLang.teamCretaBook,
-          onPressed: () {
-            Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
-          },
-          selected: widget.selectedPage == SelectedPage.teamPage),
+        caption: CretaStudioLang.teamCretaBook,
+        onPressed: () {
+          Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
+        },
+        selected: widget.selectedPage == SelectedPage.teamPage,
+        iconData: Icons.group_outlined,
+        isIconText: true,
+        iconSize: 20,
+      ),
+      CretaMenuItem(
+        caption: CretaStudioLang.trashCan,
+        onPressed: () {},
+        selected: widget.selectedPage == SelectedPage.trashCanPage,
+        iconData: Icons.delete_outline,
+        isIconText: true,
+        iconSize: 20,
+      ),
     ];
 
     _dropDownMenuItemList1 = bookManagerHolder!.getFilterMenu((() => setState(() {})));
@@ -165,6 +187,17 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       ],
       child: Snippet.CretaScaffold(
           title: Snippet.logo('studio'),
+          additionals: SizedBox(
+            height: 36,
+            width: 130,
+            child: BTN.fill_gray_it_l(
+              text: CretaStudioLang.newBook,
+              onPressed: () {
+                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+              },
+              icon: Icons.add_outlined,
+            ),
+          ),
           context: context,
           child: mainPage(
             context,
@@ -280,6 +313,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         bookModel: isValidIndex(index) ? bookManager.findByIndex(index - 1) as BookModel : null,
         width: itemWidth,
         height: itemHeight,
+        selectedPage: widget.selectedPage,
       );
     }
 

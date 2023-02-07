@@ -76,7 +76,10 @@ final routesLoggedOut = RouteMap(
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (_) {
-      BookMainPage.selectedMid = "book=0d5480be-d73b-4961-b9af-4d8f3394097a";
+      // if (BookMainPage.selectedMid.isEmpty) {
+      //   BookMainPage.selectedMid = "book=0d5480be-d73b-4961-b9af-4d8f3394097a";
+      // }
+      logger.fine('selectedMid=${BookMainPage.selectedMid}');
       return TransitionPage(child: BookMainPage());
     },
     AppRoutes.studioBookMyPage: (_) => TransitionPage(

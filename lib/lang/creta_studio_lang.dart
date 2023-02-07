@@ -27,6 +27,7 @@ class CretaStudioLang {
   static const String myCretaBook = "내 크레타북";
   static const String sharedCretaBook = "공유 크레타북";
   static const String teamCretaBook = "팀북";
+  static const String trashCan = "휴지통";
 
   static const String myCretaBookDesc = " 님의 크레타북 입니다";
   static const String sharedCretaBookDesc = " 님이 공유받은 크레타북입니다";
@@ -41,6 +42,7 @@ class CretaStudioLang {
   static const String publish = "발행하기";
 
   static const String tooltipNoti = '알림이 있습니다';
+  static const String tooltipNoNoti = '알림이 없습니다';
   static const String tooltipVolume = '작업하는 동안 소리를 끄거나 켭니다';
   static const String tooltipPause = '작업하는 동안 동영상을 정지하거나 플레이합니다';
   static const String tooltipUndo = '취소';
@@ -48,12 +50,12 @@ class CretaStudioLang {
   static const String tooltipDownload = '다운로드';
   static const String tooltipInvite = '초대하기';
   static const String tooltipPlay = '미리보기';
-  static const String tooltipScale = '배율조정';
+  static const String tooltipScale = '항상 화면 크기에 알맞게 맞춥니다.';
   static const String tooltipDelete = '삭제하기';
 
   static const String gotoCommunity = '커뮤니티로 이동';
 
-  static const String newBook = '새 크라타북 만들기';
+  static const String newBook = '새 크라타북';
   static const String newPage = '새 페이지 추가';
   static const String noNamepage = '이름없는 페이지';
 }

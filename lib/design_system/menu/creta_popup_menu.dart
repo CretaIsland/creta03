@@ -6,20 +6,24 @@ import 'package:flutter/material.dart';
 class CretaMenuItem {
   final String caption;
   final IconData? iconData;
+  final double? iconSize;
   Function? onPressed;
   String? referencedAttr;
   bool? isDescending;
   bool selected;
   String? linkUrl;
+  final bool isIconText;
 
   CretaMenuItem({
     required this.caption,
     required this.onPressed,
     this.selected = false,
     this.iconData,
+    this.iconSize,
     this.linkUrl,
     this.referencedAttr,
     this.isDescending,
+    this.isIconText = false,
   });
 }
 

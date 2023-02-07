@@ -17,6 +17,7 @@ class CretaLeftBar extends StatefulWidget {
   final double width;
   final String gotoButtonTitle;
   final Function gotoButtonPressed;
+  final bool isIconText;
 
   const CretaLeftBar({
     super.key,
@@ -25,6 +26,7 @@ class CretaLeftBar extends StatefulWidget {
     required this.height,
     required this.gotoButtonTitle,
     required this.gotoButtonPressed,
+    this.isIconText = false,
   });
 
   @override
@@ -36,6 +38,9 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
     return CretaTapBarButton(
         selected: item.selected,
         caption: item.caption,
+        iconData: item.iconData,
+        iconSize: item.iconSize,
+        isIconText: item.isIconText,
         onPressed: () {
           setState(() {
             for (var ele in widget.menuItem) {
@@ -47,7 +52,6 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
           item.onPressed?.call();
         });
   }
-
 
   @override
   Widget build(BuildContext context) {
