@@ -79,8 +79,8 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     return Scrollbar(
       thumbVisibility: true,
       controller: widget.scrollController,
-      // return ScrollConfiguration(
-      //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      // return ScrollConfiguration( // 스크롤바 감추기
+      //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기
       child: GridView.builder(
         controller: widget.scrollController,
         padding: EdgeInsets.fromLTRB(
