@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -22,6 +24,7 @@ class PageModel extends CretaModel {
   late UndoAble<bool> isShow;
   late UndoAble<bool> isCircle;
   late UndoAble<PageTransition> pageTransition;
+  late UndoAble<String> thumbnailUrl;
 
   List<FrameModel> frameList = []; // db get 전용
 
@@ -30,6 +33,7 @@ class PageModel extends CretaModel {
         ...super.props,
         name,
         description,
+        thumbnailUrl,
         shortCut,
         bgColor,
         isShow,
@@ -43,14 +47,20 @@ class PageModel extends CretaModel {
     isCircle = UndoAble<bool>(false, mid);
     isShow = UndoAble<bool>(true, mid);
     description = UndoAble<String>("You could do it simple and plain", mid);
+    thumbnailUrl = UndoAble<String>('', mid);
     pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
   }
 
   PageModel.makeSample(double porder, String pid)
       : super(pmid: '', type: ExModelType.page, parent: pid) {
+    final Random random = Random();
+    int randomNumber = random.nextInt(10);
+    String url = 'https://picsum.photos/200/?random=$randomNumber';
+    logger.fine('url=$url');
     order = UndoAble<double>(porder, mid);
     name = UndoAble<String>('${CretaStudioLang.noNamepage} ${order.value.toString()}', mid);
-    description = UndoAble<String>('', mid);
+    description = UndoAble<String>('You could do it simple and plain', mid);
+    thumbnailUrl = UndoAble<String>(url, mid);
     isCircle = UndoAble<bool>(false, mid);
     isShow = UndoAble<bool>(true, mid);
     shortCut = UndoAble<String>('', mid);
@@ -61,22 +71,13 @@ class PageModel extends CretaModel {
     isRemoved.printMid();
   }
 
-  PageModel.withName(String nameStr) : super(pmid: '', type: ExModelType.page, parent: '') {
-    name = UndoAble<String>(nameStr, mid);
-    description = UndoAble<String>('', mid);
-    isCircle = UndoAble<bool>(false, mid);
-    isShow = UndoAble<bool>(true, mid);
-    shortCut = UndoAble<String>('', mid);
-    bgColor = UndoAble<Color>(Colors.transparent, mid);
-    pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
-  }
-
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
     super.copyFrom(src, newMid: newMid, pMid: pMid);
     PageModel srcPage = src as PageModel;
     name = UndoAble<String>(srcPage.name.value, mid);
     description = UndoAble<String>(srcPage.description.value, mid);
+    thumbnailUrl = UndoAble<String>(srcPage.thumbnailUrl.value, mid);
     shortCut = UndoAble<String>(srcPage.shortCut.value, mid);
     bgColor = UndoAble<Color>(srcPage.bgColor.value, mid);
     isShow = UndoAble<bool>(srcPage.isShow.value, mid);
@@ -92,6 +93,7 @@ class PageModel extends CretaModel {
     isCircle.set(map["isCircle"] ?? false, save: false, noUndo: true);
     shortCut.set(map["shortCut"] ?? '', save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
+    thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
     bgColor.set(HycopUtils.stringToColor(map["bgColor"]), save: false, noUndo: true);
     pageTransition.set(PageTransition.fromInt(map["pageTransition"] ?? 0),
         save: false, noUndo: true);
@@ -103,6 +105,7 @@ class PageModel extends CretaModel {
       ..addEntries({
         "name": name.value,
         "description": description.value,
+        "thumbnailUrl": thumbnailUrl.value,
         "shortCut": shortCut.value,
         "bgColor": bgColor.value.toString(),
         "isShow": isShow.value,

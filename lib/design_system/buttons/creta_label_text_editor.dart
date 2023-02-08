@@ -12,6 +12,7 @@ class CretaLabelTextEditor extends StatefulWidget {
   late String text;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey;
   final void Function(String value) onEditComplete;
+  final void Function() onLabelHovered;
   final int? maxLine;
   final TextAlign align;
 
@@ -23,6 +24,7 @@ class CretaLabelTextEditor extends StatefulWidget {
     required this.text,
     required this.textStyle,
     required this.onEditComplete,
+    required this.onLabelHovered,
     this.maxLine,
     this.align = TextAlign.left,
   });
@@ -61,6 +63,7 @@ class CretaLabelTextEditorState extends State<CretaLabelTextEditor> {
           // LastClicked.set(widget);
           _isClicked = true;
         });
+        widget.onLabelHovered.call();
       },
       onExit: (val) {
         if (_isClicked && LastClicked.isClear()) {

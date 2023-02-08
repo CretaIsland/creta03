@@ -52,7 +52,7 @@ class CretaStudioLang {
 
   static const String autoScale = "자동맞춤";
 
-  static const String defaultBookName = "이름없는 크레타북 A";
+  static const String defaultBookName = "이름없는 크레타북";
 
   static const String publish = "발행하기";
 
@@ -72,5 +72,12 @@ class CretaStudioLang {
 
   static const String newBook = '새 크라타북';
   static const String newPage = '새 페이지 추가';
+  static const String treePage = '자세히 보기';
   static const String noNamepage = '이름없는 페이지';
+
+  static const String wide = "전체 페이지 보기";
+  static const String close = "닫기";
+
+  static const String copy = "복사하기";
+  static var showUnshow = "보이기/안보이기";
 }

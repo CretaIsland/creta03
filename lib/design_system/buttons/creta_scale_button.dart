@@ -138,9 +138,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
               });
             },
             child: Center(
-              child: Icon(StudioVariables.autoScale
-                  ? Icons.fullscreen_outlined
-                  : Icons.fullscreen_exit_outlined),
+              child: Icon(Icons.fullscreen_outlined),
             ),
           ),
         ));
@@ -271,6 +269,8 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
       }
       index++;
     }
+    if (index < 0 || index >= scalePlot.length) return;
+
     if (scalePlot[index] > StudioVariables.scale * 100) {
       StudioVariables.scale = scalePlot[index] / 100;
     }
@@ -285,6 +285,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
       }
       index--;
     }
+    if (index < 0 || index >= scalePlot.length) return;
     if (scalePlot[index] < StudioVariables.scale * 100) {
       StudioVariables.scale = scalePlot[index] / 100;
     }

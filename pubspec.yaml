@@ -62,6 +62,7 @@ dependencies:
   #sortedmap: ^0.5.2
   deep_collection: ^1.0.2
   get: ^4.6.5
+  dotted_border: ^2.0.0+3
 
 
 dev_dependencies:

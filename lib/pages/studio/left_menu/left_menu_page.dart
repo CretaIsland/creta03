@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
-
+import 'package:dotted_border/dotted_border.dart';
 import '../../../data_io/page_manager.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
+import '../../../design_system/component/custom_image.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
@@ -27,11 +28,17 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   late ScrollController _scrollController;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
-  final double verticalPadding = 14;
+  final double verticalPadding = 10;
   final double horizontalPadding = 24;
-  final double cardHeight = 258;
+  //final double cardHeight = 246;
   final double headerHeight = 36;
   final double menuBarHeight = 36;
+
+  final double borderThick = 4;
+
+  late double bodyHeight;
+  late double bodyWidth;
+  late double cardHeight;
 
   int _pageCount = 0;
 
@@ -46,6 +53,10 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     //_scrollController.addListener(_scrollListener);
     logger.finer('_LeftMenuPageState.initState');
     _scrollController = ScrollController(initialScrollOffset: 0.0);
+    bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
+    //bodyHeight = cardHeight - headerHeight;
+    bodyHeight = bodyWidth * (1080 / 1920);
+    cardHeight = bodyHeight + headerHeight;
     super.initState();
   }
 
@@ -78,15 +89,27 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          BTN.fill_gray_100_i_s(
-              icon: Icons.add_outlined,
-              onPressed: (() {
-                _pageManager!.createNextPage();
-                _scrollController
-                    .jumpTo(_scrollController.position.maxScrollExtent + cardHeight * 3);
-              })),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: BTN.fill_gray_100_i_m(
+                tooltip: CretaStudioLang.newPage,
+                tooltipBg: CretaColor.text[700]!,
+                icon: Icons.add_outlined,
+                onPressed: (() {
+                  _pageManager!.createNextPage();
+                  _scrollController
+                      .jumpTo(_scrollController.position.maxScrollExtent + cardHeight * 3);
+                })),
+          ),
           //BTN.fill_gray_100_i_s(icon: Icons.delete_outlined, onPressed: (() {})),
-          BTN.fill_gray_100_i_s(icon: Icons.account_tree_outlined, onPressed: (() {})),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: BTN.fill_gray_100_i_m(
+                tooltip: CretaStudioLang.treePage,
+                tooltipBg: CretaColor.text[700]!,
+                icon: Icons.account_tree_outlined,
+                onPressed: (() {})),
+          ),
         ],
       ),
     );
@@ -226,13 +249,17 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
               children: [
                 Text(
                   (pageIndex + 1).toString().padLeft(2, '0'),
-                  style: CretaFont.titleSmall,
+                  style: model.isShow.value
+                      ? CretaFont.titleSmall
+                      : CretaFont.titleSmall.copyWith(color: CretaColor.text[300]!),
                 ),
                 const SizedBox(width: 10),
                 CretaLabelTextEditor(
                   textFieldKey: textFieldKey,
                   text: model.name.value,
-                  textStyle: CretaFont.titleSmall,
+                  textStyle: model.isShow.value
+                      ? CretaFont.titleSmall
+                      : CretaFont.titleSmall.copyWith(color: CretaColor.text[300]!),
                   width: 200,
                   height: 20,
                   onEditComplete: (value) {
@@ -240,18 +267,23 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                       model.name.set(value);
                     });
                   },
+                  onLabelHovered: () {},
                 ),
               ],
             ),
             Row(
               children: [
                 BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.copy,
+                  tooltipBg: CretaColor.text[700]!,
                   icon: Icons.content_copy_outlined,
                   onPressed: () {
                     // Copy Page
                   },
                 ),
                 BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.showUnshow,
+                  tooltipBg: CretaColor.text[700]!,
                   icon: model.isShow.value
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
@@ -261,6 +293,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   },
                 ),
                 BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.tooltipDelete,
+                  tooltipBg: CretaColor.text[700]!,
                   icon: Icons.delete_outlined,
                   onPressed: () {
                     // Delete Page
@@ -275,8 +309,6 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   Widget _body(int pageIndex, PageModel model) {
-    double bodyHeight = cardHeight - headerHeight;
-    double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     //logger.finest('_body($bodyHeight, $bodyWidth)');
     double pageRatio = _pageManager!.bookModel.getRatio();
     double width = 0;
@@ -295,18 +327,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         logger.finest('double clicked = $model.id');
         logger.finest('dx=${details.localPosition.dx}, dy=${details.localPosition.dx}');
       },
-      child: Container(
+      child: SizedBox(
         // 실제 페이지를 그리는 부분
         height: bodyHeight,
         width: bodyWidth,
-        decoration: BoxDecoration(
-          border: Border.all(
-              width: 2,
-              color: _pageManager!.isPageSelected(model.mid)
-                  ? CretaColor.primary
-                  : CretaColor.text[300]!),
-        ),
         child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+          // width = constraints.maxWidth - borderThick * 2;
+          // height = constraints.maxHeight - borderThick * 2;
           width = constraints.maxWidth;
           height = constraints.maxHeight;
           if (pageRatio > 1) {
@@ -332,14 +359,27 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
             child: Container(
               height: pageHeight,
               width: pageWidth,
-              color: _pageManager!.isPageSelected(model.mid)
-                  ? CretaColor.text[200]!
-                  : CretaColor.text[100]!,
-              child: Center(
-                child: Text(
-                  model.order.value.toString(),
-                  style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]!),
-                ),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    width: borderThick,
+                    color: _pageManager!.isPageSelected(model.mid)
+                        ? CretaColor.primary
+                        : CretaColor.text[300]!),
+                color: _pageManager!.isPageSelected(model.mid)
+                    ? CretaColor.text[100]!
+                    : CretaColor.text[200]!,
+              ),
+              child: Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  _thumnailArea(pageWidth, pageHeight, model.thumbnailUrl.value),
+                  model.isShow.value == false
+                      ? Container(
+                          height: pageHeight,
+                          width: pageWidth,
+                          color: Colors.black.withOpacity(0.25))
+                      : Container(),
+                ],
               ),
             ),
           );
@@ -348,9 +388,19 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     );
   }
 
+  Widget _thumnailArea(double width, double height, String url) {
+    return CustomImage(
+        key: UniqueKey(),
+        hasMouseOverEffect: false,
+        hasAni: false,
+        width: width,
+        height: height,
+        image: url);
+  }
+
   Widget _addCard() {
-    double bodyHeight = cardHeight - headerHeight;
-    double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
+    // double bodyHeight = cardHeight - headerHeight;
+    // double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     //logger.finest('addCard($bodyHeight,$bodyWidth)');
     return Column(
       key: UniqueKey(),
@@ -358,15 +408,39 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         SizedBox(
           height: headerHeight + verticalPadding,
         ),
-        Container(
-          // 실제 페이지를 그리는 부분
-          height: bodyHeight,
-          width: bodyWidth,
-          decoration: BoxDecoration(
-            border: Border.all(width: 2, color: CretaColor.text[300]!),
-          ),
-          child: Center(
-            child: _addButton(),
+        DottedBorder(
+          dashPattern: const [6, 6],
+          strokeWidth: borderThick / 2,
+          strokeCap: StrokeCap.round,
+          color: CretaColor.primary[300]!,
+          child: SizedBox(
+            // 실제 페이지를 그리는 부분
+            height: bodyHeight,
+            width: bodyWidth,
+            // decoration: BoxDecoration(
+            //   border: Border.all(width: 2, color: CretaColor.text[300]!),
+            // ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  //_addButton(),
+                  BTN.fill_blue_i_l(
+                      size: Size(48, 48),
+                      icon: Icons.add_outlined,
+                      onPressed: () {
+                        setState(() {
+                          _pageManager!.createNextPage();
+                        });
+                      }),
+                  SizedBox(height: 12),
+                  Text(
+                    CretaStudioLang.newPage,
+                    style: CretaFont.buttonLarge,
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ],
@@ -374,8 +448,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   Widget _emptyCard() {
-    double bodyHeight = cardHeight - headerHeight;
-    double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
+    // double bodyHeight = cardHeight - headerHeight;
+    // double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     logger.finest('emptyCard($bodyHeight,$bodyWidth)');
     return SizedBox(
       key: UniqueKey(),
@@ -384,56 +458,56 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     );
   }
 
-  Widget _addButton() {
-    return ElevatedButton(
-      style: ButtonStyle(
-        elevation: MaterialStateProperty.all<double>(0.0),
-        shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-        overlayColor: MaterialStateProperty.resolveWith<Color?>(
-          (Set<MaterialState> states) {
-            if (states.contains(MaterialState.hovered)) {
-              return CretaColor.text[200]!;
-            }
-            return CretaColor.text[100]!;
-          },
-        ),
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-        // foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-        //   (Set<MaterialState> states) {
-        //     //if (states.contains(MaterialState.hovered)) return widget.fgColor;
-        //     return (selected ? widget.fgSelectedColor : widget.fgColor);
-        //   },
-        // ),
-        shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
-        // shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-        //   RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(96),
-        //     //side: BorderSide(color: selected ? Colors.white : widget.borderColor),
-        //   ),
-        // ),
-      ),
-      onPressed: () {
-        setState(() {
-          _pageManager!.createNextPage();
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.add_outlined,
-              size: 96,
-              color: CretaColor.primary,
-            ),
-            Text(
-              CretaStudioLang.newPage,
-              style: CretaFont.bodyMedium,
-            )
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _addButton() {
+  //   return ElevatedButton(
+  //     style: ButtonStyle(
+  //       elevation: MaterialStateProperty.all<double>(0.0),
+  //       shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+  //       overlayColor: MaterialStateProperty.resolveWith<Color?>(
+  //         (Set<MaterialState> states) {
+  //           if (states.contains(MaterialState.hovered)) {
+  //             return CretaColor.text[200]!;
+  //           }
+  //           return CretaColor.text[100]!;
+  //         },
+  //       ),
+  //       backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+  //       // foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+  //       //   (Set<MaterialState> states) {
+  //       //     //if (states.contains(MaterialState.hovered)) return widget.fgColor;
+  //       //     return (selected ? widget.fgSelectedColor : widget.fgColor);
+  //       //   },
+  //       // ),
+  //       shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
+  //       // shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+  //       //   RoundedRectangleBorder(
+  //       //     borderRadius: BorderRadius.circular(96),
+  //       //     //side: BorderSide(color: selected ? Colors.white : widget.borderColor),
+  //       //   ),
+  //       // ),
+  //     ),
+  //     onPressed: () {
+  //       setState(() {
+  //         _pageManager!.createNextPage();
+  //       });
+  //     },
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(20.0),
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Icon(
+  //             Icons.add_outlined,
+  //             size: 96,
+  //             color: CretaColor.primary,
+  //           ),
+  //           Text(
+  //             CretaStudioLang.newPage,
+  //             style: CretaFont.bodyMedium,
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }
