@@ -6,6 +6,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
+import 'book_main_page.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
@@ -13,46 +14,43 @@ import 'studio_variables.dart';
 // ignore: must_be_immutable
 class StickMenu extends StatefulWidget {
   final void Function(LeftMenuEnum idx) selectFunction;
-  LeftMenuEnum initSelected;
-  StickMenu({super.key, required this.selectFunction, required this.initSelected});
+  //LeftMenuEnum initSelected;
+  // StickMenu({super.key, required this.selectFunction}) {
+  //   StickMenu.initSelect();
+  // }
+  const StickMenu({super.key, required this.selectFunction});
 
   @override
   State<StickMenu> createState() => _StickMenuState();
+
+  // static List<bool> selected = [];
+
+  // static void select(int n) {
+  //   int len = CretaStudioLang.menuIconList.length;
+  //   for (int i = 0; i < len; i++) {
+  //     if (i == n && BookMainPage.selectedStick != LeftMenuEnum.None) {
+  //       selected[i] = true;
+  //     } else {
+  //       selected[i] = false;
+  //     }
+  //   }
+  // }
+
+  // static void initSelect() {
+  //   selected.clear();
+  //   int len = CretaStudioLang.menuIconList.length;
+  //   for (int i = 0; i < len; i++) {
+  //     selected.add(false);
+  //   }
+  // }
 }
 
 class _StickMenuState extends State<StickMenu> {
-  List<bool> selected = [];
-  List<IconData> icon = [
-    Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
-    Icons.insert_drive_file_outlined, //MaterialIcons.insert_drive_file,
-    Icons.space_dashboard_outlined,
-    Icons.inventory_2_outlined,
-    Icons.image_outlined,
-    Icons.slideshow_outlined,
-    Icons.title_outlined,
-    Icons.pentagon_outlined,
-    Icons.interests_outlined,
-    Icons.photo_camera_outlined,
-    Icons.chat_outlined,
-  ];
-
-  void select(int n) {
-    for (int i = 0; i < icon.length; i++) {
-      if (i == n && widget.initSelected != LeftMenuEnum.None) {
-        selected[i] = true;
-      } else {
-        selected[i] = false;
-      }
-    }
-  }
-
   @override
   void initState() {
     logger.finest('StickMenu::initState');
     super.initState();
-    for (int i = 0; i < icon.length; i++) {
-      selected.add(false);
-    }
+
     //selected[0] = true;
   }
 
@@ -62,12 +60,10 @@ class _StickMenuState extends State<StickMenu> {
     if (StudioVariables.workHeight < 1) {
       return Container();
     }
-
-    if (widget.initSelected == LeftMenuEnum.None) {
-      for (int i = 0; i < selected.length; i++) {
-        selected[i] = false;
-      }
-    }
+    logger.fine('StickMenu.build: ${BookMainPage.selectedStick}');
+    // if (BookMainPage.selectedStick == LeftMenuEnum.None) {
+    //   StickMenu.initSelect();
+    // }
     return Container(
       margin: EdgeInsets.only(right: LayoutConst.layoutMargin),
       height: StudioVariables.workHeight,
@@ -81,20 +77,25 @@ class _StickMenuState extends State<StickMenu> {
           ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기,
         child: ListView(
-          children: icon.map((e) {
-            int idx = icon.indexOf(e);
+          children: CretaStudioLang.menuIconList.map((iconData) {
+            int idx = CretaStudioLang.menuIconList.indexOf(iconData);
             return NavBarItem(
-              icon: e,
+              menuType: LeftMenuEnum.values[idx],
+              iconData: iconData,
               title: CretaStudioLang.menuStick[idx],
               onTap: () {
-                widget.initSelected = LeftMenuEnum.values[idx];
-                widget.selectFunction(LeftMenuEnum.values[idx]);
-                logger.fine('onTap ${widget.initSelected.toString()}, $idx');
+                LeftMenuEnum selectedButton = LeftMenuEnum.values[idx];
+                if (BookMainPage.selectedStick == selectedButton) {
+                  BookMainPage.selectedStick = LeftMenuEnum.None;
+                } else {
+                  BookMainPage.selectedStick = selectedButton;
+                }
+                widget.selectFunction(selectedButton);
+                logger.fine('onTap ${BookMainPage.selectedStick.toString()}, $idx');
                 setState(() {
-                  select(idx);
+                  //StickMenu.select(idx);
                 });
               },
-              selected: selected[idx],
             );
           }).toList(),
         ),
@@ -105,17 +106,18 @@ class _StickMenuState extends State<StickMenu> {
 
 // ignore: must_be_immutable
 class NavBarItem extends StatefulWidget {
-  final IconData icon;
+  final IconData iconData;
   final String title;
   final Function onTap;
-  final bool selected;
+  final LeftMenuEnum menuType;
 
-  const NavBarItem(
-      {super.key,
-      required this.icon,
-      required this.title,
-      required this.onTap,
-      required this.selected});
+  const NavBarItem({
+    super.key,
+    required this.iconData,
+    required this.title,
+    required this.onTap,
+    required this.menuType,
+  });
 
   @override
   State<NavBarItem> createState() => _NavBarItemState();
@@ -132,14 +134,15 @@ class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _selected = widget.selected;
+    _selected = (BookMainPage.selectedStick == widget.menuType);
     logger.fine('build NavBarItem $_selected');
     return GestureDetector(
       onTap: () {
         widget.onTap();
-        setState(() {
-          //_selected = !_selected;
-        });
+        // setState(() {
+        //   logger.fine('setState NavBarItem $_selected');
+        //   //_selected = !_selected;
+        // });
       },
       child: MouseRegion(
         onEnter: (value) {
@@ -168,7 +171,7 @@ class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        widget.icon,
+                        widget.iconData,
                         color:
                             _selected ? CretaColor.primary : CretaColor.text[700], //_color.value,
                         size: _hovered

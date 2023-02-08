@@ -34,6 +34,8 @@ class BookMainPage extends StatefulWidget {
   static String selectedMid = '';
   const BookMainPage({super.key});
 
+  static LeftMenuEnum selectedStick = LeftMenuEnum.None;
+
   @override
   State<BookMainPage> createState() => _BookMainPageState();
 }
@@ -58,8 +60,6 @@ class _BookMainPageState extends State<BookMainPage> {
   bool scaleChanged = false;
 
   double padding = 16;
-
-  LeftMenuEnum selectedStick = LeftMenuEnum.None;
 
   @override
   void initState() {
@@ -206,7 +206,6 @@ class _BookMainPageState extends State<BookMainPage> {
                   children: [
                     StickMenu(
                       selectFunction: _showLeftMenu,
-                      initSelected: selectedStick,
                     ),
                     Expanded(
                       child: _workArea(),
@@ -282,13 +281,12 @@ class _BookMainPageState extends State<BookMainPage> {
     return Stack(
       children: [
         _scrollArea(context),
-        selectedStick == LeftMenuEnum.None
+        BookMainPage.selectedStick == LeftMenuEnum.None
             ? Container(width: 0, height: 0, color: Colors.transparent)
             : LeftMenu(
-                selectedStick: selectedStick,
                 onClose: () {
                   setState(() {
-                    selectedStick = LeftMenuEnum.None;
+                    BookMainPage.selectedStick = LeftMenuEnum.None;
                   });
                 },
               ),
@@ -595,13 +593,13 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _showLeftMenu(LeftMenuEnum idx) {
-    logger.finest("showLeftMenu ${idx.name}");
+    logger.fine("showLeftMenu ${idx.name}");
     setState(() {
-      if (selectedStick == idx) {
-        selectedStick = LeftMenuEnum.None;
-      } else {
-        selectedStick = idx;
-      }
+      // if (BookMainPage.selectedStick == idx) {
+      //   BookMainPage.selectedStick = LeftMenuEnum.None;
+      // } else {
+      //   BookMainPage.selectedStick = idx;
+      // }
     });
   }
 }

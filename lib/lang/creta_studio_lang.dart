@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class CretaStudioLang {
   static List<String> menuStick = [
     "템플릿",
@@ -11,6 +13,19 @@ class CretaStudioLang {
     "위젯",
     "카메라",
     "코멘트",
+  ];
+  static List<IconData> menuIconList = [
+    Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
+    Icons.insert_drive_file_outlined, //MaterialIcons.insert_drive_file,
+    Icons.space_dashboard_outlined,
+    Icons.inventory_2_outlined,
+    Icons.image_outlined,
+    Icons.slideshow_outlined,
+    Icons.title_outlined,
+    Icons.pentagon_outlined,
+    Icons.interests_outlined,
+    Icons.photo_camera_outlined,
+    Icons.chat_outlined,
   ];
 
   static const List<String> frameKind = [

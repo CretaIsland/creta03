@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../book_main_page.dart';
 import 'left_menu_frame.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../design_system/creta_font.dart';
@@ -10,9 +11,9 @@ import '../studio_snippet.dart';
 import 'left_menu_page.dart';
 
 class LeftMenu extends StatefulWidget {
-  final LeftMenuEnum selectedStick;
+  //final LeftMenuEnum selectedStick;
   final Function onClose;
-  const LeftMenu({super.key, required this.selectedStick, required this.onClose});
+  const LeftMenu({super.key, required this.onClose});
 
   @override
   State<LeftMenu> createState() => _LeftMenuState();
@@ -78,13 +79,13 @@ class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin
               Positioned(
                   left: 28,
                   top: 24,
-                  child: Text(CretaStudioLang.menuStick[widget.selectedStick.index],
+                  child: Text(CretaStudioLang.menuStick[BookMainPage.selectedStick.index],
                       style: CretaFont.titleLarge)),
               Positioned(
                 top: 76,
                 left: 0,
                 width: LayoutConst.leftMenuWidth,
-                child: eachWidget(widget.selectedStick),
+                child: eachWidget(BookMainPage.selectedStick),
               )
             ],
           ),
