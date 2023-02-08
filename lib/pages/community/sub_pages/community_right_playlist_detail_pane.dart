@@ -42,19 +42,19 @@ const double _rightViewBannerMinHeight = 188 + 4;
 const double _itemDefaultWidth = 290.0;
 // const double _itemDefaultHeight = 256.0;
 
-class CommunityRightPlaylistPane extends StatefulWidget {
+class CommunityRightPlaylistDetailPane extends StatefulWidget {
   final double pageWidth;
   final double pageHeight;
   final ScrollController scrollController;
-  const CommunityRightPlaylistPane(
+  const CommunityRightPlaylistDetailPane(
       {super.key, required this.pageWidth, required this.pageHeight,
         required this.scrollController});
 
   @override
-  State<CommunityRightPlaylistPane> createState() => _CommunityRightPlaylistPaneState();
+  State<CommunityRightPlaylistDetailPane> createState() => _CommunityRightPlaylistDetailPaneState();
 }
 
-class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane> {
+class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylistDetailPane> {
   late List<CretaPlaylistData> _cretaPlaylistList;
 
   @override

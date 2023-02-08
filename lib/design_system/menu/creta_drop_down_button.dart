@@ -33,11 +33,16 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
   bool dropDownButtonOpened = false;
   double? fontSize;
   double iconSize = 24;
+  String allText = '';
+
   @override
   void initState() {
     widget.textStyle ??= CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium);
     fontSize ??= widget.textStyle!.fontSize;
     iconSize = widget.iconSize ?? iconSize;
+    if (widget.dropDownMenuItemList.isNotEmpty) {
+      allText = widget.dropDownMenuItemList[0].caption;
+    }
     super.initState();
   }
 
@@ -46,7 +51,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
     String displayString = getSelectedString();
     return ElevatedButton(
       key: dropDownButtonKey,
-      style: _buttonStyle(CretaLang.all != displayString),
+      style: _buttonStyle(allText != displayString),
       onPressed: () {
         logger.finest('Main button pressed');
         setState(() {
@@ -73,7 +78,9 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
           children: [
             Text(
               displayString,
-              style: widget.textStyle,
+              style: widget.textStyle?.copyWith(
+                color: allText == displayString ? CretaColor.text[700] : CretaColor.primary,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
@@ -91,7 +98,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         return ele.caption;
       }
     }
-    return CretaLang.all;
+    return allText;
   }
 
   ButtonStyle _buttonStyle(bool isSelected) {
