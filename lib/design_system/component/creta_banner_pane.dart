@@ -64,6 +64,14 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(7.2),
                 boxShadow: StudioSnippet.fullShadow(),
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: Colors.grey.withOpacity(0.2),
+                //     spreadRadius: 3,
+                //     blurRadius: 3,
+                //     offset: Offset(0, 1), // changes position of shadow
+                //   ),
+                // ],
               ),
               clipBehavior: Clip.antiAlias,
               child: widget.titlePane != null

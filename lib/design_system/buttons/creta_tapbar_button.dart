@@ -135,41 +135,39 @@ class _CretaTapBarButtonState extends State<CretaTapBarButton> {
   }
 
   Widget _getChild() {
-    if (widget.iconData != null && widget.caption.isNotEmpty) {
-      return Container(
-        padding: EdgeInsets.only(left: widget.width / 8),
-        alignment: AlignmentDirectional.centerStart,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Icon(widget.iconData!, color: _getfgColor(), size: 20),
-            SizedBox(width: 12),
-            Text(
-              widget.caption,
-              style: CretaFont.titleLarge.copyWith(color: _getfgColor(), fontWeight: CretaFont.medium),
-            ),
-          ],
-        ),
-      );
-    }
     if ((widget.iconData != null)) {
       if (widget.isIconText == true) {
-        return Row(
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: widget.width / 8),
-              alignment: AlignmentDirectional.centerStart,
-              child: Icon(widget.iconData!, color: CretaColor.primary),
-            ),
-            Container(
-              padding: EdgeInsets.only(left: widget.width / 8),
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(
+        // return Row(
+        //   children: [
+        //     Container(
+        //       padding: EdgeInsets.only(left: widget.width / 8),
+        //       alignment: AlignmentDirectional.centerStart,
+        //       child: Icon(widget.iconData!, color: CretaColor.primary),
+        //     ),
+        //     Container(
+        //       padding: EdgeInsets.only(left: widget.width / 8),
+        //       alignment: AlignmentDirectional.centerStart,
+        //       child: Text(
+        //         widget.caption,
+        //         style: CretaFont.titleLarge.copyWith(color: _getfgColor()),
+        //       ),
+        //     ),
+        //   ],
+        // );
+        return Container(
+          padding: EdgeInsets.only(left: widget.width / 8),
+          alignment: AlignmentDirectional.centerStart,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(widget.iconData!, color: _getfgColor(), size: 20),
+              SizedBox(width: 12),
+              Text(
                 widget.caption,
-                style: CretaFont.titleLarge.copyWith(color: _getfgColor()),
+                style: CretaFont.titleLarge.copyWith(color: _getfgColor(), fontWeight: CretaFont.medium),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       }
       return Container(

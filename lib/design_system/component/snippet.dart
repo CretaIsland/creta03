@@ -401,7 +401,7 @@ class Snippet {
           label: 'Play List',
           child: Icon(Icons.playlist_add_check),
           onTap: () {
-            Routemaster.of(context).push(AppRoutes.playList);
+            Routemaster.of(context).push(AppRoutes.playlist);
           },
         ),
       ],

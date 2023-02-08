@@ -54,7 +54,8 @@ abstract class AppRoutes {
   static const String login = '/login';
   static const String communityHome = '/community/home';
   static const String subscriptionList = '/community/subscriptionList';
-  static const String playList = '/community/playList';
+  static const String playlist = '/community/playlist';
+  static const String playlistDetail = '/community/playlistDetail';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();
@@ -92,23 +93,29 @@ final routesLoggedOut = RouteMap(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.teamPage),
         ),
     AppRoutes.communityHome: (_) => TransitionPage(
-          child: CommunityPage(
-            key: GlobalKey(),
-            subPageUrl: AppRoutes.communityHome,
-          ),
-        ),
+      child: CommunityPage(
+        key: GlobalKey(),
+        subPageUrl: AppRoutes.communityHome,
+      ),
+    ),
     AppRoutes.subscriptionList: (_) => TransitionPage(
-          child: CommunityPage(
-            key: GlobalKey(),
-            subPageUrl: AppRoutes.subscriptionList,
-          ),
-        ),
-    AppRoutes.playList: (_) => TransitionPage(
-          child: CommunityPage(
-            key: GlobalKey(),
-            subPageUrl: AppRoutes.playList,
-          ),
-        ),
+      child: CommunityPage(
+        key: GlobalKey(),
+        subPageUrl: AppRoutes.subscriptionList,
+      ),
+    ),
+    AppRoutes.playlist: (_) => TransitionPage(
+      child: CommunityPage(
+        key: GlobalKey(),
+        subPageUrl: AppRoutes.playlist,
+      ),
+    ),
+    AppRoutes.playlistDetail: (_) => TransitionPage(
+      child: CommunityPage(
+        key: GlobalKey(),
+        subPageUrl: AppRoutes.playlistDetail,
+      ),
+    ),
   },
 );
 

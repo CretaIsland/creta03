@@ -18,6 +18,13 @@ class CretaLang {
     "조회수순",
   ];
 
+  static const List<String> basicBookPermissionFilter = [
+    "권한별(전체)",
+    "소유자",
+    "편집자",
+    "뷰어",
+  ];
+
   static const String edit = '편집하기';
   static const String play = '재생하기';
   static const String addToPlayList = '재생목록에 추가';

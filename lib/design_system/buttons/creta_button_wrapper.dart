@@ -1080,21 +1080,24 @@ class BTN {
   }
 
   static CretaButton opacity_gray_it_s({
-    required IconData icon,
     required String text,
     required Function onPressed,
+    double? width = 86,
+    TextStyle? textStyle,
+    IconData? icon,
+    CretaButtonDeco decoType = CretaButtonDeco.fill,
   }) {
     return CretaButton(
-      width: 86,
+      width: width,
       height: 29,
-      buttonType: CretaButtonType.iconText,
+      buttonType: icon == null ? CretaButtonType.textOnly : CretaButtonType.iconText,
       buttonColor: CretaButtonColor.gray,
-      icon: Icon(
-        icon,
-        size: 12,
-        color: Colors.white,
-      ),
-      text: Padding(
+      decoType: decoType,
+      textStyle: textStyle,
+      icon: icon == null ? null : Icon(icon, size: 12, color: Colors.white),
+      text: textStyle != null
+          ? null
+          : Padding(
         padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
         child: Center(
           child: Text(text, style: CretaFont.buttonSmall.copyWith(color: Colors.white)),
