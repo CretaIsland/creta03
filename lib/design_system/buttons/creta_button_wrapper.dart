@@ -502,16 +502,18 @@ class BTN {
   static CretaButton fill_blue_t_m({
     required String text,
     required Function onPressed,
+    double? width = 72,
+    TextStyle? textStyle,
   }) {
     return CretaButton(
-      width: 72,
-      height: 36,
+      width: width,
+      height: 34,
       buttonType: CretaButtonType.textOnly,
       buttonColor: CretaButtonColor.blue,
       text: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: Center(
-          child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
+          child: Text(text, style: textStyle ?? CretaFont.buttonMedium.copyWith(color: Colors.white)),
         ),
       ),
       onPressed: onPressed,

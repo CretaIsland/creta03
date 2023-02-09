@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
-//import 'package:routemaster/routemaster.dart';
+import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
-//import '../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/buttons/creta_button_wrapper.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
-//import '../../routes.dart';
+import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 import 'community_sample_data.dart';
 //import '../../design_system/component/custom_image.dart';
@@ -175,27 +175,11 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                       width: 77,
                       height: 32,
                       //BTN.fill_gray_t_m
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all<Color>(Colors.grey[700]!),
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                          elevation: MaterialStateProperty.all<double>(0.0),
-                          shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  side: BorderSide(color: Colors.white))),
-                        ),
-                        onPressed: () {},
-                        child: Text(
-                          '전체보기',
-                          style: TextStyle(
-                            //color: Colors.grey[700],
-                            fontSize: 13,
-                            fontFamily: 'Pretendard',
-                            //fontWeight: FontWeight.w300,
-                          ),
-                        ),
+                      child: BTN.fill_gray_t_m(
+                        text: '전체보기',
+                        onPressed: () {
+                          Routemaster.of(context).push(AppRoutes.playlistDetail);
+                        },
                       ),
                     ),
                     Positioned(
@@ -204,27 +188,9 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                       width: 77,
                       height: 32,
                       //BTN.fill_blue_t_m
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                          backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 90, 142, 242)),
-                          elevation: MaterialStateProperty.all<double>(0.0),
-                          shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  side: BorderSide(color: Color.fromARGB(255, 90, 142, 242)))),
-                        ),
+                      child: BTN.fill_blue_t_m(
+                        text: '재생하기',
                         onPressed: () {},
-                        child: Text(
-                          '재생하기',
-                          style: TextStyle(
-                            //color: Colors.white,
-                            fontSize: 13,
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w100,
-                          ),
-                        ),
                       ),
                     ),
                     Positioned(
@@ -262,14 +228,6 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                                         height: 144,
                                         image: widget.cretaPlayListData.cretaBookDataList[idx].thumbnailUrl,
                                       ),
-                                      // child: CachedNetworkImage(
-                                      //   imageUrl: widget.cretaPlayListData.cretaBookDataList[idx].thumbnailUrl,
-                                      //   fit: BoxFit.cover,
-                                      //   placeholder: (context, url) => const CircularProgressIndicator(),
-                                      //   errorWidget: (context, url, error) => Center(
-                                      //     child: Icon(Icons.error, color: Colors.red, size: 40,),
-                                      //   ),
-                                      // ),
                                     ),
                                   );
                                 }).toList(),

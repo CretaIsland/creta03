@@ -36,7 +36,7 @@ const double _rightViewBottomPane = 40;
 // const double _rightViewItemGapY = 20;
 // //const double _scrollbarWidth = 13;
 // const double _rightViewBannerMaxHeight = 436;
-const double _rightViewBannerMinHeight = 188 + 4;
+const double _rightViewBannerMinHeight = 168;
 // const double _rightViewToolbarHeight = 76;
 //
 const double _itemDefaultWidth = 290.0;
@@ -71,8 +71,12 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
     return Scrollbar(
       thumbVisibility: true,
       controller: widget.scrollController,
-      child: ListView.builder(
-        controller: widget.scrollController,
+      child: ReorderableListView.builder(
+        buildDefaultDragHandles: false,
+        scrollController: widget.scrollController,
+        onReorder: (oldIndex, newIndex) {
+          // reorder !!!
+        },
         padding: EdgeInsets.fromLTRB(
             _rightViewLeftPane,
             _rightViewBannerMinHeight,
