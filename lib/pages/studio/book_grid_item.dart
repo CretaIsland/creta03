@@ -309,18 +309,32 @@ class BookGridItemState extends State<BookGridItem> {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0, left: 8),
-                      child: Text(
-                        widget.bookModel!.description.value,
-                        // [
-                        //   ...widget.bookModel!.owners,
-                        //   ...widget.bookModel!.writers,
-                        //   ...widget.bookModel!.readers
-                        // ].toString(),
-                        overflow: TextOverflow.fade,
-                        style: CretaFont.bodyESmall.copyWith(color: Colors.white),
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Text(
+                            widget.bookModel!.name.value,
+                            overflow: TextOverflow.fade,
+                            style: CretaFont.bodySmall.copyWith(color: Colors.white),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0, left: 8),
+                          child: Text(
+                            widget.bookModel!.description.value,
+                            // [
+                            //   ...widget.bookModel!.owners,
+                            //   ...widget.bookModel!.writers,
+                            //   ...widget.bookModel!.readers
+                            // ].toString(),
+                            overflow: TextOverflow.fade,
+                            style: CretaFont.bodyESmall.copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -366,11 +380,16 @@ class BookGridItemState extends State<BookGridItem> {
                 flex: 7,
                 child: Container(
                     color: (mouseOver) ? Colors.grey[100] : Colors.white,
-                    child: Text(
-                      widget.bookModel!.name.value,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.left,
-                      style: CretaFont.bodyMedium,
+                    child: Snippet.TooltipWrapper(
+                      tooltip: widget.bookModel!.name.value,
+                      fgColor: Colors.black,
+                      bgColor: CretaColor.text[200]!,
+                      child: Text(
+                        widget.bookModel!.name.value,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: CretaFont.bodyMedium,
+                      ),
                     )),
               ),
               widget.selectedPage != SelectedPage.myPage

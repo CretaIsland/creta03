@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:hycop/hycop.dart';
+import '../common/creta_utils.dart';
 import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
@@ -103,10 +106,17 @@ class BookManager extends CretaManager {
     int width = 1920,
     int height = 1080,
   }) {
-    BookModel defaultBook = BookModel.withName(CretaStudioLang.defaultBookName,
+    final Random random = Random();
+    int randomNumber = random.nextInt(100);
+    String url = 'https://picsum.photos/200/?random=$randomNumber';
+
+    String name = '${CretaStudioLang.defaultBookName} ';
+    name += CretaUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
+
+    BookModel defaultBook = BookModel.withName(name,
         creator: AccountManager.currentLoginUser.email,
         creatorName: AccountManager.currentLoginUser.name,
-        imageUrl: "https://picsum.photos/200/?random=1");
+        imageUrl: url);
     defaultBook.width.set(width, save: false, noUndo: true, dontChangeBookTime: true);
     defaultBook.height.set(height, save: false, noUndo: true, dontChangeBookTime: true);
     return defaultBook;

@@ -24,6 +24,7 @@ import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/creta_model.dart';
 import 'left_menu/left_menu.dart';
+import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
@@ -35,6 +36,7 @@ class BookMainPage extends StatefulWidget {
   const BookMainPage({super.key});
 
   static LeftMenuEnum selectedStick = LeftMenuEnum.None;
+  static RightMenuEnum selectedClass = RightMenuEnum.Book;
 
   @override
   State<BookMainPage> createState() => _BookMainPageState();
@@ -290,6 +292,19 @@ class _BookMainPageState extends State<BookMainPage> {
                   });
                 },
               ),
+        BookMainPage.selectedClass == RightMenuEnum.None
+            ? Container(width: 0, height: 0, color: Colors.transparent)
+            : Positioned(
+                top: 0,
+                left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
+                child: RightMenu(
+                  onClose: () {
+                    setState(() {
+                      BookMainPage.selectedClass = RightMenuEnum.None;
+                    });
+                  },
+                ),
+              ),
       ],
     );
   }
@@ -408,6 +423,11 @@ class _BookMainPageState extends State<BookMainPage> {
             onEditComplete: (value) {
               setState(() {
                 _model.name.set(value);
+              });
+            },
+            onLabelHovered: () {
+              setState(() {
+                BookMainPage.selectedClass = RightMenuEnum.Book;
               });
             },
           ),
@@ -577,8 +597,8 @@ class _BookMainPageState extends State<BookMainPage> {
     return Container(
       width: StudioVariables.virtualWidth,
       height: StudioVariables.virtualHeight,
-      color: LayoutConst.studioBGColor,
-      //color: Colors.amber,
+      //color: LayoutConst.studioBGColor,
+      color: Colors.amber,
       child: Center(
         child: Container(
           decoration: BoxDecoration(

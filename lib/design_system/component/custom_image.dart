@@ -35,13 +35,16 @@ class CustomImage extends StatefulWidget {
   final String image;
   final int duration;
   final bool hasMouseOverEffect;
+  final bool hasAni;
+
   CustomImage(
       {super.key,
       required this.width,
       required this.height,
       required this.image,
       this.hasMouseOverEffect = false,
-      this.duration = 700});
+      this.duration = 700,
+      this.hasAni = true});
 
   @override
   State<CustomImage> createState() => _CustomImageState();
@@ -59,16 +62,17 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
 
   @override
   void initState() {
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: widget.duration),
-    );
+    if (widget.hasAni) {
+      _controller = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: widget.duration),
+      );
 
-    _animation = SizeTween(
-            begin: Size(widget.width * 2.5, widget.height * 2.5),
-            end: Size(widget.width, widget.height))
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-
+      _animation = SizeTween(
+              begin: Size(widget.width * 2.5, widget.height * 2.5),
+              end: Size(widget.width, widget.height))
+          .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    }
     _imageDetail = ImageDetail();
     _imageValueNotifier = ImageValueNotifier(_imageDetail);
 
@@ -77,7 +81,9 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
       (info, value) {
         _imageInfo = info;
         _imageValueNotifier.changeLoadingState(true);
-        _controller.forward();
+        if (widget.hasAni) {
+          _controller.forward();
+        }
       },
       onChunk: (event) {
         _imageDetail.expectedTotalBytes = event.expectedTotalBytes!;
@@ -94,7 +100,9 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    _controller.stop();
+    if (widget.hasAni) {
+      _controller.stop();
+    }
     super.dispose();
     //_controller.dispose();
   }
@@ -115,29 +123,41 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
                   size: 40.0,
                 ),
               )
-            : Center(
-                child: AnimatedBuilder(
-                  animation: _animation,
-                  builder: (context, child) {
-                    return OverflowBox(
-                      minHeight: widget.height,
-                      maxHeight: widget.height * 2.5,
-                      minWidth: widget.width,
-                      maxWidth: widget.width * 2.5,
-                      child: SizedBox(
-                        height: _animation.value!.height,
-                        width: _animation.value!.width,
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: RawImage(
-                    fit: BoxFit.fill,
-                    image: _imageInfo.image,
-                  ),
-                ),
-              );
+            : Center(child: _show());
       }),
+    );
+  }
+
+  Widget _show() {
+    if (widget.hasAni) {
+      return AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          return OverflowBox(
+            minHeight: widget.height,
+            maxHeight: widget.height * 2.5,
+            minWidth: widget.width,
+            maxWidth: widget.width * 2.5,
+            child: SizedBox(
+              height: _animation.value!.height,
+              width: _animation.value!.width,
+              child: child,
+            ),
+          );
+        },
+        child: RawImage(
+          fit: BoxFit.fill,
+          image: _imageInfo.image,
+        ),
+      );
+    }
+    return SizedBox(
+      height: widget.height,
+      width: widget.width,
+      child: RawImage(
+        fit: BoxFit.fill,
+        image: _imageInfo.image,
+      ),
     );
   }
 }

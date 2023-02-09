@@ -64,6 +64,9 @@ class CretaButton extends StatefulWidget {
   Color? clickColor;
   Color? selectColor;
 
+  Color? tooltipFg;
+  Color? tooltipBg;
+
   Color? fgColor;
   Color? fgHoverColor;
   Color? fgClickColor;
@@ -89,6 +92,8 @@ class CretaButton extends StatefulWidget {
     this.tooltip,
     this.isSelectedWidget = false,
     this.hasShadow = true,
+    this.tooltipFg,
+    this.tooltipBg,
     Key? key,
   }) : super(key: key) {
     _setColor();
@@ -188,8 +193,8 @@ class _CretaButtonState extends State<CretaButton> {
     //print('build $hover $clicked $selected');
     if (widget.tooltip != null) {
       return Snippet.TooltipWrapper(
-        fgColor: widget.fgColor != null ? widget.fgColor! : Colors.white,
-        bgColor: widget.bgColor != null ? widget.bgColor! : Colors.grey,
+        fgColor: widget.tooltipFg ?? (widget.fgColor ?? Colors.white),
+        bgColor: widget.tooltipBg ?? (widget.bgColor ?? Colors.grey[700]!),
         tooltip: widget.tooltip!,
         child: _myButton(),
       );

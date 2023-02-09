@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../design_system/creta_color.dart';
 import '../book_main_page.dart';
 import 'left_menu_frame.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../design_system/creta_font.dart';
 import '../studio_constant.dart';
-import '../studio_snippet.dart';
+import 'left_menu_mixin.dart';
 import 'left_menu_page.dart';
 
 class LeftMenu extends StatefulWidget {
@@ -19,77 +21,54 @@ class LeftMenu extends StatefulWidget {
   State<LeftMenu> createState() => _LeftMenuState();
 }
 
-class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-
+class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin, LeftMenuMixin {
   @override
   void initState() {
-    _animationController = AnimationController(
-      duration: Duration(milliseconds: 150),
-      reverseDuration: Duration(milliseconds: 200),
-      vsync: this,
-    );
-    // Timer(Duration(microseconds: 100), () {
-    //   _animationController.forward();
-    // });
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _animationController.forward();
-    });
+    super.initAnimation(this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    super.disposeAnimation();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double closeIconSize = 20.0;
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: Offset(-1, 0),
-        end: Offset.zero,
-      ).animate(_animationController),
-      child: FadeTransition(
-        opacity: _animationController,
-        child: Container(
-          //margin: const EdgeInsets.only(top: LayoutConst.layoutMargin),
-          height: height,
-          width: LayoutConst.leftMenuWidth,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.rightBottum),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                  left: LayoutConst.leftMenuWidth - 2 * closeIconSize - 6,
-                  top: 6,
-                  child: IconButton(
-                    iconSize: closeIconSize,
-                    icon: Icon(Icons.keyboard_double_arrow_left_outlined),
-                    onPressed: () async {
-                      await _animationController.reverse();
-                      widget.onClose();
-                    },
-                  )),
-              Positioned(
-                  left: 28,
-                  top: 24,
-                  child: Text(CretaStudioLang.menuStick[BookMainPage.selectedStick.index],
-                      style: CretaFont.titleLarge)),
-              Positioned(
-                top: 76,
-                left: 0,
-                width: LayoutConst.leftMenuWidth,
-                child: eachWidget(BookMainPage.selectedStick),
-              )
-            ],
-          ),
-        ),
+    return super.buildAnimation(
+      context,
+      width: LayoutConst.leftMenuWidth,
+      child: Stack(
+        children: [
+          Positioned(
+              right: 24,
+              top: 24,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  BTN.fill_gray_i_m(
+                    tooltip: CretaStudioLang.wide,
+                    tooltipBg: CretaColor.text[700]!,
+                    icon: Icons.open_in_full_outlined,
+                    onPressed: () async {},
+                  ),
+                  super.closeButton(
+                      icon: Icons.keyboard_double_arrow_left_outlined, onClose: widget.onClose),
+                ],
+              )),
+          Positioned(
+              left: 28,
+              top: 24,
+              child: Text(CretaStudioLang.menuStick[BookMainPage.selectedStick.index],
+                  style: CretaFont.titleLarge)),
+          Positioned(
+            top: 76,
+            left: 0,
+            width: LayoutConst.leftMenuWidth,
+            child: eachWidget(BookMainPage.selectedStick),
+          )
+        ],
       ),
     );
   }

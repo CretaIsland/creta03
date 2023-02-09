@@ -19,6 +19,14 @@ enum LeftMenuEnum {
   None,
 }
 
+enum RightMenuEnum {
+  Book,
+  Page,
+  Frame,
+  Contents,
+  None,
+}
+
 class StudioConst {
   static const double orderVar = 0.0000001;
 }
@@ -38,6 +46,7 @@ class LayoutConst {
 
   // left menu
   static const double leftMenuWidth = 420;
+  static const double rightMenuWidth = 380;
 
   // stick page
   static const double leftPageWidth = 210;

@@ -52,4 +52,23 @@ class CretaUtils {
     logger.finest('listToString=[$retval]');
     return '[$retval]';
   }
+
+  static String getNowString(
+      {String deli1 = '/', String deli2 = ' ', String deli3 = ':', String deli4 = '.'}) {
+    var now = DateTime.now();
+    String name = '${now.year}';
+    name += deli1;
+    name += '${now.month}'.padLeft(2, '0');
+    name += deli1;
+    name += '${now.day}'.padLeft(2, '0');
+    name += deli2;
+    name += '${now.hour}'.padLeft(2, '0');
+    name += deli3;
+    name += '${now.minute}'.padLeft(2, '0');
+    name += deli3;
+    name += '${now.second}'.padLeft(2, '0');
+    name += deli4;
+    name += '${now.millisecond}'.padLeft(3, '0');
+    return name;
+  }
 }
