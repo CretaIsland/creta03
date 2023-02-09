@@ -63,6 +63,7 @@ dependencies:
   deep_collection: ^1.0.2
   get: ^4.6.5
   dotted_border: ^2.0.0+3
+  material_tag_editor: ^0.1.2
 
 
 dev_dependencies:

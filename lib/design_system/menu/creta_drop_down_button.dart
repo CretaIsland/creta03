@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
-import '../../lang/creta_lang.dart';
+//import '../../lang/creta_lang.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
 import 'creta_popup_menu.dart';
@@ -103,7 +103,8 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
 
   ButtonStyle _buttonStyle(bool isSelected) {
     return ButtonStyle(
-      textStyle: MaterialStateProperty.all<TextStyle>(CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium)),
+      textStyle: MaterialStateProperty.all<TextStyle>(
+          CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium)),
       overlayColor: MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
           if (states.contains(MaterialState.hovered)) {

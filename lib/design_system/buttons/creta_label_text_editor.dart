@@ -51,8 +51,13 @@ class CretaLabelTextEditor extends StatefulWidget {
 class CretaLabelTextEditorState extends State<CretaLabelTextEditor> {
   bool _isClicked = false;
   final TextEditingController controller = TextEditingController();
-
   GlobalKey<CretaTextFieldState> textKey = GlobalKey<CretaTextFieldState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(

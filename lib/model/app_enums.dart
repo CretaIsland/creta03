@@ -24,6 +24,18 @@ enum BookType {
   static BookType fromInt(int? val) => BookType.values[validCheck(val ?? none.index)];
 }
 
+enum CopyWrightType {
+  none,
+  free,
+  nonComertialsUseOnly,
+  openSource,
+  needPermition,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static CopyWrightType fromInt(int? val) => CopyWrightType.values[validCheck(val ?? none.index)];
+}
+
 enum BookSort {
   none,
   name,

@@ -30,6 +30,8 @@ import 'studio_constant.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
 
+BookManager? bookManagerHolder;
+
 // ignore: must_be_immutable
 class BookMainPage extends StatefulWidget {
   static String selectedMid = '';
@@ -43,7 +45,6 @@ class BookMainPage extends StatefulWidget {
 }
 
 class _BookMainPageState extends State<BookMainPage> {
-  BookManager? bookManagerHolder;
   PageManager? pageManagerHolder;
   late BookModel _model;
   bool _onceDBGetComplete = false;

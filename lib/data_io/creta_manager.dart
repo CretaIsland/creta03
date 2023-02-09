@@ -143,7 +143,7 @@ abstract class CretaManager extends AbsExModelManager {
   // }
 
   void toSorted(String sortAttrName, {bool descending = false, Function? onModelSorted}) {
-    logger.finest('toFiltered');
+    logger.finest('toSorted');
     _currentSortAttr.clear();
     _currentSortAttr[sortAttrName] =
         descending ? OrderDirection.descending : OrderDirection.ascending;

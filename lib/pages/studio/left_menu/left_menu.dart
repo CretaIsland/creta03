@@ -42,8 +42,8 @@ class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin
       child: Stack(
         children: [
           Positioned(
-              right: 24,
-              top: 24,
+              right: 8,
+              top: 8,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

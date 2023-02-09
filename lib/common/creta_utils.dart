@@ -32,6 +32,9 @@ class CretaUtils {
   }
 
   static List<String> jsonStringToList(String value) {
+    if (value.isEmpty) {
+      return [];
+    }
     try {
       return json.decode(value).cast<String>().toList();
     } catch (e) {

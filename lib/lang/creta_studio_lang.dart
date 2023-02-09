@@ -1,6 +1,30 @@
 import 'package:flutter/material.dart';
 
 class CretaStudioLang {
+  static List<String> copyWrightList = [
+    "None",
+    "자유로운 사용 가능",
+    "비상업적인 목적으로만 사용 가능",
+    "출처를 공개한 경우에 한해 사용 가능",
+    "허가 없이 사용 불가",
+    "End",
+  ];
+
+  static List<String> bookTypeList = [
+    "None",
+    "프리젠테이션용",
+    "디지털사이니지용",
+    "전자칠판용",
+    "기타",
+    "End",
+  ];
+
+  static Map<String, String> bookInfoTabBar = {
+    '크레타북 정보': 'book_info',
+    '페이지 설정': 'page_settings',
+    '편집자 권한': 'authority',
+  };
+
   static List<String> menuStick = [
     "템플릿",
     "페이지",
@@ -80,4 +104,16 @@ class CretaStudioLang {
 
   static const String copy = "복사하기";
   static var showUnshow = "보이기/안보이기";
+
+  static const String description = "설명";
+  static const String hashTab = "해쉬태그";
+  static const String infomation = "정보";
+  static const String pageSize = "페이지 크기";
+  static const String onLine = "온라인";
+  static const String offLine = "오프라인";
+
+  static const String updateDate = "만든 날짜";
+  static const String creator = "만든 사람";
+  static const String copyWright = "저작권";
+  static const String bookType = "크레타북 용도";
 }

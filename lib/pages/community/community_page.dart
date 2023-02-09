@@ -27,7 +27,7 @@ import '../../lang/creta_lang.dart';
 
 import 'package:creta03/pages/community/sub_pages/community_right_home_pane.dart';
 import 'package:creta03/pages/community/sub_pages/community_right_playlist_pane.dart';
-import 'package:creta03/pages/community/sub_pages/community_right_playlist_detail_pane.dart';
+//import 'package:creta03/pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 
 //bool _isInUsingCanvaskit = false;
 
@@ -242,11 +242,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             Container(
               width: size.width,
               height: size.height,
-              padding: EdgeInsets.fromLTRB(60,0,0,0),
+              padding: EdgeInsets.fromLTRB(60, 0, 0, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 //crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // ignore: sized_box_for_whitespace
                   Container(
                     width: size.width,
                     height: 176,
@@ -265,11 +266,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         SizedBox(height: 23),
                         Text(
                           '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
-                            style: CretaFont.bodyMedium.copyWith(
-                              color: Colors.white,
-                              fontSize: 16,
-                              //fontWeight: CretaFont.regular,
-                            ),
+                          style: CretaFont.bodyMedium.copyWith(
+                            color: Colors.white,
+                            fontSize: 16,
+                            //fontWeight: CretaFont.regular,
+                          ),
                         ),
                         SizedBox(height: 13),
                         Text(

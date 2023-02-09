@@ -37,6 +37,26 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('CretaTabButton     '),
+                    CretaTabButton(
+                      onEditComplete: (value) {},
+                      buttonLables: [
+                        '크레타북 정보',
+                        '페이지 설정',
+                        '편집자 권한',
+                      ],
+                      buttonValues: [
+                        "STUDENT",
+                        "PARENT",
+                        "TEACHER",
+                      ],
+                    ),
+                  ],
+                ),
                 // Btn_fill_Blue_I_menu
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -792,10 +812,6 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                   color: Colors.red,
                 ),
 
-                SizedBox(height: 30),
-                CretaTabButton(
-                  onEditComplete: (value) {},
-                ),
                 SizedBox(height: 30),
                 Center(
                   child: Row(
