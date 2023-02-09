@@ -44,10 +44,18 @@ class CretaBannerPane extends StatefulWidget {
 class _CretaBannerPaneState extends State<CretaBannerPane> {
   @override
   Widget build(BuildContext context) {
+    bool isExistFilter = widget.listOfListFilter.isNotEmpty
+        || (widget.onSearch != null && !(widget.isSearchbarInBanner ?? false))
+        || (widget.listOfListFilterOnRight != null && widget.listOfListFilterOnRight!.isNotEmpty);
     double internalWidth =
         widget.width - LayoutConst.cretaTopTitlePaddingLT.width - LayoutConst.cretaTopTitlePaddingRB.width;
     double heightDelta = widget.height -
-        (LayoutConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight + LayoutConst.cretaTopFilterHeight);
+        (LayoutConst.cretaPaddingPixel + LayoutConst.cretaTopTitleHeight);
+    if (isExistFilter) {
+      heightDelta -= LayoutConst.cretaTopFilterHeight;
+    } else {
+      heightDelta -= LayoutConst.cretaPaddingPixel;
+    }
     return Container(
       width: widget.width - ((widget.scrollbarOnRight ?? false) ? LayoutConst.cretaScrollbarWidth : 0),
       height: widget.height,

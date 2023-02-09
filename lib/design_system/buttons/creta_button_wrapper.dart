@@ -502,16 +502,18 @@ class BTN {
   static CretaButton fill_blue_t_m({
     required String text,
     required Function onPressed,
+    double? width = 72,
+    TextStyle? textStyle,
   }) {
     return CretaButton(
-      width: 72,
-      height: 36,
+      width: width,
+      height: 34,
       buttonType: CretaButtonType.textOnly,
       buttonColor: CretaButtonColor.blue,
       text: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: Center(
-          child: Text(text, style: CretaFont.buttonMedium.copyWith(color: Colors.white)),
+          child: Text(text, style: textStyle ?? CretaFont.buttonMedium.copyWith(color: Colors.white)),
         ),
       ),
       onPressed: onPressed,
@@ -1087,7 +1089,7 @@ class BTN {
     IconData? icon,
     CretaButtonDeco decoType = CretaButtonDeco.fill,
   }) {
-    return CretaButton(
+    var cretaButton = CretaButton(
       width: width,
       height: 29,
       buttonType: icon == null ? CretaButtonType.textOnly : CretaButtonType.iconText,
@@ -1095,16 +1097,18 @@ class BTN {
       decoType: decoType,
       textStyle: textStyle,
       icon: icon == null ? null : Icon(icon, size: 12, color: Colors.white),
-      text: textStyle != null
-          ? null
-          : Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+      text: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: Center(
-          child: Text(text, style: CretaFont.buttonSmall.copyWith(color: Colors.white)),
+          child: Text(
+            text,
+            style: textStyle ?? CretaFont.buttonSmall.copyWith(color: Colors.white),
+          ),
         ),
       ),
       onPressed: onPressed,
     );
+    return cretaButton;
   }
 
   static CretaButton opacity_gray_it_m({

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/pages/community/community_sample_data.dart';
+import 'package:creta03/pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -126,6 +127,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         _titlePane = _getTitlePane;
         setUsingBannerScrollBar(
           scrollChangedCallback: _scrollChangedCallback,
+          bannerMinHeight: 160,
+          bannerMaxHeight: 160,
         );
         break;
       case AppRoutes.communityHome:
@@ -224,6 +227,34 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     ];
   }
 
+  List<Widget> _getHashtagListOnBanner() {
+    return [
+      BTN.opacity_gray_it_s(
+        text: '# 해시태그해시태그1',
+        textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
+        width: null,
+        onPressed: () {},
+        decoType: CretaButtonDeco.opacity,
+      ),
+      SizedBox(width: 12),
+      BTN.opacity_gray_it_s(
+        text: '# 해시태그2',
+        textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
+        width: null,
+        onPressed: () {},
+        decoType: CretaButtonDeco.opacity,
+      ),
+      SizedBox(width: 12),
+      BTN.opacity_gray_it_s(
+        text: '# 해시태그3',
+        textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
+        width: null,
+        onPressed: () {},
+        decoType: CretaButtonDeco.opacity,
+      ),
+    ];
+  }
+
   Widget _getCommunityHomeTitlePane(Size size) {
     if (size.height > 176 + 40) {
       return SizedBox(
@@ -242,7 +273,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             Container(
               width: size.width,
               height: size.height,
-              padding: EdgeInsets.fromLTRB(60, 0, 0, 0),
+              padding: EdgeInsets.fromLTRB(60, 0, 40, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 //crossAxisAlignment: CrossAxisAlignment.center,
@@ -266,6 +297,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         SizedBox(height: 23),
                         Text(
                           '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+                          overflow: TextOverflow.ellipsis,
                           style: CretaFont.bodyMedium.copyWith(
                             color: Colors.white,
                             fontSize: 16,
@@ -275,6 +307,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         SizedBox(height: 13),
                         Text(
                           '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
+                          overflow: TextOverflow.ellipsis,
                           style: CretaFont.bodyMedium.copyWith(
                             color: Colors.white,
                             fontSize: 16,
@@ -284,26 +317,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         SizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            BTN.opacity_gray_it_s(
-                              text: '# 해시태그해시태그1  ',
-                              //textStyle: CretaFont.buttonMedium,
-                              width: null,
-                              onPressed: () {}, decoType: CretaButtonDeco.opacity,
-                            ),
-                            SizedBox(width: 12),
-                            BTN.opacity_gray_it_s(
-                              text: '# 해시태그2  ',
-                              //textStyle: CretaFont.buttonMedium,
-                              onPressed: () {}, decoType: CretaButtonDeco.opacity,
-                            ),
-                            SizedBox(width: 12),
-                            BTN.opacity_gray_it_s(
-                              text: '# 해시태그3  ',
-                              //textStyle: CretaFont.buttonMedium,
-                              onPressed: () {}, decoType: CretaButtonDeco.opacity,
-                            ),
-                          ],
+                          children: _getHashtagListOnBanner(),
                         )
                       ],
                     ),
@@ -314,27 +328,108 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           ],
         ),
       );
+    } else if (size.height > 122 + 40) {
+      return SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Stack(
+          children: [
+            CustomImage(
+              key: CommunitySampleData.bannerKey,
+              duration: 500,
+              hasMouseOverEffect: false,
+              width: size.width,
+              height: size.height,
+              image: CommunitySampleData.bannerUrl,
+            ),
+            Container(
+              width: size.width,
+              height: size.height,
+              padding: EdgeInsets.fromLTRB(60, 0, 40, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                //crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: size.width,
+                    height: 122,
+                    //color: Colors.red,
+                    child: Row(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '커뮤니티 홈',
+                              style: CretaFont.displaySmall.copyWith(
+                                color: Colors.white,
+                                fontWeight: CretaFont.semiBold,
+                              ),
+                            ),
+                            SizedBox(height: 23),
+                            Text(
+                              '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+                              overflow: TextOverflow.ellipsis,
+                              style: CretaFont.bodyMedium.copyWith(
+                                color: Colors.white,
+                                fontSize: 16,
+                                //fontWeight: CretaFont.regular,
+                              ),
+                            ),
+                            SizedBox(height: 13),
+                            Text(
+                              '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
+                              overflow: TextOverflow.ellipsis,
+                              style: CretaFont.bodyMedium.copyWith(
+                                color: Colors.white,
+                                fontSize: 16,
+                                //fontWeight: CretaFont.regular,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Expanded(child: Container()),
+                        Row(
+                          children: _getHashtagListOnBanner(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
     }
-
-    return SizedBox(
+    return Container(
       width: size.width,
       height: size.height,
-      child: Stack(
+      padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+      child: Row(
         children: [
-          CustomImage(
-            key: CommunitySampleData.bannerKey,
-            duration: 500,
-            hasMouseOverEffect: false,
-            width: size.width,
-            height: size.height,
-            image: CommunitySampleData.bannerUrl,
+          //icon
+          Icon(Icons.home_outlined, size: 20),
+          SizedBox(width: 12),
+          //text
+          Text(
+            '커뮤니티 홈',
+            style: CretaFont.titleELarge.copyWith(fontWeight: CretaFont.semiBold),
           ),
-          Container(
-            width: size.width,
-            height: size.height,
-            padding: EdgeInsets.all(100),
-            child: Text('커뮤니티 홈2'),
+          SizedBox(width: 24),
+          //text
+          Text(
+            '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+            overflow: TextOverflow.ellipsis,
+            style: CretaFont.bodyMedium.copyWith(fontWeight: CretaFont.regular),
           ),
+          //space
+          Expanded(
+            child: Container(),
+          ),
+          //hash tag
+          ..._getHashtagListOnBanner(),
         ],
       ),
     );
@@ -345,7 +440,6 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       case AppRoutes.subscriptionList:
         return Container();
       case AppRoutes.playlist:
-      case AppRoutes.playlistDetail:
         return SizedBox(
           width: size.width,
           height: size.height,
@@ -379,6 +473,60 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       fontFamily: 'Pretendard',
                     ),
                   ),
+                ],
+              ),
+            ],
+          ),
+        );
+      case AppRoutes.playlistDetail:
+        return Container(
+          width: size.width,
+          height: size.height,
+          //color: Colors.red,
+          padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '재생목록 01',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 22,
+                      color: Colors.grey[800],
+                      fontFamily: 'Pretendard',
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(
+                    Icons.lock_outline,
+                    size: 16,
+                  ),
+                  SizedBox(width: 28),
+                  Text(
+                    '사용자 닉네임',
+                    style: CretaFont.buttonMedium,
+                  ),
+                  SizedBox(width: 28),
+                  Text(
+                    '영상 54개',
+                    style: CretaFont.buttonMedium,
+                  ),
+                  SizedBox(width: 28),
+                  Text(
+                    '최근 업데이트 1일전',
+                    style: CretaFont.buttonMedium,
+                  ),
+                  Expanded(child: Container()),
+                  BTN.fill_blue_t_m(
+                    text: '재생하기',
+                    width: null,
+                    onPressed: () {},
+                    textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                  ),
+                  SizedBox(width: 6),
+                  BTN.fill_gray_i_m(icon: Icons.menu, onPressed: () {}),
                 ],
               ),
             ],
@@ -441,6 +589,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         );
       case AppRoutes.playlist:
         return CommunityRightPlaylistPane(
+          pageWidth: size.width,
+          pageHeight: size.height,
+          scrollController: getBannerScrollController,
+        );
+      case AppRoutes.playlistDetail:
+        return CommunityRightPlaylistDetailPane(
           pageWidth: size.width,
           pageHeight: size.height,
           scrollController: getBannerScrollController,
