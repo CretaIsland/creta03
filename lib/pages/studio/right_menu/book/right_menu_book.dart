@@ -13,6 +13,7 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../studio_constant.dart';
 import 'book_info_property.dart';
+import 'book_page_property.dart';
 
 class RightMenuBook extends StatefulWidget {
   const RightMenuBook({super.key});
@@ -103,20 +104,16 @@ class _RightMenuBookState extends State<RightMenuBook> {
           });
     }
     if (_selectedTab == menu[1]) {
-      return _pageSettings();
+      return BookPageProperty(
+          model: _model!,
+          parentNotify: () {
+            setState(() {});
+          });
     }
     if (_selectedTab == menu[2]) {
       return _authority();
     }
     return Container();
-  }
-
-  Widget _pageSettings() {
-    return Column(
-      children: [
-        Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
-      ],
-    );
   }
 
   Widget _authority() {

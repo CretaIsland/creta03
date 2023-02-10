@@ -51,6 +51,9 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
 
     _titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
     _dataStyle = CretaFont.bodySmall;
+
+    //BookMainPage.onceBookInfoOpened = true; // 처음한번만 열리도록 한다.
+
     super.initState();
   }
 
@@ -84,7 +87,9 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
         hintText: '',
         textFieldKey: GlobalKey(),
         onEditComplete: (String value) {
-          widget.model.description.set(value);
+          setState(() {
+            widget.model.description.set(value);
+          });
         },
         value: widget.model.description.value,
       ),
@@ -181,6 +186,19 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
       Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 18),
         child: Text(CretaStudioLang.infomation, style: CretaFont.titleSmall),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 6, bottom: 6),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              CretaStudioLang.createDate,
+              style: _titleStyle,
+            ),
+            Text(widget.model.createTime.toString(), style: _dataStyle),
+          ],
+        ),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 6, bottom: 6),

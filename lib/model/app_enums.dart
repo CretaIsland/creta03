@@ -12,6 +12,8 @@
 //   static ModelType fromInt(int? val) => ModelType.values[validCheck(val ?? none.index)];
 // }
 
+// ignore_for_file: constant_identifier_names
+
 enum BookType {
   none,
   presentaion,
@@ -22,6 +24,20 @@ enum BookType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static BookType fromInt(int? val) => BookType.values[validCheck(val ?? none.index)];
+}
+
+enum PageSizeType {
+  none,
+  normal4x3,
+  wideScreen16x9,
+  wideScreen16x10,
+  banner,
+  a4,
+  b5,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static PageSizeType fromInt(int? val) => PageSizeType.values[validCheck(val ?? none.index)];
 }
 
 enum CopyWrightType {

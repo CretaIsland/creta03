@@ -35,6 +35,8 @@ BookManager? bookManagerHolder;
 // ignore: must_be_immutable
 class BookMainPage extends StatefulWidget {
   static String selectedMid = '';
+  static bool onceBookInfoOpened = false;
+
   const BookMainPage({super.key});
 
   static LeftMenuEnum selectedStick = LeftMenuEnum.None;
@@ -300,21 +302,37 @@ class _BookMainPageState extends State<BookMainPage> {
                   });
                 },
               ),
-        BookMainPage.selectedClass == RightMenuEnum.None
-            ? Container(width: 0, height: 0, color: Colors.transparent)
-            : Positioned(
+        _shouldRightMenuOpen()
+            ? Positioned(
                 top: 0,
                 left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
                 child: RightMenu(
                   onClose: () {
                     setState(() {
+                      if (BookMainPage.selectedClass == RightMenuEnum.Book) {
+                        BookMainPage.onceBookInfoOpened = true;
+                      }
                       BookMainPage.selectedClass = RightMenuEnum.None;
                     });
                   },
                 ),
-              ),
+              )
+            : Container(width: 0, height: 0, color: Colors.transparent)
       ],
     );
+  }
+
+  bool _shouldRightMenuOpen() {
+    if (BookMainPage.selectedClass == RightMenuEnum.None) {
+      return false;
+    }
+    if (BookMainPage.selectedClass == RightMenuEnum.Book) {
+      if (BookMainPage.onceBookInfoOpened == true) {
+        return false;
+      }
+      return true;
+    }
+    return true;
   }
 
   Widget _topMenu() {
@@ -436,6 +454,7 @@ class _BookMainPageState extends State<BookMainPage> {
             onLabelHovered: () {
               setState(() {
                 BookMainPage.selectedClass = RightMenuEnum.Book;
+                BookMainPage.onceBookInfoOpened = false;
               });
             },
           ),

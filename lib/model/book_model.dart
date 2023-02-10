@@ -22,6 +22,7 @@ class BookModel extends CretaModel {
   late UndoAble<bool> isSilent;
   late UndoAble<bool> isAutoPlay;
   late UndoAble<BookType> bookType;
+  late UndoAble<PageSizeType> pageSizeType;
   late UndoAble<CopyWrightType> copyWright;
   late UndoAble<String> description;
   late UndoAble<bool> isReadOnly;
@@ -48,6 +49,7 @@ class BookModel extends CretaModel {
         isSilent,
         isAutoPlay,
         bookType,
+        pageSizeType,
         copyWright,
         description,
         isReadOnly,
@@ -71,6 +73,7 @@ class BookModel extends CretaModel {
     isSilent = UndoAble<bool>(false, mid);
     isAutoPlay = UndoAble<bool>(false, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
+    pageSizeType = UndoAble<PageSizeType>(PageSizeType.none, mid);
     copyWright = UndoAble<CopyWrightType>(CopyWrightType.free, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = 0;
@@ -106,6 +109,7 @@ class BookModel extends CretaModel {
     isSilent = UndoAble<bool>(false, mid);
     isAutoPlay = UndoAble<bool>(false, mid);
     bookType = UndoAble<BookType>(bookTypeVal, mid);
+    pageSizeType = UndoAble<PageSizeType>(PageSizeType.none, mid);
     copyWright = UndoAble<CopyWrightType>(copyWrightVal, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = likeNo;
@@ -135,6 +139,7 @@ class BookModel extends CretaModel {
     isSilent = UndoAble<bool>(srcBook.isSilent.value, mid);
     isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid);
     bookType = UndoAble<BookType>(srcBook.bookType.value, mid);
+    pageSizeType = UndoAble<PageSizeType>(srcBook.pageSizeType.value, mid);
     copyWright = UndoAble<CopyWrightType>(srcBook.copyWright.value, mid);
     isReadOnly = UndoAble<bool>(srcBook.isReadOnly.value, mid);
     viewCount = srcBook.viewCount;
@@ -159,6 +164,7 @@ class BookModel extends CretaModel {
     isAutoPlay.set(map["isAutoPlay"] ?? false, save: false, noUndo: true);
     isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
     bookType.set(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
+    pageSizeType.set(PageSizeType.fromInt(map["pageSizeType"] ?? 0), save: false, noUndo: true);
     copyWright.set(CopyWrightType.fromInt(map["copyWright"] ?? 1), save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
@@ -187,6 +193,7 @@ class BookModel extends CretaModel {
         "isAutoPlay": isAutoPlay.value,
         "isReadOnly": isReadOnly.value,
         "bookType": bookType.value.index,
+        "pageSizeType": pageSizeType.value.index,
         "copyWright": copyWright.value.index,
         "description": description.value,
         "thumbnailUrl": thumbnailUrl.value,

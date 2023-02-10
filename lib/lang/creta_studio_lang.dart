@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 
 class CretaStudioLang {
+  static List<String> pageSizeList = [
+    "사용자지정",
+    "표준스크린 4:3",
+    "와이드스크린 16:9",
+    "와이드스크린 16:10",
+    "배너",
+    "A4",
+    "B5",
+    "End",
+  ];
+
   static List<String> copyWrightList = [
     "None",
     "자유로운 사용 가능",
@@ -112,8 +123,11 @@ class CretaStudioLang {
   static const String onLine = "온라인";
   static const String offLine = "오프라인";
 
-  static const String updateDate = "만든 날짜";
+  static const String updateDate = "마지막 수정 날짜";
+  static const String createDate = "만든 날짜";
   static const String creator = "만든 사람";
   static const String copyWright = "저작권";
   static const String bookType = "크레타북 용도";
+  static const String width = "너비";
+  static const String height = "높이";
 }
