@@ -12,7 +12,7 @@ class SampleData {
 
   static initSample() {
     sampleBook.name
-        .set(CretaStudioLang.defaultBookName, save: false, noUndo: true, dontChangeBookTime: true);
+        .set(CretaStudioLang.sampleBookName, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.width.set(1920, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.height.set(1080, save: false, noUndo: true, dontChangeBookTime: true);
 

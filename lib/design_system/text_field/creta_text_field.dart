@@ -341,7 +341,7 @@ class CretaTextFieldState extends State<CretaTextField> {
               : null,
       maxLines: widget.maxLines,
       enabled: true,
-      autofocus: true,
+      autofocus: false,
       decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
       padding: isNumeric()
           ? EdgeInsetsDirectional.only(start: 8, end: 0)

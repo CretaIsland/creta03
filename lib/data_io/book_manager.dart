@@ -102,7 +102,7 @@ class BookManager extends CretaManager {
     search(['name', 'hashTag'], value, afterSearch);
   }
 
-  BookModel createDefault({
+  BookModel createSample({
     int width = 1920,
     int height = 1080,
   }) {
@@ -110,22 +110,22 @@ class BookManager extends CretaManager {
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
-    String name = '${CretaStudioLang.defaultBookName} ';
+    String name = '${CretaStudioLang.sampleBookName} ';
     name += CretaUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
-    BookModel defaultBook = BookModel.withName(name,
+    BookModel sampleBook = BookModel.withName(name,
         creator: AccountManager.currentLoginUser.email,
         creatorName: AccountManager.currentLoginUser.name,
         imageUrl: url);
-    defaultBook.width.set(width, save: false, noUndo: true, dontChangeBookTime: true);
-    defaultBook.height.set(height, save: false, noUndo: true, dontChangeBookTime: true);
-    return defaultBook;
+    sampleBook.width.set(width, save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.height.set(height, save: false, noUndo: true, dontChangeBookTime: true);
+    return sampleBook;
   }
 
-  Future<BookModel> saveDefault(BookModel defaultBook) async {
-    await createToDB(defaultBook);
-    insert(defaultBook);
-    return defaultBook;
+  Future<BookModel> saveSample(BookModel sampleBook) async {
+    await createToDB(sampleBook);
+    insert(sampleBook);
+    return sampleBook;
   }
 
   Future<List<AbsExModel>> sharedData(String userId, {int? limit}) async {

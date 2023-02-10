@@ -11,7 +11,7 @@ import '../studio_constant.dart';
 import '../left_menu/left_menu_mixin.dart';
 import '../studio_snippet.dart';
 import '../studio_variables.dart';
-import 'right_menu_book.dart';
+import 'book/right_menu_book.dart';
 
 class RightMenu extends StatefulWidget {
   //final RightMenuEnum selectedStick;
@@ -24,9 +24,10 @@ class RightMenu extends StatefulWidget {
 
 class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMixin, LeftMenuMixin {
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
-
+  //late ScrollController _scrollController;
   @override
   void initState() {
+    //_scrollController = ScrollController(initialScrollOffset: 0.0);
     super.initAnimation(this);
     super.initState();
   }
@@ -40,47 +41,51 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     Widget title = eachTitle(BookMainPage.selectedClass);
-    return super.buildAnimation(
-      context,
-      width: LayoutConst.rightMenuWidth,
-      shadowDirection: ShadowDirection.leftTop,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: LayoutConst.rightMenuTitleHeight,
-            width: LayoutConst.rightMenuWidth,
-            child: Row(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, left: 8),
-                      child: super.closeButton(
-                          icon: Icons.keyboard_double_arrow_right_outlined,
-                          onClose: widget.onClose),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2, left: 16.0),
-                      child: Center(
-                        child: SizedBox(
-                          width: 300,
-                          child: title,
+    return SizedBox(
+      height: StudioVariables.workHeight,
+      child: super.buildAnimation(
+        context,
+        width: LayoutConst.rightMenuWidth,
+        shadowDirection: ShadowDirection.leftTop,
+        child: ListView(
+          shrinkWrap: true,
+          //mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: LayoutConst.rightMenuTitleHeight,
+              width: LayoutConst.rightMenuWidth,
+              child: Row(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, left: 8),
+                        child: super.closeButton(
+                            icon: Icons.keyboard_double_arrow_right_outlined,
+                            onClose: widget.onClose),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, left: 16.0),
+                        child: Center(
+                          child: SizedBox(
+                            width: 300,
+                            child: title,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            width: LayoutConst.rightMenuWidth,
-            child: eachWidget(BookMainPage.selectedClass),
-          )
-        ],
+            SizedBox(
+              width: LayoutConst.rightMenuWidth,
+              child: eachWidget(BookMainPage.selectedClass),
+            )
+          ],
+        ),
       ),
     );
   }

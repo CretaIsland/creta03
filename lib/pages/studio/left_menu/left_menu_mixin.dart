@@ -29,7 +29,7 @@ mixin LeftMenuMixin {
       {required Widget child,
       required double width,
       ShadowDirection shadowDirection = ShadowDirection.rightBottum}) {
-    double height = MediaQuery.of(context).size.height;
+    //double height = MediaQuery.of(context).size.height;
     //double closeIconSize = 20.0;
     return SlideTransition(
       position: Tween<Offset>(
@@ -40,7 +40,7 @@ mixin LeftMenuMixin {
         opacity: _animationController,
         child: Container(
             //margin: const EdgeInsets.only(top: LayoutConst.layoutMargin),
-            height: height,
+            //height: height,
             width: width,
             decoration: BoxDecoration(
               color: Colors.white,

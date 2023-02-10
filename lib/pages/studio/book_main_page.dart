@@ -91,6 +91,12 @@ class _BookMainPageState extends State<BookMainPage> {
       bookManagerHolder!.getFromDB(mid).then((value) async {
         bookManagerHolder!.addRealTimeListen();
         if (bookManagerHolder!.getLength() > 0) {
+          saveManagerHolder!.setDefaultBook(bookManagerHolder!.onlyOne());
+          saveManagerHolder!.addBookChildren('book=');
+          saveManagerHolder!.addBookChildren('page=');
+          saveManagerHolder!.addBookChildren('frame=');
+          saveManagerHolder!.addBookChildren('contents=');
+
           pageManagerHolder = PageManager(bookModel: bookManagerHolder!.onlyOne()! as BookModel);
           pageManagerHolder!.clearAll();
 
@@ -100,13 +106,14 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     } else {
-      BookModel defaultBook = bookManagerHolder!.createDefault();
-      mid = defaultBook.mid;
+      BookModel sampleBook = bookManagerHolder!.createSample();
+      mid = sampleBook.mid;
+      saveManagerHolder!.setDefaultBook(sampleBook);
 
-      pageManagerHolder = PageManager(bookModel: defaultBook);
+      pageManagerHolder = PageManager(bookModel: sampleBook);
       pageManagerHolder!.clearAll();
 
-      bookManagerHolder!.saveDefault(defaultBook).then((value) async {
+      bookManagerHolder!.saveSample(sampleBook).then((value) async {
         bookManagerHolder!.addRealTimeListen();
         await _getPages();
         _onceDBGetComplete = true;
@@ -595,11 +602,11 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _drawPage(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: StudioVariables.virtualWidth,
       height: StudioVariables.virtualHeight,
       //color: LayoutConst.studioBGColor,
-      color: Colors.amber,
+      //color: Colors.amber,
       child: Center(
         child: Container(
           decoration: BoxDecoration(
