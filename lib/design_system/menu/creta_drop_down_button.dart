@@ -11,6 +11,7 @@ class CretaDropDownButton extends StatefulWidget {
   //final double width;
   final double height;
   final List<CretaMenuItem> dropDownMenuItemList;
+  final MainAxisAlignment align;
   double? width;
   TextStyle? textStyle;
   double? iconSize;
@@ -22,6 +23,7 @@ class CretaDropDownButton extends StatefulWidget {
     this.iconSize,
     required this.height,
     required this.dropDownMenuItemList,
+    this.align = MainAxisAlignment.center,
   });
 
   @override
@@ -74,7 +76,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         //     width: widget.width,
         height: widget.height,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: widget.align,
           children: [
             Text(
               displayString,

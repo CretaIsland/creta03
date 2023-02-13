@@ -107,10 +107,12 @@ class BTN {
   static CretaButton fill_blue_i_menu({
     required IconData icon,
     required Function onPressed,
+    double width = 24,
+    double height = 24,
   }) {
     return CretaButton(
-      width: 24,
-      height: 24,
+      width: width,
+      height: height,
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.sky,
       isSelectedWidget: true,
@@ -513,7 +515,8 @@ class BTN {
       text: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: Center(
-          child: Text(text, style: textStyle ?? CretaFont.buttonMedium.copyWith(color: Colors.white)),
+          child:
+              Text(text, style: textStyle ?? CretaFont.buttonMedium.copyWith(color: Colors.white)),
         ),
       ),
       onPressed: onPressed,

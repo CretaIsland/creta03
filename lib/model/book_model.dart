@@ -22,13 +22,17 @@ class BookModel extends CretaModel {
   late UndoAble<bool> isSilent;
   late UndoAble<bool> isAutoPlay;
   late UndoAble<BookType> bookType;
-  late UndoAble<PageSizeType> pageSizeType;
+  late UndoAble<int> pageSizeType;
   late UndoAble<CopyWrightType> copyWright;
   late UndoAble<String> description;
   late UndoAble<bool> isReadOnly;
   late UndoAble<String> thumbnailUrl;
   late UndoAble<ContentsType> thumbnailType;
   late UndoAble<double> thumbnailAspectRatio;
+  late UndoAble<Color> bgColor1;
+  late UndoAble<Color> bgColor2;
+  late UndoAble<double> opacity;
+  late UndoAble<GradationType> gradationType;
   int viewCount = 0;
   int likeCount = 0;
   List<String> owners = [];
@@ -62,6 +66,10 @@ class BookModel extends CretaModel {
         readers,
         writers,
         shares,
+        bgColor1,
+        bgColor2,
+        opacity,
+        gradationType,
       ];
   BookModel(String pmid) : super(pmid: pmid, type: ExModelType.book, parent: '') {
     name = UndoAble<String>('', mid);
@@ -73,7 +81,7 @@ class BookModel extends CretaModel {
     isSilent = UndoAble<bool>(false, mid);
     isAutoPlay = UndoAble<bool>(false, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
-    pageSizeType = UndoAble<PageSizeType>(PageSizeType.none, mid);
+    pageSizeType = UndoAble<int>(0, mid);
     copyWright = UndoAble<CopyWrightType>(CopyWrightType.free, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = 0;
@@ -83,6 +91,10 @@ class BookModel extends CretaModel {
     writers = [];
     shares = [];
     description = UndoAble<String>("You could do it simple and plain", mid);
+    bgColor1 = UndoAble<Color>(Colors.white, mid);
+    bgColor2 = UndoAble<Color>(Colors.white, mid);
+    opacity = UndoAble<double>(0, mid);
+    gradationType = UndoAble<GradationType>(GradationType.none, mid);
   }
 
   BookModel.withName(
@@ -109,7 +121,7 @@ class BookModel extends CretaModel {
     isSilent = UndoAble<bool>(false, mid);
     isAutoPlay = UndoAble<bool>(false, mid);
     bookType = UndoAble<BookType>(bookTypeVal, mid);
-    pageSizeType = UndoAble<PageSizeType>(PageSizeType.none, mid);
+    pageSizeType = UndoAble<int>(0, mid);
     copyWright = UndoAble<CopyWrightType>(copyWrightVal, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = likeNo;
@@ -122,6 +134,10 @@ class BookModel extends CretaModel {
     if (desc != null) {
       description = UndoAble<String>(desc, mid);
     }
+    bgColor1 = UndoAble<Color>(Colors.white, mid);
+    bgColor2 = UndoAble<Color>(Colors.white, mid);
+    opacity = UndoAble<double>(0, mid);
+    gradationType = UndoAble<GradationType>(GradationType.none, mid);
     logger.finest('owners=${owners.toString()}');
   }
   @override
@@ -139,7 +155,7 @@ class BookModel extends CretaModel {
     isSilent = UndoAble<bool>(srcBook.isSilent.value, mid);
     isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid);
     bookType = UndoAble<BookType>(srcBook.bookType.value, mid);
-    pageSizeType = UndoAble<PageSizeType>(srcBook.pageSizeType.value, mid);
+    pageSizeType = UndoAble<int>(srcBook.pageSizeType.value, mid);
     copyWright = UndoAble<CopyWrightType>(srcBook.copyWright.value, mid);
     isReadOnly = UndoAble<bool>(srcBook.isReadOnly.value, mid);
     viewCount = srcBook.viewCount;
@@ -149,6 +165,11 @@ class BookModel extends CretaModel {
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];
     shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
+    bgColor1 = UndoAble<Color>(srcBook.bgColor1.value, mid);
+    bgColor2 = UndoAble<Color>(srcBook.bgColor1.value, mid);
+    opacity = UndoAble<double>(srcBook.opacity.value, mid);
+    gradationType = UndoAble<GradationType>(srcBook.gradationType.value, mid);
+
     logger.finest('BookCopied($mid)');
   }
 
@@ -164,7 +185,7 @@ class BookModel extends CretaModel {
     isAutoPlay.set(map["isAutoPlay"] ?? false, save: false, noUndo: true);
     isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
     bookType.set(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
-    pageSizeType.set(PageSizeType.fromInt(map["pageSizeType"] ?? 0), save: false, noUndo: true);
+    pageSizeType.set(map["pageSizeType"] ?? 0, save: false, noUndo: true);
     copyWright.set(CopyWrightType.fromInt(map["copyWright"] ?? 1), save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
@@ -174,6 +195,12 @@ class BookModel extends CretaModel {
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
     //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
+    bgColor1.set(
+        Color(int.parse((map["bgColor1"] ?? 'Color(0xFFFFFFFF)').substring(8, 16), radix: 16)));
+    bgColor2.set(
+        Color(int.parse((map["bgColor2"] ?? 'Color(0xFFFFFFFF)').substring(8, 16), radix: 16)));
+    opacity.set(map["opacity"] ?? 0);
+    gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0));
 
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);
@@ -193,7 +220,7 @@ class BookModel extends CretaModel {
         "isAutoPlay": isAutoPlay.value,
         "isReadOnly": isReadOnly.value,
         "bookType": bookType.value.index,
-        "pageSizeType": pageSizeType.value.index,
+        "pageSizeType": pageSizeType.value,
         "copyWright": copyWright.value.index,
         "description": description.value,
         "thumbnailUrl": thumbnailUrl.value,
@@ -201,6 +228,10 @@ class BookModel extends CretaModel {
         "thumbnailAspectRatio": thumbnailAspectRatio.value,
         "viewCount": viewCount,
         "likeCount": likeCount,
+        "bgColor1": bgColor1.value.toString(),
+        "bgColor2": bgColor2.value.toString(),
+        "opacity": opacity.value,
+        "gradationType": gradationType.value.index,
         "owners": CretaUtils.listToString(owners),
         "readers": CretaUtils.listToString(readers),
         "writers": CretaUtils.listToString(writers),

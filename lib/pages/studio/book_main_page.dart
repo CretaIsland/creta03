@@ -30,12 +30,11 @@ import 'studio_constant.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
 
-BookManager? bookManagerHolder;
-
 // ignore: must_be_immutable
 class BookMainPage extends StatefulWidget {
   static String selectedMid = '';
   static bool onceBookInfoOpened = false;
+  static BookManager? bookManagerHolder;
 
   const BookMainPage({super.key});
 
@@ -71,9 +70,9 @@ class _BookMainPageState extends State<BookMainPage> {
     super.initState();
     logger.finest("---_BookMainPageState-----------------------------------------");
 
-    bookManagerHolder = BookManager();
-    bookManagerHolder!.configEvent(notifyModify: false);
-    bookManagerHolder!.clearAll();
+    BookMainPage.bookManagerHolder = BookManager();
+    BookMainPage.bookManagerHolder!.configEvent(notifyModify: false);
+    BookMainPage.bookManagerHolder!.clearAll();
 
     String url = Uri.base.origin;
     String query = Uri.base.query;
@@ -90,16 +89,17 @@ class _BookMainPageState extends State<BookMainPage> {
     }
 
     if (mid.isNotEmpty) {
-      bookManagerHolder!.getFromDB(mid).then((value) async {
-        bookManagerHolder!.addRealTimeListen();
-        if (bookManagerHolder!.getLength() > 0) {
-          saveManagerHolder!.setDefaultBook(bookManagerHolder!.onlyOne());
+      BookMainPage.bookManagerHolder!.getFromDB(mid).then((value) async {
+        BookMainPage.bookManagerHolder!.addRealTimeListen();
+        if (BookMainPage.bookManagerHolder!.getLength() > 0) {
+          saveManagerHolder!.setDefaultBook(BookMainPage.bookManagerHolder!.onlyOne());
           saveManagerHolder!.addBookChildren('book=');
           saveManagerHolder!.addBookChildren('page=');
           saveManagerHolder!.addBookChildren('frame=');
           saveManagerHolder!.addBookChildren('contents=');
 
-          pageManagerHolder = PageManager(bookModel: bookManagerHolder!.onlyOne()! as BookModel);
+          pageManagerHolder =
+              PageManager(bookModel: BookMainPage.bookManagerHolder!.onlyOne()! as BookModel);
           pageManagerHolder!.clearAll();
 
           await _getPages();
@@ -108,15 +108,15 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     } else {
-      BookModel sampleBook = bookManagerHolder!.createSample();
+      BookModel sampleBook = BookMainPage.bookManagerHolder!.createSample();
       mid = sampleBook.mid;
       saveManagerHolder!.setDefaultBook(sampleBook);
 
       pageManagerHolder = PageManager(bookModel: sampleBook);
       pageManagerHolder!.clearAll();
 
-      bookManagerHolder!.saveSample(sampleBook).then((value) async {
-        bookManagerHolder!.addRealTimeListen();
+      BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
+        BookMainPage.bookManagerHolder!.addRealTimeListen();
         await _getPages();
         _onceDBGetComplete = true;
         return value;
@@ -144,7 +144,7 @@ class _BookMainPageState extends State<BookMainPage> {
   @override
   void dispose() {
     super.dispose();
-    bookManagerHolder?.removeRealTimeListen();
+    BookMainPage.bookManagerHolder?.removeRealTimeListen();
     saveManagerHolder?.stopTimer();
     saveManagerHolder?.unregisterManager('page');
     saveManagerHolder?.unregisterManager('book');
@@ -158,7 +158,7 @@ class _BookMainPageState extends State<BookMainPage> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<BookManager>.value(
-          value: bookManagerHolder!,
+          value: BookMainPage.bookManagerHolder!,
         ),
       ],
       child: Snippet.CretaScaffold(
@@ -178,7 +178,7 @@ class _BookMainPageState extends State<BookMainPage> {
     }
     var retval = CretaModelSnippet.waitData(
       context,
-      manager: bookManagerHolder!,
+      manager: BookMainPage.bookManagerHolder!,
       userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
     );
@@ -621,6 +621,7 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _drawPage(BuildContext context) {
+    logger.fine('_drawPage');
     return SizedBox(
       width: StudioVariables.virtualWidth,
       height: StudioVariables.virtualHeight,

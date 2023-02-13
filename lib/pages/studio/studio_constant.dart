@@ -1,4 +1,4 @@
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: constant_identifier_names, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 
@@ -25,10 +25,6 @@ enum RightMenuEnum {
   Frame,
   Contents,
   None,
-}
-
-class StudioConst {
-  static const double orderVar = 0.0000001;
 }
 
 class LayoutConst {
@@ -92,4 +88,52 @@ class LayoutConst {
   static const Size cretaTopFilterPaddingLT = Size(
       cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
   static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
+}
+
+class StudioConst {
+  static const double orderVar = 0.0000001;
+  static List<List<Size>> signageResolution = [
+    [],
+    [
+      Size(800, 600),
+      Size(1400, 1050),
+      Size(1440, 10800),
+      Size(1920, 1440),
+      Size(2048, 1536)
+    ], // 4,3 스크린
+    [Size(1280, 800), Size(1920, 1200), Size(2560, 1600)], //"16,10 스크린"
+    [
+      Size(1920, 1080),
+      Size(1280, 720),
+      Size(1366, 768),
+      Size(1600, 900),
+      Size(2560, 1440),
+      Size(3840, 2160),
+      Size(5120, 2880),
+      Size(7680, 4320)
+    ], //"16,9 스크린"
+    [Size(2560, 1080), Size(3440, 1440), Size(5120, 2160)], //"21,9 스크린"
+    [Size(3840, 1080), Size(5120, 1440)], //"32:9 스크린">
+  ];
+
+  static List<List<Size>> presentationResolution = [
+    [],
+    [
+      Size(800, 600),
+      Size(1400, 1050),
+      Size(1440, 1080),
+      Size(1920, 1440),
+      Size(2048, 1536)
+    ], // 4,3 스크린
+    [Size(1280, 800), Size(1920, 1200), Size(2560, 1600)], //"16,10 스크린"
+    [
+      Size(1920, 1080),
+      Size(1280, 720),
+      Size(3840, 2160),
+      Size(5120, 2880),
+      Size(7680, 4320)
+    ], //"16,9 스크린"
+    [Size(2560, 1080), Size(3440, 1440), Size(5120, 2160)], //"21,9 스크린"
+    [Size(3840, 1080), Size(5120, 1440)], //"32:9 스크린">
+  ];
 }

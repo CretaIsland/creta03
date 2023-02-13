@@ -4,7 +4,6 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 
-import '../creta_color.dart';
 import '../creta_font.dart';
 
 class CretaTabButton extends StatefulWidget {
@@ -12,17 +11,35 @@ class CretaTabButton extends StatefulWidget {
   final double height;
   final void Function(String value) onEditComplete;
   final List<String> buttonLables;
+  final List<IconData>? buttonIcons;
   final List<String> buttonValues;
   final String? defaultString;
+  final Color selectedBorderColor;
+  final Color unSelectedBorderColor;
+  final Color selectedColor;
+  final Color unSelectedColor;
+  final Color selectedTextColor;
+  final Color unSelectedTextColor;
+  final bool absoluteZeroSpacing;
+  final TextStyle? textStyle;
 
-  const CretaTabButton({
+  CretaTabButton({
     super.key,
     required this.onEditComplete,
     this.width = 95,
     this.height = 24,
     required this.buttonLables,
+    this.buttonIcons,
     required this.buttonValues,
     this.defaultString,
+    required this.selectedColor,
+    required this.unSelectedColor,
+    required this.selectedTextColor,
+    required this.unSelectedTextColor,
+    this.selectedBorderColor = Colors.transparent,
+    this.unSelectedBorderColor = Colors.transparent,
+    this.absoluteZeroSpacing = false,
+    this.textStyle,
   });
 
   @override
@@ -52,21 +69,22 @@ class _CretaTabButtonState extends State<CretaTabButton> {
         width: widget.width,
         //autoWidth: true,
         buttonTextStyle: ButtonTextStyle(
-          selectedColor: CretaColor.primary,
-          unSelectedColor: CretaColor.text[700]!,
+          selectedColor: widget.selectedTextColor,
+          unSelectedColor: widget.unSelectedTextColor,
           //textStyle: CretaFont.buttonMedium.copyWith(fontWeight: FontWeight.bold),
-          textStyle: CretaFont.buttonMedium,
+          textStyle: widget.textStyle ?? CretaFont.buttonMedium,
         ),
-        selectedBorderColor: Colors.transparent,
-        unSelectedBorderColor: Colors.transparent,
+        selectedBorderColor: widget.selectedBorderColor,
+        unSelectedBorderColor: widget.unSelectedBorderColor,
         elevation: 0,
         enableButtonWrap: true,
         enableShape: true,
         shapeRadius: 60,
-        absoluteZeroSpacing: false,
-        unSelectedColor: CretaColor.text[100]!,
-        selectedColor: Colors.white,
+        absoluteZeroSpacing: widget.absoluteZeroSpacing,
+        unSelectedColor: widget.unSelectedColor,
+        selectedColor: widget.selectedColor,
         buttonLables: widget.buttonLables,
+        buttonIcons: widget.buttonIcons,
         buttonValues: widget.buttonValues,
         radioButtonValue: (value) {
           logger.finest(value);

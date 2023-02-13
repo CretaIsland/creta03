@@ -76,6 +76,7 @@ class CretaTextField extends LastClickable {
   final int maxNumber;
   final TextEditingController? controller;
   final TextAlign align;
+  final Border? defaultBorder;
 
   CretaTextField({
     required this.textFieldKey,
@@ -93,6 +94,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.start,
+    this.defaultBorder,
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -111,6 +113,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.end,
+    this.defaultBorder,
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -129,6 +132,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 9999,
     this.minNumber = 0,
     this.align = TextAlign.end,
+    this.defaultBorder,
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -147,6 +151,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.end,
+    this.defaultBorder,
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -165,6 +170,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.start,
+    this.defaultBorder,
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -183,6 +189,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.start,
+    this.defaultBorder,
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -201,6 +208,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.start,
+    this.defaultBorder,
   }) : super(key: textFieldKey);
 
   @override
@@ -389,7 +397,7 @@ class CretaTextFieldState extends State<CretaTextField> {
       // : _hover
       //     ? CretaColor.text[200]!
       //     : CretaColor.text[100]!,
-      border: _clicked ? Border.all(color: CretaColor.primary) : null,
+      border: _clicked ? Border.all(color: CretaColor.primary) : widget.defaultBorder,
       borderRadius: BorderRadius.circular(widget.radius),
     );
   }
@@ -397,7 +405,7 @@ class CretaTextFieldState extends State<CretaTextField> {
   BoxDecoration _numberDecoBox() {
     return BoxDecoration(
       color: Colors.white,
-      border: _clicked ? Border.all(color: CretaColor.primary) : null,
+      border: _clicked ? Border.all(color: CretaColor.primary) : widget.defaultBorder,
       // : _hover
       //     ? Border.all(color: CretaColor.text[200]!)
       //     : null,

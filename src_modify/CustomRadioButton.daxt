@@ -5,6 +5,7 @@ class CustomRadioButton<T> extends StatefulWidget {
   CustomRadioButton({
     super.key,
     required this.buttonLables,
+    this.buttonIcons,  //skpark
     required this.buttonValues,
     this.buttonTextStyle = const ButtonTextStyle(),
     this.autoWidth = false,
@@ -75,6 +76,7 @@ class CustomRadioButton<T> extends StatefulWidget {
   final double width;
 
   final List<String> buttonLables;
+  final List<IconData>? buttonIcons;  //skpark buttonIcons
 
   ///Styling class for label
   final ButtonTextStyle buttonTextStyle;
@@ -119,11 +121,12 @@ class CustomRadioButton<T> extends StatefulWidget {
 class _CustomRadioButtonState<T> extends State<CustomRadioButton<T>> {
   String? _currentSelectedLabel;
 
-  Color borderColor(index) =>
-      (_currentSelectedLabel == widget.buttonLables[index]
+  Color borderColor(index) {
+      return (_currentSelectedLabel == widget.buttonLables[index]
           ? widget.selectedBorderColor
           : widget.unSelectedBorderColor) ??
       Theme.of(context).primaryColor;
+  }
 
   @override
   void initState() {
@@ -174,9 +177,10 @@ class _CustomRadioButtonState<T> extends State<CustomRadioButton<T>> {
                 setState(() {
                   _currentSelectedLabel = widget.buttonLables[index];
                 });
-              },
-              child: Text(
-                widget.buttonLables[index],
+              }, 
+                //skpark
+              child:  widget.buttonIcons == null ? Text(   //skpark
+                widget.buttonLables[index],   //skpark
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -185,7 +189,14 @@ class _CustomRadioButtonState<T> extends State<CustomRadioButton<T>> {
                       ? widget.buttonTextStyle.selectedColor
                       : widget.buttonTextStyle.unSelectedColor,
                 ),
-              ),
+              ):
+              Center (child:
+              Icon( widget.buttonIcons![index],
+              size: widget.width / 2, 
+                  color: _currentSelectedLabel == widget.buttonLables[index]
+                      ? widget.buttonTextStyle.selectedColor
+                      : widget.buttonTextStyle.unSelectedColor,
+                              ),),
             ),
           ),
         ),
@@ -234,7 +245,7 @@ class _CustomRadioButtonState<T> extends State<CustomRadioButton<T>> {
                 _currentSelectedLabel = widget.buttonLables[index];
               });
             },
-            child: Text(
+            child: widget.buttonIcons == null ? Text(   //skpark
               widget.buttonLables[index],
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
@@ -244,7 +255,14 @@ class _CustomRadioButtonState<T> extends State<CustomRadioButton<T>> {
                     ? widget.buttonTextStyle.selectedColor
                     : widget.buttonTextStyle.unSelectedColor,
               ),
-            ),
+            ):  //skpark
+              Center (child:
+              Icon( widget.buttonIcons![index],
+              size: widget.width / 2, 
+                  color: _currentSelectedLabel == widget.buttonLables[index]
+                      ? widget.buttonTextStyle.selectedColor
+                      : widget.buttonTextStyle.unSelectedColor,
+                              ),),
           ),
         ),
       );

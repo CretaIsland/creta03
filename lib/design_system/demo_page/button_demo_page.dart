@@ -13,6 +13,7 @@ import '../buttons/creta_tab_button.dart';
 import '../buttons/creta_thick_choice.dart';
 import '../buttons/creta_toggle_button.dart';
 import '../component/snippet.dart';
+import '../creta_color.dart';
 //import '../creta_color.dart';
 //import '../creta_font.dart';
 
@@ -54,6 +55,10 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                         "PARENT",
                         "TEACHER",
                       ],
+                      selectedTextColor: CretaColor.primary,
+                      unSelectedTextColor: CretaColor.text[700]!,
+                      selectedColor: Colors.white,
+                      unSelectedColor: CretaColor.text[100]!,
                     ),
                   ],
                 ),

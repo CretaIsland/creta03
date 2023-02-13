@@ -111,7 +111,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
       case RightMenuEnum.Book:
         {
           String name = '';
-          BookModel? model = bookManagerHolder?.onlyOne() as BookModel?;
+          BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
           if (model == null) {
             return Container();
           }
@@ -128,7 +128,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
               setState(() {
                 model.name.set(value);
               });
-              bookManagerHolder?.notify();
+              BookMainPage.bookManagerHolder?.notify();
             },
             onLabelHovered: () {},
           );

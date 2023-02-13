@@ -7,7 +7,6 @@ import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:material_tag_editor/tag_editor.dart';
 
 import '../../../../common/creta_utils.dart';
-import '../../../../data_io/book_manager.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
@@ -28,8 +27,6 @@ class BookInfoProperty extends StatefulWidget {
 }
 
 class _BookInfoPropertyState extends State<BookInfoProperty> {
-  // ignore: unused_field
-  BookManager? _bookManager;
   // ignore: unused_field
   //late ScrollController _scrollController;
 

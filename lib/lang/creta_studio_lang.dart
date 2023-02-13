@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 
 class CretaStudioLang {
-  static List<String> pageSizeList = [
+  static List<String> pageSizeListPresentation = [
+    // 영문기준 14자가 넘지 않도록 한다.
     "사용자지정",
     "표준스크린 4:3",
-    "와이드스크린 16:9",
-    "와이드스크린 16:10",
-    "배너",
+    "와이드 16:9",
+    "와이드 16:10",
     "A4",
     "B5",
-    "End",
+  ];
+
+  static List<String> pageSizeListSignage = [
+    "사용자지정",
+    "4:3 스크린",
+    "16:10 스크린",
+    "16:9 스크린",
+    "21:9 스크린",
+    "32:9 스크린",
   ];
 
   static List<String> copyWrightList = [
@@ -74,6 +82,12 @@ class CretaStudioLang {
     "사용자정의",
   ];
 
+  static const List<String> colorTypes = [
+    //"전체",
+    "단색",
+    "그라데이션",
+  ];
+
   static const String myCretaBook = "내 크레타북";
   static const String sharedCretaBook = "공유 크레타북";
   static const String teamCretaBook = "팀북";
@@ -120,6 +134,7 @@ class CretaStudioLang {
   static const String hashTab = "해쉬태그";
   static const String infomation = "정보";
   static const String pageSize = "페이지 크기";
+  static const String pageBgColor = "페이지 배경";
   static const String onLine = "온라인";
   static const String offLine = "오프라인";
 
@@ -130,4 +145,6 @@ class CretaStudioLang {
   static const String bookType = "크레타북 용도";
   static const String width = "너비";
   static const String height = "높이";
+  static const String color = "색";
+  static const String opacity = "투명도";
 }

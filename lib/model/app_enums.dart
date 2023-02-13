@@ -26,20 +26,6 @@ enum BookType {
   static BookType fromInt(int? val) => BookType.values[validCheck(val ?? none.index)];
 }
 
-enum PageSizeType {
-  none,
-  normal4x3,
-  wideScreen16x9,
-  wideScreen16x10,
-  banner,
-  a4,
-  b5,
-  end;
-
-  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static PageSizeType fromInt(int? val) => PageSizeType.values[validCheck(val ?? none.index)];
-}
-
 enum CopyWrightType {
   none,
   free,
@@ -71,4 +57,22 @@ enum PageTransition {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static PageTransition fromInt(int? val) => PageTransition.values[validCheck(val ?? none.index)];
+}
+
+enum GradationType {
+  none,
+  top2bottom,
+  bottom2top,
+  left2right,
+  right2left,
+  leftTop2rightBottom,
+  leftBottom2rightTop,
+  rightBottom2leftTop,
+  rightTop2leftBottom,
+  in2out,
+  out2in,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static GradationType fromInt(int? val) => GradationType.values[validCheck(val ?? none.index)];
 }

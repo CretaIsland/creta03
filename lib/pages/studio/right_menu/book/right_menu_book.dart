@@ -11,6 +11,7 @@ import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
+import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import 'book_info_property.dart';
 import 'book_page_property.dart';
@@ -23,8 +24,6 @@ class RightMenuBook extends StatefulWidget {
 }
 
 class _RightMenuBookState extends State<RightMenuBook> {
-  // ignore: unused_field
-  BookManager? _bookManager;
   // ignore: unused_field
   //late ScrollController _scrollController;
   double horizontalPadding = 24;
@@ -51,8 +50,7 @@ class _RightMenuBookState extends State<RightMenuBook> {
   @override
   Widget build(BuildContext context) {
     return Consumer<BookManager>(builder: (context, bookManager, child) {
-      _bookManager = bookManager;
-      _model = _bookManager?.onlyOne() as BookModel?;
+      _model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
       if (_model == null) {
         return Center(
           child: Text("No CretaBook Selected", style: CretaFont.titleLarge),
@@ -79,6 +77,10 @@ class _RightMenuBookState extends State<RightMenuBook> {
               _selectedTab = value;
             });
           },
+          selectedTextColor: CretaColor.primary,
+          unSelectedTextColor: CretaColor.text[700]!,
+          selectedColor: Colors.white,
+          unSelectedColor: CretaColor.text[100]!,
           defaultString: CretaStudioLang.bookInfoTabBar.values.first,
           buttonLables: CretaStudioLang.bookInfoTabBar.keys.toList(),
           buttonValues: CretaStudioLang.bookInfoTabBar.values.toList()),

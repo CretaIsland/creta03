@@ -64,6 +64,7 @@ dependencies:
   get: ^4.6.5
   dotted_border: ^2.0.0+3
   material_tag_editor: ^0.1.2
+  quiver: ^3.2.1
 
 
 dev_dependencies:
