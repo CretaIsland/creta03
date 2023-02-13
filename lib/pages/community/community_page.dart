@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/pages/community/community_sample_data.dart';
+import 'package:creta03/pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -27,7 +28,7 @@ import '../../lang/creta_lang.dart';
 
 import 'package:creta03/pages/community/sub_pages/community_right_home_pane.dart';
 import 'package:creta03/pages/community/sub_pages/community_right_playlist_pane.dart';
-import 'package:creta03/pages/community/sub_pages/community_right_playlist_detail_pane.dart';
+//import 'package:creta03/pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 
 //bool _isInUsingCanvaskit = false;
 
@@ -280,7 +281,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             Container(
               width: size.width,
               height: size.height,
-              padding: EdgeInsets.fromLTRB(60,0,40,0),
+              padding: EdgeInsets.fromLTRB(60, 0, 40, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 //crossAxisAlignment: CrossAxisAlignment.center,
@@ -321,10 +322,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           ),
                         ),
                         SizedBox(height: 24),
-                        Row(
+                        (size.width > 300)
+                            ? Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: _getHashtagListOnBanner(),
                         )
+                            : Container(),
                       ],
                     ),
                   ),
@@ -351,7 +354,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             Container(
               width: size.width,
               height: size.height,
-              padding: EdgeInsets.fromLTRB(60,0,40,0),
+              padding: EdgeInsets.fromLTRB(60, 0, 40, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 //crossAxisAlignment: CrossAxisAlignment.center,
@@ -412,7 +415,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return Container(
       width: size.width,
       height: size.height,
-      padding: EdgeInsets.fromLTRB(40,0,40,0),
+      padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
       child: Row(
         children: [
           //icon
@@ -431,7 +434,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             style: CretaFont.bodyMedium.copyWith(fontWeight: CretaFont.regular),
           ),
           //space
-          Expanded(child: Container(),),
+          Expanded(
+            child: Container(),
+          ),
           //hash tag
           ..._getHashtagListOnBanner(),
         ],

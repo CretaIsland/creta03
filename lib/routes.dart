@@ -77,9 +77,10 @@ final routesLoggedOut = RouteMap(
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (_) {
-      // if (BookMainPage.selectedMid.isEmpty) {
-      //   BookMainPage.selectedMid = "book=0d5480be-d73b-4961-b9af-4d8f3394097a";
-      // }
+      //skpark test code
+      if (BookMainPage.selectedMid.isEmpty) {
+        BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+      }
       logger.fine('selectedMid=${BookMainPage.selectedMid}');
       return TransitionPage(child: BookMainPage());
     },
@@ -93,29 +94,29 @@ final routesLoggedOut = RouteMap(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.teamPage),
         ),
     AppRoutes.communityHome: (_) => TransitionPage(
-      child: CommunityPage(
-        key: GlobalKey(),
-        subPageUrl: AppRoutes.communityHome,
-      ),
-    ),
+          child: CommunityPage(
+            key: GlobalKey(),
+            subPageUrl: AppRoutes.communityHome,
+          ),
+        ),
     AppRoutes.subscriptionList: (_) => TransitionPage(
-      child: CommunityPage(
-        key: GlobalKey(),
-        subPageUrl: AppRoutes.subscriptionList,
-      ),
-    ),
+          child: CommunityPage(
+            key: GlobalKey(),
+            subPageUrl: AppRoutes.subscriptionList,
+          ),
+        ),
     AppRoutes.playlist: (_) => TransitionPage(
-      child: CommunityPage(
-        key: GlobalKey(),
-        subPageUrl: AppRoutes.playlist,
-      ),
-    ),
+          child: CommunityPage(
+            key: GlobalKey(),
+            subPageUrl: AppRoutes.playlist,
+          ),
+        ),
     AppRoutes.playlistDetail: (_) => TransitionPage(
-      child: CommunityPage(
-        key: GlobalKey(),
-        subPageUrl: AppRoutes.playlistDetail,
-      ),
-    ),
+          child: CommunityPage(
+            key: GlobalKey(),
+            subPageUrl: AppRoutes.playlistDetail,
+          ),
+        ),
   },
 );
 

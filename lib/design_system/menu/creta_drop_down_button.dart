@@ -103,7 +103,8 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
 
   ButtonStyle _buttonStyle(bool isSelected) {
     return ButtonStyle(
-      textStyle: MaterialStateProperty.all<TextStyle>(CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium)),
+      textStyle: MaterialStateProperty.all<TextStyle>(
+          CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium)),
       overlayColor: MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
           if (states.contains(MaterialState.hovered)) {
