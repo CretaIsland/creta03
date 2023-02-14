@@ -21,10 +21,11 @@ import 'package:flutter/material.dart';
 import 'community_sample_data.dart';
 //import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/custom_image.dart';
+import '../../../design_system/creta_font.dart';
 
 // const double _rightViewTopPane = 40;
-const double _rightViewLeftPane = 40;
-const double _rightViewRightPane = 40;
+//const double _rightViewLeftPane = 40;
+//const double _rightViewRightPane = 40;
 // const double _rightViewBottomPane = 40;
 // const double _rightViewItemGapX = 20;
 // const double _rightViewItemGapY = 20;
@@ -40,14 +41,16 @@ const double _rightViewRightPane = 40;
 bool isInUsingCanvaskit = false;
 
 class CretaPlaylistDetailItem extends StatefulWidget {
-  final CretaPlaylistData cretaPlayListData;
+  final CretaBookData cretaBookData;
   final double width;
+  final int index;
   //final double height;
 
   const CretaPlaylistDetailItem({
     required super.key,
-    required this.cretaPlayListData,
+    required this.cretaBookData,
     required this.width,
+    required this.index,
     //required this.height,
   });
 
@@ -56,10 +59,10 @@ class CretaPlaylistDetailItem extends StatefulWidget {
 }
 
 class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
-  bool mouseOver = false;
-  bool popmenuOpen = false;
-
-  final ScrollController _controller = ScrollController();
+  // bool mouseOver = false;
+  // bool popmenuOpen = false;
+  //
+  // final ScrollController _controller = ScrollController();
 
   @override
   void initState() {
@@ -67,226 +70,75 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
   }
 
   void setPopmenuOpen() {
-    popmenuOpen = true;
+    //popmenuOpen = true;
   }
 
   @override
   Widget build(BuildContext context) {
 
-    return MouseRegion(
-      onEnter: (value) {
-        setState(() {
-          mouseOver = true;
-        });
-      },
-      onExit: (value) {
-        setState(() {
-          mouseOver = false;
-        });
-      },
+    return Padding(
+      key: ValueKey(widget.index),
+      padding: EdgeInsets.all(4),
       child: Container(
-        width: widget.width,
-        height: 204,
-        color: Colors.white,
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7.2),
-                  color: Color.fromARGB(255, 242, 242, 242),
+        key: ValueKey(widget.index),
+        height: 107,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.7),
+          color: Color.fromARGB(255, 242, 242, 242),
+        ),
+        child: Center(
+          child: Row(
+            children: [
+              SizedBox(width: 28),
+              ReorderableDragStartListener(
+                index: widget.index,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Icon(Icons.menu_outlined, size: 16),
                 ),
-                width: widget.width,
-                //height: 184,
-                child: Stack(
+              ),
+              SizedBox(width: 20),
+              SizedBox(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Positioned(
-                      left: 40,
-                      top: 40,
-                      child: Container(
-                        width: 270,
-                        color: Color.fromARGB(255, 242, 242, 242),
-                        child: Row(
-                          children: [
-                            Container(
-                              constraints: BoxConstraints(maxWidth: 270-16-16, ),
-                              child:Text(
-                                widget.cretaPlayListData.title,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 22,
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),),
-                            SizedBox(width:16,),
-                            widget.cretaPlayListData.locked ?
-                            Icon(Icons.lock_outline, size:16, color: Colors.grey[700],)
-                                : Icon(Icons.lock_open_outlined, size:16, color: Colors.grey[700],),
-                            Expanded(child: Container()),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Positioned(
-                    //   left: 154,
-                    //   top: 45,
-                    //   child: widget.cretaPlayListData.locked ?
-                    //     Icon(Icons.lock_outline, size:16, color: Colors.grey[700],)
-                    //     : Icon(Icons.lock_open_outlined, size:16, color: Colors.grey[700],
-                    //   ),
-                    // ),
-                    Positioned(
-                      left: 48,
-                      top: 107,
-                      child: Text(
-                        widget.cretaPlayListData.userNickname,
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 13,
-                          fontFamily: 'Pretendard',
-                          //fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 48,
-                      top: 129,
-                      child: Text(
-                        '영상 ${widget.cretaPlayListData.cretaBookDataList.length}개  최근 업데이트 1일전',
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 13,
-                          fontFamily: 'Pretendard',
-                          //fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 331,
-                      top: 48,
-                      child: Icon(Icons.menu, size:16, color: Colors.grey[700],),
-                    ),
-                    Positioned(
-                      left: 277+1,
-                      top: 77-1,
-                      width: 77,
-                      height: 32,
-                      //BTN.fill_gray_t_m
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all<Color>(Colors.grey[700]!),
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                          elevation: MaterialStateProperty.all<double>(0.0),
-                          shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  side: BorderSide(color: Colors.white))),
-                        ),
-                        onPressed: () {},
-                        child: Text(
-                          '전체보기',
-                          style: TextStyle(
-                            //color: Colors.grey[700],
-                            fontSize: 13,
-                            fontFamily: 'Pretendard',
-                            //fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 278,
-                      top: 112,
-                      width: 77,
-                      height: 32,
-                      //BTN.fill_blue_t_m
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                          backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 90, 142, 242)),
-                          elevation: MaterialStateProperty.all<double>(0.0),
-                          shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  side: BorderSide(color: Color.fromARGB(255, 90, 142, 242)))),
-                        ),
-                        onPressed: () {},
-                        child: Text(
-                          '재생하기',
-                          style: TextStyle(
-                            //color: Colors.white,
-                            fontSize: 13,
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w100,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 495,
-                      top: 20,
-                      width: widget.width - 495 - 20 - _rightViewLeftPane - _rightViewRightPane,
-                      height: 144,
-                      child: Scrollbar(
-                        thumbVisibility: false,
-                        controller: _controller,
-                        child: ListView(
-                          controller: _controller,
-                          // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
-                          scrollDirection: Axis.horizontal,
-                          // 컨테이너들을 ListView의 자식들로 추가
-                          children: <Widget>[
-                            Wrap(
-                              direction: Axis.horizontal,
-                              spacing: 20, // <-- Spacing between children
-                              children: <Widget>[
-                                ...List<Widget>.generate(widget.cretaPlayListData.cretaBookDataList.length, (idx) {
-                                  return Container(
-                                    width: 187,
-                                    height: 144,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.4),
-                                      color: Colors.grey,//Color.fromARGB(255, 242, 242, 242),
-                                    ),
-                                    //padding: EdgeInsets.all(10),
-                                    //color: Colors.red[100],
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(5.4),
-                                      child: CustomImage(
-                                        width: 187,
-                                        height: 144,
-                                        image: widget.cretaPlayListData.cretaBookDataList[idx].thumbnailUrl,
-                                      ),
-                                      // child: CachedNetworkImage(
-                                      //   imageUrl: widget.cretaPlayListData.cretaBookDataList[idx].thumbnailUrl,
-                                      //   fit: BoxFit.cover,
-                                      //   placeholder: (context, url) => const CircularProgressIndicator(),
-                                      //   errorWidget: (context, url, error) => Center(
-                                      //     child: Icon(Icons.error, color: Colors.red, size: 40,),
-                                      //   ),
-                                      // ),
-                                    ),
-                                  );
-                                }).toList(),
-                              ],
-                            )
-                          ],
-                        ),
+                    SizedBox(
+                      width: 120,
+                      height: 67,
+                      child: CustomImage(
+                        key: widget.cretaBookData.imgKey,
+                        width: 120,
+                        height: 67,
+                        image: widget.cretaBookData.thumbnailUrl,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+              SizedBox(width: 20),
+              SizedBox(
+                width: widget.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.cretaBookData.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: CretaFont.titleLarge.copyWith(fontWeight: CretaFont.medium),
+                      maxLines: 1,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      widget.cretaBookData.creator,
+                      overflow: TextOverflow.ellipsis,
+                      style: CretaFont.bodyMedium.copyWith(fontWeight: CretaFont.regular),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

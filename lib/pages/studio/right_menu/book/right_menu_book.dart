@@ -77,6 +77,8 @@ class _RightMenuBookState extends State<RightMenuBook> {
               _selectedTab = value;
             });
           },
+          width: 95,
+          height: 24,
           selectedTextColor: CretaColor.primary,
           unSelectedTextColor: CretaColor.text[700]!,
           selectedColor: Colors.white,

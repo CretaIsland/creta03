@@ -7,7 +7,6 @@ import 'package:hycop/common/util/logger.dart';
 
 //import '../../../../data_io/book_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../../design_system/buttons/creta_slider.dart';
 import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
@@ -149,12 +148,12 @@ class _BookPagePropertyState extends State<BookPageProperty> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(CretaStudioLang.opacity, style: _titleStyle),
-              CretaSlider(
-                min: 0,
-                max: 100,
-                value: widget.model.opacity.value,
-                onDragComplete: (value) {},
-              ),
+              // CretaSlider(
+              //   min: 0,
+              //   max: 100,
+              //   value: widget.model.opacity.value,
+              //   onDragComplete: (value) {},
+              // ),
             ],
           ),
         ),

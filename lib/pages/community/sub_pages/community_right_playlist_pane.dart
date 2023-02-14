@@ -36,7 +36,7 @@ const double _rightViewBottomPane = 40;
 // const double _rightViewItemGapY = 20;
 // //const double _scrollbarWidth = 13;
 // const double _rightViewBannerMaxHeight = 436;
-const double _rightViewBannerMinHeight = 188 + 4;
+const double _rightViewBannerMinHeight = 196;
 // const double _rightViewToolbarHeight = 76;
 //
 const double _itemDefaultWidth = 290.0;

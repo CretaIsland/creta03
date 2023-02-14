@@ -184,7 +184,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                     ),
                     Positioned(
                       left: 278,
-                      top: 112,
+                      top: 114,
                       width: 77,
                       height: 32,
                       //BTN.fill_blue_t_m

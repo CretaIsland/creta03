@@ -230,7 +230,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   List<Widget> _getHashtagListOnBanner() {
     return [
       BTN.opacity_gray_it_s(
-        text: '# 해시태그해시태그1',
+        text: '#크레타',
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
@@ -238,7 +238,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
-        text: '# 해시태그2',
+        text: '#추천',
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
@@ -246,7 +246,15 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
-        text: '# 해시태그3',
+        text: '#인기',
+        textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
+        width: null,
+        onPressed: () {},
+        decoType: CretaButtonDeco.opacity,
+      ),
+      SizedBox(width: 12),
+      BTN.opacity_gray_it_s(
+        text: '#해시태그',
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
@@ -278,8 +286,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 mainAxisAlignment: MainAxisAlignment.center,
                 //crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // ignore: sized_box_for_whitespace
-                  Container(
+                  SizedBox(
                     width: size.width,
                     height: 176,
                     //color: Colors.red,
@@ -315,10 +322,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           ),
                         ),
                         SizedBox(height: 24),
-                        Row(
+                        (size.width > 300)
+                            ? Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: _getHashtagListOnBanner(),
                         )
+                            : Container(),
                       ],
                     ),
                   ),

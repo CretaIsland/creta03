@@ -453,8 +453,8 @@ class _BookMainPageState extends State<BookMainPage> {
             },
             onLabelHovered: () {
               setState(() {
-                BookMainPage.selectedClass = RightMenuEnum.Book;
                 BookMainPage.onceBookInfoOpened = false;
+                BookMainPage.selectedClass = RightMenuEnum.Book;
               });
             },
           ),
@@ -621,11 +621,10 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _drawPage(BuildContext context) {
-    logger.fine('_drawPage');
-    return SizedBox(
+    return Container(
       width: StudioVariables.virtualWidth,
       height: StudioVariables.virtualHeight,
-      //color: LayoutConst.studioBGColor,
+      color: LayoutConst.studioBGColor,
       //color: Colors.amber,
       child: Center(
         child: Container(

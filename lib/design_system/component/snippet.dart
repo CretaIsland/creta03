@@ -390,18 +390,25 @@ class Snippet {
             Routemaster.of(context).push(AppRoutes.communityHome);
           },
         ),
+        // SpeedDialChild(
+        //   label: 'Subscription List',
+        //   child: Icon(Icons.subscriptions),
+        //   onTap: () {
+        //     Routemaster.of(context).push(AppRoutes.subscriptionList);
+        //   },
+        // ),
         SpeedDialChild(
-          label: 'Subscription List',
-          child: Icon(Icons.subscriptions),
-          onTap: () {
-            Routemaster.of(context).push(AppRoutes.subscriptionList);
-          },
-        ),
-        SpeedDialChild(
-          label: 'Play List',
+          label: 'Playlist',
           child: Icon(Icons.playlist_add_check),
           onTap: () {
             Routemaster.of(context).push(AppRoutes.playlist);
+          },
+        ),
+        SpeedDialChild(
+          label: 'Playlist Detail',
+          child: Icon(Icons.playlist_play_outlined),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.playlistDetail);
           },
         ),
       ],

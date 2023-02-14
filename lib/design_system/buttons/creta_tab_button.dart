@@ -26,8 +26,8 @@ class CretaTabButton extends StatefulWidget {
   CretaTabButton({
     super.key,
     required this.onEditComplete,
-    this.width = 95,
-    this.height = 24,
+    this.width = 332,
+    this.height = 30,
     required this.buttonLables,
     this.buttonIcons,
     required this.buttonValues,
