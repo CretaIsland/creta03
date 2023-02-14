@@ -13,10 +13,7 @@ import 'pages/intro_page.dart';
 import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
-//import 'pages/community_home_page.dart';
 //import 'pages/studio/sample_data.dart';
-//import 'pages/subscription_list_page.dart';
-//import 'pages/play_list/play_list_page.dart';
 import 'pages/community/community_page.dart';
 
 abstract class AppRoutes {
@@ -54,6 +51,7 @@ abstract class AppRoutes {
   static const String studioBookTeamPage = '/studio/bookMyTeamPage';
   static const String login = '/login';
   static const String communityHome = '/community/home';
+  static const String channel = '/community/channel';
   static const String subscriptionList = '/community/subscriptionList';
   static const String playlist = '/community/playlist';
   static const String playlistDetail = '/community/playlistDetail';
@@ -101,6 +99,12 @@ final routesLoggedOut = RouteMap(
             subPageUrl: AppRoutes.communityHome,
           ),
         ),
+    AppRoutes.channel: (_) => TransitionPage(
+      child: CommunityPage(
+        key: GlobalKey(),
+        subPageUrl: AppRoutes.channel,
+      ),
+    ),
     AppRoutes.subscriptionList: (_) => TransitionPage(
           child: CommunityPage(
             key: GlobalKey(),

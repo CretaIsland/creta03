@@ -43,21 +43,21 @@ const double _itemDefaultHeight = 256.0;
 
 bool isInUsingCanvaskit = false;
 
-class CommunityRightHomePane extends StatefulWidget {
+class CommunityRightChannelPane extends StatefulWidget {
   final double pageWidth;
   final double pageHeight;
   final ScrollController scrollController;
-  const CommunityRightHomePane(
+  const CommunityRightChannelPane(
       {super.key,
         required this.pageWidth,
         required this.pageHeight,
         required this.scrollController});
 
   @override
-  State<CommunityRightHomePane> createState() => _CommunityRightHomePaneState();
+  State<CommunityRightChannelPane> createState() => _CommunityRightChannelPaneState();
 }
 
-class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
+class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   late List<CretaBookData> _cretaBookList;
 
   @override

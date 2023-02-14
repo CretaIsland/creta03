@@ -390,6 +390,13 @@ class Snippet {
             Routemaster.of(context).push(AppRoutes.communityHome);
           },
         ),
+        SpeedDialChild(
+          label: 'Channel',
+          child: Icon(Icons.category_outlined),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.channel);
+          },
+        ),
         // SpeedDialChild(
         //   label: 'Subscription List',
         //   child: Icon(Icons.subscriptions),
