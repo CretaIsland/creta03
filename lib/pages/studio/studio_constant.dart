@@ -92,6 +92,8 @@ class LayoutConst {
 
 class StudioConst {
   static const double orderVar = 0.0000001;
+  static const int maxFavColor = 7;
+
   static List<List<Size>> signageResolution = [
     [],
     [

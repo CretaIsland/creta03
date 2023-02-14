@@ -65,6 +65,7 @@ dependencies:
   dotted_border: ^2.0.0+3
   material_tag_editor: ^0.1.2
   quiver: ^3.2.1
+  flex_color_picker: ^3.1.0
 
 
 dev_dependencies:

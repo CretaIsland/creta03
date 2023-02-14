@@ -74,4 +74,62 @@ class CretaUtils {
     name += '${now.millisecond}'.padLeft(3, '0');
     return name;
   }
+
+  static Color? string2Color(String? colorStr, {String defaultValue = 'Color(0xFFFFFFFF)'}) {
+    if (defaultValue.isEmpty) {
+      if (colorStr == null || colorStr.length < 16) {
+        return null;
+      }
+    } else {
+      if (colorStr == null || colorStr.length < 16) {
+        return Color(int.parse(defaultValue.substring(8, 16), radix: 16));
+      }
+    }
+    return Color(int.parse(colorStr.substring(8, 16), radix: 16));
+  }
+
+  static List<Color> string2ColorList(String? colorStrList) {
+    if (colorStrList == null || colorStrList.isEmpty) {
+      return [];
+    }
+    List<Color> retval = [];
+    List<String> strList = CretaUtils.jsonStringToList(colorStrList);
+
+    for (String ele in strList) {
+      Color? color = string2Color(ele, defaultValue: '');
+      if (color != null) {
+        retval.add(color);
+      }
+    }
+    return retval;
+  }
+
+  static String colorList2String(List<Color> colorList) {
+    String retval = '';
+    for (Color ele in colorList) {
+      String str = ele.toString();
+      if (retval.isNotEmpty) {
+        retval += ",";
+      }
+      retval += '"$str"';
+    }
+    return '[$retval]';
+  }
+
+  static Color hexToColor(String hexString, {String alphaChannel = 'FF'}) {
+    if (hexString.length >= 6) {
+      if (hexString[0] == '#') {
+        if (hexString.length == 7) {
+          return Color(int.parse(hexString.replaceFirst('#', '0x$alphaChannel')));
+        }
+        return Color(int.parse(hexString.replaceFirst('#', '0x')));
+      } else {
+        if (hexString.length == 6) {
+          return Color(int.parse('0x$alphaChannel$hexString'));
+        }
+        return Color(int.parse('0x$hexString'));
+      }
+    }
+    return Colors.white;
+  }
 }

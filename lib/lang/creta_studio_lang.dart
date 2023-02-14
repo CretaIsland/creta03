@@ -147,4 +147,13 @@ class CretaStudioLang {
   static const String height = "높이";
   static const String color = "색";
   static const String opacity = "투명도";
+
+  static const String basicColor = '기본색';
+  static const String accentColor = '강조색';
+  static const String customColor = '커스텀';
+  static const String bwColor = '흑백';
+  static const String bgColorCodeInput = '색상 코드로 입력';
+
+  static const String glass = "유리질";
+  static const String outlineWidth = '두께';
 }

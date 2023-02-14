@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, must_be_immutable, unnecessary_brace_in_string_interps
 
+import 'package:creta03/design_system/component/colorPicker/my_color_picker.dart';
 import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -7,6 +8,7 @@ import 'package:hycop/common/util/logger.dart';
 
 //import '../../../../data_io/book_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/buttons/creta_slider.dart';
 import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
@@ -45,12 +47,17 @@ class _BookPagePropertyState extends State<BookPageProperty> {
   // ignore: unused_field
   late TextStyle _dataStyle;
 
+  final GlobalKey<CretaTextFieldState> textFieldKey = GlobalKey<CretaTextFieldState>();
+  GlobalKey popupKey = GlobalKey();
+  TextEditingController colorTextController = TextEditingController();
+  late ThemeMode themeMode;
+
   @override
   void initState() {
     logger.finer('_BookPagePropertyState.initState');
     _titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
     _dataStyle = CretaFont.bodySmall;
-
+    themeMode = ThemeMode.light;
     super.initState();
   }
 
@@ -72,11 +79,18 @@ class _BookPagePropertyState extends State<BookPageProperty> {
           endIndent: 0,
         ),
         _pageColor(),
+        Divider(
+          color: CretaColor.text[200]!,
+          indent: 0,
+          endIndent: 0,
+        ),
       ],
     );
   }
 
   Widget _pageColor() {
+    logger.fine('opacity3=${widget.model.opacity.value}');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -122,23 +136,22 @@ class _BookPagePropertyState extends State<BookPageProperty> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(CretaStudioLang.color, style: _titleStyle),
-              GestureDetector(
-                onLongPressDown: (details) {
-                  logger.finest('color picker invoke');
-                },
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                      color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(2))),
+              Container(
+                width: 24,
+                height: 24,
+                key: popupKey,
+                decoration: BoxDecoration(
+                    color: Colors.amber, borderRadius: BorderRadius.all(Radius.circular(2))),
+                child: GestureDetector(
+                  onLongPressDown: (details) {
+                    logger.finest('color picker invoke');
+                    MyColorPicker.colorPickerDialog(
+                        context: context,
+                        dialogPickerColor: Colors.amber,
+                        onColorChanged: (val) {});
+                  },
                 ),
               ),
-              // IconButton(
-              //   icon: Icon(Icons.circle),
-              //   iconSize: 24,
-              //   color: Colors.amber,
-              //   onPressed: () {},
-              // )
             ],
           ),
         ),
@@ -148,12 +161,44 @@ class _BookPagePropertyState extends State<BookPageProperty> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(CretaStudioLang.opacity, style: _titleStyle),
-              // CretaSlider(
-              //   min: 0,
-              //   max: 100,
-              //   value: widget.model.opacity.value,
-              //   onDragComplete: (value) {},
-              // ),
+              SizedBox(
+                height: 22,
+                width: 168,
+                child: CretaSlider(
+                  key: UniqueKey(),
+                  min: 0,
+                  max: 100,
+                  value: widget.model.opacity.value * 100,
+                  onDragComplete: (value) {
+                    setState(() {
+                      widget.model.opacity.set(value / 100);
+                      logger.fine('opacity1=${widget.model.opacity.value}');
+                    });
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CretaTextField.xshortNumber(
+                    defaultBorder: Border.all(color: CretaColor.text[100]!),
+                    width: 40,
+                    limit: 3,
+                    textFieldKey: GlobalKey(),
+                    value: '${(widget.model.opacity.value * 100).round()}',
+                    hintText: '',
+                    onEditComplete: ((value) {
+                      setState(() {
+                        double opacity = double.parse(value) / 100;
+                        widget.model.opacity.set(opacity);
+                        logger.fine('opacity2=${widget.model.opacity.value}');
+                      });
+                      //BookMainPage.bookManagerHolder?.notify();
+                    }),
+                  ),
+                  Text('%', style: CretaFont.bodySmall),
+                ],
+              ),
             ],
           ),
         ),

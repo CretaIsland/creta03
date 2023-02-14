@@ -411,6 +411,13 @@ class Snippet {
             Routemaster.of(context).push(AppRoutes.playlistDetail);
           },
         ),
+        SpeedDialChild(
+          label: 'colorPickerDemoPage',
+          child: Icon(Icons.colorize),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.colorPickerDemo);
+          },
+        ),
       ],
     );
   }

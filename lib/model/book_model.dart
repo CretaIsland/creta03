@@ -195,10 +195,8 @@ class BookModel extends CretaModel {
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
     //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
-    bgColor1.set(
-        Color(int.parse((map["bgColor1"] ?? 'Color(0xFFFFFFFF)').substring(8, 16), radix: 16)));
-    bgColor2.set(
-        Color(int.parse((map["bgColor2"] ?? 'Color(0xFFFFFFFF)').substring(8, 16), radix: 16)));
+    bgColor1.set(CretaUtils.string2Color(map["bgColor1"])!);
+    bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!);
     opacity.set(map["opacity"] ?? 0);
     gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0));
 
