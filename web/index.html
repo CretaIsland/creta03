@@ -38,15 +38,197 @@
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+  <style>
+    /* progress circle */
+    /*.loading {
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid blue;
+      border-right: 16px solid green;
+      border-bottom: 16px solid red;
+      border-left: 16px solid pink;
+      width: 120px;
+      height: 120px;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 2s linear infinite;
+    }
+    */
+    /* chrome logo */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+    .logo.chrome {
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+      -o-border-radius: 50%;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      height: 210px;
+      width: 210px;
+      z-index: 1;
+      -webkit-animation: spin 3.5s linear infinite;
+      animation: spin 3.5s linear infinite;
+    }
+    .logo.chrome .center {
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+      -o-border-radius: 50%;
+      border-radius: 50%;
+      background: #0d6cac;
+      background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #91c1e7), color-stop(100%, #0d6cac));
+      background: -webkit-linear-gradient(top center, #91c1e7, #0d6cac);
+      background: -moz-linear-gradient(top center, #91c1e7, #0d6cac);
+      background: -o-linear-gradient(top center, #91c1e7, #0d6cac);
+      background: linear-gradient(top center, #91c1e7, #0d6cac);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 80px;
+      width: 80px;
+      margin-top: -41px;
+      margin-left: -40px;
+      border-bottom: solid 1px #125e90;
+      z-index: 10;
+    }
+    .logo.chrome .circle {
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+      -o-border-radius: 50%;
+      border-radius: 50%;
+      position: absolute;
+      background: white;
+      top: 50%;
+      left: 50%;
+      height: 94px;
+      width: 94px;
+      margin-top: -48px;
+      margin-left: -47px;
+      z-index: 5;
+    }
+    .logo.chrome .part-1 {
+      background: #e93c35;
+      position: absolute;
+      top: 0;
+      left: 34px;
+      width: 200px;
+      height: 58px;
+    }
+    .logo.chrome .part-1:after {
+      -webkit-transform: rotate(60deg);
+      -moz-transform: rotate(60deg);
+      -ms-transform: rotate(60deg);
+      -o-transform: rotate(60deg);
+      transform: rotate(60deg);
+      content: " ";
+      background: #e93c35;
+      position: absolute;
+      top: 0;
+      left: -91px;
+      width: 200px;
+      height: 58px;
+    }
+    .logo.chrome .part-2 {
+      -webkit-transform: rotate(120deg);
+      -moz-transform: rotate(120deg);
+      -ms-transform: rotate(120deg);
+      -o-transform: rotate(120deg);
+      transform: rotate(120deg);
+      background: #fdd901;
+      position: absolute;
+      top: 131px;
+      left: 56px;
+      width: 200px;
+      height: 65px;
+    }
+    .logo.chrome .part-2:after {
+      -webkit-transform: rotate(60deg);
+      -moz-transform: rotate(60deg);
+      -ms-transform: rotate(60deg);
+      -o-transform: rotate(60deg);
+      transform: rotate(60deg);
+      content: " ";
+      background: #fdd901;
+      position: absolute;
+      top: 0;
+      left: -91px;
+      width: 200px;
+      height: 58px;
+    }
+    .logo.chrome .part-3 {
+      -webkit-transform: rotate(-120deg);
+      -moz-transform: rotate(-120deg);
+      -ms-transform: rotate(-120deg);
+      -o-transform: rotate(-120deg);
+      transform: rotate(-120deg);
+      background: #5bc15b;
+      position: absolute;
+      top: 88px;
+      left: -74px;
+      width: 200px;
+      height: 65px;
+    }
+    .logo.chrome .part-3:after {
+      -webkit-transform: rotate(60deg);
+      -moz-transform: rotate(60deg);
+      -ms-transform: rotate(60deg);
+      -o-transform: rotate(60deg);
+      transform: rotate(60deg);
+      content: " ";
+      background: #5bc15b;
+      position: absolute;
+      top: 0;
+      left: -91px;
+      width: 200px;
+      height: 58px;
+    }
+
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
-<body>
+<body style="overflow: hidden">
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
+      var root = "$FLUTTER_BASE_HREF";
       _flutter.loader.loadEntrypoint({
+        //<!-- hot restart 문제
+        //serviceWorker: {
+        //  serviceWorkerVersion: serviceWorkerVersion,
+        //}
+        //-->
+        entrypointUrl: root + "main.dart.js",
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
-        }
+          serviceWorkerUrl: root + "flutter_service_worker.js?v=",
+        },
       }).then(function(engineInitializer) {
         return engineInitializer.initializeEngine();
       }).then(function(appRunner) {
@@ -63,7 +245,26 @@
 	  var form = shadow.shadowRoot;
 	  // shadow_root에 css 추가
       form.appendChild(style);
-    }	
+    }
   </script>
+  <script>
+    window.onload = function () {
+      setTimeout(function () {
+        var loadingIndicator = document.getElementById("loading_indicator");
+        if (loadingIndicator) {
+          loadingIndicator.remove();
+        }
+      }, 10000);
+    }
+  </script>
+  <div class="loading" id="loading_indicator">
+    <div class="logo chrome">
+      <div class="part-1"></div>
+      <div class="part-2"></div>
+      <div class="part-3"></div>
+      <div class="circle"></div>
+      <div class="center"></div>
+    </div>
+  </div>
 </body>
 </html>

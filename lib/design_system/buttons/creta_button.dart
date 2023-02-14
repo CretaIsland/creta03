@@ -73,6 +73,7 @@ class CretaButton extends StatefulWidget {
 
   final String? tooltip;
   final bool hasShadow;
+  final bool showClickableCursor;
 
   CretaButton({
     required this.buttonType,
@@ -94,6 +95,7 @@ class CretaButton extends StatefulWidget {
     this.hasShadow = true,
     this.tooltipFg,
     this.tooltipBg,
+    this.showClickableCursor = true,
     Key? key,
   }) : super(key: key) {
     _setColor();
@@ -219,6 +221,7 @@ class _CretaButtonState extends State<CretaButton> {
         widget.onPressed.call();
       },
       child: MouseRegion(
+        cursor: widget.showClickableCursor ? SystemMouseCursors.click : MouseCursor.defer,
         onExit: (val) {
           setState(() {
             //print('hover is false');

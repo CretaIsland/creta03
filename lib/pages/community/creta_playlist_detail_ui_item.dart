@@ -89,15 +89,19 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
         child: Center(
           child: Row(
             children: [
-              SizedBox(width: 28),
+              SizedBox(width: 28-8),
               ReorderableDragStartListener(
                 index: widget.index,
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
-                  child: Icon(Icons.menu_outlined, size: 16),
+                  child: SizedBox(
+                    width: 16+16,
+                    height: 16+16,
+                    child: Icon(Icons.menu_outlined, size: 16),
+                  ),
                 ),
               ),
-              SizedBox(width: 20),
+              SizedBox(width: 20-8),
               SizedBox(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
