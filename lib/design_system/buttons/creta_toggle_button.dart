@@ -67,6 +67,7 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
             setState(() {
               toggleValue = !toggleValue;
             });
+            widget.onSelected.call(toggleValue);
           },
           child: Stack(
             alignment: AlignmentDirectional.centerStart,

@@ -629,7 +629,9 @@ class _BookMainPageState extends State<BookMainPage> {
       child: Center(
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: _model.opacity.value == 1
+                ? _model.bgColor1.value
+                : _model.bgColor1.value.withOpacity(_model.opacity.value),
             boxShadow: StudioSnippet.basicShadow(),
           ),
           width: pageWidth,

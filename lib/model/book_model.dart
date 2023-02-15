@@ -79,7 +79,7 @@ class BookModel extends CretaModel {
     thumbnailType = UndoAble<ContentsType>(ContentsType.none, mid);
     thumbnailAspectRatio = UndoAble<double>(1, mid);
     isSilent = UndoAble<bool>(false, mid);
-    isAutoPlay = UndoAble<bool>(false, mid);
+    isAutoPlay = UndoAble<bool>(true, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
     pageSizeType = UndoAble<int>(0, mid);
     copyWright = UndoAble<CopyWrightType>(CopyWrightType.free, mid);
@@ -93,7 +93,7 @@ class BookModel extends CretaModel {
     description = UndoAble<String>("You could do it simple and plain", mid);
     bgColor1 = UndoAble<Color>(Colors.white, mid);
     bgColor2 = UndoAble<Color>(Colors.white, mid);
-    opacity = UndoAble<double>(0, mid);
+    opacity = UndoAble<double>(1, mid);
     gradationType = UndoAble<GradationType>(GradationType.none, mid);
   }
 
@@ -119,7 +119,7 @@ class BookModel extends CretaModel {
     thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid);
     thumbnailAspectRatio = UndoAble<double>(imageRatio, mid);
     isSilent = UndoAble<bool>(false, mid);
-    isAutoPlay = UndoAble<bool>(false, mid);
+    isAutoPlay = UndoAble<bool>(true, mid);
     bookType = UndoAble<BookType>(bookTypeVal, mid);
     pageSizeType = UndoAble<int>(0, mid);
     copyWright = UndoAble<CopyWrightType>(copyWrightVal, mid);
@@ -136,7 +136,7 @@ class BookModel extends CretaModel {
     }
     bgColor1 = UndoAble<Color>(Colors.white, mid);
     bgColor2 = UndoAble<Color>(Colors.white, mid);
-    opacity = UndoAble<double>(0, mid);
+    opacity = UndoAble<double>(1, mid);
     gradationType = UndoAble<GradationType>(GradationType.none, mid);
     logger.finest('owners=${owners.toString()}');
   }
@@ -166,7 +166,7 @@ class BookModel extends CretaModel {
     writers = [...srcBook.writers];
     shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
     bgColor1 = UndoAble<Color>(srcBook.bgColor1.value, mid);
-    bgColor2 = UndoAble<Color>(srcBook.bgColor1.value, mid);
+    bgColor2 = UndoAble<Color>(srcBook.bgColor2.value, mid);
     opacity = UndoAble<double>(srcBook.opacity.value, mid);
     gradationType = UndoAble<GradationType>(srcBook.gradationType.value, mid);
 
@@ -182,7 +182,7 @@ class BookModel extends CretaModel {
     width.set(map["width"] ?? 0, save: false, noUndo: true);
     height.set(map["height"] ?? 0, save: false, noUndo: true);
     isSilent.set(map["isSilent"] ?? false, save: false, noUndo: true);
-    isAutoPlay.set(map["isAutoPlay"] ?? false, save: false, noUndo: true);
+    isAutoPlay.set(map["isAutoPlay"] ?? true, save: false, noUndo: true);
     isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
     bookType.set(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
     pageSizeType.set(map["pageSizeType"] ?? 0, save: false, noUndo: true);
@@ -197,7 +197,7 @@ class BookModel extends CretaModel {
     //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
     bgColor1.set(CretaUtils.string2Color(map["bgColor1"])!);
     bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!);
-    opacity.set(map["opacity"] ?? 0);
+    opacity.set(map["opacity"] ?? 1);
     gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0));
 
     viewCount = (map["viewCount"] ?? 0);

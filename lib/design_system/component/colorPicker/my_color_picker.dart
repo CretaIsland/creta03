@@ -1,5 +1,9 @@
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+
+import '../../../common/creta_constant.dart';
+import '../../../pages/studio/studio_constant.dart';
 
 class MyColorPicker {
   static const Color guidePrimary = Color(0xFF6200EE);
@@ -26,10 +30,11 @@ class MyColorPicker {
     required void Function(Color color) onColorChanged,
   }) async {
     return ColorPicker(
+      //enableOpacity: true,
       color: dialogPickerColor,
       onColorChanged: onColorChanged, //(Color color) => setState(() => dialogPickerColor = color),
-      width: 40,
-      height: 40,
+      width: 36,
+      height: 36,
       borderRadius: 4,
       spacing: 5,
       runSpacing: 5,
@@ -62,7 +67,7 @@ class MyColorPicker {
       selectedPickerTypeColor: Theme.of(context).colorScheme.primary,
       pickersEnabled: const <ColorPickerType, bool>{
         ColorPickerType.custom: true,
-        ColorPickerType.bw: false,
+        ColorPickerType.bw: true,
         ColorPickerType.both: false,
         ColorPickerType.primary: true,
         ColorPickerType.accent: true,
@@ -71,6 +76,13 @@ class MyColorPicker {
       customColorSwatchesAndNames: colorsNameMap,
     ).showPickerDialog(
       context,
+      anchorPoint: Offset(
+          StudioVariables.displayWidth - LayoutConst.rightMenuWidth - 40,
+          CretaConstant.appbarHeight +
+              LayoutConst.topMenuBarHeight +
+              LayoutConst.rightMenuTitleHeight +
+              LayoutConst.innerMenuBarHeight +
+              40),
       actionsPadding: const EdgeInsets.all(16),
       constraints: const BoxConstraints(minHeight: 400, minWidth: 300, maxWidth: 320),
     );

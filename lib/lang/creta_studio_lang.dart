@@ -154,6 +154,10 @@ class CretaStudioLang {
   static const String bwColor = '흑백';
   static const String bgColorCodeInput = '색상 코드로 입력';
 
-  static const String glass = "유리질";
+  static const String glass = '유리질';
   static const String outlineWidth = '두께';
+  static const String option = '옵션';
+  static const String autoPlay = '자동 페이지 넘김';
+  static const String widthHeight = '(가로x세로)';
+  static const String gradation = '그라데이션';
 }

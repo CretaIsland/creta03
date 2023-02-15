@@ -49,48 +49,35 @@ class CretaTabButton extends StatefulWidget {
 class _CretaTabButtonState extends State<CretaTabButton> {
   TextEditingController controller = TextEditingController();
   String searchValue = '';
-  bool hover = false;
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onExit: (val) {
-        setState(() {
-          hover = false;
-        });
-      },
-      onEnter: (val) {
-        setState(() {
-          hover = true;
-        });
-      },
-      child: CustomRadioButton(
-        defaultSelected: widget.defaultString,
-        height: widget.height,
-        width: widget.width,
-        //autoWidth: true,
-        buttonTextStyle: ButtonTextStyle(
-          selectedColor: widget.selectedTextColor,
-          unSelectedColor: widget.unSelectedTextColor,
-          //textStyle: CretaFont.buttonMedium.copyWith(fontWeight: FontWeight.bold),
-          textStyle: widget.textStyle ?? CretaFont.buttonMedium,
-        ),
-        selectedBorderColor: widget.selectedBorderColor,
-        unSelectedBorderColor: widget.unSelectedBorderColor,
-        elevation: 0,
-        enableButtonWrap: true,
-        enableShape: true,
-        shapeRadius: 60,
-        absoluteZeroSpacing: widget.absoluteZeroSpacing,
-        unSelectedColor: widget.unSelectedColor,
-        selectedColor: widget.selectedColor,
-        buttonLables: widget.buttonLables,
-        buttonIcons: widget.buttonIcons,
-        buttonValues: widget.buttonValues,
-        radioButtonValue: (value) {
-          logger.finest(value);
-          widget.onEditComplete(value);
-        },
+    return CustomRadioButton(
+      defaultSelected: widget.defaultString,
+      height: widget.height,
+      width: widget.width,
+      //autoWidth: true,
+      buttonTextStyle: ButtonTextStyle(
+        selectedColor: widget.selectedTextColor,
+        unSelectedColor: widget.unSelectedTextColor,
+        //textStyle: CretaFont.buttonMedium.copyWith(fontWeight: FontWeight.bold),
+        textStyle: widget.textStyle ?? CretaFont.buttonMedium,
       ),
+      selectedBorderColor: widget.selectedBorderColor,
+      unSelectedBorderColor: widget.unSelectedBorderColor,
+      elevation: 0,
+      enableButtonWrap: true,
+      enableShape: true,
+      shapeRadius: 60,
+      absoluteZeroSpacing: widget.absoluteZeroSpacing,
+      unSelectedColor: widget.unSelectedColor,
+      selectedColor: widget.selectedColor,
+      buttonLables: widget.buttonLables,
+      buttonIcons: widget.buttonIcons,
+      buttonValues: widget.buttonValues,
+      radioButtonValue: (value) {
+        logger.finest(value);
+        widget.onEditComplete(value);
+      },
     );
   }
 }

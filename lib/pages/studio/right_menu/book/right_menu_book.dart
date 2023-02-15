@@ -1,12 +1,12 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/book_manager.dart';
-import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -71,53 +71,81 @@ class _RightMenuBookState extends State<RightMenuBook> {
       height: LayoutConst.innerMenuBarHeight,
       width: LayoutConst.rightMenuWidth,
       color: CretaColor.text[100]!,
-      child: CretaTabButton(
-          onEditComplete: (value) {
-            setState(() {
-              _selectedTab = value;
-            });
-          },
-          width: 95,
-          height: 24,
-          selectedTextColor: CretaColor.primary,
-          unSelectedTextColor: CretaColor.text[700]!,
-          selectedColor: Colors.white,
-          unSelectedColor: CretaColor.text[100]!,
-          defaultString: CretaStudioLang.bookInfoTabBar.values.first,
-          buttonLables: CretaStudioLang.bookInfoTabBar.keys.toList(),
-          buttonValues: CretaStudioLang.bookInfoTabBar.values.toList()),
+      child: CustomRadioButton(
+        radioButtonValue: (value) {
+          setState(() {
+            _selectedTab = value;
+          });
+        },
+        width: 95,
+        height: 24,
+        buttonTextStyle: ButtonTextStyle(
+          selectedColor: CretaColor.primary,
+          unSelectedColor: CretaColor.text[700]!,
+          textStyle: CretaFont.buttonMedium,
+        ),
+        selectedColor: Colors.white,
+        unSelectedColor: CretaColor.text[100]!,
+        defaultSelected: CretaStudioLang.bookInfoTabBar.values.first,
+        buttonLables: CretaStudioLang.bookInfoTabBar.keys.toList(),
+        buttonValues: CretaStudioLang.bookInfoTabBar.values.toList(),
+        selectedBorderColor: Colors.transparent,
+        unSelectedBorderColor: Colors.transparent,
+        elevation: 0,
+        enableButtonWrap: true,
+        enableShape: true,
+        shapeRadius: 60,
+        //child: CretaTabButton(
+        // onEditComplete: (value) {
+        //   setState(() {
+        //     _selectedTab = value;
+        //   });
+        // },
+        // width: 95,
+        // height: 24,
+        // selectedTextColor: CretaColor.primary,
+        // unSelectedTextColor: CretaColor.text[700]!,
+        // selectedColor: Colors.white,
+        // unSelectedColor: CretaColor.text[100]!,
+        // defaultString: CretaStudioLang.bookInfoTabBar.values.first,
+        // buttonLables: CretaStudioLang.bookInfoTabBar.keys.toList(),
+        // buttonValues: CretaStudioLang.bookInfoTabBar.values.toList(),
+      ),
     );
   }
 
   Widget _pageView() {
-    return Container(
-      padding: EdgeInsets.all(horizontalPadding),
-      //height: StudioVariables.workHeight,
-      width: LayoutConst.rightMenuWidth,
-      child: _selectTab(),
-    );
-  }
-
-  Widget _selectTab() {
     List<String> menu = CretaStudioLang.bookInfoTabBar.values.toList();
     if (_selectedTab == menu[0]) {
-      return BookInfoProperty(
-          model: _model!,
-          parentNotify: () {
-            setState(() {});
-          });
+      return Container(
+        padding: EdgeInsets.all(horizontalPadding),
+        width: LayoutConst.rightMenuWidth,
+        child: BookInfoProperty(
+            model: _model!,
+            parentNotify: () {
+              setState(() {});
+            }),
+      );
     }
     if (_selectedTab == menu[1]) {
-      return BookPageProperty(
-          model: _model!,
-          parentNotify: () {
-            setState(() {});
-          });
+      // ignore: sized_box_for_whitespace
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: horizontalPadding),
+        width: LayoutConst.rightMenuWidth,
+        child: BookPageProperty(
+            model: _model!,
+            parentNotify: () {
+              setState(() {});
+            }),
+      );
     }
     if (_selectedTab == menu[2]) {
-      return _authority();
+      return Container(
+          padding: EdgeInsets.all(horizontalPadding),
+          width: LayoutConst.rightMenuWidth,
+          child: _authority());
     }
-    return Container();
+    return SizedBox.shrink();
   }
 
   Widget _authority() {

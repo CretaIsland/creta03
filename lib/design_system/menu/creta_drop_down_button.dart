@@ -10,20 +10,24 @@ import 'creta_popup_menu.dart';
 class CretaDropDownButton extends StatefulWidget {
   //final double width;
   final double height;
+  final double itemHeight;
   final List<CretaMenuItem> dropDownMenuItemList;
   final MainAxisAlignment align;
   double? width;
   TextStyle? textStyle;
   double? iconSize;
+  EdgeInsetsGeometry? padding; //EdgeInsets.only(left: 8, right: 4)
 
   CretaDropDownButton({
     super.key,
     this.width,
     this.textStyle,
     this.iconSize,
+    this.padding,
     required this.height,
     required this.dropDownMenuItemList,
     this.align = MainAxisAlignment.center,
+    this.itemHeight = 39,
   });
 
   @override
@@ -83,6 +87,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
               style: widget.textStyle?.copyWith(
                 color: allText == displayString ? CretaColor.text[700] : CretaColor.primary,
               ),
+              overflow: TextOverflow.fade,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
@@ -105,6 +110,9 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
 
   ButtonStyle _buttonStyle(bool isSelected) {
     return ButtonStyle(
+      padding: widget.padding != null
+          ? MaterialStateProperty.all<EdgeInsetsGeometry>(widget.padding!)
+          : null,
       textStyle: MaterialStateProperty.all<TextStyle>(
           CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.medium)),
       overlayColor: MaterialStateProperty.resolveWith<Color?>(
@@ -163,6 +171,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
           y,
           //size.width,
           widget.width ?? _getMaxWidth(popupMenu),
+          widget.itemHeight,
           popupMenu,
         );
       },
@@ -172,7 +181,13 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
   }
 
   Widget _createDropDownMenu(
-      BuildContext context, double x, double y, double width, List<CretaMenuItem> menuItem) {
+    BuildContext context,
+    double x,
+    double y,
+    double width,
+    double height,
+    List<CretaMenuItem> menuItem,
+  ) {
     return Stack(
       children: [
         Positioned(
@@ -191,7 +206,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
               children: menuItem
                   .map((item) => SizedBox(
                         width: width + 8,
-                        height: 39,
+                        height: height,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: ElevatedButton(
