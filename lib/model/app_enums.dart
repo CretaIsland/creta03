@@ -69,7 +69,8 @@ enum GradationType {
   leftBottom2rightTop,
   rightBottom2leftTop,
   rightTop2leftBottom,
-  cirle,
+  in2out,
+  out2in,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;

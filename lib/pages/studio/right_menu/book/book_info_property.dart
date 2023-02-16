@@ -170,7 +170,8 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
         children: [
           Text(CretaStudioLang.copyWright, style: CretaFont.titleSmall),
           widget.model.creator == AccountManager.currentLoginUser.email
-              ? CretaDropDownButton(height: 36, dropDownMenuItemList: getCopyWrightListItem(null))
+              ? CretaDropDownButton(
+                  height: 36, itemHeight: 24, dropDownMenuItemList: getCopyWrightListItem(null))
               : Text(CretaStudioLang.copyWrightList[widget.model.copyWright.value.index],
                   style: _dataStyle),
         ],

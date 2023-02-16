@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 
 class CretaStudioLang {
-  static List<String> pageSizeListPresentation = [
-    // 영문기준 14자가 넘지 않도록 한다.
-    "사용자지정",
-    "표준스크린 4:3",
-    "와이드 16:9",
-    "와이드 16:10",
-    "A4",
-    "B5",
-  ];
+  static Map<String, String> pageSizeMapPresentation = {
+    '사용자지정': '',
+    '표준 4 : 3': '960x720',
+    '와이드스크린 16:9': '960x540',
+    '와이드스크린 16:10': '960x600',
+    '프레젠테이션': '1920x1080',
+    '상세페이지': '860x1100',
+    '카드뉴스': '1080x1080',
+    '유튜브 썸네일': '1280x720',
+    '유튜브 채널아트': '2560x1440',
+    'SNS': '1200x1200',
+    '16:9 PC': '2560x1440',
+    '9:19 아이폰': '1080x2280',
+    '3:4 아이패드': '2048x2732',
+    '10:16 갤럭시 탭': '1600x2560',
+    '9:16 안드로이드': '1440x2560',
+    '레터': '2550x3300',
+    'a4': '2480x3508',
+    'a3': '3508x4961',
+    'a5': '1748x2480',
+    'a6': '105x148',
+    'b3': '4169x5906',
+    'b4': '2953x4169',
+    'b5': '2079x2953',
+    'c4': '2705x3827',
+    'c5': '1913x2705',
+    'c6': '1346x1913',
+  };
 
   static List<String> pageSizeListSignage = [
     "사용자지정",
@@ -40,7 +59,7 @@ class CretaStudioLang {
 
   static Map<String, String> bookInfoTabBar = {
     '크레타북 정보': 'book_info',
-    '페이지 설정': 'page_settings',
+    '크레타북 설정': 'book_settings',
     '편집자 권한': 'authority',
   };
 
@@ -134,7 +153,7 @@ class CretaStudioLang {
   static const String hashTab = "해쉬태그";
   static const String infomation = "정보";
   static const String pageSize = "페이지 크기";
-  static const String pageBgColor = "페이지 배경";
+  static const String pageBgColor = "전체 배경색";
   static const String onLine = "온라인";
   static const String offLine = "오프라인";
 
@@ -160,4 +179,7 @@ class CretaStudioLang {
   static const String autoPlay = '자동 페이지 넘김';
   static const String widthHeight = '(가로x세로)';
   static const String gradation = '그라데이션';
+
+  static const String gradationTooltip = '투톤 칼러를 선택합니다';
+  static const String colorTooltip = '기본색을 선택합니다';
 }

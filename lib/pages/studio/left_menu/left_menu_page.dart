@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
@@ -321,6 +322,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         //setState(() {
         logger.finest('selected = ${model.mid}');
         _pageManager!.setSelectedIndex(context, model.mid);
+        BookMainPage.selectedClass = RightMenuEnum.Page;
+        BookMainPage.bookManagerHolder?.notify();
         //});
       },
       onDoubleTapDown: (details) {

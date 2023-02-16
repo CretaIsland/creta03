@@ -633,6 +633,8 @@ class _BookMainPageState extends State<BookMainPage> {
                 ? _model.bgColor1.value
                 : _model.bgColor1.value.withOpacity(_model.opacity.value),
             boxShadow: StudioSnippet.basicShadow(),
+            gradient: StudioSnippet.gradient(
+                _model.gradationType.value, _model.bgColor1.value, _model.bgColor2.value),
           ),
           width: pageWidth,
           height: pageHeight,

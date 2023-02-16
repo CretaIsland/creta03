@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 //import '../../lang/creta_lang.dart';
@@ -12,6 +13,7 @@ class CretaDropDownButton extends StatefulWidget {
   final double height;
   final double itemHeight;
   final List<CretaMenuItem> dropDownMenuItemList;
+  final List<String>? hintList;
   final MainAxisAlignment align;
   double? width;
   TextStyle? textStyle;
@@ -28,6 +30,7 @@ class CretaDropDownButton extends StatefulWidget {
     required this.dropDownMenuItemList,
     this.align = MainAxisAlignment.center,
     this.itemHeight = 39,
+    this.hintList,
   });
 
   @override
@@ -40,6 +43,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
   double? fontSize;
   double iconSize = 24;
   String allText = '';
+  int _itemIndex = 0;
 
   @override
   void initState() {
@@ -65,6 +69,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
               context: context,
               globalKey: dropDownButtonKey,
               popupMenu: widget.dropDownMenuItemList,
+              hintList: widget.hintList,
               initFunc: () {
                 dropDownButtonOpened = true;
               }).then((value) {
@@ -149,6 +154,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
     required BuildContext context,
     required GlobalKey globalKey,
     required List<CretaMenuItem> popupMenu,
+    List<String>? hintList,
     Function? initFunc,
   }) async {
     await showDialog(
@@ -165,14 +171,27 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         double x = position.dx;
         double y = position.dy + size.height - 1;
 
+        double itemSpacing = 5;
+        double dialogHeight =
+            (widget.itemHeight + itemSpacing) * popupMenu.length + itemSpacing * 2;
+        if (y + dialogHeight > StudioVariables.workHeight) {
+          dialogHeight = StudioVariables.workHeight - y;
+        }
+        if (popupMenu.length > 1 && dialogHeight < widget.itemHeight + itemSpacing * 2) {
+          dialogHeight = widget.itemHeight + itemSpacing * 2;
+        }
+
         return _createDropDownMenu(
           context,
           x,
           y,
           //size.width,
           widget.width ?? _getMaxWidth(popupMenu),
+          dialogHeight,
           widget.itemHeight,
+          itemSpacing,
           popupMenu,
+          hintList,
         );
       },
     );
@@ -186,64 +205,87 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
     double y,
     double width,
     double height,
+    double itemHeight,
+    double itemSpacing,
     List<CretaMenuItem> menuItem,
+    List<String>? hintList,
   ) {
+    _itemIndex = 0;
     return Stack(
       children: [
         Positioned(
           left: x,
           top: y,
           child: Container(
+            height: height,
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: CretaColor.text[300]!),
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
             ),
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-            child: Wrap(
-              direction: Axis.vertical,
-              spacing: 5, // <-- Spacing between children
-              children: menuItem
-                  .map((item) => SizedBox(
-                        width: width + 8,
-                        height: height,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: ElevatedButton(
-                            style: _buttonStyle(item.selected),
-                            onPressed: () {
-                              setState(() {
-                                for (var ele in menuItem) {
-                                  if (ele.selected == true) {
-                                    ele.selected = false;
-                                  }
-                                }
-                                item.selected = true;
-                                item.onPressed?.call();
-                              });
-                              Navigator.pop(context);
-                            },
-                            child: Row(
-                              children: [
-                                Text(
-                                  item.caption,
-                                  style: widget.textStyle,
-                                ),
-                                Expanded(
-                                  child: Container(),
-                                ),
-                                item.selected
-                                    ? Icon(
-                                        Icons.check,
-                                        size: iconSize,
-                                      )
-                                    : Container(),
-                              ],
+            padding: EdgeInsets.fromLTRB(0, itemSpacing, 0, itemSpacing),
+            child: SingleChildScrollView(
+              child: Wrap(
+                direction: Axis.vertical,
+                spacing: itemSpacing, // <-- Spacing between children
+                children: menuItem.map((item) {
+                  _itemIndex++;
+                  return SizedBox(
+                    width: width + 8,
+                    height: itemHeight,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: ElevatedButton(
+                        style: _buttonStyle(item.selected),
+                        onPressed: () {
+                          setState(() {
+                            for (var ele in menuItem) {
+                              if (ele.selected == true) {
+                                ele.selected = false;
+                              }
+                            }
+                            item.selected = true;
+                            item.onPressed?.call();
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Row(
+                          children: [
+                            hintList == null || hintList.length < _itemIndex
+                                ? Text(
+                                    item.caption,
+                                    style: widget.textStyle,
+                                    overflow: TextOverflow.fade,
+                                  )
+                                : Text.rich(
+                                    TextSpan(
+                                        text: item.caption,
+                                        style: widget.textStyle,
+                                        children: [
+                                          TextSpan(
+                                            text: ' (${hintList[_itemIndex - 1]})',
+                                            style: widget.textStyle?.copyWith(
+                                                color: CretaColor.secondary,
+                                                overflow: TextOverflow.fade),
+                                          ),
+                                        ]),
+                                  ),
+                            Expanded(
+                              child: Container(),
                             ),
-                          ),
+                            item.selected
+                                ? Icon(
+                                    Icons.check,
+                                    size: iconSize,
+                                  )
+                                : Container(),
+                          ],
                         ),
-                      ))
-                  .toList(),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ),

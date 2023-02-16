@@ -20,6 +20,7 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../book_main_page.dart';
+import '../../studio_snippet.dart';
 import '../property_mixin.dart';
 
 class BookPageProperty extends StatefulWidget {
@@ -98,7 +99,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
       },
       titleWidget: Text(CretaStudioLang.pageBgColor, style: CretaFont.titleSmall),
       //trailWidget: _isColorOpen ? _gradationButton() : _colorIndicator(),
-      trailWidget: _colorIndicator1(),
+      trailWidget: _colorIndicatorTotal(),
       bodyWidget: _colorBody(),
     );
   }
@@ -208,16 +209,24 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
 
   Widget _gradationTypes() {
     List<Widget> gradientList = [];
-    for (int i = 0; i < GradationType.end.index; i++) {
+    for (int i = 1; i < GradationType.end.index; i++) {
       logger.fine('gradient: ${GradationType.values[i].toString()}');
+      GradationType gType = GradationType.values[i];
       gradientList.add(GradationIndicator(
           color1: widget.model.bgColor1.value,
           color2: widget.model.bgColor2.value,
-          gradationType: GradationType.values[i],
-          onTapPressed: () {
+          gradationType: gType,
+          isSelected: widget.model.gradationType.value == gType,
+          onTapPressed: (type, color1, color2) {
+            logger.finest('GradationIndicator clicked');
             setState(() {
-              widget.model.gradationType.set(GradationType.values[i]);
+              if (widget.model.gradationType.value == type) {
+                widget.model.gradationType.set(GradationType.none);
+              } else {
+                widget.model.gradationType.set(type);
+              }
             });
+            BookMainPage.bookManagerHolder?.notify();
           }));
     }
     return Padding(
@@ -226,9 +235,11 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     );
   }
 
-  Widget _colorIndicator1() {
+  Widget _colorIndicatorTotal() {
     return MyColorIndicator(
-        //opacity: widget.model.opacity.value,
+        opacity: widget.model.opacity.value,
+        gradient: StudioSnippet.gradient(widget.model.gradationType.value,
+            widget.model.bgColor1.value, widget.model.bgColor2.value),
         color: widget.model.bgColor1.value,
         onColorChanged: (val) {
           setState(() {
@@ -238,16 +249,35 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
         });
   }
 
+  Widget _colorIndicator1() {
+    return Tooltip(
+      message: CretaStudioLang.colorTooltip,
+      child: MyColorIndicator(
+          //opacity: widget.model.opacity.value,
+          color: widget.model.bgColor1.value,
+          onColorChanged: (val) {
+            setState(() {
+              widget.model.bgColor1.set(val);
+            });
+            BookMainPage.bookManagerHolder?.notify();
+          }),
+    );
+  }
+
   Widget _colorIndicator2() {
-    return MyColorIndicator(
-        //opacity: widget.model.opacity.value,
-        color: widget.model.bgColor2.value,
-        onColorChanged: (val) {
-          setState(() {
-            widget.model.bgColor2.set(val);
-          });
-          BookMainPage.bookManagerHolder?.notify();
-        });
+    return Tooltip(
+      message: CretaStudioLang.gradationTooltip,
+      child: MyColorIndicator(
+          //opacity: widget.model.opacity.value,
+
+          color: widget.model.bgColor2.value,
+          onColorChanged: (val) {
+            setState(() {
+              widget.model.bgColor2.set(val);
+            });
+            BookMainPage.bookManagerHolder?.notify();
+          }),
+    );
   }
 
   Widget _pageSize() {
@@ -264,11 +294,11 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
       },
       titleWidget: Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
       trailWidget: Text('$width x $height', style: dataStyle),
-      bodyWidget: _pageBody(width, height),
+      bodyWidget: _pageSizeBody(width, height),
     );
   }
 
-  Widget _pageBody(int width, int height) {
+  Widget _pageSizeBody(int width, int height) {
     //return Column(children: [
     //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
     return Padding(
@@ -285,15 +315,24 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                 textStyle: CretaFont.bodyESmall,
                 dropDownMenuItemList: getPageSizeListItem(null),
                 align: MainAxisAlignment.start,
+                hintList: getPageSizeListHint(),
               ),
-              widget.model.pageSizeType.value != 0
-                  ? CretaDropDownButton(
-                      padding: EdgeInsets.only(left: 8, right: 4),
-                      height: 28,
-                      itemHeight: 24,
-                      textStyle: CretaFont.bodyESmall,
-                      dropDownMenuItemList: getResolutionListItem(null),
-                      align: MainAxisAlignment.start)
+              widget.model.pageSizeType.value != 0 // none
+                  ? widget.model.bookType.value == BookType.presentaion
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            getResolutionString(),
+                            style: CretaFont.bodyESmall,
+                          ),
+                        )
+                      : CretaDropDownButton(
+                          padding: EdgeInsets.only(left: 8, right: 4),
+                          height: 28,
+                          itemHeight: 24,
+                          textStyle: CretaFont.bodyESmall,
+                          dropDownMenuItemList: getResolutionListItem(null),
+                          align: MainAxisAlignment.start)
                   : _editSize(),
             ],
           ),
@@ -435,9 +474,9 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
 
   List<String> choicePageSizeName(BookType bookType) {
     if (bookType == BookType.presentaion) {
-      return CretaStudioLang.pageSizeListSignage;
+      return CretaStudioLang.pageSizeMapPresentation.keys.toList();
     }
-    return CretaStudioLang.pageSizeListPresentation;
+    return CretaStudioLang.pageSizeListSignage;
   }
 
   List<Size> choiceResolution(BookType bookType, int idx) {
@@ -477,6 +516,13 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     }
 
     return retval;
+  }
+
+  List<String>? getPageSizeListHint() {
+    if (widget.model.bookType.value == BookType.presentaion) {
+      return CretaStudioLang.pageSizeMapPresentation.values.toList();
+    }
+    return null;
   }
 
   Size matchedReSolution() {
@@ -529,6 +575,18 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
       ));
     }
     return retval;
+  }
+
+  String getResolutionString() {
+    if (widget.model.pageSizeType.value == 0) {
+      return '';
+    }
+    List<Size> resolutionList = StudioConst.presentationResolution[widget.model.pageSizeType.value];
+    int width = resolutionList[0].width.round();
+    int height = resolutionList[0].height.round();
+
+    bool isLands = widget.model.width.value >= widget.model.height.value;
+    return isLands ? '${width}x${height}' : '${height}x${width}';
   }
 
   void saveSize(Size size) {

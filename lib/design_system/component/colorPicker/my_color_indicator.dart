@@ -13,6 +13,7 @@ class MyColorIndicator extends StatefulWidget {
   final double opacity;
   final Color color;
   final void Function(Color) onColorChanged;
+  final Gradient? gradient;
 
   const MyColorIndicator(
       {super.key,
@@ -20,6 +21,7 @@ class MyColorIndicator extends StatefulWidget {
       this.height = 24,
       this.radius = 4,
       this.opacity = 1,
+      this.gradient,
       required this.color,
       required this.onColorChanged});
 
@@ -44,6 +46,7 @@ class _MyColorIndicatorState extends State<MyColorIndicator> {
       height: widget.height,
       decoration: BoxDecoration(
           color: widget.color,
+          gradient: widget.gradient,
           borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
           border: Border.all(
             width: 2,

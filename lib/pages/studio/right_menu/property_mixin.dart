@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../design_system/component/snippet_studio.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
+import '../studio_snippet.dart';
 
 mixin PropertyMixin {
   late TextStyle titleStyle;
@@ -32,7 +32,7 @@ mixin PropertyMixin {
             children: [
               Row(
                 children: [
-                  SnippetStudio.rotateWidget(
+                  StudioSnippet.rotateWidget(
                     turns: isOpen ? 0 : 2,
                     child: BTN.fill_blue_i_menu(
                         icon: Icons.expand_circle_down_outlined,

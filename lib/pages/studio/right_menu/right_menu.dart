@@ -12,6 +12,7 @@ import '../left_menu/left_menu_mixin.dart';
 import '../studio_snippet.dart';
 import '../studio_variables.dart';
 import 'book/right_menu_book.dart';
+import 'page/page_property.dart';
 
 class RightMenu extends StatefulWidget {
   //final RightMenuEnum selectedStick;
@@ -95,7 +96,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
       case RightMenuEnum.Book:
         return RightMenuBook();
       case RightMenuEnum.Page:
-        return Container();
+        return PageProperty();
       case RightMenuEnum.Frame:
         return Container();
       case RightMenuEnum.Contents:
