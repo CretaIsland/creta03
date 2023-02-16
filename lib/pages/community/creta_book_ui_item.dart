@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
 import 'package:hycop/common/util/logger.dart';
-//import 'package:routemaster/routemaster.dart';
+import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 //import '../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/snippet.dart';
@@ -16,7 +16,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
-//import '../../routes.dart';
+import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 import 'community_sample_data.dart';
 import '../../design_system/component/custom_image.dart';
@@ -73,6 +73,7 @@ class CretaBookItemState extends State<CretaBookItem> {
 
   void _editItem() {
     logger.finest('편집하기(${widget.cretaBookData.name})');
+    Routemaster.of(context).push(AppRoutes.communityBook);
   }
 
   void _doPopupMenuPlay() {

@@ -15,6 +15,7 @@ import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
 //import 'pages/studio/sample_data.dart';
 import 'pages/community/community_page.dart';
+import 'pages/community/community_book_page.dart';
 
 abstract class AppRoutes {
   static Future<bool> launchTab(String url, {bool isHttps = false}) async {
@@ -55,6 +56,7 @@ abstract class AppRoutes {
   static const String subscriptionList = '/community/subscriptionList';
   static const String playlist = '/community/playlist';
   static const String playlistDetail = '/community/playlistDetail';
+  static const String communityBook = '/community/book';
   static const String colorPickerDemo = '/colorPickerDemoPage';
 }
 
@@ -123,6 +125,12 @@ final routesLoggedOut = RouteMap(
             subPageUrl: AppRoutes.playlistDetail,
           ),
         ),
+    AppRoutes.communityBook: (_) => TransitionPage(
+      child: CommunityBookPage(
+        key: GlobalKey(),
+        subPageUrl: AppRoutes.communityBook,
+      ),
+    ),
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
         ),
