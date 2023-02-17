@@ -84,7 +84,7 @@ final routesLoggedOut = RouteMap(
         BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
       }
       logger.fine('selectedMid=${BookMainPage.selectedMid}');
-      return TransitionPage(child: BookMainPage());
+      return TransitionPage(child: BookMainPage(key: GlobalKey()));
     },
     AppRoutes.studioBookMyPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
@@ -102,11 +102,11 @@ final routesLoggedOut = RouteMap(
           ),
         ),
     AppRoutes.channel: (_) => TransitionPage(
-      child: CommunityPage(
-        key: GlobalKey(),
-        subPageUrl: AppRoutes.channel,
-      ),
-    ),
+          child: CommunityPage(
+            key: GlobalKey(),
+            subPageUrl: AppRoutes.channel,
+          ),
+        ),
     AppRoutes.subscriptionList: (_) => TransitionPage(
           child: CommunityPage(
             key: GlobalKey(),
@@ -126,11 +126,11 @@ final routesLoggedOut = RouteMap(
           ),
         ),
     AppRoutes.communityBook: (_) => TransitionPage(
-      child: CommunityBookPage(
-        key: GlobalKey(),
-        subPageUrl: AppRoutes.communityBook,
-      ),
-    ),
+          child: CommunityBookPage(
+            key: GlobalKey(),
+            subPageUrl: AppRoutes.communityBook,
+          ),
+        ),
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
         ),

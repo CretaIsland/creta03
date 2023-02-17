@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
+//import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+//import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/model/connected_user_model.dart';
 import 'package:creta03/pages/studio/sample_data.dart';
@@ -24,6 +24,7 @@ import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/creta_model.dart';
 import 'left_menu/left_menu.dart';
+import 'containees/page/page_main.dart';
 import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
@@ -35,19 +36,18 @@ class BookMainPage extends StatefulWidget {
   static String selectedMid = '';
   static bool onceBookInfoOpened = false;
   static BookManager? bookManagerHolder;
-
-  const BookMainPage({super.key});
-
+  static PageManager? pageManagerHolder;
   static LeftMenuEnum selectedStick = LeftMenuEnum.None;
   static RightMenuEnum selectedClass = RightMenuEnum.Book;
+
+  const BookMainPage({super.key});
 
   @override
   State<BookMainPage> createState() => _BookMainPageState();
 }
 
 class _BookMainPageState extends State<BookMainPage> {
-  PageManager? pageManagerHolder;
-  late BookModel _model;
+  late BookModel _bookModel;
   bool _onceDBGetComplete = false;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
@@ -70,9 +70,17 @@ class _BookMainPageState extends State<BookMainPage> {
     super.initState();
     logger.finest("---_BookMainPageState-----------------------------------------");
 
+    // 같은 페이지에서 객체만 바뀌면 static value 들은 그대로 남아있게 되므로
+    // static value 도 초기화해준다.
+    //BookMainPage.selectedMid = '';
+    BookMainPage.onceBookInfoOpened = false;
+    BookMainPage.selectedStick = LeftMenuEnum.None;
+    BookMainPage.selectedClass = RightMenuEnum.Book;
+
     BookMainPage.bookManagerHolder = BookManager();
     BookMainPage.bookManagerHolder!.configEvent(notifyModify: false);
     BookMainPage.bookManagerHolder!.clearAll();
+    BookMainPage.pageManagerHolder = PageManager();
 
     String url = Uri.base.origin;
     String query = Uri.base.query;
@@ -98,9 +106,9 @@ class _BookMainPageState extends State<BookMainPage> {
           saveManagerHolder!.addBookChildren('frame=');
           saveManagerHolder!.addBookChildren('contents=');
 
-          pageManagerHolder =
-              PageManager(bookModel: BookMainPage.bookManagerHolder!.onlyOne()! as BookModel);
-          pageManagerHolder!.clearAll();
+          BookMainPage.pageManagerHolder!
+              .setBook(BookMainPage.bookManagerHolder!.onlyOne()! as BookModel);
+          BookMainPage.pageManagerHolder!.clearAll();
 
           await _getPages();
           _onceDBGetComplete = true;
@@ -112,8 +120,8 @@ class _BookMainPageState extends State<BookMainPage> {
       mid = sampleBook.mid;
       saveManagerHolder!.setDefaultBook(sampleBook);
 
-      pageManagerHolder = PageManager(bookModel: sampleBook);
-      pageManagerHolder!.clearAll();
+      BookMainPage.pageManagerHolder!.setBook(sampleBook);
+      BookMainPage.pageManagerHolder!.clearAll();
 
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
         BookMainPage.bookManagerHolder!.addRealTimeListen();
@@ -122,22 +130,26 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     }
+    //BookMainPage.selectedStick = LeftMenuEnum.Page; // 페이지가 열린 상태로 시작하게 한다.
 
     saveManagerHolder?.runSaveTimer();
   }
 
   Future<int> _getPages() async {
     int pageCount = 0;
+    BookMainPage.pageManagerHolder!.startTransaction();
     try {
-      pageCount = await pageManagerHolder!.getPages();
+      pageCount = await BookMainPage.pageManagerHolder!.getPages();
       if (pageCount == 0) {
-        await pageManagerHolder!.createNextPage();
+        await BookMainPage.pageManagerHolder!.createNextPage();
         pageCount = 1;
       }
     } catch (e) {
-      await pageManagerHolder!.createNextPage();
+      logger.fine('something wrong $e');
+      await BookMainPage.pageManagerHolder!.createNextPage();
       pageCount = 1;
     }
+    BookMainPage.pageManagerHolder!.endTransaction();
     return pageCount;
   }
 
@@ -170,27 +182,31 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _waitBook() {
-    // if (sizeListener.isResizing()) {
-    //   return consumerFunc(context, null);
-    // }
     if (_onceDBGetComplete) {
-      return consumerFunc(context, null);
+      logger.fine('already _onceDBGetComplete');
+      return consumerFunc();
     }
-    var retval = CretaModelSnippet.waitData(
-      context,
-      manager: BookMainPage.bookManagerHolder!,
-      userId: AccountManager.currentLoginUser.email,
+    //var retval = CretaModelSnippet.waitData(
+    var retval = CretaModelSnippet.waitDatum(
+      managerList: [
+        BookMainPage.bookManagerHolder!,
+        BookMainPage.pageManagerHolder!,
+      ],
+      //userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
     );
-    _onceDBGetComplete = true;
+
+    //_onceDBGetComplete = true;
+    logger.fine('first_onceDBGetComplete');
     return retval;
+    //return consumerFunc();
   }
 
-  Widget consumerFunc(BuildContext context, List<AbsExModel>? bookList) {
+  Widget consumerFunc() {
     logger.finest('consumerFunc');
     return Consumer<BookManager>(builder: (context, bookManager, child) {
       logger.finest('Consumer  ${bookManager.getLength()}');
-      _model = bookManager.onlyOne()! as BookModel;
+      _bookModel = bookManager.onlyOne()! as BookModel;
       return _mainPage();
     });
   }
@@ -203,7 +219,7 @@ class _BookMainPageState extends State<BookMainPage> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<PageManager>.value(
-          value: pageManagerHolder!,
+          value: BookMainPage.pageManagerHolder!,
         ),
       ],
       child: Stack(
@@ -260,9 +276,9 @@ class _BookMainPageState extends State<BookMainPage> {
     StudioVariables.availWidth = StudioVariables.virtualWidth * 0.9;
     StudioVariables.availHeight = StudioVariables.virtualHeight * 0.9;
 
-    widthRatio = StudioVariables.availWidth / _model.width.value;
-    heightRatio = StudioVariables.availHeight / _model.height.value;
-    physicalRatio = _model.height.value / _model.width.value;
+    widthRatio = StudioVariables.availWidth / _bookModel.width.value;
+    heightRatio = StudioVariables.availHeight / _bookModel.height.value;
+    physicalRatio = _bookModel.height.value / _bookModel.width.value;
 
     if (widthRatio < heightRatio) {
       pageWidth = StudioVariables.availWidth;
@@ -443,12 +459,12 @@ class _BookMainPageState extends State<BookMainPage> {
             textFieldKey: textFieldKey,
             height: 32,
             width: StudioVariables.displayWidth * 0.25,
-            text: _model.name.value,
+            text: _bookModel.name.value,
             textStyle: CretaFont.titleMedium.copyWith(),
             align: TextAlign.center,
             onEditComplete: (value) {
               setState(() {
-                _model.name.set(value);
+                _bookModel.name.set(value);
               });
             },
             onLabelHovered: () {
@@ -620,26 +636,42 @@ class _BookMainPageState extends State<BookMainPage> {
     );
   }
 
+  // Widget _drawPage(BuildContext context) {
+  //   return Container(
+  //     width: StudioVariables.virtualWidth,
+  //     height: StudioVariables.virtualHeight,
+  //     color: LayoutConst.studioBGColor,
+  //     //color: Colors.amber,
+  //     child: Center(
+  //       child: GestureDetector(
+  //         onLongPressDown: (details) {
+  //           logger.finest('page clicked');
+  //           setState(() {
+  //             BookMainPage.selectedClass = RightMenuEnum.Page;
+  //           });
+  //         },
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //             color: _bookModel.opacity.value == 1
+  //                 ? _bookModel.bgColor1.value
+  //                 : _bookModel.bgColor1.value.withOpacity(_bookModel.opacity.value),
+  //             boxShadow: StudioSnippet.basicShadow(),
+  //             gradient: StudioSnippet.gradient(_bookModel.gradationType.value,
+  //                 _bookModel.bgColor1.value, _bookModel.bgColor2.value),
+  //           ),
+  //           width: pageWidth,
+  //           height: pageHeight,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   Widget _drawPage(BuildContext context) {
-    return Container(
-      width: StudioVariables.virtualWidth,
-      height: StudioVariables.virtualHeight,
-      color: LayoutConst.studioBGColor,
-      //color: Colors.amber,
-      child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            color: _model.opacity.value == 1
-                ? _model.bgColor1.value
-                : _model.bgColor1.value.withOpacity(_model.opacity.value),
-            boxShadow: StudioSnippet.basicShadow(),
-            gradient: StudioSnippet.gradient(
-                _model.gradationType.value, _model.bgColor1.value, _model.bgColor2.value),
-          ),
-          width: pageWidth,
-          height: pageHeight,
-        ),
-      ),
+    return PageMain(
+      bookModel: _bookModel,
+      pageWidth: pageWidth,
+      pageHeight: pageHeight,
     );
   }
 

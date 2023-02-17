@@ -10,15 +10,18 @@ import '../model/creta_model.dart';
 import '../model/page_model.dart';
 import 'creta_manager.dart';
 
-PageManager? pageManagerHolder;
+//PageManager? pageManagerHolder;
 
 class PageManager extends CretaManager {
-  final BookModel bookModel;
+  late BookModel? bookModel;
   double lastOrder = 0;
   String _selectedMid = '';
 
-  PageManager({required this.bookModel}) : super('creta_page') {
+  PageManager() : super('creta_page') {
     saveManagerHolder?.registerManager('page', this);
+  }
+  void setBook(BookModel book) {
+    bookModel = book;
   }
 
   @override
@@ -38,7 +41,7 @@ class PageManager extends CretaManager {
 
   Future<PageModel> createNextPage() async {
     updateLastOrder();
-    PageModel defaultPage = PageModel.makeSample(++lastOrder, bookModel.mid);
+    PageModel defaultPage = PageModel.makeSample(++lastOrder, bookModel!.mid);
     await createToDB(defaultPage);
     insert(defaultPage, postion: getAvailLength());
     _selectedMid = defaultPage.mid;
@@ -48,7 +51,7 @@ class PageManager extends CretaManager {
   Future<int> getPages({int limit = 99}) async {
     logger.finest('getPages');
     Map<String, QueryValue> query = {};
-    query['parentMid'] = QueryValue(value: bookModel.mid);
+    query['parentMid'] = QueryValue(value: bookModel!.mid);
     query['isRemoved'] = QueryValue(value: false);
     Map<String, OrderDirection> orderBy = {};
     orderBy['order'] = OrderDirection.ascending;
@@ -66,6 +69,10 @@ class PageManager extends CretaManager {
       }
     }
     unlock();
+  }
+
+  void setSelected(int index) {
+    _selectedMid = modelList[0].mid;
   }
 
   Future<void> setSelectedIndex(BuildContext context, String mid) async {

@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../design_system/buttons/creta_slider.dart';
+import '../../../design_system/component/colorPicker/gradation_indicator.dart';
+import '../../../design_system/component/colorPicker/my_color_indicator.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
+import '../../../design_system/text_field/creta_text_field.dart';
+import '../../../lang/creta_studio_lang.dart';
+import '../../../model/app_enums.dart';
 import '../studio_snippet.dart';
 
 mixin PropertyMixin {
   late TextStyle titleStyle;
   late TextStyle dataStyle;
+  bool isColorOpen = false;
 
   void initMixin() {
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
@@ -97,6 +105,177 @@ mixin PropertyMixin {
       color: CretaColor.text[200]!,
       indent: 0,
       endIndent: 0,
+    );
+  }
+
+  Widget colorPropertyCard({
+    required Color color1,
+    required Color color2,
+    required String title,
+    required double opacity,
+    required GradationType gradationType,
+    required Function cardOpenPressed,
+    required void Function(double) onOpacityDragComplete,
+    required Function(GradationType, Color, Color) onGradationTapPressed,
+    required Function(Color) onColor1Changed,
+    required Function(Color) onColor2Changed,
+  }) {
+    return propertyCard(
+      isOpen: isColorOpen,
+      onPressed: () {
+        isColorOpen = !isColorOpen;
+        cardOpenPressed.call();
+      },
+      titleWidget: Text(title, style: CretaFont.titleSmall),
+      //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+      trailWidget: _colorIndicatorTotal(
+        color1,
+        color2,
+        opacity,
+        gradationType,
+        onColor1Changed,
+      ),
+      bodyWidget: _colorBody(
+        color1: color1,
+        color2: color2,
+        opacity: opacity,
+        onDragComplete: onOpacityDragComplete,
+        gradationType: gradationType,
+        onGradationTapPressed: onGradationTapPressed,
+        onColor1Changed: onColor1Changed,
+        onColor2Changed: onColor2Changed,
+      ),
+    );
+  }
+
+  Widget _colorBody({
+    required Color color1,
+    required Color color2,
+    required double opacity,
+    required GradationType gradationType,
+    required void Function(double) onDragComplete,
+    required Function(GradationType, Color, Color) onGradationTapPressed,
+    required Function(Color) onColor1Changed,
+    required Function(Color) onColor2Changed,
+  }) {
+    return Column(
+      children: [
+        //_gradationButton(),
+        propertyLine(
+          // 색
+          name: CretaStudioLang.color,
+          widget: _colorIndicator(
+            color1,
+            opacity,
+            gradationType,
+            onColor1Changed,
+          ),
+        ),
+        propertyLine2(
+          // 투명도
+          name: CretaStudioLang.opacity,
+          widget1: SizedBox(
+            height: 22,
+            width: 168,
+            child: CretaSlider(
+              key: UniqueKey(),
+              min: 0,
+              max: 100,
+              value: (1 - opacity) * 100,
+              onDragComplete: onDragComplete,
+            ),
+          ),
+          widget2: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              CretaTextField.xshortNumber(
+                defaultBorder: Border.all(color: CretaColor.text[100]!),
+                width: 40,
+                limit: 3,
+                textFieldKey: GlobalKey(),
+                value: '${((1 - opacity) * 100).round()}',
+                hintText: '',
+                onEditComplete: ((value) {
+                  double opacity = double.parse(value) / 100;
+                  onDragComplete(opacity);
+                }),
+              ),
+              Text('%', style: CretaFont.bodySmall),
+            ],
+          ),
+        ),
+        propertyLine(
+          // 그라데이션
+          name: CretaStudioLang.gradation,
+          widget: _colorIndicator(
+            color2,
+            opacity,
+            gradationType,
+            onColor2Changed,
+          ),
+        ),
+        _gradationTypes(
+          color1,
+          color2,
+          gradationType,
+          onGradationTapPressed,
+        ),
+      ],
+    );
+  }
+
+  Widget _gradationTypes(
+    Color color1,
+    Color color2,
+    GradationType gradationType,
+    Function(GradationType, Color, Color) onTapPressed,
+  ) {
+    List<Widget> gradientList = [];
+    for (int i = 1; i < GradationType.end.index; i++) {
+      logger.fine('gradient: ${GradationType.values[i].toString()}');
+      GradationType gType = GradationType.values[i];
+      gradientList.add(GradationIndicator(
+        color1: color1,
+        color2: color2,
+        gradationType: gType,
+        isSelected: gradationType == gType,
+        onTapPressed: onTapPressed,
+      ));
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: gradientList),
+    );
+  }
+
+  Widget _colorIndicatorTotal(
+    Color color1,
+    Color color2,
+    double opacity,
+    GradationType gradationType,
+    void Function(Color) onColorChanged,
+  ) {
+    return MyColorIndicator(
+      opacity: opacity,
+      gradient: StudioSnippet.gradient(gradationType, color1, color2),
+      color: color1,
+      onColorChanged: onColorChanged,
+    );
+  }
+
+  Widget _colorIndicator(
+    Color color,
+    double opacity,
+    GradationType gradationType,
+    void Function(Color) onColorChanged,
+  ) {
+    return Tooltip(
+      message: CretaStudioLang.colorTooltip,
+      child: MyColorIndicator(
+        opacity: opacity,
+        color: color,
+        onColorChanged: onColorChanged,
+      ),
     );
   }
 }

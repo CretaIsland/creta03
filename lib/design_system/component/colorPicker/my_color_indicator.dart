@@ -45,7 +45,7 @@ class _MyColorIndicatorState extends State<MyColorIndicator> {
       width: widget.width,
       height: widget.height,
       decoration: BoxDecoration(
-          color: widget.color,
+          color: widget.opacity == 1 ? widget.color : widget.color.withOpacity(widget.opacity),
           gradient: widget.gradient,
           borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
           border: Border.all(

@@ -70,10 +70,14 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<PageManager>(builder: (context, pageManager, child) {
-      _pageCount = pageManager.getAvailLength();
-      logger.finest('Consumer  $_pageCount');
       _pageManager = pageManager;
       pageManager.reOrdering();
+      _pageCount = pageManager.getAvailLength();
+      logger.finest('PageManager Consumer  $_pageCount');
+      if (pageManager.getSelected() == null && _pageCount > 0) {
+        pageManager.setSelected(0);
+        BookMainPage.selectedClass = RightMenuEnum.Page;
+      }
       return Column(
         children: [
           _menuBar(),
@@ -311,7 +315,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   Widget _body(int pageIndex, PageModel model) {
     //logger.finest('_body($bodyHeight, $bodyWidth)');
-    double pageRatio = _pageManager!.bookModel.getRatio();
+    double pageRatio = _pageManager!.bookModel!.getRatio();
     double width = 0;
     double height = 0;
     double pageHeight = 0;

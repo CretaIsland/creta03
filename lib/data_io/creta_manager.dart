@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
-import 'dart:io';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:deep_collection/deep_collection.dart';
 //import 'package:sortedmap/sortedmap.dart';
@@ -22,8 +21,14 @@ import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 
 enum DBState {
+  none,
   idle,
   querying,
+}
+
+enum TransState {
+  end,
+  start,
 }
 
 abstract class CretaManager extends AbsExModelManager {
@@ -57,7 +62,23 @@ abstract class CretaManager extends AbsExModelManager {
   List<Object>? _lastSortedObjectList;
   Map<String, OrderDirection> _currentSortAttr = {};
 
-  DBState _dbState = DBState.idle;
+  DBState _dbState = DBState.none;
+  TransState _transState = TransState.end;
+
+  void startTransaction() {
+    lock();
+    logger.finest('startTransaction');
+    _transState = TransState.start;
+    unlock();
+  }
+
+  void endTransaction() {
+    lock();
+    logger.finest('endTransaction');
+    _transState = TransState.end;
+    unlock();
+  }
+
   Map<String, QueryValue> _currentQuery = {};
 
   String _currentSearchStr = '';
@@ -66,6 +87,7 @@ abstract class CretaManager extends AbsExModelManager {
     _currentSearchStr = '';
     _currentLikeAttrList.clear();
     _currentQuery.clear();
+    //_transState = TransState.end;
     clearPage();
   }
 
@@ -75,7 +97,8 @@ abstract class CretaManager extends AbsExModelManager {
       _lastSortedObjectList!.clear();
       _lastSortedObjectList = null;
     }
-    _dbState = DBState.idle;
+    _dbState = DBState.none;
+    //_transState = TransState.end;
     _pageCount = 0;
     lock();
     modelList.clear();
@@ -281,9 +304,13 @@ abstract class CretaManager extends AbsExModelManager {
 
   Future<List<AbsExModel>> isGetListFromDBComplete() async {
     return await _lock.protect(() async {
-      while (_dbState == DBState.querying) {
-        sleep(const Duration(milliseconds: 100));
+      logger.fine('transState=$_transState');
+      while (_dbState == DBState.querying ||
+          _dbState == DBState.none ||
+          _transState == TransState.start) {
+        await Future.delayed(const Duration(milliseconds: 500)).then((onValue) => true);
       }
+      logger.fine('transState=$_transState');
       return modelList;
     });
   }

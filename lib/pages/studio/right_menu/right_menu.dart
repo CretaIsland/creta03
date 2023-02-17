@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../design_system/buttons/creta_label_text_editor.dart';
+import '../../../design_system/creta_color.dart';
 import '../../../model/book_model.dart';
+import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 
 import '../../../design_system/creta_font.dart';
@@ -41,7 +43,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    Widget title = eachTitle(BookMainPage.selectedClass);
+    Widget title = _eachTitle(BookMainPage.selectedClass);
     return SizedBox(
       height: StudioVariables.workHeight,
       child: super.buildAnimation(
@@ -53,7 +55,8 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
           //mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
-              height: LayoutConst.rightMenuTitleHeight,
+              height: LayoutConst.rightMenuTitleHeight -
+                  (BookMainPage.selectedClass == RightMenuEnum.Book ? 0 : 4),
               width: LayoutConst.rightMenuWidth,
               child: Row(
                 children: [
@@ -81,9 +84,17 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
                 ],
               ),
             ),
+            BookMainPage.selectedClass == RightMenuEnum.Book
+                ? SizedBox.shrink()
+                : Divider(
+                    height: 4,
+                    color: CretaColor.text[200]!,
+                    indent: 0,
+                    endIndent: 0,
+                  ),
             SizedBox(
               width: LayoutConst.rightMenuWidth,
-              child: eachWidget(BookMainPage.selectedClass),
+              child: _eachWidget(BookMainPage.selectedClass),
             )
           ],
         ),
@@ -91,7 +102,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
     );
   }
 
-  Widget eachWidget(RightMenuEnum selected) {
+  Widget _eachWidget(RightMenuEnum selected) {
     switch (selected) {
       case RightMenuEnum.Book:
         return RightMenuBook();
@@ -107,38 +118,57 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
     }
   }
 
-  Widget eachTitle(RightMenuEnum selected) {
+  Widget _showTitleText({required String title, required void Function(String) onEditComplete}) {
+    return CretaLabelTextEditor(
+      textFieldKey: textFieldKey,
+      height: 32,
+      width: StudioVariables.displayWidth * 0.25,
+      text: title,
+      textStyle: CretaFont.titleLarge,
+      align: TextAlign.center,
+      onEditComplete: onEditComplete,
+      onLabelHovered: () {},
+    );
+  }
+
+  Widget _eachTitle(RightMenuEnum selected) {
     switch (selected) {
       case RightMenuEnum.Book:
         {
-          String name = '';
+          String title = '';
           BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
           if (model == null) {
             return Container();
           }
-          name = model.name.value;
-
-          return CretaLabelTextEditor(
-            textFieldKey: textFieldKey,
-            height: 32,
-            width: StudioVariables.displayWidth * 0.25,
-            text: name,
-            textStyle: CretaFont.titleLarge,
-            align: TextAlign.center,
+          title = model.name.value;
+          return _showTitleText(
+            title: title,
             onEditComplete: (value) {
               setState(() {
                 model.name.set(value);
               });
               BookMainPage.bookManagerHolder?.notify();
             },
-            onLabelHovered: () {},
           );
         }
       case RightMenuEnum.Page:
-        return Text(
-          "Page Property",
-          style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
-        );
+        {
+          String title = '';
+          PageModel? model = BookMainPage.pageManagerHolder?.getSelected();
+          if (model == null) {
+            return Container();
+          }
+          title = model.name.value;
+          return _showTitleText(
+            title: title,
+            onEditComplete: (value) {
+              setState(() {
+                model.name.set(value);
+              });
+              BookMainPage.bookManagerHolder?.notify();
+            },
+          );
+        }
       case RightMenuEnum.Frame:
         return Text(
           "Frame Property",

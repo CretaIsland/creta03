@@ -153,9 +153,12 @@ class CretaStudioLang {
   static const String hashTab = "해쉬태그";
   static const String infomation = "정보";
   static const String pageSize = "페이지 크기";
-  static const String pageBgColor = "전체 배경색";
+  static const String bookBgColor = "전체 배경색";
+  static const String pageBgColor = "페이지 배경색";
   static const String onLine = "온라인";
   static const String offLine = "오프라인";
+  static const String transitionPage = "페이지 전환 효과";
+  static const String fadeIn = "페이드 인";
 
   static const String updateDate = "마지막 수정 날짜";
   static const String createDate = "만든 날짜";

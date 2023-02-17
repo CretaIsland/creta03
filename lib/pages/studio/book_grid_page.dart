@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:creta03/model/creta_model.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:provider/provider.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -249,19 +248,20 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     //   return consumerFunc(context, null);
     // }
     if (_onceDBGetComplete) {
-      return consumerFunc(context, null);
+      return consumerFunc();
     }
     var retval = CretaModelSnippet.waitData(
-      context,
       manager: bookManagerHolder!,
-      userId: AccountManager.currentLoginUser.email,
+      //userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
     );
     _onceDBGetComplete = true;
     return retval;
   }
 
-  Widget consumerFunc(BuildContext context, List<AbsExModel>? data) {
+  Widget consumerFunc(
+      /*List<AbsExModel>? data*/
+      ) {
     logger.finest('consumerFunc');
     return Consumer<BookManager>(builder: (context, bookManager, child) {
       logger.finest('Consumer  ${bookManager.getLength() + 1}');

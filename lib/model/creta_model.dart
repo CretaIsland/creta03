@@ -9,23 +9,21 @@ import '../data_io/creta_manager.dart';
 import '../design_system/creta_color.dart';
 
 class CretaModelSnippet {
-  static FutureBuilder<List<AbsExModel>> waitData(
-    BuildContext context, {
+  static FutureBuilder<List<AbsExModel>> waitData({
     required CretaManager manager,
-    required String userId,
-    required Widget Function(BuildContext, List<AbsExModel>?) consumerFunc,
+    //required String userId,
+    required Widget Function()? consumerFunc,
   }) {
     return FutureBuilder<List<AbsExModel>>(
-        //future: manager.getListFromDB(userId),
         future: manager.isGetListFromDBComplete(),
         builder: (context, AsyncSnapshot<List<AbsExModel>> snapshot) {
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
-            logger.severe("data fetch error($userId)");
-            return const Center(child: Text('data fetch error'));
+            logger.severe("data fetch error(WaitDatat)");
+            return const Center(child: Text('data fetch error(WaitDatat)'));
           }
           if (snapshot.hasData == false) {
-            logger.finest("wait data ...($userId)");
+            logger.finest("wait data ...(WaitDatat)");
             return Center(
               child: LoadingAnimationWidget.fourRotatingDots(
                 color: CretaColor.primary,
@@ -38,10 +36,55 @@ class CretaModelSnippet {
             // if (snapshot.data!.isEmpty) {
             //   return const Center(child: Text('no book founded'));
             // }
-            return consumerFunc(context, snapshot.data);
+            if (consumerFunc != null) {
+              return consumerFunc();
+            }
+            return const SizedBox.shrink();
           }
           return Container();
         });
+  }
+
+  static FutureBuilder<void> waitDatum({
+    required List<CretaManager> managerList,
+    required Widget Function()? consumerFunc,
+  }) {
+    return FutureBuilder<bool>(
+        future: CretaModelSnippet._waitUntilAllManager(managerList),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            logger.severe("data fetch error(WaitDatum)");
+            return const Center(child: Text('data fetch error(WaitDatum)'));
+          }
+          if (snapshot.hasData == false) {
+            logger.finest("wait data ...(WaitData)");
+            return Center(
+              child: LoadingAnimationWidget.fourRotatingDots(
+                color: CretaColor.primary,
+                size: 40.0,
+              ),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            logger.finest("founded ${snapshot.data!}");
+            // if (snapshot.data!.isEmpty) {
+            //   return const Center(child: Text('no book founded'));
+            // }
+            if (consumerFunc != null) {
+              return consumerFunc();
+            }
+            return const SizedBox.shrink();
+          }
+          return Container();
+        });
+  }
+
+  static Future<bool> _waitUntilAllManager(List<CretaManager> managerList) async {
+    for (var manager in managerList) {
+      await manager.isGetListFromDBComplete();
+    }
+    return true;
   }
 }
 
