@@ -49,6 +49,7 @@ class BookMainPage extends StatefulWidget {
 class _BookMainPageState extends State<BookMainPage> {
   late BookModel _bookModel;
   bool _onceDBGetComplete = false;
+  bool _isFirstOpen = true;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
   final ScrollController controller = ScrollController();
@@ -111,6 +112,7 @@ class _BookMainPageState extends State<BookMainPage> {
           BookMainPage.pageManagerHolder!.clearAll();
 
           await _getPages();
+          BookMainPage.pageManagerHolder!.setSelected(0);
           _onceDBGetComplete = true;
         }
         return value;
@@ -126,11 +128,12 @@ class _BookMainPageState extends State<BookMainPage> {
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
         BookMainPage.bookManagerHolder!.addRealTimeListen();
         await _getPages();
+        BookMainPage.pageManagerHolder!.setSelected(0);
         _onceDBGetComplete = true;
         return value;
       });
     }
-    //BookMainPage.selectedStick = LeftMenuEnum.Page; // 페이지가 열린 상태로 시작하게 한다.
+    BookMainPage.selectedStick = LeftMenuEnum.Page; // 페이지가 열린 상태로 시작하게 한다.
 
     saveManagerHolder?.runSaveTimer();
   }
@@ -342,7 +345,8 @@ class _BookMainPageState extends State<BookMainPage> {
     if (BookMainPage.selectedClass == RightMenuEnum.None) {
       return false;
     }
-    if (BookMainPage.selectedClass == RightMenuEnum.Book) {
+    if (BookMainPage.selectedClass == RightMenuEnum.Book || _isFirstOpen == true) {
+      _isFirstOpen = false;
       if (BookMainPage.onceBookInfoOpened == true) {
         return false;
       }
@@ -669,6 +673,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget _drawPage(BuildContext context) {
     return PageMain(
+      key: GlobalKey(),
       bookModel: _bookModel,
       pageWidth: pageWidth,
       pageHeight: pageHeight,

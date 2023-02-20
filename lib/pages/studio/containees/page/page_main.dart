@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../data_io/page_manager.dart';
 import '../../../../model/app_enums.dart';
@@ -36,6 +37,7 @@ class _PageMainState extends State<PageMain> {
   Widget build(BuildContext context) {
     return Consumer<PageManager>(builder: (context, pageManager, child) {
       _pageModel = pageManager.getSelected();
+      logger.finest('PageMain Invoked');
       return Container(
         width: StudioVariables.virtualWidth,
         height: StudioVariables.virtualHeight,
@@ -48,19 +50,55 @@ class _PageMainState extends State<PageMain> {
               setState(() {
                 BookMainPage.selectedClass = RightMenuEnum.Page;
               });
+              BookMainPage.bookManagerHolder!.notify();
             },
-            child: Container(
-              decoration: _pageBG(),
-              width: widget.pageWidth,
-              height: widget.pageHeight,
-            ),
+            child: _applyAnimate(),
           ),
         ),
       );
     });
   }
 
-  BoxDecoration _pageBG() {
+  Widget _pageBox() {
+    return Container(
+      decoration: _pageDeco(),
+      width: widget.pageWidth,
+      height: widget.pageHeight,
+    );
+  }
+
+  Widget _applyAnimate() {
+    List<AnimationType> animations =
+        AnimationType.toAniListFromInt(_pageModel!.pageTransition.value);
+
+    if (animations.isEmpty) {
+      return _pageBox();
+    }
+
+    Animate ani = _pageBox().animate();
+    for (var ele in animations) {
+      if (ele == AnimationType.fadeIn) {
+        logger.finest('fadeIn');
+        ani = ani.fadeIn().then();
+      }
+      if (ele == AnimationType.flip) {
+        logger.finest('flip');
+        ani = ani.flip().then();
+      }
+      if (ele == AnimationType.shake) {
+        logger.finest('shake');
+        ani = ani.shake().then();
+      }
+      if (ele == AnimationType.shimmer) {
+        logger.finest('shimmer');
+        ani = ani.shimmer().then();
+      }
+    }
+
+    return ani;
+  }
+
+  BoxDecoration _pageDeco() {
     double opacity = widget.bookModel.opacity.value;
     Color bgColor1 = widget.bookModel.bgColor1.value;
     Color bgColor2 = widget.bookModel.bgColor2.value;

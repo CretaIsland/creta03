@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 
 import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/creta_color.dart';
@@ -119,6 +120,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
   }
 
   Widget _showTitleText({required String title, required void Function(String) onEditComplete}) {
+    logger.finest('_showTitletext $title');
     return CretaLabelTextEditor(
       textFieldKey: textFieldKey,
       height: 32,
@@ -132,6 +134,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
   }
 
   Widget _eachTitle(RightMenuEnum selected) {
+    logger.finest('_eachTitle $selected');
     switch (selected) {
       case RightMenuEnum.Book:
         {

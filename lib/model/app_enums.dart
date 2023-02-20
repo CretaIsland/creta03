@@ -49,15 +49,15 @@ enum BookSort {
   static BookSort fromInt(int? val) => BookSort.values[validCheck(val ?? none.index)];
 }
 
-enum PageTransition {
-  none,
-  fadeIn,
-  fadeOut,
-  end;
+// enum PageTransition {
+//   none,
+//   fadeIn,
+//   fadeOut,
+//   end;
 
-  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static PageTransition fromInt(int? val) => PageTransition.values[validCheck(val ?? none.index)];
-}
+//   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+//   static PageTransition fromInt(int? val) => PageTransition.values[validCheck(val ?? none.index)];
+// }
 
 enum GradationType {
   none,
@@ -75,4 +75,28 @@ enum GradationType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static GradationType fromInt(int? val) => GradationType.values[validCheck(val ?? none.index)];
+}
+
+enum AnimationType {
+  none(0),
+  fadeIn(1),
+  flip(2),
+  shake(4),
+  shimmer(8),
+  end(999999);
+
+  const AnimationType(this.value);
+  final int value;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static AnimationType fromInt(int? val) => AnimationType.values[validCheck(val ?? none.index)];
+  static List<AnimationType> toAniListFromInt(int val) {
+    List<AnimationType> retval = [];
+    for (int i = 1; i < end.index; i++) {
+      if (val & AnimationType.values[i].value == AnimationType.values[i].value) {
+        retval.add(AnimationType.values[i]);
+      }
+    }
+    return retval;
+  }
 }

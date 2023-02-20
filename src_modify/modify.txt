@@ -12,3 +12,6 @@ copy src_modify\tag_editor.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub
 
 # skpark modify 2/13
 copy src_modify\CustomRadioButton.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\custom_radio_grouped_button-2.1.2+2\lib\CustomButtons\CustomRadioButton.dart 
+
+# skpark src_modif 2/17
+C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\firebase_database.dart 

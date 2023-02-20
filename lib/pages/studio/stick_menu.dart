@@ -135,7 +135,7 @@ class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     _selected = (BookMainPage.selectedStick == widget.menuType);
-    logger.fine('build NavBarItem $_selected');
+    //logger.fine('build NavBarItem $_selected');
     return GestureDetector(
       onTap: () {
         widget.onTap();

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_slider.dart';
@@ -59,7 +58,13 @@ mixin PropertyMixin {
                   ),
                 ],
               ),
-              isOpen ? const SizedBox.shrink() : trailWidget ?? const SizedBox.shrink(),
+              isOpen
+                  ? const SizedBox.shrink()
+                  : InkWell(
+                      onTap: () {
+                        onPressed.call();
+                      },
+                      child: trailWidget ?? const SizedBox.shrink()),
             ],
           ),
         ),
@@ -232,7 +237,7 @@ mixin PropertyMixin {
   ) {
     List<Widget> gradientList = [];
     for (int i = 1; i < GradationType.end.index; i++) {
-      logger.fine('gradient: ${GradationType.values[i].toString()}');
+      //logger.fine('gradient: ${GradationType.values[i].toString()}');
       GradationType gType = GradationType.values[i];
       gradientList.add(GradationIndicator(
         color1: color1,

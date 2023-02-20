@@ -157,8 +157,6 @@ class CretaStudioLang {
   static const String pageBgColor = "페이지 배경색";
   static const String onLine = "온라인";
   static const String offLine = "오프라인";
-  static const String transitionPage = "페이지 전환 효과";
-  static const String fadeIn = "페이드 인";
 
   static const String updateDate = "마지막 수정 날짜";
   static const String createDate = "만든 날짜";
@@ -185,4 +183,14 @@ class CretaStudioLang {
 
   static const String gradationTooltip = '투톤 칼러를 선택합니다';
   static const String colorTooltip = '기본색을 선택합니다';
+
+  static const String transitionPage = "페이지 전환 효과";
+
+  static List<String> animationTypes = [
+    "없음",
+    "페이드 인",
+    "플립",
+    "흔들기",
+    "반짝이기",
+  ];
 }

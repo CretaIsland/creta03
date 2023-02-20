@@ -26,7 +26,7 @@ class PageModel extends CretaModel {
   late UndoAble<GradationType> gradationType;
   late UndoAble<bool> isShow;
   late UndoAble<bool> isCircle;
-  late UndoAble<PageTransition> pageTransition;
+  late UndoAble<int> pageTransition;
   late UndoAble<String> thumbnailUrl;
 
   List<FrameModel> frameList = []; // db get 전용
@@ -57,7 +57,7 @@ class PageModel extends CretaModel {
     isShow = UndoAble<bool>(true, mid);
     description = UndoAble<String>("You could do it simple and plain", mid);
     thumbnailUrl = UndoAble<String>('', mid);
-    pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
+    pageTransition = UndoAble<int>(0, mid);
   }
 
   PageModel.makeSample(double porder, String pid)
@@ -78,7 +78,7 @@ class PageModel extends CretaModel {
     opacity = UndoAble<double>(1, mid);
     gradationType = UndoAble<GradationType>(GradationType.none, mid);
 
-    pageTransition = UndoAble<PageTransition>(PageTransition.none, mid);
+    pageTransition = UndoAble<int>(0, mid);
 
     logger.finest('mid=$mid');
     isRemoved.printMid();
@@ -98,7 +98,7 @@ class PageModel extends CretaModel {
     gradationType = UndoAble<GradationType>(srcPage.gradationType.value, mid);
     isShow = UndoAble<bool>(srcPage.isShow.value, mid);
     isCircle = UndoAble<bool>(srcPage.isCircle.value, mid);
-    pageTransition = UndoAble<PageTransition>(srcPage.pageTransition.value, mid);
+    pageTransition = UndoAble<int>(srcPage.pageTransition.value, mid);
   }
 
   @override
@@ -110,12 +110,11 @@ class PageModel extends CretaModel {
     shortCut.set(map["shortCut"] ?? '', save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
-    bgColor1.set(CretaUtils.string2Color(map["bgColor1"])!);
-    bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!);
-    opacity.set(map["opacity"] ?? 1);
-    gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0));
-    pageTransition.set(PageTransition.fromInt(map["pageTransition"] ?? 0),
-        save: false, noUndo: true);
+    bgColor1.set(CretaUtils.string2Color(map["bgColor1"])!, save: false, noUndo: true);
+    bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);
+    opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
+    gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0), save: false, noUndo: true);
+    pageTransition.set(map["pageTransition"] ?? 0, save: false, noUndo: true);
   }
 
   @override
@@ -132,7 +131,7 @@ class PageModel extends CretaModel {
         "gradationType": gradationType.value.index,
         "isShow": isShow.value,
         "isCircle": isCircle.value,
-        "pageTransition": pageTransition.value.index,
+        "pageTransition": pageTransition.value,
       }.entries);
   }
 

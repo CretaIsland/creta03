@@ -1,10 +1,12 @@
-// ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
+// ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/data_io/page_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
+import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
@@ -136,65 +138,231 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   }
 
   Widget _pageTransition() {
+    logger.finest('pageTransition=${_model!.pageTransition.value}');
+    List<AnimationType> animations = AnimationType.toAniListFromInt(_model!.pageTransition.value);
+    String trails = '';
+    for (var ele in animations) {
+      logger.finest('anymationTy=[$ele]');
+      if (trails.isNotEmpty) {
+        trails += "+";
+      }
+      trails += CretaStudioLang.animationTypes[ele.index];
+    }
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: propertyCard(
-          isOpen: _isTransitionOpen,
-          onPressed: () {
-            setState(() {
-              _isTransitionOpen = !_isTransitionOpen;
-            });
-          },
-          titleWidget: Text(CretaStudioLang.transitionPage, style: CretaFont.titleSmall),
-          //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-          trailWidget: Center(
-            child: Text(CretaStudioLang.fadeIn, style: CretaFont.titleSmall),
+        isOpen: _isTransitionOpen,
+        onPressed: () {
+          setState(() {
+            _isTransitionOpen = !_isTransitionOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.transitionPage, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: SizedBox(
+          width: 200,
+          child: Text(
+            trails,
+            textAlign: TextAlign.right,
+            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
           ),
-          bodyWidget: SizedBox(
-            height: 300,
-            child: Center(
-              child: Text("Not yet implemented", style: CretaFont.titleSmall),
-            ),
-          )),
+        ),
+        bodyWidget: _transitionBody(),
+      ),
+    );
+  }
+
+  Widget _transitionBody() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 16,
+        children: [
+          for (int i = 0; i < AnimationType.end.index; i++)
+            ExampleBox(
+                key: GlobalKey(),
+                model: _model!,
+                name: CretaStudioLang.animationTypes[i],
+                aniType: AnimationType.values[i],
+                selected: (i != 0 &&
+                        (AnimationType.values[i].value & _model!.pageTransition.value ==
+                            AnimationType.values[i].value) ||
+                    i == 0 && _model!.pageTransition.value == 0),
+                onSelected: () {
+                  setState(() {});
+                  BookMainPage.bookManagerHolder!.notify();
+                }),
+          // ExampleBox(model: _model!, name: CretaStudioLang.flip, aniType: AnimationType.flip),
+          // ExampleBox(model: _model!, name: CretaStudioLang.shake, aniType: AnimationType.shake),
+          // ExampleBox(model: _model!, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
+        ],
+      ),
     );
   }
 }
 
-// class _Chip extends StatelessWidget {
-//   const _Chip({
-//     required this.label,
-//     required this.onDeleted,
-//     required this.index,
-//   });
+class ExampleBox extends StatefulWidget {
+  final PageModel model;
+  final String name;
+  final AnimationType aniType;
+  final bool selected;
+  final Function onSelected;
+  const ExampleBox({
+    super.key,
+    required this.name,
+    required this.aniType,
+    required this.model,
+    required this.selected,
+    required this.onSelected,
+  });
 
-//   final String label;
-//   final ValueChanged<int> onDeleted;
-//   final int index;
+  @override
+  State<ExampleBox> createState() => _ExampleBoxState();
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Chip(
-//       clipBehavior: Clip.antiAlias,
-//       backgroundColor: Colors.white,
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(24),
-//         side: BorderSide(
-//           width: 1,
-//           color: CretaColor.text[700]!,
-//         ),
-//       ),
-//       labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-//       label: Text(
-//         '#$label',
-//         style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
-//       ),
-//       deleteIcon: Icon(
-//         Icons.close,
-//         size: 18,
-//       ),
-//       onDeleted: () {
-//         onDeleted(index);
-//       },
-//     );
-//   }
-// }
+class _ExampleBoxState extends State<ExampleBox> {
+  bool? _isHover;
+  bool _isClicked = false;
+
+  final double _height = 106;
+  final double _width = 156;
+
+  @override
+  void initState() {
+    _isClicked = widget.selected;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _selectAnimation();
+  }
+
+  bool isAni() {
+    if (_isHover == null) return true;
+    return _isHover!;
+  }
+
+  Widget _selectAnimation() {
+    switch (widget.aniType) {
+      case AnimationType.fadeIn:
+        return isAni() ? _aniBox().fadeIn() : _normalBox();
+      case AnimationType.flip:
+        return isAni() ? _aniBox().flip() : _normalBox();
+      case AnimationType.shake:
+        return isAni() ? _aniBox().shake() : _normalBox();
+      case AnimationType.shimmer:
+        return isAni() ? _aniBox().shimmer() : _normalBox();
+      default:
+        return _noAnimation();
+    }
+  }
+
+  Widget _normalBox() {
+    return MouseRegion(
+      onHover: (value) {
+        if (_isHover == null || _isHover! == false) {
+          setState(() {
+            logger.finest('transition hovered');
+            _isHover = true;
+          });
+        }
+      },
+      onExit: (value) {
+        if (_isHover == null || _isHover! == true) {
+          setState(() {
+            logger.finest('transition exit');
+            _isHover = false;
+          });
+        }
+      },
+      child: GestureDetector(
+        onLongPressDown: (details) {
+          setState(() {
+            _isClicked = !_isClicked;
+            if (_isClicked) {
+              widget.model.pageTransition
+                  .set(widget.model.pageTransition.value | widget.aniType.value);
+            } else {
+              int newVal = widget.model.pageTransition.value - widget.aniType.value;
+              if (newVal < 0) newVal = 0;
+              widget.model.pageTransition.set(newVal);
+            }
+            logger.finest('pageTrasitionValue = ${widget.model.pageTransition.value}');
+          });
+          widget.onSelected.call();
+        },
+        child: Container(
+          height: _height,
+          width: _width,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.all(
+              color: _isClicked ? CretaColor.primary : Colors.white,
+              width: 2,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+          ),
+          child: Container(
+            height: _height - 8,
+            width: _width - 8,
+            decoration: BoxDecoration(
+              color: CretaColor.text[200]!,
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            child: Center(
+              child: Text(widget.name, style: CretaFont.titleSmall),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Animate _aniBox() {
+    return _normalBox().animate(
+        onPlay: (controller) => controller.loop(
+            period: Duration(
+              milliseconds: 1000,
+            ),
+            count: 3,
+            reverse: true));
+  }
+
+  Widget _noAnimation() {
+    return GestureDetector(
+      onLongPressDown: (details) {
+        setState(() {
+          _isClicked = !_isClicked;
+          widget.model.pageTransition.set(0);
+          logger.finest('pageTrasitionValue = ${widget.model.pageTransition.value}');
+        });
+        widget.onSelected.call();
+      },
+      child: Container(
+        height: _height,
+        width: _width,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(
+            color: _isClicked ? CretaColor.primary : Colors.white,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        child: Container(
+          height: _height - 8,
+          width: _width - 8,
+          decoration: BoxDecoration(
+            color: CretaColor.text[200]!,
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+          ),
+          child: Center(
+            child: Text(widget.name, style: CretaFont.titleSmall),
+          ),
+        ),
+      ),
+    );
+  }
+}
