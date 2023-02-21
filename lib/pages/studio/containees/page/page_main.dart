@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../data_io/page_manager.dart';
 import '../../../../model/app_enums.dart';
@@ -13,6 +12,7 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
+import '../containee_mixin.dart';
 
 class PageMain extends StatefulWidget {
   final BookModel bookModel;
@@ -30,13 +30,18 @@ class PageMain extends StatefulWidget {
   State<PageMain> createState() => _PageMainState();
 }
 
-class _PageMainState extends State<PageMain> {
+class _PageMainState extends State<PageMain> with ContaineeMixin {
   PageModel? _pageModel;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<PageManager>(builder: (context, pageManager, child) {
-      _pageModel = pageManager.getSelected();
+      _pageModel = pageManager.getSelected() as PageModel?;
       logger.finest('PageMain Invoked');
       return Container(
         width: StudioVariables.virtualWidth,
@@ -69,33 +74,13 @@ class _PageMainState extends State<PageMain> {
 
   Widget _applyAnimate() {
     List<AnimationType> animations =
-        AnimationType.toAniListFromInt(_pageModel!.pageTransition.value);
+        AnimationType.toAniListFromInt(_pageModel!.transitionEffect.value);
 
-    if (animations.isEmpty) {
+    if (animations.isEmpty || BookMainPage.pageManagerHolder!.isSelectedChanged() == false) {
       return _pageBox();
     }
 
-    Animate ani = _pageBox().animate();
-    for (var ele in animations) {
-      if (ele == AnimationType.fadeIn) {
-        logger.finest('fadeIn');
-        ani = ani.fadeIn().then();
-      }
-      if (ele == AnimationType.flip) {
-        logger.finest('flip');
-        ani = ani.flip().then();
-      }
-      if (ele == AnimationType.shake) {
-        logger.finest('shake');
-        ani = ani.shake().then();
-      }
-      if (ele == AnimationType.shimmer) {
-        logger.finest('shimmer');
-        ani = ani.shimmer().then();
-      }
-    }
-
-    return ani;
+    return getAnimation(_pageBox(), animations);
   }
 
   BoxDecoration _pageDeco() {

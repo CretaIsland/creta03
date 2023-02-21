@@ -1,48 +1,57 @@
 // ignore_for_file: must_be_immutable
 
 // import 'package:hycop/common/util/util.dart';
-import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
-import 'package:hycop/hycop/utils/hycop_utils.dart';
 
+import '../lang/creta_studio_lang.dart';
+import 'app_enums.dart';
 import 'creta_model.dart';
+import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types
-class FrameModel extends CretaModel {
+class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<String> name;
   late UndoAble<String> bgUrl;
-  late UndoAble<double> width;
-  late UndoAble<double> height;
   late UndoAble<double> posX;
   late UndoAble<double> posY;
   late UndoAble<double> angle;
-  late UndoAble<Color> bgColor;
+  FrameType frameType = FrameType.none;
 
   @override
-  List<Object?> get props => [...super.props, name, width, height, posX, posY, angle, bgColor];
+  List<Object?> get props => [
+        ...super.props,
+        name,
+        posX,
+        posY,
+        angle,
+        frameType,
+        ...super.propsMixin,
+      ];
   FrameModel(String pmid) : super(pmid: pmid, type: ExModelType.frame, parent: '') {
     name = UndoAble<String>('', mid);
     bgUrl = UndoAble<String>('', mid);
-    width = UndoAble<double>(0, mid);
-    height = UndoAble<double>(0, mid);
     posX = UndoAble<double>(0, mid);
     posY = UndoAble<double>(0, mid);
     angle = UndoAble<double>(0, mid);
-    bgColor = UndoAble<Color>(Colors.transparent, mid);
+    frameType = FrameType.none;
+    super.initMixin(mid);
   }
 
-  FrameModel.withName(String nameStr) : super(pmid: '', type: ExModelType.frame, parent: '') {
-    name = UndoAble<String>(nameStr, mid);
+  FrameModel.makeSample(double porder, String pid, {FrameType pType = FrameType.none})
+      : super(pmid: '', type: ExModelType.frame, parent: pid) {
+    super.makeSampleMixin(mid);
+    order = UndoAble<double>(porder, mid);
+    name = UndoAble<String>('${CretaStudioLang.noNameframe} ${order.value.toString()}', mid);
     bgUrl = UndoAble<String>('', mid);
-    width = UndoAble<double>(200, mid);
-    height = UndoAble<double>(200, mid);
     posX = UndoAble<double>(100, mid);
     posY = UndoAble<double>(100, mid);
     angle = UndoAble<double>(0, mid);
-    bgColor = UndoAble<Color>(Colors.transparent, mid);
+    width = UndoAble<double>(200, mid);
+    height = UndoAble<double>(200, mid);
+    frameType = pType;
   }
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
@@ -50,12 +59,11 @@ class FrameModel extends CretaModel {
     FrameModel srcFrame = src as FrameModel;
     name = UndoAble<String>(srcFrame.name.value, mid);
     bgUrl = UndoAble<String>(srcFrame.bgUrl.value, mid);
-    width = UndoAble<double>(srcFrame.width.value, mid);
-    height = UndoAble<double>(srcFrame.height.value, mid);
     posX = UndoAble<double>(srcFrame.posX.value, mid);
     posY = UndoAble<double>(srcFrame.posY.value, mid);
     angle = UndoAble<double>(srcFrame.angle.value, mid);
-    bgColor = UndoAble<Color>(srcFrame.bgColor.value, mid);
+    frameType = srcFrame.frameType;
+    super.copyFromMixin(mid, srcFrame);
     logger.finest('FrameCopied($mid)');
   }
 
@@ -64,13 +72,11 @@ class FrameModel extends CretaModel {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);
     bgUrl.set(map["bgUrl"] ?? '', save: false, noUndo: true);
-    width.set(map["width"] ?? 0, save: false, noUndo: true);
-    height.set(map["height"] ?? 0, save: false, noUndo: true);
     posX.set(map["posX"] ?? false, save: false, noUndo: true);
     posY.set(map["posY"] ?? false, save: false, noUndo: true);
     angle.set((map["angle"] ?? 0), save: false, noUndo: true);
-
-    bgColor.set(HycopUtils.stringToColor(map["bgColor"]), save: false, noUndo: true);
+    frameType = FrameType.fromInt(map["frameType"] ?? 0);
+    super.fromMapMixin(map);
     logger.finest('${posX.value}, ${posY.value}');
   }
 
@@ -80,12 +86,11 @@ class FrameModel extends CretaModel {
       ..addEntries({
         "name": name.value,
         "bgUrl": bgUrl.value,
-        "width": width.value,
-        "height": height.value,
         "posX": posX.value,
         "posY": posY.value,
         "angle": angle.value,
-        "bgColor": bgColor.value.toString(),
+        'frameType': frameType.index,
+        ...super.toMapMixin(),
       }.entries);
   }
 }

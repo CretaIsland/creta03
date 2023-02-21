@@ -26,6 +26,17 @@ enum BookType {
   static BookType fromInt(int? val) => BookType.values[validCheck(val ?? none.index)];
 }
 
+enum FrameType {
+  none,
+  latest,
+  polygon,
+  animation,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static FrameType fromInt(int? val) => FrameType.values[validCheck(val ?? none.index)];
+}
+
 enum CopyWrightType {
   none,
   free,

@@ -10,7 +10,7 @@ class CretaColor {
     _primary,
     <int, Color>{
       100: Color(0xffE7EFFD),
-      200: Color(0xffB8CEFA),
+      200: Color(0xffC6D8F8),
       300: Color(0xff89AEF6),
       400: Color(_primary),
       500: Color(0xff2A6DEE),

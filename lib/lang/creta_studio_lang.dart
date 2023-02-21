@@ -142,6 +142,7 @@ class CretaStudioLang {
   static const String newPage = '새 페이지 추가';
   static const String treePage = '자세히 보기';
   static const String noNamepage = '이름없는 페이지';
+  static const String noNameframe = '이름없는 프레임';
 
   static const String wide = "전체 페이지 보기";
   static const String close = "닫기";
@@ -193,4 +194,12 @@ class CretaStudioLang {
     "흔들기",
     "반짝이기",
   ];
+
+  static const String lastestFrame = "최근에 사용한 프레임";
+  static const String poligonFrame = "도형 프레임";
+  static const String animationFrame = "애니메이션 프레임";
+
+  static const String lastestFrameError = "최근에 사용한 프레임이 없습니다.";
+  static const String poligonFrameError = "준비된 도형 프레임이 없습니다.";
+  static const String animationFrameError = "준비된 애니메이션 프레임이 없습니다.";
 }

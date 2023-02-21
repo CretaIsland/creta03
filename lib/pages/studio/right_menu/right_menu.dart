@@ -157,7 +157,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
       case RightMenuEnum.Page:
         {
           String title = '';
-          PageModel? model = BookMainPage.pageManagerHolder?.getSelected();
+          PageModel? model = BookMainPage.pageManagerHolder?.getSelected() as PageModel?;
           if (model == null) {
             return Container();
           }

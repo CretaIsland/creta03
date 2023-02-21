@@ -29,9 +29,9 @@ class CretaFont {
     fontSize: 14,
     color: CretaColor.text,
   );
-  static TextStyle titleMedium = headlineSmall.copyWith(fontSize: 16);
-  static TextStyle titleLarge = headlineSmall.copyWith(fontSize: 20);
-  static TextStyle titleELarge = headlineSmall.copyWith(fontSize: 22);
+  static TextStyle titleMedium = titleSmall.copyWith(fontSize: 16);
+  static TextStyle titleLarge = titleSmall.copyWith(fontSize: 20);
+  static TextStyle titleELarge = titleSmall.copyWith(fontSize: 22);
 
   static TextStyle displaySmall = const TextStyle(
     fontFamily: fontFamily,
@@ -39,8 +39,8 @@ class CretaFont {
     fontSize: 40,
     color: CretaColor.text,
   );
-  static TextStyle displayMedium = headlineSmall.copyWith(fontSize: 50);
-  static TextStyle displayLarge = headlineSmall.copyWith(fontSize: 60);
+  static TextStyle displayMedium = displaySmall.copyWith(fontSize: 50);
+  static TextStyle displayLarge = displaySmall.copyWith(fontSize: 60);
 
   static TextStyle bodyESmall = const TextStyle(
     fontFamily: fontFamily,
@@ -48,9 +48,9 @@ class CretaFont {
     fontSize: 12,
     color: CretaColor.text,
   );
-  static TextStyle bodySmall = headlineSmall.copyWith(fontSize: 14);
-  static TextStyle bodyMedium = headlineSmall.copyWith(fontSize: 16);
-  static TextStyle bodyLarge = headlineSmall.copyWith(fontSize: 20);
+  static TextStyle bodySmall = bodyESmall.copyWith(fontSize: 14);
+  static TextStyle bodyMedium = bodyESmall.copyWith(fontSize: 16);
+  static TextStyle bodyLarge = bodyESmall.copyWith(fontSize: 20);
 
   static TextStyle buttonSmall = const TextStyle(
     fontFamily: fontFamily,
@@ -58,6 +58,6 @@ class CretaFont {
     fontSize: 11,
     color: CretaColor.text,
   );
-  static TextStyle buttonMedium = headlineSmall.copyWith(fontSize: 13);
-  static TextStyle buttonLarge = headlineSmall.copyWith(fontSize: 15);
+  static TextStyle buttonMedium = buttonSmall.copyWith(fontSize: 13);
+  static TextStyle buttonLarge = buttonSmall.copyWith(fontSize: 15);
 }

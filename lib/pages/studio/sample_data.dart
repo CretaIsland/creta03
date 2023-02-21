@@ -18,6 +18,7 @@ class SampleData {
 
     AccountManager.currentLoginUser.setValue('email', 'skpark@sqisoft.com');
     AccountManager.currentLoginUser.setValue('name', 'Turtle Rabbit');
+    AccountManager.currentLoginUser.setValue('userId', 'ThisIsTestUserId');
   }
 
   static List<PageModel> samplePageList = [

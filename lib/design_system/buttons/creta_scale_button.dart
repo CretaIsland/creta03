@@ -71,13 +71,13 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
   @override
   void initState() {
     super.initState();
-    logger.fine('initState :: scale=${StudioVariables.scale}');
+    logger.finest('initState :: scale=${StudioVariables.scale}');
   }
 
   @override
   Widget build(BuildContext context) {
     _scaleText = "${(StudioVariables.scale * 100).round()}";
-    logger.fine('scaleText=$_scaleText');
+    logger.finest('scaleText=$_scaleText');
     return Container(
         padding: EdgeInsets.only(left: 4, right: 4),
         decoration: _getDeco(),

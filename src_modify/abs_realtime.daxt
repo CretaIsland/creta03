@@ -29,7 +29,7 @@ abstract class AbsRealtime {
 
   void stop();
   void clearListener() {
-    logger.fine('clearListener()');
+    logger.finest('clearListener()');
     listenerMap.clear();
   }
 

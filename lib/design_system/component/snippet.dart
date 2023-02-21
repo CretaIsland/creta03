@@ -47,7 +47,7 @@ class Snippet {
         behavior: HitTestBehavior.opaque,
         onLongPressDown: ((details) {
           LastClicked.clickedOutSide(details.globalPosition);
-          logger.fine('LastClicked pressed');
+          logger.finest('LastClicked pressed');
         }),
         child: child,
       ),

@@ -83,7 +83,7 @@ final routesLoggedOut = RouteMap(
       if (BookMainPage.selectedMid.isEmpty) {
         BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
       }
-      logger.fine('selectedMid=${BookMainPage.selectedMid}');
+      logger.finest('selectedMid=${BookMainPage.selectedMid}');
       return TransitionPage(child: BookMainPage(key: GlobalKey()));
     },
     AppRoutes.studioBookMyPage: (_) => TransitionPage(

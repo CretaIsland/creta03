@@ -103,8 +103,8 @@ class BookManager extends CretaManager {
   }
 
   BookModel createSample({
-    int width = 1920,
-    int height = 1080,
+    double width = 1920,
+    double height = 1080,
   }) {
     final Random random = Random();
     int randomNumber = random.nextInt(100);

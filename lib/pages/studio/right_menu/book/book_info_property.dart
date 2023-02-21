@@ -124,18 +124,18 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
           setState(() {
             hashTagList.add(newValue);
             String val = CretaUtils.listToString(hashTagList);
-            logger.fine('hashTag=$val');
+            logger.finest('hashTag=$val');
             widget.model.hashTag.set(val);
           });
-          logger.fine('onTagChanged $newValue input');
+          logger.finest('onTagChanged $newValue input');
         },
         onSubmitted: (outstandingValue) {
           setState(() {
             hashTagList.add(outstandingValue);
             String val = CretaUtils.listToString(hashTagList);
-            logger.fine('hashTag=$val');
+            logger.finest('hashTag=$val');
             widget.model.hashTag.set(val);
-            logger.fine('onSubmitted $outstandingValue input');
+            logger.finest('onSubmitted $outstandingValue input');
           });
         },
         tagBuilder: (context, index) {
@@ -152,7 +152,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
                   hashTagList.removeAt(index);
                   String val = CretaUtils.listToString(hashTagList);
                   widget.model.hashTag.set(val);
-                  logger.fine('onDelete $index');
+                  logger.finest('onDelete $index');
                 });
               },
             ),

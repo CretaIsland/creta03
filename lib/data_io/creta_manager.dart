@@ -304,13 +304,13 @@ abstract class CretaManager extends AbsExModelManager {
 
   Future<List<AbsExModel>> isGetListFromDBComplete() async {
     return await _lock.protect(() async {
-      logger.fine('transState=$_transState');
+      logger.finest('transState=$_transState');
       while (_dbState == DBState.querying ||
           _dbState == DBState.none ||
           _transState == TransState.start) {
         await Future.delayed(const Duration(milliseconds: 500)).then((onValue) => true);
       }
-      logger.fine('transState=$_transState');
+      logger.finest('transState=$_transState');
       return modelList;
     });
   }
@@ -440,7 +440,7 @@ abstract class CretaManager extends AbsExModelManager {
       //reOrdering();
       return retval;
     } catch (e) {
-      logger.severe('databaseError', e);
+      logger.severe('databaseError $e');
       _dbState = DBState.idle;
       unlock();
       throw HycopException(message: 'databaseError', exception: e as Exception);
@@ -619,7 +619,7 @@ abstract class CretaManager extends AbsExModelManager {
       }
       _orderMap[ele.order.value] = ele as CretaModel;
     }
-    logger.fine('reOrdering  ${_orderMap.length}');
+    logger.finest('reOrdering  ${_orderMap.length}');
 
     unlock();
     return;
@@ -717,5 +717,72 @@ abstract class CretaManager extends AbsExModelManager {
   AbsExModel? onlyOne() {
     if (modelList.isEmpty) return null;
     return modelList.first;
+  }
+
+  ///
+  ///  select 관련
+  ///
+  ///
+  ///
+  @protected
+  double lastOrder = 0;
+  @protected
+  String selectedMid = '';
+  @protected
+  String prevSelectedMid = '';
+
+  bool isSelectedChanged() {
+    bool retval = (prevSelectedMid != selectedMid);
+    prevSelectedMid = selectedMid;
+    return retval;
+  }
+
+  bool isSelected(String mid) {
+    //rlogHolder.log('isPageSelected($mid)');
+    return selectedMid == mid;
+  }
+
+  void updateLastOrder() {
+    lock();
+    for (var ele in modelList) {
+      if (ele.order.value > lastOrder) {
+        lastOrder = ele.order.value;
+      }
+    }
+    unlock();
+  }
+
+  void setSelected(int index) {
+    prevSelectedMid = selectedMid;
+    selectedMid = modelList[0].mid;
+    logger.finest('1 selected=$selectedMid, prev=$prevSelectedMid');
+  }
+
+  Future<void> setSelectedIndex(BuildContext context, String mid) async {
+    prevSelectedMid = selectedMid;
+    selectedMid = mid;
+    logger.finest('2 selected=$selectedMid, prev=$prevSelectedMid');
+
+    notify();
+  }
+
+  AbsExModel? getSelected() {
+    if (selectedMid.isEmpty) {
+      return null;
+    }
+    for (var ele in modelList) {
+      if (ele.mid == selectedMid) {
+        return ele;
+      }
+    }
+    return null;
+  }
+
+  void printLog() {
+    lock();
+    for (var ele in modelList) {
+      logger.finer('${ele.mid}, isRemoved=${ele.isRemoved.value}');
+    }
+    unlock();
   }
 }

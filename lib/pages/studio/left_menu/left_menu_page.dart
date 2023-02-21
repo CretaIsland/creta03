@@ -133,7 +133,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           _emptyCard(),
         ],
         onReorder: (oldIndex, newIndex) {
-          logger.fine('oldIndex=$oldIndex, newIndex=$newIndex');
+          logger.finest('oldIndex=$oldIndex, newIndex=$newIndex');
           CretaModel? target = _pageManager!.getNthModel(oldIndex);
           if (target != null) {
             setState(() {
@@ -144,61 +144,6 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       ),
     );
   }
-
-  // Widget _eachCard(int pageIndex, PageModel model) {
-  //   double pageRatio = _pageManager!.bookModel.getRatio();
-  //   double width = 0;
-  //   double height = 0;
-  //   double pageHeight = 0;
-  //   double pageWidth = 0;
-
-  //   //String pageNo = (pageIndex + 1).toString().padLeft(2, '0');
-
-  //   return ReorderableDragStartListener(
-  //     key: ValueKey(model.mid),
-  //     index: pageIndex,
-  //     child: Padding(
-  //       padding: const EdgeInsets.fromLTRB(20, 0, 20, 13),
-  //       //padding: const EdgeInsets.only(left: 20, top: 0),
-  //       child: SizedBox(
-  //         // 실제 페이지를 그리는 부분
-  //         height: 126.0,
-  //         child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-  //           width = constraints.maxWidth;
-  //           height = constraints.maxHeight;
-  //           if (pageRatio > 1) {
-  //             // 세로형
-  //             pageHeight = height;
-  //             pageWidth = pageHeight * (1 / pageRatio);
-  //           } else {
-  //             // 가로형
-  //             pageWidth = width;
-  //             pageHeight = pageWidth * pageRatio;
-  //             if (pageHeight > height) {
-  //               // 화면에서 page 를 표시하는 영역은 항상 가로형으로 항상 세로는
-  //               // 가로보다 작다.  이러다 보니, 세로 사이지그 화면의 영역을 오버하는
-  //               // 경우가 생기게 된다.  그러나 세로형의 경우는 이런 일이 발생하지 않는다.
-  //               pageHeight = height;
-  //               pageWidth = pageHeight * (1 / pageRatio);
-  //             }
-  //           }
-  //           logger.finest("pl:width=$width, height=$height, ratio=$pageRatio");
-  //           logger.finest("pl:pageWidth=$pageWidth, pageHeight=$pageHeight");
-
-  //           return SafeArea(
-  //             child: Container(
-  //               height: pageHeight,
-  //               width: pageWidth,
-  //               color: _pageManager!.isPageSelected(model.mid)
-  //                   ? CretaColor.text[200]!
-  //                   : CretaColor.text[100]!,
-  //             ),
-  //           );
-  //         }),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   List<Widget> _cardList() {
     if (_pageManager!.getAvailLength() == 0) {
@@ -369,10 +314,10 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
               decoration: BoxDecoration(
                 border: Border.all(
                     width: borderThick,
-                    color: _pageManager!.isPageSelected(model.mid)
+                    color: _pageManager!.isSelected(model.mid)
                         ? CretaColor.primary
                         : CretaColor.text[300]!),
-                color: _pageManager!.isPageSelected(model.mid)
+                color: _pageManager!.isSelected(model.mid)
                     ? CretaColor.text[100]!
                     : CretaColor.text[200]!,
               ),

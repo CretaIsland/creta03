@@ -13,23 +13,28 @@ import 'creta_model.dart';
 class UserPropertyModel extends CretaModel {
   late String email;
   late List<Color> bgColorList1;
+  late List<String> latestFrames;
 
   @override
   List<Object?> get props => [
         ...super.props,
         email,
         bgColorList1,
+        latestFrames,
       ];
 
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
     email = '';
     bgColorList1 = [];
+    latestFrames = [];
   }
 
   UserPropertyModel.withName({
     required this.email,
+    required String pparentMid,
     this.bgColorList1 = const [],
-  }) : super(pmid: '', type: ExModelType.user, parent: '');
+    this.latestFrames = const [],
+  }) : super(pmid: '', type: ExModelType.user, parent: pparentMid);
 
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
@@ -37,6 +42,7 @@ class UserPropertyModel extends CretaModel {
     UserPropertyModel srcUser = src as UserPropertyModel;
     email = srcUser.email;
     bgColorList1 = [...srcUser.bgColorList1];
+    latestFrames = [...srcUser.latestFrames];
     logger.finest('UserCopied($mid)');
   }
 
@@ -45,6 +51,7 @@ class UserPropertyModel extends CretaModel {
     super.fromMap(map);
     email = map["email"] ?? '';
     bgColorList1 = CretaUtils.string2ColorList(map["bgColorList1"]);
+    latestFrames = CretaUtils.jsonStringToList(map["latestFrames"]);
   }
 
   @override
@@ -53,6 +60,7 @@ class UserPropertyModel extends CretaModel {
       ..addEntries({
         "email": email,
         "bgColorList1": CretaUtils.colorList2String(bgColorList1),
+        "latestFrames": CretaUtils.listToString(latestFrames),
       }.entries);
   }
 }

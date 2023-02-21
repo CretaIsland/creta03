@@ -11,14 +11,13 @@ import '../common/creta_utils.dart';
 import '../pages/studio/studio_constant.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
+import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types
-class BookModel extends CretaModel {
+class BookModel extends CretaModel with CretaStyleMixin {
   String creator = '';
   String creatorName = '';
   late UndoAble<String> name;
-  late UndoAble<int> width;
-  late UndoAble<int> height;
   late UndoAble<bool> isSilent;
   late UndoAble<bool> isAutoPlay;
   late UndoAble<BookType> bookType;
@@ -29,10 +28,6 @@ class BookModel extends CretaModel {
   late UndoAble<String> thumbnailUrl;
   late UndoAble<ContentsType> thumbnailType;
   late UndoAble<double> thumbnailAspectRatio;
-  late UndoAble<Color> bgColor1;
-  late UndoAble<Color> bgColor2;
-  late UndoAble<double> opacity;
-  late UndoAble<GradationType> gradationType;
   int viewCount = 0;
   int likeCount = 0;
   List<String> owners = [];
@@ -48,8 +43,6 @@ class BookModel extends CretaModel {
         creator,
         creatorName,
         name,
-        width,
-        height,
         isSilent,
         isAutoPlay,
         bookType,
@@ -66,15 +59,10 @@ class BookModel extends CretaModel {
         readers,
         writers,
         shares,
-        bgColor1,
-        bgColor2,
-        opacity,
-        gradationType,
+        ...super.propsMixin,
       ];
   BookModel(String pmid) : super(pmid: pmid, type: ExModelType.book, parent: '') {
     name = UndoAble<String>('', mid);
-    width = UndoAble<int>(0, mid);
-    height = UndoAble<int>(0, mid);
     thumbnailUrl = UndoAble<String>('', mid);
     thumbnailType = UndoAble<ContentsType>(ContentsType.none, mid);
     thumbnailAspectRatio = UndoAble<double>(1, mid);
@@ -91,10 +79,7 @@ class BookModel extends CretaModel {
     writers = [];
     shares = [];
     description = UndoAble<String>("You could do it simple and plain", mid);
-    bgColor1 = UndoAble<Color>(Colors.white, mid);
-    bgColor2 = UndoAble<Color>(Colors.white, mid);
-    opacity = UndoAble<double>(1, mid);
-    gradationType = UndoAble<GradationType>(GradationType.none, mid);
+    super.initMixin(mid);
   }
 
   BookModel.withName(
@@ -113,8 +98,6 @@ class BookModel extends CretaModel {
     String? desc,
   }) : super(pmid: '', type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
-    width = UndoAble<int>(1920, mid);
-    height = UndoAble<int>(1080, mid);
     thumbnailUrl = UndoAble<String>(imageUrl, mid);
     thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid);
     thumbnailAspectRatio = UndoAble<double>(imageRatio, mid);
@@ -134,10 +117,8 @@ class BookModel extends CretaModel {
     if (desc != null) {
       description = UndoAble<String>(desc, mid);
     }
-    bgColor1 = UndoAble<Color>(Colors.white, mid);
-    bgColor2 = UndoAble<Color>(Colors.white, mid);
-    opacity = UndoAble<double>(1, mid);
-    gradationType = UndoAble<GradationType>(GradationType.none, mid);
+    super.makeSampleMixin(mid);
+
     logger.finest('owners=${owners.toString()}');
   }
   @override
@@ -147,8 +128,6 @@ class BookModel extends CretaModel {
     creator = src.creator;
     creatorName = src.creatorName;
     name = UndoAble<String>(srcBook.name.value, mid);
-    width = UndoAble<int>(srcBook.width.value, mid);
-    height = UndoAble<int>(srcBook.height.value, mid);
     thumbnailUrl = UndoAble<String>(srcBook.thumbnailUrl.value, mid);
     thumbnailType = UndoAble<ContentsType>(srcBook.thumbnailType.value, mid);
     thumbnailAspectRatio = UndoAble<double>(srcBook.thumbnailAspectRatio.value, mid);
@@ -165,11 +144,8 @@ class BookModel extends CretaModel {
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];
     shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
-    bgColor1 = UndoAble<Color>(srcBook.bgColor1.value, mid);
-    bgColor2 = UndoAble<Color>(srcBook.bgColor2.value, mid);
-    opacity = UndoAble<double>(srcBook.opacity.value, mid);
-    gradationType = UndoAble<GradationType>(srcBook.gradationType.value, mid);
 
+    super.copyFromMixin(mid, srcBook);
     logger.finest('BookCopied($mid)');
   }
 
@@ -179,8 +155,6 @@ class BookModel extends CretaModel {
     name.set(map["name"] ?? '', save: false, noUndo: true);
     creator = map["creator"] ?? '';
     creatorName = map["creatorName"] ?? '';
-    width.set(map["width"] ?? 0, save: false, noUndo: true);
-    height.set(map["height"] ?? 0, save: false, noUndo: true);
     isSilent.set(map["isSilent"] ?? false, save: false, noUndo: true);
     isAutoPlay.set(map["isAutoPlay"] ?? true, save: false, noUndo: true);
     isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
@@ -195,13 +169,11 @@ class BookModel extends CretaModel {
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
     //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
-    bgColor1.set(CretaUtils.string2Color(map["bgColor1"])!, save: false, noUndo: true);
-    bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);
-    opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
-    gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0), save: false, noUndo: true);
 
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);
+
+    super.fromMapMixin(map);
   }
 
   @override
@@ -212,8 +184,6 @@ class BookModel extends CretaModel {
         "name": name.value,
         "creator": creator,
         "creatorName": creatorName,
-        "width": width.value,
-        "height": height.value,
         "isSilent": isSilent.value,
         "isAutoPlay": isAutoPlay.value,
         "isReadOnly": isReadOnly.value,
@@ -226,14 +196,11 @@ class BookModel extends CretaModel {
         "thumbnailAspectRatio": thumbnailAspectRatio.value,
         "viewCount": viewCount,
         "likeCount": likeCount,
-        "bgColor1": bgColor1.value.toString(),
-        "bgColor2": bgColor2.value.toString(),
-        "opacity": opacity.value,
-        "gradationType": gradationType.value.index,
         "owners": CretaUtils.listToString(owners),
         "readers": CretaUtils.listToString(readers),
         "writers": CretaUtils.listToString(writers),
         "shares": shares, //DB 에 쓰기는 쓴다, 검색용이다.
+        ...super.toMapMixin(),
       }.entries);
   }
 
@@ -242,7 +209,7 @@ class BookModel extends CretaModel {
   }
 
   Size getSize() {
-    return Size(width.value.toDouble(), height.value.toDouble());
+    return Size(width.value, height.value);
   }
 
   Size getRealSize() {

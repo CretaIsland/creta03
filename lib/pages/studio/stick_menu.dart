@@ -60,7 +60,7 @@ class _StickMenuState extends State<StickMenu> {
     if (StudioVariables.workHeight < 1) {
       return Container();
     }
-    logger.fine('StickMenu.build: ${BookMainPage.selectedStick}');
+    logger.finest('StickMenu.build: ${BookMainPage.selectedStick}');
     // if (BookMainPage.selectedStick == LeftMenuEnum.None) {
     //   StickMenu.initSelect();
     // }
@@ -91,7 +91,7 @@ class _StickMenuState extends State<StickMenu> {
                   BookMainPage.selectedStick = selectedButton;
                 }
                 widget.selectFunction(selectedButton);
-                logger.fine('onTap ${BookMainPage.selectedStick.toString()}, $idx');
+                logger.finest('onTap ${BookMainPage.selectedStick.toString()}, $idx');
                 setState(() {
                   //StickMenu.select(idx);
                 });
@@ -135,12 +135,12 @@ class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     _selected = (BookMainPage.selectedStick == widget.menuType);
-    //logger.fine('build NavBarItem $_selected');
+    //logger.finest('build NavBarItem $_selected');
     return GestureDetector(
       onTap: () {
         widget.onTap();
         // setState(() {
-        //   logger.fine('setState NavBarItem $_selected');
+        //   logger.finest('setState NavBarItem $_selected');
         //   //_selected = !_selected;
         // });
       },

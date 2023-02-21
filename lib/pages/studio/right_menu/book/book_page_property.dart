@@ -83,7 +83,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
 
   // ignore: unused_element
   Widget _pageColor() {
-    logger.fine('opacity3=${widget.model.opacity.value}');
+    logger.finest('opacity3=${widget.model.opacity.value}');
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: colorPropertyCard(
@@ -98,7 +98,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
         onOpacityDragComplete: (value) {
           setState(() {
             widget.model.opacity.set(1 - (value / 100));
-            logger.fine('opacity1=${widget.model.opacity.value}');
+            logger.finest('opacity1=${widget.model.opacity.value}');
           });
           BookMainPage.bookManagerHolder?.notify();
         },
@@ -130,8 +130,8 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   }
 
   Widget _pageSize() {
-    int height = widget.model.height.value;
-    int width = widget.model.width.value;
+    double height = widget.model.height.value;
+    double width = widget.model.width.value;
 
     return propertyCard(
       padding: horizontalPadding,
@@ -147,7 +147,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     );
   }
 
-  Widget _pageSizeBody(int width, int height) {
+  Widget _pageSizeBody(double width, double height) {
     //return Column(children: [
     //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
     return Padding(
@@ -300,7 +300,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
               value: widget.model.width.value.toString(),
               hintText: '',
               onEditComplete: ((value) {
-                widget.model.width.set(int.parse(value));
+                widget.model.width.set(double.parse(value));
                 BookMainPage.bookManagerHolder!.notify();
               })),
           Text(' x ', style: dataStyle),
@@ -312,7 +312,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
             value: widget.model.height.value.toString(),
             hintText: '',
             onEditComplete: ((value) {
-              widget.model.height.set(int.parse(value));
+              widget.model.height.set(double.parse(value));
               BookMainPage.bookManagerHolder!.notify();
             }),
           ),
@@ -442,16 +442,16 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     bool isLands = widget.model.width.value >= widget.model.height.value;
     mychangeStack.startTrans();
     if (isLands) {
-      widget.model.width.set(size.width.round());
-      widget.model.height.set(size.height.round());
+      widget.model.width.set(size.width);
+      widget.model.height.set(size.height);
     } else {
-      widget.model.width.set(size.height.round());
-      widget.model.height.set(size.width.round());
+      widget.model.width.set(size.height);
+      widget.model.height.set(size.width);
     }
   }
 
   Widget _bookOption() {
-    logger.fine('_bookOption=${widget.model.isAutoPlay.value}');
+    logger.finest('_bookOption=${widget.model.isAutoPlay.value}');
     return propertyCard(
       isOpen: _isOptionOpen,
       onPressed: () {

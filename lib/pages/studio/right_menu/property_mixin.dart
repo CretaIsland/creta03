@@ -237,7 +237,7 @@ mixin PropertyMixin {
   ) {
     List<Widget> gradientList = [];
     for (int i = 1; i < GradationType.end.index; i++) {
-      //logger.fine('gradient: ${GradationType.values[i].toString()}');
+      //logger.finest('gradient: ${GradationType.values[i].toString()}');
       GradationType gType = GradationType.values[i];
       gradientList.add(GradationIndicator(
         color1: color1,

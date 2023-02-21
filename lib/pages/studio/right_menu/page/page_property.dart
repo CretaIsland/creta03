@@ -59,7 +59,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       }
       _pageManager = pageManager;
       pageManager.reOrdering();
-      _model = pageManager.getSelected();
+      _model = pageManager.getSelected() as PageModel?;
       if (_model == null) {
         BookMainPage.selectedClass = RightMenuEnum.Book;
         return RightMenu(
@@ -106,7 +106,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         onOpacityDragComplete: (value) {
           setState(() {
             _model!.opacity.set(1 - (value / 100));
-            logger.fine('opacity1=${_model!.opacity.value}');
+            logger.finest('opacity1=${_model!.opacity.value}');
           });
           BookMainPage.bookManagerHolder?.notify();
         },
@@ -138,8 +138,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   }
 
   Widget _pageTransition() {
-    logger.finest('pageTransition=${_model!.pageTransition.value}');
-    List<AnimationType> animations = AnimationType.toAniListFromInt(_model!.pageTransition.value);
+    logger.finest('pageTransition=${_model!.transitionEffect.value}');
+    List<AnimationType> animations = AnimationType.toAniListFromInt(_model!.transitionEffect.value);
     String trails = '';
     for (var ele in animations) {
       logger.finest('anymationTy=[$ele]');
@@ -186,9 +186,9 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
                 name: CretaStudioLang.animationTypes[i],
                 aniType: AnimationType.values[i],
                 selected: (i != 0 &&
-                        (AnimationType.values[i].value & _model!.pageTransition.value ==
+                        (AnimationType.values[i].value & _model!.transitionEffect.value ==
                             AnimationType.values[i].value) ||
-                    i == 0 && _model!.pageTransition.value == 0),
+                    i == 0 && _model!.transitionEffect.value == 0),
                 onSelected: () {
                   setState(() {});
                   BookMainPage.bookManagerHolder!.notify();
@@ -282,14 +282,14 @@ class _ExampleBoxState extends State<ExampleBox> {
           setState(() {
             _isClicked = !_isClicked;
             if (_isClicked) {
-              widget.model.pageTransition
-                  .set(widget.model.pageTransition.value | widget.aniType.value);
+              widget.model.transitionEffect
+                  .set(widget.model.transitionEffect.value | widget.aniType.value);
             } else {
-              int newVal = widget.model.pageTransition.value - widget.aniType.value;
+              int newVal = widget.model.transitionEffect.value - widget.aniType.value;
               if (newVal < 0) newVal = 0;
-              widget.model.pageTransition.set(newVal);
+              widget.model.transitionEffect.set(newVal);
             }
-            logger.finest('pageTrasitionValue = ${widget.model.pageTransition.value}');
+            logger.finest('pageTrasitionValue = ${widget.model.transitionEffect.value}');
           });
           widget.onSelected.call();
         },
@@ -335,8 +335,8 @@ class _ExampleBoxState extends State<ExampleBox> {
       onLongPressDown: (details) {
         setState(() {
           _isClicked = !_isClicked;
-          widget.model.pageTransition.set(0);
-          logger.finest('pageTrasitionValue = ${widget.model.pageTransition.value}');
+          widget.model.transitionEffect.set(0);
+          logger.finest('pageTrasitionValue = ${widget.model.transitionEffect.value}');
         });
         widget.onSelected.call();
       },

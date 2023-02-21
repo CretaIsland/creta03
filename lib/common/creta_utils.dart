@@ -85,6 +85,14 @@ class CretaUtils {
         return Color(int.parse(defaultValue.substring(8, 16), radix: 16));
       }
     }
+    // MaterialColor(primary value: Color(0xfff44336)) 케이스와
+    // Color(0xffffffff) 케이스가 있다.
+    String example = 'MaterialColor(primary value: Color(0xfff44336))';
+    String prefix = 'MaterialColor(primary value: Color(0x';
+
+    if (colorStr.length >= example.length && colorStr.substring(0, prefix.length) == prefix) {
+      return Color(int.parse(colorStr.substring(prefix.length, prefix.length + 8), radix: 16));
+    }
     return Color(int.parse(colorStr.substring(8, 16), radix: 16));
   }
 
