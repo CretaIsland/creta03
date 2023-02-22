@@ -14,6 +14,7 @@ class GradationIndicator extends StatefulWidget {
   final double width;
   final double height;
   final bool isSelected;
+  final double radius;
   const GradationIndicator({
     super.key,
     required this.gradationType,
@@ -23,6 +24,7 @@ class GradationIndicator extends StatefulWidget {
     this.isSelected = false,
     this.width = 24,
     this.height = 24,
+    this.radius = 4,
   });
 
   @override
@@ -45,7 +47,7 @@ class _GradationIndicatorState extends State<GradationIndicator> {
               color: widget.isSelected ? CretaColor.primary : Colors.white,
               width: 2,
             ),
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
           ),
           child: Center(
             child: Container(
@@ -54,7 +56,7 @@ class _GradationIndicatorState extends State<GradationIndicator> {
               decoration: BoxDecoration(
                 gradient:
                     StudioSnippet.gradient(widget.gradationType, widget.color1, widget.color2),
-                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
               ),
             ),
           ),

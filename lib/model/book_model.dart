@@ -22,7 +22,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
   late UndoAble<bool> isAutoPlay;
   late UndoAble<BookType> bookType;
   late UndoAble<int> pageSizeType;
-  late UndoAble<CopyWrightType> copyWright;
+  late UndoAble<CopyWrightType> copyRight;
   late UndoAble<String> description;
   late UndoAble<bool> isReadOnly;
   late UndoAble<String> thumbnailUrl;
@@ -47,7 +47,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
         isAutoPlay,
         bookType,
         pageSizeType,
-        copyWright,
+        copyRight,
         description,
         isReadOnly,
         thumbnailUrl,
@@ -70,7 +70,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     isAutoPlay = UndoAble<bool>(true, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
     pageSizeType = UndoAble<int>(0, mid);
-    copyWright = UndoAble<CopyWrightType>(CopyWrightType.free, mid);
+    copyRight = UndoAble<CopyWrightType>(CopyWrightType.free, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = 0;
     likeCount = 0;
@@ -105,7 +105,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     isAutoPlay = UndoAble<bool>(true, mid);
     bookType = UndoAble<BookType>(bookTypeVal, mid);
     pageSizeType = UndoAble<int>(0, mid);
-    copyWright = UndoAble<CopyWrightType>(copyWrightVal, mid);
+    copyRight = UndoAble<CopyWrightType>(copyWrightVal, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = likeNo;
     likeCount = viewNo;
@@ -135,7 +135,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid);
     bookType = UndoAble<BookType>(srcBook.bookType.value, mid);
     pageSizeType = UndoAble<int>(srcBook.pageSizeType.value, mid);
-    copyWright = UndoAble<CopyWrightType>(srcBook.copyWright.value, mid);
+    copyRight = UndoAble<CopyWrightType>(srcBook.copyRight.value, mid);
     isReadOnly = UndoAble<bool>(srcBook.isReadOnly.value, mid);
     viewCount = srcBook.viewCount;
     likeCount = srcBook.likeCount;
@@ -160,7 +160,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
     bookType.set(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
     pageSizeType.set(map["pageSizeType"] ?? 0, save: false, noUndo: true);
-    copyWright.set(CopyWrightType.fromInt(map["copyWright"] ?? 1), save: false, noUndo: true);
+    copyRight.set(CopyWrightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
     thumbnailType.set(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);
@@ -189,7 +189,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
         "isReadOnly": isReadOnly.value,
         "bookType": bookType.value.index,
         "pageSizeType": pageSizeType.value,
-        "copyWright": copyWright.value.index,
+        "copyRight": copyRight.value.index,
         "description": description.value,
         "thumbnailUrl": thumbnailUrl.value,
         "thumbnailType": thumbnailType.value.index,

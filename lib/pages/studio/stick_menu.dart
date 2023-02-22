@@ -178,12 +178,15 @@ class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
                             ? LayoutConst.menuStickIconSize + 4
                             : LayoutConst.menuStickIconSize,
                       ),
-                      Text(
-                        widget.title,
-                        style: CretaFont.titleSmall.copyWith(
-                          color: _selected ? CretaColor.primary : CretaColor.text[700],
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          widget.title,
+                          style: CretaFont.titleSmall.copyWith(
+                            color: _selected ? CretaColor.primary : CretaColor.text[700],
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),

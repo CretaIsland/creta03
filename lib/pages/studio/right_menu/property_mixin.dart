@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../design_system/buttons/creta_checkbox.dart';
 import '../../../design_system/buttons/creta_slider.dart';
 import '../../../design_system/component/colorPicker/gradation_indicator.dart';
 import '../../../design_system/component/colorPicker/my_color_indicator.dart';
@@ -15,6 +16,8 @@ mixin PropertyMixin {
   late TextStyle titleStyle;
   late TextStyle dataStyle;
   bool isColorOpen = false;
+  bool isGradationOpen = false;
+  bool isTextureOpen = false;
 
   void initMixin() {
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
@@ -40,11 +43,12 @@ mixin PropertyMixin {
               Row(
                 children: [
                   StudioSnippet.rotateWidget(
-                    turns: isOpen ? 0 : 2,
+                    turns: isOpen ? 2 : 0,
                     child: BTN.fill_blue_i_menu(
                         icon: Icons.expand_circle_down_outlined,
-                        width: 20,
-                        height: 20,
+                        width: 24,
+                        height: 24,
+                        iconSize: 20,
                         onPressed: onPressed),
                   ),
                   InkWell(
@@ -73,13 +77,27 @@ mixin PropertyMixin {
     );
   }
 
-  Widget propertyLine({required String name, required Widget widget, double topPadding = 20.0}) {
+  Widget propertyLine({
+    required String name,
+    required Widget widget,
+    double topPadding = 20.0,
+    bool hasCheckBox = false,
+    bool isSelected = false,
+    void Function(String, bool, Map<String, bool>)? onCheck,
+  }) {
     return Padding(
       padding: EdgeInsets.only(top: topPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(name, style: titleStyle),
+          hasCheckBox
+              ? CretaCheckbox(
+                  valueMap: {
+                    name: isSelected,
+                  },
+                  onSelected: onCheck ?? (name, isChecked, valueMap) {},
+                )
+              : Text(name, style: titleStyle),
           widget,
         ],
       ),
@@ -149,6 +167,7 @@ mixin PropertyMixin {
         onGradationTapPressed: onGradationTapPressed,
         onColor1Changed: onColor1Changed,
         onColor2Changed: onColor2Changed,
+        cardOpenPressed: cardOpenPressed,
       ),
     );
   }
@@ -162,6 +181,7 @@ mixin PropertyMixin {
     required Function(GradationType, Color, Color) onGradationTapPressed,
     required Function(Color) onColor1Changed,
     required Function(Color) onColor2Changed,
+    required Function cardOpenPressed,
   }) {
     return Column(
       children: [
@@ -201,7 +221,7 @@ mixin PropertyMixin {
                 value: '${((1 - opacity) * 100).round()}',
                 hintText: '',
                 onEditComplete: ((value) {
-                  double opacity = double.parse(value) / 100;
+                  double opacity = int.parse(value).toDouble() / 100;
                   onDragComplete(opacity);
                 }),
               ),
@@ -211,20 +231,36 @@ mixin PropertyMixin {
         ),
         propertyLine(
           // 그라데이션
+          hasCheckBox: true,
+          isSelected: gradationType != GradationType.none || isGradationOpen,
+          onCheck: (name, value, valueMap) {
+            isGradationOpen = value;
+            if (isGradationOpen == false) {
+              onGradationTapPressed.call(GradationType.none, color1, color2);
+            } else {
+              cardOpenPressed.call();
+            }
+          },
           name: CretaStudioLang.gradation,
-          widget: _colorIndicator(
-            color2,
-            opacity,
-            gradationType,
-            onColor2Changed,
-          ),
+          widget: gradationType != GradationType.none || isGradationOpen
+              ? const SizedBox.shrink()
+              : _colorIndicator(
+                  color2,
+                  opacity,
+                  gradationType,
+                  onColor2Changed,
+                ),
         ),
-        _gradationTypes(
-          color1,
-          color2,
-          gradationType,
-          onGradationTapPressed,
-        ),
+        gradationType != GradationType.none || isGradationOpen
+            ? _gradationTypes(
+                color1,
+                color2,
+                opacity,
+                gradationType,
+                onGradationTapPressed,
+                onColor2Changed,
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -232,8 +268,10 @@ mixin PropertyMixin {
   Widget _gradationTypes(
     Color color1,
     Color color2,
+    double opacity,
     GradationType gradationType,
     Function(GradationType, Color, Color) onTapPressed,
+    void Function(Color) onColor2Changed,
   ) {
     List<Widget> gradientList = [];
     for (int i = 1; i < GradationType.end.index; i++) {
@@ -245,11 +283,34 @@ mixin PropertyMixin {
         gradationType: gType,
         isSelected: gradationType == gType,
         onTapPressed: onTapPressed,
+        width: 54,
+        height: 54,
+        radius: 6,
       ));
     }
-    return Padding(
-      padding: const EdgeInsets.only(top: 12.0),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: gradientList),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 24, bottom: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(CretaStudioLang.secondColor, style: titleStyle),
+              _colorIndicator(
+                color2,
+                opacity,
+                gradationType,
+                onColor2Changed,
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          //child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: gradientList),
+          child: Wrap(children: gradientList),
+        ),
+      ],
     );
   }
 

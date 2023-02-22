@@ -7,6 +7,7 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 
 //import '../../../../data_io/book_manager.dart';
+import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
@@ -150,176 +151,271 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   Widget _pageSizeBody(double width, double height) {
     //return Column(children: [
     //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
-    return Padding(
-      padding: const EdgeInsets.only(top: 12, left: 20, right: 24),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 12, left: 20, right: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CretaDropDownButton(
-                padding: EdgeInsets.only(left: 8, right: 4),
-                height: 28,
-                itemHeight: 24,
-                textStyle: CretaFont.bodyESmall,
-                dropDownMenuItemList: getPageSizeListItem(null),
-                align: MainAxisAlignment.start,
-                hintList: getPageSizeListHint(),
-              ),
-              widget.model.pageSizeType.value != 0 // none
-                  ? widget.model.bookType.value == BookType.presentaion
-                      ? Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            getResolutionString(),
-                            style: CretaFont.bodyESmall,
-                          ),
-                        )
-                      : CretaDropDownButton(
+              Row(
+                children: [
+                  CretaDropDownButton(
+                    padding: EdgeInsets.only(left: 8, right: 4),
+                    height: 28,
+                    itemHeight: 24,
+                    textStyle: CretaFont.bodyESmall,
+                    dropDownMenuItemList: getPageSizeListItem(null),
+                    align: MainAxisAlignment.start,
+                    hintList: getPageSizeListHint(),
+                  ),
+                  //widget.model.pageSizeType.value != 0 // none
+                  //    ? widget.model.bookType.value == BookType.presentaion
+                  //? Padding(
+                  //   padding: const EdgeInsets.only(left: 8.0),
+                  //   child: Text(
+                  //     getResolutionString(),
+                  //     style: CretaFont.bodyESmall,
+                  //   ),
+                  // )
+                  //:
+                  widget.model.bookType.value != BookType.presentaion
+                      ? CretaDropDownButton(
                           padding: EdgeInsets.only(left: 8, right: 4),
                           height: 28,
                           itemHeight: 24,
                           textStyle: CretaFont.bodyESmall,
                           dropDownMenuItemList: getResolutionListItem(null),
-                          align: MainAxisAlignment.start)
-                  : _editSize(),
+                          align: MainAxisAlignment.start,
+                        )
+                      : SizedBox.shrink(),
+
+                  //: _editSize(),
+                ],
+              ),
+              // 가로세로 버튼
+              CustomRadioButton(
+                radioButtonValue: (value) {
+                  if (value == "lands") {
+                    if (widget.model.width.value >= widget.model.height.value) {
+                      return;
+                    }
+                  }
+                  if (value == "ports") {
+                    if (widget.model.height.value >= widget.model.width.value) {
+                      return;
+                    }
+                  }
+                  setState(() {
+                    mychangeStack.startTrans();
+                    widget.model.height.set(width);
+                    widget.model.width.set(height);
+                    mychangeStack.endTrans();
+                  });
+                  logger.finest('notify');
+                  BookMainPage.bookManagerHolder?.notify();
+                },
+                width: 32,
+                height: 32,
+                defaultSelected:
+                    height <= width ? widget.rotationStrings[0] : widget.rotationStrings[1],
+                buttonLables: widget.rotationStrings,
+                buttonIcons: widget.rotaionIcons,
+                buttonValues: widget.rotationStrings,
+                buttonTextStyle: ButtonTextStyle(
+                  selectedColor: CretaColor.primary,
+                  unSelectedColor: CretaColor.text[700]!,
+                  //textStyle: CretaFont.buttonMedium.copyWith(fontWeight: FontWeight.bold),
+                  textStyle: CretaFont.buttonMedium,
+                ),
+                selectedColor: CretaColor.text[100]!,
+                unSelectedColor: Colors.white,
+                absoluteZeroSpacing: true,
+                selectedBorderColor: Colors.transparent,
+                unSelectedBorderColor: Colors.transparent,
+                elevation: 0,
+                enableButtonWrap: true,
+                enableShape: true,
+                shapeRadius: 60,
+              ),
             ],
           ),
-          // 가로세로 버튼
-          CustomRadioButton(
-            radioButtonValue: (value) {
-              setState(() {
-                mychangeStack.startTrans();
-                widget.model.height.set(width);
-                widget.model.width.set(height);
-                mychangeStack.endTrans();
-              });
-              logger.finest('notify');
-              BookMainPage.bookManagerHolder?.notify();
-            },
-            width: 32,
-            height: 32,
-            defaultSelected:
-                height <= width ? widget.rotationStrings[0] : widget.rotationStrings[1],
-            buttonLables: widget.rotationStrings,
-            buttonIcons: widget.rotaionIcons,
-            buttonValues: widget.rotationStrings,
-            buttonTextStyle: ButtonTextStyle(
-              selectedColor: CretaColor.primary,
-              unSelectedColor: CretaColor.text[700]!,
-              //textStyle: CretaFont.buttonMedium.copyWith(fontWeight: FontWeight.bold),
-              textStyle: CretaFont.buttonMedium,
-            ),
-            selectedColor: CretaColor.text[100]!,
-            unSelectedColor: Colors.white,
-            absoluteZeroSpacing: true,
-            selectedBorderColor: Colors.transparent,
-            unSelectedBorderColor: Colors.transparent,
-            elevation: 0,
-            enableButtonWrap: true,
-            enableShape: true,
-            shapeRadius: 60,
+        ),
+        // 두번째 줄
+        Padding(
+          //padding: const EdgeInsets.only(top: 12, left: 20, right: 24),
+          padding: const EdgeInsets.only(top: 6, left: 30, right: 24),
+          child: Row(
+            children: [
+              Text(
+                CretaStudioLang.width,
+                style: titleStyle,
+              ),
+              SizedBox(width: 10),
+              //widget.model.pageSizeType.value == 0
+              //?
+              CretaTextField.xshortNumber(
+                defaultBorder: Border.all(color: CretaColor.text[100]!),
+                width: 45,
+                limit: 5,
+                textFieldKey: GlobalKey(),
+                value: widget.model.width.value.toString(),
+                hintText: '',
+                onEditComplete: ((value) {
+                  _sizeChanged(value, widget.model.width, widget.model.height);
+                  // logger.fine('onEditComplete $value');
+                  // double newWidth = int.parse(value).toDouble();
+                  // if (widget.model.width.value == newWidth) {
+                  //   return;
+                  // }
+                  // widget.model.pageSizeType.set(0);
+                  // if (widget.model.isFixedRatio.value == true) {
+                  //   double ratio = widget.model.height.value / widget.model.width.value;
+                  //   widget.model.height.set((newWidth * ratio).roundToDouble());
+                  // }
+                  // widget.model.width.set(newWidth);
+                  // BookMainPage.bookManagerHolder!.notify();
+                  // logger.fine('onEditComplete ${widget.model.width.value}');
+                }),
+                // onChanged: (value) {
+                //   logger.fine('onChanged ${widget.model.width.value}');
+                //   setState(() {
+                //     widget.model.pageSizeType.set(0);
+                //   });
+                // },
+              ),
+              // : SizedBox(
+              //     width: 45,
+              //     child: Text(
+              //       widget.model.width.value.toString(),
+              //       style: dataStyle,
+              //       textAlign: TextAlign.end,
+              //     ),
+              //   ),
+              SizedBox(width: 10),
+              BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.fixedRatio,
+                  tooltipBg: CretaColor.text[400]!,
+                  icon: widget.model.isFixedRatio.value
+                      ? Icons.lock_outlined
+                      : Icons.lock_open_outlined,
+                  iconColor:
+                      widget.model.isFixedRatio.value ? CretaColor.primary : CretaColor.text[700]!,
+                  onPressed: () {
+                    setState(() {
+                      widget.model.isFixedRatio.set(!widget.model.isFixedRatio.value);
+                    });
+                  }),
+              SizedBox(width: 10),
+              Text(
+                CretaStudioLang.height,
+                style: titleStyle,
+              ),
+              SizedBox(width: 10),
+              // widget.model.pageSizeType.value == 0
+              //     ?
+              CretaTextField.xshortNumber(
+                defaultBorder: Border.all(color: CretaColor.text[100]!),
+                width: 45,
+                limit: 5,
+                textFieldKey: GlobalKey(),
+                value: widget.model.height.value.toString(),
+                hintText: '',
+                onEditComplete: ((value) {
+                  _sizeChanged(value, widget.model.height, widget.model.width);
+                  // logger.fine('onEditComplete $value');
+                  // double newHeight = int.parse(value).toDouble();
+                  // if (widget.model.height.value == newHeight) {
+                  //   return;
+                  // }
+                  // widget.model.pageSizeType.set(0);
+
+                  // if (widget.model.isFixedRatio.value == true) {
+                  //   double ratio = widget.model.width.value / widget.model.height.value;
+                  //   widget.model.width.set((newHeight * ratio).roundToDouble());
+                  // }
+                  // widget.model.height.set(newHeight);
+                  // BookMainPage.bookManagerHolder!.notify();
+                  // logger.fine('onEditComplete ${widget.model.height.value}');
+                }),
+                // onChanged: (value) {
+                //   logger.fine('onChanged ${widget.model.height.value}');
+                //   setState(() {
+                //     widget.model.pageSizeType.set(0);
+                //   });
+                // },
+              ),
+              // : SizedBox(
+              //     width: 55,
+              //     child: Text(
+              //       widget.model.height.value.toString(),
+              //       style: dataStyle,
+              //       textAlign: TextAlign.end,
+              //     ),
+              //   ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
-    // Padding(
-    //   padding: const EdgeInsets.only(top: 6),
-    //   child: Row(
-    //     children: [
-    //       Text(
-    //         CretaStudioLang.width,
-    //         style: titleStyle,
-    //       ),
-    //       SizedBox(width: 10),
-    //       widget.model.pageSizeType.value == 0
-    //           ? CretaTextField.xshortNumber(
-    //               defaultBorder: Border.all(color: CretaColor.text[100]!),
-    //               width: 45,
-    //               limit: 5,
-    //               textFieldKey: GlobalKey(),
-    //               value: widget.model.width.value.toString(),
-    //               hintText: '',
-    //               onEditComplete: ((value) {
-    //                 widget.model.width.set(int.parse(value));
-    //                 BookMainPage.bookManagerHolder!.notify();
-    //               }))
-    //           : SizedBox(
-    //               width: 45,
-    //               child: Text(
-    //                 widget.model.width.value.toString(),
-    //                 style: dataStyle,
-    //                 textAlign: TextAlign.end,
-    //               ),
-    //             ),
-    //       SizedBox(width: 10),
-    //       BTN.fill_gray_i_m(icon: Icons.link_outlined, onPressed: () {}),
-    //       SizedBox(width: 10),
-    //       Text(
-    //         CretaStudioLang.height,
-    //         style: titleStyle,
-    //       ),
-    //       SizedBox(width: 10),
-    //       widget.model.pageSizeType.value == 0
-    //           ? CretaTextField.xshortNumber(
-    //               defaultBorder: Border.all(color: CretaColor.text[100]!),
-    //               width: 45,
-    //               limit: 5,
-    //               textFieldKey: GlobalKey(),
-    //               value: widget.model.height.value.toString(),
-    //               hintText: '',
-    //               onEditComplete: ((value) {
-    //                 widget.model.height.set(int.parse(value));
-    //                 BookMainPage.bookManagerHolder!.notify();
-    //               }),
-    //             )
-    //           : SizedBox(
-    //               width: 55,
-    //               child: Text(
-    //                 widget.model.height.value.toString(),
-    //                 style: dataStyle,
-    //                 textAlign: TextAlign.end,
-    //               ),
-    //             ),
-    //     ],
-    //   ),
-    // ),
-    //]);
+
+    // ]);
   }
 
-  Widget _editSize() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: Row(
-        children: [
-          CretaTextField.xshortNumber(
-              defaultBorder: Border.all(color: CretaColor.text[200]!),
-              width: 45,
-              limit: 5,
-              textFieldKey: GlobalKey(),
-              value: widget.model.width.value.toString(),
-              hintText: '',
-              onEditComplete: ((value) {
-                widget.model.width.set(double.parse(value));
-                BookMainPage.bookManagerHolder!.notify();
-              })),
-          Text(' x ', style: dataStyle),
-          CretaTextField.xshortNumber(
-            defaultBorder: Border.all(color: CretaColor.text[200]!),
-            width: 45,
-            limit: 5,
-            textFieldKey: GlobalKey(),
-            value: widget.model.height.value.toString(),
-            hintText: '',
-            onEditComplete: ((value) {
-              widget.model.height.set(double.parse(value));
-              BookMainPage.bookManagerHolder!.notify();
-            }),
-          ),
-        ],
-      ),
-    );
+  void _sizeChanged(
+    String value,
+    UndoAble<double> targetAttr,
+    UndoAble<double> counterAttr,
+  ) {
+    logger.fine('onEditComplete $value');
+    double newValue = int.parse(value).toDouble();
+    if (targetAttr.value == newValue) {
+      return;
+    }
+    widget.model.pageSizeType.set(0);
+
+    if (widget.model.isFixedRatio.value == true) {
+      double ratio = counterAttr.value / targetAttr.value;
+      counterAttr.set((newValue * ratio).roundToDouble());
+    }
+    targetAttr.set(newValue);
+    BookMainPage.bookManagerHolder!.notify();
+    logger.fine('onEditComplete ${targetAttr.value}');
   }
+
+  // Widget _editSize() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(left: 16.0),
+  //     child: Row(
+  //       children: [
+  //         CretaTextField.xshortNumber(
+  //             defaultBorder: Border.all(color: CretaColor.text[200]!),
+  //             width: 45,
+  //             limit: 5,
+  //             textFieldKey: GlobalKey(),
+  //             value: widget.model.width.value.toString(),
+  //             hintText: '',
+  //             onEditComplete: ((value) {
+  //               widget.model.width.set(int.parse(value));
+  //               BookMainPage.bookManagerHolder!.notify();
+  //             })),
+  //         Text(' x ', style: dataStyle),
+  //         CretaTextField.xshortNumber(
+  //           defaultBorder: Border.all(color: CretaColor.text[200]!),
+  //           width: 45,
+  //           limit: 5,
+  //           textFieldKey: GlobalKey(),
+  //           value: widget.model.height.value.toString(),
+  //           hintText: '',
+  //           onEditComplete: ((value) {
+  //             widget.model.height.set(int.parse(value));
+  //             BookMainPage.bookManagerHolder!.notify();
+  //           }),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   List<String> choicePageSizeName(BookType bookType) {
     if (bookType == BookType.presentaion) {

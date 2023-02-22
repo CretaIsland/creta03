@@ -51,6 +51,7 @@ class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin
                     tooltip: CretaStudioLang.wide,
                     tooltipBg: CretaColor.text[700]!,
                     icon: Icons.open_in_full_outlined,
+                    iconSize: 14,
                     onPressed: () async {},
                   ),
                   super.closeButton(

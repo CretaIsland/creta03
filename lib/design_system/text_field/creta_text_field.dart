@@ -77,6 +77,7 @@ class CretaTextField extends LastClickable {
   final TextEditingController? controller;
   final TextAlign align;
   final Border? defaultBorder;
+  final Function(String)? onChanged;
 
   CretaTextField({
     required this.textFieldKey,
@@ -95,6 +96,7 @@ class CretaTextField extends LastClickable {
     this.minNumber = 0,
     this.align = TextAlign.start,
     this.defaultBorder,
+    this.onChanged,
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -114,6 +116,7 @@ class CretaTextField extends LastClickable {
     this.minNumber = 0,
     this.align = TextAlign.end,
     this.defaultBorder,
+    this.onChanged,
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -133,6 +136,7 @@ class CretaTextField extends LastClickable {
     this.minNumber = 0,
     this.align = TextAlign.end,
     this.defaultBorder,
+    this.onChanged,
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -152,6 +156,7 @@ class CretaTextField extends LastClickable {
     this.minNumber = 0,
     this.align = TextAlign.end,
     this.defaultBorder,
+    this.onChanged,
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -171,6 +176,7 @@ class CretaTextField extends LastClickable {
     this.minNumber = 0,
     this.align = TextAlign.start,
     this.defaultBorder,
+    this.onChanged,
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -190,6 +196,7 @@ class CretaTextField extends LastClickable {
     this.minNumber = 0,
     this.align = TextAlign.start,
     this.defaultBorder,
+    this.onChanged,
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -209,6 +216,7 @@ class CretaTextField extends LastClickable {
     this.minNumber = 0,
     this.align = TextAlign.start,
     this.defaultBorder,
+    this.onChanged,
   }) : super(key: textFieldKey);
 
   @override
@@ -236,6 +244,7 @@ class CretaTextFieldState extends State<CretaTextField> {
   String _searchValue = '';
   //bool _hover = false;
   bool _clicked = false;
+  bool _hovered = false;
 
   void setLastClicked() {
     logger.finest('setLastClicked');
@@ -326,92 +335,124 @@ class CretaTextFieldState extends State<CretaTextField> {
   }
 
   Widget _cupertinoTextField() {
-    return CupertinoTextField(
-      textAlign: widget.align,
-      keyboardType:
-          widget.textType == CretaTextFieldType.number ? TextInputType.number : TextInputType.none,
-      focusNode: _focusNode,
-      textAlignVertical: TextAlignVertical.center,
-      clearButtonMode: widget.selectAtInit == false
-          ? OverlayVisibilityMode.editing
-          : OverlayVisibilityMode.never,
-      inputFormatters: widget.textType == CretaTextFieldType.number
-          ? [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(widget.limit),
-              //FilteringTextInputFormatter.allow(RegExp('^[0-9]\$')),
-            ]
-          : widget.textType == CretaTextFieldType.color
-              ? [
-                  //LengthLimitingTextInputFormatter(widget.limit),
-                  FilteringTextInputFormatter.allow(RegExp('^[0-9#A-Fa-f]{0,${widget.limit}}\$')),
-                ]
-              : null,
-      maxLines: widget.maxLines,
-      enabled: true,
-      autofocus: false,
-      decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
-      padding: isNumeric()
-          ? EdgeInsetsDirectional.only(start: 8, end: 0)
-          : widget.textType == CretaTextFieldType.longText
-              ? EdgeInsetsDirectional.only(start: 18, end: 18, top: 5, bottom: 5)
-              : EdgeInsetsDirectional.only(start: 18, end: 18),
-      controller: _controller,
-      placeholder: _clicked ? null : widget.hintText,
-      placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
-      style: CretaFont.bodySmall.copyWith(color: CretaColor.text[900]!),
-      suffixMode: OverlayVisibilityMode.always,
-      onSubmitted: ((value) {
-        preprocess(value);
-        logger.finest('onSubmitted $_searchValue');
-        widget.onEditComplete(_searchValue);
-        LastClicked.clear();
-      }),
-      // onEditingComplete: () {
-      //   _searchValue = _controller.text;
-      //   logger.finest('onEditingComplete $_searchValue');
-      //   widget.onEditComplete(_searchValue);
-      // },
-      onChanged: (value) {
-        logger.finest('onChanged');
-        setLastClicked();
-        if (_clicked == false) {
+    return MouseRegion(
+      onEnter: (event) {
+        setState(() {
+          _hovered = true;
+        });
+      },
+      onExit: (event) {
+        setState(() {
+          _hovered = false;
+        });
+      },
+      child: CupertinoTextField(
+        textAlign: widget.align,
+        keyboardType: widget.textType == CretaTextFieldType.number
+            ? TextInputType.number
+            : TextInputType.none,
+        focusNode: _focusNode,
+        textAlignVertical: TextAlignVertical.center,
+        clearButtonMode: _clicked
+            ? widget.selectAtInit == false
+                ? OverlayVisibilityMode.editing
+                : OverlayVisibilityMode.never
+            : OverlayVisibilityMode.never,
+        inputFormatters: widget.textType == CretaTextFieldType.number
+            ? [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(widget.limit),
+                //FilteringTextInputFormatter.allow(RegExp('^[0-9]\$')),
+              ]
+            : widget.textType == CretaTextFieldType.color
+                ? [
+                    //LengthLimitingTextInputFormatter(widget.limit),
+                    FilteringTextInputFormatter.allow(RegExp('^[0-9#A-Fa-f]{0,${widget.limit}}\$')),
+                  ]
+                : null,
+        maxLines: widget.maxLines,
+        enabled: true,
+        autofocus: false,
+        //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
+        decoration: _basicDecoBox(),
+        padding: isNumeric()
+            ? EdgeInsetsDirectional.only(start: 8, end: 0)
+            : widget.textType == CretaTextFieldType.longText
+                ? EdgeInsetsDirectional.only(start: 18, end: 18, top: 5, bottom: 5)
+                : EdgeInsetsDirectional.only(start: 18, end: 18),
+        controller: _controller,
+        placeholder: _clicked ? null : widget.hintText,
+        placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
+        style: CretaFont.bodySmall.copyWith(color: CretaColor.text[900]!),
+        suffixMode: OverlayVisibilityMode.always,
+        onSubmitted: ((value) {
+          preprocess(value);
+          logger.finest('onSubmitted $_searchValue');
+          widget.onEditComplete(_searchValue);
+          LastClicked.clear();
+        }),
+        // onEditingComplete: () {
+        //   _searchValue = _controller.text;
+        //   logger.finest('onEditingComplete $_searchValue');
+        //   widget.onEditComplete(_searchValue);
+        // },
+        onChanged: (value) {
+          logger.finest('onChanged');
+          setLastClicked();
+          if (_clicked == false) {
+            setState(() {
+              _clicked = true;
+            });
+          }
+          widget.onChanged?.call(value);
+        },
+        onTap: () {
+          logger.finest('onTapped');
+          setLastClicked();
           setState(() {
             _clicked = true;
           });
-        }
-      },
-      onTap: () {
-        logger.finest('onTapped');
-        setLastClicked();
-        setState(() {
-          _clicked = true;
-        });
-      },
+        },
+        // onTapOutside: (event) {
+        //   widget.onEditComplete(_searchValue);
+        // },
+      ),
     );
   }
 
   BoxDecoration _basicDecoBox() {
     return BoxDecoration(
-      color: _clicked ? Colors.white : CretaColor.text[100]!,
+      //color: _clicked ? Colors.white : CretaColor.text[100]!,
+      color: Colors.white,
       // : _hover
       //     ? CretaColor.text[200]!
       //     : CretaColor.text[100]!,
-      border: _clicked ? Border.all(color: CretaColor.primary) : widget.defaultBorder,
+      //border: _clicked ? Border.all(color: CretaColor.primary) : widget.defaultBorder,
+      border: _clicked
+          ? Border.all(color: CretaColor.primary)
+          : _hovered
+              ? Border.all(color: CretaColor.text[300]!)
+              //? Border.all(color: Colors.red)
+              : widget.defaultBorder ?? Border.all(color: CretaColor.text[200]!),
       borderRadius: BorderRadius.circular(widget.radius),
     );
   }
 
-  BoxDecoration _numberDecoBox() {
-    return BoxDecoration(
-      color: Colors.white,
-      border: _clicked ? Border.all(color: CretaColor.primary) : widget.defaultBorder,
-      // : _hover
-      //     ? Border.all(color: CretaColor.text[200]!)
-      //     : null,
-      borderRadius: BorderRadius.circular(widget.radius),
-    );
-  }
+  // InputDecoration _inputBorderDeco () {
+  //   return InputDecoration(
+  //       fillColor: Colors.white,
+  //       focusedBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(widget.radius),
+  //         borderSide: BorderSide(color: CretaColor.text[200]!),
+  //       )
+
+  //       //Border.all(color: CretaColor.primary) : widget.defaultBorder,
+  //       // : _hover
+  //       //     ? Border.all(color: CretaColor.text[200]!)
+  //       //     : null,
+  //       //borderRadius: BorderRadius.circular(widget.radius),
+  //       );
+  //}
 
   bool isNumeric() {
     return (widget.textType == CretaTextFieldType.number ||

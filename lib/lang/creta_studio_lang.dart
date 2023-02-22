@@ -61,6 +61,7 @@ class CretaStudioLang {
     '크레타북 정보': 'book_info',
     '크레타북 설정': 'book_settings',
     '편집자 권한': 'authority',
+    '발행 이력': 'history',
   };
 
   static List<String> menuStick = [
@@ -158,11 +159,12 @@ class CretaStudioLang {
   static const String pageBgColor = "페이지 배경색";
   static const String onLine = "온라인";
   static const String offLine = "오프라인";
+  static const String bookHistory = "발행이력";
 
   static const String updateDate = "마지막 수정 날짜";
   static const String createDate = "만든 날짜";
   static const String creator = "만든 사람";
-  static const String copyWright = "저작권";
+  static const String copyRight = "저작권";
   static const String bookType = "크레타북 용도";
   static const String width = "너비";
   static const String height = "높이";
@@ -202,4 +204,8 @@ class CretaStudioLang {
   static const String lastestFrameError = "최근에 사용한 프레임이 없습니다.";
   static const String poligonFrameError = "준비된 도형 프레임이 없습니다.";
   static const String animationFrameError = "준비된 애니메이션 프레임이 없습니다.";
+
+  static const String fixedRatio = "가로세로비를 고정합니다";
+
+  static const String secondColor = "혼합색";
 }

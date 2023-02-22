@@ -19,6 +19,7 @@ class CretaDropDownButton extends StatefulWidget {
   TextStyle? textStyle;
   double? iconSize;
   EdgeInsetsGeometry? padding; //EdgeInsets.only(left: 8, right: 4)
+  final Color selectedColor;
 
   CretaDropDownButton({
     super.key,
@@ -31,6 +32,7 @@ class CretaDropDownButton extends StatefulWidget {
     this.align = MainAxisAlignment.center,
     this.itemHeight = 39,
     this.hintList,
+    this.selectedColor = CretaColor.primary,
   });
 
   @override
@@ -90,7 +92,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
             Text(
               displayString,
               style: widget.textStyle?.copyWith(
-                color: allText == displayString ? CretaColor.text[700] : CretaColor.primary,
+                color: allText == displayString ? CretaColor.text[700] : widget.selectedColor,
               ),
               overflow: TextOverflow.fade,
             ),
@@ -180,6 +182,14 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         if (popupMenu.length > 1 && dialogHeight < widget.itemHeight + itemSpacing * 2) {
           dialogHeight = widget.itemHeight + itemSpacing * 2;
         }
+
+        double width = widget.width ?? _getMaxWidth(popupMenu);
+        logger.fine('x=$x, width=$width, d:${StudioVariables.displayWidth}');
+        double gap = x + width - StudioVariables.displayWidth;
+        if (gap > 0) {
+          x = x - gap - 20;
+        }
+        logger.fine('x=$x, width=$width, d:${StudioVariables.displayWidth}');
 
         return _createDropDownMenu(
           context,

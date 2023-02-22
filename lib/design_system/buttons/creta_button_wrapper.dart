@@ -109,6 +109,7 @@ class BTN {
     required Function onPressed,
     double width = 24,
     double height = 24,
+    double iconSize = 16,
   }) {
     return CretaButton(
       width: width,
@@ -121,20 +122,21 @@ class BTN {
         backgroundColor: Colors.transparent,
         child: Icon(
           icon,
-          size: 16,
+          size: iconSize,
           color: CretaColor.primary[400]!,
         ),
       ),
     );
   }
 
-  static CretaButton fill_gray_i_m({
-    required IconData icon,
-    required Function onPressed,
-    String? tooltip,
-    Color? tooltipFg,
-    Color? tooltipBg,
-  }) {
+  static CretaButton fill_gray_i_m(
+      {required IconData icon,
+      required Function onPressed,
+      String? tooltip,
+      Color? tooltipFg,
+      Color? tooltipBg,
+      double iconSize = 16,
+      Color? iconColor}) {
     return CretaButton(
       tooltip: tooltip,
       tooltipFg: tooltipFg,
@@ -146,8 +148,8 @@ class BTN {
       onPressed: onPressed,
       child: Icon(
         icon,
-        size: 16,
-        color: CretaColor.text[700]!,
+        size: iconSize,
+        color: iconColor ?? CretaColor.text[700]!,
       ),
     );
   }

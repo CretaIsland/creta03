@@ -14,6 +14,7 @@ import '../../../../model/book_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import 'book_editor_property.dart';
+import 'book_history_property.dart';
 import 'book_info_property.dart';
 import 'book_page_property.dart';
 
@@ -79,6 +80,7 @@ class _RightMenuBookState extends State<RightMenuBook> {
           });
         },
         width: 95,
+        autoWidth: true,
         height: 24,
         buttonTextStyle: ButtonTextStyle(
           selectedColor: CretaColor.primary,
@@ -145,6 +147,17 @@ class _RightMenuBookState extends State<RightMenuBook> {
         padding: EdgeInsets.all(horizontalPadding),
         width: LayoutConst.rightMenuWidth,
         child: BookEditorProperty(
+            model: _model!,
+            parentNotify: () {
+              setState(() {});
+            }),
+      );
+    }
+    if (_selectedTab == menu[3]) {
+      return Container(
+        padding: EdgeInsets.all(horizontalPadding),
+        width: LayoutConst.rightMenuWidth,
+        child: BookHistoryProperty(
             model: _model!,
             parentNotify: () {
               setState(() {});

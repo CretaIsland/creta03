@@ -150,8 +150,9 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
         mainAxisSize: MainAxisSize.min,
         children: [
           CretaTextField.xshortNumber(
+              align: TextAlign.center,
               limit: 3,
-              width: 36,
+              width: 34,
               textFieldKey: GlobalKey(),
               value: _scaleText,
               hintText: _scaleText,
@@ -160,7 +161,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
                     ? StudioVariables.scale * 100
                     : scalePlot[scalePlot.length - 1];
                 double min = scalePlot[0];
-                double val = double.parse(valStr);
+                double val = int.parse(valStr).toDouble();
                 if (val < min) {
                   val = min;
                 } else if (val > max) {
@@ -222,6 +223,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
 
   Widget _buttonPlus() {
     return Container(
+        //padding: EdgeInsets.only(left: 6),
         width: _isClickedPlus ? widget.iconSize : widget.iconSize * 1.2,
         height: _isClickedPlus ? widget.iconSize : widget.iconSize * 1.2,
         decoration: BoxDecoration(

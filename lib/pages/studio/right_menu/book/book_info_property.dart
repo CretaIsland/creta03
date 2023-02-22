@@ -68,7 +68,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
       children: [
         ..._description(),
         ..._tag(),
-        _copyWright(),
+        _copyRight(),
         ..._info(),
       ],
     );
@@ -81,6 +81,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
         child: Text(CretaStudioLang.description, style: CretaFont.titleSmall),
       ),
       CretaTextField.long(
+        radius: 12,
         hintText: '',
         textFieldKey: GlobalKey(),
         onEditComplete: (String value) {
@@ -162,17 +163,22 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
     ];
   }
 
-  Widget _copyWright() {
+  Widget _copyRight() {
     return Padding(
       padding: const EdgeInsets.only(top: 24, bottom: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(CretaStudioLang.copyWright, style: CretaFont.titleSmall),
+          Text(CretaStudioLang.copyRight, style: CretaFont.titleSmall),
           widget.model.creator == AccountManager.currentLoginUser.email
               ? CretaDropDownButton(
-                  height: 36, itemHeight: 24, dropDownMenuItemList: getCopyWrightListItem(null))
-              : Text(CretaStudioLang.copyWrightList[widget.model.copyWright.value.index],
+                  selectedColor: CretaColor.text[700]!,
+                  textStyle: _dataStyle,
+                  width: 260,
+                  height: 36,
+                  itemHeight: 24,
+                  dropDownMenuItemList: getCopyWrightListItem(null))
+              : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
                   style: _dataStyle),
         ],
       ),
@@ -194,7 +200,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
               CretaStudioLang.createDate,
               style: _titleStyle,
             ),
-            Text(widget.model.createTime.toString(), style: _dataStyle),
+            Text(widget.model.createTime.toString().substring(0, 19), style: _dataStyle),
           ],
         ),
       ),
@@ -207,7 +213,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
               CretaStudioLang.updateDate,
               style: _titleStyle,
             ),
-            Text(widget.model.updateTime.toString(), style: _dataStyle),
+            Text(widget.model.updateTime.toString().substring(0, 19), style: _dataStyle),
           ],
         ),
       ),
@@ -243,25 +249,25 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
       CretaMenuItem(
           caption: CretaStudioLang.copyWrightList[1],
           onPressed: () {
-            widget.model.copyWright.set(CopyWrightType.free);
+            widget.model.copyRight.set(CopyWrightType.free);
           },
           selected: true),
       CretaMenuItem(
           caption: CretaStudioLang.copyWrightList[2],
           onPressed: () {
-            widget.model.copyWright.set(CopyWrightType.nonComertialsUseOnly);
+            widget.model.copyRight.set(CopyWrightType.nonComertialsUseOnly);
           },
           selected: false),
       CretaMenuItem(
           caption: CretaStudioLang.copyWrightList[3],
           onPressed: () {
-            widget.model.copyWright.set(CopyWrightType.openSource);
+            widget.model.copyRight.set(CopyWrightType.openSource);
           },
           selected: false),
       CretaMenuItem(
           caption: CretaStudioLang.copyWrightList[4],
           onPressed: () {
-            widget.model.copyWright.set(CopyWrightType.needPermition);
+            widget.model.copyRight.set(CopyWrightType.needPermition);
           },
           selected: false),
     ];
@@ -283,22 +289,22 @@ class _Chip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Chip(
       clipBehavior: Clip.antiAlias,
-      //backgroundColor: Colors.white,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(32),
-      //   side: BorderSide(
-      //     width: 2,
-      //     color: CretaColor.text[700]!,
-      //   ),
-      // ),
-      labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+        side: BorderSide(
+          width: 1,
+          color: CretaColor.text[700]!,
+        ),
+      ),
+      labelPadding: const EdgeInsets.only(left: 6.0, right: 1.0),
       label: Text(
         '#$label',
         style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
       ),
       deleteIcon: Icon(
         Icons.close,
-        size: 18,
+        size: 16,
       ),
       onDeleted: () {
         onDeleted(index);

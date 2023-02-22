@@ -539,7 +539,7 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
               SizedBox(width: padding),
               CretaScaleButton(
-                width: 157,
+                width: 162,
                 onManualScale: () {
                   setState(() {
                     scaleChanged = true;
