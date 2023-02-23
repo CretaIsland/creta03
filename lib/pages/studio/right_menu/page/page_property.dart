@@ -86,6 +86,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         propertyDivider(),
         _gradation(),
         propertyDivider(),
+        _texture(),
+        propertyDivider(),
         _pageTransition(),
         propertyDivider(),
       ]);
@@ -152,6 +154,10 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         },
       ),
     );
+  }
+
+  Widget _texture() {
+    return Container();
   }
 
   Widget _pageTransition() {
