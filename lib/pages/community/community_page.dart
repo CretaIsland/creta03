@@ -276,6 +276,53 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   Widget _getCommunityHomeTitlePane(Size size) {
     if (size.height > 176 + 40) {
+      // max size
+      List<Widget> titleList = [];
+      if (size.width > 175) {
+        titleList.add(
+          Text(
+            '커뮤니티 홈1',
+            style: CretaFont.displaySmall.copyWith(
+              color: Colors.white,
+              fontWeight: CretaFont.semiBold,
+            ),
+          ),
+        );
+      }
+      if (size.width > 500) {
+        titleList.addAll([
+          SizedBox(height: 23),
+          Text(
+            '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+            overflow: TextOverflow.ellipsis,
+            style: CretaFont.bodyMedium.copyWith(
+              color: Colors.white,
+              fontSize: 16,
+              //fontWeight: CretaFont.regular,
+            ),
+          ),
+          SizedBox(height: 13),
+          Text(
+            '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
+            overflow: TextOverflow.ellipsis,
+            style: CretaFont.bodyMedium.copyWith(
+              color: Colors.white,
+              fontSize: 16,
+              //fontWeight: CretaFont.regular,
+            ),
+          ),
+        ]);
+      }
+      List<Widget> hashtagList = [];
+      if (size.width > 430) {
+        hashtagList.addAll([
+          SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: _getHashtagListOnBanner(),
+          ),
+        ]);
+      }
       return SizedBox(
         width: size.width,
         height: size.height,
@@ -305,40 +352,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '커뮤니티 홈',
-                          style: CretaFont.displaySmall.copyWith(
-                            color: Colors.white,
-                            fontWeight: CretaFont.semiBold,
-                          ),
-                        ),
-                        SizedBox(height: 23),
-                        Text(
-                          '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
-                          overflow: TextOverflow.ellipsis,
-                          style: CretaFont.bodyMedium.copyWith(
-                            color: Colors.white,
-                            fontSize: 16,
-                            //fontWeight: CretaFont.regular,
-                          ),
-                        ),
-                        SizedBox(height: 13),
-                        Text(
-                          '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
-                          overflow: TextOverflow.ellipsis,
-                          style: CretaFont.bodyMedium.copyWith(
-                            color: Colors.white,
-                            fontSize: 16,
-                            //fontWeight: CretaFont.regular,
-                          ),
-                        ),
-                        SizedBox(height: 24),
-                        (size.width > 300)
-                            ? Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: _getHashtagListOnBanner(),
-                        )
-                            : Container(),
+                        ...titleList,
+                        ...hashtagList,
                       ],
                     ),
                   ),
@@ -349,6 +364,47 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         ),
       );
     } else if (size.height > 122 + 40) {
+      // middle size
+      List<Widget> titleList = [];
+      if (size.width > 175) {
+        titleList.add(
+          Text(
+            '커뮤니티 홈2',
+            overflow: TextOverflow.ellipsis,
+            style: CretaFont.displaySmall.copyWith(
+              color: Colors.white,
+              fontWeight: CretaFont.semiBold,
+            ),
+          ),
+        );
+      }
+      if (size.width > 800) {
+        titleList.addAll([
+          SizedBox(height: 23),
+          Text(
+            '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+            overflow: TextOverflow.ellipsis,
+            style: CretaFont.bodyMedium.copyWith(
+              color: Colors.white,
+              fontSize: 16,
+              //fontWeight: CretaFont.regular,
+            ),
+          ),
+          SizedBox(height: 13),
+          Text(
+            '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
+            overflow: TextOverflow.ellipsis,
+            style: CretaFont.bodyMedium.copyWith(
+              color: Colors.white,
+              fontSize: 16,
+              //fontWeight: CretaFont.regular,
+            ),
+          ),
+        ]);
+      }
+      Widget hashtagWidget = (size.width > 630)
+          ? Row(children: _getHashtagListOnBanner())
+          : Container();
       return SizedBox(
         width: size.width,
         height: size.height,
@@ -372,47 +428,17 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 children: [
                   SizedBox(
                     width: size.width,
-                    height: 122,
+                    height: (titleList.length == 1) ? 48 : 122,
                     //color: Colors.red,
                     child: Row(
                       children: [
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '커뮤니티 홈',
-                              style: CretaFont.displaySmall.copyWith(
-                                color: Colors.white,
-                                fontWeight: CretaFont.semiBold,
-                              ),
-                            ),
-                            SizedBox(height: 23),
-                            Text(
-                              '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
-                              overflow: TextOverflow.ellipsis,
-                              style: CretaFont.bodyMedium.copyWith(
-                                color: Colors.white,
-                                fontSize: 16,
-                                //fontWeight: CretaFont.regular,
-                              ),
-                            ),
-                            SizedBox(height: 13),
-                            Text(
-                              '다양한 크레타북을 시청하고 새로운 아이디어를 얻으세요.',
-                              overflow: TextOverflow.ellipsis,
-                              style: CretaFont.bodyMedium.copyWith(
-                                color: Colors.white,
-                                fontSize: 16,
-                                //fontWeight: CretaFont.regular,
-                              ),
-                            ),
-                          ],
+                          children: titleList,
                         ),
                         Expanded(child: Container()),
-                        Row(
-                          children: _getHashtagListOnBanner(),
-                        ),
+                        hashtagWidget,
                       ],
                     ),
                   ),
@@ -423,35 +449,43 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         ),
       );
     }
+    // min size
+    List<Widget> titleList = [];
+    if (size.width > 220) {
+      titleList.addAll([
+        //icon
+        Icon(Icons.home_outlined, size: 20),
+        SizedBox(width: 12),
+        //text
+        Text(
+          '커뮤니티 홈',
+          style: CretaFont.titleELarge.copyWith(fontWeight: CretaFont.semiBold),
+        ),
+      ]);
+    }
+    if (size.width > 885) {
+      titleList.addAll([
+        SizedBox(width: 24),
+        //text
+        Text(
+          '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
+          overflow: TextOverflow.ellipsis,
+          style: CretaFont.bodyMedium.copyWith(fontWeight: CretaFont.regular),
+        ),
+      ]);
+    }
+    if (size.width > 540) {
+      titleList.addAll([
+        Expanded(child: Container()),
+        Row(children: _getHashtagListOnBanner()),
+      ]);
+    }
+
     return Container(
       width: size.width,
       height: size.height,
       padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Row(
-        children: [
-          //icon
-          Icon(Icons.home_outlined, size: 20),
-          SizedBox(width: 12),
-          //text
-          Text(
-            '커뮤니티 홈',
-            style: CretaFont.titleELarge.copyWith(fontWeight: CretaFont.semiBold),
-          ),
-          SizedBox(width: 24),
-          //text
-          Text(
-            '전세계의 작가들이 업로드한 크레타북을 탐색합니다.',
-            overflow: TextOverflow.ellipsis,
-            style: CretaFont.bodyMedium.copyWith(fontWeight: CretaFont.regular),
-          ),
-          //space
-          Expanded(
-            child: Container(),
-          ),
-          //hash tag
-          ..._getHashtagListOnBanner(),
-        ],
-      ),
+      child: Row(children: titleList),
     );
   }
 
