@@ -106,22 +106,54 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
   }
 
   Widget _filterPane() {
+    double filterWidth = 40 + 40;
+    List<List<CretaMenuItem>> listOfListFilter = [];
+    if (widget.listOfListFilter.isNotEmpty) {
+      for(int i = 0; i < widget.listOfListFilter.length; i++) {
+        filterWidth += 150;
+        if (widget.width < filterWidth) {
+          break;
+        }
+        listOfListFilter.add(widget.listOfListFilter[i]);
+      }
+    }
+    List<List<CretaMenuItem>> listOfListFilterOnRight = [];
+    if (widget.listOfListFilterOnRight != null
+        && widget.listOfListFilterOnRight!.isNotEmpty) {
+      for(int i = 0; i < widget.listOfListFilterOnRight!.length; i++) {
+        filterWidth += 150;
+        if (widget.width < filterWidth) {
+          break;
+        }
+        listOfListFilterOnRight.add(widget.listOfListFilterOnRight![i]);
+      }
+    }
+    bool showSearchbar = (widget.width > filterWidth + 246);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        widget.width > 500
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: widget.listOfListFilter
-                    .map(
-                      (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
-                    )
-                    .toList(),
-              )
-            : Container(),
+        // widget.width > 500
+        //     ? Row(
+        //         mainAxisAlignment: MainAxisAlignment.start,
+        //         children: widget.listOfListFilter
+        //             .map(
+        //               (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
+        //             )
+        //             .toList(),
+        //       )
+        //     : Container(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: listOfListFilter
+            .map(
+                (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
+          )
+              .toList(),
+        ),
         Row(
           children: [
-            widget.width > 700 && widget.onSearch != null && !(widget.isSearchbarInBanner ?? false)
+            showSearchbar
+            //widget.width > 750 && widget.onSearch != null && !(widget.isSearchbarInBanner ?? false)
                 ? CretaSearchBar(
                     hintText: CretaLang.searchBar,
                     onSearch: (value) {
@@ -131,23 +163,36 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
                     height: 32,
                   )
                 : Container(),
-            widget.width > 500 && widget.listOfListFilterOnRight != null
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 8,
-                      ),
-                      ...widget.listOfListFilterOnRight!
-                          .map(
-                            (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
-                          )
-                          .toList(),
-                    ],
-                  )
-                : Container(
-                    width: 0,
-                  ),
+            // widget.width > 500 && widget.listOfListFilterOnRight != null
+            //     ? Row(
+            //         mainAxisAlignment: MainAxisAlignment.start,
+            //         children: [
+            //           Container(
+            //             width: 8,
+            //           ),
+            //           ...widget.listOfListFilterOnRight!
+            //               .map(
+            //                 (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
+            //               )
+            //               .toList(),
+            //         ],
+            //       )
+            //     : Container(
+            //         width: 0,
+            //       ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: 8,
+                ),
+                ...listOfListFilterOnRight
+                    .map(
+                      (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
+                )
+                    .toList(),
+              ],
+            )
           ],
         ),
       ],

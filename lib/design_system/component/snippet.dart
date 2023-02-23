@@ -331,6 +331,7 @@ class Snippet {
     return SpeedDial(
       //key: GlobalKey(),
       animatedIcon: AnimatedIcons.menu_close,
+      childrenButtonSize: const Size(48, 48),
       children: [
         SpeedDialChild(
           child: Icon(Icons.house),
