@@ -13,8 +13,6 @@ import 'package:creta03/model/connected_user_model.dart';
 import 'package:creta03/pages/studio/sample_data.dart';
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
-import '../../data_io/frame_manager.dart';
-import '../../data_io/frame_template_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../data_io/user_property_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -23,11 +21,11 @@ import '../../design_system/buttons/creta_scale_button.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
-import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
+import 'containees/containee_nofifier.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
 import 'right_menu/right_menu.dart';
@@ -42,13 +40,14 @@ class BookMainPage extends StatefulWidget {
   static bool onceBookInfoOpened = false;
   static BookManager? bookManagerHolder;
   static PageManager? pageManagerHolder;
-  static FrameManager? frameManagerHolder;
-  static FrameTemplateManager? polygonFrameManagerHolder;
-  static FrameTemplateManager? animationFrameManagerHolder;
+  // static FrameTemplateManager? polygonFrameManagerHolder;
+  // static FrameTemplateManager? animationFrameManagerHolder;
   static UserPropertyManager? userPropertyManagerHolder;
+  static ContaineeNotifier? containeeNotifier;
 
   static LeftMenuEnum selectedStick = LeftMenuEnum.None;
-  static RightMenuEnum selectedClass = RightMenuEnum.Book;
+
+  //static ContaineeEnum selectedClass = ContaineeEnum.Book;
 
   const BookMainPage({super.key});
 
@@ -68,7 +67,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   double pageWidth = 0;
   double pageHeight = 0;
-  double physicalRatio = 0;
+  double heightWidthRatio = 0;
   double widthRatio = 0;
   double heightRatio = 0;
   double applyScale = 1;
@@ -81,20 +80,22 @@ class _BookMainPageState extends State<BookMainPage> {
     super.initState();
     logger.finest("---_BookMainPageState-----------------------------------------");
 
+    BookMainPage.containeeNotifier = ContaineeNotifier();
+
     // 같은 페이지에서 객체만 바뀌면 static value 들은 그대로 남아있게 되므로
     // static value 도 초기화해준다.
     //BookMainPage.selectedMid = '';
     BookMainPage.onceBookInfoOpened = false;
     BookMainPage.selectedStick = LeftMenuEnum.None;
-    BookMainPage.selectedClass = RightMenuEnum.Book;
+
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: false);
 
     BookMainPage.bookManagerHolder = BookManager();
     BookMainPage.bookManagerHolder!.configEvent(notifyModify: false);
     BookMainPage.bookManagerHolder!.clearAll();
     BookMainPage.pageManagerHolder = PageManager();
-    BookMainPage.frameManagerHolder = FrameManager();
-    BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
-    BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
+    // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
+    // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
     BookMainPage.userPropertyManagerHolder = UserPropertyManager();
 
     String url = Uri.base.origin;
@@ -138,29 +139,20 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder!.setDefaultBook(model);
     saveManagerHolder!.addBookChildren('book=');
     saveManagerHolder!.addBookChildren('page=');
-    saveManagerHolder!.addBookChildren('frame=');
     saveManagerHolder!.addBookChildren('contents=');
 
     // Get Pages
     BookMainPage.pageManagerHolder!.setBook(model);
     BookMainPage.pageManagerHolder!.clearAll();
     BookMainPage.pageManagerHolder!.addRealTimeListen();
-    await _getPages();
+    await BookMainPage.pageManagerHolder!.getPages();
     BookMainPage.pageManagerHolder!.setSelected(0);
 
-    // Get Frames
-    BookMainPage.frameManagerHolder!
-        .setBookAndPage(model, BookMainPage.pageManagerHolder!.getSelected() as PageModel?);
-    BookMainPage.frameManagerHolder!.clearAll();
-    BookMainPage.frameManagerHolder!.addRealTimeListen();
-    await _getFrames();
-    BookMainPage.frameManagerHolder!.setSelected(0);
-
     // Get Template Frames
-    BookMainPage.polygonFrameManagerHolder!.clearAll();
-    await _getPolygonFrameTemplates();
-    BookMainPage.animationFrameManagerHolder!.clearAll();
-    await _getAnimationFrameTemplates();
+    // BookMainPage.polygonFrameManagerHolder!.clearAll();
+    // await _getPolygonFrameTemplates();
+    // BookMainPage.animationFrameManagerHolder!.clearAll();
+    // await _getAnimationFrameTemplates();
 
     // Get User property
     BookMainPage.userPropertyManagerHolder!.clearAll();
@@ -169,88 +161,51 @@ class _BookMainPageState extends State<BookMainPage> {
     _onceDBGetComplete = true;
   }
 
-  Future<int> _getPages() async {
-    int pageCount = 0;
-    BookMainPage.pageManagerHolder!.startTransaction();
-    try {
-      pageCount = await BookMainPage.pageManagerHolder!.getPages();
-      if (pageCount == 0) {
-        await BookMainPage.pageManagerHolder!.createNextPage();
-        pageCount = 1;
-      }
-    } catch (e) {
-      logger.finest('something wrong $e');
-      await BookMainPage.pageManagerHolder!.createNextPage();
-      pageCount = 1;
-    }
-    BookMainPage.pageManagerHolder!.endTransaction();
+  //   Future<int> _getPolygonFrameTemplates() async {
+  //   int frameCount = 0;
+  //   BookMainPage.polygonFrameManagerHolder!.startTransaction();
+  //   try {
+  //     frameCount = await BookMainPage.polygonFrameManagerHolder!.getFrames();
+  //     if (frameCount < StudioConst.maxMyFavFrame) {
+  //       for (int i = 0; i < StudioConst.maxMyFavFrame - frameCount; i++) {
+  //         await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
+  //       }
+  //       frameCount = StudioConst.maxMyFavFrame;
+  //     }
+  //   } catch (e) {
+  //     logger.finest('something wrong $e');
+  //     await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
+  //     await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
+  //     await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
+  //     await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
+  //     frameCount = 1;
+  //   }
+  //   BookMainPage.polygonFrameManagerHolder!.endTransaction();
+  //   return frameCount;
+  // }
 
-    return pageCount;
-  }
-
-  Future<int> _getFrames() async {
-    int frameCount = 0;
-    BookMainPage.frameManagerHolder!.startTransaction();
-    try {
-      frameCount = await BookMainPage.frameManagerHolder!.getFrames();
-      if (frameCount == 0) {
-        await BookMainPage.frameManagerHolder!.createNextFrame();
-        frameCount = 1;
-      }
-    } catch (e) {
-      logger.finest('something wrong $e');
-      await BookMainPage.frameManagerHolder!.createNextFrame();
-      frameCount = 1;
-    }
-    BookMainPage.frameManagerHolder!.endTransaction();
-    return frameCount;
-  }
-
-  Future<int> _getPolygonFrameTemplates() async {
-    int frameCount = 0;
-    BookMainPage.polygonFrameManagerHolder!.startTransaction();
-    try {
-      frameCount = await BookMainPage.polygonFrameManagerHolder!.getFrames();
-      if (frameCount < 4) {
-        for (int i = 0; i < 4 - frameCount; i++) {
-          await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
-        }
-        frameCount = 4;
-      }
-    } catch (e) {
-      logger.finest('something wrong $e');
-      await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
-      await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
-      await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
-      await BookMainPage.polygonFrameManagerHolder!.createNextFrame();
-      frameCount = 1;
-    }
-    BookMainPage.polygonFrameManagerHolder!.endTransaction();
-    return frameCount;
-  }
-
-  Future<int> _getAnimationFrameTemplates() async {
-    int frameCount = 0;
-    BookMainPage.animationFrameManagerHolder!.startTransaction();
-    try {
-      frameCount = await BookMainPage.animationFrameManagerHolder!.getFrames();
-      if (frameCount < 4) {
-        for (int i = 0; i < 4 - frameCount; i++) {
-          await BookMainPage.animationFrameManagerHolder!.createNextFrame();
-        }
-        frameCount = 1;
-      }
-    } catch (e) {
-      logger.finest('something wrong $e');
-      await BookMainPage.animationFrameManagerHolder!.createNextFrame();
-      await BookMainPage.animationFrameManagerHolder!.createNextFrame();
-      await BookMainPage.animationFrameManagerHolder!.createNextFrame();
-      await BookMainPage.animationFrameManagerHolder!.createNextFrame();
-      frameCount = 1;
-    }
-    BookMainPage.animationFrameManagerHolder!.endTransaction();
-    return frameCount;
-  }
+  // Future<int> _getAnimationFrameTemplates() async {
+  //   int frameCount = 0;
+  //   BookMainPage.animationFrameManagerHolder!.startTransaction();
+  //   try {
+  //     frameCount = await BookMainPage.animationFrameManagerHolder!.getFrames();
+  //     if (frameCount < StudioConst.maxMyFavFrame) {
+  //       for (int i = 0; i < StudioConst.maxMyFavFrame - frameCount; i++) {
+  //         await BookMainPage.animationFrameManagerHolder!.createNextFrame();
+  //       }
+  //       frameCount = 1;
+  //     }
+  //   } catch (e) {
+  //     logger.finest('something wrong $e');
+  //     await BookMainPage.animationFrameManagerHolder!.createNextFrame();
+  //     await BookMainPage.animationFrameManagerHolder!.createNextFrame();
+  //     await BookMainPage.animationFrameManagerHolder!.createNextFrame();
+  //     await BookMainPage.animationFrameManagerHolder!.createNextFrame();
+  //     frameCount = 1;
+  //   }
+  //   BookMainPage.animationFrameManagerHolder!.endTransaction();
+  //   return frameCount;
+  // }
 
   Future<int> _getUserPropery() async {
     int userCount = 0;
@@ -275,11 +230,10 @@ class _BookMainPageState extends State<BookMainPage> {
     super.dispose();
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
-    BookMainPage.frameManagerHolder?.removeRealTimeListen();
+
     saveManagerHolder?.stopTimer();
-    saveManagerHolder?.unregisterManager('page');
     saveManagerHolder?.unregisterManager('book');
-    saveManagerHolder?.unregisterManager('frame');
+    saveManagerHolder?.unregisterManager('page');
     saveManagerHolder?.unregisterManager('user');
     controller.dispose();
     verticalScroll.dispose();
@@ -290,6 +244,9 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ContaineeNotifier>.value(
+          value: BookMainPage.containeeNotifier!,
+        ),
         ChangeNotifierProvider<BookManager>.value(
           value: BookMainPage.bookManagerHolder!,
         ),
@@ -312,9 +269,8 @@ class _BookMainPageState extends State<BookMainPage> {
       managerList: [
         BookMainPage.bookManagerHolder!,
         BookMainPage.pageManagerHolder!,
-        BookMainPage.frameManagerHolder!,
-        BookMainPage.polygonFrameManagerHolder!,
-        BookMainPage.animationFrameManagerHolder!,
+        // BookMainPage.polygonFrameManagerHolder!,
+        // BookMainPage.animationFrameManagerHolder!,
         BookMainPage.userPropertyManagerHolder!,
       ],
       //userId: AccountManager.currentLoginUser.email,
@@ -345,9 +301,6 @@ class _BookMainPageState extends State<BookMainPage> {
       providers: [
         ChangeNotifierProvider<PageManager>.value(
           value: BookMainPage.pageManagerHolder!,
-        ),
-        ChangeNotifierProvider<FrameManager>.value(
-          value: BookMainPage.frameManagerHolder!,
         ),
       ],
       child: Stack(
@@ -406,18 +359,18 @@ class _BookMainPageState extends State<BookMainPage> {
 
     widthRatio = StudioVariables.availWidth / _bookModel.width.value;
     heightRatio = StudioVariables.availHeight / _bookModel.height.value;
-    physicalRatio = _bookModel.height.value / _bookModel.width.value;
+    heightWidthRatio = _bookModel.height.value / _bookModel.width.value;
 
     if (widthRatio < heightRatio) {
       pageWidth = StudioVariables.availWidth;
-      pageHeight = pageWidth * physicalRatio;
+      pageHeight = pageWidth * heightWidthRatio;
       if (StudioVariables.autoScale == true) {
         StudioVariables.fitScale = widthRatio; // 화면에 꽉찾을때의 최적의 값
         StudioVariables.scale = widthRatio;
       }
     } else {
       pageHeight = StudioVariables.availHeight;
-      pageWidth = pageHeight / physicalRatio;
+      pageWidth = pageHeight / heightWidthRatio;
       if (StudioVariables.autoScale == true) {
         StudioVariables.fitScale = heightRatio; // 화면에 꽉찾을때의 최적의 값
         StudioVariables.scale = heightRatio;
@@ -446,31 +399,39 @@ class _BookMainPageState extends State<BookMainPage> {
                   });
                 },
               ),
-        _shouldRightMenuOpen()
-            ? Positioned(
-                top: 0,
-                left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
-                child: RightMenu(
-                  onClose: () {
-                    setState(() {
-                      if (BookMainPage.selectedClass == RightMenuEnum.Book) {
-                        BookMainPage.onceBookInfoOpened = true;
-                      }
-                      BookMainPage.selectedClass = RightMenuEnum.None;
-                    });
-                  },
-                ),
-              )
-            : Container(width: 0, height: 0, color: Colors.transparent)
+        _openRightMenu(),
       ],
     );
   }
 
+  Widget _openRightMenu() {
+    return Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
+      logger.finest('Consumer  ContaineeNotifier');
+      return _shouldRightMenuOpen()
+          ? Positioned(
+              top: 0,
+              left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
+              child: RightMenu(
+                onClose: () {
+                  setState(() {
+                    if (containeeNotifier.selectedClass == ContaineeEnum.Book) {
+                      BookMainPage.onceBookInfoOpened = true;
+                    }
+                    containeeNotifier.clear();
+                  });
+                },
+              ),
+            )
+          : Container(width: 0, height: 0, color: Colors.transparent);
+    });
+  }
+
   bool _shouldRightMenuOpen() {
-    if (BookMainPage.selectedClass == RightMenuEnum.None) {
+    if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.None) {
       return false;
     }
-    if (BookMainPage.selectedClass == RightMenuEnum.Book || _isFirstOpen == true) {
+    if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book ||
+        _isFirstOpen == true) {
       _isFirstOpen = false;
       if (BookMainPage.onceBookInfoOpened == true) {
         return false;
@@ -599,7 +560,7 @@ class _BookMainPageState extends State<BookMainPage> {
             onLabelHovered: () {
               setState(() {
                 BookMainPage.onceBookInfoOpened = false;
-                BookMainPage.selectedClass = RightMenuEnum.Book;
+                BookMainPage.containeeNotifier!.set(ContaineeEnum.Book);
               });
             },
           ),
@@ -776,7 +737,7 @@ class _BookMainPageState extends State<BookMainPage> {
   //         onLongPressDown: (details) {
   //           logger.finest('page clicked');
   //           setState(() {
-  //             BookMainPage.selectedClass = RightMenuEnum.Page;
+  //            BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
   //           });
   //         },
   //         child: Container(
@@ -797,12 +758,20 @@ class _BookMainPageState extends State<BookMainPage> {
   // }
 
   Widget _drawPage(BuildContext context) {
-    return PageMain(
-      key: GlobalKey(),
-      bookModel: _bookModel,
-      pageWidth: pageWidth,
-      pageHeight: pageHeight,
-    );
+    return Consumer<PageManager>(builder: (context, pageManager, child) {
+      PageModel? pageModel = pageManager.getSelected() as PageModel?;
+      logger.finest('PageMain Invoked');
+      if (pageModel == null) {
+        return const SizedBox.shrink();
+      }
+      return PageMain(
+        key: GlobalKey(),
+        bookModel: _bookModel,
+        pageModel: pageModel,
+        pageWidth: pageWidth,
+        pageHeight: pageHeight,
+      );
+    });
   }
 
   void _showLeftMenu(LeftMenuEnum idx) {

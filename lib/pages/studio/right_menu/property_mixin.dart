@@ -139,9 +139,8 @@ mixin PropertyMixin {
     required GradationType gradationType,
     required Function cardOpenPressed,
     required void Function(double) onOpacityDragComplete,
-    required Function(GradationType, Color, Color) onGradationTapPressed,
+    //required Function(GradationType, Color, Color) onGradationTapPressed,
     required Function(Color) onColor1Changed,
-    required Function(Color) onColor2Changed,
   }) {
     return propertyCard(
       isOpen: isColorOpen,
@@ -150,12 +149,9 @@ mixin PropertyMixin {
         cardOpenPressed.call();
       },
       titleWidget: Text(title, style: CretaFont.titleSmall),
-      //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-      trailWidget: _colorIndicatorTotal(
+      trailWidget: colorIndicator(
         color1,
-        color2,
         opacity,
-        gradationType,
         onColor1Changed,
       ),
       bodyWidget: _colorBody(
@@ -164,9 +160,8 @@ mixin PropertyMixin {
         opacity: opacity,
         onDragComplete: onOpacityDragComplete,
         gradationType: gradationType,
-        onGradationTapPressed: onGradationTapPressed,
+        //onGradationTapPressed: onGradationTapPressed,
         onColor1Changed: onColor1Changed,
-        onColor2Changed: onColor2Changed,
         cardOpenPressed: cardOpenPressed,
       ),
     );
@@ -178,9 +173,8 @@ mixin PropertyMixin {
     required double opacity,
     required GradationType gradationType,
     required void Function(double) onDragComplete,
-    required Function(GradationType, Color, Color) onGradationTapPressed,
+    //required Function(GradationType, Color, Color) onGradationTapPressed,
     required Function(Color) onColor1Changed,
-    required Function(Color) onColor2Changed,
     required Function cardOpenPressed,
   }) {
     return Column(
@@ -189,10 +183,9 @@ mixin PropertyMixin {
         propertyLine(
           // 색
           name: CretaStudioLang.color,
-          widget: _colorIndicator(
+          widget: colorIndicator(
             color1,
             opacity,
-            gradationType,
             onColor1Changed,
           ),
         ),
@@ -229,43 +222,47 @@ mixin PropertyMixin {
             ],
           ),
         ),
-        propertyLine(
-          // 그라데이션
-          hasCheckBox: true,
-          isSelected: gradationType != GradationType.none || isGradationOpen,
-          onCheck: (name, value, valueMap) {
-            isGradationOpen = value;
-            if (isGradationOpen == false) {
-              onGradationTapPressed.call(GradationType.none, color1, color2);
-            } else {
-              cardOpenPressed.call();
-            }
-          },
-          name: CretaStudioLang.gradation,
-          widget: gradationType != GradationType.none || isGradationOpen
-              ? const SizedBox.shrink()
-              : _colorIndicator(
-                  color2,
-                  opacity,
-                  gradationType,
-                  onColor2Changed,
-                ),
-        ),
-        gradationType != GradationType.none || isGradationOpen
-            ? _gradationTypes(
-                color1,
-                color2,
-                opacity,
-                gradationType,
-                onGradationTapPressed,
-                onColor2Changed,
-              )
-            : const SizedBox.shrink(),
       ],
     );
   }
 
-  Widget _gradationTypes(
+  Widget gradationCard({
+    required Color bgColor1,
+    required Color bgColor2,
+    required double opacity,
+    required GradationType gradationType,
+    required Function onPressed,
+    required void Function(GradationType, Color, Color) onGradationTapPressed,
+    required void Function(Color val) onColor2Changed,
+  }) {
+    return propertyCard(
+      isOpen: isGradationOpen,
+      onPressed: () {
+        isGradationOpen = !isGradationOpen;
+        onPressed.call();
+      },
+      titleWidget: Text(CretaStudioLang.gradation, style: CretaFont.titleSmall),
+      trailWidget: gradationType == GradationType.none
+          ? const SizedBox.shrink()
+          : colorIndicatorTotal(
+              bgColor1,
+              bgColor2,
+              opacity,
+              gradationType,
+              onColor2Changed,
+            ),
+      bodyWidget: gradationTypes(
+        bgColor1,
+        bgColor2,
+        opacity,
+        gradationType,
+        onGradationTapPressed,
+        onColor2Changed,
+      ),
+    );
+  }
+
+  Widget gradationTypes(
     Color color1,
     Color color2,
     double opacity,
@@ -296,10 +293,9 @@ mixin PropertyMixin {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(CretaStudioLang.secondColor, style: titleStyle),
-              _colorIndicator(
+              colorIndicator(
                 color2,
                 opacity,
-                gradationType,
                 onColor2Changed,
               ),
             ],
@@ -314,7 +310,7 @@ mixin PropertyMixin {
     );
   }
 
-  Widget _colorIndicatorTotal(
+  Widget colorIndicatorTotal(
     Color color1,
     Color color2,
     double opacity,
@@ -329,10 +325,9 @@ mixin PropertyMixin {
     );
   }
 
-  Widget _colorIndicator(
+  Widget colorIndicator(
     Color color,
     double opacity,
-    GradationType gradationType,
     void Function(Color) onColorChanged,
   ) {
     return Tooltip(

@@ -40,7 +40,25 @@ class PageManager extends CretaManager {
     return defaultPage;
   }
 
-  Future<int> getPages({int limit = 99}) async {
+  Future<int> getPages() async {
+    int pageCount = 0;
+    startTransaction();
+    try {
+      pageCount = await _getPages();
+      if (pageCount == 0) {
+        await createNextPage();
+        pageCount = 1;
+      }
+    } catch (e) {
+      logger.finest('something wrong $e');
+      await createNextPage();
+      pageCount = 1;
+    }
+    endTransaction();
+    return pageCount;
+  }
+
+  Future<int> _getPages({int limit = 99}) async {
     logger.finest('getPages');
     Map<String, QueryValue> query = {};
     query['parentMid'] = QueryValue(value: bookModel!.mid);

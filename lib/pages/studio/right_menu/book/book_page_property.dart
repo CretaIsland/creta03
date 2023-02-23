@@ -74,6 +74,8 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
         propertyDivider(),
         _pageColor(),
         propertyDivider(),
+        _gradation(),
+        propertyDivider(),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: _bookOption(),
@@ -103,7 +105,28 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
           });
           BookMainPage.bookManagerHolder?.notify();
         },
-        onGradationTapPressed: (type, color1, color2) {
+        onColor1Changed: (val) {
+          setState(() {
+            widget.model.bgColor1.set(val);
+          });
+          BookMainPage.bookManagerHolder?.notify();
+        },
+      ),
+    );
+  }
+
+  Widget _gradation() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: gradationCard(
+        onPressed: () {
+          setState(() {});
+        },
+        bgColor1: widget.model.bgColor1.value,
+        bgColor2: widget.model.bgColor2.value,
+        opacity: widget.model.opacity.value,
+        gradationType: widget.model.gradationType.value,
+        onGradationTapPressed: (GradationType type, Color color1, Color color2) {
           logger.finest('GradationIndicator clicked');
           setState(() {
             if (widget.model.gradationType.value == type) {
@@ -114,13 +137,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
           });
           BookMainPage.bookManagerHolder?.notify();
         },
-        onColor1Changed: (val) {
-          setState(() {
-            widget.model.bgColor1.set(val);
-          });
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onColor2Changed: (val) {
+        onColor2Changed: (Color val) {
           setState(() {
             widget.model.bgColor2.set(val);
           });

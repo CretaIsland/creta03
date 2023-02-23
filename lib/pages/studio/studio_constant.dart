@@ -19,14 +19,6 @@ enum LeftMenuEnum {
   None,
 }
 
-enum RightMenuEnum {
-  Book,
-  Page,
-  Frame,
-  Contents,
-  None,
-}
-
 class LayoutConst {
   //
   static const double maxPageCount = 99;
@@ -146,4 +138,6 @@ class StudioConst {
     [Size(1913, 2705)],
     [Size(1346, 1913)],
   ];
+
+  static int maxMyFavFrame = 12;
 }

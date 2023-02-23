@@ -12,6 +12,7 @@ import 'package:hycop/hycop/utils/hycop_exceptions.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/user_propery_model.dart';
+import '../pages/studio/studio_constant.dart';
 import 'creta_manager.dart';
 
 class UserPropertyManager extends CretaManager {
@@ -133,7 +134,7 @@ class UserPropertyManager extends CretaManager {
       'creta_frame',
       where: query,
       orderBy: orderBy,
-      limit: 4,
+      limit: StudioConst.maxMyFavFrame,
     );
 
     logger.fine('_getAnyLattestFrames ${resultList.length}');

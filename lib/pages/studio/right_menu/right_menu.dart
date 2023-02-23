@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -10,6 +10,7 @@ import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 
 import '../../../design_system/creta_font.dart';
+import '../containees/containee_nofifier.dart';
 import '../studio_constant.dart';
 import '../left_menu/left_menu_mixin.dart';
 import '../studio_snippet.dart';
@@ -18,7 +19,7 @@ import 'book/right_menu_book.dart';
 import 'page/page_property.dart';
 
 class RightMenu extends StatefulWidget {
-  //final RightMenuEnum selectedStick;
+  //final ContaineeEnum selectedStick;
   final Function onClose;
   const RightMenu({super.key, required this.onClose});
 
@@ -44,7 +45,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    Widget title = _eachTitle(BookMainPage.selectedClass);
+    Widget title = _eachTitle(BookMainPage.containeeNotifier!.selectedClass);
     return SizedBox(
       height: StudioVariables.workHeight,
       child: super.buildAnimation(
@@ -57,7 +58,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
           children: [
             SizedBox(
               height: LayoutConst.rightMenuTitleHeight -
-                  (BookMainPage.selectedClass == RightMenuEnum.Book ? 0 : 4),
+                  (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book ? 0 : 4),
               width: LayoutConst.rightMenuWidth,
               child: Row(
                 children: [
@@ -85,7 +86,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
                 ],
               ),
             ),
-            BookMainPage.selectedClass == RightMenuEnum.Book
+            BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book
                 ? SizedBox.shrink()
                 : Divider(
                     height: 4,
@@ -95,7 +96,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
                   ),
             SizedBox(
               width: LayoutConst.rightMenuWidth,
-              child: _eachWidget(BookMainPage.selectedClass),
+              child: _eachWidget(BookMainPage.containeeNotifier!.selectedClass),
             )
           ],
         ),
@@ -103,15 +104,15 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
     );
   }
 
-  Widget _eachWidget(RightMenuEnum selected) {
+  Widget _eachWidget(ContaineeEnum selected) {
     switch (selected) {
-      case RightMenuEnum.Book:
+      case ContaineeEnum.Book:
         return RightMenuBook();
-      case RightMenuEnum.Page:
+      case ContaineeEnum.Page:
         return PageProperty();
-      case RightMenuEnum.Frame:
+      case ContaineeEnum.Frame:
         return Container();
-      case RightMenuEnum.Contents:
+      case ContaineeEnum.Contents:
         return Container();
 
       default:
@@ -133,10 +134,10 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
     );
   }
 
-  Widget _eachTitle(RightMenuEnum selected) {
+  Widget _eachTitle(ContaineeEnum selected) {
     logger.finest('_eachTitle $selected');
     switch (selected) {
-      case RightMenuEnum.Book:
+      case ContaineeEnum.Book:
         {
           String title = '';
           BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
@@ -154,7 +155,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
             },
           );
         }
-      case RightMenuEnum.Page:
+      case ContaineeEnum.Page:
         {
           String title = '';
           PageModel? model = BookMainPage.pageManagerHolder?.getSelected() as PageModel?;
@@ -172,12 +173,12 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
             },
           );
         }
-      case RightMenuEnum.Frame:
+      case ContaineeEnum.Frame:
         return Text(
           "Frame Property",
           style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
         );
-      case RightMenuEnum.Contents:
+      case ContaineeEnum.Contents:
         return Text(
           "Contents Property",
           style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),

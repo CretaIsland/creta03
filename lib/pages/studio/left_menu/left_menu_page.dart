@@ -14,6 +14,7 @@ import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/page_model.dart';
+import '../containees/containee_nofifier.dart';
 import '../studio_constant.dart';
 import '../studio_variables.dart';
 
@@ -76,7 +77,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       logger.finest('PageManager Consumer  $_pageCount');
       if (pageManager.getSelected() == null && _pageCount > 0) {
         pageManager.setSelected(0);
-        BookMainPage.selectedClass = RightMenuEnum.Page;
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       }
       return Column(
         children: [
@@ -271,8 +272,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         //setState(() {
         logger.finest('selected = ${model.mid}');
         _pageManager!.setSelectedIndex(context, model.mid);
-        BookMainPage.selectedClass = RightMenuEnum.Page;
-        BookMainPage.bookManagerHolder?.notify();
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
+        //BookMainPage.bookManagerHolder?.notify();
         //});
       },
       onDoubleTapDown: (details) {

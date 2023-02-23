@@ -13,7 +13,7 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
-import '../../studio_constant.dart';
+import '../../containees/containee_nofifier.dart';
 import '../property_mixin.dart';
 import '../right_menu.dart';
 
@@ -61,14 +61,14 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       pageManager.reOrdering();
       _model = pageManager.getSelected() as PageModel?;
       if (_model == null) {
-        BookMainPage.selectedClass = RightMenuEnum.Book;
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Book);
         return RightMenu(
           onClose: () {
             setState(() {
-              if (BookMainPage.selectedClass == RightMenuEnum.Book) {
+              if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book) {
                 BookMainPage.onceBookInfoOpened = true;
               }
-              BookMainPage.selectedClass = RightMenuEnum.None;
+              BookMainPage.containeeNotifier!.clear();
             });
           },
         );
@@ -83,6 +83,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           padding: const EdgeInsets.only(top: 16.0),
           child: _pageColor(),
         ),
+        propertyDivider(),
+        _gradation(),
         propertyDivider(),
         _pageTransition(),
         propertyDivider(),
@@ -110,7 +112,28 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           });
           BookMainPage.bookManagerHolder?.notify();
         },
-        onGradationTapPressed: (type, color1, color2) {
+        onColor1Changed: (val) {
+          setState(() {
+            _model!.bgColor1.set(val);
+          });
+          BookMainPage.bookManagerHolder?.notify();
+        },
+      ),
+    );
+  }
+
+  Widget _gradation() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: gradationCard(
+        onPressed: () {
+          setState(() {});
+        },
+        bgColor1: _model!.bgColor1.value,
+        bgColor2: _model!.bgColor2.value,
+        opacity: _model!.opacity.value,
+        gradationType: _model!.gradationType.value,
+        onGradationTapPressed: (GradationType type, Color color1, Color color2) {
           logger.finest('GradationIndicator clicked');
           setState(() {
             if (_model!.gradationType.value == type) {
@@ -121,13 +144,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           });
           BookMainPage.bookManagerHolder?.notify();
         },
-        onColor1Changed: (val) {
-          setState(() {
-            _model!.bgColor1.set(val);
-          });
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onColor2Changed: (val) {
+        onColor2Changed: (Color val) {
           setState(() {
             _model!.bgColor2.set(val);
           });

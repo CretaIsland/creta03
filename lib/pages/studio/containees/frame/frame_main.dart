@@ -11,31 +11,36 @@ import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
-import '../../studio_constant.dart';
+//import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
 import '../containee_mixin.dart';
+import '../containee_nofifier.dart';
+import 'sticker/draggable_resizable.dart';
+import 'sticker/stickerview.dart';
 
-class FramMain extends StatefulWidget {
+class FrameMain extends StatefulWidget {
   final BookModel bookModel;
   final PageModel pageModel;
-  final double frameWidth;
-  final double frameHeight;
+  final double pageWidth;
+  final double pageHeight;
 
-  const FramMain({
+  const FrameMain({
     super.key,
     required this.bookModel,
     required this.pageModel,
-    required this.frameWidth,
-    required this.frameHeight,
+    required this.pageWidth,
+    required this.pageHeight,
   });
 
   @override
-  State<FramMain> createState() => _FramMainState();
+  State<FrameMain> createState() => _FrameMainState();
 }
 
-class _FramMainState extends State<FramMain> with ContaineeMixin {
-  FrameModel? _frameModel;
+class _FrameMainState extends State<FrameMain> with ContaineeMixin {
+  FrameManager? _frameManager;
+  //int _randomIndex = 0;
+  double applyScale = 1;
 
   @override
   void initState() {
@@ -44,58 +49,119 @@ class _FramMainState extends State<FramMain> with ContaineeMixin {
 
   @override
   Widget build(BuildContext context) {
+    applyScale = StudioVariables.scale / StudioVariables.fitScale;
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
-      _frameModel = frameManager.getSelected() as FrameModel;
-      logger.finest('FramMain Invoked');
-      return Container(
-        width: StudioVariables.virtualWidth,
-        height: StudioVariables.virtualHeight,
-        color: LayoutConst.studioBGColor,
-        //color: Colors.amber,
-        child: Center(
-          child: GestureDetector(
-            onLongPressDown: (details) {
-              logger.finest('frame clicked');
-              setState(() {
-                BookMainPage.selectedClass = RightMenuEnum.Frame;
-              });
-              BookMainPage.bookManagerHolder!.notify();
-            },
-            child: _applyAnimate(),
-          ),
-        ),
-      );
+      _frameManager = frameManager;
+      logger.finest('FrameMain Invoked ${widget.pageModel.mid}');
+      return showFrame();
     });
   }
 
-  Widget _frameBox() {
-    return Container(
-      decoration: _frameDeco(),
-      width: widget.frameWidth,
-      height: widget.frameHeight,
+  Widget showFrame() {
+    return StickerView(
+      width: widget.pageWidth,
+      height: widget.pageHeight,
+      // List of Stickers
+      onUpdate: (update, mid) {
+        logger.fine('saveItem');
+        saveItem(update, mid);
+      },
+      onDelete: (mid) {
+        logger.fine('removeItem');
+        removeItem(mid);
+      },
+      onTap: () {
+        logger.finest('frame clicked');
+        // setState(() {
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
+        // });
+        //BookMainPage.bookManagerHolder!.notify();
+      },
+      stickerList: getStickerList(),
     );
   }
 
-  Widget _applyAnimate() {
-    List<AnimationType> animations =
-        AnimationType.toAniListFromInt(_frameModel!.transitionEffect.value);
+  List<Sticker> getStickerList() {
+    logger.finest('getStickerList()');
+    return _frameManager!.modelList.map((e) {
+      //_randomIndex += 10;
+      FrameModel model = e as FrameModel;
 
-    if (animations.isEmpty || BookMainPage.frameManagerHolder!.isSelectedChanged() == false) {
-      return _frameBox();
-    }
-    return getAnimation(_frameBox(), animations);
+      logger.info('applyScale = $applyScale');
+
+      double frameWidth = model.width.value * applyScale;
+      double frameHeight = model.height.value * applyScale;
+      double posX = model.posX.value * applyScale;
+      double posY = model.posY.value * applyScale;
+
+      return Sticker(
+        id: model.mid,
+        position: Offset(posX, posY),
+        angle: model.angle.value,
+        size: Size(frameWidth, frameHeight),
+        child: _applyAnimate(model),
+      );
+    }).toList();
   }
 
-  BoxDecoration _frameDeco() {
-    double opacity = _frameModel!.opacity.value;
-    Color bgColor1 = _frameModel!.bgColor1.value;
-    Color bgColor2 = _frameModel!.bgColor2.value;
-    GradationType gradationType = _frameModel!.gradationType.value;
+  Widget _applyAnimate(FrameModel model) {
+    List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
+
+    if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
+      return _frameBox(model);
+    }
+    return getAnimation(_frameBox(model), animations);
+  }
+
+  Widget _frameBox(FrameModel model) {
+    return Container(
+      decoration: _frameDeco(model),
+      width: double.infinity,
+      height: double.infinity,
+      child: Center(
+        child: Text('${model.order.value}'),
+      ),
+    );
+  }
+
+  BoxDecoration _frameDeco(FrameModel model) {
+    double opacity = model.opacity.value;
+    Color bgColor1 = model.bgColor1.value;
+    Color bgColor2 = model.bgColor2.value;
+    GradationType gradationType = model.gradationType.value;
 
     return BoxDecoration(
       color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
       boxShadow: StudioSnippet.basicShadow(),
       gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
     );
+  }
+
+  // ignore: unused_element
+
+  void saveItem(DragUpdate update, String mid) async {
+    for (var item in _frameManager!.modelList) {
+      if (item.mid != mid) continue;
+      FrameModel model = item as FrameModel;
+
+      logger.info('before save widthxheight = ${model.width.value}x${model.height.value}');
+
+      model.angle.set(update.angle, save: false);
+      model.posX.set(update.position.dx, save: false);
+      model.posY.set(update.position.dy, save: false);
+      model.width.set(update.size.width, save: false);
+      model.height.set(update.size.height, save: false);
+      model.save();
+
+      logger.info('after save widthxheight = ${model.width.value}x${model.height.value}');
+    }
+  }
+
+  void removeItem(String mid) async {
+    for (var item in _frameManager!.modelList) {
+      if (item.mid != mid) continue;
+      _frameManager!.modelList.remove(item);
+    }
+    await _frameManager!.removeToDB(mid);
   }
 }

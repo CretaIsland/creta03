@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
+import 'package:creta03/pages/studio/containees/frame/frame_mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,7 @@ import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../model/frame_model.dart';
 import '../book_main_page.dart';
-import '../studio_constant.dart';
+//import '../studio_constant.dart';
 import '../studio_variables.dart';
 
 class LeftMenuFrame extends StatefulWidget {
@@ -21,7 +22,7 @@ class LeftMenuFrame extends StatefulWidget {
   State<LeftMenuFrame> createState() => _LeftMenuFrameState();
 }
 
-class _LeftMenuFrameState extends State<LeftMenuFrame> {
+class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
   FrameManager? _frameManager;
   //late ScrollController _scrollController;
 
@@ -182,13 +183,16 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> {
   Widget _lattests() {
     List<FrameModel> modelList = BookMainPage.userPropertyManagerHolder!.getFrameList();
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _header(CretaStudioLang.lastestFrame),
-        SizedBox(
+        Container(
           height: 228,
+          color: Colors.amber,
           child: modelList.isEmpty
               ? _emptyView(CretaStudioLang.lastestFrameError)
-              : _gridView(modelList),
+              : _itemListView(modelList),
         ),
       ],
     );
@@ -208,32 +212,54 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> {
     );
   }
 
-  Widget _gridView(List<FrameModel> modelList) {
-    return GridView.builder(
-      //controller: _scrollController,
-      padding: LayoutConst.cretaPadding,
-      itemCount: modelList.length > 4 ? 4 : modelList.length, //item 개수
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
-        childAspectRatio:
-            LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
-        mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
-        crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        return (itemWidth >= 0 && itemHeight >= 0)
-            ? frameGridItem(modelList[index])
-            : LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  itemWidth = constraints.maxWidth;
-                  itemHeight = constraints.maxHeight;
-                  //logger.finest('first data, $itemWidth, $itemHeight');
-                  return frameGridItem(modelList[index]);
-                },
-              );
-      },
+  Widget _itemListView(List<FrameModel> modelList) {
+    return Wrap(
+      spacing: 10,
+      children: modelList.map((model) {
+        //FrameType fType = model.frameType;
+
+        //if (fType == FrameType.none) {
+        return Container(
+          width: 50 * (model.width.value / model.height.value),
+          height: 50 * (model.height.value / model.width.value),
+          decoration: frameDecoration(model),
+        );
+        //}
+        // return Container(
+        //   width: 50,
+        //   height: 50,
+        //   color: Colors.blue,
+        // );
+      }).toList(),
     );
   }
+
+  // Widget _gridView(List<FrameModel> modelList) {
+  //   return GridView.builder(
+  //     //controller: _scrollController,
+  //     padding: LayoutConst.cretaPadding,
+  //     itemCount: modelList.length > 12 ? 12 : modelList.length, //item 개수
+  //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //       crossAxisCount: 2, //1 개의 행에 보여줄 item 개수
+  //       childAspectRatio:
+  //           LayoutConst.bookThumbSize.width / LayoutConst.bookThumbSize.height, // 가로÷세로 비율
+  //       mainAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수평 Padding
+  //       crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
+  //     ),
+  //     itemBuilder: (BuildContext context, int index) {
+  //       return (itemWidth >= 0 && itemHeight >= 0)
+  //           ? frameGridItem(modelList[index])
+  //           : LayoutBuilder(
+  //               builder: (BuildContext context, BoxConstraints constraints) {
+  //                 itemWidth = constraints.maxWidth;
+  //                 itemHeight = constraints.maxHeight;
+  //                 //logger.finest('first data, $itemWidth, $itemHeight');
+  //                 return frameGridItem(modelList[index]);
+  //               },
+  //             );
+  //     },
+  //   );
+  // }
 
   Widget frameGridItem(FrameModel? model) {
     if (model == null) {
