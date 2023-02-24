@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:glass/glass.dart';
 
 import '../../../../data_io/frame_manager.dart';
 import '../../../../model/app_enums.dart';
@@ -33,11 +34,10 @@ class PageMain extends StatefulWidget {
   });
 
   @override
-  State<PageMain> createState() => _PageMainState();
+  State<PageMain> createState() => PageMainState();
 }
 
-class _PageMainState extends State<PageMain> with ContaineeMixin {
-  Map<String, FrameManager?> frameManagerList = {};
+class PageMainState extends State<PageMain> with ContaineeMixin {
   late FrameManager _frameManager;
   bool _onceDBGetComplete = false;
 
@@ -50,15 +50,11 @@ class _PageMainState extends State<PageMain> with ContaineeMixin {
   Future<void> initChildren(BookModel model) async {
     saveManagerHolder!.addBookChildren('frame=');
 
-    _frameManager = FrameManager(
-      bookModel: widget.bookModel,
-      pageModel: widget.pageModel,
+    _frameManager = BookMainPage.pageManagerHolder!.newFrame(
+      widget.bookModel,
+      widget.pageModel,
     );
-    frameManagerList[widget.pageModel.mid] = _frameManager;
-    _frameManager.clearAll();
-    _frameManager.addRealTimeListen();
-    await _frameManager.getFrames();
-    _frameManager.setSelected(0);
+    await BookMainPage.pageManagerHolder!.initFrame(_frameManager);
 
     _onceDBGetComplete = true;
   }
@@ -66,7 +62,7 @@ class _PageMainState extends State<PageMain> with ContaineeMixin {
   @override
   void dispose() {
     _frameManager.removeRealTimeListen();
-    saveManagerHolder?.unregisterManager('frame');
+    saveManagerHolder?.unregisterManager('frame', postfix: widget.pageModel.mid);
 
     super.dispose();
   }
@@ -120,9 +116,34 @@ class _PageMainState extends State<PageMain> with ContaineeMixin {
     );
   }
 
-  Widget _pageBox() {
+  Widget _applyAnimate() {
+    List<AnimationType> animations =
+        AnimationType.toAniListFromInt(widget.pageModel.transitionEffect.value);
+    if (animations.isEmpty || BookMainPage.pageManagerHolder!.isSelectedChanged() == false) {
+      return _textureBox();
+    }
+    return getAnimation(_textureBox(), animations);
+  }
+
+  TextureType _getTextureType() {
+    if (widget.pageModel.bgColor1.value == Colors.transparent) {
+      if (widget.pageModel.textureType.value == TextureType.none) {
+        return widget.bookModel.textureType.value;
+      }
+    }
+    return widget.pageModel.textureType.value;
+  }
+
+  Widget _textureBox() {
+    if (_getTextureType() == TextureType.glass) {
+      return _pageBox(useColor: false).asGlass();
+    }
+    return _pageBox();
+  }
+
+  Widget _pageBox({bool useColor = true}) {
     return Container(
-      decoration: _pageDeco(),
+      decoration: _pageDeco(useColor: useColor),
       width: widget.pageWidth,
       height: widget.pageHeight,
       child: FrameMain(
@@ -135,18 +156,7 @@ class _PageMainState extends State<PageMain> with ContaineeMixin {
     );
   }
 
-  Widget _applyAnimate() {
-    List<AnimationType> animations =
-        AnimationType.toAniListFromInt(widget.pageModel.transitionEffect.value);
-
-    if (animations.isEmpty || BookMainPage.pageManagerHolder!.isSelectedChanged() == false) {
-      return _pageBox();
-    }
-
-    return getAnimation(_pageBox(), animations);
-  }
-
-  BoxDecoration _pageDeco() {
+  BoxDecoration _pageDeco({bool useColor = true}) {
     double opacity = widget.bookModel.opacity.value;
     Color bgColor1 = widget.bookModel.bgColor1.value;
     Color bgColor2 = widget.bookModel.bgColor2.value;
@@ -160,9 +170,13 @@ class _PageMainState extends State<PageMain> with ContaineeMixin {
     }
 
     return BoxDecoration(
-      color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
+      color: useColor == true
+          ? opacity == 1
+              ? bgColor1
+              : bgColor1.withOpacity(opacity)
+          : null,
       boxShadow: StudioSnippet.basicShadow(),
-      gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
+      gradient: useColor == true ? StudioSnippet.gradient(gradationType, bgColor1, bgColor2) : null,
     );
   }
 }

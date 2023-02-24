@@ -186,6 +186,7 @@ class CretaStudioLang {
 
   static const String gradationTooltip = '투톤 칼러를 선택합니다';
   static const String colorTooltip = '기본색을 선택합니다';
+  static const String textureTooltip = '질감을 선택합니다';
 
   static const String transitionPage = "페이지 전환 효과";
 
@@ -208,4 +209,21 @@ class CretaStudioLang {
   static const String fixedRatio = "가로세로비를 고정합니다";
 
   static const String secondColor = "혼합색";
+
+  static const String texture = '질감';
+
+  static const List<String> textureTypeList = [
+    "솔리드",
+    "유리",
+    "대리석",
+    "나무",
+    "캔버스",
+    "종이",
+    "한지",
+    "가죽",
+    "돌",
+    "잔디",
+    "모래",
+    "물방울",
+  ];
 }

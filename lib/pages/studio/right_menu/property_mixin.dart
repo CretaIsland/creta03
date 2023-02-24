@@ -5,6 +5,7 @@ import '../../../design_system/buttons/creta_checkbox.dart';
 import '../../../design_system/buttons/creta_slider.dart';
 import '../../../design_system/component/colorPicker/gradation_indicator.dart';
 import '../../../design_system/component/colorPicker/my_color_indicator.dart';
+import '../../../design_system/component/colorPicker/my_texture_indicator.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../design_system/text_field/creta_text_field.dart';
@@ -251,7 +252,7 @@ mixin PropertyMixin {
               gradationType,
               onColor2Changed,
             ),
-      bodyWidget: gradationTypes(
+      bodyWidget: gradationListView(
         bgColor1,
         bgColor2,
         opacity,
@@ -262,7 +263,7 @@ mixin PropertyMixin {
     );
   }
 
-  Widget gradationTypes(
+  Widget gradationListView(
     Color color1,
     Color color2,
     double opacity,
@@ -336,6 +337,62 @@ mixin PropertyMixin {
         opacity: opacity,
         color: color,
         onColorChanged: onColorChanged,
+      ),
+    );
+  }
+
+  Widget textureCard({
+    required TextureType textureType,
+    required Function onPressed,
+    required void Function(TextureType) onTextureTapPressed,
+  }) {
+    return propertyCard(
+      isOpen: isTextureOpen,
+      onPressed: () {
+        isTextureOpen = !isTextureOpen;
+        onPressed.call();
+      },
+      titleWidget: Text(CretaStudioLang.texture, style: CretaFont.titleSmall),
+      trailWidget: textureType == TextureType.none
+          ? const SizedBox.shrink()
+          : Tooltip(
+              message: CretaStudioLang.textureTypeList[textureType.index],
+              child: MyTextureIndicator(
+                  textureType: textureType,
+                  onTextureChanged: (val) {
+                    isTextureOpen = !isTextureOpen;
+                    onPressed.call();
+                  }),
+            ),
+      bodyWidget: textureTypeListView(
+        textureType,
+        onTextureTapPressed,
+      ),
+    );
+  }
+
+  Widget textureTypeListView(
+    TextureType textureType,
+    void Function(TextureType) onTextureTapPressed,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Wrap(
+        spacing: 15,
+        runSpacing: 12,
+        children: [
+          for (int i = 0; i < TextureType.end.index; i++)
+            MyTextureIndicator(
+              isSelected: textureType == TextureType.values[i],
+              isBigOne: true,
+              width: 68,
+              height: 68,
+              radius: 6.8,
+              color: CretaColor.text[200]!,
+              textureType: TextureType.values[i],
+              onTextureChanged: onTextureTapPressed,
+            ),
+        ],
       ),
     );
   }

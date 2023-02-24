@@ -6,11 +6,13 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data_io/frame_manager.dart';
+import '../../../data_io/page_manager.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../model/frame_model.dart';
+import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 //import '../studio_constant.dart';
 import '../studio_variables.dart';
@@ -24,6 +26,7 @@ class LeftMenuFrame extends StatefulWidget {
 
 class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
   FrameManager? _frameManager;
+  PageModel? _pageModel;
   //late ScrollController _scrollController;
 
   final double verticalPadding = 10;
@@ -43,8 +46,15 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FrameManager>(builder: (context, frameManager, child) {
-      _frameManager = frameManager;
+    return Consumer<PageManager>(builder: (context, pageManager, child) {
+      _pageModel = pageManager.getSelected() as PageModel?;
+      if (_pageModel == null) {
+        return Center(child: Text('No Page Selected'));
+      }
+      _frameManager = pageManager.getFrameManager(_pageModel!.mid);
+      if (_frameManager == null) {
+        return Center(child: Text('No Frame fetched'));
+      }
 
       return Column(
         children: [

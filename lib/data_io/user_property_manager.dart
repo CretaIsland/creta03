@@ -34,6 +34,29 @@ class UserPropertyManager extends CretaManager {
     return retval;
   }
 
+  Future<void> initUserProperty() async {
+    clearAll();
+    await getUserPropery();
+  }
+
+  Future<int> getUserPropery() async {
+    int userCount = 0;
+    startTransaction();
+    try {
+      userCount = await getProperty();
+      if (userCount == 0) {
+        await createNext();
+        userCount = 1;
+      }
+    } catch (e) {
+      logger.finest('something wrong $e');
+      await createNext();
+      userCount = 1;
+    }
+    endTransaction();
+    return userCount;
+  }
+
   void addFavColor(Color color) {
     if (propertyModel == null) {
       return;

@@ -111,3 +111,22 @@ enum AnimationType {
     return retval;
   }
 }
+
+enum TextureType {
+  none,
+  glass,
+  marble,
+  wood,
+  canvas,
+  paper,
+  hanji,
+  leather,
+  stone,
+  grass,
+  sand,
+  drops,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static TextureType fromInt(int? val) => TextureType.values[validCheck(val ?? none.index)];
+}

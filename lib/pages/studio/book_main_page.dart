@@ -142,11 +142,7 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder!.addBookChildren('contents=');
 
     // Get Pages
-    BookMainPage.pageManagerHolder!.setBook(model);
-    BookMainPage.pageManagerHolder!.clearAll();
-    BookMainPage.pageManagerHolder!.addRealTimeListen();
-    await BookMainPage.pageManagerHolder!.getPages();
-    BookMainPage.pageManagerHolder!.setSelected(0);
+    await BookMainPage.pageManagerHolder!.initPage(model);
 
     // Get Template Frames
     // BookMainPage.polygonFrameManagerHolder!.clearAll();
@@ -155,8 +151,7 @@ class _BookMainPageState extends State<BookMainPage> {
     // await _getAnimationFrameTemplates();
 
     // Get User property
-    BookMainPage.userPropertyManagerHolder!.clearAll();
-    await _getUserPropery();
+    await BookMainPage.userPropertyManagerHolder!.initUserProperty();
 
     _onceDBGetComplete = true;
   }
@@ -206,24 +201,6 @@ class _BookMainPageState extends State<BookMainPage> {
   //   BookMainPage.animationFrameManagerHolder!.endTransaction();
   //   return frameCount;
   // }
-
-  Future<int> _getUserPropery() async {
-    int userCount = 0;
-    BookMainPage.userPropertyManagerHolder!.startTransaction();
-    try {
-      userCount = await BookMainPage.userPropertyManagerHolder!.getProperty();
-      if (userCount == 0) {
-        await BookMainPage.userPropertyManagerHolder!.createNext();
-        userCount = 1;
-      }
-    } catch (e) {
-      logger.finest('something wrong $e');
-      await BookMainPage.userPropertyManagerHolder!.createNext();
-      userCount = 1;
-    }
-    BookMainPage.userPropertyManagerHolder!.endTransaction();
-    return userCount;
-  }
 
   @override
   void dispose() {
@@ -764,8 +741,9 @@ class _BookMainPageState extends State<BookMainPage> {
       if (pageModel == null) {
         return const SizedBox.shrink();
       }
+
       return PageMain(
-        key: GlobalKey(),
+        key: ValueKey(pageModel.mid),
         bookModel: _bookModel,
         pageModel: pageModel,
         pageWidth: pageWidth,

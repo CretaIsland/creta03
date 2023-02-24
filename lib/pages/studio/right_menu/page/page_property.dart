@@ -157,7 +157,21 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   }
 
   Widget _texture() {
-    return Container();
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: textureCard(
+        textureType: _model!.textureType.value,
+        onPressed: () {
+          setState(() {});
+        },
+        onTextureTapPressed: (val) {
+          setState(() {
+            _model!.textureType.set(val);
+          });
+          BookMainPage.bookManagerHolder?.notify();
+        },
+      ),
+    );
   }
 
   Widget _pageTransition() {

@@ -15,7 +15,7 @@ class FrameManager extends CretaManager {
   BookModel bookModel;
 
   FrameManager({required this.pageModel, required this.bookModel}) : super('creta_frame') {
-    saveManagerHolder?.registerManager('frame', this);
+    saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
   }
 
   @override

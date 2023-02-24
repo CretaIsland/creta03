@@ -8,17 +8,47 @@ import '../model/book_model.dart';
 import '../model/creta_model.dart';
 import '../model/page_model.dart';
 import 'creta_manager.dart';
+import 'frame_manager.dart';
 
 //PageManager? pageManagerHolder;
 
 class PageManager extends CretaManager {
   BookModel? bookModel;
+  Map<String, FrameManager?> frameManagerList = {};
 
   PageManager() : super('creta_page') {
     saveManagerHolder?.registerManager('page', this);
   }
   void setBook(BookModel book) {
     bookModel = book;
+  }
+
+  Future<void> initPage(BookModel bookModel) async {
+    setBook(bookModel);
+    clearAll();
+    addRealTimeListen();
+    await getPages();
+    setSelected(0);
+  }
+
+  FrameManager newFrame(BookModel bookModel, PageModel pageModel) {
+    FrameManager retval = FrameManager(
+      bookModel: bookModel,
+      pageModel: pageModel,
+    );
+    frameManagerList[pageModel.mid] = retval;
+    return retval;
+  }
+
+  Future<void> initFrame(FrameManager frameManager) async {
+    frameManager.clearAll();
+    frameManager.addRealTimeListen();
+    await frameManager.getFrames();
+    frameManager.setSelected(0);
+  }
+
+  FrameManager? getFrameManager(String pageMid) {
+    return frameManagerList[pageMid];
   }
 
   @override

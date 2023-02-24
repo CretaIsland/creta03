@@ -14,6 +14,7 @@ mixin CretaStyleMixin {
   late UndoAble<Color> bgColor2;
   late UndoAble<double> opacity;
   late UndoAble<GradationType> gradationType;
+  late UndoAble<TextureType> textureType;
   late UndoAble<int> transitionEffect;
   late UndoAble<bool> isFixedRatio;
 
@@ -24,6 +25,7 @@ mixin CretaStyleMixin {
         bgColor2,
         opacity,
         gradationType,
+        textureType,
         isFixedRatio,
       ];
 
@@ -35,6 +37,7 @@ mixin CretaStyleMixin {
     bgColor2 = UndoAble<Color>(Colors.white, mid);
     opacity = UndoAble<double>(1, mid);
     gradationType = UndoAble<GradationType>(GradationType.none, mid);
+    textureType = UndoAble<TextureType>(TextureType.none, mid);
     transitionEffect = UndoAble<int>(0, mid);
     isFixedRatio = UndoAble<bool>(false, mid);
   }
@@ -47,6 +50,7 @@ mixin CretaStyleMixin {
     bgColor2 = UndoAble<Color>(Colors.white, mid);
     opacity = UndoAble<double>(1, mid);
     gradationType = UndoAble<GradationType>(GradationType.none, mid);
+    textureType = UndoAble<TextureType>(TextureType.none, mid);
 
     transitionEffect = UndoAble<int>(0, mid);
     isFixedRatio = UndoAble<bool>(false, mid);
@@ -60,6 +64,7 @@ mixin CretaStyleMixin {
     bgColor2 = UndoAble<Color>(src.bgColor2.value, mid);
     opacity = UndoAble<double>(src.opacity.value, mid);
     gradationType = UndoAble<GradationType>(src.gradationType.value, mid);
+    textureType = UndoAble<TextureType>(src.textureType.value, mid);
     transitionEffect = UndoAble<int>(src.transitionEffect.value, mid);
     isFixedRatio = UndoAble<bool>(src.isFixedRatio.value, mid);
   }
@@ -72,6 +77,7 @@ mixin CretaStyleMixin {
     bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);
     opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
     gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0), save: false, noUndo: true);
+    textureType.set(TextureType.fromInt(map["textureType"] ?? 0), save: false, noUndo: true);
     transitionEffect.set(map["transitionEffect"] ?? 0, save: false, noUndo: true);
     isFixedRatio.set(map["isFixedRatio"] ?? false, save: false, noUndo: true);
   }
@@ -84,6 +90,7 @@ mixin CretaStyleMixin {
       "bgColor2": bgColor2.value.toString(),
       "opacity": opacity.value,
       "gradationType": gradationType.value.index,
+      "textureType": textureType.value.index,
       "transitionEffect": transitionEffect.value,
       "isFixedRatio": isFixedRatio.value,
     };

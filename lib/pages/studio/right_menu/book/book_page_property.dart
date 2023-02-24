@@ -76,6 +76,8 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
         propertyDivider(),
         _gradation(),
         propertyDivider(),
+        _texture(),
+        propertyDivider(),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: _bookOption(),
@@ -587,5 +589,23 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
             widget.model.isAutoPlay.set(value);
           },
         ));
+  }
+
+  Widget _texture() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: textureCard(
+        textureType: widget.model.textureType.value,
+        onPressed: () {
+          setState(() {});
+        },
+        onTextureTapPressed: (val) {
+          setState(() {
+            widget.model.textureType.set(val);
+          });
+          BookMainPage.bookManagerHolder?.notify();
+        },
+      ),
+    );
   }
 }
