@@ -38,7 +38,7 @@ class PageMain extends StatefulWidget {
 }
 
 class PageMainState extends State<PageMain> with ContaineeMixin {
-  late FrameManager _frameManager;
+  FrameManager? _frameManager;
   bool _onceDBGetComplete = false;
 
   @override
@@ -50,18 +50,20 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   Future<void> initChildren(BookModel model) async {
     saveManagerHolder!.addBookChildren('frame=');
 
-    _frameManager = BookMainPage.pageManagerHolder!.newFrame(
-      widget.bookModel,
-      widget.pageModel,
-    );
-    await BookMainPage.pageManagerHolder!.initFrame(_frameManager);
-
+    _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
+    if (_frameManager == null) {
+      _frameManager = BookMainPage.pageManagerHolder!.newFrame(
+        widget.bookModel,
+        widget.pageModel,
+      );
+      await BookMainPage.pageManagerHolder!.initFrame(_frameManager!);
+    }
     _onceDBGetComplete = true;
   }
 
   @override
   void dispose() {
-    _frameManager.removeRealTimeListen();
+    _frameManager?.removeRealTimeListen();
     saveManagerHolder?.unregisterManager('frame', postfix: widget.pageModel.mid);
 
     super.dispose();
@@ -94,7 +96,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     }
     //var retval = CretaModelSnippet.waitData(
     var retval = CretaModelSnippet.waitDatum(
-      managerList: [_frameManager],
+      managerList: [_frameManager!],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _consumerFunc,
     );
@@ -109,7 +111,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FrameManager>.value(
-          value: _frameManager,
+          value: _frameManager!,
         ),
       ],
       child: _applyAnimate(),

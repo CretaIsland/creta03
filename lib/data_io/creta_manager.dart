@@ -758,7 +758,7 @@ abstract class CretaManager extends AbsExModelManager {
     logger.finest('1 selected=$selectedMid, prev=$prevSelectedMid');
   }
 
-  Future<void> setSelectedIndex(BuildContext context, String mid) async {
+  Future<void> setSelectedMid(String mid) async {
     prevSelectedMid = selectedMid;
     selectedMid = mid;
     logger.finest('2 selected=$selectedMid, prev=$prevSelectedMid');
@@ -784,5 +784,21 @@ abstract class CretaManager extends AbsExModelManager {
       logger.finer('${ele.mid}, isRemoved=${ele.isRemoved.value}');
     }
     unlock();
+  }
+
+  bool updateModel(CretaModel newModel) {
+    lock();
+    bool retval = false;
+    for (var ele in modelList) {
+      CretaModel model = ele as CretaModel;
+      if (model.mid == newModel.mid) {
+        newModel.copyTo(model);
+        logger.finer('copy ${newModel.mid}');
+        retval = true;
+        break;
+      }
+    }
+    unlock();
+    return retval;
   }
 }

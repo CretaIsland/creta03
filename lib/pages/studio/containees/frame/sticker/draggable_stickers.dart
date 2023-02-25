@@ -8,7 +8,7 @@ class DraggableStickers extends StatefulWidget {
   final List<Sticker> stickerList;
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onDelete;
-  final void Function()? onTap;
+  final void Function(String)? onTap;
 
   // ignore: use_key_in_widget_constructors
   const DraggableStickers({
@@ -130,7 +130,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       selectedAssetId = sticker.id;
                       logger.info('onTap...');
                       setState(() {});
-                      widget.onTap?.call();
+                      widget.onTap?.call(selectedAssetId!);
                     },
                     child: SizedBox(
                       width: double.infinity,

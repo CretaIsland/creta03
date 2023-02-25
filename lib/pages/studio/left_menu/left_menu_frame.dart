@@ -51,7 +51,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
       if (_pageModel == null) {
         return Center(child: Text('No Page Selected'));
       }
-      _frameManager = pageManager.getFrameManager(_pageModel!.mid);
+      _frameManager = pageManager.findFrameManager(_pageModel!.mid);
       if (_frameManager == null) {
         return Center(child: Text('No Frame fetched'));
       }

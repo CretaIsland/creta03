@@ -6,6 +6,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../model/book_model.dart';
+import '../../../model/frame_model.dart';
 import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 
@@ -16,6 +17,7 @@ import '../left_menu/left_menu_mixin.dart';
 import '../studio_snippet.dart';
 import '../studio_variables.dart';
 import 'book/right_menu_book.dart';
+import 'frame/frame_property.dart';
 import 'page/page_property.dart';
 
 class RightMenu extends StatefulWidget {
@@ -111,7 +113,7 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
       case ContaineeEnum.Page:
         return PageProperty();
       case ContaineeEnum.Frame:
-        return Container();
+        return FrameProperty();
       case ContaineeEnum.Contents:
         return Container();
 
@@ -174,10 +176,23 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
           );
         }
       case ContaineeEnum.Frame:
-        return Text(
-          "Frame Property",
-          style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
-        );
+        {
+          String title = '';
+          FrameModel? model = BookMainPage.pageManagerHolder?.getSelectedFrame();
+          if (model == null) {
+            return Container();
+          }
+          title = model.name.value;
+          return _showTitleText(
+            title: title,
+            onEditComplete: (value) {
+              setState(() {
+                model.name.set(value);
+              });
+              BookMainPage.bookManagerHolder?.notify();
+            },
+          );
+        }
       case ContaineeEnum.Contents:
         return Text(
           "Contents Property",

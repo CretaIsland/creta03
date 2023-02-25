@@ -6,6 +6,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 import '../model/book_model.dart';
 import '../model/creta_model.dart';
+import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
@@ -31,6 +32,10 @@ class PageManager extends CretaManager {
     setSelected(0);
   }
 
+  FrameManager? findFrameManager(String pageMid) {
+    return frameManagerList[pageMid];
+  }
+
   FrameManager newFrame(BookModel bookModel, PageModel pageModel) {
     FrameManager retval = FrameManager(
       bookModel: bookModel,
@@ -47,8 +52,25 @@ class PageManager extends CretaManager {
     frameManager.setSelected(0);
   }
 
-  FrameManager? getFrameManager(String pageMid) {
-    return frameManagerList[pageMid];
+  FrameModel? getSelectedFrame() {
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    FrameManager? frameManager = frameManagerList[pageModel.mid];
+    if (frameManager == null) {
+      return null;
+    }
+    return frameManager.getSelected() as FrameModel?;
+  }
+
+  FrameManager? getSelectedFrameManager() {
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    FrameManager? frameManager = frameManagerList[pageModel.mid];
+    return frameManager;
   }
 
   @override

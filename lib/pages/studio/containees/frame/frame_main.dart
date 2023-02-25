@@ -1,8 +1,8 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
@@ -12,6 +12,7 @@ import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 //import '../../studio_constant.dart';
+import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
 import '../containee_mixin.dart';
@@ -50,11 +51,24 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   @override
   Widget build(BuildContext context) {
     applyScale = StudioVariables.scale / StudioVariables.fitScale;
-    return Consumer<FrameManager>(builder: (context, frameManager, child) {
-      _frameManager = frameManager;
-      logger.finest('FrameMain Invoked ${widget.pageModel.mid}');
-      return showFrame();
-    });
+    _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    logger.info('==========================FrameMain initialized================');
+
+    final FrameEventController frameEvent = Get.find(/*tag: 'frameEvent1'*/);
+    return StreamBuilder<FrameModel>(
+        stream: frameEvent.eventStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data != null) {
+            _frameManager!.updateModel(snapshot.data!);
+          }
+          return showFrame();
+        });
+    // return Consumer<FrameManager>(builder: (context, frameManager, child) {
+    //   _frameManager = frameManager;
+    //   logger.finest('FrameMain Invoked ${widget.pageModel.mid}');
+    //   return showFrame();
+    // });
+    //return showFrame();
   }
 
   Widget showFrame() {
@@ -70,11 +84,11 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         logger.fine('removeItem');
         removeItem(mid);
       },
-      onTap: () {
+      onTap: (mid) {
         logger.finest('frame clicked');
         // setState(() {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
-        // });
+        _frameManager?.setSelectedMid(mid); // });
         //BookMainPage.bookManagerHolder!.notify();
       },
       stickerList: getStickerList(),

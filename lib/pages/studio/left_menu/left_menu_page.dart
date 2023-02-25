@@ -271,7 +271,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       onTapDown: (details) {
         //setState(() {
         logger.finest('selected = ${model.mid}');
-        _pageManager!.setSelectedIndex(context, model.mid);
+        _pageManager!.setSelectedMid(model.mid);
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
         //BookMainPage.bookManagerHolder?.notify();
         //});

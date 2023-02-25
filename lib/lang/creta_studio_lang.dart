@@ -157,6 +157,7 @@ class CretaStudioLang {
   static const String pageSize = "페이지 크기";
   static const String bookBgColor = "전체 배경색";
   static const String pageBgColor = "페이지 배경색";
+  static const String frameBgColor = "프레임 배경색";
   static const String onLine = "온라인";
   static const String offLine = "오프라인";
   static const String bookHistory = "발행이력";
@@ -189,6 +190,7 @@ class CretaStudioLang {
   static const String textureTooltip = '질감을 선택합니다';
 
   static const String transitionPage = "페이지 전환 효과";
+  static const String transitionFrame = "애니메이션";
 
   static List<String> animationTypes = [
     "없음",

@@ -18,7 +18,7 @@ class StickerView extends StatefulWidget {
   final List<Sticker> stickerList;
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onDelete;
-  final void Function()? onTap;
+  final void Function(String)? onTap;
   final double height; // height of the editor view
   final double width; // width of the editor view
 

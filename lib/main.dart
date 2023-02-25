@@ -8,15 +8,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hycop/hycop.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:logging/logging.dart';
+import 'package:get/get.dart';
 import 'common/creta_constant.dart';
 import 'common/cross_common_job.dart';
+import 'pages/studio/studio_getx_controller.dart';
 import 'routes.dart';
 
 void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
-  Logger.root.level = Level.FINE;
+  Logger.root.level = Level.INFO;
   HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
 
@@ -49,8 +51,9 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return GetMaterialApp.router(
       title: 'Creta creates',
+      initialBinding: InitBinding(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         //useMaterial3: true,
@@ -83,6 +86,16 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
     );
   }
 }
+
+class InitBinding extends Bindings {
+  @override
+  void dependencies() {
+    // Register the InitController class
+    //Get.put(StudioGetXController());
+    Get.put(FrameEventController());
+  }
+}
+
 
 
 
