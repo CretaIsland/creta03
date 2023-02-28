@@ -32,6 +32,16 @@ class PageManager extends CretaManager {
     setSelected(0);
   }
 
+  void clearFrame() {
+    logger.severe('clearFrame');
+    for (FrameManager? ele in frameManagerList.values) {
+      ele?.removeRealTimeListen();
+    }
+    for (String mid in frameManagerList.keys) {
+      saveManagerHolder?.unregisterManager('frame', postfix: mid);
+    }
+  }
+
   FrameManager? findFrameManager(String pageMid) {
     return frameManagerList[pageMid];
   }

@@ -18,7 +18,7 @@ void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
-  Logger.root.level = Level.INFO;
+  Logger.root.level = Level.SEVERE;
   HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
 

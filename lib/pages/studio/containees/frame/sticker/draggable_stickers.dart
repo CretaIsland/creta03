@@ -9,6 +9,7 @@ class DraggableStickers extends StatefulWidget {
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onDelete;
   final void Function(String)? onTap;
+  final void Function() onResizeButtonTap;
 
   // ignore: use_key_in_widget_constructors
   const DraggableStickers({
@@ -16,6 +17,7 @@ class DraggableStickers extends StatefulWidget {
     required this.onUpdate,
     required this.onDelete,
     required this.onTap,
+    required this.onResizeButtonTap,
   });
   @override
   State<DraggableStickers> createState() => _DraggableStickersState();
@@ -64,19 +66,19 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       //: Size(64 * _initialStickerScale, 64 * _initialStickerScale),
                       : sticker.size,
 
-                  canTransform: selectedAssetId == sticker.id ? true : false
-
+                  canTransform: selectedAssetId == sticker.id ? true : false,
+                  onResizeButtonTap: widget.onResizeButtonTap,
                   //  true
-                  /*sticker.id == state.selectedAssetId*/,
+                  /*sticker.id == state.selectedAssetId*/
                   onUpdate: (update, mid) {
-                    logger.info(
+                    logger.finest(
                         "oldposition=${sticker.position.toString()}, new=${update.position.toString()}");
 
                     sticker.angle = update.angle;
                     sticker.size = update.size;
                     sticker.position = update.position;
                     widget.onUpdate.call(update, mid);
-                    logger.info("saved");
+                    logger.finest("saved");
                   },
 
                   // To update the layer (manage position of widget in stack)

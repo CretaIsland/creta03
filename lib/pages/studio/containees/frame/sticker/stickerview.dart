@@ -19,6 +19,8 @@ class StickerView extends StatefulWidget {
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onDelete;
   final void Function(String)? onTap;
+  final void Function() onResizeButtonTap;
+
   final double height; // height of the editor view
   final double width; // width of the editor view
 
@@ -28,6 +30,7 @@ class StickerView extends StatefulWidget {
       required this.onUpdate,
       required this.onDelete,
       required this.onTap,
+      required this.onResizeButtonTap,
       required this.height,
       required this.width});
 
@@ -101,10 +104,12 @@ class StickerViewState extends State<StickerView> {
                   child:
                       //DraggableStickers class in which stickerList is passed
                       DraggableStickers(
-                          stickerList: stickerList!,
-                          onUpdate: widget.onUpdate,
-                          onDelete: widget.onDelete,
-                          onTap: widget.onTap),
+                    stickerList: stickerList!,
+                    onUpdate: widget.onUpdate,
+                    onDelete: widget.onDelete,
+                    onTap: widget.onTap,
+                    onResizeButtonTap: widget.onResizeButtonTap,
+                  ),
                 ),
               ),
             ],
@@ -137,10 +142,10 @@ class Sticker extends StatefulWidget {
     this.child,
   }) : super(key: key);
   @override
-  _StickerState createState() => _StickerState();
+  StickerState createState() => StickerState();
 }
 
-class _StickerState extends State<Sticker> {
+class StickerState extends State<Sticker> {
   @override
   Widget build(BuildContext context) {
     return widget.child != null ? widget.child! : Container();

@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -46,6 +47,7 @@ class DraggableResizable extends StatefulWidget {
     required this.position,
     required this.angle,
     BoxConstraints? constraints,
+    required this.onResizeButtonTap,
     this.onUpdate,
     this.onLayerTapped,
     this.onEdit,
@@ -67,6 +69,7 @@ class DraggableResizable extends StatefulWidget {
   final VoidCallback? onDelete;
   final VoidCallback? onEdit;
   final VoidCallback? onLayerTapped;
+  final void Function() onResizeButtonTap;
 
   /// Whether or not the asset can be dragged or resized.
   /// Defaults to false.
@@ -130,11 +133,11 @@ class _DraggableResizableState extends State<DraggableResizable> {
         final newSize = Size(normalizedWidth, normalizedHeight);
 
         if (widget.constraints.isSatisfiedBy(newSize)) {
-          logger.info(
+          logger.finest(
               'size updated old=(${size.width},${size.height}), new=(${newSize.width},${newSize.height})');
           size = newSize;
         } else {
-          logger.info('size not updated');
+          logger.finest('size not updated');
           //size = newSize;
         }
 
@@ -142,15 +145,15 @@ class _DraggableResizableState extends State<DraggableResizable> {
         final normalizedTop = position.dy;
 
         void onUpdate(String hint, {bool save = true}) {
-          logger.info('onUpdate($hint)');
-          final normalizedPosition = Offset(
-            normalizedLeft + (floatingActionPadding / 2) + (cornerDiameter / 2),
-            normalizedTop + (floatingActionPadding / 2) + (cornerDiameter / 2),
-          );
+          logger.finest('onUpdate($hint)');
+          // final normalizedPosition = Offset(
+          //   normalizedLeft + (floatingActionPadding / 2) + (cornerDiameter / 2),
+          //   normalizedTop + (floatingActionPadding / 2) + (cornerDiameter / 2),
+          // );
 
           if (save) {
-            logger.info(
-                'onUpdate($angle, ${normalizedPosition.dx},${normalizedPosition.dy}, ${size.width}, ${size.height})');
+            //logger.fine(
+            //    'onUpdate($angle, ${normalizedPosition.dx},${normalizedPosition.dy}, ${size.width}, ${size.height})');
             widget.onUpdate?.call(
               DragUpdate(
                 //position: normalizedPosition,
@@ -298,6 +301,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           key: const Key('draggableResizable_bottomRight_resizePoint'),
           type: ResizePointType.bottomRight,
           onDrag: onDragBottomRight,
+          onTap: widget.onResizeButtonTap,
           iconData: Icons.zoom_out_map,
         );
 
@@ -323,20 +327,31 @@ class _DraggableResizableState extends State<DraggableResizable> {
           key: const Key('draggableResizable_rotate_gestureDetector'),
           onScaleStart: (details) {
             final offsetFromCenter = details.localFocalPoint - center;
-            setState(
-                () => angleDelta = baseAngle - offsetFromCenter.direction - floatingActionDiameter);
+            setState(() {
+              angleDelta = baseAngle - offsetFromCenter.direction - floatingActionDiameter;
+            });
+            logger.fine(
+                'onScaleStart $baseAngle-${offsetFromCenter.direction}-$floatingActionDiameter,');
           },
           onScaleUpdate: (details) {
             final offsetFromCenter = details.localFocalPoint - center;
 
             setState(
               () {
-                angle = offsetFromCenter.direction + angleDelta * 0.5;
+                //angle = offsetFromCenter.direction + angleDelta * 0.5;
+                angle = offsetFromCenter.direction + angleDelta;
+                logger.fine('org :$angle:$angleDelta,');
+                double degree = angle * 180 / pi % -360;
+                angle = degree * pi / 180;
+                logger.fine('onScaleUpdate $degree:$angle,');
               },
             );
             onUpdate('onScaleUpdate');
           },
-          onScaleEnd: (_) => setState(() => baseAngle = angle),
+          onScaleEnd: (_) => setState(() {
+            logger.fine('onScaleEnd $angle');
+            baseAngle = angle;
+          }),
           child: FloatingActionIcon(
             key: const Key('draggableResizable_rotate_floatingActionIcon'),
             iconData: Icons.rotate_90_degrees_ccw,
@@ -393,6 +408,8 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   },
                   onRotate: (a) {
                     setState(() => angle = a * 0.5);
+                    logger.fine('onRotate $a');
+                    //setState(() => angle = a);
                     onUpdate('onRotate');
                   },
                   child: Stack(

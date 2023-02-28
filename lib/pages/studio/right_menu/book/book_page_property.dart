@@ -1,7 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, must_be_immutable, unnecessary_brace_in_string_interps
 
 import 'package:creta03/pages/studio/studio_constant.dart';
-import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -23,13 +22,7 @@ import '../property_mixin.dart';
 class BookPageProperty extends StatefulWidget {
   final BookModel model;
   final Function() parentNotify;
-  BookPageProperty({super.key, required this.model, required this.parentNotify});
-
-  final List<String> rotationStrings = ["lands", "ports"];
-  final List<IconData> rotaionIcons = [
-    Icons.crop_landscape_outlined,
-    Icons.crop_portrait_outlined,
-  ];
+  const BookPageProperty({super.key, required this.model, required this.parentNotify});
 
   @override
   State<BookPageProperty> createState() => _BookPagePropertyState();
@@ -162,14 +155,12 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
         });
       },
       titleWidget: Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
-      trailWidget: Text('$width x $height', style: dataStyle),
+      trailWidget: Text('${width.round()} x ${height.round()}', style: dataStyle),
       bodyWidget: _pageSizeBody(width, height),
     );
   }
 
   Widget _pageSizeBody(double width, double height) {
-    //return Column(children: [
-    //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
     return Column(
       children: [
         Padding(
@@ -188,16 +179,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                     align: MainAxisAlignment.start,
                     hintList: getPageSizeListHint(),
                   ),
-                  //widget.model.pageSizeType.value != 0 // none
-                  //    ? widget.model.bookType.value == BookType.presentaion
-                  //? Padding(
-                  //   padding: const EdgeInsets.only(left: 8.0),
-                  //   child: Text(
-                  //     getResolutionString(),
-                  //     style: CretaFont.bodyESmall,
-                  //   ),
-                  // )
-                  //:
+
                   widget.model.bookType.value != BookType.presentaion
                       ? CretaDropDownButton(
                           padding: EdgeInsets.only(left: 8, right: 4),
@@ -213,50 +195,19 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                 ],
               ),
               // 가로세로 버튼
-              CustomRadioButton(
-                radioButtonValue: (value) {
-                  if (value == "lands") {
-                    if (widget.model.width.value >= widget.model.height.value) {
-                      return;
-                    }
-                  }
-                  if (value == "ports") {
-                    if (widget.model.height.value >= widget.model.width.value) {
-                      return;
-                    }
-                  }
-                  setState(() {
-                    mychangeStack.startTrans();
-                    widget.model.height.set(width);
-                    widget.model.width.set(height);
-                    mychangeStack.endTrans();
-                  });
-                  logger.finest('notify');
-                  BookMainPage.bookManagerHolder?.notify();
-                },
-                width: 32,
-                height: 32,
-                defaultSelected:
-                    height <= width ? widget.rotationStrings[0] : widget.rotationStrings[1],
-                buttonLables: widget.rotationStrings,
-                buttonIcons: widget.rotaionIcons,
-                buttonValues: widget.rotationStrings,
-                buttonTextStyle: ButtonTextStyle(
-                  selectedColor: CretaColor.primary,
-                  unSelectedColor: CretaColor.text[700]!,
-                  //textStyle: CretaFont.buttonMedium.copyWith(fontWeight: FontWeight.bold),
-                  textStyle: CretaFont.buttonMedium,
-                ),
-                selectedColor: CretaColor.text[100]!,
-                unSelectedColor: Colors.white,
-                absoluteZeroSpacing: true,
-                selectedBorderColor: Colors.transparent,
-                unSelectedBorderColor: Colors.transparent,
-                elevation: 0,
-                enableButtonWrap: true,
-                enableShape: true,
-                shapeRadius: 60,
-              ),
+              rotateButtons(
+                  pWidth: widget.model.width.value,
+                  pHeight: widget.model.height.value,
+                  rotateButtonPresed: (value) {
+                    setState(() {
+                      mychangeStack.startTrans();
+                      widget.model.height.set(width);
+                      widget.model.width.set(height);
+                      mychangeStack.endTrans();
+                    });
+                    logger.finest('notify');
+                    BookMainPage.bookManagerHolder?.notify();
+                  }),
             ],
           ),
         ),
@@ -271,46 +222,19 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                 style: titleStyle,
               ),
               SizedBox(width: 10),
-              //widget.model.pageSizeType.value == 0
-              //?
               CretaTextField.xshortNumber(
                 defaultBorder: Border.all(color: CretaColor.text[100]!),
                 width: 45,
                 limit: 5,
                 textFieldKey: GlobalKey(),
-                value: widget.model.width.value.toString(),
+                value: widget.model.width.value.round().toString(),
                 hintText: '',
+                minNumber: 10,
                 onEditComplete: ((value) {
                   _sizeChanged(value, widget.model.width, widget.model.height);
-                  // logger.fine('onEditComplete $value');
-                  // double newWidth = int.parse(value).toDouble();
-                  // if (widget.model.width.value == newWidth) {
-                  //   return;
-                  // }
-                  // widget.model.pageSizeType.set(0);
-                  // if (widget.model.isFixedRatio.value == true) {
-                  //   double ratio = widget.model.height.value / widget.model.width.value;
-                  //   widget.model.height.set((newWidth * ratio).roundToDouble());
-                  // }
-                  // widget.model.width.set(newWidth);
-                  // BookMainPage.bookManagerHolder!.notify();
-                  // logger.fine('onEditComplete ${widget.model.width.value}');
                 }),
-                // onChanged: (value) {
-                //   logger.fine('onChanged ${widget.model.width.value}');
-                //   setState(() {
-                //     widget.model.pageSizeType.set(0);
-                //   });
-                // },
               ),
-              // : SizedBox(
-              //     width: 45,
-              //     child: Text(
-              //       widget.model.width.value.toString(),
-              //       style: dataStyle,
-              //       textAlign: TextAlign.end,
-              //     ),
-              //   ),
+
               SizedBox(width: 10),
               BTN.fill_gray_i_m(
                   tooltip: CretaStudioLang.fixedRatio,
@@ -338,47 +262,18 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                 width: 45,
                 limit: 5,
                 textFieldKey: GlobalKey(),
-                value: widget.model.height.value.toString(),
+                value: widget.model.height.value.round().toString(),
                 hintText: '',
+                minNumber: 10,
                 onEditComplete: ((value) {
                   _sizeChanged(value, widget.model.height, widget.model.width);
-                  // logger.fine('onEditComplete $value');
-                  // double newHeight = int.parse(value).toDouble();
-                  // if (widget.model.height.value == newHeight) {
-                  //   return;
-                  // }
-                  // widget.model.pageSizeType.set(0);
-
-                  // if (widget.model.isFixedRatio.value == true) {
-                  //   double ratio = widget.model.width.value / widget.model.height.value;
-                  //   widget.model.width.set((newHeight * ratio).roundToDouble());
-                  // }
-                  // widget.model.height.set(newHeight);
-                  // BookMainPage.bookManagerHolder!.notify();
-                  // logger.fine('onEditComplete ${widget.model.height.value}');
                 }),
-                // onChanged: (value) {
-                //   logger.fine('onChanged ${widget.model.height.value}');
-                //   setState(() {
-                //     widget.model.pageSizeType.set(0);
-                //   });
-                // },
               ),
-              // : SizedBox(
-              //     width: 55,
-              //     child: Text(
-              //       widget.model.height.value.toString(),
-              //       style: dataStyle,
-              //       textAlign: TextAlign.end,
-              //     ),
-              //   ),
             ],
           ),
         ),
       ],
     );
-
-    // ]);
   }
 
   void _sizeChanged(

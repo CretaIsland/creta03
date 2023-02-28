@@ -140,4 +140,38 @@ class CretaUtils {
     }
     return Colors.white;
   }
+
+  static bool isPointInsideWidget(GlobalKey widgetKey, Offset point, double margin) {
+    final RenderBox? widgetBox = widgetKey.currentContext?.findRenderObject() as RenderBox?;
+    if (widgetBox != null) {
+      //final Offset localOffset = widgetBox.globalToLocal(point);
+      //logger.fine('localOffset = $localOffset');
+
+      // final Rect widgetRect =
+      //     MatrixUtils.transformRect(widgetBox.getTransformTo(null), Offset.zero & widgetBox.size);
+      final Rect widgetRect = MatrixUtils.transformRect(
+          widgetBox.getTransformTo(null),
+          Offset(-margin, -margin) &
+              Size(widgetBox.size.width + margin, widgetBox.size.height + margin));
+      //return widgetRect.contains(localOffset);
+
+      // final Rect marginPlusRect = Offset(widgetRect.left - margin, widgetRect.top - margin) &
+      //     Size(widgetRect.width + margin, widgetRect.height + margin);
+
+      return widgetRect.contains(point);
+    }
+    logger.fine('key is null');
+    return false;
+  }
+
+  static String? isPointInsideWidgetList(
+      Map<String, GlobalKey> widgetKeyMap, Offset point, double margin) {
+    logger.fine('widgetKeyMap = ${widgetKeyMap.length}');
+    for (String aKey in widgetKeyMap.keys) {
+      if (isPointInsideWidget(widgetKeyMap[aKey]!, point, margin)) {
+        return aKey;
+      }
+    }
+    return null;
+  }
 }

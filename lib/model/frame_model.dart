@@ -72,8 +72,13 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);
     bgUrl.set(map["bgUrl"] ?? '', save: false, noUndo: true);
-    posX.set(map["posX"] ?? 0, save: false, noUndo: true);
-    posY.set(map["posY"] ?? 0, save: false, noUndo: true);
+
+    double x = map["posX"] ?? 0;
+    double y = map["posY"] ?? 0;
+
+    posX.set(x < 0 ? 0 : x, save: false, noUndo: true);
+    posY.set(y < 0 ? 0 : y, save: false, noUndo: true);
+
     angle.set((map["angle"] ?? 0), save: false, noUndo: true);
     frameType = FrameType.fromInt(map["frameType"] ?? 0);
     super.fromMapMixin(map);

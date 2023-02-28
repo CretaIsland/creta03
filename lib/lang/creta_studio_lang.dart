@@ -155,6 +155,7 @@ class CretaStudioLang {
   static const String hashTab = "해쉬태그";
   static const String infomation = "정보";
   static const String pageSize = "페이지 크기";
+  static const String frameSize = "프레임 크기";
   static const String bookBgColor = "전체 배경색";
   static const String pageBgColor = "페이지 배경색";
   static const String frameBgColor = "프레임 배경색";
@@ -171,6 +172,7 @@ class CretaStudioLang {
   static const String height = "높이";
   static const String color = "색";
   static const String opacity = "투명도";
+  static const String angle = "각도";
 
   static const String basicColor = '기본색';
   static const String accentColor = '강조색';
@@ -228,4 +230,7 @@ class CretaStudioLang {
     "모래",
     "물방울",
   ];
+
+  static const String posX = 'X좌표';
+  static const String posY = 'Y좌표';
 }

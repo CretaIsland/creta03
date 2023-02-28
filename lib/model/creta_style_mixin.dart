@@ -70,8 +70,11 @@ mixin CretaStyleMixin {
   }
 
   void fromMapMixin(Map<String, dynamic> map) {
-    width.set(map["width"] ?? 0, save: false, noUndo: true);
-    height.set(map["height"] ?? 0, save: false, noUndo: true);
+    double w = map["width"] ?? 10;
+    double h = map["height"] ?? 10;
+
+    width.set(w == 0 ? 10 : w, save: false, noUndo: true);
+    height.set(h == 0 ? 10 : h, save: false, noUndo: true);
 
     bgColor1.set(CretaUtils.string2Color(map["bgColor1"])!, save: false, noUndo: true);
     bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);

@@ -204,9 +204,12 @@ class _BookMainPageState extends State<BookMainPage> {
 
   @override
   void dispose() {
+    logger.severe('BookMainPage.dispose');
+
     super.dispose();
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
+    BookMainPage.pageManagerHolder?.clearFrame();
 
     saveManagerHolder?.stopTimer();
     saveManagerHolder?.unregisterManager('book');

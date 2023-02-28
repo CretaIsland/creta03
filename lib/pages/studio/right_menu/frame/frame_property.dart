@@ -2,14 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
+import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_getx_controller.dart';
@@ -31,6 +35,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   // ignore: unused_field
   FrameManager? _frameManager;
   bool _isTransitionOpen = false;
+  bool _isSizeOpen = false;
+
   FrameEventController? frameEvent;
   @override
   void initState() {
@@ -66,8 +72,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           return Column(children: [
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
-              child: _pageColor(),
+              child: _pageSize(),
             ),
+            propertyDivider(),
+            _pageColor(),
             propertyDivider(),
             _gradation(),
             propertyDivider(),
@@ -77,6 +85,278 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             propertyDivider(),
           ]);
         });
+  }
+
+  Widget _pageSize() {
+    double height = _model!.height.value;
+    double width = _model!.width.value;
+
+    return propertyCard(
+      padding: horizontalPadding,
+      isOpen: _isSizeOpen,
+      onPressed: () {
+        setState(() {
+          _isSizeOpen = !_isSizeOpen;
+        });
+      },
+      titleWidget: Text(CretaStudioLang.frameSize, style: CretaFont.titleSmall),
+      trailWidget: Text('${width.round()} x ${height.round()}', style: dataStyle),
+      bodyWidget: _pageSizeBody(width, height),
+    );
+  }
+
+  Widget _pageSizeBody(double width, double height) {
+    //return Column(children: [
+    //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
+    return Column(
+      children: [
+// 첫번쨰 줄
+        Padding(
+          padding: const EdgeInsets.only(top: 20, left: 30, right: 24),
+          child: Row(
+            children: [
+              Text(
+                CretaStudioLang.posX,
+                style: titleStyle,
+              ),
+              SizedBox(width: 5),
+              CretaTextField.xshortNumber(
+                defaultBorder: Border.all(color: CretaColor.text[100]!),
+                width: 45,
+                limit: 5,
+                textFieldKey: GlobalKey(),
+                value: _model!.posX.value.round().toString(),
+                hintText: '',
+                onEditComplete: ((value) {
+                  _model!.posX.set(int.parse(value).toDouble());
+                  frameEvent?.sendEvent(_model!);
+                }),
+                minNumber: 0,
+              ),
+              SizedBox(width: 10),
+              Text(
+                CretaStudioLang.posY,
+                style: titleStyle,
+              ),
+              SizedBox(width: 5),
+              CretaTextField.xshortNumber(
+                defaultBorder: Border.all(color: CretaColor.text[100]!),
+                width: 45,
+                limit: 5,
+                textFieldKey: GlobalKey(),
+                value: _model!.posY.value.round().toString(),
+                hintText: '',
+                minNumber: 0,
+                onEditComplete: ((value) {
+                  _model!.posY.set(int.parse(value).toDouble());
+                  frameEvent?.sendEvent(_model!);
+                }),
+              ),
+            ],
+          ),
+        ),
+        // 두번째 줄
+        Padding(
+          padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    CretaStudioLang.width,
+                    style: titleStyle,
+                  ),
+                  SizedBox(width: 5),
+                  CretaTextField.xshortNumber(
+                    defaultBorder: Border.all(color: CretaColor.text[100]!),
+                    width: 45,
+                    limit: 5,
+                    textFieldKey: GlobalKey(),
+                    value: _model!.width.value.round().toString(),
+                    hintText: '',
+                    onEditComplete: ((value) {
+                      _sizeChanged(value, _model!.width, _model!.height);
+                    }),
+                    minNumber: 10,
+                  ),
+                  SizedBox(width: 6),
+                  BTN.fill_gray_i_m(
+                      tooltip: CretaStudioLang.fixedRatio,
+                      tooltipBg: CretaColor.text[400]!,
+                      icon: _model!.isFixedRatio.value
+                          ? Icons.lock_outlined
+                          : Icons.lock_open_outlined,
+                      iconColor:
+                          _model!.isFixedRatio.value ? CretaColor.primary : CretaColor.text[700]!,
+                      onPressed: () {
+                        setState(() {
+                          _model!.isFixedRatio.set(!_model!.isFixedRatio.value);
+                        });
+                      }),
+                  SizedBox(width: 6),
+                  Text(
+                    CretaStudioLang.height,
+                    style: titleStyle,
+                  ),
+                  SizedBox(width: 5),
+                  CretaTextField.xshortNumber(
+                    defaultBorder: Border.all(color: CretaColor.text[100]!),
+                    width: 45,
+                    limit: 5,
+                    textFieldKey: GlobalKey(),
+                    value: _model!.height.value.round().toString(),
+                    hintText: '',
+                    minNumber: 10,
+                    onEditComplete: ((value) {
+                      _sizeChanged(value, _model!.height, _model!.width);
+                    }),
+                  ),
+                ],
+              ),
+              BTN.fill_gray_i_m(
+                  iconSize: 18,
+                  icon: Icons.fullscreen_outlined,
+                  onPressed: () {
+                    BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+                    if (book == null) return;
+                    if (_isFullScreen(book)) return;
+
+                    mychangeStack.startTrans();
+                    _model!.height.set(book.height.value);
+                    _model!.width.set(book.width.value);
+                    _model!.posX.set(0);
+                    _model!.posY.set(0);
+                    mychangeStack.endTrans();
+                    //});
+                    logger.finest('sendEvent');
+                    frameEvent!.sendEvent(_model!);
+                  })
+            ],
+          ),
+        ),
+        // 세번째 줄
+        Padding(
+          padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    CretaStudioLang.angle,
+                    style: titleStyle,
+                  ),
+                  SizedBox(width: 5),
+                  CretaTextField.xshortNumber(
+                    maxNumber: 3600,
+                    defaultBorder: Border.all(color: CretaColor.text[100]!),
+                    width: 45,
+                    limit: 5,
+                    textFieldKey: GlobalKey(),
+                    value: _model!.angle.value.round().toString(),
+                    hintText: '',
+                    onEditComplete: ((value) {
+                      logger.fine('onEditComplete $value');
+                      double newValue = int.parse(value).toDouble();
+                      if (_model!.angle.value == newValue) {
+                        return;
+                      }
+                      _model!.angle.set(newValue);
+                      //BookMainPage.bookManagerHolder!.notify();
+                      frameEvent!.sendEvent(_model!);
+                      logger.fine('onEditComplete ${_model!.angle.value}');
+                    }),
+                    minNumber: 0,
+                  ),
+                  // SizedBox(width: 6),
+                  // BTN.fill_gray_i_m(
+                  //     tooltip: CretaStudioLang.fixedRatio,
+                  //     tooltipBg: CretaColor.text[400]!,
+                  //     icon: _model!.isFixedRatio.value
+                  //         ? Icons.lock_outlined
+                  //         : Icons.lock_open_outlined,
+                  //     iconColor:
+                  //         _model!.isFixedRatio.value ? CretaColor.primary : CretaColor.text[700]!,
+                  //     onPressed: () {
+                  //       setState(() {
+                  //         _model!.isFixedRatio.set(!_model!.isFixedRatio.value);
+                  //       });
+                  //     }),
+                  // SizedBox(width: 6),
+                  // Text(
+                  //   CretaStudioLang.height,
+                  //   style: titleStyle,
+                  // ),
+                  // SizedBox(width: 5),
+                  // CretaTextField.xshortNumber(
+                  //   defaultBorder: Border.all(color: CretaColor.text[100]!),
+                  //   width: 45,
+                  //   limit: 5,
+                  //   textFieldKey: GlobalKey(),
+                  //   value: _model!.height.value.round().toString(),
+                  //   hintText: '',
+                  //   minNumber: 10,
+                  //   onEditComplete: ((value) {
+                  //     _sizeChanged(value, _model!.height, _model!.width);
+                  //   }),
+                  // ),
+                ],
+              ),
+              // BTN.fill_gray_i_m(
+              //     iconSize: 18,
+              //     icon: Icons.fullscreen_outlined,
+              //     onPressed: () {
+              //       BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+              //       if (book == null) return;
+              //       if (_isFullScreen(book)) return;
+
+              //       mychangeStack.startTrans();
+              //       _model!.height.set(book.height.value);
+              //       _model!.width.set(book.width.value);
+              //       _model!.posX.set(0);
+              //       _model!.posY.set(0);
+              //       mychangeStack.endTrans();
+              //       //});
+              //       logger.finest('sendEvent');
+              //       frameEvent!.sendEvent(_model!);
+              //     })
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  bool _isFullScreen(BookModel book) {
+    if (_model!.width.value == book.width.value &&
+        _model!.width.value == book.height.value &&
+        _model!.posX.value == 0 &&
+        _model!.posY.value == 0) {
+      return true;
+    }
+    return false;
+  }
+
+  void _sizeChanged(
+    String value,
+    UndoAble<double> targetAttr,
+    UndoAble<double> counterAttr,
+  ) {
+    logger.fine('onEditComplete $value');
+    double newValue = int.parse(value).toDouble();
+    if (targetAttr.value == newValue) {
+      return;
+    }
+
+    if (_model!.isFixedRatio.value == true) {
+      double ratio = counterAttr.value / targetAttr.value;
+      counterAttr.set((newValue * ratio).roundToDouble());
+    }
+    targetAttr.set(newValue);
+    //BookMainPage.bookManagerHolder!.notify();
+    frameEvent!.sendEvent(_model!);
+    logger.fine('onEditComplete ${targetAttr.value}');
   }
 
   Widget _pageColor() {

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -13,6 +14,7 @@ import 'creta_manager.dart';
 class FrameManager extends CretaManager {
   PageModel pageModel;
   BookModel bookModel;
+  Map<String, GlobalKey> frameKeyMap = {};
 
   FrameManager({required this.pageModel, required this.bookModel}) : super('creta_frame') {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);

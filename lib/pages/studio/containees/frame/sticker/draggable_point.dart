@@ -10,7 +10,7 @@ class DraggablePoint extends StatefulWidget {
     this.onDrag,
     this.onScale,
     this.onRotate,
-    this.onTap,
+    required this.onTap,
     this.mode = PositionMode.global,
   }) : super(key: key);
 
@@ -50,6 +50,7 @@ class DraggablePointState extends State<DraggablePoint> {
         }
         if (details.pointerCount > 1) {
           baseAngle = angle;
+          logger.fine('baseAngle=$baseAngle}');
           baseScaleFactor = scaleFactor;
           widget.onRotate?.call(baseAngle);
           widget.onScale?.call(baseScaleFactor);
@@ -74,6 +75,9 @@ class DraggablePointState extends State<DraggablePoint> {
           scaleFactor = baseScaleFactor * details.scale;
           widget.onScale?.call(scaleFactor);
           angle = baseAngle + details.rotation;
+
+          logger.fine('baseAngle=$baseAngle, rotation=${details.rotation}');
+
           widget.onRotate?.call(angle);
         }
       },

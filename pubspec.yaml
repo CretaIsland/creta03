@@ -67,9 +67,7 @@ dependencies:
   quiver: ^3.2.1
   flex_color_picker: ^3.1.0
   flutter_animate: ^4.0.0
-  glass_kit: ^2.0.1
-  glass: ^1.0.1+1
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -99,6 +97,7 @@ flutter:
     - assets/creta_default.png
     - assets/logo_en.png
     - assets/grid.png
+    - assets/noise.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

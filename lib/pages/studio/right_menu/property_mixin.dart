@@ -1,3 +1,4 @@
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
@@ -19,6 +20,12 @@ mixin PropertyMixin {
   bool isColorOpen = false;
   bool isGradationOpen = false;
   bool isTextureOpen = false;
+
+  final List<String> rotationStrings = ["lands", "ports"];
+  final List<IconData> rotaionIcons = [
+    Icons.crop_landscape_outlined,
+    Icons.crop_portrait_outlined,
+  ];
 
   void initMixin() {
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
@@ -394,6 +401,49 @@ mixin PropertyMixin {
             ),
         ],
       ),
+    );
+  }
+
+  Widget rotateButtons({
+    required double pWidth,
+    required double pHeight,
+    required void Function(String) rotateButtonPresed,
+  }) {
+    return CustomRadioButton(
+      radioButtonValue: (value) {
+        if (value == "lands") {
+          if (pWidth >= pHeight) {
+            return;
+          }
+        }
+        if (value == "ports") {
+          if (pHeight >= pWidth) {
+            return;
+          }
+        }
+        rotateButtonPresed.call(value);
+      },
+      width: 32,
+      height: 32,
+      defaultSelected: pHeight <= pWidth ? rotationStrings[0] : rotationStrings[1],
+      buttonLables: rotationStrings,
+      buttonIcons: rotaionIcons,
+      buttonValues: rotationStrings,
+      buttonTextStyle: ButtonTextStyle(
+        selectedColor: CretaColor.primary,
+        unSelectedColor: CretaColor.text[700]!,
+        //textStyle: CretaFont.buttonMedium.copyWith(fontWeight: FontWeight.bold),
+        textStyle: CretaFont.buttonMedium,
+      ),
+      selectedColor: CretaColor.text[100]!,
+      unSelectedColor: Colors.white,
+      absoluteZeroSpacing: true,
+      selectedBorderColor: Colors.transparent,
+      unSelectedBorderColor: Colors.transparent,
+      elevation: 0,
+      enableButtonWrap: true,
+      enableShape: true,
+      shapeRadius: 60,
     );
   }
 }

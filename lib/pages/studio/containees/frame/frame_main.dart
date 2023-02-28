@@ -1,9 +1,13 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+//import 'package:glass/glass.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
 import '../../../../model/app_enums.dart';
@@ -42,7 +46,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   FrameManager? _frameManager;
   //int _randomIndex = 0;
   double applyScale = 1;
-
+  // ignore: unused_field
+  FrameEventController? _frameEvent;
   @override
   void initState() {
     super.initState();
@@ -55,6 +60,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     logger.info('==========================FrameMain initialized================');
 
     final FrameEventController frameEvent = Get.find(/*tag: 'frameEvent1'*/);
+    _frameEvent = frameEvent;
     return StreamBuilder<FrameModel>(
         stream: frameEvent.eventStream.stream,
         builder: (context, snapshot) {
@@ -77,19 +83,30 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       height: widget.pageHeight,
       // List of Stickers
       onUpdate: (update, mid) {
-        logger.fine('saveItem');
+        //logger.fine('saveItem ${update.angle}');
         saveItem(update, mid);
+        // FrameModel? model = _frameManager!.getModel(mid) as FrameModel?;
+        // if (model != null) {
+        //   _frameEvent?.sendEvent(model);
+        // }
+        FrameModel? model = _frameManager!.getSelected() as FrameModel?;
+        if (model != null && model.mid == mid) {
+          BookMainPage.containeeNotifier!.notify();
+        }
       },
       onDelete: (mid) {
-        logger.fine('removeItem');
+        logger.finest('removeItem');
         removeItem(mid);
       },
       onTap: (mid) {
-        logger.finest('frame clicked');
+        logger.fine('frame clicked');
         // setState(() {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
         _frameManager?.setSelectedMid(mid); // });
         //BookMainPage.bookManagerHolder!.notify();
+      },
+      onResizeButtonTap: () {
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       },
       stickerList: getStickerList(),
     );
@@ -97,6 +114,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
   List<Sticker> getStickerList() {
     logger.finest('getStickerList()');
+    _frameManager!.frameKeyMap.clear();
     return _frameManager!.modelList.map((e) {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
@@ -108,10 +126,14 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       double posX = model.posX.value * applyScale;
       double posY = model.posY.value * applyScale;
 
+      GlobalKey<StickerState> stickerKey = GlobalKey<StickerState>();
+      _frameManager!.frameKeyMap[model.mid] = stickerKey;
+
       return Sticker(
+        key: stickerKey,
         id: model.mid,
         position: Offset(posX, posY),
-        angle: model.angle.value,
+        angle: model.angle.value * (pi / 180),
         size: Size(frameWidth, frameHeight),
         child: _applyAnimate(model),
       );
@@ -122,14 +144,33 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
 
     if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
-      return _frameBox(model);
+      return _textureBox(model);
     }
-    return getAnimation(_frameBox(model), animations);
+    return getAnimation(_textureBox(model), animations);
   }
 
-  Widget _frameBox(FrameModel model) {
+  Widget _textureBox(FrameModel model) {
+    logger.severe('mid=${model.mid}, ${model.textureType.value}');
+    if (model.textureType.value == TextureType.glass) {
+      logger.severe('frame Glass!!!');
+      double opacity = model.opacity.value;
+      Color bgColor1 = model.bgColor1.value;
+      Color bgColor2 = model.bgColor2.value;
+      GradationType gradationType = model.gradationType.value;
+      return _frameBox(model, false).asCretaGlass(
+        gradient: StudioSnippet.gradient(
+            gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
+        opacity: opacity,
+        bgColor1: bgColor1,
+        bgColor2: bgColor2,
+      );
+    }
+    return _frameBox(model, true);
+  }
+
+  Widget _frameBox(FrameModel model, bool useColor) {
     return Container(
-      decoration: _frameDeco(model),
+      decoration: useColor ? _frameDeco(model) : null,
       width: double.infinity,
       height: double.infinity,
       child: Center(
@@ -146,7 +187,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
     return BoxDecoration(
       color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
-      boxShadow: StudioSnippet.basicShadow(),
+      //boxShadow: StudioSnippet.basicShadow(),
       gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
     );
   }
@@ -158,16 +199,16 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
 
-      logger.info('before save widthxheight = ${model.width.value}x${model.height.value}');
+      logger.fine('before save widthxheight = ${model.width.value}x${model.height.value}');
 
-      model.angle.set(update.angle, save: false);
+      model.angle.set(update.angle * (180 / pi), save: false);
       model.posX.set(update.position.dx, save: false);
       model.posY.set(update.position.dy, save: false);
       model.width.set(update.size.width, save: false);
       model.height.set(update.size.height, save: false);
       model.save();
 
-      logger.info('after save widthxheight = ${model.width.value}x${model.height.value}');
+      logger.fine('after save widthxheight = ${model.width.value}x${model.height.value}');
     }
   }
 
