@@ -14,10 +14,23 @@ class ContaineeNotifier extends ChangeNotifier {
   ContaineeEnum _selectedClass = ContaineeEnum.None;
   ContaineeEnum get selectedClass => _selectedClass;
 
+  bool _isOpenSize = false;
+  bool get isOpenSize => _isOpenSize;
+  void setOpenSize(bool val) {
+    _isOpenSize = val;
+  }
+
   ContaineeNotifier();
 
   void set(ContaineeEnum val, {bool doNoti = true}) {
     _selectedClass = val;
+    if (doNoti) {
+      notify();
+    }
+  }
+
+  void openSize({bool doNoti = true}) {
+    _isOpenSize = true;
     if (doNoti) {
       notify();
     }

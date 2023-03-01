@@ -18,6 +18,12 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> posX;
   late UndoAble<double> posY;
   late UndoAble<double> angle;
+  late UndoAble<double> radius;
+  late UndoAble<double> radiusLeftTop;
+  late UndoAble<double> radiusRightTop;
+  late UndoAble<double> radiusRightBottom;
+  late UndoAble<double> radiusLeftBottom;
+  late UndoAble<bool> isAutoFit;
   FrameType frameType = FrameType.none;
 
   @override
@@ -28,6 +34,12 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         posY,
         angle,
         frameType,
+        radius,
+        radiusLeftTop,
+        radiusRightTop,
+        radiusRightBottom,
+        radiusLeftBottom,
+        isAutoFit,
         ...super.propsMixin,
       ];
   FrameModel(String pmid) : super(pmid: pmid, type: ExModelType.frame, parent: '') {
@@ -36,6 +48,12 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posX = UndoAble<double>(0, mid);
     posY = UndoAble<double>(0, mid);
     angle = UndoAble<double>(0, mid);
+    radius = UndoAble<double>(0, mid);
+    radiusLeftTop = UndoAble<double>(0, mid);
+    radiusRightTop = UndoAble<double>(0, mid);
+    radiusRightBottom = UndoAble<double>(0, mid);
+    radiusLeftBottom = UndoAble<double>(0, mid);
+    isAutoFit = UndoAble<bool>(false, mid);
     frameType = FrameType.none;
     super.initMixin(mid);
   }
@@ -49,8 +67,13 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posX = UndoAble<double>(100, mid);
     posY = UndoAble<double>(100, mid);
     angle = UndoAble<double>(0, mid);
-    width = UndoAble<double>(200, mid);
-    height = UndoAble<double>(200, mid);
+    radius = UndoAble<double>(0, mid);
+    radiusLeftTop = UndoAble<double>(0, mid);
+    radiusRightTop = UndoAble<double>(0, mid);
+    radiusRightBottom = UndoAble<double>(0, mid);
+    radiusLeftBottom = UndoAble<double>(0, mid);
+    isAutoFit = UndoAble<bool>(false, mid);
+
     frameType = pType;
   }
   @override
@@ -62,6 +85,13 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posX = UndoAble<double>(srcFrame.posX.value, mid);
     posY = UndoAble<double>(srcFrame.posY.value, mid);
     angle = UndoAble<double>(srcFrame.angle.value, mid);
+    radius = UndoAble<double>(srcFrame.radius.value, mid);
+    radiusLeftTop = UndoAble<double>(srcFrame.radiusLeftTop.value, mid);
+    radiusRightTop = UndoAble<double>(srcFrame.radiusRightTop.value, mid);
+    radiusRightBottom = UndoAble<double>(srcFrame.radiusRightBottom.value, mid);
+    radiusLeftBottom = UndoAble<double>(srcFrame.radiusLeftBottom.value, mid);
+    isAutoFit = UndoAble<bool>(srcFrame.isAutoFit.value, mid);
+
     frameType = srcFrame.frameType;
     super.copyFromMixin(mid, srcFrame);
     logger.finest('FrameCopied($mid)');
@@ -80,6 +110,14 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posY.set(y < 0 ? 0 : y, save: false, noUndo: true);
 
     angle.set((map["angle"] ?? 0), save: false, noUndo: true);
+
+    radius.set((map["radius"] ?? 0), save: false, noUndo: true);
+    radiusLeftTop.set((map["radiusLeftTop"] ?? 0), save: false, noUndo: true);
+    radiusRightTop.set((map["radiusRightTop"] ?? 0), save: false, noUndo: true);
+    radiusRightBottom.set((map["radiusRightBottom"] ?? 0), save: false, noUndo: true);
+    radiusLeftBottom.set((map["radiusLeftBottom"] ?? 0), save: false, noUndo: true);
+    isAutoFit.set((map["isAutoFit"] ?? false), save: false, noUndo: true);
+
     frameType = FrameType.fromInt(map["frameType"] ?? 0);
     super.fromMapMixin(map);
     logger.finest('${posX.value}, ${posY.value}');
@@ -94,6 +132,12 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "posX": posX.value,
         "posY": posY.value,
         "angle": angle.value,
+        "radius": radius.value,
+        "radiusLeftTop": radiusLeftTop.value,
+        "radiusRightTop": radiusRightTop.value,
+        "radiusRightBottom": radiusRightBottom.value,
+        "radiusLeftBottom": radiusLeftBottom.value,
+        "isAutoFit": isAutoFit.value,
         'frameType': frameType.index,
         ...super.toMapMixin(),
       }.entries);

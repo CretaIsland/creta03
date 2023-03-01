@@ -78,6 +78,7 @@ class CretaTextField extends LastClickable {
   final TextAlign align;
   final Border? defaultBorder;
   final Function(String)? onChanged;
+  final bool enabled;
 
   CretaTextField({
     required this.textFieldKey,
@@ -95,6 +96,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.start,
+    this.enabled = true,
     this.defaultBorder,
     this.onChanged,
   }) : super(key: textFieldKey);
@@ -115,6 +117,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.end,
+    this.enabled = true,
     this.defaultBorder,
     this.onChanged,
   }) : super(key: textFieldKey);
@@ -135,6 +138,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 9999,
     this.minNumber = 0,
     this.align = TextAlign.end,
+    this.enabled = true,
     this.defaultBorder,
     this.onChanged,
   }) : super(key: textFieldKey);
@@ -155,6 +159,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.end,
+    this.enabled = true,
     this.defaultBorder,
     this.onChanged,
   }) : super(key: textFieldKey);
@@ -175,6 +180,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.start,
+    this.enabled = true,
     this.defaultBorder,
     this.onChanged,
   }) : super(key: textFieldKey);
@@ -195,6 +201,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.start,
+    this.enabled = true,
     this.defaultBorder,
     this.onChanged,
   }) : super(key: textFieldKey);
@@ -215,6 +222,7 @@ class CretaTextField extends LastClickable {
     this.maxNumber = 100,
     this.minNumber = 0,
     this.align = TextAlign.start,
+    this.enabled = true,
     this.defaultBorder,
     this.onChanged,
   }) : super(key: textFieldKey);
@@ -347,6 +355,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         });
       },
       child: CupertinoTextField(
+        enabled: widget.enabled,
         textAlign: widget.align,
         keyboardType: widget.textType == CretaTextFieldType.number
             ? TextInputType.number
@@ -371,7 +380,6 @@ class CretaTextFieldState extends State<CretaTextField> {
                   ]
                 : null,
         maxLines: widget.maxLines,
-        enabled: true,
         autofocus: false,
         //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
         decoration: _basicDecoBox(),

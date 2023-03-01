@@ -173,6 +173,8 @@ class CretaStudioLang {
   static const String color = "색";
   static const String opacity = "투명도";
   static const String angle = "각도";
+  static const String radius = "모서리";
+  static const String all = "전체";
 
   static const String basicColor = '기본색';
   static const String accentColor = '강조색';
@@ -190,6 +192,9 @@ class CretaStudioLang {
   static const String gradationTooltip = '투톤 칼러를 선택합니다';
   static const String colorTooltip = '기본색을 선택합니다';
   static const String textureTooltip = '질감을 선택합니다';
+  static const String angleTooltip = '45도 회전합니다';
+  static const String cornerTooltip = '각각의 코너 값을 다르게 설정합니다';
+  static const String fullscreenTooltip = '페이지에 꽉차게 합니다';
 
   static const String transitionPage = "페이지 전환 효과";
   static const String transitionFrame = "애니메이션";
@@ -233,4 +238,6 @@ class CretaStudioLang {
 
   static const String posX = 'X좌표';
   static const String posY = 'Y좌표';
+
+  static const String autoFitContents = '콘텐츠 크기에 자동 맞춤';
 }

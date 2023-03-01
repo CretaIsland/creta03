@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +8,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/text_field/creta_text_field.dart';
@@ -18,6 +19,18 @@ import '../../../../model/frame_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_getx_controller.dart';
 import '../property_mixin.dart';
+
+// class CornerOpenFlag {
+//   bool value = false;
+// }
+
+// class LeftTopSelected extends CornerOpenFlag {}
+
+// class RightTopSelected extends CornerOpenFlag {}
+
+// class LeftBottomSelected extends CornerOpenFlag {}
+
+// class RightBottomSelected extends CornerOpenFlag {}
 
 class FrameProperty extends StatefulWidget {
   const FrameProperty({super.key});
@@ -36,6 +49,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   FrameManager? _frameManager;
   bool _isTransitionOpen = false;
   bool _isSizeOpen = false;
+  bool _isRadiusOpen = false;
+  // LeftTopSelected _isLeftTopSelected = LeftTopSelected();
+  // RightTopSelected _isRightTopSelected = RightTopSelected();
+  // LeftBottomSelected _isLeftBottomSelected = LeftBottomSelected();
+  // RightBottomSelected _isRightBottomSelected = RightBottomSelected();
 
   FrameEventController? frameEvent;
   @override
@@ -61,6 +79,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //frameEvent = Get.find(/*tag: 'frameEvent1'*/);
     final FrameEventController aController = Get.find(/*tag: 'frameEvent1'*/);
     frameEvent = aController;
+
+    _isRadiusOpen = !(_model!.radiusLeftBottom.value == _model!.radiusRightBottom.value &&
+        _model!.radiusRightBottom.value == _model!.radiusLeftTop.value &&
+        _model!.radiusLeftTop.value == _model!.radiusRightTop.value);
 
     return StreamBuilder<FrameModel>(
         stream: aController.eventStream.stream,
@@ -93,10 +115,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
     return propertyCard(
       padding: horizontalPadding,
-      isOpen: _isSizeOpen,
+      isOpen: _isSizeOpen || BookMainPage.containeeNotifier!.isOpenSize,
       onPressed: () {
         setState(() {
           _isSizeOpen = !_isSizeOpen;
+          BookMainPage.containeeNotifier!.setOpenSize(_isSizeOpen);
         });
       },
       titleWidget: Text(CretaStudioLang.frameSize, style: CretaFont.titleSmall),
@@ -110,111 +133,145 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
     return Column(
       children: [
-// 첫번쨰 줄
+// 첫번쨰 줄  posX,y
         Padding(
-          padding: const EdgeInsets.only(top: 20, left: 30, right: 24),
+          padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                CretaStudioLang.posX,
-                style: titleStyle,
+              SizedBox(
+                width: 97,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      CretaStudioLang.posX,
+                      style: titleStyle,
+                    ),
+                    CretaTextField.xshortNumber(
+                      defaultBorder: Border.all(color: CretaColor.text[100]!),
+                      width: 45,
+                      limit: 5,
+                      textFieldKey: GlobalKey(),
+                      value: _model!.posX.value.round().toString(),
+                      hintText: '',
+                      onEditComplete: ((value) {
+                        _model!.posX.set(int.parse(value).toDouble());
+                        frameEvent?.sendEvent(_model!);
+                      }),
+                      minNumber: 0,
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(width: 5),
-              CretaTextField.xshortNumber(
-                defaultBorder: Border.all(color: CretaColor.text[100]!),
-                width: 45,
-                limit: 5,
-                textFieldKey: GlobalKey(),
-                value: _model!.posX.value.round().toString(),
-                hintText: '',
-                onEditComplete: ((value) {
-                  _model!.posX.set(int.parse(value).toDouble());
-                  frameEvent?.sendEvent(_model!);
-                }),
-                minNumber: 0,
-              ),
-              SizedBox(width: 10),
-              Text(
-                CretaStudioLang.posY,
-                style: titleStyle,
-              ),
-              SizedBox(width: 5),
-              CretaTextField.xshortNumber(
-                defaultBorder: Border.all(color: CretaColor.text[100]!),
-                width: 45,
-                limit: 5,
-                textFieldKey: GlobalKey(),
-                value: _model!.posY.value.round().toString(),
-                hintText: '',
-                minNumber: 0,
-                onEditComplete: ((value) {
-                  _model!.posY.set(int.parse(value).toDouble());
-                  frameEvent?.sendEvent(_model!);
-                }),
+              SizedBox(width: 64),
+              SizedBox(
+                width: 97,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      CretaStudioLang.posY,
+                      style: titleStyle,
+                    ),
+                    CretaTextField.xshortNumber(
+                      defaultBorder: Border.all(color: CretaColor.text[100]!),
+                      width: 45,
+                      limit: 5,
+                      textFieldKey: GlobalKey(),
+                      value: _model!.posY.value.round().toString(),
+                      hintText: '',
+                      minNumber: 0,
+                      onEditComplete: ((value) {
+                        _model!.posY.set(int.parse(value).toDouble());
+                        frameEvent?.sendEvent(_model!);
+                      }),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-        // 두번째 줄
+        // 두번째 줄  width, height
         Padding(
           padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Text(
-                    CretaStudioLang.width,
-                    style: titleStyle,
-                  ),
-                  SizedBox(width: 5),
-                  CretaTextField.xshortNumber(
-                    defaultBorder: Border.all(color: CretaColor.text[100]!),
-                    width: 45,
-                    limit: 5,
-                    textFieldKey: GlobalKey(),
-                    value: _model!.width.value.round().toString(),
-                    hintText: '',
-                    onEditComplete: ((value) {
-                      _sizeChanged(value, _model!.width, _model!.height);
-                    }),
-                    minNumber: 10,
-                  ),
-                  SizedBox(width: 6),
-                  BTN.fill_gray_i_m(
-                      tooltip: CretaStudioLang.fixedRatio,
-                      tooltipBg: CretaColor.text[400]!,
-                      icon: _model!.isFixedRatio.value
-                          ? Icons.lock_outlined
-                          : Icons.lock_open_outlined,
-                      iconColor:
-                          _model!.isFixedRatio.value ? CretaColor.primary : CretaColor.text[700]!,
-                      onPressed: () {
-                        setState(() {
-                          _model!.isFixedRatio.set(!_model!.isFixedRatio.value);
-                        });
-                      }),
-                  SizedBox(width: 6),
-                  Text(
-                    CretaStudioLang.height,
-                    style: titleStyle,
-                  ),
-                  SizedBox(width: 5),
-                  CretaTextField.xshortNumber(
-                    defaultBorder: Border.all(color: CretaColor.text[100]!),
-                    width: 45,
-                    limit: 5,
-                    textFieldKey: GlobalKey(),
-                    value: _model!.height.value.round().toString(),
-                    hintText: '',
-                    minNumber: 10,
-                    onEditComplete: ((value) {
-                      _sizeChanged(value, _model!.height, _model!.width);
-                    }),
-                  ),
-                ],
+              SizedBox(
+                width: 258,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 97,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            CretaStudioLang.width,
+                            style: titleStyle,
+                          ),
+                          CretaTextField.xshortNumber(
+                            defaultBorder: Border.all(color: CretaColor.text[100]!),
+                            width: 45,
+                            limit: 5,
+                            textFieldKey: GlobalKey(),
+                            value: _model!.width.value.round().toString(),
+                            hintText: '',
+                            onEditComplete: ((value) {
+                              _sizeChanged(value, _model!.width, _model!.height);
+                            }),
+                            minNumber: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                    BTN.fill_gray_i_m(
+                        tooltip: CretaStudioLang.fixedRatio,
+                        tooltipBg: CretaColor.text[400]!,
+                        icon: _model!.isFixedRatio.value
+                            ? Icons.lock_outlined
+                            : Icons.lock_open_outlined,
+                        iconColor:
+                            _model!.isFixedRatio.value ? CretaColor.primary : CretaColor.text[700]!,
+                        onPressed: () {
+                          setState(() {
+                            _model!.isFixedRatio.set(!_model!.isFixedRatio.value);
+                          });
+                        }),
+                    SizedBox(
+                      width: 97,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            CretaStudioLang.height,
+                            style: titleStyle,
+                          ),
+                          SizedBox(width: 15),
+                          CretaTextField.xshortNumber(
+                            defaultBorder: Border.all(color: CretaColor.text[100]!),
+                            width: 45,
+                            limit: 5,
+                            textFieldKey: GlobalKey(),
+                            value: _model!.height.value.round().toString(),
+                            hintText: '',
+                            minNumber: 10,
+                            onEditComplete: ((value) {
+                              _sizeChanged(value, _model!.height, _model!.width);
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.fullscreenTooltip,
+                  tooltipBg: CretaColor.text[400]!,
                   iconSize: 18,
                   icon: Icons.fullscreen_outlined,
                   onPressed: () {
@@ -231,102 +288,424 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     //});
                     logger.finest('sendEvent');
                     frameEvent!.sendEvent(_model!);
-                  })
+                  }),
             ],
           ),
         ),
-        // 세번째 줄
+        // 세번째 줄  rotate
+        Padding(
+          padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 97,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      CretaStudioLang.angle,
+                      style: titleStyle,
+                    ),
+                    CretaTextField.xshortNumber(
+                      maxNumber: 360,
+                      defaultBorder: Border.all(color: CretaColor.text[100]!),
+                      width: 45,
+                      limit: 5,
+                      textFieldKey: GlobalKey(),
+                      value: _model!.angle.value.round().toString(),
+                      hintText: '',
+                      onEditComplete: ((value) {
+                        logger.fine('onEditComplete $value');
+                        double newValue = int.parse(value).toDouble();
+                        if (_model!.angle.value == newValue) {
+                          return;
+                        }
+                        _model!.angle.set(newValue);
+                        //BookMainPage.bookManagerHolder!.notify();
+                        frameEvent!.sendEvent(_model!);
+                        logger.fine('onEditComplete ${_model!.angle.value}');
+                      }),
+                      minNumber: 0,
+                    ),
+                    // Text(
+                    //   "90",
+                    //   style: titleStyle,
+                    // ),
+                    // BTN.fill_gray_i_m(
+                    //     iconSize: 18,
+                    //     icon: Icons.rotate_90_degrees_ccw_outlined,
+                    //     onPressed: () {
+                    //       _model!.angle.set((_model!.angle.value + 270) % 360);
+                    //       logger.finest('sendEvent');
+                    //       frameEvent!.sendEvent(_model!);
+                    //     }),
+                  ],
+                ),
+              ),
+              SizedBox(width: 17),
+              BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.angleTooltip,
+                  tooltipBg: CretaColor.text[400]!,
+                  iconSize: 18,
+                  icon: Icons.rotate_90_degrees_cw_outlined,
+                  onPressed: () {
+                    int turns = (_model!.angle.value / 45).round() + 1;
+                    _model!.angle.set(turns * 45.0);
+                    logger.finest('sendEvent');
+                    frameEvent!.sendEvent(_model!);
+                  }),
+            ],
+          ),
+        ),
+        // 네번째 줄  radius
+        Padding(
+          padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 97,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      CretaStudioLang.radius,
+                      style: titleStyle,
+                    ),
+                    CretaTextField.xshortNumber(
+                      maxNumber: 360,
+                      defaultBorder: Border.all(color: CretaColor.text[100]!),
+                      width: 45,
+                      limit: 5,
+                      textFieldKey: GlobalKey(),
+                      value: _model!.radius.value.round().toString(),
+                      hintText: '',
+                      onEditComplete: ((value) {
+                        logger.fine('onEditComplete $value');
+                        double newValue = int.parse(value).toDouble();
+                        if (_model!.radius.value == newValue) {
+                          return;
+                        }
+                        mychangeStack.startTrans();
+                        _model!.radius.set(newValue);
+                        _model!.radiusLeftTop.set(newValue);
+                        _model!.radiusRightTop.set(newValue);
+                        _model!.radiusRightBottom.set(newValue);
+                        _model!.radiusLeftBottom.set(newValue);
+                        mychangeStack.endTrans();
+                        //BookMainPage.bookManagerHolder!.notify();
+                        frameEvent!.sendEvent(_model!);
+                        logger.fine('onEditComplete ${_model!.radius.value}');
+                      }),
+                      minNumber: 0,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 17),
+              BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.cornerTooltip,
+                  tooltipBg: CretaColor.text[400]!,
+                  iconSize: 18,
+                  icon: Icons.rounded_corner_outlined,
+                  onPressed: () {
+                    setState(() {
+                      _isRadiusOpen = !_isRadiusOpen;
+                    });
+                  }),
+            ],
+          ),
+        ),
+        _isRadiusOpen
+            ? Padding(
+                padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 45,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _cornerRadius(
+                            cornerValue: _model!.radiusLeftTop,
+                            onEditComplete: ((value) {}),
+                            onSelected: (name, value, nvMap) {},
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          _cornerRadius(
+                            cornerValue: _model!.radiusLeftBottom,
+                            onEditComplete: ((value) {}),
+                            onSelected: (name, value, nvMap) {},
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 49,
+                      height: 49,
+                      child: Wrap(
+                        spacing: 1,
+                        runSpacing: 1,
+                        children: [
+                          RotatedBox(
+                            quarterTurns: 3,
+                            child: Icon(Icons.rounded_corner_outlined,
+                                size: 24,
+                                color: _model!.radiusLeftTop.value > 0
+                                    ? CretaColor.primary
+                                    : CretaColor.text[200]!),
+                          ),
+                          RotatedBox(
+                            quarterTurns: 0,
+                            child: Icon(Icons.rounded_corner_outlined,
+                                size: 24,
+                                color: _model!.radiusRightTop.value > 0
+                                    ? CretaColor.primary
+                                    : CretaColor.text[200]!),
+                          ),
+                          RotatedBox(
+                            quarterTurns: 2,
+                            child: Icon(Icons.rounded_corner_outlined,
+                                size: 24,
+                                color: _model!.radiusLeftBottom.value > 0
+                                    ? CretaColor.primary
+                                    : CretaColor.text[200]!),
+                          ),
+                          RotatedBox(
+                            quarterTurns: 1,
+                            child: Icon(Icons.rounded_corner_outlined,
+                                size: 24,
+                                color: _model!.radiusRightBottom.value > 0
+                                    ? CretaColor.primary
+                                    : CretaColor.text[200]!),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 45,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _cornerRadius(
+                            cornerValue: _model!.radiusRightTop,
+                            onEditComplete: ((value) {}),
+                            onSelected: (name, value, nvMap) {},
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          _cornerRadius(
+                            cornerValue: _model!.radiusRightBottom,
+                            onEditComplete: ((value) {}),
+                            onSelected: (name, value, nvMap) {},
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+
+        // 다선번째 줄  autofit
         Padding(
           padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Text(
-                    CretaStudioLang.angle,
-                    style: titleStyle,
-                  ),
-                  SizedBox(width: 5),
-                  CretaTextField.xshortNumber(
-                    maxNumber: 3600,
-                    defaultBorder: Border.all(color: CretaColor.text[100]!),
-                    width: 45,
-                    limit: 5,
-                    textFieldKey: GlobalKey(),
-                    value: _model!.angle.value.round().toString(),
-                    hintText: '',
-                    onEditComplete: ((value) {
-                      logger.fine('onEditComplete $value');
-                      double newValue = int.parse(value).toDouble();
-                      if (_model!.angle.value == newValue) {
-                        return;
-                      }
-                      _model!.angle.set(newValue);
-                      //BookMainPage.bookManagerHolder!.notify();
-                      frameEvent!.sendEvent(_model!);
-                      logger.fine('onEditComplete ${_model!.angle.value}');
-                    }),
-                    minNumber: 0,
-                  ),
-                  // SizedBox(width: 6),
-                  // BTN.fill_gray_i_m(
-                  //     tooltip: CretaStudioLang.fixedRatio,
-                  //     tooltipBg: CretaColor.text[400]!,
-                  //     icon: _model!.isFixedRatio.value
-                  //         ? Icons.lock_outlined
-                  //         : Icons.lock_open_outlined,
-                  //     iconColor:
-                  //         _model!.isFixedRatio.value ? CretaColor.primary : CretaColor.text[700]!,
-                  //     onPressed: () {
-                  //       setState(() {
-                  //         _model!.isFixedRatio.set(!_model!.isFixedRatio.value);
-                  //       });
-                  //     }),
-                  // SizedBox(width: 6),
-                  // Text(
-                  //   CretaStudioLang.height,
-                  //   style: titleStyle,
-                  // ),
-                  // SizedBox(width: 5),
-                  // CretaTextField.xshortNumber(
-                  //   defaultBorder: Border.all(color: CretaColor.text[100]!),
-                  //   width: 45,
-                  //   limit: 5,
-                  //   textFieldKey: GlobalKey(),
-                  //   value: _model!.height.value.round().toString(),
-                  //   hintText: '',
-                  //   minNumber: 10,
-                  //   onEditComplete: ((value) {
-                  //     _sizeChanged(value, _model!.height, _model!.width);
-                  //   }),
-                  // ),
-                ],
+              Text(
+                CretaStudioLang.autoFitContents,
+                style: titleStyle,
               ),
-              // BTN.fill_gray_i_m(
-              //     iconSize: 18,
-              //     icon: Icons.fullscreen_outlined,
-              //     onPressed: () {
-              //       BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
-              //       if (book == null) return;
-              //       if (_isFullScreen(book)) return;
-
-              //       mychangeStack.startTrans();
-              //       _model!.height.set(book.height.value);
-              //       _model!.width.set(book.width.value);
-              //       _model!.posX.set(0);
-              //       _model!.posY.set(0);
-              //       mychangeStack.endTrans();
-              //       //});
-              //       logger.finest('sendEvent');
-              //       frameEvent!.sendEvent(_model!);
-              //     })
+              CretaToggleButton(
+                defaultValue: _model!.isAutoFit.value,
+                onSelected: (value) {
+                  _model!.isAutoFit.set(value);
+                  frameEvent?.sendEvent(_model!);
+                },
+              ),
             ],
           ),
         ),
       ],
     );
   }
+
+  Widget _cornerRadius({
+    // required bool isLeftWidget,
+    // required CornerOpenFlag openFlag,
+    required UndoAble<double> cornerValue,
+    required void Function(String) onEditComplete,
+    required void Function(String, bool, Map<String, bool>) onSelected,
+  }) {
+    return CretaTextField.xshortNumber(
+      //enabled: openFlag.value,
+      align: TextAlign.center,
+      maxNumber: 360,
+      defaultBorder: Border.all(color: CretaColor.text[100]!),
+      width: 45,
+      limit: 5,
+      textFieldKey: GlobalKey(),
+      value: cornerValue.value.round().toString(),
+      hintText: '',
+      onEditComplete: ((value) {
+        logger.fine('onEditComplete $value');
+        double newValue = int.parse(value).toDouble();
+        if (cornerValue.value == newValue) {
+          return;
+        }
+        cornerValue.set(newValue);
+        //BookMainPage.bookManagerHolder!.notify();
+        frameEvent!.sendEvent(_model!);
+        logger.fine('onEditComplete ${cornerValue.value}');
+        onEditComplete.call(value);
+      }),
+      minNumber: 0,
+    );
+    // if (isLeftWidget == true) {
+    //   return Row(
+    //     mainAxisAlignment: MainAxisAlignment.end,
+    //     children: [
+    //       CretaTextField.xshortNumber(
+    //         enabled: openFlag.value,
+    //         align: TextAlign.center,
+    //         maxNumber: 360,
+    //         defaultBorder: Border.all(color: CretaColor.text[100]!),
+    //         width: 45,
+    //         limit: 5,
+    //         textFieldKey: GlobalKey(),
+    //         value: cornerValue.value.round().toString(),
+    //         hintText: '',
+    //         onEditComplete: ((value) {
+    //           logger.fine('onEditComplete $value');
+    //           double newValue = int.parse(value).toDouble();
+    //           if (cornerValue.value == newValue) {
+    //             return;
+    //           }
+    //           cornerValue.set(newValue);
+    //           //BookMainPage.bookManagerHolder!.notify();
+    //           frameEvent!.sendEvent(_model!);
+    //           logger.fine('onEditComplete ${cornerValue.value}');
+    //           onEditComplete.call(value);
+    //         }),
+    //         minNumber: 0,
+    //       ),
+    //       CretaCheckbox(
+    //         density: 0,
+    //         onSelected: (name, value, nvMap) {
+    //           if (value == false) {
+    //             openFlag.value = value;
+    //             cornerValue.set(0);
+    //             //BookMainPage.bookManagerHolder!.notify();
+    //             frameEvent!.sendEvent(_model!);
+    //             logger.fine('onEditComplete ${cornerValue.value}');
+    //           } else {
+    //             setState(() {
+    //               openFlag.value = value;
+    //             });
+    //           }
+    //           onSelected.call(name, value, nvMap);
+    //         },
+    //         valueMap: {"": (cornerValue.value != 0)},
+    //       ),
+    //     ],
+    //   );
+    // }
+
+    // return Row(
+    //   mainAxisAlignment = MainAxisAlignment.start,
+    //   children = [
+    //     CretaCheckbox(
+    //       density: 0,
+    //       onSelected: (name, value, nvMap) {
+    //         if (value == false) {
+    //           openFlag.value = value;
+    //           cornerValue.set(0);
+    //           //BookMainPage.bookManagerHolder!.notify();
+    //           frameEvent!.sendEvent(_model!);
+    //           logger.fine('onEditComplete ${cornerValue.value}');
+    //         } else {
+    //           setState(() {
+    //             openFlag.value = value;
+    //           });
+    //         }
+    //         onSelected.call(name, value, nvMap);
+    //       },
+    //       valueMap: {"": (cornerValue.value != 0)},
+    //     ),
+    //     CretaTextField.xshortNumber(
+    //       enabled: openFlag.value,
+    //       align: TextAlign.center,
+    //       maxNumber: 360,
+    //       defaultBorder: Border.all(color: CretaColor.text[100]!),
+    //       width: 45,
+    //       limit: 5,
+    //       textFieldKey: GlobalKey(),
+    //       value: cornerValue.value.round().toString(),
+    //       hintText: '',
+    //       onEditComplete: ((value) {
+    //         logger.fine('onEditComplete $value');
+    //         double newValue = int.parse(value).toDouble();
+    //         if (cornerValue.value == newValue) {
+    //           return;
+    //         }
+    //         cornerValue.set(newValue);
+    //         //BookMainPage.bookManagerHolder!.notify();
+    //         frameEvent!.sendEvent(_model!);
+    //         logger.fine('onEditComplete ${cornerValue.value}');
+    //         onEditComplete.call(value);
+    //       }),
+    //       minNumber: 0,
+    //     ),
+    //   ],q
+    // );
+  }
+
+  // Wdiget _eachCorner()
+  // {
+  //   return  child: SizedBox(
+  //                 width: 97,
+  //                 child: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     CretaIconCheckbox(
+  //                       onSelected: (name, value, nvMap) {},
+  //                       valueMap: {
+  //                         Icons.rounded_corner_outlined: (_model!.radiusLeftTop.value != 0)
+  //                       },
+  //                       iconTurns: 3,
+  //                     ),
+  //                     SizedBox(width:10),
+  //                     CretaTextField.xshortNumber(
+  //                       maxNumber: 360,
+  //                       defaultBorder: Border.all(color: CretaColor.text[100]!),
+  //                       width: 45,
+  //                       limit: 5,
+  //                       textFieldKey: GlobalKey(),
+  //                       value: _model!.radiusLeftTop.value.round().toString(),
+  //                       hintText: '',
+  //                       onEditComplete: ((value) {
+  //                         logger.fine('onEditComplete $value');
+  //                         double newValue = int.parse(value).toDouble();
+  //                         if (_model!.radiusLeftTop.value == newValue) {
+  //                           return;
+  //                         }
+  //                         _model!.radiusLeftTop.set(newValue);
+  //                         //BookMainPage.bookManagerHolder!.notify();
+  //                         frameEvent!.sendEvent(_model!);
+  //                         logger.fine('onEditComplete ${_model!.radiusLeftTop.value}');
+  //                       }),
+  //                       minNumber: 0,
+  //                     ),
+  //                   ],
+  //                 ),
+  //               );
+  // }
 
   bool _isFullScreen(BookModel book) {
     if (_model!.width.value == book.width.value &&

@@ -85,12 +85,9 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       onUpdate: (update, mid) {
         //logger.fine('saveItem ${update.angle}');
         saveItem(update, mid);
-        // FrameModel? model = _frameManager!.getModel(mid) as FrameModel?;
-        // if (model != null) {
-        //   _frameEvent?.sendEvent(model);
-        // }
         FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
+          BookMainPage.containeeNotifier!.openSize(doNoti: false);
           BookMainPage.containeeNotifier!.notify();
         }
       },
@@ -106,6 +103,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         //BookMainPage.bookManagerHolder!.notify();
       },
       onResizeButtonTap: () {
+        BookMainPage.containeeNotifier!.openSize(doNoti: false);
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       },
       stickerList: getStickerList(),
@@ -163,6 +161,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         opacity: opacity,
         bgColor1: bgColor1,
         bgColor2: bgColor2,
+        clipBorderRadius: _getBorderRadius(model),
       );
     }
     return _frameBox(model, true);
@@ -189,9 +188,28 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
       //boxShadow: StudioSnippet.basicShadow(),
       gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
+      borderRadius: _getBorderRadius(model),
     );
   }
 
+  BorderRadius? _getBorderRadius(FrameModel model) {
+    double lt = model.radiusLeftTop.value;
+    double rt = model.radiusRightTop.value;
+    double rb = model.radiusRightBottom.value;
+    double lb = model.radiusLeftBottom.value;
+    if (lt == rt && rt == rb && rb == lb) {
+      if (lt == 0) {
+        return BorderRadius.zero;
+      }
+      return BorderRadius.all(Radius.circular(model.radiusLeftTop.value));
+    }
+    return BorderRadius.only(
+      topLeft: Radius.circular(lt),
+      topRight: Radius.circular(rt),
+      bottomLeft: Radius.circular(lb),
+      bottomRight: Radius.circular(rb),
+    );
+  }
   // ignore: unused_element
 
   void saveItem(DragUpdate update, String mid) async {
@@ -199,7 +217,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
 
-      logger.fine('before save widthxheight = ${model.width.value}x${model.height.value}');
+      //logger.fine('before save widthxheight = ${model.width.value}x${model.height.value}');
 
       model.angle.set(update.angle * (180 / pi), save: false);
       model.posX.set(update.position.dx, save: false);
@@ -208,7 +226,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       model.height.set(update.size.height, save: false);
       model.save();
 
-      logger.fine('after save widthxheight = ${model.width.value}x${model.height.value}');
+      //logger.fine('after save widthxheight = ${model.width.value}x${model.height.value}');
     }
   }
 

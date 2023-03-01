@@ -73,8 +73,8 @@ class _CretaCheckboxState extends State<CretaCheckbox> {
                 });
               },
               child: Padding(
-                padding:
-                    EdgeInsets.only(top: widget.density / 2, bottom: widget.density / 2, left: 5),
+                padding: EdgeInsets.only(
+                    top: widget.density / 2, bottom: widget.density / 2, left: widget.density / 2),
                 child: Row(
                   children: [
                     widget.valueMap[title] == true
@@ -88,9 +88,112 @@ class _CretaCheckboxState extends State<CretaCheckbox> {
                             size: 20,
                           ),
                     SizedBox(width: widget.density),
-                    Text(
-                      title,
-                      style: CretaFont.bodySmall.copyWith(
+                    title.isNotEmpty
+                        ? Text(
+                            title,
+                            style: CretaFont.bodySmall.copyWith(
+                              color: CretaColor.text[700]!,
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class CretaIconCheckbox extends StatefulWidget {
+  final Map<IconData, bool> valueMap; // value and title map
+  final void Function(IconData icon, bool value, Map<IconData, bool> nvMap) onSelected;
+  final double density;
+  final int iconTurns;
+
+  const CretaIconCheckbox({
+    super.key,
+    required this.onSelected,
+    required this.valueMap,
+    this.density = 10,
+    this.iconTurns = 0,
+  });
+
+  @override
+  State<CretaIconCheckbox> createState() => _CretaIconCheckboxState();
+}
+
+class _CretaIconCheckboxState extends State<CretaIconCheckbox> {
+  TextEditingController controller = TextEditingController();
+  late List<bool> hover;
+  IconData? selectedTitle;
+  @override
+  void initState() {
+    super.initState();
+    hover = widget.valueMap.keys.map((value) {
+      return false;
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int counter = 0;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: widget.valueMap.keys.map((iconData) {
+        int idx = counter % widget.valueMap.length;
+        counter++;
+        return Container(
+          color: hover[idx] ? CretaColor.text[200]! : null,
+          child: GestureDetector(
+            onLongPressDown: (details) {
+              setState(() {
+                if (widget.valueMap[iconData] != true) {
+                  logger.finest('onLongPressDown = $iconData');
+                  selectedTitle = iconData;
+                  widget.valueMap[iconData] = true;
+                } else {
+                  widget.valueMap[iconData] = false;
+                  logger.finest('onLongPressDown = null');
+                  selectedTitle = null;
+                }
+                widget.onSelected(iconData, widget.valueMap[iconData]!, widget.valueMap);
+              });
+            },
+            child: MouseRegion(
+              onExit: (val) {
+                setState(() {
+                  hover[idx] = false;
+                });
+              },
+              onEnter: (val) {
+                setState(() {
+                  hover[idx] = true;
+                });
+              },
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: widget.density / 2, bottom: widget.density / 2, left: 5),
+                child: Row(
+                  children: [
+                    widget.valueMap[iconData] == true
+                        ? Icon(
+                            Icons.check_circle_outline_outlined,
+                            size: 20,
+                            color: CretaColor.primary,
+                          )
+                        : Icon(
+                            Icons.circle_outlined,
+                            size: 20,
+                          ),
+                    SizedBox(width: widget.density),
+                    RotatedBox(
+                      quarterTurns: widget.iconTurns,
+                      child: Icon(
+                        iconData,
+                        size: 16,
                         color: CretaColor.text[700]!,
                       ),
                     ),
@@ -104,6 +207,7 @@ class _CretaCheckboxState extends State<CretaCheckbox> {
     );
   }
 }
+
 
 
 // // 
