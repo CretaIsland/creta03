@@ -141,6 +141,7 @@ class CretaStudioLang {
 
   static const String newBook = '새 크라타북';
   static const String newPage = '새 페이지 추가';
+  static const String newFrame = '새 프레임 추가';
   static const String treePage = '자세히 보기';
   static const String noNamepage = '이름없는 페이지';
   static const String noNameframe = '이름없는 프레임';
@@ -240,4 +241,7 @@ class CretaStudioLang {
   static const String posY = 'Y좌표';
 
   static const String autoFitContents = '콘텐츠 크기에 자동 맞춤';
+
+  static const String border = '테두리';
+  static const String thickness = '두께';
 }

@@ -17,6 +17,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
 import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_popup_menu.dart';
 import '../model/creta_model.dart';
+import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 
@@ -755,13 +756,22 @@ abstract class CretaManager extends AbsExModelManager {
   void setSelected(int index) {
     prevSelectedMid = selectedMid;
     selectedMid = modelList[0].mid;
-    logger.finest('1 selected=$selectedMid, prev=$prevSelectedMid');
+    logger.finest('selected1=$selectedMid, prev=$prevSelectedMid');
   }
 
   Future<void> setSelectedMid(String mid) async {
     prevSelectedMid = selectedMid;
     selectedMid = mid;
-    logger.finest('2 selected=$selectedMid, prev=$prevSelectedMid');
+    logger.finest('selected2=$selectedMid, prev=$prevSelectedMid');
+
+    notify();
+  }
+
+  Future<void> clearSelectedMid() async {
+    prevSelectedMid = selectedMid;
+    selectedMid = "";
+    logger.finest('unselected, prev=$prevSelectedMid');
+    DraggableStickers.selectedAssetId = "";
 
     notify();
   }

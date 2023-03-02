@@ -1,11 +1,14 @@
 // ignore_for_file: must_be_immutable
 
 // import 'package:hycop/common/util/util.dart';
+
+import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
+import '../common/creta_utils.dart';
 import '../lang/creta_studio_lang.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
@@ -24,6 +27,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> radiusRightBottom;
   late UndoAble<double> radiusLeftBottom;
   late UndoAble<bool> isAutoFit;
+  late UndoAble<Color> borderColor;
+  late UndoAble<double> thickness;
   FrameType frameType = FrameType.none;
 
   @override
@@ -40,6 +45,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         radiusRightBottom,
         radiusLeftBottom,
         isAutoFit,
+        borderColor,
+        thickness,
         ...super.propsMixin,
       ];
   FrameModel(String pmid) : super(pmid: pmid, type: ExModelType.frame, parent: '') {
@@ -55,6 +62,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom = UndoAble<double>(0, mid);
     isAutoFit = UndoAble<bool>(false, mid);
     frameType = FrameType.none;
+    borderColor = UndoAble<Color>(Colors.transparent, mid);
+    thickness = UndoAble<double>(1, mid);
     super.initMixin(mid);
   }
 
@@ -73,7 +82,9 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusRightBottom = UndoAble<double>(0, mid);
     radiusLeftBottom = UndoAble<double>(0, mid);
     isAutoFit = UndoAble<bool>(false, mid);
-
+    bgColor1 = UndoAble<Color>(Colors.white, mid);
+    borderColor = UndoAble<Color>(Colors.transparent, mid);
+    thickness = UndoAble<double>(1, mid);
     frameType = pType;
   }
   @override
@@ -91,6 +102,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusRightBottom = UndoAble<double>(srcFrame.radiusRightBottom.value, mid);
     radiusLeftBottom = UndoAble<double>(srcFrame.radiusLeftBottom.value, mid);
     isAutoFit = UndoAble<bool>(srcFrame.isAutoFit.value, mid);
+    borderColor = UndoAble<Color>(srcFrame.borderColor.value, mid);
+    thickness = UndoAble<double>(srcFrame.thickness.value, mid);
 
     frameType = srcFrame.frameType;
     super.copyFromMixin(mid, srcFrame);
@@ -118,6 +131,9 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom.set((map["radiusLeftBottom"] ?? 0), save: false, noUndo: true);
     isAutoFit.set((map["isAutoFit"] ?? false), save: false, noUndo: true);
 
+    borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
+    thickness.set((map["thickness"] ?? 1), save: false, noUndo: true);
+
     frameType = FrameType.fromInt(map["frameType"] ?? 0);
     super.fromMapMixin(map);
     logger.finest('${posX.value}, ${posY.value}');
@@ -138,6 +154,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "radiusRightBottom": radiusRightBottom.value,
         "radiusLeftBottom": radiusLeftBottom.value,
         "isAutoFit": isAutoFit.value,
+        "borderColor": borderColor.value.toString(),
+        "thickness": thickness.value,
         'frameType': frameType.index,
         ...super.toMapMixin(),
       }.entries);

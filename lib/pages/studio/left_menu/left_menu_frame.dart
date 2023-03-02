@@ -125,12 +125,13 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: BTN.fill_gray_100_i_m(
-                tooltip: CretaStudioLang.newPage,
+                tooltip: CretaStudioLang.newFrame,
                 tooltipBg: CretaColor.text[700]!,
                 icon: Icons.add_outlined,
                 onPressed: (() {
                   _frameManager!.createNextFrame();
                   _frameManager!.notify();
+                  //BookMainPage.bookManagerHolder!.notify();
                 })),
           ),
           //BTN.fill_gray_100_i_s(icon: Icons.delete_outlined, onPressed: (() {})),

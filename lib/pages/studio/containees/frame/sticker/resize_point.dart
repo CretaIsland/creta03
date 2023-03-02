@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'acc_const.dart';
+import '../../../studio_constant.dart';
+
 import 'draggable_point.dart';
 
 enum ResizePointType {
@@ -48,8 +49,8 @@ class ResizePoint extends StatelessWidget {
         onScale: onScale,
         onTap: onTap,
         child: Container(
-          width: cornerDiameter,
-          height: cornerDiameter,
+          width: LayoutConst.cornerDiameter,
+          height: LayoutConst.cornerDiameter,
           decoration: BoxDecoration(
             border: Border.all(color: Colors.transparent, width: 2),
             shape: BoxShape.circle,

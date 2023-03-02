@@ -113,7 +113,13 @@ class _RightMenuState extends State<RightMenu> with SingleTickerProviderStateMix
       case ContaineeEnum.Page:
         return PageProperty();
       case ContaineeEnum.Frame:
-        return FrameProperty();
+        {
+          FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
+          if (frame == null) {
+            return Container();
+          }
+          return FrameProperty(key: ValueKey(frame.mid), model: frame);
+        }
       case ContaineeEnum.Contents:
         return Container();
 

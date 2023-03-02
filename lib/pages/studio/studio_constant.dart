@@ -80,6 +80,10 @@ class LayoutConst {
   static const Size cretaTopFilterPaddingLT = Size(
       cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
   static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
+
+  static const cornerDiameter = 22.0;
+  static const floatingActionDiameter = 18.0;
+  static const floatingActionPadding = 24.0;
 }
 
 class StudioConst {

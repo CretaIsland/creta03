@@ -151,8 +151,8 @@ class CretaUtils {
       //     MatrixUtils.transformRect(widgetBox.getTransformTo(null), Offset.zero & widgetBox.size);
       final Rect widgetRect = MatrixUtils.transformRect(
           widgetBox.getTransformTo(null),
-          Offset(-margin, -margin) &
-              Size(widgetBox.size.width + margin, widgetBox.size.height + margin));
+          Offset(-margin / 2, -margin / 2) &
+              Size(widgetBox.size.width + margin / 2, widgetBox.size.height + margin / 2));
       //return widgetRect.contains(localOffset);
 
       // final Rect marginPlusRect = Offset(widgetRect.left - margin, widgetRect.top - margin) &

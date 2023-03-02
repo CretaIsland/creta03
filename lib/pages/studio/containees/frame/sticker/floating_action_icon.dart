@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'acc_const.dart';
+import '../../../studio_constant.dart';
 
 class FloatingActionIcon extends StatefulWidget {
   //const FloatingActionIcon({Key? key}) : super(key: key);
@@ -34,8 +34,8 @@ class FloatingActionIconState extends State<FloatingActionIcon> {
         // },
         onTap: widget.onTap,
         child: SizedBox(
-          height: floatingActionDiameter * _enlarge,
-          width: floatingActionDiameter * _enlarge,
+          height: LayoutConst.floatingActionDiameter * _enlarge,
+          width: LayoutConst.floatingActionDiameter * _enlarge,
           child: Center(
             child: Icon(
               widget.iconData,
@@ -68,8 +68,8 @@ class FloatingActionIconState extends State<FloatingActionIcon> {
 //       child: InkWell(
 //         onTap: onTap,
 //         child: SizedBox(
-//           height: floatingActionDiameter,
-//           width: floatingActionDiameter,
+//           height: LayoutConst.floatingActionDiameter,
+//           width: LayoutConst.floatingActionDiameter,
 //           child: Center(
 //             child: Icon(
 //               iconData,

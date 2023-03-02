@@ -59,7 +59,7 @@ class PageManager extends CretaManager {
     frameManager.clearAll();
     frameManager.addRealTimeListen();
     await frameManager.getFrames();
-    frameManager.setSelected(0);
+    //frameManager.setSelected(0);  처음에 프레임에 선택되어 있지 않다.
   }
 
   FrameModel? getSelectedFrame() {

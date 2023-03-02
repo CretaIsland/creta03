@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:hycop/common/util/logger.dart';
-import 'acc_const.dart';
+import '../../../studio_constant.dart';
 import 'draggable_point.dart';
 import 'floating_action_icon.dart';
 import 'resize_point.dart';
@@ -49,6 +49,7 @@ class DraggableResizable extends StatefulWidget {
     BoxConstraints? constraints,
     required this.onResizeButtonTap,
     this.onUpdate,
+    this.onTap,
     this.onLayerTapped,
     this.onEdit,
     this.onDelete,
@@ -66,6 +67,7 @@ class DraggableResizable extends StatefulWidget {
   final void Function(DragUpdate value, String mid)? onUpdate;
 
   /// Delete callback
+  final VoidCallback? onTap;
   final VoidCallback? onDelete;
   final VoidCallback? onEdit;
   final VoidCallback? onLayerTapped;
@@ -145,11 +147,15 @@ class _DraggableResizableState extends State<DraggableResizable> {
         final normalizedTop = position.dy;
 
         void onUpdate(String hint, {bool save = true}) {
-          logger.finest('onUpdate($hint)');
           // final normalizedPosition = Offset(
-          //   normalizedLeft + (floatingActionPadding / 2) + (cornerDiameter / 2),
-          //   normalizedTop + (floatingActionPadding / 2) + (cornerDiameter / 2),
+          //   normalizedLeft + (LayoutConst.floatingActionPadding / 2) + (LayoutConst.cornerDiameter / 2),
+          //   normalizedTop + (LayoutConst.floatingActionPadding / 2) + (LayoutConst.cornerDiameter / 2),
           // );
+
+          if (hint == 'onTap') {
+            logger.fine('Gest2 : onUpdate($hint),$save in DraggableResizable');
+            widget.onTap?.call();
+          }
 
           if (save) {
             //logger.fine(
@@ -251,10 +257,12 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         final decoratedChild = Container(
+          // skprak 확장된 박스임...
           key: const Key('draggableResizable_child_container'),
           alignment: Alignment.center,
-          height: normalizedHeight + cornerDiameter + floatingActionPadding,
-          width: normalizedWidth + cornerDiameter + floatingActionPadding,
+          height: normalizedHeight + LayoutConst.cornerDiameter + LayoutConst.floatingActionPadding,
+          width: normalizedWidth + LayoutConst.cornerDiameter + LayoutConst.floatingActionPadding,
+          //color: Colors.green,
           child: Container(
             height: normalizedHeight,
             width: normalizedWidth,
@@ -313,29 +321,30 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
         final center = Offset(
           -((normalizedHeight / 2) +
-              (floatingActionDiameter / 2) +
-              (cornerDiameter / 2) +
-              (floatingActionPadding / 2)),
-          // (floatingActionDiameter + cornerDiameter) / 2,
+              (LayoutConst.floatingActionDiameter / 2) +
+              (LayoutConst.cornerDiameter / 2) +
+              (LayoutConst.floatingActionPadding / 2)),
+          // (LayoutConst.floatingActionDiameter + LayoutConst.cornerDiameter) / 2,
           (normalizedHeight / 2) +
-              (floatingActionDiameter / 2) +
-              (cornerDiameter / 2) +
-              (floatingActionPadding / 2),
+              (LayoutConst.floatingActionDiameter / 2) +
+              (LayoutConst.cornerDiameter / 2) +
+              (LayoutConst.floatingActionPadding / 2),
         );
 
         final rotateAnchor = GestureDetector(
+          behavior: HitTestBehavior.translucent,
           key: const Key('draggableResizable_rotate_gestureDetector'),
           onScaleStart: (details) {
+            logger.fine('draggableResizable_rotate_gestureDetector.onScaleStart');
             final offsetFromCenter = details.localFocalPoint - center;
             setState(() {
-              angleDelta = baseAngle - offsetFromCenter.direction - floatingActionDiameter;
+              angleDelta =
+                  baseAngle - offsetFromCenter.direction - LayoutConst.floatingActionDiameter;
             });
-            logger.fine(
-                'onScaleStart $baseAngle-${offsetFromCenter.direction}-$floatingActionDiameter,');
           },
           onScaleUpdate: (details) {
+            logger.fine('draggableResizable_rotate_gestureDetector.onScaleUpdate');
             final offsetFromCenter = details.localFocalPoint - center;
-
             setState(
               () {
                 //angle = offsetFromCenter.direction + angleDelta * 0.5;
@@ -343,7 +352,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
                 logger.fine('org :$angle:$angleDelta,');
                 double degree = angle * 180 / pi % -360;
                 angle = degree * pi / 180;
-                logger.fine('onScaleUpdate $degree:$angle,');
               },
             );
             onUpdate('onScaleUpdate');
@@ -417,30 +425,30 @@ class _DraggableResizableState extends State<DraggableResizable> {
                       decoratedChild,
                       if (widget.canTransform && isTouchInputSupported) ...[
                         Positioned(
-                          top: floatingActionPadding / 2,
-                          left: floatingActionPadding / 2,
+                          top: LayoutConst.floatingActionPadding / 2,
+                          left: LayoutConst.floatingActionPadding / 2,
                           child: topLeftCorner,
                         ),
                         Positioned(
                           right: (normalizedWidth / 2) -
-                              (floatingActionDiameter / 2) +
-                              (cornerDiameter / 2) +
-                              (floatingActionPadding / 2),
+                              (LayoutConst.floatingActionDiameter / 2) +
+                              (LayoutConst.cornerDiameter / 2) +
+                              (LayoutConst.floatingActionPadding / 2),
                           child: topCenter,
                         ),
                         Positioned(
-                          bottom: floatingActionPadding / 2,
-                          left: floatingActionPadding / 2,
+                          bottom: LayoutConst.floatingActionPadding / 2,
+                          left: LayoutConst.floatingActionPadding / 2,
                           child: deleteButton,
                         ),
                         Positioned(
-                          top: normalizedHeight + floatingActionPadding / 2,
-                          left: normalizedWidth + floatingActionPadding / 2,
+                          top: normalizedHeight + LayoutConst.floatingActionPadding / 2,
+                          left: normalizedWidth + LayoutConst.floatingActionPadding / 2,
                           child: bottomRightCorner,
                         ),
                         Positioned(
-                          top: floatingActionPadding / 2,
-                          right: floatingActionPadding / 2,
+                          top: LayoutConst.floatingActionPadding / 2,
+                          right: LayoutConst.floatingActionPadding / 2,
                           child: rotateAnchor,
                         ),
                       ],

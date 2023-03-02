@@ -339,6 +339,7 @@ mixin PropertyMixin {
     void Function(Color) onColorChanged,
   ) {
     return Tooltip(
+      preferBelow: false,
       message: CretaStudioLang.colorTooltip,
       child: MyColorIndicator(
         opacity: opacity,

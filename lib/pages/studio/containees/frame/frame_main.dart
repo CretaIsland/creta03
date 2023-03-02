@@ -16,6 +16,7 @@ import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 //import '../../studio_constant.dart';
+import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
@@ -55,7 +56,11 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
   @override
   Widget build(BuildContext context) {
-    applyScale = StudioVariables.scale / StudioVariables.fitScale;
+    //applyScale = StudioVariables.scale / StudioVariables.fitScale;
+
+    applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
+    //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
+
     _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     logger.info('==========================FrameMain initialized================');
 
@@ -83,7 +88,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       height: widget.pageHeight,
       // List of Stickers
       onUpdate: (update, mid) {
-        //logger.fine('saveItem ${update.angle}');
+        logger.finest('onUpdate $update');
         saveItem(update, mid);
         FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
@@ -96,10 +101,14 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         removeItem(mid);
       },
       onTap: (mid) {
-        logger.fine('frame clicked');
-        // setState(() {
-        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
-        _frameManager?.setSelectedMid(mid); // });
+        logger.fine('Gest1 : onTop in StikcersView but File is frame_name.dart, setState');
+        FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
+        if (frame == null || frame.mid != mid) {
+          setState(() {
+            BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
+            _frameManager?.setSelectedMid(mid);
+          });
+        }
         //BookMainPage.bookManagerHolder!.notify();
       },
       onResizeButtonTap: () {
@@ -121,8 +130,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
       double frameWidth = model.width.value * applyScale;
       double frameHeight = model.height.value * applyScale;
-      double posX = model.posX.value * applyScale;
-      double posY = model.posY.value * applyScale;
+      double posX = model.posX.value * applyScale - LayoutConst.floatingActionPadding;
+      double posY = model.posY.value * applyScale - LayoutConst.floatingActionPadding;
 
       GlobalKey<StickerState> stickerKey = GlobalKey<StickerState>();
       _frameManager!.frameKeyMap[model.mid] = stickerKey;
@@ -220,10 +229,12 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       //logger.fine('before save widthxheight = ${model.width.value}x${model.height.value}');
 
       model.angle.set(update.angle * (180 / pi), save: false);
-      model.posX.set(update.position.dx, save: false);
-      model.posY.set(update.position.dy, save: false);
-      model.width.set(update.size.width, save: false);
-      model.height.set(update.size.height, save: false);
+      model.posX
+          .set((update.position.dx + LayoutConst.floatingActionDiameter) / applyScale, save: false);
+      model.posY
+          .set((update.position.dy + LayoutConst.floatingActionDiameter) / applyScale, save: false);
+      model.width.set(update.size.width / applyScale, save: false);
+      model.height.set(update.size.height / applyScale, save: false);
       model.save();
 
       //logger.fine('after save widthxheight = ${model.width.value}x${model.height.value}');

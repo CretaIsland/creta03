@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ import '../../book_main_page.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
 import '../containee_mixin.dart';
+import '../containee_nofifier.dart';
 import '../frame/frame_main.dart';
 
 class PageMain extends StatefulWidget {
@@ -120,22 +122,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   Widget _drawPage(bool useColor) {
     return GestureDetector(
-      onLongPressDown: (details) {
-        //logger.fine('page clicked , ${details.localPosition}, ${details.globalPosition}');
-
-        // String? selectedMid = CretaUtils.isPointInsideWidgetList(
-        //     _frameManager!.frameKeyMap, details.globalPosition, floatingActionDiameter);
-
-        // if (selectedMid != null) {
-        //   FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-        //   frameManager?.setSelectedMid(selectedMid);
-        //   BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
-        //   return;
-        // }
-
-        // logger.fine('page clicked');
-        // BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
-      },
+      behavior: HitTestBehavior.translucent,
+      onLongPressDown: pageClicked,
       child: Container(
         decoration: useColor ? _pageDeco() : null,
         width: widget.pageWidth,
@@ -143,6 +131,21 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         child: _waitFrame(),
       ),
     );
+  }
+
+  void pageClicked(LongPressDownDetails details) {
+    logger.fine(
+        'Gest3 : onLongPressDown in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
+    if (BookMainPage.containeeNotifier!.isFrameClick == true) {
+      BookMainPage.containeeNotifier!.setFrameClick(false);
+      logger.fine('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
+      return;
+    }
+    logger.fine('page clicked');
+    setState(() {
+      _frameManager?.clearSelectedMid();
+    });
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
   }
 
   BoxDecoration _pageDeco() {
@@ -195,18 +198,14 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _drawFrames() {
-    return
-        // SizedBox(
-        //   width: widget.pageWidth,
-        //   height: widget.pageHeight,
-        //   child:
-        FrameMain(
-      key: GlobalKey(),
-      pageWidth: widget.pageWidth,
-      pageHeight: widget.pageHeight,
-      pageModel: widget.pageModel,
-      bookModel: widget.bookModel,
-      //     ),
-    );
+    return Consumer<FrameManager>(builder: (context, frameManager, child) {
+      return FrameMain(
+        key: GlobalKey(),
+        pageWidth: widget.pageWidth,
+        pageHeight: widget.pageHeight,
+        pageModel: widget.pageModel,
+        bookModel: widget.bookModel,
+      );
+    });
   }
 }

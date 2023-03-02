@@ -605,6 +605,7 @@ class Snippet {
     required Widget child,
   }) {
     return Tooltip(
+      preferBelow: false,
       textStyle: CretaFont.bodyESmall.copyWith(color: fgColor),
       decoration: BoxDecoration(
           color: bgColor.withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(24))),

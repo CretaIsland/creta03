@@ -20,6 +20,14 @@ class ContaineeNotifier extends ChangeNotifier {
     _isOpenSize = val;
   }
 
+  bool _isFrameClick = false;
+  bool get isFrameClick => _isFrameClick;
+  bool setFrameClick(bool val) {
+    bool retval = _isFrameClick;
+    _isFrameClick = val;
+    return retval;
+  }
+
   ContaineeNotifier();
 
   void set(ContaineeEnum val, {bool doNoti = true}) {

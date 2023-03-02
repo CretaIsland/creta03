@@ -8,6 +8,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/buttons/creta_slider.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
@@ -33,7 +34,8 @@ import '../property_mixin.dart';
 // class RightBottomSelected extends CornerOpenFlag {}
 
 class FrameProperty extends StatefulWidget {
-  const FrameProperty({super.key});
+  final FrameModel model;
+  const FrameProperty({super.key, required this.model});
 
   @override
   State<FrameProperty> createState() => _FramePropertyState();
@@ -44,10 +46,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //late ScrollController _scrollController;
   double horizontalPadding = 24;
   // ignore: unused_field
-  FrameModel? _model;
   // ignore: unused_field
   FrameManager? _frameManager;
   bool _isTransitionOpen = false;
+  bool _isBorderOpen = false;
   bool _isSizeOpen = false;
   bool _isRadiusOpen = false;
   // LeftTopSelected _isLeftTopSelected = LeftTopSelected();
@@ -62,6 +64,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
     super.initMixin();
     super.initState();
+
+    _isRadiusOpen = !(widget.model.radiusLeftBottom.value == widget.model.radiusRightBottom.value &&
+        widget.model.radiusRightBottom.value == widget.model.radiusLeftTop.value &&
+        widget.model.radiusLeftTop.value == widget.model.radiusRightTop.value);
   }
 
   @override
@@ -72,23 +78,19 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
   @override
   Widget build(BuildContext context) {
-    _model = BookMainPage.pageManagerHolder!.getSelectedFrame();
-    if (_model == null) {
-      return SizedBox.shrink();
-    }
+    // _model = BookMainPage.pageManagerHolder!.getSelectedFrame();
+    // if (_model == null) {
+    //   return SizedBox.shrink();
+    // }
     //frameEvent = Get.find(/*tag: 'frameEvent1'*/);
     final FrameEventController aController = Get.find(/*tag: 'frameEvent1'*/);
     frameEvent = aController;
 
-    _isRadiusOpen = !(_model!.radiusLeftBottom.value == _model!.radiusRightBottom.value &&
-        _model!.radiusRightBottom.value == _model!.radiusLeftTop.value &&
-        _model!.radiusLeftTop.value == _model!.radiusRightTop.value);
-
     return StreamBuilder<FrameModel>(
         stream: aController.eventStream.stream,
         builder: (context, snapshot) {
-          if (snapshot.data != null && snapshot.data!.mid == _model!.mid) {
-            snapshot.data!.copyTo(_model!);
+          if (snapshot.data != null && snapshot.data!.mid == widget.model.mid) {
+            snapshot.data!.copyTo(widget.model);
           }
 
           return Column(children: [
@@ -105,13 +107,15 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             propertyDivider(),
             _pageTransition(),
             propertyDivider(),
+            _border(),
+            propertyDivider(),
           ]);
         });
   }
 
   Widget _pageSize() {
-    double height = _model!.height.value;
-    double width = _model!.width.value;
+    double height = widget.model.height.value;
+    double width = widget.model.width.value;
 
     return propertyCard(
       padding: horizontalPadding,
@@ -153,11 +157,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       width: 45,
                       limit: 5,
                       textFieldKey: GlobalKey(),
-                      value: _model!.posX.value.round().toString(),
+                      value: widget.model.posX.value.round().toString(),
                       hintText: '',
                       onEditComplete: ((value) {
-                        _model!.posX.set(int.parse(value).toDouble());
-                        frameEvent?.sendEvent(_model!);
+                        widget.model.posX.set(int.parse(value).toDouble());
+                        frameEvent?.sendEvent(widget.model);
                       }),
                       minNumber: 0,
                     ),
@@ -179,12 +183,12 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       width: 45,
                       limit: 5,
                       textFieldKey: GlobalKey(),
-                      value: _model!.posY.value.round().toString(),
+                      value: widget.model.posY.value.round().toString(),
                       hintText: '',
                       minNumber: 0,
                       onEditComplete: ((value) {
-                        _model!.posY.set(int.parse(value).toDouble());
-                        frameEvent?.sendEvent(_model!);
+                        widget.model.posY.set(int.parse(value).toDouble());
+                        frameEvent?.sendEvent(widget.model);
                       }),
                     ),
                   ],
@@ -218,10 +222,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             width: 45,
                             limit: 5,
                             textFieldKey: GlobalKey(),
-                            value: _model!.width.value.round().toString(),
+                            value: widget.model.width.value.round().toString(),
                             hintText: '',
                             onEditComplete: ((value) {
-                              _sizeChanged(value, _model!.width, _model!.height);
+                              _sizeChanged(value, widget.model.width, widget.model.height);
                             }),
                             minNumber: 10,
                           ),
@@ -231,14 +235,15 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     BTN.fill_gray_i_m(
                         tooltip: CretaStudioLang.fixedRatio,
                         tooltipBg: CretaColor.text[400]!,
-                        icon: _model!.isFixedRatio.value
+                        icon: widget.model.isFixedRatio.value
                             ? Icons.lock_outlined
                             : Icons.lock_open_outlined,
-                        iconColor:
-                            _model!.isFixedRatio.value ? CretaColor.primary : CretaColor.text[700]!,
+                        iconColor: widget.model.isFixedRatio.value
+                            ? CretaColor.primary
+                            : CretaColor.text[700]!,
                         onPressed: () {
                           setState(() {
-                            _model!.isFixedRatio.set(!_model!.isFixedRatio.value);
+                            widget.model.isFixedRatio.set(!widget.model.isFixedRatio.value);
                           });
                         }),
                     SizedBox(
@@ -256,11 +261,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             width: 45,
                             limit: 5,
                             textFieldKey: GlobalKey(),
-                            value: _model!.height.value.round().toString(),
+                            value: widget.model.height.value.round().toString(),
                             hintText: '',
                             minNumber: 10,
                             onEditComplete: ((value) {
-                              _sizeChanged(value, _model!.height, _model!.width);
+                              _sizeChanged(value, widget.model.height, widget.model.width);
                             }),
                           ),
                         ],
@@ -280,14 +285,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     if (_isFullScreen(book)) return;
 
                     mychangeStack.startTrans();
-                    _model!.height.set(book.height.value);
-                    _model!.width.set(book.width.value);
-                    _model!.posX.set(0);
-                    _model!.posY.set(0);
+                    widget.model.height.set(book.height.value);
+                    widget.model.width.set(book.width.value);
+                    widget.model.posX.set(0);
+                    widget.model.posY.set(0);
                     mychangeStack.endTrans();
                     //});
                     logger.finest('sendEvent');
-                    frameEvent!.sendEvent(_model!);
+                    frameEvent!.sendEvent(widget.model);
                   }),
             ],
           ),
@@ -313,18 +318,18 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       width: 45,
                       limit: 5,
                       textFieldKey: GlobalKey(),
-                      value: _model!.angle.value.round().toString(),
+                      value: widget.model.angle.value.round().toString(),
                       hintText: '',
                       onEditComplete: ((value) {
                         logger.fine('onEditComplete $value');
                         double newValue = int.parse(value).toDouble();
-                        if (_model!.angle.value == newValue) {
+                        if (widget.model.angle.value == newValue) {
                           return;
                         }
-                        _model!.angle.set(newValue);
+                        widget.model.angle.set(newValue);
                         //BookMainPage.bookManagerHolder!.notify();
-                        frameEvent!.sendEvent(_model!);
-                        logger.fine('onEditComplete ${_model!.angle.value}');
+                        frameEvent!.sendEvent(widget.model);
+                        logger.fine('onEditComplete ${widget.model.angle.value}');
                       }),
                       minNumber: 0,
                     ),
@@ -336,9 +341,9 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     //     iconSize: 18,
                     //     icon: Icons.rotate_90_degrees_ccw_outlined,
                     //     onPressed: () {
-                    //       _model!.angle.set((_model!.angle.value + 270) % 360);
+                    //       widget.model.angle.set((widget.model.angle.value + 270) % 360);
                     //       logger.finest('sendEvent');
-                    //       frameEvent!.sendEvent(_model!);
+                    //       frameEvent!.sendEvent(widget.model);
                     //     }),
                   ],
                 ),
@@ -348,12 +353,27 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   tooltip: CretaStudioLang.angleTooltip,
                   tooltipBg: CretaColor.text[400]!,
                   iconSize: 18,
+                  icon: Icons.rotate_90_degrees_ccw_outlined,
+                  onPressed: () {
+                    int turns = (widget.model.angle.value / 45).round() - 1;
+                    double angle = (turns * 45.0) % 360;
+                    if (angle < 0) {
+                      angle = 360 - angle;
+                    }
+                    widget.model.angle.set(angle);
+                    logger.finest('sendEvent');
+                    frameEvent!.sendEvent(widget.model);
+                  }),
+              BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.angleTooltip,
+                  tooltipBg: CretaColor.text[400]!,
+                  iconSize: 18,
                   icon: Icons.rotate_90_degrees_cw_outlined,
                   onPressed: () {
-                    int turns = (_model!.angle.value / 45).round() + 1;
-                    _model!.angle.set(turns * 45.0);
+                    int turns = (widget.model.angle.value / 45).round() + 1;
+                    widget.model.angle.set((turns * 45.0) % 360);
                     logger.finest('sendEvent');
-                    frameEvent!.sendEvent(_model!);
+                    frameEvent!.sendEvent(widget.model);
                   }),
             ],
           ),
@@ -379,24 +399,24 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       width: 45,
                       limit: 5,
                       textFieldKey: GlobalKey(),
-                      value: _model!.radius.value.round().toString(),
+                      value: widget.model.radius.value.round().toString(),
                       hintText: '',
                       onEditComplete: ((value) {
                         logger.fine('onEditComplete $value');
                         double newValue = int.parse(value).toDouble();
-                        if (_model!.radius.value == newValue) {
+                        if (widget.model.radius.value == newValue) {
                           return;
                         }
                         mychangeStack.startTrans();
-                        _model!.radius.set(newValue);
-                        _model!.radiusLeftTop.set(newValue);
-                        _model!.radiusRightTop.set(newValue);
-                        _model!.radiusRightBottom.set(newValue);
-                        _model!.radiusLeftBottom.set(newValue);
+                        widget.model.radius.set(newValue);
+                        widget.model.radiusLeftTop.set(newValue);
+                        widget.model.radiusRightTop.set(newValue);
+                        widget.model.radiusRightBottom.set(newValue);
+                        widget.model.radiusLeftBottom.set(newValue);
                         mychangeStack.endTrans();
                         //BookMainPage.bookManagerHolder!.notify();
-                        frameEvent!.sendEvent(_model!);
-                        logger.fine('onEditComplete ${_model!.radius.value}');
+                        frameEvent!.sendEvent(widget.model);
+                        logger.fine('onEditComplete ${widget.model.radius.value}');
                       }),
                       minNumber: 0,
                     ),
@@ -429,7 +449,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           _cornerRadius(
-                            cornerValue: _model!.radiusLeftTop,
+                            cornerValue: widget.model.radiusLeftTop,
                             onEditComplete: ((value) {}),
                             onSelected: (name, value, nvMap) {},
                           ),
@@ -437,7 +457,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             height: 20,
                           ),
                           _cornerRadius(
-                            cornerValue: _model!.radiusLeftBottom,
+                            cornerValue: widget.model.radiusLeftBottom,
                             onEditComplete: ((value) {}),
                             onSelected: (name, value, nvMap) {},
                           ),
@@ -455,7 +475,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             quarterTurns: 3,
                             child: Icon(Icons.rounded_corner_outlined,
                                 size: 24,
-                                color: _model!.radiusLeftTop.value > 0
+                                color: widget.model.radiusLeftTop.value > 0
                                     ? CretaColor.primary
                                     : CretaColor.text[200]!),
                           ),
@@ -463,7 +483,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             quarterTurns: 0,
                             child: Icon(Icons.rounded_corner_outlined,
                                 size: 24,
-                                color: _model!.radiusRightTop.value > 0
+                                color: widget.model.radiusRightTop.value > 0
                                     ? CretaColor.primary
                                     : CretaColor.text[200]!),
                           ),
@@ -471,7 +491,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             quarterTurns: 2,
                             child: Icon(Icons.rounded_corner_outlined,
                                 size: 24,
-                                color: _model!.radiusLeftBottom.value > 0
+                                color: widget.model.radiusLeftBottom.value > 0
                                     ? CretaColor.primary
                                     : CretaColor.text[200]!),
                           ),
@@ -479,7 +499,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             quarterTurns: 1,
                             child: Icon(Icons.rounded_corner_outlined,
                                 size: 24,
-                                color: _model!.radiusRightBottom.value > 0
+                                color: widget.model.radiusRightBottom.value > 0
                                     ? CretaColor.primary
                                     : CretaColor.text[200]!),
                           ),
@@ -492,7 +512,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           _cornerRadius(
-                            cornerValue: _model!.radiusRightTop,
+                            cornerValue: widget.model.radiusRightTop,
                             onEditComplete: ((value) {}),
                             onSelected: (name, value, nvMap) {},
                           ),
@@ -500,7 +520,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             height: 20,
                           ),
                           _cornerRadius(
-                            cornerValue: _model!.radiusRightBottom,
+                            cornerValue: widget.model.radiusRightBottom,
                             onEditComplete: ((value) {}),
                             onSelected: (name, value, nvMap) {},
                           ),
@@ -523,10 +543,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 style: titleStyle,
               ),
               CretaToggleButton(
-                defaultValue: _model!.isAutoFit.value,
+                defaultValue: widget.model.isAutoFit.value,
                 onSelected: (value) {
-                  _model!.isAutoFit.set(value);
-                  frameEvent?.sendEvent(_model!);
+                  widget.model.isAutoFit.set(value);
+                  frameEvent?.sendEvent(widget.model);
                 },
               ),
             ],
@@ -561,7 +581,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         }
         cornerValue.set(newValue);
         //BookMainPage.bookManagerHolder!.notify();
-        frameEvent!.sendEvent(_model!);
+        frameEvent!.sendEvent(widget.model);
         logger.fine('onEditComplete ${cornerValue.value}');
         onEditComplete.call(value);
       }),
@@ -589,7 +609,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //           }
     //           cornerValue.set(newValue);
     //           //BookMainPage.bookManagerHolder!.notify();
-    //           frameEvent!.sendEvent(_model!);
+    //           frameEvent!.sendEvent(widget.model);
     //           logger.fine('onEditComplete ${cornerValue.value}');
     //           onEditComplete.call(value);
     //         }),
@@ -602,7 +622,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //             openFlag.value = value;
     //             cornerValue.set(0);
     //             //BookMainPage.bookManagerHolder!.notify();
-    //             frameEvent!.sendEvent(_model!);
+    //             frameEvent!.sendEvent(widget.model);
     //             logger.fine('onEditComplete ${cornerValue.value}');
     //           } else {
     //             setState(() {
@@ -627,7 +647,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //           openFlag.value = value;
     //           cornerValue.set(0);
     //           //BookMainPage.bookManagerHolder!.notify();
-    //           frameEvent!.sendEvent(_model!);
+    //           frameEvent!.sendEvent(widget.model);
     //           logger.fine('onEditComplete ${cornerValue.value}');
     //         } else {
     //           setState(() {
@@ -656,7 +676,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //         }
     //         cornerValue.set(newValue);
     //         //BookMainPage.bookManagerHolder!.notify();
-    //         frameEvent!.sendEvent(_model!);
+    //         frameEvent!.sendEvent(widget.model);
     //         logger.fine('onEditComplete ${cornerValue.value}');
     //         onEditComplete.call(value);
     //       }),
@@ -676,7 +696,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //                     CretaIconCheckbox(
   //                       onSelected: (name, value, nvMap) {},
   //                       valueMap: {
-  //                         Icons.rounded_corner_outlined: (_model!.radiusLeftTop.value != 0)
+  //                         Icons.rounded_corner_outlined: (widget.model.radiusLeftTop.value != 0)
   //                       },
   //                       iconTurns: 3,
   //                     ),
@@ -687,18 +707,18 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //                       width: 45,
   //                       limit: 5,
   //                       textFieldKey: GlobalKey(),
-  //                       value: _model!.radiusLeftTop.value.round().toString(),
+  //                       value: widget.model.radiusLeftTop.value.round().toString(),
   //                       hintText: '',
   //                       onEditComplete: ((value) {
   //                         logger.fine('onEditComplete $value');
   //                         double newValue = int.parse(value).toDouble();
-  //                         if (_model!.radiusLeftTop.value == newValue) {
+  //                         if (widget.model.radiusLeftTop.value == newValue) {
   //                           return;
   //                         }
-  //                         _model!.radiusLeftTop.set(newValue);
+  //                         widget.model.radiusLeftTop.set(newValue);
   //                         //BookMainPage.bookManagerHolder!.notify();
-  //                         frameEvent!.sendEvent(_model!);
-  //                         logger.fine('onEditComplete ${_model!.radiusLeftTop.value}');
+  //                         frameEvent!.sendEvent(widget.model);
+  //                         logger.fine('onEditComplete ${widget.model.radiusLeftTop.value}');
   //                       }),
   //                       minNumber: 0,
   //                     ),
@@ -708,10 +728,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   // }
 
   bool _isFullScreen(BookModel book) {
-    if (_model!.width.value == book.width.value &&
-        _model!.width.value == book.height.value &&
-        _model!.posX.value == 0 &&
-        _model!.posY.value == 0) {
+    if (widget.model.width.value == book.width.value &&
+        widget.model.width.value == book.height.value &&
+        widget.model.posX.value == 0 &&
+        widget.model.posY.value == 0) {
       return true;
     }
     return false;
@@ -728,13 +748,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       return;
     }
 
-    if (_model!.isFixedRatio.value == true) {
+    if (widget.model.isFixedRatio.value == true) {
       double ratio = counterAttr.value / targetAttr.value;
       counterAttr.set((newValue * ratio).roundToDouble());
     }
     targetAttr.set(newValue);
     //BookMainPage.bookManagerHolder!.notify();
-    frameEvent!.sendEvent(_model!);
+    frameEvent!.sendEvent(widget.model);
     logger.fine('onEditComplete ${targetAttr.value}');
   }
 
@@ -743,26 +763,26 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: colorPropertyCard(
         title: CretaStudioLang.frameBgColor,
-        color1: _model!.bgColor1.value,
-        color2: _model!.bgColor2.value,
-        opacity: _model!.opacity.value,
-        gradationType: _model!.gradationType.value,
+        color1: widget.model.bgColor1.value,
+        color2: widget.model.bgColor2.value,
+        opacity: widget.model.opacity.value,
+        gradationType: widget.model.gradationType.value,
         cardOpenPressed: () {
           setState(() {});
         },
         onOpacityDragComplete: (value) {
           setState(() {
-            _model!.opacity.set(1 - (value / 100));
-            logger.finest('opacity1=${_model!.opacity.value}');
+            widget.model.opacity.set(1 - (value / 100));
+            logger.finest('opacity1=${widget.model.opacity.value}');
           });
-          frameEvent!.sendEvent(_model!);
+          frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
         },
         onColor1Changed: (val) {
           setState(() {
-            _model!.bgColor1.set(val);
+            widget.model.bgColor1.set(val);
           });
-          frameEvent!.sendEvent(_model!);
+          frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
         },
       ),
@@ -776,27 +796,27 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         onPressed: () {
           setState(() {});
         },
-        bgColor1: _model!.bgColor1.value,
-        bgColor2: _model!.bgColor2.value,
-        opacity: _model!.opacity.value,
-        gradationType: _model!.gradationType.value,
+        bgColor1: widget.model.bgColor1.value,
+        bgColor2: widget.model.bgColor2.value,
+        opacity: widget.model.opacity.value,
+        gradationType: widget.model.gradationType.value,
         onGradationTapPressed: (GradationType type, Color color1, Color color2) {
           logger.finest('GradationIndicator clicked');
           setState(() {
-            if (_model!.gradationType.value == type) {
-              _model!.gradationType.set(GradationType.none);
+            if (widget.model.gradationType.value == type) {
+              widget.model.gradationType.set(GradationType.none);
             } else {
-              _model!.gradationType.set(type);
+              widget.model.gradationType.set(type);
             }
           });
-          frameEvent!.sendEvent(_model!);
+          frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
         },
         onColor2Changed: (Color val) {
           setState(() {
-            _model!.bgColor2.set(val);
+            widget.model.bgColor2.set(val);
           });
-          frameEvent!.sendEvent(_model!);
+          frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
         },
       ),
@@ -807,15 +827,15 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: textureCard(
-        textureType: _model!.textureType.value,
+        textureType: widget.model.textureType.value,
         onPressed: () {
           setState(() {});
         },
         onTextureTapPressed: (val) {
           setState(() {
-            _model!.textureType.set(val);
+            widget.model.textureType.set(val);
           });
-          frameEvent!.sendEvent(_model!);
+          frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
         },
       ),
@@ -823,8 +843,9 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   }
 
   Widget _pageTransition() {
-    logger.finest('pageTransition=${_model!.transitionEffect.value}');
-    List<AnimationType> animations = AnimationType.toAniListFromInt(_model!.transitionEffect.value);
+    logger.finest('pageTransition=${widget.model.transitionEffect.value}');
+    List<AnimationType> animations =
+        AnimationType.toAniListFromInt(widget.model.transitionEffect.value);
     String trails = '';
     for (var ele in animations) {
       logger.finest('anymationTy=[$ele]');
@@ -867,23 +888,119 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           for (int i = 0; i < AnimationType.end.index; i++)
             ExampleBox(
                 key: GlobalKey(),
-                model: _model!,
+                model: widget.model,
                 name: CretaStudioLang.animationTypes[i],
                 aniType: AnimationType.values[i],
                 selected: (i != 0 &&
-                        (AnimationType.values[i].value & _model!.transitionEffect.value ==
+                        (AnimationType.values[i].value & widget.model.transitionEffect.value ==
                             AnimationType.values[i].value) ||
-                    i == 0 && _model!.transitionEffect.value == 0),
+                    i == 0 && widget.model.transitionEffect.value == 0),
                 onSelected: () {
                   setState(() {});
-                  frameEvent!.sendEvent(_model!);
+                  frameEvent!.sendEvent(widget.model);
                   //BookMainPage.bookManagerHolder!.notify();
                 }),
-          // ExampleBox(model: _model!, name: CretaStudioLang.flip, aniType: AnimationType.flip),
-          // ExampleBox(model: _model!, name: CretaStudioLang.shake, aniType: AnimationType.shake),
-          // ExampleBox(model: _model!, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
+          // ExampleBox(model: widget.model, name: CretaStudioLang.flip, aniType: AnimationType.flip),
+          // ExampleBox(model: widget.model, name: CretaStudioLang.shake, aniType: AnimationType.shake),
+          // ExampleBox(model: widget.model, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
         ],
       ),
+    );
+  }
+
+  Widget _border() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: propertyCard(
+        isOpen: _isBorderOpen,
+        onPressed: () {
+          setState(() {
+            _isBorderOpen = !_isBorderOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.border, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: SizedBox(
+          width: 200,
+          child: Text(
+            'no yet impl',
+            textAlign: TextAlign.right,
+            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+          ),
+        ),
+        bodyWidget: _borderBody(
+          color1: widget.model.borderColor.value,
+          thickness: widget.model.thickness.value,
+          onDragComplete: (value) {
+            setState(() {
+              widget.model.thickness.set(value);
+              logger.finest('thickness=${widget.model.thickness.value}');
+            });
+            frameEvent!.sendEvent(widget.model);
+          },
+          onColor1Changed: (color) {
+            setState(() {
+              widget.model.borderColor.set(color);
+            });
+            frameEvent!.sendEvent(widget.model);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _borderBody({
+    required Color color1,
+    required double thickness,
+    required void Function(double) onDragComplete,
+    required Function(Color) onColor1Changed,
+  }) {
+    return Column(
+      children: [
+        //_gradationButton(),
+        propertyLine(
+          // 색
+          name: CretaStudioLang.color,
+          widget: colorIndicator(
+            color1,
+            1.0,
+            onColor1Changed,
+          ),
+        ),
+        propertyLine2(
+          // 두께
+          name: CretaStudioLang.thickness,
+          widget1: SizedBox(
+            height: 22,
+            width: 168,
+            child: CretaSlider(
+              key: UniqueKey(),
+              min: 0,
+              max: 24,
+              value: thickness,
+              onDragComplete: onDragComplete,
+            ),
+          ),
+          widget2: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              CretaTextField.xshortNumber(
+                defaultBorder: Border.all(color: CretaColor.text[100]!),
+                width: 40,
+                limit: 3,
+                textFieldKey: GlobalKey(),
+                value: '${widget.model.thickness.value.round()}',
+                hintText: '',
+                onEditComplete: ((value) {
+                  double thickness = int.parse(value).toDouble();
+                  onDragComplete(thickness);
+                }),
+              ),
+              Text('%', style: CretaFont.bodySmall),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
