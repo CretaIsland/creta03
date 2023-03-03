@@ -243,5 +243,10 @@ class CretaStudioLang {
   static const String autoFitContents = '콘텐츠 크기에 자동 맞춤';
 
   static const String border = '테두리';
+  static const String shadow = '그림자';
   static const String thickness = '두께';
+  static const String spread = '거리';
+  static const String blur = '흐림';
+  static const String direction = '방향';
+  static const String shadowIn = '안쪽그림자';
 }

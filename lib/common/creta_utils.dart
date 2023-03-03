@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
@@ -173,5 +174,15 @@ class CretaUtils {
       }
     }
     return null;
+  }
+
+  static double degreeToRadian(double degree) {
+    return degree * (pi / 180);
+  }
+
+  static Offset getShadowOffset(double degree, double shadowDistance) {
+    double offsetX = shadowDistance * cos(degreeToRadian(degree));
+    double offsetY = shadowDistance * sin(degreeToRadian(degree));
+    return Offset(offsetX, offsetY);
   }
 }

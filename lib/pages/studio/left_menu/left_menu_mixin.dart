@@ -51,13 +51,39 @@ mixin LeftMenuMixin {
     );
   }
 
+  Widget verticalAnimation(
+    BuildContext context, {
+    required Widget child,
+    required double height,
+  }) {
+    //double height = MediaQuery.of(context).size.height;
+    //double closeIconSize = 20.0;
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: Offset(0, -1),
+        end: Offset.zero,
+      ).animate(_animationController),
+      child: FadeTransition(
+        opacity: _animationController,
+        child: Container(
+            //margin: const EdgeInsets.only(top: LayoutConst.layoutMargin),
+            //height: height,
+            height: height,
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            child: child),
+      ),
+    );
+  }
+
   Widget closeButton({required IconData icon, required Function onClose}) {
     return BTN.fill_gray_i_m(
       tooltip: CretaStudioLang.close,
       tooltipBg: CretaColor.text[700]!,
       icon: icon,
       onPressed: () async {
-        await _animationController.reverse();
+        //await _animationController.reverse();
         onClose.call();
       },
     );

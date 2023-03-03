@@ -1,5 +1,6 @@
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_checkbox.dart';
@@ -80,7 +81,9 @@ mixin PropertyMixin {
             ],
           ),
         ),
-        isOpen ? bodyWidget : const SizedBox.shrink(),
+        isOpen
+            ? bodyWidget.animate().scaleY(alignment: Alignment.topCenter)
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -125,6 +128,49 @@ mixin PropertyMixin {
           Text(name, style: titleStyle),
           widget1,
           widget2,
+        ],
+      ),
+    );
+  }
+
+  Widget propertySlider({
+    required String name,
+    required String valueString,
+    required double value,
+    required double min,
+    required double max,
+    required void Function(double) onChannged,
+    required String postfix,
+  }) {
+    return propertyLine2(
+      name: CretaStudioLang.spread,
+      widget1: SizedBox(
+        height: 22,
+        width: 168,
+        child: CretaSlider(
+          key: GlobalKey(),
+          min: min,
+          max: max,
+          value: value,
+          onDragComplete: onChannged,
+        ),
+      ),
+      widget2: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          CretaTextField.xshortNumber(
+            defaultBorder: Border.all(color: CretaColor.text[100]!),
+            width: 40,
+            limit: 3,
+            textFieldKey: GlobalKey(),
+            value: valueString,
+            hintText: '',
+            onEditComplete: ((value) {
+              double val = int.parse(value).toDouble();
+              onChannged(val);
+            }),
+          ),
+          postfix.isNotEmpty ? Text(postfix, style: CretaFont.bodySmall) : const SizedBox.shrink(),
         ],
       ),
     );

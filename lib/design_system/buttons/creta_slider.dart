@@ -11,6 +11,7 @@ class CretaSlider extends StatefulWidget {
   final double max;
   final double value;
   final void Function(double value) onDragComplete;
+  final void Function(double value)? onDragging;
 
   const CretaSlider({
     super.key,
@@ -18,6 +19,7 @@ class CretaSlider extends StatefulWidget {
     required this.max,
     required this.value,
     required this.onDragComplete,
+    this.onDragging,
   });
 
   @override
@@ -68,6 +70,9 @@ class _CretaSliderState extends State<CretaSlider> {
           setState(() {
             clicked = true;
           });
+        },
+        onDragging: (handlerIndex, lowerValue, upperValue) {
+          widget.onDragging?.call(lowerValue);
         },
         onDragCompleted: (handlerIndex, lowerValue, upperValue) {
           setState(() {

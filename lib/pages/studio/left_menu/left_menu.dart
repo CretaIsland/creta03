@@ -1,15 +1,16 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../book_main_page.dart';
+import '../studio_snippet.dart';
 import 'left_menu_frame.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../design_system/creta_font.dart';
 import '../studio_constant.dart';
-import 'left_menu_mixin.dart';
 import 'left_menu_page.dart';
 
 class LeftMenu extends StatefulWidget {
@@ -21,24 +22,39 @@ class LeftMenu extends StatefulWidget {
   State<LeftMenu> createState() => _LeftMenuState();
 }
 
-class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin, LeftMenuMixin {
+class _LeftMenuState
+    extends State<LeftMenu> /* with SingleTickerProviderStateMixin,  LeftMenuMixin  */ {
+  //final bool _closeWidget = false;
+
   @override
   void initState() {
-    super.initAnimation(this);
+    //super.initAnimation(this);
     super.initState();
   }
 
   @override
   void dispose() {
-    super.disposeAnimation();
+    //super.disposeAnimation();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return super.buildAnimation(
-      context,
+    // if (BookMainPage.selectedStick == LeftMenuEnum.None) {
+    //   return Container();
+    // }
+
+    return
+        // super.buildAnimation(
+        //   context,
+        //   width: LayoutConst.leftMenuWidth,
+        //   child:
+        Container(
       width: LayoutConst.leftMenuWidth,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.rightBottum),
+      ),
       child: Stack(
         children: [
           Positioned(
@@ -54,15 +70,29 @@ class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin
                     iconSize: 14,
                     onPressed: () async {},
                   ),
-                  super.closeButton(
-                      icon: Icons.keyboard_double_arrow_left_outlined, onClose: widget.onClose),
+                  BTN.fill_gray_i_m(
+                    tooltip: CretaStudioLang.close,
+                    tooltipBg: CretaColor.text[700]!,
+                    icon: Icons.keyboard_double_arrow_left_outlined,
+                    onPressed: () async {
+                      //await _animationController.reverse();
+                      widget.onClose.call();
+                    },
+                  ),
+                  // super.closeButton(
+                  //     icon: Icons.keyboard_double_arrow_left_outlined,
+                  //     onClose: () {
+                  //       widget.onClose.call();
+                  //     }),
                 ],
               )),
           Positioned(
               left: 28,
               top: 24,
-              child: Text(CretaStudioLang.menuStick[BookMainPage.selectedStick.index],
-                  style: CretaFont.titleLarge)),
+              child: BookMainPage.selectedStick == LeftMenuEnum.None
+                  ? SizedBox.shrink()
+                  : Text(CretaStudioLang.menuStick[BookMainPage.selectedStick.index],
+                      style: CretaFont.titleLarge)),
           Positioned(
             top: 76,
             left: 0,
@@ -70,8 +100,9 @@ class _LeftMenuState extends State<LeftMenu> with SingleTickerProviderStateMixin
             child: eachWidget(BookMainPage.selectedStick),
           )
         ],
+        //),
       ),
-    );
+    ).animate().scaleX(alignment: Alignment.centerLeft);
   }
 
   Widget eachWidget(LeftMenuEnum selected) {

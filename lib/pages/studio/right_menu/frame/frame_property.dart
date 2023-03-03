@@ -50,6 +50,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   FrameManager? _frameManager;
   bool _isTransitionOpen = false;
   bool _isBorderOpen = false;
+  bool _isShadowOpen = false;
   bool _isSizeOpen = false;
   bool _isRadiusOpen = false;
   // LeftTopSelected _isLeftTopSelected = LeftTopSelected();
@@ -108,6 +109,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _pageTransition(),
             propertyDivider(),
             _border(),
+            propertyDivider(),
+            _shadow(),
             propertyDivider(),
           ]);
         });
@@ -999,6 +1002,117 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               Text('%', style: CretaFont.bodySmall),
             ],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _shadow() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: propertyCard(
+        isOpen: _isShadowOpen,
+        onPressed: () {
+          setState(() {
+            _isShadowOpen = !_isShadowOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.shadow, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: SizedBox(
+          width: 200,
+          child: Text(
+            'no yet impl',
+            textAlign: TextAlign.right,
+            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+          ),
+        ),
+        bodyWidget: _shodowBody(
+          shadowColor: widget.model.shadowColor.value,
+          shadowOpacity: widget.model.shadowOpacity.value,
+          shadowSpread: widget.model.shadowSpread.value,
+          shadowBlur: widget.model.shadowBlur.value,
+          shadowDirection: widget.model.shadowDirection.value,
+          onColorChanged: (color) {
+            setState(() {
+              widget.model.shadowColor.set(color);
+            });
+            frameEvent!.sendEvent(widget.model);
+          },
+          onOpacityChanged: (value) {
+            setState(() {
+              widget.model.shadowOpacity.set(value);
+              logger.finest('thickness=${widget.model.shadowOpacity.value}');
+            });
+            frameEvent!.sendEvent(widget.model);
+          },
+          onSpreadChanged: (value) {
+            setState(() {
+              widget.model.shadowOpacity.set(value);
+              logger.finest('shadowOpacity=${widget.model.shadowOpacity.value}');
+            });
+            frameEvent!.sendEvent(widget.model);
+          },
+          onBlurChanged: (value) {
+            setState(() {
+              widget.model.shadowBlur.set(value);
+              logger.finest('shadowBlur=${widget.model.shadowBlur.value}');
+            });
+            frameEvent!.sendEvent(widget.model);
+          },
+          onDirectionChanged: (value) {
+            setState(() {
+              widget.model.shadowDirection.set(value);
+              logger.finest('shadowDirection=${widget.model.shadowDirection.value}');
+            });
+            frameEvent!.sendEvent(widget.model);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _shodowBody({
+    required Color shadowColor,
+    required double shadowOpacity,
+    required double shadowSpread,
+    required double shadowBlur,
+    required double shadowDirection,
+    required Function(Color) onColorChanged,
+    required Function(double) onOpacityChanged,
+    required Function(double) onSpreadChanged,
+    required Function(double) onBlurChanged,
+    required Function(double) onDirectionChanged,
+  }) {
+    return Column(
+      children: [
+        //_shadowExampleButton(shadowColor, shadowOpacity, shadowSpread, shadowBlur,shadowDirection),
+        propertyLine(
+          // 색
+          name: CretaStudioLang.color,
+          widget: colorIndicator(
+            shadowColor,
+            shadowOpacity,
+            onColorChanged,
+          ),
+        ),
+        propertySlider(
+          name: CretaStudioLang.opacity,
+          min: 0,
+          max: 100,
+          value: shadowOpacity,
+          valueString: '${widget.model.shadowOpacity.value.round()}',
+          onChannged: onOpacityChanged,
+          postfix: '%',
+        ),
+        propertySlider(
+          name: CretaStudioLang.spread,
+          min: 0,
+          max: 24,
+          value: shadowSpread,
+          valueString: '${widget.model.shadowSpread.value.round()}',
+          onChannged: onSpreadChanged,
+          postfix: '',
         ),
       ],
     );

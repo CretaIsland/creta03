@@ -103,7 +103,9 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       onTap: (mid) {
         logger.fine('Gest1 : onTop in StikcersView but File is frame_name.dart, setState');
         FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
-        if (frame == null || frame.mid != mid) {
+        if (frame == null ||
+            frame.mid != mid ||
+            BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame) {
           setState(() {
             BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
             _frameManager?.setSelectedMid(mid);

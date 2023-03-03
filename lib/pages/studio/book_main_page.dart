@@ -400,7 +400,7 @@ class _BookMainPageState extends State<BookMainPage> {
                     containeeNotifier.clear();
                   });
                 },
-              ),
+              )
             )
           : Container(width: 0, height: 0, color: Colors.transparent);
     });
