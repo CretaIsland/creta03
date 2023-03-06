@@ -85,28 +85,31 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: colorPropertyCard(
-        title: CretaStudioLang.bookBgColor,
-        color1: widget.model.bgColor1.value,
-        color2: widget.model.bgColor2.value,
-        opacity: widget.model.opacity.value,
-        gradationType: widget.model.gradationType.value,
-        cardOpenPressed: () {
-          setState(() {});
-        },
-        onOpacityDragComplete: (value) {
-          setState(() {
+          title: CretaStudioLang.bookBgColor,
+          color1: widget.model.bgColor1.value,
+          color2: widget.model.bgColor2.value,
+          opacity: widget.model.opacity.value,
+          gradationType: widget.model.gradationType.value,
+          cardOpenPressed: () {
+            setState(() {});
+          },
+          onOpacityDragComplete: (value) {
+            //setState(() {
             widget.model.opacity.set(1 - (value / 100));
             logger.finest('opacity1=${widget.model.opacity.value}');
-          });
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onColor1Changed: (val) {
-          setState(() {
+            //});
+            BookMainPage.bookManagerHolder?.notify();
+          },
+          onColor1Changed: (val) {
+            //setState(() {
             widget.model.bgColor1.set(val);
-          });
-          BookMainPage.bookManagerHolder?.notify();
-        },
-      ),
+            //});
+            BookMainPage.bookManagerHolder?.notify();
+          },
+          onColorIndicatorClicked: () {
+            isColorOpen = true;
+            setState(() {});
+          }),
     );
   }
 
@@ -114,31 +117,35 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: gradationCard(
-        onPressed: () {
-          setState(() {});
-        },
-        bgColor1: widget.model.bgColor1.value,
-        bgColor2: widget.model.bgColor2.value,
-        opacity: widget.model.opacity.value,
-        gradationType: widget.model.gradationType.value,
-        onGradationTapPressed: (GradationType type, Color color1, Color color2) {
-          logger.finest('GradationIndicator clicked');
-          setState(() {
+          onPressed: () {
+            setState(() {});
+          },
+          bgColor1: widget.model.bgColor1.value,
+          bgColor2: widget.model.bgColor2.value,
+          opacity: widget.model.opacity.value,
+          gradationType: widget.model.gradationType.value,
+          onGradationTapPressed: (GradationType type, Color color1, Color color2) {
+            logger.finest('GradationIndicator clicked');
+            //setState(() {
             if (widget.model.gradationType.value == type) {
               widget.model.gradationType.set(GradationType.none);
             } else {
               widget.model.gradationType.set(type);
             }
-          });
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onColor2Changed: (Color val) {
-          setState(() {
+            //});
+            BookMainPage.bookManagerHolder?.notify();
+          },
+          onColor2Changed: (Color val) {
+            //setState(() {
             widget.model.bgColor2.set(val);
-          });
-          BookMainPage.bookManagerHolder?.notify();
-        },
-      ),
+            //});
+            BookMainPage.bookManagerHolder?.notify();
+          },
+          onColorIndicatorClicked: () {
+            setState(() {
+              isGradationOpen = true;
+            });
+          }),
     );
   }
 
@@ -199,12 +206,12 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                   pWidth: widget.model.width.value,
                   pHeight: widget.model.height.value,
                   rotateButtonPresed: (value) {
-                    setState(() {
-                      mychangeStack.startTrans();
-                      widget.model.height.set(width);
-                      widget.model.width.set(height);
-                      mychangeStack.endTrans();
-                    });
+                    //setState(() {
+                    mychangeStack.startTrans();
+                    widget.model.height.set(width);
+                    widget.model.width.set(height);
+                    mychangeStack.endTrans();
+                    //});
                     logger.finest('notify');
                     BookMainPage.bookManagerHolder?.notify();
                   }),

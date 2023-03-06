@@ -5,13 +5,16 @@ import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:r_dotted_line_border/r_dotted_line_border.dart';
 
+import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../../design_system/buttons/creta_slider.dart';
+import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../design_system/menu/creta_widget_drop_down.dart';
 import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
@@ -44,7 +47,8 @@ class FrameProperty extends StatefulWidget {
 class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   // ignore: unused_field
   //late ScrollController _scrollController;
-  double horizontalPadding = 24;
+  final double horizontalPadding = 24;
+  final double boderStyleDropBoxWidth = 224;
   // ignore: unused_field
   // ignore: unused_field
   FrameManager? _frameManager;
@@ -57,6 +61,34 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   // RightTopSelected _isRightTopSelected = RightTopSelected();
   // LeftBottomSelected _isLeftBottomSelected = LeftBottomSelected();
   // RightBottomSelected _isRightBottomSelected = RightBottomSelected();
+
+  // List<Image> _imageList = [
+  //   Image.asset('assets/line0.png'),
+  //   Image.asset('assets/line1.png'),
+  //   Image.asset('assets/line2.png'),
+  //   Image.asset('assets/line3.png'),
+  //   Image.asset('assets/line4.png'),
+  //   Image.asset('assets/line5.png'),
+  // ];
+
+  Widget _borderStyle(double width, double height, double dottedLength, double dottedSpace) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: (boderStyleDropBoxWidth - width) / 2,
+          right: (boderStyleDropBoxWidth - width) / 2,
+          top: height),
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        border: RDottedLineBorder(
+          dottedLength: dottedLength,
+          dottedSpace: dottedSpace,
+          top: BorderSide(),
+        ),
+      ),
+    );
+  }
 
   FrameEventController? frameEvent;
   @override
@@ -120,9 +152,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     double height = widget.model.height.value;
     double width = widget.model.width.value;
 
+    if (BookMainPage.containeeNotifier!.isOpenSize) {
+      _isSizeOpen = true;
+    }
+
     return propertyCard(
       padding: horizontalPadding,
-      isOpen: _isSizeOpen || BookMainPage.containeeNotifier!.isOpenSize,
+      isOpen: _isSizeOpen,
       onPressed: () {
         setState(() {
           _isSizeOpen = !_isSizeOpen;
@@ -774,19 +810,23 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {});
         },
         onOpacityDragComplete: (value) {
-          setState(() {
-            widget.model.opacity.set(1 - (value / 100));
-            logger.finest('opacity1=${widget.model.opacity.value}');
-          });
+          //setState(() {
+          widget.model.opacity.set(1 - (value / 100));
+          logger.finest('opacity1=${widget.model.opacity.value}');
+          //});
           frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
         },
         onColor1Changed: (val) {
-          setState(() {
-            widget.model.bgColor1.set(val);
-          });
+          //setState(() {
+          widget.model.bgColor1.set(val);
+          //});
           frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
+        },
+        onColorIndicatorClicked: () {
+          isColorOpen = true;
+          setState(() {});
         },
       ),
     );
@@ -805,22 +845,27 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         gradationType: widget.model.gradationType.value,
         onGradationTapPressed: (GradationType type, Color color1, Color color2) {
           logger.finest('GradationIndicator clicked');
-          setState(() {
-            if (widget.model.gradationType.value == type) {
-              widget.model.gradationType.set(GradationType.none);
-            } else {
-              widget.model.gradationType.set(type);
-            }
-          });
+          //setState(() {
+          if (widget.model.gradationType.value == type) {
+            widget.model.gradationType.set(GradationType.none);
+          } else {
+            widget.model.gradationType.set(type);
+          }
+          //});
           frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
         },
         onColor2Changed: (Color val) {
-          setState(() {
-            widget.model.bgColor2.set(val);
-          });
+          //setState(() {
+          widget.model.bgColor2.set(val);
+          //});
           frameEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
+        },
+        onColorIndicatorClicked: () {
+          setState(() {
+            isGradationOpen = true;
+          });
         },
       ),
     );
@@ -923,83 +968,127 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.border, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: SizedBox(
-          width: 200,
-          child: Text(
-            'no yet impl',
-            textAlign: TextAlign.right,
-            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
-          ),
+        trailWidget: colorIndicator(
+          widget.model.borderColor.value,
+          1.0,
+          onColorChanged: (color) {
+            widget.model.borderColor.set(color);
+            frameEvent!.sendEvent(widget.model);
+          },
+          onClicked: () {
+            setState(() {
+              _isBorderOpen = true;
+            });
+          },
         ),
         bodyWidget: _borderBody(
-          color1: widget.model.borderColor.value,
-          thickness: widget.model.thickness.value,
-          onDragComplete: (value) {
-            setState(() {
-              widget.model.thickness.set(value);
-              logger.finest('thickness=${widget.model.thickness.value}');
-            });
-            frameEvent!.sendEvent(widget.model);
-          },
-          onColor1Changed: (color) {
-            setState(() {
+            color1: widget.model.borderColor.value,
+            borderWidth: widget.model.borderWidth.value,
+            onBorderWidthChanged: (value) {
+              //setState(() {
+              widget.model.borderWidth.set(value);
+              logger.finest('borderWidth=${widget.model.borderWidth.value}');
+              //});
+              frameEvent!.sendEvent(widget.model);
+            },
+            onColor1Changed: (color) {
+              //setState(() {
               widget.model.borderColor.set(color);
-            });
-            frameEvent!.sendEvent(widget.model);
-          },
-        ),
+              //});
+              frameEvent!.sendEvent(widget.model);
+            },
+            onPositionChanged: (value) {
+              int idx = 1;
+              for (String val in CretaStudioLang.borderPosition.values) {
+                if (value == val) {
+                  widget.model.borderPosition.set(BorderPositionType.values[idx]);
+                }
+                idx++;
+              }
+              frameEvent!.sendEvent(widget.model);
+            },
+            onStyleChanged: (value) {
+              widget.model.borderType.set(value!);
+              frameEvent!.sendEvent(widget.model);
+            }),
       ),
     );
   }
 
   Widget _borderBody({
     required Color color1,
-    required double thickness,
-    required void Function(double) onDragComplete,
+    required double borderWidth,
+    required void Function(double) onBorderWidthChanged,
+    required void Function(String) onPositionChanged,
+    required void Function(int?) onStyleChanged,
     required Function(Color) onColor1Changed,
   }) {
     return Column(
       children: [
         //_gradationButton(),
         propertyLine(
-          // 색
+          // 보더 색
           name: CretaStudioLang.color,
-          widget: colorIndicator(
-            color1,
-            1.0,
-            onColor1Changed,
+          widget: colorIndicator(color1, 1.0, onColorChanged: onColor1Changed, onClicked: () {}),
+        ),
+
+        propertySlider(
+          // 보더 두께
+          name: CretaStudioLang.borderWidth,
+          min: 0,
+          max: 36,
+          value: borderWidth,
+          valueString: '${widget.model.borderWidth.value.round()}',
+          onChannged: onBorderWidthChanged,
+        ),
+
+        // 보더 위치
+        Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(CretaStudioLang.borderPostion, style: titleStyle),
+              CretaTabButton(
+                onEditComplete: onPositionChanged,
+                width: 75,
+                height: 24,
+                selectedTextColor: CretaColor.primary,
+                unSelectedTextColor: CretaColor.text[700]!,
+                selectedColor: Colors.white,
+                unSelectedColor: CretaColor.text[100]!,
+                selectedBorderColor: CretaColor.primary,
+                defaultString: CretaStudioLang.borderPosition.values.first,
+                buttonLables: CretaStudioLang.borderPosition.keys.toList(),
+                buttonValues: CretaStudioLang.borderPosition.values.toList(),
+              ),
+            ],
           ),
         ),
-        propertyLine2(
-          // 두께
-          name: CretaStudioLang.thickness,
-          widget1: SizedBox(
-            height: 22,
-            width: 168,
-            child: CretaSlider(
-              key: UniqueKey(),
-              min: 0,
-              max: 24,
-              value: thickness,
-              onDragComplete: onDragComplete,
-            ),
-          ),
-          widget2: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+
+        // 보더 스타일
+        Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CretaTextField.xshortNumber(
-                defaultBorder: Border.all(color: CretaColor.text[100]!),
-                width: 40,
-                limit: 3,
-                textFieldKey: GlobalKey(),
-                value: '${widget.model.thickness.value.round()}',
-                hintText: '',
-                onEditComplete: ((value) {
-                  double thickness = int.parse(value).toDouble();
-                  onDragComplete(thickness);
-                }),
+              Text(CretaStudioLang.style, style: titleStyle),
+              // CretaImageDropDown(
+              //   imageList: _imageList,
+              //   defaultValue: widget.model.borderType.value,
+              //   onChanged: onStyleChanged,
+              //   width: 180,
+              //   height: 24,
+              // ),
+              CretaWidgetDropDown(
+                items: CretaUtils.borderStyle.map((e) {
+                  return _borderStyle(156, 10, e[0], e[1]);
+                }).toList(),
+                defaultValue: widget.model.borderType.value,
+                onSelected: onStyleChanged,
+                width: boderStyleDropBoxWidth,
+                height: 32,
               ),
-              Text('%', style: CretaFont.bodySmall),
             ],
           ),
         ),
@@ -1033,38 +1122,39 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           shadowSpread: widget.model.shadowSpread.value,
           shadowBlur: widget.model.shadowBlur.value,
           shadowDirection: widget.model.shadowDirection.value,
+          shadowOffset: widget.model.shadowOffset.value,
           onColorChanged: (color) {
-            setState(() {
-              widget.model.shadowColor.set(color);
-            });
+            //setState(() {
+            widget.model.shadowColor.set(color);
+            //});
             frameEvent!.sendEvent(widget.model);
           },
           onOpacityChanged: (value) {
-            setState(() {
-              widget.model.shadowOpacity.set(value);
-              logger.finest('thickness=${widget.model.shadowOpacity.value}');
-            });
+            //setState(() {
+            widget.model.shadowOpacity.set(value);
+            logger.finest('borderWidth=${widget.model.shadowOpacity.value}');
+            //});
             frameEvent!.sendEvent(widget.model);
           },
           onSpreadChanged: (value) {
-            setState(() {
-              widget.model.shadowOpacity.set(value);
-              logger.finest('shadowOpacity=${widget.model.shadowOpacity.value}');
-            });
+            //setState(() {
+            widget.model.shadowOpacity.set(value);
+            logger.finest('shadowOpacity=${widget.model.shadowOpacity.value}');
+            //});
             frameEvent!.sendEvent(widget.model);
           },
           onBlurChanged: (value) {
-            setState(() {
-              widget.model.shadowBlur.set(value);
-              logger.finest('shadowBlur=${widget.model.shadowBlur.value}');
-            });
+            //setState(() {
+            widget.model.shadowBlur.set(value);
+            logger.finest('shadowBlur=${widget.model.shadowBlur.value}');
+            //});
             frameEvent!.sendEvent(widget.model);
           },
           onDirectionChanged: (value) {
-            setState(() {
-              widget.model.shadowDirection.set(value);
-              logger.finest('shadowDirection=${widget.model.shadowDirection.value}');
-            });
+            //setState(() {
+            widget.model.shadowDirection.set(value);
+            logger.finest('shadowDirection=${widget.model.shadowDirection.value}');
+            //});
             frameEvent!.sendEvent(widget.model);
           },
         ),
@@ -1078,6 +1168,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     required double shadowSpread,
     required double shadowBlur,
     required double shadowDirection,
+    required double shadowOffset,
     required Function(Color) onColorChanged,
     required Function(double) onOpacityChanged,
     required Function(double) onSpreadChanged,
@@ -1088,15 +1179,30 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       children: [
         //_shadowExampleButton(shadowColor, shadowOpacity, shadowSpread, shadowBlur,shadowDirection),
         propertyLine(
-          // 색
+          // 그림자 색
           name: CretaStudioLang.color,
           widget: colorIndicator(
             shadowColor,
             shadowOpacity,
-            onColorChanged,
+            onColorChanged: onColorChanged,
+            onClicked: () {
+              setState(() {
+                _isShadowOpen = true;
+              });
+            },
           ),
         ),
         propertySlider(
+          // 그림자 방향
+          name: CretaStudioLang.direction,
+          min: 0,
+          max: 360,
+          value: shadowDirection,
+          valueString: '${widget.model.shadowDirection.value.round()}',
+          onChannged: onOpacityChanged,
+        ),
+        propertySlider(
+          // 그림자 투명도
           name: CretaStudioLang.opacity,
           min: 0,
           max: 100,
@@ -1106,13 +1212,31 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           postfix: '%',
         ),
         propertySlider(
+          // 그림자 크기
           name: CretaStudioLang.spread,
           min: 0,
           max: 24,
           value: shadowSpread,
           valueString: '${widget.model.shadowSpread.value.round()}',
           onChannged: onSpreadChanged,
-          postfix: '',
+        ),
+        propertySlider(
+          // 그림자 블러
+          name: CretaStudioLang.blur,
+          min: 0,
+          max: 24,
+          value: shadowBlur,
+          valueString: '${widget.model.shadowBlur.value.round()}',
+          onChannged: onBlurChanged,
+        ),
+        propertySlider(
+          // 그림자 거리
+          name: CretaStudioLang.offset,
+          min: 0,
+          max: 24,
+          value: shadowOffset,
+          valueString: '${widget.model.shadowOffset.value.round()}',
+          onChannged: onBlurChanged,
         ),
       ],
     );

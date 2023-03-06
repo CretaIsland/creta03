@@ -244,9 +244,18 @@ class CretaStudioLang {
 
   static const String border = '테두리';
   static const String shadow = '그림자';
-  static const String thickness = '두께';
-  static const String spread = '거리';
+  static const String borderWidth = '두께';
+  static const String offset = '거리';
+  static const String spread = '크기';
   static const String blur = '흐림';
   static const String direction = '방향';
+  static const String style = '스타일';
+  static const String borderPostion = '외곽선 위치';
   static const String shadowIn = '안쪽그림자';
+
+  static Map<String, String> borderPosition = {
+    '경계 외부': 'outSide',
+    '경계 내부': 'inSide',
+    '경계 중앙': 'center',
+  };
 }

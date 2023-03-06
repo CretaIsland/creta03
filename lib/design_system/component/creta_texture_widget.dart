@@ -60,49 +60,92 @@ extension GlassWidget<T extends Widget> on T {
     );
   }
 
-  ClipRRect asCretaGlass({
+  Widget asCretaGlass({
     double blurX = 15.0,
     double blurY = 15.0,
     //Color tintColor = Colors.white,
     bool frosted = true,
     BorderRadius? clipBorderRadius = BorderRadius.zero,
+    BorderRadius? radius = BorderRadius.zero,
     Clip clipBehaviour = Clip.antiAlias,
     TileMode tileMode = TileMode.clamp,
     CustomClipper<RRect>? clipper,
+    BoxBorder? border,
+    required Color bgColor1,
+    required Color bgColor2,
+    required double opacity,
+    Gradient? gradient,
+    int? borderStyle,
+    double? borderWidth,
+  }) {
+    return _asCretaGlass(
+      blurX: blurX,
+      blurY: blurY,
+      frosted: frosted,
+      clipBorderRadius: clipBorderRadius,
+      radius: radius,
+      clipBehaviour: clipBehaviour,
+      tileMode: tileMode,
+      clipper: clipper,
+      border: border,
+      bgColor1: bgColor1,
+      bgColor2: bgColor2,
+      opacity: opacity,
+      gradient: gradient,
+    );
+  }
+
+  Widget _asCretaGlass({
+    double blurX = 15.0,
+    double blurY = 15.0,
+    //Color tintColor = Colors.white,
+    bool frosted = true,
+    BorderRadius? clipBorderRadius = BorderRadius.zero,
+    BorderRadius? radius = BorderRadius.zero,
+    Clip clipBehaviour = Clip.antiAlias,
+    TileMode tileMode = TileMode.clamp,
+    CustomClipper<RRect>? clipper,
+    BoxBorder? border,
     required Color bgColor1,
     required Color bgColor2,
     required double opacity,
     Gradient? gradient,
   }) {
-    return ClipRRect(
-      clipper: clipper,
-      clipBehavior: clipBehaviour,
-      borderRadius: clipBorderRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: blurX,
-          sigmaY: blurY,
-          tileMode: tileMode,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: gradient ??
-                LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    bgColor1.withOpacity(opacity),
-                    bgColor2.withOpacity(opacity / 2),
-                  ],
-                ),
-            image: frosted
-                ? const DecorationImage(
-                    image: AssetImage('assets/noise.png'),
-                    fit: BoxFit.cover,
-                  )
-                : null,
+    return Container(
+      decoration: BoxDecoration(
+        border: border,
+        borderRadius: radius,
+      ),
+      child: ClipRRect(
+        clipper: clipper,
+        clipBehavior: clipBehaviour,
+        borderRadius: clipBorderRadius,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: blurX,
+            sigmaY: blurY,
+            tileMode: tileMode,
           ),
-          child: this,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: gradient ??
+                  LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      bgColor1.withOpacity(opacity),
+                      bgColor2.withOpacity(opacity / 2),
+                    ],
+                  ),
+              image: frosted
+                  ? const DecorationImage(
+                      image: AssetImage('assets/noise.png'),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            ),
+            child: this,
+          ),
         ),
       ),
     );

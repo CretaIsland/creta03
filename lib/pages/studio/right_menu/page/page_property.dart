@@ -108,17 +108,21 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           setState(() {});
         },
         onOpacityDragComplete: (value) {
-          setState(() {
-            _model!.opacity.set(1 - (value / 100));
-            logger.finest('opacity1=${_model!.opacity.value}');
-          });
+          //setState(() {
+          _model!.opacity.set(1 - (value / 100));
+          logger.finest('opacity1=${_model!.opacity.value}');
+          //});
           BookMainPage.bookManagerHolder?.notify();
         },
         onColor1Changed: (val) {
-          setState(() {
-            _model!.bgColor1.set(val);
-          });
+          //setState(() {
+          _model!.bgColor1.set(val);
+          //});
           BookMainPage.bookManagerHolder?.notify();
+        },
+        onColorIndicatorClicked: () {
+          isColorOpen = true;
+          setState(() {});
         },
       ),
     );
@@ -137,20 +141,25 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         gradationType: _model!.gradationType.value,
         onGradationTapPressed: (GradationType type, Color color1, Color color2) {
           logger.finest('GradationIndicator clicked');
-          setState(() {
-            if (_model!.gradationType.value == type) {
-              _model!.gradationType.set(GradationType.none);
-            } else {
-              _model!.gradationType.set(type);
-            }
-          });
+          //setState(() {
+          if (_model!.gradationType.value == type) {
+            _model!.gradationType.set(GradationType.none);
+          } else {
+            _model!.gradationType.set(type);
+          }
+          //});
           BookMainPage.bookManagerHolder?.notify();
         },
         onColor2Changed: (Color val) {
-          setState(() {
-            _model!.bgColor2.set(val);
-          });
+          //setState(() {
+          _model!.bgColor2.set(val);
+          //});
           BookMainPage.bookManagerHolder?.notify();
+        },
+        onColorIndicatorClicked: () {
+          setState(() {
+            isGradationOpen = true;
+          });
         },
       ),
     );

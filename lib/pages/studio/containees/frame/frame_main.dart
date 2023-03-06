@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 //import 'package:glass/glass.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:r_dotted_line_border/r_dotted_line_border.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
+import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
 import '../../../../model/app_enums.dart';
@@ -173,8 +175,13 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         bgColor1: bgColor1,
         bgColor2: bgColor2,
         clipBorderRadius: _getBorderRadius(model),
+        radius: _getBorderRadius(model, addRadius: model.borderWidth.value * 0.7),
+        border: _getBorder(model),
+        borderStyle: model.borderType.value,
+        borderWidth: model.borderWidth.value,
       );
     }
+
     return _frameBox(model, true);
   }
 
@@ -200,14 +207,44 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       //boxShadow: StudioSnippet.basicShadow(),
       gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
       borderRadius: _getBorderRadius(model),
+      border: _getBorder(model),
     );
   }
 
-  BorderRadius? _getBorderRadius(FrameModel model) {
-    double lt = model.radiusLeftTop.value;
-    double rt = model.radiusRightTop.value;
-    double rb = model.radiusRightBottom.value;
-    double lb = model.radiusLeftBottom.value;
+  BoxBorder? _getBorder(FrameModel model) {
+    if (model.borderColor.value == Colors.transparent || model.borderWidth.value == 0) {
+      return null;
+    }
+
+    BorderSide bs = BorderSide(
+        color: model.borderColor.value,
+        width: model.borderWidth.value,
+        style: BorderStyle.solid,
+        strokeAlign: CretaUtils.borderPosition(model.borderPosition.value));
+
+    if (model.borderType.value != 0) {
+      return RDottedLineBorder(
+        dottedLength: CretaUtils.borderStyle[model.borderType.value][0],
+        dottedSpace: CretaUtils.borderStyle[model.borderType.value][1],
+        bottom: bs,
+        top: bs,
+        left: bs,
+        right: bs,
+      );
+    }
+    return Border.all(
+      color: model.borderColor.value,
+      width: model.borderWidth.value,
+      style: BorderStyle.solid,
+      strokeAlign: CretaUtils.borderPosition(model.borderPosition.value),
+    );
+  }
+
+  BorderRadius? _getBorderRadius(FrameModel model, {double addRadius = 0}) {
+    double lt = model.radiusLeftTop.value + addRadius;
+    double rt = model.radiusRightTop.value + addRadius;
+    double rb = model.radiusRightBottom.value + addRadius;
+    double lb = model.radiusLeftBottom.value + addRadius;
     if (lt == rt && rt == rb && rb == lb) {
       if (lt == 0) {
         return BorderRadius.zero;

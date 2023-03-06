@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../lang/creta_lang.dart';
+import '../model/app_enums.dart';
 import '../pages/studio/studio_variables.dart';
 
 class CretaUtils {
@@ -185,4 +186,26 @@ class CretaUtils {
     double offsetY = shadowDistance * sin(degreeToRadian(degree));
     return Offset(offsetX, offsetY);
   }
+
+  static double borderPosition(BorderPositionType aType) {
+    switch (aType) {
+      case BorderPositionType.center:
+        return BorderSide.strokeAlignCenter;
+      case BorderPositionType.inSide:
+        return BorderSide.strokeAlignInside;
+      case BorderPositionType.outSide:
+        return BorderSide.strokeAlignOutside;
+      default:
+        return 0;
+    }
+  }
+
+  static List<List<double>> borderStyle = [
+    [132, 0],
+    [4, 4],
+    [8, 8],
+    [12, 12],
+    [16, 4],
+    [16, 16],
+  ];
 }

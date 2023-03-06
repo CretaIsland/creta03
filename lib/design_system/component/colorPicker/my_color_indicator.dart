@@ -13,6 +13,7 @@ class MyColorIndicator extends StatefulWidget {
   final double opacity;
   final Color color;
   final void Function(Color) onColorChanged;
+  final Function? onClicked;
   final Gradient? gradient;
 
   const MyColorIndicator(
@@ -22,6 +23,7 @@ class MyColorIndicator extends StatefulWidget {
       this.radius = 4,
       this.opacity = 1,
       this.gradient,
+      this.onClicked,
       required this.color,
       required this.onColorChanged});
 
@@ -55,6 +57,7 @@ class _MyColorIndicatorState extends State<MyColorIndicator> {
       child: InkWell(
         onTap: () {
           logger.finest('color picker invoke');
+          widget.onClicked?.call();
           MyColorPicker.colorPickerDialog(
             context: context,
             dialogPickerColor: widget.color,

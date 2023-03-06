@@ -130,3 +130,15 @@ enum TextureType {
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static TextureType fromInt(int? val) => TextureType.values[validCheck(val ?? none.index)];
 }
+
+enum BorderPositionType {
+  none,
+  outSide,
+  inSide,
+  center,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static BorderPositionType fromInt(int? val) =>
+      BorderPositionType.values[validCheck(val ?? none.index)];
+}
