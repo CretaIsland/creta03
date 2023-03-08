@@ -939,7 +939,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _isTransitionOpen = !_isTransitionOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.transitionPage, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang.transitionFrame, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: SizedBox(
           width: 200,
@@ -1162,12 +1162,12 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             },
             onOpacityChanged: (value) {
               widget.model.shadowOpacity.set(value);
-              logger.finest('borderWidth=${widget.model.shadowOpacity.value}');
+              logger.finest('shadowOpacity=${widget.model.shadowOpacity.value}');
               _sendEvent!.sendEvent(widget.model);
             },
             onSpreadChanged: (value) {
               widget.model.shadowSpread.set(value);
-              logger.finest('shadowOpacity=${widget.model.shadowSpread.value}');
+              logger.finest('shadowSpread=${widget.model.shadowSpread.value}');
               _sendEvent!.sendEvent(widget.model);
             },
             onBlurChanged: (value) {
@@ -1188,8 +1188,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             onShadowSampleSelected: (spread, blur, direction, distance, shadowIn) {
               mychangeStack.startTrans();
               widget.model.shadowSpread.set(spread, save: false);
-              widget.model.shadowBlur.set(spread, save: false);
-              widget.model.shadowDirection.set(spread, save: false);
+              widget.model.shadowBlur.set(blur, save: false);
+              widget.model.shadowDirection.set(direction, save: false);
               widget.model.shadowOffset.set(distance, save: false);
               widget.model.shadowIn.set(shadowIn, save: false);
               widget.model.shadowOpacity.set(0.5, save: false);

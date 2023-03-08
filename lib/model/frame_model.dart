@@ -85,7 +85,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderType = UndoAble<int>(0, mid);
     borderPosition = UndoAble<BorderPositionType>(BorderPositionType.inSide, mid);
     shadowColor = UndoAble<Color>(Colors.transparent, mid);
-    shadowOpacity = UndoAble<double>(0, mid);
+    shadowOpacity = UndoAble<double>(0.5, mid);
     shadowSpread = UndoAble<double>(0, mid);
     shadowBlur = UndoAble<double>(0, mid);
     shadowDirection = UndoAble<double>(0, mid);
@@ -216,7 +216,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "borderPosition": borderPosition.value.index,
         "shadowColor": shadowColor.value.toString(),
         "shadowOpacity": shadowOpacity.value,
-        "shadowSpread": shadowOpacity.value,
+        "shadowSpread": shadowSpread.value,
         "shadowBlur": shadowBlur.value,
         "shadowDirection": shadowDirection.value,
         "shadowOffset": shadowOffset.value,
