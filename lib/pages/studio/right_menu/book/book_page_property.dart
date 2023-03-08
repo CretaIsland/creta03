@@ -36,8 +36,8 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   final double horizontalPadding = 24;
 
   //bool isColorOpen = false;
-  bool _isOptionOpen = false;
-  bool _isSizeOpen = false;
+  static bool _isOptionOpen = false;
+  static bool _isSizeOpen = false;
 
   final GlobalKey<CretaTextFieldState> textFieldKey = GlobalKey<CretaTextFieldState>();
   GlobalKey popupKey = GlobalKey();
@@ -100,6 +100,11 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
             //});
             BookMainPage.bookManagerHolder?.notify();
           },
+          onOpacityDrag: (value) {
+            widget.model.opacity.set(1 - (value / 100));
+            logger.finest('opacity1=${widget.model.opacity.value}');
+            BookMainPage.bookManagerHolder?.notify();
+          },
           onColor1Changed: (val) {
             //setState(() {
             widget.model.bgColor1.set(val);
@@ -107,7 +112,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
             BookMainPage.bookManagerHolder?.notify();
           },
           onColorIndicatorClicked: () {
-            isColorOpen = true;
+            PropertyMixin.isColorOpen = true;
             setState(() {});
           }),
     );
@@ -143,7 +148,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
           },
           onColorIndicatorClicked: () {
             setState(() {
-              isGradationOpen = true;
+              PropertyMixin.isGradationOpen = true;
             });
           }),
     );

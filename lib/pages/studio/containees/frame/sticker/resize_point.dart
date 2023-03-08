@@ -24,6 +24,7 @@ class ResizePoint extends StatelessWidget {
       required this.onDrag,
       required this.type,
       required this.onTap,
+      required this.onComplete,
       // ignore: unused_element
       this.onScale,
       this.iconData})
@@ -34,6 +35,7 @@ class ResizePoint extends StatelessWidget {
   final ResizePointType type;
   final IconData? iconData;
   final void Function() onTap;
+  final void Function() onComplete;
 
   MouseCursor get _cursor {
     return _cursorLookup[type]!;
@@ -48,6 +50,7 @@ class ResizePoint extends StatelessWidget {
         onDrag: onDrag,
         onScale: onScale,
         onTap: onTap,
+        onComplete: onComplete,
         child: Container(
           width: LayoutConst.cornerDiameter,
           height: LayoutConst.cornerDiameter,

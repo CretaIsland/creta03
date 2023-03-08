@@ -103,8 +103,10 @@ class _CretaSliderState extends State<CretaSlider> {
           ),
           child: Container(),
         ),
-        handlerHeight: hover ? 15 : 12,
-        handlerWidth: hover ? 15 : 12,
+        // handlerHeight: hover ? 15 : 12,
+        // handlerWidth: hover ? 15 : 12,
+        handlerHeight: 15,
+        handlerWidth: 15,
       ),
     );
   }

@@ -97,7 +97,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     TextureType textureType = getTextureType(widget.bookModel, widget.pageModel);
 
     if (textureType == TextureType.glass) {
-      logger.severe('GrassType!!!');
+      logger.finest('GrassType!!!');
       double opacity = widget.bookModel.opacity.value;
       Color bgColor1 = widget.bookModel.bgColor1.value;
       Color bgColor2 = widget.bookModel.bgColor2.value;

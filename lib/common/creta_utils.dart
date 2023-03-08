@@ -7,6 +7,20 @@ import '../lang/creta_lang.dart';
 import '../model/app_enums.dart';
 import '../pages/studio/studio_variables.dart';
 
+class ShadowData {
+  final double spread;
+  final double blur;
+  final double direction;
+  final double distance;
+
+  ShadowData({
+    required this.spread,
+    required this.blur,
+    required this.direction,
+    required this.distance,
+  });
+}
+
 class CretaUtils {
   static Size getDisplaySize(BuildContext context) {
     StudioVariables.displayWidth = MediaQuery.of(context).size.width;
@@ -182,8 +196,11 @@ class CretaUtils {
   }
 
   static Offset getShadowOffset(double degree, double shadowDistance) {
-    double offsetX = shadowDistance * cos(degreeToRadian(degree));
-    double offsetY = shadowDistance * sin(degreeToRadian(degree));
+    //logger.fine('getShadowOffset= $degree, $shadowDistance');
+    double radian = degreeToRadian(degree);
+    double offsetX = shadowDistance * cos(radian);
+    double offsetY = shadowDistance * sin(radian);
+    //logger.fine('getShadowOffset= $radian, $offsetX, $offsetY');
     return Offset(offsetX, offsetY);
   }
 
@@ -207,5 +224,13 @@ class CretaUtils {
     [12, 12],
     [16, 4],
     [16, 16],
+  ];
+
+  static List<ShadowData> shadowDataList = [
+    ShadowData(spread: 3, blur: 4, direction: 0, distance: 0),
+    ShadowData(spread: 3, blur: 0, direction: 0, distance: 0),
+    ShadowData(spread: 3, blur: 4, direction: 135, distance: 3),
+    ShadowData(spread: 0, blur: 0, direction: 135, distance: 3),
+    ShadowData(spread: 0, blur: 0, direction: 90, distance: 3),
   ];
 }

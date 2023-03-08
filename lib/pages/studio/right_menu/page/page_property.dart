@@ -33,7 +33,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   PageModel? _model;
   // ignore: unused_field
   PageManager? _pageManager;
-  bool _isTransitionOpen = false;
+  static bool _isTransitionOpen = false;
 
   @override
   void initState() {
@@ -108,20 +108,25 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           setState(() {});
         },
         onOpacityDragComplete: (value) {
-          //setState(() {
+          setState(() {
+            _model!.opacity.set(1 - (value / 100));
+            logger.finest('opacity1=${_model!.opacity.value}');
+          });
+          BookMainPage.bookManagerHolder?.notify();
+        },
+        onOpacityDrag: (value) {
           _model!.opacity.set(1 - (value / 100));
           logger.finest('opacity1=${_model!.opacity.value}');
-          //});
           BookMainPage.bookManagerHolder?.notify();
         },
         onColor1Changed: (val) {
-          //setState(() {
-          _model!.bgColor1.set(val);
-          //});
+          setState(() {
+            _model!.bgColor1.set(val);
+          });
           BookMainPage.bookManagerHolder?.notify();
         },
         onColorIndicatorClicked: () {
-          isColorOpen = true;
+          PropertyMixin.isColorOpen = true;
           setState(() {});
         },
       ),
@@ -141,13 +146,13 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         gradationType: _model!.gradationType.value,
         onGradationTapPressed: (GradationType type, Color color1, Color color2) {
           logger.finest('GradationIndicator clicked');
-          //setState(() {
-          if (_model!.gradationType.value == type) {
-            _model!.gradationType.set(GradationType.none);
-          } else {
-            _model!.gradationType.set(type);
-          }
-          //});
+          setState(() {
+            if (_model!.gradationType.value == type) {
+              _model!.gradationType.set(GradationType.none);
+            } else {
+              _model!.gradationType.set(type);
+            }
+          });
           BookMainPage.bookManagerHolder?.notify();
         },
         onColor2Changed: (Color val) {
@@ -158,7 +163,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         },
         onColorIndicatorClicked: () {
           setState(() {
-            isGradationOpen = true;
+            PropertyMixin.isGradationOpen = true;
           });
         },
       ),

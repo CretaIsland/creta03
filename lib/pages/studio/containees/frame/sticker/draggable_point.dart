@@ -7,6 +7,7 @@ class DraggablePoint extends StatefulWidget {
   const DraggablePoint({
     Key? key,
     required this.child,
+    required this.onComplete,
     this.onDrag,
     this.onScale,
     this.onRotate,
@@ -20,6 +21,7 @@ class DraggablePoint extends StatefulWidget {
   final ValueSetter<double>? onScale;
   final ValueSetter<double>? onRotate;
   final VoidCallback? onTap;
+  final VoidCallback onComplete;
 
   @override
   DraggablePointState createState() => DraggablePointState();
@@ -36,11 +38,12 @@ class DraggablePointState extends State<DraggablePoint> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressDown: (detail) {
-        logger.info('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
+        logger.fine('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
         //
         widget.onTap!();
       },
       onScaleStart: (details) {
+        logger.fine('Gest2 : onScaleStart');
         switch (widget.mode) {
           case PositionMode.global:
             initPoint = details.focalPoint;
@@ -51,13 +54,14 @@ class DraggablePointState extends State<DraggablePoint> {
         }
         if (details.pointerCount > 1) {
           baseAngle = angle;
-          logger.fine('baseAngle=$baseAngle}');
+          logger.finest('baseAngle=$baseAngle}');
           baseScaleFactor = scaleFactor;
           widget.onRotate?.call(baseAngle);
           widget.onScale?.call(baseScaleFactor);
         }
       },
       onScaleUpdate: (details) {
+        logger.fine('Gest2 : onSateUpdate');
         switch (widget.mode) {
           case PositionMode.global:
             final dx = details.focalPoint.dx - initPoint.dx;
@@ -77,10 +81,14 @@ class DraggablePointState extends State<DraggablePoint> {
           widget.onScale?.call(scaleFactor);
           angle = baseAngle + details.rotation;
 
-          logger.fine('baseAngle=$baseAngle, rotation=${details.rotation}');
+          logger.finest('baseAngle=$baseAngle, rotation=${details.rotation}');
 
           widget.onRotate?.call(angle);
         }
+      },
+      onScaleEnd: (details) {
+        logger.finest('onScaleEnd ${details.toString()}');
+        widget.onComplete();
       },
       child: widget.child,
     );

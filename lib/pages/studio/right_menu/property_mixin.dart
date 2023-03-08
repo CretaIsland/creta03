@@ -4,13 +4,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_checkbox.dart';
-import '../../../design_system/buttons/creta_slider.dart';
 import '../../../design_system/component/colorPicker/gradation_indicator.dart';
 import '../../../design_system/component/colorPicker/my_color_indicator.dart';
 import '../../../design_system/component/colorPicker/my_texture_indicator.dart';
+import '../../../design_system/component/creta_proprty_slider.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
-import '../../../design_system/text_field/creta_text_field.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/app_enums.dart';
 import '../studio_snippet.dart';
@@ -18,9 +17,9 @@ import '../studio_snippet.dart';
 mixin PropertyMixin {
   late TextStyle titleStyle;
   late TextStyle dataStyle;
-  bool isColorOpen = false;
-  bool isGradationOpen = false;
-  bool isTextureOpen = false;
+  static bool isColorOpen = false;
+  static bool isGradationOpen = false;
+  static bool isTextureOpen = false;
 
   final List<String> rotationStrings = ["lands", "ports"];
   final List<IconData> rotaionIcons = [
@@ -135,50 +134,52 @@ mixin PropertyMixin {
     );
   }
 
-  Widget propertySlider({
-    required String name,
-    required String valueString,
-    required double value,
-    required double min,
-    required double max,
-    required void Function(double) onChannged,
-    String? postfix,
-  }) {
-    return propertyLine2(
-      name: name,
-      widget1: SizedBox(
-        height: 22,
-        width: 168,
-        child: CretaSlider(
-          key: GlobalKey(),
-          min: min,
-          max: max,
-          value: value,
-          onDragComplete: onChannged,
-        ),
-      ),
-      widget2: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          CretaTextField.xshortNumber(
-            defaultBorder: Border.all(color: CretaColor.text[100]!),
-            width: 40,
-            limit: 3,
-            textFieldKey: GlobalKey(),
-            value: valueString,
-            hintText: '',
-            onEditComplete: ((value) {
-              double val = int.parse(value).toDouble();
-              onChannged(val);
-            }),
-          ),
-          postfix != null
-              ? Text(postfix, style: CretaFont.bodySmall)
-              : const Padding(padding: EdgeInsets.only(right: 12))
-        ],
-      ),
-    );
-  }
+  // Widget propertySlider({
+  //   required String name,
+  //   required String valueString,
+  //   required double value,
+  //   required double min,
+  //   required double max,
+  //   required void Function(double) onChannged,
+  //   required void Function(double) onChanngeComplete,
+  //   String? postfix,
+  // }) {
+  //   return propertyLine2(
+  //     name: name,
+  //     widget1: SizedBox(
+  //       height: 22,
+  //       width: 168,
+  //       child: CretaSlider(
+  //         key: GlobalKey(),
+  //         min: min,
+  //         max: max,
+  //         value: value,
+  //         onDragComplete: onChanngeComplete,
+  //         onDragging: onChannged,
+  //       ),
+  //     ),
+  //     widget2: Row(
+  //       mainAxisAlignment: MainAxisAlignment.end,
+  //       children: [
+  //         CretaTextField.xshortNumber(
+  //           defaultBorder: Border.all(color: CretaColor.text[100]!),
+  //           width: 40,
+  //           limit: 3,
+  //           textFieldKey: GlobalKey(),
+  //           value: valueString,
+  //           hintText: '',
+  //           onEditComplete: ((value) {
+  //             double val = int.parse(value).toDouble();
+  //             onChannged(val);
+  //           }),
+  //         ),
+  //         postfix != null
+  //             ? Text(postfix, style: CretaFont.bodySmall)
+  //             : const Padding(padding: EdgeInsets.only(right: 12))
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget propertyDivider({double height = 38}) {
     return Divider(
@@ -197,6 +198,7 @@ mixin PropertyMixin {
     required GradationType gradationType,
     required Function cardOpenPressed,
     required void Function(double) onOpacityDragComplete,
+    required void Function(double) onOpacityDrag,
     //required Function(GradationType, Color, Color) onGradationTapPressed,
     required Function(Color) onColor1Changed,
     required Function() onColorIndicatorClicked,
@@ -218,7 +220,8 @@ mixin PropertyMixin {
         color1: color1,
         color2: color2,
         opacity: opacity,
-        onOpactityChanged: onOpacityDragComplete,
+        onOpactityChanged: onOpacityDrag,
+        onOpactityChangedComplete: onOpacityDragComplete,
         gradationType: gradationType,
         //onGradationTapPressed: onGradationTapPressed,
         onColor1Changed: onColor1Changed,
@@ -233,6 +236,7 @@ mixin PropertyMixin {
     required double opacity,
     required GradationType gradationType,
     required void Function(double) onOpactityChanged,
+    required void Function(double) onOpactityChangedComplete,
     //required Function(GradationType, Color, Color) onGradationTapPressed,
     required Function(Color) onColor1Changed,
     required Function cardOpenPressed,
@@ -250,14 +254,15 @@ mixin PropertyMixin {
             onClicked: () {},
           ),
         ),
-        propertySlider(
+        CretaPropertySlider(
           // 투명도
           name: CretaStudioLang.opacity,
           min: 0,
           max: 100,
           value: (1 - opacity) * 100,
-          valueString: '${((1 - opacity) * 100).round()}',
+          valueType: SliderValueType.reverse,
           onChannged: onOpactityChanged,
+          onChanngeComplete: onOpactityChangedComplete,
           postfix: '%',
         ),
       ],

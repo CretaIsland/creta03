@@ -68,6 +68,7 @@ dependencies:
   flex_color_picker: ^3.1.0
   flutter_animate: ^4.0.0
   r_dotted_line_border: ^0.1.1
+  flutter_inner_shadow: 0.0.1
   
 dev_dependencies:
   flutter_test:
@@ -99,12 +100,6 @@ flutter:
     - assets/logo_en.png
     - assets/grid.png
     - assets/noise.png
-    - assets/line0.png
-    - assets/line1.png
-    - assets/line2.png
-    - assets/line3.png
-    - assets/line4.png
-    - assets/line5.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

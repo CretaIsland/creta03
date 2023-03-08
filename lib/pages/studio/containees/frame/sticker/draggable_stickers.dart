@@ -13,6 +13,7 @@ class DraggableStickers extends StatefulWidget {
   final void Function(String) onDelete;
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
+  final void Function(String) onComplete;
 
   // ignore: use_key_in_widget_constructors
   const DraggableStickers({
@@ -20,6 +21,7 @@ class DraggableStickers extends StatefulWidget {
     required this.onUpdate,
     required this.onDelete,
     required this.onTap,
+    required this.onComplete,
     required this.onResizeButtonTap,
   });
   @override
@@ -50,7 +52,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               //   child: GestureDetector(
               //     key: const Key('stickersView_background_gestureDetector'),
               //     onTap: () {
-              //       logger.info('GestureDetector.onTap');
+              //       logger.fine('GestureDetector.onTap');
               //     },
               //   ),
               // ),
@@ -88,10 +90,13 @@ class _DraggableStickersState extends State<DraggableStickers> {
         logger.finest("saved");
       },
       onTap: () {
-        logger.fine('Gest2 : onTop on DraggableStickers for each sticker setStates here');
+        logger.finest('Gest2 : onTop on DraggableStickers for each sticker setStates here');
         BookMainPage.containeeNotifier!.setFrameClick(true);
-        // logger.fine('setState');
+        // logger.finest('setState');
         // setState(() {});
+      },
+      onComplete: () {
+        widget.onComplete.call(sticker.id);
       },
 
       // To update the layer (manage position of widget in stack)
@@ -106,7 +111,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         }
 
         DraggableStickers.selectedAssetId = sticker.id;
-        logger.info('onLayerTapped');
+        logger.finest('onLayerTapped');
         setState(() {});
       },
 
@@ -138,12 +143,29 @@ class _DraggableStickersState extends State<DraggableStickers> {
             ),
 
       // Child widget in which sticker is passed
-      child: GestureDetector(
-        //behavior: HitTestBehavior.translucent,
-        onLongPressDown: (details) {
-          logger
-              .info('Gest1 : onLongPressDown in DraggableStickers for Real Area for each sticker');
+      child:
+          // GestureDetector(
+          //   //behavior: HitTestBehavior.translucent,
+          //   onLongPressDown: (details) {
+          //     logger
+          //         .info('Gest1 : onLongPressDown in DraggableStickers for Real Area for each sticker');
+          //     DraggableStickers.selectedAssetId = sticker.id;
+          //     widget.onTap?.call(DraggableStickers.selectedAssetId!);
+          //   },
+          //   child: SizedBox(
+          //     width: double.infinity,
+          //     height: double.infinity,
+          //     child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+          //   ),
+          // ),
+
+          InkWell(
+        splashColor: Colors.transparent,
+        onTap: () {
+          // To update the selected widget
           DraggableStickers.selectedAssetId = sticker.id;
+          logger.finest('onTap...');
+          setState(() {});
           widget.onTap?.call(DraggableStickers.selectedAssetId!);
         },
         child: SizedBox(
@@ -152,22 +174,6 @@ class _DraggableStickersState extends State<DraggableStickers> {
           child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
         ),
       ),
-
-      //   InkWell(
-      // splashColor: Colors.transparent,
-      // onTap: () {
-      //   // To update the selected widget
-      //   DraggableStickers.selectedAssetId = sticker.id;
-      //   logger.info('onTap...');
-      //   setState(() {});
-      //   widget.onTap?.call(DraggableStickers.selectedAssetId!);
-      // },
-      // child: SizedBox(
-      //   width: double.infinity,
-      //   height: double.infinity,
-      //   child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
-      // ),
-      //),
     );
   }
 }

@@ -91,8 +91,8 @@ class InitBinding extends Bindings {
   @override
   void dependencies() {
     // Register the InitController class
-    //Get.put(StudioGetXController());
-    Get.put(FrameEventController());
+    Get.put(StudioGetXController());
+    //Get.put(FrameEventController());
   }
 }
 

@@ -50,10 +50,18 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   //int _randomIndex = 0;
   double applyScale = 1;
   // ignore: unused_field
-  FrameEventController? _frameEvent;
+  FrameEventController? _receiveEvent;
+  FrameEventController? _sendEvent;
   @override
   void initState() {
     super.initState();
+
+    logger.finest('==========================FrameMain initialized================');
+
+    final FrameEventController receiveEvent = Get.find(tag: 'frame-property-to-main');
+    final FrameEventController sendEvent = Get.find(tag: 'frame-main-to-property');
+    _receiveEvent = receiveEvent;
+    _sendEvent = sendEvent;
   }
 
   @override
@@ -64,12 +72,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
     _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-    logger.info('==========================FrameMain initialized================');
-
-    final FrameEventController frameEvent = Get.find(/*tag: 'frameEvent1'*/);
-    _frameEvent = frameEvent;
     return StreamBuilder<FrameModel>(
-        stream: frameEvent.eventStream.stream,
+        stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null) {
             _frameManager!.updateModel(snapshot.data!);
@@ -90,12 +94,13 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       height: widget.pageHeight,
       // List of Stickers
       onUpdate: (update, mid) {
-        logger.finest('onUpdate $update');
-        saveItem(update, mid);
+        logger.finest('onUpdate ${update.hint}');
+        _setItem(update, mid);
         FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           BookMainPage.containeeNotifier!.openSize(doNoti: false);
-          BookMainPage.containeeNotifier!.notify();
+          //_sendEvent!.sendEvent(model);
+          //BookMainPage.containeeNotifier!.notify();
         }
       },
       onDelete: (mid) {
@@ -116,8 +121,16 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         //BookMainPage.bookManagerHolder!.notify();
       },
       onResizeButtonTap: () {
+        logger.finest('onResizeButtonTap');
         BookMainPage.containeeNotifier!.openSize(doNoti: false);
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
+      },
+      onComplete: (mid) {
+        FrameModel? model = _frameManager!.getSelected() as FrameModel?;
+        if (model != null && model.mid == mid) {
+          //model.save();
+          _sendEvent!.sendEvent(model);
+        }
       },
       stickerList: getStickerList(),
     );
@@ -130,10 +143,12 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
 
-      logger.info('applyScale = $applyScale');
+      logger.finest('applyScale = $applyScale');
 
       double frameWidth = model.width.value * applyScale;
       double frameHeight = model.height.value * applyScale;
+      //double posX = (model.posX.value - LayoutConst.floatingActionPadding) * applyScale;
+      //double posY = (model.posY.value - LayoutConst.floatingActionPadding) * applyScale;
       double posX = model.posX.value * applyScale - LayoutConst.floatingActionPadding;
       double posY = model.posY.value * applyScale - LayoutConst.floatingActionPadding;
 
@@ -161,9 +176,9 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   }
 
   Widget _textureBox(FrameModel model) {
-    logger.severe('mid=${model.mid}, ${model.textureType.value}');
+    logger.finest('mid=${model.mid}, ${model.textureType.value}');
     if (model.textureType.value == TextureType.glass) {
-      logger.severe('frame Glass!!!');
+      logger.finest('frame Glass!!!');
       double opacity = model.opacity.value;
       Color bgColor1 = model.bgColor1.value;
       Color bgColor2 = model.bgColor2.value;
@@ -260,7 +275,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   }
   // ignore: unused_element
 
-  void saveItem(DragUpdate update, String mid) async {
+  void _setItem(DragUpdate update, String mid) async {
     for (var item in _frameManager!.modelList) {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
@@ -268,10 +283,14 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       //logger.fine('before save widthxheight = ${model.width.value}x${model.height.value}');
 
       model.angle.set(update.angle * (180 / pi), save: false);
+      // model.posX
+      //     .set((update.position.dx + LayoutConst.floatingActionPadding) / applyScale, save: false);
+      // model.posY
+      //     .set((update.position.dy + LayoutConst.floatingActionPadding) / applyScale, save: false);
       model.posX
-          .set((update.position.dx + LayoutConst.floatingActionDiameter) / applyScale, save: false);
+          .set(update.position.dx / applyScale + LayoutConst.floatingActionPadding, save: false);
       model.posY
-          .set((update.position.dy + LayoutConst.floatingActionDiameter) / applyScale, save: false);
+          .set(update.position.dy / applyScale + LayoutConst.floatingActionPadding, save: false);
       model.width.set(update.size.width / applyScale, save: false);
       model.height.set(update.size.height / applyScale, save: false);
       model.save();

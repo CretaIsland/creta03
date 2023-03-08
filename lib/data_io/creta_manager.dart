@@ -2,6 +2,7 @@
 
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:deep_collection/deep_collection.dart';
+import 'package:hycop/hycop/utils/hycop_utils.dart';
 //import 'package:sortedmap/sortedmap.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
@@ -756,6 +757,10 @@ abstract class CretaManager extends AbsExModelManager {
   void setSelected(int index) {
     prevSelectedMid = selectedMid;
     selectedMid = modelList[0].mid;
+    String className = HycopUtils.getClassName(selectedMid);
+    if (className != 'frame' && className != 'content') {
+      DraggableStickers.selectedAssetId = "";
+    }
     logger.finest('selected1=$selectedMid, prev=$prevSelectedMid');
   }
 
@@ -763,6 +768,11 @@ abstract class CretaManager extends AbsExModelManager {
     prevSelectedMid = selectedMid;
     selectedMid = mid;
     logger.finest('selected2=$selectedMid, prev=$prevSelectedMid');
+
+    String className = HycopUtils.getClassName(selectedMid);
+    if (className != 'frame' && className != 'content') {
+      DraggableStickers.selectedAssetId = "";
+    }
 
     notify();
   }

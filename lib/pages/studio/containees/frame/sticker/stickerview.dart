@@ -20,6 +20,7 @@ class StickerView extends StatefulWidget {
   final void Function(String) onDelete;
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
+  final void Function(String) onComplete;
 
   final double height; // height of the editor view
   final double width; // width of the editor view
@@ -30,6 +31,7 @@ class StickerView extends StatefulWidget {
       required this.onUpdate,
       required this.onDelete,
       required this.onTap,
+      required this.onComplete,
       required this.onResizeButtonTap,
       required this.height,
       required this.width});
@@ -109,6 +111,7 @@ class StickerViewState extends State<StickerView> {
                     onDelete: widget.onDelete,
                     onTap: widget.onTap,
                     onResizeButtonTap: widget.onResizeButtonTap,
+                    onComplete: widget.onComplete,
                   ),
                 ),
               ),
