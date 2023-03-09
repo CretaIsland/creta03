@@ -10,19 +10,19 @@ mixin ContaineeMixin {
     Animate ani = target.animate();
     for (var ele in animations) {
       if (ele == AnimationType.fadeIn) {
-        logger.finest('fadeIn');
+        logger.fine('fadeIn');
         ani = ani.fadeIn().then();
       }
       if (ele == AnimationType.flip) {
-        logger.finest('flip');
+        logger.fine('flip');
         ani = ani.flip().then();
       }
       if (ele == AnimationType.shake) {
-        logger.finest('shake');
+        logger.fine('shake');
         ani = ani.shake().then();
       }
       if (ele == AnimationType.shimmer) {
-        logger.finest('shimmer');
+        logger.fine('shimmer');
         ani = ani.shimmer().then();
       }
     }
@@ -37,6 +37,4 @@ mixin ContaineeMixin {
     }
     return mddel.textureType.value;
   }
-
-  
 }

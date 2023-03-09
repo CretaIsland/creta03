@@ -37,7 +37,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> shadowBlur;
   late UndoAble<double> shadowDirection;
   late UndoAble<double> shadowOffset;
-  late UndoAble<bool> shadowIn;
+  //late UndoAble<bool> shadowIn;
   FrameType frameType = FrameType.none;
 
   @override
@@ -64,7 +64,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         shadowBlur,
         shadowDirection,
         shadowOffset,
-        shadowIn,
+        //shadowIn,
         ...super.propsMixin,
       ];
   FrameModel(String pmid) : super(pmid: pmid, type: ExModelType.frame, parent: '') {
@@ -80,7 +80,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom = UndoAble<double>(0, mid);
     isAutoFit = UndoAble<bool>(false, mid);
     frameType = FrameType.none;
-    borderColor = UndoAble<Color>(Colors.transparent, mid);
+    borderColor = UndoAble<Color>(Colors.black, mid);
     borderWidth = UndoAble<double>(1, mid);
     borderType = UndoAble<int>(0, mid);
     borderPosition = UndoAble<BorderPositionType>(BorderPositionType.inSide, mid);
@@ -90,7 +90,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur = UndoAble<double>(0, mid);
     shadowDirection = UndoAble<double>(0, mid);
     shadowOffset = UndoAble<double>(0, mid);
-    shadowIn = UndoAble<bool>(false, mid);
+    //shadowIn = UndoAble<bool>(false, mid);
     super.initMixin(mid);
   }
 
@@ -110,7 +110,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom = UndoAble<double>(0, mid);
     isAutoFit = UndoAble<bool>(false, mid);
     bgColor1 = UndoAble<Color>(Colors.white, mid);
-    borderColor = UndoAble<Color>(Colors.transparent, mid);
+    borderColor = UndoAble<Color>(Colors.black, mid);
     borderWidth = UndoAble<double>(1, mid);
     borderType = UndoAble<int>(0, mid);
     borderPosition = UndoAble<BorderPositionType>(BorderPositionType.none, mid);
@@ -120,7 +120,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur = UndoAble<double>(0, mid);
     shadowDirection = UndoAble<double>(0, mid);
     shadowOffset = UndoAble<double>(0, mid);
-    shadowIn = UndoAble<bool>(false, mid);
+    //shadowIn = UndoAble<bool>(false, mid);
 
     frameType = pType;
   }
@@ -149,7 +149,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur = UndoAble<double>(srcFrame.shadowBlur.value, mid);
     shadowDirection = UndoAble<double>(srcFrame.shadowDirection.value, mid);
     shadowOffset = UndoAble<double>(srcFrame.shadowOffset.value, mid);
-    shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
+    //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
 
     frameType = srcFrame.frameType;
     super.copyFromMixin(mid, srcFrame);
@@ -188,7 +188,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur.set((map["shadowBlur"] ?? 0), save: false, noUndo: true);
     shadowDirection.set((map["shadowDirection"] ?? 0), save: false, noUndo: true);
     shadowOffset.set((map["shadowOffset"] ?? 0), save: false, noUndo: true);
-    shadowIn.set((map["shadowIn"] ?? false), save: false, noUndo: true);
+    //shadowIn.set((map["shadowIn"] ?? false), save: false, noUndo: true);
 
     frameType = FrameType.fromInt(map["frameType"] ?? 0);
     super.fromMapMixin(map);
@@ -220,9 +220,20 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "shadowBlur": shadowBlur.value,
         "shadowDirection": shadowDirection.value,
         "shadowOffset": shadowOffset.value,
-        "shadowIn": shadowIn.value,
+        //"shadowIn": shadowIn.value,
         'frameType': frameType.index,
         ...super.toMapMixin(),
       }.entries);
+  }
+
+  bool isNoShadow() {
+    if (0 == shadowBlur.value &&
+        0 == shadowDirection.value &&
+        0 == shadowOffset.value &&
+        0 == shadowSpread.value) {
+      return true;
+    }
+
+    return false;
   }
 }

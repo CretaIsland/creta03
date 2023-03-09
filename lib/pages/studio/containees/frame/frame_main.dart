@@ -94,7 +94,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       height: widget.pageHeight,
       // List of Stickers
       onUpdate: (update, mid) {
-        logger.finest('onUpdate ${update.hint}');
+        logger.fine('onUpdate ${update.hint}');
         _setItem(update, mid);
         FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
@@ -168,8 +168,9 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
   Widget _applyAnimate(FrameModel model) {
     List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
-
-    if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
+    logger.fine('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
+    //if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
+    if (animations.isEmpty) {
       return _textureBox(model);
     }
     return getAnimation(_textureBox(model), animations);
@@ -194,14 +195,35 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         border: _getBorder(model),
         borderStyle: model.borderType.value,
         borderWidth: model.borderWidth.value,
+        boxShadow: _getShadow(model),
       );
     }
-
     return _frameBox(model, true);
   }
 
+  // Widget _shadowBox(FrameModel model, bool useColor) {
+  //   if (model.isNoShadow() == false && model.shadowIn.value == true) {
+  //     return InnerShadow(
+  //       shadows: [
+  //         Shadow(
+  //           blurRadius:
+  //               model.shadowBlur.value > 0 ? model.shadowBlur.value : model.shadowSpread.value,
+  //           color: model.shadowOpacity.value == 1
+  //               ? model.shadowColor.value
+  //               : model.shadowColor.value.withOpacity(model.shadowOpacity.value),
+  //           offset: CretaUtils.getShadowOffset(
+  //               (180 + model.shadowDirection.value) % 360, model.shadowOffset.value),
+  //         ),
+  //       ],
+  //       child: _frameBox(model, useColor),
+  //     );
+  //   }
+  //   return _frameBox(model, useColor);
+  // }
+
   Widget _frameBox(FrameModel model, bool useColor) {
     return Container(
+      key: GlobalKey(),
       decoration: useColor ? _frameDeco(model) : null,
       width: double.infinity,
       height: double.infinity,
@@ -223,11 +245,25 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
       borderRadius: _getBorderRadius(model),
       border: _getBorder(model),
+      boxShadow: model.isNoShadow() == true ? null : [_getShadow(model)],
+    );
+  }
+
+  BoxShadow _getShadow(FrameModel model) {
+    return BoxShadow(
+      color: model.shadowColor.value
+          .withOpacity(CretaUtils.validCheckDouble(model.shadowOpacity.value, 0, 1)),
+      offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
+      blurRadius: model.shadowBlur.value,
+      spreadRadius: model.shadowSpread.value,
+      //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
     );
   }
 
   BoxBorder? _getBorder(FrameModel model) {
-    if (model.borderColor.value == Colors.transparent || model.borderWidth.value == 0) {
+    if (model.borderColor.value == Colors.transparent ||
+        model.borderWidth.value == 0 ||
+        model.borderType.value == 0) {
       return null;
     }
 
@@ -237,10 +273,10 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         style: BorderStyle.solid,
         strokeAlign: CretaUtils.borderPosition(model.borderPosition.value));
 
-    if (model.borderType.value != 0) {
+    if (model.borderType.value > 1) {
       return RDottedLineBorder(
-        dottedLength: CretaUtils.borderStyle[model.borderType.value][0],
-        dottedSpace: CretaUtils.borderStyle[model.borderType.value][1],
+        dottedLength: CretaUtils.borderStyle[model.borderType.value - 1][0],
+        dottedSpace: CretaUtils.borderStyle[model.borderType.value - 1][1],
         bottom: bs,
         top: bs,
         left: bs,

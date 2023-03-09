@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 
 import '../buttons/creta_slider.dart';
 import '../creta_color.dart';
@@ -58,16 +59,17 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
           key: GlobalKey(),
           min: widget.min,
           max: widget.max,
-          value: _value,
+          value: _makeValue(_value, widget.valueType),
           onDragComplete: (val) {
-            widget.onChanngeComplete?.call(val);
             setState(() {
-              _value = val;
+              logger.fine('CretaSlider value=$val');
+              _value = _reverseValue(val, widget.valueType);
             });
+            widget.onChanngeComplete?.call(_value);
           },
           onDragging: (val) {
-            _value = val;
-            widget.onChannged.call(val);
+            _value = _reverseValue(val, widget.valueType);
+            widget.onChannged.call(_value);
           },
         ),
       ),
@@ -82,7 +84,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
             value: _makeValueString(_value, widget.valueType),
             hintText: '',
             onEditComplete: ((value) {
-              double val = int.parse(value).toDouble();
+              double val = _reverseValue(int.parse(value).toDouble(), widget.valueType);
               widget.onChannged(val);
             }),
           ),
@@ -95,6 +97,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
   }
 
   String _makeValueString(double value, SliderValueType aType) {
+    logger.fine('_makeValueString($value)');
     switch (aType) {
       case SliderValueType.percent:
         return '${(value * 100).round()}';
@@ -102,6 +105,30 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
         return '${((1 - value) * 100).round()}';
       default:
         return '${value.round()}';
+    }
+  }
+
+  double _makeValue(double value, SliderValueType aType) {
+    logger.fine('_makeValue($value)');
+    switch (aType) {
+      case SliderValueType.percent:
+        return (value * 100);
+      case SliderValueType.reverse:
+        return (1 - value) * 100;
+      default:
+        return value;
+    }
+  }
+
+  double _reverseValue(double value, SliderValueType aType) {
+    logger.fine('_reverseValue($value)');
+    switch (aType) {
+      case SliderValueType.percent:
+        return (value / 100);
+      case SliderValueType.reverse:
+        return (1 - value / 100);
+      default:
+        return value;
     }
   }
 

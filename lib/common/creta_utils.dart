@@ -12,12 +12,14 @@ class ShadowData {
   final double blur;
   final double direction;
   final double distance;
+  final double opacity;
 
   ShadowData({
     required this.spread,
     required this.blur,
     required this.direction,
     required this.distance,
+    required this.opacity,
   });
 }
 
@@ -227,10 +229,23 @@ class CretaUtils {
   ];
 
   static List<ShadowData> shadowDataList = [
-    ShadowData(spread: 3, blur: 4, direction: 0, distance: 0),
-    ShadowData(spread: 3, blur: 0, direction: 0, distance: 0),
-    ShadowData(spread: 3, blur: 4, direction: 135, distance: 3),
-    ShadowData(spread: 0, blur: 0, direction: 135, distance: 3),
-    ShadowData(spread: 0, blur: 0, direction: 90, distance: 3),
+    ShadowData(spread: 3, blur: 4, direction: 0, distance: 0, opacity: 0.5),
+    ShadowData(spread: 3, blur: 0, direction: 0, distance: 0, opacity: 0.5),
+    ShadowData(spread: 3, blur: 4, direction: 135, distance: 3, opacity: 0.5),
+    ShadowData(spread: 0, blur: 0, direction: 135, distance: 3, opacity: 0.5),
+    ShadowData(spread: 0, blur: 0, direction: 90, distance: 3, opacity: 0.5),
+
+    //   ShadowData(spread: 3, blur: 4, direction: 0, distance: 0),
+    //   ShadowData(spread: 3, blur: 0, direction: 0, distance: 0),
+    //   ShadowData(spread: 3, blur: 4, direction: 135, distance: 3),
+    //   ShadowData(spread: 0, blur: 0, direction: 135, distance: 3),
+    //   ShadowData(spread: 0, blur: 0, direction: 90, distance: 3),
+    //   ShadowData(spread: 0, blur: 0, direction: 90, distance: 3),
   ];
+
+  static double validCheckDouble(double target, double min, double max) {
+    if (target < min) return min;
+    if (target > max) return max;
+    return target;
+  }
 }

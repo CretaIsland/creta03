@@ -77,6 +77,7 @@ extension GlassWidget<T extends Widget> on T {
     Gradient? gradient,
     int? borderStyle,
     double? borderWidth,
+    BoxShadow? boxShadow,
   }) {
     return _asCretaGlass(
       blurX: blurX,
@@ -92,6 +93,7 @@ extension GlassWidget<T extends Widget> on T {
       bgColor2: bgColor2,
       opacity: opacity,
       gradient: gradient,
+      boxShadow: boxShadow,
     );
   }
 
@@ -110,11 +112,13 @@ extension GlassWidget<T extends Widget> on T {
     required Color bgColor2,
     required double opacity,
     Gradient? gradient,
+    BoxShadow? boxShadow,
   }) {
     return Container(
       decoration: BoxDecoration(
         border: border,
         borderRadius: radius,
+        boxShadow: boxShadow != null ? [boxShadow] : null,
       ),
       child: ClipRRect(
         clipper: clipper,

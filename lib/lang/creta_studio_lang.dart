@@ -250,12 +250,19 @@ class CretaStudioLang {
   static const String blur = '흐림';
   static const String direction = '방향';
   static const String style = '스타일';
-  static const String borderPostion = '외곽선 위치';
-  static const String shadowIn = '안쪽그림자';
+  static const String borderPosition = '외곽선 위치';
+  //static const String shadowIn = '종류';
+  static const String nothing = '없음';
+  static const String noBorder = '테두리 없음';
 
-  static Map<String, String> borderPosition = {
+  static Map<String, String> borderPositionList = {
     '경계 외부': 'outSide',
     '경계 내부': 'inSide',
     '경계 중앙': 'center',
   };
+
+  // static Map<String, String> shadowInList = {
+  //   '외부 그림자': 'outSide',
+  //   '내부 그림자': 'inSide',
+  // };
 }

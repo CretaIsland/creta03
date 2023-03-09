@@ -109,13 +109,13 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         },
         onOpacityDragComplete: (value) {
           setState(() {
-            _model!.opacity.set(1 - (value / 100));
+            _model!.opacity.set(value);
             logger.finest('opacity1=${_model!.opacity.value}');
           });
           BookMainPage.bookManagerHolder?.notify();
         },
         onOpacityDrag: (value) {
-          _model!.opacity.set(1 - (value / 100));
+          _model!.opacity.set(value);
           logger.finest('opacity1=${_model!.opacity.value}');
           BookMainPage.bookManagerHolder?.notify();
         },

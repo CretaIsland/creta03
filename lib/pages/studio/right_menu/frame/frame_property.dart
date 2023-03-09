@@ -95,9 +95,23 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     );
   }
 
+  Widget _noBorder(double width, double height) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: Center(
+        child: Text(
+          CretaStudioLang.noBorder,
+          textAlign: TextAlign.center,
+          style: CretaFont.titleSmall,
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
-    logger.finer('_FramePropertyState.initState');
+    logger.fine('_FramePropertyState.initState');
 
     super.initMixin();
     super.initState();
@@ -110,6 +124,9 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     _sendEvent = sendEvent;
     final FrameEventController receiveEvent = Get.find(tag: 'frame-main-to-property');
     _receiveEvent = receiveEvent;
+
+    logger.fine(
+        'spread=${widget.model.shadowSpread.value}, blur=${widget.model.shadowBlur.value},direction=${widget.model.shadowDirection.value}, distance=${widget.model.shadowOffset.value}');
   }
 
   @override
@@ -135,7 +152,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //       if (snapshot.data != null && snapshot.data!.mid == widget.model.mid) {
     //         snapshot.data!.copyTo(widget.model);
     //       }
-
+    logger.fine(
+        'build : spread=${widget.model.shadowSpread.value}, blur=${widget.model.shadowBlur.value},direction=${widget.model.shadowDirection.value}, distance=${widget.model.shadowOffset.value}');
     return Column(children: [
       Padding(
         padding: const EdgeInsets.only(top: 16.0),
@@ -838,14 +856,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         },
         onOpacityDragComplete: (value) {
           setState(() {
-            widget.model.opacity.set(1 - (value / 100));
-            logger.finest('opacity1=${widget.model.opacity.value}');
+            widget.model.opacity.set(value);
+            logger.fine('opacity1=${widget.model.opacity.value}');
           });
           _sendEvent!.sendEvent(widget.model);
         },
         onOpacityDrag: (value) {
-          widget.model.opacity.set(1 - (value / 100));
-          logger.finest('opacity1=${widget.model.opacity.value}');
+          widget.model.opacity.set(value);
+          logger.fine('opacity1=${widget.model.opacity.value}');
           _sendEvent!.sendEvent(widget.model);
         },
         onColor1Changed: (val) {
@@ -996,19 +1014,21 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.border, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: colorIndicator(
-          widget.model.borderColor.value,
-          1.0,
-          onColorChanged: (color) {
-            widget.model.borderColor.set(color);
-            _sendEvent!.sendEvent(widget.model);
-          },
-          onClicked: () {
-            setState(() {
-              _isBorderOpen = true;
-            });
-          },
-        ),
+        trailWidget: widget.model.borderWidth.value == 0
+            ? SizedBox.shrink()
+            : colorIndicator(
+                widget.model.borderColor.value,
+                1.0,
+                onColorChanged: (color) {
+                  widget.model.borderColor.set(color);
+                  _sendEvent!.sendEvent(widget.model);
+                },
+                onClicked: () {
+                  setState(() {
+                    _isBorderOpen = true;
+                  });
+                },
+              ),
         bodyWidget: _borderBody(
             color1: widget.model.borderColor.value,
             borderWidth: widget.model.borderWidth.value,
@@ -1028,7 +1048,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             },
             onPositionChanged: (value) {
               int idx = 1;
-              for (String val in CretaStudioLang.borderPosition.values) {
+              for (String val in CretaStudioLang.borderPositionList.values) {
                 if (value == val) {
                   widget.model.borderPosition.set(BorderPositionType.values[idx]);
                 }
@@ -1037,7 +1057,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               _sendEvent!.sendEvent(widget.model);
             },
             onStyleChanged: (value) {
-              widget.model.borderType.set(value!);
+              if (value == null || value == 0) {
+                widget.model.borderType.set(0);
+              } else {
+                widget.model.borderType.set(value);
+              }
               _sendEvent!.sendEvent(widget.model);
             }),
       ),
@@ -1079,7 +1103,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(CretaStudioLang.borderPostion, style: titleStyle),
+              Text(CretaStudioLang.borderPosition, style: titleStyle),
               CretaTabButton(
                 onEditComplete: onPositionChanged,
                 width: 75,
@@ -1089,9 +1113,9 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 selectedColor: Colors.white,
                 unSelectedColor: CretaColor.text[100]!,
                 selectedBorderColor: CretaColor.primary,
-                defaultString: CretaStudioLang.borderPosition.values.first,
-                buttonLables: CretaStudioLang.borderPosition.keys.toList(),
-                buttonValues: CretaStudioLang.borderPosition.values.toList(),
+                defaultString: _getBorderPostion(),
+                buttonLables: CretaStudioLang.borderPositionList.keys.toList(),
+                buttonValues: CretaStudioLang.borderPositionList.values.toList(),
               ),
             ],
           ),
@@ -1112,9 +1136,12 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               //   height: 24,
               // ),
               CretaWidgetDropDown(
-                items: CretaUtils.borderStyle.map((e) {
-                  return _borderStyle(156, 10, e[0], e[1]);
-                }).toList(),
+                items: [
+                  _noBorder(156, 30),
+                  ...CretaUtils.borderStyle.map((e) {
+                    return _borderStyle(156, 10, e[0], e[1]);
+                  }).toList(),
+                ],
                 defaultValue: widget.model.borderType.value,
                 onSelected: onStyleChanged,
                 width: boderStyleDropBoxWidth,
@@ -1125,6 +1152,17 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         ),
       ],
     );
+  }
+
+  String _getBorderPostion() {
+    switch (widget.model.borderPosition.value) {
+      case BorderPositionType.inSide:
+        return 'inSide';
+      case BorderPositionType.outSide:
+        return 'outSide';
+      default:
+        return 'center';
+    }
   }
 
   Widget _shadow() {
@@ -1139,14 +1177,25 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.shadow, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: SizedBox(
-          width: 200,
-          child: Text(
-            'no yet impl',
-            textAlign: TextAlign.right,
-            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
-          ),
-        ),
+        trailWidget: widget.model.isNoShadow()
+            ? SizedBox.shrink()
+            : ShadowIndicator(
+                color: widget.model.shadowColor.value,
+                spread: widget.model.shadowSpread.value,
+                blur: widget.model.shadowBlur.value,
+                direction: widget.model.shadowDirection.value,
+                distance: widget.model.shadowOffset.value,
+                opacity: CretaUtils.validCheckDouble(widget.model.shadowOpacity.value, 0, 1),
+                isSelected: false,
+                width: 24,
+                height: 24,
+                isSample: true,
+                onTapPressed: (spread, blur, direction, distance, opacity) {
+                  setState(() {
+                    _isShadowOpen = !_isShadowOpen;
+                  });
+                },
+              ),
         bodyWidget: _shodowBody(
             shadowColor: widget.model.shadowColor.value,
             shadowOpacity: widget.model.shadowOpacity.value,
@@ -1157,12 +1206,12 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             onColorChanged: (color) {
               setState(() {
                 widget.model.shadowColor.set(color);
-                _sendEvent!.sendEvent(widget.model);
               });
+              _sendEvent!.sendEvent(widget.model);
             },
             onOpacityChanged: (value) {
               widget.model.shadowOpacity.set(value);
-              logger.finest('shadowOpacity=${widget.model.shadowOpacity.value}');
+              logger.fine('shadowOpacity=${widget.model.shadowOpacity.value}');
               _sendEvent!.sendEvent(widget.model);
             },
             onSpreadChanged: (value) {
@@ -1185,16 +1234,18 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               logger.finest('shadowOffset=${widget.model.shadowOffset.value}');
               _sendEvent!.sendEvent(widget.model);
             },
-            onShadowSampleSelected: (spread, blur, direction, distance, shadowIn) {
-              mychangeStack.startTrans();
-              widget.model.shadowSpread.set(spread, save: false);
-              widget.model.shadowBlur.set(blur, save: false);
-              widget.model.shadowDirection.set(direction, save: false);
-              widget.model.shadowOffset.set(distance, save: false);
-              widget.model.shadowIn.set(shadowIn, save: false);
-              widget.model.shadowOpacity.set(0.5, save: false);
-              widget.model.save();
-              mychangeStack.endTrans();
+            onShadowSampleSelected: (spread, blur, direction, distance, opactiy) {
+              logger.info('spread=$spread, blur=$blur, direction=$direction, distance=$distance,');
+              setState(() {
+                mychangeStack.startTrans();
+                widget.model.shadowSpread.set(spread, save: false);
+                widget.model.shadowBlur.set(blur, save: false);
+                widget.model.shadowDirection.set(direction, save: false);
+                widget.model.shadowOffset.set(distance, save: false);
+                widget.model.shadowOpacity.set(opactiy, save: false);
+                widget.model.save();
+                mychangeStack.endTrans();
+              });
               _sendEvent!.sendEvent(widget.model);
             }
 
@@ -1236,7 +1287,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       double blur, //'assets/grid.png'
       double direction, //'assets/grid.png'
       double distance,
-      bool shadowIn,
+      double opacity,
     )
         onShadowSampleSelected,
     // required Function(double) onOpacityChangeComplete,
@@ -1248,12 +1299,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     return Column(
       children: [
         //_shadowExampleButton(shadowColor, shadowOpacity, shadowSpread, shadowBlur,shadowDirection),
+
         propertyLine(
           // 그림자 색
           name: CretaStudioLang.color,
           widget: colorIndicator(
             shadowColor,
-            shadowOpacity,
+            CretaUtils.validCheckDouble(shadowOpacity, 0, 1),
             onColorChanged: onColorChanged,
             onClicked: () {
               setState(() {
@@ -1262,12 +1314,36 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             },
           ),
         ),
+        // // 안쪽 그림자 / 바깥쪽 그림자
+        // Padding(
+        //   padding: const EdgeInsets.only(top: 20.0),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //     children: [
+        //       Text(CretaStudioLang.shadowIn, style: titleStyle),
+        //       CretaTabButton(
+        //         onEditComplete: onShadowInChanged,
+        //         width: 90,
+        //         height: 24,
+        //         selectedTextColor: CretaColor.primary,
+        //         unSelectedTextColor: CretaColor.text[700]!,
+        //         selectedColor: Colors.white,
+        //         unSelectedColor: CretaColor.text[100]!,
+        //         selectedBorderColor: CretaColor.primary,
+        //         defaultString: shadowIn ? 'inSide' : 'outSide',
+        //         buttonLables: CretaStudioLang.shadowInList.keys.toList(),
+        //         buttonValues: CretaStudioLang.shadowInList.values.toList(),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         _shadowListView(
           widget.model,
           onShadowSampleSelected,
         ),
         CretaPropertySlider(
           // 그림자 방향
+          key: GlobalKey(),
           name: CretaStudioLang.direction,
           min: 0,
           max: 360,
@@ -1278,17 +1354,19 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         ),
         CretaPropertySlider(
           // 그림자 투명도
+          key: GlobalKey(),
           name: CretaStudioLang.opacity,
           min: 0,
           max: 100,
-          value: shadowOpacity,
-          valueType: SliderValueType.normal,
+          value: CretaUtils.validCheckDouble(shadowOpacity, 0, 1),
+          valueType: SliderValueType.reverse,
           onChannged: onOpacityChanged,
           //onChanngeComplete: onOpacityChangeComplete,
           postfix: '%',
         ),
         CretaPropertySlider(
           // 그림자 크기
+          key: GlobalKey(),
           name: CretaStudioLang.spread,
           min: 0,
           max: 24,
@@ -1299,6 +1377,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         ),
         CretaPropertySlider(
           // 그림자 블러
+          key: GlobalKey(),
           name: CretaStudioLang.blur,
           min: 0,
           max: 24,
@@ -1309,6 +1388,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         ),
         CretaPropertySlider(
           // 그림자 거리
+          key: GlobalKey(),
           name: CretaStudioLang.offset,
           min: 0,
           max: 24,
@@ -1328,58 +1408,60 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       double blur, //'assets/grid.png'
       double direction, //'assets/grid.png'
       double distance,
-      bool shadowIn,
+      double opacity,
     )
         onTapPressed,
   ) {
     List<Widget> shadowList = [];
+    // 그림자 없음 버튼
+    shadowList.add(ShadowIndicator(
+      color: model.shadowColor.value,
+      spread: 0,
+      blur: 0,
+      direction: 0,
+      distance: 0,
+      opacity: 0,
+      isSelected: model.isNoShadow(),
+      onTapPressed: onTapPressed,
+      hintText: CretaStudioLang.nothing,
+    ));
+
     int len = CretaUtils.shadowDataList.length;
     for (int i = 0; i < len; i++) {
       //logger.finest('gradient: ${GradationType.values[i].toString()}');
       ShadowData data = CretaUtils.shadowDataList[i];
       shadowList.add(ShadowIndicator(
+        color: model.shadowColor.value,
         spread: data.spread,
         blur: data.blur,
         direction: data.direction,
         distance: data.distance,
-        shadowIn: false,
-        isSelected: _isSameShadow(data, false, model),
+        opacity: data.opacity,
+        isSelected: _isSameShadow(data, model),
         onTapPressed: onTapPressed,
-        width: 54,
-        height: 54,
       ));
     }
-    for (int i = 0; i < len; i++) {
-      //logger.finest('gradient: ${GradationType.values[i].toString()}');
-      ShadowData data = CretaUtils.shadowDataList[i];
-      shadowList.add(ShadowIndicator(
-        spread: data.spread,
-        blur: data.blur,
-        direction: data.direction,
-        distance: data.distance,
-        shadowIn: true,
-        isSelected: _isSameShadow(data, true, model),
-        onTapPressed: onTapPressed,
-        width: 54,
-        height: 54,
-      ));
-    }
+
     return Padding(
       padding: const EdgeInsets.only(top: 12.0),
       //child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: gradientList),
-      child: Wrap(children: shadowList),
+      child: Wrap(
+        // spacing: 1,
+        // runSpacing: 1,
+        children: shadowList,
+      ),
     );
   }
 
-  bool _isSameShadow(ShadowData data, bool shadowIn, FrameModel model) {
+  bool _isSameShadow(ShadowData data, FrameModel model) {
     if (data.blur == model.shadowBlur.value &&
         data.direction == model.shadowDirection.value &&
         data.distance == model.shadowOffset.value &&
-        data.spread == model.shadowSpread.value &&
-        shadowIn == model.shadowIn.value) {
+        data.spread == model.shadowSpread.value) {
+      logger.info('_isSameShadow true');
       return true;
     }
-
+    logger.info('_isSameShadow false');
     return false;
   }
 }
@@ -1418,30 +1500,7 @@ class _ExampleBoxState extends State<ExampleBox> {
 
   @override
   Widget build(BuildContext context) {
-    return _selectAnimation();
-  }
-
-  bool isAni() {
-    if (_isHover == null) return true;
-    return _isHover!;
-  }
-
-  Widget _selectAnimation() {
-    switch (widget.aniType) {
-      case AnimationType.fadeIn:
-        return isAni() ? _aniBox().fadeIn() : _normalBox();
-      case AnimationType.flip:
-        return isAni() ? _aniBox().flip() : _normalBox();
-      case AnimationType.shake:
-        return isAni() ? _aniBox().shake() : _normalBox();
-      case AnimationType.shimmer:
-        return isAni() ? _aniBox().shimmer() : _normalBox();
-      default:
-        return _noAnimation();
-    }
-  }
-
-  Widget _normalBox() {
+    //return _selectAnimation();
     return MouseRegion(
       onHover: (value) {
         if (_isHover == null || _isHover! == false) {
@@ -1484,20 +1543,54 @@ class _ExampleBoxState extends State<ExampleBox> {
               color: _isClicked ? CretaColor.primary : Colors.white,
               width: 2,
             ),
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           child: Container(
             height: _height - 8,
             width: _width - 8,
             decoration: BoxDecoration(
               color: CretaColor.text[200]!,
-              borderRadius: BorderRadius.all(Radius.circular(4)),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             child: Center(
-              child: Text(widget.name, style: CretaFont.titleSmall),
+              child: _selectAnimation(),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  bool isAni() {
+    if (_isHover == null) return true;
+    return _isHover!;
+  }
+
+  Widget _selectAnimation() {
+    switch (widget.aniType) {
+      case AnimationType.fadeIn:
+        return isAni() ? _aniBox().fadeIn() : _normalBox();
+      case AnimationType.flip:
+        return isAni() ? _aniBox().flip() : _normalBox();
+      case AnimationType.shake:
+        return isAni() ? _aniBox().shake() : _normalBox();
+      case AnimationType.shimmer:
+        return isAni() ? _aniBox().shimmer() : _normalBox();
+      default:
+        return _noAnimation();
+    }
+  }
+
+  Widget _normalBox() {
+    return Container(
+      height: _height - 56,
+      width: _width - 46,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(6)),
+      ),
+      child: Center(
+        child: Text(widget.name, style: CretaFont.titleSmall),
       ),
     );
   }

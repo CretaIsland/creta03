@@ -259,7 +259,7 @@ mixin PropertyMixin {
           name: CretaStudioLang.opacity,
           min: 0,
           max: 100,
-          value: (1 - opacity) * 100,
+          value: opacity,
           valueType: SliderValueType.reverse,
           onChannged: onOpactityChanged,
           onChanngeComplete: onOpactityChangedComplete,
@@ -310,6 +310,16 @@ mixin PropertyMixin {
     void Function(Color) onColor2Changed,
   ) {
     List<Widget> gradientList = [];
+    gradientList.add(GradationIndicator(
+      color1: color1,
+      color2: color2,
+      gradationType: GradationType.none,
+      isSelected: gradationType == GradationType.none,
+      onTapPressed: onTapPressed,
+      width: 44,
+      height: 44,
+      radius: 5,
+    ));
     for (int i = 1; i < GradationType.end.index; i++) {
       //logger.finest('gradient: ${GradationType.values[i].toString()}');
       GradationType gType = GradationType.values[i];
@@ -319,9 +329,9 @@ mixin PropertyMixin {
         gradationType: gType,
         isSelected: gradationType == gType,
         onTapPressed: onTapPressed,
-        width: 54,
-        height: 54,
-        radius: 6,
+        width: 44,
+        height: 44,
+        radius: 5,
       ));
     }
     return Column(

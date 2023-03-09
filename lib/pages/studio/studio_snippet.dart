@@ -85,6 +85,12 @@ class StudioSnippet {
     if (currentType == GradationType.out2in) {
       return RadialGradient(colors: [color2, color1]);
     }
+    if (currentType == GradationType.topAndBottom) {
+      return LinearGradient(
+          begin: beginAlignment(currentType),
+          end: endAlignment(currentType),
+          colors: [color1, color2, color2, color1]);
+    }
     return LinearGradient(
         begin: beginAlignment(currentType),
         end: endAlignment(currentType),
@@ -110,7 +116,7 @@ class StudioSnippet {
       case GradationType.rightTop2leftBottom:
         return Alignment.topRight;
       default:
-        return Alignment.topLeft;
+        return Alignment.topCenter;
     }
   }
 
@@ -133,7 +139,7 @@ class StudioSnippet {
       case GradationType.rightTop2leftBottom:
         return Alignment.bottomLeft;
       default:
-        return Alignment.bottomRight;
+        return Alignment.bottomCenter;
     }
   }
 }
