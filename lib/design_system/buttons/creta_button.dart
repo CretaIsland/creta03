@@ -25,7 +25,9 @@ enum CretaButtonDeco {
 enum CretaButtonColor {
   blue,
   blueAndWhite,
+  blueAndWhiteTitle,
   sky,
+  skyTitle,
   gray,
   gray100,
   gray200,
@@ -74,6 +76,8 @@ class CretaButton extends StatefulWidget {
   final String? tooltip;
   final bool hasShadow;
   final bool showClickableCursor;
+  final bool alwaysShowIcon;
+  final double sidePaddingSize;
 
   CretaButton({
     required this.buttonType,
@@ -96,6 +100,8 @@ class CretaButton extends StatefulWidget {
     this.tooltipFg,
     this.tooltipBg,
     this.showClickableCursor = true,
+    this.alwaysShowIcon = false,
+    this.sidePaddingSize = 0,
     Key? key,
   }) : super(key: key) {
     _setColor();
@@ -138,6 +144,11 @@ class CretaButton extends StatefulWidget {
       hoverColor = CretaColor.primary[200]!;
       clickColor = CretaColor.primary[300]!;
       selectColor = CretaColor.primary[400]!;
+    } else if (buttonColor == CretaButtonColor.skyTitle) {
+      bgColor = CretaColor.primary;
+      hoverColor = CretaColor.primary[500]!;
+      clickColor = CretaColor.primary[600]!;
+      selectColor = CretaColor.primary;
     } else if (buttonColor == CretaButtonColor.purple) {
       bgColor = CretaColor.secondary;
       hoverColor = CretaColor.secondary[500]!;
@@ -177,6 +188,10 @@ class CretaButton extends StatefulWidget {
     } else if (buttonColor == CretaButtonColor.blueAndWhite) {
       bgColor = CretaColor.primary[400]!;
       hoverColor = CretaColor.primary[200]!;
+      clickColor = CretaColor.primary[600]!;
+    } else if (buttonColor == CretaButtonColor.blueAndWhiteTitle) {
+      bgColor = CretaColor.primary[400]!;
+      hoverColor = CretaColor.primary[500]!;
       clickColor = CretaColor.primary[600]!;
     } else {
       bgColor = CretaColor.primary[400]!;
@@ -256,7 +271,10 @@ class _CretaButtonState extends State<CretaButton> {
             height: widget.height ?? _getHeight(),
             clipBehavior: Clip.antiAlias,
             //child: Center(
-            child: _getChild(),
+            child: Container(
+              margin: EdgeInsets.fromLTRB(widget.sidePaddingSize, 0, widget.sidePaddingSize, 0),
+              child: _getChild(),
+            ),
             //),
           ),
         ),
@@ -430,10 +448,10 @@ class _CretaButtonState extends State<CretaButton> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          hover ? _getIcon() : Container(),
+          (hover || widget.alwaysShowIcon) ? _getIcon() : Container(),
           AnimatedPadding(
             curve: Curves.easeOutQuad,
-            padding: EdgeInsetsDirectional.only(start: hover ? widget.width! / 14 : 0),
+            padding: EdgeInsetsDirectional.only(start: hover ? (widget.width ?? 0) / 14 : 0),
             duration: Duration(milliseconds: 800),
             child: _getText(),
           ),
@@ -465,7 +483,7 @@ class _CretaButtonState extends State<CretaButton> {
             duration: Duration(milliseconds: 800),
             child: _getText(),
           ),
-          hover ? _getIcon() : Container(),
+          (hover || widget.alwaysShowIcon) ? _getIcon() : Container(),
         ],
       );
     }

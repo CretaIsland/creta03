@@ -157,19 +157,21 @@ class BTN {
   static CretaButton fill_gray_i_l({
     required IconData icon,
     required Function onPressed,
+    CretaButtonColor butonColor = CretaButtonColor.white,
+    Color? iconColor,
   }) {
     return CretaButton(
       width: 36,
       height: 36,
       buttonType: CretaButtonType.child,
-      buttonColor: CretaButtonColor.white,
+      buttonColor: butonColor,
       onPressed: onPressed,
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         child: Icon(
           icon,
           size: 20,
-          color: CretaColor.text[700]!,
+          color: iconColor ?? CretaColor.text[700]!,
         ),
       ),
     );
@@ -279,24 +281,29 @@ class BTN {
     required IconData icon,
     required String text,
     required Function onPressed,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Color? textColor,
+    double? width = 96,
+    bool alwaysShowIcon = false,
   }) {
     return CretaButton(
-      width: 96,
+      width: width,
       height: 32,
       buttonType: CretaButtonType.iconText,
-      buttonColor: CretaButtonColor.white,
+      buttonColor: buttonColor,
       icon: Icon(
         icon,
         size: 16,
-        color: CretaColor.text[700]!,
+        color: textColor ?? CretaColor.text[700]!,
       ),
       text: Padding(
         padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
         child: Center(
-          child: Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)),
+          child: Text(text, style: CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
         ),
       ),
       onPressed: onPressed,
+      alwaysShowIcon: alwaysShowIcon,
     );
   }
 
@@ -304,24 +311,28 @@ class BTN {
     required IconData icon,
     required String text,
     required Function onPressed,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Color? textColor,
+    double? width = 106,
+    double sidePaddingSize = 0,
   }) {
     return CretaButton(
-      width: 106,
+      width: width,
       height: 36,
       buttonType: CretaButtonType.iconTextFix,
-      buttonColor: CretaButtonColor.white,
+      buttonColor: buttonColor,
       icon: Icon(
         icon,
         size: 20,
-        color: CretaColor.text[700]!,
+        color: textColor ?? CretaColor.text[700]!,
       ),
       text: Padding(
         padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
         child: Center(
-          child: Text(text, style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]!)),
-        ),
+          child: Text(text, style: CretaFont.buttonLarge.copyWith(color: textColor ?? CretaColor.text[700]!))),
       ),
       onPressed: onPressed,
+      sidePaddingSize: sidePaddingSize,
     );
   }
 
@@ -1287,5 +1298,43 @@ class BTN {
         text: text,
         iconData: iconData,
         iconSize: 20);
+  }
+
+  static CretaButton fill_gray_itt_l({
+    required IconData icon,
+    required String text,
+    required String subText,
+    required Function onPressed,
+    CretaButtonColor buttonColor = CretaButtonColor.sky,
+    Color? textColor,
+    Color? subTextColor,
+    double? width = 106,
+    double sidePaddingSize = 0,
+  }) {
+    return CretaButton(
+      width: width,
+      height: 36,
+      buttonType: CretaButtonType.iconTextFix,
+      buttonColor: buttonColor,
+      icon: Icon(
+        icon,
+        size: 20,
+        color: textColor ?? CretaColor.text[700]!,
+      ),
+      text: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+        child: Center(
+          child: Row(
+            children: [
+              Text(text, style: CretaFont.buttonLarge.copyWith(fontWeight: CretaFont.regular, color: textColor ?? CretaColor.text[700]!)),
+              const SizedBox(width: 21),
+              Text(subText, style: CretaFont.buttonSmall.copyWith(color: subTextColor ?? CretaColor.primary[200]!)),
+            ],
+          ),
+        ),
+      ),
+      onPressed: onPressed,
+      sidePaddingSize: sidePaddingSize,
+    );
   }
 }

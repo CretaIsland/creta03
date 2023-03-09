@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -8,12 +9,13 @@ import 'package:flutter/material.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/buttons/creta_elibated_button.dart';
 //import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-//import '../design_system/creta_color.dart';
+import '../../design_system/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
@@ -46,13 +48,36 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
     // _isInUsingCanvaskit = ccj.isInUsingCanvaskit();
   }
 
+  Widget _getHashtagWidget(String hashtag) {
+    return CretaElevatedButton(
+      height: 32,
+      caption: hashtag,
+      captionStyle: CretaFont.bodyMedium.copyWith(fontSize: 13),
+      onPressed: () {},
+      bgHoverColor: CretaColor.text[100]!,
+      bgHoverSelectedColor: CretaColor.text[100]!,
+      bgSelectedColor: Colors.white,
+      borderColor: CretaColor.text[700]!,
+      borderSelectedColor: CretaColor.text[700]!,
+      fgColor: CretaColor.text[700]!,
+      fgSelectedColor: CretaColor.text[700]!,
+    );
+  }
+
   List<Widget> _getHashtagList() {
     return [
+      _getHashtagWidget('#크레타북'),
+      _getHashtagWidget('#추천'),
+      _getHashtagWidget('#인기'),
+      _getHashtagWidget('#해시태그'),
+      _getHashtagWidget('#목록입니다'),
+      _getHashtagWidget('#스페이싱'),
       BTN.opacity_gray_it_s(
         text: '#크레타북',
         textStyle: CretaFont.buttonMedium,
         //width: null,
         onPressed: () {},
+        width: null,
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
@@ -60,21 +85,22 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
         textStyle: CretaFont.buttonMedium,
         //width: null,
         onPressed: () {},
+        width: null,
       ),
-      SizedBox(width: 12),
-      BTN.opacity_gray_it_s(
-        text: '#인기',
-        textStyle: CretaFont.buttonMedium,
-        //width: null,
-        onPressed: () {},
-      ),
-      SizedBox(width: 12),
-      BTN.opacity_gray_it_s(
-        text: '#해시태그',
-        textStyle: CretaFont.buttonMedium,
-        //width: null,
-        onPressed: () {},
-      ),
+      // SizedBox(width: 12),
+      // BTN.opacity_gray_it_s(
+      //   text: '#인기',
+      //   textStyle: CretaFont.buttonMedium,
+      //   //width: null,
+      //   onPressed: () {},
+      // ),
+      // SizedBox(width: 12),
+      // BTN.opacity_gray_it_s(
+      //   text: '#해시태그',
+      //   textStyle: CretaFont.buttonMedium,
+      //   //width: null,
+      //   onPressed: () {},
+      // ),
     ];
   }
 
@@ -82,14 +108,106 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
     return Container(
       width: size.width,
       height: size.height,
-      padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Row(
-        children: [
-          Text(
-            '_getTitlePane',
-            style: CretaFont.titleELarge,
-          ),
-        ],
+      padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[800],
+          borderRadius: BorderRadius.circular(7.6),
+        ),
+        padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
+        child: Row(
+          children: [
+            Text(
+              '크레타북 01',//'[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
+              overflow: TextOverflow.ellipsis,
+              style: CretaFont.titleELarge.copyWith(color: Colors.white),
+            ),
+            SizedBox(width:20),
+            // CretaElevatedButton(
+            //   caption: '이지금 [IU Official]',
+            //   captionStyle: CretaFont.bodyMedium.copyWith(color: Colors.white),
+            //   icon: Icon(Icons.person_pin, color: Colors.white, size: 16),
+            //   bgColor: CretaColor.primary,
+            //   bgSelectedColor: CretaColor.primary[600]!,
+            //   bgHoverColor: CretaColor.primary[500]!,
+            //   bgHoverSelectedColor: CretaColor.primary,
+            //   fgColor: CretaColor.primary,
+            //   fgSelectedColor: CretaColor.primary,
+            //   borderColor: CretaColor.primary,
+            //   borderSelectedColor: CretaColor.primary,
+            //   onPressed: () {},
+            // ),
+            BTN.fill_gray_it_m(
+              text: '이지금 [IU Official]',
+              icon: Icons.account_circle,
+              onPressed: () {},
+              width: null,
+              buttonColor: CretaButtonColor.transparent,
+              textColor: Colors.white,
+              alwaysShowIcon: true,
+            ),
+            // InkWell(
+            //   onTap: () {},
+            //   child: Row(
+            //     children: [
+            //       Icon(Icons.person_pin, color: Colors.white, size: 16),
+            //       SizedBox(width:8),
+            //       Text(
+            //         '이지금 [IU Official]',
+            //         overflow: TextOverflow.ellipsis,
+            //         style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            SizedBox(width:20),
+            Text(
+              '2023.03.01',
+              style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+            ),
+            SizedBox(width:20),
+            Text(
+              '조회수 123,456회',
+              style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+            ),
+            Expanded(child: Container()),
+            BTN.fill_gray_i_l(
+              icon: Icons.edit_outlined,
+              onPressed: () {},
+              butonColor : CretaButtonColor.blueAndWhiteTitle,
+              iconColor: Colors.white,
+            ),
+            SizedBox(width:12),
+            BTN.fill_gray_it_l(
+              icon: Icons.favorite_border_outlined,
+              text: '123',
+              onPressed: () {},
+              buttonColor: CretaButtonColor.transparent,
+              textColor: Colors.white,
+              width: null,
+              sidePaddingSize: 8,
+            ),
+            SizedBox(width:13),
+            BTN.fill_gray_itt_l(
+              icon: Icons.copy_rounded,
+              text: '복제하기',
+              subText: '123',
+              onPressed: () {},
+              buttonColor: CretaButtonColor.skyTitle,
+              textColor: Colors.white,
+              subTextColor: CretaColor.primary[200],
+              width: null,
+              sidePaddingSize: 8,
+            ),
+            SizedBox(width:12),
+            BTN.fill_gray_i_l(
+              icon: Icons.menu_outlined,
+              onPressed: () {},
+              butonColor : CretaButtonColor.transparent,
+              iconColor: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -177,12 +295,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
         child: Column(
           children: [
             // title
-            Container(
-              color: Colors.yellow[200],
-              width: titleArea.width,
-              height: titleArea.height,
-              child: Center(child: _getTitlePane(titleArea)),
-            ),
+            _getTitlePane(titleArea),
             // body
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,

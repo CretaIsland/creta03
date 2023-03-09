@@ -79,7 +79,7 @@ class _CretaElevatedButtonState extends State<CretaElevatedButton> {
         // ),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(widget.radius),
-            side: BorderSide(color: selected ? Colors.white : widget.borderColor))),
+            side: BorderSide(color: selected ? widget.borderSelectedColor : widget.borderColor))),
       ),
       onPressed: () {
         setState(() {
