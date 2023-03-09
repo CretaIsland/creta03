@@ -134,14 +134,14 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   void pageClicked(LongPressDownDetails details) {
-    logger.fine(
+    logger.finest(
         'Gest3 : onLongPressDown in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
     if (BookMainPage.containeeNotifier!.isFrameClick == true) {
       BookMainPage.containeeNotifier!.setFrameClick(false);
-      logger.fine('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
+      logger.finest('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
       return;
     }
-    logger.fine('page clicked');
+    logger.finest('page clicked');
     setState(() {
       _frameManager?.clearSelectedMid();
     });

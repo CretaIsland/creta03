@@ -62,7 +62,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
           value: _makeValue(_value, widget.valueType),
           onDragComplete: (val) {
             setState(() {
-              logger.fine('CretaSlider value=$val');
+              logger.finest('CretaSlider value=$val');
               _value = _reverseValue(val, widget.valueType);
             });
             widget.onChanngeComplete?.call(_value);
@@ -97,7 +97,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
   }
 
   String _makeValueString(double value, SliderValueType aType) {
-    logger.fine('_makeValueString($value)');
+    logger.finest('_makeValueString($value)');
     switch (aType) {
       case SliderValueType.percent:
         return '${(value * 100).round()}';
@@ -109,7 +109,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
   }
 
   double _makeValue(double value, SliderValueType aType) {
-    logger.fine('_makeValue($value)');
+    logger.finest('_makeValue($value)');
     switch (aType) {
       case SliderValueType.percent:
         return (value * 100);
@@ -121,7 +121,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
   }
 
   double _reverseValue(double value, SliderValueType aType) {
-    logger.fine('_reverseValue($value)');
+    logger.finest('_reverseValue($value)');
     switch (aType) {
       case SliderValueType.percent:
         return (value / 100);

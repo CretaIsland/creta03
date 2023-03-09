@@ -10,19 +10,19 @@ mixin ContaineeMixin {
     Animate ani = target.animate();
     for (var ele in animations) {
       if (ele == AnimationType.fadeIn) {
-        logger.fine('fadeIn');
+        logger.finest('fadeIn');
         ani = ani.fadeIn().then();
       }
       if (ele == AnimationType.flip) {
-        logger.fine('flip');
+        logger.finest('flip');
         ani = ani.flip().then();
       }
       if (ele == AnimationType.shake) {
-        logger.fine('shake');
+        logger.finest('shake');
         ani = ani.shake().then();
       }
       if (ele == AnimationType.shimmer) {
-        logger.fine('shimmer');
+        logger.finest('shimmer');
         ani = ani.shimmer().then();
       }
     }

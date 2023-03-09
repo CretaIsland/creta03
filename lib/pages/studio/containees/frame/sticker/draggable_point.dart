@@ -38,12 +38,12 @@ class DraggablePointState extends State<DraggablePoint> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressDown: (detail) {
-        logger.fine('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
+        logger.finest('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
         //
         widget.onTap!();
       },
       onScaleStart: (details) {
-        logger.fine('Gest2 : onScaleStart');
+        logger.finest('Gest2 : onScaleStart');
         switch (widget.mode) {
           case PositionMode.global:
             initPoint = details.focalPoint;
@@ -61,7 +61,7 @@ class DraggablePointState extends State<DraggablePoint> {
         }
       },
       onScaleUpdate: (details) {
-        logger.fine('Gest2 : onSateUpdate');
+        logger.finest('Gest2 : onSateUpdate');
         switch (widget.mode) {
           case PositionMode.global:
             final dx = details.focalPoint.dx - initPoint.dx;

@@ -111,7 +111,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
   @override
   void initState() {
-    logger.fine('_FramePropertyState.initState');
+    logger.finest('_FramePropertyState.initState');
 
     super.initMixin();
     super.initState();
@@ -125,7 +125,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     final FrameEventController receiveEvent = Get.find(tag: 'frame-main-to-property');
     _receiveEvent = receiveEvent;
 
-    logger.fine(
+    logger.finest(
         'spread=${widget.model.shadowSpread.value}, blur=${widget.model.shadowBlur.value},direction=${widget.model.shadowDirection.value}, distance=${widget.model.shadowOffset.value}');
   }
 
@@ -152,7 +152,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //       if (snapshot.data != null && snapshot.data!.mid == widget.model.mid) {
     //         snapshot.data!.copyTo(widget.model);
     //       }
-    logger.fine(
+    logger.finest(
         'build : spread=${widget.model.shadowSpread.value}, blur=${widget.model.shadowBlur.value},direction=${widget.model.shadowDirection.value}, distance=${widget.model.shadowOffset.value}');
     return Column(children: [
       Padding(
@@ -396,7 +396,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       value: widget.model.angle.value.round().toString(),
                       hintText: '',
                       onEditComplete: ((value) {
-                        logger.fine('onEditComplete $value');
+                        logger.finest('onEditComplete $value');
                         double newValue = int.parse(value).toDouble();
                         if (widget.model.angle.value == newValue) {
                           return;
@@ -404,7 +404,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         widget.model.angle.set(newValue);
                         //BookMainPage.bookManagerHolder!.notify();
                         _sendEvent!.sendEvent(widget.model);
-                        logger.fine('onEditComplete ${widget.model.angle.value}');
+                        logger.finest('onEditComplete ${widget.model.angle.value}');
                       }),
                       minNumber: 0,
                     ),
@@ -482,7 +482,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       value: widget.model.radius.value.round().toString(),
                       hintText: '',
                       onEditComplete: ((value) {
-                        logger.fine('onEditComplete $value');
+                        logger.finest('onEditComplete $value');
                         double newValue = int.parse(value).toDouble();
                         if (widget.model.radius.value == newValue) {
                           return;
@@ -496,7 +496,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         mychangeStack.endTrans();
                         //BookMainPage.bookManagerHolder!.notify();
                         _sendEvent!.sendEvent(widget.model);
-                        logger.fine('onEditComplete ${widget.model.radius.value}');
+                        logger.finest('onEditComplete ${widget.model.radius.value}');
                       }),
                       minNumber: 0,
                     ),
@@ -654,7 +654,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       value: cornerValue.value.round().toString(),
       hintText: '',
       onEditComplete: ((value) {
-        logger.fine('onEditComplete $value');
+        logger.finest('onEditComplete $value');
         double newValue = int.parse(value).toDouble();
         if (cornerValue.value == newValue) {
           return;
@@ -662,7 +662,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         cornerValue.set(newValue);
         //BookMainPage.bookManagerHolder!.notify();
         _sendEvent!.sendEvent(widget.model);
-        logger.fine('onEditComplete ${cornerValue.value}');
+        logger.finest('onEditComplete ${cornerValue.value}');
         onEditComplete.call(value);
       }),
       minNumber: 0,
@@ -682,7 +682,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //         value: cornerValue.value.round().toString(),
     //         hintText: '',
     //         onEditComplete: ((value) {
-    //           logger.fine('onEditComplete $value');
+    //           logger.finest('onEditComplete $value');
     //           double newValue = int.parse(value).toDouble();
     //           if (cornerValue.value == newValue) {
     //             return;
@@ -690,7 +690,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //           cornerValue.set(newValue);
     //           //BookMainPage.bookManagerHolder!.notify();
     //           _sendEvent!.sendEvent(widget.model);
-    //           logger.fine('onEditComplete ${cornerValue.value}');
+    //           logger.finest('onEditComplete ${cornerValue.value}');
     //           onEditComplete.call(value);
     //         }),
     //         minNumber: 0,
@@ -703,7 +703,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //             cornerValue.set(0);
     //             //BookMainPage.bookManagerHolder!.notify();
     //             _sendEvent!.sendEvent(widget.model);
-    //             logger.fine('onEditComplete ${cornerValue.value}');
+    //             logger.finest('onEditComplete ${cornerValue.value}');
     //           } else {
     //             setState(() {
     //               openFlag.value = value;
@@ -728,7 +728,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //           cornerValue.set(0);
     //           //BookMainPage.bookManagerHolder!.notify();
     //           _sendEvent!.sendEvent(widget.model);
-    //           logger.fine('onEditComplete ${cornerValue.value}');
+    //           logger.finest('onEditComplete ${cornerValue.value}');
     //         } else {
     //           setState(() {
     //             openFlag.value = value;
@@ -749,7 +749,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //       value: cornerValue.value.round().toString(),
     //       hintText: '',
     //       onEditComplete: ((value) {
-    //         logger.fine('onEditComplete $value');
+    //         logger.finest('onEditComplete $value');
     //         double newValue = int.parse(value).toDouble();
     //         if (cornerValue.value == newValue) {
     //           return;
@@ -757,7 +757,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //         cornerValue.set(newValue);
     //         //BookMainPage.bookManagerHolder!.notify();
     //         _sendEvent!.sendEvent(widget.model);
-    //         logger.fine('onEditComplete ${cornerValue.value}');
+    //         logger.finest('onEditComplete ${cornerValue.value}');
     //         onEditComplete.call(value);
     //       }),
     //       minNumber: 0,
@@ -790,7 +790,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //                       value: widget.model.radiusLeftTop.value.round().toString(),
   //                       hintText: '',
   //                       onEditComplete: ((value) {
-  //                         logger.fine('onEditComplete $value');
+  //                         logger.finest('onEditComplete $value');
   //                         double newValue = int.parse(value).toDouble();
   //                         if (widget.model.radiusLeftTop.value == newValue) {
   //                           return;
@@ -798,7 +798,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //                         widget.model.radiusLeftTop.set(newValue);
   //                         //BookMainPage.bookManagerHolder!.notify();
   //                         _sendEvent!.sendEvent(widget.model);
-  //                         logger.fine('onEditComplete ${widget.model.radiusLeftTop.value}');
+  //                         logger.finest('onEditComplete ${widget.model.radiusLeftTop.value}');
   //                       }),
   //                       minNumber: 0,
   //                     ),
@@ -822,7 +822,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     UndoAble<double> targetAttr,
     UndoAble<double> counterAttr,
   ) {
-    logger.fine('onEditComplete $value');
+    logger.finest('onEditComplete $value');
     double oldValue = targetAttr.value;
     double newValue = int.parse(value).toDouble();
     if (targetAttr.value == newValue) {
@@ -839,7 +839,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
     //BookMainPage.bookManagerHolder!.notify();
     _sendEvent!.sendEvent(widget.model);
-    logger.fine('onEditComplete ${targetAttr.value}');
+    logger.finest('onEditComplete ${targetAttr.value}');
   }
 
   Widget _pageColor() {
@@ -857,13 +857,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         onOpacityDragComplete: (value) {
           setState(() {
             widget.model.opacity.set(value);
-            logger.fine('opacity1=${widget.model.opacity.value}');
+            logger.finest('opacity1=${widget.model.opacity.value}');
           });
           _sendEvent!.sendEvent(widget.model);
         },
         onOpacityDrag: (value) {
           widget.model.opacity.set(value);
-          logger.fine('opacity1=${widget.model.opacity.value}');
+          logger.finest('opacity1=${widget.model.opacity.value}');
           _sendEvent!.sendEvent(widget.model);
         },
         onColor1Changed: (val) {
@@ -1211,7 +1211,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             },
             onOpacityChanged: (value) {
               widget.model.shadowOpacity.set(value);
-              logger.fine('shadowOpacity=${widget.model.shadowOpacity.value}');
+              logger.finest('shadowOpacity=${widget.model.shadowOpacity.value}');
               _sendEvent!.sendEvent(widget.model);
             },
             onSpreadChanged: (value) {
@@ -1458,10 +1458,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         data.direction == model.shadowDirection.value &&
         data.distance == model.shadowOffset.value &&
         data.spread == model.shadowSpread.value) {
-      logger.info('_isSameShadow true');
+      logger.finest('_isSameShadow true');
       return true;
     }
-    logger.info('_isSameShadow false');
+    logger.finest('_isSameShadow false');
     return false;
   }
 }

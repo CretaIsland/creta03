@@ -96,14 +96,14 @@ class UserPropertyManager extends CretaManager {
   }
 
   Future<int> getProperty({int limit = 99}) async {
-    logger.fine('getProperty ${userModel.userId}');
+    logger.finest('getProperty ${userModel.userId}');
     Map<String, QueryValue> query = {};
     query['parentMid'] = QueryValue(value: userModel.userId);
     query['isRemoved'] = QueryValue(value: false);
     Map<String, OrderDirection> orderBy = {};
     orderBy['order'] = OrderDirection.ascending;
     await queryFromDB(query, orderBy: orderBy, limit: limit);
-    logger.fine('getProperty ${modelList.length}');
+    logger.finest('getProperty ${modelList.length}');
     updateLastOrder();
 
     propertyModel = onlyOne() as UserPropertyModel?;
@@ -146,7 +146,7 @@ class UserPropertyManager extends CretaManager {
   }
 
   Future<List<FrameModel>> _getAnyLattestFrames() async {
-    logger.fine('_getAnyLattestFrames');
+    logger.finest('_getAnyLattestFrames');
     Map<String, QueryValue> query = {};
     query['parentMid'] = QueryValue(value: 'TEMPLATE');
     query['isRemoved'] = QueryValue(value: false);
@@ -160,7 +160,7 @@ class UserPropertyManager extends CretaManager {
       limit: StudioConst.maxMyFavFrame,
     );
 
-    logger.fine('_getAnyLattestFrames ${resultList.length}');
+    logger.finest('_getAnyLattestFrames ${resultList.length}');
 
     if (propertyModel == null) {
       logger.severe('propertyModel == null');
@@ -171,19 +171,19 @@ class UserPropertyManager extends CretaManager {
       FrameModel model = FrameModel(ele['mid'] ?? '');
       model.fromMap(ele);
 
-      logger.fine('ele = ${model.mid}');
+      logger.finest('ele = ${model.mid}');
       _frameModelList.add(model);
-      logger.fine('ele = ${model.mid}');
+      logger.finest('ele = ${model.mid}');
       propertyModel!.latestFrames.add(model.mid);
-      logger.fine('ele = ${model.mid}');
+      logger.finest('ele = ${model.mid}');
       if (_frameModelList.length >= 4) {
         break;
       }
     }
-    logger.fine('save ${_frameModelList.length}');
+    logger.finest('save ${_frameModelList.length}');
     propertyModel?.save();
 
-    logger.fine('getAnyLattestFrames ${propertyModel!.latestFrames.toString()}');
+    logger.finest('getAnyLattestFrames ${propertyModel!.latestFrames.toString()}');
     return _frameModelList;
   }
 }

@@ -69,6 +69,7 @@ dependencies:
   flutter_animate: ^4.0.0
   r_dotted_line_border: ^0.1.1
   flutter_inner_shadow: 0.0.1
+  inner_shadow_widget: ^0.0.3
   
 dev_dependencies:
   flutter_test:

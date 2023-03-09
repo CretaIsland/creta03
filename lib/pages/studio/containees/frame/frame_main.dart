@@ -94,7 +94,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       height: widget.pageHeight,
       // List of Stickers
       onUpdate: (update, mid) {
-        logger.fine('onUpdate ${update.hint}');
+        logger.finest('onUpdate ${update.hint}');
         _setItem(update, mid);
         FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
@@ -138,7 +138,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
   List<Sticker> getStickerList() {
     logger.finest('getStickerList()');
-    _frameManager!.frameKeyMap.clear();
+    //_frameManager!.frameKeyMap.clear();
     return _frameManager!.modelList.map((e) {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
@@ -152,8 +152,13 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       double posX = model.posX.value * applyScale - LayoutConst.floatingActionPadding;
       double posY = model.posY.value * applyScale - LayoutConst.floatingActionPadding;
 
-      GlobalKey<StickerState> stickerKey = GlobalKey<StickerState>();
-      _frameManager!.frameKeyMap[model.mid] = stickerKey;
+      GlobalKey<StickerState>? stickerKey =
+          _frameManager!.frameKeyMap[model.mid] as GlobalKey<StickerState>?;
+      if (stickerKey == null) {
+        stickerKey = GlobalKey<StickerState>();
+        //Get.put(FrameEventController(), tag: model.mid);
+        _frameManager!.frameKeyMap[model.mid] = stickerKey;
+      }
 
       return Sticker(
         key: stickerKey,
@@ -168,7 +173,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
   Widget _applyAnimate(FrameModel model) {
     List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
-    logger.fine('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
+    logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
     //if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
     if (animations.isEmpty) {
       return _textureBox(model);
@@ -316,7 +321,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
 
-      //logger.fine('before save widthxheight = ${model.width.value}x${model.height.value}');
+      //logger.finest('before save widthxheight = ${model.width.value}x${model.height.value}');
 
       model.angle.set(update.angle * (180 / pi), save: false);
       // model.posX
@@ -331,7 +336,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       model.height.set(update.size.height / applyScale, save: false);
       model.save();
 
-      //logger.fine('after save widthxheight = ${model.width.value}x${model.height.value}');
+      //logger.finest('after save widthxheight = ${model.width.value}x${model.height.value}');
     }
   }
 

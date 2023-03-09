@@ -293,7 +293,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     UndoAble<double> targetAttr,
     UndoAble<double> counterAttr,
   ) {
-    logger.fine('onEditComplete $value');
+    logger.finest('onEditComplete $value');
     double newValue = int.parse(value).toDouble();
     if (targetAttr.value == newValue) {
       return;
@@ -306,7 +306,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     }
     targetAttr.set(newValue);
     BookMainPage.bookManagerHolder!.notify();
-    logger.fine('onEditComplete ${targetAttr.value}');
+    logger.finest('onEditComplete ${targetAttr.value}');
   }
 
   // Widget _editSize() {

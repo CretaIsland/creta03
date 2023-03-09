@@ -184,12 +184,12 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         }
 
         double width = widget.width ?? _getMaxWidth(popupMenu);
-        logger.fine('x=$x, width=$width, d:${StudioVariables.displayWidth}');
+        logger.finest('x=$x, width=$width, d:${StudioVariables.displayWidth}');
         double gap = x + width - StudioVariables.displayWidth;
         if (gap > 0) {
           x = x - gap - 20;
         }
-        logger.fine('x=$x, width=$width, d:${StudioVariables.displayWidth}');
+        logger.finest('x=$x, width=$width, d:${StudioVariables.displayWidth}');
 
         return _createDropDownMenu(
           context,

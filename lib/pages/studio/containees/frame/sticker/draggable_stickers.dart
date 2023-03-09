@@ -52,7 +52,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               //   child: GestureDetector(
               //     key: const Key('stickersView_background_gestureDetector'),
               //     onTap: () {
-              //       logger.fine('GestureDetector.onTap');
+              //       logger.finest('GestureDetector.onTap');
               //     },
               //   ),
               // ),
@@ -80,8 +80,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
       //  true
       /*sticker.id == state.selectedAssetId*/
       onUpdate: (update, mid) {
-        logger.finest(
-            "oldposition=${sticker.position.toString()}, new=${update.position.toString()}");
+        logger
+            .fine("oldposition=${sticker.position.toString()}, new=${update.position.toString()}");
 
         sticker.angle = update.angle;
         sticker.size = update.size;
@@ -90,7 +90,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         logger.finest("saved");
       },
       onTap: () {
-        logger.finest('Gest2 : onTop on DraggableStickers for each sticker setStates here');
+        logger.fine('Gest2 : onTop on DraggableStickers for each sticker setStates here');
         BookMainPage.containeeNotifier!.setFrameClick(true);
         // logger.finest('setState');
         // setState(() {});
@@ -164,7 +164,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         onTap: () {
           // To update the selected widget
           DraggableStickers.selectedAssetId = sticker.id;
-          logger.finest('onTap...');
+          logger.fine('InkWell onTap...');
           setState(() {});
           widget.onTap?.call(DraggableStickers.selectedAssetId!);
         },
