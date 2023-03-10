@@ -229,6 +229,12 @@ class _CretaButtonState extends State<CretaButton> {
           }
         });
       },
+      onLongPressUp: () {
+        setState(() {
+          clicked = false;
+        });
+        widget.onPressed.call();
+      },
       onTapUp: (details) {
         setState(() {
           clicked = false;
@@ -380,8 +386,11 @@ class _CretaButtonState extends State<CretaButton> {
       //if (selected && widget.isSelectedWidget && widget.buttonColor == CretaButtonColor.white) {
       if (selected && widget.isSelectedWidget) {
         if (widget.buttonType == CretaButtonType.textOnly) {
-          return Center(
-            child: Text(widget.textString!, style: widget.textStyle!.copyWith(color: Colors.white)),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(widget.textString!, style: widget.textStyle!.copyWith(color: Colors.white)),
+            ],
           );
         }
         return Padding(
@@ -390,8 +399,11 @@ class _CretaButtonState extends State<CretaButton> {
         );
       }
       if (widget.buttonType == CretaButtonType.textOnly) {
-        return Center(
-          child: Text(widget.textString!, style: widget.textStyle!),
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(widget.textString!, style: widget.textStyle!),
+          ],
         );
       }
       return Padding(
