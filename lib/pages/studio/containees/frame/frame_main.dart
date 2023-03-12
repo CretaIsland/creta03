@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 //import 'package:glass/glass.dart';
@@ -176,9 +177,33 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
     //if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
     if (animations.isEmpty) {
-      return _textureBox(model);
+      return _textureBox(model).asShape(
+        mid: model.mid,
+        shapeType: model.shape.value,
+        width: model.width.value,
+        height: model.height.value,
+        strokeWidth: model.borderWidth.value,
+        strokeColor: model.borderColor.value,
+        radiusLeftBottom: model.radiusLeftBottom.value,
+        radiusLeftTop: model.radiusLeftTop.value,
+        radiusRightBottom: model.radiusRightBottom.value,
+        radiusRightTop: model.radiusRightTop.value,
+      );
     }
-    return getAnimation(_textureBox(model), animations);
+    return getAnimation(
+        _textureBox(model).asShape(
+          mid: model.mid,
+          shapeType: model.shape.value,
+          width: model.width.value,
+          height: model.height.value,
+          strokeWidth: model.borderWidth.value,
+          strokeColor: model.borderColor.value,
+          radiusLeftBottom: model.radiusLeftBottom.value,
+          radiusLeftTop: model.radiusLeftTop.value,
+          radiusRightBottom: model.radiusRightBottom.value,
+          radiusRightTop: model.radiusRightTop.value,
+        ),
+        animations);
   }
 
   Widget _textureBox(FrameModel model) {

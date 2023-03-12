@@ -143,3 +143,19 @@ enum BorderPositionType {
   static BorderPositionType fromInt(int? val) =>
       BorderPositionType.values[validCheck(val ?? none.index)];
 }
+
+enum ShapeType {
+  none,
+  rectangle,
+  circle,
+  oval,
+  triangle,
+  star,
+  diamond,
+  //rhombus, // 마름모
+  //parallelogram, // 평행사변형
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static ShapeType fromInt(int? val) => ShapeType.values[validCheck(val ?? none.index)];
+}

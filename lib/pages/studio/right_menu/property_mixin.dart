@@ -354,7 +354,7 @@ mixin PropertyMixin {
         Padding(
           padding: const EdgeInsets.only(top: 12.0),
           //child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: gradientList),
-          child: Wrap(children: gradientList),
+          child: Wrap(spacing: 1, runSpacing: 1, children: gradientList),
         ),
       ],
     );

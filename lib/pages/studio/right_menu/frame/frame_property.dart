@@ -13,6 +13,7 @@ import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/component/colorPicker/shadow_indicator.dart';
+import '../../../../design_system/component/shape/shape_indicator.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
@@ -59,6 +60,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   static bool _isShadowOpen = false;
   static bool _isSizeOpen = false;
   static bool _isRadiusOpen = false;
+
+  static bool _isShapeOpen = false;
   // LeftTopSelected _isLeftTopSelected = LeftTopSelected();
   // RightTopSelected _isRightTopSelected = RightTopSelected();
   // LeftBottomSelected _isLeftBottomSelected = LeftBottomSelected();
@@ -172,6 +175,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       propertyDivider(),
       _shadow(),
       propertyDivider(),
+      _shape(),
     ]);
     //});
   }
@@ -1463,6 +1467,61 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     }
     logger.finest('_isSameShadow false');
     return false;
+  }
+
+  Widget _shape() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: propertyCard(
+        isOpen: _isShapeOpen,
+        onPressed: () {
+          setState(() {
+            _isShapeOpen = !_isShapeOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.shape, style: CretaFont.titleSmall),
+        trailWidget: widget.model.shape.value == ShapeType.none
+            ? const SizedBox.shrink()
+            : ShapeIndicator(
+                shapeType: widget.model.shape.value,
+                isSelected: false,
+                onTapPressed: (value) {
+                  setState(() {
+                    _isShapeOpen = !_isShapeOpen;
+                  });
+                },
+                width: 24,
+                height: 24,
+              ),
+        bodyWidget: _shapeListView(
+          onShapeTapPressed: (value) {
+            setState(() {
+              widget.model.shape.set(value);
+            });
+            _sendEvent!.sendEvent(widget.model);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _shapeListView({required void Function(ShapeType value) onShapeTapPressed}) {
+    List<Widget> shapeList = [];
+    for (int i = 1; i < ShapeType.end.index; i++) {
+      ShapeType gType = ShapeType.values[i];
+      shapeList.add(ShapeIndicator(
+        shapeType: gType,
+        isSelected: widget.model.shape.value == gType,
+        onTapPressed: onShapeTapPressed,
+        width: 36,
+        height: 36,
+      ));
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0),
+      //child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: gradientList),
+      child: Wrap(children: shapeList),
+    );
   }
 }
 

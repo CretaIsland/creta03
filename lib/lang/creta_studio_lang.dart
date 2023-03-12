@@ -261,6 +261,8 @@ class CretaStudioLang {
     '경계 중앙': 'center',
   };
 
+  static String shape = "모양";
+
   // static Map<String, String> shadowInList = {
   //   '외부 그림자': 'outSide',
   //   '내부 그림자': 'inSide',
