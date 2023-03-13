@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import '../../../model/app_enums.dart';
 
 class ShapePath {
-  static Path getClip(ShapeType shapeType, Size size) {
+  static Path getClip(ShapeType shapeType, Size size, {Offset offset = Offset.zero}) {
     switch (shapeType) {
       case ShapeType.triangle:
         return ShapePath.triangle(size);
       case ShapeType.diamond:
         return ShapePath.diamond(size);
       case ShapeType.star:
-        return ShapePath.star(size);
+        return ShapePath.star(size, offset: offset);
       default:
         return Path();
     }
   }
 
-  static Path star(Size size) {
+  static Path star(Size size, {Offset offset = Offset.zero}) {
     Path path = Path();
     double halfWidth = size.width / 2;
     double bigRadius = halfWidth;
@@ -25,7 +25,7 @@ class ShapePath {
     double outerRadius = bigRadius * cos(pi / 10);
     double innerRadius = smallRadius * sin(3 * pi / 10) / sin(7 * pi / 10);
 
-    Offset center = Offset(halfWidth, halfWidth);
+    Offset center = Offset(halfWidth, halfWidth) + offset;
 
     for (int i = 0; i < 5; i++) {
       double angle = 2 * pi / 5 * i - pi / 2;

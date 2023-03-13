@@ -206,16 +206,42 @@ class CretaUtils {
     return Offset(offsetX, offsetY);
   }
 
-  static double borderPosition(BorderPositionType aType) {
+  // static double borderPosition(BorderPositionType aType) {
+  //   switch (aType) {
+  //     case BorderPositionType.center:
+  //       return BorderSide.strokeAlignCenter;
+  //     case BorderPositionType.inSide:
+  //       return BorderSide.strokeAlignInside;
+  //     case BorderPositionType.outSide:
+  //       return BorderSide.strokeAlignOutside;
+  //     default:
+  //       return 0;
+  //   }
+  //}
+
+  static StrokeCap borderCap(BorderCapType aType) {
     switch (aType) {
-      case BorderPositionType.center:
-        return BorderSide.strokeAlignCenter;
-      case BorderPositionType.inSide:
-        return BorderSide.strokeAlignInside;
-      case BorderPositionType.outSide:
-        return BorderSide.strokeAlignOutside;
+      case BorderCapType.bevel:
+        return StrokeCap.butt;
+      case BorderCapType.miter:
+        return StrokeCap.square;
+      case BorderCapType.round:
+        return StrokeCap.round;
       default:
-        return 0;
+        return StrokeCap.round;
+    }
+  }
+
+  static StrokeJoin borderJoin(BorderCapType aType) {
+    switch (aType) {
+      case BorderCapType.bevel:
+        return StrokeJoin.bevel;
+      case BorderCapType.miter:
+        return StrokeJoin.miter;
+      case BorderCapType.round:
+        return StrokeJoin.round;
+      default:
+        return StrokeJoin.round;
     }
   }
 

@@ -199,6 +199,7 @@ class CretaStudioLang {
 
   static const String transitionPage = "페이지 전환 효과";
   static const String transitionFrame = "애니메이션";
+  static const String effect = "배경효과";
 
   static List<String> animationTypes = [
     "없음",
@@ -251,14 +252,21 @@ class CretaStudioLang {
   static const String direction = '방향';
   static const String style = '스타일';
   static const String borderPosition = '외곽선 위치';
+  static const String borderCap = '선 마감';
   //static const String shadowIn = '종류';
   static const String nothing = '없음';
   static const String noBorder = '테두리 없음';
 
-  static Map<String, String> borderPositionList = {
-    '경계 외부': 'outSide',
-    '경계 내부': 'inSide',
-    '경계 중앙': 'center',
+  // static Map<String, String> borderPositionList = {
+  //   '경계 외부': 'outSide',
+  //   '경계 내부': 'inSide',
+  //   '경계 중앙': 'center',
+  // };
+
+  static Map<String, String> borderCapList = {
+    '둥근': 'round',
+    '각진': 'bevel',
+    '뾰족한': 'miter',
   };
 
   static String shape = "모양";

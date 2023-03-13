@@ -30,7 +30,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<Color> borderColor;
   late UndoAble<double> borderWidth;
   late UndoAble<int> borderType;
-  late UndoAble<BorderPositionType> borderPosition;
+  late UndoAble<BorderCapType> borderCap;
   late UndoAble<Color> shadowColor;
   late UndoAble<double> shadowOpacity;
   late UndoAble<double> shadowSpread;
@@ -38,6 +38,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> shadowDirection;
   late UndoAble<double> shadowOffset;
   late UndoAble<ShapeType> shape;
+  late UndoAble<EffectType> effect;
   //late UndoAble<bool> shadowIn;
 
   FrameType frameType = FrameType.none;
@@ -59,7 +60,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         borderColor,
         borderWidth,
         borderType,
-        borderPosition,
+        borderCap,
         shadowColor,
         shadowOpacity,
         shadowSpread,
@@ -67,6 +68,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         shadowDirection,
         shadowOffset,
         shape,
+        effect,
         //shadowIn,
         ...super.propsMixin,
       ];
@@ -86,7 +88,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderColor = UndoAble<Color>(Colors.black, mid);
     borderWidth = UndoAble<double>(1, mid);
     borderType = UndoAble<int>(0, mid);
-    borderPosition = UndoAble<BorderPositionType>(BorderPositionType.inSide, mid);
+    borderCap = UndoAble<BorderCapType>(BorderCapType.round, mid);
     shadowColor = UndoAble<Color>(Colors.transparent, mid);
     shadowOpacity = UndoAble<double>(0.5, mid);
     shadowSpread = UndoAble<double>(0, mid);
@@ -94,6 +96,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(0, mid);
     shadowOffset = UndoAble<double>(0, mid);
     shape = UndoAble<ShapeType>(ShapeType.none, mid);
+    effect = UndoAble<EffectType>(EffectType.none, mid);
     //shadowIn = UndoAble<bool>(false, mid);
     super.initMixin(mid);
   }
@@ -117,7 +120,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderColor = UndoAble<Color>(Colors.black, mid);
     borderWidth = UndoAble<double>(1, mid);
     borderType = UndoAble<int>(0, mid);
-    borderPosition = UndoAble<BorderPositionType>(BorderPositionType.none, mid);
+    borderCap = UndoAble<BorderCapType>(BorderCapType.none, mid);
     shadowColor = UndoAble<Color>(Colors.transparent, mid);
     shadowOpacity = UndoAble<double>(0, mid);
     shadowSpread = UndoAble<double>(0, mid);
@@ -125,6 +128,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(0, mid);
     shadowOffset = UndoAble<double>(0, mid);
     shape = UndoAble<ShapeType>(ShapeType.none, mid);
+    effect = UndoAble<EffectType>(EffectType.none, mid);
     //shadowIn = UndoAble<bool>(false, mid);
 
     frameType = pType;
@@ -147,7 +151,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderColor = UndoAble<Color>(srcFrame.borderColor.value, mid);
     borderWidth = UndoAble<double>(srcFrame.borderWidth.value, mid);
     borderType = UndoAble<int>(srcFrame.borderType.value, mid);
-    borderPosition = UndoAble<BorderPositionType>(srcFrame.borderPosition.value, mid);
+    borderCap = UndoAble<BorderCapType>(srcFrame.borderCap.value, mid);
     shadowColor = UndoAble<Color>(srcFrame.shadowColor.value, mid);
     shadowOpacity = UndoAble<double>(srcFrame.shadowOpacity.value, mid);
     shadowSpread = UndoAble<double>(srcFrame.shadowSpread.value, mid);
@@ -155,6 +159,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(srcFrame.shadowDirection.value, mid);
     shadowOffset = UndoAble<double>(srcFrame.shadowOffset.value, mid);
     shape = UndoAble<ShapeType>(srcFrame.shape.value, mid);
+    effect = UndoAble<EffectType>(srcFrame.effect.value, mid);
     //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
 
     frameType = srcFrame.frameType;
@@ -186,8 +191,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
     borderWidth.set((map["borderWidth"] ?? 1), save: false, noUndo: true);
     borderType.set((map["borderType"] ?? 0), save: false, noUndo: true);
-    borderPosition.set(BorderPositionType.fromInt(map["borderPosition"] ?? 0),
-        save: false, noUndo: true);
+    borderCap.set(BorderCapType.fromInt(map["borderCap"] ?? 0), save: false, noUndo: true);
     shadowColor.set(CretaUtils.string2Color(map["shadowColor"])!, save: false, noUndo: true);
     shadowOpacity.set((map["shadowOpacity"] ?? 0), save: false, noUndo: true);
     shadowSpread.set((map["shadowSpread"] ?? 0), save: false, noUndo: true);
@@ -195,6 +199,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection.set((map["shadowDirection"] ?? 0), save: false, noUndo: true);
     shadowOffset.set((map["shadowOffset"] ?? 0), save: false, noUndo: true);
     shape.set(ShapeType.fromInt(map["shape"] ?? 0), save: false, noUndo: true);
+    effect.set(EffectType.fromInt(map["effect"] ?? 0), save: false, noUndo: true);
 
     //shadowIn.set((map["shadowIn"] ?? false), save: false, noUndo: true);
 
@@ -221,7 +226,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "borderColor": borderColor.value.toString(),
         "borderWidth": borderWidth.value,
         "borderType": borderType.value,
-        "borderPosition": borderPosition.value.index,
+        "borderCap": borderCap.value.index,
         "shadowColor": shadowColor.value.toString(),
         "shadowOpacity": shadowOpacity.value,
         "shadowSpread": shadowSpread.value,
@@ -229,6 +234,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "shadowDirection": shadowDirection.value,
         "shadowOffset": shadowOffset.value,
         "shape": shape.value.index,
+        "effect": effect.value.index,
         //"shadowIn": shadowIn.value,
         'frameType': frameType.index,
         ...super.toMapMixin(),

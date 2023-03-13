@@ -2,24 +2,46 @@
 
 import 'package:flutter/material.dart';
 import '../../../model/app_enums.dart';
+import 'creta_outline_painter.dart';
+import 'creta_shadow_painter.dart';
 import 'shape_path.dart';
 
 extension ShapeWidget<T extends Widget> on T {
   Widget asShape({
     required String mid,
     required ShapeType shapeType,
+    required Offset offset,
+    required double blurRadius,
+    required double blurSpread,
+    required double opacity,
+    required Color shadowColor,
     required double width,
     required double height,
     required double radiusLeftBottom,
     required double radiusLeftTop,
     required double radiusRightBottom,
     required double radiusRightTop,
+    required BorderCapType borderCap,
     double strokeWidth = 0,
     Color strokeColor = Colors.transparent,
   }) {
     return Stack(
       alignment: Alignment.center,
       children: [
+        _getShadowWidget(
+          shapeType: shapeType,
+          offset: offset,
+          blurRadius: blurRadius,
+          blurSpread: blurSpread,
+          opacity: opacity,
+          shadowColor: shadowColor,
+          width: width,
+          height: height,
+          radiusLeftBottom: radiusLeftBottom,
+          radiusLeftTop: radiusLeftTop,
+          radiusRightBottom: radiusRightBottom,
+          radiusRightTop: radiusRightTop,
+        ),
         _getBaseWidget(
           mid: mid,
           shapeType: shapeType,
@@ -31,6 +53,7 @@ extension ShapeWidget<T extends Widget> on T {
                 shapeType: shapeType,
                 strokeWidth: strokeWidth,
                 strokeColor: strokeColor,
+                borderCap: borderCap,
                 width: width,
                 height: height,
                 radiusLeftBottom: radiusLeftBottom,
@@ -132,6 +155,7 @@ CustomPaint _getOutlineWidget({
   required double strokeWidth,
   required Color strokeColor,
   required ShapeType shapeType,
+  required BorderCapType borderCap,
   required double width,
   required double height,
   required double radiusLeftBottom,
@@ -148,6 +172,7 @@ CustomPaint _getOutlineWidget({
         shapeType: shapeType,
         strokeColor: strokeColor,
         strokeWidth: strokeWidth,
+        borderCap: borderCap,
         width: width,
         height: height,
         radiusLeftBottom: radiusLeftBottom,
@@ -165,6 +190,7 @@ CustomPaint _getOutlineWidget({
         shapeType: shapeType,
         strokeColor: strokeColor,
         strokeWidth: strokeWidth,
+        borderCap: borderCap,
         rect: Offset(0, 0) & Size(width, height),
       ),
     );
@@ -176,194 +202,114 @@ CustomPaint _getOutlineWidget({
       shapeType: shapeType,
       strokeWidth: strokeWidth,
       strokeColor: strokeColor,
+      borderCap: borderCap,
     ),
   );
 }
 
-class CretaOutLinePathPainter extends CustomPainter {
-  final double strokeWidth;
-  final Color strokeColor;
-  final ShapeType shapeType;
-
-  CretaOutLinePathPainter({
-    this.shapeType = ShapeType.none,
-    this.strokeWidth = 0,
-    this.strokeColor = Colors.transparent,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Path path = ShapePath.getClip(shapeType, Size(size.width, size.height));
-    // Paint fillPaint = Paint()
-    //   ..color = color
-    //   ..style = PaintingStyle.fill;
-    // canvas.drawPath(path, fillPaint);
-    Paint strokePaint = Paint()
-      ..color = strokeColor
-      ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = strokeWidth;
-    canvas.drawPath(path, strokePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
-class CretaOutLineOvalPainter extends CustomPainter {
-  final double strokeWidth;
-  final Color strokeColor;
-  final ShapeType shapeType;
-  final Rect rect;
-
-  CretaOutLineOvalPainter({
-    this.shapeType = ShapeType.none,
-    this.strokeWidth = 0,
-    this.strokeColor = Colors.transparent,
-    required this.rect,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    //Path path = ShapePath.getClip(shapeType, Size(size.width, size.height));
-    // Paint fillPaint = Paint()
-    //   ..color = color
-    //   ..style = PaintingStyle.fill;
-    // canvas.drawPath(path, fillPaint);
-    Paint strokePaint = Paint()
-      ..color = strokeColor
-      ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = strokeWidth;
-    canvas.drawOval(rect, strokePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
-class CretaOutLineRRectPainter extends CustomPainter {
-  final double strokeWidth;
-  final Color strokeColor;
-  final ShapeType shapeType;
-  final double width;
-  final double height;
-  final double radiusLeftBottom;
-  final double radiusLeftTop;
-  final double radiusRightBottom;
-  final double radiusRightTop;
-
-  CretaOutLineRRectPainter({
-    this.shapeType = ShapeType.none,
-    this.strokeWidth = 0,
-    this.strokeColor = Colors.transparent,
-    required this.width,
-    required this.height,
-    required this.radiusLeftBottom,
-    required this.radiusLeftTop,
-    required this.radiusRightBottom,
-    required this.radiusRightTop,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    //Path path = ShapePath.getClip(shapeType, Size(size.width, size.height));
-    // Paint fillPaint = Paint()
-    //   ..color = color
-    //   ..style = PaintingStyle.fill;
-    // canvas.drawPath(path, fillPaint);
-    Paint strokePaint = Paint()
-      ..color = strokeColor
-      ..style = PaintingStyle.stroke
-      ..strokeJoin = StrokeJoin.round
-      ..strokeWidth = strokeWidth;
-
-    canvas.drawRRect(_getRRect(), strokePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-
-  RRect _getRRect({double addRadius = 0}) {
-    double lt = radiusLeftTop + addRadius;
-    double rt = radiusRightTop + addRadius;
-    double rb = radiusRightBottom + addRadius;
-    double lb = radiusLeftBottom + addRadius;
-    if (lt == rt && rt == rb && rb == lb) {
-      if (lt == 0) {
-        return RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-            0,
-            0,
-            width,
-            height,
-          ),
-          Radius.zero,
-        );
-      }
-      return RRect.fromRectAndRadius(
-        Rect.fromLTWH(
-          0,
-          0,
-          width,
-          height,
-        ),
-        Radius.circular(radiusLeftTop),
-      );
-    }
-    return RRect.fromRectAndCorners(
-      Rect.fromLTWH(
-        0,
-        0,
-        width,
-        height,
+CustomPaint _getShadowWidget({
+  required ShapeType shapeType,
+  required Offset offset,
+  required double blurRadius,
+  required double blurSpread,
+  required double opacity,
+  required Color shadowColor,
+  required double width,
+  required double height,
+  required double radiusLeftBottom,
+  required double radiusLeftTop,
+  required double radiusRightBottom,
+  required double radiusRightTop,
+}) {
+  if (shapeType == ShapeType.circle ||
+      shapeType == ShapeType.rectangle ||
+      shapeType == ShapeType.none) {
+    return CustomPaint(
+      size: Size(width, height),
+      painter: CretaShadowRRectPainter(
+        pshapeType: shapeType,
+        poffset: offset,
+        pblurRadius: blurRadius,
+        pblurSpread: blurSpread,
+        popacity: opacity,
+        pshadowColor: shadowColor,
+        radiusLeftBottom: radiusLeftBottom,
+        radiusLeftTop: radiusLeftTop,
+        radiusRightBottom: radiusRightBottom,
+        radiusRightTop: radiusRightTop,
       ),
-      bottomLeft: Radius.circular(radiusLeftBottom),
-      bottomRight: Radius.circular(radiusRightBottom),
-      topLeft: Radius.circular(radiusLeftTop),
-      topRight: Radius.circular(radiusRightTop),
     );
   }
-}
 
-class ShadowPainter extends CustomPainter {
-  final double xOffset;
-  final double yOffset;
-  final double blurRadius;
-  final Color shadowColor;
-
-  ShadowPainter({
-    required this.xOffset,
-    required this.yOffset,
-    required this.blurRadius,
-    required this.shadowColor,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint shadowPaint = Paint()
-      ..color = shadowColor
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius);
-
-    final Offset offset = Offset(xOffset, yOffset);
-    final Rect rect = offset & size;
-
-    canvas.drawShadow(
-      Path()..addRect(rect),
-      shadowColor,
-      blurRadius,
-      true,
+  if (shapeType == ShapeType.oval) {
+    return CustomPaint(
+      size: Size(width, height),
+      painter: CretaShadowOvalPainter(
+        pshapeType: shapeType,
+        poffset: offset,
+        pblurRadius: blurRadius,
+        pblurSpread: blurSpread,
+        popacity: opacity,
+        pshadowColor: shadowColor,
+      ),
     );
-
-    canvas.saveLayer(rect, shadowPaint);
   }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  return CustomPaint(
+    size: Size(width, height),
+    painter: CretaShadowPathPainter(
+      pshapeType: shapeType,
+      poffset: offset,
+      pblurRadius: blurRadius,
+      pblurSpread: blurSpread,
+      popacity: opacity,
+      pshadowColor: shadowColor,
+    ),
+  );
 }
+
+
+
+
+
+// class ShadowPainter extends CustomPainter {
+//   final ShapeType shapeType;
+//   final double xOffset;
+//   final double yOffset;
+//   final double blurRadius;
+//   final double blurSpread;
+//   final double opacity;
+//   final Color shadowColor;
+
+//   ShadowPainter({
+//     required this.shapeType,
+//     required this.xOffset,
+//     required this.yOffset,
+//     required this.blurRadius,
+//     required this.blurSpread,
+//     required this.opacity,
+//     required this.shadowColor,
+//   });
+
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     Paint shadowPaint = Paint()
+//       ..color = opacity != 1 ? shadowColor.withOpacity(opacity) : shadowColor
+//       ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius);
+
+//     final Offset offset = Offset(xOffset, yOffset);
+//     final Rect rect = offset & size;
+
+//     canvas.drawShadow(
+//       ShapePath.getClip(shapeType, size),
+//       shadowColor,
+//       blurSpread,
+//       true,
+//     );
+
+//     canvas.saveLayer(rect, shadowPaint);
+//   }
+
+//   @override
+//   bool shouldRepaint(CustomPainter oldDelegate) => true;
+// }

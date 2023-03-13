@@ -62,6 +62,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   static bool _isRadiusOpen = false;
 
   static bool _isShapeOpen = false;
+  static bool _isEffectOpen = false;
   // LeftTopSelected _isLeftTopSelected = LeftTopSelected();
   // RightTopSelected _isRightTopSelected = RightTopSelected();
   // LeftBottomSelected _isLeftBottomSelected = LeftBottomSelected();
@@ -176,6 +177,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       _shadow(),
       propertyDivider(),
       _shape(),
+      propertyDivider(),
+      _effect(),
     ]);
     //});
   }
@@ -1050,11 +1053,21 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               });
               _sendEvent!.sendEvent(widget.model);
             },
+            // onPositionChanged: (value) {
+            //   int idx = 1;
+            //   for (String val in CretaStudioLang.borderPositionList.values) {
+            //     if (value == val) {
+            //       widget.model.borderPosition.set(BorderPositionType.values[idx]);
+            //     }
+            //     idx++;
+            //   }
+            //   _sendEvent!.sendEvent(widget.model);
+            // },
             onPositionChanged: (value) {
               int idx = 1;
-              for (String val in CretaStudioLang.borderPositionList.values) {
+              for (String val in CretaStudioLang.borderCapList.values) {
                 if (value == val) {
-                  widget.model.borderPosition.set(BorderPositionType.values[idx]);
+                  widget.model.borderCap.set(BorderCapType.values[idx]);
                 }
                 idx++;
               }
@@ -1107,7 +1120,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(CretaStudioLang.borderPosition, style: titleStyle),
+              Text(CretaStudioLang.borderCap, style: titleStyle),
               CretaTabButton(
                 onEditComplete: onPositionChanged,
                 width: 75,
@@ -1117,9 +1130,9 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 selectedColor: Colors.white,
                 unSelectedColor: CretaColor.text[100]!,
                 selectedBorderColor: CretaColor.primary,
-                defaultString: _getBorderPostion(),
-                buttonLables: CretaStudioLang.borderPositionList.keys.toList(),
-                buttonValues: CretaStudioLang.borderPositionList.values.toList(),
+                defaultString: _getBorderCap(),
+                buttonLables: CretaStudioLang.borderCapList.keys.toList(),
+                buttonValues: CretaStudioLang.borderCapList.values.toList(),
               ),
             ],
           ),
@@ -1158,14 +1171,25 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     );
   }
 
-  String _getBorderPostion() {
-    switch (widget.model.borderPosition.value) {
-      case BorderPositionType.inSide:
-        return 'inSide';
-      case BorderPositionType.outSide:
-        return 'outSide';
+  // String _getBorderPostion() {
+  //   switch (widget.model.borderPosition.value) {
+  //     case BorderPositionType.inSide:
+  //       return 'inSide';
+  //     case BorderPositionType.outSide:
+  //       return 'outSide';
+  //     default:
+  //       return 'center';
+  //   }
+  // }
+
+  String _getBorderCap() {
+    switch (widget.model.borderCap.value) {
+      case BorderCapType.miter:
+        return 'miter';
+      case BorderCapType.bevel:
+        return 'bevel';
       default:
-        return 'center';
+        return 'round';
     }
   }
 
@@ -1521,6 +1545,49 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       padding: const EdgeInsets.only(top: 12.0),
       //child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: gradientList),
       child: Wrap(children: shapeList),
+    );
+  }
+
+  Widget _effect() {
+    logger.finest('effect=${widget.model.effect.value}');
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: propertyCard(
+        isOpen: _isEffectOpen,
+        onPressed: () {
+          setState(() {
+            _isEffectOpen = !_isEffectOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.effect, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: SizedBox(
+          width: 200,
+          child: Text(
+            widget.model.effect.value.name,
+            textAlign: TextAlign.right,
+            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+          ),
+        ),
+        bodyWidget: _effectBody(),
+      ),
+    );
+  }
+
+  Widget _effectBody() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 16,
+        children: [
+          for (int i = 1; i < EffectType.end.index; i++)
+            SizedBox(
+                width: 156,
+                height: 106,
+                child: Text(EffectType.values.elementAt(i).name, style: titleStyle)),
+        ],
+      ),
     );
   }
 }

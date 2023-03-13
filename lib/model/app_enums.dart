@@ -132,16 +132,27 @@ enum TextureType {
   static TextureType fromInt(int? val) => TextureType.values[validCheck(val ?? none.index)];
 }
 
-enum BorderPositionType {
+// enum BorderPositionType {
+//   none,
+//   outSide,
+//   inSide,
+//   center,
+//   end;
+
+//   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+//   static BorderPositionType fromInt(int? val) =>
+//       BorderPositionType.values[validCheck(val ?? none.index)];
+// }
+
+enum BorderCapType {
   none,
-  outSide,
-  inSide,
-  center,
+  round,
+  bevel,
+  miter,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static BorderPositionType fromInt(int? val) =>
-      BorderPositionType.values[validCheck(val ?? none.index)];
+  static BorderCapType fromInt(int? val) => BorderCapType.values[validCheck(val ?? none.index)];
 }
 
 enum ShapeType {
@@ -158,4 +169,19 @@ enum ShapeType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static ShapeType fromInt(int? val) => ShapeType.values[validCheck(val ?? none.index)];
+}
+
+enum EffectType {
+  none,
+  conffeti,
+  snow,
+  bubble,
+  number,
+  star,
+  //rhombus, // 마름모
+  //parallelogram, // 평행사변형
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static EffectType fromInt(int? val) => EffectType.values[validCheck(val ?? none.index)];
 }

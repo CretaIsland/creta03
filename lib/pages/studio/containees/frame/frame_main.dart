@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 //import 'package:glass/glass.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:r_dotted_line_border/r_dotted_line_border.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../common/creta_utils.dart';
@@ -177,33 +176,30 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
     //if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
     if (animations.isEmpty) {
-      return _textureBox(model).asShape(
-        mid: model.mid,
-        shapeType: model.shape.value,
-        width: model.width.value,
-        height: model.height.value,
-        strokeWidth: model.borderWidth.value,
-        strokeColor: model.borderColor.value,
-        radiusLeftBottom: model.radiusLeftBottom.value,
-        radiusLeftTop: model.radiusLeftTop.value,
-        radiusRightBottom: model.radiusRightBottom.value,
-        radiusRightTop: model.radiusRightTop.value,
-      );
+      return _shapeBox(model);
     }
-    return getAnimation(
-        _textureBox(model).asShape(
-          mid: model.mid,
-          shapeType: model.shape.value,
-          width: model.width.value,
-          height: model.height.value,
-          strokeWidth: model.borderWidth.value,
-          strokeColor: model.borderColor.value,
-          radiusLeftBottom: model.radiusLeftBottom.value,
-          radiusLeftTop: model.radiusLeftTop.value,
-          radiusRightBottom: model.radiusRightBottom.value,
-          radiusRightTop: model.radiusRightTop.value,
-        ),
-        animations);
+    return getAnimation(_shapeBox(model), animations);
+  }
+
+  Widget _shapeBox(FrameModel model) {
+    return _textureBox(model).asShape(
+      mid: model.mid,
+      shapeType: model.shape.value,
+      offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
+      blurRadius: model.shadowBlur.value,
+      blurSpread: model.shadowSpread.value,
+      opacity: model.shadowOpacity.value,
+      shadowColor: model.shadowColor.value,
+      width: model.width.value,
+      height: model.height.value,
+      strokeWidth: model.borderWidth.value,
+      strokeColor: model.borderColor.value,
+      radiusLeftBottom: model.radiusLeftBottom.value,
+      radiusLeftTop: model.radiusLeftTop.value,
+      radiusRightBottom: model.radiusRightBottom.value,
+      radiusRightTop: model.radiusRightTop.value,
+      borderCap: model.borderCap.value,
+    );
   }
 
   Widget _textureBox(FrameModel model) {
@@ -220,12 +216,12 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         opacity: opacity,
         bgColor1: bgColor1,
         bgColor2: bgColor2,
-        clipBorderRadius: _getBorderRadius(model),
-        radius: _getBorderRadius(model, addRadius: model.borderWidth.value * 0.7),
-        border: _getBorder(model),
-        borderStyle: model.borderType.value,
-        borderWidth: model.borderWidth.value,
-        boxShadow: _getShadow(model),
+        //clipBorderRadius: _getBorderRadius(model),
+        //radius: _getBorderRadius(model, addRadius: model.borderWidth.value * 0.7),
+        //border: _getBorder(model),
+        //borderStyle: model.borderType.value,
+        //borderWidth: model.borderWidth.value,
+        //boxShadow: _getShadow(model),
       );
     }
     return _frameBox(model, true);
@@ -273,73 +269,72 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
       //boxShadow: StudioSnippet.basicShadow(),
       gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
-      borderRadius: _getBorderRadius(model),
-      border: _getBorder(model),
-      boxShadow: model.isNoShadow() == true ? null : [_getShadow(model)],
+      //borderRadius: _getBorderRadius(model),
+      //border: _getBorder(model),
+      //boxShadow: model.isNoShadow() == true ? null : [_getShadow(model)],
     );
   }
 
-  BoxShadow _getShadow(FrameModel model) {
-    return BoxShadow(
-      color: model.shadowColor.value
-          .withOpacity(CretaUtils.validCheckDouble(model.shadowOpacity.value, 0, 1)),
-      offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
-      blurRadius: model.shadowBlur.value,
-      spreadRadius: model.shadowSpread.value,
-      //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
-    );
-  }
+  // BoxShadow _getShadow(FrameModel model) {
+  //   return BoxShadow(
+  //     color: model.shadowColor.value
+  //         .withOpacity(CretaUtils.validCheckDouble(model.shadowOpacity.value, 0, 1)),
+  //     offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
+  //     blurRadius: model.shadowBlur.value,
+  //     spreadRadius: model.shadowSpread.value,
+  //     //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
+  //   );
+  // }
 
-  BoxBorder? _getBorder(FrameModel model) {
-    if (model.borderColor.value == Colors.transparent ||
-        model.borderWidth.value == 0 ||
-        model.borderType.value == 0) {
-      return null;
-    }
+  // BoxBorder? _getBorder(FrameModel model) {
+  //   if (model.borderColor.value == Colors.transparent ||
+  //       model.borderWidth.value == 0 ||
+  //       model.borderType.value == 0) {
+  //     return null;
+  //   }
 
-    BorderSide bs = BorderSide(
-        color: model.borderColor.value,
-        width: model.borderWidth.value,
-        style: BorderStyle.solid,
-        strokeAlign: CretaUtils.borderPosition(model.borderPosition.value));
+  //   BorderSide bs = BorderSide(
+  //       color: model.borderColor.value,
+  //       width: model.borderWidth.value,
+  //       style: BorderStyle.solid,
+  //       strokeAlign: CretaUtils.borderPosition(model.borderPosition.value));
 
-    if (model.borderType.value > 1) {
-      return RDottedLineBorder(
-        dottedLength: CretaUtils.borderStyle[model.borderType.value - 1][0],
-        dottedSpace: CretaUtils.borderStyle[model.borderType.value - 1][1],
-        bottom: bs,
-        top: bs,
-        left: bs,
-        right: bs,
-      );
-    }
-    return Border.all(
-      color: model.borderColor.value,
-      width: model.borderWidth.value,
-      style: BorderStyle.solid,
-      strokeAlign: CretaUtils.borderPosition(model.borderPosition.value),
-    );
-  }
+  //   if (model.borderType.value > 1) {
+  //     return RDottedLineBorder(
+  //       dottedLength: CretaUtils.borderStyle[model.borderType.value - 1][0],
+  //       dottedSpace: CretaUtils.borderStyle[model.borderType.value - 1][1],
+  //       bottom: bs,
+  //       top: bs,
+  //       left: bs,
+  //       right: bs,
+  //     );
+  //   }
+  //   return Border.all(
+  //     color: model.borderColor.value,
+  //     width: model.borderWidth.value,
+  //     style: BorderStyle.solid,
+  //     strokeAlign: CretaUtils.borderPosition(model.borderPosition.value),
+  //   );
+  // }
 
-  BorderRadius? _getBorderRadius(FrameModel model, {double addRadius = 0}) {
-    double lt = model.radiusLeftTop.value + addRadius;
-    double rt = model.radiusRightTop.value + addRadius;
-    double rb = model.radiusRightBottom.value + addRadius;
-    double lb = model.radiusLeftBottom.value + addRadius;
-    if (lt == rt && rt == rb && rb == lb) {
-      if (lt == 0) {
-        return BorderRadius.zero;
-      }
-      return BorderRadius.all(Radius.circular(model.radiusLeftTop.value));
-    }
-    return BorderRadius.only(
-      topLeft: Radius.circular(lt),
-      topRight: Radius.circular(rt),
-      bottomLeft: Radius.circular(lb),
-      bottomRight: Radius.circular(rb),
-    );
-  }
-  // ignore: unused_element
+  // BorderRadius? _getBorderRadius(FrameModel model, {double addRadius = 0}) {
+  //   double lt = model.radiusLeftTop.value + addRadius;
+  //   double rt = model.radiusRightTop.value + addRadius;
+  //   double rb = model.radiusRightBottom.value + addRadius;
+  //   double lb = model.radiusLeftBottom.value + addRadius;
+  //   if (lt == rt && rt == rb && rb == lb) {
+  //     if (lt == 0) {
+  //       return BorderRadius.zero;
+  //     }
+  //     return BorderRadius.all(Radius.circular(model.radiusLeftTop.value));
+  //   }
+  //   return BorderRadius.only(
+  //     topLeft: Radius.circular(lt),
+  //     topRight: Radius.circular(rt),
+  //     bottomLeft: Radius.circular(lb),
+  //     bottomRight: Radius.circular(rb),
+  //   );
+  // }
 
   void _setItem(DragUpdate update, String mid) async {
     for (var item in _frameManager!.modelList) {
