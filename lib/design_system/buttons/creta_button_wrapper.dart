@@ -159,14 +159,14 @@ class BTN {
   static CretaButton fill_gray_i_l({
     required IconData icon,
     required Function onPressed,
-    CretaButtonColor butonColor = CretaButtonColor.white,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
     Color? iconColor,
   }) {
     return CretaButton(
       width: 36,
       height: 36,
       buttonType: CretaButtonType.child,
-      buttonColor: butonColor,
+      buttonColor: buttonColor,
       onPressed: onPressed,
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
@@ -1249,6 +1249,7 @@ class BTN {
     TextStyle? textStyle,
     IconData? icon,
     CretaButtonDeco decoType = CretaButtonDeco.fill,
+    bool alwaysShowIcon = false,
   }) {
     var cretaButton = CretaButton(
       width: width,
@@ -1259,7 +1260,7 @@ class BTN {
       textStyle: textStyle,
       icon: icon == null ? null : Icon(icon, size: 12, color: Colors.white),
       text: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -1272,6 +1273,7 @@ class BTN {
       ),
       onPressed: onPressed,
       sidePaddingSize: sidePaddingSize,
+      alwaysShowIcon: alwaysShowIcon,
     );
     return cretaButton;
   }

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
-//import '../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
@@ -20,6 +21,8 @@ import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 import 'community_sample_data.dart';
 import '../../design_system/component/custom_image.dart';
+import '../../design_system/creta_font.dart';
+import '../../design_system/creta_color.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;
@@ -142,144 +145,33 @@ class CretaBookItemState extends State<CretaBookItem> {
     }
 
     return [
-      Positioned(
-        left: 8,
-        top: 8,
-        // BTN.opacity_gray_it_s
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child:
-          GestureDetector(
-            onTap: () => _editItem(),
-            child:
-            SizedBox(
-              width: 91,
-              height: 29,
-              child: Stack(
-                children: [
-                  Opacity(
-                    opacity: 0.25,
-                    child: SizedBox(
-                      width: 91,
-                      height: 29,
-                      child: FloatingActionButton.extended(
-                        onPressed: () => _editItem(),
-                        label: Container(),
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.black,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 91,
-                    height: 29,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.edit_outlined,
-                          size: 12.0,
-                          color: Colors.white,
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                          '편집하기',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 11,
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w100,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      Positioned(
-        left: widget.width - 68,
-        top: 8,
-        //BTN.opacity_gray_i_s
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: GestureDetector(
-            onTap: () => _openPopupMenu(),
-            child: SizedBox(
-              width: 29,
-              height: 29,
-              child: Stack(
-                children: [
-                  Opacity(
-                    opacity: 0.25,
-                    child: SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: FloatingActionButton.extended(
-                        onPressed: () => _openPopupMenu(),
-                        label: Container(),
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.black,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 29,
-                    height: 29,
-                    child: Center(
-                      child: Icon(
-                        Icons.add,
-                        size: 12.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      Positioned(
-        left: widget.width - 36,
-        top: 8,
-        child: Stack(
+      Container(
+        width: widget.width,
+        height: 37,
+        padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+        child: Row(
           children: [
-            Opacity(
-              opacity: 0.25,
-              child: SizedBox(
-                width: 28,
-                height: 28,
-                child: FloatingActionButton.extended(
-                  onPressed: () {},
-                  label: Text(
-                    '',
-                    style: TextStyle(
-                      fontSize: 10,
-                    ),
-                  ),
-                  // icon: Icon(
-                  //   Icons.menu,
-                  //   size: 12.0,
-                  // ),
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.black,
-                ),
-              ),
+            BTN.opacity_gray_it_s(
+              width: 91,
+              icon: Icons.edit_outlined,
+              text: '편집하기',
+              onPressed: () => _editItem(),
+              alwaysShowIcon: true,
             ),
-            SizedBox(
-              width: 28,
-              height: 28,
-              child: Icon(
-                Icons.menu,
-                size: 12.0,
-                color: Colors.white,
-              ),
+            Expanded(child: Container()),
+            BTN.opacity_gray_i_s(
+              icon: Icons.favorite_outline,
+              onPressed: () {},
+            ),
+            SizedBox(width: 4),
+            BTN.opacity_gray_i_s(
+              icon: Icons.content_copy_rounded,
+              onPressed: () {},
+            ),
+            SizedBox(width: 4),
+            BTN.opacity_gray_i_s(
+              icon: Icons.menu_outlined,
+              onPressed: () => _openPopupMenu(),
             ),
           ],
         ),
@@ -330,7 +222,7 @@ class CretaBookItemState extends State<CretaBookItem> {
                   Container(
                     width: widget.width,
                     height: widget.height - _itemDescriptionHeight,
-                    decoration: mouseOver ? Snippet.gradationShadowDeco() : null,
+                    decoration: (mouseOver || popmenuOpen) ? Snippet.gradationShadowDeco() : null,
                   ),
                   // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
                   ..._getOverlayMenu(),
@@ -338,60 +230,103 @@ class CretaBookItemState extends State<CretaBookItem> {
               ),
             ),
             Container(
+              width: widget.width,
               height: _itemDescriptionHeight,
               color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-              child: Stack(
+              child: Row(
                 children: [
-                  Positioned(
-                      left: widget.width - 37,
-                      top: 17,
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-                        child: Icon(
-                          Icons.favorite_outline,
-                          size: 20.0,
-                          color: Colors.grey[700],
-                        ),
-                      )),
-                  Positioned(
-                    left: 15,
-                    top: 7,
-                    child: Container(
-                        width: widget.width - 45 - 15,
-                        color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-                        child: Text(
+                  SizedBox(width: 15),
+                  Expanded(
+                    //width: widget.width - 15 - 8 - 36 - 8,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 8),
+                        Text(
                           widget.cretaBookData.name,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey[700],
-                            fontFamily: 'Pretendard',
-                          ),
-                        )),
-                  ),
-                  Positioned(
-                    left: 16,
-                    top: 29,
-                    child: Container(
-                      width: widget.width - 45 - 15,
-                      color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-                      child: Text(
-                        widget.cretaBookData.creator,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[500],
-                          fontFamily: 'Pretendard',
+                          style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
                         ),
-                      ),
+                        SizedBox(height: 4),
+                        Text(
+                          widget.cretaBookData.creator,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left,
+                          style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
+                        ),
+                      ],
                     ),
                   ),
+                  //Expanded(child: Container()),
+                  SizedBox(width: 8),
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 9),
+                        BTN.fill_gray_i_l(
+                          icon: Icons.content_copy_rounded,
+                          buttonColor: CretaButtonColor.transparent,
+                          onPressed: () {},
+                        ),
+                      ],
+                  ),
+                  SizedBox(width: 8),
                 ],
               ),
+              // child: Stack(
+              //   children: [
+              //     Positioned(
+              //         left: widget.width - 37,
+              //         top: 17,
+              //         child: Container(
+              //           width: 20,
+              //           height: 20,
+              //           color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
+              //           child: Icon(
+              //             Icons.favorite_outline,
+              //             size: 20.0,
+              //             color: Colors.grey[700],
+              //           ),
+              //         )),
+              //     Positioned(
+              //       left: 15,
+              //       top: 7,
+              //       child: Container(
+              //           width: widget.width - 45 - 15,
+              //           color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
+              //           child: Text(
+              //             widget.cretaBookData.name,
+              //             overflow: TextOverflow.ellipsis,
+              //             textAlign: TextAlign.left,
+              //             style: TextStyle(
+              //               fontSize: 16,
+              //               color: Colors.grey[700],
+              //               fontFamily: 'Pretendard',
+              //             ),
+              //           )),
+              //     ),
+              //     Positioned(
+              //       left: 16,
+              //       top: 29,
+              //       child: Container(
+              //         width: widget.width - 45 - 15,
+              //         color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
+              //         child: Text(
+              //           widget.cretaBookData.creator,
+              //           overflow: TextOverflow.ellipsis,
+              //           textAlign: TextAlign.left,
+              //           style: TextStyle(
+              //             fontSize: 13,
+              //             color: Colors.grey[500],
+              //             fontFamily: 'Pretendard',
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ),
           ],
         ),

@@ -26,7 +26,8 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 //import '../../lang/creta_lang.dart';
 //import 'package:creta03/design_system/creta_color.dart';
-
+import 'package:creta03/pages/community/community_sample_data.dart';
+import 'creta_book_ui_item.dart';
 
 //bool _isInUsingCanvaskit = false;
 
@@ -39,13 +40,13 @@ class CommunityBookPage extends StatefulWidget {
 }
 
 class _CommunityBookPageState extends State<CommunityBookPage> {
+  late List<CretaBookData> _cretaRelatedBookList;
 
   @override
   void initState() {
     super.initState();
 
-    // CrossCommonJob ccj = CrossCommonJob();
-    // _isInUsingCanvaskit = ccj.isInUsingCanvaskit();
+    _cretaRelatedBookList = CommunitySampleData.getCretaBookList();
   }
 
   Widget _getHashtagWidget(String hashtag) {
@@ -72,6 +73,9 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
       _getHashtagWidget('#해시태그'),
       _getHashtagWidget('#목록입니다'),
       _getHashtagWidget('#스페이싱'),
+      _getHashtagWidget('#스페이싱'),
+      _getHashtagWidget('#스페이싱'),
+      _getHashtagWidget('#스페이싱'),
       BTN.opacity_gray_it_s(
         text: '#크레타북',
         textStyle: CretaFont.buttonMedium,
@@ -79,7 +83,6 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
         onPressed: () {},
         width: null,
       ),
-      SizedBox(width: 12),
       BTN.opacity_gray_it_s(
         text: '#추천',
         textStyle: CretaFont.buttonMedium,
@@ -118,11 +121,11 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
         child: Row(
           children: [
             Text(
-              '크레타북 01',//'[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
+              '크레타북 01', //'[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
               overflow: TextOverflow.ellipsis,
               style: CretaFont.titleELarge.copyWith(color: Colors.white),
             ),
-            SizedBox(width:20),
+            SizedBox(width: 20),
             // CretaElevatedButton(
             //   caption: '이지금 [IU Official]',
             //   captionStyle: CretaFont.bodyMedium.copyWith(color: Colors.white),
@@ -160,12 +163,12 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
             //     ],
             //   ),
             // ),
-            SizedBox(width:20),
+            SizedBox(width: 20),
             Text(
               '2023.03.01',
               style: CretaFont.bodyMedium.copyWith(color: Colors.white),
             ),
-            SizedBox(width:20),
+            SizedBox(width: 20),
             Text(
               '조회수 123,456회',
               style: CretaFont.bodyMedium.copyWith(color: Colors.white),
@@ -174,10 +177,10 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
             BTN.fill_gray_i_l(
               icon: Icons.edit_outlined,
               onPressed: () {},
-              butonColor : CretaButtonColor.blueAndWhiteTitle,
+              buttonColor: CretaButtonColor.blueAndWhiteTitle,
               iconColor: Colors.white,
             ),
-            SizedBox(width:12),
+            SizedBox(width: 12),
             BTN.fill_gray_it_l(
               icon: Icons.favorite_border_outlined,
               text: '123',
@@ -187,7 +190,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
               width: null,
               sidePaddingSize: 8,
             ),
-            SizedBox(width:13),
+            SizedBox(width: 13),
             BTN.fill_gray_itt_l(
               icon: Icons.copy_rounded,
               text: '복제하기',
@@ -199,11 +202,11 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
               width: null,
               sidePaddingSize: 8,
             ),
-            SizedBox(width:12),
+            SizedBox(width: 12),
             BTN.fill_gray_i_l(
               icon: Icons.menu_outlined,
               onPressed: () {},
-              butonColor : CretaButtonColor.transparent,
+              buttonColor: CretaButtonColor.transparent,
               iconColor: Colors.white,
             ),
           ],
@@ -245,17 +248,28 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
   }
 
   Widget _getRelatedBookList(Size size) {
+    double height = _cretaRelatedBookList.length * 256;
+    if (_cretaRelatedBookList.isNotEmpty) {
+      height += ((_cretaRelatedBookList.length - 1) * 20);
+    }
     return Container(
       width: size.width,
-      height: size.height,
-      padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Row(
-        children: [
-          Text(
-            '_getBookSidePane',
-            style: CretaFont.titleELarge,
-          ),
-        ],
+      height: height,
+      //height: size.height,
+      //padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+      child: Wrap(
+        //direction: Axis.vertical, // 나열 방향
+        //alignment: WrapAlignment.start, // 정렬 방식
+        //spacing: 16, // 좌우 간격
+        runSpacing: 20, // 상하 간격
+        children: _cretaRelatedBookList.map((item) {
+          return CretaBookItem(
+            key: item.uiKey,
+            cretaBookData: item,
+            width: 365,
+            height: 256,
+          );
+        }).toList(),
       ),
     );
   }
@@ -271,6 +285,119 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
     sideArea = Size(525, double.infinity);
     bookArea = Size(width - sideArea.width, (width - 525 - 80) / 16 * 9);
     descriptionArea = Size(bookArea.width, double.infinity);
+  }
+
+  Widget _getMainPane() {
+    return SizedBox(
+      width: bookArea.width,
+      child: Column(
+        children: [
+          // book
+          Container(
+            padding: EdgeInsets.fromLTRB(80, 0, 0, 0),
+            height: bookArea.height,
+            child: Container(
+              color: Colors.red[100],
+              child: Center(child: _getBookMainPane(Size(bookArea.width - 80, bookArea.height))),
+            ),
+          ),
+          // description
+          Container(
+            padding: EdgeInsets.fromLTRB(100, 40, 20, 0),
+            child: Center(
+              child: Column(
+                children: [
+                  // description
+                  Container(
+                    color: Colors.red[200],
+                    height: 600,
+                    child: Center(child: _getBookDescriptionPane(Size(bookArea.width - 100, 600))),
+                  ),
+                  // using contents list
+                  Container(
+                    color: Colors.red[300],
+                    height: 600,
+                    child: Center(child: Text('using contents list area')),
+                  ),
+                  // comments
+                  Container(
+                    color: Colors.red[400],
+                    height: 600,
+                    child: Center(child: Text('comments area')),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getSidePane() {
+    return SizedBox(
+      width: sideArea.width,
+      child: Column(
+        children: [
+          // hashtag
+          Container(
+            //height: 210,
+            padding: EdgeInsets.fromLTRB(60, 20, 0, 0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      '해시태그',
+                      style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+                    ),
+                    Expanded(child: Container()),
+                    BTN.fill_gray_200_i_s(icon: Icons.edit_outlined, onPressed: () {}),
+                    SizedBox(width: 46),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 365 + 16 + 16,
+                      child: Wrap(
+                        direction: Axis.horizontal, // 나열 방향
+                        alignment: WrapAlignment.start, // 정렬 방식
+                        spacing: 16, // 좌우 간격
+                        runSpacing: 20, // 상하 간격
+                        children: _getHashtagList(),
+                      ),
+                    ),
+                    Expanded(child: Container()),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          // related book
+          Container(
+            //height: 1000,
+            padding: EdgeInsets.fromLTRB(60, 60, 100, 40),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      '연관 크레타북',
+                      style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+                    ),
+                    Expanded(child: Container()),
+                  ],
+                ),
+                SizedBox(height: 20),
+                _getRelatedBookList(Size(sideArea.width - 60 - 100, 1000)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -301,82 +428,9 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // main
-                SizedBox(
-                  width: bookArea.width,
-                  child: Column(
-                    children: [
-                      // book
-                      Container(
-                        padding: EdgeInsets.fromLTRB(80, 0, 0, 0),
-                        height: bookArea.height,
-                        child: Container(
-                          color: Colors.red[100],
-                          child: Center(child: _getBookMainPane(Size(bookArea.width-80, bookArea.height))),
-                        ),
-                      ),
-                      // description
-                      Container(
-                        padding: EdgeInsets.fromLTRB(100, 40, 20, 0),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              // description
-                              Container(
-                                color: Colors.red[200],
-                                height: 600,
-                                child: Center(child: _getBookDescriptionPane(Size(bookArea.width-100,600))),
-                              ),
-                              // using contents list
-                              Container(
-                                color: Colors.red[300],
-                                height: 600,
-                                child: Center(child: Text('using contents list area')),
-                              ),
-                              // comments
-                              Container(
-                                color: Colors.red[400],
-                                height: 600,
-                                child: Center(child: Text('comments area')),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _getMainPane(),
                 // side
-                SizedBox(
-                  width: sideArea.width,
-                  child: Column(
-                    children: [
-                      // hashtag
-                      Container(
-                        height: 210,
-                        padding: EdgeInsets.fromLTRB(60, 40, 100, 0),
-                        child: Container(
-                          color: Colors.grey,
-                          child: Wrap(
-                            direction: Axis.horizontal, // 나열 방향
-                            alignment: WrapAlignment.start, // 정렬 방식
-                            spacing: 5, // 좌우 간격
-                            runSpacing: 5, // 상하 간격
-                            children: _getHashtagList(),
-                          ),
-                        ),
-                      ),
-                      // related book
-                      Container(
-                        height: 1000,
-                        padding: EdgeInsets.fromLTRB(60, 60, 100, 40),
-                        child: Container(
-                          color: Colors.green[200],
-                          child: Center(child: _getRelatedBookList(Size(sideArea.width-60-100,1000))),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _getSidePane(),
               ],
             ),
           ],
