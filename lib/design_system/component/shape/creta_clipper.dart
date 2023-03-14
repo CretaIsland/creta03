@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import '../../../model/app_enums.dart';
 import 'creta_outline_painter.dart';
 import 'creta_shadow_painter.dart';
@@ -15,8 +16,8 @@ extension ShapeWidget<T extends Widget> on T {
     required double blurSpread,
     required double opacity,
     required Color shadowColor,
-    required double width,
-    required double height,
+    // required double width,
+    // required double height,
     required double radiusLeftBottom,
     required double radiusLeftTop,
     required double radiusRightBottom,
@@ -29,14 +30,15 @@ extension ShapeWidget<T extends Widget> on T {
       alignment: Alignment.center,
       children: [
         _getShadowWidget(
+          mid: mid,
           shapeType: shapeType,
           offset: offset,
           blurRadius: blurRadius,
           blurSpread: blurSpread,
           opacity: opacity,
           shadowColor: shadowColor,
-          width: width,
-          height: height,
+          // width: width,
+          // height: height,
           radiusLeftBottom: radiusLeftBottom,
           radiusLeftTop: radiusLeftTop,
           radiusRightBottom: radiusRightBottom,
@@ -45,17 +47,22 @@ extension ShapeWidget<T extends Widget> on T {
         _getBaseWidget(
           mid: mid,
           shapeType: shapeType,
-          width: width,
-          height: height,
+          // width: width,
+          // height: height,
+          radiusLeftBottom: radiusLeftBottom,
+          radiusLeftTop: radiusLeftTop,
+          radiusRightBottom: radiusRightBottom,
+          radiusRightTop: radiusRightTop,
         ),
         strokeWidth > 0
             ? _getOutlineWidget(
+                mid: mid,
                 shapeType: shapeType,
                 strokeWidth: strokeWidth,
                 strokeColor: strokeColor,
                 borderCap: borderCap,
-                width: width,
-                height: height,
+                // width: width,
+                // height: height,
                 radiusLeftBottom: radiusLeftBottom,
                 radiusLeftTop: radiusLeftTop,
                 radiusRightBottom: radiusRightBottom,
@@ -74,63 +81,94 @@ extension ShapeWidget<T extends Widget> on T {
     );
   }
 
-  Widget _getBaseWidget(
-      {required ShapeType shapeType,
-      required String mid,
-      required double width,
-      required double height}) {
+  Widget _getBaseWidget({
+    required ShapeType shapeType,
+    required String mid,
+    required double radiusLeftBottom,
+    required double radiusLeftTop,
+    required double radiusRightBottom,
+    required double radiusRightTop,
+
+    // required double width,
+    // required double height,
+  }) {
     if (shapeType == ShapeType.none || shapeType == ShapeType.rectangle) {
-      return SizedBox(
-        width: width,
-        height: height,
-        child: Image.asset(
-          'assets/creta_default.png',
-          fit: BoxFit.cover,
+      return ClipRRect(
+        //clipBehavior: Clip.hardEdge,
+        borderRadius: _getBorderRadius(
+          radiusLeftBottom: radiusLeftBottom,
+          radiusLeftTop: radiusLeftTop,
+          radiusRightBottom: radiusRightBottom,
+          radiusRightTop: radiusRightTop,
         ),
+        // child: SizedBox(
+        //   width: width,
+        //   height: height,
+        //   child: this,
+        // ),
+        child: this,
       );
     }
     if (shapeType == ShapeType.circle) {
       return ClipRRect(
         //clipBehavior: Clip.hardEdge,
-        borderRadius: BorderRadius.all(Radius.circular(width / 2)),
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: Image.asset(
-            'assets/creta_default.png',
-            fit: BoxFit.cover,
-          ),
-        ),
+        borderRadius: BorderRadius.all(Radius.circular(360)),
+        // child: SizedBox(
+        //   width: width,
+        //   height: height,
+        //   child: this,
+        // ),
+        child: this,
       );
     }
     if (shapeType == ShapeType.oval) {
       return ClipOval(
         //clipBehavior: Clip.hardEdge,
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: Image.asset(
-            'assets/creta_default.png',
-            fit: BoxFit.cover,
-          ),
-        ),
+        // child: SizedBox(
+        //   width: width,
+        //   height: height,
+        //   child: this,
+        // ),
+        child: this,
       );
     }
 
     return ClipPath(
-      key: ValueKey(mid),
+      key: ValueKey('base-$mid'),
       clipper: CretaClipper(
         mid: mid,
         shapeType: shapeType,
       ),
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Image.asset(
-          'assets/creta_default.png',
-          fit: BoxFit.cover,
-        ),
-      ),
+      child: this,
+      // child: SizedBox(
+      //   width: double.infinity,
+      //   height: double.infinity,
+      //   child: this,
+      // ),
+    );
+  }
+
+  BorderRadius? _getBorderRadius(
+      {required double radiusLeftTop,
+      required double radiusRightTop,
+      required double radiusRightBottom,
+      required double radiusLeftBottom,
+      double addRadius = 0}) {
+    double lt = radiusLeftTop + addRadius;
+    double rt = radiusRightTop + addRadius;
+    double rb = radiusRightBottom + addRadius;
+    double lb = radiusLeftBottom + addRadius;
+    if (lt == rt && rt == rb && rb == lb) {
+      if (lt == 0) {
+        return BorderRadius.zero;
+      }
+      return BorderRadius.all(Radius.circular(lt));
+    }
+    return BorderRadius.only(
+      topLeft: Radius.circular(lt),
+      topRight: Radius.circular(rt),
+      bottomLeft: Radius.circular(lb),
+      bottomRight: Radius.circular(rb),
     );
   }
 }
@@ -147,57 +185,91 @@ class CretaClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CretaClipper oldClipper) {
-    return oldClipper.shapeType != shapeType;
+    //return oldClipper.shapeType != shapeType;
+    return true;
   }
 }
 
-CustomPaint _getOutlineWidget({
+Widget _getOutlineWidget({
+  required String mid,
   required double strokeWidth,
   required Color strokeColor,
   required ShapeType shapeType,
   required BorderCapType borderCap,
-  required double width,
-  required double height,
+  // required double width,
+  // required double height,
   required double radiusLeftBottom,
   required double radiusLeftTop,
   required double radiusRightBottom,
   required double radiusRightTop,
 }) {
-  if (shapeType == ShapeType.circle ||
-      shapeType == ShapeType.rectangle ||
-      shapeType == ShapeType.none) {
-    return CustomPaint(
-      size: Size(width, height),
-      painter: CretaOutLineRRectPainter(
-        shapeType: shapeType,
-        strokeColor: strokeColor,
-        strokeWidth: strokeWidth,
-        borderCap: borderCap,
-        width: width,
-        height: height,
-        radiusLeftBottom: radiusLeftBottom,
-        radiusLeftTop: radiusLeftTop,
-        radiusRightBottom: radiusRightBottom,
-        radiusRightTop: radiusRightTop,
-      ),
-    );
+  if (shapeType == ShapeType.rectangle || shapeType == ShapeType.none) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return CustomPaint(
+        //size: Size(width, height),
+        key: ValueKey('outline-$mid'),
+        size: Size(double.infinity, double.infinity),
+        painter: CretaOutLineRRectPainter(
+          shapeType: shapeType,
+          strokeColor: strokeColor,
+          strokeWidth: strokeWidth,
+          borderCap: borderCap,
+          // width: width,
+          // height: height,
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+          radiusLeftBottom: radiusLeftBottom,
+          radiusLeftTop: radiusLeftTop,
+          radiusRightBottom: radiusRightBottom,
+          radiusRightTop: radiusRightTop,
+        ),
+      );
+    });
+  }
+
+  if (shapeType == ShapeType.circle) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return CustomPaint(
+        //size: Size(width, height),
+        key: ValueKey('outline-$mid'),
+        size: Size(double.infinity, double.infinity),
+        painter: CretaOutLineCirclePainter(
+          shapeType: shapeType,
+          strokeColor: strokeColor,
+          strokeWidth: strokeWidth,
+          borderCap: borderCap,
+          // width: width,
+          // height: height,
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+        ),
+      );
+    });
   }
 
   if (shapeType == ShapeType.oval) {
-    return CustomPaint(
-      size: Size(width, height),
-      painter: CretaOutLineOvalPainter(
-        shapeType: shapeType,
-        strokeColor: strokeColor,
-        strokeWidth: strokeWidth,
-        borderCap: borderCap,
-        rect: Offset(0, 0) & Size(width, height),
-      ),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      logger.fine('RealSize=${constraints.maxWidth}, ${constraints.maxHeight}');
+      return CustomPaint(
+        key: ValueKey('outline-$mid'),
+        //size: Size(width, height),
+        size: Size(double.infinity, double.infinity),
+        painter: CretaOutLineOvalPainter(
+          shapeType: shapeType,
+          strokeColor: strokeColor,
+          strokeWidth: strokeWidth,
+          borderCap: borderCap,
+          //rect: Offset(0, 0) & Size(width, height),
+          rect: Offset(0, 0) & Size(constraints.maxWidth, constraints.maxHeight),
+        ),
+      );
+    });
   }
 
   return CustomPaint(
-    size: Size(width, height),
+    key: ValueKey('outline-$mid'),
+    //size: Size(width, height),
+    size: Size(double.infinity, double.infinity),
     painter: CretaOutLinePathPainter(
       shapeType: shapeType,
       strokeWidth: strokeWidth,
@@ -208,24 +280,26 @@ CustomPaint _getOutlineWidget({
 }
 
 CustomPaint _getShadowWidget({
+  required String mid,
   required ShapeType shapeType,
   required Offset offset,
   required double blurRadius,
   required double blurSpread,
   required double opacity,
   required Color shadowColor,
-  required double width,
-  required double height,
+  // required double width,
+  // required double height,
   required double radiusLeftBottom,
   required double radiusLeftTop,
   required double radiusRightBottom,
   required double radiusRightTop,
 }) {
-  if (shapeType == ShapeType.circle ||
-      shapeType == ShapeType.rectangle ||
-      shapeType == ShapeType.none) {
+  if (shapeType == ShapeType.rectangle || shapeType == ShapeType.none) {
     return CustomPaint(
-      size: Size(width, height),
+      key: ValueKey('shadow-$mid'),
+      //size: Size(width, height),
+      size: Size(double.infinity, double.infinity),
+
       painter: CretaShadowRRectPainter(
         pshapeType: shapeType,
         poffset: offset,
@@ -241,9 +315,29 @@ CustomPaint _getShadowWidget({
     );
   }
 
+  if (shapeType == ShapeType.circle) {
+    return CustomPaint(
+      key: ValueKey('shadow-$mid'),
+      //size: Size(width, height),
+      size: Size(double.infinity, double.infinity),
+
+      painter: CretaShadowCirclePainter(
+        pshapeType: shapeType,
+        poffset: offset,
+        pblurRadius: blurRadius,
+        pblurSpread: blurSpread,
+        popacity: opacity,
+        pshadowColor: shadowColor,
+      ),
+    );
+  }
+
   if (shapeType == ShapeType.oval) {
     return CustomPaint(
-      size: Size(width, height),
+      key: ValueKey('shadow-$mid'),
+      //size: Size(width, height),
+      size: Size(double.infinity, double.infinity),
+
       painter: CretaShadowOvalPainter(
         pshapeType: shapeType,
         poffset: offset,
@@ -256,7 +350,9 @@ CustomPaint _getShadowWidget({
   }
 
   return CustomPaint(
-    size: Size(width, height),
+    key: ValueKey('shadow-$mid'),
+    //size: Size(width, height),
+    size: Size(double.infinity, double.infinity),
     painter: CretaShadowPathPainter(
       pshapeType: shapeType,
       poffset: offset,

@@ -184,3 +184,44 @@ class CretaShadowRRectPainter extends CretaShadowPainter {
     );
   }
 }
+
+class CretaShadowCirclePainter extends CretaShadowPainter {
+  CretaShadowCirclePainter({
+    required ShapeType pshapeType,
+    required Offset poffset,
+    required double pblurRadius,
+    required double pblurSpread,
+    required double popacity,
+    required Color pshadowColor,
+  }) : super(
+          shapeType: pshapeType,
+          offset: poffset,
+          blurRadius: pblurRadius,
+          blurSpread: pblurSpread,
+          opacity: popacity,
+          shadowColor: pshadowColor,
+        );
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    super.paint(canvas, size);
+    canvas.drawRRect(_getRRect(size), getPaint(size));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+
+  RRect _getRRect(Size size) {
+    return RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        offset.dx,
+        offset.dy,
+        size.width + blurSpread,
+        size.height + blurSpread,
+      ),
+      Radius.circular(360),
+    );
+  }
+}

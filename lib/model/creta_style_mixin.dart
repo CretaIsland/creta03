@@ -17,6 +17,7 @@ mixin CretaStyleMixin {
   late UndoAble<TextureType> textureType;
   late UndoAble<int> transitionEffect;
   late UndoAble<bool> isFixedRatio;
+  late UndoAble<EffectType> effect;
 
   List<Object?> get propsMixin => [
         width,
@@ -27,6 +28,7 @@ mixin CretaStyleMixin {
         gradationType,
         textureType,
         isFixedRatio,
+        effect,
       ];
 
   void initMixin(String mid) {
@@ -40,6 +42,7 @@ mixin CretaStyleMixin {
     textureType = UndoAble<TextureType>(TextureType.none, mid);
     transitionEffect = UndoAble<int>(0, mid);
     isFixedRatio = UndoAble<bool>(false, mid);
+    effect = UndoAble<EffectType>(EffectType.none, mid);
   }
 
   void makeSampleMixin(String mid) {
@@ -54,6 +57,7 @@ mixin CretaStyleMixin {
 
     transitionEffect = UndoAble<int>(0, mid);
     isFixedRatio = UndoAble<bool>(false, mid);
+    effect = UndoAble<EffectType>(EffectType.none, mid);
   }
 
   void copyFromMixin(String mid, CretaStyleMixin src) {
@@ -67,6 +71,7 @@ mixin CretaStyleMixin {
     textureType = UndoAble<TextureType>(src.textureType.value, mid);
     transitionEffect = UndoAble<int>(src.transitionEffect.value, mid);
     isFixedRatio = UndoAble<bool>(src.isFixedRatio.value, mid);
+    effect = UndoAble<EffectType>(src.effect.value, mid);
   }
 
   void fromMapMixin(Map<String, dynamic> map) {
@@ -83,6 +88,7 @@ mixin CretaStyleMixin {
     textureType.set(TextureType.fromInt(map["textureType"] ?? 0), save: false, noUndo: true);
     transitionEffect.set(map["transitionEffect"] ?? 0, save: false, noUndo: true);
     isFixedRatio.set(map["isFixedRatio"] ?? false, save: false, noUndo: true);
+    effect.set(EffectType.fromInt(map["effect"] ?? 0), save: false, noUndo: true);
   }
 
   Map<String, dynamic> toMapMixin() {
@@ -96,6 +102,7 @@ mixin CretaStyleMixin {
       "textureType": textureType.value.index,
       "transitionEffect": transitionEffect.value,
       "isFixedRatio": isFixedRatio.value,
+      "effect": effect.value.index,
     };
   }
 }

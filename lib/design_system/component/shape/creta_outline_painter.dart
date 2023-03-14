@@ -164,3 +164,43 @@ class CretaOutLineRRectPainter extends CretaOutLinePainter {
     );
   }
 }
+
+class CretaOutLineCirclePainter extends CretaOutLinePainter {
+  final double width;
+  final double height;
+
+  CretaOutLineCirclePainter({
+    required this.width,
+    required this.height,
+    ShapeType shapeType = ShapeType.none,
+    double strokeWidth = 0,
+    Color strokeColor = Colors.transparent,
+    BorderCapType borderCap = BorderCapType.round,
+  }) : super(
+            shapeType: shapeType,
+            strokeWidth: strokeWidth,
+            strokeColor: strokeColor,
+            borderCap: borderCap);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRRect(_getRRect(), getPaint(size));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+
+  RRect _getRRect() {
+    return RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        0,
+        0,
+        width,
+        height,
+      ),
+      Radius.circular(360),
+    );
+  }
+}

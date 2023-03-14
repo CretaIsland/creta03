@@ -8,10 +8,12 @@ import '../../../design_system/component/colorPicker/gradation_indicator.dart';
 import '../../../design_system/component/colorPicker/my_color_indicator.dart';
 import '../../../design_system/component/colorPicker/my_texture_indicator.dart';
 import '../../../design_system/component/creta_proprty_slider.dart';
+import '../../../design_system/component/example_box_mixin.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/app_enums.dart';
+import '../../../model/creta_style_mixin.dart';
 import '../studio_snippet.dart';
 
 mixin PropertyMixin {
@@ -20,6 +22,7 @@ mixin PropertyMixin {
   static bool isColorOpen = false;
   static bool isGradationOpen = false;
   static bool isTextureOpen = false;
+  static bool isEffectOpen = false;
 
   final List<String> rotationStrings = ["lands", "ports"];
   final List<IconData> rotaionIcons = [
@@ -488,4 +491,163 @@ mixin PropertyMixin {
       shapeRadius: 60,
     );
   }
+
+  Widget effect(
+    String title, {
+    required double padding,
+    required void Function() setState,
+    required String modelPrefix,
+    required CretaStyleMixin model,
+    required void Function() onSelected,
+  }) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: padding),
+      child: propertyCard(
+        isOpen: isEffectOpen,
+        onPressed: () {
+          isEffectOpen = !isEffectOpen;
+          setState();
+        },
+        titleWidget: Text(CretaStudioLang.effect, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: SizedBox(
+          width: 200,
+          child: Text(
+            title,
+            textAlign: TextAlign.right,
+            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+          ),
+        ),
+        bodyWidget: effectBody(
+          modelPrefix: modelPrefix,
+          model: model,
+          onSelected: onSelected,
+        ),
+      ),
+    );
+  }
+
+  Widget effectBody(
+      {required String modelPrefix,
+      required CretaStyleMixin model,
+      required void Function() onSelected}) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 16,
+        children: [
+          for (int i = 1; i < EffectType.end.index; i++)
+            EffectExampleBox(
+              //key: ValueKey('$modelPrefix=${EffectType.values[i].name}'),
+              key: ValueKey(
+                  '$modelPrefix=${EffectType.values[i].name}+${model.effect.value == EffectType.values[i]}'),
+              model: model,
+              name: EffectType.values[i].name,
+              effectType: EffectType.values[i],
+              selected: model.effect.value == EffectType.values[i],
+              onSelected: onSelected,
+            ),
+          // SizedBox(
+          //     width: 156,
+          //     height: 106,
+          //     child: Text(EffectType.values.elementAt(i).name, style: titleStyle)),
+        ],
+      ),
+    );
+  }
+}
+
+class EffectExampleBox extends StatefulWidget {
+  final CretaStyleMixin model;
+  final String name;
+  final EffectType effectType;
+  final bool selected;
+  final Function onSelected;
+  const EffectExampleBox({
+    super.key,
+    required this.name,
+    required this.effectType,
+    required this.model,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  @override
+  State<EffectExampleBox> createState() => _EffectExampleBoxState();
+}
+
+class _EffectExampleBoxState extends State<EffectExampleBox> with ExampleBoxStateMixin {
+  @override
+  void initState() {
+    super.initMixin(widget.selected);
+    super.initState();
+  }
+
+  void onSelected() {
+    setState(() {
+      widget.model.effect.set(widget.effectType);
+    });
+    widget.onSelected.call();
+  }
+
+  void onUnselected() {
+    setState(() {
+      widget.model.effect.set(EffectType.none);
+    });
+    widget.onSelected.call();
+  }
+
+  void onNormalSelected() {
+    setState(() {
+      widget.model.effect.set(EffectType.none);
+    });
+    widget.onSelected.call();
+  }
+
+  void rebuild() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //return _selectAnimation();
+    return super.buildMixin(
+      context,
+      isSelected: widget.model.effect.value == widget.effectType,
+      setState: rebuild,
+      onSelected: onSelected,
+      onUnselected: onUnselected,
+      //selectWidget: selectWidget,
+      selectWidget: selectWidget,
+    );
+  }
+
+  Widget selectWidget() {
+    return normalBox(widget.name);
+  }
+//   Widget selectWidget() {
+//     switch (widget.effectType) {
+//       case EffectType.conffeti:
+//         return isAni() ? _aniBox().fadeIn() : normalBox(widget.name);
+//       case EffectType.snow:
+//         return isAni() ? _aniBox().flip() : normalBox(widget.name);
+//       case EffectType.bubble:
+//         return isAni() ? _aniBox().shake() : normalBox(widget.name);
+//       case EffectType.number:
+//         return isAni() ? _aniBox().shimmer() : normalBox(widget.name);
+//       default:
+//         return noAnimation(widget.name, onNormalSelected: onNormalSelected);
+//     }
+//   }
+
+//   Animate _aniBox() {
+//     return normalBox(widget.name).animate(
+//         onPlay: (controller) => controller.loop(
+//             period: const Duration(
+//               milliseconds: 1000,
+//             ),
+//             count: 3,
+//             reverse: true));
+//   }
 }

@@ -70,6 +70,11 @@ dependencies:
   r_dotted_line_border: ^0.1.1
   flutter_inner_shadow: 0.0.1
   inner_shadow_widget: ^0.0.3
+  confetti: ^0.7.0
+  snowfall: ^0.0.2
+  parallax_rain: ^1.1.0
+  floating_bubbles: ^2.3.0
+  starsview: ^0.0.2
   
 dev_dependencies:
   flutter_test:

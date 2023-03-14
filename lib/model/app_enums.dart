@@ -175,8 +175,8 @@ enum EffectType {
   none,
   conffeti,
   snow,
+  rain,
   bubble,
-  number,
   star,
   //rhombus, // 마름모
   //parallelogram, // 평행사변형

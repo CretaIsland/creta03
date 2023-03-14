@@ -6,7 +6,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../../design_system/creta_color.dart';
+import '../../../../design_system/component/example_box_mixin.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
@@ -90,6 +90,17 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         propertyDivider(),
         _pageTransition(),
         propertyDivider(),
+        effect(_model!.effect.value.name,
+            padding: horizontalPadding,
+            setState: () {
+              setState(() {});
+            },
+            model: _model!,
+            modelPrefix: 'page',
+            onSelected: () {
+              setState(() {});
+              BookMainPage.bookManagerHolder!.notify();
+            }),
       ]);
       //);
     });
@@ -230,36 +241,34 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         spacing: 16,
         runSpacing: 16,
         children: [
-          for (int i = 0; i < AnimationType.end.index; i++)
-            ExampleBox(
-                key: GlobalKey(),
+          for (int i = 1; i < AnimationType.end.index; i++)
+            AniExampleBox(
+                key: ValueKey(
+                    'page=${AnimationType.values[i].name}+${AnimationType.values[i].value == _model!.transitionEffect.value}'),
                 model: _model!,
                 name: CretaStudioLang.animationTypes[i],
                 aniType: AnimationType.values[i],
-                selected: (i != 0 &&
-                        (AnimationType.values[i].value & _model!.transitionEffect.value ==
-                            AnimationType.values[i].value) ||
-                    i == 0 && _model!.transitionEffect.value == 0),
+                selected: AnimationType.values[i].value == _model!.transitionEffect.value,
                 onSelected: () {
                   setState(() {});
                   BookMainPage.bookManagerHolder!.notify();
                 }),
-          // ExampleBox(model: _model!, name: CretaStudioLang.flip, aniType: AnimationType.flip),
-          // ExampleBox(model: _model!, name: CretaStudioLang.shake, aniType: AnimationType.shake),
-          // ExampleBox(model: _model!, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
+          // AniExampleBox(model: _model!, name: CretaStudioLang.flip, aniType: AnimationType.flip),
+          // AniExampleBox(model: _model!, name: CretaStudioLang.shake, aniType: AnimationType.shake),
+          // AniExampleBox(model: _model!, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
         ],
       ),
     );
   }
 }
 
-class ExampleBox extends StatefulWidget {
+class AniExampleBox extends StatefulWidget {
   final PageModel model;
   final String name;
   final AnimationType aniType;
   final bool selected;
   final Function onSelected;
-  const ExampleBox({
+  const AniExampleBox({
     super.key,
     required this.name,
     required this.aniType,
@@ -269,151 +278,79 @@ class ExampleBox extends StatefulWidget {
   });
 
   @override
-  State<ExampleBox> createState() => _ExampleBoxState();
+  State<AniExampleBox> createState() => _AniExampleBoxState();
 }
 
-class _ExampleBoxState extends State<ExampleBox> {
-  bool? _isHover;
-  bool _isClicked = false;
-
-  final double _height = 106;
-  final double _width = 156;
-
+class _AniExampleBoxState extends State<AniExampleBox> with ExampleBoxStateMixin {
   @override
   void initState() {
-    _isClicked = widget.selected;
+    //_isClicked = widget.selected;
+    super.initMixin(widget.selected);
     super.initState();
+  }
+
+  void onSelected() {
+    setState(() {
+      if (widget.aniType.value == 0) {
+        widget.model.transitionEffect.set(0);
+      } else {
+        widget.model.transitionEffect.set(widget.aniType.value);
+      }
+    });
+    widget.onSelected.call();
+  }
+
+  void onUnselected() {
+    setState(() {
+      widget.model.transitionEffect.set(0);
+    });
+    widget.onSelected.call();
+  }
+
+  void onNormalSelected() {
+    setState(() {
+      widget.model.transitionEffect.set(0);
+      logger.finest('pageTrasitionValue = ${widget.model.transitionEffect.value}');
+    });
+    widget.onSelected.call();
+  }
+
+  void rebuild() {
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return _selectAnimation();
+    //return _selectAnimation();
+    return super.buildMixin(context,
+        setState: rebuild,
+        onSelected: onSelected,
+        onUnselected: onUnselected,
+        selectWidget: selectWidget);
   }
 
-  bool isAni() {
-    if (_isHover == null) return true;
-    return _isHover!;
-  }
-
-  Widget _selectAnimation() {
+  Widget selectWidget() {
     switch (widget.aniType) {
       case AnimationType.fadeIn:
-        return isAni() ? _aniBox().fadeIn() : _normalBox();
+        return isAni() ? _aniBox().fadeIn() : normalBox(widget.name);
       case AnimationType.flip:
-        return isAni() ? _aniBox().flip() : _normalBox();
+        return isAni() ? _aniBox().flip() : normalBox(widget.name);
       case AnimationType.shake:
-        return isAni() ? _aniBox().shake() : _normalBox();
+        return isAni() ? _aniBox().shake() : normalBox(widget.name);
       case AnimationType.shimmer:
-        return isAni() ? _aniBox().shimmer() : _normalBox();
+        return isAni() ? _aniBox().shimmer() : normalBox(widget.name);
       default:
-        return _noAnimation();
+        return noAnimation(widget.name, onNormalSelected: onNormalSelected);
     }
   }
 
-  Widget _normalBox() {
-    return MouseRegion(
-      onHover: (value) {
-        if (_isHover == null || _isHover! == false) {
-          setState(() {
-            logger.finest('transition hovered');
-            _isHover = true;
-          });
-        }
-      },
-      onExit: (value) {
-        if (_isHover == null || _isHover! == true) {
-          setState(() {
-            logger.finest('transition exit');
-            _isHover = false;
-          });
-        }
-      },
-      child: GestureDetector(
-        onLongPressDown: (details) {
-          setState(() {
-            _isClicked = !_isClicked;
-            if (_isClicked) {
-              widget.model.transitionEffect
-                  .set(widget.model.transitionEffect.value | widget.aniType.value);
-            } else {
-              int newVal = widget.model.transitionEffect.value - widget.aniType.value;
-              if (newVal < 0) newVal = 0;
-              widget.model.transitionEffect.set(newVal);
-            }
-            logger.finest('pageTrasitionValue = ${widget.model.transitionEffect.value}');
-          });
-          widget.onSelected.call();
-        },
-        child: Container(
-          height: _height,
-          width: _width,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            border: Border.all(
-              color: _isClicked ? CretaColor.primary : Colors.white,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-          ),
-          child: Container(
-            height: _height - 8,
-            width: _width - 8,
-            decoration: BoxDecoration(
-              color: CretaColor.text[200]!,
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-            ),
-            child: Center(
-              child: Text(widget.name, style: CretaFont.titleSmall),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Animate _aniBox() {
-    return _normalBox().animate(
+    return normalBox(widget.name).animate(
         onPlay: (controller) => controller.loop(
             period: Duration(
               milliseconds: 1000,
             ),
             count: 3,
             reverse: true));
-  }
-
-  Widget _noAnimation() {
-    return GestureDetector(
-      onLongPressDown: (details) {
-        setState(() {
-          _isClicked = !_isClicked;
-          widget.model.transitionEffect.set(0);
-          logger.finest('pageTrasitionValue = ${widget.model.transitionEffect.value}');
-        });
-        widget.onSelected.call();
-      },
-      child: Container(
-        height: _height,
-        width: _width,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border.all(
-            color: _isClicked ? CretaColor.primary : Colors.white,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        child: Container(
-          height: _height - 8,
-          width: _width - 8,
-          decoration: BoxDecoration(
-            color: CretaColor.text[200]!,
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-          ),
-          child: Center(
-            child: Text(widget.name, style: CretaFont.titleSmall),
-          ),
-        ),
-      ),
-    );
   }
 }

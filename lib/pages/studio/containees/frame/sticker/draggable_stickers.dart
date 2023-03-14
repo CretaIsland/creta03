@@ -80,8 +80,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
       //  true
       /*sticker.id == state.selectedAssetId*/
       onUpdate: (update, mid) {
-        logger
-            .fine("oldposition=${sticker.position.toString()}, new=${update.position.toString()}");
+        logger.finest(
+            "oldposition=${sticker.position.toString()}, new=${update.position.toString()}");
 
         sticker.angle = update.angle;
         sticker.size = update.size;

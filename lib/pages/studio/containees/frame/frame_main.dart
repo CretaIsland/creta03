@@ -190,8 +190,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       blurSpread: model.shadowSpread.value,
       opacity: model.shadowOpacity.value,
       shadowColor: model.shadowColor.value,
-      width: model.width.value,
-      height: model.height.value,
+      // width: model.width.value,
+      // height: model.height.value,
       strokeWidth: model.borderWidth.value,
       strokeColor: model.borderColor.value,
       radiusLeftBottom: model.radiusLeftBottom.value,
@@ -253,8 +253,13 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       decoration: useColor ? _frameDeco(model) : null,
       width: double.infinity,
       height: double.infinity,
-      child: Center(
-        child: Text('${model.order.value}'),
+      child: ClipRect(
+        //child: Text('${model.order.value}'),
+        clipBehavior: Clip.hardEdge,
+        child: Image.asset(
+          'assets/creta_default.png',
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
