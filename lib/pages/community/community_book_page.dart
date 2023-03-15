@@ -22,7 +22,7 @@ import '../../design_system/creta_color.dart';
 //import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 //import '../../design_system/component/creta_basic_layout_mixin.dart';
-//import '../../design_system/component/custom_image.dart';
+import '../../design_system/component/custom_image.dart';
 import '../../design_system/creta_font.dart';
 //import '../../lang/creta_lang.dart';
 //import 'package:creta03/design_system/creta_color.dart';
@@ -215,18 +215,163 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
     );
   }
 
+  final GlobalKey bookKey = GlobalKey();
+
+  Widget _getBook(Size size) {
+    if (_cretaRelatedBookList.isNotEmpty) {
+      return Container(
+        decoration: BoxDecoration(
+          // crop
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          children: [
+            ClipRect(
+              child: CustomImage(
+                  key: bookKey,
+                  duration: 500,
+                  hasMouseOverEffect: false,
+                  width: size.width,
+                  height: size.height,
+                  image: _cretaRelatedBookList[0].thumbnailUrl),
+            ),
+            Container(
+              width: size.width,
+              height: size.height,
+              decoration: bookMouseOver ? Snippet.gradationShadowDeco() : null,
+            ),
+          ],
+        ),
+      );
+    }
+    return Container();
+  }
+
+  double _value = 0;
+  bool bookMouseOver = false;
+  bool sliderMouseOver = false;
+
   Widget _getBookMainPane(Size size) {
-    return Container(
-      width: size.width,
-      height: size.height,
-      padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Row(
-        children: [
-          Text(
-            '_getBookMainPane',
-            style: CretaFont.titleELarge,
-          ),
-        ],
+    return MouseRegion(
+      onEnter: (val) {
+        setState(() {
+          bookMouseOver = true;
+        });
+      },
+      onExit: (val) {
+        setState(() {
+          bookMouseOver = false;
+        });
+      },
+      child: Container(
+        width: size.width,
+        height: size.height,
+        margin: EdgeInsets.fromLTRB(80, 0, 0, 0),
+        child: Stack(
+          children: [
+            _getBook(size),
+            !bookMouseOver
+                ? Container()
+                : Container(
+              padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: Container()),
+                  BTN.fill_blue_i_l(
+                    icon: Icons.share_outlined,
+                    buttonColor: CretaButtonColor.blueGray,
+                    onPressed: () {},
+                  ),
+                  SizedBox(width: 12),
+                  BTN.fill_blue_i_l(
+                    icon: Icons.file_download_outlined,
+                    buttonColor: CretaButtonColor.blueGray,
+                    onPressed: () {},
+                  ),
+                  SizedBox(width: 12),
+                  BTN.fill_blue_i_l(
+                    icon: Icons.playlist_add_outlined,
+                    buttonColor: CretaButtonColor.blueGray,
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+            !bookMouseOver
+                ? Container()
+                : SizedBox(
+              width: size.width,
+              height: size.height,
+              child: Center(
+                child: BTN.opacity_gray_i_el(
+                  icon: Icons.play_arrow,
+                  onPressed: () {},
+                ),
+              ),
+            ),
+            !bookMouseOver
+                ? Container()
+                : Container(
+              height: size.height,
+              padding: EdgeInsets.fromLTRB(20-4, 24, 20-4, 16),
+              child: Column(
+                children: [
+                  Expanded(child: Container()),
+                  MouseRegion(
+                    onEnter: (val) {
+                      setState(() {
+                        sliderMouseOver = true;
+                      });
+                    },
+                    onExit: (val) {
+                      setState(() {
+                        sliderMouseOver = false;
+                      });
+                    },
+                    child: Container(
+                      height: 8,
+                      //color: Colors.red,
+                      margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                      decoration: BoxDecoration(
+                        // crop
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: SliderTheme(
+                        data: SliderThemeData(
+                          //overlayShape: SliderComponentShape.noOverlay,
+                          trackHeight: 8.0,
+                          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 4, elevation: 0, pressedElevation: 0),
+                          thumbColor: sliderMouseOver ? null : Colors.transparent,
+                          inactiveTrackColor: Colors.white,
+                          overlayColor: Colors.transparent,
+                          //disabledThumbColor: Colors.transparent,
+                          // overlappingShapeStrokeColor: Colors.transparent,
+                          // valueIndicatorColor: Colors.transparent,
+                          trackShape: CustomTrackShape(),
+                        ),
+                        child: Slider(
+                          //thumbColor: sliderMouseOver ? null : Colors.transparent,
+                          min: 0,
+                          max: 100,
+                          value: _value,
+                          onChanged: (double value) {
+                            setState(() {
+                              _value = value;
+                              //print('value=$value');
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -252,7 +397,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
     if (_cretaRelatedBookList.isNotEmpty) {
       height += ((_cretaRelatedBookList.length - 1) * 20);
     }
-    return Container(
+    return SizedBox(
       width: size.width,
       height: height,
       //height: size.height,
@@ -293,14 +438,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
       child: Column(
         children: [
           // book
-          Container(
-            padding: EdgeInsets.fromLTRB(80, 0, 0, 0),
-            height: bookArea.height,
-            child: Container(
-              color: Colors.red[100],
-              child: Center(child: _getBookMainPane(Size(bookArea.width - 80, bookArea.height))),
-            ),
-          ),
+          _getBookMainPane(Size(bookArea.width - 80, bookArea.height)),
           // description
           Container(
             padding: EdgeInsets.fromLTRB(100, 40, 20, 0),
@@ -437,5 +575,22 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
         ),
       ),
     );
+  }
+}
+
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final trackHeight = sliderTheme.trackHeight;
+    final trackLeft = offset.dx;
+    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

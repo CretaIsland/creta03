@@ -24,6 +24,7 @@ enum CretaButtonDeco {
 
 enum CretaButtonColor {
   blue,
+  blueGray,
   blueAndWhite,
   blueAndWhiteTitle,
   sky,
@@ -183,6 +184,13 @@ class CretaButton extends StatefulWidget {
       hoverColor = Colors.transparent;
       clickColor = Colors.transparent;
       fgColor = CretaColor.primary;
+      fgHoverColor = CretaColor.primary[500];
+      fgClickColor = CretaColor.primary[600];
+    } else if (buttonColor == CretaButtonColor.blueGray) {
+      bgColor = CretaColor.text[900]!.withOpacity(0.25);
+      hoverColor = CretaColor.primary[500];
+      clickColor = CretaColor.primary[600];
+      fgColor = CretaColor.text[900]!.withOpacity(0.25);
       fgHoverColor = CretaColor.primary[500];
       fgClickColor = CretaColor.primary[600];
     } else if (buttonColor == CretaButtonColor.blueAndWhite) {
