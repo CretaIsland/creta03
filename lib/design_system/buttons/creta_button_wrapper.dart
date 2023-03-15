@@ -563,16 +563,19 @@ class BTN {
     );
   }
 
-  static CretaButton fill_blue_i_l(
-      {required IconData icon,
-      required Function onPressed,
-      String? tooltip,
-      Size size = const Size(36, 36)}) {
+  static CretaButton fill_blue_i_l({
+    required IconData icon,
+    required Function onPressed,
+    String? tooltip,
+    Size size = const Size(36, 36),
+    CretaButtonColor buttonColor = CretaButtonColor.blue,
+  }) {
     return CretaButton(
       tooltip: tooltip,
       width: size.width,
       height: size.height,
       buttonType: CretaButtonType.iconOnly,
+      buttonColor: buttonColor,
       icon: Icon(
         icon,
         size: 20,
