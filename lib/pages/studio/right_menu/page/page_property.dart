@@ -101,6 +101,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
               setState(() {});
               BookMainPage.bookManagerHolder!.notify();
             }),
+        propertyDivider(),
       ]);
       //);
     });

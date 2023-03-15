@@ -37,4 +37,8 @@ class CretaLang {
   static String dayBefore = '일 전';
   static String hourBefore = '시간 전';
   static String minBefore = '분 전';
+
+  static String hours = '시간';
+  static String minutes = '분';
+  static String seconds = '초';
 }

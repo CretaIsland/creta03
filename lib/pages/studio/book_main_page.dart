@@ -25,6 +25,7 @@ import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
+import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
@@ -133,6 +134,8 @@ class _BookMainPageState extends State<BookMainPage> {
     }
     BookMainPage.selectedStick = LeftMenuEnum.Page; // 페이지가 열린 상태로 시작하게 한다.
     saveManagerHolder?.runSaveTimer();
+
+    ClickReceiverHandler.init();
   }
 
   Future<void> initChildren(BookModel model) async {
@@ -400,8 +403,7 @@ class _BookMainPageState extends State<BookMainPage> {
                     containeeNotifier.clear();
                   });
                 },
-              )
-            )
+              ))
           : Container(width: 0, height: 0, color: Colors.transparent);
     });
   }

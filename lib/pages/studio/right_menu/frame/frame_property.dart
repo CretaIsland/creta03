@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:r_dotted_line_border/r_dotted_line_border.dart';
 
 import '../../../../common/creta_utils.dart';
@@ -16,6 +17,7 @@ import '../../../../design_system/component/colorPicker/shadow_indicator.dart';
 import '../../../../design_system/component/example_box_mixin.dart';
 import '../../../../design_system/component/shape/shape_indicator.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
+import '../../../../design_system/component/time_input_widget.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/menu/creta_widget_drop_down.dart';
@@ -60,6 +62,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   static bool _isBorderOpen = false;
   static bool _isShadowOpen = false;
   static bool _isSizeOpen = false;
+  static bool _isEventOpen = false;
   static bool _isRadiusOpen = false;
 
   static bool _isShapeOpen = false;
@@ -99,13 +102,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     );
   }
 
-  Widget _noBorder(double width, double height) {
+  Widget _choiceStringElement(String name, double width, double height) {
     return SizedBox(
       width: width,
       height: height,
       child: Center(
         child: Text(
-          CretaStudioLang.noBorder,
+          name,
           textAlign: TextAlign.center,
           style: CretaFont.titleSmall,
         ),
@@ -177,16 +180,19 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       _shadow(),
       propertyDivider(),
       _shape(),
+      propertyDivider(),
+      _event(),
+      propertyDivider(),
     ]);
     //});
   }
 
   Widget _pageSize() {
-    return StreamBuilder<FrameModel>(
+    return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data!.mid == widget.model.mid) {
-            snapshot.data!.copyTo(widget.model);
+            (snapshot.data! as FrameModel).copyTo(widget.model);
           }
 
           double height = widget.model.height.value;
@@ -1114,7 +1120,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           //onChanngeComplete: onBorderWidthChangeComplete,
         ),
 
-        // 보더 위치
+        // 보더 마감
         Padding(
           padding: const EdgeInsets.only(top: 20.0),
           child: Row(
@@ -1154,7 +1160,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               // ),
               CretaWidgetDropDown(
                 items: [
-                  _noBorder(156, 30),
+                  _choiceStringElement(CretaStudioLang.noBorder, 156, 30),
                   ...CretaUtils.borderStyle.map((e) {
                     return _borderStyle(156, 10, e[0], e[1]);
                   }).toList(),
@@ -1546,6 +1552,206 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       //child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: gradientList),
       child: Wrap(children: shapeList),
     );
+  }
+
+  Widget _event() {
+    return propertyCard(
+      padding: horizontalPadding,
+      isOpen: _isEventOpen,
+      onPressed: () {
+        setState(() {
+          _isEventOpen = !_isEventOpen;
+        });
+      },
+      titleWidget: Text(CretaStudioLang.clickEvent, style: CretaFont.titleSmall),
+      trailWidget: Text('Not Yet Impl', style: dataStyle),
+      bodyWidget: _eventBody(),
+    );
+  }
+
+  Widget _eventBody() {
+    //return Column(children: [
+    //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
+    List<String> hashTagList = CretaUtils.jsonStringToList(widget.model.eventReceive.value);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+// 첫번쨰 줄  sendEvent
+        Padding(
+          padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                CretaStudioLang.eventSend,
+                style: titleStyle,
+              ),
+              CretaTextField.short(
+                width: 210,
+                defaultBorder: Border.all(color: CretaColor.text[100]!),
+                textFieldKey: GlobalKey(),
+                value: widget.model.eventSend.value,
+                hintText: '',
+                onEditComplete: ((value) {
+                  widget.model.eventSend.set(value);
+                  _sendEvent?.sendEvent(widget.model);
+                }),
+                minNumber: 0,
+              ),
+            ],
+          ),
+        ),
+        // 두번쨰 줄,  receiveEvent
+        Padding(
+          padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                CretaStudioLang.eventReceived,
+                style: titleStyle,
+              ),
+              // CretaTextField.short(
+              //   width: 210,
+              //   defaultBorder: Border.all(color: CretaColor.text[100]!),
+              //   textFieldKey: GlobalKey(),
+              //   value: widget.model.eventSend.value,
+              //   hintText: '',
+              //   onEditComplete: ((value) {
+              //     widget.model.eventReceive.set(value);
+              //     _sendEvent?.sendEvent(widget.model);
+              //   }),
+              //   minNumber: 0,
+              // ),
+              SizedBox(
+                width: 210,
+                child: tagWidget(
+                  hashTagList: hashTagList,
+                  onTagChanged: (newValue) {
+                    setState(() {
+                      hashTagList.add(newValue);
+                      String val = CretaUtils.listToString(hashTagList);
+                      logger.fine('eventReceive=$val');
+                      widget.model.eventReceive.set(val);
+                    });
+                    logger.fine('onTagChanged $newValue input');
+
+                    _sendEvent?.sendEvent(widget.model);
+                  },
+                  onSubmitted: (outstandingValue) {
+                    setState(() {
+                      hashTagList.add(outstandingValue);
+                      String val = CretaUtils.listToString(hashTagList);
+                      logger.fine('eventReceive=$val');
+                      widget.model.eventReceive.set(val);
+                      logger.fine('onSubmitted $outstandingValue input');
+                    });
+
+                    _sendEvent?.sendEvent(widget.model);
+                  },
+                  onDeleted: (idx) {
+                    setState(() {
+                      hashTagList.removeAt(idx);
+                      String val = CretaUtils.listToString(hashTagList);
+                      widget.model.eventReceive.set(val);
+                      logger.finest('onDelete $idx');
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Padding(
+        //   padding: EdgeInsets.only(top: 12, left: 30, right: 30),
+        //   child:
+        // ),
+        // 세번쨰 줄,  이벤트를 받았을 때만 등장,  평소에도 등장
+        widget.model.eventReceive.value.length > 2
+            //widget.model.eventReceive.value.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      CretaStudioLang.showWhenEventReceived,
+                      style: titleStyle,
+                    ),
+                    CretaToggleButton(
+                      defaultValue: widget.model.showWhenEventReceived.value,
+                      onSelected: (value) {
+                        widget.model.showWhenEventReceived.set(value);
+                        _sendEvent?.sendEvent(widget.model);
+                      },
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+        // 네번쨰 줄,
+        //  등장후 지속시간 :  영구히,  콘텐츠가 끝날때까지, 지정된 시간동안
+        widget.model.eventReceive.value.length > 2
+            //widget.model.eventReceive.value.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(top: 8, left: 30, right: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(CretaStudioLang.durationType, style: titleStyle),
+                    CretaWidgetDropDown(
+                      items: [
+                        ...CretaStudioLang.durationTypeList.keys.map((e) {
+                          return _choiceStringElement(e, 156, 30);
+                        }).toList(),
+                      ],
+                      defaultValue: _getDurationType(),
+                      onSelected: (val) {
+                        widget.model.durationType.set(DurationType.fromInt(val + 1));
+                        setState(() {});
+                      },
+                      width: boderStyleDropBoxWidth,
+                      height: 32,
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+        widget.model.durationType.value == DurationType.specified
+            ? Padding(
+                padding: const EdgeInsets.only(top: 8, left: 30, right: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(CretaStudioLang.durationSpecifiedTime, style: titleStyle),
+                    TimeInputWidget(
+                      textStyle: titleStyle,
+                      initValue: widget.model.duration.value,
+                      onValueChnaged: (duration) {
+                        widget.model.duration.set(duration.inSeconds);
+                      },
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+      ],
+    );
+  }
+
+  int _getDurationType() {
+    switch (widget.model.durationType.value) {
+      case DurationType.untilContentsEnd:
+        return 1;
+      case DurationType.specified:
+        return 2;
+      default:
+        return 0;
+    }
   }
 }
 

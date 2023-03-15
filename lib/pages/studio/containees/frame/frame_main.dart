@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 //import 'package:glass/glass.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../common/creta_utils.dart';
@@ -22,6 +23,7 @@ import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
+import '../click_event.dart';
 import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
 import 'sticker/draggable_resizable.dart';
@@ -72,11 +74,12 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
     _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-    return StreamBuilder<FrameModel>(
+    return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null) {
-            _frameManager!.updateModel(snapshot.data!);
+            FrameModel model = snapshot.data! as FrameModel;
+            _frameManager!.updateModel(model);
           }
           return showFrame();
         });
@@ -118,6 +121,10 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
             _frameManager?.setSelectedMid(mid);
           });
         }
+        frame = _frameManager?.getSelected() as FrameModel?;
+        if (frame != null) {
+          ClickEventHandler.publish(frame.eventSend.value);
+        }
         //BookMainPage.bookManagerHolder!.notify();
       },
       onResizeButtonTap: () {
@@ -145,6 +152,12 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
       logger.finest('applyScale = $applyScale');
 
+      ClickEventHandler.subscribeList(
+        model.eventReceive.value,
+        model,
+        _receiveEvent!,
+      );
+
       double frameWidth = model.width.value * applyScale;
       double frameHeight = model.height.value * applyScale;
       //double posX = (model.posX.value - LayoutConst.floatingActionPadding) * applyScale;
@@ -166,9 +179,32 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         position: Offset(posX, posY),
         angle: model.angle.value * (pi / 180),
         size: Size(frameWidth, frameHeight),
-        child: _applyAnimate(model),
+        child: Visibility(visible: _isVisible(model), child: _applyAnimate(model)),
       );
     }).toList();
+  }
+
+  bool _isVisible(FrameModel model) {
+    if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
+      logger.fine(
+          '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
+      List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
+      for (String eventName in eventNameList) {
+        if (ClickReceiverHandler.isEventOn(eventName) == true) {
+          return true;
+        }
+      }
+      return false;
+    }
+    //if (model.eventReceive.value.isNotEmpty && model.showWhenEventReceived.value == true) {
+    //   logger.fine(
+    //       '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
+    //   if (ClickReceiverHandler.isEventOn(model.eventReceive.value) == true) {
+    //     return true;
+    //   }
+    //   return false;
+    // }
+    return true;
   }
 
   Widget _applyAnimate(FrameModel model) {

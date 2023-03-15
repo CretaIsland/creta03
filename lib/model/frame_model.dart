@@ -39,6 +39,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> shadowOffset;
   late UndoAble<ShapeType> shape;
   //late UndoAble<bool> shadowIn;
+  late UndoAble<String> eventSend;
 
   FrameType frameType = FrameType.none;
 
@@ -67,6 +68,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         shadowDirection,
         shadowOffset,
         shape,
+        eventSend,
         //shadowIn,
         ...super.propsMixin,
       ];
@@ -94,6 +96,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(0, mid);
     shadowOffset = UndoAble<double>(0, mid);
     shape = UndoAble<ShapeType>(ShapeType.none, mid);
+    eventSend = UndoAble<String>('', mid);
     //shadowIn = UndoAble<bool>(false, mid);
     super.initMixin(mid);
   }
@@ -125,6 +128,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(0, mid);
     shadowOffset = UndoAble<double>(0, mid);
     shape = UndoAble<ShapeType>(ShapeType.none, mid);
+    eventSend = UndoAble<String>('', mid);
     //shadowIn = UndoAble<bool>(false, mid);
 
     frameType = pType;
@@ -155,6 +159,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(srcFrame.shadowDirection.value, mid);
     shadowOffset = UndoAble<double>(srcFrame.shadowOffset.value, mid);
     shape = UndoAble<ShapeType>(srcFrame.shape.value, mid);
+    eventSend = UndoAble<String>(srcFrame.eventSend.value, mid);
     //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
 
     frameType = srcFrame.frameType;
@@ -194,6 +199,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection.set((map["shadowDirection"] ?? 0), save: false, noUndo: true);
     shadowOffset.set((map["shadowOffset"] ?? 0), save: false, noUndo: true);
     shape.set(ShapeType.fromInt(map["shape"] ?? 0), save: false, noUndo: true);
+    eventSend.set(map["eventSend"] ?? '', save: false, noUndo: true);
 
     //shadowIn.set((map["shadowIn"] ?? false), save: false, noUndo: true);
 
@@ -228,6 +234,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "shadowDirection": shadowDirection.value,
         "shadowOffset": shadowOffset.value,
         "shape": shape.value.index,
+        "eventSend": eventSend.value,
         //"shadowIn": shadowIn.value,
         'frameType': frameType.index,
         ...super.toMapMixin(),

@@ -52,6 +52,7 @@ class _CretaTabButtonState extends State<CretaTabButton> {
   @override
   Widget build(BuildContext context) {
     return CustomRadioButton(
+      wrapAlignment: WrapAlignment.start,
       defaultSelected: widget.defaultString,
       height: widget.height,
       width: widget.width,

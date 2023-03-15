@@ -178,10 +178,19 @@ enum EffectType {
   rain,
   bubble,
   star,
-  //rhombus, // 마름모
-  //parallelogram, // 평행사변형
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static EffectType fromInt(int? val) => EffectType.values[validCheck(val ?? none.index)];
+}
+
+enum DurationType {
+  none,
+  forever,
+  untilContentsEnd,
+  specified,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static DurationType fromInt(int? val) => DurationType.values[validCheck(val ?? none.index)];
 }

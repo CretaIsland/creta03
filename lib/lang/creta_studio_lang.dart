@@ -157,6 +157,7 @@ class CretaStudioLang {
   static const String infomation = "정보";
   static const String pageSize = "페이지 크기";
   static const String frameSize = "프레임 크기";
+  static const String clickEvent = "클릭 이벤트";
   static const String bookBgColor = "전체 배경색";
   static const String pageBgColor = "페이지 배경색";
   static const String frameBgColor = "프레임 배경색";
@@ -270,6 +271,18 @@ class CretaStudioLang {
   };
 
   static String shape = "모양";
+
+  static String eventSend = "발신 이벤트";
+  static String eventReceived = "수신 이벤트";
+  static String showWhenEventReceived = "이벤트를 받았을 때만 나타남";
+  static String durationType = "닫힘 조건";
+  static String durationSpecifiedTime = "다음 시간 후 닫힘";
+
+  static Map<String, String> durationTypeList = {
+    '닫지 않음': 'forever',
+    '콘텐츠가 끝날때': 'untilContentsEnd',
+    '지정된 시간이 경과하면': 'specified',
+  };
 
   // static Map<String, String> shadowInList = {
   //   '외부 그림자': 'outSide',

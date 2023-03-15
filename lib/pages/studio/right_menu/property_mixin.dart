@@ -1,6 +1,8 @@
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:material_tag_editor/tag_editor.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_checkbox.dart';
@@ -14,6 +16,7 @@ import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/creta_style_mixin.dart';
+import '../studio_constant.dart';
 import '../studio_snippet.dart';
 
 mixin PropertyMixin {
@@ -554,6 +557,88 @@ mixin PropertyMixin {
           //     child: Text(EffectType.values.elementAt(i).name, style: titleStyle)),
         ],
       ),
+    );
+  }
+
+  Widget tagWidget({
+    double horizontalPadding = 24,
+    required List<String> hashTagList,
+    required void Function(String) onTagChanged,
+    required void Function(String) onSubmitted,
+    required void Function(int) onDeleted,
+  }) {
+    return TagEditor(
+      textFieldHeight: 36,
+      minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
+      tagSpacing: 0,
+      textStyle: CretaFont.buttonMedium,
+      length: hashTagList.length,
+      delimiters: const [',', ' '],
+      hasAddButton: true,
+      resetTextOnSubmitted: true,
+      inputDecoration: InputDecoration(
+        iconColor: CretaColor.text[200]!,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide(
+            width: 1,
+            color: CretaColor.text[200]!,
+          ),
+        ),
+        //hintText: '당신의 크레타북에 적절한 검섹어 태그를 붙이세요',
+      ),
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[/\\]'))],
+      onTagChanged: onTagChanged,
+      onSubmitted: onSubmitted,
+      tagBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(
+            right: 4,
+            bottom: 4,
+          ),
+          child: ChipWidget(index: index, label: hashTagList[index], onDeleted: onDeleted),
+        );
+      },
+    );
+  }
+}
+
+class ChipWidget extends StatelessWidget {
+  const ChipWidget({
+    super.key,
+    required this.label,
+    required this.onDeleted,
+    required this.index,
+  });
+
+  final String label;
+  final ValueChanged<int> onDeleted;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      clipBehavior: Clip.antiAlias,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+        side: BorderSide(
+          width: 1,
+          color: CretaColor.text[700]!,
+        ),
+      ),
+      labelPadding: const EdgeInsets.only(left: 6.0, right: 1.0),
+      label: Text(
+        '#$label',
+        style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
+      ),
+      deleteIcon: const Icon(
+        Icons.close,
+        size: 16,
+      ),
+      onDeleted: () {
+        onDeleted(index);
+      },
     );
   }
 }

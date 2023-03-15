@@ -18,6 +18,10 @@ mixin CretaStyleMixin {
   late UndoAble<int> transitionEffect;
   late UndoAble<bool> isFixedRatio;
   late UndoAble<EffectType> effect;
+  late UndoAble<String> eventReceive;
+  late UndoAble<bool> showWhenEventReceived;
+  late UndoAble<DurationType> durationType;
+  late UndoAble<int> duration;
 
   List<Object?> get propsMixin => [
         width,
@@ -29,6 +33,10 @@ mixin CretaStyleMixin {
         textureType,
         isFixedRatio,
         effect,
+        eventReceive,
+        showWhenEventReceived,
+        durationType,
+        duration,
       ];
 
   void initMixin(String mid) {
@@ -43,6 +51,10 @@ mixin CretaStyleMixin {
     transitionEffect = UndoAble<int>(0, mid);
     isFixedRatio = UndoAble<bool>(false, mid);
     effect = UndoAble<EffectType>(EffectType.none, mid);
+    eventReceive = UndoAble<String>('', mid);
+    showWhenEventReceived = UndoAble<bool>(false, mid);
+    durationType = UndoAble<DurationType>(DurationType.none, mid);
+    duration = UndoAble<int>(0, mid);
   }
 
   void makeSampleMixin(String mid) {
@@ -58,6 +70,10 @@ mixin CretaStyleMixin {
     transitionEffect = UndoAble<int>(0, mid);
     isFixedRatio = UndoAble<bool>(false, mid);
     effect = UndoAble<EffectType>(EffectType.none, mid);
+    eventReceive = UndoAble<String>('', mid);
+    showWhenEventReceived = UndoAble<bool>(false, mid);
+    durationType = UndoAble<DurationType>(DurationType.none, mid);
+    duration = UndoAble<int>(0, mid);
   }
 
   void copyFromMixin(String mid, CretaStyleMixin src) {
@@ -72,6 +88,10 @@ mixin CretaStyleMixin {
     transitionEffect = UndoAble<int>(src.transitionEffect.value, mid);
     isFixedRatio = UndoAble<bool>(src.isFixedRatio.value, mid);
     effect = UndoAble<EffectType>(src.effect.value, mid);
+    eventReceive = UndoAble<String>(src.eventReceive.value, mid);
+    showWhenEventReceived = UndoAble<bool>(src.showWhenEventReceived.value, mid);
+    durationType = UndoAble<DurationType>(src.durationType.value, mid);
+    duration = UndoAble<int>(src.duration.value, mid);
   }
 
   void fromMapMixin(Map<String, dynamic> map) {
@@ -89,6 +109,10 @@ mixin CretaStyleMixin {
     transitionEffect.set(map["transitionEffect"] ?? 0, save: false, noUndo: true);
     isFixedRatio.set(map["isFixedRatio"] ?? false, save: false, noUndo: true);
     effect.set(EffectType.fromInt(map["effect"] ?? 0), save: false, noUndo: true);
+    eventReceive.set(map["eventReceive"] ?? '', save: false, noUndo: true);
+    showWhenEventReceived.set(map["showWhenEventReceived"] ?? false, save: false, noUndo: true);
+    durationType.set(DurationType.fromInt(map["durationType"] ?? 0), save: false, noUndo: true);
+    duration.set(map["duration"] ?? 0, save: false, noUndo: true);
   }
 
   Map<String, dynamic> toMapMixin() {
@@ -103,6 +127,10 @@ mixin CretaStyleMixin {
       "transitionEffect": transitionEffect.value,
       "isFixedRatio": isFixedRatio.value,
       "effect": effect.value.index,
+      "eventReceive": eventReceive.value,
+      "showWhenEventReceived": showWhenEventReceived.value,
+      "durationType": durationType.value.index,
+      "duration": duration.value,
     };
   }
 }

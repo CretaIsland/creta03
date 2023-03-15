@@ -75,6 +75,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: _bookOption(),
         ),
+        propertyDivider(),
       ],
     );
   }

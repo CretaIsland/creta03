@@ -3,16 +3,25 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../model/frame_model.dart';
+import '../../model/creta_model.dart';
 
-class FrameEventController extends GetxController {
-  // Define an event stream
-  final eventStream = StreamController<FrameModel>.broadcast();
+class StudioEventController extends GetxController {
+  final eventStream = StreamController<CretaModel>.broadcast();
 
   // Method to send an event
-  void sendEvent(FrameModel model) {
+  void sendEvent(CretaModel model) {
     eventStream.add(model);
   }
+}
+
+class FrameEventController extends StudioEventController {
+  // Define an event stream
+  // final eventStream = StreamController<FrameModel>.broadcast();
+
+  // // Method to send an event
+  // void sendEvent(FrameModel model) {
+  //   eventStream.add(model);
+  // }
 }
 
 // class PageEventController extends GetxController {
