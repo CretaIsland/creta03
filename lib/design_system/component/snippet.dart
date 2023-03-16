@@ -43,6 +43,7 @@ class Snippet {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
       floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onLongPressDown: ((details) {

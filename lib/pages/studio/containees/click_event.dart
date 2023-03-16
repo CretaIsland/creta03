@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:mutex/mutex.dart';
 import '../../../common/creta_utils.dart';
+import '../../../data_io/page_manager.dart';
 import '../../../model/creta_model.dart';
+import '../book_main_page.dart';
 import '../studio_getx_controller.dart';
+import 'containee_nofifier.dart';
 
 class ClickReceiver {
   final String eventName;
@@ -17,28 +20,28 @@ class ClickReceiver {
 }
 
 class ClickReceiverHandler {
-  //static final _lock = Mutex();
-  static final Map<String, ClickReceiver> _eventReceived = {};
-  static Timer? _timer;
+  // final _lock = Mutex();
+  final Map<String, ClickReceiver> _eventReceived = {};
+  Timer? _timer;
 
-  static void init() {
+  void init() {
     //_timer ??= Timer.periodic(const Duration(milliseconds: 100), _timerFunction);
   }
 
-  static void eventOn(String eventName) {
+  void eventOn(String eventName) {
     //_lock.acquire();
     _eventReceived[eventName] = ClickReceiver(eventName);
     logger.fine('eventOn($eventName)=${_eventReceived[eventName]!.eventName}');
     //_lock.release();
   }
 
-  static void eventOff(String eventName) {
+  void eventOff(String eventName) {
     //_lock.acquire();
     _eventReceived.remove(eventName);
     //_lock.release();
   }
 
-  static bool isEventOn(String eventName) {
+  bool isEventOn(String eventName) {
     bool retval = false;
     //_lock.acquire();
     retval = _eventReceived[eventName] == null ? false : true;
@@ -48,7 +51,7 @@ class ClickReceiverHandler {
   }
 
   // ignore: unused_element
-  static void _timerFunction(Timer timer) {
+  void _timerFunction(Timer timer) {
     List<String> deleteTargetList = [];
     _eventReceived.map((key, value) {
       if (DateTime.now().millisecondsSinceEpoch - value.receivedTime.millisecondsSinceEpoch >
@@ -63,7 +66,7 @@ class ClickReceiverHandler {
     }
   }
 
-  static void deleteTimer() {
+  void deleteTimer() {
     if (_timer != null) {
       _timer!.cancel();
       _timer = null;
@@ -74,18 +77,19 @@ class ClickReceiverHandler {
 
 class ClickEvent {
   final CretaModel model;
-  final StudioEventController eventController;
-  ClickEvent({required this.model, required this.eventController});
+  StudioEventController? eventController;
+  PageManager? pageManager;
+  ClickEvent({required this.model, this.eventController, this.pageManager});
 }
 
 class ClickEventHandler {
-  static Map<String, Map<String, ClickEvent>> registerMap = {};
-  //static final _lock = Mutex();
+  Map<String, Map<String, ClickEvent>> registerMap = {};
+  // final _lock = Mutex();
 
   ClickEventHandler();
 
-  static void subscribeList(
-      String eventNameStringList, CretaModel model, StudioEventController eventController) {
+  void subscribeList(String eventNameStringList, CretaModel model,
+      StudioEventController? eventController, PageManager? pageManager) {
     //_lock.acquire();
     logger.fine('subscribeList($eventNameStringList, ${model.mid}) ');
 
@@ -100,13 +104,13 @@ class ClickEventHandler {
 
     List<String> eventNameList = CretaUtils.jsonStringToList(eventNameStringList);
     for (String eventName in eventNameList) {
-      _subscribe(eventName, model, eventController);
+      _subscribe(eventName, model, eventController, pageManager);
     }
     //_lock.release();
   }
 
-  static void _subscribe(
-      String eventName, CretaModel model, StudioEventController eventController) {
+  void _subscribe(String eventName, CretaModel model, StudioEventController? eventController,
+      PageManager? pageManager) {
     //_lock.acquire();
     logger.fine('subscribe($eventName, ${model.mid}) ');
     Map<String, ClickEvent>? eventMap = registerMap[eventName];
@@ -114,12 +118,13 @@ class ClickEventHandler {
       eventMap = {};
       registerMap[eventName] = eventMap;
     }
-    eventMap[model.mid] = ClickEvent(model: model, eventController: eventController);
+    eventMap[model.mid] =
+        ClickEvent(model: model, eventController: eventController, pageManager: pageManager);
     //_lock.release();
   }
 
   // ignore: unused_element
-  static void _unsubscribe(String eventName, String mid) {
+  void _unsubscribe(String eventName, String mid) {
     logger.fine('unsubscribe($eventName, $mid) ');
     //_lock.acquire();
     Map<String, ClickEvent>? eventMap = registerMap[eventName];
@@ -127,7 +132,7 @@ class ClickEventHandler {
     //_lock.release();
   }
 
-  static void publish(String eventName) {
+  void publish(String eventName) {
     // _lock.acquire();
     logger.fine('publish($eventName) ');
     Map<String, ClickEvent>? eventMap = registerMap[eventName];
@@ -137,9 +142,13 @@ class ClickEventHandler {
       return;
     }
     eventMap.map((key, value) {
-      ClickReceiverHandler.eventOn(eventName);
+      BookMainPage.clickReceiverHandler.eventOn(eventName);
       logger.fine('publish($eventName) key=$key');
-      value.eventController.sendEvent(value.model);
+      value.eventController?.sendEvent(value.model);
+      if (value.pageManager != null) {
+        value.pageManager?.setSelectedMid(value.model.mid);
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
+      }
       return MapEntry(key, value);
     });
     //_lock.release();

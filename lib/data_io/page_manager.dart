@@ -8,6 +8,7 @@ import '../model/book_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
+import '../pages/studio/book_main_page.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
 
@@ -30,6 +31,7 @@ class PageManager extends CretaManager {
     addRealTimeListen();
     await getPages();
     setSelected(0);
+    subcribe();
   }
 
   void clearFrame() {
@@ -131,5 +133,19 @@ class PageManager extends CretaManager {
     logger.finest('getPages ${modelList.length}');
     updateLastOrder();
     return modelList.length;
+  }
+
+  void subcribe() {
+    lock();
+    for (var ele in modelList) {
+      PageModel model = ele as PageModel;
+      BookMainPage.clickEventHandler.subscribeList(
+        model.eventReceive.value,
+        model,
+        null,
+        this,
+      );
+    }
+    unlock();
   }
 }

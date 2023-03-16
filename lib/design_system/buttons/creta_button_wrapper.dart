@@ -40,7 +40,7 @@ class BTN {
       onPressed: onPressed,
       child: Icon(
         icon,
-        size: 12,
+        size: 16,
         color: CretaColor.text[700]!,
       ),
     );
@@ -328,7 +328,8 @@ class BTN {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(text, style: CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
+            Text(text,
+                style: CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
           ],
         ),
       ),
@@ -362,7 +363,8 @@ class BTN {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(text, style: CretaFont.buttonLarge.copyWith(color: textColor ?? CretaColor.text[700]!)),
+            Text(text,
+                style: CretaFont.buttonLarge.copyWith(color: textColor ?? CretaColor.text[700]!)),
           ],
         ),
       ),
@@ -486,7 +488,8 @@ class BTN {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(subText, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]!)),
+                    Text(subText,
+                        style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]!)),
                   ],
                 ),
               ),
@@ -1390,7 +1393,9 @@ class BTN {
           children: [
             Text(
               text,
-              style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]!,),
+              style: CretaFont.buttonLarge.copyWith(
+                color: CretaColor.text[700]!,
+              ),
             ),
           ],
         ),
@@ -1500,9 +1505,13 @@ class BTN {
           children: [
             Row(
               children: [
-                Text(text, style: CretaFont.buttonLarge.copyWith(color: textColor ?? CretaColor.text[700]!)),
+                Text(text,
+                    style:
+                        CretaFont.buttonLarge.copyWith(color: textColor ?? CretaColor.text[700]!)),
                 const SizedBox(width: 21),
-                Text(subText, style: CretaFont.buttonSmall.copyWith(color: subTextColor ?? CretaColor.primary[200]!)),
+                Text(subText,
+                    style: CretaFont.buttonSmall
+                        .copyWith(color: subTextColor ?? CretaColor.primary[200]!)),
               ],
             ),
           ],

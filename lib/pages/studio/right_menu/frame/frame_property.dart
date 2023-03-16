@@ -53,8 +53,7 @@ class FrameProperty extends StatefulWidget {
 class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   // ignore: unused_field
   //late ScrollController _scrollController;
-  final double horizontalPadding = 24;
-  final double boderStyleDropBoxWidth = 224;
+
   // ignore: unused_field
   // ignore: unused_field
   FrameManager? _frameManager;
@@ -62,7 +61,6 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   static bool _isBorderOpen = false;
   static bool _isShadowOpen = false;
   static bool _isSizeOpen = false;
-  static bool _isEventOpen = false;
   static bool _isRadiusOpen = false;
 
   static bool _isShapeOpen = false;
@@ -97,20 +95,6 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           dottedLength: dottedLength,
           dottedSpace: dottedSpace,
           top: BorderSide(),
-        ),
-      ),
-    );
-  }
-
-  Widget _choiceStringElement(String name, double width, double height) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: Center(
-        child: Text(
-          name,
-          textAlign: TextAlign.center,
-          style: CretaFont.titleSmall,
         ),
       ),
     );
@@ -213,6 +197,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             },
             titleWidget: Text(CretaStudioLang.frameSize, style: CretaFont.titleSmall),
             trailWidget: Text('${width.round()} x ${height.round()}', style: dataStyle),
+            onDelete: () {},
+            hasRemoveButton: false,
             bodyWidget: _pageSizeBody(width, height),
           );
         });
@@ -887,6 +873,12 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           PropertyMixin.isColorOpen = true;
           setState(() {});
         },
+        onDelete: () {
+          setState(() {
+            widget.model.bgColor1.set(Colors.transparent);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
       ),
     );
   }
@@ -924,6 +916,12 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             PropertyMixin.isGradationOpen = true;
           });
         },
+        onDelete: () {
+          setState(() {
+            widget.model.gradationType.set(GradationType.none);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
       ),
     );
   }
@@ -942,6 +940,12 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           });
           _sendEvent!.sendEvent(widget.model);
           //BookMainPage.bookManagerHolder?.notify();
+        },
+        onDelete: () {
+          setState(() {
+            widget.model.textureType.set(TextureType.none);
+          });
+          _sendEvent!.sendEvent(widget.model);
         },
       ),
     );
@@ -970,14 +974,18 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.transitionFrame, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: SizedBox(
-          width: 200,
-          child: Text(
-            trails,
-            textAlign: TextAlign.right,
-            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
-          ),
+        trailWidget: Text(
+          trails,
+          textAlign: TextAlign.right,
+          style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
         ),
+        hasRemoveButton: widget.model.transitionEffect.value != 0,
+        onDelete: () {
+          setState(() {
+            widget.model.transitionEffect.set(0);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
         bodyWidget: _transitionBody(),
       ),
     );
@@ -1042,6 +1050,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   });
                 },
               ),
+        hasRemoveButton: widget.model.borderWidth.value != 0,
+        onDelete: () {
+          setState(() {
+            widget.model.borderWidth.set(0);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
         bodyWidget: _borderBody(
             color1: widget.model.borderColor.value,
             borderWidth: widget.model.borderWidth.value,
@@ -1160,7 +1175,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               // ),
               CretaWidgetDropDown(
                 items: [
-                  _choiceStringElement(CretaStudioLang.noBorder, 156, 30),
+                  choiceStringElement(CretaStudioLang.noBorder, 156, 30),
                   ...CretaUtils.borderStyle.map((e) {
                     return _borderStyle(156, 10, e[0], e[1]);
                   }).toList(),
@@ -1230,6 +1245,16 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   });
                 },
               ),
+        hasRemoveButton: widget.model.isNoShadow() == false,
+        onDelete: () {
+          setState(() {
+            widget.model.shadowSpread.set(0);
+            widget.model.shadowBlur.set(0);
+            widget.model.shadowDirection.set(0);
+            widget.model.shadowOffset.set(0);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
         bodyWidget: _shodowBody(
             shadowColor: widget.model.shadowColor.value,
             shadowOpacity: widget.model.shadowOpacity.value,
@@ -1523,6 +1548,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 width: 24,
                 height: 24,
               ),
+        hasRemoveButton: widget.model.shape.value != ShapeType.none,
+        onDelete: () {
+          setState(() {
+            widget.model.shape.set(ShapeType.none);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
         bodyWidget: _shapeListView(
           onShapeTapPressed: (value) {
             setState(() {
@@ -1555,20 +1587,121 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   }
 
   Widget _event() {
-    return propertyCard(
-      padding: horizontalPadding,
-      isOpen: _isEventOpen,
-      onPressed: () {
+    return super.event(
+      cretaModel: widget.model,
+      mixinModel: widget.model,
+      setState: () {
+        setState(() {});
+      },
+      sendEventWidget: _sendEventWidget(),
+      visibleButton: _visibleButton(),
+      durationTypeWidget: _durationTypeWidget(),
+      durationWidget: _durationWidget(),
+      onDelete: () {
         setState(() {
-          _isEventOpen = !_isEventOpen;
+          widget.model.eventSend.set('');
+          widget.model.eventReceive.set('');
         });
       },
-      titleWidget: Text(CretaStudioLang.clickEvent, style: CretaFont.titleSmall),
-      trailWidget: Text('Not Yet Impl', style: dataStyle),
-      bodyWidget: _eventBody(),
     );
   }
 
+  Widget _visibleButton() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            CretaStudioLang.showWhenEventReceived,
+            style: titleStyle,
+          ),
+          CretaToggleButton(
+            defaultValue: widget.model.showWhenEventReceived.value,
+            onSelected: (value) {
+              widget.model.showWhenEventReceived.set(value);
+              _sendEvent?.sendEvent(widget.model);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sendEventWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            CretaStudioLang.eventSend,
+            style: titleStyle,
+          ),
+          CretaTextField.short(
+            width: 210,
+            defaultBorder: Border.all(color: CretaColor.text[100]!),
+            textFieldKey: GlobalKey(),
+            value: widget.model.eventSend.value,
+            hintText: '',
+            onEditComplete: ((value) {
+              widget.model.eventSend.set(value);
+              _sendEvent?.sendEvent(widget.model);
+            }),
+            minNumber: 0,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _durationTypeWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, left: 30, right: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(CretaStudioLang.durationType, style: titleStyle),
+          CretaWidgetDropDown(
+            items: [
+              ...CretaStudioLang.durationTypeList.keys.map((e) {
+                return choiceStringElement(e, 156, 30);
+              }).toList(),
+            ],
+            defaultValue: getDurationType(widget.model.durationType.value),
+            onSelected: (val) {
+              widget.model.durationType.set(DurationType.fromInt(val + 1));
+              setState(() {});
+            },
+            width: boderStyleDropBoxWidth,
+            height: 32,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _durationWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, left: 30, right: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(CretaStudioLang.durationSpecifiedTime, style: titleStyle),
+          TimeInputWidget(
+            textStyle: titleStyle,
+            initValue: widget.model.duration.value,
+            onValueChnaged: (duration) {
+              widget.model.duration.set(duration.inSeconds);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+/*
   Widget _eventBody() {
     //return Column(children: [
     //Text(CretaStudioLang.pageSize, style: CretaFont.titleSmall),
@@ -1742,17 +1875,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       ],
     );
   }
-
-  int _getDurationType() {
-    switch (widget.model.durationType.value) {
-      case DurationType.untilContentsEnd:
-        return 1;
-      case DurationType.specified:
-        return 2;
-      default:
-        return 0;
-    }
-  }
+  */
 }
 
 class AniExampleBox extends StatefulWidget {

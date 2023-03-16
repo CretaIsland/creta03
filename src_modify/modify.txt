@@ -8,13 +8,13 @@
 
 ###### skpark modify ########
 
-#skpark modify 2/?
-copy src_modify\tag_editor.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\material_tag_editor-0.1.2\lib\tag_editor.dart 
-
 # skpark modify 2/13
 copy src_modify\CustomRadioButton.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\custom_radio_grouped_button-2.1.2+2\lib\CustomButtons\CustomRadioButton.dart 
 
 #skpark modify 3/6
 copy src_modify\r_dotted_line_border.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\r_dotted_line_border-0.1.1\lib\r_dotted_line_border.dart  
+
+#skpark modify 3/16
+copy src_modify\tag_editor.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\material_tag_editor-0.1.2\lib\tag_editor.dart 
 
 

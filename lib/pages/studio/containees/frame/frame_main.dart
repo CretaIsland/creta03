@@ -23,7 +23,6 @@ import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
-import '../click_event.dart';
 import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
 import 'sticker/draggable_resizable.dart';
@@ -123,7 +122,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         }
         frame = _frameManager?.getSelected() as FrameModel?;
         if (frame != null) {
-          ClickEventHandler.publish(frame.eventSend.value);
+          BookMainPage.clickEventHandler.publish(frame.eventSend.value); //skpark publish 는 나중에 빼야함.
         }
         //BookMainPage.bookManagerHolder!.notify();
       },
@@ -152,10 +151,11 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
       logger.finest('applyScale = $applyScale');
 
-      ClickEventHandler.subscribeList(
+      BookMainPage.clickEventHandler.subscribeList(
         model.eventReceive.value,
         model,
-        _receiveEvent!,
+        _receiveEvent,
+        null,
       );
 
       double frameWidth = model.width.value * applyScale;
@@ -179,7 +179,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         position: Offset(posX, posY),
         angle: model.angle.value * (pi / 180),
         size: Size(frameWidth, frameHeight),
-        child: Visibility(visible: _isVisible(model), child: _applyAnimate(model)),
+        child: Visibility(
+            visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
       );
     }).toList();
   }
@@ -190,7 +191,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
           '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
       List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
       for (String eventName in eventNameList) {
-        if (ClickReceiverHandler.isEventOn(eventName) == true) {
+        if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
           return true;
         }
       }

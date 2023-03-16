@@ -27,7 +27,6 @@ class PageProperty extends StatefulWidget {
 class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   // ignore: unused_field
   //late ScrollController _scrollController;
-  double horizontalPadding = 24;
   BookModel? _book;
   // ignore: unused_field
   PageModel? _model;
@@ -90,17 +89,26 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         propertyDivider(),
         _pageTransition(),
         propertyDivider(),
-        effect(_model!.effect.value.name,
-            padding: horizontalPadding,
-            setState: () {
-              setState(() {});
-            },
-            model: _model!,
-            modelPrefix: 'page',
-            onSelected: () {
-              setState(() {});
-              BookMainPage.bookManagerHolder!.notify();
-            }),
+        effect(
+          _model!.effect.value.name,
+          padding: horizontalPadding,
+          setState: () {
+            setState(() {});
+          },
+          model: _model!,
+          modelPrefix: 'page',
+          onSelected: () {
+            setState(() {});
+            BookMainPage.bookManagerHolder!.notify();
+          },
+          onDelete: () {
+            setState(() {
+              _model!.eventReceive.set('');
+            });
+          },
+        ),
+        propertyDivider(),
+        _event(),
         propertyDivider(),
       ]);
       //);
@@ -141,6 +149,12 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           PropertyMixin.isColorOpen = true;
           setState(() {});
         },
+        onDelete: () {
+          setState(() {
+            _model!.bgColor1.set(Colors.transparent);
+          });
+          BookMainPage.bookManagerHolder?.notify();
+        },
       ),
     );
   }
@@ -178,6 +192,12 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
             PropertyMixin.isGradationOpen = true;
           });
         },
+        onDelete: () {
+          setState(() {
+            _model!.gradationType.set(GradationType.none);
+          });
+          BookMainPage.bookManagerHolder?.notify();
+        },
       ),
     );
   }
@@ -193,6 +213,12 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         onTextureTapPressed: (val) {
           setState(() {
             _model!.textureType.set(val);
+          });
+          BookMainPage.bookManagerHolder?.notify();
+        },
+        onDelete: () {
+          setState(() {
+            _model!.textureType.set(TextureType.none);
           });
           BookMainPage.bookManagerHolder?.notify();
         },
@@ -222,14 +248,18 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.transitionPage, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: SizedBox(
-          width: 200,
-          child: Text(
-            trails,
-            textAlign: TextAlign.right,
-            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
-          ),
+        trailWidget: Text(
+          trails,
+          textAlign: TextAlign.right,
+          style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
         ),
+        hasRemoveButton: _model!.transitionEffect.value > 0,
+        onDelete: () {
+          setState(() {
+            _model!.transitionEffect.set(0);
+          });
+          BookMainPage.bookManagerHolder!.notify();
+        },
         bodyWidget: _transitionBody(),
       ),
     );
@@ -261,6 +291,69 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       ),
     );
   }
+
+  Widget _event() {
+    return super.event(
+      cretaModel: _model!,
+      mixinModel: _model!,
+      setState: () {
+        setState(() {});
+      },
+      onDelete: () {
+        setState(() {
+          _model!.eventReceive.set('');
+        });
+      },
+      //durationTypeWidget: _durationTypeWidget(),
+      //durationWidget: _durationWidget(),
+    );
+  }
+
+  // Widget _durationTypeWidget() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 8, left: 30, right: 24),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Text(CretaStudioLang.durationType, style: titleStyle),
+  //         CretaWidgetDropDown(
+  //           items: [
+  //             ...CretaStudioLang.durationTypeList.keys.map((e) {
+  //               return choiceStringElement(e, 156, 30);
+  //             }).toList(),
+  //           ],
+  //           defaultValue: getDurationType(_model!.durationType.value),
+  //           onSelected: (val) {
+  //             _model!.durationType.set(DurationType.fromInt(val + 1));
+  //             setState(() {});
+  //           },
+  //           width: boderStyleDropBoxWidth,
+  //           height: 32,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // Widget _durationWidget() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 8, left: 30, right: 24),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(CretaStudioLang.durationSpecifiedTime, style: titleStyle),
+  //         TimeInputWidget(
+  //           textStyle: titleStyle,
+  //           initValue: _model!.duration.value,
+  //           onValueChnaged: (duration) {
+  //             _model!.duration.set(duration.inSeconds);
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
 
 class AniExampleBox extends StatefulWidget {

@@ -39,6 +39,7 @@ class TagEditor extends StatefulWidget {
     this.inputFormatters,
     this.keyboardAppearance,
     this.textFieldHeight = 30,
+    this.reverseOrder = false,
   }) : super(key: key);
 
   /// The number of tags currently shown.
@@ -46,6 +47,9 @@ class TagEditor extends StatefulWidget {
 
   // skpark add for height of textfield
   final double textFieldHeight;
+
+  // skpark add for changing oroder with tags aand textfield
+  final bool reverseOrder;
 
   /// The minimum width that the `TextField` should take
   final double minTextFieldWidth;
@@ -231,53 +235,97 @@ class _TagsEditorState extends State<TagEditor> {
           ))
         : widget.inputDecoration;
 
-    final tagEditorArea = Container(
-      child: TagLayout(
-        delegate: TagEditorLayoutDelegate(
-          length: widget.length,
-          minTextFieldWidth: widget.minTextFieldWidth,
-          spacing: widget.tagSpacing,
-        ),
-        children: List<Widget>.generate(
-              widget.length,
-              (index) => LayoutId(
-                id: TagEditorLayoutDelegate.getTagId(index),
-                child: widget.tagBuilder(context, index),
-              ),
-            ) +
-            <Widget>[
-              LayoutId(
-                id: TagEditorLayoutDelegate.textFieldId,
-                child: Container(
-                  padding: EdgeInsets.only(top: 4), //skpark
-                  height: widget.textFieldHeight, //skppark control size
-                  child: TextField(
-                    textAlignVertical: TextAlignVertical.top, //skpark
-                    style: widget.textStyle,
-                    focusNode: _focusNode,
-                    enabled: widget.enabled,
-                    controller: _textFieldController,
-                    keyboardType: widget.keyboardType,
-                    keyboardAppearance: widget.keyboardAppearance,
-                    textCapitalization: widget.textCapitalization,
-                    textInputAction: widget.textInputAction,
-                    autocorrect: widget.autocorrect,
-                    textAlign: widget.textAlign,
-                    textDirection: widget.textDirection,
-                    readOnly: widget.readOnly,
-                    autofocus: widget.autofocus,
-                    enableSuggestions: widget.enableSuggestions,
-                    maxLines: widget.maxLines,
-                    decoration: decoration,
-                    onChanged: _onTextFieldChange,
-                    onSubmitted: _onSubmitted,
-                    inputFormatters: widget.inputFormatters,
-                  ),
-                ),
-              ),
-            ],
+    //skpark
+    List<Widget> _tags = List<Widget>.generate(
+      widget.length,
+      (index) => LayoutId(
+        id: TagEditorLayoutDelegate.getTagId(index),
+        child: widget.tagBuilder(context, index),
       ),
     );
+
+    //skpark
+    List<Widget> _tags2 = List<Widget>.generate(
+      widget.length,
+      (index) => widget.tagBuilder(context, index),
+    );
+
+    //skpark
+    List<Widget> _editor = <Widget>[
+      LayoutId(
+        id: TagEditorLayoutDelegate.textFieldId,
+        child: Container(
+          padding: EdgeInsets.only(top: 4), //skpark
+          height: widget.textFieldHeight, //skppark control size
+          child: TextField(
+            textAlignVertical: TextAlignVertical.top, //skpark
+            style: widget.textStyle,
+            focusNode: _focusNode,
+            enabled: widget.enabled,
+            controller: _textFieldController,
+            keyboardType: widget.keyboardType,
+            keyboardAppearance: widget.keyboardAppearance,
+            textCapitalization: widget.textCapitalization,
+            textInputAction: widget.textInputAction,
+            autocorrect: widget.autocorrect,
+            textAlign: widget.textAlign,
+            textDirection: widget.textDirection,
+            readOnly: widget.readOnly,
+            autofocus: widget.autofocus,
+            enableSuggestions: widget.enableSuggestions,
+            maxLines: widget.maxLines,
+            decoration: decoration,
+            onChanged: _onTextFieldChange,
+            onSubmitted: _onSubmitted,
+            inputFormatters: widget.inputFormatters,
+          ),
+        ),
+      ),
+    ];
+
+    //skpark
+    Widget _editor2 = Container(
+      padding: EdgeInsets.only(top: 4), //skpark
+      height: widget.textFieldHeight, //skppark control size
+      child: TextField(
+        textAlignVertical: TextAlignVertical.top, //skpark
+        style: widget.textStyle,
+        focusNode: _focusNode,
+        enabled: widget.enabled,
+        controller: _textFieldController,
+        keyboardType: widget.keyboardType,
+        keyboardAppearance: widget.keyboardAppearance,
+        textCapitalization: widget.textCapitalization,
+        textInputAction: widget.textInputAction,
+        autocorrect: widget.autocorrect,
+        textAlign: widget.textAlign,
+        textDirection: widget.textDirection,
+        readOnly: widget.readOnly,
+        autofocus: widget.autofocus,
+        enableSuggestions: widget.enableSuggestions,
+        maxLines: widget.maxLines,
+        decoration: decoration,
+        onChanged: _onTextFieldChange,
+        onSubmitted: _onSubmitted,
+        inputFormatters: widget.inputFormatters,
+      ),
+    );
+
+    final tagEditorArea = widget.reverseOrder == false
+        ? Container(
+            child: TagLayout(
+                delegate: TagEditorLayoutDelegate(
+                  length: widget.length,
+                  minTextFieldWidth: widget.minTextFieldWidth,
+                  spacing: widget.tagSpacing,
+                ),
+                children: _tags + _editor),
+          )
+        : Container(
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [_editor2, SizedBox(height: 10), Wrap(children: _tags2)],
+          ));
 
     return widget.icon == null
         ? tagEditorArea

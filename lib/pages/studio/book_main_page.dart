@@ -47,6 +47,8 @@ class BookMainPage extends StatefulWidget {
   static ContaineeNotifier? containeeNotifier;
 
   static LeftMenuEnum selectedStick = LeftMenuEnum.None;
+  static ClickReceiverHandler clickReceiverHandler = ClickReceiverHandler();
+  static ClickEventHandler clickEventHandler = ClickEventHandler();
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
 
@@ -135,7 +137,7 @@ class _BookMainPageState extends State<BookMainPage> {
     BookMainPage.selectedStick = LeftMenuEnum.Page; // 페이지가 열린 상태로 시작하게 한다.
     saveManagerHolder?.runSaveTimer();
 
-    ClickReceiverHandler.init();
+    BookMainPage.clickReceiverHandler.init();
   }
 
   Future<void> initChildren(BookModel model) async {

@@ -2,8 +2,10 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:hycop/common/util/logger.dart';
 import 'package:material_tag_editor/tag_editor.dart';
 
+import '../../../common/creta_utils.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_checkbox.dart';
 import '../../../design_system/component/colorPicker/gradation_indicator.dart';
@@ -15,17 +17,23 @@ import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/app_enums.dart';
+import '../../../model/creta_model.dart';
 import '../../../model/creta_style_mixin.dart';
 import '../studio_constant.dart';
+import '../studio_getx_controller.dart';
 import '../studio_snippet.dart';
 
 mixin PropertyMixin {
+  final double horizontalPadding = 24;
+  final double boderStyleDropBoxWidth = 224;
+
   late TextStyle titleStyle;
   late TextStyle dataStyle;
   static bool isColorOpen = false;
   static bool isGradationOpen = false;
   static bool isTextureOpen = false;
   static bool isEffectOpen = false;
+  static bool isEventOpen = false;
 
   final List<String> rotationStrings = ["lands", "ports"];
   final List<IconData> rotaionIcons = [
@@ -45,6 +53,8 @@ mixin PropertyMixin {
     required Widget titleWidget,
     Widget? trailWidget,
     required Widget bodyWidget,
+    required bool hasRemoveButton,
+    required Function onDelete,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,12 +87,43 @@ mixin PropertyMixin {
                 ],
               ),
               isOpen
-                  ? const SizedBox.shrink()
-                  : InkWell(
-                      onTap: () {
-                        onPressed.call();
-                      },
-                      child: trailWidget ?? const SizedBox.shrink()),
+                  ? hasRemoveButton
+                      ? BTN.fill_gray_i_xs(
+                          icon: Icons.delete,
+                          onPressed: () {
+                            onDelete.call();
+                          })
+                      : const SizedBox.shrink()
+                  : hasRemoveButton
+                      ? SizedBox(
+                          width: 200,
+                          //color: Colors.amber,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  onPressed.call();
+                                },
+                                child: trailWidget ?? const SizedBox.shrink(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: BTN.fill_gray_i_s(
+                                    icon: Icons.delete_outline,
+                                    onPressed: () {
+                                      onDelete.call();
+                                    }),
+                              ),
+                            ],
+                          ),
+                        )
+                      : InkWell(
+                          onTap: () {
+                            onPressed.call();
+                          },
+                          child: trailWidget ?? const SizedBox.shrink(),
+                        ),
             ],
           ),
         ),
@@ -208,6 +249,7 @@ mixin PropertyMixin {
     //required Function(GradationType, Color, Color) onGradationTapPressed,
     required Function(Color) onColor1Changed,
     required Function() onColorIndicatorClicked,
+    required Function onDelete,
   }) {
     return propertyCard(
       isOpen: isColorOpen,
@@ -216,12 +258,14 @@ mixin PropertyMixin {
         cardOpenPressed.call();
       },
       titleWidget: Text(title, style: CretaFont.titleSmall),
+      hasRemoveButton: color1 != Colors.transparent,
       trailWidget: colorIndicator(
         color1,
         opacity,
         onColorChanged: onColor1Changed,
         onClicked: onColorIndicatorClicked,
       ),
+      onDelete: onDelete,
       bodyWidget: _colorBody(
         color1: color1,
         color2: color2,
@@ -284,6 +328,7 @@ mixin PropertyMixin {
     required void Function(GradationType, Color, Color) onGradationTapPressed,
     required void Function(Color val) onColor2Changed,
     required Function() onColorIndicatorClicked,
+    required Function onDelete,
   }) {
     return propertyCard(
       isOpen: isGradationOpen,
@@ -296,6 +341,8 @@ mixin PropertyMixin {
           ? const SizedBox.shrink()
           : colorIndicatorTotal(bgColor1, bgColor2, opacity, gradationType,
               onColorChanged: onColor2Changed, onColorIndicatorClicked: onColorIndicatorClicked),
+      hasRemoveButton: gradationType != GradationType.none,
+      onDelete: onDelete,
       bodyWidget: gradationListView(
         bgColor1,
         bgColor2,
@@ -400,6 +447,7 @@ mixin PropertyMixin {
     required TextureType textureType,
     required Function onPressed,
     required void Function(TextureType) onTextureTapPressed,
+    required Function onDelete,
   }) {
     return propertyCard(
       isOpen: isTextureOpen,
@@ -419,6 +467,8 @@ mixin PropertyMixin {
                     onPressed.call();
                   }),
             ),
+      hasRemoveButton: textureType != TextureType.none,
+      onDelete: onDelete,
       bodyWidget: textureTypeListView(
         textureType,
         onTextureTapPressed,
@@ -502,6 +552,7 @@ mixin PropertyMixin {
     required String modelPrefix,
     required CretaStyleMixin model,
     required void Function() onSelected,
+    required Function onDelete,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: padding),
@@ -513,14 +564,13 @@ mixin PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.effect, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: SizedBox(
-          width: 200,
-          child: Text(
-            title,
-            textAlign: TextAlign.right,
-            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
-          ),
+        trailWidget: Text(
+          title,
+          textAlign: TextAlign.right,
+          style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
         ),
+        hasRemoveButton: model.effect.value != EffectType.none,
+        onDelete: onDelete,
         bodyWidget: effectBody(
           modelPrefix: modelPrefix,
           model: model,
@@ -561,13 +611,13 @@ mixin PropertyMixin {
   }
 
   Widget tagWidget({
-    double horizontalPadding = 24,
     required List<String> hashTagList,
     required void Function(String) onTagChanged,
     required void Function(String) onSubmitted,
     required void Function(int) onDeleted,
   }) {
     return TagEditor(
+      reverseOrder: true,
       textFieldHeight: 36,
       minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
       tagSpacing: 0,
@@ -600,6 +650,142 @@ mixin PropertyMixin {
         );
       },
     );
+  }
+
+  Widget event({
+    required void Function() setState,
+    required CretaStyleMixin mixinModel,
+    required CretaModel cretaModel,
+    StudioEventController? sendEvent,
+    Widget? sendEventWidget,
+    Widget? visibleButton,
+    Widget? durationTypeWidget,
+    Widget? durationWidget,
+    required Function onDelete,
+  }) {
+    List<String> hashTagList = CretaUtils.jsonStringToList(mixinModel.eventReceive.value);
+
+    return propertyCard(
+      padding: horizontalPadding,
+      isOpen: isEventOpen,
+      onPressed: () {
+        isEventOpen = !isEventOpen;
+        setState();
+      },
+      titleWidget: Text(CretaStudioLang.clickEvent, style: CretaFont.titleSmall),
+      trailWidget: Text(mixinModel.eventReceive.value, style: dataStyle),
+      hasRemoveButton: mixinModel.eventReceive.value.length > 2 || sendEventWidget != null,
+      onDelete: onDelete,
+      bodyWidget: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+// 첫번쨰 줄  sendEvent
+          sendEventWidget ?? const SizedBox.shrink(),
+          // 두번쨰 줄,  receiveEvent
+          Padding(
+            padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  CretaStudioLang.eventReceived,
+                  style: titleStyle,
+                ),
+                // CretaTextField.short(
+                //   width: 210,
+                //   defaultBorder: Border.all(color: CretaColor.text[100]!),
+                //   textFieldKey: GlobalKey(),
+                //   value: widget.model.eventSend.value,
+                //   hintText: '',
+                //   onEditComplete: ((value) {
+                //     widget.model.eventReceive.set(value);
+                //     _sendEvent?.sendEvent(widget.model);
+                //   }),
+                //   minNumber: 0,
+                // ),
+                SizedBox(
+                  width: 210,
+                  child: tagWidget(
+                    hashTagList: hashTagList,
+                    onTagChanged: (newValue) {
+                      hashTagList.add(newValue);
+                      String val = CretaUtils.listToString(hashTagList);
+                      logger.fine('eventReceive=$val');
+                      mixinModel.eventReceive.set(val);
+                      setState();
+                      logger.fine('onTagChanged $newValue input');
+
+                      sendEvent?.sendEvent(cretaModel);
+                    },
+                    onSubmitted: (outstandingValue) {
+                      hashTagList.add(outstandingValue);
+                      String val = CretaUtils.listToString(hashTagList);
+                      logger.fine('eventReceive=$val');
+                      mixinModel.eventReceive.set(val);
+                      logger.fine('onSubmitted $outstandingValue input');
+                      setState();
+
+                      sendEvent?.sendEvent(cretaModel);
+                    },
+                    onDeleted: (idx) {
+                      hashTagList.removeAt(idx);
+                      String val = CretaUtils.listToString(hashTagList);
+                      mixinModel.eventReceive.set(val);
+                      logger.finest('onDelete $idx');
+                      setState();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Padding(
+          //   padding: EdgeInsets.only(top: 12, left: 30, right: 30),
+          //   child:
+          // ),
+          // 세번쨰 줄,  이벤트를 받았을 때만 등장,  평소에도 등장
+          mixinModel.eventReceive.value.length > 2 && visibleButton != null
+              //widget.model.eventReceive.value.isNotEmpty
+              ? visibleButton
+              : const SizedBox.shrink(),
+          // 네번쨰 줄,
+          //  등장후 지속시간 :  영구히,  콘텐츠가 끝날때까지, 지정된 시간동안
+          mixinModel.eventReceive.value.length > 2 && durationTypeWidget != null
+              ? durationTypeWidget
+              : const SizedBox.shrink(),
+          mixinModel.eventReceive.value.length > 2 && durationWidget != null
+              ? durationWidget
+              : const SizedBox.shrink(),
+        ],
+      ),
+    );
+  }
+
+  Widget choiceStringElement(String name, double width, double height) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: Center(
+        child: Text(
+          name,
+          textAlign: TextAlign.center,
+          style: CretaFont.titleSmall,
+        ),
+      ),
+    );
+  }
+
+  int getDurationType(DurationType durationType) {
+    switch (durationType) {
+      case DurationType.untilContentsEnd:
+        return 1;
+      case DurationType.specified:
+        return 2;
+      default:
+        return 0;
+    }
   }
 }
 
