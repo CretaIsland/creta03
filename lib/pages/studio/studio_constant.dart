@@ -81,9 +81,12 @@ class LayoutConst {
       cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
   static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
 
-  static const cornerDiameter = 22.0;
-  static const floatingActionDiameter = 18.0;
-  static const floatingActionPadding = 24.0;
+  static const double cornerDiameter = 22.0;
+  static const double floatingActionDiameter = 18.0;
+  static const double floatingActionPadding = 24.0;
+  static const double selectBoxBorder = 2.0;
+
+  static const double dragHandle = 8;
 }
 
 class StudioConst {

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:hycop/common/util/logger.dart';
+import '../../../../../design_system/creta_color.dart';
 import '../../../studio_constant.dart';
 import 'draggable_point.dart';
 import 'floating_action_icon.dart';
@@ -49,6 +50,7 @@ class DraggableResizable extends StatefulWidget {
     required this.size,
     required this.position,
     required this.angle,
+    required this.borderWidth,
     required this.onComplete,
     BoxConstraints? constraints,
     required this.onResizeButtonTap,
@@ -87,6 +89,7 @@ class DraggableResizable extends StatefulWidget {
   final Size size;
   final Offset position;
   final double angle;
+  final double borderWidth;
 
   /// The child's constraints.
   /// Defaults to [BoxConstraints.loose(Size.infinite)].
@@ -125,7 +128,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
     // angle = widget.angle;
     // position = widget.position;
 
-    final aspectRatio = widget.size.width / widget.size.height;
+    //final aspectRatio = widget.size.width / widget.size.height;
     return LayoutBuilder(
       builder: (context, constraints) {
         position = (position == Offset.zero)
@@ -136,8 +139,11 @@ class _DraggableResizableState extends State<DraggableResizable> {
             : position;
 
         final normalizedWidth = size.width;
-        final normalizedHeight = normalizedWidth / aspectRatio;
+        //final normalizedHeight = normalizedWidth / aspectRatio;
+        final normalizedHeight = size.height;
         final newSize = Size(normalizedWidth, normalizedHeight);
+
+        logger.info('DraggableResize: $normalizedHeight, $normalizedWidth');
 
         if (widget.constraints.isSatisfiedBy(newSize)) {
           logger.finest(
@@ -243,19 +249,24 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragBottomRight(Offset details) {
-          final mid = (details.dx + details.dy) / 2;
-          final newHeight = math.max(size.height + (2 * mid), 0.0);
-          final newWidth = math.max(size.width + (2 * mid), 0.0);
+          final newHeight = math.max(size.height + details.dy, 0.0);
+          final newWidth = math.max(size.width + details.dx, 0.0);
+
+          logger.info('newHeight=$newHeight, newWidth=$newWidth');
+
+          // final mid = (details.dx + details.dy) / 2;
+          // final newHeight = math.max(size.height + (2 * mid), 0.0);
+          // final newWidth = math.max(size.width + (2 * mid), 0.0);
           final updatedSize = Size(newWidth, newHeight);
 
           // if (!widget.constraints.isSatisfiedBy(updatedSize)) return;
 
-          final updatedPosition = Offset(position.dx - mid, position.dy - mid);
+          //final updatedPosition = Offset(position.dx - mid, position.dy - mid);
           // minimum size of the sticker should be Size(50,50)
           if (updatedSize > const Size(50, 50)) {
             setState(() {
               size = updatedSize;
-              position = updatedPosition;
+              //position = updatedPosition;
             });
           }
 
@@ -263,19 +274,27 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         final decoratedChild = Container(
-          // skprak 확장된 박스임...
+          // skpark 확장된 박스임...
           key: const Key('draggableResizable_child_container'),
           alignment: Alignment.center,
-          height: normalizedHeight + LayoutConst.cornerDiameter + LayoutConst.floatingActionPadding,
-          width: normalizedWidth + LayoutConst.cornerDiameter + LayoutConst.floatingActionPadding,
-          //color: Colors.green,
+          height: normalizedHeight +
+              widget.borderWidth +
+              LayoutConst.cornerDiameter +
+              LayoutConst.floatingActionPadding,
+          width: normalizedWidth +
+              widget.borderWidth +
+              LayoutConst.cornerDiameter +
+              LayoutConst.floatingActionPadding,
+          decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.red),
+          ),
           child: Container(
-            height: normalizedHeight,
-            width: normalizedWidth,
+            height: normalizedHeight + widget.borderWidth,
+            width: normalizedWidth + widget.borderWidth,
             decoration: BoxDecoration(
               border: Border.all(
-                width: 2,
-                color: widget.canTransform ? Colors.blue : Colors.transparent,
+                width: LayoutConst.selectBoxBorder,
+                color: widget.canTransform ? CretaColor.primary : Colors.transparent,
               ),
             ),
             child: Center(child: widget.child),
@@ -316,7 +335,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           type: ResizePointType.bottomRight,
           onDrag: onDragBottomRight,
           onTap: widget.onResizeButtonTap,
-          iconData: Icons.zoom_out_map,
+          //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
         );
 
@@ -327,7 +346,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final center = Offset(
-          -((normalizedHeight / 2) +
+          -((normalizedWidth / 2) +
               (LayoutConst.floatingActionDiameter / 2) +
               (LayoutConst.cornerDiameter / 2) +
               (LayoutConst.floatingActionPadding / 2)),
@@ -407,6 +426,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                     onUpdate('onDrag');
                   },
                   onScale: (s) {
+                    logger.info('onScale($s)');
                     final updatedSize = Size(
                       widget.size.width * s,
                       widget.size.height * s,
@@ -455,8 +475,14 @@ class _DraggableResizableState extends State<DraggableResizable> {
                           child: deleteButton,
                         ),
                         Positioned(
-                          top: normalizedHeight + LayoutConst.floatingActionPadding / 2,
-                          left: normalizedWidth + LayoutConst.floatingActionPadding / 2,
+                          top: normalizedHeight +
+                              widget.borderWidth +
+                              (LayoutConst.floatingActionPadding / 2 -
+                                  LayoutConst.selectBoxBorder / 2),
+                          left: normalizedWidth +
+                              widget.borderWidth +
+                              (LayoutConst.floatingActionPadding / 2 -
+                                  LayoutConst.selectBoxBorder / 2),
                           child: bottomRightCorner,
                         ),
                         Positioned(

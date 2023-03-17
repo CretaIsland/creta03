@@ -81,7 +81,7 @@ class DraggablePointState extends State<DraggablePoint> {
           widget.onScale?.call(scaleFactor);
           angle = baseAngle + details.rotation;
 
-          logger.finest('baseAngle=$baseAngle, rotation=${details.rotation}');
+          logger.fine('baseAngle=$baseAngle, rotation=${details.rotation}');
 
           widget.onRotate?.call(angle);
         }

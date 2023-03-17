@@ -14,6 +14,7 @@ import 'creta_manager.dart';
 class FrameManager extends CretaManager {
   PageModel pageModel;
   BookModel bookModel;
+  //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey> frameKeyMap = {};
 
   FrameManager({required this.pageModel, required this.bookModel}) : super('creta_frame') {

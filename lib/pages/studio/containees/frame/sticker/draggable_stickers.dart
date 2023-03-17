@@ -69,6 +69,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       mid: sticker.id,
       angle: sticker.angle,
       position: sticker.position,
+      borderWidth: sticker.borderWidth,
       // Size of the sticker
       size: sticker.isText == true
           ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)

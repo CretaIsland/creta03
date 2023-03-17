@@ -240,8 +240,8 @@ Widget _getOutlineWidget({
           borderCap: borderCap,
           // width: width,
           // height: height,
-          width: constraints.maxWidth,
-          height: constraints.maxHeight,
+          width: constraints.maxWidth - strokeWidth / 2,
+          height: constraints.maxHeight - strokeWidth / 2,
         ),
       );
     });
@@ -259,8 +259,11 @@ Widget _getOutlineWidget({
           strokeColor: strokeColor,
           strokeWidth: strokeWidth,
           borderCap: borderCap,
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
           //rect: Offset(0, 0) & Size(width, height),
-          rect: Offset(0, 0) & Size(constraints.maxWidth, constraints.maxHeight),
+          // rect: Offset(strokeWidth / 2, strokeWidth / 2) &
+          //     Size(constraints.maxWidth - strokeWidth / 2, constraints.maxHeight - strokeWidth / 2),
         ),
       );
     });

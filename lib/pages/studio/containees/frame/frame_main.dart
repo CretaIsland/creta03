@@ -69,7 +69,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   Widget build(BuildContext context) {
     //applyScale = StudioVariables.scale / StudioVariables.fitScale;
 
-    applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
+    //applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
+    applyScale = StudioVariables.availWidth / widget.bookModel.width.value;
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
     _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
@@ -122,7 +123,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         }
         frame = _frameManager?.getSelected() as FrameModel?;
         if (frame != null) {
-          BookMainPage.clickEventHandler.publish(frame.eventSend.value); //skpark publish 는 나중에 빼야함.
+          //BookMainPage.clickEventHandler.publish(frame.eventSend.value); //skpark publish 는 나중에 빼야함.
         }
         //BookMainPage.bookManagerHolder!.notify();
       },
@@ -149,7 +150,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
 
-      logger.finest('applyScale = $applyScale');
+      logger.info('applyScale = $applyScale');
 
       BookMainPage.clickEventHandler.subscribeList(
         model.eventReceive.value,
@@ -165,20 +166,28 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       double posX = model.posX.value * applyScale - LayoutConst.floatingActionPadding;
       double posY = model.posY.value * applyScale - LayoutConst.floatingActionPadding;
 
-      GlobalKey<StickerState>? stickerKey =
-          _frameManager!.frameKeyMap[model.mid] as GlobalKey<StickerState>?;
+      // ValueKey? stickerKey = _frameManager!.frameKeyMap[model.mid];
+      // if (stickerKey == null) {
+      //   stickerKey = ValueKey('${model.mid}+${applyScale.roundToDouble()}');
+      //   //Get.put(FrameEventController(), tag: model.mid);
+      //   _frameManager!.frameKeyMap[model.mid] = stickerKey;
+      // }
+
+      GlobalKey? stickerKey = _frameManager!.frameKeyMap[model.mid];
       if (stickerKey == null) {
-        stickerKey = GlobalKey<StickerState>();
+        stickerKey = GlobalKey();
         //Get.put(FrameEventController(), tag: model.mid);
         _frameManager!.frameKeyMap[model.mid] = stickerKey;
       }
 
       return Sticker(
         key: stickerKey,
+        //key: ValueKey('${model.mid}+$applyScale'),
         id: model.mid,
         position: Offset(posX, posY),
         angle: model.angle.value * (pi / 180),
         size: Size(frameWidth, frameHeight),
+        borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
         child: Visibility(
             visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
       );
@@ -229,7 +238,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       shadowColor: model.shadowColor.value,
       // width: model.width.value,
       // height: model.height.value,
-      strokeWidth: model.borderWidth.value,
+      strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
       strokeColor: model.borderColor.value,
       radiusLeftBottom: model.radiusLeftBottom.value,
       radiusLeftTop: model.radiusLeftTop.value,

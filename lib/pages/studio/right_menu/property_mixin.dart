@@ -89,7 +89,7 @@ mixin PropertyMixin {
               isOpen
                   ? hasRemoveButton
                       ? BTN.fill_gray_i_xs(
-                          icon: Icons.delete,
+                          icon: Icons.delete_outlined,
                           onPressed: () {
                             onDelete.call();
                           })
@@ -673,8 +673,15 @@ mixin PropertyMixin {
         setState();
       },
       titleWidget: Text(CretaStudioLang.clickEvent, style: CretaFont.titleSmall),
-      trailWidget: Text(mixinModel.eventReceive.value, style: dataStyle),
-      hasRemoveButton: mixinModel.eventReceive.value.length > 2 || sendEventWidget != null,
+      trailWidget: SizedBox(
+        width: 150,
+        child: Text(
+          mixinModel.eventReceive.value.replaceAll(RegExp(r'\[|\]|"'), ''),
+          style: dataStyle,
+          overflow: TextOverflow.fade,
+        ),
+      ),
+      hasRemoveButton: mixinModel.eventReceive.value.length > 2,
       onDelete: onDelete,
       bodyWidget: Column(
         mainAxisAlignment: MainAxisAlignment.start,

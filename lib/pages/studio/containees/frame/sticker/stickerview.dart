@@ -134,6 +134,7 @@ class Sticker extends StatefulWidget {
   late Offset position;
   late double angle;
   late Size size;
+  late double borderWidth;
 
   Sticker({
     Key? key,
@@ -141,6 +142,7 @@ class Sticker extends StatefulWidget {
     required this.position,
     required this.angle,
     required this.size,
+    required this.borderWidth,
     this.isText,
     this.child,
   }) : super(key: key);
