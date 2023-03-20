@@ -72,8 +72,8 @@ class CretaTextField extends LastClickable {
   final CretaTextFieldType textType;
   final bool selectAtInit;
   final int limit;
-  final int minNumber;
-  final int maxNumber;
+  final int? minNumber;
+  final int? maxNumber;
   final TextEditingController? controller;
   final TextAlign align;
   final Border? defaultBorder;
@@ -93,8 +93,8 @@ class CretaTextField extends LastClickable {
     this.textType = CretaTextFieldType.text,
     this.limit = 255,
     this.selectAtInit = false,
-    this.maxNumber = 100,
-    this.minNumber = 0,
+    this.maxNumber,
+    this.minNumber,
     this.align = TextAlign.start,
     this.enabled = true,
     this.defaultBorder,
@@ -114,8 +114,8 @@ class CretaTextField extends LastClickable {
     this.textType = CretaTextFieldType.number,
     this.limit = 3,
     this.selectAtInit = true,
-    this.maxNumber = 100,
-    this.minNumber = 0,
+    this.maxNumber,
+    this.minNumber,
     this.align = TextAlign.end,
     this.enabled = true,
     this.defaultBorder,
@@ -135,8 +135,8 @@ class CretaTextField extends LastClickable {
     this.textType = CretaTextFieldType.number,
     this.limit = 4,
     this.selectAtInit = true,
-    this.maxNumber = 9999,
-    this.minNumber = 0,
+    this.maxNumber,
+    this.minNumber,
     this.align = TextAlign.end,
     this.enabled = true,
     this.defaultBorder,
@@ -156,8 +156,8 @@ class CretaTextField extends LastClickable {
     this.textType = CretaTextFieldType.color,
     this.limit = 7,
     this.selectAtInit = true,
-    this.maxNumber = 100,
-    this.minNumber = 0,
+    this.maxNumber,
+    this.minNumber,
     this.align = TextAlign.end,
     this.enabled = true,
     this.defaultBorder,
@@ -177,8 +177,8 @@ class CretaTextField extends LastClickable {
     this.textType = CretaTextFieldType.text,
     this.limit = 255,
     this.selectAtInit = false,
-    this.maxNumber = 100,
-    this.minNumber = 0,
+    this.maxNumber,
+    this.minNumber,
     this.align = TextAlign.start,
     this.enabled = true,
     this.defaultBorder,
@@ -198,8 +198,8 @@ class CretaTextField extends LastClickable {
     this.textType = CretaTextFieldType.longText,
     this.limit = 1023,
     this.selectAtInit = false,
-    this.maxNumber = 100,
-    this.minNumber = 0,
+    this.maxNumber,
+    this.minNumber,
     this.align = TextAlign.start,
     this.enabled = true,
     this.defaultBorder,
@@ -219,8 +219,8 @@ class CretaTextField extends LastClickable {
     this.textType = CretaTextFieldType.text,
     this.limit = 255,
     this.selectAtInit = false,
-    this.maxNumber = 100,
-    this.minNumber = 0,
+    this.maxNumber,
+    this.minNumber,
     this.align = TextAlign.start,
     this.enabled = true,
     this.defaultBorder,
@@ -274,7 +274,7 @@ class CretaTextFieldState extends State<CretaTextField> {
             if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
               logger.finest('onKeyEvent(${event.logicalKey.debugName})');
               int number = int.parse(_controller.text);
-              if (number < widget.maxNumber) {
+              if (widget.maxNumber == null || number < widget.maxNumber!) {
                 number++;
                 setState(() {
                   _controller.text = '$number';
@@ -285,7 +285,7 @@ class CretaTextFieldState extends State<CretaTextField> {
             if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
               logger.finest('onKeyEvent(${event.logicalKey.debugName})');
               int number = int.parse(_controller.text);
-              if (number > widget.minNumber) {
+              if (widget.maxNumber == null || number > widget.minNumber!) {
                 number--;
                 setState(() {
                   _controller.text = '$number';
@@ -394,6 +394,19 @@ class CretaTextFieldState extends State<CretaTextField> {
         style: CretaFont.bodySmall.copyWith(color: CretaColor.text[900]!),
         suffixMode: OverlayVisibilityMode.always,
         onSubmitted: ((value) {
+          if (isNumeric()) {
+            int num = int.parse(value);
+            if (widget.maxNumber != null && num > widget.maxNumber!) {
+              setState(() {
+                _controller.text = '${widget.maxNumber!}';
+              });
+            }
+            if (widget.minNumber != null && num < widget.minNumber!) {
+              setState(() {
+                _controller.text = '${widget.minNumber!}';
+              });
+            }
+          }
           preprocess(value);
           logger.finest('onSubmitted $_searchValue');
           widget.onEditComplete(_searchValue);

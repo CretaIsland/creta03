@@ -43,16 +43,17 @@ class DraggablePointState extends State<DraggablePoint> {
         widget.onTap!();
       },
       onScaleStart: (details) {
-        logger.finest('Gest2 : onScaleStart');
         switch (widget.mode) {
           case PositionMode.global:
             initPoint = details.focalPoint;
             break;
           case PositionMode.local:
+            logger.info('Gest2 : onScaleStart');
             initPoint = details.localFocalPoint;
             break;
         }
         if (details.pointerCount > 1) {
+          // 멀티 터치인 경우인것 같음.
           baseAngle = angle;
           logger.finest('baseAngle=$baseAngle}');
           baseScaleFactor = scaleFactor;
@@ -61,7 +62,6 @@ class DraggablePointState extends State<DraggablePoint> {
         }
       },
       onScaleUpdate: (details) {
-        logger.finest('Gest2 : onSateUpdate');
         switch (widget.mode) {
           case PositionMode.global:
             final dx = details.focalPoint.dx - initPoint.dx;
@@ -70,6 +70,7 @@ class DraggablePointState extends State<DraggablePoint> {
             widget.onDrag?.call(Offset(dx, dy));
             break;
           case PositionMode.local:
+            logger.info('Gest2 : onSateUpdate');
             final dx = details.localFocalPoint.dx - initPoint.dx;
             final dy = details.localFocalPoint.dy - initPoint.dy;
             initPoint = details.localFocalPoint;
@@ -87,7 +88,7 @@ class DraggablePointState extends State<DraggablePoint> {
         }
       },
       onScaleEnd: (details) {
-        logger.finest('onScaleEnd ${details.toString()}');
+        logger.info('onScaleEnd ${details.toString()}');
         widget.onComplete();
       },
       child: widget.child,

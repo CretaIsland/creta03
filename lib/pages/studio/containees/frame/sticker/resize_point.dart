@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../design_system/creta_color.dart';
 import '../../../studio_constant.dart';
@@ -13,6 +12,10 @@ enum ResizePointType {
   topRight,
   bottomLeft,
   bottomRight,
+  up,
+  down,
+  left,
+  right,
 }
 
 const _cursorLookup = <ResizePointType, MouseCursor>{
@@ -20,6 +23,10 @@ const _cursorLookup = <ResizePointType, MouseCursor>{
   ResizePointType.topRight: SystemMouseCursors.resizeUpRight,
   ResizePointType.bottomLeft: SystemMouseCursors.resizeDownLeft,
   ResizePointType.bottomRight: SystemMouseCursors.resizeDownRight,
+  ResizePointType.up: SystemMouseCursors.resizeUpDown,
+  ResizePointType.down: SystemMouseCursors.resizeUpDown,
+  ResizePointType.left: SystemMouseCursors.resizeLeftRight,
+  ResizePointType.right: SystemMouseCursors.resizeLeftRight,
 };
 
 class ResizePoint extends StatefulWidget {
@@ -52,6 +59,50 @@ class _ResizePointState extends State<ResizePoint> {
     return _cursorLookup[widget.type]!;
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MouseRegion(
+  //     onHover: (event) {
+  //       setState(() {
+  //         _isHover = true;
+  //       });
+  //     },
+  //     onExit: (event) {
+  //       setState(() {
+  //         _isHover = false;
+  //       });
+  //     },
+  //     cursor: _cursor,
+  //     child: DraggablePoint(
+  //       mode: PositionMode.local,
+  //       onDrag: (value) {
+  //         widget.onDrag.call(value);
+  //       },
+  //       onScale: widget.onScale,
+  //       onTap: widget.onTap,
+  //       onComplete: () {
+  //         widget.onComplete.call();
+  //       },
+  //       child: Container(
+  //         width: LayoutConst.dragHandle,
+  //         height: LayoutConst.dragHandle,
+  //         decoration: BoxDecoration(
+  //           border: Border.all(color: CretaColor.primary, width: 1),
+  //           color: _isHover ? CretaColor.primary : Colors.white,
+  //           shape: BoxShape.rectangle,
+  //         ),
+  //         child: widget.iconData != null
+  //             ? Icon(
+  //                 widget.iconData,
+  //                 size: 12,
+  //                 color: Colors.blue,
+  //               )
+  //             : Container(),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -79,7 +130,6 @@ class _ResizePointState extends State<ResizePoint> {
         onComplete: () {
           setState(() {
             _isHover = false;
-            logger.fine('onComplete');
           });
           widget.onComplete.call();
         },

@@ -27,6 +27,7 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../book_main_page.dart';
+import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../property_mixin.dart';
 
@@ -57,6 +58,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   // ignore: unused_field
   // ignore: unused_field
   FrameManager? _frameManager;
+  BookModel? _bookModel;
   static bool _isTransitionOpen = false;
   static bool _isBorderOpen = false;
   static bool _isShadowOpen = false;
@@ -128,7 +130,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
   @override
   Widget build(BuildContext context) {
-    // _model = BookMainPage.pageManagerHolder!.getSelectedFrame();
+    _bookModel = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
     // if (_model == null) {
     //   return SizedBox.shrink();
     // }
@@ -256,6 +258,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       limit: 5,
                       textFieldKey: GlobalKey(),
                       value: widget.model.posY.value.round().toString(),
+                      //value: widget.model.posY.value.toString(),
                       hintText: '',
                       minNumber: 0,
                       onEditComplete: ((value) {
@@ -299,7 +302,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             onEditComplete: ((value) {
                               _sizeChanged(value, widget.model.width, widget.model.height);
                             }),
-                            minNumber: 10,
+                            minNumber: LayoutConst.minFrameSize,
+                            maxNumber: _bookModel!.width.value.round(),
                           ),
                         ],
                       ),
@@ -335,7 +339,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             textFieldKey: GlobalKey(),
                             value: widget.model.height.value.round().toString(),
                             hintText: '',
-                            minNumber: 10,
+                            minNumber: LayoutConst.minFrameSize,
+                            maxNumber: _bookModel!.height.value.round(),
                             onEditComplete: ((value) {
                               _sizeChanged(value, widget.model.height, widget.model.width);
                             }),

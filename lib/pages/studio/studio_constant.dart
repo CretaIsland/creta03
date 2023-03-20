@@ -82,11 +82,14 @@ class LayoutConst {
   static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
 
   static const double cornerDiameter = 22.0;
-  static const double floatingActionDiameter = 18.0;
   static const double floatingActionPadding = 24.0;
+  static const double stikerOffset = cornerDiameter + floatingActionPadding;
+
   static const double selectBoxBorder = 2.0;
 
   static const double dragHandle = 8;
+
+  static const int minFrameSize = 50;
 }
 
 class StudioConst {

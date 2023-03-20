@@ -100,12 +100,14 @@ class StickerViewState extends State<StickerView> {
                   // decoration: BoxDecoration(
                   //   color: Colors.grey[200],
                   // ),
-                  color: Colors.transparent,
+                  color: Colors.red.withOpacity(0.3),
                   height: widget.height,
                   width: widget.width,
                   child:
                       //DraggableStickers class in which stickerList is passed
                       DraggableStickers(
+                    pageWidth: widget.width,
+                    pageHeight: widget.height,
                     stickerList: stickerList!,
                     onUpdate: widget.onUpdate,
                     onDelete: widget.onDelete,

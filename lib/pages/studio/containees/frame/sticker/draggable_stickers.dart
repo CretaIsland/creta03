@@ -8,6 +8,8 @@ class DraggableStickers extends StatefulWidget {
   static String? selectedAssetId;
 
   //List of stickers (elements)
+  final double pageWidth;
+  final double pageHeight;
   final List<Sticker> stickerList;
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onDelete;
@@ -17,6 +19,8 @@ class DraggableStickers extends StatefulWidget {
 
   // ignore: use_key_in_widget_constructors
   const DraggableStickers({
+    required this.pageWidth,
+    required this.pageHeight,
     required this.stickerList,
     required this.onUpdate,
     required this.onDelete,
@@ -70,6 +74,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
       angle: sticker.angle,
       position: sticker.position,
       borderWidth: sticker.borderWidth,
+      pageWidth: widget.pageWidth,
+      pageHeight: widget.pageHeight,
       // Size of the sticker
       size: sticker.isText == true
           ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
@@ -129,19 +135,19 @@ class _DraggableStickersState extends State<DraggableStickers> {
       },
 
       // Constraints of the sticker
-      constraints: sticker.isText == true
-          ? BoxConstraints.tight(
-              Size(
-                64 * _initialStickerScale / 3,
-                64 * _initialStickerScale / 3,
-              ),
-            )
-          : BoxConstraints.tight(
-              Size(
-                64 * _initialStickerScale,
-                64 * _initialStickerScale,
-              ),
-            ),
+      // constraints: sticker.isText == true
+      //     ? BoxConstraints.tight(
+      //         Size(
+      //           64 * _initialStickerScale / 3,
+      //           64 * _initialStickerScale / 3,
+      //         ),
+      //       )
+      //     : BoxConstraints.tight(
+      //         Size(
+      //           64 * _initialStickerScale,
+      //           64 * _initialStickerScale,
+      //         ),
+      //       ),
 
       // Child widget in which sticker is passed
       child:

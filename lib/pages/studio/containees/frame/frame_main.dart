@@ -22,7 +22,6 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
-import '../../studio_variables.dart';
 import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
 import 'sticker/draggable_resizable.dart';
@@ -70,7 +69,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     //applyScale = StudioVariables.scale / StudioVariables.fitScale;
 
     //applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
-    applyScale = StudioVariables.availWidth / widget.bookModel.width.value;
+    applyScale = widget.pageWidth / widget.bookModel.width.value;
+    logger.info('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
     _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
@@ -122,9 +122,9 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
           });
         }
         frame = _frameManager?.getSelected() as FrameModel?;
-        if (frame != null) {
-          //BookMainPage.clickEventHandler.publish(frame.eventSend.value); //skpark publish 는 나중에 빼야함.
-        }
+        //if (frame != null) {
+        //BookMainPage.clickEventHandler.publish(frame.eventSend.value); //skpark publish 는 나중에 빼야함.
+        //}
         //BookMainPage.bookManagerHolder!.notify();
       },
       onResizeButtonTap: () {
@@ -161,28 +161,17 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
       double frameWidth = model.width.value * applyScale;
       double frameHeight = model.height.value * applyScale;
-      //double posX = (model.posX.value - LayoutConst.floatingActionPadding) * applyScale;
-      //double posY = (model.posY.value - LayoutConst.floatingActionPadding) * applyScale;
-      double posX = model.posX.value * applyScale - LayoutConst.floatingActionPadding;
-      double posY = model.posY.value * applyScale - LayoutConst.floatingActionPadding;
-
-      // ValueKey? stickerKey = _frameManager!.frameKeyMap[model.mid];
-      // if (stickerKey == null) {
-      //   stickerKey = ValueKey('${model.mid}+${applyScale.roundToDouble()}');
-      //   //Get.put(FrameEventController(), tag: model.mid);
-      //   _frameManager!.frameKeyMap[model.mid] = stickerKey;
-      // }
+      double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
+      double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 
       GlobalKey? stickerKey = _frameManager!.frameKeyMap[model.mid];
       if (stickerKey == null) {
         stickerKey = GlobalKey();
-        //Get.put(FrameEventController(), tag: model.mid);
         _frameManager!.frameKeyMap[model.mid] = stickerKey;
       }
 
       return Sticker(
         key: stickerKey,
-        //key: ValueKey('${model.mid}+$applyScale'),
         id: model.mid,
         position: Offset(posX, posY),
         angle: model.angle.value * (pi / 180),
@@ -395,14 +384,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       //logger.finest('before save widthxheight = ${model.width.value}x${model.height.value}');
 
       model.angle.set(update.angle * (180 / pi), save: false);
-      // model.posX
-      //     .set((update.position.dx + LayoutConst.floatingActionPadding) / applyScale, save: false);
-      // model.posY
-      //     .set((update.position.dy + LayoutConst.floatingActionPadding) / applyScale, save: false);
-      model.posX
-          .set(update.position.dx / applyScale + LayoutConst.floatingActionPadding, save: false);
-      model.posY
-          .set(update.position.dy / applyScale + LayoutConst.floatingActionPadding, save: false);
+      model.posX.set((update.position.dx + LayoutConst.stikerOffset / 2) / applyScale, save: false);
+      model.posY.set((update.position.dy + LayoutConst.stikerOffset / 2) / applyScale, save: false);
       model.width.set(update.size.width / applyScale, save: false);
       model.height.set(update.size.height / applyScale, save: false);
       model.save();

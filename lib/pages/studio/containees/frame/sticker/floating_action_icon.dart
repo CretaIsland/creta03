@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../studio_constant.dart';
 
 class FloatingActionIcon extends StatefulWidget {
+  static const double floatingActionDiameter = 18.0;
   //const FloatingActionIcon({Key? key}) : super(key: key);
   final IconData iconData;
   final VoidCallback? onTap;
@@ -34,8 +34,8 @@ class FloatingActionIconState extends State<FloatingActionIcon> {
         // },
         onTap: widget.onTap,
         child: SizedBox(
-          height: LayoutConst.floatingActionDiameter * _enlarge,
-          width: LayoutConst.floatingActionDiameter * _enlarge,
+          height: FloatingActionIcon.floatingActionDiameter * _enlarge,
+          width: FloatingActionIcon.floatingActionDiameter * _enlarge,
           child: Center(
             child: Icon(
               widget.iconData,
