@@ -28,6 +28,8 @@ import '../../design_system/creta_font.dart';
 //import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/pages/community/community_sample_data.dart';
 import 'creta_book_ui_item.dart';
+import '../../design_system/buttons/creta_progress_slider.dart';
+import '../../design_system/text_field/creta_comment_bar.dart';
 
 //bool _isInUsingCanvaskit = false;
 
@@ -250,7 +252,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
 
   double _value = 0;
   bool bookMouseOver = false;
-  bool sliderMouseOver = false;
+  //bool sliderMouseOver = false;
 
   Widget _getBookMainPane(Size size) {
     return MouseRegion(
@@ -315,58 +317,72 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
                 ? Container()
                 : Container(
               height: size.height,
-              padding: EdgeInsets.fromLTRB(20-4, 24, 20-4, 16),
+              padding: EdgeInsets.fromLTRB(20, 24, 20, 16-4),
               child: Column(
                 children: [
                   Expanded(child: Container()),
-                  MouseRegion(
-                    onEnter: (val) {
+                  CretaProgressSlider(
+                    height: 24,
+                    barThickness: 8,
+                    min: 0,
+                    max: 100,
+                    value: _value,
+                    inactiveTrackColor: Colors.white,
+                    onChanged: (value) {
                       setState(() {
-                        sliderMouseOver = true;
+                        _value = value;
+                        //print('value=$value');
                       });
                     },
-                    onExit: (val) {
-                      setState(() {
-                        sliderMouseOver = false;
-                      });
-                    },
-                    child: Container(
-                      height: 8,
-                      //color: Colors.red,
-                      margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                      decoration: BoxDecoration(
-                        // crop
-                        borderRadius: BorderRadius.circular(6.0),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: SliderTheme(
-                        data: SliderThemeData(
-                          //overlayShape: SliderComponentShape.noOverlay,
-                          trackHeight: 8.0,
-                          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 4, elevation: 0, pressedElevation: 0),
-                          thumbColor: sliderMouseOver ? null : Colors.transparent,
-                          inactiveTrackColor: Colors.white,
-                          overlayColor: Colors.transparent,
-                          //disabledThumbColor: Colors.transparent,
-                          // overlappingShapeStrokeColor: Colors.transparent,
-                          // valueIndicatorColor: Colors.transparent,
-                          trackShape: CustomTrackShape(),
-                        ),
-                        child: Slider(
-                          //thumbColor: sliderMouseOver ? null : Colors.transparent,
-                          min: 0,
-                          max: 100,
-                          value: _value,
-                          onChanged: (double value) {
-                            setState(() {
-                              _value = value;
-                              //print('value=$value');
-                            });
-                          },
-                        ),
-                      ),
-                    ),
                   ),
+                  // MouseRegion(
+                  //   onEnter: (val) {
+                  //     setState(() {
+                  //       sliderMouseOver = true;
+                  //     });
+                  //   },
+                  //   onExit: (val) {
+                  //     setState(() {
+                  //       sliderMouseOver = false;
+                  //     });
+                  //   },
+                  //   child: Container(
+                  //     height: 8,
+                  //     //color: Colors.red,
+                  //     margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                  //     decoration: BoxDecoration(
+                  //       // crop
+                  //       borderRadius: BorderRadius.circular(4.0),
+                  //     ),
+                  //     clipBehavior: Clip.antiAlias,
+                  //     child: SliderTheme(
+                  //       data: SliderThemeData(
+                  //         //overlayShape: SliderComponentShape.noOverlay,
+                  //         trackHeight: 8.0,
+                  //         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 4, elevation: 0, pressedElevation: 0),
+                  //         thumbColor: sliderMouseOver ? null : Colors.transparent,
+                  //         inactiveTrackColor: Colors.white,
+                  //         overlayColor: Colors.transparent,
+                  //         //disabledThumbColor: Colors.transparent,
+                  //         // overlappingShapeStrokeColor: Colors.transparent,
+                  //         // valueIndicatorColor: Colors.transparent,
+                  //         trackShape: CustomTrackShape(),
+                  //       ),
+                  //       child: Slider(
+                  //         //thumbColor: sliderMouseOver ? null : Colors.transparent,
+                  //         min: 0,
+                  //         max: 100,
+                  //         value: _value,
+                  //         onChanged: (double value) {
+                  //           setState(() {
+                  //             _value = value;
+                  //             //print('value=$value');
+                  //           });
+                  //         },
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -377,16 +393,99 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
   }
 
   Widget _getBookDescriptionPane(Size size) {
-    return Container(
+    List<String> descList = [
+      '한강의 사계절을 한강 철교를 중심으로 표현해 보았습니다. 즐겁게 감상하세요.',
+      '보다 자세한 사항은 아래 블로그를 방문해 주세요.',
+      '',
+      '이 콘텐츠의 사용 조건(저작권) : MIT',
+      '이 콘텐츠가 포함하고 있는 원본 저작권 표시 : YG Entertainment, SME, Hive...',
+    ];
+
+    return SizedBox(
       width: size.width,
-      height: size.height,
-      padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Row(
+      //height: size.height,
+      //padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '_getBookDescriptionPane',
-            style: CretaFont.titleELarge,
+            '내용',
+            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+            textAlign: TextAlign.left,
           ),
+          SizedBox(height: 19),
+          Wrap(
+            direction: Axis.vertical,
+            spacing: 13, // 상하 간격
+            children: descList.map((item) => SizedBox(
+              width: size.width,
+              child: Text(
+                item,
+                style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
+                overflow: TextOverflow.ellipsis,
+              ),
+            )).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getCommentsPane(Size size) {
+    return SizedBox(
+      width: size.width,
+      //height: size.height,
+      //padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '댓글',
+            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+            textAlign: TextAlign.left,
+          ),
+          SizedBox(height: 20),
+          CretaCommentBar(
+            hintText: '',
+            onSearch: (text) {},
+            width: size.width,
+            thumb: Icon(Icons.account_circle),
+          ),
+          // Container(
+          //   width: size.width,
+          //   height: 56,
+          //   decoration: BoxDecoration(
+          //     // crop
+          //     borderRadius: BorderRadius.circular(30),
+          //     color: CretaColor.text[100],
+          //   ),
+          //   clipBehavior: Clip.antiAlias,
+          //   padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+          //   child: Container(
+          //     width: size.width,
+          //     height: 56,
+          //     decoration: BoxDecoration(
+          //       // crop
+          //       borderRadius: BorderRadius.circular(30),
+          //       color: CretaColor.text[100],
+          //     ),
+          //     clipBehavior: Clip.antiAlias,
+          //     child: Row(
+          //       children: [
+          //         Icon(Icons.account_circle, size: 40,),
+          //         SizedBox(width: 8),
+          //         Expanded(child: Container()),
+          //         BTN.fill_blue_t_m(
+          //           text: '댓글 등록',
+          //           width: 81,
+          //           onPressed: () {},
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -446,23 +545,15 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
               child: Column(
                 children: [
                   // description
-                  Container(
-                    color: Colors.red[200],
-                    height: 600,
-                    child: Center(child: _getBookDescriptionPane(Size(bookArea.width - 100, 600))),
-                  ),
+                  _getBookDescriptionPane(Size(bookArea.width - 100, 600)),
                   // using contents list
-                  Container(
-                    color: Colors.red[300],
-                    height: 600,
-                    child: Center(child: Text('using contents list area')),
-                  ),
+                  // Container(
+                  //   color: Colors.red[300],
+                  //   height: 600,
+                  //   child: Center(child: Text('using contents list area')),
+                  // ),
                   // comments
-                  Container(
-                    color: Colors.red[400],
-                    height: 600,
-                    child: Center(child: Text('comments area')),
-                  ),
+                  _getCommentsPane(Size(bookArea.width - 100, 600)),
                 ],
               ),
             ),
