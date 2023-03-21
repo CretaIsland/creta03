@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../studio_variables.dart';
+
 enum PositionMode { local, global }
 
 class DraggablePoint extends StatefulWidget {
@@ -36,62 +38,64 @@ class DraggablePointState extends State<DraggablePoint> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPressDown: (detail) {
-        logger.finest('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
-        //
-        widget.onTap!();
-      },
-      onScaleStart: (details) {
-        switch (widget.mode) {
-          case PositionMode.global:
-            initPoint = details.focalPoint;
-            break;
-          case PositionMode.local:
-            logger.info('Gest2 : onScaleStart');
-            initPoint = details.localFocalPoint;
-            break;
-        }
-        if (details.pointerCount > 1) {
-          // 멀티 터치인 경우인것 같음.
-          baseAngle = angle;
-          logger.finest('baseAngle=$baseAngle}');
-          baseScaleFactor = scaleFactor;
-          widget.onRotate?.call(baseAngle);
-          widget.onScale?.call(baseScaleFactor);
-        }
-      },
-      onScaleUpdate: (details) {
-        switch (widget.mode) {
-          case PositionMode.global:
-            final dx = details.focalPoint.dx - initPoint.dx;
-            final dy = details.focalPoint.dy - initPoint.dy;
-            initPoint = details.focalPoint;
-            widget.onDrag?.call(Offset(dx, dy));
-            break;
-          case PositionMode.local:
-            logger.info('Gest2 : onSateUpdate');
-            final dx = details.localFocalPoint.dx - initPoint.dx;
-            final dy = details.localFocalPoint.dy - initPoint.dy;
-            initPoint = details.localFocalPoint;
-            widget.onDrag?.call(Offset(dx, dy));
-            break;
-        }
-        if (details.pointerCount > 1) {
-          scaleFactor = baseScaleFactor * details.scale;
-          widget.onScale?.call(scaleFactor);
-          angle = baseAngle + details.rotation;
+    return StudioVariables.handToolMode == false
+        ? GestureDetector(
+            onLongPressDown: (detail) {
+              logger.finest('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
+              //
+              widget.onTap!();
+            },
+            onScaleStart: (details) {
+              switch (widget.mode) {
+                case PositionMode.global:
+                  initPoint = details.focalPoint;
+                  break;
+                case PositionMode.local:
+                  logger.info('Gest2 : onScaleStart');
+                  initPoint = details.localFocalPoint;
+                  break;
+              }
+              if (details.pointerCount > 1) {
+                // 멀티 터치인 경우인것 같음.
+                baseAngle = angle;
+                logger.finest('baseAngle=$baseAngle}');
+                baseScaleFactor = scaleFactor;
+                widget.onRotate?.call(baseAngle);
+                widget.onScale?.call(baseScaleFactor);
+              }
+            },
+            onScaleUpdate: (details) {
+              switch (widget.mode) {
+                case PositionMode.global:
+                  final dx = details.focalPoint.dx - initPoint.dx;
+                  final dy = details.focalPoint.dy - initPoint.dy;
+                  initPoint = details.focalPoint;
+                  widget.onDrag?.call(Offset(dx, dy));
+                  break;
+                case PositionMode.local:
+                  logger.info('Gest2 : onSateUpdate');
+                  final dx = details.localFocalPoint.dx - initPoint.dx;
+                  final dy = details.localFocalPoint.dy - initPoint.dy;
+                  initPoint = details.localFocalPoint;
+                  widget.onDrag?.call(Offset(dx, dy));
+                  break;
+              }
+              if (details.pointerCount > 1) {
+                scaleFactor = baseScaleFactor * details.scale;
+                widget.onScale?.call(scaleFactor);
+                angle = baseAngle + details.rotation;
 
-          logger.fine('baseAngle=$baseAngle, rotation=${details.rotation}');
+                logger.fine('baseAngle=$baseAngle, rotation=${details.rotation}');
 
-          widget.onRotate?.call(angle);
-        }
-      },
-      onScaleEnd: (details) {
-        logger.info('onScaleEnd ${details.toString()}');
-        widget.onComplete();
-      },
-      child: widget.child,
-    );
+                widget.onRotate?.call(angle);
+              }
+            },
+            onScaleEnd: (details) {
+              logger.info('onScaleEnd ${details.toString()}');
+              widget.onComplete();
+            },
+            child: widget.child,
+          )
+        : widget.child;
   }
 }

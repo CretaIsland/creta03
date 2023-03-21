@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../book_main_page.dart';
+import '../../../studio_variables.dart';
 import 'draggable_resizable.dart';
 import 'stickerview.dart';
 
@@ -165,22 +166,27 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //     child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
           //   ),
           // ),
-
-          InkWell(
-        splashColor: Colors.transparent,
-        onTap: () {
-          // To update the selected widget
-          DraggableStickers.selectedAssetId = sticker.id;
-          logger.fine('InkWell onTap...');
-          setState(() {});
-          widget.onTap?.call(DraggableStickers.selectedAssetId!);
-        },
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
-        ),
-      ),
+          StudioVariables.handToolMode == false
+              ? InkWell(
+                  splashColor: Colors.transparent,
+                  onTap: () {
+                    // To update the selected widget
+                    DraggableStickers.selectedAssetId = sticker.id;
+                    logger.fine('InkWell onTap...');
+                    setState(() {});
+                    widget.onTap?.call(DraggableStickers.selectedAssetId!);
+                  },
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+                  ),
+                )
+              : SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+                ),
     );
   }
 }

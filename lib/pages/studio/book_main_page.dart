@@ -367,8 +367,8 @@ class _BookMainPageState extends State<BookMainPage> {
       padding = 2;
     }
 
-    logger.finest(
-        "height=${StudioVariables.workHeight}, width=${StudioVariables.workWidth}, scale=${StudioVariables.fitScale}}");
+    logger.info(
+        "height=${StudioVariables.virtualHeight}, width=${StudioVariables.virtualWidth}, scale=${StudioVariables.fitScale}}");
   }
 
   Widget _workArea() {
@@ -512,7 +512,26 @@ class _BookMainPageState extends State<BookMainPage> {
                 hasShadow: false,
                 tooltip: CretaStudioLang.tooltipPause,
               ),
-
+              SizedBox(width: padding),
+              BTN.floating_l(
+                icon: Icons.transit_enterexit_outlined,
+                onPressed: () {
+                  StudioVariables.handToolMode = false;
+                  BookMainPage.bookManagerHolder!.notify();
+                },
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipEdit,
+              ),
+              SizedBox(width: padding),
+              BTN.floating_l(
+                icon: Icons.pan_tool_outlined,
+                onPressed: () {
+                  StudioVariables.handToolMode = true;
+                  BookMainPage.bookManagerHolder!.notify();
+                },
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipNoneEdit,
+              ),
               //VerticalDivider(),
             ],
           ),
@@ -692,22 +711,87 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _scrollArea(BuildContext context) {
-    // if (StudioVariables.autoScale == true ||
-    //     StudioVariables.scale - StudioVariables.fitScale <= 0) {
-    if (StudioVariables.autoScale == true) {
-      return _drawPage(context);
+    // if (StudioVariables.autoScale == true) {
+    //   return _drawPage(context);
+    // }
+    return Consumer<ContaineeNotifier>(builder: (context, notifier, child) {
+      double marginX = (StudioVariables.workWidth - StudioVariables.virtualWidth) / 2;
+      double marginY = (StudioVariables.workHeight - StudioVariables.virtualHeight) / 2;
+      if (marginX < 0) marginX = 0;
+      if (marginY < 0) marginY = 0;
+      return BookMainPage.selectedStick != LeftMenuEnum.None
+          ? Positioned(
+              left: LayoutConst.leftMenuWidth,
+              top: 0,
+              child: Container(
+                color: Colors.green,
+                width: getScrollWidth(),
+                height: StudioVariables.workHeight,
+                child: CrossScrollBar(
+                  key: GlobalKey(),
+                  width: StudioVariables.virtualWidth,
+                  marginX: marginX,
+                  marginY: marginY,
+                  initialScrollOffsetX: StudioVariables.workWidth * 0.1,
+                  child: _drawPage(context),
+                ),
+              ),
+            )
+          : Container(
+              color: Colors.green,
+              width: getScrollWidth(),
+              height: StudioVariables.workHeight,
+              child: CrossScrollBar(
+                key: GlobalKey(),
+                width: StudioVariables.virtualWidth,
+                marginX: marginX,
+                marginY: marginY,
+                initialScrollOffsetX: StudioVariables.workWidth * 0.1,
+                child: _drawPage(context),
+              ),
+            );
+
+      //   return BookMainPage.selectedStick != LeftMenuEnum.None
+      //       ? Center(
+      //           child: SizedBox(
+      //             width: getScrollWidth(),
+      //             height: StudioVariables.workHeight,
+      //             child: CrossScrollBar(
+      //               key: GlobalKey(),
+      //               width: StudioVariables.virtualWidth,
+      //               marginX: marginX,
+      //               marginY: marginY,
+      //               initialScrollOffsetX: LayoutConst.leftMenuWidth,
+      //               child: _drawPage(context),
+      //             ),
+      //           ),
+      //         )
+      //       : Center(
+      //           child: SizedBox(
+      //             width: getScrollWidth(),
+      //             height: StudioVariables.workHeight,
+      //             child: CrossScrollBar(
+      //               key: GlobalKey(),
+      //               width: StudioVariables.virtualWidth,
+      //               marginX: marginX,
+      //               marginY: marginY,
+      //               initialScrollOffsetX: StudioVariables.workWidth * 0.1,
+      //               child: _drawPage(context),
+      //             ),
+      //           ),
+      //         );
+    });
+  }
+
+  double getScrollWidth() {
+    double retval = StudioVariables.workWidth;
+    if (BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.None) {
+      retval = retval - LayoutConst.rightMenuWidth;
     }
-    double marginX = (StudioVariables.workWidth - StudioVariables.virtualWidth) / 2;
-    double marginY = (StudioVariables.workHeight - StudioVariables.virtualHeight) / 2;
-    if (marginX < 0) marginX = 0;
-    if (marginY < 0) marginY = 0;
-    return CrossScrollBar(
-      key: GlobalKey(),
-      width: StudioVariables.virtualWidth,
-      marginX: marginX,
-      marginY: marginY,
-      child: _drawPage(context),
-    );
+    if (BookMainPage.selectedStick != LeftMenuEnum.None) {
+      retval = retval - LayoutConst.leftMenuWidth;
+    }
+    return retval;
   }
 
   // Widget _drawPage(BuildContext context) {

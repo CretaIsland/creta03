@@ -9,6 +9,7 @@ import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
 import '../../lang/creta_studio_lang.dart';
+import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
 import '../creta_font.dart';
 import '../text_field/creta_text_field.dart';
@@ -44,14 +45,16 @@ class Snippet {
       appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
       floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onLongPressDown: ((details) {
-          LastClicked.clickedOutSide(details.globalPosition);
-          logger.finest('LastClicked pressed');
-        }),
-        child: child,
-      ),
+      body: StudioVariables.handToolMode == false
+          ? GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onLongPressDown: ((details) {
+                LastClicked.clickedOutSide(details.globalPosition);
+                logger.finest('LastClicked pressed');
+              }),
+              child: child,
+            )
+          : child,
     );
   }
 

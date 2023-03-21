@@ -1,6 +1,7 @@
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 
+import '../../pages/studio/studio_variables.dart';
 import '../creta_color.dart';
 
 class CrossScrollBar extends StatefulWidget {
@@ -8,23 +9,33 @@ class CrossScrollBar extends StatefulWidget {
   final double width;
   final double marginX;
   final double marginY;
-  const CrossScrollBar(
-      {super.key,
-      required this.child,
-      required this.marginX,
-      required this.marginY,
-      required this.width});
+  final double initialScrollOffsetX;
+  final double initialScrollOffsetY;
+  const CrossScrollBar({
+    super.key,
+    required this.child,
+    required this.marginX,
+    required this.marginY,
+    required this.width,
+    this.initialScrollOffsetX = 0,
+    this.initialScrollOffsetY = 0,
+  });
 
   @override
   State<CrossScrollBar> createState() => _CrossScrollBarState();
 }
 
 class _CrossScrollBarState extends State<CrossScrollBar> {
-  final ScrollController horizontalScroll = ScrollController();
-  final ScrollController verticalScroll = ScrollController();
+  late ScrollController horizontalScroll;
+  late ScrollController verticalScroll;
   final double barWidth = 12;
+
+  Offset? initHandToolPoint;
+
   @override
   void initState() {
+    horizontalScroll = ScrollController(initialScrollOffset: widget.initialScrollOffsetX);
+    verticalScroll = ScrollController(initialScrollOffset: widget.initialScrollOffsetY);
     // horizontalScroll.addListener(() {
     //   logger.finest('horizontal ');
     //   //setState(() {});
@@ -32,6 +43,9 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
     // verticalScroll.addListener(() {
     //   logger.finest('horizontal ');
     //   //setState(() {});
+    // });
+    // verticalScroll.addListener(() {
+    //   verticalScroll.jumpTo(0);
     // });
     super.initState();
   }
@@ -43,6 +57,97 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
 
   @override
   Widget build(BuildContext context) {
+    return StudioVariables.handToolMode
+        ? MouseRegion(
+            cursor: SystemMouseCursors.grabbing,
+            child: GestureDetector(
+              onHorizontalDragStart: (details) {
+                initHandToolPoint = details.localPosition;
+              },
+              onVerticalDragStart: (details) {
+                initHandToolPoint = details.localPosition;
+              },
+              onHorizontalDragUpdate: (details) {
+                _movePosition(details);
+              },
+              onVerticalDragUpdate: (details) {
+                _movePosition(details);
+              },
+              child: _scrolledWidget(),
+            ),
+          )
+        : _scrolledWidget();
+
+    // return Listener(
+    //   behavior: HitTestBehavior.translucent,
+    //   onPointerSignal: (pointerSignal) {
+    //     if (pointerSignal is PointerScrollEvent) {
+    //       logger.info('========${pointerSignal.scrollDelta.dx}, ${pointerSignal.scrollDelta.dy}');
+
+    //       final double xDelta = pointerSignal.scrollDelta.dy / StudioVariables.virtualWidth;
+    //       final double xOffset = (horizontalScroll.position.maxScrollExtent -
+    //               horizontalScroll.position.minScrollExtent) *
+    //           xDelta;
+    //       final double move = horizontalScroll.offset + xOffset;
+    //       if (move > horizontalScroll.position.minScrollExtent &&
+    //           move < horizontalScroll.position.maxScrollExtent) {
+    //         horizontalScroll.jumpTo(move);
+    //         logger.info('xxxxxxxx${horizontalScroll.offset}, $xOffset');
+
+    //         // 버티컬 스크롤바를 움직이지 않기 위해
+    //         verticalScroll.jumpTo(0);
+    //       }
+    //     }
+    //   },
+    //   child: _scrolledWidget(),
+    // );
+    //return _scrolledWidget();
+  }
+
+  void _movePosition(DragUpdateDetails details) {
+    double xBarLength =
+        horizontalScroll.position.maxScrollExtent - horizontalScroll.position.minScrollExtent;
+    double yBarLength =
+        verticalScroll.position.maxScrollExtent - verticalScroll.position.minScrollExtent;
+
+    double xSpeed = 1.0;
+    double ySpeed = 1.0;
+    if (xBarLength > yBarLength) {
+      xSpeed = 2.0;
+    } else {
+      ySpeed = 2.0;
+    }
+    //logger.info('xBarLength = $xBarLength');
+
+    final dx = details.localPosition.dx - initHandToolPoint!.dx;
+
+    final double xDelta = dx * xSpeed / StudioVariables.virtualWidth;
+    final double xOffset = xBarLength * xDelta;
+    final double moveX = horizontalScroll.offset - xOffset;
+    if (moveX > horizontalScroll.position.minScrollExtent &&
+        moveX < horizontalScroll.position.maxScrollExtent) {
+      horizontalScroll.jumpTo(moveX);
+    }
+
+    final dy = details.localPosition.dy - initHandToolPoint!.dy;
+    final double yDelta = dy * ySpeed / StudioVariables.virtualHeight;
+    final double yOffset = yBarLength * yDelta;
+    final double moveY = verticalScroll.offset - yOffset;
+    if (moveY > verticalScroll.position.minScrollExtent &&
+        moveY < verticalScroll.position.maxScrollExtent) {
+      verticalScroll.jumpTo(moveY);
+    }
+    initHandToolPoint = details.localPosition;
+  }
+
+  BoxDecoration _barDeco() {
+    return const BoxDecoration(
+      color: CretaColor.primary,
+      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+    );
+  }
+
+  Widget _scrolledWidget() {
     return AdaptiveScrollbar(
       controller: verticalScroll,
       width: barWidth,
@@ -103,13 +208,6 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
         //   ),
         // ),
       ),
-    );
-  }
-
-  BoxDecoration _barDeco() {
-    return const BoxDecoration(
-      color: CretaColor.primary,
-      borderRadius: BorderRadius.all(Radius.circular(12.0)),
     );
   }
 }

@@ -121,16 +121,23 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _drawPage(bool useColor) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onLongPressDown: pageClicked,
-      child: Container(
-        decoration: useColor ? _pageDeco() : null,
-        width: widget.pageWidth,
-        height: widget.pageHeight,
-        child: _waitFrame(),
-      ),
-    );
+    return StudioVariables.handToolMode == false
+        ? GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onLongPressDown: pageClicked,
+            child: Container(
+              decoration: useColor ? _pageDeco() : null,
+              width: widget.pageWidth,
+              height: widget.pageHeight,
+              child: _waitFrame(),
+            ),
+          )
+        : Container(
+            decoration: useColor ? _pageDeco() : null,
+            width: widget.pageWidth,
+            height: widget.pageHeight,
+            child: _waitFrame(),
+          );
   }
 
   void pageClicked(LongPressDownDetails details) {
