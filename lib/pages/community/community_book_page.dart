@@ -29,7 +29,8 @@ import '../../design_system/creta_font.dart';
 import 'package:creta03/pages/community/community_sample_data.dart';
 import 'creta_book_ui_item.dart';
 import '../../design_system/buttons/creta_progress_slider.dart';
-import '../../design_system/text_field/creta_comment_bar.dart';
+//import '../../design_system/text_field/creta_comment_bar.dart';
+import 'sub_pages/community_comment_pane.dart';
 
 //bool _isInUsingCanvaskit = false;
 
@@ -447,45 +448,17 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
             textAlign: TextAlign.left,
           ),
           SizedBox(height: 20),
-          CretaCommentBar(
-            hintText: '',
-            onSearch: (text) {},
-            width: size.width,
-            thumb: Icon(Icons.account_circle),
-          ),
-          // Container(
+          // CretaCommentBar(
+          //   hintText: '욕설, 비방 등은 경고 없이 삭제될 수 있습니다.',
+          //   onSearch: (text) {},
           //   width: size.width,
-          //   height: 56,
-          //   decoration: BoxDecoration(
-          //     // crop
-          //     borderRadius: BorderRadius.circular(30),
-          //     color: CretaColor.text[100],
-          //   ),
-          //   clipBehavior: Clip.antiAlias,
-          //   padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-          //   child: Container(
-          //     width: size.width,
-          //     height: 56,
-          //     decoration: BoxDecoration(
-          //       // crop
-          //       borderRadius: BorderRadius.circular(30),
-          //       color: CretaColor.text[100],
-          //     ),
-          //     clipBehavior: Clip.antiAlias,
-          //     child: Row(
-          //       children: [
-          //         Icon(Icons.account_circle, size: 40,),
-          //         SizedBox(width: 8),
-          //         Expanded(child: Container()),
-          //         BTN.fill_blue_t_m(
-          //           text: '댓글 등록',
-          //           width: 81,
-          //           onPressed: () {},
-          //         ),
-          //       ],
-          //     ),
-          //   ),
+          //   thumb: Icon(Icons.account_circle),
           // ),
+          CommunityCommentPane(
+            paneWidth: size.width,
+            paneHeight: null,
+            showAddCommentBar: true,
+          ),
         ],
       ),
     );
@@ -666,22 +639,5 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
         ),
       ),
     );
-  }
-}
-
-class CustomTrackShape extends RoundedRectSliderTrackShape {
-  @override
-  Rect getPreferredRect({
-    required RenderBox parentBox,
-    Offset offset = Offset.zero,
-    required SliderThemeData sliderTheme,
-    bool isEnabled = false,
-    bool isDiscrete = false,
-  }) {
-    final trackHeight = sliderTheme.trackHeight;
-    final trackLeft = offset.dx;
-    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
-    final trackWidth = parentBox.size.width;
-    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }
