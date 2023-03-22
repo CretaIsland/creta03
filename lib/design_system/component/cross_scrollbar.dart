@@ -1,5 +1,6 @@
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 
 import '../../pages/studio/studio_variables.dart';
 import '../creta_color.dart';
@@ -11,12 +12,17 @@ class CrossScrollBar extends StatefulWidget {
   final double marginY;
   final double initialScrollOffsetX;
   final double initialScrollOffsetY;
+  final void Function(double value) currentVerticalScrollBarOffset;
+  final void Function(double value) currentHorizontalScrollBarOffset;
+
   const CrossScrollBar({
     super.key,
     required this.child,
     required this.marginX,
     required this.marginY,
     required this.width,
+    required this.currentHorizontalScrollBarOffset,
+    required this.currentVerticalScrollBarOffset,
     this.initialScrollOffsetX = 0,
     this.initialScrollOffsetY = 0,
   });
@@ -36,14 +42,16 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
   void initState() {
     horizontalScroll = ScrollController(initialScrollOffset: widget.initialScrollOffsetX);
     verticalScroll = ScrollController(initialScrollOffset: widget.initialScrollOffsetY);
-    // horizontalScroll.addListener(() {
-    //   logger.finest('horizontal ');
-    //   //setState(() {});
-    // });
-    // verticalScroll.addListener(() {
-    //   logger.finest('horizontal ');
-    //   //setState(() {});
-    // });
+    horizontalScroll.addListener(() {
+      logger.finest('horizontal ');
+      widget.currentHorizontalScrollBarOffset(horizontalScroll.offset);
+      //setState(() {});
+    });
+    verticalScroll.addListener(() {
+      logger.finest('horizontal ');
+      widget.currentVerticalScrollBarOffset(horizontalScroll.offset);
+      //setState(() {});
+    });
     // verticalScroll.addListener(() {
     //   verticalScroll.jumpTo(0);
     // });
@@ -57,17 +65,19 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
 
   @override
   Widget build(BuildContext context) {
-    return StudioVariables.handToolMode
+    return StudioVariables.handToolMode == true
         ? MouseRegion(
             cursor: SystemMouseCursors.grabbing,
             child: GestureDetector(
               onHorizontalDragStart: (details) {
+                logger.fine('Gest4 : onHorizontalDragStart');
                 initHandToolPoint = details.localPosition;
               },
               onVerticalDragStart: (details) {
                 initHandToolPoint = details.localPosition;
               },
               onHorizontalDragUpdate: (details) {
+                logger.fine('Gest4 : onHorizontalDragUpdate');
                 _movePosition(details);
               },
               onVerticalDragUpdate: (details) {
@@ -82,7 +92,7 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
     //   behavior: HitTestBehavior.translucent,
     //   onPointerSignal: (pointerSignal) {
     //     if (pointerSignal is PointerScrollEvent) {
-    //       logger.info('========${pointerSignal.scrollDelta.dx}, ${pointerSignal.scrollDelta.dy}');
+    //       logger.fine('========${pointerSignal.scrollDelta.dx}, ${pointerSignal.scrollDelta.dy}');
 
     //       final double xDelta = pointerSignal.scrollDelta.dy / StudioVariables.virtualWidth;
     //       final double xOffset = (horizontalScroll.position.maxScrollExtent -
@@ -92,7 +102,7 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
     //       if (move > horizontalScroll.position.minScrollExtent &&
     //           move < horizontalScroll.position.maxScrollExtent) {
     //         horizontalScroll.jumpTo(move);
-    //         logger.info('xxxxxxxx${horizontalScroll.offset}, $xOffset');
+    //         logger.fine('xxxxxxxx${horizontalScroll.offset}, $xOffset');
 
     //         // 버티컬 스크롤바를 움직이지 않기 위해
     //         verticalScroll.jumpTo(0);
@@ -117,7 +127,7 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
     } else {
       ySpeed = 2.0;
     }
-    //logger.info('xBarLength = $xBarLength');
+    //logger.fine('xBarLength = $xBarLength');
 
     final dx = details.localPosition.dx - initHandToolPoint!.dx;
 

@@ -70,7 +70,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
     //applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
     applyScale = widget.pageWidth / widget.bookModel.width.value;
-    logger.info('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
+    logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
     _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
@@ -97,7 +97,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       height: widget.pageHeight,
       // List of Stickers
       onUpdate: (update, mid) {
-        logger.finest('onUpdate ${update.hint}');
+        logger.fine('onUpdate ${update.hint}');
         _setItem(update, mid);
         FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
@@ -111,15 +111,15 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         removeItem(mid);
       },
       onTap: (mid) {
-        logger.fine('Gest1 : onTop in StikcersView but File is frame_name.dart, setState');
+        logger.fine('Gest1 : onTop in StikcersView but File is frame_name.dart, no setState');
         FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
         if (frame == null ||
             frame.mid != mid ||
             BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame) {
-          setState(() {
-            BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
-            _frameManager?.setSelectedMid(mid);
-          });
+          //setState(() {
+          BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+          _frameManager?.setSelectedMid(mid);
+          //});
         }
         frame = _frameManager?.getSelected() as FrameModel?;
         //if (frame != null) {
@@ -136,7 +136,9 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           //model.save();
-          _sendEvent!.sendEvent(model);
+          logger.fine('onComplete');
+          _sendEvent?.sendEvent(model);
+          BookMainPage.miniMenuNotifier?.notify();
         }
       },
       stickerList: getStickerList(),
@@ -150,7 +152,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
 
-      logger.info('applyScale = $applyScale');
+      logger.fine('applyScale = $applyScale');
 
       BookMainPage.clickEventHandler.subscribeList(
         model.eventReceive.value,

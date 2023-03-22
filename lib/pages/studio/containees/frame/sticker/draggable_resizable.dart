@@ -136,7 +136,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         final normalizedWidth = size.width;
         final normalizedHeight = size.height;
 
-        logger.info('DraggableResize: $normalizedHeight, $normalizedWidth');
+        logger.fine('DraggableResize: $normalizedHeight, $normalizedWidth');
 
         final normalizedLeft = position.dx;
         final normalizedTop = position.dy;
@@ -447,6 +447,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   ..scale(1.0)
                   ..rotateZ(angle),
                 child: DraggablePoint(
+                  //mode: PositionMode.local,
                   key: const Key('draggableResizable_child_draggablePoint'),
                   onComplete: () {
                     widget.onComplete();
@@ -465,7 +466,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                     onUpdate('onDrag');
                   },
                   onScale: (s) {
-                    logger.info('onScale($s)');
+                    logger.fine('onScale($s)');
                     final updatedSize = Size(
                       widget.size.width * s,
                       widget.size.height * s,
@@ -568,28 +569,28 @@ class _DraggableResizableState extends State<DraggableResizable> {
     double offset = LayoutConst.stikerOffset / 2;
 
     if (size.width < LayoutConst.minFrameSize) {
-      logger.info('mininumSize constraint');
+      logger.fine('mininumSize constraint');
       return false;
     }
     if (size.height < LayoutConst.minFrameSize) {
-      logger.info('mininumSize constraint');
+      logger.fine('mininumSize constraint');
       return false;
     }
     if (pos.dx + offset < 0) {
-      logger.info('postion constraint  pos.dx=${pos.dx}, offset=$offset');
+      logger.fine('postion constraint  pos.dx=${pos.dx}, offset=$offset');
       return false;
     }
     if (pos.dy + offset < 0) {
-      logger.info('postion constraint pos.dy=${pos.dy}, offset=$offset');
+      logger.fine('postion constraint pos.dy=${pos.dy}, offset=$offset');
       return false;
     }
 
     if (pos.dx + size.width + offset > widget.pageWidth) {
-      logger.info('maxinumSize constraint');
+      logger.fine('maxinumSize constraint');
       return false;
     }
     if (pos.dy + size.height + offset > widget.pageHeight) {
-      logger.info('maxinumSize constraint');
+      logger.fine('maxinumSize constraint');
       return false;
     }
 

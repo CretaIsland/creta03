@@ -6,6 +6,7 @@ import '../../../../../design_system/creta_color.dart';
 import '../../../studio_constant.dart';
 
 import 'draggable_point.dart';
+import 'resize_point_draggable.dart';
 
 enum ResizePointType {
   topLeft,
@@ -117,7 +118,7 @@ class _ResizePointState extends State<ResizePoint> {
         });
       },
       cursor: _cursor,
-      child: DraggablePoint(
+      child: ResizePointDraggable(
         mode: PositionMode.local,
         onDrag: (value) {
           setState(() {
@@ -133,42 +134,46 @@ class _ResizePointState extends State<ResizePoint> {
           });
           widget.onComplete.call();
         },
-        child: Container(
-          width: LayoutConst.cornerDiameter,
-          height: LayoutConst.cornerDiameter,
-          decoration: BoxDecoration(
-            color: _isHover ? Colors.white : Colors.transparent,
-            border: Border.all(color: _isHover ? CretaColor.primary : Colors.transparent, width: 1),
-            shape: BoxShape.rectangle,
-          ),
-          child: _isHover == false
-              ? Center(
-                  child: Container(
-                    width: LayoutConst.dragHandle,
-                    height: LayoutConst.dragHandle,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: CretaColor.primary, width: 1),
-                      color: Colors.white,
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: widget.iconData != null
-                        ? Icon(
-                            widget.iconData,
-                            size: 12,
-                            color: Colors.blue,
-                          )
-                        : Container(),
-                  ),
-                )
-              : widget.iconData != null
-                  ? Icon(
-                      widget.iconData,
-                      size: 12,
-                      color: Colors.blue,
-                    )
-                  : Container(),
-        ),
+        child: _handle(),
       ),
+    );
+  }
+
+  Widget _handle() {
+    return Container(
+      width: LayoutConst.cornerDiameter,
+      height: LayoutConst.cornerDiameter,
+      decoration: BoxDecoration(
+        color: _isHover ? Colors.white : Colors.transparent,
+        border: Border.all(color: _isHover ? CretaColor.primary : Colors.transparent, width: 1),
+        shape: BoxShape.rectangle,
+      ),
+      child: _isHover == false
+          ? Center(
+              child: Container(
+                width: LayoutConst.dragHandle,
+                height: LayoutConst.dragHandle,
+                decoration: BoxDecoration(
+                  border: Border.all(color: CretaColor.primary, width: 1),
+                  color: Colors.white,
+                  shape: BoxShape.rectangle,
+                ),
+                child: widget.iconData != null
+                    ? Icon(
+                        widget.iconData,
+                        size: 12,
+                        color: Colors.blue,
+                      )
+                    : Container(),
+              ),
+            )
+          : widget.iconData != null
+              ? Icon(
+                  widget.iconData,
+                  size: 12,
+                  color: Colors.blue,
+                )
+              : Container(),
     );
   }
 }

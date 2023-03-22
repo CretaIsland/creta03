@@ -90,6 +90,10 @@ class LayoutConst {
   static const double dragHandle = 8;
 
   static const int minFrameSize = 50;
+
+  static const double miniMenuWidth = 248;
+  static const double miniMenuHeight = 40;
+  static const double miniMenuGap = 12;
 }
 
 class StudioConst {

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../studio_variables.dart';
+import 'draggable_point.dart';
 
-enum PositionMode { local, global }
+//enum PositionMode { local, global }
 
-class DraggablePoint extends StatefulWidget {
-  const DraggablePoint({
+class ResizePointDraggable extends StatefulWidget {
+  const ResizePointDraggable({
     Key? key,
     required this.child,
     required this.onComplete,
@@ -26,10 +27,10 @@ class DraggablePoint extends StatefulWidget {
   final VoidCallback onComplete;
 
   @override
-  DraggablePointState createState() => DraggablePointState();
+  ResizePointDraggableState createState() => ResizePointDraggableState();
 }
 
-class DraggablePointState extends State<DraggablePoint> {
+class ResizePointDraggableState extends State<ResizePointDraggable> {
   late Offset initPoint;
   var baseScaleFactor = 1.0;
   var scaleFactor = 1.0;
@@ -40,11 +41,41 @@ class DraggablePointState extends State<DraggablePoint> {
   Widget build(BuildContext context) {
     return StudioVariables.handToolMode == false
         ? GestureDetector(
-            onLongPressDown: (detail) {
-              logger.fine('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
-              //
-              widget.onTap!();
-            },
+            // onLongPressDown: (detail) {
+            //   logger.fine('Gest2 : onLongPressDown in ResizePointDraggable for Extended Area');
+            //   //
+            //   widget.onTap!();
+            // },
+            // onHorizontalDragStart: (details) {
+            //   logger.fine('Gest2 : onHorizontalDragStart');
+            //   initPoint = details.localPosition;
+            // },
+            // onHorizontalDragUpdate: (details) {
+            //   logger.fine('Gest2 : onHorizontalDragUpdate');
+            //   final dx = details.localPosition.dx - initPoint.dx;
+            //   final dy = details.localPosition.dy - initPoint.dy;
+            //   initPoint = details.localPosition;
+            //   widget.onDrag?.call(Offset(dx, dy));
+            // },
+            // onHorizontalDragEnd: (details) {
+            //   logger.fine('Gest2 : onHorizontalDragEnd');
+            //   widget.onComplete();
+            // },
+            // onVerticalDragStart: (details) {
+            //   logger.fine('Gest2 : onVerticalDragStart');
+            //   initPoint = details.localPosition;
+            // },
+            // onVerticalDragUpdate: (details) {
+            //   logger.fine('Gest2 : onVerticalDragUpdate');
+            //   final dx = details.localPosition.dx - initPoint.dx;
+            //   final dy = details.localPosition.dy - initPoint.dy;
+            //   initPoint = details.localPosition;
+            //   widget.onDrag?.call(Offset(dx, dy));
+            // },
+            // onVerticalDragEnd: (details) {
+            //   logger.fine('Gest2 : onHorizontalDragEnd');
+            //   widget.onComplete();
+            // },
             onScaleStart: (details) {
               switch (widget.mode) {
                 case PositionMode.global:

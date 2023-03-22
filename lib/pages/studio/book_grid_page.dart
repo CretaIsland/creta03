@@ -63,7 +63,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
 
   @override
   void initState() {
-    logger.info('initState start');
+    logger.fine('initState start');
 
     super.initState();
 
@@ -145,7 +145,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     _dropDownMenuItemList1 = bookManagerHolder!.getFilterMenu((() => setState(() {})));
     _dropDownMenuItemList2 = bookManagerHolder!.getSortMenu((() => setState(() {})));
 
-    logger.info('initState end');
+    logger.fine('initState end');
   }
 
   void _scrollListener(bool bannerSizeChanged) {

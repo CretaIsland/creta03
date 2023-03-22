@@ -45,6 +45,7 @@ class BookMainPage extends StatefulWidget {
   // static FrameTemplateManager? animationFrameManagerHolder;
   static UserPropertyManager? userPropertyManagerHolder;
   static ContaineeNotifier? containeeNotifier;
+  static MiniMenuNotifier? miniMenuNotifier;
 
   static LeftMenuEnum selectedStick = LeftMenuEnum.None;
   static ClickReceiverHandler clickReceiverHandler = ClickReceiverHandler();
@@ -64,9 +65,9 @@ class _BookMainPageState extends State<BookMainPage> {
   bool _isFirstOpen = true;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
-  final ScrollController controller = ScrollController();
-  final ScrollController horizontalScroll = ScrollController();
-  final ScrollController verticalScroll = ScrollController();
+  // final ScrollController controller = ScrollController();
+  //ScrollController? horizontalScroll;
+  //ScrollController? verticalScroll;
 
   double pageWidth = 0;
   double pageHeight = 0;
@@ -78,12 +79,16 @@ class _BookMainPageState extends State<BookMainPage> {
 
   double padding = 16;
 
+  double? vericalScrollOffset;
+  double? horizontalScrollOffset;
+
   @override
   void initState() {
     super.initState();
     logger.finest("---_BookMainPageState-----------------------------------------");
 
     BookMainPage.containeeNotifier = ContaineeNotifier();
+    BookMainPage.miniMenuNotifier = MiniMenuNotifier();
 
     // 같은 페이지에서 객체만 바뀌면 static value 들은 그대로 남아있게 되므로
     // static value 도 초기화해준다.
@@ -220,9 +225,9 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder?.unregisterManager('book');
     saveManagerHolder?.unregisterManager('page');
     saveManagerHolder?.unregisterManager('user');
-    controller.dispose();
-    verticalScroll.dispose();
-    horizontalScroll.dispose();
+    // controller.dispose();
+    //verticalScroll?.dispose();
+    //horizontalScroll?.dispose();
   }
 
   @override
@@ -231,6 +236,9 @@ class _BookMainPageState extends State<BookMainPage> {
       providers: [
         ChangeNotifierProvider<ContaineeNotifier>.value(
           value: BookMainPage.containeeNotifier!,
+        ),
+        ChangeNotifierProvider<MiniMenuNotifier>.value(
+          value: BookMainPage.miniMenuNotifier!,
         ),
         ChangeNotifierProvider<BookManager>.value(
           value: BookMainPage.bookManagerHolder!,
@@ -367,7 +375,7 @@ class _BookMainPageState extends State<BookMainPage> {
       padding = 2;
     }
 
-    logger.info(
+    logger.fine(
         "height=${StudioVariables.virtualHeight}, width=${StudioVariables.virtualWidth}, scale=${StudioVariables.fitScale}}");
   }
 
@@ -711,76 +719,58 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _scrollArea(BuildContext context) {
-    // if (StudioVariables.autoScale == true) {
-    //   return _drawPage(context);
-    // }
-    return Consumer<ContaineeNotifier>(builder: (context, notifier, child) {
-      double marginX = (StudioVariables.workWidth - StudioVariables.virtualWidth) / 2;
-      double marginY = (StudioVariables.workHeight - StudioVariables.virtualHeight) / 2;
-      if (marginX < 0) marginX = 0;
-      if (marginY < 0) marginY = 0;
-      return BookMainPage.selectedStick != LeftMenuEnum.None
-          ? Positioned(
-              left: LayoutConst.leftMenuWidth,
-              top: 0,
-              child: Container(
-                color: Colors.green,
-                width: getScrollWidth(),
-                height: StudioVariables.workHeight,
-                child: CrossScrollBar(
-                  key: GlobalKey(),
-                  width: StudioVariables.virtualWidth,
-                  marginX: marginX,
-                  marginY: marginY,
-                  initialScrollOffsetX: StudioVariables.workWidth * 0.1,
-                  child: _drawPage(context),
-                ),
-              ),
-            )
-          : Container(
-              color: Colors.green,
-              width: getScrollWidth(),
-              height: StudioVariables.workHeight,
-              child: CrossScrollBar(
-                key: GlobalKey(),
-                width: StudioVariables.virtualWidth,
-                marginX: marginX,
-                marginY: marginY,
-                initialScrollOffsetX: StudioVariables.workWidth * 0.1,
-                child: _drawPage(context),
-              ),
-            );
+    //verticalScroll ??= ScrollController(initialScrollOffset: StudioVariables.workHeight * 0.1);
+    //horizontalScroll ??= ScrollController(initialScrollOffset: StudioVariables.workWidth * 0.1);
 
-      //   return BookMainPage.selectedStick != LeftMenuEnum.None
-      //       ? Center(
-      //           child: SizedBox(
-      //             width: getScrollWidth(),
-      //             height: StudioVariables.workHeight,
-      //             child: CrossScrollBar(
-      //               key: GlobalKey(),
-      //               width: StudioVariables.virtualWidth,
-      //               marginX: marginX,
-      //               marginY: marginY,
-      //               initialScrollOffsetX: LayoutConst.leftMenuWidth,
-      //               child: _drawPage(context),
-      //             ),
-      //           ),
-      //         )
-      //       : Center(
-      //           child: SizedBox(
-      //             width: getScrollWidth(),
-      //             height: StudioVariables.workHeight,
-      //             child: CrossScrollBar(
-      //               key: GlobalKey(),
-      //               width: StudioVariables.virtualWidth,
-      //               marginX: marginX,
-      //               marginY: marginY,
-      //               initialScrollOffsetX: StudioVariables.workWidth * 0.1,
-      //               child: _drawPage(context),
-      //             ),
-      //           ),
-      //         );
-    });
+    //return Consumer<ContaineeNotifier>(builder: (context, notifier, child) {
+    double scrollWidth = getScrollWidth();
+
+    //double marginX = (StudioVariables.workWidth - StudioVariables.virtualWidth) / 2;
+    double marginX = (scrollWidth - StudioVariables.virtualWidth) / 2;
+    double marginY = (StudioVariables.workHeight - StudioVariables.virtualHeight) / 2;
+    if (marginX < 0) marginX = 0;
+    if (marginY < 0) marginY = 0;
+
+    Widget scrollBox = Container(
+      width: scrollWidth,
+      height: StudioVariables.workHeight,
+      color: Colors.green,
+      child: Center(
+        child: CrossScrollBar(
+          //key: ValueKey('CrossScrollBar_${_bookModel.mid}'),
+          key: GlobalKey(),
+          width: StudioVariables.virtualWidth,
+          //width: StudioVariables.workWidth,
+          marginX: marginX,
+          marginY: marginY,
+          initialScrollOffsetX: horizontalScrollOffset ?? StudioVariables.workWidth * 0.1,
+          initialScrollOffsetY: vericalScrollOffset ?? StudioVariables.workHeight * 0.1,
+          currentHorizontalScrollBarOffset: (value) {
+            horizontalScrollOffset = value;
+          },
+          currentVerticalScrollBarOffset: (value) {
+            vericalScrollOffset = value;
+          },
+          child: Center(child: _drawPage(context)),
+        ),
+      ),
+    );
+
+    if (BookMainPage.selectedStick != LeftMenuEnum.None) {
+      //if (applyScale >= StudioVariables.fitScale) {
+      return Positioned(
+        left: LayoutConst.leftMenuWidth,
+        top: 0,
+        child: scrollBox,
+      );
+      //}
+      // return Center(
+      //   child: scrollBox,
+      // );
+    }
+
+    return scrollBox;
+    //});
   }
 
   double getScrollWidth() {

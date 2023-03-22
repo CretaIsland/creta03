@@ -71,7 +71,7 @@ class FrameManager extends CretaManager {
     for (var ele in modelList) {
       if (ele.mid == 'frame=38a8223f-0da4-4821-beea-ffd78de763d6') {
         FrameModel model = ele as FrameModel;
-        logger.info(
+        logger.fine(
             'x,y,w,h= ${model.posX.value}, ${model.posY.value}, ${model.width.value},${model.height.value}');
       }
     }

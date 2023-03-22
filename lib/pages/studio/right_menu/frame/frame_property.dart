@@ -1299,7 +1299,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               _sendEvent!.sendEvent(widget.model);
             },
             onShadowSampleSelected: (spread, blur, direction, distance, opactiy) {
-              logger.info('spread=$spread, blur=$blur, direction=$direction, distance=$distance,');
+              logger.fine('spread=$spread, blur=$blur, direction=$direction, distance=$distance,');
               setState(() {
                 mychangeStack.startTrans();
                 widget.model.shadowSpread.set(spread, save: false);

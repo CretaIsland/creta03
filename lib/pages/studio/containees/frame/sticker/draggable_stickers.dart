@@ -1,8 +1,14 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:hycop/common/util/logger.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_variables.dart';
+import '../../containee_nofifier.dart';
 import 'draggable_resizable.dart';
+import 'mini_menu.dart';
 import 'stickerview.dart';
 
 class DraggableStickers extends StatefulWidget {
@@ -36,6 +42,7 @@ class DraggableStickers extends StatefulWidget {
 class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
   final _initialStickerScale = 5.0;
+  Sticker? _selectedSticker;
 
   List<Sticker> stickers = [];
   @override
@@ -49,6 +56,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   @override
   Widget build(BuildContext context) {
     stickers = widget.stickerList;
+    _selectedSticker = _getSelectedSticker();
     return stickers.isNotEmpty && stickers != []
         ? Stack(
             fit: StackFit.expand,
@@ -61,13 +69,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
               //     },
               //   ),
               // ),
-              for (final sticker in stickers) drawEachStiker(sticker),
+              for (final sticker in stickers) _drawEachStiker(sticker),
+              _selectedSticker != null ? _drawMiniMenu() : const SizedBox.shrink(),
             ],
           )
         : Container();
   }
 
-  Widget drawEachStiker(Sticker sticker) {
+  Widget _drawEachStiker(Sticker sticker) {
     // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
     return DraggableResizable(
       key: UniqueKey(),
@@ -188,5 +197,31 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
                 ),
     );
+  }
+
+  Sticker? _getSelectedSticker() {
+    if (DraggableStickers.selectedAssetId == null) {
+      return null;
+    }
+    for (Sticker sticker in widget.stickerList) {
+      if (sticker.id == DraggableStickers.selectedAssetId!) {
+        return sticker;
+      }
+    }
+    return null;
+  }
+
+  Widget _drawMiniMenu() {
+    return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
+      logger.fine('_drawMiniMenu()');
+
+      return MiniMenu(
+        key: const ValueKey('MiniMenu'),
+        parentPosition: _selectedSticker!.position,
+        parentSize: _selectedSticker!.size,
+        parentBorderWidth: _selectedSticker!.borderWidth,
+        pageHeight: widget.pageHeight,
+      );
+    });
   }
 }

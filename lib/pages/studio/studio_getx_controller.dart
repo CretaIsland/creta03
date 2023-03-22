@@ -40,7 +40,7 @@ class StudioGetXController extends GetxController {
   @override
   void onInit() {
     // Initialize EventController1 instance with a tag
-    logger.info('==========================StudioGetXController initialized================');
+    logger.fine('==========================StudioGetXController initialized================');
     Get.put(FrameEventController(), tag: 'frame-property-to-main');
     Get.put(FrameEventController(), tag: 'frame-main-to-property');
     // Initialize EventController2 instance with a tag
@@ -50,7 +50,7 @@ class StudioGetXController extends GetxController {
 
   @override
   void onClose() {
-    logger.info('==========================StudioGetXController onClose================');
+    logger.fine('==========================StudioGetXController onClose================');
     super.onClose();
     //Dispose of eventController here
     // frameEvent?.onClose();
