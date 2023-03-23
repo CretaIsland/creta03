@@ -627,6 +627,15 @@ abstract class CretaManager extends AbsExModelManager {
     return;
   }
 
+  List<T> orderMapIterator<T>(T Function(AbsExModel) toElement) {
+    List<T> retval = [];
+    for (var model in _orderMap.deepSortByKey().values) {
+      var ele = toElement(model);
+      retval.add(ele);
+    }
+    return retval;
+  }
+
   CretaModel? getNthModel(int index) {
     int count = 0;
     lock();

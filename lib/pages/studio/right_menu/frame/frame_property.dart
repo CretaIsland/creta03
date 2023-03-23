@@ -433,8 +433,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   icon: Icons.rotate_90_degrees_ccw_outlined,
                   onPressed: () {
                     setState(() {
-                      int turns = (widget.model.angle.value / 45).round() - 1;
-                      double angle = (turns * 45.0) % 360;
+                      int turns = (widget.model.angle.value / 15).round() - 1;
+                      double angle = (turns * 15.0) % 360;
                       if (angle < 0) {
                         angle = 360 - angle;
                       }
@@ -450,8 +450,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   icon: Icons.rotate_90_degrees_cw_outlined,
                   onPressed: () {
                     setState(() {
-                      int turns = (widget.model.angle.value / 45).round() + 1;
-                      widget.model.angle.set((turns * 45.0) % 360);
+                      int turns = (widget.model.angle.value / 15).round() + 1;
+                      widget.model.angle.set((turns * 15.0) % 360);
                     });
 
                     logger.finest('sendEvent');

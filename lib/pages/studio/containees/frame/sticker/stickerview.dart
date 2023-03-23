@@ -17,7 +17,12 @@ enum ImageQuality { low, medium, high }
 class StickerView extends StatefulWidget {
   final List<Sticker> stickerList;
   final void Function(DragUpdate, String) onUpdate;
-  final void Function(String) onDelete;
+  final void Function(String) onFrameDelete;
+  final void Function(String, String) onFrameBack;
+  final void Function(String, String) onFrameFront;
+  final void Function(String) onFrameMain;
+  final void Function(String, double) onFrameRotate;
+  final void Function(String) onFrameCopy;
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
@@ -29,7 +34,12 @@ class StickerView extends StatefulWidget {
   const StickerView(
       {required this.stickerList,
       required this.onUpdate,
-      required this.onDelete,
+      required this.onFrameDelete,
+      required this.onFrameBack,
+      required this.onFrameFront,
+      required this.onFrameMain,
+      required this.onFrameRotate,
+      required this.onFrameCopy,
       required this.onTap,
       required this.onComplete,
       required this.onResizeButtonTap,
@@ -110,7 +120,12 @@ class StickerViewState extends State<StickerView> {
                     pageHeight: widget.height,
                     stickerList: stickerList!,
                     onUpdate: widget.onUpdate,
-                    onDelete: widget.onDelete,
+                    onFrameDelete: widget.onFrameDelete,
+                    onFrameBack: widget.onFrameBack,
+                    onFrameFront: widget.onFrameFront,
+                    onFrameCopy: widget.onFrameCopy,
+                    onFrameMain: widget.onFrameMain,
+                    onFrameRotate: widget.onFrameRotate,
                     onTap: widget.onTap,
                     onResizeButtonTap: widget.onResizeButtonTap,
                     onComplete: widget.onComplete,
@@ -137,6 +152,7 @@ class Sticker extends StatefulWidget {
   late double angle;
   late Size size;
   late double borderWidth;
+  late bool isMain;
 
   Sticker({
     Key? key,
@@ -145,6 +161,7 @@ class Sticker extends StatefulWidget {
     required this.angle,
     required this.size,
     required this.borderWidth,
+    required this.isMain,
     this.isText,
     this.child,
   }) : super(key: key);

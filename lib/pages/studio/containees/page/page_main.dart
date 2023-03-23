@@ -123,7 +123,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   Widget _drawPage(bool useColor) {
     return StudioVariables.handToolMode == false
         ? GestureDetector(
-            behavior: HitTestBehavior.translucent,
+            behavior: HitTestBehavior.deferToChild,
             onLongPressDown: pageClicked,
             child: Container(
               decoration: useColor ? _pageDeco() : null,
@@ -141,14 +141,14 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   void pageClicked(LongPressDownDetails details) {
-    logger.finest(
+    logger.info(
         'Gest3 : onLongPressDown in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
     if (BookMainPage.containeeNotifier!.isFrameClick == true) {
       BookMainPage.containeeNotifier!.setFrameClick(false);
-      logger.finest('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
+      logger.info('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
       return;
     }
-    logger.finest('page clicked');
+    logger.info('page clicked');
     setState(() {
       _frameManager?.clearSelectedMid();
     });

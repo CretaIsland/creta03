@@ -111,8 +111,14 @@ class BTN {
     double height = 24,
     double iconSize = 16,
     double sidePaddingSize = 0,
+    String? tooltip,
+    Color? tooltipFg,
+    Color? tooltipBg,
   }) {
     return CretaButton(
+      tooltip: tooltip,
+      tooltipBg: tooltipBg,
+      tooltipFg: tooltipFg,
       width: width,
       height: height,
       sidePaddingSize: sidePaddingSize,

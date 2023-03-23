@@ -286,6 +286,13 @@ class CretaStudioLang {
     '지정된 시간이 경과하면': 'specified',
   };
 
+  static String copyFrameTooltip = '프레임 복사';
+  static String deleteFrameTooltip = '프레임 삭제';
+  static String frontFrameTooltip = '앞으로 당기기';
+  static String backFrameTooltip = '뒤로 보내기';
+  static String rotateFrameTooltip = '15도씩 회전합니다';
+  static String mainFrameTooltip = '메인 프레임으로 지정합니다';
+
   // static Map<String, String> shadowInList = {
   //   '외부 그림자': 'outSide',
   //   '내부 그림자': 'inSide',

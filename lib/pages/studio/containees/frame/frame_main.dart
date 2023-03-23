@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hycop/common/undo/undo.dart';
 //import 'package:glass/glass.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -13,6 +14,7 @@ import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
+import '../../../../design_system/creta_font.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
@@ -106,12 +108,39 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
           //BookMainPage.containeeNotifier!.notify();
         }
       },
-      onDelete: (mid) {
-        logger.finest('removeItem');
+      onFrameDelete: (mid) {
+        logger.info('Frame onFrameDelete $mid');
         removeItem(mid);
+        setState(() {});
+      },
+      onFrameBack: (aMid, bMid) {
+        _exchangeOrder(aMid, bMid, 'onFrameBack');
+        setState(() {});
+      },
+      onFrameFront: (aMid, bMid) {
+        _exchangeOrder(aMid, bMid, 'onFrameFront');
+        setState(() {});
+      },
+      onFrameCopy: (mid) async {
+        logger.info('Frame onFrameCopy');
+        FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
+        await _frameManager?.copyFrame(frame!);
+        setState(() {});
+      },
+      onFrameRotate: (mid, angle) {
+        FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
+        if (frame == null) {
+          return;
+        }
+        frame.angle.set(angle);
+      },
+      onFrameMain: (mid) {
+        logger.info('Frame onFrameMain');
+        _setMain(mid);
+        setState(() {});
       },
       onTap: (mid) {
-        logger.fine('Gest1 : onTop in StikcersView but File is frame_name.dart, no setState');
+        logger.info('onTap : from InkWell , frame_name.dart, no setState');
         FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
         if (frame == null ||
             frame.mid != mid ||
@@ -145,10 +174,33 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     );
   }
 
+  void _exchangeOrder(String aMid, String bMid, String hint) {
+    FrameModel? aModel = _frameManager!.getModel(aMid) as FrameModel?;
+    FrameModel? bModel = _frameManager!.getModel(bMid) as FrameModel?;
+    if (aModel == null) {
+      logger.info('$aMid does not exist in modelList');
+      return;
+    }
+    if (bModel == null) {
+      logger.info('$bMid does not exist in modelList');
+      return;
+    }
+    logger.info('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
+
+    double aOrder = aModel.order.value;
+    double bOrder = bModel.order.value;
+
+    mychangeStack.startTrans();
+    aModel.order.set(bOrder);
+    bModel.order.set(aOrder);
+    mychangeStack.endTrans();
+  }
+
   List<Sticker> getStickerList() {
-    logger.finest('getStickerList()');
+    logger.info('getStickerList()');
     //_frameManager!.frameKeyMap.clear();
-    return _frameManager!.modelList.map((e) {
+    _frameManager!.reOrdering();
+    return _frameManager!.orderMapIterator((e) {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
 
@@ -179,10 +231,47 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         angle: model.angle.value * (pi / 180),
         size: Size(frameWidth, frameHeight),
         borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
+        isMain: model.isMain.value,
         child: Visibility(
             visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
       );
-    }).toList();
+    });
+    // return _frameManager!.modelList.map((e) {
+    //   //_randomIndex += 10;
+    //   FrameModel model = e as FrameModel;
+
+    //   logger.fine('applyScale = $applyScale');
+
+    //   BookMainPage.clickEventHandler.subscribeList(
+    //     model.eventReceive.value,
+    //     model,
+    //     _receiveEvent,
+    //     null,
+    //   );
+
+    //   double frameWidth = model.width.value * applyScale;
+    //   double frameHeight = model.height.value * applyScale;
+    //   double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
+    //   double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
+
+    //   GlobalKey? stickerKey = _frameManager!.frameKeyMap[model.mid];
+    //   if (stickerKey == null) {
+    //     stickerKey = GlobalKey();
+    //     _frameManager!.frameKeyMap[model.mid] = stickerKey;
+    //   }
+
+    //   return Sticker(
+    //     key: stickerKey,
+    //     id: model.mid,
+    //     position: Offset(posX, posY),
+    //     angle: model.angle.value * (pi / 180),
+    //     size: Size(frameWidth, frameHeight),
+    //     borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
+    //     isMain: model.isMain.value,
+    //     child: Visibility(
+    //         visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
+    //   );
+    // }).toList();
   }
 
   bool _isVisible(FrameModel model) {
@@ -291,12 +380,16 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       width: double.infinity,
       height: double.infinity,
       child: ClipRect(
-        //child: Text('${model.order.value}'),
         clipBehavior: Clip.hardEdge,
-        child: Image.asset(
-          'assets/creta_default.png',
-          fit: BoxFit.cover,
-        ),
+        child: Center(
+            child: Text(
+          '${model.order.value}',
+          style: CretaFont.titleLarge,
+        )),
+        // child: Image.asset(
+        //   'assets/creta_default.png',
+        //   fit: BoxFit.cover,
+        // ),
       ),
     );
   }
@@ -399,8 +492,24 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   void removeItem(String mid) async {
     for (var item in _frameManager!.modelList) {
       if (item.mid != mid) continue;
-      _frameManager!.modelList.remove(item);
+      FrameModel model = item as FrameModel;
+      model.isRemoved.set(true);
     }
-    await _frameManager!.removeToDB(mid);
+    // for (var item in _frameManager!.modelList) {
+    //   if (item.mid != mid) continue;
+    //   _frameManager!.modelList.remove(item);
+    // }
+    // await _frameManager!.removeToDB(mid);
+  }
+
+  void _setMain(String mid) async {
+    for (var item in _frameManager!.modelList) {
+      FrameModel model = item as FrameModel;
+      if (item.mid == mid) {
+        model.isMain.set(true);
+      } else {
+        model.isMain.set(false);
+      }
+    }
   }
 }

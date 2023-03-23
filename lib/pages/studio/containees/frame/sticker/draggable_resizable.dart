@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
 import 'dart:math' as math;
 import 'dart:math';
@@ -52,6 +52,7 @@ class DraggableResizable extends StatefulWidget {
     required this.size,
     required this.position,
     required this.angle,
+    required this.isMain,
     required this.pageWidth,
     required this.pageHeight,
     required this.borderWidth,
@@ -62,7 +63,7 @@ class DraggableResizable extends StatefulWidget {
     this.onTap,
     this.onLayerTapped,
     this.onEdit,
-    this.onDelete,
+    this.onFrameDelete,
     this.canTransform = false,
   }) : //constraints = constraints ?? BoxConstraints.loose(Size.infinite),
         super(key: key);
@@ -79,7 +80,7 @@ class DraggableResizable extends StatefulWidget {
   /// Delete callback
   final VoidCallback onComplete;
   final VoidCallback? onTap;
-  final VoidCallback? onDelete;
+  final VoidCallback? onFrameDelete;
   final VoidCallback? onEdit;
   final VoidCallback? onLayerTapped;
   final void Function() onResizeButtonTap;
@@ -94,6 +95,7 @@ class DraggableResizable extends StatefulWidget {
   final Offset position;
   final double angle;
   final double borderWidth;
+  final bool isMain;
 
   /// The child's constraints.
   /// Defaults to [BoxConstraints.loose(Size.infinite)].
@@ -143,7 +145,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
         void onUpdate(String hint, {bool save = true}) {
           if (hint == 'onTap') {
-            logger.finest('Gest2 : onUpdate($hint),$save in DraggableResizable');
+            logger.finest('onUpdate : onUpdate($hint),$save in DraggableResizable');
             widget.onTap?.call();
           }
 
@@ -303,6 +305,24 @@ class _DraggableResizableState extends State<DraggableResizable> {
               ),
             ),
             child: Center(child: widget.child),
+          ),
+        );
+
+        final mainSymbol = Positioned(
+          left: LayoutConst.stikerOffset / 2 + 4,
+          top: LayoutConst.stikerOffset / 2 + 4,
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircleAvatar(
+              backgroundColor: Colors.white.withOpacity(0.5),
+              //radius: 16,
+              child: Icon(
+                Icons.auto_stories_outlined,
+                size: 16,
+                color: CretaColor.primary,
+              ),
+            ),
           ),
         );
 
@@ -496,6 +516,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   child: Stack(
                     children: [
                       decoratedChild,
+                      if (widget.isMain) mainSymbol,
                       if (widget.canTransform && isTouchInputSupported) ...[
                         Positioned(
                           // upPlane

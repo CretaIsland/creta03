@@ -40,8 +40,9 @@ class DraggablePointState extends State<DraggablePoint> {
   Widget build(BuildContext context) {
     return StudioVariables.handToolMode == false
         ? GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onLongPressDown: (detail) {
-              logger.fine('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
+              logger.info('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
               //
               widget.onTap!();
             },

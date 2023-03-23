@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/creta_color.dart';
+import '../../../../../lang/creta_studio_lang.dart';
+import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 
 class MiniMenu extends StatefulWidget {
@@ -9,6 +12,12 @@ class MiniMenu extends StatefulWidget {
   final Size parentSize;
   final double parentBorderWidth;
   final double pageHeight;
+  final void Function() onFrameDelete;
+  final void Function() onFrameFront;
+  final void Function() onFrameBack;
+  final void Function() onFrameCopy;
+  final void Function() onFrameRotate;
+  final void Function() onFrameMain;
 
   const MiniMenu({
     super.key,
@@ -16,6 +25,12 @@ class MiniMenu extends StatefulWidget {
     required this.parentSize,
     required this.parentBorderWidth,
     required this.pageHeight,
+    required this.onFrameDelete,
+    required this.onFrameFront,
+    required this.onFrameBack,
+    required this.onFrameCopy,
+    required this.onFrameRotate,
+    required this.onFrameMain,
   });
 
   @override
@@ -57,14 +72,78 @@ class _MiniMenuState extends State<MiniMenu> {
         width: LayoutConst.miniMenuWidth,
         height: LayoutConst.miniMenuHeight,
         decoration: BoxDecoration(
-          color: CretaColor.primary.withOpacity(0.5),
+          //color: CretaColor.primary.withOpacity(0.5),
+          color: Colors.white.withOpacity(0.5),
           border: Border.all(
             width: 1,
             color: CretaColor.primary,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(45)),
         ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: _buttonList(),
+        ),
       ),
     );
+  }
+
+  List<Widget> _buttonList() {
+    return [
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.mainFrameTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.schedule_outlined,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.info("MinuMenu onFrameMain");
+            widget.onFrameMain.call();
+          }),
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.frontFrameTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.flip_to_front_outlined,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.info("MinuMenu onFrameFront");
+            widget.onFrameFront.call();
+          }),
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.backFrameTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.flip_to_back_outlined,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.info("MinuMenu onFrameBack");
+            widget.onFrameBack.call();
+          }),
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.copyFrameTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.copy_all_outlined,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.info("MinuMenu onFrameCopy");
+            widget.onFrameCopy.call();
+          }),
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.rotateFrameTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.screen_rotation_outlined,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.info("MinuMenu onFrameRotate");
+            widget.onFrameRotate.call();
+          }),
+      BTN.fill_blue_i_menu(
+          tooltipFg: CretaColor.text,
+          tooltip: CretaStudioLang.deleteFrameTooltip,
+          icon: Icons.delete_outlined,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.info("MinuMenu onFrameDelete");
+            widget.onFrameDelete.call();
+          }),
+    ];
   }
 }

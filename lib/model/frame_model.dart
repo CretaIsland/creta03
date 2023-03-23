@@ -27,6 +27,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> radiusRightBottom;
   late UndoAble<double> radiusLeftBottom;
   late UndoAble<bool> isAutoFit;
+  late UndoAble<bool> isMain;
   late UndoAble<Color> borderColor;
   late UndoAble<double> borderWidth;
   late UndoAble<int> borderType;
@@ -57,6 +58,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         radiusRightBottom,
         radiusLeftBottom,
         isAutoFit,
+        isMain,
         borderColor,
         borderWidth,
         borderType,
@@ -84,6 +86,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusRightBottom = UndoAble<double>(0, mid);
     radiusLeftBottom = UndoAble<double>(0, mid);
     isAutoFit = UndoAble<bool>(false, mid);
+    isMain = UndoAble<bool>(false, mid);
     frameType = FrameType.none;
     borderColor = UndoAble<Color>(Colors.black, mid);
     borderWidth = UndoAble<double>(1, mid);
@@ -116,6 +119,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusRightBottom = UndoAble<double>(0, mid);
     radiusLeftBottom = UndoAble<double>(0, mid);
     isAutoFit = UndoAble<bool>(false, mid);
+    isMain = UndoAble<bool>(false, mid);
     bgColor1 = UndoAble<Color>(Colors.white, mid);
     borderColor = UndoAble<Color>(Colors.black, mid);
     borderWidth = UndoAble<double>(1, mid);
@@ -148,6 +152,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusRightBottom = UndoAble<double>(srcFrame.radiusRightBottom.value, mid);
     radiusLeftBottom = UndoAble<double>(srcFrame.radiusLeftBottom.value, mid);
     isAutoFit = UndoAble<bool>(srcFrame.isAutoFit.value, mid);
+    isMain = UndoAble<bool>(srcFrame.isMain.value, mid);
     borderColor = UndoAble<Color>(srcFrame.borderColor.value, mid);
     borderWidth = UndoAble<double>(srcFrame.borderWidth.value, mid);
     borderType = UndoAble<int>(srcFrame.borderType.value, mid);
@@ -187,6 +192,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusRightBottom.set((map["radiusRightBottom"] ?? 0), save: false, noUndo: true);
     radiusLeftBottom.set((map["radiusLeftBottom"] ?? 0), save: false, noUndo: true);
     isAutoFit.set((map["isAutoFit"] ?? false), save: false, noUndo: true);
+    isMain.set((map["isMain"] ?? false), save: false, noUndo: true);
 
     borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
     borderWidth.set((map["borderWidth"] ?? 1), save: false, noUndo: true);
@@ -223,6 +229,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "radiusRightBottom": radiusRightBottom.value,
         "radiusLeftBottom": radiusLeftBottom.value,
         "isAutoFit": isAutoFit.value,
+        "isMain": isMain.value,
         "borderColor": borderColor.value.toString(),
         "borderWidth": borderWidth.value,
         "borderType": borderType.value,

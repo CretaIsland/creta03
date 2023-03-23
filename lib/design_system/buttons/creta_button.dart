@@ -2,6 +2,7 @@
 
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 
 import '../component/snippet.dart';
 
@@ -230,24 +231,28 @@ class _CretaButtonState extends State<CretaButton> {
   Widget _myButton() {
     return GestureDetector(
       onLongPressDown: (details) {
+        logger.info("Gest : CretaButton onLongPressDown");
         setState(() {
           clicked = true;
           if (widget.isSelectedWidget) {
             selected = !selected;
           }
         });
+        widget.onPressed.call();
       },
       onLongPressUp: () {
+        logger.info("onLongPressUp");
         setState(() {
           clicked = false;
         });
-        widget.onPressed.call();
+        //widget.onPressed.call();
       },
       onTapUp: (details) {
+        logger.info("onTapUp");
         setState(() {
           clicked = false;
         });
-        widget.onPressed.call();
+        //widget.onPressed.call();
       },
       child: MouseRegion(
         cursor: widget.showClickableCursor ? SystemMouseCursors.click : MouseCursor.defer,

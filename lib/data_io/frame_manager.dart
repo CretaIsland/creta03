@@ -40,6 +40,23 @@ class FrameManager extends CretaManager {
     return defaultFrame;
   }
 
+  Future<FrameModel> copyFrame(FrameModel src) async {
+    updateLastOrder();
+    FrameModel newModel = FrameModel('');
+    newModel.copyFrom(src, newMid: newModel.mid);
+
+    newModel.posX.set(src.posX.value + 20, save: false, noUndo: true);
+    newModel.posY.set(src.posY.value + 20, save: false, noUndo: true);
+    newModel.order.set(getMaxOrder() + 1, save: false, noUndo: true);
+
+    logger.info('create new frame ${newModel.mid}');
+
+    await createToDB(newModel);
+    insert(newModel, postion: getAvailLength());
+    selectedMid = newModel.mid;
+    return newModel;
+  }
+
   Future<int> getFrames() async {
     int frameCount = 0;
     startTransaction();
