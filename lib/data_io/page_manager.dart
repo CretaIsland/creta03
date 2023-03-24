@@ -34,8 +34,8 @@ class PageManager extends CretaManager {
     subcribe();
   }
 
-  void clearFrame() {
-    logger.severe('clearFrame');
+  void clearFrameManager() {
+    logger.severe('clearFrameManager');
     for (FrameManager? ele in frameManagerList.values) {
       ele?.removeRealTimeListen();
     }
@@ -48,7 +48,7 @@ class PageManager extends CretaManager {
     return frameManagerList[pageMid];
   }
 
-  FrameManager newFrame(BookModel bookModel, PageModel pageModel) {
+  FrameManager newFrameManager(BookModel bookModel, PageModel pageModel) {
     FrameManager retval = FrameManager(
       bookModel: bookModel,
       pageModel: pageModel,
@@ -57,7 +57,7 @@ class PageManager extends CretaManager {
     return retval;
   }
 
-  Future<void> initFrame(FrameManager frameManager) async {
+  Future<void> initFrameManager(FrameManager frameManager) async {
     frameManager.clearAll();
     frameManager.addRealTimeListen();
     await frameManager.getFrames();

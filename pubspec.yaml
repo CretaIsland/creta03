@@ -75,6 +75,8 @@ dependencies:
   parallax_rain: ^1.1.0
   floating_bubbles: ^2.3.0
   starsview: ^0.0.2
+  flutter_dropzone: ^3.0.5
+  blobs: ^2.0.0
   
 dev_dependencies:
   flutter_test:

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
+import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
+import '../../../../../model/contents_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
@@ -30,6 +32,7 @@ class DraggableStickers extends StatefulWidget {
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
+  final void Function(ContentsModel) onDropContents;
 
   // ignore: use_key_in_widget_constructors
   const DraggableStickers({
@@ -46,6 +49,7 @@ class DraggableStickers extends StatefulWidget {
     required this.onTap,
     required this.onComplete,
     required this.onResizeButtonTap,
+    required this.onDropContents,
   });
   @override
   State<DraggableStickers> createState() => _DraggableStickersState();
@@ -81,6 +85,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               //     },
               //   ),
               // ),
+              _dropdownZone(),
               for (final sticker in stickers) _drawEachStiker(sticker),
               _selectedSticker != null ? _drawMiniMenu() : const SizedBox.shrink(),
             ],
@@ -291,5 +296,16 @@ class _DraggableStickersState extends State<DraggableStickers> {
         },
       );
     });
+  }
+
+  Widget _dropdownZone() {
+    return DropZoneWidget(
+      parentId: '',
+      onDroppedFile: (model) {
+        logger.info('contents added ${model.mid}');
+        model.isDynamicSize.set(true);
+        widget.onDropContents(model); // 동영상에 맞게 frame size 를 조절하라는 뜻
+      },
+    );
   }
 }

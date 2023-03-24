@@ -20,4 +20,6 @@ class StudioVariables {
   static double virtualHeight = 961;
 
   static bool handToolMode = false;
+
+  static double applyScale = 1;
 }

@@ -14,6 +14,8 @@
 
 // ignore_for_file: constant_identifier_names
 
+import 'dart:ui';
+
 enum BookType {
   none,
   presentaion,
@@ -193,4 +195,84 @@ enum DurationType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static DurationType fromInt(int? val) => DurationType.values[validCheck(val ?? none.index)];
+}
+
+// enum ContentsType {
+//   none,
+//   video,
+//   image,
+//   text,
+//   sheet,
+//   youtube,
+//   instagram,
+//   web,
+//   pdf,
+//   effect,
+//   free,
+//   end;
+
+//   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+//   static ContentsType fromInt(int? val) => ContentsType.values[validCheck(val ?? none.index)];
+// }
+
+enum TextAniType {
+  none,
+  tickerSide,
+  tickerUpDown,
+  rotate,
+  fade,
+  fidget,
+  typewriter,
+  wavy,
+  colorize,
+  textLiquidFill,
+  bounce,
+  shimmer,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static TextAniType fromInt(int? val) => TextAniType.values[validCheck(val ?? none.index)];
+}
+
+enum TextLineType {
+  none,
+  underline,
+  overline,
+  lineThrough,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static TextLineType fromInt(int? val) => TextLineType.values[validCheck(val ?? none.index)];
+}
+
+enum PlayState {
+  none,
+  init,
+  start,
+  pause,
+  disposed,
+  manualPlay,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static PlayState fromInt(int? val) => PlayState.values[validCheck(val ?? none.index)];
+}
+
+TextAlign intToTextAlign(int t) {
+  switch (t) {
+    case 0:
+      return TextAlign.left;
+    case 1:
+      return TextAlign.right;
+    case 2:
+      return TextAlign.center;
+    case 3:
+      return TextAlign.justify;
+    case 4:
+      return TextAlign.start;
+    case 5:
+      return TextAlign.end;
+    case 6:
+  }
+  return TextAlign.center;
 }

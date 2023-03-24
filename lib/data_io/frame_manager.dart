@@ -7,6 +7,7 @@ import '../model/book_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
+import 'contents_manager.dart';
 import 'creta_manager.dart';
 
 //FrameManager? frameManagerHolder;
@@ -16,6 +17,8 @@ class FrameManager extends CretaManager {
   BookModel bookModel;
   //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey> frameKeyMap = {};
+
+  Map<String, ContentsManager?> contentsManagerList = {};
 
   FrameManager({required this.pageModel, required this.bookModel}) : super('creta_frame') {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
@@ -85,15 +88,58 @@ class FrameManager extends CretaManager {
     await queryFromDB(query, orderBy: orderBy, limit: limit);
     logger.finest('getFrames ${modelList.length}');
 
-    for (var ele in modelList) {
-      if (ele.mid == 'frame=38a8223f-0da4-4821-beea-ffd78de763d6') {
-        FrameModel model = ele as FrameModel;
-        logger.fine(
-            'x,y,w,h= ${model.posX.value}, ${model.posY.value}, ${model.width.value},${model.height.value}');
-      }
-    }
-
     updateLastOrder();
     return modelList.length;
+  }
+
+  void clearContentsManager() {
+    logger.severe('clearContentsManager');
+    for (ContentsManager? ele in contentsManagerList.values) {
+      ele?.removeRealTimeListen();
+    }
+    for (String mid in contentsManagerList.keys) {
+      saveManagerHolder?.unregisterManager('frame', postfix: mid);
+    }
+  }
+
+  ContentsManager? findContentsManager(String pageMid) {
+    return contentsManagerList[pageMid];
+  }
+
+  ContentsManager newContentsManager(FrameModel frameModel) {
+    ContentsManager retval = ContentsManager(
+      pageModel: pageModel,
+      frameModel: frameModel,
+    );
+    contentsManagerList[frameModel.mid] = retval;
+    return retval;
+  }
+
+  Future<void> initContentsManager(ContentsManager frameManager) async {
+    frameManager.clearAll();
+    frameManager.addRealTimeListen();
+    await frameManager.getContents();
+    //frameManager.setSelected(0);  처음에 프레임에 선택되어 있지 않다.
+  }
+
+  FrameModel? getSelectedFrame() {
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    ContentsManager? frameManager = contentsManagerList[pageModel.mid];
+    if (frameManager == null) {
+      return null;
+    }
+    return frameManager.getSelected() as FrameModel?;
+  }
+
+  ContentsManager? getSelectedFrameManager() {
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    ContentsManager? frameManager = contentsManagerList[pageModel.mid];
+    return frameManager;
   }
 }

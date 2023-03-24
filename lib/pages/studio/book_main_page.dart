@@ -74,7 +74,7 @@ class _BookMainPageState extends State<BookMainPage> {
   double heightWidthRatio = 0;
   double widthRatio = 0;
   double heightRatio = 0;
-  double applyScale = 1;
+  //double applyScale = 1;
   bool scaleChanged = false;
 
   double padding = 16;
@@ -219,7 +219,7 @@ class _BookMainPageState extends State<BookMainPage> {
     super.dispose();
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
-    BookMainPage.pageManagerHolder?.clearFrame();
+    BookMainPage.pageManagerHolder?.clearFrameManager();
 
     saveManagerHolder?.stopTimer();
     saveManagerHolder?.unregisterManager('book');
@@ -340,10 +340,10 @@ class _BookMainPageState extends State<BookMainPage> {
         StudioVariables.displayHeight - CretaConstant.appbarHeight - LayoutConst.topMenuBarHeight;
     StudioVariables.workRatio = StudioVariables.workHeight / StudioVariables.workWidth;
 
-    applyScale = StudioVariables.scale / StudioVariables.fitScale;
+    StudioVariables.applyScale = StudioVariables.scale / StudioVariables.fitScale;
     if (StudioVariables.autoScale == true || scaleChanged == true) {
-      StudioVariables.virtualWidth = StudioVariables.workWidth * applyScale;
-      StudioVariables.virtualHeight = StudioVariables.workHeight * applyScale;
+      StudioVariables.virtualWidth = StudioVariables.workWidth * StudioVariables.applyScale;
+      StudioVariables.virtualHeight = StudioVariables.workHeight * StudioVariables.applyScale;
     }
     scaleChanged = false;
 
@@ -757,16 +757,11 @@ class _BookMainPageState extends State<BookMainPage> {
     );
 
     if (BookMainPage.selectedStick != LeftMenuEnum.None) {
-      //if (applyScale >= StudioVariables.fitScale) {
       return Positioned(
         left: LayoutConst.leftMenuWidth,
         top: 0,
         child: scrollBox,
       );
-      //}
-      // return Center(
-      //   child: scrollBox,
-      // );
     }
 
     return scrollBox;

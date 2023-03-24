@@ -12,6 +12,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../common/creta_utils.dart';
+import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
 import '../../../../design_system/creta_font.dart';
@@ -169,6 +170,14 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
           _sendEvent?.sendEvent(model);
           BookMainPage.miniMenuNotifier?.notify();
         }
+      },
+      onDropContents: (model) async {
+        logger.info('onDropContents');
+        FrameModel frameModel = await _frameManager!.createNextFrame();
+        ContentsManager contentsManager = _frameManager!.newContentsManager(frameModel);
+        await contentsManager.create(model);
+
+        _frameManager!.notify();
       },
       stickerList: getStickerList(),
     );

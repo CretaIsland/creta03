@@ -53,11 +53,11 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
     _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
     if (_frameManager == null) {
-      _frameManager = BookMainPage.pageManagerHolder!.newFrame(
+      _frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
       );
-      await BookMainPage.pageManagerHolder!.initFrame(_frameManager!);
+      await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!);
     }
     _onceDBGetComplete = true;
   }

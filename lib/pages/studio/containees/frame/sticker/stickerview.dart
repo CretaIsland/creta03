@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
+import '../../../../../model/contents_model.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
@@ -26,25 +27,28 @@ class StickerView extends StatefulWidget {
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
+  final void Function(ContentsModel) onDropContents;
 
   final double height; // height of the editor view
   final double width; // width of the editor view
 
   // ignore: use_key_in_widget_constructors
-  const StickerView(
-      {required this.stickerList,
-      required this.onUpdate,
-      required this.onFrameDelete,
-      required this.onFrameBack,
-      required this.onFrameFront,
-      required this.onFrameMain,
-      required this.onFrameRotate,
-      required this.onFrameCopy,
-      required this.onTap,
-      required this.onComplete,
-      required this.onResizeButtonTap,
-      required this.height,
-      required this.width});
+  const StickerView({
+    required this.stickerList,
+    required this.onUpdate,
+    required this.onFrameDelete,
+    required this.onFrameBack,
+    required this.onFrameFront,
+    required this.onFrameMain,
+    required this.onFrameRotate,
+    required this.onFrameCopy,
+    required this.onTap,
+    required this.onComplete,
+    required this.onResizeButtonTap,
+    required this.height,
+    required this.width,
+    required this.onDropContents,
+  });
 
   // Method for saving image of the editor view as Uint8List
   // You have to pass the imageQuality as per your requirement (ImageQuality.low, ImageQuality.medium or ImageQuality.high)
@@ -129,6 +133,7 @@ class StickerViewState extends State<StickerView> {
                     onTap: widget.onTap,
                     onResizeButtonTap: widget.onResizeButtonTap,
                     onComplete: widget.onComplete,
+                    onDropContents: widget.onDropContents,
                   ),
                 ),
               ),
