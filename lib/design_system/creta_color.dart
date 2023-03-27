@@ -54,6 +54,10 @@ class CretaColor {
   static const MaterialColor red = MaterialColor(
     _red,
     <int, Color>{
+      100: Color(0xffFAEDE6),
+      200: Color(0xffFAD4C0),
+      300: Color(0xffFAB796),
+      400: Color(0xffFF9159),
       500: Color(_red),
       600: Color(0xffE04E05),
       700: Color(0xffAF3D04),

@@ -40,6 +40,7 @@ enum CretaButtonColor {
   skypurple,
   black,
   red,
+  redAndWhiteTitle,
   transparent,
 }
 
@@ -180,6 +181,10 @@ class CretaButton extends StatefulWidget {
       fgColor = CretaColor.red;
       fgHoverColor = CretaColor.red[600];
       fgClickColor = CretaColor.red[700];
+    } else if (buttonColor == CretaButtonColor.redAndWhiteTitle) {
+      bgColor = CretaColor.red[400]!;
+      hoverColor = CretaColor.red[500]!;
+      clickColor = CretaColor.red[600]!;
     } else if (buttonColor == CretaButtonColor.transparent) {
       bgColor = Colors.transparent;
       hoverColor = Colors.transparent;
