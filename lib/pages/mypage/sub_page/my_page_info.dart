@@ -29,9 +29,9 @@ class _MyPageInfoState extends State<MyPageInfo> {
   FirebaseAppStorage? firebaseAppStorage;
 
   // dropdownmenu item
-  List<Widget> countryDropDownItem = [];
-  List<Widget> languageDropDownItem = [];
-  List<Widget> jobDropDownItem = [];
+  List<Widget> countryDropdownItem = [];
+  List<Widget> languageDropdownItem = [];
+  List<Widget> jobDropdownItem = [];
 
 
   @override
@@ -39,13 +39,13 @@ class _MyPageInfoState extends State<MyPageInfo> {
     super.initState();
 
     for (var element in CretaMyPageLang.countryList) {
-      countryDropDownItem.add(Text(element));
+      countryDropdownItem.add(Text(element));
     }
     for (var element in CretaMyPageLang.languageList) {
-      languageDropDownItem.add(Text(element));
+      languageDropdownItem.add(Text(element));
     }
     for (var element in CretaMyPageLang.jobList) {
-      jobDropDownItem.add(Text(element));
+      jobDropdownItem.add(Text(element));
     }
 
     firebaseAppStorage = FirebaseAppStorage();
@@ -63,7 +63,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
   Widget mainComponent() {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
-      child: SizedBox( 
+      child: widget.width < 700 ? Container() : SizedBox( 
         width: widget.width,
         child: Padding(
           padding: const EdgeInsets.only(left: 165.0, top: 72.0),
@@ -170,21 +170,21 @@ class _MyPageInfoState extends State<MyPageInfo> {
                     children: [
                       CretaWidgetDropDown(
                         width: 120,
-                        items: countryDropDownItem, 
+                        items: countryDropdownItem, 
                         defaultValue: 0, 
                         onSelected: (value) { }
                       ),
                       const SizedBox(height: 13),  
                       CretaWidgetDropDown(
                         width: 120,
-                        items: languageDropDownItem, 
+                        items: languageDropdownItem, 
                         defaultValue: 0, 
                         onSelected: (value) { }
                       ),
                       const SizedBox(height: 13),  
                       CretaWidgetDropDown(
                         width: 120,
-                        items: jobDropDownItem, 
+                        items: jobDropdownItem, 
                         defaultValue: 0, 
                         onSelected: (value) { }
                       ),
@@ -199,7 +199,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                   await firebaseAppStorage!.uploadFile("my_profile.jpg", _pickedFile!.mimeType.toString(), _pickedFileBytes!);
                 }
               ),
-              const SizedBox(height: 50)
+              widget.height > 967 ? SizedBox(height: widget.height - 967 / 2) : Container()
             ],
           ),
         ),

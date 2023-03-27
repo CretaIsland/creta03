@@ -12,12 +12,16 @@ class MyPageTeamManage extends StatefulWidget {
 }
 
 class _MyPageTeamManageState extends State<MyPageTeamManage> {
+
+  Widget mainComponent() {
+    return Container(
+      width: widget.width,
+      height: widget.height
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("TeamManage"),
-      ),
-    );
+    return mainComponent();
   }
 }
