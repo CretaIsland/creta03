@@ -22,5 +22,37 @@ class CretaMyPageLang {
   ];
   static String myTeam = '내 팀';
 
+  static List<String> infoField = [
+    '사진',
+    '닉네임',
+    '이메일',
+    '연락처',
+    '비밀번호',
+    '국가',
+    '언어',
+    '직업',
+  ];
+  static List<String> countryList = [
+    '대한민국',
+    '미국',
+    '일본',
+    '중국',
+    '프랑스'
+  ];
+  static List<String> languageList = [
+    '한국어',
+    'English',
+    '日本語',
+    '中文',
+    'français'
+  ];
+  static List<String> jobList = [
+    '학생',
+    '선생님',
+    '디자이너',
+    '개발자',
+    '일반 사용자'
+  ];
+
 
 }

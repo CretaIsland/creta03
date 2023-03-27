@@ -77,6 +77,7 @@ dependencies:
   starsview: ^0.0.2
   flutter_dropzone: ^3.0.5
   blobs: ^2.0.0
+  image_picker: ^0.8.7
   
 dev_dependencies:
   flutter_test:

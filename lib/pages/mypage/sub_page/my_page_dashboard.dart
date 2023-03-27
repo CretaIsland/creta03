@@ -9,8 +9,7 @@ class MyPageDashBoard extends StatefulWidget {
   
   final double width;
   final double height;
-  final ScrollController scrollController;
-  const MyPageDashBoard({super.key, required this.width, required this.height, required this.scrollController});
+  const MyPageDashBoard({super.key, required this.width, required this.height});
 
   @override
   State<MyPageDashBoard> createState() => _MyPageDashBoardState();

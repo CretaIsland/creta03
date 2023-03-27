@@ -168,7 +168,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       case AppRoutes.myPageTeamManage:
         return MyPageTeamManage(width: size.width, height: size.height + LayoutConst.cretaBannerMinHeight);
       default:
-        return MyPageDashBoard(width: size.width, height: size.height + LayoutConst.cretaBannerMinHeight, scrollController: ScrollController());
+        return MyPageDashBoard(width: size.width, height: size.height + LayoutConst.cretaBannerMinHeight);
     }
   }
 
