@@ -60,28 +60,45 @@ class CommunityCommentPane extends StatefulWidget {
 
 class _CommunityCommentPaneState extends State<CommunityCommentPane> {
   late List<CretaCommentData> _cretaCommentList;
+  late CretaCommentData _newData;
 
   @override
   void initState() {
     super.initState();
     _cretaCommentList = CommunitySampleData.getCretaCommentList();
-  }
-
-  Widget _getCommentWidget(CretaCommentData commentData) {
-    return SizedBox(
-      height: 61,
-      child: Text(commentData.comment),
+    _newData = CretaCommentData(
+      key: GlobalKey().toString(),
+      name: '',
+      creator: '',
+      comment: '',
+      dateTime: DateTime.now(),
+      //parentKey: null,
     );
   }
 
-  List<Widget> _getCommentList(String parentKey) {
+  Widget _getCommentWidget(double width, CretaCommentData commentData, {double indentSize = 0}) {
+    return Container(
+      ///height: 61,
+      padding: EdgeInsets.fromLTRB(indentSize, 0, 0, 0),
+      child: CretaCommentBar(
+        data : commentData,
+        onSearch: (value) {},
+        hintText: '',
+        showEditButton: true,
+        width: width - indentSize,
+        thumb: Container(color: Colors.red,),
+      ),
+    );
+  }
+
+  List<Widget> _getCommentList(double width, String parentKey) {
     List<Widget> retList = [];
     for(CretaCommentData data in _cretaCommentList) {
       if (data.parentKey == parentKey) {
         //print('key:${data.parentKey}, name:${data.name}, comment:${data.comment}');
-        retList.add(_getCommentWidget(data));
+        retList.add(_getCommentWidget(width, data, indentSize: parentKey.isEmpty ? 0 : 40+18));
         if (parentKey.isEmpty) {
-          retList.addAll(_getCommentList(data.key));
+          retList.addAll(_getCommentList(width, data.key));
         }
       }
     }
@@ -100,12 +117,14 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
           !widget.showAddCommentBar
               ? Container()
               : CretaCommentBar(
+                  data: _newData,
                   hintText: '욕설, 비방 등은 경고 없이 삭제될 수 있습니다.',
                   onSearch: (text) {},
                   width: widget.paneWidth,
                   thumb: Icon(Icons.account_circle),
+                  showEditButton: false,
                 ),
-          ..._getCommentList(''),
+          ..._getCommentList(widget.paneWidth ?? 0, ''),
         ],
       ),
     );

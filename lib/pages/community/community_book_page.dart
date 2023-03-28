@@ -2,6 +2,8 @@
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
@@ -50,6 +52,13 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
     super.initState();
 
     _cretaRelatedBookList = CommunitySampleData.getCretaBookList();
+
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+      }
+    });
+    _controller.text = _description;
   }
 
   Widget _getHashtagWidget(String hashtag) {
@@ -122,95 +131,81 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
         ),
         padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              '크레타북 01', //'[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
-              overflow: TextOverflow.ellipsis,
-              style: CretaFont.titleELarge.copyWith(color: Colors.white),
-            ),
-            SizedBox(width: 20),
-            // CretaElevatedButton(
-            //   caption: '이지금 [IU Official]',
-            //   captionStyle: CretaFont.bodyMedium.copyWith(color: Colors.white),
-            //   icon: Icon(Icons.person_pin, color: Colors.white, size: 16),
-            //   bgColor: CretaColor.primary,
-            //   bgSelectedColor: CretaColor.primary[600]!,
-            //   bgHoverColor: CretaColor.primary[500]!,
-            //   bgHoverSelectedColor: CretaColor.primary,
-            //   fgColor: CretaColor.primary,
-            //   fgSelectedColor: CretaColor.primary,
-            //   borderColor: CretaColor.primary,
-            //   borderSelectedColor: CretaColor.primary,
-            //   onPressed: () {},
-            // ),
-            BTN.fill_gray_it_m(
-              text: '이지금 [IU Official]',
-              icon: Icons.account_circle,
-              onPressed: () {},
-              width: null,
-              buttonColor: CretaButtonColor.transparent,
-              textColor: Colors.white,
-              alwaysShowIcon: true,
-            ),
-            // InkWell(
-            //   onTap: () {},
-            //   child: Row(
-            //     children: [
-            //       Icon(Icons.person_pin, color: Colors.white, size: 16),
-            //       SizedBox(width:8),
-            //       Text(
-            //         '이지금 [IU Official]',
-            //         overflow: TextOverflow.ellipsis,
-            //         style: CretaFont.bodyMedium.copyWith(color: Colors.white),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            SizedBox(width: 20),
-            Text(
-              '2023.03.01',
-              style: CretaFont.bodyMedium.copyWith(color: Colors.white),
-            ),
-            SizedBox(width: 20),
-            Text(
-              '조회수 123,456회',
-              style: CretaFont.bodyMedium.copyWith(color: Colors.white),
-            ),
-            Expanded(child: Container()),
-            BTN.fill_gray_i_l(
-              icon: Icons.edit_outlined,
-              onPressed: () {},
-              buttonColor: CretaButtonColor.blueAndWhiteTitle,
-              iconColor: Colors.white,
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
+                      overflow: TextOverflow.ellipsis,
+                      style: CretaFont.titleELarge.copyWith(color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  BTN.fill_gray_it_m(
+                    text: '이지금 [IU Official]',
+                    icon: Icons.account_circle,
+                    onPressed: () {},
+                    width: null,
+                    buttonColor: CretaButtonColor.transparent,
+                    textColor: Colors.white,
+                    alwaysShowIcon: true,
+                  ),
+                  SizedBox(width: 20),
+                  Text(
+                    '2023.03.01',
+                    style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                  SizedBox(width: 20),
+                  Text(
+                    '조회수 123,456회',
+                    style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
             ),
             SizedBox(width: 12),
-            BTN.fill_gray_it_l(
-              icon: Icons.favorite_border_outlined,
-              text: '123',
-              onPressed: () {},
-              buttonColor: CretaButtonColor.transparent,
-              textColor: Colors.white,
-              width: null,
-              sidePaddingSize: 8,
-            ),
-            SizedBox(width: 13),
-            BTN.fill_gray_itt_l(
-              icon: Icons.copy_rounded,
-              text: '복제하기',
-              subText: '123',
-              onPressed: () {},
-              buttonColor: CretaButtonColor.skyTitle,
-              textColor: Colors.white,
-              subTextColor: CretaColor.primary[200],
-              width: null,
-              sidePaddingSize: 8,
-            ),
-            SizedBox(width: 12),
-            BTN.fill_gray_i_l(
-              icon: Icons.menu_outlined,
-              onPressed: () {},
-              buttonColor: CretaButtonColor.transparent,
-              iconColor: Colors.white,
+            Row(
+              children: [
+                BTN.fill_gray_i_l(
+                  icon: Icons.edit_outlined,
+                  onPressed: () {},
+                  buttonColor: CretaButtonColor.blueAndWhiteTitle,
+                  iconColor: Colors.white,
+                ),
+                SizedBox(width: 12),
+                BTN.fill_gray_it_l(
+                  icon: Icons.favorite_border_outlined,
+                  text: '123',
+                  onPressed: () {},
+                  buttonColor: CretaButtonColor.transparent,
+                  textColor: Colors.white,
+                  width: null,
+                  sidePaddingSize: 8,
+                ),
+                SizedBox(width: 13),
+                BTN.fill_gray_itt_l(
+                  icon: Icons.copy_rounded,
+                  text: '복제하기',
+                  subText: '123',
+                  onPressed: () {},
+                  buttonColor: CretaButtonColor.skyTitle,
+                  textColor: Colors.white,
+                  subTextColor: CretaColor.primary[200],
+                  width: null,
+                  sidePaddingSize: 8,
+                ),
+                SizedBox(width: 12),
+                BTN.fill_gray_i_l(
+                  icon: Icons.menu_outlined,
+                  onPressed: () {},
+                  buttonColor: CretaButtonColor.transparent,
+                  iconColor: Colors.white,
+                ),
+              ],
             ),
           ],
         ),
@@ -277,156 +272,246 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
             !bookMouseOver
                 ? Container()
                 : Container(
-              padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: Container()),
-                  BTN.fill_blue_i_l(
-                    icon: Icons.share_outlined,
-                    buttonColor: CretaButtonColor.blueGray,
-                    onPressed: () {},
+                    padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: Container()),
+                        BTN.fill_blue_i_l(
+                          icon: Icons.share_outlined,
+                          buttonColor: CretaButtonColor.blueGray,
+                          onPressed: () {},
+                        ),
+                        SizedBox(width: 12),
+                        BTN.fill_blue_i_l(
+                          icon: Icons.file_download_outlined,
+                          buttonColor: CretaButtonColor.blueGray,
+                          onPressed: () {},
+                        ),
+                        SizedBox(width: 12),
+                        BTN.fill_blue_i_l(
+                          icon: Icons.playlist_add_outlined,
+                          buttonColor: CretaButtonColor.blueGray,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(width: 12),
-                  BTN.fill_blue_i_l(
-                    icon: Icons.file_download_outlined,
-                    buttonColor: CretaButtonColor.blueGray,
-                    onPressed: () {},
-                  ),
-                  SizedBox(width: 12),
-                  BTN.fill_blue_i_l(
-                    icon: Icons.playlist_add_outlined,
-                    buttonColor: CretaButtonColor.blueGray,
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
             !bookMouseOver
                 ? Container()
                 : SizedBox(
-              width: size.width,
-              height: size.height,
-              child: Center(
-                child: BTN.opacity_gray_i_el(
-                  icon: Icons.play_arrow,
-                  onPressed: () {},
-                ),
-              ),
-            ),
+                    width: size.width,
+                    height: size.height,
+                    child: Center(
+                      child: BTN.opacity_gray_i_el(
+                        icon: Icons.play_arrow,
+                        onPressed: () {},
+                      ),
+                    ),
+                  ),
             !bookMouseOver
                 ? Container()
                 : Container(
-              height: size.height,
-              padding: EdgeInsets.fromLTRB(20, 24, 20, 16-4),
-              child: Column(
-                children: [
-                  Expanded(child: Container()),
-                  CretaProgressSlider(
-                    height: 24,
-                    barThickness: 8,
-                    min: 0,
-                    max: 100,
-                    value: _value,
-                    inactiveTrackColor: Colors.white,
-                    onChanged: (value) {
-                      setState(() {
-                        _value = value;
-                        //print('value=$value');
-                      });
-                    },
+                    height: size.height,
+                    padding: EdgeInsets.fromLTRB(20, 24, 20, 16 - 4),
+                    child: Column(
+                      children: [
+                        Expanded(child: Container()),
+                        CretaProgressSlider(
+                          height: 24,
+                          barThickness: 8,
+                          min: 0,
+                          max: 100,
+                          value: _value,
+                          inactiveTrackColor: Colors.white,
+                          onChanged: (value) {
+                            setState(() {
+                              _value = value;
+                              //print('value=$value');
+                            });
+                          },
+                        ),
+                        // MouseRegion(
+                        //   onEnter: (val) {
+                        //     setState(() {
+                        //       sliderMouseOver = true;
+                        //     });
+                        //   },
+                        //   onExit: (val) {
+                        //     setState(() {
+                        //       sliderMouseOver = false;
+                        //     });
+                        //   },
+                        //   child: Container(
+                        //     height: 8,
+                        //     //color: Colors.red,
+                        //     margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                        //     decoration: BoxDecoration(
+                        //       // crop
+                        //       borderRadius: BorderRadius.circular(4.0),
+                        //     ),
+                        //     clipBehavior: Clip.antiAlias,
+                        //     child: SliderTheme(
+                        //       data: SliderThemeData(
+                        //         //overlayShape: SliderComponentShape.noOverlay,
+                        //         trackHeight: 8.0,
+                        //         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 4, elevation: 0, pressedElevation: 0),
+                        //         thumbColor: sliderMouseOver ? null : Colors.transparent,
+                        //         inactiveTrackColor: Colors.white,
+                        //         overlayColor: Colors.transparent,
+                        //         //disabledThumbColor: Colors.transparent,
+                        //         // overlappingShapeStrokeColor: Colors.transparent,
+                        //         // valueIndicatorColor: Colors.transparent,
+                        //         trackShape: CustomTrackShape(),
+                        //       ),
+                        //       child: Slider(
+                        //         //thumbColor: sliderMouseOver ? null : Colors.transparent,
+                        //         min: 0,
+                        //         max: 100,
+                        //         value: _value,
+                        //         onChanged: (double value) {
+                        //           setState(() {
+                        //             _value = value;
+                        //             //print('value=$value');
+                        //           });
+                        //         },
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
                   ),
-                  // MouseRegion(
-                  //   onEnter: (val) {
-                  //     setState(() {
-                  //       sliderMouseOver = true;
-                  //     });
-                  //   },
-                  //   onExit: (val) {
-                  //     setState(() {
-                  //       sliderMouseOver = false;
-                  //     });
-                  //   },
-                  //   child: Container(
-                  //     height: 8,
-                  //     //color: Colors.red,
-                  //     margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                  //     decoration: BoxDecoration(
-                  //       // crop
-                  //       borderRadius: BorderRadius.circular(4.0),
-                  //     ),
-                  //     clipBehavior: Clip.antiAlias,
-                  //     child: SliderTheme(
-                  //       data: SliderThemeData(
-                  //         //overlayShape: SliderComponentShape.noOverlay,
-                  //         trackHeight: 8.0,
-                  //         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 4, elevation: 0, pressedElevation: 0),
-                  //         thumbColor: sliderMouseOver ? null : Colors.transparent,
-                  //         inactiveTrackColor: Colors.white,
-                  //         overlayColor: Colors.transparent,
-                  //         //disabledThumbColor: Colors.transparent,
-                  //         // overlappingShapeStrokeColor: Colors.transparent,
-                  //         // valueIndicatorColor: Colors.transparent,
-                  //         trackShape: CustomTrackShape(),
-                  //       ),
-                  //       child: Slider(
-                  //         //thumbColor: sliderMouseOver ? null : Colors.transparent,
-                  //         min: 0,
-                  //         max: 100,
-                  //         value: _value,
-                  //         onChanged: (double value) {
-                  //           setState(() {
-                  //             _value = value;
-                  //             //print('value=$value');
-                  //           });
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _getBookDescriptionPane(Size size) {
-    List<String> descList = [
-      '한강의 사계절을 한강 철교를 중심으로 표현해 보았습니다. 즐겁게 감상하세요.',
-      '보다 자세한 사항은 아래 블로그를 방문해 주세요.',
-      '',
-      '이 콘텐츠의 사용 조건(저작권) : MIT',
-      '이 콘텐츠가 포함하고 있는 원본 저작권 표시 : YG Entertainment, SME, Hive...',
-    ];
+  bool _clickedDescriptionEditButton = false;
+  String _description =
+      '한강의 사계절을 한강 철교를 중심으로 표현해 보았습니다. 즐겁게 감상하세요.\n보다 자세한 사항은 아래 블로그를 방문해 주세요.\n\n이 콘텐츠의 사용 조건(저작권) : MIT\n이 콘텐츠가 포함하고 있는 원본 저작권 표시 : YG Entertainment, SME, Hive...';
+  String _descriptionOld = '';
+  final FocusNode _focusNode = FocusNode();
+  final TextEditingController _controller = TextEditingController();
 
+  Widget _getBookDescriptionPane(Size size) {
+    _descriptionOld = _description;
     return SizedBox(
       width: size.width,
       //height: size.height,
       //padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Text(
-            '내용',
-            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
-            textAlign: TextAlign.left,
-          ),
-          SizedBox(height: 19),
-          Wrap(
-            direction: Axis.vertical,
-            spacing: 13, // 상하 간격
-            children: descList.map((item) => SizedBox(
-              width: size.width,
-              child: Text(
-                item,
-                style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
-                overflow: TextOverflow.ellipsis,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '내용',
+                style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+                textAlign: TextAlign.left,
               ),
-            )).toList(),
+              SizedBox(height: 19),
+              RawKeyboardListener(
+                focusNode: FocusNode(),
+                onKey: (RawKeyEvent event) {
+                  if (event.logicalKey == LogicalKeyboardKey.escape) {
+                    // Do something when ESC key is pressed
+                    setState(() {
+                      //print('_description(1)=$_description');
+                      _controller.text = _description;
+                      _clickedDescriptionEditButton = false;
+                    });
+                  }
+                },
+                child: CupertinoTextField(
+                  minLines: 1,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  focusNode: _focusNode,
+                  padding: EdgeInsets.fromLTRB(15, 0, 15, 6),
+                  enabled: _clickedDescriptionEditButton,
+                  autofocus: true,
+                  decoration: BoxDecoration(
+                    color: _clickedDescriptionEditButton ? Colors.white : Color.fromARGB(255, 250, 250, 250),
+                    border: _clickedDescriptionEditButton
+                        ? Border.all(color: CretaColor.text[200]!)
+                        : Border.all(color: Color.fromARGB(255, 250, 250, 250)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  controller: _controller,
+                  //placeholder: _clicked ? null : widget.hintText,
+                  placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
+                  // prefixInsets: EdgeInsetsDirectional.only(start: 18),
+                  // prefixIcon: Container(),
+                  style: CretaFont.bodyMedium.copyWith(
+                    color: CretaColor.text[700],
+                    height: 2.0,
+                  ),
+                  // suffixInsets: EdgeInsetsDirectional.only(end: 18),
+                  // suffixIcon: Icon(CupertinoIcons.search),
+                  suffixMode: OverlayVisibilityMode.always,
+                  onChanged: (value) {
+                    _descriptionOld = value;
+                  },
+                  onSubmitted: ((value) {
+                    _descriptionOld = value;
+                  }),
+                  onTapOutside: (event) {
+                    //logger.info('onTapOutside($_searchValue)');
+                    if (_clickedDescriptionEditButton) {
+                      setState(() {
+                        _description = _descriptionOld;
+                        //print('_description(2)=$_description');
+                        _clickedDescriptionEditButton = false;
+                      });
+                    }
+                  },
+                  // onSuffixTap: () {
+                  //   _searchValue = _controller.text;
+                  //   logger.finest('search $_searchValue');
+                  //   widget.onSearch(_searchValue);
+                  // },
+                  onTap: () {
+                    // setState(() {
+                    //   _clicked = true;
+                    // });
+                  },
+                ),
+              )
+              // Wrap(
+              //   direction: Axis.vertical,
+              //   spacing: 13, // 상하 간격
+              //   children: descList
+              //       .map((item) => SizedBox(
+              //             width: size.width,
+              //             child: Text(
+              //               item,
+              //               style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
+              //               overflow: TextOverflow.ellipsis,
+              //             ),
+              //           ))
+              //       .toList(),
+              // ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: Container()),
+              _clickedDescriptionEditButton
+                  ? Container()
+                  : BTN.fill_gray_200_i_s(
+                      icon: Icons.edit_outlined,
+                      onPressed: () {
+                        setState(() {
+                          _clickedDescriptionEditButton = true;
+                        });
+                      },
+                    ),
+            ],
           ),
         ],
       ),
@@ -525,8 +610,9 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
                   //   height: 600,
                   //   child: Center(child: Text('using contents list area')),
                   // ),
+                  SizedBox(height: 12),
                   // comments
-                  _getCommentsPane(Size(bookArea.width - 100, 600)),
+                  _getCommentsPane(Size(bookArea.width - 100 - 20, 600)),
                 ],
               ),
             ),
