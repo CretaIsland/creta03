@@ -1,37 +1,41 @@
 class CretaMyPageLang {
  
+  // 좌측 메뉴
   static String dashboard = '대시보드';
   static String info = '개인 정보';
   static String accountManage = '계정 관리';
   static String settings = '알림과 설정';
   static String teamManage = '팀 관리';
 
+
+  // 대시보드
   static String accountInfo = '계정 정보';
-  static List<String> accountInfoField = [
-    '등급',
-    '북 개수',
-    '요금제',
-    '남은 용량'
-  ];
-  static String lastRecord = '최근 요약';
-  static List<String> lastRecordField = [
-    '북 조회수',
-    '북 시청시간',
-    '좋아요 개수',
-    '댓글 개수'
-  ];
+  static String grade = '등급';
+  static String bookCount = '북 개수';
+  static String ratePlan = '요금제';
+  static String freeSpace = '남은 용량';
+
+  static String recentSummary = '최근 요약';
+  static String bookViewCount = '북 조회수'; 
+  static String bookViewTime = '북 시청시간';
+  static String likeCount = '좋아요 개수';
+  static String commentCount = '댓글 개수';
+
   static String myTeam = '내 팀';
 
-  static List<String> infoField = [
-    '사진',
-    '닉네임',
-    '이메일',
-    '연락처',
-    '비밀번호',
-    '국가',
-    '언어',
-    '직업',
-  ];
+  static String ratePlanChangeBTN = '요금제 전환';
+
+
+  // 개인 정보
+  static String profileImage = '사진';
+  static String nickname = '닉네임';
+  static String email = '이메일';
+  static String phoneNumber = '연락처';
+  static String password = '비밀번호';
+  static String country = '국가';
+  static String language = '언어';
+  static String job = '직업';
+
   static List<String> countryList = [
     '대한민국',
     '미국',
@@ -39,6 +43,7 @@ class CretaMyPageLang {
     '중국',
     '프랑스'
   ];
+
   static List<String> languageList = [
     '한국어',
     'English',
@@ -46,25 +51,41 @@ class CretaMyPageLang {
     '中文',
     'français'
   ];
+
   static List<String> jobList = [
+    '일반',
     '학생',
     '선생님',
     '디자이너',
-    '개발자',
-    '일반 사용자'
+    '개발자'
   ];
 
-  static String setPurpose = '용도 설정';
+  static String basicProfileImgBTN = '기본 이미지로 변경'; 
+  static String passwordChangeBTN = '비밀번호 변경';  
+  static String saveChangeBTN = '변경사항 저장'; 
+
+
+  // 계정 관리
+  static String purposeSetting = '용도 설정';
   static String usePresentation = '프레젠테이션 기능 사용하기';
-  static String useDisitalSignage = '디지털 사이니지 기능 사용하기';
-  static String paymentSystem = '요금제';
-  static String teamPaymentPhrase = '팀 요금제를 사용해보세요!';
-  static String setChannel = '채널 설정';
-  static String isPublicProfile = '프로필 공개';
-  static String publicProfilePhrase = '모든 사람들에게 프로필이 공개됩니다.';
-  static String setBackgroundImg = '배경 이미지 설정';
-  static String logout = '모든 기기에서 로그아웃';
+  static String useDigitalSignage = '디지털 사이니지 기능 사용하기';
+
+  static String ratePlanTip = '팀 요금제를 사용해보세요!';
+
+  static String channelSetting = '채널 설정';
+  static String publicProfile = '프로필 공개';
+  static String profileTip = '모든 사람들에게 프로필이 공개됩니다.';
+  static String backgroundImgSetting = '배경 이미지 설정';
+
+  static String allDeviceLogout = '모든 기기에서 로그아웃';
   static String removeAccount = '계정 탈퇴';
+
+  static String selectImgBTN = '이미지 선택';
+  static String logoutBTN = '로그아웃';
+  static String removeAccountBTN = '계정 탈퇴';
+
+
+
 
   static String myNotice = '내 알림';
   static String pushNotice = '푸시 알림';

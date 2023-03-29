@@ -1,8 +1,8 @@
+import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
+import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design_system/creta_color.dart';
-import '../../../design_system/creta_font.dart';
 
 
 class MyPageDashBoard extends StatefulWidget {
@@ -17,66 +17,83 @@ class MyPageDashBoard extends StatefulWidget {
 
 class _MyPageDashBoardState extends State<MyPageDashBoard> {
 
-  BoxDecoration dataComponentDeco = BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
-    border: Border.all(color: Colors.grey.shade200, width: 1)
-  );
 
-  Widget divideLine(double topMargin, double bottomMargin) {
-    return Container(
-      margin: EdgeInsets.only(top: topMargin, bottom: bottomMargin),
-      height: 1,
-      color: Colors.grey.shade200,
+  // 구분선
+  Widget divideLine({double leftPadding = 0, double topPadding = 0, double rightPadding = 0, double bottomPadding = 0}) {
+    return Padding(
+      padding: EdgeInsets.only(left: leftPadding, top: topPadding, right: rightPadding, bottom: bottomPadding), 
+      child: Container(
+        width: 400,
+        height: 1,
+        color: Colors.grey.shade200 ,
+      ),
     );
-  } 
+  }
+
+  // 프로필 이미지
+  Widget profileImg() {
+    return Container(
+      width: 200,
+      height: 200,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300, width: 1),
+        borderRadius: BorderRadius.circular(200.0),
+        image: DecorationImage(image: Image.network("https://image.genie.co.kr/Y/IMAGE/IMG_ARTIST/080/574/299/80574299_1603344703162_2_600x600.JPG").image, fit: BoxFit.cover)  
+      ),
+    );
+  }
 
   // 계정 정보
-  Widget accountInfoComponent() {
+  Widget accountInfoBox() {
     return Container(
       width: 400,
       height: 400,
-      decoration: dataComponentDeco,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200, width: 1),
+        borderRadius: BorderRadius.circular(20.0)
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 32, top: 32),
-            child: Text(CretaMyPageLang.accountInfo, textAlign: TextAlign.start, style: CretaFont.titleELarge),
+            padding: const EdgeInsets.only(left: 32.0, top: 32.0),
+            child: Text(CretaMyPageLang.accountInfo, style: CretaFont.titleELarge),
           ),
-          divideLine(32, 32),
+          divideLine(topPadding: 32.0, bottomPadding: 40.0),
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(CretaMyPageLang.accountInfoField[0], style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text(CretaMyPageLang.accountInfoField[1], style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text(CretaMyPageLang.accountInfoField[2], style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text(CretaMyPageLang.accountInfoField[3], style: CretaFont.bodyMedium),
-                  ],
-                ),
+              const SizedBox(width: 32.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(CretaMyPageLang.grade, style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text(CretaMyPageLang.bookCount, style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text(CretaMyPageLang.ratePlan, style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text(CretaMyPageLang.freeSpace, style: CretaFont.bodyMedium)
+                ],
               ),
-              const SizedBox(width: 32),
-              Padding(
-                padding: const EdgeInsets.only(left: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [ 
-                    Text('Creta Star', style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text('10', style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text('무료 개인', style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text('256 MB (전체 1024MB)', style: CretaFont.bodyMedium),
-                  ],
-                ),
-              )
+              const SizedBox(width: 40.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Creta Star", style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text("10", style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Row(
+                    children: [
+                      Text("무료 개인", style: CretaFont.bodyMedium),
+                      const SizedBox(width: 24),
+                      BTN.line_blue_t_m(text: CretaMyPageLang.ratePlanChangeBTN, onPressed: (){ })
+                    ],
+                  ),
+                  const SizedBox(height: 28.0),
+                  Text("256MB (전체 1024MB)", style: CretaFont.bodyMedium)
+                ],
+              ),
             ],
           )
         ],
@@ -85,58 +102,56 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   }
 
   // 최근 요약
-  Widget lastRecordComponent() {
+  Widget recentInfoBox() {
     return Container(
       width: 400,
       height: 400,
-      decoration: dataComponentDeco,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200, width: 1),
+        borderRadius: BorderRadius.circular(20.0)
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 32, top: 32, right: 32),
+            padding: const EdgeInsets.only(left: 32.0, top: 32.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(CretaMyPageLang.lastRecord, textAlign: TextAlign.start, style: CretaFont.titleELarge),
-                Text("지난 30일", textAlign: TextAlign.start, style: CretaFont.titleMedium),
+                Text(CretaMyPageLang.recentSummary, style: CretaFont.titleELarge), 
+                const SizedBox(width: 192),
+                Text("지난 30일", style: CretaFont.titleMedium),
               ],
-            ),
+            )
           ),
-          divideLine(32, 32),
+          divideLine(topPadding: 32.0, bottomPadding: 40.0),
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(CretaMyPageLang.lastRecordField[0], style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text(CretaMyPageLang.lastRecordField[1], style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text(CretaMyPageLang.lastRecordField[2], style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text(CretaMyPageLang.lastRecordField[3], style: CretaFont.bodyMedium),
-                  ],
-                ),
+              const SizedBox(width: 32.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(CretaMyPageLang.bookViewCount, style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text(CretaMyPageLang.bookViewTime, style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text(CretaMyPageLang.likeCount, style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text(CretaMyPageLang.commentCount, style: CretaFont.bodyMedium)
+                ],
               ),
-              const SizedBox(width: 32),
-              Padding(
-                padding: const EdgeInsets.only(left: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [ 
-                    Text('17', style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text('15 시간', style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text('3', style: CretaFont.bodyMedium),
-                    const SizedBox(height: 27),
-                    Text('5', style: CretaFont.bodyMedium),
-                  ],
-                ),
-              )
+              const SizedBox(width: 40.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("17", style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text("15 시간", style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text("3", style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                  Text("5", style: CretaFont.bodyMedium)
+                ],
+              ),
             ],
           )
         ],
@@ -145,93 +160,81 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   }
 
   // 내 팀
-  Widget myTeamComponent() {
+  Widget myTeamInfoBox() {
     return Container(
       width: 400,
       height: 400,
-      decoration: dataComponentDeco,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200, width: 1),
+        borderRadius: BorderRadius.circular(20.0)
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 32, top: 32),
-            child: Text(CretaMyPageLang.accountInfo, textAlign: TextAlign.start, style: CretaFont.titleELarge),
+            padding: const EdgeInsets.only(left: 32.0, top: 32.0),
+            child: Text(CretaMyPageLang.myTeam, style: CretaFont.titleELarge),
           ),
-          divideLine(32, 32),
+          divideLine(topPadding: 32.0, bottomPadding: 40.0),
           Padding(
-            padding: const EdgeInsets.only(left: 32),
+            padding: const EdgeInsets.only(left: 32.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('기적소리 (소유자)', style: CretaFont.bodyMedium),
-                const SizedBox(height: 27),
-                Text('위화감 (사용자)', style: CretaFont.bodyMedium),
-                const SizedBox(height: 27),
-                Text('이지적 (관리자)', style: CretaFont.bodyMedium),
-                const SizedBox(height: 27),
-                Text('고지식 (사용자)', style: CretaFont.bodyMedium),
+                Text("기적소리 (소유자)", style: CretaFont.bodyMedium),
+                const SizedBox(height: 28.0),
+                Text("위화감 (사용자)", style: CretaFont.bodyMedium),
+                const SizedBox(height: 28.0),
+                Text("이지적 (관리자)", style: CretaFont.bodyMedium),
+                const SizedBox(height: 28.0),
+                Text("고지식 (사용자)", style: CretaFont.bodyMedium)
               ],
-            ),
-          ),
+            )
+          )
         ],
       ),
     );
   }
 
-
-  Widget dataComponent() {
-    if(widget.width > 1300) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          accountInfoComponent(),
-          SizedBox(width: widget.width / 40),
-          lastRecordComponent(),
-          SizedBox(width: widget.width / 40),
-          myTeamComponent(),
-        ],
-      );
-    } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          accountInfoComponent(),
-          SizedBox(height: widget.width / 40),
-          lastRecordComponent(),
-          SizedBox(height: widget.width / 40),
-          myTeamComponent(),
-          SizedBox(height: widget.width / 40),
-        ],
-      );
-    }
-  }
-
   Widget mainComponent() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: widget.width < 500 ? Container() : SizedBox(
-        width: widget.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return SizedBox(
+      width: widget.width,
+      height: widget.height,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: widget.width > 400 ? Column(
           children: [
-            const SizedBox(height: 70),
-            Container(  // 프로필 사진
-              width: 200, 
-              height: 200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: Colors.grey.shade200, width: 2),
-                color: Colors.yellow
-              ),
-            ),
+            const SizedBox(height: 60),
+            profileImg(),
             const SizedBox(height: 40),
             const Text("사용자 닉네임", style: TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 40, color: CretaColor.text)),
             const SizedBox(height: 16),
             Text("csy_0102@sqisoft.com", style: CretaFont.buttonLarge),
             const SizedBox(height: 86),
-            dataComponent()
-          ]
-        ),
+            widget.width > 1280 ?
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  accountInfoBox(),
+                  const SizedBox(width: 40.0),
+                  recentInfoBox(),
+                  const SizedBox(width: 40.0),
+                  myTeamInfoBox()
+                ],
+              ) : 
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  accountInfoBox(),
+                  const SizedBox(height: 40.0),
+                  recentInfoBox(),
+                  const SizedBox(height: 40.0),
+                  myTeamInfoBox()
+                ],
+              ),
+            const SizedBox(height: 100)
+          ],
+        ) : Container()
       )
     );
   }
