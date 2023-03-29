@@ -612,6 +612,57 @@ abstract class CretaManager extends AbsExModelManager {
     return retval;
   }
 
+  List<T> listIterator<T>(T Function(AbsExModel) toElement) {
+    List<T> retval = [];
+    for (var model in modelList) {
+      var ele = toElement(model);
+      retval.add(ele);
+    }
+    return retval;
+  }
+
+  ///
+  ///
+  ///  Order 관련
+  ///
+  ///
+  ///
+
+  int length() => _orderMap.length;
+  bool isEmpty() => _orderMap.isEmpty;
+  bool isNotEmpty() => _orderMap.isNotEmpty;
+  double firstOrder() {
+    if (_orderMap.isNotEmpty) {
+      return _orderMap.deepSortByKey().keys.first;
+    }
+    return -1;
+  }
+
+  double lastOrder() {
+    if (_orderMap.isNotEmpty) {
+      return _orderMap.deepSortByKey().keys.last;
+    }
+    return -1;
+  }
+
+  double nextOrder(double currentOrder) {
+    bool matched = false;
+    for (double ele in _orderMap.deepSortByKey().keys) {
+      if (matched == true) {
+        return ele;
+      }
+      if (ele == currentOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    if (matched == true) {
+      // 끝까지 온것이다.  처음으로 돌아간다.
+      return _orderMap.deepSortByKey().keys.first;
+    }
+    return -1;
+  }
+
   void reOrdering() {
     lock();
     _orderMap.clear();
@@ -634,6 +685,10 @@ abstract class CretaManager extends AbsExModelManager {
       retval.add(ele);
     }
     return retval;
+  }
+
+  CretaModel? getNthOrder(double order) {
+    return _orderMap[order];
   }
 
   CretaModel? getNthModel(int index) {
@@ -736,7 +791,7 @@ abstract class CretaManager extends AbsExModelManager {
   ///
   ///
   @protected
-  double lastOrder = 0;
+  //double lastOrder = 0;
   @protected
   String selectedMid = '';
   @protected
@@ -753,15 +808,15 @@ abstract class CretaManager extends AbsExModelManager {
     return selectedMid == mid;
   }
 
-  void updateLastOrder() {
-    lock();
-    for (var ele in modelList) {
-      if (ele.order.value > lastOrder) {
-        lastOrder = ele.order.value;
-      }
-    }
-    unlock();
-  }
+  // void updateLastOrder() {
+  //   lock();
+  //   for (var ele in modelList) {
+  //     if (ele.order.value > lastOrder) {
+  //       lastOrder = ele.order.value;
+  //     }
+  //   }
+  //   unlock();
+  // }
 
   void setSelected(int index) {
     prevSelectedMid = selectedMid;

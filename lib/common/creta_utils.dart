@@ -274,4 +274,17 @@ class CretaUtils {
     if (target > max) return max;
     return target;
   }
+
+  static int getStringSize(String str) {
+    int retval = 0;
+    for (int byte in str.codeUnits.toList()) {
+      if (byte > 256) {
+        // It's 2 bytes character
+        retval += 2;
+      } else {
+        retval++;
+      }
+    }
+    return retval;
+  }
 }

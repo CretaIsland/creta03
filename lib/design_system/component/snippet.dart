@@ -4,6 +4,7 @@ import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
@@ -11,6 +12,7 @@ import '../../common/creta_constant.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
+import '../creta_color.dart';
 import '../creta_font.dart';
 import '../text_field/creta_text_field.dart';
 import '../buttons/creta_button_wrapper.dart';
@@ -33,6 +35,25 @@ extension GlobalKeyExtension on GlobalKey {
 
 class Snippet {
   static List<LogicalKeyboardKey> keys = [];
+
+  static Widget showWaitSign({double size = 40.0}) {
+    return LoadingAnimationWidget.fourRotatingDots(
+      color: CretaColor.primary,
+      size: 40.0,
+    );
+  }
+
+  static Widget errMsgWidget(AsyncSnapshot<Object> snapshot) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        'Error: ${snapshot.error}',
+        style: const TextStyle(fontSize: 8),
+      ),
+    );
+  }
+
+  static Widget defaultImage = Image.asset('creta_default.png', fit: BoxFit.cover);
 
   static Widget CretaScaffold({
     required Widget title,

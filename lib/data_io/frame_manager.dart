@@ -4,6 +4,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 import '../model/book_model.dart';
+import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
@@ -18,7 +19,7 @@ class FrameManager extends CretaManager {
   //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey> frameKeyMap = {};
 
-  Map<String, ContentsManager?> contentsManagerList = {};
+  ContentsManager? contentsManager;
 
   FrameManager({required this.pageModel, required this.bookModel}) : super('creta_frame') {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
@@ -35,28 +36,28 @@ class FrameManager extends CretaManager {
   }
 
   Future<FrameModel> createNextFrame() async {
-    updateLastOrder();
-    FrameModel defaultFrame = FrameModel.makeSample(++lastOrder, pageModel.mid);
+    FrameModel defaultFrame = FrameModel.makeSample(lastOrder() + 1, pageModel.mid);
     await createToDB(defaultFrame);
     insert(defaultFrame, postion: getAvailLength());
     selectedMid = defaultFrame.mid;
+    //reOrdering();
     return defaultFrame;
   }
 
   Future<FrameModel> copyFrame(FrameModel src) async {
-    updateLastOrder();
     FrameModel newModel = FrameModel('');
     newModel.copyFrom(src, newMid: newModel.mid);
 
     newModel.posX.set(src.posX.value + 20, save: false, noUndo: true);
     newModel.posY.set(src.posY.value + 20, save: false, noUndo: true);
-    newModel.order.set(getMaxOrder() + 1, save: false, noUndo: true);
+    newModel.order.set(lastOrder() + 1, save: false, noUndo: true);
 
     logger.info('create new frame ${newModel.mid}');
 
     await createToDB(newModel);
     insert(newModel, postion: getAvailLength());
     selectedMid = newModel.mid;
+    //reOrdering();
     return newModel;
   }
 
@@ -74,6 +75,7 @@ class FrameManager extends CretaManager {
       await createNextFrame();
       frameCount = 1;
     }
+    //reOrdering();
     endTransaction();
     return frameCount;
   }
@@ -87,59 +89,21 @@ class FrameManager extends CretaManager {
     orderBy['order'] = OrderDirection.ascending;
     await queryFromDB(query, orderBy: orderBy, limit: limit);
     logger.finest('getFrames ${modelList.length}');
-
-    updateLastOrder();
     return modelList.length;
   }
 
-  void clearContentsManager() {
-    logger.severe('clearContentsManager');
-    for (ContentsManager? ele in contentsManagerList.values) {
-      ele?.removeRealTimeListen();
-    }
-    for (String mid in contentsManagerList.keys) {
-      saveManagerHolder?.unregisterManager('frame', postfix: mid);
-    }
-  }
-
-  ContentsManager? findContentsManager(String pageMid) {
-    return contentsManagerList[pageMid];
-  }
-
   ContentsManager newContentsManager(FrameModel frameModel) {
-    ContentsManager retval = ContentsManager(
+    contentsManager ??= ContentsManager(
       pageModel: pageModel,
       frameModel: frameModel,
     );
-    contentsManagerList[frameModel.mid] = retval;
-    return retval;
+    return contentsManager!;
   }
 
-  Future<void> initContentsManager(ContentsManager frameManager) async {
-    frameManager.clearAll();
-    frameManager.addRealTimeListen();
-    await frameManager.getContents();
-    //frameManager.setSelected(0);  처음에 프레임에 선택되어 있지 않다.
-  }
-
-  FrameModel? getSelectedFrame() {
-    PageModel? pageModel = getSelected() as PageModel?;
-    if (pageModel == null) {
+  ContentsModel? getSelectedContents() {
+    if (contentsManager == null) {
       return null;
     }
-    ContentsManager? frameManager = contentsManagerList[pageModel.mid];
-    if (frameManager == null) {
-      return null;
-    }
-    return frameManager.getSelected() as FrameModel?;
-  }
-
-  ContentsManager? getSelectedFrameManager() {
-    PageModel? pageModel = getSelected() as PageModel?;
-    if (pageModel == null) {
-      return null;
-    }
-    ContentsManager? frameManager = contentsManagerList[pageModel.mid];
-    return frameManager;
+    return contentsManager?.getSelected() as ContentsModel?;
   }
 }

@@ -77,6 +77,13 @@ dependencies:
   starsview: ^0.0.2
   flutter_dropzone: ^3.0.5
   blobs: ^2.0.0
+  video_player: ^2.6.0
+  youtube_player_iframe: ^3.1.0
+  animated_text_kit: ^4.2.2
+  auto_size_text: ^3.0.0
+  scroll_loop_auto_scroll: ^0.0.5
+  widget_and_text_animator: ^1.0.9
+  text_to_speech: ^0.2.3
   
 dev_dependencies:
   flutter_test:

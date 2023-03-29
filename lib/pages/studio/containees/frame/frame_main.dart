@@ -15,7 +15,6 @@ import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
-import '../../../../design_system/creta_font.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
@@ -27,6 +26,7 @@ import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
+import '../contents/contents_main.dart';
 import 'sticker/draggable_resizable.dart';
 import 'sticker/stickerview.dart';
 
@@ -175,7 +175,8 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         logger.info('onDropContents');
         FrameModel frameModel = await _frameManager!.createNextFrame();
         ContentsManager contentsManager = _frameManager!.newContentsManager(frameModel);
-        await contentsManager.create(model);
+        await contentsManager.create(model); // 콘텐츠를 DB 에 Crete 한다.
+        // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
 
         _frameManager!.notify();
       },
@@ -390,11 +391,10 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       height: double.infinity,
       child: ClipRect(
         clipBehavior: Clip.hardEdge,
-        child: Center(
-            child: Text(
-          '${model.order.value}',
-          style: CretaFont.titleLarge,
-        )),
+        child: ContentsMain(
+          frameModel: model,
+          pageModel: widget.pageModel,
+        ),
         // child: Image.asset(
         //   'assets/creta_default.png',
         //   fit: BoxFit.cover,

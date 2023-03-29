@@ -1,9 +1,8 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import '../creta_color.dart';
+import 'snippet.dart';
 
 class ImageDetail {
   late bool isLoaded = false;
@@ -118,10 +117,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
       builder: ((context, value, child) {
         return !value.isLoaded
             ? Center(
-                child: LoadingAnimationWidget.fourRotatingDots(
-                  color: CretaColor.primary,
-                  size: 40.0,
-                ),
+                child: Snippet.showWaitSign(),
               )
             : Center(child: _show());
       }),

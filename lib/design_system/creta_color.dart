@@ -62,4 +62,9 @@ class CretaColor {
   static const stateCritical = Color(0xffFA681F);
   static const stateWarining = Color(0xffFBC559);
   static const stateNormal = Color(0xff6BDEC9);
+
+//For ImagePlayer
+  static const Color playedColor = Color.fromRGBO(255, 0, 0, 0.7);
+  static const Color bufferedColor = Color.fromRGBO(50, 50, 200, 0.2);
+  static const Color pgBackgroundColor = Color.fromRGBO(200, 200, 200, 0.5);
 }

@@ -22,4 +22,8 @@ class StudioVariables {
   static bool handToolMode = false;
 
   static double applyScale = 1;
+
+  static bool isSilent = false;
+  static bool isReadOnly = false;
+  static bool isAutoPlay = true;
 }

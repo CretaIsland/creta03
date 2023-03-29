@@ -3,10 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../data_io/creta_manager.dart';
-import '../design_system/creta_color.dart';
+import '../design_system/component/snippet.dart';
 
 class CretaModelSnippet {
   static FutureBuilder<List<AbsExModel>> waitData({
@@ -25,10 +24,7 @@ class CretaModelSnippet {
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitDatat)");
             return Center(
-              child: LoadingAnimationWidget.fourRotatingDots(
-                color: CretaColor.primary,
-                size: 40.0,
-              ),
+              child: Snippet.showWaitSign(),
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
@@ -60,10 +56,7 @@ class CretaModelSnippet {
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitData)");
             return Center(
-              child: LoadingAnimationWidget.fourRotatingDots(
-                color: CretaColor.primary,
-                size: 40.0,
-              ),
+              child: Snippet.showWaitSign(),
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
