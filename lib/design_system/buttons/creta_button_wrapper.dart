@@ -1527,4 +1527,53 @@ class BTN {
       sidePaddingSize: sidePaddingSize,
     );
   }
+
+   static CretaElevatedButton line_red_t_m({
+    required String text,
+    required Function onPressed,
+  }) {
+    return CretaElevatedButton(
+      height: 32,
+      radius: 30,
+      onPressed: onPressed,
+      caption: text,
+      captionStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.red[400]!),
+      bgColor: Colors.white,
+      bgHoverColor: CretaColor.red[100]!,
+      bgHoverSelectedColor: CretaColor.red[300]!,
+      bgSelectedColor: CretaColor.red[400]!,
+      fgColor: CretaColor.red[400]!,
+      fgSelectedColor: Colors.white,
+      borderColor: CretaColor.red[400]!,
+      borderSelectedColor: CretaColor.red[400]!,
+    );
+  }
+
+  static CretaButton fill_red_t_m({
+    required String text,
+    required Function onPressed,
+    double? width = 72,
+    double sidePaddingSize = 0,
+    TextStyle? textStyle,
+  }) {
+    return CretaButton(
+      width: width,
+      height: 32,
+      buttonType: CretaButtonType.textOnly,
+      buttonColor: CretaButtonColor.redAndWhiteTitle,
+      text: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(text, style: textStyle ?? CretaFont.buttonMedium.copyWith(color: Colors.white)),
+          ],
+        ),
+      ),
+      onPressed: onPressed,
+      sidePaddingSize: sidePaddingSize,
+    );
+  }
+
+
 }

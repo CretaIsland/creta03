@@ -194,6 +194,87 @@ class Snippet {
     );
   }
 
+  // MyPage Scaffold
+  static Widget CretaScaffoldOfMyPage(
+      {required Widget title, required BuildContext context, required Widget child}) {
+    return Scaffold(
+      appBar: Snippet.CretaAppBarOfMyPage(context, title),
+      floatingActionButton: Snippet.CretaDial(context),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onLongPressDown: ((details) {
+          logger.finest('onLongPressDown');
+          LastClicked.clickedOutSide(details.globalPosition);
+        }),
+        child: Container(
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  // Creta MyPage AppBar
+  static PreferredSizeWidget CretaAppBarOfMyPage(BuildContext context, Widget title) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      shadowColor: Colors.grey[500],
+      title: title,
+      toolbarHeight: 60,
+      actions: [
+        SizedBox(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 44,
+                height: 36,
+                child: Icon(
+                  Icons.notifications_outlined,
+                  color: Colors.grey[700],
+                  size: 20,
+                ),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  child: Container(
+                    color: Colors.green
+                  )
+                )
+              ],
+            ),
+          )
+        ),
+        SizedBox(
+          width: 8
+        ),
+        CretaDropDown(
+          width: 130,
+          height: 40,
+          items: const ["사용자 닉네임1", "사용자 닉네임2", "사용자 닉네임3"], 
+          defaultValue: "사용자 닉네임1", 
+          onSelected: (value) {
+            logger.finest(value);
+          }
+        ),
+        SizedBox(
+          width: 40
+        )
+      ],
+    );
+  }
+
   static Widget logo(String title) {
     return Row(children: [
       // SizedBox(
@@ -449,6 +530,13 @@ class Snippet {
           child: Icon(Icons.colorize),
           onTap: () {
             Routemaster.of(context).push(AppRoutes.colorPickerDemo);
+          },
+        ),
+        SpeedDialChild(
+          label: 'My Page',
+          child: Icon(Icons.person),
+          onTap: () {
+            Routemaster.of(context).push(AppRoutes.myPageDashBoard);
           },
         ),
       ],

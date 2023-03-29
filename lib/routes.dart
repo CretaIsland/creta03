@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/pages/mypage/mypage.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -58,6 +59,12 @@ abstract class AppRoutes {
   static const String playlistDetail = '/community/playlistDetail';
   static const String communityBook = '/community/book';
   static const String colorPickerDemo = '/colorPickerDemoPage';
+
+  static const String myPageDashBoard = '/mypage/dashboard';
+  static const String myPageInfo = '/mypage/info';
+  static const String myPageAccountManage = '/mypage/accountManage';
+  static const String myPageSettings = '/mypage/settings';
+  static const String myPageTeamManage = '/mypage/teamManage';
 }
 
 //final menuKey = GlobalKey<DrawerMenuPageState>();
@@ -133,6 +140,21 @@ final routesLoggedOut = RouteMap(
         ),
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
+        ),
+    AppRoutes.myPageDashBoard: (_) => TransitionPage(
+          child: MyPage(selectedPage: AppRoutes.myPageDashBoard),
+        ),
+    AppRoutes.myPageInfo: (_) => TransitionPage(
+          child: MyPage(selectedPage: AppRoutes.myPageInfo),
+        ),
+    AppRoutes.myPageAccountManage: (_) => TransitionPage(
+          child: MyPage(selectedPage: AppRoutes.myPageAccountManage),
+        ),
+    AppRoutes.myPageSettings: (_) => TransitionPage(
+          child: MyPage(selectedPage: AppRoutes.myPageSettings),
+        ),
+    AppRoutes.myPageTeamManage: (_) => TransitionPage(
+          child: MyPage(selectedPage: AppRoutes.myPageTeamManage),
         ),
   },
 );
