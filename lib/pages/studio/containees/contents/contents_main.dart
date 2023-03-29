@@ -8,6 +8,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
@@ -29,6 +30,7 @@ class ContentsMain extends StatefulWidget {
 
 class ContentsMainState extends State<ContentsMain> {
   ContentsManager? _contentsManager;
+  PlayerHandler? _playerHandler;
   bool _onceDBGetComplete = false;
 
   @override
@@ -38,15 +40,21 @@ class ContentsMainState extends State<ContentsMain> {
   }
 
   Future<void> initChildren() async {
-    saveManagerHolder!.addBookChildren('frame=');
+    saveManagerHolder!.addBookChildren('contents=');
+
+    _playerHandler = PlayerHandler();
 
     _contentsManager ??= ContentsManager(
       frameModel: widget.frameModel,
       pageModel: widget.pageModel,
     );
+    _contentsManager!.clearAll();
     await _contentsManager!.getContents();
     _contentsManager!.addRealTimeListen();
     _onceDBGetComplete = true;
+    _contentsManager!.reOrdering();
+
+    _playerHandler!.start(_contentsManager!);
   }
 
   @override
@@ -59,25 +67,8 @@ class ContentsMainState extends State<ContentsMain> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<ContentsManager>.value(
-          value: _contentsManager!,
-        ),
-        ChangeNotifierProvider<PlayerHandler>(
-          create: (context) {
-            playerManagerHolder = PlayerHandler(_contentsManager!);
-            return playerManagerHolder!;
-          },
-        ),
-      ],
-      child: _waitContents(),
-    );
-  }
-
-  Widget _waitContents() {
     if (_onceDBGetComplete) {
-      logger.finest('already _onceDBGetComplete');
+      logger.info('already _onceDBGetComplete');
       return _consumerFunc();
     }
     var retval = CretaModelSnippet.waitDatum(
@@ -90,13 +81,35 @@ class ContentsMainState extends State<ContentsMain> {
   }
 
   Widget _consumerFunc() {
-    return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
-      return Center(
-        child: Text(
-          '${widget.frameModel.order.value}',
-          style: CretaFont.titleLarge,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ContentsManager>.value(
+          value: _contentsManager!,
         ),
-      );
-    });
+        ChangeNotifierProvider<PlayerHandler>.value(
+          value: _playerHandler!,
+        ),
+      ],
+      child: Consumer<ContentsManager>(builder: (context, contentsManager, child) {
+        return Consumer<PlayerHandler>(builder: (context, playerHandler, child) {
+          int contentsCount = contentsManager.getLength();
+          if (contentsCount > 0) {
+            ContentsModel? model = playerHandler.getCurrentModel();
+
+            if (model != null) {
+              return playerHandler.createPlayer(model);
+            } else {
+              logger.info('current model is null');
+            }
+          }
+          return Center(
+            child: Text(
+              '${widget.frameModel.order.value} : $contentsCount',
+              style: CretaFont.titleLarge,
+            ),
+          );
+        });
+      }),
+    );
   }
 }

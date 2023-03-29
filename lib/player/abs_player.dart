@@ -134,11 +134,11 @@ abstract class AbsPlayWidget extends StatefulWidget {
   }
 
   String getURI(ContentsModel model) {
-    if (model.url.isNotEmpty) {
-      return model.url;
-    }
     if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
       return model.remoteUrl!;
+    }
+    if (model.url.isNotEmpty) {
+      return model.url;
     }
     return '';
   }

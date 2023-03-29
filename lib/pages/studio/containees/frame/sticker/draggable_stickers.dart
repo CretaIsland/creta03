@@ -303,7 +303,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       parentId: '',
       onDroppedFile: (model) {
         logger.info('contents added ${model.mid}');
-        model.isDynamicSize.set(true);
+        //model.isDynamicSize.set(true);
         widget.onDropContents(model); // 동영상에 맞게 frame size 를 조절하라는 뜻
       },
     );

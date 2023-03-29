@@ -78,6 +78,7 @@ abstract class CretaManager extends AbsExModelManager {
     lock();
     logger.finest('endTransaction');
     _transState = TransState.end;
+
     unlock();
   }
 
@@ -613,11 +614,13 @@ abstract class CretaManager extends AbsExModelManager {
   }
 
   List<T> listIterator<T>(T Function(AbsExModel) toElement) {
+    lock();
     List<T> retval = [];
     for (var model in modelList) {
       var ele = toElement(model);
       retval.add(ele);
     }
+    unlock();
     return retval;
   }
 

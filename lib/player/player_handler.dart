@@ -54,15 +54,14 @@ class SelectedModel extends ChangeNotifier {
   }
 }
 
-PlayerHandler? playerManagerHolder;
-
 class PlayerHandler extends ChangeNotifier {
-  final ContentsManager contentsManager;
+  ContentsManager? contentsManager;
   late PlayTimer _timer;
   //AbsPlayWidget? _player;
 
-  PlayerHandler(this.contentsManager) {
-    _timer = PlayTimer(contentsManager, this);
+  void start(ContentsManager manager) {
+    contentsManager = manager;
+    _timer = PlayTimer(contentsManager!, this);
     _timer.initTimer();
   }
 
@@ -84,28 +83,28 @@ class PlayerHandler extends ChangeNotifier {
         return VideoPlayerWidget(
           globalKey: GlobalObjectKey<VideoPlayerWidgetState>(model.mid),
           model: model,
-          acc: contentsManager,
+          acc: contentsManager!,
           onAfterEvent: () {},
         );
       case ContentsType.image:
         return ImagePlayerWidget(
           globalKey: GlobalObjectKey<ImagePlayerWidgetState>(model.mid),
           model: model,
-          acc: contentsManager,
+          acc: contentsManager!,
           onAfterEvent: () {},
         );
       case ContentsType.text:
         return TextPlayerWidget(
           globalKey: GlobalObjectKey<TextPlayerWidgetState>(model.mid),
           model: model,
-          acc: contentsManager,
+          acc: contentsManager!,
           onAfterEvent: () {},
         );
       default:
         throw EmptyPlayWidget(
             key: GlobalObjectKey<EmptyPlayWidgetState>(model.mid),
             onAfterEvent: () {},
-            acc: contentsManager);
+            acc: contentsManager!);
     }
   }
 

@@ -17,4 +17,5 @@ copy src_modify\r_dotted_line_border.daxt C:\Users\seon\AppData\Local\Pub\Cache\
 #skpark modify 3/16
 copy src_modify\tag_editor.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\material_tag_editor-0.1.2\lib\tag_editor.dart 
 
-
+#skpark modify 3/29
+copy  src_modify\firebase_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\firebase_database.dart

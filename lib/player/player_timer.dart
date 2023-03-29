@@ -44,7 +44,6 @@ class PlayTimer {
     _currentModel = contentsManager.getNthOrder(_currentOrder) as ContentsModel?;
     while (true) {
       if (_currentModel != null) {
-        logger.info('$_currentOrder is valid');
         break;
       }
       _currentOrder = contentsManager.nextOrder(_currentOrder);
@@ -71,6 +70,7 @@ class PlayTimer {
         // 아무것도 돌고 있지 않다면,
         if (_currentOrder < 0) {
           _currentOrder = contentsManager.firstOrder();
+          logger.info('currentOrder=$_currentOrder');
           if (_currentOrder < 0) {
             return; // 돌릴게 없다.
           }
@@ -91,20 +91,20 @@ class PlayTimer {
             if ((StudioVariables.isAutoPlay && _currentModel!.playState != PlayState.pause) ||
                 _currentModel!.manualState == PlayState.start) {
               _currentPlaySec += _timeGap;
-              await playManager.setProgressBar(
-                playTime <= 0 ? 0 : _currentPlaySec / playTime,
-                _currentModel!,
-              );
+              // await playManager.setProgressBar(
+              //   playTime <= 0 ? 0 : _currentPlaySec / playTime,
+              //   _currentModel!,
+              // );
             }
             return;
           }
 
           // 교체시간이 되었다.
           _currentOrder = contentsManager.nextOrder(_currentOrder);
-          await playManager.setProgressBar(
-            playTime <= 0 ? 0 : _currentPlaySec / playTime,
-            _currentModel!,
-          );
+          // await playManager.setProgressBar(
+          //   playTime <= 0 ? 0 : _currentPlaySec / playTime,
+          //   _currentModel!,
+          // );
           return;
         }
 

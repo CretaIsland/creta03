@@ -1,6 +1,8 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
 import 'dart:math';
+import 'dart:html' as html;
+import 'dart:typed_data';
 
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:hycop/common/undo/undo.dart';
 //import 'package:glass/glass.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:hycop/hycop/hycop_factory.dart';
+import 'package:hycop/hycop/model/file_model.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../common/creta_utils.dart';
@@ -175,8 +179,31 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         logger.info('onDropContents');
         FrameModel frameModel = await _frameManager!.createNextFrame();
         ContentsManager contentsManager = _frameManager!.newContentsManager(frameModel);
+        model.parentMid.set(frameModel.mid, save: false, noUndo: true);
         await contentsManager.create(model); // 콘텐츠를 DB 에 Crete 한다.
         // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
+        if (model.file != null && (model.remoteUrl == null || model.remoteUrl!.isEmpty)) {
+          // upload 되어 있지 않으므로 업로드한다.
+          final reader = html.FileReader();
+          reader.readAsArrayBuffer(model.file!);
+          await reader.onLoad.first;
+          FileModel? fileModel = await HycopFactory.storage!
+              .uploadFile(model.file!.name, model.mime, reader.result as Uint8List);
+
+          var image = await decodeImageFromList(reader.result as Uint8List);
+          model.aspectRatio.set(image.height.toDouble() / image.width.toDouble());
+
+          if (fileModel != null) {
+            model.remoteUrl = fileModel.fileView;
+            logger.info('uploaded url = ${model.url}');
+            logger.info('uploaded fileName = ${model.name}');
+            logger.info('uploaded remoteUrl = ${model.remoteUrl!}');
+            logger.info('uploaded aspectRatio = ${model.aspectRatio.value}');
+            await contentsManager.setToDB(model);
+          } else {
+            logger.severe('upload failed ${model.file!.name}');
+          }
+        }
 
         _frameManager!.notify();
       },
@@ -385,13 +412,14 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
   Widget _frameBox(FrameModel model, bool useColor) {
     return Container(
-      key: GlobalKey(),
+      key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,
       width: double.infinity,
       height: double.infinity,
       child: ClipRect(
         clipBehavior: Clip.hardEdge,
         child: ContentsMain(
+          key: ValueKey('ContentsMain${model.mid}'),
           frameModel: model,
           pageModel: widget.pageModel,
         ),
