@@ -73,7 +73,7 @@ class UserPropertyManager extends CretaManager {
   }
 
   Future<UserPropertyModel> createNext() async {
-    updateLastOrder();
+    //updateLastOrder();
     propertyModel = UserPropertyModel.withName(
       pparentMid: userModel.userId,
       email: userModel.email,
@@ -104,7 +104,7 @@ class UserPropertyManager extends CretaManager {
     orderBy['order'] = OrderDirection.ascending;
     await queryFromDB(query, orderBy: orderBy, limit: limit);
     logger.finest('getProperty ${modelList.length}');
-    updateLastOrder();
+    //updateLastOrder();
 
     propertyModel = onlyOne() as UserPropertyModel?;
     await getLinkedObject();

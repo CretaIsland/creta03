@@ -243,6 +243,21 @@ enum TextLineType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static TextLineType fromInt(int? val) => TextLineType.values[validCheck(val ?? none.index)];
+
+  static TextDecoration getTextDecoration(TextLineType value) {
+    switch (value) {
+      case TextLineType.none:
+        return TextDecoration.none;
+      case TextLineType.underline:
+        return TextDecoration.underline;
+      case TextLineType.overline:
+        return TextDecoration.overline;
+      case TextLineType.lineThrough:
+        return TextDecoration.lineThrough;
+      default:
+        return TextDecoration.none;
+    }
+  }
 }
 
 enum PlayState {

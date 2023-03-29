@@ -13,6 +13,8 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/page_model.dart';
+import '../../../../player/abs_player.dart';
+import '../../../../player/player_handler.dart';
 import '../../book_main_page.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
@@ -44,11 +46,11 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   @override
   void initState() {
-    initChildren(widget.bookModel);
+    initChildren();
     super.initState();
   }
 
-  Future<void> initChildren(BookModel model) async {
+  Future<void> initChildren() async {
     saveManagerHolder!.addBookChildren('frame=');
 
     _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
@@ -194,10 +196,18 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _consumerFunc() {
+    progressHolder = ProgressNotifier();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FrameManager>.value(
           value: _frameManager!,
+        ),
+        ChangeNotifierProvider<SelectedModel>(
+          create: (context) {
+            selectedModelHolder = SelectedModel();
+            return selectedModelHolder!;
+          },
         ),
       ],
       child: _pageEffect(),

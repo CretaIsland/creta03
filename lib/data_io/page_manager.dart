@@ -96,11 +96,11 @@ class PageManager extends CretaManager {
   AbsExModel newModel(String mid) => PageModel(mid);
 
   Future<PageModel> createNextPage() async {
-    updateLastOrder();
-    PageModel defaultPage = PageModel.makeSample(++lastOrder, bookModel!.mid);
+    PageModel defaultPage = PageModel.makeSample(lastOrder() + 1, bookModel!.mid);
     await createToDB(defaultPage);
     insert(defaultPage, postion: getAvailLength());
     selectedMid = defaultPage.mid;
+    //reOrdering();
     return defaultPage;
   }
 
@@ -118,6 +118,7 @@ class PageManager extends CretaManager {
       await createNextPage();
       pageCount = 1;
     }
+    //reOrdering();
     endTransaction();
     return pageCount;
   }
@@ -131,7 +132,6 @@ class PageManager extends CretaManager {
     orderBy['order'] = OrderDirection.ascending;
     await queryFromDB(query, orderBy: orderBy, limit: limit);
     logger.finest('getPages ${modelList.length}');
-    updateLastOrder();
     return modelList.length;
   }
 

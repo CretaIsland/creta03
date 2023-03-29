@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import '../model/contents_model.dart';
@@ -36,15 +38,16 @@ class ContentsManager extends CretaManager {
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> getContents() async {
-    int frameCount = 0;
+    int contentsCount = 0;
     startTransaction();
     try {
-      frameCount = await _getContents();
+      contentsCount = await _getContents();
     } catch (e) {
       logger.finest('something wrong $e');
     }
+    //reOrdering();
     endTransaction();
-    return frameCount;
+    return contentsCount;
   }
 
   Future<int> _getContents({int limit = 99}) async {
@@ -56,8 +59,6 @@ class ContentsManager extends CretaManager {
     orderBy['order'] = OrderDirection.ascending;
     await queryFromDB(query, orderBy: orderBy, limit: limit);
     logger.finest('getContents ${modelList.length}');
-
-    updateLastOrder();
     return modelList.length;
   }
 
