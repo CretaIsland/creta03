@@ -1,10 +1,9 @@
+import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
+import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:flutter/material.dart';
-
-import '../../../design_system/buttons/creta_toggle_button.dart';
-import '../../../design_system/creta_color.dart';
-import '../../../design_system/creta_font.dart';
-import '../../../design_system/menu/creta_widget_drop_down.dart';
 
 
 class MyPageSettings extends StatefulWidget {
@@ -19,128 +18,165 @@ class MyPageSettings extends StatefulWidget {
 
 class _MyPageSettingsState extends State<MyPageSettings> {
 
-  List<Widget> themeDropdownItem = [];
-  List<Widget> startpageDropdownItem = [];
-  List<Widget> cookieDropdownItem = [];
+  List<Text> themeItemList = [];
+  List<Text> initPageItemList = [];
+  List<Text> cookieItemList = [];
 
-
+  
   @override
   void initState() {
     super.initState();
-    for (var element in CretaMyPageLang.themeItem) {
-      themeDropdownItem.add(Text(element));
+
+    // 테마 드롭다운 아이템 정의
+    for(var element in CretaMyPageLang.themeList) {
+      themeItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
-    for (var element in CretaMyPageLang.startPageItem) {
-      startpageDropdownItem.add(Text(element));
+    // 시작페이지 드롭다운 아이템 정의
+    for(var element in CretaMyPageLang.initPageList) {
+      initPageItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
-    for (var element in CretaMyPageLang.cookieItem) {
-      cookieDropdownItem.add(Text(element));
+    // 쿠키 드롭다운 아이템 정의
+    for(var element in CretaMyPageLang.cookieList) {
+      cookieItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
+
   }
 
 
- Widget divideLine(double topMargin, double bottomMargin) {
-    return Container(
-      margin: EdgeInsets.only(top: topMargin, bottom: bottomMargin),
-      height: 1,
-      color: Colors.grey.shade200,
+  // 구분선
+  Widget divideLine({double leftPadding = 0, double topPadding = 0, double rightPadding = 0, double bottomPadding = 0}) {
+    return Padding(
+      padding: EdgeInsets.only(left: leftPadding, top: topPadding, right: rightPadding, bottom: bottomPadding), 
+      child: Container(
+        width: widget.width * .7,
+        height: 1,
+        color: Colors.grey.shade200 ,
+      ),
     );
   }
 
-
-  Widget mainContainer(Size size) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: widget.width < 700 ? Container() : SizedBox( 
-        width: widget.width,
-        child: Padding(
+  Widget mainComponent() {
+    return SizedBox(
+      width: widget.width,
+      height: widget.height,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: widget.width > 450 ? Padding(
           padding: const EdgeInsets.only(left: 165.0, top: 72.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(CretaMyPageLang.settings, style: const TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 40, color: CretaColor.text)),
-              divideLine(20.0, 38.0),
-              Text(CretaMyPageLang.myNotice, style: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 22, color: CretaColor.text)),
-              const SizedBox(height: 32),
-              Row(  
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(CretaMyPageLang.pushNotice, style: CretaFont.titleMedium),
-                      const SizedBox(height: 30),  
-                      Text(CretaMyPageLang.emailNotice, style: CretaFont.titleMedium),
-                    ],
-                  ),
-                  const SizedBox(width: 80),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CretaToggleButton(onSelected: (value) {}, defaultValue: true),
-                      const SizedBox(height: 16),  
-                      CretaToggleButton(onSelected: (value) {}, defaultValue: true)
-                    ],
-                  ),
-                ],
+              divideLine(topPadding: 22.0, bottomPadding: 32.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(CretaMyPageLang.myNotice, style: CretaFont.titleELarge),
+                    const SizedBox(height: 32.0),
+                    Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(CretaMyPageLang.pushNotice, style: CretaFont.titleMedium),
+                            const SizedBox(height: 25.0),
+                            Text(CretaMyPageLang.emailNotice, style: CretaFont.titleMedium)
+                          ],
+                        ),
+                        const SizedBox(width: 200.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CretaToggleButton(
+                              onSelected: (value) {}, 
+                              defaultValue: false
+                            ),
+                            const SizedBox(height: 16.0),
+                            CretaToggleButton(
+                              onSelected: (value) {}, 
+                              defaultValue: false
+                            )
+                          ]
+                        )
+                      ]
+                    )
+                  ]
+                )
               ),
-              divideLine(27.0, 30.0),
-              Text(CretaMyPageLang.mySettings, style: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 22, color: CretaColor.text)),
-              const SizedBox(height: 32),
-              Row(
-                children: [
-                  Text(CretaMyPageLang.theme, style: CretaFont.titleMedium),
-                  const SizedBox(width: 245.0),
-                  CretaWidgetDropDown(
-                    items: themeDropdownItem, 
-                    defaultValue: 0, 
-                    onSelected: (value) {},
-                    width: 134,
-                  )
-                ],
+              divideLine(topPadding: 27.0, bottomPadding: 32.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(CretaMyPageLang.mySetting, style: CretaFont.titleELarge),
+                    const SizedBox(height: 32.0),
+                    Row(
+                      children: [
+                        Text(CretaMyPageLang.theme, style: CretaFont.titleMedium),
+                        const SizedBox(width: 245.0),
+                        CretaWidgetDropDown(
+                          width: 134.0,
+                          items: themeItemList, 
+                          defaultValue: 0, 
+                          onSelected: (value) {
+
+                          }
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 14.0),
+                    Text(CretaMyPageLang.themeTip, style: CretaFont.bodySmall),
+                    const SizedBox(height: 30.0),
+                    Row(
+                      children: [
+                        Text(CretaMyPageLang.initPage, style: CretaFont.titleMedium),
+                        const SizedBox(width: 199.0),
+                        CretaWidgetDropDown(
+                          width: 116.0,
+                          items: initPageItemList, 
+                          defaultValue: 0, 
+                          onSelected: (value) {
+
+                          }
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 14.0),
+                    Text(CretaMyPageLang.initPageTip, style: CretaFont.bodySmall),
+                    const SizedBox(height: 30.0),
+                    Row(
+                      children: [
+                        Text(CretaMyPageLang.cookieSetting, style: CretaFont.titleMedium),
+                        const SizedBox(width: 213.0),
+                        CretaWidgetDropDown(
+                          width: 120.0,
+                          items: cookieItemList, 
+                          defaultValue: 0, 
+                          onSelected: (value) {
+
+                          }
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 14.0),
+                    Text(CretaMyPageLang.cookieSettingTip, style: CretaFont.bodySmall),
+                    const SizedBox(height: 150.0)
+                  ]
+                )
               ),
-              const SizedBox(height: 14),
-              Text(CretaMyPageLang.themeGuidePhrase, style: CretaFont.bodySmall),
-              const SizedBox(height: 23),
-              Row(
-                children: [
-                  Text(CretaMyPageLang.startPage, style: CretaFont.titleMedium),
-                  const SizedBox(width: 199.0),
-                  CretaWidgetDropDown(
-                    items: startpageDropdownItem, 
-                    defaultValue: 0, 
-                    onSelected: (value) {},
-                    width: 134,
-                  )
-                ],
-              ),
-              const SizedBox(height: 14),
-              Text(CretaMyPageLang.startPageGuidePhrase, style: CretaFont.bodySmall),
-              const SizedBox(height: 23),
-              Row(
-                children: [
-                  Text(CretaMyPageLang.setCookie, style: CretaFont.titleMedium),
-                  const SizedBox(width: 213.0),
-                  CretaWidgetDropDown(
-                    items: cookieDropdownItem, 
-                    defaultValue: 0, 
-                    onSelected: (value) {},
-                    width: 134,
-                  )
-                ],
-              ),
-              const SizedBox(height: 14),
-              Text(CretaMyPageLang.setCookieGuidePhrase, style: CretaFont.bodySmall),
-              widget.height > 692 ? SizedBox(height: widget.height - 692 / 2) : Container()
             ],
           ),
-        ),
+        ) : Container()
       ),
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return mainContainer(Size(widget.width, widget.height));
+    return mainComponent();
   }
 }

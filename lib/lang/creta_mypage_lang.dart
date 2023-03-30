@@ -85,31 +85,30 @@ class CretaMyPageLang {
   static String removeAccountBTN = '계정 탈퇴';
 
 
-
-
+  // 알림과 설정
   static String myNotice = '내 알림';
   static String pushNotice = '푸시 알림';
   static String emailNotice = '이메일 알림';
-  static String mySettings = '내 알림';
+
+  static String mySetting = '내 설정';
   static String theme = '테마';
-  static String themeGuidePhrase = '내 기기에서 크레타의 모습을 바꿔보세요.';
-  static String startPage = '시작 페이지';
-  static String startPageGuidePhrase = '크레타를 시작할 때 표시할 페이지를 선택하세요.';
-  static String setCookie = '쿠키 설정';
-  static String setCookieGuidePhrase = '쿠키를 설정하세요.';
-  static List<String> themeItem = [
+  static String themeTip = '내 기기에서 크레타의 모습을 바꿔보세요.';
+  static String initPage = '시작 페이지';
+  static String initPageTip = '크레타를 시작할 때 표시할 페이지를 선택하세요.';
+  static String cookieSetting = '쿠키 설정';
+  static String cookieSettingTip = '쿠키를 설정하세요.';
+
+  static List<String> themeList = [
     '라이트 모드',
     '다크 모드'
   ];
-  static List<String> startPageItem = [
+  static List<String> initPageList = [
     '커뮤니티',
     '스튜디오'
   ];
-  static List<String> cookieItem = [
+  static List<String> cookieList = [
     '쿠키 허용',
-    '쿠키 제한'
+    '쿠키 거부'
   ];
-
-
 
 }
