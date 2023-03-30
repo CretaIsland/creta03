@@ -111,4 +111,15 @@ class CretaMyPageLang {
     '쿠키 거부'
   ];
 
+
+  // 팀 관리
+  static String teamInfo = '팀 정보';
+  static String teamChannel = '팀 채널';
+  static String teamMemberManage = '팀원 관리';
+  static String inviteablePeopleNumber = '초대 가능 인원';
+
+  static String throwBTN = '내보내기';
+  static String addMemberBTN = '팀원 추가';
+
+
 }
