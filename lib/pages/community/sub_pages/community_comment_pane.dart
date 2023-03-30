@@ -65,7 +65,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
   @override
   void initState() {
     super.initState();
-    _cretaCommentList = CommunitySampleData.getCretaCommentList();
+    // new data for comment-bar before adding
     _newData = CretaCommentData(
       key: GlobalKey().toString(),
       name: '',
@@ -74,35 +74,70 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       dateTime: DateTime.now(),
       //parentKey: null,
     );
+
+    _cretaCommentList = _reorderList(CommunitySampleData.getCretaCommentList());
   }
 
-  Widget _getCommentWidget(double width, CretaCommentData commentData, {double indentSize = 0}) {
+  List<CretaCommentData> _reorderList(List<CretaCommentData> oldList) {
+    List<CretaCommentData> newList = [];
+    Map<String, CretaCommentData> newMap = {};
+
+    for(CretaCommentData data in oldList) {
+      if (data.parentKey.isNotEmpty) continue;
+      newList.add(data);
+      newMap[data.key] = data;
+    }
+
+    for(CretaCommentData data in oldList) {
+      if (data.parentKey.isEmpty) continue;
+      CretaCommentData? parentData = newMap[data.parentKey];
+      if (parentData == null) continue;
+      parentData.replyList ??= [];
+      parentData.replyList?.add(data);
+    }
+
+    return newList;
+  }
+
+  Widget _getCommentWidget(double width, CretaCommentData data, {double indentSize = 0}) {
+    print('key:${data.parentKey}, name:${data.name}, comment:${data.comment}, parentKey.isEmpty=${data.parentKey.isEmpty}');
     return Container(
       ///height: 61,
       padding: EdgeInsets.fromLTRB(indentSize, 0, 0, 0),
       child: CretaCommentBar(
-        data : commentData,
+        data : data,
         onSearch: (value) {},
         hintText: '',
         showEditButton: true,
         width: width - indentSize,
         thumb: Container(color: Colors.red,),
+        onAddReply: data.parentKey.isNotEmpty ? null : (data) {},
+        onShowReplyList: (data.replyList == null || data.replyList!.isEmpty)
+            ? null
+            : (data) {
+          setState(() {
+            data.showReplyList = !data.showReplyList;
+          });
+        },
       ),
     );
   }
 
-  List<Widget> _getCommentList(double width, String parentKey) {
-    List<Widget> retList = [];
+  List<Widget> _getCommentWidgetList(double width) {
+    print('_getCommentWidgetList start...');
+    List<Widget> commentWidgetList = [];
     for(CretaCommentData data in _cretaCommentList) {
-      if (data.parentKey == parentKey) {
-        //print('key:${data.parentKey}, name:${data.name}, comment:${data.comment}');
-        retList.add(_getCommentWidget(width, data, indentSize: parentKey.isEmpty ? 0 : 40+18));
-        if (parentKey.isEmpty) {
-          retList.addAll(_getCommentList(width, data.key));
-        }
+      //print('key:${data.parentKey}, name:${data.name}, comment:${data.comment}, replyCount=${data.replyList?.length}');
+      commentWidgetList.add(_getCommentWidget(width, data, indentSize: 0));
+      if (data.showReplyList == false) continue;
+      if (data.replyList == null) continue;
+      if (data.replyList!.isEmpty) continue;
+      for(CretaCommentData replyData in data.replyList!) {
+        commentWidgetList.add(_getCommentWidget(width, replyData, indentSize: 40+18));
       }
     }
-    return retList;
+    print('_getCommentWidgetList end');
+    return commentWidgetList;
   }
 
   @override
@@ -122,9 +157,9 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
                   onSearch: (text) {},
                   width: widget.paneWidth,
                   thumb: Icon(Icons.account_circle),
-                  showEditButton: false,
+                  editModeOnly: true,
                 ),
-          ..._getCommentList(widget.paneWidth ?? 0, ''),
+          ..._getCommentWidgetList(widget.paneWidth ?? 0),
         ],
       ),
     );

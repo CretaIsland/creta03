@@ -384,18 +384,40 @@ class BTN {
     required Function onPressed,
     double? width = 87,
     double sidePaddingSize = 0,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Color? textColor,
+    IconData? tailIconData,
   }) {
     return CretaButton(
       width: width,
       height: 20,
       buttonType: CretaButtonType.textOnly,
-      buttonColor: CretaButtonColor.white,
+      buttonColor: buttonColor,
       text: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)),
+            (tailIconData == null)
+                ? Text(
+              text,
+              style: CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]),
+            )
+                : SizedBox(
+              child: Row(
+                children: [
+                  Text(
+                    text,
+                    style: CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]),
+                  ),
+                  Icon(
+                    tailIconData,
+                    size: 16,
+                    color: textColor ?? CretaColor.text[700],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

@@ -512,7 +512,7 @@ class CretaCommentData {
     required this.comment,
     required this.dateTime,
     this.parentKey = '',
-    this.showChildComment = false,
+    this.showReplyList = false,
   });
   CretaCommentData.clone(CretaCommentData src)
       : this(
@@ -522,14 +522,15 @@ class CretaCommentData {
     comment: src.comment,
     dateTime: src.dateTime,
     parentKey: src.parentKey,
-    showChildComment: src.showChildComment,
   );
 
-  String key;
-  String name;
-  String creator;
+  final String key;
+  final String name;
+  final String creator;
   String comment;
   DateTime dateTime;
-  String parentKey;
-  bool showChildComment;
+  final String parentKey;
+  // below-items is not copied in clone()
+  bool showReplyList;
+  List<CretaCommentData>? replyList;
 }
