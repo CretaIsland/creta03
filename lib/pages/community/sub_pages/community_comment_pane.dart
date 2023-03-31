@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -68,7 +69,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
     // new data for comment-bar before adding
     _newData = CretaCommentData(
       key: GlobalKey().toString(),
-      name: '',
+      name: 'Tester123',
       creator: '',
       comment: '',
       dateTime: DateTime.now(),
@@ -82,13 +83,13 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
     List<CretaCommentData> newList = [];
     Map<String, CretaCommentData> newMap = {};
 
-    for(CretaCommentData data in oldList) {
+    for (CretaCommentData data in oldList) {
       if (data.parentKey.isNotEmpty) continue;
       newList.add(data);
       newMap[data.key] = data;
     }
 
-    for(CretaCommentData data in oldList) {
+    for (CretaCommentData data in oldList) {
       if (data.parentKey.isEmpty) continue;
       CretaCommentData? parentData = newMap[data.parentKey];
       if (parentData == null) continue;
@@ -105,39 +106,56 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       ///height: 61,
       padding: EdgeInsets.fromLTRB(indentSize, 0, 0, 0),
       child: CretaCommentBar(
-        data : data,
-        onSearch: (value) {},
+        data: data,
+        onAddComment: (value) {},
         hintText: '',
         showEditButton: true,
         width: width - indentSize,
-        thumb: Container(color: Colors.red,),
+        thumb: Container(
+          color: Colors.red,
+        ),
         onAddReply: data.parentKey.isNotEmpty ? null : (data) {},
         onShowReplyList: (data.replyList == null || data.replyList!.isEmpty)
             ? null
             : (data) {
-          setState(() {
-            data.showReplyList = !data.showReplyList;
-          });
-        },
+                setState(() {
+                  data.showReplyList = !data.showReplyList;
+                });
+              },
       ),
     );
   }
 
   List<Widget> _getCommentWidgetList(double width) {
-    //print('_getCommentWidgetList start...');
+    if (kDebugMode) print('_getCommentWidgetList start...');
     List<Widget> commentWidgetList = [];
-    for(CretaCommentData data in _cretaCommentList) {
+    for (CretaCommentData data in _cretaCommentList) {
       //print('key:${data.parentKey}, name:${data.name}, comment:${data.comment}, replyCount=${data.replyList?.length}');
       commentWidgetList.add(_getCommentWidget(width, data, indentSize: 0));
       if (data.showReplyList == false) continue;
       if (data.replyList == null) continue;
       if (data.replyList!.isEmpty) continue;
-      for(CretaCommentData replyData in data.replyList!) {
-        commentWidgetList.add(_getCommentWidget(width, replyData, indentSize: 40+18));
+      for (CretaCommentData replyData in data.replyList!) {
+        commentWidgetList.add(_getCommentWidget(width, replyData, indentSize: 40 + 18 - 8));
       }
     }
     //print('_getCommentWidgetList end');
     return commentWidgetList;
+  }
+
+  void _onAddComment(String comment) {
+
+    setState(() {
+      _cretaCommentList.insert(0, _newData);
+      _newData = CretaCommentData(
+        key: GlobalKey().toString(),
+        name: 'Tester123',
+        creator: '',
+        comment: '',
+        dateTime: DateTime.now(),
+        //parentKey: null,
+      );
+    });
   }
 
   @override
@@ -154,12 +172,17 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
               : CretaCommentBar(
                   data: _newData,
                   hintText: '욕설, 비방 등은 경고 없이 삭제될 수 있습니다.',
-                  onSearch: (text) {},
+                  onAddComment: _onAddComment,
                   width: widget.paneWidth,
                   thumb: Icon(Icons.account_circle),
                   editModeOnly: true,
                 ),
-          ..._getCommentWidgetList(widget.paneWidth ?? 0),
+          Container(
+            padding: EdgeInsets.fromLTRB(16, 20, 0, 0),
+            child: Column(
+              children: _getCommentWidgetList(widget.paneWidth == null ? 0 : widget.paneWidth! - 16),
+            ),
+          ),
         ],
       ),
     );
