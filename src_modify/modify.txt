@@ -20,5 +20,5 @@ copy src_modify\tag_editor.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub
 #skpark modify 3/29
 copy  src_modify\firebase_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\firebase_database.dart
 
-#skpark modify 3/29
+#skpark modify 3/31
 copy  src_modify\video_player.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\video_player-2.6.0\lib\video_player.dart
