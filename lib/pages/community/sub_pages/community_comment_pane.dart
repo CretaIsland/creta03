@@ -100,7 +100,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
   }
 
   Widget _getCommentWidget(double width, CretaCommentData data, {double indentSize = 0}) {
-    print('key:${data.parentKey}, name:${data.name}, comment:${data.comment}, parentKey.isEmpty=${data.parentKey.isEmpty}');
+    //print('key:${data.parentKey}, name:${data.name}, comment:${data.comment}, parentKey.isEmpty=${data.parentKey.isEmpty}');
     return Container(
       ///height: 61,
       padding: EdgeInsets.fromLTRB(indentSize, 0, 0, 0),
@@ -124,7 +124,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
   }
 
   List<Widget> _getCommentWidgetList(double width) {
-    print('_getCommentWidgetList start...');
+    //print('_getCommentWidgetList start...');
     List<Widget> commentWidgetList = [];
     for(CretaCommentData data in _cretaCommentList) {
       //print('key:${data.parentKey}, name:${data.name}, comment:${data.comment}, replyCount=${data.replyList?.length}');
@@ -136,7 +136,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
         commentWidgetList.add(_getCommentWidget(width, replyData, indentSize: 40+18));
       }
     }
-    print('_getCommentWidgetList end');
+    //print('_getCommentWidgetList end');
     return commentWidgetList;
   }
 
