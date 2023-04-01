@@ -67,7 +67,12 @@ abstract class AbsPlayWidget extends StatefulWidget {
     //model!.setPlayState(PlayState.init);
     if (model!.isDynamicSize.value) {
       model!.isDynamicSize.set(false, noUndo: true, save: false);
-      acc.resizeFrame(model!.aspectRatio.value);
+      acc.resizeFrame(
+        model!.aspectRatio.value,
+        model!.width.value,
+        model!.height.value,
+        initPosition: false,
+      );
     }
     // if (selectedModelHolder != null && pageManagerHolder != null) {
     //   if (await selectedModelHolder!.isSelectedModel(model!)) {
@@ -214,7 +219,7 @@ class EmptyPlayWidget extends AbsPlayWidget {
   @override
   PlayState getPlayState() {
     if (model == null) {
-      logger.info("getPlayState model is null");
+      logger.fine("getPlayState model is null");
       return PlayState.none;
     }
     return model!.prevState;

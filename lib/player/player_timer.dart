@@ -41,6 +41,7 @@ class PlayTimer {
   // }
 
   void _setCurrentModel() {
+    contentsManager.reOrdering();
     _currentModel = contentsManager.getNthOrder(_currentOrder) as ContentsModel?;
     while (true) {
       if (_currentModel != null) {
@@ -70,7 +71,7 @@ class PlayTimer {
         // 아무것도 돌고 있지 않다면,
         if (_currentOrder < 0) {
           _currentOrder = contentsManager.firstOrder();
-          logger.info('currentOrder=$_currentOrder');
+          logger.fine('currentOrder=$_currentOrder');
           if (_currentOrder < 0) {
             return; // 돌릴게 없다.
           }
@@ -111,7 +112,7 @@ class PlayTimer {
         if (_currentModel!.isVideo()) {
           if (_currentModel!.playState == PlayState.end) {
             _currentModel!.setPlayState(PlayState.none);
-            logger.info('before next');
+            logger.fine('before next');
             _currentOrder = contentsManager.nextOrder(_currentOrder);
             // 비디오가 마무리 작업을 할 시간을 준다.
             Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));

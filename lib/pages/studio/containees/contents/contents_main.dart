@@ -7,6 +7,7 @@ import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
+import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
@@ -17,11 +18,13 @@ import '../../../../player/player_handler.dart';
 class ContentsMain extends StatefulWidget {
   final FrameModel frameModel;
   final PageModel pageModel;
+  final FrameManager frameManager;
 
   const ContentsMain({
     super.key,
     required this.frameModel,
     required this.pageModel,
+    required this.frameManager,
   });
 
   @override
@@ -54,12 +57,15 @@ class ContentsMainState extends State<ContentsMain> {
     _onceDBGetComplete = true;
     _contentsManager!.reOrdering();
 
+    widget.frameManager.setContentsManager(_contentsManager!);
+    widget.frameManager.setPlayerHandler(_playerHandler!);
+
     _playerHandler!.start(_contentsManager!);
   }
 
   @override
   void dispose() {
-    logger.info('dispose');
+    logger.fine('dispose');
     //_contentsManager?.removeRealTimeListen();
     //saveManagerHolder?.unregisterManager('contents', postfix: widget.frameModel.mid);
     super.dispose();
@@ -68,7 +74,7 @@ class ContentsMainState extends State<ContentsMain> {
   @override
   Widget build(BuildContext context) {
     if (_onceDBGetComplete) {
-      logger.info('already _onceDBGetComplete');
+      logger.fine('already _onceDBGetComplete');
       return _consumerFunc();
     }
     var retval = CretaModelSnippet.waitDatum(

@@ -37,8 +37,8 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
         //   // change UI when user hover file on dropzone
         //   onHover: () => setState(() => highlight = true),
         //   onLeave: () => setState(() => highlight = false),
-        //   onLoaded: () => logger.info('Zone Loaded'),
-        //   onError: (err) => logger.info('run when error found : $err'),
+        //   onLoaded: () => logger.fine('Zone Loaded'),
+        //   onError: (err) => logger.fine('run when error found : $err'),
         //),
 
         child: Stack(
@@ -54,8 +54,8 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
                 // change UI when user hover file on dropzone
                 onHover: () => setState(() => highlight = true),
                 onLeave: () => setState(() => highlight = false),
-                onLoaded: () => logger.info('Zone Loaded'),
-                onError: (err) => logger.info('run when error found : $err'),
+                onLoaded: () => logger.fine('Zone Loaded'),
+                onError: (err) => logger.fine('run when error found : $err'),
               )
             : Container(),
         // Center(
@@ -107,11 +107,11 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
     final url = await controller.createFileUrl(event);
     //final blob = await controller.getFileData(event);
 
-    logger.info('Name : $name');
-    logger.info('Mime: $mime');
+    logger.fine('Name : $name');
+    logger.fine('Mime: $mime');
 
-    logger.info('Size : ${byte / (1024 * 1024)}');
-    logger.info('URL: $url');
+    logger.fine('Size : ${byte / (1024 * 1024)}');
+    logger.fine('URL: $url');
 
     // update the data model with recent file uploaded
     final droppedFile = ContentsModel.withFile(widget.parentId,

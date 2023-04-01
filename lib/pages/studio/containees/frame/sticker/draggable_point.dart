@@ -42,7 +42,7 @@ class DraggablePointState extends State<DraggablePoint> {
         ? GestureDetector(
             behavior: HitTestBehavior.opaque,
             onLongPressDown: (detail) {
-              logger.info('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
+              logger.fine('Gest2 : onLongPressDown in DraggablePoint for Extended Area');
               //
               widget.onTap!();
             },

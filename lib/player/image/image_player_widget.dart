@@ -67,7 +67,7 @@ class ImagePlayerWidget extends AbsPlayWidget {
 
   @override
   Future<void> play({bool byManual = false}) async {
-    logger.info('image play');
+    logger.fine('image play');
     model!.setPlayState(PlayState.start);
     if (byManual) {
       model!.setManualState(PlayState.start);
@@ -87,7 +87,7 @@ class ImagePlayerWidget extends AbsPlayWidget {
 
   @override
   Future<void> close() async {
-    logger.info('Image close');
+    logger.fine('Image close');
 
     model!.setPlayState(PlayState.none);
   }
@@ -167,9 +167,9 @@ class ImagePlayerWidgetState extends State<ImagePlayerWidget> {
     String uri = widget.getURI(widget.model!);
     String errMsg = '${widget.model!.name} uri is null';
     if (uri.isEmpty) {
-      logger.info(errMsg);
+      logger.fine(errMsg);
     }
-    logger.info("uri=<$uri>");
+    logger.fine("uri=<$uri>");
 
     // return ClipRRect(
     //   borderRadius: BorderRadius.only(
@@ -192,7 +192,7 @@ class ImagePlayerWidgetState extends State<ImagePlayerWidget> {
     //                 fit: BoxFit.cover,
     //                 errorBuilder: (context, error, stackTrace) {
     //                   errMsg = '${widget.model!.name} ${error.toString()}';
-    //                   logger.info(errMsg);
+    //                   logger.fine(errMsg);
     //                   return noImage(errMsg);
     //                 },
     //               ),

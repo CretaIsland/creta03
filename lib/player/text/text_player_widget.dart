@@ -88,7 +88,7 @@ class TextPlayerWidget extends AbsPlayWidget {
 
   @override
   Future<void> play({bool byManual = false}) async {
-    //logger.info('text play');
+    //logger.fine('text play');
     model!.setPlayState(PlayState.start);
     if (byManual) {
       model!.setManualState(PlayState.start);
@@ -110,7 +110,7 @@ class TextPlayerWidget extends AbsPlayWidget {
 
   @override
   Future<void> close() async {
-    logger.info('Image close');
+    logger.fine('Image close');
 
     model!.setPlayState(PlayState.none);
     if (model!.isTTS.value == true && tts != null) {
@@ -146,7 +146,7 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
   }
 
   void invalidate() {
-    logger.info('TextPlayerWidgetState setState');
+    logger.fine('TextPlayerWidgetState setState');
     setState(() {});
   }
 
@@ -215,11 +215,11 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
   }
 
   Widget playText(String text, TextStyle style, double fontSize, Size realSize) {
-    //logger.info('playText ${widget.model!.outLineWidth.value} ${widget.model!.aniType.value}',level: 6);
+    //logger.fine('playText ${widget.model!.outLineWidth.value} ${widget.model!.aniType.value}',level: 6);
 
     TextStyle? shadowStyle;
     if (widget.model!.shadowBlur.value > 0) {
-      //logger.info('widget.model!.shadowBlur.value=${widget.model!.shadowBlur.value}');
+      //logger.fine('widget.model!.shadowBlur.value=${widget.model!.shadowBlur.value}');
       shadowStyle = style.copyWith(shadows: [
         Shadow(
             color: widget.model!.shadowColor.value.withOpacity(widget.model!.shadowIntensity.value),
@@ -353,7 +353,7 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
             atRestEffect: WidgetRestingEffects.bounce(),
             //outgoingEffect: WidgetTransitionEffects.outgoingScaleUp(),
             // onIncomingAnimationComplete: (key) async {
-            //   logger.info("TextAniType.bounce onIncomingAnimationComplete()");
+            //   logger.fine("TextAniType.bounce onIncomingAnimationComplete()");
             //   await Future.delayed(Duration(milliseconds: duration * 8));
             //   setState(() {});
             // },
@@ -371,7 +371,7 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
             atRestEffect: WidgetRestingEffects.fidget(),
             //outgoingEffect: WidgetTransitionEffects.outgoingSlideOutToBottom(),
             // onIncomingAnimationComplete: (key) async {
-            //   logger.info("TextAniType.bounce onIncomingAnimationComplete()");
+            //   logger.fine("TextAniType.bounce onIncomingAnimationComplete()");
             //   await Future.delayed(Duration(milliseconds: duration * 8));
             //   setState(() {});
             // },
@@ -465,7 +465,7 @@ class TextPlayerWidgetState extends State<TextPlayerWidget> {
     // 현재 사이즈보다 작다면,  폰트가 커져야 한다.
     double fontRatio = sqrt(realSize.width * realSize.height) / sqrt(idealWidth * idealHeight);
     return fontSize * fontRatio;
-    //logger.info("font = ${widget.model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
+    //logger.fine("font = ${widget.model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
     //    level: 6);
   }
 }

@@ -136,7 +136,7 @@ class SimpleVideoPlayerState extends State<SimpleVideoPlayer> {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     if (widget.autoStart) {
-      logger.info('initState play');
+      logger.fine('initState play');
       await widget.play();
     }
     return true;
@@ -144,7 +144,7 @@ class SimpleVideoPlayerState extends State<SimpleVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    logger.info('SimpleVideoPlayerState');
+    logger.fine('SimpleVideoPlayerState');
     // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
     return FutureBuilder(
         future: waitInit(),

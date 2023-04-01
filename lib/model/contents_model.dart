@@ -36,6 +36,8 @@ class ContentsModel extends CretaModel {
   late UndoAble<bool> mute;
   late UndoAble<double> volume;
   late UndoAble<double> aspectRatio;
+  late UndoAble<double> width;
+  late UndoAble<double> height;
   late UndoAble<bool> isDynamicSize; // 동영상의 크기에 맞게 frame 사이즈를 변경해야 하는 경우
 
 // text 관련
@@ -79,6 +81,8 @@ class ContentsModel extends CretaModel {
         mute,
         volume,
         aspectRatio,
+        width,
+        height,
         isDynamicSize,
         font,
         isBold,
@@ -132,6 +136,8 @@ class ContentsModel extends CretaModel {
     mute = UndoAble<bool>(false, mid);
     volume = UndoAble<double>(100, mid);
     aspectRatio = UndoAble<double>(1, mid);
+    width = UndoAble<double>(320, mid);
+    height = UndoAble<double>(180, mid);
     isDynamicSize = UndoAble<bool>(false, mid); //
 
     font = UndoAble<String>(CretaFont.fontFamily, mid);
@@ -182,6 +188,8 @@ class ContentsModel extends CretaModel {
     mute = UndoAble<bool>(srcContents.mute.value, mid);
     volume = UndoAble<double>(srcContents.volume.value, mid);
     aspectRatio = UndoAble<double>(srcContents.aspectRatio.value, mid);
+    width = UndoAble<double>(srcContents.width.value, mid);
+    height = UndoAble<double>(srcContents.height.value, mid);
     isDynamicSize = UndoAble<bool>(srcContents.isDynamicSize.value, mid); //
 
     if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
@@ -259,6 +267,8 @@ class ContentsModel extends CretaModel {
     mute.set(map["mute"], save: false, noUndo: true);
     volume.set(map["volume"], save: false, noUndo: true);
     aspectRatio.set(map["aspectRatio"], save: false, noUndo: true);
+    width.set(map["width"], save: false, noUndo: true);
+    height.set(map["height"], save: false, noUndo: true);
     isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
     lastModifiedTime = map["lastModifiedTime"];
     prevPlayTime = map["prevPlayTime"];
@@ -301,6 +311,8 @@ class ContentsModel extends CretaModel {
         "volume": volume.value,
         "contentsType": contentsType.index,
         "aspectRatio": aspectRatio.value,
+        "width": width.value,
+        "height": height.value,
         "isDynamicSize": isDynamicSize.value,
         "prevPlayTime": prevPlayTime,
         "lastModifiedTime": (file != null) ? file!.lastModifiedDate.toString() : '',

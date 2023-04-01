@@ -27,7 +27,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
             acc: acc,
             model: model,
             autoStart: autoStart) {
-    logger.info("VideoPlayerWidget(isAutoPlay=$autoStart)");
+    logger.fine("VideoPlayerWidget(isAutoPlay=$autoStart)");
   }
 
   final GlobalObjectKey<VideoPlayerWidgetState> globalKey;
@@ -37,21 +37,21 @@ class VideoPlayerWidget extends AbsPlayWidget {
 
   @override
   Future<void> init() async {
-    logger.info('initVideo(${model!.name},${model!.remoteUrl})');
+    logger.fine('initVideo(${model!.name},${model!.remoteUrl})');
 
     String uri = getURI(model!);
     String errMsg = '${model!.name} uri is null';
     if (uri.isEmpty) {
-      logger.info(errMsg);
+      logger.fine(errMsg);
     }
-    logger.info("uri=$uri");
+    logger.fine("uri=$uri");
 
     wcontroller = VideoPlayerController.network(uri,
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
       ..initialize().then((_) {
-        logger.info('initialize complete(${model!.name})');
+        logger.fine('initialize complete(${model!.name})');
         //setState(() {});
-        logger.info('initialize complete(${wcontroller!.value.duration.inMilliseconds})');
+        logger.fine('initialize complete(${wcontroller!.value.duration.inMilliseconds})');
 
         model!.videoPlayTime
             .set(wcontroller!.value.duration.inMilliseconds.toDouble(), noUndo: true, save: false);
@@ -59,13 +59,13 @@ class VideoPlayerWidget extends AbsPlayWidget {
 
         wcontroller!.onAfterVideoEvent = (event) {
           if (event.duration != null) {
-            logger.info(
+            logger.fine(
                 'video event ${event.eventType.toString()}, ${event.duration.toString()},(${model!.name})');
           }
           if (event.eventType == VideoEventType.completed) {
             // bufferingEnd and completed 가 시간이 다 되서 종료한 것임.
 
-            logger.info('video completed(${model!.name})');
+            logger.fine('video completed(${model!.name})');
             model!.setPlayState(PlayState.end);
             onAfterEvent!.call();
           }
@@ -92,7 +92,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.info('play  ${model!.name}');
+    logger.fine('play  ${model!.name}');
     model!.setPlayState(PlayState.start);
     await wcontroller!.play();
   }
@@ -102,7 +102,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.info('pause');
+    logger.fine('pause');
     model!.setPlayState(PlayState.pause);
     await wcontroller!.pause();
   }
@@ -110,7 +110,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
   @override
   Future<void> close() async {
     model!.setPlayState(PlayState.none);
-    logger.info("videoController close()");
+    logger.fine("videoController close()");
     await wcontroller!.dispose();
   }
 
@@ -133,7 +133,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
   @override
   // ignore: no_logic_in_create_state
   VideoPlayerWidgetState createState() {
-    logger.info('video createState (${model!.name}');
+    logger.fine('video createState (${model!.name}');
     return VideoPlayerWidgetState();
   }
 }
@@ -150,7 +150,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      logger.info('afterBuild video');
+      logger.fine('afterBuild video');
       if (widget.wcontroller != null && widget.model != null) {
         widget.model!.aspectRatio
             .set(widget.wcontroller!.value.aspectRatio, noUndo: true, save: false);
@@ -167,7 +167,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   void dispose() {
-    logger.info("video widget dispose,${widget.model!.name}");
+    logger.fine("video widget dispose,${widget.model!.name}");
     //widget.wcontroller!.dispose();
     super.dispose();
     widget.model!.setPlayState(PlayState.disposed);
@@ -179,7 +179,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     if (widget.autoStart) {
-      logger.info('initState play--${widget.model!.name}---------------');
+      logger.fine('initState play--${widget.model!.name}---------------');
       await widget.play();
     }
     return true;
@@ -187,7 +187,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    logger.info('VideoPlayerWidgetState');
+    logger.fine('VideoPlayerWidgetState');
     // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
     Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
     if (StudioVariables.isSilent) {
@@ -252,7 +252,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 class MyContentsClipper extends CustomClipper<RRect> {
   @override
   RRect getClip(Size size) {
-    logger.info('MyContentsClipper=$size');
+    logger.fine('MyContentsClipper=$size');
     return RRect.fromLTRBR(50, 50, 200, 200, const Radius.circular(20));
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
 import '../../../../../model/contents_model.dart';
+import '../../../../../model/frame_model.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
@@ -31,6 +32,7 @@ class StickerView extends StatefulWidget {
 
   final double height; // height of the editor view
   final double width; // width of the editor view
+  final FrameModel? frameModel;
 
   // ignore: use_key_in_widget_constructors
   const StickerView({
@@ -47,6 +49,7 @@ class StickerView extends StatefulWidget {
     required this.onResizeButtonTap,
     required this.height,
     required this.width,
+    required this.frameModel,
     required this.onDropContents,
   });
 
@@ -122,6 +125,7 @@ class StickerViewState extends State<StickerView> {
                       DraggableStickers(
                     pageWidth: widget.width,
                     pageHeight: widget.height,
+                    frameModel: widget.frameModel,
                     stickerList: stickerList!,
                     onUpdate: widget.onUpdate,
                     onFrameDelete: widget.onFrameDelete,

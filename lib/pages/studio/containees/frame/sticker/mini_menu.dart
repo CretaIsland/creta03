@@ -96,7 +96,7 @@ class _MiniMenuState extends State<MiniMenu> {
           icon: Icons.schedule_outlined,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onFrameMain");
+            logger.fine("MinuMenu onFrameMain");
             widget.onFrameMain.call();
           }),
       BTN.fill_blue_i_menu(
@@ -105,7 +105,7 @@ class _MiniMenuState extends State<MiniMenu> {
           icon: Icons.flip_to_front_outlined,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onFrameFront");
+            logger.fine("MinuMenu onFrameFront");
             widget.onFrameFront.call();
           }),
       BTN.fill_blue_i_menu(
@@ -114,7 +114,7 @@ class _MiniMenuState extends State<MiniMenu> {
           icon: Icons.flip_to_back_outlined,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onFrameBack");
+            logger.fine("MinuMenu onFrameBack");
             widget.onFrameBack.call();
           }),
       BTN.fill_blue_i_menu(
@@ -123,7 +123,7 @@ class _MiniMenuState extends State<MiniMenu> {
           icon: Icons.copy_all_outlined,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onFrameCopy");
+            logger.fine("MinuMenu onFrameCopy");
             widget.onFrameCopy.call();
           }),
       BTN.fill_blue_i_menu(
@@ -132,7 +132,7 @@ class _MiniMenuState extends State<MiniMenu> {
           icon: Icons.screen_rotation_outlined,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onFrameRotate");
+            logger.fine("MinuMenu onFrameRotate");
             widget.onFrameRotate.call();
           }),
       BTN.fill_blue_i_menu(
@@ -141,7 +141,7 @@ class _MiniMenuState extends State<MiniMenu> {
           icon: Icons.delete_outlined,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onFrameDelete");
+            logger.fine("MinuMenu onFrameDelete");
             widget.onFrameDelete.call();
           }),
     ];

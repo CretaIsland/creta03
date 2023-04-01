@@ -120,6 +120,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
     logger.finest(
         'spread=${widget.model.shadowSpread.value}, blur=${widget.model.shadowBlur.value},direction=${widget.model.shadowDirection.value}, distance=${widget.model.shadowOffset.value}');
+
+    _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
   }
 
   @override
@@ -628,6 +630,17 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 defaultValue: widget.model.isAutoFit.value,
                 onSelected: (value) {
                   widget.model.isAutoFit.set(value);
+                  if (value == true) {
+                    setState(() {
+                      widget.model.isFixedRatio.set(value);
+                    });
+                    if (_frameManager == null) {
+                      logger.info('frameManager is null');
+                    }
+                    _frameManager?.resizeFrame2(widget.model);
+                  } else {
+                    _frameManager?.notify();
+                  }
                   _sendEvent?.sendEvent(widget.model);
                 },
               ),

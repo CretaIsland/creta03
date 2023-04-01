@@ -21,6 +21,7 @@ import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
+import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
@@ -99,14 +100,15 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   }
 
   Widget showFrame() {
+    FrameModel? model = _frameManager!.getSelected() as FrameModel?;
     return StickerView(
       width: widget.pageWidth,
       height: widget.pageHeight,
+      frameModel: model,
       // List of Stickers
       onUpdate: (update, mid) {
         logger.fine('onUpdate ${update.hint}');
         _setItem(update, mid);
-        FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           BookMainPage.containeeNotifier!.openSize(doNoti: false);
           //_sendEvent!.sendEvent(model);
@@ -114,7 +116,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         }
       },
       onFrameDelete: (mid) {
-        logger.info('Frame onFrameDelete $mid');
+        logger.fine('Frame onFrameDelete $mid');
         removeItem(mid);
         setState(() {});
       },
@@ -127,7 +129,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         setState(() {});
       },
       onFrameCopy: (mid) async {
-        logger.info('Frame onFrameCopy');
+        logger.fine('Frame onFrameCopy');
         FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
         await _frameManager?.copyFrame(frame!);
         setState(() {});
@@ -140,12 +142,12 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         frame.angle.set(angle);
       },
       onFrameMain: (mid) {
-        logger.info('Frame onFrameMain');
+        logger.fine('Frame onFrameMain');
         _setMain(mid);
         setState(() {});
       },
       onTap: (mid) {
-        logger.info('onTap : from InkWell , frame_name.dart, no setState');
+        logger.fine('onTap : from InkWell , frame_name.dart, no setState');
         FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
         if (frame == null ||
             frame.mid != mid ||
@@ -176,53 +178,104 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         }
       },
       onDropContents: (model) async {
-        logger.info('onDropContents');
-        FrameModel frameModel = await _frameManager!.createNextFrame();
+        logger.fine('onDropContents, ${model.isDynamicSize.value}');
+
+        // 프레임을 생성한다.
+        FrameModel frameModel = await _frameManager!.createNextFrame(doNotify: false);
+
+        // 콘텐츠 매니저를 생성한다.
         ContentsManager contentsManager = _frameManager!.newContentsManager(frameModel);
         model.parentMid.set(frameModel.mid, save: false, noUndo: true);
-        await contentsManager.create(model); // 콘텐츠를 DB 에 Crete 한다.
-        // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
+
+        // 그림의 가로 세로 규격을 알아낸다.
+        final reader = html.FileReader();
+        reader.readAsArrayBuffer(model.file!);
+        await reader.onLoad.first;
+        Uint8List blob = reader.result as Uint8List;
+        var image = await decodeImageFromList(blob);
+        model.width.set(image.width.toDouble(), save: false, noUndo: true);
+        model.height.set(image.height.toDouble(), save: false, noUndo: true);
+        model.aspectRatio.set(model.height.value / model.width.value, save: false, noUndo: true);
+
+        logger.info('contentsSize, ${model.width.value} x ${model.height.value}');
+
+        // 그림의 규격에 따라 프레임 사이즈를 수정해 준다
+        _frameManager?.resizeFrame(
+          frameModel,
+          model.aspectRatio.value,
+          model.width.value,
+          model.height.value,
+          invalidate: true,
+        );
+
+        // 콘텐츠 객체를 DB에 Crete 한다.
+        await contentsManager.create(model, doNotify: false);
+
+        // 업로드는  async 로 진행한다.
         if (model.file != null && (model.remoteUrl == null || model.remoteUrl!.isEmpty)) {
           // upload 되어 있지 않으므로 업로드한다.
-          final reader = html.FileReader();
-          reader.readAsArrayBuffer(model.file!);
-          await reader.onLoad.first;
-          FileModel? fileModel = await HycopFactory.storage!
-              .uploadFile(model.file!.name, model.mime, reader.result as Uint8List);
-
-          var image = await decodeImageFromList(reader.result as Uint8List);
-          model.aspectRatio.set(image.height.toDouble() / image.width.toDouble());
-
-          if (fileModel != null) {
-            model.remoteUrl = fileModel.fileView;
-            logger.info('uploaded url = ${model.url}');
-            logger.info('uploaded fileName = ${model.name}');
-            logger.info('uploaded remoteUrl = ${model.remoteUrl!}');
-            logger.info('uploaded aspectRatio = ${model.aspectRatio.value}');
-            await contentsManager.setToDB(model);
-          } else {
-            logger.severe('upload failed ${model.file!.name}');
-          }
+          _uploadFile(model, contentsManager, blob);
         }
-
         _frameManager!.notify();
+
+        // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
       },
       stickerList: getStickerList(),
     );
+  }
+
+  Future<void> _uploadFile(
+    ContentsModel model,
+    ContentsManager contentsManager,
+    Uint8List blob,
+  ) async {
+    // 파일명을 확장자와 파일명으로 분리함.
+    int pos = model.file!.name.lastIndexOf('.');
+    String name = '';
+    String ext = '';
+    if (pos > 0) {
+      name = model.file!.name.substring(0, pos);
+      ext = model.file!.name.substring(pos);
+    } else if (pos == 0) {
+      name = '';
+      ext = model.file!.name;
+    } else {
+      name = model.file!.name;
+      ext = '';
+    }
+
+    String uniqFileName = '${name}_${model.bytes}$ext';
+
+    FileModel? fileModel = await HycopFactory.storage!.uploadFile(uniqFileName, model.mime, blob);
+
+    if (fileModel != null) {
+      // modelList 가 그사이 갱신되었을 수가 있기 때문에, 다시 가져온다.
+      ContentsModel? reModel = contentsManager.getModel(model.mid) as ContentsModel?;
+      reModel ??= model;
+      reModel.remoteUrl = fileModel.fileView;
+      logger.fine('uploaded url = ${reModel.url}');
+      logger.fine('uploaded fileName = ${reModel.name}');
+      logger.fine('uploaded remoteUrl = ${reModel.remoteUrl!}');
+      logger.fine('uploaded aspectRatio = ${reModel.aspectRatio.value}');
+      //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
+      await contentsManager.setToDB(reModel);
+    } else {
+      logger.severe('upload failed ${model.file!.name}');
+    }
   }
 
   void _exchangeOrder(String aMid, String bMid, String hint) {
     FrameModel? aModel = _frameManager!.getModel(aMid) as FrameModel?;
     FrameModel? bModel = _frameManager!.getModel(bMid) as FrameModel?;
     if (aModel == null) {
-      logger.info('$aMid does not exist in modelList');
+      logger.fine('$aMid does not exist in modelList');
       return;
     }
     if (bModel == null) {
-      logger.info('$bMid does not exist in modelList');
+      logger.fine('$bMid does not exist in modelList');
       return;
     }
-    logger.info('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
+    logger.fine('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
 
     double aOrder = aModel.order.value;
     double bOrder = bModel.order.value;
@@ -234,7 +287,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   }
 
   List<Sticker> getStickerList() {
-    logger.info('getStickerList()');
+    logger.fine('getStickerList()');
     //_frameManager!.frameKeyMap.clear();
     _frameManager!.reOrdering();
     return _frameManager!.orderMapIterator((e) {
@@ -422,6 +475,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
           key: ValueKey('ContentsMain${model.mid}'),
           frameModel: model,
           pageModel: widget.pageModel,
+          frameManager: _frameManager!,
         ),
         // child: Image.asset(
         //   'assets/creta_default.png',

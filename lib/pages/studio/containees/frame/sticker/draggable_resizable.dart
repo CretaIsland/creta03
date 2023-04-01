@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../design_system/creta_color.dart';
+import '../../../../../model/frame_model.dart';
 import '../../../studio_constant.dart';
 import 'draggable_point.dart';
 import 'floating_action_icon.dart';
@@ -53,6 +54,7 @@ class DraggableResizable extends StatefulWidget {
     required this.position,
     required this.angle,
     required this.isMain,
+    required this.frameModel,
     required this.pageWidth,
     required this.pageHeight,
     required this.borderWidth,
@@ -103,6 +105,7 @@ class DraggableResizable extends StatefulWidget {
 
   final double pageWidth;
   final double pageHeight;
+  final FrameModel? frameModel;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -133,6 +136,9 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
   @override
   Widget build(BuildContext context) {
+    bool isFixedRatio = (widget.frameModel != null && widget.frameModel!.isFixedRatio.value);
+    bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final normalizedWidth = size.width;
@@ -163,8 +169,13 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragBottomRight(Offset details) {
-          final newHeight = math.max(size.height + details.dy, 0.0);
+          if (isAutoFit) return;
+          //final newHeight = math.max(size.height + details.dy, 0.0);
           final newWidth = math.max(size.width + details.dx, 0.0);
+          var newHeight = size.height;
+          if (isFixedRatio) {
+            newHeight = newWidth * (size.height / size.width);
+          }
 
           final updatedSize = Size(newWidth, newHeight);
           if (_sizeValidChcheck(updatedSize, position) == false) return;
@@ -176,8 +187,13 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragTopRight(Offset details) {
+          if (isAutoFit) return;
           final newHeight = math.max(size.height - details.dy, 0.0);
-          final newWidth = math.max(size.width + details.dx, 0.0);
+          //final newWidth = math.max(size.width + details.dx, 0.0);
+          var newWidth = size.width;
+          if (isFixedRatio) {
+            newWidth = newHeight / (size.height / size.width);
+          }
 
           final updatedSize = Size(newWidth, newHeight);
           final updatedPosition = Offset(position.dx, position.dy + details.dy);
@@ -193,11 +209,18 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragTopLeft(Offset details) {
-          final newHeight = math.max(size.height - details.dy, 0.0);
+          if (isAutoFit) return;
+          //final newHeight = math.max(size.height - details.dy, 0.0);
           final newWidth = math.max(size.width - details.dx, 0.0);
+          var newHeight = size.height;
+          if (isFixedRatio) {
+            newHeight = newWidth * (size.height / size.width);
+          }
 
           final updatedSize = Size(newWidth, newHeight);
-          final updatedPosition = Offset(position.dx + details.dx, position.dy + details.dy);
+          //final updatedPosition = Offset(position.dx + details.dx, position.dy + details.dy);
+          final updatedPosition = Offset(
+              position.dx + details.dx, position.dy + details.dx * (size.height / size.width));
 
           if (_sizeValidChcheck(updatedSize, updatedPosition) == false) return;
 
@@ -210,8 +233,13 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragBottomLeft(Offset details) {
-          final newHeight = math.max(size.height + details.dy, 0.0);
+          //final newHeight = math.max(size.height + details.dy, 0.0);
+          if (isAutoFit) return;
           final newWidth = math.max(size.width - details.dx, 0.0);
+          var newHeight = size.height;
+          if (isFixedRatio) {
+            newHeight = newWidth * (size.height / size.width);
+          }
 
           final updatedSize = Size(newWidth, newHeight);
           final updatedPosition = Offset(position.dx + details.dx, position.dy);
@@ -227,11 +255,13 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragRight(Offset details) {
-          //final newHeight = math.max(size.height + details.dy, 0.0);
+          if (isAutoFit) return;
           final newWidth = math.max(size.width + details.dx, 0.0);
-
-          final updatedSize = Size(newWidth, size.height);
-
+          var newHeight = size.height;
+          if (isFixedRatio) {
+            newHeight = newWidth * (size.height / size.width);
+          }
+          final updatedSize = Size(newWidth, newHeight);
           if (_sizeValidChcheck(updatedSize, position) == false) return;
 
           setState(() {
@@ -241,10 +271,14 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragLeft(Offset details) {
+          if (isAutoFit) return;
           //final newHeight = math.max(size.height + details.dy, 0.0);
           final newWidth = math.max(size.width - details.dx, 0.0);
-
-          final updatedSize = Size(newWidth, size.height);
+          var newHeight = size.height;
+          if (isFixedRatio) {
+            newHeight = newWidth * (size.height / size.width);
+          }
+          final updatedSize = Size(newWidth, newHeight);
           final updatedPosition = Offset(position.dx + details.dx, position.dy);
 
           if (_sizeValidChcheck(updatedSize, updatedPosition) == false) return;
@@ -257,10 +291,13 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragDown(Offset details) {
+          if (isAutoFit) return;
           final newHeight = math.max(size.height + details.dy, 0.0);
-          //final newWidth = math.max(size.width + details.dx, 0.0);
-
-          final updatedSize = Size(size.width, newHeight);
+          var newWidth = size.width;
+          if (isFixedRatio) {
+            newWidth = newHeight / (size.height / size.width);
+          }
+          final updatedSize = Size(newWidth, newHeight);
 
           if (_sizeValidChcheck(updatedSize, position) == false) return;
 
@@ -271,10 +308,14 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragUp(Offset details) {
+          if (isAutoFit) return;
           final newHeight = math.max(size.height - details.dy, 0.0);
-          //final newWidth = math.max(size.width - details.dx, 0.0);
+          var newWidth = size.width;
+          if (isFixedRatio) {
+            newWidth = newHeight / (size.height / size.width);
+          }
+          final updatedSize = Size(newWidth, newHeight);
 
-          final updatedSize = Size(size.width, newHeight);
           final updatedPosition = Offset(position.dx, position.dy + details.dy);
 
           if (_sizeValidChcheck(updatedSize, updatedPosition) == false) return;
@@ -331,6 +372,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           type: ResizePointType.topLeft,
           onDrag: onDragTopLeft,
           onTap: widget.onResizeButtonTap,
+          enable: !isAutoFit,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
         );
@@ -342,6 +384,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
+          enable: !isAutoFit,
         );
 
         final topRightCorner = ResizePoint(
@@ -351,6 +394,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
+          enable: !isAutoFit,
         );
 
         final bottomLeftCorner = ResizePoint(
@@ -360,6 +404,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
+          enable: !isAutoFit,
         );
 
         final upPlane = ResizePoint(
@@ -369,6 +414,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
+          enable: !isAutoFit,
         );
 
         final rightPlane = ResizePoint(
@@ -378,6 +424,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
+          enable: !isAutoFit,
         );
 
         final downPlane = ResizePoint(
@@ -387,6 +434,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
+          enable: !isAutoFit,
         );
 
         final leftPlane = ResizePoint(
@@ -396,6 +444,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
+          enable: !isAutoFit,
         );
 
         final center = Offset(

@@ -434,7 +434,9 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
                   enabled: _clickedDescriptionEditButton,
                   autofocus: true,
                   decoration: BoxDecoration(
-                    color: _clickedDescriptionEditButton ? Colors.white : Color.fromARGB(255, 250, 250, 250),
+                    color: _clickedDescriptionEditButton
+                        ? Colors.white
+                        : Color.fromARGB(255, 250, 250, 250),
                     border: _clickedDescriptionEditButton
                         ? Border.all(color: CretaColor.text[200]!)
                         : Border.all(color: Color.fromARGB(255, 250, 250, 250)),
@@ -459,7 +461,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
                     _descriptionOld = value;
                   }),
                   onTapOutside: (event) {
-                    //logger.info('onTapOutside($_searchValue)');
+                    //logger.fine('onTapOutside($_searchValue)');
                     if (_clickedDescriptionEditButton) {
                       setState(() {
                         _description = _descriptionOld;

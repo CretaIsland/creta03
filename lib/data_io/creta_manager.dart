@@ -573,10 +573,12 @@ abstract class CretaManager extends AbsExModelManager {
     HycopFactory.realtime!.removeListener(instanceId, collectionId);
   }
 
-  void insert(CretaModel model, {int postion = 0}) {
+  void insert(CretaModel model, {int postion = 0, bool doNotify = true}) {
     lock();
     modelList.insert(postion, model);
-    notify();
+    if (doNotify) {
+      notify();
+    }
     unlock();
     //reOrdering();
   }

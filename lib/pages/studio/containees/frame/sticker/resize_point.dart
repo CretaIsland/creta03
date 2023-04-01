@@ -37,6 +37,7 @@ class ResizePoint extends StatefulWidget {
       required this.type,
       required this.onTap,
       required this.onComplete,
+      required this.enable,
       // ignore: unused_element
       this.onScale,
       this.iconData})
@@ -48,6 +49,7 @@ class ResizePoint extends StatefulWidget {
   final IconData? iconData;
   final void Function() onTap;
   final void Function() onComplete;
+  final bool enable;
 
   @override
   State<ResizePoint> createState() => _ResizePointState();
@@ -117,7 +119,7 @@ class _ResizePointState extends State<ResizePoint> {
           _isHover = false;
         });
       },
-      cursor: _cursor,
+      cursor: widget.enable ? _cursor : MouseCursor.defer,
       child: ResizePointDraggable(
         mode: PositionMode.local,
         onDrag: (value) {
@@ -144,7 +146,7 @@ class _ResizePointState extends State<ResizePoint> {
       width: LayoutConst.cornerDiameter,
       height: LayoutConst.cornerDiameter,
       decoration: BoxDecoration(
-        color: _isHover ? Colors.white : Colors.transparent,
+        color: _isHover && widget.enable ? Colors.white : Colors.transparent,
         border: Border.all(color: _isHover ? CretaColor.primary : Colors.transparent, width: 1),
         shape: BoxShape.rectangle,
       ),
@@ -155,7 +157,7 @@ class _ResizePointState extends State<ResizePoint> {
                 height: LayoutConst.dragHandle,
                 decoration: BoxDecoration(
                   border: Border.all(color: CretaColor.primary, width: 1),
-                  color: Colors.white,
+                  color: widget.enable ? Colors.white : CretaColor.primary,
                   shape: BoxShape.rectangle,
                 ),
                 child: widget.iconData != null

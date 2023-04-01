@@ -813,10 +813,12 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget _drawPage(BuildContext context) {
     return Consumer<PageManager>(builder: (context, pageManager, child) {
       PageModel? pageModel = pageManager.getSelected() as PageModel?;
-      logger.finest('PageMain Invoked');
       if (pageModel == null) {
         return const SizedBox.shrink();
       }
+      pageModel.width.set(_bookModel.width.value, save: false, noUndo: true);
+      pageModel.height.set(_bookModel.height.value, save: false, noUndo: true);
+      logger.fine('PageMain Invoked ***** ${pageModel.width.value}');
 
       return PageMain(
         key: ValueKey(pageModel.mid),

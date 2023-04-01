@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../model/contents_model.dart';
+import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
@@ -21,6 +22,7 @@ class DraggableStickers extends StatefulWidget {
   //List of stickers (elements)
   final double pageWidth;
   final double pageHeight;
+  final FrameModel? frameModel;
   final List<Sticker> stickerList;
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onFrameDelete;
@@ -38,6 +40,7 @@ class DraggableStickers extends StatefulWidget {
   const DraggableStickers({
     required this.pageWidth,
     required this.pageHeight,
+    required this.frameModel,
     required this.stickerList,
     required this.onUpdate,
     required this.onFrameDelete,
@@ -102,6 +105,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       position: sticker.position,
       borderWidth: sticker.borderWidth,
       isMain: sticker.isMain,
+      frameModel: widget.frameModel,
       pageWidth: widget.pageWidth,
       pageHeight: widget.pageHeight,
       // Size of the sticker
@@ -125,7 +129,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         logger.finest("saved");
       },
       onTap: () {
-        logger.info('onTap : from Gest2');
+        logger.fine('onTap : from Gest2');
         BookMainPage.containeeNotifier!.setFrameClick(true);
         // logger.finest('setState');
         // setState(() {});
@@ -199,7 +203,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   onTap: () {
                     // To update the selected widget
                     DraggableStickers.selectedAssetId = sticker.id;
-                    logger.info('InkWell onTap from draggable_stickers...');
+                    logger.fine('InkWell onTap from draggable_stickers...');
                     setState(() {});
                     widget.onTap?.call(DraggableStickers.selectedAssetId!);
                   },
@@ -240,13 +244,13 @@ class _DraggableStickersState extends State<DraggableStickers> {
         parentBorderWidth: _selectedSticker!.borderWidth,
         pageHeight: widget.pageHeight,
         onFrameDelete: () {
-          logger.info('onFrameDelete');
+          logger.fine('onFrameDelete');
           stickers.remove(_selectedSticker!);
           widget.onFrameDelete.call(_selectedSticker!.id);
           //setState(() {});
         },
         onFrameBack: () {
-          logger.info('onFrameBack');
+          logger.fine('onFrameBack');
           var ind = stickers.indexOf(_selectedSticker!);
           if (ind > 0) {
             // 제일 뒤에 있는것은 제외한다.
@@ -259,7 +263,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           }
         },
         onFrameFront: () {
-          logger.info('onFrameFront');
+          logger.fine('onFrameFront');
           var listLength = stickers.length;
           var ind = stickers.indexOf(_selectedSticker!);
           if (ind < listLength - 1) {
@@ -273,24 +277,24 @@ class _DraggableStickersState extends State<DraggableStickers> {
           }
         },
         onFrameMain: () {
-          logger.info('onFrameMain');
+          logger.fine('onFrameMain');
           _selectedSticker!.isMain = true;
           widget.onFrameMain.call(_selectedSticker!.id);
           //setState(() {});
         },
         onFrameCopy: () {
-          logger.info('onFrameCopy');
+          logger.fine('onFrameCopy');
           widget.onFrameCopy.call(_selectedSticker!.id);
           //setState(() {});
         },
         onFrameRotate: () {
           double reverse = 180 / pi;
           double before = (_selectedSticker!.angle * reverse).roundToDouble();
-          logger.info('onFrameRotate  before $before');
+          logger.fine('onFrameRotate  before $before');
           int turns = (before / 15).round() + 1;
           double after = ((turns * 15.0) % 360).roundToDouble();
           _selectedSticker!.angle = after / reverse;
-          logger.info('onFrameRotate  after $after');
+          logger.fine('onFrameRotate  after $after');
           widget.onFrameRotate.call(_selectedSticker!.id, after);
           setState(() {});
         },
@@ -302,8 +306,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
     return DropZoneWidget(
       parentId: '',
       onDroppedFile: (model) {
-        logger.info('contents added ${model.mid}');
-        //model.isDynamicSize.set(true);
+        logger.fine('contents added ${model.mid}');
+        model.isDynamicSize.set(true, save: false, noUndo: true);
         widget.onDropContents(model); // 동영상에 맞게 frame size 를 조절하라는 뜻
       },
     );

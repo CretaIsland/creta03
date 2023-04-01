@@ -29,15 +29,18 @@ class ContentsManager extends CretaManager {
     return retval;
   }
 
-  Future<ContentsModel> create(ContentsModel model) async {
+  Future<ContentsModel> create(ContentsModel model, {bool doNotify = true}) async {
+    logger.fine('create ${model.mid}!!!!!!!!!!!!!!!!!!!!!!');
     await createToDB(model);
-    insert(model);
+    logger.fine('end create ${model.mid}!!!!!!!!!!!!!!!!!!!!!!');
+    insert(model, doNotify: doNotify);
     return model;
   }
 
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> getContents() async {
+    logger.fine('getContents-------------------------------------------');
     int contentsCount = 0;
     startTransaction();
     try {
@@ -62,8 +65,10 @@ class ContentsManager extends CretaManager {
     return modelList.length;
   }
 
-  void resizeFrame(double ratio, {bool invalidate = true}) {
-    // 원본에서 ratio = w / h 이다.
+  void resizeFrame(double ratio, double imageWidth, double imageHeight,
+      {bool invalidate = true, bool initPosition = true}) {
+    //abs_palyer에서만 호출된다.
+    // 원본에서 ratio = h / w 이다.
     //width 와 height 중 짧은 쪽을 기준으로 해서,
     // 반대편을 ratio 만큼 늘린다.
     if (ratio == 0) return;
@@ -77,45 +82,34 @@ class ContentsManager extends CretaManager {
     double dx = frameModel.posX.value;
     double dy = frameModel.posY.value;
 
-    // ratio = w / h 이다.
-    if (ratio >= 1) {
-      // 콘텐츠의 가로가 더 길다.
-      // 이 경우 페이지의 가로에 꽉차게 수정해준다.
-      w = pageWidth;
-      h = w / ratio;
-      dx = 0;
+    logger.fine(
+        'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$imageWidth, imageH=$imageHeight, dx=$dx, dy=$dy --------------------');
 
-      if (h > pageHeight) {
-        h = pageHeight;
-        w = h * ratio;
-        dy = 0;
-      }
-      if (h == pageHeight) {
-        dy = 0;
-      }
+    if (imageWidth <= pageWidth && imageHeight <= pageHeight) {
+      w = imageWidth;
+      h = imageHeight;
     } else {
-      // 콘텐츠의 세로가 더 길다.
-      // 이 경우 페이지의 세로에 꽉차게 수정해준다.
-      h = pageHeight;
-      w = h * ratio;
-      dy = 0;
-      if (w > pageWidth) {
+      // 뭔가가 pageSize 보다 크다.  어느쪽이 더 큰지 본다.
+      double wRatio = pageWidth / imageWidth;
+      double hRatio = pageHeight / imageHeight;
+      if (wRatio > hRatio) {
         w = pageWidth;
-        h = w / ratio;
-        dx = 0;
-      }
-      if (w == pageWidth) {
-        dx = 0;
+        h = w * ratio;
+      } else {
+        h = pageHeight;
+        w = h / ratio;
       }
     }
-
-    mychangeStack.startTrans();
-    frameModel.posX.set(dx, save: false);
-    frameModel.posY.set(dy, save: false);
-    frameModel.width.set(w, save: false);
-    frameModel.height.set(h, save: false);
+    if (initPosition == true) {
+      dx = (pageWidth - w) / 2;
+      dy = (pageHeight - h) / 2;
+      frameModel.posX.set(dx, save: false, noUndo: true);
+      frameModel.posY.set(dy, save: false, noUndo: true);
+    }
+    frameModel.width.set(w, save: false, noUndo: true);
+    frameModel.height.set(h, save: false, noUndo: true);
+    logger.fine('resizeFrame($ratio, $invalidate) w=$w, h=$h, dx=$dx, dy=$dy --------------------');
     frameModel.save();
-    mychangeStack.endTrans();
 
     if (invalidate) {
       notify();

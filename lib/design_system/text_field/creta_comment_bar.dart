@@ -130,11 +130,11 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
         onSubmitted: ((value) {
           _searchValue = value;
           //print(_searchValue);
-          //logger.info('search $_searchValue');
+          //logger.fine('search $_searchValue');
           widget.onSearch(_searchValue);
         }),
         onTapOutside: (event) {
-          //logger.info('onTapOutside($_searchValue)');
+          //logger.fine('onTapOutside($_searchValue)');
         },
         // onSuffixTap: () {
         //   _searchValue = _controller.text;
@@ -267,7 +267,8 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
 
   @override
   Widget build(BuildContext context) {
-    double textWidth = (widget.thumb != null) ? widget.width! - 16 - 16 - 40 - 8 : widget.width! - 16 - 16;
+    double textWidth =
+        (widget.thumb != null) ? widget.width! - 16 - 16 - 40 - 8 : widget.width! - 16 - 16;
 
     final span = TextSpan(text: widget.data.comment, style: CretaFont.bodyMedium);
     final tp = TextPainter(text: span, textDirection: TextDirection.ltr);
@@ -474,11 +475,11 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
     // //     onSubmitted: ((value) {
     // //       _searchValue = value;
     // //       //print(_searchValue);
-    // //       logger.info('search $_searchValue');
+    // //       logger.fine('search $_searchValue');
     // //       widget.onSearch(_searchValue);
     // //     }),
     // //     onTapOutside: (event) {
-    // //       logger.info('onTapOutside($_searchValue)');
+    // //       logger.fine('onTapOutside($_searchValue)');
     // //     },
     // //     onTap: () {
     // //       setState(() {
@@ -568,11 +569,11 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
     //           onSubmitted: ((value) {
     //             _searchValue = value;
     //             //print(_searchValue);
-    //             logger.info('search $_searchValue');
+    //             logger.fine('search $_searchValue');
     //             widget.onSearch(_searchValue);
     //           }),
     //           onTapOutside: (event) {
-    //             logger.info('onTapOutside($_searchValue)');
+    //             logger.fine('onTapOutside($_searchValue)');
     //           },
     //           // onSuffixTap: () {
     //           //   _searchValue = _controller.text;

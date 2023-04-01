@@ -116,7 +116,7 @@ class CretaButton extends StatefulWidget {
   State<CretaButton> createState() => _CretaButtonState();
 
   void _setColor() {
-    switch(buttonColor) {
+    switch (buttonColor) {
       case CretaButtonColor.white:
         bgColor = Colors.white;
         hoverColor = CretaColor.text[100]!;
@@ -141,109 +141,109 @@ class CretaButton extends StatefulWidget {
         hoverColor = CretaColor.text[200]!;
         clickColor = CretaColor.text[300]!;
         break;
-    case CretaButtonColor.gray100light:
-      bgColor = CretaColor.text[100]!;
-      hoverColor = CretaColor.text[100]!;
-      clickColor = CretaColor.text[200]!;
-      fgColor = CretaColor.text[400];
-      break;
-    case CretaButtonColor.gray100blue:
-      bgColor = CretaColor.text[100]!;
-      hoverColor = CretaColor.text[100]!;
-      clickColor = CretaColor.text[200]!;
-      fgColor = CretaColor.primary[400];
-      break;
-    case CretaButtonColor.gray200:
-      bgColor = CretaColor.text[200]!;
-      hoverColor = CretaColor.text[300]!;
-      clickColor = CretaColor.text[400]!;
-      break;
-    case CretaButtonColor.gray:
-      bgColor = CretaColor.text[900]!.withOpacity(0.25);
-      hoverColor = CretaColor.text[900]!.withOpacity(0.40);
-      clickColor = CretaColor.text[900]!.withOpacity(0.60);
-      break;
-    case CretaButtonColor.sky:
-      bgColor = Colors.white;
-      hoverColor = CretaColor.primary[200]!;
-      clickColor = CretaColor.primary[300]!;
-      selectColor = CretaColor.primary[400]!;
-      break;
-    case CretaButtonColor.skyTitle:
-      bgColor = CretaColor.primary;
-      hoverColor = CretaColor.primary[500]!;
-      clickColor = CretaColor.primary[600]!;
-      selectColor = CretaColor.primary;
-      break;
-    case CretaButtonColor.purple:
-      bgColor = CretaColor.secondary;
-      hoverColor = CretaColor.secondary[500]!;
-      clickColor = CretaColor.secondary[600]!;
-      break;
-    case CretaButtonColor.skypurple:
-      bgColor = Colors.white;
-      hoverColor = CretaColor.secondary[200]!;
-      clickColor = CretaColor.secondary[300]!;
-      selectColor = CretaColor.secondary[400]!;
-      // bgColor = Colors.transparent;
-      // hoverColor = Colors.transparent;
-      // clickColor = Colors.transparent;
-      // fgColor = Colors.white;
-      // fgHoverColor = CretaColor.secondary[200]!;
-      // fgClickColor = CretaColor.secondary[300]!;
-      break;
-    case CretaButtonColor.black:
-      bgColor = CretaColor.text[700]!;
-      hoverColor = CretaColor.text[600]!;
-      clickColor = CretaColor.text[500]!;
-      break;
-    case CretaButtonColor.red:
-      // bgColor = CretaColor.red;
-      // hoverColor = CretaColor.red[600]!;
-      // clickColor = CretaColor.red[700]!;
-      bgColor = Colors.transparent;
-      hoverColor = Colors.transparent;
-      clickColor = Colors.transparent;
-      fgColor = CretaColor.red;
-      fgHoverColor = CretaColor.red[600];
-      fgClickColor = CretaColor.red[700];
-      break;
-    case CretaButtonColor.redAndWhiteTitle:
-      bgColor = CretaColor.red[400]!;
-      hoverColor = CretaColor.red[500]!;
-      clickColor = CretaColor.red[600]!;
-      break;
-    case CretaButtonColor.transparent:
-      bgColor = Colors.transparent;
-      hoverColor = Colors.transparent;
-      clickColor = Colors.transparent;
-      fgColor = CretaColor.primary;
-      fgHoverColor = CretaColor.primary[500];
-      fgClickColor = CretaColor.primary[600];
-      break;
-    case CretaButtonColor.blueGray:
-      bgColor = CretaColor.text[900]!.withOpacity(0.25);
-      hoverColor = CretaColor.primary[500];
-      clickColor = CretaColor.primary[600];
-      fgColor = CretaColor.text[900]!.withOpacity(0.25);
-      fgHoverColor = CretaColor.primary[500];
-      fgClickColor = CretaColor.primary[600];
-      break;
-    case CretaButtonColor.blueAndWhite:
-      bgColor = CretaColor.primary[400]!;
-      hoverColor = CretaColor.primary[200]!;
-      clickColor = CretaColor.primary[600]!;
-      break;
-    case CretaButtonColor.blueAndWhiteTitle:
-      bgColor = CretaColor.primary[400]!;
-      hoverColor = CretaColor.primary[500]!;
-      clickColor = CretaColor.primary[600]!;
-      break;
-    default:
-      bgColor = CretaColor.primary[400]!;
-      hoverColor = CretaColor.primary[500]!;
-      clickColor = CretaColor.primary[600]!;
-      break;
+      case CretaButtonColor.gray100light:
+        bgColor = CretaColor.text[100]!;
+        hoverColor = CretaColor.text[100]!;
+        clickColor = CretaColor.text[200]!;
+        fgColor = CretaColor.text[400];
+        break;
+      case CretaButtonColor.gray100blue:
+        bgColor = CretaColor.text[100]!;
+        hoverColor = CretaColor.text[100]!;
+        clickColor = CretaColor.text[200]!;
+        fgColor = CretaColor.primary[400];
+        break;
+      case CretaButtonColor.gray200:
+        bgColor = CretaColor.text[200]!;
+        hoverColor = CretaColor.text[300]!;
+        clickColor = CretaColor.text[400]!;
+        break;
+      case CretaButtonColor.gray:
+        bgColor = CretaColor.text[900]!.withOpacity(0.25);
+        hoverColor = CretaColor.text[900]!.withOpacity(0.40);
+        clickColor = CretaColor.text[900]!.withOpacity(0.60);
+        break;
+      case CretaButtonColor.sky:
+        bgColor = Colors.white;
+        hoverColor = CretaColor.primary[200]!;
+        clickColor = CretaColor.primary[300]!;
+        selectColor = CretaColor.primary[400]!;
+        break;
+      case CretaButtonColor.skyTitle:
+        bgColor = CretaColor.primary;
+        hoverColor = CretaColor.primary[500]!;
+        clickColor = CretaColor.primary[600]!;
+        selectColor = CretaColor.primary;
+        break;
+      case CretaButtonColor.purple:
+        bgColor = CretaColor.secondary;
+        hoverColor = CretaColor.secondary[500]!;
+        clickColor = CretaColor.secondary[600]!;
+        break;
+      case CretaButtonColor.skypurple:
+        bgColor = Colors.white;
+        hoverColor = CretaColor.secondary[200]!;
+        clickColor = CretaColor.secondary[300]!;
+        selectColor = CretaColor.secondary[400]!;
+        // bgColor = Colors.transparent;
+        // hoverColor = Colors.transparent;
+        // clickColor = Colors.transparent;
+        // fgColor = Colors.white;
+        // fgHoverColor = CretaColor.secondary[200]!;
+        // fgClickColor = CretaColor.secondary[300]!;
+        break;
+      case CretaButtonColor.black:
+        bgColor = CretaColor.text[700]!;
+        hoverColor = CretaColor.text[600]!;
+        clickColor = CretaColor.text[500]!;
+        break;
+      case CretaButtonColor.red:
+        // bgColor = CretaColor.red;
+        // hoverColor = CretaColor.red[600]!;
+        // clickColor = CretaColor.red[700]!;
+        bgColor = Colors.transparent;
+        hoverColor = Colors.transparent;
+        clickColor = Colors.transparent;
+        fgColor = CretaColor.red;
+        fgHoverColor = CretaColor.red[600];
+        fgClickColor = CretaColor.red[700];
+        break;
+      case CretaButtonColor.redAndWhiteTitle:
+        bgColor = CretaColor.red[400]!;
+        hoverColor = CretaColor.red[500]!;
+        clickColor = CretaColor.red[600]!;
+        break;
+      case CretaButtonColor.transparent:
+        bgColor = Colors.transparent;
+        hoverColor = Colors.transparent;
+        clickColor = Colors.transparent;
+        fgColor = CretaColor.primary;
+        fgHoverColor = CretaColor.primary[500];
+        fgClickColor = CretaColor.primary[600];
+        break;
+      case CretaButtonColor.blueGray:
+        bgColor = CretaColor.text[900]!.withOpacity(0.25);
+        hoverColor = CretaColor.primary[500];
+        clickColor = CretaColor.primary[600];
+        fgColor = CretaColor.text[900]!.withOpacity(0.25);
+        fgHoverColor = CretaColor.primary[500];
+        fgClickColor = CretaColor.primary[600];
+        break;
+      case CretaButtonColor.blueAndWhite:
+        bgColor = CretaColor.primary[400]!;
+        hoverColor = CretaColor.primary[200]!;
+        clickColor = CretaColor.primary[600]!;
+        break;
+      case CretaButtonColor.blueAndWhiteTitle:
+        bgColor = CretaColor.primary[400]!;
+        hoverColor = CretaColor.primary[500]!;
+        clickColor = CretaColor.primary[600]!;
+        break;
+      default:
+        bgColor = CretaColor.primary[400]!;
+        hoverColor = CretaColor.primary[500]!;
+        clickColor = CretaColor.primary[600]!;
+        break;
     }
   }
 }
@@ -269,7 +269,7 @@ class _CretaButtonState extends State<CretaButton> {
   Widget _myButton() {
     return GestureDetector(
       onLongPressDown: (details) {
-        logger.info("Gest : CretaButton onLongPressDown");
+        logger.fine("Gest : CretaButton onLongPressDown");
         setState(() {
           clicked = true;
           if (widget.isSelectedWidget) {
@@ -279,14 +279,14 @@ class _CretaButtonState extends State<CretaButton> {
         widget.onPressed.call();
       },
       onLongPressUp: () {
-        logger.info("onLongPressUp");
+        logger.fine("onLongPressUp");
         setState(() {
           clicked = false;
         });
         //widget.onPressed.call();
       },
       onTapUp: (details) {
-        logger.info("onTapUp");
+        logger.fine("onTapUp");
         setState(() {
           clicked = false;
         });

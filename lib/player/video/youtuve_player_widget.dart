@@ -46,9 +46,9 @@ class YoutubePlayerWidget extends AbsPlayWidget {
             acc: acc,
             model: model,
             autoStart: autoStart) {
-    logger.info("YoutubePlayerWidget(url=${model.url})");
+    logger.fine("YoutubePlayerWidget(url=${model.url})");
     if (model.remoteUrl != null) {
-      logger.info("YoutubePlayerWidget(remoteUrl=${model.remoteUrl!})");
+      logger.fine("YoutubePlayerWidget(remoteUrl=${model.remoteUrl!})");
     }
     videoId = model.remoteUrl ?? model.url;
     //playList.add(videoId);
@@ -61,7 +61,7 @@ class YoutubePlayerWidget extends AbsPlayWidget {
   Future<void> init() async {
     bool isReadOnly = StudioVariables.isReadOnly;
 
-    logger.info('initYoutube(${model!.name},$videoId), ${playList.toString()}');
+    logger.fine('initYoutube(${model!.name},$videoId), ${playList.toString()}');
     wcontroller = YoutubePlayerController(
       params: YoutubePlayerParams(
         loop: true,
@@ -103,7 +103,7 @@ class YoutubePlayerWidget extends AbsPlayWidget {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.info('play  ${model!.name}');
+    logger.fine('play  ${model!.name}');
     model!.setPlayState(PlayState.start);
     wcontroller.playVideo();
   }
@@ -113,7 +113,7 @@ class YoutubePlayerWidget extends AbsPlayWidget {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.info('pause');
+    logger.fine('pause');
     model!.setPlayState(PlayState.pause);
     wcontroller.pauseVideo();
   }
@@ -121,7 +121,7 @@ class YoutubePlayerWidget extends AbsPlayWidget {
   @override
   Future<void> close() async {
     model!.setPlayState(PlayState.none);
-    logger.info("videoController close()");
+    logger.fine("videoController close()");
     wcontroller.close();
   }
 
@@ -149,19 +149,19 @@ class YoutubePlayerWidget extends AbsPlayWidget {
         quality: ThumbnailQuality.medium,
       );
 
-      logger.info("youtube thumbnail= ${model!.thumbnail!}");
+      logger.fine("youtube thumbnail= ${model!.thumbnail!}");
     }
   }
 
   @override
   Future<void> next() async {
-    logger.info('YoutubePlayerWidget.next()');
+    logger.fine('YoutubePlayerWidget.next()');
     wcontroller.nextVideo();
   }
 
   @override
   Future<void> prev() async {
-    logger.info('YoutubePlayerWidget.prev()');
+    logger.fine('YoutubePlayerWidget.prev()');
     wcontroller.previousVideo();
   }
 
@@ -217,10 +217,10 @@ class YoutubePlayerWidgetState extends State<YoutubePlayerWidget> {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     if (widget.autoStart) {
-      logger.info('initState play--${widget.model!.name}---------------');
+      logger.fine('initState play--${widget.model!.name}---------------');
       await widget.play();
     }
-    logger.info('waitInit()');
+    logger.fine('waitInit()');
     return true;
   }
 
@@ -307,7 +307,7 @@ class YoutubePlayerWidgetState extends State<YoutubePlayerWidget> {
 
   @override
   void dispose() {
-    logger.info('Youtube dispose');
+    logger.fine('Youtube dispose');
     //widget.wcontroller.close();
     widget.model!.setPlayState(PlayState.disposed);
     super.dispose();

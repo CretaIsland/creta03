@@ -36,7 +36,7 @@ class SelectedModel extends ChangeNotifier {
   Future<bool> setModel(ContentsModel m, {bool invalidate = true}) async {
     return await _lock.synchronized(() async {
       if (_model == null || _model!.isChanged(m)) {
-        logger.info('setModel');
+        logger.fine('setModel');
         _model = m;
         if (invalidate) {
           notifyListeners();
