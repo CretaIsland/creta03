@@ -2,7 +2,9 @@
 
 import 'package:creta03/pages/community/community_sample_data.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 //import 'package:hycop/hycop.dart';
 
 import '../creta_color.dart';
@@ -18,7 +20,7 @@ class CretaCommentBar extends StatefulWidget {
   //final double height;
   final Widget? thumb;
   final CretaCommentData data;
-  final void Function(String value) onSearch;
+  final void Function(String value) onAddComment;
   final String hintText;
   final bool showEditButton;
   final void Function(CretaCommentData data)? onAddReply;
@@ -28,7 +30,7 @@ class CretaCommentBar extends StatefulWidget {
   const CretaCommentBar({
     super.key,
     required this.data,
-    required this.onSearch,
+    required this.onAddComment,
     required this.hintText,
     this.width,
     this.thumb,
@@ -92,6 +94,18 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
   Widget _getTextFieldWidget(double textWidth, int line) {
     return Expanded(
       child: CupertinoTextField(
+        inputFormatters: [
+          //LengthLimitingTextInputFormatter(10),
+          TextInputFormatter.withFunction((oldValue, newValue) {
+            int newLines = newValue.text.split('\n').length;
+            if (newLines > 10) {
+              return oldValue;
+            } else {
+              return newValue;
+            }
+          }),
+        ],
+        maxLength: 500,
         minLines: 1,
         maxLines: 10,
         keyboardType: TextInputType.multiline,
@@ -129,9 +143,9 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
         },
         onSubmitted: ((value) {
           _searchValue = value;
-          //print(_searchValue);
-          //logger.fine('search $_searchValue');
-          widget.onSearch(_searchValue);
+          if (kDebugMode) print('onSubmitted=$_searchValue');
+          //logger.info('search $_searchValue');
+          //widget.onSearch(_searchValue);
         }),
         onTapOutside: (event) {
           //logger.fine('onTapOutside($_searchValue)');
@@ -155,11 +169,12 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
       width: textWidth,
       //color: Colors.green,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // name & date & edit-button
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
                 widget.data.name,
@@ -178,6 +193,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
                 onPressed: () {
                   setState(() {
                     _isEditMode = true;
+                    _controller.text = widget.data.comment;
                   });
                 },
                 width: 61,
@@ -193,10 +209,16 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
             ],
           ),
           // spacing
-          SizedBox(height: 3),
+          SizedBox(height: 1),
           // comment
-          (line > 2 && _showMoreButton)
-              ? SizedBox(
+          (line <= 3 || _showMoreButton == false)
+              ? Text(
+                  widget.data.comment,
+                  style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
+                  overflow: TextOverflow.visible,
+                  maxLines: 100,
+                )
+              : SizedBox(
                   height: 19 * 2,
                   child: Text(
                     widget.data.comment,
@@ -204,62 +226,23 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
                     overflow: TextOverflow.fade,
                     maxLines: 100,
                   ),
-                )
-              : Text(
-                  widget.data.comment,
-                  style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
-                  overflow: TextOverflow.visible,
-                  maxLines: 100,
                 ),
-          //(line > 2 && _showMoreButton) ? SizedBox(height: 8) : Container(),
-          (line > 2 && _showMoreButton)
-              ? BTN.fill_gray_t_es(
-                  text: '자세히 보기',
-                  onPressed: () {
-                    setState(() {
-                      _showMoreButton = false;
-                    });
-                  },
-                  width: 81,
-                )
-              : Container(),
-          SizedBox(height: 8),
-          (widget.onAddReply == null && widget.onShowReplyList == null)
+          // show more button
+          (line <= 3 || _showMoreButton == false)
               ? Container()
               : Container(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                  child: Row(
-                    children: [
-                      (widget.onAddReply == null)
-                          ? Container()
-                          : BTN.fill_gray_t_es(
-                              text: '답글달기',
-                              width: 61,
-                              buttonColor: CretaButtonColor.gray100light,
-                              onPressed: () {
-                                widget.onAddReply?.call(widget.data);
-                              },
-                            ),
-                      (widget.onAddReply == null) ? Container() : SizedBox(width: 8),
-                      (widget.onShowReplyList == null)
-                          ? Container()
-                          : BTN.fill_gray_t_es(
-                              text: '답글 ${widget.data.replyList!.length}개',
-                              width: null,
-                              buttonColor: CretaButtonColor.gray100blue,
-                              textColor: CretaColor.primary[400],
-                              onPressed: () {
-                                widget.onShowReplyList?.call(widget.data);
-                              },
-                              tailIconData: widget.data.showReplyList
-                                  ? Icons.arrow_drop_up_outlined
-                                  : Icons.arrow_drop_down_outlined,
-                              sidePaddingSize: 8,
-                            ),
-                    ],
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  child: BTN.fill_gray_t_es(
+                    text: '자세히 보기',
+                    onPressed: () {
+                      setState(() {
+                        _showMoreButton = false;
+                      });
+                    },
+                    width: 81,
+                    buttonColor: CretaButtonColor.gray100light,
                   ),
                 ),
-          SizedBox(height: 8),
         ],
       ),
     );
@@ -287,30 +270,101 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
             //_hover = true;
           });
         },
-        child: Container(
-          width: widget.width,
-          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-          decoration: BoxDecoration(
-            // crop
-            borderRadius: BorderRadius.circular(30),
-            //color: _isEditMode ? CretaColor.text[300] : CretaColor.text[100],
-          ),
-          clipBehavior: Clip.none, //Clip.antiAlias,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _getProfileImage(),
-              _isEditMode ? _getTextFieldWidget(textWidth, line) : _getTextWidget(textWidth, line),
-              _isEditMode ? SizedBox(width: 8) : Container(),
-              _isEditMode
-                  ? BTN.fill_blue_t_m(
-                      text: '댓글 등록',
-                      width: 81,
-                      onPressed: () {},
-                    )
-                  : Container(),
-            ],
-          ),
+        child: Column(
+          children: [
+            // profile & text(field)
+            Container(
+              width: widget.width,
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+              decoration: BoxDecoration(
+                // crop
+                borderRadius: BorderRadius.circular(30),
+                color: _isEditMode ? CretaColor.text[100] : null, //CretaColor.text[300],
+              ),
+              clipBehavior: Clip.hardEdge, //Clip.antiAlias,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // profile image
+                  _getProfileImage(),
+                  // text or textfield
+                  (!_isEditMode)
+                      ? _getTextWidget(textWidth, line)
+                      : _getTextFieldWidget(textWidth, line),
+                  // button
+                  (!_isEditMode)
+                      ? Container()
+                      : Container(
+                          padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                          child: BTN.fill_blue_t_m(
+                            text: widget.editModeOnly ? '댓글 등록' : '댓글 수정',
+                            width: 81,
+                            onPressed: () {
+                              setState(() {
+                                if (!widget.editModeOnly) _isEditMode = false;
+                                widget.data.comment = _controller.text;
+                              });
+                              widget.onAddComment.call(_controller.text);
+                            },
+                          ),
+                        ),
+                  (!_isEditMode || widget.editModeOnly)
+                      ? Container()
+                      : Container(
+                          padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                          child: BTN.fill_blue_t_m(
+                            text: '취소',
+                            width: 81,
+                            onPressed: () {
+                              setState(() {
+                                _isEditMode = false;
+                                _controller.text = widget.data.comment;
+                              });
+                            },
+                          ),
+                        ),
+                ],
+              ),
+            ),
+            // buttons (add-reply, show-reply)
+            (widget.onAddReply == null && widget.onShowReplyList == null)
+                ? Container(height: 10)
+                : Container(
+                    padding: EdgeInsets.fromLTRB(64, 8, 0, 8),
+                    child: Row(
+                      children: [
+                        (widget.onAddReply == null)
+                            ? Container()
+                            : Container(
+                                padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                                child: BTN.fill_gray_t_es(
+                                  text: '답글달기',
+                                  width: 61,
+                                  buttonColor: CretaButtonColor.gray100light,
+                                  onPressed: () {
+                                    widget.onAddReply?.call(widget.data);
+                                  },
+                                ),
+                              ),
+                        (widget.onShowReplyList == null)
+                            ? Container()
+                            : BTN.fill_gray_t_es(
+                                text: '답글 ${widget.data.replyList!.length}개',
+                                width: null,
+                                buttonColor: CretaButtonColor.gray100blue,
+                                textColor: CretaColor.primary[400],
+                                onPressed: () {
+                                  widget.onShowReplyList?.call(widget.data);
+                                },
+                                tailIconData: widget.data.showReplyList
+                                    ? Icons.arrow_drop_up_outlined
+                                    : Icons.arrow_drop_down_outlined,
+                                sidePaddingSize: 8,
+                              ),
+                      ],
+                    ),
+                  ),
+          ],
         ));
     // child: Container(
     //   height: 56,
