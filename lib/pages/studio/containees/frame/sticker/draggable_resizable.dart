@@ -113,12 +113,12 @@ class DraggableResizable extends StatefulWidget {
 }
 
 class _DraggableResizableState extends State<DraggableResizable> {
-  late Size size;
-  late Offset position;
+  late Size _size;
+  late Offset _position;
   //late BoxConstraints constraints;
-  late double angle;
-  late double angleDelta;
-  late double baseAngle;
+  late double _angle;
+  late double _angleDelta;
+  late double _baseAngle;
 
   bool get isTouchInputSupported => true;
 
@@ -126,28 +126,31 @@ class _DraggableResizableState extends State<DraggableResizable> {
   void initState() {
     logger.finest('_DraggableResizableState.initState()');
     super.initState();
-    size = widget.size;
+    _size = widget.size;
     //constraints = const BoxConstraints.expand(width: 1, height: 1);
-    angle = widget.angle;
-    position = widget.position;
-    baseAngle = 0;
-    angleDelta = 0;
+    _angle = widget.angle;
+    _position = widget.position;
+    _baseAngle = 0;
+    _angleDelta = 0;
   }
 
   @override
   Widget build(BuildContext context) {
     bool isFixedRatio = (widget.frameModel != null && widget.frameModel!.isFixedRatio.value);
     bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
+    double whRatio = (_size.height / _size.width);
+
+    logger.info('whRatio=${_size.height} / ${_size.width}');
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final normalizedWidth = size.width;
-        final normalizedHeight = size.height;
+        final normalizedWidth = _size.width;
+        final normalizedHeight = _size.height;
 
         logger.fine('DraggableResize: $normalizedHeight, $normalizedWidth');
 
-        final normalizedLeft = position.dx;
-        final normalizedTop = position.dy;
+        final normalizedLeft = _position.dx;
+        final normalizedTop = _position.dy;
 
         void onUpdate(String hint, {bool save = true}) {
           if (hint == 'onTap') {
@@ -158,9 +161,9 @@ class _DraggableResizableState extends State<DraggableResizable> {
           if (save) {
             widget.onUpdate?.call(
               DragUpdate(
-                position: position,
-                size: size,
-                angle: angle,
+                position: _position,
+                size: _size,
+                angle: _angle,
                 hint: hint,
               ),
               widget.mid,
@@ -169,86 +172,121 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragBottomRight(Offset details) {
+          //ok
           if (isAutoFit) return;
-          //final newHeight = math.max(size.height + details.dy, 0.0);
-          final newWidth = math.max(size.width + details.dx, 0.0);
-          var newHeight = size.height;
+          var newHeight = math.max(_size.height + details.dy, 0.0);
+          var newWidth = math.max(_size.width + details.dx, 0.0);
           if (isFixedRatio) {
-            newHeight = newWidth * (size.height / size.width);
+            if (details.dx.abs() > details.dy.abs()) {
+              newHeight = newWidth * whRatio;
+            } else {
+              newWidth = newHeight / whRatio;
+            }
           }
 
           final updatedSize = Size(newWidth, newHeight);
-          if (_sizeValidChcheck(updatedSize, position) == false) return;
+          // x 값은 클수록 사이즈가 커진다.
+          // y 값은 클수록 사이즈가 커진다.
+          Offset moveDirection = Offset(details.dx, details.dy);
+          if (_sizeValidCheck(updatedSize, _position, moveDirection, details) == false) return;
 
           setState(() {
-            size = updatedSize;
+            _size = updatedSize;
           });
           onUpdate('onDragBottomRight');
         }
 
         void onDragTopRight(Offset details) {
+          //ok
           if (isAutoFit) return;
-          final newHeight = math.max(size.height - details.dy, 0.0);
-          //final newWidth = math.max(size.width + details.dx, 0.0);
-          var newWidth = size.width;
+          var newHeight = math.max(_size.height - details.dy, 0.0);
+          var newWidth = math.max(_size.width + details.dx, 0.0);
+          var updatedPosition = Offset(_position.dx, _position.dy + details.dy);
+
           if (isFixedRatio) {
-            newWidth = newHeight / (size.height / size.width);
+            if (details.dx.abs() > details.dy.abs()) {
+              newHeight = newWidth * whRatio;
+              updatedPosition = Offset(_position.dx, _position.dy + _size.height - newHeight);
+            } else {
+              newWidth = newHeight / whRatio;
+            }
           }
 
           final updatedSize = Size(newWidth, newHeight);
-          final updatedPosition = Offset(position.dx, position.dy + details.dy);
-
-          if (_sizeValidChcheck(updatedSize, updatedPosition) == false) return;
+          // x 값은 클수록 사이즈가 커진다.
+          // y 값은 작을수록 사이즈가 커진다.
+          Offset moveDirection = Offset(details.dx, details.dy * -1);
+          if (_sizeValidCheck(updatedSize, updatedPosition, moveDirection, details) == false) {
+            return;
+          }
 
           setState(() {
-            position = updatedPosition;
-            size = updatedSize;
+            _position = updatedPosition;
+            _size = updatedSize;
           });
 
           onUpdate('onDragTopRight');
         }
 
         void onDragTopLeft(Offset details) {
+          //ok
           if (isAutoFit) return;
-          //final newHeight = math.max(size.height - details.dy, 0.0);
-          final newWidth = math.max(size.width - details.dx, 0.0);
-          var newHeight = size.height;
+          var newHeight = math.max(_size.height - details.dy, 0.0);
+          var newWidth = math.max(_size.width - details.dx, 0.0);
+          var updatedPosition = Offset(_position.dx + details.dx, _position.dy + details.dy);
           if (isFixedRatio) {
-            newHeight = newWidth * (size.height / size.width);
+            if (details.dx.abs() > details.dy.abs()) {
+              newHeight = newWidth * whRatio;
+              updatedPosition =
+                  Offset(_position.dx + details.dx, _position.dy + _size.height - newHeight);
+            } else {
+              newWidth = newHeight / whRatio;
+              updatedPosition =
+                  Offset(_position.dx + _size.width - newWidth, _position.dy + details.dy);
+            }
+          }
+          final updatedSize = Size(newWidth, newHeight);
+
+          // x 값은 작을수록 사이즈가 커진다.
+          // y 값은 작을수록 사이즈가 커진다.
+          Offset moveDirection = Offset(details.dx * -1, details.dy * -1);
+          if (_sizeValidCheck(updatedSize, updatedPosition, moveDirection, details) == false) {
+            return;
           }
 
-          final updatedSize = Size(newWidth, newHeight);
-          //final updatedPosition = Offset(position.dx + details.dx, position.dy + details.dy);
-          final updatedPosition = Offset(
-              position.dx + details.dx, position.dy + details.dx * (size.height / size.width));
-
-          if (_sizeValidChcheck(updatedSize, updatedPosition) == false) return;
-
           setState(() {
-            position = updatedPosition;
-            size = updatedSize;
+            _position = updatedPosition;
+            _size = updatedSize;
           });
 
           onUpdate('onDragTopLeft');
         }
 
         void onDragBottomLeft(Offset details) {
-          //final newHeight = math.max(size.height + details.dy, 0.0);
           if (isAutoFit) return;
-          final newWidth = math.max(size.width - details.dx, 0.0);
-          var newHeight = size.height;
+          var newHeight = math.max(_size.height + details.dy, 0.0);
+          var newWidth = math.max(_size.width - details.dx, 0.0);
+          var updatedPosition = Offset(_position.dx + details.dx, _position.dy);
           if (isFixedRatio) {
-            newHeight = newWidth * (size.height / size.width);
+            if (details.dx.abs() > details.dy.abs()) {
+              newHeight = newWidth * whRatio;
+            } else {
+              newWidth = newHeight / whRatio;
+              updatedPosition = Offset(_position.dx + _size.width - newWidth, _position.dy);
+            }
+          }
+          final updatedSize = Size(newWidth, newHeight);
+
+          // x 값은 작을수록 사이즈가 커진다.
+          // y 값은 클수록 사이즈가 커진다.
+          Offset moveDirection = Offset(details.dx * -1, details.dy);
+          if (_sizeValidCheck(updatedSize, updatedPosition, moveDirection, details) == false) {
+            return;
           }
 
-          final updatedSize = Size(newWidth, newHeight);
-          final updatedPosition = Offset(position.dx + details.dx, position.dy);
-
-          if (_sizeValidChcheck(updatedSize, updatedPosition) == false) return;
-
           setState(() {
-            position = updatedPosition;
-            size = updatedSize;
+            _position = updatedPosition;
+            _size = updatedSize;
           });
 
           onUpdate('onDragBottomLeft');
@@ -256,73 +294,85 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
         void onDragRight(Offset details) {
           if (isAutoFit) return;
-          final newWidth = math.max(size.width + details.dx, 0.0);
-          var newHeight = size.height;
+          var newWidth = math.max(_size.width + details.dx, 0.0);
+          var newHeight = _size.height;
           if (isFixedRatio) {
-            newHeight = newWidth * (size.height / size.width);
+            newHeight = newWidth * (_size.height / _size.width);
           }
           final updatedSize = Size(newWidth, newHeight);
-          if (_sizeValidChcheck(updatedSize, position) == false) return;
+
+          // x 값은 클수록 사이즈가 커진다.
+          Offset moveDirection = Offset(details.dx, details.dy);
+          if (_sizeValidCheck(updatedSize, _position, moveDirection, details) == false) return;
 
           setState(() {
-            size = updatedSize;
+            _size = updatedSize;
           });
           onUpdate('onDragBottomRight');
         }
 
         void onDragLeft(Offset details) {
           if (isAutoFit) return;
-          //final newHeight = math.max(size.height + details.dy, 0.0);
-          final newWidth = math.max(size.width - details.dx, 0.0);
-          var newHeight = size.height;
+          //final newHeight = math.max(_size.height + details.dy, 0.0);
+          var newWidth = math.max(_size.width - details.dx, 0.0);
+          var newHeight = _size.height;
+          var updatedPosition = Offset(_position.dx + details.dx, _position.dy);
           if (isFixedRatio) {
-            newHeight = newWidth * (size.height / size.width);
+            newHeight = newWidth * (_size.height / _size.width);
           }
           final updatedSize = Size(newWidth, newHeight);
-          final updatedPosition = Offset(position.dx + details.dx, position.dy);
 
-          if (_sizeValidChcheck(updatedSize, updatedPosition) == false) return;
+          // x 값은 작을수록 사이즈가 커진다.
+          Offset moveDirection = Offset(details.dx * -1, details.dy);
+          if (_sizeValidCheck(updatedSize, updatedPosition, moveDirection, details) == false) {
+            return;
+          }
 
           setState(() {
-            size = updatedSize;
-            position = updatedPosition;
+            _size = updatedSize;
+            _position = updatedPosition;
           });
           onUpdate('onDragBottomRight');
         }
 
         void onDragDown(Offset details) {
           if (isAutoFit) return;
-          final newHeight = math.max(size.height + details.dy, 0.0);
-          var newWidth = size.width;
+          var newHeight = math.max(_size.height + details.dy, 0.0);
+          var newWidth = _size.width;
           if (isFixedRatio) {
-            newWidth = newHeight / (size.height / size.width);
+            newWidth = newHeight / (_size.height / _size.width);
           }
           final updatedSize = Size(newWidth, newHeight);
 
-          if (_sizeValidChcheck(updatedSize, position) == false) return;
+          // y 값은 클수록 사이즈가 커진다.
+          Offset moveDirection = Offset(details.dx, details.dy);
+          if (_sizeValidCheck(updatedSize, _position, moveDirection, details) == false) return;
 
           setState(() {
-            size = updatedSize;
+            _size = updatedSize;
           });
           onUpdate('onDragBottomRight');
         }
 
         void onDragUp(Offset details) {
           if (isAutoFit) return;
-          final newHeight = math.max(size.height - details.dy, 0.0);
-          var newWidth = size.width;
+          var newHeight = math.max(_size.height - details.dy, 0.0);
+          var newWidth = _size.width;
+          var updatedPosition = Offset(_position.dx, _position.dy + details.dy);
           if (isFixedRatio) {
-            newWidth = newHeight / (size.height / size.width);
+            newWidth = newHeight / (_size.height / _size.width);
           }
           final updatedSize = Size(newWidth, newHeight);
 
-          final updatedPosition = Offset(position.dx, position.dy + details.dy);
-
-          if (_sizeValidChcheck(updatedSize, updatedPosition) == false) return;
+          // y 값은 작을수록 사이즈가 커진다.
+          Offset moveDirection = Offset(details.dx, details.dy * -1);
+          if (_sizeValidCheck(updatedSize, updatedPosition, moveDirection, details) == false) {
+            return;
+          }
 
           setState(() {
-            size = updatedSize;
-            position = updatedPosition;
+            _size = updatedSize;
+            _position = updatedPosition;
           });
           onUpdate('onDragBottomRight');
         }
@@ -465,7 +515,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
             logger.finest('draggableResizable_rotate_gestureDetector.onScaleStart');
             final offsetFromCenter = details.localFocalPoint - center;
             setState(() {
-              angleDelta = baseAngle -
+              _angleDelta = _baseAngle -
                   offsetFromCenter.direction -
                   FloatingActionIcon.floatingActionDiameter;
             });
@@ -475,18 +525,18 @@ class _DraggableResizableState extends State<DraggableResizable> {
             final offsetFromCenter = details.localFocalPoint - center;
             setState(
               () {
-                //angle = offsetFromCenter.direction + angleDelta * 0.5;
-                angle = offsetFromCenter.direction + angleDelta;
-                logger.finest('org :$angle:$angleDelta,');
-                double degree = angle * 180 / pi % -360;
-                angle = degree * pi / 180;
+                //_angle = offsetFromCenter.direction + _angleDelta * 0.5;
+                _angle = offsetFromCenter.direction + _angleDelta;
+                logger.finest('org :$_angle:$_angleDelta,');
+                double degree = _angle * 180 / pi % -360;
+                _angle = degree * pi / 180;
               },
             );
             onUpdate('onScaleUpdate');
           },
           onScaleEnd: (_) => setState(() {
-            logger.finest('onScaleEnd $angle');
-            baseAngle = angle;
+            logger.finest('onScaleEnd $_angle');
+            _baseAngle = _angle;
             widget.onComplete();
           }),
           child: FloatingActionIcon(
@@ -514,7 +564,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                 alignment: Alignment.center,
                 transform: Matrix4.identity()
                   ..scale(1.0)
-                  ..rotateZ(angle),
+                  ..rotateZ(_angle),
                 child: DraggablePoint(
                   //mode: PositionMode.local,
                   key: const Key('draggableResizable_child_draggablePoint'),
@@ -524,13 +574,14 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   onTap: () {
                     onUpdate('onTap', save: false);
                   },
-                  onDrag: (d) {
-                    Offset newPosition = Offset(position.dx + d.dx, position.dy + d.dy);
-                    if (_sizeValidChcheck(widget.size, newPosition) == false) {
+                  onDrag: (details) {
+                    Offset newPosition =
+                        Offset(_position.dx + details.dx, _position.dy + details.dy);
+                    if (_moveValidCheck(_size, newPosition, details) == false) {
                       return;
                     }
                     setState(() {
-                      position = newPosition;
+                      _position = newPosition;
                     });
                     onUpdate('onDrag');
                   },
@@ -543,23 +594,23 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
                     //if (!widget.constraints.isSatisfiedBy(updatedSize)) return;
 
-                    final midX = position.dx + (size.width / 2);
-                    final midY = position.dy + (size.height / 2);
+                    final midX = _position.dx + (_size.width / 2);
+                    final midY = _position.dy + (_size.height / 2);
                     final updatedPosition = Offset(
                       midX - (updatedSize.width / 2),
                       midY - (updatedSize.height / 2),
                     );
 
                     setState(() {
-                      size = updatedSize;
-                      position = updatedPosition;
+                      _size = updatedSize;
+                      _position = updatedPosition;
                     });
                     onUpdate('onScale');
                   },
                   onRotate: (a) {
-                    setState(() => angle = a * 0.5);
+                    setState(() => _angle = a * 0.5);
                     logger.finest('onRotate $a');
-                    //setState(() => angle = a);
+                    //setState(() => _angle = a);
                     onUpdate('onRotate');
                   },
                   child: Stack(
@@ -635,34 +686,69 @@ class _DraggableResizableState extends State<DraggableResizable> {
     );
   }
 
-  bool _sizeValidChcheck(Size size, Offset pos) {
+  bool _sizeValidCheck(Size updatedSize, Offset pos, Offset moveDirection, Offset details) {
     double offset = LayoutConst.stikerOffset / 2;
 
-    if (size.width < LayoutConst.minFrameSize) {
-      logger.fine('mininumSize constraint');
-      return false;
+    if (moveDirection.dx < 0) {
+      if (updatedSize.width < LayoutConst.minFrameSize) {
+        logger.info('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
+        return false;
+      }
     }
-    if (size.height < LayoutConst.minFrameSize) {
-      logger.fine('mininumSize constraint');
-      return false;
+    if (moveDirection.dy < 0) {
+      if (updatedSize.height < LayoutConst.minFrameSize) {
+        logger.info('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
+        return false;
+      }
     }
-    if (pos.dx + offset < 0) {
-      logger.fine('postion constraint  pos.dx=${pos.dx}, offset=$offset');
-      return false;
-    }
-    if (pos.dy + offset < 0) {
-      logger.fine('postion constraint pos.dy=${pos.dy}, offset=$offset');
-      return false;
+    if (moveDirection.dx > 0) {
+      if (pos.dx + updatedSize.width + offset > widget.pageWidth) {
+        logger.info(
+            'maxinumSize constraint  ${updatedSize.width}, ${updatedSize.height}, pos.dx=${pos.dx}, offset=$offset');
+        return false;
+      }
     }
 
-    if (pos.dx + size.width + offset > widget.pageWidth) {
-      logger.fine('maxinumSize constraint');
-      return false;
+    if (moveDirection.dy < 0) {
+      if (pos.dy + updatedSize.height + offset > widget.pageHeight) {
+        logger.info(
+            'maxinumSize constraint  ${updatedSize.width}, ${updatedSize.height} pos.dy=${pos.dy}, offset=$offset');
+        return false;
+      }
     }
-    if (pos.dy + size.height + offset > widget.pageHeight) {
-      logger.fine('maxinumSize constraint');
-      return false;
+
+    return _moveValidCheck(updatedSize, pos, details);
+  }
+
+  bool _moveValidCheck(Size updatedSize, Offset pos, Offset move) {
+    double offset = LayoutConst.stikerOffset / 2;
+    if (move.dx <= 0) {
+      if (pos.dx + offset < 0) {
+        logger.info('1.postion constraint  ${move.dx},pos.dx=${pos.dx}, offset=$offset');
+        return false;
+      }
     }
+    if (move.dy <= 0) {
+      if (pos.dy + offset < 0) {
+        logger.info('2.postion constraint ${move.dy}, pos.dy=${pos.dy}, offset=$offset');
+        return false;
+      }
+    }
+
+    if (move.dx >= 0) {
+      if (updatedSize.width + pos.dx + offset > widget.pageWidth) {
+        logger.info('3.postion constraint  ${updatedSize.width},pos.dx=${pos.dx}, offset=$offset');
+        return false;
+      }
+    }
+    if (move.dy >= 0) {
+      if (updatedSize.height + pos.dy + offset > widget.pageHeight) {
+        logger.info('4.postion constraint ${updatedSize.height}, pos.dy=${pos.dy}, offset=$offset');
+        return false;
+      }
+    }
+    logger.info(
+        '_moveValidCheck  move=(${move.dx},${move.dy}),size=(${updatedSize.width.round()},${updatedSize.height.round()}, pos=(${pos.dx.round()},${pos.dy.round()}, offset=$offset');
 
     return true;
   }

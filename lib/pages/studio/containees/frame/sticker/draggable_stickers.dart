@@ -99,7 +99,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   Widget _drawEachStiker(Sticker sticker) {
     // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
     return DraggableResizable(
-      key: UniqueKey(),
+      key: GlobalKey(),
       mid: sticker.id,
       angle: sticker.angle,
       position: sticker.position,

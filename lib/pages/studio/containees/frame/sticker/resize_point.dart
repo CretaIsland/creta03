@@ -147,7 +147,8 @@ class _ResizePointState extends State<ResizePoint> {
       height: LayoutConst.cornerDiameter,
       decoration: BoxDecoration(
         color: _isHover && widget.enable ? Colors.white : Colors.transparent,
-        border: Border.all(color: _isHover ? CretaColor.primary : Colors.transparent, width: 1),
+        border: Border.all(
+            color: _isHover && widget.enable ? CretaColor.primary : Colors.transparent, width: 1),
         shape: BoxShape.rectangle,
       ),
       child: _isHover == false
