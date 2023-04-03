@@ -9,11 +9,17 @@ import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/studio_variables.dart';
+import '../player/player_handler.dart';
 import 'creta_manager.dart';
 
 class ContentsManager extends CretaManager {
   final PageModel pageModel;
   final FrameModel frameModel;
+
+  PlayerHandler? playerHandler;
+  void setPlayerHandler(PlayerHandler p) {
+    playerHandler = p;
+  }
 
   ContentsManager({required this.pageModel, required this.frameModel}) : super('creta_contents') {
     saveManagerHolder?.registerManager('contents', this);
@@ -27,6 +33,13 @@ class ContentsManager extends CretaManager {
     ContentsModel retval = newModel(src.mid) as ContentsModel;
     src.copyTo(retval);
     return retval;
+  }
+
+  ContentsModel? getCurrentModel() {
+    if (playerHandler == null) {
+      return null;
+    }
+    return playerHandler?.getCurrentModel();
   }
 
   Future<ContentsModel> create(ContentsModel model, {bool doNotify = true}) async {

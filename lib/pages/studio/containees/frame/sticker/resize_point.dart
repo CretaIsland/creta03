@@ -37,7 +37,7 @@ class ResizePoint extends StatefulWidget {
       required this.type,
       required this.onTap,
       required this.onComplete,
-      required this.enable,
+      this.enable = true,
       // ignore: unused_element
       this.onScale,
       this.iconData})

@@ -44,6 +44,33 @@ class FrameModel extends CretaModel with CretaStyleMixin {
 
   FrameType frameType = FrameType.none;
 
+  double prevWidth = -1;
+  double prevHeight = -1;
+  double prevPosX = -1;
+  double prevPosY = -1;
+
+  void savePrevValue() {
+    prevWidth = width.value;
+    prevHeight = height.value;
+    prevPosX = posX.value;
+    prevPosY = posY.value;
+  }
+
+  void restorePrevValue() {
+    mychangeStack.startTrans();
+    if (prevWidth <= 0 || prevHeight <= 0 || prevPosX < 0 || prevPosY < 0) {
+      width.set(width.value * 0.9, save: false);
+      height.set(height.value * 0.9, save: false);
+    } else {
+      width.set(prevWidth, save: false);
+      height.set(prevHeight, save: false);
+      posX.set(prevPosX, save: false);
+      posY.set(prevPosY, save: false);
+    }
+    save();
+    mychangeStack.endTrans();
+  }
+
   @override
   List<Object?> get props => [
         ...super.props,
@@ -191,7 +218,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusRightTop.set((map["radiusRightTop"] ?? 0), save: false, noUndo: true);
     radiusRightBottom.set((map["radiusRightBottom"] ?? 0), save: false, noUndo: true);
     radiusLeftBottom.set((map["radiusLeftBottom"] ?? 0), save: false, noUndo: true);
-    isAutoFit.set((map["isAutoFit"] ?? false), save: false, noUndo: true);
+    //isAutoFit.set((map["isAutoFit"] ?? false), save: false, noUndo: true);  // DB 에 쓰지 않는다.
     isMain.set((map["isMain"] ?? false), save: false, noUndo: true);
 
     borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
@@ -228,7 +255,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "radiusRightTop": radiusRightTop.value,
         "radiusRightBottom": radiusRightBottom.value,
         "radiusLeftBottom": radiusLeftBottom.value,
-        "isAutoFit": isAutoFit.value,
+        //"isAutoFit": isAutoFit.value,   //DB 에서 읽지 않는다.
         "isMain": isMain.value,
         "borderColor": borderColor.value.toString(),
         "borderWidth": borderWidth.value,

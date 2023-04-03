@@ -137,10 +137,10 @@ class _DraggableResizableState extends State<DraggableResizable> {
   @override
   Widget build(BuildContext context) {
     bool isFixedRatio = (widget.frameModel != null && widget.frameModel!.isFixedRatio.value);
-    bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
+    //bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
     double whRatio = (_size.height / _size.width);
 
-    logger.info('whRatio=${_size.height} / ${_size.width}');
+    //logger.info('whRatio=${_size.height} / ${_size.width}');
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -173,7 +173,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
         void onDragBottomRight(Offset details) {
           //ok
-          if (isAutoFit) return;
           var newHeight = math.max(_size.height + details.dy, 0.0);
           var newWidth = math.max(_size.width + details.dx, 0.0);
           if (isFixedRatio) {
@@ -198,7 +197,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
         void onDragTopRight(Offset details) {
           //ok
-          if (isAutoFit) return;
           var newHeight = math.max(_size.height - details.dy, 0.0);
           var newWidth = math.max(_size.width + details.dx, 0.0);
           var updatedPosition = Offset(_position.dx, _position.dy + details.dy);
@@ -230,7 +228,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
         void onDragTopLeft(Offset details) {
           //ok
-          if (isAutoFit) return;
           var newHeight = math.max(_size.height - details.dy, 0.0);
           var newWidth = math.max(_size.width - details.dx, 0.0);
           var updatedPosition = Offset(_position.dx + details.dx, _position.dy + details.dy);
@@ -263,7 +260,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragBottomLeft(Offset details) {
-          if (isAutoFit) return;
           var newHeight = math.max(_size.height + details.dy, 0.0);
           var newWidth = math.max(_size.width - details.dx, 0.0);
           var updatedPosition = Offset(_position.dx + details.dx, _position.dy);
@@ -293,7 +289,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragRight(Offset details) {
-          if (isAutoFit) return;
           var newWidth = math.max(_size.width + details.dx, 0.0);
           var newHeight = _size.height;
           if (isFixedRatio) {
@@ -312,7 +307,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragLeft(Offset details) {
-          if (isAutoFit) return;
           //final newHeight = math.max(_size.height + details.dy, 0.0);
           var newWidth = math.max(_size.width - details.dx, 0.0);
           var newHeight = _size.height;
@@ -336,7 +330,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragDown(Offset details) {
-          if (isAutoFit) return;
           var newHeight = math.max(_size.height + details.dy, 0.0);
           var newWidth = _size.width;
           if (isFixedRatio) {
@@ -355,7 +348,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         void onDragUp(Offset details) {
-          if (isAutoFit) return;
           var newHeight = math.max(_size.height - details.dy, 0.0);
           var newWidth = _size.width;
           var updatedPosition = Offset(_position.dx, _position.dy + details.dy);
@@ -422,7 +414,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           type: ResizePointType.topLeft,
           onDrag: onDragTopLeft,
           onTap: widget.onResizeButtonTap,
-          enable: !isAutoFit,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
         );
@@ -434,7 +425,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
-          enable: !isAutoFit,
         );
 
         final topRightCorner = ResizePoint(
@@ -444,7 +434,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
-          enable: !isAutoFit,
         );
 
         final bottomLeftCorner = ResizePoint(
@@ -454,7 +443,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
-          enable: !isAutoFit,
         );
 
         final upPlane = ResizePoint(
@@ -464,7 +452,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
-          enable: !isAutoFit,
         );
 
         final rightPlane = ResizePoint(
@@ -474,7 +461,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
-          enable: !isAutoFit,
         );
 
         final downPlane = ResizePoint(
@@ -484,7 +470,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
-          enable: !isAutoFit,
         );
 
         final leftPlane = ResizePoint(
@@ -494,7 +479,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onTap: widget.onResizeButtonTap,
           //iconData: Icons.zoom_out_map,
           onComplete: widget.onComplete,
-          enable: !isAutoFit,
         );
 
         final center = Offset(
@@ -747,8 +731,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
         return false;
       }
     }
-    logger.info(
-        '_moveValidCheck  move=(${move.dx},${move.dy}),size=(${updatedSize.width.round()},${updatedSize.height.round()}, pos=(${pos.dx.round()},${pos.dy.round()}, offset=$offset');
 
     return true;
   }

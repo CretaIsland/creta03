@@ -38,7 +38,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<double> aspectRatio;
   late UndoAble<double> width;
   late UndoAble<double> height;
-  late UndoAble<bool> isDynamicSize; // 동영상의 크기에 맞게 frame 사이즈를 변경해야 하는 경우
+  //late UndoAble<bool> isDynamicSize; // 동영상의 크기에 맞게 frame 사이즈를 변경해야 하는 경우
 
 // text 관련
   late UndoAble<String> font;
@@ -83,7 +83,7 @@ class ContentsModel extends CretaModel {
         aspectRatio,
         width,
         height,
-        isDynamicSize,
+        //isDynamicSize,
         font,
         isBold,
         isAutoSize,
@@ -138,7 +138,7 @@ class ContentsModel extends CretaModel {
     aspectRatio = UndoAble<double>(1, mid);
     width = UndoAble<double>(320, mid);
     height = UndoAble<double>(180, mid);
-    isDynamicSize = UndoAble<bool>(false, mid); //
+    //isDynamicSize = UndoAble<bool>(false, mid); //
 
     font = UndoAble<String>(CretaFont.fontFamily, mid);
     isBold = UndoAble<bool>(false, mid); //bold
@@ -190,7 +190,7 @@ class ContentsModel extends CretaModel {
     aspectRatio = UndoAble<double>(srcContents.aspectRatio.value, mid);
     width = UndoAble<double>(srcContents.width.value, mid);
     height = UndoAble<double>(srcContents.height.value, mid);
-    isDynamicSize = UndoAble<bool>(srcContents.isDynamicSize.value, mid); //
+    //isDynamicSize = UndoAble<bool>(srcContents.isDynamicSize.value, mid); //
 
     if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
     if (srcContents.thumbnail != null) thumbnail = srcContents.thumbnail;
@@ -269,7 +269,7 @@ class ContentsModel extends CretaModel {
     aspectRatio.set(map["aspectRatio"], save: false, noUndo: true);
     width.set(map["width"], save: false, noUndo: true);
     height.set(map["height"], save: false, noUndo: true);
-    isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
+    //isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
     lastModifiedTime = map["lastModifiedTime"];
     prevPlayTime = map["prevPlayTime"];
 
@@ -313,7 +313,7 @@ class ContentsModel extends CretaModel {
         "aspectRatio": aspectRatio.value,
         "width": width.value,
         "height": height.value,
-        "isDynamicSize": isDynamicSize.value,
+        //"isDynamicSize": isDynamicSize.value,
         "prevPlayTime": prevPlayTime,
         "lastModifiedTime": (file != null) ? file!.lastModifiedDate.toString() : '',
         "remoteUrl": remoteUrl ?? '',

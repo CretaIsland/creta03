@@ -33,6 +33,7 @@ import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
 import '../contents/contents_main.dart';
 import 'sticker/draggable_resizable.dart';
+import 'sticker/draggable_stickers.dart';
 import 'sticker/stickerview.dart';
 
 class FrameMain extends StatefulWidget {
@@ -178,7 +179,7 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         }
       },
       onDropContents: (model) async {
-        logger.fine('onDropContents, ${model.isDynamicSize.value}');
+        //logger.fine('onDropContents, ${model.isDynamicSize.value}');
 
         // 프레임을 생성한다.
         FrameModel frameModel = await _frameManager!.createNextFrame(doNotify: false);
@@ -193,8 +194,27 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         await reader.onLoad.first;
         Uint8List blob = reader.result as Uint8List;
         var image = await decodeImageFromList(blob);
-        model.width.set(image.width.toDouble(), save: false, noUndo: true);
-        model.height.set(image.height.toDouble(), save: false, noUndo: true);
+
+        double imageWidth = image.width.toDouble();
+        double imageHeight = image.height.toDouble();
+
+        double pageHeight = widget.pageModel.height.value;
+        double pageWidth = widget.pageModel.width.value;
+
+        // width 가 더 크다
+        if (imageWidth > pageWidth) {
+          // 근데, width 가 page 를 넘어간다.
+          imageHeight = imageHeight * (pageWidth / imageWidth);
+          imageWidth = pageWidth;
+        }
+        //이렇게 했는데도, imageHeight 가 page 를 넘어간다.
+        if (imageHeight > pageHeight) {
+          imageWidth = imageWidth * (pageHeight / imageHeight);
+          imageHeight = pageHeight;
+        }
+
+        model.width.set(imageWidth, save: false, noUndo: true);
+        model.height.set(imageHeight, save: false, noUndo: true);
         model.aspectRatio.set(model.height.value / model.width.value, save: false, noUndo: true);
 
         logger.info('contentsSize, ${model.width.value} x ${model.height.value}');
@@ -216,7 +236,10 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
           // upload 되어 있지 않으므로 업로드한다.
           _uploadFile(model, contentsManager, blob);
         }
-        _frameManager!.notify();
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+        DraggableStickers.selectedAssetId = frameModel.mid;
+        _frameManager!.setSelectedMid(frameModel.mid);
+        //_frameManager!.notify();
 
         // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
       },
@@ -253,10 +276,10 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
       ContentsModel? reModel = contentsManager.getModel(model.mid) as ContentsModel?;
       reModel ??= model;
       reModel.remoteUrl = fileModel.fileView;
-      logger.fine('uploaded url = ${reModel.url}');
-      logger.fine('uploaded fileName = ${reModel.name}');
-      logger.fine('uploaded remoteUrl = ${reModel.remoteUrl!}');
-      logger.fine('uploaded aspectRatio = ${reModel.aspectRatio.value}');
+      logger.info('uploaded url = ${reModel.url}');
+      logger.info('uploaded fileName = ${reModel.name}');
+      logger.info('uploaded remoteUrl = ${reModel.remoteUrl!}');
+      logger.info('uploaded aspectRatio = ${reModel.aspectRatio.value}');
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
       await contentsManager.setToDB(reModel);
     } else {

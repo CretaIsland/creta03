@@ -47,18 +47,14 @@ class ContentsMainState extends State<ContentsMain> {
 
     _playerHandler = PlayerHandler();
 
-    _contentsManager ??= ContentsManager(
-      frameModel: widget.frameModel,
-      pageModel: widget.pageModel,
-    );
+    _contentsManager = widget.frameManager.newContentsManager(widget.frameModel);
     _contentsManager!.clearAll();
     await _contentsManager!.getContents();
     _contentsManager!.addRealTimeListen();
     _onceDBGetComplete = true;
     _contentsManager!.reOrdering();
 
-    widget.frameManager.setContentsManager(_contentsManager!);
-    widget.frameManager.setPlayerHandler(_playerHandler!);
+    _contentsManager!.setPlayerHandler(_playerHandler!);
 
     _playerHandler!.start(_contentsManager!);
   }

@@ -59,6 +59,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   // ignore: unused_field
   FrameManager? _frameManager;
   BookModel? _bookModel;
+  bool _isFullScreen = false;
   static bool _isTransitionOpen = false;
   static bool _isBorderOpen = false;
   static bool _isShadowOpen = false;
@@ -133,6 +134,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   @override
   Widget build(BuildContext context) {
     _bookModel = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+    _isFullScreen = _isFullScreenTest(_bookModel!);
     // if (_model == null) {
     //   return SizedBox.shrink();
     // }
@@ -357,21 +359,25 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   tooltip: CretaStudioLang.fullscreenTooltip,
                   tooltipBg: CretaColor.text[400]!,
                   iconSize: 18,
-                  icon: Icons.fullscreen_outlined,
+                  icon: _isFullScreen ? Icons.fullscreen_exit_outlined : Icons.fullscreen_outlined,
                   onPressed: () {
-                    BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
-                    if (book == null) return;
-                    if (_isFullScreen(book)) return;
+                    if (_bookModel == null) return;
                     setState(() {
-                      mychangeStack.startTrans();
-                      widget.model.height.set(book.height.value);
-                      widget.model.width.set(book.width.value);
-                      widget.model.posX.set(0);
-                      widget.model.posY.set(0);
-                      mychangeStack.endTrans();
+                      if (_isFullScreen) {
+                        widget.model.restorePrevValue();
+                      } else {
+                        widget.model.savePrevValue();
+                        mychangeStack.startTrans();
+                        widget.model.height.set(_bookModel!.height.value, save: false);
+                        widget.model.width.set(_bookModel!.width.value, save: false);
+                        widget.model.posX.set(0, save: false);
+                        widget.model.posY.set(0, save: false);
+                        widget.model.save();
+                        mychangeStack.endTrans();
+                      }
+                      logger.finest('sendEvent');
+                      _sendEvent!.sendEvent(widget.model);
                     });
-                    logger.finest('sendEvent');
-                    _sendEvent!.sendEvent(widget.model);
                   }),
             ],
           ),
@@ -618,35 +624,52 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
         // 다선번째 줄  autofit
         Padding(
-          padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                CretaStudioLang.autoFitContents,
-                style: titleStyle,
-              ),
-              CretaToggleButton(
-                defaultValue: widget.model.isAutoFit.value,
-                onSelected: (value) {
-                  widget.model.isAutoFit.set(value);
-                  if (value == true) {
-                    setState(() {
-                      widget.model.isFixedRatio.set(value);
-                    });
-                    if (_frameManager == null) {
-                      logger.info('frameManager is null');
-                    }
-                    _frameManager?.resizeFrame2(widget.model);
-                  } else {
-                    _frameManager?.notify();
-                  }
-                  _sendEvent?.sendEvent(widget.model);
-                },
-              ),
-            ],
-          ),
-        ),
+            padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+            child: BTN.line_blue_t_m(
+              text: CretaStudioLang.autoFitContents,
+              onPressed: () {
+                if (_frameManager == null) {
+                  logger.info('frameManager is null');
+                  return;
+                }
+                mychangeStack.startTrans();
+                setState(() {
+                  widget.model.isAutoFit.set(true, save: false);
+                  widget.model.isFixedRatio.set(true);
+                });
+                _frameManager?.resizeFrame2(widget.model);
+                mychangeStack.endTrans();
+                _sendEvent?.sendEvent(widget.model);
+              },
+            )
+            // child: Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(
+            //       CretaStudioLang.autoFitContents,
+            //       style: titleStyle,
+            //     ),
+            //     CretaToggleButton(
+            //       defaultValue: widget.model.isAutoFit.value,
+            //       onSelected: (value) {
+            //         widget.model.isAutoFit.set(value);
+            //         if (value == true) {
+            //           setState(() {
+            //             widget.model.isFixedRatio.set(value);
+            //           });
+            //           if (_frameManager == null) {
+            //             logger.info('frameManager is null');
+            //           }
+            //           _frameManager?.resizeFrame2(widget.model);
+            //         } else {
+            //           _frameManager?.notify();
+            //         }
+            //         _sendEvent?.sendEvent(widget.model);
+            //       },
+            //     ),
+            //   ],
+            // ),
+            ),
       ],
     );
   }
@@ -822,9 +845,9 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //               );
   // }
 
-  bool _isFullScreen(BookModel book) {
+  bool _isFullScreenTest(BookModel book) {
     if (widget.model.width.value == book.width.value &&
-        widget.model.width.value == book.height.value &&
+        widget.model.height.value == book.height.value &&
         widget.model.posX.value == 0 &&
         widget.model.posY.value == 0) {
       return true;

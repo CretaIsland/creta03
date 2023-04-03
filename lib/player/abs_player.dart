@@ -65,15 +65,15 @@ abstract class AbsPlayWidget extends StatefulWidget {
   Future<void> afterBuild() async {
     if (model == null) return;
     //model!.setPlayState(PlayState.init);
-    if (model!.isDynamicSize.value) {
-      model!.isDynamicSize.set(false, noUndo: true, save: false);
-      acc.resizeFrame(
-        model!.aspectRatio.value,
-        model!.width.value,
-        model!.height.value,
-        initPosition: false,
-      );
-    }
+    // if (model!.isDynamicSize.value) {
+    //   model!.isDynamicSize.set(false, noUndo: true, save: false);
+    //   acc.resizeFrame(
+    //     model!.aspectRatio.value,
+    //     model!.width.value,
+    //     model!.height.value,
+    //     initPosition: false,
+    //   );
+    // }
     // if (selectedModelHolder != null && pageManagerHolder != null) {
     //   if (await selectedModelHolder!.isSelectedModel(model!)) {
     //     pageManagerHolder!.setAsContents();

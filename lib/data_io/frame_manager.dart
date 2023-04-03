@@ -8,7 +8,7 @@ import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
-import '../player/player_handler.dart';
+import '../pages/studio/studio_constant.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
 
@@ -19,16 +19,16 @@ class FrameManager extends CretaManager {
   BookModel bookModel;
   //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey> frameKeyMap = {};
+  Map<String, ContentsManager> contentsManagerMap = {};
 
-  ContentsManager? contentsManager;
-  void setContentsManager(ContentsManager c) {
-    contentsManager = c;
+  void setContentsManager(String frameId, ContentsManager c) {
+    contentsManagerMap[frameId] = c;
   }
 
-  PlayerHandler? playerHandler;
-  void setPlayerHandler(PlayerHandler p) {
-    playerHandler = p;
-  }
+  // PlayerHandler? _playerHandler;
+  // void setPlayerHandler(PlayerHandler p) {
+  //   _playerHandler = p;
+  // }
 
   FrameManager({required this.pageModel, required this.bookModel}) : super('creta_frame') {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
@@ -104,30 +104,35 @@ class FrameManager extends CretaManager {
   ContentsManager newContentsManager(FrameModel frameModel) {
     logger.fine('newContentsManager(${pageModel.width.value}, ${pageModel.height.value})*******');
 
-    contentsManager ??= ContentsManager(
-      pageModel: pageModel,
-      frameModel: frameModel,
-    );
-    return contentsManager!;
+    ContentsManager? retval = contentsManagerMap[frameModel.mid];
+    if (retval == null) {
+      retval = ContentsManager(
+        pageModel: pageModel,
+        frameModel: frameModel,
+      );
+      contentsManagerMap[frameModel.mid] = retval;
+    }
+    return retval;
   }
 
-  ContentsModel? getCurrentModel() {
-    if (playerHandler == null) {
-      return null;
+  ContentsModel? getCurrentModel(String frameMid) {
+    ContentsManager? retval = contentsManagerMap[frameMid];
+    if (retval != null) {
+      return retval.getCurrentModel();
     }
-    return playerHandler?.getCurrentModel();
+    return null;
   }
 
   Future<void> resizeFrame(
       FrameModel frameModel, double ratio, double contentsWidth, double contentsHeight,
-      {bool invalidate = true, bool initPosition = true}) async {
+      {bool invalidate = true, bool initPosition = true, bool undo = false}) async {
     // 원본에서 ratio = h / w 이다.
     //width 와 height 중 짧은 쪽을 기준으로 해서,
     // 반대편을 ratio 만큼 늘린다.
     if (ratio == 0) return;
 
-    double w = frameModel.width.value;
-    double h = frameModel.height.value;
+    // double w = frameModel.width.value;
+    // double h = frameModel.height.value;
 
     double pageHeight = pageModel.height.value;
     double pageWidth = pageModel.width.value;
@@ -138,32 +143,41 @@ class FrameManager extends CretaManager {
     logger.info(
         'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$contentsWidth, imageH=$contentsHeight, dx=$dx, dy=$dy --------------------');
 
-    if (contentsWidth <= pageWidth && contentsHeight <= pageHeight) {
-      w = contentsWidth;
-      h = contentsHeight;
-    } else {
-      // 뭔가가 pageSize 보다 크다.  어느쪽이 더 큰지 본다.
-      double wRatio = pageWidth / contentsWidth;
-      double hRatio = pageHeight / contentsHeight;
-      if (wRatio > hRatio) {
-        w = pageWidth;
-        h = w * ratio;
-      } else {
-        h = pageHeight;
-        w = h / ratio;
-      }
-    }
+    // if (contentsWidth <= pageWidth && contentsHeight <= pageHeight) {
+    //   w = contentsWidth;
+    //   h = contentsHeight;
+    // } else {
+    //   // 뭔가가 pageSize 보다 크다.  어느쪽이 더 큰지 본다.
+    //   double wRatio = pageWidth / contentsWidth;
+    //   double hRatio = pageHeight / contentsHeight;
+    //   if (wRatio > hRatio) {
+    //     w = pageWidth;
+    //     h = w * ratio;
+    //   } else {
+    //     h = pageHeight;
+    //     w = h / ratio;
+    //   }
+    // }
 
     if (initPosition) {
-      dx = (pageWidth - w) / 2;
-      dy = (pageHeight - h) / 2;
-      frameModel.posX.set(dx, save: false, noUndo: true);
-      frameModel.posY.set(dy, save: false, noUndo: true);
+      dx = (pageWidth - contentsWidth) / 2;
+      dy = (pageHeight - contentsHeight) / 2;
+      frameModel.posX.set(dx, save: false, noUndo: !undo);
+      frameModel.posY.set(dy, save: false, noUndo: !undo);
+    }
+    double offset = LayoutConst.stikerOffset / 2;
+    if (contentsWidth + dx + offset >= pageWidth) {
+      frameModel.posX.set(0, save: false, noUndo: !undo);
+    }
+    if (contentsHeight + dy + offset >= pageHeight) {
+      frameModel.posY.set(0, save: false, noUndo: !undo);
     }
 
-    frameModel.width.set(w, save: false, noUndo: true);
-    frameModel.height.set(h, save: false, noUndo: true);
-    logger.info('resizeFrame($ratio, $invalidate) w=$w, h=$h, dx=$dx, dy=$dy --------------------');
+    frameModel.width.set(contentsWidth, save: false, noUndo: !undo);
+    frameModel.height.set(contentsHeight, save: false, noUndo: !undo);
+
+    logger.info(
+        'resizeFrame($ratio, $invalidate) w=$contentsWidth, h=$contentsHeight, dx=$dx, dy=$dy --------------------');
     await setToDB(frameModel);
 
     if (invalidate) {
@@ -172,13 +186,13 @@ class FrameManager extends CretaManager {
   }
 
   Future<void> resizeFrame2(FrameModel frameModel, {bool invalidate = true}) async {
-    logger.info('resizeFrame');
-    ContentsModel? contentsModel = getCurrentModel();
+    ContentsModel? contentsModel = getCurrentModel(frameModel.mid);
     if (contentsModel == null) {
       return;
     }
+    logger.info('resizeFrame2 ${contentsModel.name}');
     await resizeFrame(frameModel, contentsModel.aspectRatio.value, contentsModel.width.value,
         contentsModel.height.value,
-        invalidate: invalidate, initPosition: false);
+        invalidate: invalidate, initPosition: false, undo: true);
   }
 }

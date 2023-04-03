@@ -383,18 +383,22 @@ class _BookMainPageState extends State<BookMainPage> {
     return Stack(
       children: [
         _scrollArea(context),
-        BookMainPage.selectedStick == LeftMenuEnum.None
-            ? Container(width: 0, height: 0, color: Colors.transparent)
-            : LeftMenu(
-                onClose: () {
-                  setState(() {
-                    BookMainPage.selectedStick = LeftMenuEnum.None;
-                  });
-                },
-              ),
+        _openLeftMenu(),
         _openRightMenu(),
       ],
     );
+  }
+
+  Widget _openLeftMenu() {
+    return BookMainPage.selectedStick != LeftMenuEnum.None
+        ? LeftMenu(
+            onClose: () {
+              setState(() {
+                BookMainPage.selectedStick = LeftMenuEnum.None;
+              });
+            },
+          )
+        : SizedBox.shrink();
   }
 
   Widget _openRightMenu() {
@@ -414,7 +418,7 @@ class _BookMainPageState extends State<BookMainPage> {
                   });
                 },
               ))
-          : Container(width: 0, height: 0, color: Colors.transparent);
+          : SizedBox.shrink();
     });
   }
 
@@ -724,7 +728,6 @@ class _BookMainPageState extends State<BookMainPage> {
 
     //return Consumer<ContaineeNotifier>(builder: (context, notifier, child) {
     double scrollWidth = getScrollWidth();
-
     //double marginX = (StudioVariables.workWidth - StudioVariables.virtualWidth) / 2;
     double marginX = (scrollWidth - StudioVariables.virtualWidth) / 2;
     double marginY = (StudioVariables.workHeight - StudioVariables.virtualHeight) / 2;
@@ -732,14 +735,15 @@ class _BookMainPageState extends State<BookMainPage> {
     if (marginY < 0) marginY = 0;
 
     Widget scrollBox = Container(
-      width: scrollWidth,
+      width: StudioVariables.workWidth, //scrollWidth,
       height: StudioVariables.workHeight,
       color: Colors.green,
       child: Center(
         child: CrossScrollBar(
           //key: ValueKey('CrossScrollBar_${_bookModel.mid}'),
           key: GlobalKey(),
-          width: StudioVariables.virtualWidth,
+          width:
+              StudioVariables.virtualWidth + LayoutConst.rightMenuWidth + LayoutConst.leftMenuWidth,
           //width: StudioVariables.workWidth,
           marginX: marginX,
           marginY: marginY,
@@ -756,15 +760,15 @@ class _BookMainPageState extends State<BookMainPage> {
       ),
     );
 
-    if (BookMainPage.selectedStick != LeftMenuEnum.None) {
-      return Positioned(
-        left: LayoutConst.leftMenuWidth,
-        top: 0,
-        child: scrollBox,
-      );
-    }
+    // if (BookMainPage.selectedStick != LeftMenuEnum.None) {
+    //   return Positioned(
+    //     left: LayoutConst.leftMenuWidth,
+    //     top: 0,
+    //     child: scrollBox,
+    //   );
+    // }
 
-    return scrollBox;
+    return Center(child: scrollBox);
     //});
   }
 
