@@ -382,7 +382,64 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             ],
           ),
         ),
-        // 세번째 줄  rotate
+        // 세번째 줄  autofit
+        Padding(
+            padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+            //child: BTN.line_blue_t_m(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                BTN.fill_gray_ti_m(
+                  width: 180,
+                  icon: Icons.crop_original_outlined,
+                  text: CretaStudioLang.autoFitContents,
+                  onPressed: () {
+                    if (_frameManager == null) {
+                      logger.info('frameManager is null');
+                      return;
+                    }
+                    mychangeStack.startTrans();
+                    setState(() {
+                      widget.model.isAutoFit.set(true, save: false);
+                      widget.model.isFixedRatio.set(true);
+                    });
+                    _frameManager?.resizeFrame2(widget.model);
+                    mychangeStack.endTrans();
+                    _sendEvent?.sendEvent(widget.model);
+                  },
+                ),
+              ],
+            )
+            // child: Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(
+            //       CretaStudioLang.autoFitContents,
+            //       style: titleStyle,
+            //     ),
+            //     CretaToggleButton(
+            //       defaultValue: widget.model.isAutoFit.value,
+            //       onSelected: (value) {
+            //         widget.model.isAutoFit.set(value);
+            //         if (value == true) {
+            //           setState(() {
+            //             widget.model.isFixedRatio.set(value);
+            //           });
+            //           if (_frameManager == null) {
+            //             logger.info('frameManager is null');
+            //           }
+            //           _frameManager?.resizeFrame2(widget.model);
+            //         } else {
+            //           _frameManager?.notify();
+            //         }
+            //         _sendEvent?.sendEvent(widget.model);
+            //       },
+            //     ),
+            //   ],
+            // ),
+            ),
+
+        // 네번째 줄  rotate
         Padding(
           padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
           child: Row(
@@ -468,7 +525,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             ],
           ),
         ),
-        // 네번째 줄  radius
+        // 다선번째 줄  radius
         Padding(
           padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
           child: Row(
@@ -621,55 +678,6 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 ),
               )
             : SizedBox.shrink(),
-
-        // 다선번째 줄  autofit
-        Padding(
-            padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
-            child: BTN.line_blue_t_m(
-              text: CretaStudioLang.autoFitContents,
-              onPressed: () {
-                if (_frameManager == null) {
-                  logger.info('frameManager is null');
-                  return;
-                }
-                mychangeStack.startTrans();
-                setState(() {
-                  widget.model.isAutoFit.set(true, save: false);
-                  widget.model.isFixedRatio.set(true);
-                });
-                _frameManager?.resizeFrame2(widget.model);
-                mychangeStack.endTrans();
-                _sendEvent?.sendEvent(widget.model);
-              },
-            )
-            // child: Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Text(
-            //       CretaStudioLang.autoFitContents,
-            //       style: titleStyle,
-            //     ),
-            //     CretaToggleButton(
-            //       defaultValue: widget.model.isAutoFit.value,
-            //       onSelected: (value) {
-            //         widget.model.isAutoFit.set(value);
-            //         if (value == true) {
-            //           setState(() {
-            //             widget.model.isFixedRatio.set(value);
-            //           });
-            //           if (_frameManager == null) {
-            //             logger.info('frameManager is null');
-            //           }
-            //           _frameManager?.resizeFrame2(widget.model);
-            //         } else {
-            //           _frameManager?.notify();
-            //         }
-            //         _sendEvent?.sendEvent(widget.model);
-            //       },
-            //     ),
-            //   ],
-            // ),
-            ),
       ],
     );
   }

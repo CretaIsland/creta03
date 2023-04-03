@@ -7,7 +7,6 @@ import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -97,7 +96,12 @@ class _MyPageInfoState extends State<MyPageInfo> {
                             _pickedFileBytes = fileBytes;
                           });
                           try {
-                            HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType.toString(), _pickedFileBytes!).then((value) => value != null ? logger.info(value.toMap()) : logger.info("비어있음") );
+                            HycopFactory.storage!
+                                .uploadFile(_pickedFile!.name, _pickedFile!.mimeType.toString(),
+                                    _pickedFileBytes!)
+                                .then((value) => value != null
+                                    ? logger.info(value.toMap())
+                                    : logger.info("비어있음"));
                           } catch (error) {
                             logger.info(error);
                           }
