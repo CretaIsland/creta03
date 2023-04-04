@@ -302,149 +302,149 @@ class CommunitySampleData {
     ),
   ];
 
-  static final GlobalKey _commentKey1 = GlobalKey();
-  static final GlobalKey _commentKey2 = GlobalKey();
-  static final GlobalKey _commentKey3 = GlobalKey();
+  static final String _commentMid1 = GlobalKey().toString();
+  static final String _commentMid2 = GlobalKey().toString();
+  static final String _commentMid3 = GlobalKey().toString();
 
   static final List<CretaCommentData> _sampleCretaCommentList = [
     CretaCommentData(
-      key: _commentKey1.toString(),
-      name: '쿠릉쿠릉',
+      mid: _commentMid1,
+      nickname: '쿠릉쿠릉',
       creator: '쿠릉쿠릉',
       comment: '공직사회에서도 정착 못 시킨걸 민간기업에 하겠다는게 참 대단한듯',
       dateTime: DateTime.now().subtract(Duration(days: 4)),
-      //parentKey: null,
+      //parentMid: null,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: 'ㅇㄹㅇㄷ',
+      mid: GlobalKey().toString(),
+      nickname: 'ㅇㄹㅇㄷ',
       creator: 'ㅇㄹㅇㄷ',
       comment: 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
       dateTime: DateTime.now().subtract(Duration(days: 4)),
-      parentKey: _commentKey1.toString(),
+      parentMid: _commentMid1,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: '설',
+      mid: GlobalKey().toString(),
+      nickname: '설',
       creator: '설',
       comment: '내 일을 남이 대신 해주지 못한다는 가장 큰 문제를 안 말한게 아쉽네요',
       dateTime: DateTime.now().subtract(Duration(days: 4)),
-      parentKey: _commentKey1.toString(),
+      parentMid: _commentMid1,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: '젝다니엘',
+      mid: GlobalKey().toString(),
+      nickname: '젝다니엘',
       creator: '젝다니엘',
       comment: 'ㄹㅇ ㅋㅋㅋ',
       dateTime: DateTime.now().subtract(Duration(days: 4)),
-      parentKey: _commentKey1.toString(),
+      parentMid: _commentMid1,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: '가온',
+      mid: GlobalKey().toString(),
+      nickname: '가온',
       creator: '가온',
       comment: '공직사회는 프로젝트 급의 일이 많지 않고 꾸준히 적정량을 처리해야 하는 일이 많으니 그런거죠',
       dateTime: DateTime.now().subtract(Duration(days: 4)),
-      parentKey: _commentKey1.toString(),
+      parentMid: _commentMid1,
     ),
 
     CretaCommentData(
-      key: _commentKey2.toString(),
-      name: 'Hakarov Anderi',
+      mid: _commentMid2,
+      nickname: 'Hakarov Anderi',
       creator: 'Hakarov Anderi',
       comment: '영상 끝부분에서 생산성을 높이는 방법을 근면함으로 해결하려한다는 말에 감탄이 나오네요. 영상 잘봤습니다.',
       dateTime: DateTime.now().subtract(Duration(days: 5)),
-      //parentKey: null,
+      //parentMid: null,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: 'IN J',
+      mid: GlobalKey().toString(),
+      nickname: 'IN J',
       creator: 'IN J',
       comment: '근면함 말고 뭐가 있을까요.. 높은 임금이나 추가 수당이 있을까요.. 가뜩이나 52시간 때문에 소득 줄어든 사람들은 오히려 생산성을 떨어뜨려 추가수당까지 다 받아 가려 하지 않을까요',
       dateTime: DateTime.now().subtract(Duration(days: 5)),
-      parentKey: _commentKey2.toString(),
+      parentMid: _commentMid2,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: 'K Moon',
+      mid: GlobalKey().toString(),
+      nickname: 'K Moon',
       creator: 'K Moon',
       comment: '대안없는 불평 발견!',
       dateTime: DateTime.now().subtract(Duration(days: 5)),
-      parentKey: _commentKey2.toString(),
+      parentMid: _commentMid2,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: 'IN J',
+      mid: GlobalKey().toString(),
+      nickname: 'IN J',
       creator: 'IN J',
       comment: '정작 이제도가 필요한 생산직은 일하고 있고 컴터 앞에서 일보는 사무직들만 댓글 다는거같네..',
       dateTime: DateTime.now().subtract(Duration(days: 5)),
-      parentKey: _commentKey2.toString(),
+      parentMid: _commentMid2,
     ),
 
     CretaCommentData(
-      key: _commentKey3.toString(),
-      name: '어억',
+      mid: _commentMid3,
+      nickname: '어억',
       creator: '어억',
       comment: '사실 가장 큰 문제는  52시간에서 69시간으로 규제를 완화하게 되었을때 적절한 보상이 이루어지지 않는다는 겁니다. 12시간만 할 수 있는 야근도 포괄임금제 때문에 휴가든 수당이든 안 줬는데 2주동안 25시간씩 야근해도 결국 포괄임금제 때문에 휴가든 수당이든 안준다는겁니다. 포괄임금제 개선이 선행되지 않는다면 보상없는 야근만 늘려주는 제도라는 겁니다.',
       dateTime: DateTime.now().subtract(Duration(days: 6)),
-      //parentKey: null,
+      //parentMid: null,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: '어억',
+      mid: GlobalKey().toString(),
+      nickname: '어억',
       creator: '어억',
       comment: '2012년 부터 일했는데 2018년에 40시간+12시간 으로 바꼈을 때의 행복감을 잊을 수 없습니다. 당연한 야근이 사라질 정도였어요. 제발 역사를 거꾸로 가지 맙시다.',
       dateTime: DateTime.now().subtract(Duration(days: 7)),
-      parentKey: _commentKey3.toString(),
+      parentMid: _commentMid3,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: '꾸옹영원',
+      mid: GlobalKey().toString(),
+      nickname: '꾸옹영원',
       creator: '꾸옹영원',
       comment: '진짜 이번 정책 들이민 사람들은 책임을 져야함',
       dateTime: DateTime.now().subtract(Duration(days: 8)),
-      parentKey: _commentKey3.toString(),
+      parentMid: _commentMid3,
     ),
 
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: 'Live Line',
+      mid: GlobalKey().toString(),
+      nickname: 'Live Line',
       creator: 'Live Line',
       comment: '이런 주제를 가져와주신것에 대해 감사드려요',
       dateTime: DateTime.now().subtract(Duration(days: 9)),
-      //parentKey: null,
+      //parentMid: null,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: '월영',
+      mid: GlobalKey().toString(),
+      nickname: '월영',
       creator: '월영',
       comment: '사실 아직 대학생인지라 이게 뭐 때문에 난리인지를 몰랐는데 알고리즘에 떠서 이렇게 쉽게 정리해주시니 감사할 따름입니다.',
       dateTime: DateTime.now().subtract(Duration(days: 29)),
-      //parentKey: null,
+      //parentMid: null,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: 'Skim On West',
+      mid: GlobalKey().toString(),
+      nickname: 'Skim On West',
       creator: 'Skim On West',
       comment: '미국은 연장근로 제한은 없어도 추가 근무에 대해 시간당 1.5-2배 씩 돈을 더 줘야해서 회사가 알아서 최소한으로 일하게하는 것 같습니다.',
       dateTime: DateTime.now().subtract(Duration(days: 30)),
-      //parentKey: null,
+      //parentMid: null,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: 'A J',
+      mid: GlobalKey().toString(),
+      nickname: 'A J',
       creator: 'A J',
       comment: '솔직하게 모두가 정직해져야 합니다.\n\n근로자는 출퇴근 초과근무를 정직하게 작성하고\n사업자는 근무시간에 맞게 급여를 지급하여야 하고\n\n정직이 사회 제일의 규범이 되어야 한다고 봅니다\n정직한 사회를 망치는 사기꾼과 경제사범에 강력한 처벌이 필요하구요',
       dateTime: DateTime.now().subtract(Duration(days: 31)),
-      //parentKey: null,
+      //parentMid: null,
     ),
     CretaCommentData(
-      key: GlobalKey().toString(),
-      name: 'ksc-591',
+      mid: GlobalKey().toString(),
+      nickname: 'ksc-591',
       creator: 'ksc-591',
       comment: '뭔가 회사 생활을 안해본 사람들이 만든 정책 같군요',
       dateTime: DateTime.now().subtract(Duration(days: 32)),
-      //parentKey: null,
+      //parentMid: null,
     ),
   ];
 }
@@ -504,33 +504,44 @@ class CretaPlaylistData {
   List<CretaBookData> cretaBookDataList;
 }
 
+enum CretaCommentBarType {
+  addCommentMode,
+  modifyCommentMode,
+  addReplyMode,
+}
+
 class CretaCommentData {
   CretaCommentData({
-    required this.key,
-    required this.name,
+    required this.mid,
+    required this.nickname,
     required this.creator,
     required this.comment,
     required this.dateTime,
-    this.parentKey = '',
+    this.parentMid = '',
+    this.barType = CretaCommentBarType.modifyCommentMode,
     this.showReplyList = false,
   });
   CretaCommentData.clone(CretaCommentData src)
       : this(
-    key: src.key,
-    name: src.name,
+    mid: src.mid,
+    nickname: src.nickname,
     creator: src.creator,
     comment: src.comment,
     dateTime: src.dateTime,
-    parentKey: src.parentKey,
+    parentMid: src.parentMid,
   );
 
-  final String key;
-  final String name;
+  final String mid;
+  final String nickname;
   final String creator;
   String comment;
   DateTime dateTime;
-  final String parentKey;
+  final String parentMid;
   // below-items is not copied in clone()
+  CretaCommentBarType barType;
   bool showReplyList;
-  List<CretaCommentData>? replyList;
+  List<CretaCommentData> replyList = [];
+
+  bool get hasReply => replyList.isNotEmpty;
+  bool get hasNoReply => replyList.isEmpty;
 }
