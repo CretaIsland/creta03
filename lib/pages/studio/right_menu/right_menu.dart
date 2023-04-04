@@ -16,6 +16,7 @@ import '../book_main_page.dart';
 import '../../../design_system/creta_font.dart';
 import '../containees/containee_nofifier.dart';
 import '../studio_constant.dart';
+import '../studio_snippet.dart';
 import '../studio_variables.dart';
 import 'book/right_menu_book.dart';
 import 'frame/frame_property.dart';
@@ -64,6 +65,7 @@ class _RightMenuState
       width: LayoutConst.rightMenuWidth,
       decoration: BoxDecoration(
         color: Colors.white,
+        boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.leftTop),
       ),
       child: ListView(
         shrinkWrap: true,

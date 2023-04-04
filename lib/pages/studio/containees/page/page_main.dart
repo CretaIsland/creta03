@@ -16,6 +16,7 @@ import '../../../../model/page_model.dart';
 import '../../../../player/abs_player.dart';
 import '../../../../player/player_handler.dart';
 import '../../book_main_page.dart';
+import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
 import '../containee_mixin.dart';
@@ -78,8 +79,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
       child: Container(
         width: StudioVariables.virtualWidth,
         height: StudioVariables.virtualHeight,
-        //color: LayoutConst.studioBGColor,
-        color: Colors.amber,
+        color: LayoutConst.studioBGColor,
+        //color: Colors.amber,
         child: Center(child: _animatedPage()),
       ),
       //),

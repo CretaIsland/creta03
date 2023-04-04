@@ -65,7 +65,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           onClose: () {
             setState(() {
               if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book) {
-                BookMainPage.onceBookInfoOpened = true;
+                //BookMainPage.onceBookInfoOpened = true;
               }
               BookMainPage.containeeNotifier!.clear();
             });

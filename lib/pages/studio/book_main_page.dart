@@ -38,7 +38,7 @@ import 'studio_variables.dart';
 // ignore: must_be_immutable
 class BookMainPage extends StatefulWidget {
   static String selectedMid = '';
-  static bool onceBookInfoOpened = false;
+  //static bool onceBookInfoOpened = false;
   static BookManager? bookManagerHolder;
   static PageManager? pageManagerHolder;
   // static FrameTemplateManager? polygonFrameManagerHolder;
@@ -85,7 +85,7 @@ class _BookMainPageState extends State<BookMainPage> {
   @override
   void initState() {
     super.initState();
-    logger.finest("---_BookMainPageState-----------------------------------------");
+    logger.info("---_BookMainPageState-----------------------------------------");
 
     BookMainPage.containeeNotifier = ContaineeNotifier();
     BookMainPage.miniMenuNotifier = MiniMenuNotifier();
@@ -93,7 +93,7 @@ class _BookMainPageState extends State<BookMainPage> {
     // 같은 페이지에서 객체만 바뀌면 static value 들은 그대로 남아있게 되므로
     // static value 도 초기화해준다.
     //BookMainPage.selectedMid = '';
-    BookMainPage.onceBookInfoOpened = false;
+    //BookMainPage.onceBookInfoOpened = false;
     BookMainPage.selectedStick = LeftMenuEnum.None;
 
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: false);
@@ -403,16 +403,18 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget _openRightMenu() {
     return Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
-      logger.finest('Consumer  ContaineeNotifier');
+      logger.info(
+          'Consumer  ContaineeNotifier ${BookMainPage.containeeNotifier!.selectedClass}, $_isFirstOpen');
       return _shouldRightMenuOpen()
           ? Positioned(
               top: 0,
               left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
               child: RightMenu(
+                key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
                 onClose: () {
                   setState(() {
                     if (containeeNotifier.selectedClass == ContaineeEnum.Book) {
-                      BookMainPage.onceBookInfoOpened = true;
+                      //BookMainPage.onceBookInfoOpened = true;
                     }
                     containeeNotifier.clear();
                   });
@@ -429,9 +431,9 @@ class _BookMainPageState extends State<BookMainPage> {
     if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book ||
         _isFirstOpen == true) {
       _isFirstOpen = false;
-      if (BookMainPage.onceBookInfoOpened == true) {
-        return false;
-      }
+      // if (BookMainPage.onceBookInfoOpened == true) {
+      //   return false;
+      // }
       return true;
     }
     return true;
@@ -574,7 +576,7 @@ class _BookMainPageState extends State<BookMainPage> {
             },
             onLabelHovered: () {
               setState(() {
-                BookMainPage.onceBookInfoOpened = false;
+                //BookMainPage.onceBookInfoOpened = false;
                 BookMainPage.containeeNotifier!.set(ContaineeEnum.Book);
               });
             },
@@ -734,20 +736,24 @@ class _BookMainPageState extends State<BookMainPage> {
     if (marginX < 0) marginX = 0;
     if (marginY < 0) marginY = 0;
 
+    double totalWidth =
+        StudioVariables.virtualWidth + LayoutConst.rightMenuWidth + LayoutConst.leftMenuWidth;
+
     Widget scrollBox = Container(
       width: StudioVariables.workWidth, //scrollWidth,
       height: StudioVariables.workHeight,
-      color: Colors.green,
+      color: LayoutConst.studioBGColor,
+      //color: Colors.green,
       child: Center(
         child: CrossScrollBar(
-          //key: ValueKey('CrossScrollBar_${_bookModel.mid}'),
-          key: GlobalKey(),
-          width:
-              StudioVariables.virtualWidth + LayoutConst.rightMenuWidth + LayoutConst.leftMenuWidth,
+          key: ValueKey('CrossScrollBar_${_bookModel.mid}'),
+          //key: GlobalKey(),
+          width: totalWidth,
           //width: StudioVariables.workWidth,
           marginX: marginX,
           marginY: marginY,
-          initialScrollOffsetX: horizontalScrollOffset ?? StudioVariables.workWidth * 0.1,
+          initialScrollOffsetX:
+              horizontalScrollOffset ?? (totalWidth - StudioVariables.workWidth) * 0.5,
           initialScrollOffsetY: vericalScrollOffset ?? StudioVariables.workHeight * 0.1,
           currentHorizontalScrollBarOffset: (value) {
             horizontalScrollOffset = value;
