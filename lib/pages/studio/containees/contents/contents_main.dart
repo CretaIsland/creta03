@@ -104,10 +104,16 @@ class ContentsMainState extends State<ContentsMain> {
               logger.info('current model is null');
             }
           }
-          return Center(
-            child: Text(
-              '${widget.frameModel.order.value} : $contentsCount',
-              style: CretaFont.titleLarge,
+          // ignore: sized_box_for_whitespace
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.transparent,
+            child: Center(
+              child: Text(
+                '${widget.frameModel.order.value} : $contentsCount',
+                style: CretaFont.titleLarge,
+              ),
             ),
           );
         });

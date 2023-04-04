@@ -116,7 +116,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isMain = UndoAble<bool>(false, mid);
     frameType = FrameType.none;
     borderColor = UndoAble<Color>(Colors.black, mid);
-    borderWidth = UndoAble<double>(1, mid);
+    borderWidth = UndoAble<double>(0, mid);
     borderType = UndoAble<int>(0, mid);
     borderCap = UndoAble<BorderCapType>(BorderCapType.round, mid);
     shadowColor = UndoAble<Color>(Colors.transparent, mid);
@@ -149,7 +149,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isMain = UndoAble<bool>(false, mid);
     bgColor1 = UndoAble<Color>(Colors.white, mid);
     borderColor = UndoAble<Color>(Colors.black, mid);
-    borderWidth = UndoAble<double>(1, mid);
+    borderWidth = UndoAble<double>(0, mid);
     borderType = UndoAble<int>(0, mid);
     borderCap = UndoAble<BorderCapType>(BorderCapType.none, mid);
     shadowColor = UndoAble<Color>(Colors.transparent, mid);
@@ -222,7 +222,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isMain.set((map["isMain"] ?? false), save: false, noUndo: true);
 
     borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
-    borderWidth.set((map["borderWidth"] ?? 1), save: false, noUndo: true);
+    borderWidth.set((map["borderWidth"] ?? 0), save: false, noUndo: true);
     borderType.set((map["borderType"] ?? 0), save: false, noUndo: true);
     borderCap.set(BorderCapType.fromInt(map["borderCap"] ?? 0), save: false, noUndo: true);
     shadowColor.set(CretaUtils.string2Color(map["shadowColor"])!, save: false, noUndo: true);
