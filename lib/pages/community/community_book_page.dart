@@ -432,7 +432,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
                   focusNode: _focusNode,
                   padding: EdgeInsets.fromLTRB(15, 0, 15, 6),
                   enabled: _clickedDescriptionEditButton,
-                  autofocus: true,
+                  autofocus: false,
                   decoration: BoxDecoration(
                     color: _clickedDescriptionEditButton
                         ? Colors.white
