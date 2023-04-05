@@ -41,7 +41,7 @@ class CretaModelSnippet {
         });
   }
 
-  static FutureBuilder<void> waitDatum({
+  static FutureBuilder<bool> waitDatum({
     required List<CretaManager> managerList,
     required Widget Function()? consumerFunc,
   }) {
