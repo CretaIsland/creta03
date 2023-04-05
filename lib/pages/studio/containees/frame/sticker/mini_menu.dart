@@ -132,7 +132,7 @@ class _MiniMenuState extends State<MiniMenu> {
           icon: Icons.screen_rotation_outlined,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.fine("MinuMenu onFrameRotate");
+            logger.info("MinuMenu onFrameRotate");
             widget.onFrameRotate.call();
           }),
       BTN.fill_blue_i_menu(

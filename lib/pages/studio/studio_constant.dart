@@ -82,9 +82,10 @@ class LayoutConst {
       cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
   static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
 
-  static const double cornerDiameter = 22.0;
-  static const double floatingActionPadding = 24.0;
-  static const double stikerOffset = cornerDiameter + floatingActionPadding;
+  static const double cornerDiameter = 20.0;
+  //static const double floatingActionPadding = 24;
+  //static const double stikerOffset = cornerDiameter + floatingActionPadding;
+  static const double stikerOffset = 8;
 
   static const double selectBoxBorder = 2.0;
 

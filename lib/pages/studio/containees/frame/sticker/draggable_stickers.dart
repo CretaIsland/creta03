@@ -290,11 +290,11 @@ class _DraggableStickersState extends State<DraggableStickers> {
         onFrameRotate: () {
           double reverse = 180 / pi;
           double before = (_selectedSticker!.angle * reverse).roundToDouble();
-          logger.fine('onFrameRotate  before $before');
+          logger.info('onFrameRotate  before $before');
           int turns = (before / 15).round() + 1;
           double after = ((turns * 15.0) % 360).roundToDouble();
           _selectedSticker!.angle = after / reverse;
-          logger.fine('onFrameRotate  after $after');
+          logger.info('onFrameRotate  after $after');
           widget.onFrameRotate.call(_selectedSticker!.id, after);
           setState(() {});
         },

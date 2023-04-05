@@ -55,18 +55,20 @@ extension ShapeWidget<T extends Widget> on T {
           radiusRightTop: radiusRightTop,
         ),
         strokeWidth > 0
-            ? _getOutlineWidget(
-                mid: mid,
-                shapeType: shapeType,
-                strokeWidth: strokeWidth,
-                strokeColor: strokeColor,
-                borderCap: borderCap,
-                // width: width,
-                // height: height,
-                radiusLeftBottom: radiusLeftBottom,
-                radiusLeftTop: radiusLeftTop,
-                radiusRightBottom: radiusRightBottom,
-                radiusRightTop: radiusRightTop,
+            ? IgnorePointer(
+                child: _getOutlineWidget(
+                  mid: mid,
+                  shapeType: shapeType,
+                  strokeWidth: strokeWidth,
+                  strokeColor: strokeColor,
+                  borderCap: borderCap,
+                  // width: width,
+                  // height: height,
+                  radiusLeftBottom: radiusLeftBottom,
+                  radiusLeftTop: radiusLeftTop,
+                  radiusRightBottom: radiusRightBottom,
+                  radiusRightTop: radiusRightTop,
+                ),
               )
             // ? CustomPaint(
             //     size: Size(width, height),

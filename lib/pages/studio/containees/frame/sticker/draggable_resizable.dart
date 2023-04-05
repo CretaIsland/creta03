@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
 import 'dart:math' as math;
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -10,7 +9,7 @@ import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../studio_constant.dart';
 import 'draggable_point.dart';
-import 'floating_action_icon.dart';
+//import 'floating_action_icon.dart';
 import 'resize_point.dart';
 
 /// {@template drag_update}
@@ -117,8 +116,8 @@ class _DraggableResizableState extends State<DraggableResizable> {
   late Offset _position;
   //late BoxConstraints constraints;
   late double _angle;
-  late double _angleDelta;
-  late double _baseAngle;
+  // late double _angleDelta;
+  // late double _baseAngle;
 
   bool get isTouchInputSupported => true;
 
@@ -130,8 +129,8 @@ class _DraggableResizableState extends State<DraggableResizable> {
     //constraints = const BoxConstraints.expand(width: 1, height: 1);
     _angle = widget.angle;
     _position = widget.position;
-    _baseAngle = 0;
-    _angleDelta = 0;
+    // _baseAngle = 0;
+    // _angleDelta = 0;
   }
 
   @override
@@ -370,8 +369,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         }
 
         final decoratedChild = Container(
-          // skpark 확장된 박스임...
-          key: const Key('draggableResizable_child_container'),
+          key: Key('decoratedChild2-$widget.mid}'),
           alignment: Alignment.center,
           height: normalizedHeight + LayoutConst.stikerOffset,
           width: normalizedWidth + LayoutConst.stikerOffset,
@@ -410,7 +408,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final topLeftCorner = ResizePoint(
-          key: const Key('draggableResizable_topLeft_resizePoint'),
+          key: Key('draggableResizable_topLeft_resizePoint-${widget.mid}'),
           type: ResizePointType.topLeft,
           onDrag: onDragTopLeft,
           onTap: widget.onResizeButtonTap,
@@ -419,7 +417,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final bottomRightCorner = ResizePoint(
-          key: const Key('draggableResizable_bottomRight_resizePoint'),
+          key: Key('draggableResizable_bottomRight_resizePoint-${widget.mid}'),
           type: ResizePointType.bottomRight,
           onDrag: onDragBottomRight,
           onTap: widget.onResizeButtonTap,
@@ -428,7 +426,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final topRightCorner = ResizePoint(
-          key: const Key('draggableResizable_topRight_resizePoint'),
+          key: Key('draggableResizable_topRight_resizePoint-${widget.mid}'),
           type: ResizePointType.topRight,
           onDrag: onDragTopRight,
           onTap: widget.onResizeButtonTap,
@@ -437,7 +435,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final bottomLeftCorner = ResizePoint(
-          key: const Key('draggableResizable_bottomLeft_resizePoint'),
+          key: Key('draggableResizable_bottomLeft_resizePoint-${widget.mid}'),
           type: ResizePointType.bottomLeft,
           onDrag: onDragBottomLeft,
           onTap: widget.onResizeButtonTap,
@@ -446,7 +444,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final upPlane = ResizePoint(
-          key: const Key('draggableResizable_upPlane_resizePoint'),
+          key: Key('draggableResizable_upPlane_resizePoint-${widget.mid}'),
           type: ResizePointType.up,
           onDrag: onDragUp,
           onTap: widget.onResizeButtonTap,
@@ -455,7 +453,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final rightPlane = ResizePoint(
-          key: const Key('draggableResizable_rightPlane_resizePoint'),
+          key: Key('draggableResizable_rightPlane_resizePoint-${widget.mid}'),
           type: ResizePointType.right,
           onDrag: onDragRight,
           onTap: widget.onResizeButtonTap,
@@ -464,7 +462,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final downPlane = ResizePoint(
-          key: const Key('draggableResizable_downPlane_resizePoint'),
+          key: Key('draggableResizable_downPlane_resizePoint-${widget.mid}'),
           type: ResizePointType.down,
           onDrag: onDragDown,
           onTap: widget.onResizeButtonTap,
@@ -473,7 +471,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         );
 
         final leftPlane = ResizePoint(
-          key: const Key('draggableResizable_leftPlane_resizePoint'),
+          key: Key('draggableResizable_leftPlane_resizePoint-${widget.mid}'),
           type: ResizePointType.left,
           onDrag: onDragLeft,
           onTap: widget.onResizeButtonTap,
@@ -481,54 +479,54 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onComplete: widget.onComplete,
         );
 
-        final center = Offset(
-          -((normalizedWidth +
-                  FloatingActionIcon.floatingActionDiameter +
-                  LayoutConst.stikerOffset) /
-              2),
-          (normalizedHeight +
-                  FloatingActionIcon.floatingActionDiameter +
-                  LayoutConst.stikerOffset) /
-              2,
-        );
+        // final center = Offset(
+        //   -((normalizedWidth +
+        //           FloatingActionIcon.floatingActionDiameter +
+        //           LayoutConst.stikerOffset) /
+        //       2),
+        //   (normalizedHeight +
+        //           FloatingActionIcon.floatingActionDiameter +
+        //           LayoutConst.stikerOffset) /
+        //       2,
+        // );
 
-        final rotateAnchor = GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          key: const Key('draggableResizable_rotate_gestureDetector'),
-          onScaleStart: (details) {
-            logger.finest('draggableResizable_rotate_gestureDetector.onScaleStart');
-            final offsetFromCenter = details.localFocalPoint - center;
-            setState(() {
-              _angleDelta = _baseAngle -
-                  offsetFromCenter.direction -
-                  FloatingActionIcon.floatingActionDiameter;
-            });
-          },
-          onScaleUpdate: (details) {
-            logger.finest('draggableResizable_rotate_gestureDetector.onScaleUpdate');
-            final offsetFromCenter = details.localFocalPoint - center;
-            setState(
-              () {
-                //_angle = offsetFromCenter.direction + _angleDelta * 0.5;
-                _angle = offsetFromCenter.direction + _angleDelta;
-                logger.finest('org :$_angle:$_angleDelta,');
-                double degree = _angle * 180 / pi % -360;
-                _angle = degree * pi / 180;
-              },
-            );
-            onUpdate('onScaleUpdate');
-          },
-          onScaleEnd: (_) => setState(() {
-            logger.finest('onScaleEnd $_angle');
-            _baseAngle = _angle;
-            widget.onComplete();
-          }),
-          child: FloatingActionIcon(
-            key: const Key('draggableResizable_rotate_floatingActionIcon'),
-            iconData: Icons.rotate_90_degrees_ccw,
-            onTap: () {},
-          ),
-        );
+        // final rotateAnchor = GestureDetector(
+        //   behavior: HitTestBehavior.translucent,
+        //   key: Key('draggableResizable_rotate_gestureDetecto-${widget.mid}'),
+        //   onScaleStart: (details) {
+        //     logger.finest('draggableResizable_rotate_gestureDetector.onScaleStart-${widget.mid}');
+        //     final offsetFromCenter = details.localFocalPoint - center;
+        //     setState(() {
+        //       _angleDelta = _baseAngle -
+        //           offsetFromCenter.direction -
+        //           FloatingActionIcon.floatingActionDiameter;
+        //     });
+        //   },
+        //   onScaleUpdate: (details) {
+        //     logger.finest('draggableResizable_rotate_gestureDetector.onScaleUpdate-${widget.mid}');
+        //     final offsetFromCenter = details.localFocalPoint - center;
+        //     setState(
+        //       () {
+        //         //_angle = offsetFromCenter.direction + _angleDelta * 0.5;
+        //         _angle = offsetFromCenter.direction + _angleDelta;
+        //         logger.finest('org :$_angle:$_angleDelta,');
+        //         double degree = _angle * 180 / pi % -360;
+        //         _angle = degree * pi / 180;
+        //       },
+        //     );
+        //     onUpdate('onScaleUpdate');
+        //   },
+        //   onScaleEnd: (_) => setState(() {
+        //     logger.finest('onScaleEnd $_angle');
+        //     _baseAngle = _angle;
+        //     widget.onComplete();
+        //   }),
+        //   child: FloatingActionIcon(
+        //     key: Key('draggableResizable_rotate_floatingActionIcon-${widget.mid}'),
+        //     iconData: Icons.rotate_90_degrees_ccw,
+        //     onTap: () {},
+        //   ),
+        // );
 
         logger.finest('DraggableResizable : $normalizedTop, $normalizedLeft');
 
@@ -551,7 +549,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   ..rotateZ(_angle),
                 child: DraggablePoint(
                   //mode: PositionMode.local,
-                  key: const Key('draggableResizable_child_draggablePoint'),
+                  key: Key('draggableResizable_child_draggablePoint-${widget.mid}'),
                   onComplete: () {
                     widget.onComplete();
                   },
@@ -602,11 +600,11 @@ class _DraggableResizableState extends State<DraggableResizable> {
                       decoratedChild,
                       if (widget.isMain) mainSymbol,
                       if (widget.canTransform && isTouchInputSupported) ...[
-                        Positioned(
-                          // upPlane
-                          left: widthCenter,
-                          child: rotateAnchor,
-                        ),
+                        // Positioned(
+                        //   // upPlane
+                        //   left: widthCenter,
+                        //   child: rotateAnchor,
+                        // ),
                         Positioned(
                           //topLeft
                           top: resizePointerOffset,

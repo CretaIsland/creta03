@@ -136,11 +136,14 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         setState(() {});
       },
       onFrameRotate: (mid, angle) {
+        logger.info('FrameMain.onFrameRotate 1');
         FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
         if (frame == null) {
           return;
         }
         frame.angle.set(angle);
+        logger.info('FrameMain.onFrameRotate 2');
+        //setState(() {});
       },
       onFrameMain: (mid) {
         logger.fine('Frame onFrameMain');

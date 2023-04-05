@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
-import '../../../studio_constant.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
@@ -114,12 +113,12 @@ class StickerViewState extends State<StickerView> {
               //For capturing screenshot of the widget
               RepaintBoundary(
                 key: stickGlobalKey,
-                child: Container(
+                child: SizedBox(
                   // decoration: BoxDecoration(
                   //   color: Colors.grey[200],
                   // ),
                   //color: Colors.red.withOpacity(0.3),
-                  color: LayoutConst.studioPageColor, // pageBackground
+                  //color: LayoutConst.studioPageColor, // pageBackground
                   height: widget.height,
                   width: widget.width,
                   child:
