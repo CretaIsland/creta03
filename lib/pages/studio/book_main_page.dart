@@ -278,11 +278,13 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget consumerFunc() {
     logger.finest('consumerFunc');
-    return Consumer<BookManager>(builder: (context, bookManager, child) {
-      logger.finest('Consumer  ${bookManager.getLength()}');
-      _bookModel = bookManager.onlyOne()! as BookModel;
-      return _mainPage();
-    });
+    return Consumer<BookManager>(
+        key: ValueKey('consumerFunc+${BookMainPage.selectedMid}'),
+        builder: (context, bookManager, child) {
+          logger.info('Consumer  ${bookManager.getLength()}');
+          _bookModel = bookManager.onlyOne()! as BookModel;
+          return _mainPage();
+        });
   }
 
   Widget _mainPage() {
@@ -291,6 +293,7 @@ class _BookMainPageState extends State<BookMainPage> {
       return Container();
     }
     return MultiProvider(
+      key: ValueKey('MultiProvider ${BookMainPage.selectedMid}'),
       providers: [
         ChangeNotifierProvider<PageManager>.value(
           value: BookMainPage.pageManagerHolder!,
@@ -403,8 +406,6 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget _openRightMenu() {
     return Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
-      logger.info(
-          'Consumer  ContaineeNotifier ${BookMainPage.containeeNotifier!.selectedClass}, $_isFirstOpen');
       return _shouldRightMenuOpen()
           ? Positioned(
               top: 0,
