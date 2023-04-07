@@ -95,7 +95,7 @@ class LayoutConst {
 
   static const double miniMenuWidth = 248;
   static const double miniMenuHeight = 40;
-  static const double miniMenuGap = 12;
+  static const double miniMenuGap = 8;
 }
 
 class StudioConst {

@@ -37,6 +37,7 @@ class DraggableStickers extends StatefulWidget {
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
+  final void Function(String) onScaleStart;
   final void Function(ContentsModel) onDropPage;
   //final void Function(String, ContentsModel) onDropFrame;
 
@@ -55,6 +56,7 @@ class DraggableStickers extends StatefulWidget {
     required this.onFrameMain,
     required this.onTap,
     required this.onComplete,
+    required this.onScaleStart,
     required this.onResizeButtonTap,
     required this.onDropPage,
     //required this.onDropFrame,
@@ -95,8 +97,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
               // ),
               _pageDropZone(),
               for (final sticker in stickers) _drawEachStiker(sticker),
-              _selectedSticker != null ? _drawMiniMenu() : const SizedBox.shrink(),
-              _selectedSticker != null ? _drawMiniMenuContents() : const SizedBox.shrink(),
+              if (_selectedSticker != null && BookMainPage.miniMenuNotifier!.isShow)
+                _drawMiniMenu(),
+              if (_selectedSticker != null && BookMainPage.miniMenuContentsNotifier!.isShow)
+                _drawMiniMenuContents(),
             ],
           )
         : Container();
@@ -142,6 +146,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
       },
       onComplete: () {
         widget.onComplete.call(sticker.id);
+      },
+      onScaleStart: () {
+        widget.onScaleStart.call(sticker.id);
       },
 
       // To update the layer (manage position of widget in stack)

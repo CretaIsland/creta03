@@ -10,6 +10,7 @@ class DraggablePoint extends StatefulWidget {
     Key? key,
     required this.child,
     required this.onComplete,
+    required this.onScaleStart,
     this.onDrag,
     this.onScale,
     this.onRotate,
@@ -21,6 +22,7 @@ class DraggablePoint extends StatefulWidget {
   final PositionMode mode;
   final ValueSetter<Offset>? onDrag;
   final ValueSetter<double>? onScale;
+  final VoidCallback onScaleStart;
   final ValueSetter<double>? onRotate;
   final VoidCallback? onTap;
   final VoidCallback onComplete;
@@ -64,6 +66,7 @@ class DraggablePointState extends State<DraggablePoint> {
                 widget.onRotate?.call(baseAngle);
                 widget.onScale?.call(baseScaleFactor);
               }
+              widget.onScaleStart();
             },
             onScaleUpdate: (details) {
               switch (widget.mode) {

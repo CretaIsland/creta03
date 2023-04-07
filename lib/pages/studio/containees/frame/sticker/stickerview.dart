@@ -28,6 +28,7 @@ class StickerView extends StatefulWidget {
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
+  final void Function(String) onScaleStart;
   final void Function(ContentsModel) onDropPage;
   //final void Function(String, ContentsModel) onDropFrame;
 
@@ -47,6 +48,7 @@ class StickerView extends StatefulWidget {
     required this.onFrameCopy,
     required this.onTap,
     required this.onComplete,
+    required this.onScaleStart,
     required this.onResizeButtonTap,
     required this.height,
     required this.width,
@@ -140,6 +142,7 @@ class StickerViewState extends State<StickerView> {
                     onTap: widget.onTap,
                     onResizeButtonTap: widget.onResizeButtonTap,
                     onComplete: widget.onComplete,
+                    onScaleStart: widget.onScaleStart,
                     onDropPage: widget.onDropPage,
                     //onDropFrame: widget.onDropFrame,
                   ),

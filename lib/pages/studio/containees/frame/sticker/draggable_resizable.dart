@@ -58,6 +58,7 @@ class DraggableResizable extends StatefulWidget {
     required this.pageHeight,
     required this.borderWidth,
     required this.onComplete,
+    required this.onScaleStart,
     //BoxConstraints? constraints,
     required this.onResizeButtonTap,
     this.onUpdate,
@@ -80,6 +81,7 @@ class DraggableResizable extends StatefulWidget {
 
   /// Delete callback
   final VoidCallback onComplete;
+  final VoidCallback onScaleStart;
   final VoidCallback? onTap;
   final VoidCallback? onFrameDelete;
   final VoidCallback? onEdit;
@@ -554,6 +556,9 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   key: Key('draggableResizable_child_draggablePoint-${widget.mid}'),
                   onComplete: () {
                     widget.onComplete();
+                  },
+                  onScaleStart: () {
+                    widget.onScaleStart();
                   },
                   onTap: () {
                     onUpdate('onTap', save: false);

@@ -53,7 +53,7 @@ class _MiniMenuState extends State<MiniMenu> {
     double top = widget.parentPosition.dy +
         widget.parentSize.height +
         LayoutConst.miniMenuGap +
-        LayoutConst.stikerOffset / 2;
+        LayoutConst.dragHandle;
 
     if (top + LayoutConst.miniMenuHeight > widget.pageHeight) {
       // 화면의 영역을 벗어나면 어쩔 것인가...
@@ -62,7 +62,8 @@ class _MiniMenuState extends State<MiniMenu> {
       top = widget.parentPosition.dy +
           widget.parentSize.height -
           LayoutConst.miniMenuGap -
-          LayoutConst.miniMenuHeight;
+          LayoutConst.miniMenuHeight +
+          LayoutConst.dragHandle;
     }
 
     return Positioned(

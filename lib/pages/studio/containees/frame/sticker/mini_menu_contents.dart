@@ -50,19 +50,16 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
     double centerX =
         widget.parentPosition.dx + (widget.parentSize.width + LayoutConst.stikerOffset) / 2;
     double left = centerX - LayoutConst.miniMenuWidth / 2;
-    double top = widget.parentPosition.dy +
-        widget.parentSize.height +
-        LayoutConst.miniMenuGap +
-        LayoutConst.stikerOffset / 2;
+    double top = widget.parentPosition.dy -
+        LayoutConst.miniMenuGap -
+        LayoutConst.miniMenuHeight +
+        LayoutConst.dragHandle;
 
-    if (top + LayoutConst.miniMenuHeight > widget.pageHeight) {
+    if (widget.parentPosition.dy < LayoutConst.miniMenuGap + LayoutConst.miniMenuHeight) {
       // 화면의 영역을 벗어나면 어쩔 것인가...
       // 겨...올라간다...
 
-      top = widget.parentPosition.dy +
-          widget.parentSize.height -
-          LayoutConst.miniMenuGap -
-          LayoutConst.miniMenuHeight;
+      top = widget.parentPosition.dy + LayoutConst.miniMenuGap + 2 * LayoutConst.dragHandle;
     }
 
     return Positioned(

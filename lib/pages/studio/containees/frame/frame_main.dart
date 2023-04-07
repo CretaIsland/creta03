@@ -189,9 +189,22 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
         FrameModel? model = _frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           //model.save();
-          logger.fine('onComplete');
+          logger.info('onComplete');
           _sendEvent?.sendEvent(model);
+          BookMainPage.miniMenuNotifier!.isShow = true;
+          BookMainPage.miniMenuContentsNotifier!.isShow = true;
           BookMainPage.miniMenuNotifier?.notify();
+          BookMainPage.miniMenuContentsNotifier?.notify();
+        }
+      },
+      onScaleStart: (mid) {
+        FrameModel? model = _frameManager!.getSelected() as FrameModel?;
+        if (model != null && model.mid == mid) {
+          logger.info('onScaleStart');
+          BookMainPage.miniMenuNotifier!.isShow = false;
+          BookMainPage.miniMenuContentsNotifier!.isShow = false;
+          BookMainPage.miniMenuNotifier?.notify();
+          BookMainPage.miniMenuContentsNotifier?.notify();
         }
       },
       onDropPage: (contentsModel) async {
