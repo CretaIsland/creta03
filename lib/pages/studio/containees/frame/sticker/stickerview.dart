@@ -28,7 +28,8 @@ class StickerView extends StatefulWidget {
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
-  final void Function(ContentsModel) onDropContents;
+  final void Function(ContentsModel) onDropPage;
+  //final void Function(String, ContentsModel) onDropFrame;
 
   final double height; // height of the editor view
   final double width; // width of the editor view
@@ -50,7 +51,8 @@ class StickerView extends StatefulWidget {
     required this.height,
     required this.width,
     required this.frameModel,
-    required this.onDropContents,
+    required this.onDropPage,
+    //required this.onDropFrame,
   });
 
   // Method for saving image of the editor view as Uint8List
@@ -138,7 +140,8 @@ class StickerViewState extends State<StickerView> {
                     onTap: widget.onTap,
                     onResizeButtonTap: widget.onResizeButtonTap,
                     onComplete: widget.onComplete,
-                    onDropContents: widget.onDropContents,
+                    onDropPage: widget.onDropPage,
+                    //onDropFrame: widget.onDropFrame,
                   ),
                 ),
               ),

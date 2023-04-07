@@ -13,8 +13,15 @@ import '../../model/contents_model.dart';
 class DropZoneWidget extends StatefulWidget {
   final ValueChanged<ContentsModel> onDroppedFile;
   final String parentId;
+  final Widget? child;
+  final Color bgColor;
 
-  const DropZoneWidget({Key? key, required this.onDroppedFile, required this.parentId})
+  const DropZoneWidget(
+      {Key? key,
+      required this.onDroppedFile,
+      required this.parentId,
+      this.child,
+      this.bgColor = Colors.black})
       : super(key: key);
   @override
   DropZoneWidgetState createState() => DropZoneWidgetState();
@@ -28,74 +35,26 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return buildDecoration(
-        // child: DropzoneView(
-        //   // attach an configure the controller
-        //   onCreated: (controller) => this.controller = controller,
-        //   // call UploadedFile method when user drop the file
-        //   onDrop: uploadedFile,
-        //   // change UI when user hover file on dropzone
-        //   onHover: () => setState(() => highlight = true),
-        //   onLeave: () => setState(() => highlight = false),
-        //   onLoaded: () => logger.fine('Zone Loaded'),
-        //   onError: (err) => logger.fine('run when error found : $err'),
-        //),
-
-        child: Stack(
-      children: [
-        kIsWeb
-            ?
-            // dropzone area
-            DropzoneView(
-                // attach an configure the controller
+    final colorBackground = highlight ? widget.bgColor : Colors.transparent;
+    return ClipRRect(
+      child: Stack(
+        children: [
+          if (widget.child != null) widget.child!,
+          if (kIsWeb)
+            IgnorePointer(
+              child: DropzoneView(
                 onCreated: (controller) => this.controller = controller,
-                // call UploadedFile method when user drop the file
                 onDrop: uploadedFile,
-                // change UI when user hover file on dropzone
                 onHover: () => setState(() => highlight = true),
                 onLeave: () => setState(() => highlight = false),
                 onLoaded: () => logger.fine('Zone Loaded'),
                 onError: (err) => logger.fine('run when error found : $err'),
-              )
-            : Container(),
-        // Center(
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       const Icon(
-        //         Icons.cloud_upload_outlined,
-        //         size: 80,
-        //         color: Colors.white,
-        //       ),
-        //       const Text(
-        //         'Drop Files Here',
-        //         style: TextStyle(color: Colors.white, fontSize: 24),
-        //       ),
-        //       const SizedBox(
-        //         height: 16,
-        //       ),
-        //       // a button to pickfile from computer
-        //       ElevatedButton.icon(
-        //         onPressed: () async {
-        //           final events = await controller.pickFiles();
-        //           if (events.isEmpty) return;
-        //           uploadedFile(events.first);
-        //         },
-        //         icon: const Icon(Icons.search),
-        //         label: const Text(
-        //           'Choose File',
-        //           style: TextStyle(color: Colors.white, fontSize: 15),
-        //         ),
-        //         style: ElevatedButton.styleFrom(
-        //             padding: const EdgeInsets.symmetric(horizontal: 20),
-        //             primary: highlight ? Colors.blue : Colors.green.shade300,
-        //             shape: const RoundedRectangleBorder()),
-        //       )
-        //     ],
-        //   ),
-        //),
-      ],
-    ));
+              ),
+            ),
+          if (highlight) IgnorePointer(child: Container(color: colorBackground.withOpacity(0.25))),
+        ],
+      ),
+    );
   }
 
   Future uploadedFile(dynamic event) async {
@@ -122,25 +81,5 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
     setState(() {
       highlight = false;
     });
-  }
-
-  Widget buildDecoration({required Widget child}) {
-    final colorBackground = highlight ? Colors.blue : Colors.transparent;
-    return ClipRRect(
-      //borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        // DottedBorder(
-        // borderType: BorderType.RRect,
-        // color: Colors.white,
-        // strokeWidth: 3,
-        // dashPattern: const [8, 4],
-        // radius: const Radius.circular(10),
-        // padding: EdgeInsets.zero,
-        // child: child),
-        color: colorBackground,
-        child: child,
-      ),
-    );
   }
 }

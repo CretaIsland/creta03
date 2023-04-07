@@ -71,7 +71,7 @@ class PlayTimer {
         // 아무것도 돌고 있지 않다면,
         if (_currentOrder < 0) {
           _currentOrder = contentsManager.firstOrder();
-          logger.fine('currentOrder=$_currentOrder');
+          logger.info('currentOrder=$_currentOrder');
           if (_currentOrder < 0) {
             return; // 돌릴게 없다.
           }
@@ -100,7 +100,11 @@ class PlayTimer {
             return;
           }
 
+          logger.info(
+              'playTime expired $playTime, ${_currentModel!.name}, ${_currentModel!.order.value}');
+
           // 교체시간이 되었다.
+          _currentPlaySec = 0.0;
           _currentOrder = contentsManager.nextOrder(_currentOrder);
           // await playManager.setProgressBar(
           //   playTime <= 0 ? 0 : _currentPlaySec / playTime,

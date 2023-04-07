@@ -4,24 +4,18 @@ import 'dart:math';
 import 'dart:html' as html;
 import 'dart:typed_data';
 
-import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
 //import 'package:glass/glass.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
-import 'package:hycop/hycop/hycop_factory.dart';
-import 'package:hycop/hycop/model/file_model.dart';
 
-import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
-import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
-import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
@@ -29,9 +23,8 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
-import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
-import '../contents/contents_main.dart';
+import 'frame_each.dart';
 import 'sticker/draggable_resizable.dart';
 import 'sticker/draggable_stickers.dart';
 import 'sticker/stickerview.dart';
@@ -54,7 +47,7 @@ class FrameMain extends StatefulWidget {
   State<FrameMain> createState() => _FrameMainState();
 }
 
-class _FrameMainState extends State<FrameMain> with ContaineeMixin {
+class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
   FrameManager? _frameManager;
   //int _randomIndex = 0;
   double applyScale = 1;
@@ -181,19 +174,17 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
           BookMainPage.miniMenuNotifier?.notify();
         }
       },
-      onDropContents: (model) async {
-        //logger.fine('onDropContents, ${model.isDynamicSize.value}');
-
+      onDropPage: (contentsModel) async {
         // 프레임을 생성한다.
         FrameModel frameModel = await _frameManager!.createNextFrame(doNotify: false);
 
         // 콘텐츠 매니저를 생성한다.
         ContentsManager contentsManager = _frameManager!.newContentsManager(frameModel);
-        model.parentMid.set(frameModel.mid, save: false, noUndo: true);
+        contentsModel.parentMid.set(frameModel.mid, save: false, noUndo: true);
 
         // 그림의 가로 세로 규격을 알아낸다.
         final reader = html.FileReader();
-        reader.readAsArrayBuffer(model.file!);
+        reader.readAsArrayBuffer(contentsModel.file!);
         await reader.onLoad.first;
         Uint8List blob = reader.result as Uint8List;
         var image = await decodeImageFromList(blob);
@@ -216,28 +207,30 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
           imageHeight = pageHeight;
         }
 
-        model.width.set(imageWidth, save: false, noUndo: true);
-        model.height.set(imageHeight, save: false, noUndo: true);
-        model.aspectRatio.set(model.height.value / model.width.value, save: false, noUndo: true);
+        contentsModel.width.set(imageWidth, save: false, noUndo: true);
+        contentsModel.height.set(imageHeight, save: false, noUndo: true);
+        contentsModel.aspectRatio
+            .set(contentsModel.height.value / contentsModel.width.value, save: false, noUndo: true);
 
-        logger.info('contentsSize, ${model.width.value} x ${model.height.value}');
+        logger.info('contentsSize, ${contentsModel.width.value} x ${contentsModel.height.value}');
 
         // 그림의 규격에 따라 프레임 사이즈를 수정해 준다
         _frameManager?.resizeFrame(
           frameModel,
-          model.aspectRatio.value,
-          model.width.value,
-          model.height.value,
+          contentsModel.aspectRatio.value,
+          contentsModel.width.value,
+          contentsModel.height.value,
           invalidate: true,
         );
 
         // 콘텐츠 객체를 DB에 Crete 한다.
-        await contentsManager.create(model, doNotify: false);
+        await contentsManager.create(contentsModel, doNotify: false);
 
         // 업로드는  async 로 진행한다.
-        if (model.file != null && (model.remoteUrl == null || model.remoteUrl!.isEmpty)) {
+        if (contentsModel.file != null &&
+            (contentsModel.remoteUrl == null || contentsModel.remoteUrl!.isEmpty)) {
           // upload 되어 있지 않으므로 업로드한다.
-          _uploadFile(model, contentsManager, blob);
+          StudioSnippet.uploadFile(contentsModel, contentsManager, blob);
         }
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
         DraggableStickers.selectedAssetId = frameModel.mid;
@@ -246,49 +239,109 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
 
         // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
       },
+      //onDropFrame: (frameId, contentsModel) async {
+      // 콘텐츠 매니저를 생성한다.
+      // FrameModel? frameModel = _frameManager!.getModel(frameId) as FrameModel?;
+      // if (frameModel == null) {
+      //   return;
+      // }
+
+      // ContentsManager contentsManager = _frameManager!.newContentsManager(frameModel);
+      // contentsModel.parentMid.set(frameModel.mid, save: false, noUndo: true);
+
+      // // 그림의 가로 세로 규격을 알아낸다.
+      // final reader = html.FileReader();
+      // reader.readAsArrayBuffer(contentsModel.file!);
+      // await reader.onLoad.first;
+      // Uint8List blob = reader.result as Uint8List;
+      // var image = await decodeImageFromList(blob);
+
+      // double imageWidth = image.width.toDouble();
+      // double imageHeight = image.height.toDouble();
+
+      // double pageHeight = widget.pageModel.height.value;
+      // double pageWidth = widget.pageModel.width.value;
+
+      // // width 가 더 크다
+      // if (imageWidth > pageWidth) {
+      //   // 근데, width 가 page 를 넘어간다.
+      //   imageHeight = imageHeight * (pageWidth / imageWidth);
+      //   imageWidth = pageWidth;
+      // }
+      // //이렇게 했는데도, imageHeight 가 page 를 넘어간다.
+      // if (imageHeight > pageHeight) {
+      //   imageWidth = imageWidth * (pageHeight / imageHeight);
+      //   imageHeight = pageHeight;
+      // }
+
+      // contentsModel.width.set(imageWidth, save: false, noUndo: true);
+      // contentsModel.height.set(imageHeight, save: false, noUndo: true);
+      // contentsModel.aspectRatio
+      //     .set(contentsModel.height.value / contentsModel.width.value, save: false, noUndo: true);
+
+      // logger.info('contentsSize, ${contentsModel.width.value} x ${contentsModel.height.value}');
+
+      // // 콘텐츠 객체를 DB에 Crete 한다.
+      // await contentsManager.create(contentsModel, doNotify: true);
+
+      // _frameManager!.notify();
+
+      // // 업로드는  async 로 진행한다.
+      // if (contentsModel.file != null &&
+      //     (contentsModel.remoteUrl == null || contentsModel.remoteUrl!.isEmpty)) {
+      //   // upload 되어 있지 않으므로 업로드한다.
+      //   _uploadFile(contentsModel, contentsManager, blob);
+      // }
+      // BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+      // DraggableStickers.selectedAssetId = frameModel.mid;
+      // _frameManager!.setSelectedMid(frameModel.mid);
+      // //_frameManager!.notify();
+
+      //// 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
+      //},
       stickerList: getStickerList(),
     );
   }
 
-  Future<void> _uploadFile(
-    ContentsModel model,
-    ContentsManager contentsManager,
-    Uint8List blob,
-  ) async {
-    // 파일명을 확장자와 파일명으로 분리함.
-    int pos = model.file!.name.lastIndexOf('.');
-    String name = '';
-    String ext = '';
-    if (pos > 0) {
-      name = model.file!.name.substring(0, pos);
-      ext = model.file!.name.substring(pos);
-    } else if (pos == 0) {
-      name = '';
-      ext = model.file!.name;
-    } else {
-      name = model.file!.name;
-      ext = '';
-    }
+  // Future<void> _uploadFile(
+  //   ContentsModel model,
+  //   ContentsManager contentsManager,
+  //   Uint8List blob,
+  // ) async {
+  //   // 파일명을 확장자와 파일명으로 분리함.
+  //   int pos = model.file!.name.lastIndexOf('.');
+  //   String name = '';
+  //   String ext = '';
+  //   if (pos > 0) {
+  //     name = model.file!.name.substring(0, pos);
+  //     ext = model.file!.name.substring(pos);
+  //   } else if (pos == 0) {
+  //     name = '';
+  //     ext = model.file!.name;
+  //   } else {
+  //     name = model.file!.name;
+  //     ext = '';
+  //   }
 
-    String uniqFileName = '${name}_${model.bytes}$ext';
+  //   String uniqFileName = '${name}_${model.bytes}$ext';
 
-    FileModel? fileModel = await HycopFactory.storage!.uploadFile(uniqFileName, model.mime, blob);
+  //   FileModel? fileModel = await HycopFactory.storage!.uploadFile(uniqFileName, model.mime, blob);
 
-    if (fileModel != null) {
-      // modelList 가 그사이 갱신되었을 수가 있기 때문에, 다시 가져온다.
-      ContentsModel? reModel = contentsManager.getModel(model.mid) as ContentsModel?;
-      reModel ??= model;
-      reModel.remoteUrl = fileModel.fileView;
-      logger.info('uploaded url = ${reModel.url}');
-      logger.info('uploaded fileName = ${reModel.name}');
-      logger.info('uploaded remoteUrl = ${reModel.remoteUrl!}');
-      logger.info('uploaded aspectRatio = ${reModel.aspectRatio.value}');
-      //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
-      await contentsManager.setToDB(reModel);
-    } else {
-      logger.severe('upload failed ${model.file!.name}');
-    }
-  }
+  //   if (fileModel != null) {
+  //     // modelList 가 그사이 갱신되었을 수가 있기 때문에, 다시 가져온다.
+  //     ContentsModel? reModel = contentsManager.getModel(model.mid) as ContentsModel?;
+  //     reModel ??= model;
+  //     reModel.remoteUrl = fileModel.fileView;
+  //     logger.info('uploaded url = ${reModel.url}');
+  //     logger.info('uploaded fileName = ${reModel.name}');
+  //     logger.info('uploaded remoteUrl = ${reModel.remoteUrl!}');
+  //     logger.info('uploaded aspectRatio = ${reModel.aspectRatio.value}');
+  //     //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
+  //     await contentsManager.setToDB(reModel);
+  //   } else {
+  //     logger.severe('upload failed ${model.file!.name}');
+  //   }
+  // }
 
   void _exchangeOrder(String aMid, String bMid, String hint) {
     FrameModel? aModel = _frameManager!.getModel(aMid) as FrameModel?;
@@ -349,7 +402,17 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
         borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
         isMain: model.isMain.value,
         child: Visibility(
-            visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
+          //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
+          visible: _isVisible(model),
+          child: FrameEach(
+            model: model,
+            pageModel: widget.pageModel,
+            frameManager: _frameManager!,
+            applyScale: applyScale,
+            width: frameWidth,
+            height: frameHeight,
+          ),
+        ),
       );
     });
     // return _frameManager!.modelList.map((e) {
@@ -413,61 +476,61 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
     return true;
   }
 
-  Widget _applyAnimate(FrameModel model) {
-    List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
-    logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
-    //if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
-    if (animations.isEmpty) {
-      return _shapeBox(model);
-    }
-    return getAnimation(_shapeBox(model), animations);
-  }
+  // Widget _applyAnimate(FrameModel model) {
+  //   List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
+  //   logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
+  //   //if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
+  //   if (animations.isEmpty) {
+  //     return _shapeBox(model);
+  //   }
+  //   return getAnimation(_shapeBox(model), animations);
+  // }
 
-  Widget _shapeBox(FrameModel model) {
-    return _textureBox(model).asShape(
-      mid: model.mid,
-      shapeType: model.shape.value,
-      offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
-      blurRadius: model.shadowBlur.value,
-      blurSpread: model.shadowSpread.value,
-      opacity: model.shadowOpacity.value,
-      shadowColor: model.shadowColor.value,
-      // width: model.width.value,
-      // height: model.height.value,
-      strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
-      strokeColor: model.borderColor.value,
-      radiusLeftBottom: model.radiusLeftBottom.value,
-      radiusLeftTop: model.radiusLeftTop.value,
-      radiusRightBottom: model.radiusRightBottom.value,
-      radiusRightTop: model.radiusRightTop.value,
-      borderCap: model.borderCap.value,
-    );
-  }
+  // Widget _shapeBox(FrameModel model) {
+  //   return _textureBox(model).asShape(
+  //     mid: model.mid,
+  //     shapeType: model.shape.value,
+  //     offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
+  //     blurRadius: model.shadowBlur.value,
+  //     blurSpread: model.shadowSpread.value,
+  //     opacity: model.shadowOpacity.value,
+  //     shadowColor: model.shadowColor.value,
+  //     // width: model.width.value,
+  //     // height: model.height.value,
+  //     strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
+  //     strokeColor: model.borderColor.value,
+  //     radiusLeftBottom: model.radiusLeftBottom.value,
+  //     radiusLeftTop: model.radiusLeftTop.value,
+  //     radiusRightBottom: model.radiusRightBottom.value,
+  //     radiusRightTop: model.radiusRightTop.value,
+  //     borderCap: model.borderCap.value,
+  //   );
+  // }
 
-  Widget _textureBox(FrameModel model) {
-    logger.finest('mid=${model.mid}, ${model.textureType.value}');
-    if (model.textureType.value == TextureType.glass) {
-      logger.finest('frame Glass!!!');
-      double opacity = model.opacity.value;
-      Color bgColor1 = model.bgColor1.value;
-      Color bgColor2 = model.bgColor2.value;
-      GradationType gradationType = model.gradationType.value;
-      return _frameBox(model, false).asCretaGlass(
-        gradient: StudioSnippet.gradient(
-            gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
-        opacity: opacity,
-        bgColor1: bgColor1,
-        bgColor2: bgColor2,
-        //clipBorderRadius: _getBorderRadius(model),
-        //radius: _getBorderRadius(model, addRadius: model.borderWidth.value * 0.7),
-        //border: _getBorder(model),
-        //borderStyle: model.borderType.value,
-        //borderWidth: model.borderWidth.value,
-        //boxShadow: _getShadow(model),
-      );
-    }
-    return _frameBox(model, true);
-  }
+  // Widget _textureBox(FrameModel model) {
+  //   logger.finest('mid=${model.mid}, ${model.textureType.value}');
+  //   if (model.textureType.value == TextureType.glass) {
+  //     logger.finest('frame Glass!!!');
+  //     double opacity = model.opacity.value;
+  //     Color bgColor1 = model.bgColor1.value;
+  //     Color bgColor2 = model.bgColor2.value;
+  //     GradationType gradationType = model.gradationType.value;
+  //     return _frameBox(model, false).asCretaGlass(
+  //       gradient: StudioSnippet.gradient(
+  //           gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
+  //       opacity: opacity,
+  //       bgColor1: bgColor1,
+  //       bgColor2: bgColor2,
+  //       //clipBorderRadius: _getBorderRadius(model),
+  //       //radius: _getBorderRadius(model, addRadius: model.borderWidth.value * 0.7),
+  //       //border: _getBorder(model),
+  //       //borderStyle: model.borderType.value,
+  //       //borderWidth: model.borderWidth.value,
+  //       //boxShadow: _getShadow(model),
+  //     );
+  //   }
+  //   return _frameBox(model, true);
+  // }
 
   // Widget _shadowBox(FrameModel model, bool useColor) {
   //   if (model.isNoShadow() == false && model.shadowIn.value == true) {
@@ -489,43 +552,43 @@ class _FrameMainState extends State<FrameMain> with ContaineeMixin {
   //   return _frameBox(model, useColor);
   // }
 
-  Widget _frameBox(FrameModel model, bool useColor) {
-    return Container(
-      key: ValueKey('Container${model.mid}'),
-      decoration: useColor ? _frameDeco(model) : null,
-      width: double.infinity,
-      height: double.infinity,
-      child: ClipRect(
-        clipBehavior: Clip.hardEdge,
-        child: ContentsMain(
-          key: ValueKey('ContentsMain${model.mid}'),
-          frameModel: model,
-          pageModel: widget.pageModel,
-          frameManager: _frameManager!,
-        ),
-        // child: Image.asset(
-        //   'assets/creta_default.png',
-        //   fit: BoxFit.cover,
-        // ),
-      ),
-    );
-  }
+  // Widget _frameBox(FrameModel model, bool useColor) {
+  //   return Container(
+  //     key: ValueKey('Container${model.mid}'),
+  //     decoration: useColor ? _frameDeco(model) : null,
+  //     width: double.infinity,
+  //     height: double.infinity,
+  //     child: ClipRect(
+  //       clipBehavior: Clip.hardEdge,
+  //       child: ContentsMain(
+  //         key: ValueKey('ContentsMain${model.mid}'),
+  //         frameModel: model,
+  //         pageModel: widget.pageModel,
+  //         frameManager: _frameManager!,
+  //       ),
+  //       // child: Image.asset(
+  //       //   'assets/creta_default.png',
+  //       //   fit: BoxFit.cover,
+  //       // ),
+  //     ),
+  //   );
+  // }
 
-  BoxDecoration _frameDeco(FrameModel model) {
-    double opacity = model.opacity.value;
-    Color bgColor1 = model.bgColor1.value;
-    Color bgColor2 = model.bgColor2.value;
-    GradationType gradationType = model.gradationType.value;
+  // BoxDecoration _frameDeco(FrameModel model) {
+  //   double opacity = model.opacity.value;
+  //   Color bgColor1 = model.bgColor1.value;
+  //   Color bgColor2 = model.bgColor2.value;
+  //   GradationType gradationType = model.gradationType.value;
 
-    return BoxDecoration(
-      color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
-      //boxShadow: StudioSnippet.basicShadow(),
-      gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
-      //borderRadius: _getBorderRadius(model),
-      //border: _getBorder(model),
-      //boxShadow: model.isNoShadow() == true ? null : [_getShadow(model)],
-    );
-  }
+  //   return BoxDecoration(
+  //     color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
+  //     //boxShadow: StudioSnippet.basicShadow(),
+  //     gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
+  //     //borderRadius: _getBorderRadius(model),
+  //     //border: _getBorder(model),
+  //     //boxShadow: model.isNoShadow() == true ? null : [_getShadow(model)],
+  //   );
+  // }
 
   // BoxShadow _getShadow(FrameModel model) {
   //   return BoxShadow(

@@ -373,18 +373,20 @@ class _DraggableResizableState extends State<DraggableResizable> {
           alignment: Alignment.center,
           height: normalizedHeight + LayoutConst.stikerOffset,
           width: normalizedWidth + LayoutConst.stikerOffset,
-          decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.red),
-          ),
+          // decoration: BoxDecoration(
+          //   border: Border.all(width: 1, color: Colors.red),
+          // ),
           child: Container(
             height: normalizedHeight,
             width: normalizedWidth,
-            decoration: BoxDecoration(
-              border: Border.all(
-                width: LayoutConst.selectBoxBorder,
-                color: widget.canTransform ? CretaColor.primary : Colors.transparent,
-              ),
-            ),
+            decoration: widget.canTransform
+                ? BoxDecoration(
+                    border: Border.all(
+                      width: LayoutConst.selectBoxBorder,
+                      color: CretaColor.primary,
+                    ),
+                  )
+                : null,
             child: Center(child: widget.child),
           ),
         );

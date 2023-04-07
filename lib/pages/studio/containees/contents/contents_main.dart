@@ -19,12 +19,16 @@ class ContentsMain extends StatefulWidget {
   final FrameModel frameModel;
   final PageModel pageModel;
   final FrameManager frameManager;
+  final ContentsManager contentsManager;
+  final PlayerHandler playerHandler;
 
   const ContentsMain({
     super.key,
     required this.frameModel,
     required this.pageModel,
     required this.frameManager,
+    required this.contentsManager,
+    required this.playerHandler,
   });
 
   @override
@@ -32,32 +36,34 @@ class ContentsMain extends StatefulWidget {
 }
 
 class ContentsMainState extends State<ContentsMain> {
-  ContentsManager? _contentsManager;
-  PlayerHandler? _playerHandler;
+  //ContentsManager? _contentsManager;
+  //PlayerHandler? _playerHandler;
   bool _onceDBGetComplete = false;
 
   @override
   void initState() {
-    initChildren();
+    saveManagerHolder!.addBookChildren('contents=');
+    _onceDBGetComplete = true;
+    //initChildren();
     super.initState();
   }
 
-  Future<void> initChildren() async {
-    saveManagerHolder!.addBookChildren('contents=');
+  // Future<void> initChildren() async {
+  //   saveManagerHolder!.addBookChildren('contents=');
 
-    _playerHandler = PlayerHandler();
+  //   _playerHandler = PlayerHandler();
 
-    _contentsManager = widget.frameManager.newContentsManager(widget.frameModel);
-    _contentsManager!.clearAll();
-    await _contentsManager!.getContents();
-    _contentsManager!.addRealTimeListen();
-    _onceDBGetComplete = true;
-    _contentsManager!.reOrdering();
+  //   _contentsManager = widget.frameManager.newContentsManager(widget.frameModel);
+  //   _contentsManager!.clearAll();
+  //   await _contentsManager!.getContents();
+  //   _contentsManager!.addRealTimeListen();
+  //   _onceDBGetComplete = true;
+  //   _contentsManager!.reversOrdering();
 
-    _contentsManager!.setPlayerHandler(_playerHandler!);
+  //   _contentsManager!.setPlayerHandler(_playerHandler!);
 
-    _playerHandler!.start(_contentsManager!);
-  }
+  //   _playerHandler!.start(_contentsManager!);
+  // }
 
   @override
   void dispose() {
@@ -74,7 +80,7 @@ class ContentsMainState extends State<ContentsMain> {
       return _consumerFunc();
     }
     var retval = CretaModelSnippet.waitDatum(
-      managerList: [_contentsManager!],
+      managerList: [widget.contentsManager],
       consumerFunc: _consumerFunc,
     );
 
@@ -83,41 +89,33 @@ class ContentsMainState extends State<ContentsMain> {
   }
 
   Widget _consumerFunc() {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<ContentsManager>.value(
-          value: _contentsManager!,
-        ),
-        ChangeNotifierProvider<PlayerHandler>.value(
-          value: _playerHandler!,
-        ),
-      ],
-      child: Consumer<ContentsManager>(builder: (context, contentsManager, child) {
-        return Consumer<PlayerHandler>(builder: (context, playerHandler, child) {
-          int contentsCount = contentsManager.getLength();
-          if (contentsCount > 0) {
-            ContentsModel? model = playerHandler.getCurrentModel();
+    return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
+      return Consumer<PlayerHandler>(builder: (context, playerHandler, child) {
+        int contentsCount = contentsManager.getLength();
+        logger.info('Consumer<ContentsManager>, ${widget.frameModel.order.value}, $contentsCount');
+        contentsManager.reversOrdering();
+        if (contentsCount > 0) {
+          ContentsModel? model = playerHandler.getCurrentModel();
 
-            if (model != null) {
-              return playerHandler.createPlayer(model);
-            } else {
-              logger.info('current model is null');
-            }
+          if (model != null) {
+            return playerHandler.createPlayer(model);
+          } else {
+            logger.info('current model is null');
           }
-          // ignore: sized_box_for_whitespace
-          return Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.transparent,
-            child: Center(
-              child: Text(
-                '${widget.frameModel.order.value} : $contentsCount',
-                style: CretaFont.titleLarge,
-              ),
+        }
+        // ignore: sized_box_for_whitespace
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.transparent,
+          child: Center(
+            child: Text(
+              '${widget.frameModel.order.value} : $contentsCount',
+              style: CretaFont.titleLarge,
             ),
-          );
-        });
-      }),
-    );
+          ),
+        );
+      });
+    });
   }
 }

@@ -85,7 +85,7 @@ class LayoutConst {
   static const double cornerDiameter = 20.0;
   //static const double floatingActionPadding = 24;
   //static const double stikerOffset = cornerDiameter + floatingActionPadding;
-  static const double stikerOffset = 8;
+  static const double stikerOffset = 20;
 
   static const double selectBoxBorder = 2.0;
 
@@ -224,4 +224,6 @@ class StudioConst {
       code2TTSMap[langCodes[i]] = ttsCodes[i];
     }
   }
+
+  static const double bigNumber = 100000000;
 }

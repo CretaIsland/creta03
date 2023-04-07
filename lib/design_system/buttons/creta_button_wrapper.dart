@@ -400,24 +400,26 @@ class BTN {
           children: [
             (tailIconData == null)
                 ? Text(
-              text,
-              style: CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]),
-            )
-                : SizedBox(
-              child: Row(
-                children: [
-                  Text(
                     text,
-                    style: CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]),
+                    style:
+                        CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]),
+                  )
+                : SizedBox(
+                    child: Row(
+                      children: [
+                        Text(
+                          text,
+                          style: CretaFont.buttonMedium
+                              .copyWith(color: textColor ?? CretaColor.text[700]),
+                        ),
+                        Icon(
+                          tailIconData,
+                          size: 16,
+                          color: textColor ?? CretaColor.text[700],
+                        ),
+                      ],
+                    ),
                   ),
-                  Icon(
-                    tailIconData,
-                    size: 16,
-                    color: textColor ?? CretaColor.text[700],
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
@@ -1378,6 +1380,7 @@ class BTN {
       {required IconData icon,
       required Function onPressed,
       bool hasShadow = true,
+      double iconSize = 20,
       String? tooltip}) {
     return CretaButton(
       tooltip: tooltip,
@@ -1389,7 +1392,7 @@ class BTN {
       buttonColor: CretaButtonColor.whiteShadow,
       icon: Icon(
         icon,
-        size: 20,
+        size: iconSize,
         color: CretaColor.text[700]!,
       ),
       onPressed: onPressed,
@@ -1550,7 +1553,7 @@ class BTN {
     );
   }
 
-   static CretaElevatedButton line_red_t_m({
+  static CretaElevatedButton line_red_t_m({
     required String text,
     required Function onPressed,
   }) {
@@ -1596,6 +1599,4 @@ class BTN {
       sidePaddingSize: sidePaddingSize,
     );
   }
-
-
 }

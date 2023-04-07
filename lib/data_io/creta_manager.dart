@@ -683,6 +683,24 @@ abstract class CretaManager extends AbsExModelManager {
     return;
   }
 
+  void reversOrdering() {
+    lock();
+    // order 의 역순으로 ordering 한다.
+    _orderMap.clear();
+    //double bigNumber = 100000000.0;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      _orderMap[StudioConst.bigNumber - ele.order.value] = ele as CretaModel;
+    }
+
+    logger.finest('reOrdering  ${_orderMap.length}');
+
+    unlock();
+    return;
+  }
+
   List<T> orderMapIterator<T>(T Function(AbsExModel) toElement) {
     List<T> retval = [];
     for (var model in _orderMap.deepSortByKey().values) {

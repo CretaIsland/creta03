@@ -522,8 +522,13 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
               SizedBox(width: padding),
               BTN.floating_l(
-                icon: Icons.pause_outlined,
-                onPressed: () {},
+                icon: StudioVariables.isAutoPlay ? Icons.pause_outlined : Icons.play_arrow_outlined,
+                iconSize: StudioVariables.isAutoPlay ? 20 : 24,
+                onPressed: () {
+                  setState(() {
+                    StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
+                  });
+                },
                 hasShadow: false,
                 tooltip: CretaStudioLang.tooltipPause,
               ),

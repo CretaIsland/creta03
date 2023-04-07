@@ -34,7 +34,8 @@ class DraggableStickers extends StatefulWidget {
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
-  final void Function(ContentsModel) onDropContents;
+  final void Function(ContentsModel) onDropPage;
+  //final void Function(String, ContentsModel) onDropFrame;
 
   // ignore: use_key_in_widget_constructors
   const DraggableStickers({
@@ -52,7 +53,8 @@ class DraggableStickers extends StatefulWidget {
     required this.onTap,
     required this.onComplete,
     required this.onResizeButtonTap,
-    required this.onDropContents,
+    required this.onDropPage,
+    //required this.onDropFrame,
   });
   @override
   State<DraggableStickers> createState() => _DraggableStickersState();
@@ -88,7 +90,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               //     },
               //   ),
               // ),
-              _dropdownZone(),
+              _pageDropZone(),
               for (final sticker in stickers) _drawEachStiker(sticker),
               _selectedSticker != null ? _drawMiniMenu() : const SizedBox.shrink(),
             ],
@@ -207,17 +209,26 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     setState(() {});
                     widget.onTap?.call(DraggableStickers.selectedAssetId!);
                   },
-                  child: SizedBox(
+                  child:
+                      // _frameDropZone(
+                      //   sticker,
+                      //child:
+                      SizedBox(
                     width: double.infinity,
                     height: double.infinity,
                     child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
                   ),
+                  //),
                 )
-              : SizedBox(
+              : //_frameDropZone(
+              //sticker,
+              //child:
+              SizedBox(
                   width: double.infinity,
                   height: double.infinity,
                   child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
                 ),
+      //),
     );
   }
 
@@ -302,14 +313,26 @@ class _DraggableStickersState extends State<DraggableStickers> {
     });
   }
 
-  Widget _dropdownZone() {
+  Widget _pageDropZone() {
     return DropZoneWidget(
       parentId: '',
       onDroppedFile: (model) {
-        logger.fine('contents added ${model.mid}');
+        logger.info('page dropZone contents added ${model.mid}');
         //model.isDynamicSize.set(true, save: false, noUndo: true);
-        widget.onDropContents(model); // 동영상에 맞게 frame size 를 조절하라는 뜻
+        widget.onDropPage(model); // 동영상에 맞게 frame size 를 조절하라는 뜻
       },
     );
   }
+
+  // Widget _frameDropZone(Sticker sticker, {required Widget child}) {
+  //   return DropZoneWidget(
+  //     parentId: '',
+  //     onDroppedFile: (model) {
+  //       logger.info('frame dropzone contents added ${model.mid}');
+  //       //model.isDynamicSize.set(true, save: false, noUndo: true);
+  //       widget.onDropFrame(sticker.id, model); // 동영상에 맞게 frame size 를 조절하라는 뜻
+  //     },
+  //     child: child,
+  //   );
+  // }
 }
