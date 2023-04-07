@@ -58,6 +58,8 @@ abstract class AppRoutes {
   static const String playlist = '/community/playlist';
   static const String playlistDetail = '/community/playlistDetail';
   static const String communityBook = '/community/book';
+  static const String watchHistory = '/community/watchHistory';
+  static const String favorites = '/community/favorites';
   static const String colorPickerDemo = '/colorPickerDemoPage';
 
   static const String myPageDashBoard = '/mypage/dashboard';
@@ -138,6 +140,18 @@ final routesLoggedOut = RouteMap(
             subPageUrl: AppRoutes.communityBook,
           ),
         ),
+    AppRoutes.watchHistory: (_) => TransitionPage(
+      child: CommunityPage(
+        key: GlobalKey(),
+        subPageUrl: AppRoutes.watchHistory,
+      ),
+    ),
+    AppRoutes.favorites: (_) => TransitionPage(
+      child: CommunityPage(
+        key: GlobalKey(),
+        subPageUrl: AppRoutes.favorites,
+      ),
+    ),
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
         ),
