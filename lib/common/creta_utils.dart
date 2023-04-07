@@ -289,4 +289,12 @@ class CretaUtils {
     }
     return retval;
   }
+
+  static int getTextLineCount(String text, TextStyle textStyle, double width) {
+    final span = TextSpan(text: text, style: textStyle);
+    final tp = TextPainter(text: span, textDirection: TextDirection.ltr);
+    tp.layout(maxWidth: width);
+    final line = tp.computeLineMetrics().length;
+    return line;
+  }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/pages/community/sub_pages/community_right_watch_history_pane.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -30,6 +31,8 @@ import 'package:creta03/pages/community/sub_pages/community_right_home_pane.dart
 import 'package:creta03/pages/community/sub_pages/community_right_channel_pane.dart';
 import 'package:creta03/pages/community/sub_pages/community_right_playlist_pane.dart';
 import 'package:creta03/pages/community/sub_pages/community_right_playlist_detail_pane.dart';
+import 'package:creta03/pages/community/sub_pages/community_right_subscription_pane.dart';
+//import 'package:creta03/pages/community/sub_pages/community_right_watch_history_pane.dart';
 
 //bool _isInUsingCanvaskit = false;
 
@@ -84,12 +87,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         caption: '시청기록',
         iconData: Icons.article_outlined,
         onPressed: () {},
+        linkUrl: AppRoutes.watchHistory,
         isIconText: true,
       ),
       CretaMenuItem(
         caption: '좋아요',
         iconData: Icons.favorite_outline,
         onPressed: () {},
+        linkUrl: AppRoutes.favorites,
         isIconText: true,
       ),
       CretaMenuItem(
@@ -118,6 +123,25 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         _leftMenuItemList[1].selected = true;
         _leftMenuItemList[1].onPressed = () {};
         _leftMenuItemList[1].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+        );
+        break;
+      case AppRoutes.watchHistory:
+        _leftMenuItemList[2].selected = true;
+        _leftMenuItemList[2].onPressed = () {};
+        _leftMenuItemList[2].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+        );
+        break;
+      case AppRoutes.favorites:
+        _leftMenuItemList[3].selected = true;
+        _leftMenuItemList[3].onPressed = () {};
+        _leftMenuItemList[3].linkUrl = null;
+        _titlePane = _getTitlePane;
         setUsingBannerScrollBar(
           scrollChangedCallback: _scrollChangedCallback,
         );
@@ -402,9 +426,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           ),
         ]);
       }
-      Widget hashtagWidget = (size.width > 630)
-          ? Row(children: _getHashtagListOnBanner())
-          : Container();
+      Widget hashtagWidget = (size.width > 630) ? Row(children: _getHashtagListOnBanner()) : Container();
       return SizedBox(
         width: size.width,
         height: size.height,
@@ -708,51 +730,170 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     );
   }
 
+  Widget _getSmallTitlePane({
+    Size? size,
+    IconData? headIcon,
+    String? titleText,
+    String? descriptionText,
+  }) {
+    return SizedBox(
+      width: size?.width,
+      height: size?.height,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              SizedBox(width: 41),
+              (headIcon == null)
+                  ? SizedBox.shrink()
+                  : Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 11, 0),
+                      child: Icon(
+                        headIcon,
+                        size: 20,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+              (titleText == null)
+                  ? SizedBox.shrink()
+                  : Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 24, 0),
+                      child: Text(
+                        titleText,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 22,
+                          color: Colors.grey[800],
+                          fontFamily: 'Pretendard',
+                        ),
+                      ),
+                    ),
+              (descriptionText == null)
+                  ? SizedBox.shrink()
+                  : Text(
+                      descriptionText,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[700],
+                        fontFamily: 'Pretendard',
+                      ),
+                    ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _getTitlePane(Size size) {
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         return _getChannelTitlePane(size);
       case AppRoutes.subscriptionList:
-        return Container();
-      case AppRoutes.playlist:
-        return SizedBox(
-          width: size.width,
-          height: size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  SizedBox(width: 41),
-                  Icon(
-                    Icons.playlist_play,
-                    size: 20,
-                    color: Colors.grey[800],
-                  ),
-                  SizedBox(width: 11),
-                  Text(
-                    '재생목록',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 22,
-                      color: Colors.grey[800],
-                      fontFamily: 'Pretendard',
-                    ),
-                  ),
-                  SizedBox(width: 24),
-                  Text(
-                    '사용자 닉네임님이 만든 재생목록입니다.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[700],
-                      fontFamily: 'Pretendard',
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        return _getSmallTitlePane(
+          size: size,
+          headIcon: Icons.local_library_outlined,
+          titleText: '구독목록',
+          descriptionText: '사용자 닉네임님만을 위한 콘텐츠를 빠르게 만나보세요!',
         );
+      // return SizedBox(
+      //   width: size.width,
+      //   height: size.height,
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Row(
+      //         children: [
+      //           SizedBox(width: 41),
+      //           Icon(
+      //             Icons.local_library_outlined,
+      //             size: 20,
+      //             color: Colors.grey[800],
+      //           ),
+      //           SizedBox(width: 11),
+      //           Text(
+      //             '구독목록',
+      //             style: TextStyle(
+      //               fontWeight: FontWeight.w600,
+      //               fontSize: 22,
+      //               color: Colors.grey[800],
+      //               fontFamily: 'Pretendard',
+      //             ),
+      //           ),
+      //           SizedBox(width: 24),
+      //           Text(
+      //             '사용자 닉네임님만을 위한 콘텐츠를 빠르게 만나보세요!',
+      //             style: TextStyle(
+      //               fontSize: 16,
+      //               color: Colors.grey[700],
+      //               fontFamily: 'Pretendard',
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ],
+      //   ),
+      // );
+      case AppRoutes.watchHistory:
+        return _getSmallTitlePane(
+          size: size,
+          headIcon: Icons.article_outlined,
+          titleText: '시청기록',
+          descriptionText: '사용자 닉네임님의 최근에 시청한 크레타북입니다.',
+        );
+      case AppRoutes.favorites:
+        return _getSmallTitlePane(
+          size: size,
+          headIcon: Icons.favorite_outline,
+          titleText: '좋아요',
+          descriptionText: '사용자 닉네임님이 좋아요를 누른 크레타북입니다.',
+        );
+      case AppRoutes.playlist:
+        return _getSmallTitlePane(
+          size: size,
+          headIcon: Icons.playlist_play,
+          titleText: '재생목록',
+          descriptionText: '사용자 닉네임님이 만든 재생목록입니다.',
+        );
+        // return SizedBox(
+        //   width: size.width,
+        //   height: size.height,
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       Row(
+        //         children: [
+        //           SizedBox(width: 41),
+        //           Icon(
+        //             Icons.playlist_play,
+        //             size: 20,
+        //             color: Colors.grey[800],
+        //           ),
+        //           SizedBox(width: 11),
+        //           Text(
+        //             '재생목록',
+        //             style: TextStyle(
+        //               fontWeight: FontWeight.w600,
+        //               fontSize: 22,
+        //               color: Colors.grey[800],
+        //               fontFamily: 'Pretendard',
+        //             ),
+        //           ),
+        //           SizedBox(width: 24),
+        //           Text(
+        //             '사용자 닉네임님이 만든 재생목록입니다.',
+        //             style: TextStyle(
+        //               fontSize: 16,
+        //               color: Colors.grey[700],
+        //               fontFamily: 'Pretendard',
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        // );
       case AppRoutes.playlistDetail:
         return Container(
           width: size.width,
@@ -817,6 +958,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
         break;
+      case AppRoutes.watchHistory:
+        return [_dropDownMenuItemList1, _dropDownMenuItemList2, _dropDownMenuItemList3];
       case AppRoutes.playlist:
         return [_dropDownMenuItemList3];
       case AppRoutes.playlistDetail:
@@ -847,6 +990,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
         break;
+      case AppRoutes.watchHistory:
+        return (value) {};
       case AppRoutes.playlist:
         return (value) {};
       case AppRoutes.communityHome:
@@ -865,11 +1010,19 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           scrollController: getBannerScrollController,
         );
       case AppRoutes.subscriptionList:
-        return CommunityRightHomePane(
+        return CommunityRightSubscriptionPane(
           pageWidth: size.width,
           pageHeight: size.height,
           scrollController: getBannerScrollController,
         );
+      case AppRoutes.watchHistory:
+        return CommunityRightWatchHistoryPane(
+          pageWidth: size.width,
+          pageHeight: size.height,
+          scrollController: getBannerScrollController,
+        );
+      case AppRoutes.favorites:
+        return Container();
       case AppRoutes.playlist:
         return CommunityRightPlaylistPane(
           pageWidth: size.width,
