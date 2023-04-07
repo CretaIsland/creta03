@@ -218,8 +218,10 @@ class CretaShadowCirclePainter extends CretaShadowPainter {
       Rect.fromLTWH(
         offset.dx,
         offset.dy,
-        size.width + blurSpread,
-        size.height + blurSpread,
+        // size.width + blurSpread,
+        // size.height + blurSpread,
+        size.width,
+        size.height,
       ),
       Radius.circular(360),
     );

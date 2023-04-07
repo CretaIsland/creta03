@@ -57,12 +57,14 @@ class SelectedModel extends ChangeNotifier {
 class PlayerHandler extends ChangeNotifier {
   ContentsManager? contentsManager;
   late PlayTimer _timer;
+  bool _initComplete = false;
   //AbsPlayWidget? _player;
 
   void start(ContentsManager manager) {
     contentsManager = manager;
     _timer = PlayTimer(contentsManager!, this);
     _timer.initTimer();
+    _initComplete = true;
   }
 
   void notify() {
@@ -74,6 +76,9 @@ class PlayerHandler extends ChangeNotifier {
   }
 
   ContentsModel? getCurrentModel() {
+    if (!_initComplete) {
+      return null;
+    }
     return _timer.currentModel;
   }
 
@@ -114,4 +119,12 @@ class PlayerHandler extends ChangeNotifier {
       progressHolder!.setProgress(value, currentModel.mid);
     }
   }
+
+  void toggleIsPause() {
+    _timer.togglgePause();
+  }
+
+  bool isPause() => _timer.isPauseTimer;
+  void next() => _timer.next();
+  void prev() => _timer.prev();
 }

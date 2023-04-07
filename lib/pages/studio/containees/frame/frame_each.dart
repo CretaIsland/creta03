@@ -11,6 +11,7 @@ import 'package:creta03/design_system/component/creta_texture_widget.dart';
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
@@ -51,6 +52,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin {
   ContentsManager? _contentsManager;
   PlayerHandler? _playerHandler;
 
+  bool _isHover = false;
+
   @override
   void initState() {
     super.initState();
@@ -85,13 +88,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin {
           value: _playerHandler!,
         ),
       ],
-      child: _frameDropZone(
-        child: _applyAnimate(widget.model),
-      ),
+      child: _frameDropZone(),
     );
   }
 
-  Widget _frameDropZone({required Widget child}) {
+  Widget _frameDropZone() {
     return DropZoneWidget(
       parentId: '',
       onDroppedFile: (model) {
@@ -99,7 +100,60 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin {
         //model.isDynamicSize.set(true, save: false, noUndo: true);
         _onDropFrame(widget.model.mid, model); // 동영상에 맞게 frame size 를 조절하라는 뜻
       },
-      child: child,
+      child: MouseRegion(
+          onEnter: ((event) {
+            //logger.info('onEnter');
+            setState(() {
+              _isHover = true;
+            });
+          }),
+          onExit: ((event) {
+            //logger.info('onExit');
+            setState(() {
+              _isHover = false;
+            });
+          }),
+          // onHover: ((event) {
+          //   //logger.info('onHover');
+          //   setState(() {
+          //     _isHover = true;
+          //   });
+          // }),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              _applyAnimate(widget.model),
+              if (_isHover)
+                BTN.fill_i_s(
+                    icon: _playerHandler != null && _playerHandler!.isPause()
+                        ? Icons.play_arrow
+                        : Icons.pause_outlined,
+                    onPressed: () {
+                      logger.info('play Button pressed');
+                      _playerHandler?.toggleIsPause();
+                    }),
+              if (_isHover)
+                Align(
+                  alignment: const Alignment(-0.4, 0),
+                  child: BTN.fill_i_s(
+                      icon: Icons.skip_previous,
+                      onPressed: () {
+                        logger.info('prev Button pressed');
+                        _playerHandler?.prev();
+                      }),
+                ),
+              if (_isHover)
+                Align(
+                  alignment: const Alignment(0.4, 0),
+                  child: BTN.fill_i_s(
+                      icon: Icons.skip_next,
+                      onPressed: () {
+                        logger.info('next Button pressed');
+                        _playerHandler?.next();
+                      }),
+                ),
+            ],
+          )),
     );
   }
 
@@ -181,7 +235,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin {
       shapeType: model.shape.value,
       offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
       blurRadius: model.shadowBlur.value,
-      blurSpread: model.shadowSpread.value,
+      blurSpread: model.shadowSpread.value * applyScale,
       opacity: model.shadowOpacity.value,
       shadowColor: model.shadowColor.value,
       // width: widget.width,

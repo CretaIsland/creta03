@@ -25,6 +25,8 @@ class FrameManager extends CretaManager {
     contentsManagerMap[frameId] = c;
   }
 
+  ContentsManager? getContentsManager(String frameId) => contentsManagerMap[frameId];
+
   // PlayerHandler? _playerHandler;
   // void setPlayerHandler(PlayerHandler p) {
   //   _playerHandler = p;

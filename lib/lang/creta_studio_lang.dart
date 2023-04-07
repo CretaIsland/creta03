@@ -293,6 +293,13 @@ class CretaStudioLang {
   static String rotateFrameTooltip = '15도씩 회전합니다';
   static String mainFrameTooltip = '메인 프레임으로 지정합니다';
 
+  static String flipConTooltip = '콘텐츠 플립';
+  static String rotateConTooltip = '콘텐츠 회전';
+  static String cropConTooltip = '콘텐츠 재단';
+  static String fullscreenConTooltip = '콘텐츠를 프레임사이즈에 맞춤';
+  static String deleteConTooltip = '콘텐츠 삭제';
+  static String editConTooltip = '콘텐츠 편집';
+
   // static Map<String, String> shadowInList = {
   //   '외부 그림자': 'outSide',
   //   '내부 그림자': 'inSide',

@@ -227,10 +227,17 @@ class ContentsModel extends CretaModel {
   PlayState get playState => _playState;
   PlayState get prevState => _prevState;
   PlayState get manualState => _manualState;
+
   void setPlayState(PlayState s) {
     _prevState = playState;
     _playState = s;
     _manualState = playState;
+  }
+
+  bool isState(PlayState s) => (s == _playState);
+
+  void resumeState() {
+    _playState = _prevState;
   }
 
   void setManualState(PlayState s) {

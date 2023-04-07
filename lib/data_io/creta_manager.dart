@@ -668,6 +668,24 @@ abstract class CretaManager extends AbsExModelManager {
     return -1;
   }
 
+  double prevOrder(double currentOrder) {
+    bool matched = false;
+    for (double ele in _orderMap.deepReverse().keys) {
+      if (matched == true) {
+        return ele;
+      }
+      if (ele == currentOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    if (matched == true) {
+      // 처음까지 온것이다.  마지막으로 돌아간다.
+      return _orderMap.deepSortByKey().keys.last;
+    }
+    return -1;
+  }
+
   void reOrdering() {
     lock();
     _orderMap.clear();
@@ -845,23 +863,24 @@ abstract class CretaManager extends AbsExModelManager {
     prevSelectedMid = selectedMid;
     selectedMid = modelList[0].mid;
     String className = HycopUtils.getClassName(selectedMid);
-    if (className != 'frame' && className != 'content') {
+    if (className != 'frame' && className != 'contents') {
       DraggableStickers.selectedAssetId = "";
     }
     logger.finest('selected1=$selectedMid, prev=$prevSelectedMid');
   }
 
-  Future<void> setSelectedMid(String mid) async {
+  Future<void> setSelectedMid(String mid, {bool doNotify = true}) async {
     prevSelectedMid = selectedMid;
     selectedMid = mid;
     logger.finest('selected2=$selectedMid, prev=$prevSelectedMid');
 
     String className = HycopUtils.getClassName(selectedMid);
-    if (className != 'frame' && className != 'content') {
+    if (className != 'frame' && className != 'contents') {
       DraggableStickers.selectedAssetId = "";
     }
-
-    notify();
+    if (doNotify) {
+      notify();
+    }
   }
 
   Future<void> clearSelectedMid() async {

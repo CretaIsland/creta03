@@ -26,61 +26,70 @@ extension ShapeWidget<T extends Widget> on T {
     double strokeWidth = 0,
     Color strokeColor = Colors.transparent,
   }) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        _getShadowWidget(
-          mid: mid,
-          shapeType: shapeType,
-          offset: offset,
-          blurRadius: blurRadius,
-          blurSpread: blurSpread,
-          opacity: opacity,
-          shadowColor: shadowColor,
-          // width: width,
-          // height: height,
-          radiusLeftBottom: radiusLeftBottom,
-          radiusLeftTop: radiusLeftTop,
-          radiusRightBottom: radiusRightBottom,
-          radiusRightTop: radiusRightTop,
-        ),
-        _getBaseWidget(
-          mid: mid,
-          shapeType: shapeType,
-          // width: width,
-          // height: height,
-          radiusLeftBottom: radiusLeftBottom,
-          radiusLeftTop: radiusLeftTop,
-          radiusRightBottom: radiusRightBottom,
-          radiusRightTop: radiusRightTop,
-        ),
-        strokeWidth > 0
-            ? IgnorePointer(
-                child: _getOutlineWidget(
-                  mid: mid,
-                  shapeType: shapeType,
-                  strokeWidth: strokeWidth,
-                  strokeColor: strokeColor,
-                  borderCap: borderCap,
-                  // width: width,
-                  // height: height,
-                  radiusLeftBottom: radiusLeftBottom,
-                  radiusLeftTop: radiusLeftTop,
-                  radiusRightBottom: radiusRightBottom,
-                  radiusRightTop: radiusRightTop,
-                ),
-              )
-            // ? CustomPaint(
-            //     size: Size(width, height),
-            //     painter: CretaOutLinePathPainter(
-            //       shapeType: shapeType,
-            //       strokeWidth: strokeWidth,
-            //       strokeColor: strokeColor,
-            //     ),
-            //   )
-            : const SizedBox.shrink(),
-      ],
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      double width = constraints.maxWidth;
+      double height = constraints.maxHeight;
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          _getShadowWidget(
+            mid: mid,
+            shapeType: shapeType,
+            offset: offset,
+            blurRadius: blurRadius,
+            blurSpread: blurSpread,
+            opacity: opacity,
+            shadowColor: shadowColor,
+            // width: width,
+            // height: height,
+            radiusLeftBottom: radiusLeftBottom,
+            radiusLeftTop: radiusLeftTop,
+            radiusRightBottom: radiusRightBottom,
+            radiusRightTop: radiusRightTop,
+          ),
+          _getBaseWidget(
+            mid: mid,
+            shapeType: shapeType,
+            width: width - blurSpread,
+            height: height - blurSpread,
+            radiusLeftBottom: radiusLeftBottom,
+            radiusLeftTop: radiusLeftTop,
+            radiusRightBottom: radiusRightBottom,
+            radiusRightTop: radiusRightTop,
+          ),
+          strokeWidth > 0
+              ? Container(
+                  alignment: Alignment.center,
+                  width: width - blurSpread,
+                  height: height - blurSpread,
+                  child: IgnorePointer(
+                    child: _getOutlineWidget(
+                      mid: mid,
+                      shapeType: shapeType,
+                      strokeWidth: strokeWidth,
+                      strokeColor: strokeColor,
+                      borderCap: borderCap,
+                      width: width - blurSpread,
+                      height: height - blurSpread,
+                      radiusLeftBottom: radiusLeftBottom,
+                      radiusLeftTop: radiusLeftTop,
+                      radiusRightBottom: radiusRightBottom,
+                      radiusRightTop: radiusRightTop,
+                    ),
+                  ),
+                )
+              // ? CustomPaint(
+              //     size: Size(width, height),
+              //     painter: CretaOutLinePathPainter(
+              //       shapeType: shapeType,
+              //       strokeWidth: strokeWidth,
+              //       strokeColor: strokeColor,
+              //     ),
+              //   )
+              : const SizedBox.shrink(),
+        ],
+      );
+    });
   }
 
   Widget _getBaseWidget({
@@ -90,9 +99,8 @@ extension ShapeWidget<T extends Widget> on T {
     required double radiusLeftTop,
     required double radiusRightBottom,
     required double radiusRightTop,
-
-    // required double width,
-    // required double height,
+    required double width,
+    required double height,
   }) {
     if (shapeType == ShapeType.none || shapeType == ShapeType.rectangle) {
       return ClipRRect(
@@ -103,35 +111,35 @@ extension ShapeWidget<T extends Widget> on T {
           radiusRightBottom: radiusRightBottom,
           radiusRightTop: radiusRightTop,
         ),
-        // child: SizedBox(
-        //   width: width,
-        //   height: height,
-        //   child: this,
-        // ),
-        child: this,
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: this,
+        ),
+        //child: this,
       );
     }
     if (shapeType == ShapeType.circle) {
       return ClipRRect(
         //clipBehavior: Clip.hardEdge,
         borderRadius: BorderRadius.all(Radius.circular(360)),
-        // child: SizedBox(
-        //   width: width,
-        //   height: height,
-        //   child: this,
-        // ),
-        child: this,
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: this,
+        ),
+        //child: this,
       );
     }
     if (shapeType == ShapeType.oval) {
       return ClipOval(
         //clipBehavior: Clip.hardEdge,
-        // child: SizedBox(
-        //   width: width,
-        //   height: height,
-        //   child: this,
-        // ),
-        child: this,
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: this,
+        ),
+        //child: this,
       );
     }
 
@@ -141,12 +149,12 @@ extension ShapeWidget<T extends Widget> on T {
         mid: mid,
         shapeType: shapeType,
       ),
-      child: this,
-      // child: SizedBox(
-      //   width: double.infinity,
-      //   height: double.infinity,
-      //   child: this,
-      // ),
+      //child: this,
+      child: SizedBox(
+        width: width,
+        height: width,
+        child: this,
+      ),
     );
   }
 
@@ -198,83 +206,85 @@ Widget _getOutlineWidget({
   required Color strokeColor,
   required ShapeType shapeType,
   required BorderCapType borderCap,
-  // required double width,
-  // required double height,
+  required double width,
+  required double height,
   required double radiusLeftBottom,
   required double radiusLeftTop,
   required double radiusRightBottom,
   required double radiusRightTop,
 }) {
   if (shapeType == ShapeType.rectangle || shapeType == ShapeType.none) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return CustomPaint(
-        //size: Size(width, height),
-        key: ValueKey('outline-$mid'),
-        size: Size(double.infinity, double.infinity),
-        painter: CretaOutLineRRectPainter(
-          shapeType: shapeType,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          borderCap: borderCap,
-          // width: width,
-          // height: height,
-          width: constraints.maxWidth,
-          height: constraints.maxHeight,
-          radiusLeftBottom: radiusLeftBottom,
-          radiusLeftTop: radiusLeftTop,
-          radiusRightBottom: radiusRightBottom,
-          radiusRightTop: radiusRightTop,
-        ),
-      );
-    });
+    //return LayoutBuilder(builder: (context, constraints) {
+    return CustomPaint(
+      //size: Size(width, height),
+      key: ValueKey('outline-$mid'),
+      size: Size(double.infinity, double.infinity),
+      painter: CretaOutLineRRectPainter(
+        shapeType: shapeType,
+        strokeColor: strokeColor,
+        strokeWidth: strokeWidth,
+        borderCap: borderCap,
+        width: width,
+        height: height,
+        // width: constraints.maxWidth,
+        // height: constraints.maxHeight,
+        radiusLeftBottom: radiusLeftBottom,
+        radiusLeftTop: radiusLeftTop,
+        radiusRightBottom: radiusRightBottom,
+        radiusRightTop: radiusRightTop,
+      ),
+    );
+    //});
   }
 
   if (shapeType == ShapeType.circle) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return CustomPaint(
-        //size: Size(width, height),
-        key: ValueKey('outline-$mid'),
-        size: Size(double.infinity, double.infinity),
-        painter: CretaOutLineCirclePainter(
-          shapeType: shapeType,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          borderCap: borderCap,
-          // width: width,
-          // height: height,
-          width: constraints.maxWidth - strokeWidth / 2,
-          height: constraints.maxHeight - strokeWidth / 2,
-        ),
-      );
-    });
+    //return LayoutBuilder(builder: (context, constraints) {
+    return CustomPaint(
+      //size: Size(width, height),
+      key: ValueKey('outline-$mid'),
+      size: Size(double.infinity, double.infinity),
+      painter: CretaOutLineCirclePainter(
+        shapeType: shapeType,
+        strokeColor: strokeColor,
+        strokeWidth: strokeWidth,
+        borderCap: borderCap,
+        width: width - strokeWidth / 2,
+        height: height - strokeWidth / 2,
+        // width: constraints.maxWidth - strokeWidth / 2 - 30,
+        // height: constraints.maxHeight - strokeWidth / 2 - 30,
+      ),
+    );
+    //});
   }
 
   if (shapeType == ShapeType.oval) {
-    return LayoutBuilder(builder: (context, constraints) {
-      logger.fine('RealSize=${constraints.maxWidth}, ${constraints.maxHeight}');
-      return CustomPaint(
-        key: ValueKey('outline-$mid'),
-        //size: Size(width, height),
-        size: Size(double.infinity, double.infinity),
-        painter: CretaOutLineOvalPainter(
-          shapeType: shapeType,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          borderCap: borderCap,
-          width: constraints.maxWidth,
-          height: constraints.maxHeight,
-          //rect: Offset(0, 0) & Size(width, height),
-          // rect: Offset(strokeWidth / 2, strokeWidth / 2) &
-          //     Size(constraints.maxWidth - strokeWidth / 2, constraints.maxHeight - strokeWidth / 2),
-        ),
-      );
-    });
+    //return LayoutBuilder(builder: (context, constraints) {
+    //logger.fine('RealSize=${constraints.maxWidth}, ${constraints.maxHeight}');
+    return CustomPaint(
+      key: ValueKey('outline-$mid'),
+      //size: Size(width, height),
+      size: Size(double.infinity, double.infinity),
+      painter: CretaOutLineOvalPainter(
+        shapeType: shapeType,
+        strokeColor: strokeColor,
+        strokeWidth: strokeWidth,
+        borderCap: borderCap,
+        // width: constraints.maxWidth,
+        // height: constraints.maxHeight,
+        width: width,
+        height: height,
+        //rect: Offset(0, 0) & Size(width, height),
+        // rect: Offset(strokeWidth / 2, strokeWidth / 2) &
+        //     Size(constraints.maxWidth - strokeWidth / 2, constraints.maxHeight - strokeWidth / 2),
+      ),
+    );
+    //});
   }
 
   return CustomPaint(
     key: ValueKey('outline-$mid'),
-    //size: Size(width, height),
-    size: Size(double.infinity, double.infinity),
+    size: Size(width, height),
+    //size: Size(double.infinity, double.infinity),
     painter: CretaOutLinePathPainter(
       shapeType: shapeType,
       strokeWidth: strokeWidth,
@@ -321,6 +331,11 @@ CustomPaint _getShadowWidget({
   }
 
   if (shapeType == ShapeType.circle) {
+    logger.info('offset=$offset');
+    logger.info('blurRadius = $blurRadius');
+    logger.info('blurSpread = $blurSpread');
+    logger.info('opacity = $opacity');
+
     return CustomPaint(
       key: ValueKey('shadow-$mid'),
       //size: Size(width, height),

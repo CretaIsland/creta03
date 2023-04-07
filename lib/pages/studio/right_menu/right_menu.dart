@@ -4,21 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../data_io/frame_manager.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/book_model.dart';
+import '../../../model/contents_model.dart';
 import '../../../model/frame_model.dart';
 import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 
 import '../../../design_system/creta_font.dart';
 import '../containees/containee_nofifier.dart';
+import '../containees/frame/sticker/draggable_stickers.dart';
 import '../studio_constant.dart';
 import '../studio_snippet.dart';
 import '../studio_variables.dart';
 import 'book/right_menu_book.dart';
+import 'contents/contents_property.dart';
 import 'frame/frame_property.dart';
 import 'page/page_property.dart';
 
@@ -144,6 +148,17 @@ class _RightMenuState
           return FrameProperty(key: ValueKey(frame.mid), model: frame);
         }
       case ContaineeEnum.Contents:
+        logger.info('4');
+        FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
+        FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+        if (frame != null && frameManager != null) {
+          logger.info('5');
+          ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
+          if (contents != null) {
+            logger.info('6:${DraggableStickers.selectedAssetId}');
+            return ContentsProperty(key: ValueKey(frame.mid), model: contents);
+          }
+        }
         return Container();
 
       default:
@@ -166,7 +181,7 @@ class _RightMenuState
   }
 
   Widget _eachTitle(ContaineeEnum selected) {
-    logger.finest('_eachTitle $selected');
+    logger.info('_eachTitle $selected');
     switch (selected) {
       case ContaineeEnum.Book:
         {

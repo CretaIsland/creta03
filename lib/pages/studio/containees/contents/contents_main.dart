@@ -92,7 +92,8 @@ class ContentsMainState extends State<ContentsMain> {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       return Consumer<PlayerHandler>(builder: (context, playerHandler, child) {
         int contentsCount = contentsManager.getLength();
-        logger.info('Consumer<ContentsManager>, ${widget.frameModel.order.value}, $contentsCount');
+        logger
+            .finest('Consumer<ContentsManager>, ${widget.frameModel.order.value}, $contentsCount');
         contentsManager.reversOrdering();
         if (contentsCount > 0) {
           ContentsModel? model = playerHandler.getCurrentModel();

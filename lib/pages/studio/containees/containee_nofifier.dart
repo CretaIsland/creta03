@@ -54,3 +54,7 @@ class ContaineeNotifier extends ChangeNotifier {
 class MiniMenuNotifier extends ChangeNotifier {
   void notify() => notifyListeners();
 }
+
+class MiniMenuContentsNotifier extends ChangeNotifier {
+  void notify() => notifyListeners();
+}

@@ -16,6 +16,7 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 //import '../../../../data_io/page_manager.dart';
 import '../../../../model/book_model.dart';
+import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
@@ -144,8 +145,9 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
         setState(() {});
       },
       onTap: (mid) {
-        logger.fine('onTap : from InkWell , frame_name.dart, no setState');
+        logger.info('onTap : from InkWell , frame_name.dart, no setState $mid');
         FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
+
         if (frame == null ||
             frame.mid != mid ||
             BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame) {
@@ -155,6 +157,24 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
           //});
         }
         frame = _frameManager?.getSelected() as FrameModel?;
+
+        if (frame != null) {
+          logger.info('1');
+          ContentsManager? contentsManager = _frameManager?.getContentsManager(frame.mid);
+          if (contentsManager != null) {
+            logger.info('2');
+            ContentsModel? content = contentsManager.getCurrentModel();
+            if (content != null) {
+              logger.info('3');
+              contentsManager.setSelectedMid(content.mid);
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
+              //_frameManager?.setSelectedMid(mid);
+              return;
+            }
+          }
+        }
+
+        //frame = _frameManager?.getSelected() as FrameModel?;
         //if (frame != null) {
         //BookMainPage.clickEventHandler.publish(frame.eventSend.value); //skpark publish 는 나중에 빼야함.
         //}
@@ -382,8 +402,8 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
         null,
       );
 
-      double frameWidth = model.width.value * applyScale;
-      double frameHeight = model.height.value * applyScale;
+      double frameWidth = (model.width.value + model.shadowSpread.value) * applyScale;
+      double frameHeight = (model.height.value + model.shadowSpread.value) * applyScale;
       double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
       double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 

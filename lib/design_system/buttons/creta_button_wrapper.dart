@@ -28,6 +28,24 @@ class BTN {
     );
   }
 
+  static CretaButton fill_i_s({
+    required IconData icon,
+    required Function onPressed,
+  }) {
+    return CretaButton(
+      width: 28,
+      height: 28,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.gray,
+      onPressed: onPressed,
+      child: Icon(
+        icon,
+        size: 20,
+        color: Colors.white,
+      ),
+    );
+  }
+
   static CretaButton fill_gray_i_s({
     required IconData icon,
     required Function onPressed,
@@ -40,7 +58,7 @@ class BTN {
       onPressed: onPressed,
       child: Icon(
         icon,
-        size: 16,
+        size: 12,
         color: CretaColor.text[700]!,
       ),
     );

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
+import '../../../../../data_io/contents_manager.dart';
+import '../../../../../data_io/frame_manager.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
@@ -14,6 +16,7 @@ import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
 import 'draggable_resizable.dart';
 import 'mini_menu.dart';
+import 'mini_menu_contents.dart';
 import 'stickerview.dart';
 
 class DraggableStickers extends StatefulWidget {
@@ -93,6 +96,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               _pageDropZone(),
               for (final sticker in stickers) _drawEachStiker(sticker),
               _selectedSticker != null ? _drawMiniMenu() : const SizedBox.shrink(),
+              _selectedSticker != null ? _drawMiniMenuContents() : const SizedBox.shrink(),
             ],
           )
         : Container();
@@ -308,6 +312,50 @@ class _DraggableStickersState extends State<DraggableStickers> {
           logger.info('onFrameRotate  after $after');
           widget.onFrameRotate.call(_selectedSticker!.id, after);
           setState(() {});
+        },
+      );
+    });
+  }
+
+  Widget _drawMiniMenuContents() {
+    return Consumer<MiniMenuContentsNotifier>(builder: (context, notifier, child) {
+      logger.fine('_drawMiniMenu()');
+
+      FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+      if (frameManager == null) {
+        return const SizedBox.shrink();
+      }
+      ContentsManager? contentsManager = frameManager.getContentsManager(widget.frameModel!.mid);
+      if (contentsManager == null) {
+        return const SizedBox.shrink();
+      }
+      if (contentsManager.isEmpty()) {
+        return const SizedBox.shrink();
+      }
+
+      return MiniMenuContents(
+        key: const ValueKey('MiniMenuContents'),
+        parentPosition: _selectedSticker!.position,
+        parentSize: _selectedSticker!.size,
+        parentBorderWidth: _selectedSticker!.borderWidth,
+        pageHeight: widget.pageHeight,
+        onContentsFlip: () {
+          logger.fine('onContentsFlip');
+        },
+        onContentsRotate: () {
+          logger.fine('onContentsRotate');
+        },
+        onContentsCrop: () {
+          logger.fine('onContentsCrop');
+        },
+        onContentsFullscreen: () {
+          logger.fine('onContentsFullscreen');
+        },
+        onContentsDelete: () {
+          logger.fine('onContentsDelete');
+        },
+        onContentsEdit: () {
+          logger.fine('onContentsEdit');
         },
       );
     });

@@ -46,6 +46,7 @@ class BookMainPage extends StatefulWidget {
   static UserPropertyManager? userPropertyManagerHolder;
   static ContaineeNotifier? containeeNotifier;
   static MiniMenuNotifier? miniMenuNotifier;
+  static MiniMenuContentsNotifier? miniMenuContentsNotifier;
 
   static LeftMenuEnum selectedStick = LeftMenuEnum.None;
   static ClickReceiverHandler clickReceiverHandler = ClickReceiverHandler();
@@ -89,6 +90,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     BookMainPage.containeeNotifier = ContaineeNotifier();
     BookMainPage.miniMenuNotifier = MiniMenuNotifier();
+    BookMainPage.miniMenuContentsNotifier = MiniMenuContentsNotifier();
 
     // 같은 페이지에서 객체만 바뀌면 static value 들은 그대로 남아있게 되므로
     // static value 도 초기화해준다.
@@ -239,6 +241,9 @@ class _BookMainPageState extends State<BookMainPage> {
         ),
         ChangeNotifierProvider<MiniMenuNotifier>.value(
           value: BookMainPage.miniMenuNotifier!,
+        ),
+        ChangeNotifierProvider<MiniMenuContentsNotifier>.value(
+          value: BookMainPage.miniMenuContentsNotifier!,
         ),
         ChangeNotifierProvider<BookManager>.value(
           value: BookMainPage.bookManagerHolder!,
@@ -411,7 +416,7 @@ class _BookMainPageState extends State<BookMainPage> {
               top: 0,
               left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
               child: RightMenu(
-                key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
+                //key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
                 onClose: () {
                   setState(() {
                     if (containeeNotifier.selectedClass == ContaineeEnum.Book) {
