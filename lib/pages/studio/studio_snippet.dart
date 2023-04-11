@@ -6,6 +6,8 @@ import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/model/file_model.dart';
 
 import '../../data_io/contents_manager.dart';
+import '../../design_system/menu/creta_popup_menu.dart';
+import '../../lang/creta_studio_lang.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
 
@@ -188,5 +190,34 @@ class StudioSnippet {
     } else {
       logger.severe('upload failed ${model.file!.name}');
     }
+  }
+
+  static List<CretaMenuItem> getCopyRightListItem(void Function(CopyRightType) onChnaged) {
+    return [
+      CretaMenuItem(
+          caption: CretaStudioLang.copyWrightList[1],
+          onPressed: () {
+            onChnaged(CopyRightType.free);
+          },
+          selected: true),
+      CretaMenuItem(
+          caption: CretaStudioLang.copyWrightList[2],
+          onPressed: () {
+            onChnaged(CopyRightType.nonComertialsUseOnly);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaStudioLang.copyWrightList[3],
+          onPressed: () {
+            onChnaged(CopyRightType.openSource);
+          },
+          selected: false),
+      CretaMenuItem(
+          caption: CretaStudioLang.copyWrightList[4],
+          onPressed: () {
+            onChnaged(CopyRightType.needPermition);
+          },
+          selected: false),
+    ];
   }
 }

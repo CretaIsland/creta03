@@ -159,13 +159,10 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
         frame = _frameManager?.getSelected() as FrameModel?;
 
         if (frame != null) {
-          logger.info('1');
           ContentsManager? contentsManager = _frameManager?.getContentsManager(frame.mid);
           if (contentsManager != null) {
-            logger.info('2');
             ContentsModel? content = contentsManager.getCurrentModel();
             if (content != null) {
-              logger.info('3');
               contentsManager.setSelectedMid(content.mid);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
               //_frameManager?.setSelectedMid(mid);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
@@ -70,10 +71,10 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
         height: LayoutConst.miniMenuHeight,
         decoration: BoxDecoration(
           //color: CretaColor.primary.withOpacity(0.5),
-          color: Colors.white.withOpacity(0.5),
+          color: CretaColor.secondary[100],
           border: Border.all(
             width: 1,
-            color: CretaColor.primary,
+            color: CretaColor.secondary,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(45)),
         ),
@@ -91,6 +92,9 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
           tooltip: CretaStudioLang.flipConTooltip,
           tooltipFg: CretaColor.text,
           icon: Icons.flip_outlined,
+          decoType: CretaButtonDeco.opacity,
+          iconColor: CretaColor.secondary,
+          buttonColor: CretaButtonColor.secondary,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameMain");
@@ -100,6 +104,9 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
           tooltip: CretaStudioLang.rotateConTooltip,
           tooltipFg: CretaColor.text,
           icon: Icons.rotate_90_degrees_cw_outlined,
+          iconColor: CretaColor.secondary,
+          buttonColor: CretaButtonColor.secondary,
+          decoType: CretaButtonDeco.opacity,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameFront");
@@ -109,6 +116,9 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
           tooltip: CretaStudioLang.cropConTooltip,
           tooltipFg: CretaColor.text,
           icon: Icons.crop_outlined,
+          iconColor: CretaColor.secondary,
+          buttonColor: CretaButtonColor.secondary,
+          decoType: CretaButtonDeco.opacity,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameBack");
@@ -118,6 +128,9 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
           tooltip: CretaStudioLang.fullscreenConTooltip,
           tooltipFg: CretaColor.text,
           icon: Icons.fullscreen_outlined,
+          iconColor: CretaColor.secondary,
+          buttonColor: CretaButtonColor.secondary,
+          decoType: CretaButtonDeco.opacity,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameCopy");
@@ -126,7 +139,10 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
       BTN.fill_blue_i_menu(
           tooltipFg: CretaColor.text,
           tooltip: CretaStudioLang.deleteConTooltip,
+          iconColor: CretaColor.secondary,
           icon: Icons.delete_outlined,
+          buttonColor: CretaButtonColor.secondary,
+          decoType: CretaButtonDeco.opacity,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameDelete");
@@ -135,7 +151,10 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.editConTooltip,
           tooltipFg: CretaColor.text,
+          iconColor: CretaColor.secondary,
           icon: Icons.edit_outlined,
+          decoType: CretaButtonDeco.opacity,
+          buttonColor: CretaButtonColor.secondary,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.info("MinuMenu onContentsEdit");

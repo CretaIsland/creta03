@@ -39,7 +39,7 @@ enum FrameType {
   static FrameType fromInt(int? val) => FrameType.values[validCheck(val ?? none.index)];
 }
 
-enum CopyWrightType {
+enum CopyRightType {
   none,
   free,
   nonComertialsUseOnly,
@@ -48,7 +48,7 @@ enum CopyWrightType {
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static CopyWrightType fromInt(int? val) => CopyWrightType.values[validCheck(val ?? none.index)];
+  static CopyRightType fromInt(int? val) => CopyRightType.values[validCheck(val ?? none.index)];
 }
 
 enum BookSort {
@@ -132,6 +132,26 @@ enum TextureType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static TextureType fromInt(int? val) => TextureType.values[validCheck(val ?? none.index)];
+}
+
+enum ImageFilterType {
+  none,
+  gay,
+  warm,
+  bright,
+  dark,
+  cold,
+  vintage,
+  romantic,
+  tranquil,
+  soft,
+  Pleasant,
+  elegant,
+  sepia,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static ImageFilterType fromInt(int? val) => ImageFilterType.values[validCheck(val ?? none.index)];
 }
 
 // enum BorderPositionType {

@@ -1,6 +1,8 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/undo/save_manager.dart';
@@ -14,6 +16,7 @@ import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/player_handler.dart';
+import '../../studio_getx_controller.dart';
 
 class ContentsMain extends StatefulWidget {
   final FrameModel frameModel;
@@ -39,6 +42,8 @@ class ContentsMainState extends State<ContentsMain> {
   //ContentsManager? _contentsManager;
   //PlayerHandler? _playerHandler;
   bool _onceDBGetComplete = false;
+  ContentsEventController? _receiveEvent;
+  //ContentsEventController? _sendEvent;
 
   @override
   void initState() {
@@ -46,6 +51,11 @@ class ContentsMainState extends State<ContentsMain> {
     _onceDBGetComplete = true;
     //initChildren();
     super.initState();
+
+    final ContentsEventController receiveEvent = Get.find(tag: 'contents-property-to-main');
+    //final ContentsEventController sendEvent = Get.find(tag: 'contents-main-to-property');
+    _receiveEvent = receiveEvent;
+    //_sendEvent = sendEvent;
   }
 
   // Future<void> initChildren() async {
@@ -105,17 +115,25 @@ class ContentsMainState extends State<ContentsMain> {
           }
         }
         // ignore: sized_box_for_whitespace
-        return Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Colors.transparent,
-          child: Center(
-            child: Text(
-              '${widget.frameModel.order.value} : $contentsCount',
-              style: CretaFont.titleLarge,
-            ),
-          ),
-        );
+        return StreamBuilder<AbsExModel>(
+            stream: _receiveEvent!.eventStream.stream,
+            builder: (context, snapshot) {
+              if (snapshot.data != null) {
+                ContentsModel model = snapshot.data! as ContentsModel;
+                contentsManager.updateModel(model);
+              }
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.transparent,
+                child: Center(
+                  child: Text(
+                    '${widget.frameModel.order.value} : $contentsCount',
+                    style: CretaFont.titleLarge,
+                  ),
+                ),
+              );
+            });
       });
     });
   }

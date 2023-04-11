@@ -44,6 +44,8 @@ enum CretaButtonColor {
   red,
   redAndWhiteTitle,
   transparent,
+  secondary,
+  primary,
 }
 
 class CretaButton extends StatefulWidget {
@@ -238,6 +240,18 @@ class CretaButton extends StatefulWidget {
         bgColor = CretaColor.primary[400]!;
         hoverColor = CretaColor.primary[500]!;
         clickColor = CretaColor.primary[600]!;
+        break;
+      case CretaButtonColor.secondary:
+        bgColor = CretaColor.secondary[100]!;
+        hoverColor = CretaColor.secondary[100]!;
+        clickColor = CretaColor.secondary[300]!;
+        fgColor = CretaColor.secondary;
+        break;
+      case CretaButtonColor.primary:
+        bgColor = CretaColor.primary[100]!;
+        hoverColor = CretaColor.primary[100]!;
+        clickColor = CretaColor.primary[300]!;
+        fgColor = CretaColor.primary;
         break;
       default:
         bgColor = CretaColor.primary[400]!;

@@ -331,10 +331,10 @@ CustomPaint _getShadowWidget({
   }
 
   if (shapeType == ShapeType.circle) {
-    logger.info('offset=$offset');
-    logger.info('blurRadius = $blurRadius');
-    logger.info('blurSpread = $blurSpread');
-    logger.info('opacity = $opacity');
+    logger.fine('offset=$offset');
+    logger.fine('blurRadius = $blurRadius');
+    logger.fine('blurSpread = $blurSpread');
+    logger.fine('opacity = $opacity');
 
     return CustomPaint(
       key: ValueKey('shadow-$mid'),

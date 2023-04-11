@@ -10,12 +10,11 @@ import '../../../../common/creta_utils.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
-import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../studio_constant.dart';
+import '../../studio_snippet.dart';
 
 class BookInfoProperty extends StatefulWidget {
   final BookModel model;
@@ -177,7 +176,9 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
                   width: 260,
                   height: 36,
                   itemHeight: 24,
-                  dropDownMenuItemList: getCopyWrightListItem(null))
+                  dropDownMenuItemList: StudioSnippet.getCopyRightListItem((val) {
+                    widget.model.copyRight.set(val);
+                  }))
               : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
                   style: _dataStyle),
         ],
@@ -241,35 +242,6 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
           ],
         ),
       )
-    ];
-  }
-
-  List<CretaMenuItem> getCopyWrightListItem(Function? onChnaged) {
-    return [
-      CretaMenuItem(
-          caption: CretaStudioLang.copyWrightList[1],
-          onPressed: () {
-            widget.model.copyRight.set(CopyWrightType.free);
-          },
-          selected: true),
-      CretaMenuItem(
-          caption: CretaStudioLang.copyWrightList[2],
-          onPressed: () {
-            widget.model.copyRight.set(CopyWrightType.nonComertialsUseOnly);
-          },
-          selected: false),
-      CretaMenuItem(
-          caption: CretaStudioLang.copyWrightList[3],
-          onPressed: () {
-            widget.model.copyRight.set(CopyWrightType.openSource);
-          },
-          selected: false),
-      CretaMenuItem(
-          caption: CretaStudioLang.copyWrightList[4],
-          onPressed: () {
-            widget.model.copyRight.set(CopyWrightType.needPermition);
-          },
-          selected: false),
     ];
   }
 }

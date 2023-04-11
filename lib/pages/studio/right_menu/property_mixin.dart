@@ -10,6 +10,7 @@ import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_checkbox.dart';
 import '../../../design_system/component/colorPicker/gradation_indicator.dart';
 import '../../../design_system/component/colorPicker/my_color_indicator.dart';
+import '../../../design_system/component/colorPicker/my_image_filter_indicator.dart';
 import '../../../design_system/component/colorPicker/my_texture_indicator.dart';
 import '../../../design_system/component/creta_proprty_slider.dart';
 import '../../../design_system/component/example_box_mixin.dart';
@@ -230,7 +231,7 @@ mixin PropertyMixin {
 
   Widget propertyDivider({double height = 38}) {
     return Divider(
-      height: 38,
+      height: height,
       color: CretaColor.text[200]!,
       indent: 0,
       endIndent: 0,
@@ -496,6 +497,65 @@ mixin PropertyMixin {
               color: CretaColor.text[200]!,
               textureType: TextureType.values[i],
               onTextureChanged: onTextureTapPressed,
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget imageFilterCard({
+    required ImageFilterType imageFilterType,
+    required Function onPressed,
+    required void Function(ImageFilterType) onImageFilterChanged,
+    required Function onDelete,
+  }) {
+    return propertyCard(
+      isOpen: isTextureOpen,
+      onPressed: () {
+        isTextureOpen = !isTextureOpen;
+        onPressed.call();
+      },
+      titleWidget: Text(CretaStudioLang.imageFilter, style: CretaFont.titleSmall),
+      trailWidget: imageFilterType == TextureType.none
+          ? const SizedBox.shrink()
+          : Tooltip(
+              message: CretaStudioLang.imageFilterTypeList[imageFilterType.index],
+              child: MyImageFilterIndicator(
+                  imageFilterType: imageFilterType,
+                  onImageFilterChanged: (val) {
+                    isTextureOpen = !isTextureOpen;
+                    onPressed.call();
+                  }),
+            ),
+      hasRemoveButton: imageFilterType != TextureType.none,
+      onDelete: onDelete,
+      bodyWidget: imageFilterTypeListView(
+        imageFilterType,
+        onImageFilterChanged,
+      ),
+    );
+  }
+
+  Widget imageFilterTypeListView(
+    ImageFilterType imageFilterType,
+    void Function(ImageFilterType) onImageFilterChanged,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Wrap(
+        spacing: 15,
+        runSpacing: 12,
+        children: [
+          for (int i = 0; i < ImageFilterType.end.index; i++)
+            MyImageFilterIndicator(
+              isSelected: imageFilterType == ImageFilterType.values[i],
+              isBigOne: true,
+              width: 68,
+              height: 68,
+              radius: 6.8,
+              color: CretaColor.text[200]!,
+              imageFilterType: ImageFilterType.values[i],
+              onImageFilterChanged: onImageFilterChanged,
             ),
         ],
       ),

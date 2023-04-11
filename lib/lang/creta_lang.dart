@@ -41,4 +41,6 @@ class CretaLang {
   static String hours = '시간';
   static String minutes = '분';
   static String seconds = '초';
+  static String playTime = '플레이 시간';
+  static String forever = '영구히';
 }

@@ -56,14 +56,14 @@ class SelectedModel extends ChangeNotifier {
 
 class PlayerHandler extends ChangeNotifier {
   ContentsManager? contentsManager;
-  late PlayTimer _timer;
+  PlayTimer? _timer;
   bool _initComplete = false;
   //AbsPlayWidget? _player;
 
   void start(ContentsManager manager) {
     contentsManager = manager;
     _timer = PlayTimer(contentsManager!, this);
-    _timer.initTimer();
+    _timer!.initTimer();
     _initComplete = true;
   }
 
@@ -72,14 +72,14 @@ class PlayerHandler extends ChangeNotifier {
   }
 
   void clear() {
-    _timer.disposeTimer();
+    _timer?.disposeTimer();
   }
 
   ContentsModel? getCurrentModel() {
-    if (!_initComplete) {
+    if (!_initComplete || _timer == null) {
       return null;
     }
-    return _timer.currentModel;
+    return _timer!.currentModel;
   }
 
   AbsPlayWidget createPlayer(ContentsModel model) {
@@ -121,10 +121,16 @@ class PlayerHandler extends ChangeNotifier {
   }
 
   void toggleIsPause() {
-    _timer.togglgePause();
+    _timer?.togglgePause();
   }
 
-  bool isPause() => _timer.isPauseTimer;
-  void next() => _timer.next();
-  void prev() => _timer.prev();
+  bool isPause() {
+    if (_timer == null) {
+      return true;
+    }
+    return _timer!.isPauseTimer;
+  }
+
+  void next() => _timer?.next();
+  void prev() => _timer?.prev();
 }

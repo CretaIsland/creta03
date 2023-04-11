@@ -17,7 +17,6 @@ import '../book_main_page.dart';
 
 import '../../../design_system/creta_font.dart';
 import '../containees/containee_nofifier.dart';
-import '../containees/frame/sticker/draggable_stickers.dart';
 import '../studio_constant.dart';
 import '../studio_snippet.dart';
 import '../studio_variables.dart';
@@ -148,15 +147,18 @@ class _RightMenuState
           return FrameProperty(key: ValueKey(frame.mid), model: frame);
         }
       case ContaineeEnum.Contents:
-        logger.info('4');
+        BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
         FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
         FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+
         if (frame != null && frameManager != null) {
-          logger.info('5');
           ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
           if (contents != null) {
-            logger.info('6:${DraggableStickers.selectedAssetId}');
-            return ContentsProperty(key: ValueKey(frame.mid), model: contents);
+            return ContentsProperty(
+                key: ValueKey(contents.mid),
+                model: contents,
+                frameManager: frameManager,
+                book: model);
           }
         }
         return Container();

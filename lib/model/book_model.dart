@@ -22,7 +22,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
   late UndoAble<bool> isAutoPlay;
   late UndoAble<BookType> bookType;
   late UndoAble<int> pageSizeType;
-  late UndoAble<CopyWrightType> copyRight;
+  late UndoAble<CopyRightType> copyRight;
   late UndoAble<String> description;
   late UndoAble<bool> isReadOnly;
   late UndoAble<String> thumbnailUrl;
@@ -70,7 +70,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     isAutoPlay = UndoAble<bool>(true, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
     pageSizeType = UndoAble<int>(0, mid);
-    copyRight = UndoAble<CopyWrightType>(CopyWrightType.free, mid);
+    copyRight = UndoAble<CopyRightType>(CopyRightType.free, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = 0;
     likeCount = 0;
@@ -91,7 +91,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     int likeNo = 0,
     int viewNo = 0,
     BookType bookTypeVal = BookType.presentaion,
-    CopyWrightType copyWrightVal = CopyWrightType.free,
+    CopyRightType copyRightVal = CopyRightType.free,
     List<String> ownerList = const [],
     List<String> readerList = const [],
     List<String> writerList = const [],
@@ -105,7 +105,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     isAutoPlay = UndoAble<bool>(true, mid);
     bookType = UndoAble<BookType>(bookTypeVal, mid);
     pageSizeType = UndoAble<int>(0, mid);
-    copyRight = UndoAble<CopyWrightType>(copyWrightVal, mid);
+    copyRight = UndoAble<CopyRightType>(copyRightVal, mid);
     isReadOnly = UndoAble<bool>(false, mid);
     viewCount = likeNo;
     likeCount = viewNo;
@@ -135,7 +135,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid);
     bookType = UndoAble<BookType>(srcBook.bookType.value, mid);
     pageSizeType = UndoAble<int>(srcBook.pageSizeType.value, mid);
-    copyRight = UndoAble<CopyWrightType>(srcBook.copyRight.value, mid);
+    copyRight = UndoAble<CopyRightType>(srcBook.copyRight.value, mid);
     isReadOnly = UndoAble<bool>(srcBook.isReadOnly.value, mid);
     viewCount = srcBook.viewCount;
     likeCount = srcBook.likeCount;
@@ -160,7 +160,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
     bookType.set(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
     pageSizeType.set(map["pageSizeType"] ?? 0, save: false, noUndo: true);
-    copyRight.set(CopyWrightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
+    copyRight.set(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
     thumbnailType.set(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);

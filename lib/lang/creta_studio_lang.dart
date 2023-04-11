@@ -300,6 +300,27 @@ class CretaStudioLang {
   static String deleteConTooltip = '콘텐츠 삭제';
   static String editConTooltip = '콘텐츠 편집';
 
+  static String imageInfo = '이미지 정보';
+  static String fileName = '파일명';
+  static String fileSize = '파일 크기';
+  static String imageFilter = '이미지 필터';
+  static String imageControl = '이미지 조정';
+
+  static const List<String> imageFilterTypeList = [
+    "화사한",
+    "따듯한",
+    "밝은",
+    "어두운",
+    "차가운",
+    "빈티지한",
+    "로맨틱한",
+    "차분한",
+    "부드러운",
+    "깨긋한",
+    "우아한",
+    "세피아",
+  ];
+
   // static Map<String, String> shadowInList = {
   //   '외부 그림자': 'outSide',
   //   '내부 그림자': 'inSide',

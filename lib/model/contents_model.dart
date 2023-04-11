@@ -38,6 +38,9 @@ class ContentsModel extends CretaModel {
   late UndoAble<double> aspectRatio;
   late UndoAble<double> width;
   late UndoAble<double> height;
+  late UndoAble<CopyRightType> copyRight;
+  late UndoAble<ImageFilterType> filter;
+
   //late UndoAble<bool> isDynamicSize; // 동영상의 크기에 맞게 frame 사이즈를 변경해야 하는 경우
 
 // text 관련
@@ -83,6 +86,8 @@ class ContentsModel extends CretaModel {
         aspectRatio,
         width,
         height,
+        copyRight,
+        filter,
         //isDynamicSize,
         font,
         isBold,
@@ -139,7 +144,8 @@ class ContentsModel extends CretaModel {
     width = UndoAble<double>(320, mid);
     height = UndoAble<double>(180, mid);
     //isDynamicSize = UndoAble<bool>(false, mid); //
-
+    copyRight = UndoAble<CopyRightType>(CopyRightType.free, mid);
+    filter = UndoAble<ImageFilterType>(ImageFilterType.none, mid);
     font = UndoAble<String>(CretaFont.fontFamily, mid);
     isBold = UndoAble<bool>(false, mid); //bold
     isAutoSize = UndoAble<bool>(true, mid); //bold
@@ -191,6 +197,8 @@ class ContentsModel extends CretaModel {
     width = UndoAble<double>(srcContents.width.value, mid);
     height = UndoAble<double>(srcContents.height.value, mid);
     //isDynamicSize = UndoAble<bool>(srcContents.isDynamicSize.value, mid); //
+    copyRight = UndoAble<CopyRightType>(srcContents.copyRight.value, mid);
+    filter = UndoAble<ImageFilterType>(srcContents.filter.value, mid);
 
     if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
     if (srcContents.thumbnail != null) thumbnail = srcContents.thumbnail;
@@ -276,6 +284,8 @@ class ContentsModel extends CretaModel {
     aspectRatio.set(map["aspectRatio"], save: false, noUndo: true);
     width.set(map["width"], save: false, noUndo: true);
     height.set(map["height"], save: false, noUndo: true);
+    copyRight.set(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
+    filter.set(ImageFilterType.fromInt(map["filter"] ?? 1), save: false, noUndo: true);
     //isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
     lastModifiedTime = map["lastModifiedTime"];
     prevPlayTime = map["prevPlayTime"];
@@ -320,6 +330,8 @@ class ContentsModel extends CretaModel {
         "aspectRatio": aspectRatio.value,
         "width": width.value,
         "height": height.value,
+        "copyRight": copyRight.value.index,
+        "filter": filter.value.index,
         //"isDynamicSize": isDynamicSize.value,
         "prevPlayTime": prevPlayTime,
         "lastModifiedTime": (file != null) ? file!.lastModifiedDate.toString() : '',

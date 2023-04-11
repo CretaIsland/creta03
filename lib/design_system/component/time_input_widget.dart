@@ -8,12 +8,14 @@ class TimeInputWidget extends StatefulWidget {
   final void Function(Duration duration) onValueChnaged;
   final int initValue;
   final TextStyle textStyle;
+  final double textWidth;
 
   const TimeInputWidget({
     super.key,
     required this.onValueChnaged,
     required this.initValue,
     required this.textStyle,
+    this.textWidth = 45,
   });
 
   @override
@@ -27,9 +29,11 @@ class TimeInputWidgetState extends State<TimeInputWidget> {
 
   @override
   void initState() {
-    _seconds = (widget.initValue % 60).round();
-    _hours = (widget.initValue / (60 * 60)).round();
-    _minutes = ((widget.initValue % 60 * 60) / 60).round();
+    int seconds = widget.initValue;
+
+    _hours = seconds ~/ 3600;
+    _minutes = (seconds % 3600) ~/ 60;
+    _seconds = seconds % 60;
 
     super.initState();
   }
@@ -73,7 +77,7 @@ class TimeInputWidgetState extends State<TimeInputWidget> {
           ),
           CretaTextField.xshortNumber(
             defaultBorder: Border.all(color: CretaColor.text[100]!),
-            width: 45,
+            width: widget.textWidth,
             limit: 5,
             textFieldKey: GlobalKey(),
             value: value.toString(),

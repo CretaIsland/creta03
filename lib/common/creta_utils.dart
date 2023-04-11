@@ -33,6 +33,27 @@ class CretaUtils {
     return StudioVariables.displaySize;
   }
 
+  static String secToDurationString(double seconds) {
+    final hours = seconds ~/ 3600;
+    final minutes = (seconds % 3600) ~/ 60;
+    final remainingSeconds = seconds % 60;
+
+    final hoursStr = hours.toString().padLeft(2, '0');
+    final minutesStr = minutes.toString().padLeft(2, '0');
+    final secondsStr = remainingSeconds.toString().padLeft(2, '0');
+
+    String retval = '';
+
+    if (hours > 0) {
+      retval = '$hoursStr ${CretaLang.hours} ';
+    }
+    if (hours > 0 || minutes > 0) {
+      retval += '$minutesStr ${CretaLang.minutes} ';
+    }
+    retval += '$secondsStr ${CretaLang.seconds}';
+    return retval;
+  }
+
   static String dateToDurationString(DateTime updateTime) {
     Duration duration = DateTime.now().difference(updateTime);
     if (duration.inDays >= 365) {

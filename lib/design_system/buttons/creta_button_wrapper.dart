@@ -132,6 +132,9 @@ class BTN {
     String? tooltip,
     Color? tooltipFg,
     Color? tooltipBg,
+    CretaButtonColor buttonColor = CretaButtonColor.sky,
+    Color iconColor = CretaColor.primary,
+    CretaButtonDeco decoType = CretaButtonDeco.opacity,
   }) {
     return CretaButton(
       tooltip: tooltip,
@@ -141,7 +144,8 @@ class BTN {
       height: height,
       sidePaddingSize: sidePaddingSize,
       buttonType: CretaButtonType.child,
-      buttonColor: CretaButtonColor.sky,
+      decoType: decoType,
+      buttonColor: buttonColor,
       isSelectedWidget: true,
       onPressed: onPressed,
       child: CircleAvatar(
@@ -149,7 +153,7 @@ class BTN {
         child: Icon(
           icon,
           size: iconSize,
-          color: CretaColor.primary[400]!,
+          color: iconColor,
         ),
       ),
     );
