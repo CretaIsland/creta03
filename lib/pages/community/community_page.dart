@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/pages/community/sub_pages/community_right_watch_history_pane.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -15,7 +13,7 @@ import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-//import '../design_system/creta_color.dart';
+import '../../design_system/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
@@ -26,19 +24,19 @@ import '../../design_system/component/custom_image.dart';
 import '../../design_system/creta_font.dart';
 import '../../lang/creta_lang.dart';
 
-import 'package:creta03/pages/community/community_sample_data.dart';
-import 'package:creta03/pages/community/sub_pages/community_right_home_pane.dart';
-import 'package:creta03/pages/community/sub_pages/community_right_channel_pane.dart';
-import 'package:creta03/pages/community/sub_pages/community_right_playlist_pane.dart';
-import 'package:creta03/pages/community/sub_pages/community_right_playlist_detail_pane.dart';
-import 'package:creta03/pages/community/sub_pages/community_right_subscription_pane.dart';
-//import 'package:creta03/pages/community/sub_pages/community_right_watch_history_pane.dart';
+import 'community_sample_data.dart';
+import 'sub_pages/community_right_home_pane.dart';
+import 'sub_pages/community_right_channel_pane.dart';
+import 'sub_pages/community_right_favorites_pane.dart';
+import 'sub_pages/community_right_playlist_pane.dart';
+import 'sub_pages/community_right_playlist_detail_pane.dart';
+import 'sub_pages/community_right_subscription_pane.dart';
+import 'sub_pages/community_right_watch_history_pane.dart';
 
-//bool _isInUsingCanvaskit = false;
 
 class CommunityPage extends StatefulWidget {
   final String subPageUrl;
-  const CommunityPage({super.key, this.subPageUrl = ''});
+  const CommunityPage({super.key, required this.subPageUrl});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -47,11 +45,13 @@ class CommunityPage extends StatefulWidget {
 class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixin {
   late List<CretaMenuItem> _leftMenuItemList;
 
-  late List<CretaMenuItem> _dropDownMenuItemList1;
-  late List<CretaMenuItem> _dropDownMenuItemList2;
-  late List<CretaMenuItem> _dropDownMenuItemList3;
+  late List<CretaMenuItem> _dropDownMenuItemListPurpose;
+  late List<CretaMenuItem> _dropDownMenuItemListPermission;
+  late List<CretaMenuItem> _dropDownMenuItemListSort;
 
   Widget Function(Size)? _titlePane;
+
+  final Map<String, CretaBookData> _subscriptionUserMap = {};
 
   void _scrollChangedCallback(bool bannerSizeChanged) {
     setState(() {
@@ -63,8 +63,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   void initState() {
     super.initState();
 
-    // CrossCommonJob ccj = CrossCommonJob();
-    // _isInUsingCanvaskit = ccj.isInUsingCanvaskit();
+    List<CretaBookData> cretaBookList = CommunitySampleData.getCretaBookList();
+    for(final cretaBookData in cretaBookList) {
+      _subscriptionUserMap.putIfAbsent(cretaBookData.creator, () => cretaBookData);
+    }
 
     _leftMenuItemList = [
       CretaMenuItem(
@@ -79,14 +81,18 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       CretaMenuItem(
         caption: '구독목록',
         iconData: Icons.local_library_outlined,
-        onPressed: () {},
+        onPressed: () {
+          Routemaster.of(context).push(AppRoutes.subscriptionList);
+        },
         linkUrl: AppRoutes.subscriptionList,
         isIconText: true,
       ),
       CretaMenuItem(
         caption: '시청기록',
         iconData: Icons.article_outlined,
-        onPressed: () {},
+        onPressed: () {
+          Routemaster.of(context).push(AppRoutes.watchHistory);
+        },
         linkUrl: AppRoutes.watchHistory,
         isIconText: true,
       ),
@@ -126,6 +132,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         _titlePane = _getTitlePane;
         setUsingBannerScrollBar(
           scrollChangedCallback: _scrollChangedCallback,
+          bannerMinHeight: 160,
+          bannerMaxHeight: 160,
         );
         break;
       case AppRoutes.watchHistory:
@@ -180,7 +188,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         break;
     }
 
-    _dropDownMenuItemList1 = [
+    _dropDownMenuItemListPurpose = [
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[0],
         iconData: Icons.type_specimen,
@@ -207,7 +215,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       ),
     ];
 
-    _dropDownMenuItemList2 = [
+    _dropDownMenuItemListPermission = [
       CretaMenuItem(
         caption: CretaLang.basicBookPermissionFilter[0],
         iconData: Icons.power,
@@ -234,7 +242,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       ),
     ];
 
-    _dropDownMenuItemList3 = [
+    _dropDownMenuItemListSort = [
       CretaMenuItem(
         caption: CretaLang.basicBookSortFilter[0],
         iconData: Icons.power,
@@ -856,44 +864,44 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           titleText: '재생목록',
           descriptionText: '사용자 닉네임님이 만든 재생목록입니다.',
         );
-        // return SizedBox(
-        //   width: size.width,
-        //   height: size.height,
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       Row(
-        //         children: [
-        //           SizedBox(width: 41),
-        //           Icon(
-        //             Icons.playlist_play,
-        //             size: 20,
-        //             color: Colors.grey[800],
-        //           ),
-        //           SizedBox(width: 11),
-        //           Text(
-        //             '재생목록',
-        //             style: TextStyle(
-        //               fontWeight: FontWeight.w600,
-        //               fontSize: 22,
-        //               color: Colors.grey[800],
-        //               fontFamily: 'Pretendard',
-        //             ),
-        //           ),
-        //           SizedBox(width: 24),
-        //           Text(
-        //             '사용자 닉네임님이 만든 재생목록입니다.',
-        //             style: TextStyle(
-        //               fontSize: 16,
-        //               color: Colors.grey[700],
-        //               fontFamily: 'Pretendard',
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // );
+      // return SizedBox(
+      //   width: size.width,
+      //   height: size.height,
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Row(
+      //         children: [
+      //           SizedBox(width: 41),
+      //           Icon(
+      //             Icons.playlist_play,
+      //             size: 20,
+      //             color: Colors.grey[800],
+      //           ),
+      //           SizedBox(width: 11),
+      //           Text(
+      //             '재생목록',
+      //             style: TextStyle(
+      //               fontWeight: FontWeight.w600,
+      //               fontSize: 22,
+      //               color: Colors.grey[800],
+      //               fontFamily: 'Pretendard',
+      //             ),
+      //           ),
+      //           SizedBox(width: 24),
+      //           Text(
+      //             '사용자 닉네임님이 만든 재생목록입니다.',
+      //             style: TextStyle(
+      //               fontSize: 16,
+      //               color: Colors.grey[700],
+      //               fontFamily: 'Pretendard',
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ],
+      //   ),
+      // );
       case AppRoutes.playlistDetail:
         return Container(
           width: size.width,
@@ -957,16 +965,16 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   List<List<CretaMenuItem>> _getLeftDropdownMenuOnBanner() {
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
-        break;
+        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
       case AppRoutes.watchHistory:
-        return [_dropDownMenuItemList1, _dropDownMenuItemList2, _dropDownMenuItemList3];
+        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
       case AppRoutes.playlist:
-        return [_dropDownMenuItemList3];
+        return [_dropDownMenuItemListSort];
       case AppRoutes.playlistDetail:
         break;
       case AppRoutes.communityHome:
       case AppRoutes.channel:
-        return [_dropDownMenuItemList1, _dropDownMenuItemList2];
+        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission];
     }
     return [];
   }
@@ -981,7 +989,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         break;
       case AppRoutes.communityHome:
       case AppRoutes.channel:
-        return [_dropDownMenuItemList3];
+        return [_dropDownMenuItemListSort];
     }
     return null;
   }
@@ -1011,9 +1019,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         );
       case AppRoutes.subscriptionList:
         return CommunityRightSubscriptionPane(
+          key: ValueKey(_selectedSubscriptionUserId),
           pageWidth: size.width,
           pageHeight: size.height,
           scrollController: getBannerScrollController,
+          selectedUserId: _selectedSubscriptionUserId,
         );
       case AppRoutes.watchHistory:
         return CommunityRightWatchHistoryPane(
@@ -1022,7 +1032,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           scrollController: getBannerScrollController,
         );
       case AppRoutes.favorites:
-        return Container();
+        return CommunityRightFavoritesPane(
+          pageWidth: size.width,
+          pageHeight: size.height,
+          scrollController: getBannerScrollController,
+        );
       case AppRoutes.playlist:
         return CommunityRightPlaylistPane(
           pageWidth: size.width,
@@ -1045,6 +1059,65 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     }
   }
 
+  Widget _getRightOverlayPane(Size size) {
+    switch (widget.subPageUrl) {
+      case AppRoutes.channel:
+        break;
+      case AppRoutes.subscriptionList:
+        return Positioned(
+          left: 310 + 40,
+          top: 140, //196 - 40 - 20 + 4,
+          child: Container(
+            width: 286,
+            height: gridArea.height + 40,
+            padding: EdgeInsets.fromLTRB(20, 20, 5, 20),
+            decoration: BoxDecoration(
+              color: CretaColor.text[100],
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Wrap(
+                direction: Axis.horizontal,
+                spacing: 20,
+                runSpacing: 20,
+                children: _getSubscriptionUserList(),
+              ),
+            ),
+          ),
+        );
+      case AppRoutes.watchHistory:
+      case AppRoutes.favorites:
+      case AppRoutes.playlist:
+      case AppRoutes.playlistDetail:
+      case AppRoutes.communityHome:
+      default:
+        break;
+    }
+    return SizedBox.shrink();
+  }
+
+  String _selectedSubscriptionUserId = '';
+  void _changeSubscriptionUser(String id) {
+    setState(() {
+      _selectedSubscriptionUserId = id;
+    });
+  }
+
+  List<Widget> _getSubscriptionUserList() {
+    List<Widget> widgetList = [];
+    _subscriptionUserMap.forEach((key, cretaBookData) {
+      widgetList.add(
+        SubscribeUserItem(
+          cretaBookData: cretaBookData,
+          onChangeSelectUser: _changeSubscriptionUser,
+          isSelectedUser: (_selectedSubscriptionUserId == cretaBookData.creator),
+        ),
+      );
+    });
+    return widgetList;
+  }
+
   @override
   Widget build(BuildContext context) {
     resize(context);
@@ -1063,20 +1136,121 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         ],
       ),
       context: context,
-      child: mainPage(
-        context,
-        gotoButtonPressed: () {
-          Routemaster.of(context).push(AppRoutes.studioBookMyPage);
+      child: Stack(
+        children: [
+          mainPage(
+            context,
+            gotoButtonPressed: () {
+              Routemaster.of(context).push(AppRoutes.studioBookMyPage);
+            },
+            gotoButtonTitle: '내 크레타북 관리',
+            leftMenuItemList: _leftMenuItemList,
+            bannerTitle: 'title',
+            bannerDescription: 'description',
+            listOfListFilter: _getLeftDropdownMenuOnBanner(),
+            onSearch: _getSearchFunction(),
+            mainWidget: _getRightPane(gridArea),
+            listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
+            titlePane: _titlePane,
+            leftPaddingOfFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 346 : null,
+          ),
+          _getRightOverlayPane(gridArea),
+        ],
+      ),
+    );
+  }
+}
+
+class SubscribeUserItem extends StatefulWidget {
+  final CretaBookData cretaBookData;
+  final double width;
+  final double height;
+  final Function(String) onChangeSelectUser;
+  final bool isSelectedUser;
+
+  const SubscribeUserItem({
+    super.key,
+    required this.cretaBookData,
+    this.width = 286,
+    this.height = 80,
+    required this.onChangeSelectUser,
+    required this.isSelectedUser,
+  });
+
+  @override
+  State<SubscribeUserItem> createState() => _SubscribeUserItemState();
+}
+
+class _SubscribeUserItemState extends State<SubscribeUserItem> {
+  bool _mouseOver = false;
+  late Color? textColor;
+
+  @override
+  void initState() {
+    super.initState();
+    textColor = widget.isSelectedUser ? CretaColor.primary[400] : CretaColor.text[700];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: _mouseOver ? SystemMouseCursors.click : MouseCursor.defer,
+      onEnter: (event) {
+        setState(() {
+          _mouseOver = true;
+        });
+      },
+      onExit: (event) {
+        setState(() {
+          _mouseOver = false;
+        });
+      },
+      child: InkWell(
+        onTap: () {
+          widget.onChangeSelectUser.call(widget.isSelectedUser ? '' : widget.cretaBookData.creator);
         },
-        gotoButtonTitle: '내 크레타북 관리',
-        leftMenuItemList: _leftMenuItemList,
-        bannerTitle: 'title',
-        bannerDescription: 'description',
-        listOfListFilter: _getLeftDropdownMenuOnBanner(),
-        onSearch: _getSearchFunction(),
-        mainWidget: _getRightPane(gridArea),
-        listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
-        titlePane: _titlePane,
+        child: Container(
+          width: 246,
+          height: 80,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: widget.isSelectedUser ? Colors.white : null,
+          ),
+          clipBehavior: Clip.antiAlias,
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+          child: Row(
+            children: [
+              //Icon(Icons.account_circle, size:40),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  widget.cretaBookData.thumbnailUrl,
+                  height: 40,
+                  width: 40,
+                ),
+              ),
+              SizedBox(width: 12),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 246 - 40 - 12 - 20 - 20,
+                    child: Text(
+                      widget.cretaBookData.creator,
+                      style: CretaFont.buttonLarge.copyWith(color: textColor),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    '구독자 xx명',
+                    style: CretaFont.bodySmall.copyWith(color: textColor),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -8,6 +8,7 @@ import '../../pages/studio/studio_variables.dart';
 import 'creta_banner_pane.dart';
 import 'creta_leftbar.dart';
 import 'snippet.dart';
+import 'creta_filter_pane.dart';
 
 mixin CretaBasicLayoutMixin {
   final ScrollController _bannerScrollController = ScrollController();
@@ -53,8 +54,8 @@ mixin CretaBasicLayoutMixin {
 
   void resize(BuildContext context) {
     CretaUtils.getDisplaySize(context);
-    availArea = Size(StudioVariables.displayWidth,
-        StudioVariables.displayHeight - CretaComponentLocation.BarTop.height);
+    availArea =
+        Size(StudioVariables.displayWidth, StudioVariables.displayHeight - CretaComponentLocation.BarTop.height);
     leftBarArea = Size(CretaComponentLocation.TabBar.width, availArea.height);
     rightPaneArea = Size(StudioVariables.displayWidth - leftBarArea.width, availArea.height);
     topBannerArea = Size(rightPaneArea.width, _bannerHeight);
@@ -93,6 +94,7 @@ mixin CretaBasicLayoutMixin {
 
   Widget mainPage(
     BuildContext context, {
+    Key? key,
     required List<CretaMenuItem> leftMenuItemList,
     required Function gotoButtonPressed,
     required String gotoButtonTitle,
@@ -105,9 +107,12 @@ mixin CretaBasicLayoutMixin {
     bool isSearchbarInBanner = false,
     List<List<CretaMenuItem>>? listOfListFilterOnRight,
     Size gridMinArea = const Size(300, 300),
+    double? leftPaddingOfFilter,
   }) {
     resize(context);
+    //topBannerArea = Size(topBannerArea.width, topBannerArea.height - (leftPaddingOfFilter == null ? 0 : 76));
     return Row(
+      key: key,
       children: [
         CretaLeftBar(
           width: leftBarArea.width,
@@ -145,20 +150,37 @@ mixin CretaBasicLayoutMixin {
                         height: topBannerArea.height,
                         title: bannerTitle,
                         description: bannerDescription,
-                        listOfListFilter: listOfListFilter,
+                        listOfListFilter: (leftPaddingOfFilter != null) ? [] : listOfListFilter,
                         titlePane: titlePane,
                         isSearchbarInBanner: isSearchbarInBanner,
                         scrollbarOnRight: true,
-                        listOfListFilterOnRight: listOfListFilterOnRight,
-                        onSearch: onSearch,
+                        listOfListFilterOnRight: (leftPaddingOfFilter != null) ? null : listOfListFilterOnRight,
+                        onSearch: (leftPaddingOfFilter != null) ? null : onSearch,
                       ),
+                      (leftPaddingOfFilter == null)
+                          ? const SizedBox.shrink()
+                          : Positioned(
+                              left: leftPaddingOfFilter,
+                              top: topBannerArea.height - 20,
+                              child: SizedBox(
+                                width: topBannerArea.width - leftPaddingOfFilter - LayoutConst.cretaScrollbarWidth,
+                                height: LayoutConst.cretaTopFilterHeight - 20,
+                                child: CretaFilterPane(
+                                  width: topBannerArea.width - leftPaddingOfFilter - LayoutConst.cretaScrollbarWidth,
+                                  height: LayoutConst.cretaTopFilterHeight,
+                                  listOfListFilter: listOfListFilter,
+                                  onSearch: onSearch,
+                                  listOfListFilterOnRight: listOfListFilterOnRight,
+                                  rowCrossAxisAlignment: CrossAxisAlignment.start,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 )
               : Column(
                   children: [
-                    StudioVariables.displayHeight >
-                            topBannerArea.height + CretaComponentLocation.BarTop.height
+                    StudioVariables.displayHeight > topBannerArea.height + CretaComponentLocation.BarTop.height
                         ? getBannerPane(
                             width: topBannerArea.width,
                             height: topBannerArea.height,
