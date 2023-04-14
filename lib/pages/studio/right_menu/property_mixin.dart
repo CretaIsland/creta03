@@ -89,8 +89,8 @@ mixin PropertyMixin {
               ),
               isOpen
                   ? hasRemoveButton
-                      ? BTN.fill_gray_i_xs(
-                          icon: Icons.delete_outlined,
+                      ? BTN.fill_gray_i_m(
+                          icon: Icons.close_outlined,
                           onPressed: () {
                             onDelete.call();
                           })
@@ -110,8 +110,8 @@ mixin PropertyMixin {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
-                                child: BTN.fill_gray_i_s(
-                                    icon: Icons.delete_outline,
+                                child: BTN.fill_gray_i_m(
+                                    icon: Icons.close_outlined,
                                     onPressed: () {
                                       onDelete.call();
                                     }),
@@ -516,17 +516,11 @@ mixin PropertyMixin {
         onPressed.call();
       },
       titleWidget: Text(CretaStudioLang.imageFilter, style: CretaFont.titleSmall),
-      trailWidget: imageFilterType == TextureType.none
-          ? const SizedBox.shrink()
-          : Tooltip(
-              message: CretaStudioLang.imageFilterTypeList[imageFilterType.index],
-              child: MyImageFilterIndicator(
-                  imageFilterType: imageFilterType,
-                  onImageFilterChanged: (val) {
-                    isTextureOpen = !isTextureOpen;
-                    onPressed.call();
-                  }),
-            ),
+      trailWidget: Text(
+        _trailString(imageFilterType.index),
+        textAlign: TextAlign.right,
+        style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+      ),
       hasRemoveButton: imageFilterType != TextureType.none,
       onDelete: onDelete,
       bodyWidget: imageFilterTypeListView(
@@ -534,6 +528,13 @@ mixin PropertyMixin {
         onImageFilterChanged,
       ),
     );
+  }
+
+  String _trailString(int idx) {
+    if (idx > ImageFilterType.none.index && idx < ImageFilterType.end.index) {
+      return CretaStudioLang.imageFilterTypeList[idx - 1];
+    }
+    return '';
   }
 
   Widget imageFilterTypeListView(
@@ -546,7 +547,7 @@ mixin PropertyMixin {
         spacing: 15,
         runSpacing: 12,
         children: [
-          for (int i = 0; i < ImageFilterType.end.index; i++)
+          for (int i = 1; i < ImageFilterType.end.index; i++)
             MyImageFilterIndicator(
               isSelected: imageFilterType == ImageFilterType.values[i],
               isBigOne: true,

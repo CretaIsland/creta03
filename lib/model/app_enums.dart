@@ -154,6 +154,17 @@ enum ImageFilterType {
   static ImageFilterType fromInt(int? val) => ImageFilterType.values[validCheck(val ?? none.index)];
 }
 
+enum ContentsFitType {
+  none,
+  cover,
+  fill,
+  free,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static ContentsFitType fromInt(int? val) => ContentsFitType.values[validCheck(val ?? none.index)];
+}
+
 // enum BorderPositionType {
 //   none,
 //   outSide,

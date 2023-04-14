@@ -7,6 +7,7 @@ import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
 import '../../../../design_system/component/time_input_widget.dart';
@@ -113,10 +114,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              CretaStudioLang.fileName,
+              CretaStudioLang.contentyType,
               style: _titleStyle,
             ),
-            Text(widget.model.name, style: _dataStyle),
+            Text(CretaLang.contentsTypeString[widget.model.contentsType.index], style: _dataStyle),
           ],
         ),
       ),
@@ -133,6 +134,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           ],
         ),
       ),
+      _durationWidget(),
     ];
   }
 
@@ -150,9 +152,11 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                   width: 260,
                   height: 36,
                   itemHeight: 24,
-                  dropDownMenuItemList: StudioSnippet.getCopyRightListItem((val) {
-                    widget.model.copyRight.set(val);
-                  }))
+                  dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
+                      defaultValue: widget.model.copyRight.value,
+                      onChanged: (val) {
+                        widget.model.copyRight.set(val);
+                      }))
               : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
                   style: _dataStyle),
         ],
@@ -173,7 +177,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         titleWidget: Text(CretaStudioLang.imageControl, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(
-          CretaUtils.secToDurationString(widget.model.playTime.value / 1000),
+          _trailString(),
           textAlign: TextAlign.right,
           style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
         ),
@@ -184,15 +188,22 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     );
   }
 
+  String _trailString() {
+    int idx = widget.model.fit.value.index;
+    if (idx > ContentsFitType.none.index && idx < ContentsFitType.end.index) {
+      return CretaStudioLang.fitList.keys.toList()[idx - 1];
+    }
+    return '';
+  }
+
   Widget _imageControlBody() {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _durationWidget(),
           CretaPropertySlider(
-            // 그림자 방향
+            // 투명도
             key: GlobalKey(),
             name: CretaStudioLang.opacity,
             min: 0,
@@ -201,14 +212,59 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             valueType: SliderValueType.reverse,
             onChannged: (value) {
               widget.model.opacity.set(value);
-              logger.finest('opacity=${widget.model.opacity.value}');
+              widget.model.save();
+              logger.info('opacity=${widget.model.opacity.value}');
               _sendEvent!.sendEvent(widget.model);
             },
             postfix: '%',
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(CretaStudioLang.borderCap, style: titleStyle),
+                CretaTabButton(
+                  onEditComplete: (value) {
+                    int idx = 1;
+                    for (String val in CretaStudioLang.fitList.values) {
+                      if (value == val) {
+                        widget.model.fit.set(ContentsFitType.values[idx]);
+                      }
+                      idx++;
+                    }
+                    _sendEvent!.sendEvent(widget.model);
+                  },
+                  width: 75,
+                  height: 24,
+                  selectedTextColor: CretaColor.primary,
+                  unSelectedTextColor: CretaColor.text[700]!,
+                  selectedColor: Colors.white,
+                  unSelectedColor: CretaColor.text[100]!,
+                  selectedBorderColor: CretaColor.primary,
+                  defaultString: _getFit(),
+                  buttonLables: CretaStudioLang.fitList.keys.toList(),
+                  buttonValues: CretaStudioLang.fitList.values.toList(),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  String _getFit() {
+    switch (widget.model.fit.value) {
+      case ContentsFitType.cover:
+        return 'cover';
+      case ContentsFitType.fill:
+        return 'fill';
+      case ContentsFitType.free:
+        return 'free';
+      default:
+        return 'cover';
+    }
   }
 
   Widget _durationWidget() {
@@ -216,6 +272,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       padding: EdgeInsets.only(top: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(CretaLang.playTime, style: titleStyle),
           if (widget.model.playTime.value >= 0)
@@ -224,6 +281,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               textStyle: titleStyle,
               initValue: (widget.model.playTime.value / 1000).round(),
               onValueChnaged: (duration) {
+                logger.info('save : ${widget.model.mid}');
                 widget.model.playTime.set(duration.inSeconds * 1000.0);
               },
             ),
@@ -235,8 +293,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                 child: Text(CretaLang.forever, style: titleStyle),
               ),
               CretaToggleButton(
-                  width: 54 * 0.6,
-                  height: 28 * 0.6,
+                  width: 54 * 0.75,
+                  height: 28 * 0.75,
                   onSelected: (value) {
                     setState(() {
                       if (value) {

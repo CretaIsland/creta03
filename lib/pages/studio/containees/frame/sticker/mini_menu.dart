@@ -19,6 +19,7 @@ class MiniMenu extends StatefulWidget {
   final void Function() onFrameCopy;
   final void Function() onFrameRotate;
   final void Function() onFrameMain;
+  final void Function(bool) onFrontBackHover;
 
   const MiniMenu({
     super.key,
@@ -32,6 +33,7 @@ class MiniMenu extends StatefulWidget {
     required this.onFrameCopy,
     required this.onFrameRotate,
     required this.onFrameMain,
+    required this.onFrontBackHover,
   });
 
   @override
@@ -111,6 +113,9 @@ class _MiniMenuState extends State<MiniMenu> {
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
+          onHover: (hover) {
+            widget.onFrontBackHover(hover);
+          },
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameFront");
@@ -123,6 +128,9 @@ class _MiniMenuState extends State<MiniMenu> {
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
+          onHover: (hover) {
+            widget.onFrontBackHover(hover);
+          },
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameBack");

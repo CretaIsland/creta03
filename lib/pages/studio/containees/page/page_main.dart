@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
-import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
@@ -52,7 +51,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Future<void> initChildren() async {
-    saveManagerHolder!.addBookChildren('frame=');
+    //saveManagerHolder!.addBookChildren('frame=');
 
     _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
     if (_frameManager == null) {

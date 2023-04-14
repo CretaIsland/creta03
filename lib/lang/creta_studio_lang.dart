@@ -271,6 +271,11 @@ class CretaStudioLang {
     '각진': 'bevel',
     '뾰족한': 'miter',
   };
+  static Map<String, String> fitList = {
+    '맞추기': 'cover',
+    '채우기': 'fill',
+    '자유롭게': 'free',
+  };
 
   static String shape = "모양";
 
@@ -302,6 +307,7 @@ class CretaStudioLang {
 
   static String imageInfo = '이미지 정보';
   static String fileName = '파일명';
+  static String contentyType = '콘테츠타입';
   static String fileSize = '파일 크기';
   static String imageFilter = '이미지 필터';
   static String imageControl = '이미지 조정';

@@ -27,7 +27,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
             acc: acc,
             model: model,
             autoStart: autoStart) {
-    logger.fine("VideoPlayerWidget(isAutoPlay=$autoStart)");
+    logger.info("VideoPlayerWidget(isAutoPlay=$autoStart)");
   }
 
   final GlobalObjectKey<VideoPlayerWidgetState> globalKey;
@@ -37,40 +37,39 @@ class VideoPlayerWidget extends AbsPlayWidget {
 
   @override
   Future<void> init() async {
-    logger.fine('initVideo(${model!.name},${model!.remoteUrl})');
-
     String uri = getURI(model!);
     String errMsg = '${model!.name} uri is null';
     if (uri.isEmpty) {
-      logger.fine(errMsg);
+      logger.severe(errMsg);
     }
-    logger.fine("uri=$uri");
+    logger.info('initVideo(${model!.name},$uri)');
 
     wcontroller = VideoPlayerController.network(uri,
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
       ..initialize().then((_) {
-        logger.fine('initialize complete(${model!.name})');
+        logger.info('initialize complete(${model!.name}, ${acc.getAvailLength()})');
         //setState(() {});
-        logger.fine('initialize complete(${wcontroller!.value.duration.inMilliseconds})');
-
         model!.videoPlayTime
             .set(wcontroller!.value.duration.inMilliseconds.toDouble(), noUndo: true, save: false);
-        wcontroller!.setLooping(false);
+        wcontroller!.setLooping(acc.getAvailLength() == 1);
 
         wcontroller!.onAfterVideoEvent = (event) {
           if (event.duration != null) {
-            logger.fine(
+            logger.info(
                 'video event ${event.eventType.toString()}, ${event.duration.toString()},(${model!.name})');
+          } else {
+            logger.warning('event duration is null');
           }
           if (event.eventType == VideoEventType.completed) {
             // bufferingEnd and completed 가 시간이 다 되서 종료한 것임.
-
-            logger.fine('video completed(${model!.name})');
+            logger.info('video play completed(${model!.name})');
             model!.setPlayState(PlayState.end);
             onAfterEvent!.call();
           }
           prevEvent = event.eventType;
         };
+        logger.info('initialize complete(${wcontroller!.value.duration.inMilliseconds})');
+
         //wcontroller!.play();
       });
   }
@@ -92,7 +91,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.fine('play  ${model!.name}');
+    logger.info('play  ${model!.name}');
     model!.setPlayState(PlayState.start);
     await wcontroller!.play();
   }
@@ -109,9 +108,10 @@ class VideoPlayerWidget extends AbsPlayWidget {
 
   @override
   Future<void> close() async {
-    model!.setPlayState(PlayState.none);
-    logger.fine("videoController close()");
-    await wcontroller!.dispose();
+    model?.setPlayState(PlayState.none);
+    logger.info("videoController close()");
+    await wcontroller?.dispose();
+    wcontroller = null;
   }
 
   @override
@@ -150,7 +150,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      logger.fine('afterBuild video');
+      logger.info('afterBuild video');
       if (widget.wcontroller != null && widget.model != null) {
         widget.model!.aspectRatio
             .set(widget.wcontroller!.value.aspectRatio, noUndo: true, save: false);
@@ -161,25 +161,27 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   void initState() {
+    //widget.init();
     super.initState();
     afterBuild();
   }
 
   @override
   void dispose() {
-    logger.fine("video widget dispose,${widget.model!.name}");
+    logger.info("video widget dispose,${widget.model!.name}");
     //widget.wcontroller!.dispose();
     super.dispose();
     widget.model!.setPlayState(PlayState.disposed);
   }
 
   Future<bool> waitInit() async {
-    bool isReady = widget.wcontroller!.value.isInitialized;
-    while (!isReady) {
+    logger.info('waitInit...');
+    while (!widget.wcontroller!.value.isInitialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
+    logger.info('waitInit end');
     if (widget.autoStart) {
-      logger.fine('initState play--${widget.model!.name}---------------');
+      logger.info('initState play--${widget.model!.name}---------------');
       await widget.play();
     }
     return true;
@@ -187,13 +189,26 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    logger.fine('VideoPlayerWidgetState');
-    // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
-    Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
     if (StudioVariables.isSilent) {
       widget.wcontroller!.setVolume(0.0);
       widget.model!.mute.set(true, save: false, noUndo: true);
     }
+
+    if (widget.wcontroller != null && widget.wcontroller!.value.isInitialized) {
+      logger.info('VideoPlayerWidget build aspectRatio=${widget.wcontroller!.value.aspectRatio}');
+      // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
+      Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
+
+      if (widget.autoStart) {
+        widget.wcontroller!.play();
+      }
+
+      return IgnorePointer(
+        child: widget.getClipRect(
+            outSize, VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url))),
+      );
+    }
+
     return FutureBuilder(
         future: waitInit(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -206,44 +221,21 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             return Snippet.errMsgWidget(snapshot);
           }
 
-          // return widget.getClipRect(
-          //   outSize,
-          //   VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url)),
-          // );
-          return widget.getClipRect(
-            outSize,
-            //Stack(
-            //children: [
-            VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url)),
-            //BasicOverayWidget(controller: widget.wcontroller!),
-            //],
-            //),
-          );
-          // return ClipRRect(
-          //   //clipper: MyContentsClipper(),
-          //   borderRadius: BorderRadius.only(
-          //     topRight: Radius.circular(widget.acc.radiusTopRight.value),
-          //     topLeft: Radius.circular(widget.acc.radiusTopLeft.value),
-          //     bottomRight: Radius.circular(widget.acc.radiusBottomRight.value),
-          //     bottomLeft: Radius.circular(widget.acc.radiusBottomLeft.value),
-          //   ),
-          //   child: //// widget.wcontroller!.value.isInitialized ?
-          //       SizedBox.expand(
-          //           child: FittedBox(
-          //     alignment: Alignment.center,
-          //     fit: BoxFit.cover,
-          //     child: SizedBox(
-          //       //width: realSize.width,
-          //       //height: realSize.height,
-          //       width: outSize.width,
-          //       height: outSize.height,
-          //       child: VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url)),
-          //       //child: VideoPlayer(controller: widget.wcontroller!),
-          //     ),
-          //   )),
-
-          //   //: const Text('not init'),
-          // );
+          logger
+              .info('VideoPlayerWidget build aspectRatio=${widget.wcontroller!.value.aspectRatio}');
+          // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
+          Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
+          return IgnorePointer(
+              // child: widget.getClipRect(
+              //     outSize, VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url))),
+              child: SizedBox(
+            width: outSize.width,
+            height: outSize.height,
+            child: VideoPlayer(
+              widget.wcontroller!,
+              key: ValueKey(widget.model!.url),
+            ),
+          ));
         });
   }
 }

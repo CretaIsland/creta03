@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:synchronized/synchronized.dart';
 
 import '../data_io/contents_manager.dart';
@@ -25,17 +26,25 @@ class PlayTimer {
   bool _isPauseTimer = false;
   bool _isPrevPauseTimer = false;
 
-  void togglgePause() {
+  void togglePause() {
     _isPrevPauseTimer = _isPauseTimer;
     _isPauseTimer = !_isPauseTimer;
+
+    if (_currentModel != null && _currentModel!.contentsType == ContentsType.video) {
+      if (_isPauseTimer) {
+        playHandler.pause();
+      } else {
+        playHandler.play();
+      }
+    }
   }
 
   bool get isPauseTimer => _isPauseTimer;
 
   final ContentsManager contentsManager;
-  final PlayerHandler playManager;
+  final PlayerHandler playHandler;
 
-  PlayTimer(this.contentsManager, this.playManager);
+  PlayTimer(this.contentsManager, this.playHandler);
 
   void initTimer() {
     _timer = Timer.periodic(Duration(milliseconds: _timeGap), _timerExpired);
@@ -54,6 +63,7 @@ class PlayTimer {
   // }
 
   void _setCurrentModel() {
+    //logger.info('_setCurrentModel');
     contentsManager.reOrdering();
     _currentModel = contentsManager.getNthOrder(_currentOrder) as ContentsModel?;
     while (true) {
@@ -68,9 +78,10 @@ class PlayTimer {
     }
     _prevModel ??= ContentsModel('');
 
+    //logger.info('_setCurrentModel ${_currentModel!.mid}');
     if (_currentModel!.mid != _prevModel!.mid) {
       _currentModel!.copyTo(_prevModel!);
-      playManager.notify();
+      playHandler.notify();
       notifyToProperty();
     }
 
@@ -144,7 +155,7 @@ class PlayTimer {
             if ((StudioVariables.isAutoPlay && _currentModel!.playState != PlayState.pause) ||
                 _currentModel!.manualState == PlayState.start) {
               _currentPlaySec += _timeGap;
-              // await playManager.setProgressBar(
+              // await playHandler.setProgressBar(
               //   playTime <= 0 ? 0 : _currentPlaySec / playTime,
               //   _currentModel!,
               // );
@@ -158,7 +169,7 @@ class PlayTimer {
           // 교체시간이 되었다.
           _currentPlaySec = 0.0;
           _currentOrder = contentsManager.nextOrder(_currentOrder);
-          // await playManager.setProgressBar(
+          // await playHandler.setProgressBar(
           //   playTime <= 0 ? 0 : _currentPlaySec / playTime,
           //   _currentModel!,
           // );
@@ -168,10 +179,11 @@ class PlayTimer {
         if (_currentModel!.isVideo()) {
           if (_currentModel!.playState == PlayState.end) {
             _currentModel!.setPlayState(PlayState.none);
-            logger.fine('before next');
+            logger.info('before next, currentOrder=$_currentOrder');
             _currentOrder = contentsManager.nextOrder(_currentOrder);
             // 비디오가 마무리 작업을 할 시간을 준다.
             Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
+            logger.info('after next, currentOrder=$_currentOrder');
           }
           return;
         }

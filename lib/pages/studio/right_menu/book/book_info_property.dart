@@ -176,9 +176,11 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
                   width: 260,
                   height: 36,
                   itemHeight: 24,
-                  dropDownMenuItemList: StudioSnippet.getCopyRightListItem((val) {
-                    widget.model.copyRight.set(val);
-                  }))
+                  dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
+                      defaultValue: widget.model.copyRight.value,
+                      onChanged: (val) {
+                        widget.model.copyRight.set(val);
+                      }))
               : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
                   style: _dataStyle),
         ],

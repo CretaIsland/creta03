@@ -58,8 +58,8 @@ mixin CretaStyleMixin {
   }
 
   void makeSampleMixin(String mid) {
-    width = UndoAble<double>(200, mid);
-    height = UndoAble<double>(200, mid);
+    width = UndoAble<double>(600, mid);
+    height = UndoAble<double>(400, mid);
 
     bgColor1 = UndoAble<Color>(Colors.transparent, mid);
     bgColor2 = UndoAble<Color>(Colors.black, mid);

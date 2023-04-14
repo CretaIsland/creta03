@@ -21,6 +21,7 @@ import 'stickerview.dart';
 
 class DraggableStickers extends StatefulWidget {
   static String? selectedAssetId;
+  static bool isFrontBackHover = false;
 
   //List of stickers (elements)
   final double pageWidth;
@@ -39,6 +40,7 @@ class DraggableStickers extends StatefulWidget {
   final void Function(String) onComplete;
   final void Function(String) onScaleStart;
   final void Function(ContentsModel) onDropPage;
+  final void Function(bool) onFrontBackHover;
   //final void Function(String, ContentsModel) onDropFrame;
 
   // ignore: use_key_in_widget_constructors
@@ -59,6 +61,7 @@ class DraggableStickers extends StatefulWidget {
     required this.onScaleStart,
     required this.onResizeButtonTap,
     required this.onDropPage,
+    required this.onFrontBackHover,
     //required this.onDropFrame,
   });
   @override
@@ -284,6 +287,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   setState(() {});
                 }
               },
+              onFrontBackHover: widget.onFrontBackHover,
               onFrameFront: () {
                 logger.fine('onFrameFront');
                 var listLength = stickers.length;
@@ -364,6 +368,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
         },
         onContentsDelete: () {
           logger.fine('onContentsDelete');
+          contentsManager.removeSelected();
+          //setState(() {});
         },
         onContentsEdit: () {
           logger.fine('onContentsEdit');

@@ -30,6 +30,8 @@ class StickerView extends StatefulWidget {
   final void Function(String) onComplete;
   final void Function(String) onScaleStart;
   final void Function(ContentsModel) onDropPage;
+  final void Function(bool) onFrontBackHover;
+
   //final void Function(String, ContentsModel) onDropFrame;
 
   final double height; // height of the editor view
@@ -54,6 +56,7 @@ class StickerView extends StatefulWidget {
     required this.width,
     required this.frameModel,
     required this.onDropPage,
+    required this.onFrontBackHover,
     //required this.onDropFrame,
   });
 
@@ -144,6 +147,8 @@ class StickerViewState extends State<StickerView> {
                     onComplete: widget.onComplete,
                     onScaleStart: widget.onScaleStart,
                     onDropPage: widget.onDropPage,
+                    onFrontBackHover: widget.onFrontBackHover,
+
                     //onDropFrame: widget.onDropFrame,
                   ),
                 ),

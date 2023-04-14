@@ -5,12 +5,10 @@ import 'package:get/get.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
-import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../design_system/creta_font.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
@@ -47,8 +45,8 @@ class ContentsMainState extends State<ContentsMain> {
 
   @override
   void initState() {
-    saveManagerHolder!.addBookChildren('contents=');
-    _onceDBGetComplete = true;
+    //saveManagerHolder!.addBookChildren('contents=');
+    //_onceDBGetComplete = true;
     //initChildren();
     super.initState();
 
@@ -86,35 +84,24 @@ class ContentsMainState extends State<ContentsMain> {
   @override
   Widget build(BuildContext context) {
     if (_onceDBGetComplete) {
-      logger.fine('already _onceDBGetComplete');
+      logger.finest('already _onceDBGetComplete');
       return _consumerFunc();
     }
+
     var retval = CretaModelSnippet.waitDatum(
       managerList: [widget.contentsManager],
       consumerFunc: _consumerFunc,
     );
-
-    logger.finest('first_onceDBGetComplete');
+    _onceDBGetComplete = true;
+    logger.info('first_onceDBGetComplete');
     return retval;
   }
 
   Widget _consumerFunc() {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
-      return Consumer<PlayerHandler>(builder: (context, playerHandler, child) {
-        int contentsCount = contentsManager.getLength();
-        logger
-            .finest('Consumer<ContentsManager>, ${widget.frameModel.order.value}, $contentsCount');
-        contentsManager.reversOrdering();
-        if (contentsCount > 0) {
-          ContentsModel? model = playerHandler.getCurrentModel();
+      int contentsCount = contentsManager.getAvailLength();
 
-          if (model != null) {
-            return playerHandler.createPlayer(model);
-          } else {
-            logger.info('current model is null');
-          }
-        }
-        // ignore: sized_box_for_whitespace
+      return Consumer<PlayerHandler>(builder: (context, playerHandler, child) {
         return StreamBuilder<AbsExModel>(
             stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {
@@ -122,17 +109,39 @@ class ContentsMainState extends State<ContentsMain> {
                 ContentsModel model = snapshot.data! as ContentsModel;
                 contentsManager.updateModel(model);
               }
-              return Container(
-                width: double.infinity,
-                height: double.infinity,
-                color: Colors.transparent,
-                child: Center(
-                  child: Text(
-                    '${widget.frameModel.order.value} : $contentsCount',
-                    style: CretaFont.titleLarge,
-                  ),
-                ),
-              );
+
+              logger.finest(
+                  'Consumer<ContentsManager>, ${widget.frameModel.order.value}, $contentsCount');
+              contentsManager.reOrdering();
+              if (contentsCount > 0) {
+                ContentsModel? model = playerHandler.getCurrentModel();
+
+                if (model != null) {
+                  logger.fine('Consumer<ContentsManager> ${model.contentsType}, ${model.mid}');
+                  if (model.opacity.value > 0) {
+                    return Opacity(
+                      opacity: model.opacity.value,
+                      child: playerHandler.createPlayer(model),
+                    );
+                  }
+                  return playerHandler.createPlayer(model);
+                }
+
+                logger.info('current model is null');
+              }
+              // ignore: sized_box_for_whitespace
+              return SizedBox.shrink();
+              // return Container(
+              //   width: double.infinity,
+              //   height: double.infinity,
+              //   color: Colors.transparent,
+              //   child: Center(
+              //     child: Text(
+              //       '${widget.frameModel.order.value} : $contentsCount',
+              //       style: CretaFont.titleLarge,
+              //     ),
+              //   ),
+              // );
             });
       });
     });

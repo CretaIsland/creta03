@@ -78,37 +78,27 @@ class _RightMenuState
             height: LayoutConst.rightMenuTitleHeight -
                 (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book ? 0 : 4),
             width: LayoutConst.rightMenuWidth,
-            child: Row(
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8, left: 8),
-                      child: BTN.fill_gray_i_m(
-                        tooltip: CretaStudioLang.close,
-                        tooltipBg: CretaColor.text[700]!,
-                        icon: Icons.keyboard_double_arrow_right_outlined,
-                        onPressed: () async {
-                          //await _animationController.reverse();
-                          widget.onClose.call();
-                        },
-                      ),
-                      // super.closeButton(
-                      //     icon: Icons.keyboard_double_arrow_right_outlined,
-                      //     onClose: widget.onClose),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2, left: 16.0),
-                      child: Center(
-                        child: SizedBox(
-                          width: 300,
-                          child: title,
-                        ),
-                      ),
-                    ),
-                  ],
+                Positioned(
+                  top: 8, left: 8,
+                  child: BTN.fill_gray_i_m(
+                    tooltip: CretaStudioLang.close,
+                    tooltipBg: CretaColor.text[700]!,
+                    icon: Icons.keyboard_double_arrow_right_outlined,
+                    onPressed: () async {
+                      //await _animationController.reverse();
+                      widget.onClose.call();
+                    },
+                  ),
+                  // super.closeButton(
+                  //     icon: Icons.keyboard_double_arrow_right_outlined,
+                  //     onClose: widget.onClose),
+                ),
+                SizedBox(
+                  width: 300,
+                  child: title,
                 ),
               ],
             ),
@@ -154,6 +144,7 @@ class _RightMenuState
         if (frame != null && frameManager != null) {
           ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
           if (contents != null) {
+            logger.info('ContentsProperty ${contents.mid}');
             return ContentsProperty(
                 key: ValueKey(contents.mid),
                 model: contents,
@@ -240,11 +231,22 @@ class _RightMenuState
           );
         }
       case ContaineeEnum.Contents:
-        return Text(
-          "Contents Property",
-          style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
-        );
-
+        {
+          FrameManager? frameManager = BookMainPage.pageManagerHolder?.getSelectedFrameManager();
+          FrameModel? frameModel = BookMainPage.pageManagerHolder?.getSelectedFrame();
+          if (frameModel == null || frameManager == null) {
+            return Container();
+          }
+          ContentsModel? contents = frameManager.getCurrentModel(frameModel.mid);
+          if (contents == null) {
+            return Container();
+          }
+          return Text(
+            contents.name,
+            textAlign: TextAlign.center,
+            style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
+          );
+        }
       default:
         return Text(
           "... Property",

@@ -151,6 +151,7 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder!.setDefaultBook(model);
     saveManagerHolder!.addBookChildren('book=');
     saveManagerHolder!.addBookChildren('page=');
+    saveManagerHolder!.addBookChildren('frame=');
     saveManagerHolder!.addBookChildren('contents=');
 
     // Get Pages

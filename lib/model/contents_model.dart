@@ -1,7 +1,7 @@
 //import 'package:uuid/uuid.dart';
 // ignore_for_file: must_be_immutable, avoid_web_libraries_in_flutter
 
-import 'dart:html';
+import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -24,7 +24,7 @@ class ContentsModel extends CretaModel {
   late int bytes;
   late String url;
   late String mime;
-  File? file;
+  html.File? file;
   String? remoteUrl;
   String? thumbnail;
   ContentsType contentsType = ContentsType.none;
@@ -40,6 +40,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<double> height;
   late UndoAble<CopyRightType> copyRight;
   late UndoAble<ImageFilterType> filter;
+  late UndoAble<ContentsFitType> fit;
 
   //late UndoAble<bool> isDynamicSize; // 동영상의 크기에 맞게 frame 사이즈를 변경해야 하는 경우
 
@@ -88,6 +89,7 @@ class ContentsModel extends CretaModel {
         height,
         copyRight,
         filter,
+        fit,
         //isDynamicSize,
         font,
         isBold,
@@ -121,7 +123,7 @@ class ContentsModel extends CretaModel {
     _initValues();
   }
 
-  ContentsModel(String pmid) : super(pmid: '', type: ExModelType.contents, parent: '') {
+  ContentsModel(String pmid) : super(pmid: pmid, type: ExModelType.contents, parent: '') {
     name = ''; // aaa.jpg
     bytes = 0;
     url = '';
@@ -146,6 +148,7 @@ class ContentsModel extends CretaModel {
     //isDynamicSize = UndoAble<bool>(false, mid); //
     copyRight = UndoAble<CopyRightType>(CopyRightType.free, mid);
     filter = UndoAble<ImageFilterType>(ImageFilterType.none, mid);
+    fit = UndoAble<ContentsFitType>(ContentsFitType.cover, mid);
     font = UndoAble<String>(CretaFont.fontFamily, mid);
     isBold = UndoAble<bool>(false, mid); //bold
     isAutoSize = UndoAble<bool>(true, mid); //bold
@@ -199,6 +202,7 @@ class ContentsModel extends CretaModel {
     //isDynamicSize = UndoAble<bool>(srcContents.isDynamicSize.value, mid); //
     copyRight = UndoAble<CopyRightType>(srcContents.copyRight.value, mid);
     filter = UndoAble<ImageFilterType>(srcContents.filter.value, mid);
+    fit = UndoAble<ContentsFitType>(srcContents.fit.value, mid);
 
     if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
     if (srcContents.thumbnail != null) thumbnail = srcContents.thumbnail;
@@ -286,6 +290,7 @@ class ContentsModel extends CretaModel {
     height.set(map["height"], save: false, noUndo: true);
     copyRight.set(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
     filter.set(ImageFilterType.fromInt(map["filter"] ?? 1), save: false, noUndo: true);
+    fit.set(ContentsFitType.fromInt(map["fit"] ?? 1), save: false, noUndo: true);
     //isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
     lastModifiedTime = map["lastModifiedTime"];
     prevPlayTime = map["prevPlayTime"];
@@ -332,6 +337,7 @@ class ContentsModel extends CretaModel {
         "height": height.value,
         "copyRight": copyRight.value.index,
         "filter": filter.value.index,
+        "fit": fit.value.index,
         //"isDynamicSize": isDynamicSize.value,
         "prevPlayTime": prevPlayTime,
         "lastModifiedTime": (file != null) ? file!.lastModifiedDate.toString() : '',

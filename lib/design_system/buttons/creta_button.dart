@@ -86,6 +86,8 @@ class CretaButton extends StatefulWidget {
   final bool alwaysShowIcon;
   final double sidePaddingSize;
 
+  final void Function(bool)? onHover;
+
   CretaButton({
     required this.buttonType,
     required this.onPressed,
@@ -109,6 +111,7 @@ class CretaButton extends StatefulWidget {
     this.showClickableCursor = true,
     this.alwaysShowIcon = false,
     this.sidePaddingSize = 0,
+    this.onHover,
     Key? key,
   }) : super(key: key) {
     _setColor();
@@ -313,12 +316,14 @@ class _CretaButtonState extends State<CretaButton> {
             //print('hover is false');
             hover = false;
             clicked = false;
+            widget.onHover?.call(hover);
           });
         },
         onEnter: (val) {
           setState(() {
             //print('hover is true');
             hover = true;
+            widget.onHover?.call(hover);
           });
         },
         // child: Transform.scale(

@@ -43,4 +43,24 @@ class CretaLang {
   static String seconds = '초';
   static String playTime = '플레이 시간';
   static String forever = '영구히';
+
+  static List<String> contentsTypeString = [
+    "없음",
+    "비디오",
+    "이미지",
+    "텍스트",
+    "유투브",
+    "효과",
+    "스티커",
+    "뮤직",
+    "날씨",
+    "뉴스",
+    "도큐먼트",
+    "데이터시트",
+    "PDF",
+    "3D",
+    "웹",
+    "스트림",
+    "끝",
+  ];
 }

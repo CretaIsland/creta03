@@ -58,6 +58,10 @@ class PlayerHandler extends ChangeNotifier {
   ContentsManager? contentsManager;
   PlayTimer? _timer;
   bool _initComplete = false;
+  AbsPlayWidget? _currentPlayer;
+
+  final Map<String, AbsPlayWidget> _playerMap = {};
+
   //AbsPlayWidget? _player;
 
   void start(ContentsManager manager) {
@@ -83,6 +87,20 @@ class PlayerHandler extends ChangeNotifier {
   }
 
   AbsPlayWidget createPlayer(ContentsModel model) {
+    AbsPlayWidget? player = _playerMap[model.mid];
+    if (player != null) {
+      _currentPlayer = player;
+      return player;
+    }
+    player = _createPlayer(model);
+    _currentPlayer = player;
+    _playerMap[model.mid] = player;
+    player.init();
+    logger.info('player newly created');
+    return player;
+  }
+
+  AbsPlayWidget _createPlayer(ContentsModel model) {
     switch (model.contentsType) {
       case ContentsType.video:
         return VideoPlayerWidget(
@@ -121,7 +139,7 @@ class PlayerHandler extends ChangeNotifier {
   }
 
   void toggleIsPause() {
-    _timer?.togglgePause();
+    _timer?.togglePause();
   }
 
   bool isPause() {
@@ -133,4 +151,21 @@ class PlayerHandler extends ChangeNotifier {
 
   void next() => _timer?.next();
   void prev() => _timer?.prev();
+
+  void pause() {
+    _currentPlayer?.pause();
+  }
+
+  void play() {
+    _currentPlayer?.play();
+  }
+
+  void setLoop(bool loop) {
+    for (AbsPlayWidget player in _playerMap.values) {
+      if (player.model!.contentsType == ContentsType.video) {
+        VideoPlayerWidget video = player as VideoPlayerWidget;
+        video.wcontroller?.setLooping(loop);
+      }
+    }
+  }
 }

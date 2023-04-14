@@ -22,7 +22,7 @@ class ContentsManager extends CretaManager {
   }
 
   ContentsManager({required this.pageModel, required this.frameModel}) : super('creta_contents') {
-    saveManagerHolder?.registerManager('contents', this);
+    saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
   }
 
   @override
@@ -42,10 +42,9 @@ class ContentsManager extends CretaManager {
     return playerHandler?.getCurrentModel();
   }
 
-  Future<ContentsModel> create(ContentsModel model, {bool doNotify = true}) async {
-    logger.fine('create ${model.mid}!!!!!!!!!!!!!!!!!!!!!!');
+  Future<ContentsModel> createNextContents(ContentsModel model, {bool doNotify = true}) async {
+    model.order.set(lastOrder() + 1, save: false, noUndo: true);
     await createToDB(model);
-    logger.fine('end create ${model.mid}!!!!!!!!!!!!!!!!!!!!!!');
     insert(model, doNotify: doNotify);
     return model;
   }
@@ -133,5 +132,23 @@ class ContentsManager extends CretaManager {
     double width = StudioVariables.applyScale * frameModel.width.value;
     double height = StudioVariables.applyScale * frameModel.height.value;
     return Size(width, height);
+  }
+
+  void removeSelected() {
+    ContentsModel? model = getSelected() as ContentsModel?;
+    if (model == null) return;
+    model.isRemoved.set(true, save: false);
+    setToDB(model);
+    remove(model);
+    logger.info('remove contents ${model.name}, ${model.mid}');
+    reOrdering();
+  }
+
+  void pause() {
+    playerHandler?.pause();
+  }
+
+  void setLoop(bool loop) {
+    playerHandler?.setLoop(loop);
   }
 }

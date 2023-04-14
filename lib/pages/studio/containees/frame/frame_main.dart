@@ -1,31 +1,25 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
 import 'dart:math';
-import 'dart:html' as html;
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
-//import 'package:glass/glass.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
-import '../../../../data_io/frame_manager.dart';
-//import '../../../../data_io/page_manager.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
-//import '../../studio_constant.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
-import '../../studio_snippet.dart';
 import '../containee_nofifier.dart';
 import 'frame_each.dart';
+import 'frame_play_mixin.dart';
 import 'sticker/draggable_resizable.dart';
 import 'sticker/draggable_stickers.dart';
 import 'sticker/stickerview.dart';
@@ -48,8 +42,7 @@ class FrameMain extends StatefulWidget {
   State<FrameMain> createState() => _FrameMainState();
 }
 
-class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
-  FrameManager? _frameManager;
+class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   //int _randomIndex = 0;
   double applyScale = 1;
   // ignore: unused_field
@@ -76,26 +69,20 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
     logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
-    _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null) {
             FrameModel model = snapshot.data! as FrameModel;
-            _frameManager!.updateModel(model);
+            frameManager!.updateModel(model);
           }
           return showFrame();
         });
-    // return Consumer<FrameManager>(builder: (context, frameManager, child) {
-    //   _frameManager = frameManager;
-    //   logger.finest('FrameMain Invoked ${widget.pageModel.mid}');
-    //   return showFrame();
-    // });
-    //return showFrame();
   }
 
   Widget showFrame() {
-    FrameModel? model = _frameManager!.getSelected() as FrameModel?;
+    FrameModel? model = frameManager!.getSelected() as FrameModel?;
     return StickerView(
       width: widget.pageWidth,
       height: widget.pageHeight,
@@ -125,13 +112,13 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
       },
       onFrameCopy: (mid) async {
         logger.fine('Frame onFrameCopy');
-        FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
-        await _frameManager?.copyFrame(frame!);
+        FrameModel? frame = frameManager?.getSelected() as FrameModel?;
+        await frameManager?.copyFrame(frame!);
         setState(() {});
       },
       onFrameRotate: (mid, angle) {
         logger.info('FrameMain.onFrameRotate 1');
-        FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
+        FrameModel? frame = frameManager?.getSelected() as FrameModel?;
         if (frame == null) {
           return;
         }
@@ -146,32 +133,32 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
       },
       onTap: (mid) {
         logger.info('onTap : from InkWell , frame_name.dart, no setState $mid');
-        FrameModel? frame = _frameManager?.getSelected() as FrameModel?;
+        FrameModel? frame = frameManager?.getSelected() as FrameModel?;
 
         if (frame == null ||
             frame.mid != mid ||
             BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame) {
           //setState(() {
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
-          _frameManager?.setSelectedMid(mid);
+          frameManager?.setSelectedMid(mid);
           //});
         }
-        frame = _frameManager?.getSelected() as FrameModel?;
+        frame = frameManager?.getSelected() as FrameModel?;
 
         if (frame != null) {
-          ContentsManager? contentsManager = _frameManager?.getContentsManager(frame.mid);
+          ContentsManager? contentsManager = frameManager?.getContentsManager(frame.mid);
           if (contentsManager != null) {
             ContentsModel? content = contentsManager.getCurrentModel();
             if (content != null) {
               contentsManager.setSelectedMid(content.mid);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
-              //_frameManager?.setSelectedMid(mid);
+              //frameManager?.setSelectedMid(mid);
               return;
             }
           }
         }
 
-        //frame = _frameManager?.getSelected() as FrameModel?;
+        //frame = frameManager?.getSelected() as FrameModel?;
         //if (frame != null) {
         //BookMainPage.clickEventHandler.publish(frame.eventSend.value); //skpark publish 는 나중에 빼야함.
         //}
@@ -183,7 +170,7 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       },
       onComplete: (mid) {
-        FrameModel? model = _frameManager!.getSelected() as FrameModel?;
+        FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           //model.save();
           logger.info('onComplete');
@@ -195,7 +182,7 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
         }
       },
       onScaleStart: (mid) {
-        FrameModel? model = _frameManager!.getSelected() as FrameModel?;
+        FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           logger.info('onScaleStart');
           BookMainPage.miniMenuNotifier!.isShow = false;
@@ -204,178 +191,25 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
           BookMainPage.miniMenuContentsNotifier?.notify();
         }
       },
+      onFrontBackHover: (hover) {
+        setState(() {
+          DraggableStickers.isFrontBackHover = hover;
+        });
+      },
       onDropPage: (contentsModel) async {
         // 프레임을 생성한다.
-        FrameModel frameModel = await _frameManager!.createNextFrame(doNotify: false);
-
-        // 콘텐츠 매니저를 생성한다.
-        ContentsManager contentsManager = _frameManager!.newContentsManager(frameModel);
-        contentsModel.parentMid.set(frameModel.mid, save: false, noUndo: true);
-
-        // 그림의 가로 세로 규격을 알아낸다.
-        final reader = html.FileReader();
-        reader.readAsArrayBuffer(contentsModel.file!);
-        await reader.onLoad.first;
-        Uint8List blob = reader.result as Uint8List;
-        var image = await decodeImageFromList(blob);
-
-        double imageWidth = image.width.toDouble();
-        double imageHeight = image.height.toDouble();
-
-        double pageHeight = widget.pageModel.height.value;
-        double pageWidth = widget.pageModel.width.value;
-
-        // width 가 더 크다
-        if (imageWidth > pageWidth) {
-          // 근데, width 가 page 를 넘어간다.
-          imageHeight = imageHeight * (pageWidth / imageWidth);
-          imageWidth = pageWidth;
-        }
-        //이렇게 했는데도, imageHeight 가 page 를 넘어간다.
-        if (imageHeight > pageHeight) {
-          imageWidth = imageWidth * (pageHeight / imageHeight);
-          imageHeight = pageHeight;
-        }
-
-        contentsModel.width.set(imageWidth, save: false, noUndo: true);
-        contentsModel.height.set(imageHeight, save: false, noUndo: true);
-        contentsModel.aspectRatio
-            .set(contentsModel.height.value / contentsModel.width.value, save: false, noUndo: true);
-
-        logger.info('contentsSize, ${contentsModel.width.value} x ${contentsModel.height.value}');
-
-        // 그림의 규격에 따라 프레임 사이즈를 수정해 준다
-        _frameManager?.resizeFrame(
-          frameModel,
-          contentsModel.aspectRatio.value,
-          contentsModel.width.value,
-          contentsModel.height.value,
-          invalidate: true,
-        );
-
-        // 콘텐츠 객체를 DB에 Crete 한다.
-        await contentsManager.create(contentsModel, doNotify: false);
-
-        // 업로드는  async 로 진행한다.
-        if (contentsModel.file != null &&
-            (contentsModel.remoteUrl == null || contentsModel.remoteUrl!.isEmpty)) {
-          // upload 되어 있지 않으므로 업로드한다.
-          StudioSnippet.uploadFile(contentsModel, contentsManager, blob);
-        }
-        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
-        DraggableStickers.selectedAssetId = frameModel.mid;
-        _frameManager!.setSelectedMid(frameModel.mid);
-        //_frameManager!.notify();
-
-        // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
+        FrameModel frameModel = await frameManager!.createNextFrame(doNotify: false);
+        // 코텐츠를 play 하고 DB 에 Crete 하고 업로드까지 한다.
+        await createContents(contentsModel, frameModel, widget.pageModel);
       },
-      //onDropFrame: (frameId, contentsModel) async {
-      // 콘텐츠 매니저를 생성한다.
-      // FrameModel? frameModel = _frameManager!.getModel(frameId) as FrameModel?;
-      // if (frameModel == null) {
-      //   return;
-      // }
 
-      // ContentsManager contentsManager = _frameManager!.newContentsManager(frameModel);
-      // contentsModel.parentMid.set(frameModel.mid, save: false, noUndo: true);
-
-      // // 그림의 가로 세로 규격을 알아낸다.
-      // final reader = html.FileReader();
-      // reader.readAsArrayBuffer(contentsModel.file!);
-      // await reader.onLoad.first;
-      // Uint8List blob = reader.result as Uint8List;
-      // var image = await decodeImageFromList(blob);
-
-      // double imageWidth = image.width.toDouble();
-      // double imageHeight = image.height.toDouble();
-
-      // double pageHeight = widget.pageModel.height.value;
-      // double pageWidth = widget.pageModel.width.value;
-
-      // // width 가 더 크다
-      // if (imageWidth > pageWidth) {
-      //   // 근데, width 가 page 를 넘어간다.
-      //   imageHeight = imageHeight * (pageWidth / imageWidth);
-      //   imageWidth = pageWidth;
-      // }
-      // //이렇게 했는데도, imageHeight 가 page 를 넘어간다.
-      // if (imageHeight > pageHeight) {
-      //   imageWidth = imageWidth * (pageHeight / imageHeight);
-      //   imageHeight = pageHeight;
-      // }
-
-      // contentsModel.width.set(imageWidth, save: false, noUndo: true);
-      // contentsModel.height.set(imageHeight, save: false, noUndo: true);
-      // contentsModel.aspectRatio
-      //     .set(contentsModel.height.value / contentsModel.width.value, save: false, noUndo: true);
-
-      // logger.info('contentsSize, ${contentsModel.width.value} x ${contentsModel.height.value}');
-
-      // // 콘텐츠 객체를 DB에 Crete 한다.
-      // await contentsManager.create(contentsModel, doNotify: true);
-
-      // _frameManager!.notify();
-
-      // // 업로드는  async 로 진행한다.
-      // if (contentsModel.file != null &&
-      //     (contentsModel.remoteUrl == null || contentsModel.remoteUrl!.isEmpty)) {
-      //   // upload 되어 있지 않으므로 업로드한다.
-      //   _uploadFile(contentsModel, contentsManager, blob);
-      // }
-      // BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
-      // DraggableStickers.selectedAssetId = frameModel.mid;
-      // _frameManager!.setSelectedMid(frameModel.mid);
-      // //_frameManager!.notify();
-
-      //// 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
-      //},
       stickerList: getStickerList(),
     );
   }
 
-  // Future<void> _uploadFile(
-  //   ContentsModel model,
-  //   ContentsManager contentsManager,
-  //   Uint8List blob,
-  // ) async {
-  //   // 파일명을 확장자와 파일명으로 분리함.
-  //   int pos = model.file!.name.lastIndexOf('.');
-  //   String name = '';
-  //   String ext = '';
-  //   if (pos > 0) {
-  //     name = model.file!.name.substring(0, pos);
-  //     ext = model.file!.name.substring(pos);
-  //   } else if (pos == 0) {
-  //     name = '';
-  //     ext = model.file!.name;
-  //   } else {
-  //     name = model.file!.name;
-  //     ext = '';
-  //   }
-
-  //   String uniqFileName = '${name}_${model.bytes}$ext';
-
-  //   FileModel? fileModel = await HycopFactory.storage!.uploadFile(uniqFileName, model.mime, blob);
-
-  //   if (fileModel != null) {
-  //     // modelList 가 그사이 갱신되었을 수가 있기 때문에, 다시 가져온다.
-  //     ContentsModel? reModel = contentsManager.getModel(model.mid) as ContentsModel?;
-  //     reModel ??= model;
-  //     reModel.remoteUrl = fileModel.fileView;
-  //     logger.info('uploaded url = ${reModel.url}');
-  //     logger.info('uploaded fileName = ${reModel.name}');
-  //     logger.info('uploaded remoteUrl = ${reModel.remoteUrl!}');
-  //     logger.info('uploaded aspectRatio = ${reModel.aspectRatio.value}');
-  //     //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
-  //     await contentsManager.setToDB(reModel);
-  //   } else {
-  //     logger.severe('upload failed ${model.file!.name}');
-  //   }
-  // }
-
   void _exchangeOrder(String aMid, String bMid, String hint) {
-    FrameModel? aModel = _frameManager!.getModel(aMid) as FrameModel?;
-    FrameModel? bModel = _frameManager!.getModel(bMid) as FrameModel?;
+    FrameModel? aModel = frameManager!.getModel(aMid) as FrameModel?;
+    FrameModel? bModel = frameManager!.getModel(bMid) as FrameModel?;
     if (aModel == null) {
       logger.fine('$aMid does not exist in modelList');
       return;
@@ -397,9 +231,9 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
 
   List<Sticker> getStickerList() {
     logger.fine('getStickerList()');
-    //_frameManager!.frameKeyMap.clear();
-    _frameManager!.reOrdering();
-    return _frameManager!.orderMapIterator((e) {
+    //frameManager!.frameKeyMap.clear();
+    frameManager!.reOrdering();
+    return frameManager!.orderMapIterator((e) {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
 
@@ -417,10 +251,10 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
       double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
       double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 
-      GlobalKey? stickerKey = _frameManager!.frameKeyMap[model.mid];
+      GlobalKey? stickerKey = frameManager!.frameKeyMap[model.mid];
       if (stickerKey == null) {
         stickerKey = GlobalKey();
-        _frameManager!.frameKeyMap[model.mid] = stickerKey;
+        frameManager!.frameKeyMap[model.mid] = stickerKey;
       }
 
       return Sticker(
@@ -437,7 +271,7 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
           child: FrameEach(
             model: model,
             pageModel: widget.pageModel,
-            frameManager: _frameManager!,
+            frameManager: frameManager!,
             applyScale: applyScale,
             width: frameWidth,
             height: frameHeight,
@@ -445,7 +279,7 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
         ),
       );
     });
-    // return _frameManager!.modelList.map((e) {
+    // return frameManager!.modelList.map((e) {
     //   //_randomIndex += 10;
     //   FrameModel model = e as FrameModel;
 
@@ -463,10 +297,10 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
     //   double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
     //   double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 
-    //   GlobalKey? stickerKey = _frameManager!.frameKeyMap[model.mid];
+    //   GlobalKey? stickerKey = frameManager!.frameKeyMap[model.mid];
     //   if (stickerKey == null) {
     //     stickerKey = GlobalKey();
-    //     _frameManager!.frameKeyMap[model.mid] = stickerKey;
+    //     frameManager!.frameKeyMap[model.mid] = stickerKey;
     //   }
 
     //   return Sticker(
@@ -509,7 +343,7 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
   // Widget _applyAnimate(FrameModel model) {
   //   List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
   //   logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
-  //   //if (animations.isEmpty || _frameManager!.isSelectedChanged() == false) {
+  //   //if (animations.isEmpty || frameManager!.isSelectedChanged() == false) {
   //   if (animations.isEmpty) {
   //     return _shapeBox(model);
   //   }
@@ -594,7 +428,7 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
   //         key: ValueKey('ContentsMain${model.mid}'),
   //         frameModel: model,
   //         pageModel: widget.pageModel,
-  //         frameManager: _frameManager!,
+  //         frameManager: frameManager!,
   //       ),
   //       // child: Image.asset(
   //       //   'assets/creta_default.png',
@@ -682,7 +516,7 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
   // }
 
   void _setItem(DragUpdate update, String mid) async {
-    for (var item in _frameManager!.modelList) {
+    for (var item in frameManager!.modelList) {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
 
@@ -700,20 +534,20 @@ class _FrameMainState extends State<FrameMain> /*with ContaineeMixin */ {
   }
 
   void removeItem(String mid) async {
-    for (var item in _frameManager!.modelList) {
+    for (var item in frameManager!.modelList) {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
       model.isRemoved.set(true);
     }
-    // for (var item in _frameManager!.modelList) {
+    // for (var item in frameManager!.modelList) {
     //   if (item.mid != mid) continue;
-    //   _frameManager!.modelList.remove(item);
+    //   frameManager!.modelList.remove(item);
     // }
-    // await _frameManager!.removeToDB(mid);
+    // await frameManager!.removeToDB(mid);
   }
 
   void _setMain(String mid) async {
-    for (var item in _frameManager!.modelList) {
+    for (var item in frameManager!.modelList) {
       FrameModel model = item as FrameModel;
       if (item.mid == mid) {
         model.isMain.set(true);

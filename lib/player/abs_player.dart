@@ -101,6 +101,8 @@ abstract class AbsPlayWidget extends StatefulWidget {
         outerWidth = srcRatio * outerHeight;
       }
     }
+    logger.info(
+        'getOuterSize  autoFit=${acc.frameModel.isAutoFit.value},w=$outerWidth,h=$outerHeight');
     return Size(outerWidth, outerHeight);
   }
 

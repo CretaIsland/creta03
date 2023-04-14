@@ -176,8 +176,9 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         double itemSpacing = 5;
         double dialogHeight =
             (widget.itemHeight + itemSpacing) * popupMenu.length + itemSpacing * 2;
-        if (y + dialogHeight > StudioVariables.workHeight) {
-          dialogHeight = StudioVariables.workHeight - y;
+        if (y + dialogHeight > StudioVariables.displayHeight) {
+          //dialogHeight = StudioVariables.workHeight - y;
+          y = y - dialogHeight - widget.height;
         }
         if (popupMenu.length > 1 && dialogHeight < widget.itemHeight + itemSpacing * 2) {
           dialogHeight = widget.itemHeight + itemSpacing * 2;

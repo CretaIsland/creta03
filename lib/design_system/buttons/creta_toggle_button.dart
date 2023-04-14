@@ -40,6 +40,7 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
 
   @override
   Widget build(BuildContext context) {
+    double circleSize = widget.height - 2;
     return Center(
       child: AnimatedContainer(
         alignment: AlignmentDirectional.centerStart,
@@ -54,8 +55,8 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
                   ? CretaColor.primary[500]!
                   : CretaColor.primary
               : hover
-                  ? CretaColor.primary[200]!
-                  : CretaColor.primary[100]!,
+                  ? CretaColor.primary[300]!
+                  : CretaColor.primary[200]!,
         ),
         child: InkWell(
           onHover: (value) {
@@ -76,15 +77,15 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
                   duration: Duration(milliseconds: aniTime),
                   curve: Curves.easeIn,
                   //top: 3.0,
-                  left: toggleValue ? widget.width - 24 : 0.0,
-                  right: toggleValue ? 0.0 : widget.width - 24,
+                  left: toggleValue ? widget.width - circleSize : 0.0,
+                  right: toggleValue ? 0.0 : widget.width - circleSize,
                   child: AnimatedSwitcher(
                       duration: Duration(milliseconds: aniTime),
                       transitionBuilder: (child, animation) {
                         return RotationTransition(turns: animation, child: child);
                       },
-                      child:
-                          Icon(Icons.circle, color: Colors.white, size: 24.0, key: UniqueKey()))),
+                      child: Icon(Icons.circle,
+                          color: Colors.white, size: circleSize, key: UniqueKey()))),
             ],
           ),
         ),

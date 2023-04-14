@@ -192,32 +192,33 @@ class StudioSnippet {
     }
   }
 
-  static List<CretaMenuItem> getCopyRightListItem(void Function(CopyRightType) onChnaged) {
+  static List<CretaMenuItem> getCopyRightListItem(
+      {required CopyRightType defaultValue, required void Function(CopyRightType) onChanged}) {
     return [
       CretaMenuItem(
           caption: CretaStudioLang.copyWrightList[1],
           onPressed: () {
-            onChnaged(CopyRightType.free);
+            onChanged(CopyRightType.free);
           },
-          selected: true),
+          selected: defaultValue == CopyRightType.free),
       CretaMenuItem(
           caption: CretaStudioLang.copyWrightList[2],
           onPressed: () {
-            onChnaged(CopyRightType.nonComertialsUseOnly);
+            onChanged(CopyRightType.nonComertialsUseOnly);
           },
-          selected: false),
+          selected: defaultValue == CopyRightType.nonComertialsUseOnly),
       CretaMenuItem(
           caption: CretaStudioLang.copyWrightList[3],
           onPressed: () {
-            onChnaged(CopyRightType.openSource);
+            onChanged(CopyRightType.openSource);
           },
-          selected: false),
+          selected: defaultValue == CopyRightType.openSource),
       CretaMenuItem(
           caption: CretaStudioLang.copyWrightList[4],
           onPressed: () {
-            onChnaged(CopyRightType.needPermition);
+            onChanged(CopyRightType.needPermition);
           },
-          selected: false),
+          selected: defaultValue == CopyRightType.needPermition),
     ];
   }
 }
