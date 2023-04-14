@@ -99,7 +99,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       CretaMenuItem(
         caption: '좋아요',
         iconData: Icons.favorite_outline,
-        onPressed: () {},
+        onPressed: () {
+          Routemaster.of(context).push(AppRoutes.favorites);
+        },
         linkUrl: AppRoutes.favorites,
         isIconText: true,
       ),
@@ -968,6 +970,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
       case AppRoutes.watchHistory:
         return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+      case AppRoutes.favorites:
+        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
       case AppRoutes.playlist:
         return [_dropDownMenuItemListSort];
       case AppRoutes.playlistDetail:
@@ -983,6 +987,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
         break;
+      case AppRoutes.watchHistory:
+        break;
+      case AppRoutes.favorites:
+        break;
       case AppRoutes.playlist:
         break;
       case AppRoutes.playlistDetail:
@@ -997,8 +1005,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   Function(String)? _getSearchFunction() {
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
-        break;
+        return (value) {};
       case AppRoutes.watchHistory:
+        return (value) {};
+      case AppRoutes.favorites:
         return (value) {};
       case AppRoutes.playlist:
         return (value) {};

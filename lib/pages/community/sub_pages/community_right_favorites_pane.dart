@@ -34,8 +34,8 @@ const double _rightViewBottomPane = 40;
 const double _rightViewItemGapX = 20;
 const double _rightViewItemGapY = 20;
 //const double _scrollbarWidth = 13;
-const double _rightViewBannerMaxHeight = 436;
-//const double _rightViewBannerMinHeight = 188 + 4;
+//const double _rightViewBannerMaxHeight = 436;
+const double _rightViewBannerMinHeight = 188 + 4 + 4;
 //const double _rightViewToolbarHeight = 76;
 //
 const double _itemDefaultWidth = 290.0;
@@ -83,7 +83,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
         controller: widget.scrollController,
         padding: EdgeInsets.fromLTRB(
             _rightViewLeftPane,
-            _rightViewBannerMaxHeight,
+            _rightViewBannerMinHeight,
             _rightViewRightPane,
             _rightViewBottomPane),
         itemCount: _cretaBookList.length, //item 개수

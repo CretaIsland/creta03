@@ -59,9 +59,10 @@ class _CretaFilterPaneState extends State<CretaFilterPane> {
     // } else {
     //   heightDelta -= LayoutConst.cretaPaddingPixel;
     // }
-    return SizedBox(
+    return Container(
       width: widget.width,
       height: widget.height,
+      color: Colors.white,
       child: _filterPane(),
     );
   }

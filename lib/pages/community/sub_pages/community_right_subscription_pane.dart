@@ -107,6 +107,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
       width: paneSize.width, // - 286,
       height: paneSize.height, // - 40,
       child: Scrollbar(
+        controller: widget.scrollController,
         thumbVisibility: true,
         child: SingleChildScrollView(
           controller: widget.scrollController,
