@@ -8,7 +8,9 @@ import 'package:creta03/pages/mypage/sub_page/my_page_team_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
+import 'package:provider/provider.dart';
 
+import '../../data_io/user_property_manager.dart';
 import '../../design_system/buttons/creta_tapbar_button.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
@@ -17,6 +19,8 @@ import '../../routes.dart';
 import '../studio/studio_constant.dart';
 
 class MyPage extends StatefulWidget {
+
+  static UserPropertyManager? userPropertyManagerHolder;
   final String selectedPage;
   const MyPage({super.key, required this.selectedPage});
 
@@ -26,6 +30,7 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
 
+  
   late List<CretaMenuItem> _leftMeunItem;
 
 
@@ -108,6 +113,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
         break;
     }
 
+    MyPage.userPropertyManagerHolder = UserPropertyManager();
+
   }
 
   Widget _getCretaTapBarButton(CretaMenuItem item) {
@@ -178,7 +185,19 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
         // left area
         leftMenu(),
         // right area
-        rightArea(gridArea)
+        FutureBuilder<void>(
+          future: MyPage.userPropertyManagerHolder!.initUserProperty(),
+          builder: (context, snapshot) {
+            if(snapshot.connectionState == ConnectionState.done) {
+              return rightArea(gridArea);
+            } else {
+              return SizedBox(
+                width: gridArea.width,
+                height: gridArea.height
+              );
+            }
+          }
+        ),
       ],
     );
   }
@@ -186,16 +205,19 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   @override
   Widget build(BuildContext context) {
     resize(context);
-    return Snippet.CretaScaffoldOfMyPage(
-      title:  Container(
-        padding: const EdgeInsets.only(left: 24),
-        child: const Image(
-          image: AssetImage("assets/creta_logo_blue.png"),
-          height: 20,
+    return MultiProvider(
+      providers: [ ChangeNotifierProvider<UserPropertyManager>.value(value: MyPage.userPropertyManagerHolder!) ],
+      child: Snippet.CretaScaffoldOfMyPage(
+        title:  Container(
+          padding: const EdgeInsets.only(left: 24),
+          child: const Image(
+            image: AssetImage("assets/creta_logo_blue.png"),
+            height: 20,
+          ),
         ),
+        context: context, 
+        child: myPageMain()
       ),
-      context: context, 
-      child: myPageMain()
     );
   }
 }

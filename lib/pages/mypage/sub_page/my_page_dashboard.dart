@@ -1,8 +1,13 @@
+import 'dart:math';
+
+import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:provider/provider.dart';
 
 
 class MyPageDashBoard extends StatefulWidget {
@@ -31,20 +36,27 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   }
 
   // 프로필 이미지
-  Widget profileImg() {
+  Widget profileImageBox(UserPropertyManager userPropertyManager) {
     return Container(
-      width: 200,
-      height: 200,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-        borderRadius: BorderRadius.circular(200.0),
-        image: DecorationImage(image: Image.network("https://image.genie.co.kr/Y/IMAGE/IMG_ARTIST/080/574/299/80574299_1603344703162_2_600x600.JPG").image, fit: BoxFit.cover)  
-      ),
+        width: 200.0,
+        height: 200.0,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(200.0),
+            color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+            image: userPropertyManager.propertyModel!.profileImg == ''
+                ? null
+                : DecorationImage(image: Image.network(userPropertyManager.propertyModel!.profileImg).image, fit: BoxFit.cover)),
+        child: userPropertyManager.propertyModel!.profileImg == '' ?
+          Center(
+            child: Text(userPropertyManager.userModel!.name.substring(0, 1),
+            style: const TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 64, color: Colors.white))
+          )
+          : Container()
     );
   }
 
   // 계정 정보
-  Widget accountInfoBox() {
+  Widget accountInfoBox(UserPropertyManager propertyManager) {
     return Container(
       width: 400,
       height: 400,
@@ -79,19 +91,19 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Creta Star", style: CretaFont.bodyMedium),
+                  Text(propertyManager.propertyModel!.cretaGrade, style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
-                  Text("10", style: CretaFont.bodyMedium),
+                  Text("${propertyManager.propertyModel!.bookCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
                   Row(
                     children: [
-                      Text("무료 개인", style: CretaFont.bodyMedium),
+                      Text(propertyManager.propertyModel!.ratePlan, style: CretaFont.bodyMedium),
                       const SizedBox(width: 24),
                       BTN.line_blue_t_m(text: CretaMyPageLang.ratePlanChangeBTN, onPressed: (){ })
                     ],
                   ),
                   const SizedBox(height: 28.0),
-                  Text("256MB (전체 1024MB)", style: CretaFont.bodyMedium)
+                  Text("${propertyManager.propertyModel!.freeSpace}MB (전체 1024MB)", style: CretaFont.bodyMedium)
                 ],
               ),
             ],
@@ -102,7 +114,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   }
 
   // 최근 요약
-  Widget recentInfoBox() {
+  Widget recentInfoBox(UserPropertyManager propertyManager) {
     return Container(
       width: 400,
       height: 400,
@@ -143,13 +155,13 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("17", style: CretaFont.bodyMedium),
+                  Text("${propertyManager.propertyModel!.bookViewCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
-                  Text("15 시간", style: CretaFont.bodyMedium),
+                  Text("${propertyManager.propertyModel!.bookViewTime} 시간", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
-                  Text("3", style: CretaFont.bodyMedium),
+                  Text("${propertyManager.propertyModel!.likeCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
-                  Text("5", style: CretaFont.bodyMedium)
+                  Text("${propertyManager.propertyModel!.commentCount}", style: CretaFont.bodyMedium)
                 ],
               ),
             ],
@@ -160,7 +172,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   }
 
   // 내 팀
-  Widget myTeamInfoBox() {
+  Widget myTeamInfoBox(UserPropertyManager propertyManager) {
     return Container(
       width: 400,
       height: 400,
@@ -181,13 +193,10 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("기적소리 (소유자)", style: CretaFont.bodyMedium),
-                const SizedBox(height: 28.0),
-                Text("위화감 (사용자)", style: CretaFont.bodyMedium),
-                const SizedBox(height: 28.0),
-                Text("이지적 (관리자)", style: CretaFont.bodyMedium),
-                const SizedBox(height: 28.0),
-                Text("고지식 (사용자)", style: CretaFont.bodyMedium)
+                for(var element in propertyManager.propertyModel!.teamMembers)...[
+                  Text(element, style: CretaFont.bodyMedium),
+                  const SizedBox(height: 28.0),
+                ]
               ],
             )
           )
@@ -197,45 +206,49 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   }
 
   Widget mainComponent() {
-    return SizedBox(
-      width: widget.width,
-      height: widget.height,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: widget.width > 400 ? Column(
-          children: [
-            const SizedBox(height: 60),
-            profileImg(),
-            const SizedBox(height: 40),
-            const Text("사용자 닉네임", style: TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 40, color: CretaColor.text)),
-            const SizedBox(height: 16),
-            Text("csy_0102@sqisoft.com", style: CretaFont.buttonLarge),
-            const SizedBox(height: 86),
-            widget.width > 1280 ?
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  accountInfoBox(),
-                  const SizedBox(width: 40.0),
-                  recentInfoBox(),
-                  const SizedBox(width: 40.0),
-                  myTeamInfoBox()
-                ],
-              ) : 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  accountInfoBox(),
-                  const SizedBox(height: 40.0),
-                  recentInfoBox(),
-                  const SizedBox(height: 40.0),
-                  myTeamInfoBox()
-                ],
-              ),
-            const SizedBox(height: 100)
-          ],
-        ) : Container()
-      )
+    return Consumer<UserPropertyManager>(
+      builder: (context, userPropertyManager, child) {
+        return SizedBox(
+        width: widget.width,
+        height: widget.height,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: widget.width > 400 ? Column(
+            children: [
+              const SizedBox(height: 60),
+              profileImageBox(userPropertyManager),
+              const SizedBox(height: 40),
+              Text(userPropertyManager.propertyModel!.nickname, style: const TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 40, color: CretaColor.text)),
+              const SizedBox(height: 16),
+              Text(userPropertyManager.userModel.email, style: CretaFont.buttonLarge),
+              const SizedBox(height: 86),
+              widget.width > 1280 ?
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    accountInfoBox(userPropertyManager),
+                    const SizedBox(width: 40.0),
+                    recentInfoBox(userPropertyManager),
+                    const SizedBox(width: 40.0),
+                    myTeamInfoBox(userPropertyManager)
+                  ],
+                ) : 
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    accountInfoBox(userPropertyManager),
+                    const SizedBox(height: 40.0),
+                    recentInfoBox(userPropertyManager),
+                    const SizedBox(height: 40.0),
+                    myTeamInfoBox(userPropertyManager)
+                  ],
+                ),
+              const SizedBox(height: 100)
+            ],
+          ) : Container()
+        )
+      );
+      }
     );
   }
 

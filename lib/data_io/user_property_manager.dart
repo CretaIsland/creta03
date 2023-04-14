@@ -11,7 +11,7 @@ import 'package:hycop/hycop/model/user_model.dart';
 import 'package:hycop/hycop/utils/hycop_exceptions.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
-import '../model/user_propery_model.dart';
+import '../model/user_property_model.dart';
 import '../pages/studio/studio_constant.dart';
 import 'creta_manager.dart';
 
@@ -36,10 +36,10 @@ class UserPropertyManager extends CretaManager {
 
   Future<void> initUserProperty() async {
     clearAll();
-    await getUserPropery();
+    await getUserProperty();
   }
 
-  Future<int> getUserPropery() async {
+  Future<int> getUserProperty() async {
     int userCount = 0;
     startTransaction();
     try {
@@ -53,7 +53,7 @@ class UserPropertyManager extends CretaManager {
       await createNext();
       userCount = 1;
     }
-    endTransaction();
+    endTransaction(); 
     return userCount;
   }
 
@@ -61,7 +61,7 @@ class UserPropertyManager extends CretaManager {
     if (propertyModel == null) {
       return;
     }
-    propertyModel!.bgColorList1.add(color);
+    propertyModel!.lastestUseColors.add(color);
     propertyModel!.save();
   }
 
@@ -69,7 +69,7 @@ class UserPropertyManager extends CretaManager {
     if (propertyModel == null) {
       return [];
     }
-    return propertyModel!.bgColorList1;
+    return propertyModel!.lastestUseColors;
   }
 
   Future<UserPropertyModel> createNext() async {
@@ -77,7 +77,20 @@ class UserPropertyManager extends CretaManager {
     propertyModel = UserPropertyModel.withName(
       pparentMid: userModel.userId,
       email: userModel.email,
-      bgColorList1: [
+      nickname: userModel.name,
+      profileImg: '',
+      teamMembers: [],
+      cretaGrade: '',
+      ratePlan: '',
+      freeSpace: 0,
+      bookCount: 0,
+      bookViewCount: 0,
+      bookViewTime: 0,
+      likeCount: 0,
+      commentCount: 0,
+      lastestBook: '',
+      lastestUseFrames: [],
+      lastestUseColors: [
         Colors.white,
         Colors.black,
         Colors.red,
@@ -85,8 +98,7 @@ class UserPropertyManager extends CretaManager {
         Colors.yellow,
         Colors.green,
         Colors.purple,
-      ],
-      latestFrames: [],
+      ]
     );
     await createToDB(propertyModel!);
     insert(propertyModel!, postion: getAvailLength());
@@ -130,11 +142,11 @@ class UserPropertyManager extends CretaManager {
   }
 
   Future<List<FrameModel>> getFrameListFromDB() async {
-    if (propertyModel!.latestFrames.isEmpty) {
+    if (propertyModel!.lastestUseFrames.isEmpty) {
       return await _getAnyLattestFrames();
     }
 
-    for (String mid in propertyModel!.latestFrames) {
+    for (String mid in propertyModel!.lastestUseFrames) {
       FrameModel model = await _getFrameFromDB(mid);
       _frameModelList.add(model);
     }
@@ -174,7 +186,7 @@ class UserPropertyManager extends CretaManager {
       logger.finest('ele = ${model.mid}');
       _frameModelList.add(model);
       logger.finest('ele = ${model.mid}');
-      propertyModel!.latestFrames.add(model.mid);
+      propertyModel!.lastestUseFrames.add(model.mid);
       logger.finest('ele = ${model.mid}');
       if (_frameModelList.length >= 4) {
         break;
@@ -183,7 +195,7 @@ class UserPropertyManager extends CretaManager {
     logger.finest('save ${_frameModelList.length}');
     propertyModel?.save();
 
-    logger.finest('getAnyLattestFrames ${propertyModel!.latestFrames.toString()}');
+    logger.finest('getAnyLattestFrames ${propertyModel!.lastestUseFrames.toString()}');
     return _frameModelList;
   }
 }

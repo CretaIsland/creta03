@@ -24,6 +24,8 @@ void main() async {
 
   SampleData.initSample();
 
+  HycopFactory.setBucketId();	// test code
+
   runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(MyApp());
