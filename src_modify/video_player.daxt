@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
+import 'package:synchronized/synchronized.dart'; //skpark add
 
 import 'src/closed_caption_file.dart';
 
@@ -298,6 +299,10 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   StreamSubscription<dynamic>? _eventSubscription;
   _VideoAppLifeCycleObserver? _lifeCycleObserver;
 
+  //skpark
+  final Lock _playLock = Lock();
+  DateTime completeTime = DateTime.now();
+
   /// The id of a texture that hasn't been initialized.
   @visibleForTesting
   static const int kUninitializedTextureId = -1;
@@ -385,12 +390,20 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           // position=value.duration. Instead of setting the values directly,
           // we use pause() and seekTo() to ensure the platform stops playing
           // and seeks to the last frame of the video.
-          pause().then((void pauseResult) {
-            seekTo(value.duration);
-            if (onAfterVideoEvent != null) {
-              onAfterVideoEvent!(event);
-            }
-          });
+
+          //skpark
+          // complete 가 연달아서 계속 오기 때문에, 0.6 초 미만차이로 오는 것은 버린다.         DateTime now = DateTime.now();
+          DateTime now = DateTime.now();
+          Duration duration = now.difference(completeTime);
+          completeTime = now;
+          if (duration.inMilliseconds > 600) {
+            pause().then((void pauseResult) {
+              seekTo(value.duration);
+              if (onAfterVideoEvent != null) {
+                onAfterVideoEvent!(event);
+              }
+            });
+          }
           break;
         case VideoEventType.bufferingUpdate:
           value = value.copyWith(buffered: event.buffered);
@@ -453,11 +466,14 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// has been sent to the platform, not when playback itself is totally
   /// finished.
   Future<void> play() async {
-    if (value.position == value.duration) {
-      await seekTo(Duration.zero);
-    }
-    value = value.copyWith(isPlaying: true);
-    await _applyPlayPause();
+    //skpark add lock
+    await _playLock.synchronized(() async {
+      if (value.position == value.duration) {
+        await seekTo(Duration.zero);
+      }
+      value = value.copyWith(isPlaying: true);
+      await _applyPlayPause();
+    });
   }
 
   /// Sets whether or not the video should loop after playing once. See also
@@ -469,8 +485,11 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 
   /// Pauses the video.
   Future<void> pause() async {
-    value = value.copyWith(isPlaying: false);
-    await _applyPlayPause();
+    //skpark add lock
+    await _playLock.synchronized(() async {
+      value = value.copyWith(isPlaying: false);
+      await _applyPlayPause();
+    });
   }
 
   Future<void> _applyLooping() async {

@@ -226,16 +226,17 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
           Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
           return IgnorePointer(
-              // child: widget.getClipRect(
-              //     outSize, VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url))),
-              child: SizedBox(
-            width: outSize.width,
-            height: outSize.height,
-            child: VideoPlayer(
-              widget.wcontroller!,
-              key: ValueKey(widget.model!.url),
-            ),
-          ));
+            child: widget.getClipRect(
+                outSize, VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url))),
+            //     child: SizedBox(
+            //   width: outSize.width,
+            //   height: outSize.height,
+            //   child: VideoPlayer(
+            //     widget.wcontroller!,
+            //     key: ValueKey(widget.model!.url),
+            //   ),
+            // ),
+          );
         });
   }
 }
