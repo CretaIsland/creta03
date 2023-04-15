@@ -160,6 +160,14 @@ class PlayerHandler extends ChangeNotifier {
     _currentPlayer?.play();
   }
 
+  void globalPause() {
+    _currentPlayer?.globalPause();
+  }
+
+  void globalResume() {
+    _currentPlayer?.globalResume();
+  }
+
   void setLoop(bool loop) {
     for (AbsPlayWidget player in _playerMap.values) {
       if (player.model!.contentsType == ContentsType.video) {

@@ -141,7 +141,7 @@ class ContentsModel extends CretaModel {
     playTime = UndoAble<double>(5000, mid); // 1000 분의 1초 milliseconds
     videoPlayTime = UndoAble<double>(5000, mid); // 1000 분의 1초 milliseconds
     mute = UndoAble<bool>(false, mid);
-    volume = UndoAble<double>(100, mid);
+    volume = UndoAble<double>(50, mid);
     aspectRatio = UndoAble<double>(1, mid);
     width = UndoAble<double>(320, mid);
     height = UndoAble<double>(180, mid);
@@ -281,19 +281,19 @@ class ContentsModel extends CretaModel {
     thumbnail = map["thumbnail"] ?? '';
 
     subList.set(map["subList"] ?? '', save: false, noUndo: true);
-    playTime.set(map["playTime"], save: false, noUndo: true);
-    videoPlayTime.set(map["videoPlayTime"], save: false, noUndo: true);
-    mute.set(map["mute"], save: false, noUndo: true);
-    volume.set(map["volume"], save: false, noUndo: true);
-    aspectRatio.set(map["aspectRatio"], save: false, noUndo: true);
-    width.set(map["width"], save: false, noUndo: true);
-    height.set(map["height"], save: false, noUndo: true);
+    playTime.set(map["playTime"] ?? 5000, save: false, noUndo: true);
+    videoPlayTime.set(map["videoPlayTime"] ?? 5000, save: false, noUndo: true);
+    mute.set(map["mute"] ?? false, save: false, noUndo: true);
+    volume.set(map["volume"] ?? 50, save: false, noUndo: true);
+    aspectRatio.set(map["aspectRatio"] ?? 1, save: false, noUndo: true);
+    width.set(map["width"] ?? 600, save: false, noUndo: true);
+    height.set(map["height"] ?? 400, save: false, noUndo: true);
     copyRight.set(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
     filter.set(ImageFilterType.fromInt(map["filter"] ?? 1), save: false, noUndo: true);
     fit.set(ContentsFitType.fromInt(map["fit"] ?? 1), save: false, noUndo: true);
     //isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
-    lastModifiedTime = map["lastModifiedTime"];
-    prevPlayTime = map["prevPlayTime"];
+    lastModifiedTime = map["lastModifiedTime"] ?? '';
+    prevPlayTime = map["prevPlayTime"] ?? '';
 
     font.set(map["font"] ?? CretaFont.fontFamily, save: false, noUndo: true);
     isBold.set(map["isBold"] ?? false, save: false, noUndo: true);

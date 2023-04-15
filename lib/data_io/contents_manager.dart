@@ -11,10 +11,13 @@ import '../model/page_model.dart';
 import '../pages/studio/studio_variables.dart';
 import '../player/player_handler.dart';
 import 'creta_manager.dart';
+import 'frame_manager.dart';
 
 class ContentsManager extends CretaManager {
   final PageModel pageModel;
   final FrameModel frameModel;
+
+  FrameManager? frameManager; //onDropPage 에서 video Contents 가 Drop 된 경우만 값을 가지고 있게 된다.
 
   PlayerHandler? playerHandler;
   void setPlayerHandler(PlayerHandler p) {
@@ -77,55 +80,68 @@ class ContentsManager extends CretaManager {
     return modelList.length;
   }
 
-  void resizeFrame(double ratio, double imageWidth, double imageHeight,
-      {bool invalidate = true, bool initPosition = true}) {
-    //abs_palyer에서만 호출된다.
-    // 원본에서 ratio = h / w 이다.
-    //width 와 height 중 짧은 쪽을 기준으로 해서,
-    // 반대편을 ratio 만큼 늘린다.
-    if (ratio == 0) return;
+  // void resizeFrame(double ratio, double imageWidth, double imageHeight,
+  //     {bool invalidate = true, bool initPosition = true}) {
+  //   //abs_palyer에서만 호출된다.
+  //   // 원본에서 ratio = h / w 이다.
+  //   //width 와 height 중 짧은 쪽을 기준으로 해서,
+  //   // 반대편을 ratio 만큼 늘린다.
+  //   if (ratio == 0) return;
 
-    double w = frameModel.width.value;
-    double h = frameModel.height.value;
+  //   double w = frameModel.width.value;
+  //   double h = frameModel.height.value;
 
-    double pageHeight = pageModel.height.value;
-    double pageWidth = pageModel.width.value;
+  //   double pageHeight = pageModel.height.value;
+  //   double pageWidth = pageModel.width.value;
 
-    double dx = frameModel.posX.value;
-    double dy = frameModel.posY.value;
+  //   double dx = frameModel.posX.value;
+  //   double dy = frameModel.posY.value;
 
-    logger.fine(
-        'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$imageWidth, imageH=$imageHeight, dx=$dx, dy=$dy --------------------');
+  //   logger.fine(
+  //       'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$imageWidth, imageH=$imageHeight, dx=$dx, dy=$dy --------------------');
 
-    if (imageWidth <= pageWidth && imageHeight <= pageHeight) {
-      w = imageWidth;
-      h = imageHeight;
-    } else {
-      // 뭔가가 pageSize 보다 크다.  어느쪽이 더 큰지 본다.
-      double wRatio = pageWidth / imageWidth;
-      double hRatio = pageHeight / imageHeight;
-      if (wRatio > hRatio) {
-        w = pageWidth;
-        h = w * ratio;
-      } else {
-        h = pageHeight;
-        w = h / ratio;
-      }
-    }
-    if (initPosition == true) {
-      dx = (pageWidth - w) / 2;
-      dy = (pageHeight - h) / 2;
-      frameModel.posX.set(dx, save: false, noUndo: true);
-      frameModel.posY.set(dy, save: false, noUndo: true);
-    }
-    frameModel.width.set(w, save: false, noUndo: true);
-    frameModel.height.set(h, save: false, noUndo: true);
-    logger.fine('resizeFrame($ratio, $invalidate) w=$w, h=$h, dx=$dx, dy=$dy --------------------');
-    frameModel.save();
+  //   if (imageWidth <= pageWidth && imageHeight <= pageHeight) {
+  //     w = imageWidth;
+  //     h = imageHeight;
+  //   } else {
+  //     // 뭔가가 pageSize 보다 크다.  어느쪽이 더 큰지 본다.
+  //     double wRatio = pageWidth / imageWidth;
+  //     double hRatio = pageHeight / imageHeight;
+  //     if (wRatio > hRatio) {
+  //       w = pageWidth;
+  //       h = w * ratio;
+  //     } else {
+  //       h = pageHeight;
+  //       w = h / ratio;
+  //     }
+  //   }
+  //   if (initPosition == true) {
+  //     dx = (pageWidth - w) / 2;
+  //     dy = (pageHeight - h) / 2;
+  //     frameModel.posX.set(dx, save: false, noUndo: true);
+  //     frameModel.posY.set(dy, save: false, noUndo: true);
+  //   }
+  //   frameModel.width.set(w, save: false, noUndo: true);
+  //   frameModel.height.set(h, save: false, noUndo: true);
+  //   logger.fine('resizeFrame($ratio, $invalidate) w=$w, h=$h, dx=$dx, dy=$dy --------------------');
+  //   frameModel.save();
 
-    if (invalidate) {
-      notify();
-    }
+  //   if (invalidate) {
+  //     notify();
+  //   }
+  // }
+
+  Future<void> resizeFrame(double aspectRatio, Size size, bool invalidate) async {
+    await frameManager?.resizeFrame(
+      frameModel,
+      aspectRatio,
+      size.width,
+      size.height,
+      invalidate: invalidate,
+    );
+    // onDropPage 에서 동영상을 넣었을때, 딱 한번만 resizeFrame 하게 하기 위해,
+    // frameManager 를 null 로 만들어준다.
+    frameManager = null;
   }
 
   Size getRealSize() {
@@ -146,6 +162,14 @@ class ContentsManager extends CretaManager {
 
   void pause() {
     playerHandler?.pause();
+  }
+
+  void globalPause() {
+    playerHandler?.globalPause();
+  }
+
+  void globalResume() {
+    playerHandler?.globalResume();
   }
 
   void setLoop(bool loop) {

@@ -177,12 +177,18 @@ class PlayTimer {
         }
 
         if (_currentModel!.isVideo()) {
+          if (StudioVariables.isAutoPlay) {
+            contentsManager.globalResume();
+          } else {
+            contentsManager.globalPause();
+          }
+
           if (_currentModel!.playState == PlayState.end) {
             _currentModel!.setPlayState(PlayState.none);
             logger.info('before next, currentOrder=$_currentOrder');
-            _currentOrder = contentsManager.nextOrder(_currentOrder);
             // 비디오가 마무리 작업을 할 시간을 준다.
             Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
+            _currentOrder = contentsManager.nextOrder(_currentOrder);
             logger.info('after next, currentOrder=$_currentOrder');
           }
           return;

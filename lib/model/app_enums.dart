@@ -298,6 +298,7 @@ enum PlayState {
   pause,
   disposed,
   manualPlay,
+  globalPause,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;

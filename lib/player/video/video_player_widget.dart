@@ -107,6 +107,44 @@ class VideoPlayerWidget extends AbsPlayWidget {
   }
 
   @override
+  Future<void> globalPause() async {
+    // while (model!.state == PlayState.disposed) {
+    //   await Future.delayed(const Duration(milliseconds: 100));
+    // }
+    logger.fine('globalPause');
+    model!.setPlayState(PlayState.globalPause);
+    await wcontroller!.pause();
+  }
+
+  @override
+  Future<void> globalResume() async {
+    // while (model!.state == PlayState.disposed) {
+    //   await Future.delayed(const Duration(milliseconds: 100));
+    // }
+    logger.fine('globalResume');
+    PlayState prevState = model!.playState;
+    if (prevState == PlayState.globalPause) {
+      model!.resumeState();
+      if (model!.playState == PlayState.start) {
+        await wcontroller!.play();
+      }
+    }
+  }
+
+  @override
+  Future<void> resume({bool byManual = false}) async {
+    // while (model!.state == PlayState.disposed) {
+    //   await Future.delayed(const Duration(milliseconds: 100));
+    // }
+    logger.fine('resume');
+    PlayState prevState = model!.playState;
+    model!.resumeState();
+    if (prevState == PlayState.pause && model!.playState == PlayState.start) {
+      await wcontroller!.play();
+    }
+  }
+
+  @override
   Future<void> close() async {
     model?.setPlayState(PlayState.none);
     logger.info("videoController close()");
@@ -180,6 +218,10 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       await Future.delayed(const Duration(milliseconds: 100));
     }
     logger.info('waitInit end');
+
+    Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
+    await widget.acc.resizeFrame(widget.wcontroller!.value.aspectRatio, outSize, true);
+
     if (widget.autoStart) {
       logger.info('initState play--${widget.model!.name}---------------');
       await widget.play();
@@ -189,9 +231,16 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // if (StudioVariables.isAutoPlay) {
+    //   widget.model!.setPlayState(PlayState.start);
+    // } else {
+    //   widget.model!.setPlayState(PlayState.pause);
+    // }
     if (StudioVariables.isSilent) {
       widget.wcontroller!.setVolume(0.0);
-      widget.model!.mute.set(true, save: false, noUndo: true);
+    } else {
+      widget.wcontroller!.setVolume(widget.model!.volume.value);
+      widget.model!.mute.set(widget.model!.mute.value, save: false, noUndo: true);
     }
 
     if (widget.wcontroller != null && widget.wcontroller!.value.isInitialized) {
@@ -225,6 +274,7 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               .info('VideoPlayerWidget build aspectRatio=${widget.wcontroller!.value.aspectRatio}');
           // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
           Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
+
           return IgnorePointer(
             child: widget.getClipRect(
                 outSize, VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url))),

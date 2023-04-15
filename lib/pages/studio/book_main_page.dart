@@ -521,8 +521,13 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
               SizedBox(width: padding),
               BTN.floating_l(
-                icon: Icons.volume_off_outlined,
-                onPressed: () {},
+                icon:
+                    StudioVariables.isSilent ? Icons.volume_off_outlined : Icons.volume_up_outlined,
+                onPressed: () {
+                  setState(() {
+                    StudioVariables.isSilent = !StudioVariables.isSilent;
+                  });
+                },
                 hasShadow: false,
                 tooltip: CretaStudioLang.tooltipVolume,
               ),

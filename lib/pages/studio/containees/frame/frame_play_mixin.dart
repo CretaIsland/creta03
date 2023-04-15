@@ -34,7 +34,10 @@ mixin FramePlayMixin {
       if (contentsManager.getAvailLength() == 1) {
         contentsManager.setLoop(false);
       }
-      await _videoProcess(contentsManager, contentsModel);
+      if (isResizeFrame) {
+        contentsManager.frameManager = frameManager;
+      }
+      await _videoProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
     }
     // 콘텐츠 객체를 DB에 Crete 한다.
     await contentsManager.createNextContents(contentsModel, doNotify: false);
@@ -102,7 +105,8 @@ mixin FramePlayMixin {
     return;
   }
 
-  Future<void> _videoProcess(ContentsManager contentsManager, ContentsModel contentsModel) async {
+  Future<void> _videoProcess(ContentsManager contentsManager, ContentsModel contentsModel,
+      {required bool isResizeFrame}) async {
     //dropdown 하는 순간에 이미 플레이되고 있는 video 가 있다면, 정지시켜야 한다.
     //contentsManager.pause();
 
