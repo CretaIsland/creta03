@@ -51,7 +51,8 @@ class VideoPlayerWidget extends AbsPlayWidget {
         //setState(() {});
         model!.videoPlayTime
             .set(wcontroller!.value.duration.inMilliseconds.toDouble(), noUndo: true, save: false);
-        wcontroller!.setLooping(acc.getAvailLength() == 1);
+        //wcontroller!.setLooping(acc.getAvailLength() == 1);
+        wcontroller!.setLooping(false);
 
         wcontroller!.onAfterVideoEvent = (event) {
           if (event.duration != null) {
@@ -163,6 +164,11 @@ class VideoPlayerWidget extends AbsPlayWidget {
   }
 
   @override
+  Future<void> rewind() async {
+    await wcontroller!.seekTo(Duration.zero);
+  }
+
+  @override
   Future<void> setSound(double val) async {
     await wcontroller!.setVolume(1.0);
     model!.volume.set(val);
@@ -237,10 +243,12 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     //   widget.model!.setPlayState(PlayState.pause);
     // }
     if (StudioVariables.isSilent) {
-      widget.wcontroller!.setVolume(0.0);
+      widget.wcontroller?.setVolume(0.0);
     } else {
-      widget.wcontroller!.setVolume(widget.model!.volume.value);
-      widget.model!.mute.set(widget.model!.mute.value, save: false, noUndo: true);
+      widget.wcontroller?.setVolume(widget.model!.volume.value);
+      if (widget.model != null) {
+        widget.model!.mute.set(widget.model!.mute.value, save: false, noUndo: true);
+      }
     }
 
     if (widget.wcontroller != null && widget.wcontroller!.value.isInitialized) {

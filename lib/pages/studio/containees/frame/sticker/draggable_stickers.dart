@@ -347,7 +347,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
       if (contentsManager.isEmpty()) {
         return const SizedBox.shrink();
       }
-
+      if (contentsManager.getSelected() == null) {
+        return const SizedBox.shrink();
+      }
       return MiniMenuContents(
         key: const ValueKey('MiniMenuContents'),
         parentPosition: _selectedSticker!.position,
@@ -368,7 +370,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         },
         onContentsDelete: () {
           logger.fine('onContentsDelete');
-          contentsManager.removeSelected();
+          contentsManager.removeSelected(context);
           //setState(() {});
         },
         onContentsEdit: () {

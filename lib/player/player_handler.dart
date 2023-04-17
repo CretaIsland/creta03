@@ -79,6 +79,10 @@ class PlayerHandler extends ChangeNotifier {
     _timer?.disposeTimer();
   }
 
+  Future<void> reOrdering({bool rewind = false}) async {
+    await _timer?.reOrdering(rewind);
+  }
+
   ContentsModel? getCurrentModel() {
     if (!_initComplete || _timer == null) {
       return null;
@@ -86,46 +90,52 @@ class PlayerHandler extends ChangeNotifier {
     return _timer!.currentModel;
   }
 
+  String _keyMangler(String mid, bool flag) {
+    return mid + (flag ? '_x' : '_y');
+  }
+
   AbsPlayWidget createPlayer(ContentsModel model) {
-    AbsPlayWidget? player = _playerMap[model.mid];
+    String key = _keyMangler(model.mid, model.changeToggle);
+    AbsPlayWidget? player = _playerMap[key];
     if (player != null) {
       _currentPlayer = player;
       return player;
     }
     player = _createPlayer(model);
     _currentPlayer = player;
-    _playerMap[model.mid] = player;
+    _playerMap[key] = player;
     player.init();
     logger.info('player newly created');
     return player;
   }
 
   AbsPlayWidget _createPlayer(ContentsModel model) {
+    String key = _keyMangler(model.mid, model.changeToggle);
     switch (model.contentsType) {
       case ContentsType.video:
         return VideoPlayerWidget(
-          globalKey: GlobalObjectKey<VideoPlayerWidgetState>(model.mid),
+          globalKey: GlobalObjectKey<VideoPlayerWidgetState>(key),
           model: model,
           acc: contentsManager!,
           onAfterEvent: () {},
         );
       case ContentsType.image:
         return ImagePlayerWidget(
-          globalKey: GlobalObjectKey<ImagePlayerWidgetState>(model.mid),
+          globalKey: GlobalObjectKey<ImagePlayerWidgetState>(key),
           model: model,
           acc: contentsManager!,
           onAfterEvent: () {},
         );
       case ContentsType.text:
         return TextPlayerWidget(
-          globalKey: GlobalObjectKey<TextPlayerWidgetState>(model.mid),
+          globalKey: GlobalObjectKey<TextPlayerWidgetState>(key),
           model: model,
           acc: contentsManager!,
           onAfterEvent: () {},
         );
       default:
         throw EmptyPlayWidget(
-            key: GlobalObjectKey<EmptyPlayWidgetState>(model.mid),
+            key: GlobalObjectKey<EmptyPlayWidgetState>(key),
             onAfterEvent: () {},
             acc: contentsManager!);
     }
@@ -138,8 +148,8 @@ class PlayerHandler extends ChangeNotifier {
     }
   }
 
-  void toggleIsPause() {
-    _timer?.togglePause();
+  Future<void> toggleIsPause() async {
+    await _timer?.togglePause();
   }
 
   bool isPause() {
@@ -149,31 +159,54 @@ class PlayerHandler extends ChangeNotifier {
     return _timer!.isPauseTimer;
   }
 
-  void next() => _timer?.next();
-  void prev() => _timer?.prev();
+  Future<void> next() async => await _timer?.next();
+  Future<void> prev() async => await _timer?.prev();
 
-  void pause() {
-    _currentPlayer?.pause();
+  Future<void> pause() async {
+    await _currentPlayer?.pause();
   }
 
-  void play() {
-    _currentPlayer?.play();
+  Future<void> close() async {
+    await _currentPlayer?.close();
   }
 
-  void globalPause() {
-    _currentPlayer?.globalPause();
+  Future<void> play() async {
+    await _currentPlayer?.play();
   }
 
-  void globalResume() {
-    _currentPlayer?.globalResume();
+  Future<void> rewind() async {
+    _timer?.reset();
+    await _currentPlayer?.rewind();
   }
 
-  void setLoop(bool loop) {
-    for (AbsPlayWidget player in _playerMap.values) {
-      if (player.model!.contentsType == ContentsType.video) {
-        VideoPlayerWidget video = player as VideoPlayerWidget;
-        video.wcontroller?.setLooping(loop);
-      }
+  Future<void> globalPause() async {
+    await _currentPlayer?.globalPause();
+  }
+
+  Future<void> globalResume() async {
+    await _currentPlayer?.globalResume();
+  }
+
+  bool isInit() {
+    if (_currentPlayer == null) {
+      return false;
     }
+    return _currentPlayer!.isInit();
   }
+
+  int getAvailLength() {
+    if (contentsManager != null) {
+      return contentsManager!.getAvailLength();
+    }
+    return 0;
+  }
+
+  // void setLoop(bool loop) {
+  //   for (AbsPlayWidget player in _playerMap.values) {
+  //     if (player.model!.contentsType == ContentsType.video) {
+  //       VideoPlayerWidget video = player as VideoPlayerWidget;
+  //       video.wcontroller?.setLooping(loop);
+  //     }
+  //   }
+  // }
 }

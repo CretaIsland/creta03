@@ -17,6 +17,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
 
 import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_popup_menu.dart';
+import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/studio_constant.dart';
@@ -652,8 +653,29 @@ abstract class CretaManager extends AbsExModelManager {
 
   double nextOrder(double currentOrder) {
     bool matched = false;
-    for (double ele in _orderMap.deepSortByKey().keys) {
+
+    late Iterable<double> keys;
+    if (collectionId == "creta_contents") {
+      // 콘텐츠는 역순으로 정력해야 한다.
+      keys = _orderMap.deepReverse().keys;
+    } else {
+      keys = _orderMap.deepSortByKey().keys;
+    }
+
+    for (double ele in keys) {
       if (matched == true) {
+        if (collectionId == "creta_contents") {
+          ContentsModel next = _orderMap[ele] as ContentsModel;
+          if (currentOrder >= 0) {
+            ContentsModel curr = _orderMap[currentOrder] as ContentsModel;
+
+            logger.info(
+                'currentOrder $currentOrder, cur=${curr.name.substring(0, 6)}, nextOrder : ${ele.round()}, nex=${next.name.substring(0, 6)}');
+          } else {
+            logger.info(
+                'currentOrder $currentOrder, cur=NULL, nextOrder : ${ele.round()}, nex=${next.name.substring(0, 6)}');
+          }
+        }
         return ele;
       }
       if (ele == currentOrder) {
@@ -663,14 +685,31 @@ abstract class CretaManager extends AbsExModelManager {
     }
     if (matched == true) {
       // 끝까지 온것이다.  처음으로 돌아간다.
-      return _orderMap.deepSortByKey().keys.first;
+      ContentsModel next = _orderMap[keys.first] as ContentsModel;
+      if (currentOrder >= 0) {
+        ContentsModel curr = _orderMap[currentOrder] as ContentsModel;
+        logger.info(
+            'currentOrder $currentOrder, cur=${curr.name.substring(0, 6)}, nextOrder : ${keys.first.round()}, nex=${next.name}');
+      } else {
+        logger.info(
+            'currentOrder $currentOrder, cur=NULL, nextOrder : ${keys.first.round()}, nex=${next.name}');
+      }
+      return keys.first;
     }
     return -1;
   }
 
   double prevOrder(double currentOrder) {
     bool matched = false;
-    for (double ele in _orderMap.deepReverse().keys) {
+    late Iterable<double> keys;
+    if (collectionId == "creta_contents") {
+      // 콘텐츠는 역순으로 정력해야 한다.
+      keys = _orderMap.deepSortByKey().keys;
+    } else {
+      keys = _orderMap.deepReverse().keys;
+    }
+
+    for (double ele in keys) {
       if (matched == true) {
         return ele;
       }
@@ -680,8 +719,7 @@ abstract class CretaManager extends AbsExModelManager {
       }
     }
     if (matched == true) {
-      // 처음까지 온것이다.  마지막으로 돌아간다.
-      return _orderMap.deepSortByKey().keys.last;
+      return keys.first;
     }
     return -1;
   }
@@ -689,6 +727,19 @@ abstract class CretaManager extends AbsExModelManager {
   void reOrdering() {
     lock();
     _orderMap.clear();
+    // if (collectionId == "creta_contents") {
+    //   // 콘텐츠는 역순으로 정력해야 한다.
+    //   for (var ele in modelList) {
+    //     if (ele.isRemoved.value == true) {
+    //       continue;
+    //     }
+    //     _orderMap[StudioConst.bigNumber - ele.order.value] = ele as CretaModel;
+    //   }
+    //   logger.finest('reOrdering  ${_orderMap.length}');
+
+    //   unlock();
+    //   return;
+    // }
     for (var ele in modelList) {
       if (ele.isRemoved.value == true) {
         continue;

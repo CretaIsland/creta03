@@ -4,6 +4,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
+import '../design_system/creta_font.dart';
+import '../lang/creta_lang.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
@@ -48,7 +50,14 @@ class ContentsManager extends CretaManager {
   Future<ContentsModel> createNextContents(ContentsModel model, {bool doNotify = true}) async {
     model.order.set(lastOrder() + 1, save: false, noUndo: true);
     await createToDB(model);
-    insert(model, doNotify: doNotify);
+    insert(model, postion: getLength(), doNotify: doNotify);
+    if (playerHandler != null) {
+      if (playerHandler!.isInit()) {
+        await playerHandler?.rewind();
+        await playerHandler?.pause();
+      }
+      await playerHandler?.reOrdering(rewind: true);
+    }
     return model;
   }
 
@@ -150,29 +159,47 @@ class ContentsManager extends CretaManager {
     return Size(width, height);
   }
 
-  void removeSelected() {
+  Future<void> removeSelected(BuildContext context) async {
     ContentsModel? model = getSelected() as ContentsModel?;
-    if (model == null) return;
-    model.isRemoved.set(true, save: false);
-    setToDB(model);
-    remove(model);
-    logger.info('remove contents ${model.name}, ${model.mid}');
-    reOrdering();
+    if (model == null) {
+      SnackBar(
+          content: Text(
+        CretaLang.contentsNotDeleted,
+        style: CretaFont.titleLarge,
+      ));
+
+      return;
+    }
+
+    if (playerHandler != null && playerHandler!.isInit()) {
+      await pause();
+
+      model.isRemoved.set(true, save: false);
+      await setToDB(model);
+      remove(model);
+      logger.info('remove contents ${model.name}, ${model.mid}');
+      await playerHandler?.reOrdering();
+
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, model.name + CretaLang.contentsDeleted);
+      return;
+    }
+    showSnackBar(context, CretaLang.contentsNotDeleted);
   }
 
-  void pause() {
-    playerHandler?.pause();
+  Future<void> pause() async {
+    await playerHandler?.pause();
   }
 
-  void globalPause() {
-    playerHandler?.globalPause();
+  Future<void> globalPause() async {
+    await playerHandler?.globalPause();
   }
 
-  void globalResume() {
-    playerHandler?.globalResume();
+  Future<void> globalResume() async {
+    await playerHandler?.globalResume();
   }
 
-  void setLoop(bool loop) {
-    playerHandler?.setLoop(loop);
-  }
+  // void setLoop(bool loop) {
+  //   playerHandler?.setLoop(loop);
+  // }
 }

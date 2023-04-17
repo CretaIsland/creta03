@@ -15,10 +15,14 @@ import 'app_enums.dart';
 import 'creta_model.dart';
 
 class ContentsModel extends CretaModel {
+  // DB 에 저장하지 않는 member [
   double prevShadowBlur = 0;
   TextAniType prevAniType = TextAniType.none;
   Color prevFontColor = Colors.transparent;
   double prevOutLineWidth = 0;
+  bool forceToChange = false;
+  bool changeToggle = false;
+  // ]
 
   late String name; // aaa.jpg
   late int bytes;

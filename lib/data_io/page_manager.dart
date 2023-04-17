@@ -98,7 +98,7 @@ class PageManager extends CretaManager {
   Future<PageModel> createNextPage() async {
     PageModel defaultPage = PageModel.makeSample(lastOrder() + 1, bookModel!.mid);
     await createToDB(defaultPage);
-    insert(defaultPage, postion: getAvailLength());
+    insert(defaultPage, postion: getLength());
     selectedMid = defaultPage.mid;
     //reOrdering();
     return defaultPage;

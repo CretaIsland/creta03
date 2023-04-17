@@ -26,15 +26,15 @@ class PlayTimer {
   bool _isPauseTimer = false;
   bool _isPrevPauseTimer = false;
 
-  void togglePause() {
+  Future<void> togglePause() async {
     _isPrevPauseTimer = _isPauseTimer;
     _isPauseTimer = !_isPauseTimer;
 
     if (_currentModel != null && _currentModel!.contentsType == ContentsType.video) {
       if (_isPauseTimer) {
-        playHandler.pause();
+        await playHandler.pause();
       } else {
-        playHandler.play();
+        await playHandler.play();
       }
     }
   }
@@ -70,7 +70,7 @@ class PlayTimer {
       if (_currentModel != null) {
         break;
       }
-      _currentOrder = contentsManager.nextOrder(_currentOrder);
+      _next();
       if (_currentOrder < 0) {
         return; // 돌릴게 없다.
       }
@@ -78,11 +78,16 @@ class PlayTimer {
     }
     _prevModel ??= ContentsModel('');
 
-    //logger.info('_setCurrentModel ${_currentModel!.mid}');
-    if (_currentModel!.mid != _prevModel!.mid) {
+    if (_currentModel!.mid != _prevModel!.mid || _currentModel!.forceToChange == true) {
+      logger.info('CurrentModel changed from ${_prevModel!.name}');
       _currentModel!.copyTo(_prevModel!);
+      if (_currentModel!.forceToChange == true) {
+        _currentModel!.forceToChange = false;
+        _currentModel!.changeToggle = !_currentModel!.changeToggle;
+      }
       playHandler.notify();
       notifyToProperty();
+      logger.info('CurrentModel changed to ${_currentModel!.name}');
     }
 
     return;
@@ -90,9 +95,24 @@ class PlayTimer {
 
   Future<void> next() async {
     await _lock.synchronized(() async {
-      _currentPlaySec = 0.0;
-      _currentOrder = contentsManager.nextOrder(_currentOrder);
+      if (playHandler.isInit()) {
+        if (contentsManager.getAvailLength() > 1) {
+          playHandler.rewind();
+          playHandler.pause();
+        }
+        _next();
+      }
     });
+  }
+
+  void _next() {
+    _currentPlaySec = 0.0;
+    if (contentsManager.getAvailLength() == 1) {
+      if (_currentModel != null) {
+        _currentModel!.forceToChange = true;
+      }
+    }
+    _currentOrder = contentsManager.nextOrder(_currentOrder);
   }
 
   void notifyToProperty() {
@@ -109,9 +129,15 @@ class PlayTimer {
   }
 
   Future<void> prev() async {
+    logger.info('prev button pressed');
     await _lock.synchronized(() async {
-      _currentPlaySec = 0.0;
-      _currentOrder = contentsManager.prevOrder(_currentOrder);
+      if (playHandler.isInit()) {
+        if (contentsManager.getAvailLength() > 1) {
+          playHandler.rewind();
+          playHandler.pause();
+        }
+        _currentOrder = contentsManager.prevOrder(_currentOrder);
+      }
     });
   }
 
@@ -119,6 +145,10 @@ class PlayTimer {
     await _lock.synchronized(
       () async {
         if (contentsManager.isEmpty()) return;
+        if (BookMainPage.pageManagerHolder!.isSelected(contentsManager.pageModel.mid) == false) {
+          // 현재 보여지고 있는 페이지가 아니라면 타이머는 쉰다.
+          return;
+        }
 
         if (_isPauseTimer == true) {
           _currentModel?.setPlayState(PlayState.pause);
@@ -133,7 +163,7 @@ class PlayTimer {
 
         // 아무것도 돌고 있지 않다면,
         if (_currentOrder < 0) {
-          _currentOrder = contentsManager.firstOrder();
+          _currentOrder = contentsManager.lastOrder(); //가장 마지막이 가장 먼저 돌아야 하므로.
           logger.info('currentOrder=$_currentOrder');
           if (_currentOrder < 0) {
             return; // 돌릴게 없다.
@@ -167,8 +197,7 @@ class PlayTimer {
               'playTime expired $playTime, ${_currentModel!.name}, ${_currentModel!.order.value}');
 
           // 교체시간이 되었다.
-          _currentPlaySec = 0.0;
-          _currentOrder = contentsManager.nextOrder(_currentOrder);
+          _next();
           // await playHandler.setProgressBar(
           //   playTime <= 0 ? 0 : _currentPlaySec / playTime,
           //   _currentModel!,
@@ -178,9 +207,9 @@ class PlayTimer {
 
         if (_currentModel!.isVideo()) {
           if (StudioVariables.isAutoPlay) {
-            contentsManager.globalResume();
+            await contentsManager.globalResume();
           } else {
-            contentsManager.globalPause();
+            await contentsManager.globalPause();
           }
 
           if (_currentModel!.playState == PlayState.end) {
@@ -188,12 +217,29 @@ class PlayTimer {
             logger.info('before next, currentOrder=$_currentOrder');
             // 비디오가 마무리 작업을 할 시간을 준다.
             Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
-            _currentOrder = contentsManager.nextOrder(_currentOrder);
+            _next();
+
             logger.info('after next, currentOrder=$_currentOrder');
           }
           return;
         }
       },
     );
+  }
+
+  Future<void> reset() async {
+    await _lock.synchronized(() {
+      _currentPlaySec = 0.0;
+    });
+  }
+
+  Future<void> reOrdering(bool isRewind) async {
+    await _lock.synchronized(() {
+      contentsManager.reOrdering();
+      if (isRewind) {
+        _currentPlaySec = 0.0;
+        _currentOrder = contentsManager.lastOrder();
+      }
+    });
   }
 }

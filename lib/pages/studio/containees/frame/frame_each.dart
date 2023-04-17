@@ -9,6 +9,7 @@ import 'package:creta03/design_system/component/creta_texture_widget.dart';
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/component/snippet.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
@@ -48,6 +49,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   ContentsManager? _contentsManager;
   PlayerHandler? _playerHandler;
 
+  bool _isInitialized = false;
   //final bool _isHover = false;
 
   @override
@@ -69,6 +71,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     logger.info('initChildren(${_contentsManager!.getAvailLength()})');
 
     _contentsManager!.setPlayerHandler(_playerHandler!);
+    _isInitialized = true;
 
     _playerHandler!.start(_contentsManager!);
   }
@@ -86,12 +89,39 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
           value: _playerHandler!,
         ),
       ],
-      child: _frameDropZone(),
+      child: _isInitialized ? _frameDropZone() : _futureBuider(),
     );
   }
 
+  Future<bool> _waitInit() async {
+    //await widget.init();
+    //bool isReady = widget.wcontroller!.value.isInitialized;
+    while (!_isInitialized) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return true;
+  }
+
+  Widget _futureBuider() {
+    return FutureBuilder<bool>(
+        future: _waitInit(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData == false) {
+            //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
+            return Snippet.showWaitSign();
+          }
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            return Snippet.errMsgWidget(snapshot);
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return _frameDropZone();
+          }
+          return const SizedBox.shrink();
+        });
+  }
+
   Widget _frameDropZone() {
-    int contentsCount = _contentsManager!.getAvailLength();
     return DropZoneWidget(
       parentId: '',
       onDroppedFile: (model) {
@@ -106,7 +136,6 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
           OnFrameMenu(
             playerHandler: _playerHandler,
             model: widget.model,
-            contentsCount: contentsCount,
           ),
         ],
       ),

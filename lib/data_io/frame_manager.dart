@@ -49,7 +49,7 @@ class FrameManager extends CretaManager {
   Future<FrameModel> createNextFrame({bool doNotify = true}) async {
     FrameModel defaultFrame = FrameModel.makeSample(lastOrder() + 1, pageModel.mid);
     await createToDB(defaultFrame);
-    insert(defaultFrame, postion: getAvailLength(), doNotify: doNotify);
+    insert(defaultFrame, postion: getLength(), doNotify: doNotify);
     selectedMid = defaultFrame.mid;
     //reOrdering();
     return defaultFrame;
@@ -66,7 +66,7 @@ class FrameManager extends CretaManager {
     logger.fine('create new frame ${newModel.mid}');
 
     await createToDB(newModel);
-    insert(newModel, postion: getAvailLength());
+    insert(newModel, postion: getLength());
     selectedMid = newModel.mid;
     //reOrdering();
     return newModel;

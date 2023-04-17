@@ -31,9 +31,9 @@ mixin FramePlayMixin {
       await _imageProcess(contentsManager, contentsModel, frameModel, pageModel,
           isResizeFrame: isResizeFrame);
     } else if (contentsModel.contentsType == ContentsType.video) {
-      if (contentsManager.getAvailLength() == 1) {
-        contentsManager.setLoop(false);
-      }
+      // if (contentsManager.getAvailLength() == 1) {
+      //   contentsManager.setLoop(false);
+      // }
       if (isResizeFrame) {
         contentsManager.frameManager = frameManager;
       }
@@ -42,7 +42,7 @@ mixin FramePlayMixin {
     // 콘텐츠 객체를 DB에 Crete 한다.
     await contentsManager.createNextContents(contentsModel, doNotify: false);
 
-    BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
     DraggableStickers.selectedAssetId = frameModel.mid;
     frameManager!.setSelectedMid(frameModel.mid);
     //frameManager!.notify();

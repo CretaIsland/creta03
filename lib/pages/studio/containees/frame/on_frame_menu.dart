@@ -10,10 +10,8 @@ import 'sticker/draggable_stickers.dart';
 class OnFrameMenu extends StatefulWidget {
   final PlayerHandler? playerHandler;
   final FrameModel model;
-  final int contentsCount;
 
-  const OnFrameMenu(
-      {super.key, required this.playerHandler, required this.model, required this.contentsCount});
+  const OnFrameMenu({super.key, required this.playerHandler, required this.model});
 
   @override
   State<OnFrameMenu> createState() => _OnFrameMenuState();
@@ -23,6 +21,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
   bool _isHover = false;
   @override
   Widget build(BuildContext context) {
+    final int contentsCount = widget.playerHandler!.getAvailLength();
     return MouseRegion(
       onEnter: ((event) {
         //logger.info('onEnter');
@@ -49,7 +48,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              if (_isHover)
+              if (_isHover && contentsCount > 0)
                 BTN.fill_i_s(
                     icon: widget.playerHandler != null && widget.playerHandler!.isPause()
                         ? Icons.play_arrow
@@ -60,34 +59,39 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                         widget.playerHandler?.toggleIsPause();
                       });
                     }),
-              if (_isHover)
+              if (_isHover && contentsCount > 1)
                 Align(
                   alignment: const Alignment(-0.5, 0),
                   child: BTN.fill_i_s(
                       icon: Icons.skip_previous,
-                      onPressed: () {
+                      onPressed: () async {
                         logger.info('prev Button pressed');
-                        widget.playerHandler?.prev();
+                        await widget.playerHandler?.prev();
                       }),
                 ),
-              if (_isHover)
+              if (_isHover && contentsCount > 1)
                 Align(
                   alignment: const Alignment(0.5, 0),
                   child: BTN.fill_i_s(
                       icon: Icons.skip_next,
-                      onPressed: () {
+                      onPressed: () async {
                         logger.info('next Button pressed');
-                        widget.playerHandler?.next();
+                        await widget.playerHandler?.next();
                       }),
+                ),
+              if (_isHover && contentsCount == 0)
+                Text(
+                  '${widget.model.order.value}',
+                  style: CretaFont.titleELarge.copyWith(color: Colors.black),
                 ),
               if (DraggableStickers.isFrontBackHover)
                 Text(
-                  '${widget.model.order.value} : $widget.contentsCount',
+                  '${widget.model.order.value} : $contentsCount',
                   style: CretaFont.titleELarge.copyWith(color: Colors.white),
                 ),
               if (DraggableStickers.isFrontBackHover)
                 Text(
-                  '${widget.model.order.value} : $widget.contentsCount',
+                  '${widget.model.order.value} : $contentsCount',
                   style: CretaFont.titleLarge,
                 ),
             ],
