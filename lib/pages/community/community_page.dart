@@ -134,8 +134,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         _titlePane = _getTitlePane;
         setUsingBannerScrollBar(
           scrollChangedCallback: _scrollChangedCallback,
-          bannerMinHeight: 160,
-          bannerMaxHeight: 160,
+          //bannerMinHeight: 160,
+          //bannerMaxHeight: 160,
         );
         break;
       case AppRoutes.watchHistory:
@@ -1162,7 +1162,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             mainWidget: _getRightPane(gridArea),
             listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
             titlePane: _titlePane,
-            leftPaddingOfFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 346 : null,
+            leftPaddingOfFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 306 : null,
           ),
           _getRightOverlayPane(gridArea),
         ],
