@@ -8,7 +8,7 @@ import '../../pages/studio/studio_variables.dart';
 import 'creta_banner_pane.dart';
 import 'creta_leftbar.dart';
 import 'snippet.dart';
-import 'creta_filter_pane.dart';
+//import 'creta_filter_pane.dart';
 
 mixin CretaBasicLayoutMixin {
   final ScrollController _bannerScrollController = ScrollController();
@@ -76,6 +76,7 @@ mixin CretaBasicLayoutMixin {
     bool? scrollbarOnRight,
     List<List<CretaMenuItem>>? listOfListFilterOnRight,
     void Function(String)? onSearch,
+    double? leftPaddingOfFilter,
   }) {
     return CretaBannerPane(
       width: width,
@@ -89,6 +90,7 @@ mixin CretaBasicLayoutMixin {
       scrollbarOnRight: scrollbarOnRight,
       listOfListFilterOnRight: listOfListFilterOnRight,
       onSearch: onSearch,
+      leftPaddingOfFilter: leftPaddingOfFilter,
     );
   }
 
@@ -150,31 +152,32 @@ mixin CretaBasicLayoutMixin {
                         height: topBannerArea.height,
                         title: bannerTitle,
                         description: bannerDescription,
-                        listOfListFilter: (leftPaddingOfFilter != null) ? [] : listOfListFilter,
+                        listOfListFilter: listOfListFilter,//(leftPaddingOfFilter != null) ? [] : listOfListFilter,
                         titlePane: titlePane,
                         isSearchbarInBanner: isSearchbarInBanner,
                         scrollbarOnRight: true,
-                        listOfListFilterOnRight: (leftPaddingOfFilter != null) ? null : listOfListFilterOnRight,
-                        onSearch: (leftPaddingOfFilter != null) ? null : onSearch,
+                        listOfListFilterOnRight: listOfListFilterOnRight,//(leftPaddingOfFilter != null) ? null : listOfListFilterOnRight,
+                        onSearch: onSearch,//(leftPaddingOfFilter != null) ? null : onSearch,
+                        leftPaddingOfFilter: leftPaddingOfFilter,
                       ),
-                      (leftPaddingOfFilter == null)
-                          ? const SizedBox.shrink()
-                          : Positioned(
-                              left: leftPaddingOfFilter,
-                              top: topBannerArea.height - 20,
-                              child: SizedBox(
-                                width: topBannerArea.width - leftPaddingOfFilter - LayoutConst.cretaScrollbarWidth,
-                                height: LayoutConst.cretaTopFilterHeight - 20,
-                                child: CretaFilterPane(
-                                  width: topBannerArea.width - leftPaddingOfFilter - LayoutConst.cretaScrollbarWidth,
-                                  height: LayoutConst.cretaTopFilterHeight,
-                                  listOfListFilter: listOfListFilter,
-                                  onSearch: onSearch,
-                                  listOfListFilterOnRight: listOfListFilterOnRight,
-                                  rowCrossAxisAlignment: CrossAxisAlignment.start,
-                                ),
-                              ),
-                            ),
+                      // (leftPaddingOfFilter == null)
+                      //     ? const SizedBox.shrink()
+                      //     : Positioned(
+                      //         left: leftPaddingOfFilter,
+                      //         top: topBannerArea.height - 20,
+                      //         child: SizedBox(
+                      //           width: topBannerArea.width - leftPaddingOfFilter - LayoutConst.cretaScrollbarWidth,
+                      //           height: LayoutConst.cretaTopFilterHeight - 20,
+                      //           child: CretaFilterPane(
+                      //             width: topBannerArea.width - leftPaddingOfFilter - LayoutConst.cretaScrollbarWidth,
+                      //             height: LayoutConst.cretaTopFilterHeight,
+                      //             listOfListFilter: listOfListFilter,
+                      //             onSearch: onSearch,
+                      //             listOfListFilterOnRight: listOfListFilterOnRight,
+                      //             rowCrossAxisAlignment: CrossAxisAlignment.start,
+                      //           ),
+                      //         ),
+                      //       ),
                     ],
                   ),
                 )
@@ -190,6 +193,7 @@ mixin CretaBasicLayoutMixin {
                             isSearchbarInBanner: isSearchbarInBanner,
                             listOfListFilterOnRight: listOfListFilterOnRight,
                             onSearch: onSearch,
+                            leftPaddingOfFilter: leftPaddingOfFilter,
                           )
                         : Container(),
                     gridArea.height > gridMinArea.height && gridArea.width > gridMinArea.width

@@ -24,19 +24,22 @@ class CretaBannerPane extends StatefulWidget {
   final void Function(String)? onSearch;
   final List<List<CretaMenuItem>>? listOfListFilterOnRight;
   final bool? scrollbarOnRight;
-  const CretaBannerPane(
-      {super.key,
-      required this.width,
-      required this.height,
-      required this.color,
-      required this.title,
-      required this.description,
-      required this.listOfListFilter,
-      this.titlePane,
-      this.isSearchbarInBanner,
-      this.listOfListFilterOnRight,
-      this.scrollbarOnRight,
-      this.onSearch});
+  final double? leftPaddingOfFilter;
+  const CretaBannerPane({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.color,
+    required this.title,
+    required this.description,
+    required this.listOfListFilter,
+    this.titlePane,
+    this.isSearchbarInBanner,
+    this.listOfListFilterOnRight,
+    this.scrollbarOnRight,
+    this.onSearch,
+    this.leftPaddingOfFilter,
+  });
 
   @override
   State<CretaBannerPane> createState() => _CretaBannerPaneState();
@@ -92,10 +95,10 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
             ),
           ),
           Positioned(
-            left: LayoutConst.cretaTopFilterPaddingLT.width,
+            left: LayoutConst.cretaTopFilterPaddingLT.width + (widget.leftPaddingOfFilter ?? 0),
             top: LayoutConst.cretaTopFilterPaddingLT.height + heightDelta,
             child: CretaFilterPane(
-              width: internalWidth,
+              width: internalWidth - (widget.leftPaddingOfFilter ?? 0),
               height: LayoutConst.cretaTopFilterItemHeight,
               listOfListFilter: widget.listOfListFilter,
               listOfListFilterOnRight: widget.listOfListFilterOnRight,
