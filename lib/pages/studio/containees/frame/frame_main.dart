@@ -176,9 +176,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           logger.info('onComplete');
           _sendEvent?.sendEvent(model);
           BookMainPage.miniMenuNotifier!.isShow = true;
-          BookMainPage.miniMenuContentsNotifier!.isShow = true;
+          //BookMainPage.miniMenuContentsNotifier!.isShow = true;
           BookMainPage.miniMenuNotifier?.notify();
-          BookMainPage.miniMenuContentsNotifier?.notify();
+          //BookMainPage.miniMenuContentsNotifier?.notify();
         }
       },
       onScaleStart: (mid) {
@@ -186,9 +186,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         if (model != null && model.mid == mid) {
           logger.info('onScaleStart');
           BookMainPage.miniMenuNotifier!.isShow = false;
-          BookMainPage.miniMenuContentsNotifier!.isShow = false;
+          //BookMainPage.miniMenuContentsNotifier!.isShow = false;
           BookMainPage.miniMenuNotifier?.notify();
-          BookMainPage.miniMenuContentsNotifier?.notify();
+          //BookMainPage.miniMenuContentsNotifier?.notify();
         }
       },
       onFrontBackHover: (hover) {

@@ -195,6 +195,9 @@ class ContentsManager extends CretaManager {
       showSnackBar(context, model.name + CretaLang.contentsDeleted, duration: snackBarDuration);
       await Future.delayed(snackBarDuration);
       iamBusy = false;
+
+      //MiniMenu.minuMenuKey
+      BookMainPage.containeeNotifier!.notify();
       return;
     }
     showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);

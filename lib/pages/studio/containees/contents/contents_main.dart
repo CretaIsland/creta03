@@ -112,7 +112,7 @@ class ContentsMainState extends State<ContentsMain> {
 
               logger.finest(
                   'Consumer<ContentsManager>, ${widget.frameModel.order.value}, $contentsCount');
-              contentsManager.reOrdering();
+              //contentsManager.reOrdering();
               if (contentsCount > 0) {
                 ContentsModel? model = playerHandler.getCurrentModel();
 

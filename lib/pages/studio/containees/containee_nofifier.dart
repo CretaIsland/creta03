@@ -56,7 +56,7 @@ class MiniMenuNotifier extends ChangeNotifier {
   void notify() => notifyListeners();
 }
 
-class MiniMenuContentsNotifier extends ChangeNotifier {
-  bool isShow = true;
-  void notify() => notifyListeners();
-}
+// class MiniMenuContentsNotifier extends ChangeNotifier {
+//   bool isShow = true;
+//   void notify() => notifyListeners();
+// }

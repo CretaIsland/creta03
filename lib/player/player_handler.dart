@@ -64,6 +64,9 @@ class PlayerHandler extends ChangeNotifier {
 
   //AbsPlayWidget? _player;
 
+  void setIsNextButtonBusy(bool val) => _timer?.setIsNextButtonBusy(val);
+  void setIsPrevButtonBusy(bool val) => _timer?.setIsPrevButtonBusy(val);
+
   void start(ContentsManager manager) {
     contentsManager = manager;
     _timer = PlayTimer(contentsManager!, this);
@@ -163,6 +166,20 @@ class PlayerHandler extends ChangeNotifier {
 
   Future<void> next() async => await _timer?.next();
   Future<void> prev() async => await _timer?.prev();
+
+  bool isNextButtonBusy() {
+    if (_timer != null) {
+      return _timer!.isNextButtonBusy;
+    }
+    return false;
+  }
+
+  bool isPrevButtonBusy() {
+    if (_timer != null) {
+      return _timer!.isPrevButtonBusy;
+    }
+    return false;
+  }
 
   Future<void> pause() async {
     await _currentPlayer?.pause();

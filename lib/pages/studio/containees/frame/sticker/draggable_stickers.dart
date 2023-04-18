@@ -71,7 +71,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
   final _initialStickerScale = 5.0;
   Sticker? _selectedSticker;
-  final bool _isContents = false;
+  //final bool _isContents = false;
 
   List<Sticker> stickers = [];
   @override
@@ -268,17 +268,17 @@ class _DraggableStickersState extends State<DraggableStickers> {
       if (contentsManager == null) {
         return const SizedBox.shrink();
       }
-      if (_isContents) {
-        if (contentsManager.isEmpty()) {
-          return const SizedBox.shrink();
-        }
-        if (contentsManager.getSelected() == null) {
-          return const SizedBox.shrink();
-        }
-        if (BookMainPage.miniMenuContentsNotifier!.isShow == false) {
-          return const SizedBox.shrink();
-        }
-      }
+      // if (_isContents) {
+      //   if (contentsManager.isEmpty()) {
+      //     return const SizedBox.shrink();
+      //   }
+      //   if (contentsManager.getSelected() == null) {
+      //     return const SizedBox.shrink();
+      //   }
+      //   if (BookMainPage.miniMenuContentsNotifier!.isShow == false) {
+      //     return const SizedBox.shrink();
+      //   }
+      // }
 
       return BookMainPage.miniMenuNotifier!.isShow == false
           ? const SizedBox.shrink()

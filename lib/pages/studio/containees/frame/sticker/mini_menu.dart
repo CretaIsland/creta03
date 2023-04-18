@@ -1,4 +1,8 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../data_io/contents_manager.dart';
@@ -8,6 +12,7 @@ import '../../../../../design_system/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
+import '../../containee_nofifier.dart';
 
 class MiniMenu extends StatefulWidget {
   final ContentsManager contentsManager;
@@ -53,10 +58,10 @@ class MiniMenu extends StatefulWidget {
   });
 
   @override
-  State<MiniMenu> createState() => _MiniMenuState();
+  State<MiniMenu> createState() => MiniMenuState();
 }
 
-class _MiniMenuState extends State<MiniMenu> {
+class MiniMenuState extends State<MiniMenu> {
   bool showFrame = false;
 
   @override
@@ -89,27 +94,42 @@ class _MiniMenuState extends State<MiniMenu> {
 
     bool hasContents = widget.contentsManager.hasContents();
 
-    return Positioned(
-      left: left,
-      top: top,
-      child: SizedBox(
-        width: LayoutConst.miniMenuWidth,
-        height: LayoutConst.miniMenuHeight,
-        child: Stack(
-          children: [
-            _frameMenu(hasContents),
-            if (hasContents) _contentsMenu(),
-          ],
+    return Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
+      return Positioned(
+        left: left,
+        top: top,
+        child: SizedBox(
+          width: LayoutConst.miniMenuWidth,
+          height: LayoutConst.miniMenuHeight,
+          child: showFrame
+              ? Stack(
+                  children: [
+                    if (hasContents) _contentsMenu(),
+                    _frameMenu(hasContents),
+                  ],
+                )
+              : Stack(
+                  children: [
+                    _frameMenu(hasContents),
+                    if (hasContents) _contentsMenu(),
+                  ],
+                ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _frameMenu(bool hasContents) {
     return Align(
-      alignment: Alignment.topRight,
+      alignment: hasContents
+          ? showFrame
+              ? Alignment.topLeft
+              : Alignment.topRight
+          : Alignment.topCenter,
       child: Container(
-        width: hasContents ? LayoutConst.miniMenuWidth * 6 / 7 : LayoutConst.miniMenuWidth,
+        width: hasContents && showFrame
+            ? LayoutConst.miniMenuWidth * 6 / 7
+            : LayoutConst.miniMenuWidth,
         height: LayoutConst.miniMenuHeight,
         decoration: BoxDecoration(
           //color: CretaColor.primary.withOpacity(0.5),
@@ -118,7 +138,12 @@ class _MiniMenuState extends State<MiniMenu> {
             width: 1,
             color: CretaColor.primary,
           ),
-          borderRadius: const BorderRadius.all(Radius.circular(45)),
+          borderRadius: hasContents && showFrame
+              ? const BorderRadius.only(
+                  topLeft: Radius.circular(45),
+                  bottomLeft: Radius.circular(45),
+                )
+              : const BorderRadius.all(Radius.circular(45)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -208,40 +233,29 @@ class _MiniMenuState extends State<MiniMenu> {
             logger.fine("MinuMenu onFrameDelete");
             widget.onFrameDelete.call();
           }),
-      if (hasContents)
-        showFrame
-            ? BTN.fill_blue_i_menu(
-                tooltipFg: CretaColor.text,
-                tooltip: CretaStudioLang.deleteFrameTooltip,
-                icon: Icons.image_outlined,
-                decoType: CretaButtonDeco.opacity,
-                iconColor: CretaColor.secondary,
-                buttonColor: CretaButtonColor.secondary,
-                onPressed: () {
-                  setState(() {
-                    showFrame = false;
-                  });
-                })
-            : BTN.fill_blue_i_menu(
-                tooltipFg: CretaColor.text,
-                tooltip: CretaStudioLang.deleteFrameTooltip,
-                icon: Icons.space_dashboard_outlined,
-                decoType: CretaButtonDeco.opacity,
-                iconColor: CretaColor.primary,
-                buttonColor: CretaButtonColor.primary,
-                onPressed: () {
-                  setState(() {
-                    showFrame = true;
-                  });
-                })
+      if (hasContents && showFrame == false)
+        BTN.fill_blue_i_menu(
+            tooltipFg: CretaColor.text,
+            tooltip: CretaStudioLang.toFrameMenu,
+            icon: Icons.space_dashboard_outlined,
+            decoType: CretaButtonDeco.opacity,
+            iconColor: CretaColor.primary,
+            buttonColor: CretaButtonColor.primary,
+            onPressed: () {
+              setState(() {
+                BookMainPage.containeeNotifier!.setFrameClick(true);
+                BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
+                showFrame = true;
+              });
+            })
     ];
   }
 
   Widget _contentsMenu() {
     return Align(
-      alignment: Alignment.topLeft,
+      alignment: showFrame ? Alignment.topRight : Alignment.topLeft,
       child: Container(
-        width: LayoutConst.miniMenuWidth * 6 / 7,
+        width: showFrame ? LayoutConst.miniMenuWidth : LayoutConst.miniMenuWidth * 6 / 7,
         height: LayoutConst.miniMenuHeight,
         decoration: BoxDecoration(
           //color: CretaColor.primary.withOpacity(0.5),
@@ -250,10 +264,12 @@ class _MiniMenuState extends State<MiniMenu> {
             width: 1,
             color: CretaColor.secondary,
           ),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(45),
-            bottomLeft: Radius.circular(45),
-          ),
+          borderRadius: showFrame
+              ? const BorderRadius.all(Radius.circular(45))
+              : const BorderRadius.only(
+                  topLeft: Radius.circular(45),
+                  bottomLeft: Radius.circular(45),
+                ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -338,6 +354,21 @@ class _MiniMenuState extends State<MiniMenu> {
             logger.info("MinuMenu onContentsEdit");
             widget.onContentsEdit.call();
           }),
+      if (showFrame)
+        BTN.fill_blue_i_menu(
+            tooltipFg: CretaColor.text,
+            tooltip: CretaStudioLang.toContentsMenu,
+            icon: Icons.image_outlined,
+            decoType: CretaButtonDeco.opacity,
+            iconColor: CretaColor.secondary,
+            buttonColor: CretaButtonColor.secondary,
+            onPressed: () {
+              setState(() {
+                BookMainPage.containeeNotifier!.setFrameClick(true);
+                BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
+                showFrame = false;
+              });
+            }),
     ];
   }
 }

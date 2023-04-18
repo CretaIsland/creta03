@@ -25,6 +25,14 @@ class PlayTimer {
 
   bool _isPauseTimer = false;
   bool _isPrevPauseTimer = false;
+  bool _isNextButtonIsBusy = false;
+  bool _isPrevButtonIsBusy = false;
+
+  bool get isNextButtonBusy => _isNextButtonIsBusy;
+  bool get isPrevButtonBusy => _isPrevButtonIsBusy;
+
+  void setIsNextButtonBusy(bool val) => _isNextButtonIsBusy = val;
+  void setIsPrevButtonBusy(bool val) => _isPrevButtonIsBusy = val;
 
   Future<void> togglePause() async {
     _isPrevPauseTimer = _isPauseTimer;
@@ -64,7 +72,7 @@ class PlayTimer {
 
   void _setCurrentModel() {
     //logger.info('_setCurrentModel');
-    contentsManager.reOrdering();
+    //contentsManager.reOrdering();
     _currentModel = contentsManager.getNthOrder(_currentOrder) as ContentsModel?;
     while (true) {
       if (_currentModel != null) {
@@ -95,11 +103,12 @@ class PlayTimer {
   }
 
   Future<void> next() async {
+    _isNextButtonIsBusy = true;
     await _lock.synchronized(() async {
       if (playHandler.isInit()) {
         if (contentsManager.getAvailLength() > 1) {
-          playHandler.rewind();
-          playHandler.pause();
+          //await playHandler.rewind();
+          await playHandler.pause();
         }
         _next();
       }
@@ -131,12 +140,14 @@ class PlayTimer {
   }
 
   Future<void> prev() async {
+    _isPrevButtonIsBusy = true;
+
     logger.info('prev button pressed');
     await _lock.synchronized(() async {
       if (playHandler.isInit()) {
         if (contentsManager.getAvailLength() > 1) {
-          playHandler.rewind();
-          playHandler.pause();
+          //await playHandler.rewind();
+          await playHandler.pause();
         }
         _currentOrder = contentsManager.prevOrder(_currentOrder);
       }
@@ -219,7 +230,7 @@ class PlayTimer {
             _currentModel!.setPlayState(PlayState.none);
             logger.info('before next, currentOrder=$_currentOrder');
             // 비디오가 마무리 작업을 할 시간을 준다.
-            await Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
+            //await Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
             _next();
 
             logger.info('after next, currentOrder=$_currentOrder');

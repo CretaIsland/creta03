@@ -59,7 +59,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
             logger.info(
                 'video event ${event.eventType.toString()}, ${event.duration.toString()},(${model!.name})');
           } else {
-            logger.warning('event duration is null');
+            logger.warning('event duration is null,(${model!.name})');
           }
           if (event.eventType == VideoEventType.completed) {
             // bufferingEnd and completed 가 시간이 다 되서 종료한 것임.
@@ -80,12 +80,12 @@ class VideoPlayerWidget extends AbsPlayWidget {
     return wcontroller!.value.isInitialized;
   }
 
-  @override
-  void invalidate() {
-    if (globalKey.currentState != null) {
-      globalKey.currentState!.invalidate();
-    }
-  }
+  // @override
+  // void invalidate() {
+  //   if (globalKey.currentState != null) {
+  //     globalKey.currentState!.invalidate();
+  //   }
+  // }
 
   @override
   Future<void> play({bool byManual = false}) async {
@@ -102,7 +102,7 @@ class VideoPlayerWidget extends AbsPlayWidget {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.fine('pause');
+    logger.info('pause ${model!.name}');
     model!.setPlayState(PlayState.pause);
     await wcontroller!.pause();
   }
@@ -122,9 +122,9 @@ class VideoPlayerWidget extends AbsPlayWidget {
     // while (model!.state == PlayState.disposed) {
     //   await Future.delayed(const Duration(milliseconds: 100));
     // }
-    logger.fine('globalResume');
     PlayState prevState = model!.playState;
     if (prevState == PlayState.globalPause) {
+      logger.info('globalResume');
       model!.resumeState();
       if (model!.playState == PlayState.start) {
         await wcontroller!.play();
@@ -179,6 +179,12 @@ class VideoPlayerWidget extends AbsPlayWidget {
   VideoPlayerWidgetState createState() {
     logger.fine('video createState (${model!.name}');
     return VideoPlayerWidgetState();
+  }
+
+  @override
+  Future<void> afterBuild() async {
+    acc.playerHandler?.setIsNextButtonBusy(false);
+    acc.playerHandler?.setIsPrevButtonBusy(false);
   }
 }
 

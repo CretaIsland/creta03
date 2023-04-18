@@ -110,6 +110,12 @@ class ImagePlayerWidget extends AbsPlayWidget {
   }
 
   @override
+  Future<void> afterBuild() async {
+    acc.playerHandler?.setIsNextButtonBusy(false);
+    acc.playerHandler?.setIsPrevButtonBusy(false);
+  }
+
+  @override
   ImagePlayerWidgetState createState() => ImagePlayerWidgetState();
 }
 

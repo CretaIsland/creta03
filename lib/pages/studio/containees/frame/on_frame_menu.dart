@@ -65,8 +65,11 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                   child: BTN.fill_i_s(
                       icon: Icons.skip_previous,
                       onPressed: () async {
-                        logger.info('prev Button pressed');
-                        await widget.playerHandler?.prev();
+                        if (widget.playerHandler != null &&
+                            widget.playerHandler!.isPrevButtonBusy() == false) {
+                          logger.info('prev Button pressed');
+                          await widget.playerHandler?.prev();
+                        }
                       }),
                 ),
               if (_isHover && contentsCount > 1)
@@ -75,8 +78,11 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                   child: BTN.fill_i_s(
                       icon: Icons.skip_next,
                       onPressed: () async {
-                        logger.info('next Button pressed');
-                        await widget.playerHandler?.next();
+                        if (widget.playerHandler != null &&
+                            widget.playerHandler!.isNextButtonBusy() == false) {
+                          logger.info('next Button pressed');
+                          await widget.playerHandler?.next();
+                        }
                       }),
                 ),
               if (_isHover && contentsCount == 0)
