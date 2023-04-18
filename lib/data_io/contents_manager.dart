@@ -4,12 +4,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
-import '../design_system/creta_font.dart';
 import '../lang/creta_lang.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
+import '../pages/studio/book_main_page.dart';
+import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/studio_variables.dart';
 import '../player/player_handler.dart';
 import 'creta_manager.dart';
@@ -18,6 +19,9 @@ import 'frame_manager.dart';
 class ContentsManager extends CretaManager {
   final PageModel pageModel;
   final FrameModel frameModel;
+
+  bool iamBusy = false;
+  final Duration snackBarDuration = const Duration(seconds: 1);
 
   FrameManager? frameManager; //onDropPage 에서 video Contents 가 Drop 된 경우만 값을 가지고 있게 된다.
 
@@ -160,14 +164,13 @@ class ContentsManager extends CretaManager {
   }
 
   Future<void> removeSelected(BuildContext context) async {
+    iamBusy = true;
+
     ContentsModel? model = getSelected() as ContentsModel?;
     if (model == null) {
-      SnackBar(
-          content: Text(
-        CretaLang.contentsNotDeleted,
-        style: CretaFont.titleLarge,
-      ));
-
+      showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);
+      await Future.delayed(snackBarDuration);
+      iamBusy = false;
       return;
     }
 
@@ -180,11 +183,19 @@ class ContentsManager extends CretaManager {
       logger.info('remove contents ${model.name}, ${model.mid}');
       await playerHandler?.reOrdering();
 
+      if (getAvailLength() == 0) {
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+      }
+
       // ignore: use_build_context_synchronously
-      showSnackBar(context, model.name + CretaLang.contentsDeleted);
+      showSnackBar(context, model.name + CretaLang.contentsDeleted, duration: snackBarDuration);
+      await Future.delayed(snackBarDuration);
+      iamBusy = false;
       return;
     }
-    showSnackBar(context, CretaLang.contentsNotDeleted);
+    showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);
+    await Future.delayed(snackBarDuration);
+    iamBusy = false;
   }
 
   Future<void> pause() async {

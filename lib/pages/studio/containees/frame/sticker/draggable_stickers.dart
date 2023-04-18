@@ -39,7 +39,7 @@ class DraggableStickers extends StatefulWidget {
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
   final void Function(String) onScaleStart;
-  final void Function(ContentsModel) onDropPage;
+  final void Function(List<ContentsModel>) onDropPage;
   final void Function(bool) onFrontBackHover;
   //final void Function(String, ContentsModel) onDropFrame;
 
@@ -352,6 +352,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       }
       return MiniMenuContents(
         key: const ValueKey('MiniMenuContents'),
+        contentsManager: contentsManager,
         parentPosition: _selectedSticker!.position,
         parentSize: _selectedSticker!.size,
         parentBorderWidth: _selectedSticker!.borderWidth,
@@ -383,10 +384,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
   Widget _pageDropZone() {
     return DropZoneWidget(
       parentId: '',
-      onDroppedFile: (model) {
-        logger.info('page dropZone contents added ${model.mid}');
+      onDroppedFile: (modelList) {
+        //logger.info('page dropZone contents added ${model.mid}');
         //model.isDynamicSize.set(true, save: false, noUndo: true);
-        widget.onDropPage(model); // 동영상에 맞게 frame size 를 조절하라는 뜻
+        widget.onDropPage(modelList); // 동영상에 맞게 frame size 를 조절하라는 뜻
       },
     );
   }

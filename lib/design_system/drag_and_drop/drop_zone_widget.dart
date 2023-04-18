@@ -11,7 +11,7 @@ import '../../model/contents_model.dart';
 //import 'package:dotted_border/dotted_border.dart';
 
 class DropZoneWidget extends StatefulWidget {
-  final ValueChanged<ContentsModel> onDroppedFile;
+  final ValueChanged<List<ContentsModel>> onDroppedFile;
   final String parentId;
   final Widget? child;
   final Color bgColor;
@@ -44,7 +44,20 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
             IgnorePointer(
               child: DropzoneView(
                 onCreated: (controller) => this.controller = controller,
-                onDrop: uploadedFile,
+                //onDrop: uploadedFile,
+                onDropMultiple: (list) async {
+                  if (list == null) return;
+                  logger.info('onDropMultiple -------------- ${list.length}');
+                  List<ContentsModel> contentsList = [];
+                  for (var event in list) {
+                    logger.info('onDropMultiple -------------- ${event.name}');
+                    contentsList.add(await uploadedFile(event));
+                  }
+                  widget.onDroppedFile(contentsList);
+                  setState(() {
+                    highlight = false;
+                  });
+                },
                 onHover: () => setState(() => highlight = true),
                 onLeave: () => setState(() => highlight = false),
                 onLoaded: () => logger.fine('Zone Loaded'),
@@ -57,7 +70,7 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
     );
   }
 
-  Future uploadedFile(dynamic event) async {
+  Future<ContentsModel> uploadedFile(dynamic event) async {
     // this method is called when user drop the file in drop area in flutter
     File file = event as File;
     final name = event.name;
@@ -77,9 +90,6 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
         name: name, mime: mime, bytes: byte, url: url, file: file);
 
     //Update the UI
-    widget.onDroppedFile(droppedFile);
-    setState(() {
-      highlight = false;
-    });
+    return droppedFile;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../../../data_io/contents_manager.dart';
 import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/creta_color.dart';
@@ -9,6 +10,7 @@ import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 
 class MiniMenuContents extends StatefulWidget {
+  final ContentsManager contentsManager;
   final Offset parentPosition;
   final Size parentSize;
   final double parentBorderWidth;
@@ -22,6 +24,7 @@ class MiniMenuContents extends StatefulWidget {
 
   const MiniMenuContents({
     super.key,
+    required this.contentsManager,
     required this.parentPosition,
     required this.parentSize,
     required this.parentBorderWidth,
@@ -136,18 +139,19 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
             logger.fine("MinuMenu onFrameCopy");
             widget.onContentsFullscreen.call();
           }),
-      BTN.fill_blue_i_menu(
-          tooltipFg: CretaColor.text,
-          tooltip: CretaStudioLang.deleteConTooltip,
-          iconColor: CretaColor.secondary,
-          icon: Icons.delete_outlined,
-          buttonColor: CretaButtonColor.secondary,
-          decoType: CretaButtonDeco.opacity,
-          onPressed: () {
-            BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.fine("MinuMenu onFrameDelete");
-            widget.onContentsDelete.call();
-          }),
+      if (!widget.contentsManager.iamBusy)
+        BTN.fill_blue_i_menu(
+            tooltipFg: CretaColor.text,
+            tooltip: CretaStudioLang.deleteConTooltip,
+            iconColor: CretaColor.secondary,
+            icon: Icons.delete_outlined,
+            buttonColor: CretaButtonColor.secondary,
+            decoType: CretaButtonDeco.opacity,
+            onPressed: () {
+              BookMainPage.containeeNotifier!.setFrameClick(true);
+              logger.fine("MinuMenu onFrameDelete");
+              widget.onContentsDelete.call();
+            }),
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.editConTooltip,
           tooltipFg: CretaColor.text,
