@@ -24,7 +24,8 @@ void main() async {
 
   SampleData.initSample();
 
-  HycopFactory.setBucketId();	// test code
+  // test code
+  myConfig!.serverConfig!.storageConnInfo.bucketId = "${HycopUtils.genBucketId(AccountManager.currentLoginUser.email, AccountManager.currentLoginUser.userId)}/";
 
   runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(const ProviderScope(child: MainRouteApp()));
