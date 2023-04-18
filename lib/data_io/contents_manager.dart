@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
+import '../lang/creta_lang.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
@@ -167,7 +168,7 @@ class ContentsManager extends CretaManager {
 
     ContentsModel? model = getSelected() as ContentsModel?;
     if (model == null) {
-      //showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);
+      showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);
       await Future.delayed(snackBarDuration);
       iamBusy = false;
       return;
@@ -187,12 +188,12 @@ class ContentsManager extends CretaManager {
       }
 
       // ignore: use_build_context_synchronously
-      //showSnackBar(context, model.name + CretaLang.contentsDeleted, duration: snackBarDuration);
+      showSnackBar(context, model.name + CretaLang.contentsDeleted, duration: snackBarDuration);
       await Future.delayed(snackBarDuration);
       iamBusy = false;
       return;
     }
-    //showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);
+    showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);
     await Future.delayed(snackBarDuration);
     iamBusy = false;
   }
