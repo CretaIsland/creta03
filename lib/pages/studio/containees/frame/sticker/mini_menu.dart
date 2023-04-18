@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../../../data_io/contents_manager.dart';
 import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/creta_color.dart';
@@ -9,6 +10,8 @@ import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 
 class MiniMenu extends StatefulWidget {
+  final ContentsManager contentsManager;
+
   final Offset parentPosition;
   final Size parentSize;
   final double parentBorderWidth;
@@ -20,9 +23,16 @@ class MiniMenu extends StatefulWidget {
   final void Function() onFrameRotate;
   final void Function() onFrameMain;
   final void Function(bool) onFrontBackHover;
+  final void Function() onContentsFlip;
+  final void Function() onContentsRotate;
+  final void Function() onContentsCrop;
+  final void Function() onContentsFullscreen;
+  final void Function() onContentsDelete;
+  final void Function() onContentsEdit;
 
   const MiniMenu({
     super.key,
+    required this.contentsManager,
     required this.parentPosition,
     required this.parentSize,
     required this.parentBorderWidth,
@@ -34,6 +44,12 @@ class MiniMenu extends StatefulWidget {
     required this.onFrameRotate,
     required this.onFrameMain,
     required this.onFrontBackHover,
+    required this.onContentsFlip,
+    required this.onContentsRotate,
+    required this.onContentsCrop,
+    required this.onContentsFullscreen,
+    required this.onContentsDelete,
+    required this.onContentsEdit,
   });
 
   @override
@@ -41,6 +57,8 @@ class MiniMenu extends StatefulWidget {
 }
 
 class _MiniMenuState extends State<MiniMenu> {
+  bool showFrame = false;
+
   @override
   void initState() {
     super.initState();
@@ -69,11 +87,29 @@ class _MiniMenuState extends State<MiniMenu> {
           LayoutConst.dragHandle;
     }
 
+    bool hasContents = widget.contentsManager.hasContents();
+
     return Positioned(
       left: left,
       top: top,
-      child: Container(
+      child: SizedBox(
         width: LayoutConst.miniMenuWidth,
+        height: LayoutConst.miniMenuHeight,
+        child: Stack(
+          children: [
+            _frameMenu(hasContents),
+            if (hasContents) _contentsMenu(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _frameMenu(bool hasContents) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        width: hasContents ? LayoutConst.miniMenuWidth * 6 / 7 : LayoutConst.miniMenuWidth,
         height: LayoutConst.miniMenuHeight,
         decoration: BoxDecoration(
           //color: CretaColor.primary.withOpacity(0.5),
@@ -86,13 +122,13 @@ class _MiniMenuState extends State<MiniMenu> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _buttonList(),
+          children: _frameButtons(hasContents),
         ),
       ),
     );
   }
 
-  List<Widget> _buttonList() {
+  List<Widget> _frameButtons(bool hasContents) {
     return [
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.mainFrameTooltip,
@@ -171,6 +207,136 @@ class _MiniMenuState extends State<MiniMenu> {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameDelete");
             widget.onFrameDelete.call();
+          }),
+      if (hasContents)
+        showFrame
+            ? BTN.fill_blue_i_menu(
+                tooltipFg: CretaColor.text,
+                tooltip: CretaStudioLang.deleteFrameTooltip,
+                icon: Icons.image_outlined,
+                decoType: CretaButtonDeco.opacity,
+                iconColor: CretaColor.secondary,
+                buttonColor: CretaButtonColor.secondary,
+                onPressed: () {
+                  setState(() {
+                    showFrame = false;
+                  });
+                })
+            : BTN.fill_blue_i_menu(
+                tooltipFg: CretaColor.text,
+                tooltip: CretaStudioLang.deleteFrameTooltip,
+                icon: Icons.space_dashboard_outlined,
+                decoType: CretaButtonDeco.opacity,
+                iconColor: CretaColor.primary,
+                buttonColor: CretaButtonColor.primary,
+                onPressed: () {
+                  setState(() {
+                    showFrame = true;
+                  });
+                })
+    ];
+  }
+
+  Widget _contentsMenu() {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Container(
+        width: LayoutConst.miniMenuWidth * 6 / 7,
+        height: LayoutConst.miniMenuHeight,
+        decoration: BoxDecoration(
+          //color: CretaColor.primary.withOpacity(0.5),
+          color: CretaColor.secondary[100],
+          border: Border.all(
+            width: 1,
+            color: CretaColor.secondary,
+          ),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(45),
+            bottomLeft: Radius.circular(45),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: _contentsButtons(),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _contentsButtons() {
+    return [
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.flipConTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.flip_outlined,
+          decoType: CretaButtonDeco.opacity,
+          iconColor: CretaColor.secondary,
+          buttonColor: CretaButtonColor.secondary,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.fine("MinuMenu onFrameMain");
+            widget.onContentsFlip.call();
+          }),
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.rotateConTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.rotate_90_degrees_cw_outlined,
+          iconColor: CretaColor.secondary,
+          buttonColor: CretaButtonColor.secondary,
+          decoType: CretaButtonDeco.opacity,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.fine("MinuMenu onFrameFront");
+            widget.onContentsRotate.call();
+          }),
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.cropConTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.crop_outlined,
+          iconColor: CretaColor.secondary,
+          buttonColor: CretaButtonColor.secondary,
+          decoType: CretaButtonDeco.opacity,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.fine("MinuMenu onFrameBack");
+            widget.onContentsCrop.call();
+          }),
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.fullscreenConTooltip,
+          tooltipFg: CretaColor.text,
+          icon: Icons.fullscreen_outlined,
+          iconColor: CretaColor.secondary,
+          buttonColor: CretaButtonColor.secondary,
+          decoType: CretaButtonDeco.opacity,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.fine("MinuMenu onFrameCopy");
+            widget.onContentsFullscreen.call();
+          }),
+      if (widget.contentsManager.iamBusy == false)
+        BTN.fill_blue_i_menu(
+            tooltipFg: CretaColor.text,
+            tooltip: CretaStudioLang.deleteConTooltip,
+            iconColor: CretaColor.secondary,
+            icon: Icons.delete_outlined,
+            buttonColor: CretaButtonColor.secondary,
+            decoType: CretaButtonDeco.opacity,
+            onPressed: () {
+              BookMainPage.containeeNotifier!.setFrameClick(true);
+              logger.fine("MinuMenu onFrameDelete");
+              widget.onContentsDelete.call();
+            }),
+      BTN.fill_blue_i_menu(
+          tooltip: CretaStudioLang.editConTooltip,
+          tooltipFg: CretaColor.text,
+          iconColor: CretaColor.secondary,
+          icon: Icons.edit_outlined,
+          decoType: CretaButtonDeco.opacity,
+          buttonColor: CretaButtonColor.secondary,
+          onPressed: () {
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            logger.info("MinuMenu onContentsEdit");
+            widget.onContentsEdit.call();
           }),
     ];
   }

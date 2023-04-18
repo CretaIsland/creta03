@@ -20,8 +20,8 @@ class ContentsModel extends CretaModel {
   TextAniType prevAniType = TextAniType.none;
   Color prevFontColor = Colors.transparent;
   double prevOutLineWidth = 0;
-  bool forceToChange = false;
-  bool changeToggle = false;
+  //bool forceToChange = false;
+  //bool changeToggle = false;
   // ]
 
   late String name; // aaa.jpg

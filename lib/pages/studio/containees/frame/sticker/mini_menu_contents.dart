@@ -83,13 +83,13 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _buttonList(),
+          children: _contentsMenu(),
         ),
       ),
     );
   }
 
-  List<Widget> _buttonList() {
+  List<Widget> _contentsMenu() {
     return [
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.flipConTooltip,

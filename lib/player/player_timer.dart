@@ -78,13 +78,14 @@ class PlayTimer {
     }
     _prevModel ??= ContentsModel('');
 
-    if (_currentModel!.mid != _prevModel!.mid || _currentModel!.forceToChange == true) {
+    //if (_currentModel!.mid != _prevModel!.mid || _currentModel!.forceToChange == true) {
+    if (_currentModel!.mid != _prevModel!.mid) {
       logger.info('CurrentModel changed from ${_prevModel!.name}');
       _currentModel!.copyTo(_prevModel!);
-      if (_currentModel!.forceToChange == true) {
-        _currentModel!.forceToChange = false;
-        _currentModel!.changeToggle = !_currentModel!.changeToggle;
-      }
+      // if (_currentModel!.forceToChange == true) {
+      //   _currentModel!.forceToChange = false;
+      //   _currentModel!.changeToggle = !_currentModel!.changeToggle;
+      // }
       playHandler.notify();
       notifyToProperty();
       logger.info('CurrentModel changed to ${_currentModel!.name}');
@@ -107,11 +108,12 @@ class PlayTimer {
 
   void _next() {
     _currentPlaySec = 0.0;
-    if (contentsManager.getAvailLength() == 1) {
-      if (_currentModel != null) {
-        _currentModel!.forceToChange = true;
-      }
-    }
+    // if (contentsManager.getAvailLength() == 1) {
+    //   if (_currentModel != null) {
+    //     logger.info('only one movie file');
+    //     _currentModel!.forceToChange = true;
+    //   }
+    // }
     _currentOrder = contentsManager.nextOrder(_currentOrder);
   }
 
@@ -145,6 +147,7 @@ class PlayTimer {
     await _lock.synchronized(
       () async {
         if (contentsManager.isEmpty()) return;
+        if (contentsManager.iamBusy) return;
         if (BookMainPage.pageManagerHolder!.isSelected(contentsManager.pageModel.mid) == false) {
           // 현재 보여지고 있는 페이지가 아니라면 타이머는 쉰다.
           return;
@@ -216,7 +219,7 @@ class PlayTimer {
             _currentModel!.setPlayState(PlayState.none);
             logger.info('before next, currentOrder=$_currentOrder');
             // 비디오가 마무리 작업을 할 시간을 준다.
-            Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
+            await Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
             _next();
 
             logger.info('after next, currentOrder=$_currentOrder');

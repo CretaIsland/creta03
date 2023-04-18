@@ -220,8 +220,16 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   Future<bool> waitInit() async {
     logger.info('waitInit...');
+    //int waitCount = 0;
     while (!widget.wcontroller!.value.isInitialized) {
       await Future.delayed(const Duration(milliseconds: 100));
+      // waitCount++;
+      // if (waitCount > 100) {
+      //   // 10초 이상 대기하면, break 한다.
+      //   logger.severe('Initialize failed !!!!');
+      //   widget.wcontroller!. = true;
+      //   break;
+      // }
     }
     logger.info('waitInit end');
 
@@ -254,6 +262,8 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     if (widget.wcontroller != null && widget.wcontroller!.value.isInitialized) {
       logger.info('VideoPlayerWidget build aspectRatio=${widget.wcontroller!.value.aspectRatio}');
       // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
+      widget.wcontroller!.setLooping(widget.acc.getAvailLength() == 1);
+
       Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
 
       if (widget.autoStart) {

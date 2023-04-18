@@ -20,6 +20,10 @@ class ContentsManager extends CretaManager {
   final PageModel pageModel;
   final FrameModel frameModel;
 
+  bool hasContents() {
+    return (getAvailLength() > 0);
+  }
+
   bool iamBusy = false;
   final Duration snackBarDuration = const Duration(seconds: 1);
 
@@ -175,7 +179,7 @@ class ContentsManager extends CretaManager {
     }
 
     if (playerHandler != null && playerHandler!.isInit()) {
-      await pause();
+      //await pause();
 
       model.isRemoved.set(true, save: false);
       await setToDB(model);

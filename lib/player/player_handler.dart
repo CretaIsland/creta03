@@ -90,12 +90,13 @@ class PlayerHandler extends ChangeNotifier {
     return _timer!.currentModel;
   }
 
-  String _keyMangler(String mid, bool flag) {
-    return mid + (flag ? '_x' : '_y');
-  }
+  // String _keyMangler(String mid, bool flag) {
+  //   return mid + (flag ? '_x' : '_y');
+  // }
 
   AbsPlayWidget createPlayer(ContentsModel model) {
-    String key = _keyMangler(model.mid, model.changeToggle);
+    //String key = _keyMangler(model.mid, model.changeToggle);
+    String key = model.mid;
     AbsPlayWidget? player = _playerMap[key];
     if (player != null) {
       _currentPlayer = player;
@@ -110,7 +111,8 @@ class PlayerHandler extends ChangeNotifier {
   }
 
   AbsPlayWidget _createPlayer(ContentsModel model) {
-    String key = _keyMangler(model.mid, model.changeToggle);
+    //String key = _keyMangler(model.mid, model.changeToggle);
+    String key = model.mid;
     switch (model.contentsType) {
       case ContentsType.video:
         return VideoPlayerWidget(

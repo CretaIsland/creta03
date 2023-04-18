@@ -16,7 +16,6 @@ import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
 import 'draggable_resizable.dart';
 import 'mini_menu.dart';
-import 'mini_menu_contents.dart';
 import 'stickerview.dart';
 
 class DraggableStickers extends StatefulWidget {
@@ -72,6 +71,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
   final _initialStickerScale = 5.0;
   Sticker? _selectedSticker;
+  final bool _isContents = false;
 
   List<Sticker> stickers = [];
   @override
@@ -101,7 +101,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               _pageDropZone(),
               for (final sticker in stickers) _drawEachStiker(sticker),
               if (_selectedSticker != null) _drawMiniMenu(),
-              if (_selectedSticker != null) _drawMiniMenuContents(),
+              //if (_selectedSticker != null) _drawMiniMenuContents(),
             ],
           )
         : Container();
@@ -260,10 +260,31 @@ class _DraggableStickersState extends State<DraggableStickers> {
     return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
       logger.fine('_drawMiniMenu()');
 
+      FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+      if (frameManager == null) {
+        return const SizedBox.shrink();
+      }
+      ContentsManager? contentsManager = frameManager.getContentsManager(widget.frameModel!.mid);
+      if (contentsManager == null) {
+        return const SizedBox.shrink();
+      }
+      if (_isContents) {
+        if (contentsManager.isEmpty()) {
+          return const SizedBox.shrink();
+        }
+        if (contentsManager.getSelected() == null) {
+          return const SizedBox.shrink();
+        }
+        if (BookMainPage.miniMenuContentsNotifier!.isShow == false) {
+          return const SizedBox.shrink();
+        }
+      }
+
       return BookMainPage.miniMenuNotifier!.isShow == false
           ? const SizedBox.shrink()
           : MiniMenu(
               key: const ValueKey('MiniMenu'),
+              contentsManager: contentsManager,
               parentPosition: _selectedSticker!.position,
               parentSize: _selectedSticker!.size,
               parentBorderWidth: _selectedSticker!.borderWidth,
@@ -324,62 +345,82 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 widget.onFrameRotate.call(_selectedSticker!.id, after);
                 setState(() {});
               },
+              onContentsFlip: () {
+                logger.fine('onContentsFlip');
+              },
+              onContentsRotate: () {
+                logger.fine('onContentsRotate');
+              },
+              onContentsCrop: () {
+                logger.fine('onContentsCrop');
+              },
+              onContentsFullscreen: () {
+                logger.fine('onContentsFullscreen');
+              },
+              onContentsDelete: () {
+                logger.fine('onContentsDelete');
+                contentsManager.removeSelected(context);
+                //setState(() {});
+              },
+              onContentsEdit: () {
+                logger.fine('onContentsEdit');
+              },
             );
     });
   }
 
-  Widget _drawMiniMenuContents() {
-    return Consumer<MiniMenuContentsNotifier>(builder: (context, notifier, child) {
-      logger.fine('_drawMiniMenu()');
+  // Widget _drawMiniMenuContents() {
+  //   return Consumer<MiniMenuContentsNotifier>(builder: (context, notifier, child) {
+  //     logger.fine('_drawMiniMenu()');
 
-      if (BookMainPage.miniMenuContentsNotifier!.isShow == false) {
-        return const SizedBox.shrink();
-      }
+  //     if (BookMainPage.miniMenuContentsNotifier!.isShow == false) {
+  //       return const SizedBox.shrink();
+  //     }
 
-      FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-      if (frameManager == null) {
-        return const SizedBox.shrink();
-      }
-      ContentsManager? contentsManager = frameManager.getContentsManager(widget.frameModel!.mid);
-      if (contentsManager == null) {
-        return const SizedBox.shrink();
-      }
-      if (contentsManager.isEmpty()) {
-        return const SizedBox.shrink();
-      }
-      if (contentsManager.getSelected() == null) {
-        return const SizedBox.shrink();
-      }
-      return MiniMenuContents(
-        key: const ValueKey('MiniMenuContents'),
-        contentsManager: contentsManager,
-        parentPosition: _selectedSticker!.position,
-        parentSize: _selectedSticker!.size,
-        parentBorderWidth: _selectedSticker!.borderWidth,
-        pageHeight: widget.pageHeight,
-        onContentsFlip: () {
-          logger.fine('onContentsFlip');
-        },
-        onContentsRotate: () {
-          logger.fine('onContentsRotate');
-        },
-        onContentsCrop: () {
-          logger.fine('onContentsCrop');
-        },
-        onContentsFullscreen: () {
-          logger.fine('onContentsFullscreen');
-        },
-        onContentsDelete: () {
-          logger.fine('onContentsDelete');
-          contentsManager.removeSelected(context);
-          //setState(() {});
-        },
-        onContentsEdit: () {
-          logger.fine('onContentsEdit');
-        },
-      );
-    });
-  }
+  //     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+  //     if (frameManager == null) {
+  //       return const SizedBox.shrink();
+  //     }
+  //     ContentsManager? contentsManager = frameManager.getContentsManager(widget.frameModel!.mid);
+  //     if (contentsManager == null) {
+  //       return const SizedBox.shrink();
+  //     }
+  //     if (contentsManager.isEmpty()) {
+  //       return const SizedBox.shrink();
+  //     }
+  //     if (contentsManager.getSelected() == null) {
+  //       return const SizedBox.shrink();
+  //     }
+  //     return MiniMenuContents(
+  //       key: const ValueKey('MiniMenuContents'),
+  //       contentsManager: contentsManager,
+  //       parentPosition: _selectedSticker!.position,
+  //       parentSize: _selectedSticker!.size,
+  //       parentBorderWidth: _selectedSticker!.borderWidth,
+  //       pageHeight: widget.pageHeight,
+  //       onContentsFlip: () {
+  //         logger.fine('onContentsFlip');
+  //       },
+  //       onContentsRotate: () {
+  //         logger.fine('onContentsRotate');
+  //       },
+  //       onContentsCrop: () {
+  //         logger.fine('onContentsCrop');
+  //       },
+  //       onContentsFullscreen: () {
+  //         logger.fine('onContentsFullscreen');
+  //       },
+  //       onContentsDelete: () {
+  //         logger.fine('onContentsDelete');
+  //         contentsManager.removeSelected(context);
+  //         //setState(() {});
+  //       },
+  //       onContentsEdit: () {
+  //         logger.fine('onContentsEdit');
+  //       },
+  //     );
+  //   });
+  // }
 
   Widget _pageDropZone() {
     return DropZoneWidget(
