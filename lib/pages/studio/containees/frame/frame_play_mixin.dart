@@ -21,27 +21,29 @@ mixin FramePlayMixin {
   FrameManager? frameManager;
 
   Future<void> createContents(
-      ContentsModel contentsModel, FrameModel frameModel, PageModel pageModel,
+      List<ContentsModel> contentsModelList, FrameModel frameModel, PageModel pageModel,
       {bool isResizeFrame = true}) async {
     // 콘텐츠 매니저를 생성한다.
     ContentsManager contentsManager = frameManager!.newContentsManager(frameModel);
-    contentsModel.parentMid.set(frameModel.mid, save: false, noUndo: true);
 
-    if (contentsModel.contentsType == ContentsType.image) {
-      await _imageProcess(contentsManager, contentsModel, frameModel, pageModel,
-          isResizeFrame: isResizeFrame);
-    } else if (contentsModel.contentsType == ContentsType.video) {
-      // if (contentsManager.getAvailLength() == 1) {
-      //   contentsManager.setLoop(false);
-      // }
-      if (isResizeFrame) {
-        contentsManager.frameManager = frameManager;
+    for (var contentsModel in contentsModelList) {
+      contentsModel.parentMid.set(frameModel.mid, save: false, noUndo: true);
+
+      if (contentsModel.contentsType == ContentsType.image) {
+        await _imageProcess(contentsManager, contentsModel, frameModel, pageModel,
+            isResizeFrame: isResizeFrame);
+      } else if (contentsModel.contentsType == ContentsType.video) {
+        // if (contentsManager.getAvailLength() == 1) {
+        //   contentsManager.setLoop(false);
+        // }
+        if (isResizeFrame) {
+          contentsManager.frameManager = frameManager;
+        }
+        await _videoProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
       }
-      await _videoProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
+      // 콘텐츠 객체를 DB에 Crete 한다.
+      await contentsManager.createNextContents(contentsModel, doNotify: false);
     }
-    // 콘텐츠 객체를 DB에 Crete 한다.
-    await contentsManager.createNextContents(contentsModel, doNotify: false);
-
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
     DraggableStickers.selectedAssetId = frameModel.mid;
     frameManager!.setSelectedMid(frameModel.mid);

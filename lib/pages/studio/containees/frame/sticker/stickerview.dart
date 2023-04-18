@@ -29,7 +29,7 @@ class StickerView extends StatefulWidget {
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
   final void Function(String) onScaleStart;
-  final void Function(ContentsModel) onDropPage;
+  final void Function(List<ContentsModel>) onDropPage;
   final void Function(bool) onFrontBackHover;
 
   //final void Function(String, ContentsModel) onDropFrame;

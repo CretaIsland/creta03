@@ -196,11 +196,11 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           DraggableStickers.isFrontBackHover = hover;
         });
       },
-      onDropPage: (contentsModel) async {
+      onDropPage: (modelList) async {
         // 프레임을 생성한다.
         FrameModel frameModel = await frameManager!.createNextFrame(doNotify: false);
         // 코텐츠를 play 하고 DB 에 Crete 하고 업로드까지 한다.
-        await createContents(contentsModel, frameModel, widget.pageModel);
+        await createContents(modelList, frameModel, widget.pageModel);
       },
 
       stickerList: getStickerList(),

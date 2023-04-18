@@ -124,10 +124,10 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   Widget _frameDropZone() {
     return DropZoneWidget(
       parentId: '',
-      onDroppedFile: (model) {
-        logger.info('frame dropzone contents added ${model.mid}');
+      onDroppedFile: (modelList) {
+        // logger.info('frame dropzone contents added ${model.mid}');
         //model.isDynamicSize.set(true, save: false, noUndo: true);
-        _onDropFrame(widget.model.mid, model); // 동영상에 맞게 frame size 를 조절하라는 뜻
+        _onDropFrame(widget.model.mid, modelList); // 동영상에 맞게 frame size 를 조절하라는 뜻
       },
       child: Stack(
         alignment: Alignment.center,
@@ -206,7 +206,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     );
   }
 
-  void _onDropFrame(String frameId, ContentsModel contentsModel) async {
+  void _onDropFrame(String frameId, List<ContentsModel> contentsModelList) async {
     // 콘텐츠 매니저를 생성한다.
     FrameModel? frameModel = frameManager!.getModel(frameId) as FrameModel?;
     if (frameModel == null) {
@@ -214,7 +214,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     }
 
     await createContents(
-      contentsModel,
+      contentsModelList,
       frameModel,
       widget.pageModel,
       isResizeFrame: false,
