@@ -8,6 +8,7 @@ import 'package:creta03/pages/mypage/sub_page/my_page_team_manage.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
+// ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
 import '../../data_io/user_property_manager.dart';

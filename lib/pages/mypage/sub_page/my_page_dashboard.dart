@@ -48,7 +48,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                 : DecorationImage(image: Image.network(userPropertyManager.propertyModel!.profileImg).image, fit: BoxFit.cover)),
         child: userPropertyManager.propertyModel!.profileImg == '' ?
           Center(
-            child: Text(userPropertyManager.userModel!.name.substring(0, 1),
+            child: Text(userPropertyManager.userModel.name.substring(0, 1),
             style: const TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 64, color: Colors.white))
           )
           : Container()
