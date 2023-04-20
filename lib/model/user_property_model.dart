@@ -2,6 +2,7 @@
 
 //import 'dart:convert';
 
+import 'package:creta03/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -16,7 +17,7 @@ class UserPropertyModel extends CretaModel {
   late String nickname;               // 닉네임
   // late String phoneNumber;            // 연락처
   late String profileImg;             // 프로필 이미지 url
-  late List<String> teamMembers;
+  late List<String> teamMembers;      // 팀원
   
   // late int country;                   // 국가
   // late int language;                  // 언어
@@ -31,8 +32,8 @@ class UserPropertyModel extends CretaModel {
   // late int themeStyle;                // 크레타 테마 (라이트모드, 다크 모드)
   // late int cretaInitPage;             // 크레타 처음 시작 페이지 (커뮤니티, 스튜디오)
 
-  late String cretaGrade;             // 크레타 등급
-  late String ratePlan;               // 요금제 등급
+  late CretaGrade cretaGrade;             // 크레타 등급
+  late RatePlan ratePlan;               // 요금제 등급
   late int freeSpace;                 // 남은 용량
 
   late int bookCount;                 // 본인의 북 개수
@@ -70,8 +71,8 @@ class UserPropertyModel extends CretaModel {
     nickname = '';
     profileImg = '';
     teamMembers = [];
-    cretaGrade = '';
-    ratePlan = '';
+    cretaGrade = CretaGrade.none;
+    ratePlan = RatePlan.none;
     freeSpace = 0;
     bookCount = 0;
     bookViewCount = 0;
@@ -89,8 +90,8 @@ class UserPropertyModel extends CretaModel {
     this.nickname = '',
     this.profileImg = '',
     this.teamMembers = const [],
-    this.cretaGrade = '',
-    this.ratePlan = '',
+    this.cretaGrade = CretaGrade.none,
+    this.ratePlan = RatePlan.none,
     this.freeSpace = 0,
     this.bookCount = 0,
     this.bookViewCount = 0,
@@ -131,8 +132,8 @@ class UserPropertyModel extends CretaModel {
     nickname = map["nickname"];
     profileImg = map["profileImg"];
     teamMembers = CretaUtils.jsonStringToList(map["teamMembers"]);
-    cretaGrade = map["cretaGrade"];
-    ratePlan = map["ratePlan"];
+    cretaGrade = CretaGrade.fromInt(map["cretaGrade"] ?? 1);
+    ratePlan = RatePlan.fromInt(map["ratePlan"] ?? 0);
     freeSpace = map["freeSpace"];
     bookCount = map["bookCount"];
     bookViewCount = map["bookViewCount"];
@@ -152,8 +153,8 @@ class UserPropertyModel extends CretaModel {
         "nickname": nickname,
         "profileImg": profileImg,
         "teamMembers": CretaUtils.listToString(teamMembers),
-        "cretaGrade": cretaGrade,
-        "ratePlan": ratePlan,
+        "cretaGrade": cretaGrade.index,
+        "ratePlan": ratePlan.index,
         "freeSpace": freeSpace,
         "bookCount": bookCount,
         "bookViewCount": bookViewCount,

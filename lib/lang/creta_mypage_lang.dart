@@ -122,4 +122,24 @@ class CretaMyPageLang {
   static String addMemberBTN = '팀원 추가';
 
 
+  // 크레타 등급
+  static List<String> cretaGradeList = [
+    '',
+    '크레타 루키',
+    '크레타 스타',
+    '크레타 셀럽',
+    ''
+  ];
+
+  // 크레타 등급
+  static List<String> ratePlanList = [
+    '',
+    '개인 무료',
+    '개인 유료',
+    '팀 유료',
+    '엔터프라이즈',
+    ''
+  ];
+
+
 }

@@ -5,6 +5,7 @@ import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
+import 'package:creta03/model/app_enums.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -91,13 +92,13 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(propertyManager.propertyModel!.cretaGrade, style: CretaFont.bodyMedium),
+                  Text(CretaMyPageLang.cretaGradeList[propertyManager.propertyModel!.cretaGrade.index], style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
                   Text("${propertyManager.propertyModel!.bookCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
                   Row(
                     children: [
-                      Text(propertyManager.propertyModel!.ratePlan, style: CretaFont.bodyMedium),
+                      Text(CretaMyPageLang.ratePlanList[propertyManager.propertyModel!.ratePlan.index], style: CretaFont.bodyMedium),
                       const SizedBox(width: 24),
                       BTN.line_blue_t_m(text: CretaMyPageLang.ratePlanChangeBTN, onPressed: (){ })
                     ],
