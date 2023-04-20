@@ -33,7 +33,8 @@ class LayoutConst {
   static const double menuStickIconSize = 32.0;
 
   // left/Right menu
-  static const double leftMenuWidth = 420;
+  //static const double leftMenuWidth = 420;
+  static const double leftMenuWidth = 380;
   static const double rightMenuWidth = 380;
   static const double rightMenuTitleHeight = 76;
   static const double innerMenuBarHeight = 36;

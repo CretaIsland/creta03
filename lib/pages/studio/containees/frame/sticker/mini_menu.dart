@@ -17,6 +17,8 @@ import '../../containee_nofifier.dart';
 class MiniMenu extends StatefulWidget {
   final ContentsManager contentsManager;
 
+  static bool showFrame = false;
+
   final Offset parentPosition;
   final Size parentSize;
   final double parentBorderWidth;
@@ -62,7 +64,7 @@ class MiniMenu extends StatefulWidget {
 }
 
 class MiniMenuState extends State<MiniMenu> {
-  bool showFrame = false;
+  //bool showFrame = false;
 
   @override
   void initState() {
@@ -101,7 +103,7 @@ class MiniMenuState extends State<MiniMenu> {
         child: SizedBox(
           width: LayoutConst.miniMenuWidth,
           height: LayoutConst.miniMenuHeight,
-          child: showFrame
+          child: MiniMenu.showFrame
               ? Stack(
                   children: [
                     if (hasContents) _contentsMenu(),
@@ -122,12 +124,12 @@ class MiniMenuState extends State<MiniMenu> {
   Widget _frameMenu(bool hasContents) {
     return Align(
       alignment: hasContents
-          ? showFrame
+          ? MiniMenu.showFrame
               ? Alignment.topLeft
               : Alignment.topRight
           : Alignment.topCenter,
       child: Container(
-        width: hasContents && showFrame
+        width: hasContents && MiniMenu.showFrame
             ? LayoutConst.miniMenuWidth * 6 / 7
             : LayoutConst.miniMenuWidth,
         height: LayoutConst.miniMenuHeight,
@@ -138,7 +140,7 @@ class MiniMenuState extends State<MiniMenu> {
             width: 1,
             color: CretaColor.primary,
           ),
-          borderRadius: hasContents && showFrame
+          borderRadius: hasContents && MiniMenu.showFrame
               ? const BorderRadius.only(
                   topLeft: Radius.circular(45),
                   bottomLeft: Radius.circular(45),
@@ -233,7 +235,7 @@ class MiniMenuState extends State<MiniMenu> {
             logger.fine("MinuMenu onFrameDelete");
             widget.onFrameDelete.call();
           }),
-      if (hasContents && showFrame == false)
+      if (hasContents && MiniMenu.showFrame == false)
         BTN.fill_blue_i_menu(
             tooltipFg: CretaColor.text,
             tooltip: CretaStudioLang.toFrameMenu,
@@ -245,7 +247,7 @@ class MiniMenuState extends State<MiniMenu> {
               setState(() {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
-                showFrame = true;
+                MiniMenu.showFrame = true;
               });
             })
     ];
@@ -253,9 +255,9 @@ class MiniMenuState extends State<MiniMenu> {
 
   Widget _contentsMenu() {
     return Align(
-      alignment: showFrame ? Alignment.topRight : Alignment.topLeft,
+      alignment: MiniMenu.showFrame ? Alignment.topRight : Alignment.topLeft,
       child: Container(
-        width: showFrame ? LayoutConst.miniMenuWidth : LayoutConst.miniMenuWidth * 6 / 7,
+        width: MiniMenu.showFrame ? LayoutConst.miniMenuWidth : LayoutConst.miniMenuWidth * 6 / 7,
         height: LayoutConst.miniMenuHeight,
         decoration: BoxDecoration(
           //color: CretaColor.primary.withOpacity(0.5),
@@ -264,7 +266,7 @@ class MiniMenuState extends State<MiniMenu> {
             width: 1,
             color: CretaColor.secondary,
           ),
-          borderRadius: showFrame
+          borderRadius: MiniMenu.showFrame
               ? const BorderRadius.all(Radius.circular(45))
               : const BorderRadius.only(
                   topLeft: Radius.circular(45),
@@ -354,7 +356,7 @@ class MiniMenuState extends State<MiniMenu> {
             logger.info("MinuMenu onContentsEdit");
             widget.onContentsEdit.call();
           }),
-      if (showFrame)
+      if (MiniMenu.showFrame)
         BTN.fill_blue_i_menu(
             tooltipFg: CretaColor.text,
             tooltip: CretaStudioLang.toContentsMenu,
@@ -366,7 +368,7 @@ class MiniMenuState extends State<MiniMenu> {
               setState(() {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
-                showFrame = false;
+                MiniMenu.showFrame = false;
               });
             }),
     ];

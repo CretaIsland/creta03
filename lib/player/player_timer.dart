@@ -238,7 +238,7 @@ class PlayTimer {
             _currentModel!.setPlayState(PlayState.none);
             logger.info('before next, currentOrder=$_currentOrder');
             // 비디오가 마무리 작업을 할 시간을 준다.
-            //await Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
+            await Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
             _next();
 
             logger.info('after next, currentOrder=$_currentOrder');

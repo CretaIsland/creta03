@@ -22,6 +22,7 @@ import 'frame_each.dart';
 import 'frame_play_mixin.dart';
 import 'sticker/draggable_resizable.dart';
 import 'sticker/draggable_stickers.dart';
+import 'sticker/mini_menu.dart';
 import 'sticker/stickerview.dart';
 
 class FrameMain extends StatefulWidget {
@@ -138,14 +139,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       onTap: (mid) {
         logger.info('onTap : from InkWell , frame_name.dart, no setState $mid');
 
-        ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
-        if (contentsManager != null) {
-          ContentsModel? content = contentsManager.getCurrentModel();
-          if (content != null) {
-            frameManager?.setSelectedMid(mid, doNotify: false);
-            contentsManager.setSelectedMid(content.mid, doNotify: false);
-            BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
-            return;
+        if (MiniMenu.showFrame == false) {
+          ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
+          if (contentsManager != null) {
+            ContentsModel? content = contentsManager.getCurrentModel();
+            if (content != null) {
+              frameManager?.setSelectedMid(mid, doNotify: false);
+              contentsManager.setSelectedMid(content.mid, doNotify: false);
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
+              return;
+            }
           }
         }
 
