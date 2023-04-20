@@ -91,13 +91,13 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(propertyManager.propertyModel!.cretaGrade, style: CretaFont.bodyMedium),
+                  Text(CretaMyPageLang.cretaGradeList[propertyManager.propertyModel!.cretaGrade.index], style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
                   Text("${propertyManager.propertyModel!.bookCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
                   Row(
                     children: [
-                      Text(propertyManager.propertyModel!.ratePlan, style: CretaFont.bodyMedium),
+                      Text(CretaMyPageLang.ratePlanList[propertyManager.propertyModel!.ratePlan.index], style: CretaFont.bodyMedium),
                       const SizedBox(width: 24),
                       BTN.line_blue_t_m(text: CretaMyPageLang.ratePlanChangeBTN, onPressed: (){ })
                     ],

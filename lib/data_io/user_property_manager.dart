@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'package:creta03/model/app_enums.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -80,8 +81,8 @@ class UserPropertyManager extends CretaManager {
       nickname: userModel.name,
       profileImg: '',
       teamMembers: [],
-      cretaGrade: '',
-      ratePlan: '',
+      cretaGrade: CretaGrade.none,
+      ratePlan: RatePlan.none,
       freeSpace: 0,
       bookCount: 0,
       bookViewCount: 0,

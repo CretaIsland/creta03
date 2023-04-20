@@ -16,12 +16,12 @@ import '../../design_system/buttons/creta_tapbar_button.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_mypage_lang.dart';
+import '../../model/creta_model.dart';
 import '../../routes.dart';
 import '../studio/studio_constant.dart';
 
 class MyPage extends StatefulWidget {
 
-  static UserPropertyManager? userPropertyManagerHolder;
   final String selectedPage;
   const MyPage({super.key, required this.selectedPage});
 
@@ -33,7 +33,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
 
   
   late List<CretaMenuItem> _leftMeunItem;
-
+  UserPropertyManager? userPropertyManagerHolder;
+  bool _alreadyDataGet = false;
 
   @override
   void initState() {
@@ -114,7 +115,10 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
         break;
     }
 
-    MyPage.userPropertyManagerHolder = UserPropertyManager();
+    userPropertyManagerHolder = UserPropertyManager();
+    userPropertyManagerHolder!.configEvent();
+    userPropertyManagerHolder!.clearAll();
+    userPropertyManagerHolder!.initUserProperty();
 
   }
 
@@ -165,49 +169,47 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
     );
   }
 
-  Widget rightArea(Size size) {
+  Widget rightArea() {
     switch(widget.selectedPage) {
       case AppRoutes.myPageInfo:
-        return MyPageInfo(width: size.width, height: size.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageInfo(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
       case AppRoutes.myPageAccountManage:
-        return MyPageAccountManage(width: size.width, height: size.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageAccountManage(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
       case AppRoutes.myPageSettings:
-        return MyPageSettings(width: size.width, height: size.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageSettings(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
       case AppRoutes.myPageTeamManage:
-        return MyPageTeamManage(width: size.width, height: size.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageTeamManage(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
       default:
-        return MyPageDashBoard(width: size.width, height: size.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageDashBoard(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
     }
   }
 
   Widget myPageMain() {
-    return Row(
+    if(_alreadyDataGet) {
+      return Row(
+        children: [
+          leftMenu(),
+          rightArea()
+        ],
+      );
+    }
+
+    var retval = Row(
       children: [
-        // left area
         leftMenu(),
-        // right area
-        FutureBuilder<void>(
-          future: MyPage.userPropertyManagerHolder!.initUserProperty(),
-          builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.done) {
-              return rightArea(gridArea);
-            } else {
-              return SizedBox(
-                width: gridArea.width,
-                height: gridArea.height
-              );
-            }
-          }
-        ),
+        CretaModelSnippet.waitData(consumerFunc: rightArea, manager: userPropertyManagerHolder!)
       ],
     );
+    _alreadyDataGet = true;
+
+    return retval;
   }
 
   @override
   Widget build(BuildContext context) {
     resize(context);
     return MultiProvider(
-      providers: [ ChangeNotifierProvider<UserPropertyManager>.value(value: MyPage.userPropertyManagerHolder!) ],
+      providers: [ ChangeNotifierProvider<UserPropertyManager>.value(value: userPropertyManagerHolder!) ],
       child: Snippet.CretaScaffoldOfMyPage(
         title:  Container(
           padding: const EdgeInsets.only(left: 24),

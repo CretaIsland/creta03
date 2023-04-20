@@ -305,6 +305,32 @@ enum PlayState {
   static PlayState fromInt(int? val) => PlayState.values[validCheck(val ?? none.index)];
 }
 
+
+// ==user property enum==
+enum CretaGrade {
+  none,
+  rookie,
+  star,
+  celebrity,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static CretaGrade fromInt(int? val) => CretaGrade.values[validCheck(val ?? none.index)];
+}
+
+enum RatePlan {
+  none,
+  free,
+  personalPay,
+  teamPay,
+  enterprise,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static RatePlan fromInt(int? val) => RatePlan.values[validCheck(val ?? none.index)];
+}
+
+
 TextAlign intToTextAlign(int t) {
   switch (t) {
     case 0:
