@@ -82,15 +82,19 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   }
 
   Widget showFrame() {
-    FrameModel? model = frameManager!.getSelected() as FrameModel?;
+    //FrameModel? model = frameManager!.getSelected() as FrameModel?;
+    logger.info('showFrame');
     return StickerView(
+      //key: ValueKey('StickerView-${widget.pageModel.mid}'),
+      pageMid: widget.pageModel.mid,
       width: widget.pageWidth,
       height: widget.pageHeight,
-      frameModel: model,
+      frameManager: frameManager,
       // List of Stickers
       onUpdate: (update, mid) {
         logger.fine('onUpdate ${update.hint}');
         _setItem(update, mid);
+        FrameModel? model = frameManager!.getModel(mid) as FrameModel?;
         if (model != null && model.mid == mid) {
           BookMainPage.containeeNotifier!.openSize(doNoti: false);
           //_sendEvent!.sendEvent(model);
@@ -133,8 +137,19 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       },
       onTap: (mid) {
         logger.info('onTap : from InkWell , frame_name.dart, no setState $mid');
-        FrameModel? frame = frameManager?.getSelected() as FrameModel?;
 
+        ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
+        if (contentsManager != null) {
+          ContentsModel? content = contentsManager.getCurrentModel();
+          if (content != null) {
+            frameManager?.setSelectedMid(mid, doNotify: false);
+            contentsManager.setSelectedMid(content.mid, doNotify: false);
+            BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
+            return;
+          }
+        }
+
+        FrameModel? frame = frameManager?.getSelected() as FrameModel?;
         if (frame == null ||
             frame.mid != mid ||
             BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame) {
@@ -144,19 +159,6 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           //});
         }
         frame = frameManager?.getSelected() as FrameModel?;
-
-        if (frame != null) {
-          ContentsManager? contentsManager = frameManager?.getContentsManager(frame.mid);
-          if (contentsManager != null) {
-            ContentsModel? content = contentsManager.getCurrentModel();
-            if (content != null) {
-              contentsManager.setSelectedMid(content.mid);
-              BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
-              //frameManager?.setSelectedMid(mid);
-              return;
-            }
-          }
-        }
 
         //frame = frameManager?.getSelected() as FrameModel?;
         //if (frame != null) {

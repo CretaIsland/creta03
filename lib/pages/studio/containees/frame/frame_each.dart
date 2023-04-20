@@ -122,6 +122,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameDropZone() {
+    logger.info('_frameDropZone');
     return DropZoneWidget(
       parentId: '',
       onDroppedFile: (modelList) {
@@ -297,6 +298,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   // }
 
   Widget _frameBox(FrameModel model, bool useColor) {
+    logger.info('_frameBox');
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,
@@ -305,7 +307,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       child: ClipRect(
         clipBehavior: Clip.hardEdge,
         child: ContentsMain(
-          key: ValueKey('ContentsMain${model.mid}'),
+          key: GlobalObjectKey<ContentsMainState>('ContentsMain${model.mid}'),
           frameModel: model,
           pageModel: widget.pageModel,
           frameManager: frameManager!,

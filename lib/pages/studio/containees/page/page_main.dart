@@ -194,7 +194,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     );
 
     //_onceDBGetComplete = true;
-    logger.finest('first_onceDBGetComplete');
+    logger.finest('first_onceDBGetComplete page');
     return retval;
     //return consumerFunc();
   }

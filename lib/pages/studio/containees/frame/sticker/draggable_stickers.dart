@@ -25,7 +25,7 @@ class DraggableStickers extends StatefulWidget {
   //List of stickers (elements)
   final double pageWidth;
   final double pageHeight;
-  final FrameModel? frameModel;
+  final FrameManager? frameManager;
   final List<Sticker> stickerList;
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onFrameDelete;
@@ -42,11 +42,11 @@ class DraggableStickers extends StatefulWidget {
   final void Function(bool) onFrontBackHover;
   //final void Function(String, ContentsModel) onDropFrame;
 
-  // ignore: use_key_in_widget_constructors
   const DraggableStickers({
+    super.key,
     required this.pageWidth,
     required this.pageHeight,
-    required this.frameModel,
+    required this.frameManager,
     required this.stickerList,
     required this.onUpdate,
     required this.onFrameDelete,
@@ -86,6 +86,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
   Widget build(BuildContext context) {
     stickers = widget.stickerList;
     _selectedSticker = _getSelectedSticker();
+
+    logger.info('_DraggableStickersState build');
+
     return stickers.isNotEmpty && stickers != []
         ? Stack(
             fit: StackFit.expand,
@@ -109,6 +112,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   Widget _drawEachStiker(Sticker sticker) {
     // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
+
+    FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
+
     return DraggableResizable(
       key: GlobalKey(),
       mid: sticker.id,
@@ -116,7 +122,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       position: sticker.position,
       borderWidth: sticker.borderWidth,
       isMain: sticker.isMain,
-      frameModel: widget.frameModel,
+      frameModel: frameModel,
       pageWidth: widget.pageWidth,
       pageHeight: widget.pageHeight,
       // Size of the sticker
@@ -257,14 +263,22 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   Widget _drawMiniMenu() {
+    FrameModel? frameModel = widget.frameManager!.getModel(_selectedSticker!.id) as FrameModel?;
+
     return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
-      logger.fine('_drawMiniMenu()');
+      logger.info('_drawMiniMenu()');
 
       FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
       if (frameManager == null) {
         return const SizedBox.shrink();
       }
-      ContentsManager? contentsManager = frameManager.getContentsManager(widget.frameModel!.mid);
+
+      if (frameModel == null) {
+        logger.warning('Selected frameModel is null');
+        return const SizedBox.shrink();
+      }
+
+      ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
       if (contentsManager == null) {
         return const SizedBox.shrink();
       }

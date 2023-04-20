@@ -82,6 +82,8 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                             widget.playerHandler!.isNextButtonBusy() == false) {
                           logger.info('next Button pressed');
                           await widget.playerHandler?.next();
+                        } else {
+                          logger.info('next Button is busy');
                         }
                       }),
                 ),

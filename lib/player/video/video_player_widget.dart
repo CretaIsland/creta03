@@ -180,15 +180,11 @@ class VideoPlayerWidget extends AbsPlayWidget {
     logger.fine('video createState (${model!.name}');
     return VideoPlayerWidgetState();
   }
-
-  @override
-  Future<void> afterBuild() async {
-    acc.playerHandler?.setIsNextButtonBusy(false);
-    acc.playerHandler?.setIsPrevButtonBusy(false);
-  }
 }
 
 class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+  Size? _outSize;
+
   @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
@@ -199,13 +195,15 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   Future<void> afterBuild() async {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       logger.info('afterBuild video');
       if (widget.wcontroller != null && widget.model != null) {
+        logger.info('video : ${widget.model!.name}');
         widget.model!.aspectRatio
             .set(widget.wcontroller!.value.aspectRatio, noUndo: true, save: false);
       }
       widget.afterBuild();
+      logger.info('afterBuild video end');
     });
   }
 
@@ -225,27 +223,20 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   Future<bool> waitInit() async {
-    logger.info('waitInit...');
+    logger.info('waitInit........ ${widget.model!.name}');
     //int waitCount = 0;
     while (!widget.wcontroller!.value.isInitialized) {
       await Future.delayed(const Duration(milliseconds: 100));
-      // waitCount++;
-      // if (waitCount > 100) {
-      //   // 10초 이상 대기하면, break 한다.
-      //   logger.severe('Initialize failed !!!!');
-      //   widget.wcontroller!. = true;
-      //   break;
-      // }
     }
-    logger.info('waitInit end');
+    logger.info('waitInit end .........  ${widget.model!.name}');
+    await widget.wcontroller!.setLooping(widget.acc.getAvailLength() == 1);
 
-    Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
-    await widget.acc.resizeFrame(widget.wcontroller!.value.aspectRatio, outSize, true);
-
-    if (widget.autoStart) {
-      logger.info('initState play--${widget.model!.name}---------------');
-      await widget.play();
+    if (_outSize == null) {
+      _outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
+      await widget.acc.resizeFrame(widget.wcontroller!.value.aspectRatio, _outSize!, true);
     }
+
+    await _playVideo();
     return true;
   }
 
@@ -265,53 +256,34 @@ class VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       }
     }
 
-    if (widget.wcontroller != null && widget.wcontroller!.value.isInitialized) {
-      logger.info('VideoPlayerWidget build aspectRatio=${widget.wcontroller!.value.aspectRatio}');
-      // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
-      widget.wcontroller!.setLooping(widget.acc.getAvailLength() == 1);
-
-      Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
-
-      if (widget.autoStart) {
-        widget.wcontroller!.play();
-      }
-
-      return IgnorePointer(
-        child: widget.getClipRect(
-            outSize, VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url))),
-      );
-    }
-
     return FutureBuilder(
         future: waitInit(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-            return Snippet.showWaitSign();
+            if (widget.wcontroller!.value.isInitialized == false) {
+              return Snippet.showWaitSign();
+            }
+            return const SizedBox.shrink(key: ValueKey('shrink'));
           }
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
             return Snippet.errMsgWidget(snapshot);
           }
-
-          logger
-              .info('VideoPlayerWidget build aspectRatio=${widget.wcontroller!.value.aspectRatio}');
-          // aspectorRatio 는 실제 비디오의  넓이/높이 이다.
-          Size outSize = widget.getOuterSize(widget.wcontroller!.value.aspectRatio);
-
           return IgnorePointer(
             child: widget.getClipRect(
-                outSize, VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url))),
-            //     child: SizedBox(
-            //   width: outSize.width,
-            //   height: outSize.height,
-            //   child: VideoPlayer(
-            //     widget.wcontroller!,
-            //     key: ValueKey(widget.model!.url),
-            //   ),
-            // ),
+                _outSize!, VideoPlayer(widget.wcontroller!, key: ValueKey(widget.model!.url))),
           );
         });
+  }
+
+  Future<void> _playVideo() async {
+    if (widget.autoStart && widget.model!.isState(PlayState.start) == false) {
+      logger.info('video state = ${widget.model!.playState}');
+      await widget.wcontroller!.play(); //awat를 못한다....이거 문제임...
+    }
+    widget.acc.playerHandler?.setIsNextButtonBusy(false);
+    widget.acc.playerHandler?.setIsPrevButtonBusy(false);
   }
 }
 

@@ -25,7 +25,7 @@ class ContentsManager extends CretaManager {
   }
 
   bool iamBusy = false;
-  final Duration snackBarDuration = const Duration(seconds: 1);
+  final Duration snackBarDuration = const Duration(seconds: 3);
 
   FrameManager? frameManager; //onDropPage 에서 video Contents 가 Drop 된 경우만 값을 가지고 있게 된다.
 

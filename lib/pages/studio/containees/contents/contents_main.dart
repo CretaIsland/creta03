@@ -45,6 +45,7 @@ class ContentsMainState extends State<ContentsMain> {
 
   @override
   void initState() {
+    logger.info('ContentsMain initState');
     //saveManagerHolder!.addBookChildren('contents=');
     //_onceDBGetComplete = true;
     //initChildren();
@@ -93,7 +94,7 @@ class ContentsMainState extends State<ContentsMain> {
       consumerFunc: _consumerFunc,
     );
     _onceDBGetComplete = true;
-    logger.info('first_onceDBGetComplete');
+    logger.info('first_onceDBGetComplete contents');
     return retval;
   }
 
@@ -102,6 +103,7 @@ class ContentsMainState extends State<ContentsMain> {
       int contentsCount = contentsManager.getAvailLength();
 
       return Consumer<PlayerHandler>(builder: (context, playerHandler, child) {
+        logger.info('Consumer<PlayerHandler>');
         return StreamBuilder<AbsExModel>(
             stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {

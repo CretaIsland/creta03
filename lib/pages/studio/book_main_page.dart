@@ -277,7 +277,7 @@ class _BookMainPageState extends State<BookMainPage> {
     );
 
     //_onceDBGetComplete = true;
-    logger.finest('first_onceDBGetComplete');
+    logger.finest('first_onceDBGetComplete bookmain');
     return retval;
     //return consumerFunc();
   }

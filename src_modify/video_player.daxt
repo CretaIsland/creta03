@@ -468,6 +468,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   Future<void> play() async {
     //skpark add lock
     await _playLock.synchronized(() async {
+      print('play VideoPlayerController -------');
       if (value.position == value.duration) {
         await seekTo(Duration.zero);
       }
@@ -479,6 +480,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// Sets whether or not the video should loop after playing once. See also
   /// [VideoPlayerValue.isLooping].
   Future<void> setLooping(bool looping) async {
+    if (value.isLooping == looping) return; //skpark more effiency !
     value = value.copyWith(isLooping: looping);
     await _applyLooping();
   }

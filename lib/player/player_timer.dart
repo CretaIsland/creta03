@@ -25,14 +25,21 @@ class PlayTimer {
 
   bool _isPauseTimer = false;
   bool _isPrevPauseTimer = false;
-  bool _isNextButtonIsBusy = false;
-  bool _isPrevButtonIsBusy = false;
+  bool _isNextButtonBusy = false;
+  bool _isPrevButtonBusy = false;
 
-  bool get isNextButtonBusy => _isNextButtonIsBusy;
-  bool get isPrevButtonBusy => _isPrevButtonIsBusy;
+  bool get isNextButtonBusy => _isNextButtonBusy;
+  bool get isPrevButtonBusy => _isPrevButtonBusy;
 
-  void setIsNextButtonBusy(bool val) => _isNextButtonIsBusy = val;
-  void setIsPrevButtonBusy(bool val) => _isPrevButtonIsBusy = val;
+  void setIsNextButtonBusy(bool val) {
+    logger.info('setIsNextButtonBusy($val)');
+    _isNextButtonBusy = val;
+  }
+
+  void setIsPrevButtonBusy(bool val) {
+    logger.info('setIsPrevButtonBusy($val)');
+    _isPrevButtonBusy = val;
+  }
 
   Future<void> togglePause() async {
     _isPrevPauseTimer = _isPauseTimer;
@@ -103,12 +110,13 @@ class PlayTimer {
   }
 
   Future<void> next() async {
-    _isNextButtonIsBusy = true;
+    setIsNextButtonBusy(true);
     await _lock.synchronized(() async {
       if (playHandler.isInit()) {
         if (contentsManager.getAvailLength() > 1) {
-          //await playHandler.rewind();
           await playHandler.pause();
+          await playHandler.rewind();
+          logger.info('${_currentModel!.name} is paused');
         }
         _next();
       }
@@ -140,14 +148,14 @@ class PlayTimer {
   }
 
   Future<void> prev() async {
-    _isPrevButtonIsBusy = true;
+    _isPrevButtonBusy = true;
 
     logger.info('prev button pressed');
     await _lock.synchronized(() async {
       if (playHandler.isInit()) {
         if (contentsManager.getAvailLength() > 1) {
-          //await playHandler.rewind();
           await playHandler.pause();
+          await playHandler.rewind();
         }
         _currentOrder = contentsManager.prevOrder(_currentOrder);
       }

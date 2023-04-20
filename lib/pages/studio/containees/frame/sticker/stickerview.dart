@@ -1,11 +1,9 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'dart:ui' as ui;
+import 'package:hycop/common/util/logger.dart';
+import '../../../../../data_io/frame_manager.dart';
 import '../../../../../model/contents_model.dart';
-import '../../../../../model/frame_model.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
@@ -36,10 +34,12 @@ class StickerView extends StatefulWidget {
 
   final double height; // height of the editor view
   final double width; // width of the editor view
-  final FrameModel? frameModel;
+  final FrameManager? frameManager;
+  final String pageMid;
 
-  // ignore: use_key_in_widget_constructors
   const StickerView({
+    super.key,
+    required this.pageMid,
     required this.stickerList,
     required this.onUpdate,
     required this.onFrameDelete,
@@ -54,7 +54,7 @@ class StickerView extends StatefulWidget {
     required this.onResizeButtonTap,
     required this.height,
     required this.width,
-    required this.frameModel,
+    required this.frameManager,
     required this.onDropPage,
     required this.onFrontBackHover,
     //required this.onDropFrame,
@@ -62,42 +62,42 @@ class StickerView extends StatefulWidget {
 
   // Method for saving image of the editor view as Uint8List
   // You have to pass the imageQuality as per your requirement (ImageQuality.low, ImageQuality.medium or ImageQuality.high)
-  static Future<Uint8List?> saveAsUint8List(ImageQuality imageQuality) async {
-    try {
-      Uint8List? pngBytes;
-      double pixelRatio = 1;
-      if (imageQuality == ImageQuality.high) {
-        pixelRatio = 2;
-      } else if (imageQuality == ImageQuality.low) {
-        pixelRatio = 0.5;
-      }
-      // delayed by few seconds because it takes some time to update the state by RenderRepaintBoundary
-      return await Future.delayed(const Duration(milliseconds: 700)).then((value) async {
-        RenderRepaintBoundary boundary =
-            stickGlobalKey.currentContext?.findRenderObject() as RenderRepaintBoundary;
-        ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
-        ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-        pngBytes = byteData?.buffer.asUint8List();
+  // static Future<Uint8List?> saveAsUint8List(ImageQuality imageQuality) async {
+  //   try {
+  //     Uint8List? pngBytes;
+  //     double pixelRatio = 1;
+  //     if (imageQuality == ImageQuality.high) {
+  //       pixelRatio = 2;
+  //     } else if (imageQuality == ImageQuality.low) {
+  //       pixelRatio = 0.5;
+  //     }
+  //     // delayed by few seconds because it takes some time to update the state by RenderRepaintBoundary
+  //     return await Future.delayed(const Duration(milliseconds: 700)).then((value) async {
+  //       RenderRepaintBoundary boundary =
+  //           stickGlobalKey.currentContext?.findRenderObject() as RenderRepaintBoundary;
+  //       ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
+  //       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  //       pngBytes = byteData?.buffer.asUint8List();
 
-        // final input = ImageFile(rawBytes: pngBytes!, filePath: '/test.png');
-        // final output = compress(ImageFileConfiguration(input: input));
+  //       // final input = ImageFile(rawBytes: pngBytes!, filePath: '/test.png');
+  //       // final output = compress(ImageFileConfiguration(input: input));
 
-        // return output.rawBytes;
-        return pngBytes;
-      });
-      // returns Uint8List
-      //return pngBytes;
-    } catch (e) {
-      rethrow;
-    }
-  }
+  //       // return output.rawBytes;
+  //       return pngBytes;
+  //     });
+  //     // returns Uint8List
+  //     //return pngBytes;
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
   @override
   StickerViewState createState() => StickerViewState();
 }
 
 //GlobalKey is defined for capturing screenshot
-final GlobalKey stickGlobalKey = GlobalKey();
+//final GlobalKey stickGlobalKey = GlobalKey();
 
 class StickerViewState extends State<StickerView> {
   // You have to pass the List of Sticker
@@ -113,13 +113,15 @@ class StickerViewState extends State<StickerView> {
 
   @override
   Widget build(BuildContext context) {
+    logger.info('StickerViewState build');
+
     stickerList = widget.stickerList;
     return stickerList != null
         ? Column(
             children: [
               //For capturing screenshot of the widget
               RepaintBoundary(
-                key: stickGlobalKey,
+                key: GlobalKey(),
                 child: SizedBox(
                   // decoration: BoxDecoration(
                   //   color: Colors.grey[200],
@@ -133,7 +135,7 @@ class StickerViewState extends State<StickerView> {
                       DraggableStickers(
                     pageWidth: widget.width,
                     pageHeight: widget.height,
-                    frameModel: widget.frameModel,
+                    frameManager: widget.frameManager,
                     stickerList: stickerList!,
                     onUpdate: widget.onUpdate,
                     onFrameDelete: widget.onFrameDelete,
