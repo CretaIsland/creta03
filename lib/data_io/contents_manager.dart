@@ -12,27 +12,13 @@ import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/studio_variables.dart';
-import '../player/player_handler.dart';
+import '../player/creta_play_timer.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
 
 class ContentsManager extends CretaManager {
   final PageModel pageModel;
   final FrameModel frameModel;
-
-  bool hasContents() {
-    return (getAvailLength() > 0);
-  }
-
-  bool iamBusy = false;
-  final Duration snackBarDuration = const Duration(seconds: 3);
-
-  FrameManager? frameManager; //onDropPage 에서 video Contents 가 Drop 된 경우만 값을 가지고 있게 된다.
-
-  PlayerHandler? playerHandler;
-  void setPlayerHandler(PlayerHandler p) {
-    playerHandler = p;
-  }
 
   ContentsManager({required this.pageModel, required this.frameModel}) : super('creta_contents') {
     saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
@@ -48,23 +34,36 @@ class ContentsManager extends CretaManager {
     return retval;
   }
 
+  bool hasContents() {
+    return (getAvailLength() > 0);
+  }
+
+  final Duration _snackBarDuration = const Duration(seconds: 3);
+  bool iamBusy = false;
+  FrameManager? frameManager; //onDropPage 에서 video Contents 가 Drop 된 경우만 값을 가지고 있게 된다.
+
+  CretaPlayTimer? playTimer;
+  void setPlayerHandler(CretaPlayTimer p) {
+    playTimer = p;
+  }
+
   ContentsModel? getCurrentModel() {
-    if (playerHandler == null) {
+    if (playTimer == null) {
       return null;
     }
-    return playerHandler?.getCurrentModel();
+    return playTimer?.getCurrentModel();
   }
 
   Future<ContentsModel> createNextContents(ContentsModel model, {bool doNotify = true}) async {
     model.order.set(lastOrder() + 1, save: false, noUndo: true);
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
-    if (playerHandler != null) {
-      if (playerHandler!.isInit()) {
-        await playerHandler?.rewind();
-        await playerHandler?.pause();
+    if (playTimer != null) {
+      if (playTimer!.isInit()) {
+        await playTimer?.rewind();
+        await playTimer?.pause();
       }
-      await playerHandler?.reOrdering(rewind: true);
+      await playTimer?.reOrdering(isRewind: true);
     }
     return model;
   }
@@ -80,7 +79,6 @@ class ContentsManager extends CretaManager {
     } catch (e) {
       logger.finest('something wrong $e');
     }
-    //reOrdering();
     endTransaction();
     return contentsCount;
   }
@@ -172,52 +170,52 @@ class ContentsManager extends CretaManager {
 
     ContentsModel? model = getSelected() as ContentsModel?;
     if (model == null) {
-      showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);
-      await Future.delayed(snackBarDuration);
+      showSnackBar(context, CretaLang.contentsNotDeleted, duration: _snackBarDuration);
+      await Future.delayed(_snackBarDuration);
       iamBusy = false;
       return;
     }
 
-    if (playerHandler != null && playerHandler!.isInit()) {
+    if (playTimer != null && playTimer!.isInit()) {
       //await pause();
 
       model.isRemoved.set(true, save: false);
       await setToDB(model);
       remove(model);
       logger.info('remove contents ${model.name}, ${model.mid}');
-      await playerHandler?.reOrdering();
+      await playTimer?.reOrdering();
 
       if (getAvailLength() == 0) {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
       }
 
       // ignore: use_build_context_synchronously
-      showSnackBar(context, model.name + CretaLang.contentsDeleted, duration: snackBarDuration);
-      await Future.delayed(snackBarDuration);
+      showSnackBar(context, model.name + CretaLang.contentsDeleted, duration: _snackBarDuration);
+      await Future.delayed(_snackBarDuration);
       iamBusy = false;
 
       //MiniMenu.minuMenuKey
       BookMainPage.containeeNotifier!.notify();
       return;
     }
-    showSnackBar(context, CretaLang.contentsNotDeleted, duration: snackBarDuration);
-    await Future.delayed(snackBarDuration);
+    showSnackBar(context, CretaLang.contentsNotDeleted, duration: _snackBarDuration);
+    await Future.delayed(_snackBarDuration);
     iamBusy = false;
   }
 
-  Future<void> pause() async {
-    await playerHandler?.pause();
-  }
+  // Future<void> pause() async {
+  //   await playTimer?.pause();
+  // }
 
-  Future<void> globalPause() async {
-    await playerHandler?.globalPause();
-  }
+  // Future<void> globalPause() async {
+  //   await playTimer?.globalPause();
+  // }
 
-  Future<void> globalResume() async {
-    await playerHandler?.globalResume();
-  }
+  // Future<void> globalResume() async {
+  //   await playTimer?.globalResume();
+  // }
 
   // void setLoop(bool loop) {
-  //   playerHandler?.setLoop(loop);
+  //   playTimer?.setLoop(loop);
   // }
 }

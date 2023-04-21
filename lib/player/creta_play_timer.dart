@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:synchronized/synchronized.dart';
@@ -12,34 +13,43 @@ import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/studio_variables.dart';
-import 'player_handler.dart';
+import 'creta_abs_player.dart';
+import 'creta_abs_media_widget.dart';
+import 'image/creta_image_player.dart';
+import 'image/creta_image_widget.dart';
+import 'video/creta_video_player.dart';
+import 'video/creta_video_widget.dart';
 
-class PlayTimer {
+class CretaPlayTimer extends ChangeNotifier {
+  final ContentsManager contentsManager;
+
+  CretaPlayTimer(this.contentsManager);
   Timer? _timer;
   final int _timeGap = 100; //
   final Lock _lock = Lock();
   double _currentOrder = -1;
   double _currentPlaySec = 0.0;
+
   ContentsModel? _currentModel;
+  ContentsModel? get currentModel => _currentModel;
+
   ContentsModel? _prevModel;
 
   bool _isPauseTimer = false;
   bool _isPrevPauseTimer = false;
+  bool get isPauseTimer => _isPauseTimer;
+
   bool _isNextButtonBusy = false;
   bool _isPrevButtonBusy = false;
-
   bool get isNextButtonBusy => _isNextButtonBusy;
   bool get isPrevButtonBusy => _isPrevButtonBusy;
+  void setIsNextButtonBusy(bool val) => _isNextButtonBusy = val;
+  void setIsPrevButtonBusy(bool val) => _isPrevButtonBusy = val;
 
-  void setIsNextButtonBusy(bool val) {
-    logger.info('setIsNextButtonBusy($val)');
-    _isNextButtonBusy = val;
-  }
-
-  void setIsPrevButtonBusy(bool val) {
-    logger.info('setIsPrevButtonBusy($val)');
-    _isPrevButtonBusy = val;
-  }
+  // from Handler
+  bool _initComplete = false;
+  CretaAbsPlayer? _currentPlayer;
+  final Map<String, CretaAbsPlayer> _playerMap = {};
 
   Future<void> togglePause() async {
     _isPrevPauseTimer = _isPauseTimer;
@@ -47,39 +57,97 @@ class PlayTimer {
 
     if (_currentModel != null && _currentModel!.contentsType == ContentsType.video) {
       if (_isPauseTimer) {
-        await playHandler.pause();
+        await pause();
       } else {
-        await playHandler.play();
+        await play();
       }
     }
   }
 
-  bool get isPauseTimer => _isPauseTimer;
-
-  final ContentsManager contentsManager;
-  final PlayerHandler playHandler;
-
-  PlayTimer(this.contentsManager, this.playHandler);
-
-  void initTimer() {
+  void start() {
     _timer = Timer.periodic(Duration(milliseconds: _timeGap), _timerExpired);
+    _initComplete = true;
   }
 
-  void disposeTimer() {
+  void stop() {
     _timer?.cancel();
   }
 
-  ContentsModel? get currentModel => _currentModel;
-
-  // Future<ContentsModel?> getCurrentModel() async {
-  //   return await _lock.synchronized(() async {
-  //     return _currentModel;
-  //   });
+  // Future<void> toggleIsPause() async {
+  //   await togglePause();
   // }
 
+  bool isPause() {
+    if (_timer == null) {
+      return true;
+    }
+    return isPauseTimer;
+  }
+
+  Future<void> pause() async {
+    await _currentPlayer?.pause();
+  }
+
+  // Future<void> close() async {
+  //   await _currentPlayer?.close();
+  // }
+
+  Future<void> play() async {
+    await _currentPlayer?.play();
+  }
+
+  Future<void> rewind() async {
+    reset();
+    await _currentPlayer?.rewind();
+  }
+
+  Future<void> globalPause() async {
+    await _currentPlayer?.globalPause();
+  }
+
+  Future<void> globalResume() async {
+    await _currentPlayer?.globalResume();
+  }
+
+  bool isInit() {
+    if (_currentPlayer == null) {
+      return false;
+    }
+    return _currentPlayer!.isInit();
+  }
+
+  int getAvailLength() {
+    return contentsManager.getAvailLength();
+  }
+
+  void notify() {
+    notifyListeners();
+  }
+
+  Future<void> reset() async {
+    await _lock.synchronized(() {
+      _currentPlaySec = 0.0;
+    });
+  }
+
+  Future<void> reOrdering({bool isRewind = false}) async {
+    await _lock.synchronized(() {
+      contentsManager.reOrdering();
+      if (isRewind) {
+        _currentPlaySec = 0.0;
+        _currentOrder = contentsManager.lastOrder();
+      }
+    });
+  }
+
+  ContentsModel? getCurrentModel() {
+    if (!_initComplete || _timer == null) {
+      return null;
+    }
+    return _currentModel;
+  }
+
   void _setCurrentModel() {
-    //logger.info('_setCurrentModel');
-    //contentsManager.reOrdering();
     _currentModel = contentsManager.getNthOrder(_currentOrder) as ContentsModel?;
     while (true) {
       if (_currentModel != null) {
@@ -93,15 +161,10 @@ class PlayTimer {
     }
     _prevModel ??= ContentsModel('');
 
-    //if (_currentModel!.mid != _prevModel!.mid || _currentModel!.forceToChange == true) {
     if (_currentModel!.mid != _prevModel!.mid) {
       logger.info('CurrentModel changed from ${_prevModel!.name}');
       _currentModel!.copyTo(_prevModel!);
-      // if (_currentModel!.forceToChange == true) {
-      //   _currentModel!.forceToChange = false;
-      //   _currentModel!.changeToggle = !_currentModel!.changeToggle;
-      // }
-      playHandler.notify();
+      notify();
       notifyToProperty();
       logger.info('CurrentModel changed to ${_currentModel!.name}');
     }
@@ -109,13 +172,27 @@ class PlayTimer {
     return;
   }
 
+  Future<void> prev() async {
+    setIsPrevButtonBusy(true);
+    logger.info('prev button pressed');
+    await _lock.synchronized(() async {
+      if (isInit()) {
+        if (contentsManager.getAvailLength() > 1) {
+          await pause();
+          await rewind();
+        }
+        _currentOrder = contentsManager.prevOrder(_currentOrder);
+      }
+    });
+  }
+
   Future<void> next() async {
     setIsNextButtonBusy(true);
     await _lock.synchronized(() async {
-      if (playHandler.isInit()) {
+      if (isInit()) {
         if (contentsManager.getAvailLength() > 1) {
-          await playHandler.pause();
-          await playHandler.rewind();
+          await pause();
+          await rewind();
           logger.info('${_currentModel!.name} is paused');
         }
         _next();
@@ -147,19 +224,65 @@ class PlayTimer {
     }
   }
 
-  Future<void> prev() async {
-    _isPrevButtonBusy = true;
+  CretaAbsPlayer createPlayer(ContentsModel model) {
+    final String key = "player_${model.mid}";
+    CretaAbsPlayer? player = _playerMap[key];
+    if (player != null) {
+      _currentPlayer = player;
+      return player;
+    }
+    player = _createPlayer(key, model);
+    _currentPlayer = player;
+    _playerMap[key] = player;
+    player.init();
+    logger.info('player is newly created');
+    return player;
+  }
 
-    logger.info('prev button pressed');
-    await _lock.synchronized(() async {
-      if (playHandler.isInit()) {
-        if (contentsManager.getAvailLength() > 1) {
-          await playHandler.pause();
-          await playHandler.rewind();
-        }
-        _currentOrder = contentsManager.prevOrder(_currentOrder);
-      }
-    });
+  CretaAbsPlayer _createPlayer(String key, ContentsModel model) {
+    switch (model.contentsType) {
+      case ContentsType.video:
+        return CretaVideoPlayer(
+          model: model,
+          acc: contentsManager,
+          onAfterEvent: () {},
+        );
+      case ContentsType.image:
+        return CretaImagePlayer(
+          model: model,
+          acc: contentsManager,
+          onAfterEvent: () {},
+        );
+      default:
+        return CretaEmptyPlayer(
+          acc: contentsManager,
+          onAfterEvent: () {},
+          autoStart: false,
+        );
+    }
+  }
+
+  CretaAbsPlayerWidget createWidget(ContentsModel model) {
+    CretaAbsPlayer player = createPlayer(model);
+    final String key = "player_${model.mid}";
+
+    switch (model.contentsType) {
+      case ContentsType.video:
+        return CretaVideoWidget(
+          key: GlobalObjectKey(key),
+          player: player,
+        );
+      case ContentsType.image:
+        return CretaImagerWidget(
+          key: GlobalObjectKey(key),
+          player: player,
+        );
+      default:
+        return CretaEmptyPlayerWidget(
+          key: GlobalObjectKey(key),
+          player: player,
+        );
+    }
   }
 
   Future<void> _timerExpired(Timer timer) async {
@@ -229,16 +352,16 @@ class PlayTimer {
 
         if (_currentModel!.isVideo()) {
           if (StudioVariables.isAutoPlay) {
-            await contentsManager.globalResume();
+            await globalResume();
           } else {
-            await contentsManager.globalPause();
+            await globalPause();
           }
 
           if (_currentModel!.playState == PlayState.end) {
             _currentModel!.setPlayState(PlayState.none);
             logger.info('before next, currentOrder=$_currentOrder');
             // 비디오가 마무리 작업을 할 시간을 준다.
-            await Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
+            // await Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
             _next();
 
             logger.info('after next, currentOrder=$_currentOrder');
@@ -247,21 +370,5 @@ class PlayTimer {
         }
       },
     );
-  }
-
-  Future<void> reset() async {
-    await _lock.synchronized(() {
-      _currentPlaySec = 0.0;
-    });
-  }
-
-  Future<void> reOrdering(bool isRewind) async {
-    await _lock.synchronized(() {
-      contentsManager.reOrdering();
-      if (isRewind) {
-        _currentPlaySec = 0.0;
-        _currentOrder = contentsManager.lastOrder();
-      }
-    });
   }
 }

@@ -4,14 +4,14 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../model/frame_model.dart';
-import '../../../../player/player_handler.dart';
+import '../../../../player/creta_play_timer.dart';
 import 'sticker/draggable_stickers.dart';
 
 class OnFrameMenu extends StatefulWidget {
-  final PlayerHandler? playerHandler;
+  final CretaPlayTimer? playTimer;
   final FrameModel model;
 
-  const OnFrameMenu({super.key, required this.playerHandler, required this.model});
+  const OnFrameMenu({super.key, required this.playTimer, required this.model});
 
   @override
   State<OnFrameMenu> createState() => _OnFrameMenuState();
@@ -21,7 +21,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
   bool _isHover = false;
   @override
   Widget build(BuildContext context) {
-    final int contentsCount = widget.playerHandler!.getAvailLength();
+    final int contentsCount = widget.playTimer!.getAvailLength();
     return MouseRegion(
       onEnter: ((event) {
         //logger.info('onEnter');
@@ -50,13 +50,13 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
             children: [
               if (_isHover && contentsCount > 0)
                 BTN.fill_i_s(
-                    icon: widget.playerHandler != null && widget.playerHandler!.isPause()
+                    icon: widget.playTimer != null && widget.playTimer!.isPause()
                         ? Icons.play_arrow
                         : Icons.pause_outlined,
                     onPressed: () {
                       logger.info('play Button pressed');
                       setState(() {
-                        widget.playerHandler?.toggleIsPause();
+                        widget.playTimer?.togglePause();
                       });
                     }),
               if (_isHover && contentsCount > 1)
@@ -65,10 +65,10 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                   child: BTN.fill_i_s(
                       icon: Icons.skip_previous,
                       onPressed: () async {
-                        if (widget.playerHandler != null &&
-                            widget.playerHandler!.isPrevButtonBusy() == false) {
+                        if (widget.playTimer != null &&
+                            widget.playTimer!.isPrevButtonBusy == false) {
                           logger.info('prev Button pressed');
-                          await widget.playerHandler?.prev();
+                          await widget.playTimer?.prev();
                         }
                       }),
                 ),
@@ -78,10 +78,10 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                   child: BTN.fill_i_s(
                       icon: Icons.skip_next,
                       onPressed: () async {
-                        if (widget.playerHandler != null &&
-                            widget.playerHandler!.isNextButtonBusy() == false) {
+                        if (widget.playTimer != null &&
+                            widget.playTimer!.isNextButtonBusy == false) {
                           logger.info('next Button pressed');
-                          await widget.playerHandler?.next();
+                          await widget.playTimer?.next();
                         } else {
                           logger.info('next Button is busy');
                         }

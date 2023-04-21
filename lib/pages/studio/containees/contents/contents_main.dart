@@ -13,7 +13,7 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
-import '../../../../player/player_handler.dart';
+import '../../../../player/creta_play_timer.dart';
 import '../../studio_getx_controller.dart';
 
 class ContentsMain extends StatefulWidget {
@@ -21,7 +21,6 @@ class ContentsMain extends StatefulWidget {
   final PageModel pageModel;
   final FrameManager frameManager;
   final ContentsManager contentsManager;
-  final PlayerHandler playerHandler;
 
   const ContentsMain({
     super.key,
@@ -29,7 +28,6 @@ class ContentsMain extends StatefulWidget {
     required this.pageModel,
     required this.frameManager,
     required this.contentsManager,
-    required this.playerHandler,
   });
 
   @override
@@ -38,7 +36,7 @@ class ContentsMain extends StatefulWidget {
 
 class ContentsMainState extends State<ContentsMain> {
   //ContentsManager? _contentsManager;
-  //PlayerHandler? _playerHandler;
+  //CretaPlayTimer? _playerHandler;
   bool _onceDBGetComplete = false;
   ContentsEventController? _receiveEvent;
   //ContentsEventController? _sendEvent;
@@ -60,7 +58,7 @@ class ContentsMainState extends State<ContentsMain> {
   // Future<void> initChildren() async {
   //   saveManagerHolder!.addBookChildren('contents=');
 
-  //   _playerHandler = PlayerHandler();
+  //   _playerHandler = CretaPlayTimer();
 
   //   _contentsManager = widget.frameManager.newContentsManager(widget.frameModel);
   //   _contentsManager!.clearAll();
@@ -102,8 +100,8 @@ class ContentsMainState extends State<ContentsMain> {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       int contentsCount = contentsManager.getAvailLength();
 
-      return Consumer<PlayerHandler>(builder: (context, playerHandler, child) {
-        logger.info('Consumer<PlayerHandler>');
+      return Consumer<CretaPlayTimer>(builder: (context, playTimer, child) {
+        logger.info('Consumer<CretaPlayTimer>');
         return StreamBuilder<AbsExModel>(
             stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {
@@ -112,21 +110,19 @@ class ContentsMainState extends State<ContentsMain> {
                 contentsManager.updateModel(model);
               }
 
-              logger.finest(
-                  'Consumer<ContentsManager>, ${widget.frameModel.order.value}, $contentsCount');
               //contentsManager.reOrdering();
               if (contentsCount > 0) {
-                ContentsModel? model = playerHandler.getCurrentModel();
+                ContentsModel? model = playTimer.getCurrentModel();
 
                 if (model != null) {
                   logger.fine('Consumer<ContentsManager> ${model.contentsType}, ${model.mid}');
                   if (model.opacity.value > 0) {
                     return Opacity(
                       opacity: model.opacity.value,
-                      child: playerHandler.createPlayer(model),
+                      child: playTimer.createWidget(model),
                     );
                   }
-                  return playerHandler.createPlayer(model);
+                  return playTimer.createWidget(model);
                 }
 
                 logger.info('current model is null');

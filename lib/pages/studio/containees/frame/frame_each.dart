@@ -15,7 +15,7 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
-import '../../../../player/player_handler.dart';
+import '../../../../player/creta_play_timer.dart';
 import '../../studio_snippet.dart';
 import '../containee_mixin.dart';
 import '../contents/contents_main.dart';
@@ -47,7 +47,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   double applyScale = 1;
 
   ContentsManager? _contentsManager;
-  PlayerHandler? _playerHandler;
+  CretaPlayTimer? _playTimer;
 
   bool _isInitialized = false;
   //final bool _isHover = false;
@@ -60,20 +60,21 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Future<void> initChildren() async {
-    _playerHandler = PlayerHandler();
     frameManager = widget.frameManager;
     _contentsManager = frameManager!.newContentsManager(widget.model);
     _contentsManager!.clearAll();
+
+    _playTimer = CretaPlayTimer(_contentsManager!);
+    _contentsManager!.setPlayerHandler(_playTimer!);
+
     await _contentsManager!.getContents();
     _contentsManager!.addRealTimeListen();
     _contentsManager!.reOrdering();
 
+    _playTimer!.start();
     logger.info('initChildren(${_contentsManager!.getAvailLength()})');
 
-    _contentsManager!.setPlayerHandler(_playerHandler!);
     _isInitialized = true;
-
-    _playerHandler!.start(_contentsManager!);
   }
 
   @override
@@ -85,8 +86,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         ChangeNotifierProvider<ContentsManager>.value(
           value: _contentsManager!,
         ),
-        ChangeNotifierProvider<PlayerHandler>.value(
-          value: _playerHandler!,
+        ChangeNotifierProvider<CretaPlayTimer>.value(
+          value: _playTimer!,
         ),
       ],
       child: _isInitialized ? _frameDropZone() : _futureBuider(),
@@ -135,7 +136,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         children: [
           _applyAnimate(widget.model),
           OnFrameMenu(
-            playerHandler: _playerHandler,
+            playTimer: _playTimer,
             model: widget.model,
           ),
         ],
@@ -165,12 +166,12 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       //         _applyAnimate(widget.model),
       //         if (_isHover)
       //           BTN.fill_i_s(
-      //               icon: _playerHandler != null && _playerHandler!.isPause()
+      //               icon: _playTimer != null && _playTimer!.isPause()
       //                   ? Icons.play_arrow
       //                   : Icons.pause_outlined,
       //               onPressed: () {
       //                 logger.info('play Button pressed');
-      //                 _playerHandler?.toggleIsPause();
+      //                 _playTimer?.toggleIsPause();
       //               }),
       //         if (_isHover)
       //           Align(
@@ -179,7 +180,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       //                 icon: Icons.skip_previous,
       //                 onPressed: () {
       //                   logger.info('prev Button pressed');
-      //                   _playerHandler?.prev();
+      //                   _playTimer?.prev();
       //                 }),
       //           ),
       //         if (_isHover)
@@ -189,7 +190,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       //                 icon: Icons.skip_next,
       //                 onPressed: () {
       //                   logger.info('next Button pressed');
-      //                   _playerHandler?.next();
+      //                   _playTimer?.next();
       //                 }),
       //           ),
       //         if (DraggableStickers.isFrontBackHover)
@@ -312,7 +313,6 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
           pageModel: widget.pageModel,
           frameManager: frameManager!,
           contentsManager: _contentsManager!,
-          playerHandler: _playerHandler!,
         ),
         // child: Image.asset(
         //   'assets/creta_default.png',

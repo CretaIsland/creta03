@@ -296,7 +296,7 @@ enum PlayState {
   init,
   start,
   pause,
-  disposed,
+  stop,
   manualPlay,
   globalPause,
   end;
@@ -304,7 +304,6 @@ enum PlayState {
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static PlayState fromInt(int? val) => PlayState.values[validCheck(val ?? none.index)];
 }
-
 
 // ==user property enum==
 enum CretaGrade {
@@ -329,7 +328,6 @@ enum RatePlan {
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static RatePlan fromInt(int? val) => RatePlan.values[validCheck(val ?? none.index)];
 }
-
 
 TextAlign intToTextAlign(int t) {
   switch (t) {

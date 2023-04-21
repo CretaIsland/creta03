@@ -13,7 +13,6 @@ import '../../../../model/book_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/abs_player.dart';
-import '../../../../player/player_handler.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
@@ -207,12 +206,12 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         ChangeNotifierProvider<FrameManager>.value(
           value: _frameManager!,
         ),
-        ChangeNotifierProvider<SelectedModel>(
-          create: (context) {
-            selectedModelHolder = SelectedModel();
-            return selectedModelHolder!;
-          },
-        ),
+        // ChangeNotifierProvider<SelectedModel>(
+        //   create: (context) {
+        //     selectedModelHolder = SelectedModel();
+        //     return selectedModelHolder!;
+        //   },
+        // ),
       ],
       child: _pageEffect(),
     );
