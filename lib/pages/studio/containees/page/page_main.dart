@@ -12,7 +12,7 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/page_model.dart';
-import '../../../../player/abs_player.dart';
+//import '../../../../player/abs_player.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
@@ -199,7 +199,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _consumerFunc() {
-    progressHolder = ProgressNotifier();
+    //progressHolder = ProgressNotifier();
 
     return MultiProvider(
       providers: [
