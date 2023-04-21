@@ -259,6 +259,7 @@ class CretaStudioLang {
   //static const String shadowIn = '종류';
   static const String nothing = '없음';
   static const String noBorder = '테두리 없음';
+  static const String fitting = '피팅';
 
   // static Map<String, String> borderPositionList = {
   //   '경계 외부': 'outSide',

@@ -197,4 +197,32 @@ class FrameManager extends CretaManager {
         contentsModel.height.value,
         invalidate: invalidate, initPosition: false, undo: true);
   }
+
+  void setSoundOff() {
+    for (var manager in contentsManagerMap.values) {
+      logger.info('frameManager.setSoundOff()********');
+      manager.setSoundOff();
+    }
+  }
+
+  void resumeSound() {
+    for (var manager in contentsManagerMap.values) {
+      logger.info('frameManager.resumeSound()********');
+      manager.resumeSound();
+    }
+  }
+
+  void pause() {
+    for (var manager in contentsManagerMap.values) {
+      logger.info('frameManager.setSoundOff()********');
+      manager.pause();
+    }
+  }
+
+  void resume() {
+    for (var manager in contentsManagerMap.values) {
+      logger.info('frameManager.resumeSound()********');
+      manager.resume();
+    }
+  }
 }

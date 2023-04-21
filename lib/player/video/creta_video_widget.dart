@@ -6,7 +6,6 @@ import 'package:video_player/video_player.dart';
 
 import '../../design_system/component/snippet.dart';
 import '../../model/frame_model.dart';
-import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
 import 'creta_video_player.dart';
 
@@ -18,6 +17,8 @@ class CretaVideoWidget extends CretaAbsPlayerWidget {
 }
 
 class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
+  bool isMute = false;
+
   @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
@@ -38,15 +39,6 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
   @override
   Widget build(BuildContext context) {
     final CretaVideoPlayer player = widget.player as CretaVideoPlayer;
-
-    if (StudioVariables.isSilent) {
-      player.setSound(0.0);
-    } else {
-      player.resumeSound();
-      if (player.model != null) {
-        player.mute();
-      }
-    }
 
     return FutureBuilder(
         future: player.waitInit(),

@@ -644,6 +644,14 @@ abstract class CretaManager extends AbsExModelManager {
     return -1;
   }
 
+  List<CretaModel> valueList() {
+    return _orderMap.deepReverse().values.toList();
+  }
+
+  List<double> keyList() {
+    return _orderMap.deepReverse().keys.toList();
+  }
+
   double lastOrder() {
     if (_orderMap.isNotEmpty) {
       return _orderMap.deepSortByKey().keys.last;

@@ -49,7 +49,6 @@ class CretaPlayTimer extends ChangeNotifier {
   // from Handler
   bool _initComplete = false;
   CretaAbsPlayer? _currentPlayer;
-  final Map<String, CretaAbsPlayer> _playerMap = {};
 
   Future<void> togglePause() async {
     _isPrevPauseTimer = _isPauseTimer;
@@ -140,6 +139,13 @@ class CretaPlayTimer extends ChangeNotifier {
     });
   }
 
+  bool isCurrentModel(String mid) {
+    if (!_initComplete || _timer == null || _currentModel == null) {
+      return false;
+    }
+    return _currentModel!.mid == mid;
+  }
+
   ContentsModel? getCurrentModel() {
     if (!_initComplete || _timer == null) {
       return null;
@@ -226,14 +232,14 @@ class CretaPlayTimer extends ChangeNotifier {
 
   CretaAbsPlayer createPlayer(ContentsModel model) {
     final String key = "player_${model.mid}";
-    CretaAbsPlayer? player = _playerMap[key];
+    CretaAbsPlayer? player = contentsManager.getPlayer(key);
     if (player != null) {
       _currentPlayer = player;
       return player;
     }
     player = _createPlayer(key, model);
     _currentPlayer = player;
-    _playerMap[key] = player;
+    contentsManager.setPlayer(key, player);
     player.init();
     logger.info('player is newly created');
     return player;
@@ -351,11 +357,11 @@ class CretaPlayTimer extends ChangeNotifier {
         }
 
         if (_currentModel!.isVideo()) {
-          if (StudioVariables.isAutoPlay) {
-            await globalResume();
-          } else {
-            await globalPause();
-          }
+          // if (StudioVariables.isAutoPlay) {
+          //   await globalResume();
+          // } else {
+          //   await globalPause();
+          // }
 
           if (_currentModel!.playState == PlayState.end) {
             _currentModel!.setPlayState(PlayState.none);

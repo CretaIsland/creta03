@@ -96,8 +96,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       propertyDivider(height: 28),
       _imageControl(),
       propertyDivider(),
-      _imageFilter(),
-      propertyDivider(),
+      if (widget.model.isImage()) _imageFilter(),
+      if (widget.model.isImage()) propertyDivider(),
     ]);
     //});
   }
@@ -134,7 +134,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           ],
         ),
       ),
-      _durationWidget(),
+      if (widget.model.isImage()) _imageDurationWidget(),
+      if (widget.model.isVideo()) _videoDurationWidget(),
     ];
   }
 
@@ -223,7 +224,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(CretaStudioLang.borderCap, style: titleStyle),
+                Text(CretaStudioLang.fitting, style: titleStyle),
                 CretaTabButton(
                   onEditComplete: (value) {
                     int idx = 1;
@@ -267,7 +268,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     }
   }
 
-  Widget _durationWidget() {
+  Widget _imageDurationWidget() {
     return Padding(
       padding: EdgeInsets.only(top: 8),
       child: Row(
@@ -308,6 +309,21 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
                   defaultValue: widget.model.playTime.value < 0),
             ],
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _videoDurationWidget() {
+    return Padding(
+      padding: EdgeInsets.only(top: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(CretaLang.playTime, style: titleStyle),
+          Text(CretaUtils.secToDurationString(widget.model.videoPlayTime.value / 1000),
+              style: dataStyle),
         ],
       ),
     );

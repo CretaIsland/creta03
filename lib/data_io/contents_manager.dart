@@ -12,7 +12,9 @@ import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/studio_variables.dart';
+import '../player/creta_abs_player.dart';
 import '../player/creta_play_timer.dart';
+import '../player/video/creta_video_player.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
 
@@ -34,9 +36,9 @@ class ContentsManager extends CretaManager {
     return retval;
   }
 
-  bool hasContents() {
-    return (getAvailLength() > 0);
-  }
+  final Map<String, CretaAbsPlayer> _playerMap = {};
+  CretaAbsPlayer? getPlayer(String key) => _playerMap[key];
+  void setPlayer(String key, CretaAbsPlayer player) => _playerMap[key] = player;
 
   final Duration _snackBarDuration = const Duration(seconds: 3);
   bool iamBusy = false;
@@ -45,6 +47,10 @@ class ContentsManager extends CretaManager {
   CretaPlayTimer? playTimer;
   void setPlayerHandler(CretaPlayTimer p) {
     playTimer = p;
+  }
+
+  bool hasContents() {
+    return (getAvailLength() > 0);
   }
 
   ContentsModel? getCurrentModel() {
@@ -201,6 +207,60 @@ class ContentsManager extends CretaManager {
     showSnackBar(context, CretaLang.contentsNotDeleted, duration: _snackBarDuration);
     await Future.delayed(_snackBarDuration);
     iamBusy = false;
+  }
+
+  void setSoundOff() {
+    for (var player in _playerMap.values) {
+      if (player.model != null && player.model!.isVideo()) {
+        CretaVideoPlayer video = player as CretaVideoPlayer;
+        if (video.wcontroller != null) {
+          logger.info('contents.setSoundOff()********');
+          video.wcontroller!.setVolume(0.0);
+        }
+      }
+    }
+  }
+
+  void resumeSound() {
+    for (var player in _playerMap.values) {
+      if (player.model != null && player.model!.isVideo()) {
+        CretaVideoPlayer video = player as CretaVideoPlayer;
+        if (video.wcontroller != null) {
+          logger.info('contents.resumeSound()********');
+          video.wcontroller!.setVolume(video.model!.volume.value);
+        }
+      }
+    }
+  }
+
+  void pause() {
+    for (var player in _playerMap.values) {
+      if (player.model != null && player.model!.isVideo()) {
+        CretaVideoPlayer video = player as CretaVideoPlayer;
+        if (video.wcontroller != null &&
+            video.isInit() &&
+            playTimer != null &&
+            playTimer!.isCurrentModel(player.model!.mid)) {
+          logger.info('contents.pause');
+          video.wcontroller!.pause();
+        }
+      }
+    }
+  }
+
+  void resume() {
+    for (var player in _playerMap.values) {
+      if (player.model != null && player.model!.isVideo()) {
+        CretaVideoPlayer video = player as CretaVideoPlayer;
+        if (video.wcontroller != null &&
+            video.isInit() &&
+            playTimer != null &&
+            playTimer!.isCurrentModel(player.model!.mid)) {
+          logger.info('contents.resume');
+          video.wcontroller!.play();
+        }
+      }
+    }
   }
 
   // Future<void> pause() async {

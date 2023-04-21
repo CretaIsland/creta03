@@ -13,11 +13,13 @@ import 'package:creta03/model/connected_user_model.dart';
 import 'package:creta03/pages/studio/sample_data.dart';
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
+import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../data_io/user_property_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/buttons/creta_scale_button.dart';
+import '../../design_system/component/creta_icon_toggle_button.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
@@ -520,28 +522,76 @@ class _BookMainPageState extends State<BookMainPage> {
                 tooltip: CretaStudioLang.tooltipScale,
               ),
               SizedBox(width: padding),
-              BTN.floating_l(
-                icon:
-                    StudioVariables.isSilent ? Icons.volume_off_outlined : Icons.volume_up_outlined,
-                onPressed: () {
-                  setState(() {
-                    StudioVariables.isSilent = !StudioVariables.isSilent;
-                  });
-                },
-                hasShadow: false,
+              CretaIconToggleButton(
+                toggleValue: StudioVariables.isSilent,
+                icon1: Icons.volume_off_outlined,
+                icon2: Icons.volume_up_outlined,
                 tooltip: CretaStudioLang.tooltipVolume,
-              ),
-              SizedBox(width: padding),
-              BTN.floating_l(
-                icon: StudioVariables.isAutoPlay ? Icons.pause_outlined : Icons.play_arrow_outlined,
-                iconSize: StudioVariables.isAutoPlay ? 20 : 24,
                 onPressed: () {
-                  setState(() {
-                    StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
-                  });
+                  StudioVariables.isSilent = !StudioVariables.isSilent;
+                  if (BookMainPage.pageManagerHolder == null) {
+                    return;
+                  }
+                  PageModel? pageModel =
+                      BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+                  if (pageModel == null) {
+                    return;
+                  }
+                  FrameManager? frameManager =
+                      BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+                  if (frameManager == null) {
+                    return;
+                  }
+                  if (StudioVariables.isSilent == true) {
+                    logger.info('frameManager.setSoundOff()--------');
+                    frameManager.setSoundOff();
+                  } else {
+                    logger.info('frameManager.resumeSound()--------');
+                    frameManager.resumeSound();
+                  }
                 },
-                hasShadow: false,
+              ),
+
+              SizedBox(width: padding),
+              // BTN.floating_l(
+              //   icon: StudioVariables.isAutoPlay ? Icons.pause_outlined : Icons.play_arrow_outlined,
+              //   iconSize: StudioVariables.isAutoPlay ? 20 : 24,
+              //   onPressed: () {
+              //     setState(() {
+              //       StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
+              //     });
+              //   },
+              //   hasShadow: false,
+              //   tooltip: CretaStudioLang.tooltipPause,
+              // ),
+              CretaIconToggleButton(
+                toggleValue: StudioVariables.isAutoPlay,
+                icon1: Icons.pause_outlined,
+                icon2: Icons.play_arrow_outlined,
                 tooltip: CretaStudioLang.tooltipPause,
+                onPressed: () {
+                  StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
+                  if (BookMainPage.pageManagerHolder == null) {
+                    return;
+                  }
+                  PageModel? pageModel =
+                      BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+                  if (pageModel == null) {
+                    return;
+                  }
+                  FrameManager? frameManager =
+                      BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+                  if (frameManager == null) {
+                    return;
+                  }
+                  if (StudioVariables.isAutoPlay == true) {
+                    logger.info('frameManager.resume()--------');
+                    frameManager.resume();
+                  } else {
+                    logger.info('frameManager.pause()--------');
+                    frameManager.pause();
+                  }
+                },
               ),
               SizedBox(width: padding),
               BTN.floating_l(

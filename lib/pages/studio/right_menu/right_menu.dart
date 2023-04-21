@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
+import 'package:creta03/data_io/contents_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -21,6 +22,7 @@ import '../studio_constant.dart';
 import '../studio_snippet.dart';
 import '../studio_variables.dart';
 import 'book/right_menu_book.dart';
+import 'contents/contents_ordered_list.dart';
 import 'contents/contents_property.dart';
 import 'frame/frame_property.dart';
 import 'page/page_property.dart';
@@ -140,16 +142,25 @@ class _RightMenuState
         BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
         FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
         FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-
         if (frame != null && frameManager != null) {
+          ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
           ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
           if (contents != null) {
             logger.info('ContentsProperty ${contents.mid}');
-            return ContentsProperty(
-                key: ValueKey(contents.mid),
-                model: contents,
-                frameManager: frameManager,
-                book: model);
+            return Column(
+              children: [
+                if (contentsManager != null)
+                  ContentsOrderedList(
+                      width: LayoutConst.rightMenuWidth,
+                      height: LayoutConst.contentsListHeight,
+                      contentsManager: contentsManager),
+                ContentsProperty(
+                    key: ValueKey(contents.mid),
+                    model: contents,
+                    frameManager: frameManager,
+                    book: model),
+              ],
+            );
           }
         }
         return Container();

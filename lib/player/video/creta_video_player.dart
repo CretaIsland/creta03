@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 
 import '../../model/app_enums.dart';
+import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_player.dart';
 
 // ignore: must_be_immutable
@@ -24,6 +25,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   VideoEventType prevEvent = VideoEventType.unknown;
   Size? _outSize;
   Size? getSize() => _outSize;
+  //bool _isMute = false;
 
   @override
   Future<void> init() async {
@@ -58,7 +60,11 @@ class CretaVideoPlayer extends CretaAbsPlayer {
           prevEvent = event.eventType;
         };
         logger.info('initialize complete(${wcontroller!.value.duration.inMilliseconds})');
-
+        if (StudioVariables.isSilent == false) {
+          setSound(model!.volume.value);
+        } else {
+          setSound(0.0);
+        }
         //wcontroller!.play();
       });
   }
@@ -164,7 +170,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
 
   @override
   Future<void> setSound(double val) async {
-    await wcontroller!.setVolume(1.0);
+    await wcontroller!.setVolume(val);
     model!.volume.set(val);
   }
 
@@ -194,7 +200,6 @@ class CretaVideoPlayer extends CretaAbsPlayer {
       _outSize = getOuterSize(wcontroller!.value.aspectRatio);
       await acc.resizeFrame(wcontroller!.value.aspectRatio, _outSize!, true);
     }
-
     await _playVideo();
     return true;
   }
