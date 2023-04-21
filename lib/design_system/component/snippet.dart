@@ -99,97 +99,57 @@ class Snippet {
 
   static PreferredSizeWidget CretaAppBarOfCommunity(BuildContext context, Widget title) {
     return AppBar(
+      title: title,
+      toolbarHeight: CretaConstant.appbarHeight,
       backgroundColor: Colors.white,
       shadowColor: Colors.grey[500],
-      // Here we take the value from the MyHomePage object that was created by
-      // the App.build method, and use it to set our appbar title.
-      title: title,
-      toolbarHeight: 60,
       actions: [
-        SizedBox(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 125,
-                height: 36,
-                child: BTN.fill_blue_it_l(
-                    icon: Icons.add,
-                    text: '새 크레타북',
-                    onPressed: () {
-                      Routemaster.of(context).push(AppRoutes.intro);
-                    }),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 44,
-                height: 36,
-                child: Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.grey[700],
-                  size: 20,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // user info
-        SizedBox(
-          child:
-              // Column(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              Center(
-            child: SizedBox(
-              //width: 166,
-              height: 40,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        // crop
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      clipBehavior: Clip.hardEdge,
-                      // color: Colors.grey[700],
-                      child: Container(
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  CretaDropDown(
-                      width: 130,
-                      height: 40,
-                      items: const ['사용자 닉네임', '사용자 닉네임1', '사용자 닉네임2', '사용자 닉네임3'],
-                      defaultValue: '사용자 닉네임',
-                      onSelected: (value) {
-                        //logger.finest('value=$value');
-                      }),
-                  SizedBox(
-                    width: 40,
-                  ),
-                ],
-              ),
+        // new book
+        Center(
+          child: SizedBox(
+            height: 36,
+            width: 130,
+            child: BTN.fill_gray_it_l(
+              text: CretaStudioLang.newBook,
+              buttonColor: CretaButtonColor.blueAndWhiteTitle,
+              textColor: Colors.white,
+              onPressed: () {
+                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+              },
+              icon: Icons.add_outlined,
             ),
-            //],
           ),
         ),
-        // user's dropdown menu
+        SizedBox(width: 8),
+        // noti
+        Center(
+          child: SizedBox(
+            height: 36,
+            child: BTN.fill_blue_i_l(
+              //tooltip: CretaStudioLang.tooltipNoti,
+              icon: Icons.notifications_outlined,
+              buttonColor: CretaButtonColor.white,
+              iconColor: CretaColor.text[700],
+              onPressed: () {},
+            ),
+          ),
+        ),
+        SizedBox(width: 5),
+        // user info
+        Center(
+          child: SizedBox(
+            height: 40,
+            child: BTN.fill_gray_iti_l(
+              buttonColor: CretaButtonColor.white,
+              fgColor: CretaColor.text[700]!,
+              text: AccountManager.currentLoginUser.name,
+              icon: Icons.arrow_drop_down_outlined,
+              image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+              onPressed: () {},
+            ),
+          ),
+        ),
+        SizedBox(width: 20),
       ],
     );
   }
@@ -262,8 +222,8 @@ class Snippet {
         CretaDropDown(
           width: 130,
           height: 40,
-          items: const ["사용자 닉네임1", "사용자 닉네임2", "사용자 닉네임3"], 
-          defaultValue: "사용자 닉네임1", 
+          items: const ["사용자 닉네임1", "사용자 닉네임2", "사용자 닉네임3"],
+          defaultValue: "사용자 닉네임1",
           onSelected: (value) {
             logger.finest(value);
           }
@@ -746,6 +706,21 @@ class Snippet {
         color.withOpacity(0.3),
         color.withOpacity(0.5),
         color.withOpacity(0.6),
+      ]),
+    );
+  }
+
+  static BoxDecoration shadowDeco({
+    Color color = Colors.black,
+    AlignmentGeometry begin = Alignment.topCenter,
+    AlignmentGeometry end = Alignment.bottomCenter,
+    double opacity = 0.4,
+  }) {
+    return BoxDecoration(
+      //color: Colors.black.withOpacity(0.4),
+      gradient: LinearGradient(begin: begin, end: end, colors: [
+        color.withOpacity(opacity),
+        color.withOpacity(opacity),
       ]),
     );
   }

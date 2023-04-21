@@ -1,4 +1,5 @@
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
@@ -21,6 +22,10 @@ mixin CretaBasicLayoutMixin {
 
   double get getBannerHeight => _bannerHeight;
   ScrollController get getBannerScrollController => _bannerScrollController;
+  void setScrollOffset(double offset) {
+    _scrollOffset = 0;
+    _bannerScrollController.jumpTo(_scrollOffset);
+  }
 
   void setUsingBannerScrollBar({
     required void Function(bool bannerSizeChanged) scrollChangedCallback,
@@ -39,6 +44,7 @@ mixin CretaBasicLayoutMixin {
     // 스크롤 위치 저장
     _scrollOffset = _bannerScrollController.offset;
     // 스크롤에 따른 배너 높이 재설정
+    if (kDebugMode) print('_scrollOffset=$_scrollOffset');
     double bannerHeight = _topPaneMaxHeight - _bannerScrollController.offset;
     if (bannerHeight < _topPaneMinHeight) bannerHeight = _topPaneMinHeight;
     // 스크롤 변경 콜백
@@ -52,12 +58,22 @@ mixin CretaBasicLayoutMixin {
   Size topBannerArea = Size.zero;
   Size gridArea = Size.zero;
 
-  void resize(BuildContext context) {
+  double paddingLeft = 0;
+
+  void resize(
+    BuildContext context, {
+    double leftPaddingOnRightPane = 0,
+    double topPaddingOnRightPane = 0,
+    double rightPaddingOnRightPane = 0,
+    double bottomPaddingOnRightPane = 0,
+  }) {
     CretaUtils.getDisplaySize(context);
     availArea =
         Size(StudioVariables.displayWidth, StudioVariables.displayHeight - CretaComponentLocation.BarTop.height);
     leftBarArea = Size(CretaComponentLocation.TabBar.width, availArea.height);
-    rightPaneArea = Size(StudioVariables.displayWidth - leftBarArea.width, availArea.height);
+    rightPaneArea = Size(
+        StudioVariables.displayWidth - leftBarArea.width - leftPaddingOnRightPane - rightPaddingOnRightPane,
+        availArea.height - topPaddingOnRightPane - bottomPaddingOnRightPane);
     topBannerArea = Size(rightPaneArea.width, _bannerHeight);
     gridArea = Size(rightPaneArea.width, rightPaneArea.height - LayoutConst.cretaBannerMinHeight);
     // logger.finest(
@@ -76,7 +92,7 @@ mixin CretaBasicLayoutMixin {
     bool? scrollbarOnRight,
     List<List<CretaMenuItem>>? listOfListFilterOnRight,
     void Function(String)? onSearch,
-    double? leftPaddingOfFilter,
+    double? leftPaddingOnFilter,
   }) {
     return CretaBannerPane(
       width: width,
@@ -90,7 +106,7 @@ mixin CretaBasicLayoutMixin {
       scrollbarOnRight: scrollbarOnRight,
       listOfListFilterOnRight: listOfListFilterOnRight,
       onSearch: onSearch,
-      leftPaddingOfFilter: leftPaddingOfFilter,
+      leftPaddingOnFilter: leftPaddingOnFilter,
     );
   }
 
@@ -109,10 +125,21 @@ mixin CretaBasicLayoutMixin {
     bool isSearchbarInBanner = false,
     List<List<CretaMenuItem>>? listOfListFilterOnRight,
     Size gridMinArea = const Size(300, 300),
-    double? leftPaddingOfFilter,
+    double? leftPaddingOnFilter,
+    double leftPaddingOnRightPane = 0,
+    double topPaddingOnRightPane = 0,
+    double rightPaddingOnRightPane = 0,
+    double bottomPaddingOnRightPane = 0,
   }) {
-    resize(context);
-    //topBannerArea = Size(topBannerArea.width, topBannerArea.height - (leftPaddingOfFilter == null ? 0 : 76));
+    // cacluate pane-size
+    resize(
+      context,
+      leftPaddingOnRightPane: leftPaddingOnRightPane,
+      topPaddingOnRightPane: topPaddingOnRightPane,
+      rightPaddingOnRightPane: rightPaddingOnRightPane,
+      bottomPaddingOnRightPane: bottomPaddingOnRightPane,
+    );
+    //
     return Row(
       key: key,
       children: [
@@ -128,58 +155,46 @@ mixin CretaBasicLayoutMixin {
           height: rightPaneArea.height,
           color: Colors.white,
           child: _usingBannerScrollbar
-              ? Listener(
-                  onPointerSignal: (PointerSignalEvent event) {
-                    if (event is PointerScrollEvent) {
-                      _scrollOffset += event.scrollDelta.dy;
-                      if (_scrollOffset < 0) _scrollOffset = 0;
-                      if (_scrollOffset > _bannerScrollController.position.maxScrollExtent) {
-                        _scrollOffset = _bannerScrollController.position.maxScrollExtent;
-                      }
-                      _bannerScrollController.jumpTo(_scrollOffset);
-                    }
-                  },
-                  child: Stack(
-                    children: [
-                      Container(
-                        color: Colors.white,
-                        width: rightPaneArea.width,
-                        height: rightPaneArea.height,
-                        child: mainWidget,
+              ? Stack(
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      width: rightPaneArea.width,
+                      height: rightPaneArea.height,
+                      padding: EdgeInsets.fromLTRB(
+                        leftPaddingOnRightPane,
+                        topPaddingOnRightPane,
+                        rightPaddingOnRightPane,
+                        bottomPaddingOnRightPane,
                       ),
-                      getBannerPane(
+                      child: mainWidget,
+                    ),
+                    Listener(
+                      onPointerSignal: (PointerSignalEvent event) {
+                        if (event is PointerScrollEvent) {
+                          _scrollOffset += event.scrollDelta.dy;
+                          if (_scrollOffset < 0) _scrollOffset = 0;
+                          if (_scrollOffset > _bannerScrollController.position.maxScrollExtent) {
+                            _scrollOffset = _bannerScrollController.position.maxScrollExtent;
+                          }
+                          _bannerScrollController.jumpTo(_scrollOffset);
+                        }
+                      },
+                      child: getBannerPane(
                         width: topBannerArea.width,
                         height: topBannerArea.height,
                         title: bannerTitle,
                         description: bannerDescription,
-                        listOfListFilter: listOfListFilter,//(leftPaddingOfFilter != null) ? [] : listOfListFilter,
+                        listOfListFilter: listOfListFilter,
                         titlePane: titlePane,
                         isSearchbarInBanner: isSearchbarInBanner,
                         scrollbarOnRight: true,
-                        listOfListFilterOnRight: listOfListFilterOnRight,//(leftPaddingOfFilter != null) ? null : listOfListFilterOnRight,
-                        onSearch: onSearch,//(leftPaddingOfFilter != null) ? null : onSearch,
-                        leftPaddingOfFilter: leftPaddingOfFilter,
+                        listOfListFilterOnRight: listOfListFilterOnRight,
+                        onSearch: onSearch,
+                        leftPaddingOnFilter: leftPaddingOnFilter,
                       ),
-                      // (leftPaddingOfFilter == null)
-                      //     ? const SizedBox.shrink()
-                      //     : Positioned(
-                      //         left: leftPaddingOfFilter,
-                      //         top: topBannerArea.height - 20,
-                      //         child: SizedBox(
-                      //           width: topBannerArea.width - leftPaddingOfFilter - LayoutConst.cretaScrollbarWidth,
-                      //           height: LayoutConst.cretaTopFilterHeight - 20,
-                      //           child: CretaFilterPane(
-                      //             width: topBannerArea.width - leftPaddingOfFilter - LayoutConst.cretaScrollbarWidth,
-                      //             height: LayoutConst.cretaTopFilterHeight,
-                      //             listOfListFilter: listOfListFilter,
-                      //             onSearch: onSearch,
-                      //             listOfListFilterOnRight: listOfListFilterOnRight,
-                      //             rowCrossAxisAlignment: CrossAxisAlignment.start,
-                      //           ),
-                      //         ),
-                      //       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )
               : Column(
                   children: [
@@ -193,7 +208,7 @@ mixin CretaBasicLayoutMixin {
                             isSearchbarInBanner: isSearchbarInBanner,
                             listOfListFilterOnRight: listOfListFilterOnRight,
                             onSearch: onSearch,
-                            leftPaddingOfFilter: leftPaddingOfFilter,
+                            leftPaddingOnFilter: leftPaddingOnFilter,
                           )
                         : Container(),
                     gridArea.height > gridMinArea.height && gridArea.width > gridMinArea.width

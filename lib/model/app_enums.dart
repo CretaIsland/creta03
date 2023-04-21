@@ -51,11 +51,23 @@ enum CopyRightType {
   static CopyRightType fromInt(int? val) => CopyRightType.values[validCheck(val ?? none.index)];
 }
 
+enum PermissionType {
+  none,
+  owner, // 소유자
+  editor, // 편집자
+  viewer, // 뷰어
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static PermissionType fromInt(int? val) => PermissionType.values[validCheck(val ?? none.index)];
+}
+
 enum BookSort {
   none,
-  name,
-  updateTime,
-  likeCount,
+  name, // 이름순
+  updateTime, // 최신순
+  likeCount, // 좋아요순
+  viewCount, // 조회수순
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
