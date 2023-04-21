@@ -197,7 +197,11 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
     var retval = Row(
       children: [
         leftMenu(),
-        CretaModelSnippet.waitData(consumerFunc: rightArea, manager: userPropertyManagerHolder!)
+        SizedBox(
+          width: gridArea.width, 
+          height: gridArea.height + LayoutConst.cretaBannerMinHeight,
+          child: CretaModelSnippet.waitData(consumerFunc: rightArea, manager: userPropertyManagerHolder!)
+        )
       ],
     );
     _alreadyDataGet = true;

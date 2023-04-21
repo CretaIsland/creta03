@@ -94,7 +94,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                   Text(CretaMyPageLang.cretaGradeList[propertyManager.propertyModel!.cretaGrade.index], style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
                   Text("${propertyManager.propertyModel!.bookCount}", style: CretaFont.bodyMedium),
-                  const SizedBox(height: 28.0),
+                  const SizedBox(height: 22.0),
                   Row(
                     children: [
                       Text(CretaMyPageLang.ratePlanList[propertyManager.propertyModel!.ratePlan.index], style: CretaFont.bodyMedium),
@@ -102,7 +102,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                       BTN.line_blue_t_m(text: CretaMyPageLang.ratePlanChangeBTN, onPressed: (){ })
                     ],
                   ),
-                  const SizedBox(height: 28.0),
+                  const SizedBox(height: 22.0),
                   Text("${propertyManager.propertyModel!.freeSpace}MB (전체 1024MB)", style: CretaFont.bodyMedium)
                 ],
               ),
