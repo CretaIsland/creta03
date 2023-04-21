@@ -139,7 +139,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                     //   ),
                     // ),
                     Positioned(
-                      left: 48,
+                      left: 40,
                       top: 107,
                       child: Text(
                         widget.cretaPlayListData.userNickname,
@@ -152,7 +152,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                       ),
                     ),
                     Positioned(
-                      left: 48,
+                      left: 40,
                       top: 129,
                       child: Text(
                         '영상 ${widget.cretaPlayListData.cretaBookDataList.length}개  최근 업데이트 1일전',

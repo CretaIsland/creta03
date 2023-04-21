@@ -75,7 +75,6 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       key: ValueKey(widget.index),
       padding: EdgeInsets.all(4),

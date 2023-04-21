@@ -626,6 +626,7 @@ class BTN {
     String? tooltip,
     Size size = const Size(36, 36),
     CretaButtonColor buttonColor = CretaButtonColor.blue,
+    Color? iconColor,
   }) {
     return CretaButton(
       tooltip: tooltip,
@@ -636,7 +637,7 @@ class BTN {
       icon: Icon(
         icon,
         size: 20,
-        color: CretaColor.text[100]!,
+        color: iconColor ?? CretaColor.text[100],
       ),
       onPressed: onPressed,
     );
@@ -1246,6 +1247,7 @@ class BTN {
     required IconData icon,
     required Function onPressed,
     String? tooltip,
+    Color? iconColor,
   }) {
     return CretaButton(
       tooltip: tooltip,
@@ -1258,7 +1260,7 @@ class BTN {
       child: Icon(
         icon,
         size: 12,
-        color: Colors.white,
+        color: iconColor ?? Colors.white,
       ),
     );
   }

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -49,6 +50,7 @@ class _CretaSearchBarState extends State<CretaSearchBar> {
         _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
       }
     });
+    Timer.periodic(const Duration(microseconds: 100), (timer) { timer.cancel(); _focusNode!.unfocus(); });
     super.initState();
   }
 
@@ -85,7 +87,7 @@ class _CretaSearchBarState extends State<CretaSearchBar> {
           ),
           padding: EdgeInsetsDirectional.all(0),
           controller: _controller,
-          placeholder: _clicked ? null : widget.hintText,
+          placeholder: _clicked ? '' : widget.hintText,
           placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
           prefixInsets: EdgeInsetsDirectional.only(start: 18),
           prefixIcon: Container(),

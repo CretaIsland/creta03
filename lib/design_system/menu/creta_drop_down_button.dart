@@ -43,7 +43,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
   final GlobalKey dropDownButtonKey = GlobalKey();
   bool dropDownButtonOpened = false;
   double? fontSize;
-  double iconSize = 24;
+  double iconSize = 22;
   String allText = '';
   int _itemIndex = 0;
 
@@ -98,7 +98,10 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(Icons.keyboard_arrow_down),
+              child: Icon(
+                color: allText == displayString ? CretaColor.text[700] : widget.selectedColor,
+                Icons.keyboard_arrow_down,
+              ),
             ),
           ],
         ),

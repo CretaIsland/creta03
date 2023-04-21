@@ -117,19 +117,18 @@ class _CretaFilterPaneState extends State<CretaFilterPane> {
                   )
                 : Container(),
             // listOfListFilterOnRight
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  width: 8,
-                ),
-                ...listOfListFilterOnRight
-                    .map(
-                      (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
-                    )
-                    .toList(),
-              ],
-            )
+            (listOfListFilterOnRight.isEmpty)
+                ? const SizedBox.shrink()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 8),
+                      ...listOfListFilterOnRight
+                          .map(
+                            (e) => CretaDropDownButton(height: 36, dropDownMenuItemList: e),
+                      ).toList(),
+                    ],
+                  )
           ],
         ),
       ],
