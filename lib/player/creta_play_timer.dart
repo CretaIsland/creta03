@@ -64,12 +64,18 @@ class CretaPlayTimer extends ChangeNotifier {
   }
 
   void start() {
-    _timer = Timer.periodic(Duration(milliseconds: _timeGap), _timerExpired);
-    _initComplete = true;
+    if (_timer == null) {
+      logger.info("==========================timer start================");
+      _timer = Timer.periodic(Duration(milliseconds: _timeGap), _timerExpired);
+      _initComplete = true;
+    }
   }
 
   void stop() {
+    logger.info("==========================timer stop================");
     _timer?.cancel();
+    _initComplete = false;
+    _timer = null;
   }
 
   // Future<void> toggleIsPause() async {
@@ -231,12 +237,13 @@ class CretaPlayTimer extends ChangeNotifier {
   }
 
   CretaAbsPlayer createPlayer(ContentsModel model) {
-    final String key = "player_${model.mid}";
+    final String key = contentsManager.keyMangler(model.mid);
     CretaAbsPlayer? player = contentsManager.getPlayer(key);
     if (player != null) {
       _currentPlayer = player;
       return player;
     }
+    logger.info('***************************player newly created ***********');
     player = _createPlayer(key, model);
     _currentPlayer = player;
     contentsManager.setPlayer(key, player);
@@ -249,18 +256,21 @@ class CretaPlayTimer extends ChangeNotifier {
     switch (model.contentsType) {
       case ContentsType.video:
         return CretaVideoPlayer(
+          keyString: key,
           model: model,
           acc: contentsManager,
           onAfterEvent: () {},
         );
       case ContentsType.image:
         return CretaImagePlayer(
+          keyString: key,
           model: model,
           acc: contentsManager,
           onAfterEvent: () {},
         );
       default:
         return CretaEmptyPlayer(
+          keyString: key,
           acc: contentsManager,
           onAfterEvent: () {},
           autoStart: false,
@@ -270,22 +280,21 @@ class CretaPlayTimer extends ChangeNotifier {
 
   CretaAbsPlayerWidget createWidget(ContentsModel model) {
     CretaAbsPlayer player = createPlayer(model);
-    final String key = "player_${model.mid}";
 
     switch (model.contentsType) {
       case ContentsType.video:
         return CretaVideoWidget(
-          key: GlobalObjectKey(key),
+          key: GlobalObjectKey(player.keyString),
           player: player,
         );
       case ContentsType.image:
         return CretaImagerWidget(
-          key: GlobalObjectKey(key),
+          key: GlobalObjectKey(player.keyString),
           player: player,
         );
       default:
         return CretaEmptyPlayerWidget(
-          key: GlobalObjectKey(key),
+          key: GlobalObjectKey(player.keyString),
           player: player,
         );
     }
@@ -294,12 +303,19 @@ class CretaPlayTimer extends ChangeNotifier {
   Future<void> _timerExpired(Timer timer) async {
     await _lock.synchronized(
       () async {
-        if (contentsManager.isEmpty()) return;
-        if (contentsManager.iamBusy) return;
-        if (BookMainPage.pageManagerHolder!.isSelected(contentsManager.pageModel.mid) == false) {
-          // 현재 보여지고 있는 페이지가 아니라면 타이머는 쉰다.
+        if (contentsManager.isEmpty()) {
           return;
         }
+        if (contentsManager.iamBusy) {
+          logger.info('i am busy');
+          return;
+        }
+        // if (BookMainPage.pageManagerHolder!.isSelected(contentsManager.pageModel.mid) == false) {
+        //   // 현재 보여지고 있는 페이지가 아니라면 타이머는 쉰다.
+        //   // logger.info(
+        //   //     '${contentsManager.pageModel.mid} is not ${BookMainPage.pageManagerHolder!.getSelectedMid()}');
+        //   return;
+        // }
 
         if (_isPauseTimer == true) {
           _currentModel?.setPlayState(PlayState.pause);
@@ -315,13 +331,14 @@ class CretaPlayTimer extends ChangeNotifier {
         // 아무것도 돌고 있지 않다면,
         if (_currentOrder < 0) {
           _currentOrder = contentsManager.lastOrder(); //가장 마지막이 가장 먼저 돌아야 하므로.
-          logger.info('currentOrder=$_currentOrder');
+          //logger.info('currentOrder=$_currentOrder');
           if (_currentOrder < 0) {
             return; // 돌릴게 없다.
           }
         }
         _setCurrentModel();
         if (_currentModel == null) {
+          logger.warning('_curentModel is null');
           return;
         }
 
@@ -362,7 +379,6 @@ class CretaPlayTimer extends ChangeNotifier {
           // } else {
           //   await globalPause();
           // }
-
           if (_currentModel!.playState == PlayState.end) {
             _currentModel!.setPlayState(PlayState.none);
             logger.info('before next, currentOrder=$_currentOrder');

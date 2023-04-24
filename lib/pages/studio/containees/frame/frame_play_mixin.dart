@@ -24,7 +24,8 @@ mixin FramePlayMixin {
       List<ContentsModel> contentsModelList, FrameModel frameModel, PageModel pageModel,
       {bool isResizeFrame = true}) async {
     // 콘텐츠 매니저를 생성한다.
-    ContentsManager contentsManager = frameManager!.newContentsManager(frameModel);
+    ContentsManager? contentsManager = frameManager!.findContentsManager(frameModel.mid);
+    contentsManager ??= frameManager!.newContentsManager(frameModel);
 
     for (var contentsModel in contentsModelList) {
       contentsModel.parentMid.set(frameModel.mid, save: false, noUndo: true);

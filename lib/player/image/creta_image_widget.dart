@@ -31,7 +31,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
   @override
   void dispose() {
     super.dispose();
-    widget.player.dispose();
+    widget.player.stop();
   }
 
   @override

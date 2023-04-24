@@ -64,6 +64,11 @@ class CretaStudioLang {
     '발행 이력': 'history',
   };
 
+  static Map<String, String> frameTabBar = {
+    '프레임 설정': 'frameTab',
+    '콘텐츠 설정': 'contentsTab',
+  };
+
   static List<String> menuStick = [
     "템플릿",
     "페이지",

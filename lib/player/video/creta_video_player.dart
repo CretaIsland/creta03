@@ -13,6 +13,7 @@ import '../creta_abs_player.dart';
 // ignore: must_be_immutable
 class CretaVideoPlayer extends CretaAbsPlayer {
   CretaVideoPlayer({
+    required super.keyString,
     required super.onAfterEvent,
     required super.model,
     required super.acc,
@@ -40,10 +41,15 @@ class CretaVideoPlayer extends CretaAbsPlayer {
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
       ..initialize().then((_) {
         logger.info('initialize complete(${model!.name}, ${acc.getAvailLength()})');
+        if (StudioVariables.isSilent == false) {
+          setSound(model!.volume.value);
+        } else {
+          setSound(0.0);
+        }
+
         model!.videoPlayTime
             .set(wcontroller!.value.duration.inMilliseconds.toDouble(), noUndo: true, save: false);
         wcontroller!.setLooping(false);
-
         wcontroller!.onAfterVideoEvent = (event) {
           if (event.duration != null) {
             logger.info(
@@ -60,11 +66,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
           prevEvent = event.eventType;
         };
         logger.info('initialize complete(${wcontroller!.value.duration.inMilliseconds})');
-        if (StudioVariables.isSilent == false) {
-          setSound(model!.volume.value);
-        } else {
-          setSound(0.0);
-        }
+
         //wcontroller!.play();
       });
   }
@@ -207,7 +209,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   Future<void> _playVideo() async {
     if (autoStart && model!.isState(PlayState.start) == false) {
       logger.info('video state = ${model!.playState}');
-      await wcontroller!.play(); //awat를 못한다....이거 문제임...
+      await play(); //awat를 못한다....이거 문제임...
     }
     buttonIdle();
   }

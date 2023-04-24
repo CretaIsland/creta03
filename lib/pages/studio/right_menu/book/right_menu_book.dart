@@ -89,7 +89,7 @@ class _RightMenuBookState extends State<RightMenuBook> {
         ),
         selectedColor: Colors.white,
         unSelectedColor: CretaColor.text[100]!,
-        defaultSelected: CretaStudioLang.bookInfoTabBar.values.first,
+        defaultSelected: _selectedTab,
         buttonLables: CretaStudioLang.bookInfoTabBar.keys.toList(),
         buttonValues: CretaStudioLang.bookInfoTabBar.values.toList(),
         selectedBorderColor: Colors.transparent,

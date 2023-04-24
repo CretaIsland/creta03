@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
 
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -54,7 +55,7 @@ class FrameProperty extends StatefulWidget {
 class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   // ignore: unused_field
   //late ScrollController _scrollController;
-
+  late String _selectedTab;
   // ignore: unused_field
   // ignore: unused_field
   FrameManager? _frameManager;
@@ -123,6 +124,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         'spread=${widget.model.shadowSpread.value}, blur=${widget.model.shadowBlur.value},direction=${widget.model.shadowDirection.value}, distance=${widget.model.shadowOffset.value}');
 
     _frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+
+    _selectedTab = CretaStudioLang.frameTabBar.values.first;
   }
 
   @override
@@ -153,9 +156,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         'build : spread=${widget.model.shadowSpread.value}, blur=${widget.model.shadowBlur.value},direction=${widget.model.shadowDirection.value}, distance=${widget.model.shadowOffset.value}');
     return Column(children: [
       Padding(
-        padding: const EdgeInsets.only(top: 16.0),
-        child: _pageSize(),
+        padding: const EdgeInsets.only(bottom: 24.0),
+        child: _tabBar(),
       ),
+      _pageSize(),
       propertyDivider(),
       _pageColor(),
       propertyDivider(),
@@ -175,6 +179,56 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       propertyDivider(),
     ]);
     //});
+  }
+
+  Widget _tabBar() {
+    return Container(
+      height: LayoutConst.innerMenuBarHeight,
+      width: LayoutConst.rightMenuWidth,
+      color: CretaColor.text[100]!,
+      alignment: Alignment.centerLeft,
+      child: CustomRadioButton(
+        radioButtonValue: (value) {
+          setState(() {
+            _selectedTab = value;
+          });
+        },
+        width: 84,
+        autoWidth: true,
+        height: 24,
+        buttonTextStyle: ButtonTextStyle(
+          selectedColor: CretaColor.primary,
+          unSelectedColor: CretaColor.text[700]!,
+          textStyle: CretaFont.buttonMedium,
+        ),
+        selectedColor: Colors.white,
+        unSelectedColor: CretaColor.text[100]!,
+        defaultSelected: _selectedTab,
+        buttonLables: CretaStudioLang.frameTabBar.keys.toList(),
+        buttonValues: CretaStudioLang.frameTabBar.values.toList(),
+        selectedBorderColor: Colors.transparent,
+        unSelectedBorderColor: Colors.transparent,
+        elevation: 0,
+        enableButtonWrap: true,
+        enableShape: true,
+        shapeRadius: 60,
+        //child: CretaTabButton(
+        // onEditComplete: (value) {
+        //   setState(() {
+        //     _selectedTab = value;
+        //   });
+        // },
+        // width: 95,
+        // height: 24,
+        // selectedTextColor: CretaColor.primary,
+        // unSelectedTextColor: CretaColor.text[700]!,
+        // selectedColor: Colors.white,
+        // unSelectedColor: CretaColor.text[100]!,
+        // defaultString: CretaStudioLang.frameTabBar.values.first,
+        // buttonLables: CretaStudioLang.frameTabBar.keys.toList(),
+        // buttonValues: CretaStudioLang.frameTabBar.values.toList(),
+      ),
+    );
   }
 
   Widget _pageSize() {

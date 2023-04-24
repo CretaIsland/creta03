@@ -2,6 +2,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
+import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
 import 'creta_button.dart';
@@ -161,6 +162,46 @@ class BTN {
     );
   }
 
+  static CretaButton fill_blue_image_menu({
+    required String iconImageFile,
+    required Function onPressed,
+    double width = 24,
+    double height = 24,
+    double iconSize = 18,
+    double sidePaddingSize = 0,
+    String? tooltip,
+    Color? tooltipFg,
+    Color? tooltipBg,
+    CretaButtonColor buttonColor = CretaButtonColor.sky,
+    Color iconColor = CretaColor.primary,
+    CretaButtonDeco decoType = CretaButtonDeco.opacity,
+    void Function(bool)? onHover,
+  }) {
+    return CretaButton(
+      tooltip: tooltip,
+      tooltipBg: tooltipBg,
+      tooltipFg: tooltipFg,
+      width: width,
+      height: height,
+      sidePaddingSize: sidePaddingSize,
+      buttonType: CretaButtonType.child,
+      decoType: decoType,
+      buttonColor: buttonColor,
+      isSelectedWidget: true,
+      onPressed: onPressed,
+      onHover: onHover,
+      child: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        radius: iconSize,
+        child: Snippet.SvgIcon(
+          iconImageFile: iconImageFile,
+          iconSize: iconSize,
+          iconColor: iconColor,
+        ),
+      ),
+    );
+  }
+
   static CretaButton fill_gray_i_m(
       {required IconData icon,
       required Function onPressed,
@@ -182,6 +223,35 @@ class BTN {
         icon,
         size: iconSize,
         color: iconColor ?? CretaColor.text[700]!,
+      ),
+    );
+  }
+
+  static CretaButton fill_gray_image_m(
+      {required String iconImageFile,
+      required Function onPressed,
+      String? tooltip,
+      Color? tooltipFg,
+      Color? tooltipBg,
+      double iconSize = 18,
+      Color? iconColor}) {
+    return CretaButton(
+      tooltip: tooltip,
+      tooltipFg: tooltipFg,
+      tooltipBg: tooltipBg,
+      width: 32,
+      height: 32,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.white,
+      onPressed: onPressed,
+      child: CircleAvatar(
+        radius: iconSize,
+        backgroundColor: Colors.transparent,
+        child: Snippet.SvgIcon(
+          iconImageFile: iconImageFile,
+          iconSize: iconSize,
+          iconColor: iconColor,
+        ),
       ),
     );
   }

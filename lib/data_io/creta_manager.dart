@@ -17,7 +17,6 @@ import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
 
 import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_popup_menu.dart';
-import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/studio_constant.dart';
@@ -673,15 +672,14 @@ abstract class CretaManager extends AbsExModelManager {
     for (double ele in keys) {
       if (matched == true) {
         if (collectionId == "creta_contents") {
-          ContentsModel next = _orderMap[ele] as ContentsModel;
+          //ContentsModel next = _orderMap[ele] as ContentsModel;
           if (currentOrder >= 0) {
-            ContentsModel curr = _orderMap[currentOrder] as ContentsModel;
-
-            logger.info(
-                'currentOrder $currentOrder, cur=${curr.name.substring(0, 6)}, nextOrder : ${ele.round()}, nex=${next.name.substring(0, 6)}');
+            //ContentsModel curr = _orderMap[currentOrder] as ContentsModel;
+            //logger.info(
+            //    'currentOrder $currentOrder, cur=${curr.name.substring(0, 6)}, nextOrder : ${ele.round()}, nex=${next.name.substring(0, 6)}');
           } else {
-            logger.info(
-                'currentOrder $currentOrder, cur=NULL, nextOrder : ${ele.round()}, nex=${next.name.substring(0, 6)}');
+            //logger.info(
+            //    'currentOrder $currentOrder, cur=NULL, nextOrder : ${ele.round()}, nex=${next.name.substring(0, 6)}');
           }
         }
         return ele;
@@ -693,15 +691,15 @@ abstract class CretaManager extends AbsExModelManager {
     }
     if (matched == true) {
       // 끝까지 온것이다.  처음으로 돌아간다.
-      ContentsModel next = _orderMap[keys.first] as ContentsModel;
-      if (currentOrder >= 0) {
-        ContentsModel curr = _orderMap[currentOrder] as ContentsModel;
-        logger.info(
-            'currentOrder $currentOrder, cur=${curr.name.substring(0, 6)}, nextOrder : ${keys.first.round()}, nex=${next.name}');
-      } else {
-        logger.info(
-            'currentOrder $currentOrder, cur=NULL, nextOrder : ${keys.first.round()}, nex=${next.name}');
-      }
+      //ContentsModel next = _orderMap[keys.first] as ContentsModel;
+      // if (currentOrder >= 0) {
+      //   ContentsModel curr = _orderMap[currentOrder] as ContentsModel;
+      //   logger.info(
+      //       'currentOrder $currentOrder, cur=${curr.name.substring(0, 6)}, nextOrder : ${keys.first.round()}, nex=${next.name}');
+      // } else {
+      //   logger.info(
+      //       'currentOrder $currentOrder, cur=NULL, nextOrder : ${keys.first.round()}, nex=${next.name}');
+      // }
       return keys.first;
     }
     return -1;
@@ -903,6 +901,10 @@ abstract class CretaManager extends AbsExModelManager {
     return retval;
   }
 
+  String getSelectedMid() {
+    return selectedMid;
+  }
+
   bool isSelected(String mid) {
     //rlogHolder.log('isPageSelected($mid)');
     return selectedMid == mid;
@@ -925,13 +927,13 @@ abstract class CretaManager extends AbsExModelManager {
     if (className != 'frame' && className != 'contents') {
       DraggableStickers.selectedAssetId = "";
     }
-    logger.finest('selected1=$selectedMid, prev=$prevSelectedMid');
+    logger.info('selected1=$selectedMid, prev=$prevSelectedMid');
   }
 
   Future<void> setSelectedMid(String mid, {bool doNotify = true}) async {
     prevSelectedMid = selectedMid;
     selectedMid = mid;
-    logger.finest('selected2=$selectedMid, prev=$prevSelectedMid');
+    logger.info('selected2=$selectedMid, prev=$prevSelectedMid');
 
     String className = HycopUtils.getClassName(selectedMid);
     if (className != 'frame' && className != 'contents') {

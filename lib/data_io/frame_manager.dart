@@ -106,15 +106,20 @@ class FrameManager extends CretaManager {
   ContentsManager newContentsManager(FrameModel frameModel) {
     logger.fine('newContentsManager(${pageModel.width.value}, ${pageModel.height.value})*******');
 
-    ContentsManager? retval = contentsManagerMap[frameModel.mid];
-    if (retval == null) {
-      retval = ContentsManager(
-        pageModel: pageModel,
-        frameModel: frameModel,
-      );
-      contentsManagerMap[frameModel.mid] = retval;
-    }
+    // ContentsManager? retval = contentsManagerMap[frameModel.mid];
+    // if (retval == null) {
+    ContentsManager retval = ContentsManager(
+      pageModel: pageModel,
+      frameModel: frameModel,
+    );
+    contentsManagerMap[frameModel.mid] = retval;
+    //}
     return retval;
+  }
+
+  ContentsManager? findContentsManager(String frameModelMid) {
+    logger.fine('findContentsManager(${pageModel.width.value}, ${pageModel.height.value})*******');
+    return contentsManagerMap[frameModelMid];
   }
 
   ContentsModel? getCurrentModel(String frameMid) {

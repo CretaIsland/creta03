@@ -49,6 +49,10 @@ class ContentsManager extends CretaManager {
     playTimer = p;
   }
 
+  String keyMangler(String contentsMid) {
+    return 'contents-${pageModel.mid}-${frameModel.mid}-$contentsMid';
+  }
+
   bool hasContents() {
     return (getAvailLength() > 0);
   }
@@ -77,7 +81,7 @@ class ContentsManager extends CretaManager {
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> getContents() async {
-    logger.fine('getContents-------------------------------------------');
+    logger.info('getContents-------------------------------------------');
     int contentsCount = 0;
     startTransaction();
     try {

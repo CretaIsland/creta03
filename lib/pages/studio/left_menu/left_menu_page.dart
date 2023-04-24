@@ -243,16 +243,26 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                     _pageManager!.notify();
                   },
                 ),
-                BTN.fill_gray_i_m(
+                BTN.fill_gray_image_m(
                   tooltip: CretaStudioLang.tooltipDelete,
                   tooltipBg: CretaColor.text[700]!,
-                  icon: Icons.delete_outlined,
+                  iconImageFile: "assets/delete.svg",
                   onPressed: () {
                     // Delete Page
                     model.isRemoved.set(true);
                     _pageManager!.notify();
                   },
                 ),
+                //  BTN.fill_gray_i_m(
+                //   tooltip: CretaStudioLang.tooltipDelete,
+                //   tooltipBg: CretaColor.text[700]!,
+                //   icon: Icons.delete_outlined,
+                //   onPressed: () {
+                //     // Delete Page
+                //     model.isRemoved.set(true);
+                //     _pageManager!.notify();
+                //   },
+                // ),
               ],
             ),
           ]),

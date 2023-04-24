@@ -234,17 +234,23 @@ class ContentsModel extends CretaModel {
     anyDuration = UndoAble<double>(srcContents.anyDuration.value, mid);
     isTTS = UndoAble<bool>(srcContents.isTTS.value, mid);
     lang = UndoAble<String>(srcContents.lang.value, mid);
+
+    _playState = srcContents._playState;
+    _prevState = srcContents._prevState;
+    _manualState = srcContents._manualState;
   }
 
   // ignore: prefer_final_fields
   PlayState _playState = PlayState.none;
   PlayState _prevState = PlayState.none;
   PlayState _manualState = PlayState.none;
+
   PlayState get playState => _playState;
   PlayState get prevState => _prevState;
   PlayState get manualState => _manualState;
 
   void setPlayState(PlayState s) {
+    //logger.info('setPlayState=$s');
     _prevState = playState;
     _playState = s;
     _manualState = playState;

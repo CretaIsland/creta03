@@ -53,25 +53,36 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   //final bool _isHover = false;
 
   @override
+  void dispose() {
+    super.dispose();
+    _playTimer?.stop();
+    logger.info('==========================FrameEach dispose================');
+  }
+
+  @override
   void initState() {
     super.initState();
     initChildren();
-    logger.finest('==========================FrameMain initialized================');
+    logger.info('==========================FrameEach initialized================');
   }
 
   Future<void> initChildren() async {
     frameManager = widget.frameManager;
-    _contentsManager = frameManager!.newContentsManager(widget.model);
-    _contentsManager!.clearAll();
+    _contentsManager = frameManager!.findContentsManager(widget.model.mid);
+    if (_contentsManager == null) {
+      _contentsManager = frameManager!.newContentsManager(widget.model);
+      _contentsManager!.clearAll();
 
-    _playTimer = CretaPlayTimer(_contentsManager!);
-    _contentsManager!.setPlayerHandler(_playTimer!);
+      _playTimer = CretaPlayTimer(_contentsManager!);
+      _contentsManager!.setPlayerHandler(_playTimer!);
 
-    await _contentsManager!.getContents();
-    _contentsManager!.addRealTimeListen();
-    _contentsManager!.reOrdering();
-
-    _playTimer!.start();
+      await _contentsManager!.getContents();
+      _contentsManager!.addRealTimeListen();
+      _contentsManager!.reOrdering();
+    } else {
+      _playTimer = CretaPlayTimer(_contentsManager!);
+      _contentsManager!.setPlayerHandler(_playTimer!);
+    }
     logger.info('initChildren(${_contentsManager!.getAvailLength()})');
 
     _isInitialized = true;
@@ -80,7 +91,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   @override
   Widget build(BuildContext context) {
     applyScale = widget.applyScale;
-
+    _playTimer!.start();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ContentsManager>.value(

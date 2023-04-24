@@ -48,7 +48,7 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
             if (player.isInit() == false) {
               return Snippet.showWaitSign();
             }
-            return const SizedBox.shrink(key: GlobalObjectKey('shrink'));
+            return SizedBox.shrink(key: GlobalObjectKey('shrink-${player.keyString}'));
           }
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
@@ -59,7 +59,8 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
             child: getClipRect(
               player.getSize()!,
               player.acc.frameModel,
-              VideoPlayer(player.wcontroller!, key: GlobalObjectKey('video-${player.model!.mid}')),
+              //VideoPlayer(player.wcontroller!, key: GlobalObjectKey('widget-${player.keyString}')),
+              VideoPlayer(player.wcontroller!),
             ),
           );
         });

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
@@ -54,6 +56,25 @@ class Snippet {
   }
 
   static Widget defaultImage = Image.asset('creta_default.png', fit: BoxFit.cover);
+
+  static Widget SvgIcon({
+    required String iconImageFile,
+    required double iconSize,
+    required Color? iconColor,
+  }) {
+    return CircleAvatar(
+      backgroundColor: Colors.transparent,
+      radius: iconSize,
+      child: SvgPicture.asset(
+        iconImageFile,
+        fit: BoxFit.contain,
+        width: iconSize,
+        height: iconSize,
+        // ignore: deprecated_member_use
+        color: iconColor,
+      ),
+    );
+  }
 
   static Widget CretaScaffold({
     required Widget title,
@@ -198,39 +219,28 @@ class Snippet {
           ),
         ),
         SizedBox(
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12)
-                  ),
+            child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                  decoration:
+                      BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
                   clipBehavior: Clip.hardEdge,
-                  child: Container(
-                    color: Colors.green
-                  )
-                )
-              ],
-            ),
-          )
-        ),
-        SizedBox(
-          width: 8
-        ),
+                  child: Container(color: Colors.green))
+            ],
+          ),
+        )),
+        SizedBox(width: 8),
         CretaDropDown(
-          width: 130,
-          height: 40,
-          items: const ["사용자 닉네임1", "사용자 닉네임2", "사용자 닉네임3"],
-          defaultValue: "사용자 닉네임1",
-          onSelected: (value) {
-            logger.finest(value);
-          }
-        ),
-        SizedBox(
-          width: 40
-        )
+            width: 130,
+            height: 40,
+            items: const ["사용자 닉네임1", "사용자 닉네임2", "사용자 닉네임3"],
+            defaultValue: "사용자 닉네임1",
+            onSelected: (value) {
+              logger.finest(value);
+            }),
+        SizedBox(width: 40)
       ],
     );
   }

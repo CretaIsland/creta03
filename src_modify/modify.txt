@@ -26,3 +26,7 @@ copy  src_modify\logger.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.de
 
 #skpark modify 4/20
 copy  src_modify\video_player.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\video_player-2.6.0\lib\video_player.dart
+
+
+#skpark modify 4/24
+copy src_modify\adaptive_scrollbar.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\adaptive_scrollbar-2.1.2\lib\adaptive_scrollbar.dart  

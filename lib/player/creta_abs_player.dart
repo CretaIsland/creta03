@@ -23,12 +23,14 @@ class ProgressNotifier extends ChangeNotifier {
 
 // ignore: must_be_immutable
 abstract class CretaAbsPlayer extends ChangeNotifier {
-  ContentsModel? model;
-  ContentsManager acc;
-  bool autoStart;
+  final String keyString;
+  final ContentsModel? model;
+  final ContentsManager acc;
+  final bool autoStart;
   //BasicOverayWidget? videoProgress;
 
   CretaAbsPlayer({
+    required this.keyString,
     required this.onAfterEvent,
     required this.acc,
     required this.autoStart,
@@ -135,5 +137,9 @@ abstract class CretaAbsPlayer extends ChangeNotifier {
 }
 
 class CretaEmptyPlayer extends CretaAbsPlayer {
-  CretaEmptyPlayer({required super.onAfterEvent, required super.acc, required super.autoStart});
+  CretaEmptyPlayer(
+      {required super.keyString,
+      required super.onAfterEvent,
+      required super.acc,
+      required super.autoStart});
 }

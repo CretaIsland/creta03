@@ -223,10 +223,22 @@ class MiniMenuState extends State<MiniMenu> {
             logger.info("MinuMenu onFrameRotate");
             widget.onFrameRotate.call();
           }),
-      BTN.fill_blue_i_menu(
+      // BTN.fill_blue_i_menu(
+      //     tooltipFg: CretaColor.text,
+      //     tooltip: CretaStudioLang.deleteFrameTooltip,
+      //     icon: Icons.delete_outlined,
+      //     decoType: CretaButtonDeco.opacity,
+      //     iconColor: CretaColor.primary,
+      //     buttonColor: CretaButtonColor.primary,
+      //     onPressed: () {
+      //       BookMainPage.containeeNotifier!.setFrameClick(true);
+      //       logger.fine("MinuMenu onFrameDelete");
+      //       widget.onFrameDelete.call();
+      //     }),
+      BTN.fill_blue_image_menu(
           tooltipFg: CretaColor.text,
           tooltip: CretaStudioLang.deleteFrameTooltip,
-          icon: Icons.delete_outlined,
+          iconImageFile: "assets/delete_frame.svg",
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
@@ -332,11 +344,11 @@ class MiniMenuState extends State<MiniMenu> {
             widget.onContentsFullscreen.call();
           }),
       if (widget.contentsManager.iamBusy == false)
-        BTN.fill_blue_i_menu(
+        BTN.fill_blue_image_menu(
             tooltipFg: CretaColor.text,
             tooltip: CretaStudioLang.deleteConTooltip,
             iconColor: CretaColor.secondary,
-            icon: Icons.delete_outlined,
+            iconImageFile: "assets/delete_content.svg",
             buttonColor: CretaButtonColor.secondary,
             decoType: CretaButtonDeco.opacity,
             onPressed: () {
@@ -344,6 +356,18 @@ class MiniMenuState extends State<MiniMenu> {
               logger.fine("MinuMenu onFrameDelete");
               widget.onContentsDelete.call();
             }),
+      // BTN.fill_blue_i_menu(
+      //     tooltipFg: CretaColor.text,
+      //     tooltip: CretaStudioLang.deleteConTooltip,
+      //     iconColor: CretaColor.secondary,
+      //     icon: Icons.delete_outlined,
+      //     buttonColor: CretaButtonColor.secondary,
+      //     decoType: CretaButtonDeco.opacity,
+      //     onPressed: () {
+      //       BookMainPage.containeeNotifier!.setFrameClick(true);
+      //       logger.fine("MinuMenu onFrameDelete");
+      //       widget.onContentsDelete.call();
+      //     }),
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.editConTooltip,
           tooltipFg: CretaColor.text,

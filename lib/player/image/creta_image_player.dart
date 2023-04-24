@@ -11,6 +11,7 @@ import '../creta_abs_player.dart';
 
 class CretaImagePlayer extends CretaAbsPlayer {
   CretaImagePlayer({
+    required super.keyString,
     required super.model,
     required super.acc,
     super.onAfterEvent,
