@@ -181,6 +181,7 @@ class StudioSnippet {
       ContentsModel? reModel = contentsManager.getModel(model.mid) as ContentsModel?;
       reModel ??= model;
       reModel.remoteUrl = fileModel.fileView;
+      reModel.thumbnail = fileModel.thumbnailUrl;
       logger.info('uploaded url = ${reModel.url}');
       logger.info('uploaded fileName = ${reModel.name}');
       logger.info('uploaded remoteUrl = ${reModel.remoteUrl!}');

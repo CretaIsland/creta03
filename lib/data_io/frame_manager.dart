@@ -203,31 +203,31 @@ class FrameManager extends CretaManager {
         invalidate: invalidate, initPosition: false, undo: true);
   }
 
-  void setSoundOff() {
+  Future<void> setSoundOff() async {
     for (var manager in contentsManagerMap.values) {
       logger.info('frameManager.setSoundOff()********');
-      manager.setSoundOff();
+      await manager.setSoundOff();
     }
   }
 
-  void resumeSound() {
+  Future<void> resumeSound() async {
     for (var manager in contentsManagerMap.values) {
       logger.info('frameManager.resumeSound()********');
-      manager.resumeSound();
+      await manager.resumeSound();
     }
   }
 
-  void pause() {
+  Future<void> pause() async {
     for (var manager in contentsManagerMap.values) {
       logger.info('frameManager.setSoundOff()********');
-      manager.pause();
+      await manager.pause();
     }
   }
 
-  void resume() {
+  Future<void> resume() async {
     for (var manager in contentsManagerMap.values) {
       logger.info('frameManager.resumeSound()********');
-      manager.resume();
+      await manager.resume();
     }
   }
 }

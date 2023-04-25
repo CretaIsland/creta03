@@ -213,31 +213,31 @@ class ContentsManager extends CretaManager {
     iamBusy = false;
   }
 
-  void setSoundOff() {
+  Future<void> setSoundOff() async {
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
         if (video.wcontroller != null) {
           logger.info('contents.setSoundOff()********');
-          video.wcontroller!.setVolume(0.0);
+          await video.wcontroller!.setVolume(0.0);
         }
       }
     }
   }
 
-  void resumeSound() {
+  Future<void> resumeSound() async {
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
         if (video.wcontroller != null) {
           logger.info('contents.resumeSound()********');
-          video.wcontroller!.setVolume(video.model!.volume.value);
+          await video.wcontroller!.setVolume(video.model!.volume.value);
         }
       }
     }
   }
 
-  void pause() {
+  Future<void> pause() async {
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
@@ -246,13 +246,13 @@ class ContentsManager extends CretaManager {
             playTimer != null &&
             playTimer!.isCurrentModel(player.model!.mid)) {
           logger.info('contents.pause');
-          video.wcontroller!.pause();
+          await video.wcontroller!.pause();
         }
       }
     }
   }
 
-  void resume() {
+  Future<void> resume() async {
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
@@ -261,10 +261,15 @@ class ContentsManager extends CretaManager {
             playTimer != null &&
             playTimer!.isCurrentModel(player.model!.mid)) {
           logger.info('contents.resume');
-          video.wcontroller!.play();
+          await video.wcontroller!.play();
         }
       }
     }
+  }
+
+  Future<void> goto(double order) async {
+    pause();
+    await playTimer?.setCurrentOrder(order);
   }
 
   // Future<void> pause() async {

@@ -17,16 +17,11 @@ copy src_modify\r_dotted_line_border.daxt C:\Users\seon\AppData\Local\Pub\Cache\
 #skpark modify 3/16
 copy src_modify\tag_editor.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\material_tag_editor-0.1.2\lib\tag_editor.dart 
 
-#skpark modify 3/29
-copy  src_modify\firebase_database.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\firebase_database.dart
-
-
 #skpark modify 4/18
 copy  src_modify\logger.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.1.3\lib\common\util\logger.dart 
 
 #skpark modify 4/20
 copy  src_modify\video_player.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\video_player-2.6.0\lib\video_player.dart
-
 
 #skpark modify 4/24
 copy src_modify\adaptive_scrollbar.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\adaptive_scrollbar-2.1.2\lib\adaptive_scrollbar.dart  

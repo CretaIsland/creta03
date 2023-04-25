@@ -83,6 +83,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            propertyDivider(height: 14),
             ..._info(),
           ],
         ),

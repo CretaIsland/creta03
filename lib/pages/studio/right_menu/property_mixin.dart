@@ -56,6 +56,7 @@ mixin PropertyMixin {
     required Widget bodyWidget,
     required bool hasRemoveButton,
     required Function onDelete,
+    bool animate = true,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +130,9 @@ mixin PropertyMixin {
           ),
         ),
         isOpen
-            ? bodyWidget.animate().scaleY(alignment: Alignment.topCenter)
+            ? animate
+                ? bodyWidget.animate().scaleY(alignment: Alignment.topCenter)
+                : bodyWidget
             : const SizedBox.shrink(),
       ],
     );

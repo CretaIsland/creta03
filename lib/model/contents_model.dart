@@ -38,6 +38,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<double> playTime; // 1000 분의 1초 milliseconds
   late UndoAble<double> videoPlayTime; // 1000 분의 1초 milliseconds
   late UndoAble<bool> mute;
+  late UndoAble<bool> isShow;
   late UndoAble<double> volume;
   late UndoAble<double> aspectRatio;
   late UndoAble<double> width;
@@ -87,6 +88,7 @@ class ContentsModel extends CretaModel {
         playTime,
         videoPlayTime,
         mute,
+        isShow,
         volume,
         aspectRatio,
         width,
@@ -145,6 +147,7 @@ class ContentsModel extends CretaModel {
     playTime = UndoAble<double>(5000, mid); // 1000 분의 1초 milliseconds
     videoPlayTime = UndoAble<double>(5000, mid); // 1000 분의 1초 milliseconds
     mute = UndoAble<bool>(false, mid);
+    isShow = UndoAble<bool>(true, mid);
     volume = UndoAble<double>(50, mid);
     aspectRatio = UndoAble<double>(1, mid);
     width = UndoAble<double>(320, mid);
@@ -199,6 +202,7 @@ class ContentsModel extends CretaModel {
     videoPlayTime =
         UndoAble<double>(srcContents.videoPlayTime.value, mid); // 1000 분의 1초 milliseconds
     mute = UndoAble<bool>(srcContents.mute.value, mid);
+    isShow = UndoAble<bool>(srcContents.isShow.value, mid);
     volume = UndoAble<double>(srcContents.volume.value, mid);
     aspectRatio = UndoAble<double>(srcContents.aspectRatio.value, mid);
     width = UndoAble<double>(srcContents.width.value, mid);
@@ -294,6 +298,7 @@ class ContentsModel extends CretaModel {
     playTime.set(map["playTime"] ?? 5000, save: false, noUndo: true);
     videoPlayTime.set(map["videoPlayTime"] ?? 5000, save: false, noUndo: true);
     mute.set(map["mute"] ?? false, save: false, noUndo: true);
+    isShow.set(map["isShow"] ?? true, save: false, noUndo: true);
     volume.set(map["volume"] ?? 50, save: false, noUndo: true);
     aspectRatio.set(map["aspectRatio"] ?? 1, save: false, noUndo: true);
     width.set(map["width"] ?? 600, save: false, noUndo: true);
@@ -340,6 +345,7 @@ class ContentsModel extends CretaModel {
         "playTime": playTime.value,
         "videoPlayTime": videoPlayTime.value,
         "mute": mute.value,
+        "isShow": isShow.value,
         "volume": volume.value,
         "contentsType": contentsType.index,
         "aspectRatio": aspectRatio.value,

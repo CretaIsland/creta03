@@ -50,10 +50,17 @@ class BTN {
   static CretaButton fill_gray_i_s({
     required IconData icon,
     required Function onPressed,
+    String? tooltip,
+    Color? tooltipFg,
+    Color? tooltipBg,
+    double buttonSize = 28,
   }) {
     return CretaButton(
-      width: 28,
-      height: 28,
+      tooltip: tooltip,
+      tooltipFg: tooltipFg,
+      tooltipBg: tooltipBg,
+      width: buttonSize,
+      height: buttonSize,
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.white,
       onPressed: onPressed,
@@ -233,14 +240,15 @@ class BTN {
       String? tooltip,
       Color? tooltipFg,
       Color? tooltipBg,
+      double buttonSize = 32,
       double iconSize = 18,
       Color? iconColor}) {
     return CretaButton(
       tooltip: tooltip,
       tooltipFg: tooltipFg,
       tooltipBg: tooltipBg,
-      width: 32,
-      height: 32,
+      width: buttonSize,
+      height: buttonSize,
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.white,
       onPressed: onPressed,

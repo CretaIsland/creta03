@@ -159,6 +159,12 @@ class CretaPlayTimer extends ChangeNotifier {
     return _currentModel;
   }
 
+  Future<void> setCurrentOrder(double order) async {
+    await _lock.synchronized(() async {
+      _currentOrder = order;
+    });
+  }
+
   void _setCurrentModel() {
     _currentModel = contentsManager.getNthOrder(_currentOrder) as ContentsModel?;
     while (true) {

@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
-import 'package:creta03/data_io/contents_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -22,10 +21,8 @@ import '../studio_constant.dart';
 import '../studio_snippet.dart';
 import '../studio_variables.dart';
 import 'book/right_menu_book.dart';
-import 'contents/contents_ordered_list.dart';
-import 'contents/contents_property.dart';
-import 'frame/frame_property.dart';
 import 'page/page_property.dart';
+import 'right_menu_frame_and_contents.dart';
 
 class RightMenu extends StatefulWidget {
   //final ContaineeEnum selectedStick;
@@ -105,14 +102,14 @@ class _RightMenuState
               ],
             ),
           ),
-          BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book
-              ? SizedBox.shrink()
-              : Divider(
-                  height: 4,
-                  color: CretaColor.text[200]!,
-                  indent: 0,
-                  endIndent: 0,
-                ),
+          // BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book
+          //     ? SizedBox.shrink()
+          //     : Divider(
+          //         height: 4,
+          //         color: CretaColor.text[200]!,
+          //         indent: 0,
+          //         endIndent: 0,
+          //       ),
           SizedBox(
             width: LayoutConst.rightMenuWidth,
             child: _eachWidget(BookMainPage.containeeNotifier!.selectedClass),
@@ -131,39 +128,43 @@ class _RightMenuState
       case ContaineeEnum.Page:
         return PageProperty();
       case ContaineeEnum.Frame:
-        {
-          FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
-          if (frame == null) {
-            return Container();
-          }
-          return FrameProperty(key: ValueKey(frame.mid), model: frame);
-        }
+        return RightMenuFrameAndContents(
+            key: GlobalKey(), selectedTap: CretaStudioLang.frameTabBar.values.first);
+      // {
+      //   FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
+      //   if (frame == null) {
+      //     return Container();
+      //   }
+      //   return FrameProperty(key: ValueKey(frame.mid), model: frame);
+      // }
       case ContaineeEnum.Contents:
-        BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
-        FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
-        FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-        if (frame != null && frameManager != null) {
-          ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
-          ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
-          if (contents != null) {
-            logger.info('ContentsProperty ${contents.mid}');
-            return Column(
-              children: [
-                if (contentsManager != null)
-                  ContentsOrderedList(
-                      width: LayoutConst.rightMenuWidth,
-                      height: LayoutConst.contentsListHeight,
-                      contentsManager: contentsManager),
-                ContentsProperty(
-                    key: ValueKey(contents.mid),
-                    model: contents,
-                    frameManager: frameManager,
-                    book: model),
-              ],
-            );
-          }
-        }
-        return Container();
+        return RightMenuFrameAndContents(
+            key: GlobalKey(), selectedTap: CretaStudioLang.frameTabBar.values.last);
+      // BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+      // FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
+      // FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+      // if (frame != null && frameManager != null) {
+      //   ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
+      //   ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
+      //   if (contents != null) {
+      //     logger.info('ContentsProperty ${contents.mid}');
+      //     return Column(
+      //       children: [
+      //         if (contentsManager != null)
+      //           ContentsOrderedList(
+      //               width: LayoutConst.rightMenuWidth,
+      //               height: LayoutConst.contentsListHeight,
+      //               contentsManager: contentsManager),
+      //         ContentsProperty(
+      //             key: ValueKey(contents.mid),
+      //             model: contents,
+      //             frameManager: frameManager,
+      //             book: model),
+      //       ],
+      //     );
+      //   }
+      // }
+      // return Container();
 
       default:
         return Container();

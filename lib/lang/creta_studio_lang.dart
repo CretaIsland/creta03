@@ -336,6 +336,8 @@ class CretaStudioLang {
   static String toFrameMenu = '프레임 메뉴로 전환';
   static String toContentsMenu = '콘텐츠 메뉴로 전환';
 
+  static String playList = '플레이 리스트';
+
   // static Map<String, String> shadowInList = {
   //   '외부 그림자': 'outSide',
   //   '내부 그림자': 'inSide',

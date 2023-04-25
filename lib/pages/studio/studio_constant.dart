@@ -38,7 +38,7 @@ class LayoutConst {
   static const double rightMenuWidth = 380;
   static const double rightMenuTitleHeight = 76;
   static const double innerMenuBarHeight = 36;
-  static const double contentsListHeight = 150;
+  static const double contentsListHeight = 24;
 
   // stick page
   static const double leftPageWidth = 210;
