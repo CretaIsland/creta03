@@ -136,7 +136,7 @@ class BTN {
     double? width = 24,
     double height = 24,
     double iconSize = 16,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
     String? tooltip,
     Color? tooltipFg,
     Color? tooltipBg,
@@ -151,7 +151,7 @@ class BTN {
       tooltipFg: tooltipFg,
       width: width,
       height: height,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       buttonType: CretaButtonType.child,
       decoType: decoType,
       buttonColor: buttonColor,
@@ -175,7 +175,7 @@ class BTN {
     double width = 24,
     double height = 24,
     double iconSize = 18,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
     String? tooltip,
     Color? tooltipFg,
     Color? tooltipBg,
@@ -190,7 +190,7 @@ class BTN {
       tooltipFg: tooltipFg,
       width: width,
       height: height,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       buttonType: CretaButtonType.child,
       decoType: decoType,
       buttonColor: buttonColor,
@@ -292,7 +292,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 86,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -314,7 +314,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -323,7 +323,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 96,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -345,7 +345,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -354,7 +354,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 104,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -376,7 +376,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -385,7 +385,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 86,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -407,7 +407,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -418,7 +418,7 @@ class BTN {
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color? textColor,
     double? width = 96,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
     bool alwaysShowIcon = false,
   }) {
     return CretaButton(
@@ -442,7 +442,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       alwaysShowIcon: alwaysShowIcon,
     );
   }
@@ -454,7 +454,7 @@ class BTN {
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color? textColor,
     double? width = 106,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -477,7 +477,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -485,7 +485,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 87,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color? textColor,
     IconData? tailIconData,
@@ -526,7 +526,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -534,11 +534,12 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 72,
-    double sidePaddingSize = 0,
+    double? height = 36,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
-      height: 36,
+      height: height,
       buttonType: CretaButtonType.textOnly,
       buttonColor: CretaButtonColor.white,
       text: Column(
@@ -548,7 +549,7 @@ class BTN {
         ],
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -557,7 +558,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 86,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -575,7 +576,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -585,7 +586,7 @@ class BTN {
     required ImageProvider image,
     required Function onPressed,
     double? width = 219,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -593,7 +594,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.white300,
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       child: Row(
         children: [
           Padding(
@@ -640,7 +641,7 @@ class BTN {
     Color fgColor = Colors.white,
     required Function onPressed,
     double? width = 166,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -648,7 +649,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: buttonColor,
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       child: Row(
         children: [
           Padding(
@@ -725,12 +726,13 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 72,
-    double sidePaddingSize = 0,
+    double? height = 34,
+    CretaButtonSidePadding? sidePadding,
     TextStyle? textStyle,
   }) {
     return CretaButton(
       width: width,
-      height: 34,
+      height: height,
       buttonType: CretaButtonType.textOnly,
       buttonColor: CretaButtonColor.blue,
       text: Padding(
@@ -743,7 +745,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -751,7 +753,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 179,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -768,7 +770,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -777,7 +779,7 @@ class BTN {
     required IconData icon,
     required Function onPressed,
     double? width = 207,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -799,7 +801,7 @@ class BTN {
         color: Colors.white,
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -808,7 +810,7 @@ class BTN {
     required ImageProvider image,
     required Function onPressed,
     double? width = 101,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -816,7 +818,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.blue,
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       child: Row(
         //mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -847,7 +849,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 125,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -869,7 +871,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -879,14 +881,14 @@ class BTN {
     required String subText,
     required Function onPressed,
     double? width = 191,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
       height: 36,
       buttonType: CretaButtonType.child,
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -926,7 +928,7 @@ class BTN {
     required ImageProvider image,
     required Function onPressed,
     double? width = 101,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -934,7 +936,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.purple,
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       child: Row(
         //mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -987,7 +989,7 @@ class BTN {
     required ImageProvider image,
     required Function onPressed,
     double? width = 166,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -995,7 +997,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.black,
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       child: Row(
         children: [
           Padding(
@@ -1084,7 +1086,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 72,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1096,7 +1098,7 @@ class BTN {
       textString: text,
       textStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -1105,7 +1107,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 96,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1122,7 +1124,7 @@ class BTN {
         color: CretaColor.text[700]!,
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -1168,7 +1170,7 @@ class BTN {
     required ImageProvider image,
     required Function onPressed,
     double? width = 101,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1192,7 +1194,7 @@ class BTN {
       // ),
 
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -1202,7 +1204,7 @@ class BTN {
     required ImageProvider image,
     required Function onPressed,
     double? width = 120,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1211,7 +1213,7 @@ class BTN {
       buttonColor: CretaButtonColor.sky,
       decoType: CretaButtonDeco.line,
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -1247,7 +1249,7 @@ class BTN {
     required ImageProvider image,
     required Function onPressed,
     double? width = 101,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1271,7 +1273,7 @@ class BTN {
       // ),
 
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -1281,7 +1283,7 @@ class BTN {
     required ImageProvider image,
     required Function onPressed,
     double? width = 120,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1290,7 +1292,7 @@ class BTN {
       buttonColor: CretaButtonColor.skypurple,
       decoType: CretaButtonDeco.line,
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -1385,7 +1387,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 86,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
     TextStyle? textStyle,
     IconData? icon,
     CretaButtonDeco decoType = CretaButtonDeco.fill,
@@ -1412,7 +1414,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
       alwaysShowIcon: alwaysShowIcon,
     );
     return cretaButton;
@@ -1423,7 +1425,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 96,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1445,7 +1447,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -1454,7 +1456,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 96,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1476,7 +1478,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -1508,7 +1510,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 106,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1536,7 +1538,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -1621,7 +1623,7 @@ class BTN {
     Color? textColor,
     Color? subTextColor,
     double? width = 106,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
@@ -1653,7 +1655,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 
@@ -1682,7 +1684,7 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 72,
-    double sidePaddingSize = 0,
+    CretaButtonSidePadding? sidePadding,
     TextStyle? textStyle,
   }) {
     return CretaButton(
@@ -1700,7 +1702,7 @@ class BTN {
         ),
       ),
       onPressed: onPressed,
-      sidePaddingSize: sidePaddingSize,
+      sidePadding: sidePadding,
     );
   }
 }

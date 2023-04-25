@@ -41,7 +41,9 @@ class CretaMyPageLang {
     '미국',
     '일본',
     '중국',
-    '프랑스'
+    '베트남',
+    '프랑스',
+    '독일'
   ];
 
   static List<String> languageList = [
@@ -49,7 +51,9 @@ class CretaMyPageLang {
     'English',
     '日本語',
     '中文',
-    'français'
+    'Tiếng Việt',
+    'français',
+    'Deutsche'
   ];
 
   static List<String> jobList = [
@@ -124,21 +128,17 @@ class CretaMyPageLang {
 
   // 크레타 등급
   static List<String> cretaGradeList = [
-    '',
     '크레타 루키',
     '크레타 스타',
-    '크레타 셀럽',
-    ''
+    '크레타 셀럽'
   ];
 
   // 크레타 등급
   static List<String> ratePlanList = [
-    '',
     '개인 무료',
     '개인 유료',
     '팀 유료',
-    '엔터프라이즈',
-    ''
+    '엔터프라이즈'
   ];
 
 

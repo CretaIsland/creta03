@@ -47,8 +47,7 @@ class CommunityRightPlaylistPane extends StatefulWidget {
   final double pageHeight;
   final ScrollController scrollController;
   const CommunityRightPlaylistPane(
-      {super.key, required this.pageWidth, required this.pageHeight,
-        required this.scrollController});
+      {super.key, required this.pageWidth, required this.pageHeight, required this.scrollController});
 
   @override
   State<CommunityRightPlaylistPane> createState() => _CommunityRightPlaylistPaneState();
@@ -74,16 +73,18 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
       child: ListView.builder(
         controller: widget.scrollController,
         padding: EdgeInsets.fromLTRB(
-            _rightViewLeftPane,
-            _rightViewBannerMinHeight,
-            _rightViewRightPane,
-            _rightViewBottomPane),
-          itemCount: _cretaPlaylistList.length,
-          itemExtent: 204,
-          itemBuilder: (context, index) {
-            return CretaPlaylistItem(key: _cretaPlaylistList[index].uiKey, cretaPlayListData: _cretaPlaylistList[index], width: widget.pageWidth);
-          }),
-      );
+            _rightViewLeftPane, _rightViewBannerMinHeight, _rightViewRightPane, _rightViewBottomPane),
+        itemCount: _cretaPlaylistList.length,
+        itemExtent: 204,
+        itemBuilder: (context, index) {
+          return CretaPlaylistItem(
+            key: _cretaPlaylistList[index].uiKey,
+            cretaPlayListData: _cretaPlaylistList[index],
+            width: widget.pageWidth - _rightViewLeftPane - _rightViewRightPane,
+          );
+        },
+      ),
+    );
   }
 
   @override

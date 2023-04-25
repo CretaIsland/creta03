@@ -119,7 +119,7 @@ mixin CretaBasicLayoutMixin {
     required String bannerTitle,
     required String bannerDescription,
     required List<List<CretaMenuItem>> listOfListFilter,
-    required Widget mainWidget,
+    required Widget Function(BuildContext) mainWidget,
     Widget Function(Size)? titlePane,
     void Function(String)? onSearch,
     bool isSearchbarInBanner = false,
@@ -167,7 +167,7 @@ mixin CretaBasicLayoutMixin {
                         rightPaddingOnRightPane,
                         bottomPaddingOnRightPane,
                       ),
-                      child: mainWidget,
+                      child: mainWidget(context),
                     ),
                     Listener(
                       onPointerSignal: (PointerSignalEvent event) {
@@ -216,7 +216,7 @@ mixin CretaBasicLayoutMixin {
                             color: Colors.white,
                             width: gridArea.width,
                             height: gridArea.height,
-                            child: mainWidget,
+                            child: mainWidget(context),
                           )
                         : Container()
                   ],

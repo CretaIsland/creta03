@@ -184,7 +184,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
                   buttonColor: CretaButtonColor.transparent,
                   textColor: Colors.white,
                   width: null,
-                  sidePaddingSize: 8,
+                  sidePadding: CretaButtonSidePadding.fromLR(8, 8),
                 ),
                 SizedBox(width: 13),
                 BTN.fill_gray_itt_l(
@@ -196,7 +196,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
                   textColor: Colors.white,
                   subTextColor: CretaColor.primary[200],
                   width: null,
-                  sidePaddingSize: 8,
+                  sidePadding: CretaButtonSidePadding.fromLR(8, 8),
                 ),
                 SizedBox(width: 12),
                 BTN.fill_gray_i_l(

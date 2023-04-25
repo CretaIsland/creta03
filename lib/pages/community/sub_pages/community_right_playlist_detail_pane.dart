@@ -68,14 +68,7 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
     _cretaPlaylistData = cretaPlaylistList[0];
   }
 
-  Widget getItemPane(Size paneSize) {
-    // int columnCount = (paneSize.width - _rightViewLeftPane - _rightViewRightPane) ~/ _itemDefaultWidth;
-    // if (columnCount == 0) columnCount = 1;
-    double textWidth = paneSize.width;
-    textWidth -= _rightViewLeftPane;
-    textWidth -= _rightViewRightPane;
-    textWidth -= (4 + 28 + 16 + 20 + 120 + 20 + 28 + 4);
-
+  Widget getItemPane() {
     return Scrollbar(
       thumbVisibility: true,
       controller: widget.scrollController,
@@ -104,7 +97,7 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
           return CretaPlaylistDetailItem(
             key: data.uiKey,
             cretaBookData: data,
-            width: textWidth,
+            width: widget.pageWidth,
             index: index,
           );
         },
@@ -114,6 +107,6 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
 
   @override
   Widget build(BuildContext context) {
-    return getItemPane(Size(widget.pageWidth, widget.pageHeight));
+    return getItemPane();
   }
 }

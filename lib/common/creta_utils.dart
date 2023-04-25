@@ -40,7 +40,7 @@ class CretaUtils {
 
     final hoursStr = hours.toString().padLeft(2, '0');
     final minutesStr = minutes.toString().padLeft(2, '0');
-    final secondsStr = remainingSeconds.toString().padLeft(2, '0');
+    final secondsStr = remainingSeconds.round().toString().padLeft(2, '0');
 
     String retval = '';
 

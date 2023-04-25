@@ -212,7 +212,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
             onSearch: (value) {
               bookManagerHolder!.onSearch(value, () => setState(() {}));
             },
-            mainWidget: _bookGrid(context),
+            mainWidget: _bookGrid,//_bookGrid(context),
           )),
     );
   }

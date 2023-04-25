@@ -340,35 +340,39 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   List<Widget> _getHashtagListOnBanner() {
     return [
       BTN.opacity_gray_it_s(
-        text: '#크레타  ',
+        text: '#크레타',
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
         decoType: CretaButtonDeco.opacity,
+        sidePadding: CretaButtonSidePadding.fromLR(0, 8),
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
-        text: '#추천  ',
+        text: '#추천',
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
         decoType: CretaButtonDeco.opacity,
+        sidePadding: CretaButtonSidePadding.fromLR(0, 8),
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
-        text: '#인기  ',
+        text: '#인기',
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
         decoType: CretaButtonDeco.opacity,
+        sidePadding: CretaButtonSidePadding.fromLR(0, 8),
       ),
       SizedBox(width: 12),
       BTN.opacity_gray_it_s(
-        text: '#해시태그  ',
+        text: '#해시태그',
         textStyle: CretaFont.buttonMedium.copyWith(color: Colors.white),
         width: null,
         onPressed: () {},
         decoType: CretaButtonDeco.opacity,
+        sidePadding: CretaButtonSidePadding.fromLR(0, 8),
       ),
     ];
   }
@@ -1044,7 +1048,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return ValueKey('${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}');
   }
 
-  Widget _getRightPane(Size size) {
+  Widget _getRightPane(BuildContext context) {
+    Size size = gridArea;
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         return CommunityRightChannelPane(
@@ -1160,7 +1165,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   @override
   Widget build(BuildContext context) {
-    resize(context);
+    //resize(context);
     return Snippet.CretaScaffoldOfCommunity(
       //title: Text('Community page'),
       title: Row(
@@ -1189,7 +1194,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             bannerDescription: 'description',
             listOfListFilter: _getLeftDropdownMenuOnBanner(),
             onSearch: _getSearchFunction(),
-            mainWidget: _getRightPane(gridArea),
+            mainWidget: _getRightPane,//(gridArea),
             listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
             titlePane: _titlePane,
             leftPaddingOnFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 306 : null,

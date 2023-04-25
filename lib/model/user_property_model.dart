@@ -15,13 +15,13 @@ class UserPropertyModel extends CretaModel {
   
   late String email;                  // 이메일
   late String nickname;               // 닉네임
-  // late String phoneNumber;            // 연락처
+  late String phoneNumber;            // 연락처
   late String profileImg;             // 프로필 이미지 url
   late List<String> teamMembers;      // 팀원
   
-  // late int country;                   // 국가
-  // late int language;                  // 언어
-  // late int job;                       // 직업
+  late Country country;                   // 국가
+  late Language language;                  // 언어
+  late Job job;                       // 직업
 
   // late bool useDigitalSignage;        // 디지털 사이니지 사용 여부
   // late bool isPublicProfile;          // 프로필 공개 여부  
@@ -51,8 +51,12 @@ class UserPropertyModel extends CretaModel {
         ...super.props,
         email,
         nickname,
+        phoneNumber,
         profileImg,
         teamMembers,
+        country,
+        language,
+        job,
         cretaGrade,
         ratePlan,
         freeSpace,
@@ -69,8 +73,12 @@ class UserPropertyModel extends CretaModel {
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
     email = '';
     nickname = '';
+    phoneNumber = '';
     profileImg = '';
     teamMembers = [];
+    country = Country.none;
+    language = Language.none;
+    job = Job.none;
     cretaGrade = CretaGrade.none;
     ratePlan = RatePlan.none;
     freeSpace = 0;
@@ -88,8 +96,12 @@ class UserPropertyModel extends CretaModel {
     required this.email,
     required String pparentMid,
     this.nickname = '',
+    this.phoneNumber = '',
     this.profileImg = '',
     this.teamMembers = const [],
+    this.country = Country.none,
+    this.language = Language.none,
+    this.job = Job.none,
     this.cretaGrade = CretaGrade.none,
     this.ratePlan = RatePlan.none,
     this.freeSpace = 0,
@@ -109,8 +121,12 @@ class UserPropertyModel extends CretaModel {
     UserPropertyModel srcUser = src as UserPropertyModel;
     email = srcUser.email;
     nickname = srcUser.nickname;
+    phoneNumber = srcUser.phoneNumber;
     profileImg = srcUser.profileImg;
     teamMembers = [...srcUser.teamMembers];
+    country = srcUser.country;
+    language = srcUser.language;
+    job = srcUser.job;
     cretaGrade = srcUser.cretaGrade;
     ratePlan = srcUser.ratePlan;
     freeSpace = srcUser.freeSpace;
@@ -130,9 +146,13 @@ class UserPropertyModel extends CretaModel {
     super.fromMap(map);
     email = map["email"] ?? '';
     nickname = map["nickname"];
+    phoneNumber = map["phoneNumber"];
     profileImg = map["profileImg"];
     teamMembers = CretaUtils.jsonStringToList(map["teamMembers"]);
-    cretaGrade = CretaGrade.fromInt(map["cretaGrade"] ?? 1);
+    country = Country.fromInt(map["country"] ?? 0);
+    language = Language.fromInt(map["language"] ?? 0);
+    job = Job.fromInt(map["job"] ?? 0);
+    cretaGrade = CretaGrade.fromInt(map["cretaGrade"] ?? 0);
     ratePlan = RatePlan.fromInt(map["ratePlan"] ?? 0);
     freeSpace = map["freeSpace"];
     bookCount = map["bookCount"];
@@ -151,8 +171,12 @@ class UserPropertyModel extends CretaModel {
       ..addEntries({
         "email": email,
         "nickname": nickname,
+        "phoneNumber" : phoneNumber,
         "profileImg": profileImg,
         "teamMembers": CretaUtils.listToString(teamMembers),
+        "country": country.index,
+        "language": language.index,
+        "job": job.index,
         "cretaGrade": cretaGrade.index,
         "ratePlan": ratePlan.index,
         "freeSpace": freeSpace,
