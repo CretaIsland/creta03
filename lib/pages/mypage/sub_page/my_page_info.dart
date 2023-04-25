@@ -31,7 +31,6 @@ class _MyPageInfoState extends State<MyPageInfo> {
   List<Text> jobItemList = [];
 
   XFile? _pickedFile;
-  Uint8List? _pickedFileBytes;
 
   @override
   void initState() {
@@ -106,7 +105,6 @@ class _MyPageInfoState extends State<MyPageInfo> {
                         });
                       });
                       _pickedFile = null;
-                      _pickedFileBytes!.clear();
                     });
                   }
                 } catch (error) {
