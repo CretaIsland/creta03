@@ -341,6 +341,49 @@ enum RatePlan {
   static RatePlan fromInt(int? val) => RatePlan.values[validCheck(val ?? none.index)];
 }
 
+enum Country {
+  none,
+  korea,
+  usa,
+  japan,
+  china,
+  vietnam,
+  france,
+  german,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static Country fromInt(int? val) => Country.values[validCheck(val ?? none.index)];
+}
+
+enum Language{
+  none,
+  korean,
+  english,
+  japanese,
+  chinese,
+  vietnamese,
+  french,
+  germany,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static Language fromInt(int? val) => Language.values[validCheck(val ?? none.index)];
+}
+
+enum Job {
+  none,
+  general,
+  student,
+  teacher,
+  designer,
+  developer,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static Job fromInt(int? val) => Job.values[validCheck(val ?? none.index)];
+}
+
 TextAlign intToTextAlign(int t) {
   switch (t) {
     case 0:
