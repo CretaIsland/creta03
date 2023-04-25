@@ -84,7 +84,8 @@ class CretaButton extends StatefulWidget {
   final bool hasShadow;
   final bool showClickableCursor;
   final bool alwaysShowIcon;
-  final double sidePaddingSize;
+  //final double sidePaddingSize;
+  final CretaButtonSidePadding? sidePadding;
 
   final void Function(bool)? onHover;
 
@@ -110,7 +111,8 @@ class CretaButton extends StatefulWidget {
     this.tooltipBg,
     this.showClickableCursor = true,
     this.alwaysShowIcon = false,
-    this.sidePaddingSize = 0,
+    //this.sidePaddingSize = 0,
+    this.sidePadding,
     this.onHover,
     Key? key,
   }) : super(key: key) {
@@ -348,7 +350,7 @@ class _CretaButtonState extends State<CretaButton> {
             clipBehavior: Clip.antiAlias,
             //child: Center(
             child: Container(
-              margin: EdgeInsets.fromLTRB(widget.sidePaddingSize, 0, widget.sidePaddingSize, 0),
+              margin: EdgeInsets.fromLTRB(widget.sidePadding?.left ?? 0, 0, widget.sidePadding?.right ?? 0, 0),
               child: _getChild(),
             ),
             //),
@@ -598,4 +600,20 @@ class _CretaButtonState extends State<CretaButton> {
     }
     return null;
   }
+}
+
+class CretaButtonSidePadding {
+  CretaButtonSidePadding({
+    required this.left,
+    required this.right,
+  });
+
+  CretaButtonSidePadding.fromLR(double left, double right)
+      : this(
+    left: left,
+    right: right,
+  );
+
+  final double left;
+  final double right;
 }

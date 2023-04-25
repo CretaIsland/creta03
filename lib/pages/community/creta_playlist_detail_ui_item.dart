@@ -12,7 +12,8 @@ import 'package:flutter/material.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-//import '../design_system/creta_color.dart';
+import '../../design_system/creta_color.dart';
+import '../../design_system/component/snippet.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
@@ -59,7 +60,7 @@ class CretaPlaylistDetailItem extends StatefulWidget {
 }
 
 class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
-  // bool mouseOver = false;
+  bool mouseOver = false;
   // bool popmenuOpen = false;
   //
   // final ScrollController _controller = ScrollController();
@@ -75,52 +76,78 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      key: ValueKey(widget.index),
-      padding: EdgeInsets.all(4),
-      child: Container(
+    return MouseRegion(
+      onEnter: (value) {
+        setState(() {
+          mouseOver = true;
+        });
+      },
+      onExit: (value) {
+        setState(() {
+          mouseOver = false;
+        });
+      },
+      child: Padding(
         key: ValueKey(widget.index),
-        height: 107,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.7),
-          color: Color.fromARGB(255, 242, 242, 242),
-        ),
-        child: Center(
+        padding: EdgeInsets.all(4),
+        child: Container(
+          key: ValueKey(widget.index),
+          height: 107,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.7),
+            color: mouseOver ? CretaColor.text[100] : Colors.white,
+          ),
           child: Row(
             children: [
-              SizedBox(width: 28-8),
+              SizedBox(width: 20),
               ReorderableDragStartListener(
                 index: widget.index,
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: SizedBox(
-                    width: 16+16,
-                    height: 16+16,
+                    width: 32,
+                    height: 32,
                     child: Icon(Icons.menu_outlined, size: 16),
                   ),
                 ),
               ),
-              SizedBox(width: 20-8),
+              SizedBox(width: 20),
               SizedBox(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 120,
-                      height: 67,
-                      child: CustomImage(
-                        key: widget.cretaBookData.imgKey,
-                        width: 120,
-                        height: 67,
-                        image: widget.cretaBookData.thumbnailUrl,
-                      ),
+                child: SizedBox(
+                  width: 120,
+                  height: 67,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6.7),
+                    child: Stack(
+                      children: [
+                        CustomImage(
+                          key: widget.cretaBookData.imgKey,
+                          width: 120,
+                          height: 67,
+                          image: widget.cretaBookData.thumbnailUrl,
+                        ),
+                        !mouseOver
+                            ? SizedBox.shrink()
+                            : Container(
+                                width: 120,
+                                height: 67,
+                                decoration: mouseOver ? Snippet.shadowDeco() : null,
+                              ),
+                        !mouseOver
+                            ? SizedBox.shrink()
+                            : SizedBox(
+                                width: 120,
+                                height: 67,
+                                child: Center(child: Icon(Icons.play_arrow, size: 18, color: Colors.white)),
+                              ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               SizedBox(width: 20),
               SizedBox(
-                width: widget.width,
+                width: widget.width - 212 - 20 - 40 - 40,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,14 +155,24 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                     Text(
                       widget.cretaBookData.name,
                       overflow: TextOverflow.ellipsis,
-                      style: CretaFont.titleLarge.copyWith(fontWeight: CretaFont.medium),
+                      style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
                       maxLines: 1,
                     ),
                     SizedBox(height: 10),
-                    Text(
-                      widget.cretaBookData.creator,
-                      overflow: TextOverflow.ellipsis,
-                      style: CretaFont.bodyMedium.copyWith(fontWeight: CretaFont.regular),
+                    Row(
+                      children: [
+                        Text(
+                          widget.cretaBookData.creator,
+                          overflow: TextOverflow.ellipsis,
+                          style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
+                        ),
+                        SizedBox(width: 16),
+                        Text(
+                          widget.cretaBookData.creator,
+                          overflow: TextOverflow.ellipsis,
+                          style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
+                        ),
+                      ],
                     ),
                   ],
                 ),

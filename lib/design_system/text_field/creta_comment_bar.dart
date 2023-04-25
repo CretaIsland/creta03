@@ -333,7 +333,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
                   },
                   tailIconData:
                       widget.data.showReplyList ? Icons.arrow_drop_up_outlined : Icons.arrow_drop_down_outlined,
-                  sidePaddingSize: 8,
+                  sidePadding: CretaButtonSidePadding.fromLR(8, 8),
                 ),
         ],
       ),
