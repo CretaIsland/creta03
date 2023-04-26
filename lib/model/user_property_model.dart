@@ -19,9 +19,9 @@ class UserPropertyModel extends CretaModel {
   late String profileImg;             // 프로필 이미지 url
   late List<String> teamMembers;      // 팀원
   
-  late Country country;                   // 국가
-  late Language language;                  // 언어
-  late Job job;                       // 직업
+  late CountryType country;                   // 국가
+  late LanguageType language;                  // 언어
+  late JobType job;                       // 직업
 
   // late bool useDigitalSignage;        // 디지털 사이니지 사용 여부
   // late bool isPublicProfile;          // 프로필 공개 여부  
@@ -32,8 +32,8 @@ class UserPropertyModel extends CretaModel {
   // late int themeStyle;                // 크레타 테마 (라이트모드, 다크 모드)
   // late int cretaInitPage;             // 크레타 처음 시작 페이지 (커뮤니티, 스튜디오)
 
-  late CretaGrade cretaGrade;             // 크레타 등급
-  late RatePlan ratePlan;               // 요금제 등급
+  late CretaGradeType cretaGrade;             // 크레타 등급
+  late RatePlanType ratePlan;               // 요금제 등급
   late int freeSpace;                 // 남은 용량
 
   late int bookCount;                 // 본인의 북 개수
@@ -76,11 +76,11 @@ class UserPropertyModel extends CretaModel {
     phoneNumber = '';
     profileImg = '';
     teamMembers = [];
-    country = Country.none;
-    language = Language.none;
-    job = Job.none;
-    cretaGrade = CretaGrade.none;
-    ratePlan = RatePlan.none;
+    country = CountryType.none;
+    language = LanguageType.none;
+    job = JobType.none;
+    cretaGrade = CretaGradeType.none;
+    ratePlan = RatePlanType.none;
     freeSpace = 0;
     bookCount = 0;
     bookViewCount = 0;
@@ -99,11 +99,11 @@ class UserPropertyModel extends CretaModel {
     this.phoneNumber = '',
     this.profileImg = '',
     this.teamMembers = const [],
-    this.country = Country.none,
-    this.language = Language.none,
-    this.job = Job.none,
-    this.cretaGrade = CretaGrade.none,
-    this.ratePlan = RatePlan.none,
+    this.country = CountryType.none,
+    this.language = LanguageType.none,
+    this.job = JobType.none,
+    this.cretaGrade = CretaGradeType.none,
+    this.ratePlan = RatePlanType.none,
     this.freeSpace = 0,
     this.bookCount = 0,
     this.bookViewCount = 0,
@@ -149,11 +149,11 @@ class UserPropertyModel extends CretaModel {
     phoneNumber = map["phoneNumber"];
     profileImg = map["profileImg"];
     teamMembers = CretaUtils.jsonStringToList(map["teamMembers"]);
-    country = Country.fromInt(map["country"] ?? 0);
-    language = Language.fromInt(map["language"] ?? 0);
-    job = Job.fromInt(map["job"] ?? 0);
-    cretaGrade = CretaGrade.fromInt(map["cretaGrade"] ?? 0);
-    ratePlan = RatePlan.fromInt(map["ratePlan"] ?? 0);
+    country = CountryType.fromInt(map["country"] ?? 0);
+    language = LanguageType.fromInt(map["language"] ?? 0);
+    job = JobType.fromInt(map["job"] ?? 0);
+    cretaGrade = CretaGradeType.fromInt(map["cretaGrade"] ?? 0);
+    ratePlan = RatePlanType.fromInt(map["ratePlan"] ?? 0);
     freeSpace = map["freeSpace"];
     bookCount = map["bookCount"];
     bookViewCount = map["bookViewCount"];
