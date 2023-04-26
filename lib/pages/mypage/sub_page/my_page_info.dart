@@ -98,9 +98,9 @@ class _MyPageInfoState extends State<MyPageInfo> {
                   _pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
                   if(_pickedFile != null) {
                     _pickedFile!.readAsBytes().then((fileBytes) {
-                      HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType.toString(), fileBytes).then((value){
+                      HycopFactory.storage!.uploadFile('profile/${_pickedFile!.name}', _pickedFile!.mimeType.toString(), fileBytes).then((value){
                         setState(() {
-                          value != null ? userPropertyManager.propertyModel!.profileImg = value.thumbnailUrl : logger.info("upload error");
+                          value != null ? userPropertyManager.propertyModel!.profileImg = value.fileView : logger.info("upload error");
                         });
                       });
                       _pickedFile = null;
@@ -207,7 +207,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                               items: countryItemList,
                               defaultValue: userPropertyManagerHolder.propertyModel!.country.index,
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.country = Country.fromInt(value);
+                                userPropertyManagerHolder.propertyModel!.country = CountryType.fromInt(value);
                               }),
                             const SizedBox(height: 17.0),
                             CretaWidgetDropDown(
@@ -215,7 +215,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                               items: languageItemList,
                               defaultValue: userPropertyManagerHolder.propertyModel!.language.index,
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.language = Language.fromInt(value);
+                                userPropertyManagerHolder.propertyModel!.language = LanguageType.fromInt(value);
                               }),
                             const SizedBox(height: 17.0),                            
                             CretaWidgetDropDown(
@@ -223,7 +223,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                               items: jobItemList,
                               defaultValue: userPropertyManagerHolder.propertyModel!.job.index,
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.job = Job.fromInt(value);
+                                userPropertyManagerHolder.propertyModel!.job = JobType.fromInt(value);
                               })
                           ])
                         ])

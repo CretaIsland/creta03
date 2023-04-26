@@ -318,7 +318,7 @@ enum PlayState {
 }
 
 // ==user property enum==
-enum CretaGrade {
+enum CretaGradeType {
   none,
   rookie,
   star,
@@ -326,10 +326,10 @@ enum CretaGrade {
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static CretaGrade fromInt(int? val) => CretaGrade.values[validCheck(val ?? none.index)];
+  static CretaGradeType fromInt(int? val) => CretaGradeType.values[validCheck(val ?? none.index)];
 }
 
-enum RatePlan {
+enum RatePlanType {
   none,
   free,
   personalPay,
@@ -338,10 +338,10 @@ enum RatePlan {
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static RatePlan fromInt(int? val) => RatePlan.values[validCheck(val ?? none.index)];
+  static RatePlanType fromInt(int? val) => RatePlanType.values[validCheck(val ?? none.index)];
 }
 
-enum Country {
+enum CountryType{
   none,
   korea,
   usa,
@@ -353,10 +353,10 @@ enum Country {
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static Country fromInt(int? val) => Country.values[validCheck(val ?? none.index)];
+  static CountryType fromInt(int? val) => CountryType.values[validCheck(val ?? none.index)];
 }
 
-enum Language{
+enum LanguageType {
   none,
   korean,
   english,
@@ -368,10 +368,10 @@ enum Language{
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static Language fromInt(int? val) => Language.values[validCheck(val ?? none.index)];
+  static LanguageType fromInt(int? val) => LanguageType.values[validCheck(val ?? none.index)];
 }
 
-enum Job {
+enum JobType {
   none,
   general,
   student,
@@ -381,7 +381,7 @@ enum Job {
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static Job fromInt(int? val) => Job.values[validCheck(val ?? none.index)];
+  static JobType fromInt(int? val) => JobType.values[validCheck(val ?? none.index)];
 }
 
 TextAlign intToTextAlign(int t) {

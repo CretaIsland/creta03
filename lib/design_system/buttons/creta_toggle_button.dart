@@ -15,6 +15,7 @@ class CretaToggleButton extends StatefulWidget {
   final bool defaultValue;
   final double width;
   final double height;
+  final bool isActive;
 
   const CretaToggleButton({
     super.key,
@@ -22,6 +23,7 @@ class CretaToggleButton extends StatefulWidget {
     required this.defaultValue,
     this.width = 54,
     this.height = 28,
+    this.isActive = true
   });
 
   @override
@@ -50,13 +52,14 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
         decoration: BoxDecoration(
           //border: Border.all(color: CretaColor.primary, width: 1.0),
           borderRadius: BorderRadius.circular(18.0),
-          color: toggleValue
+          color: widget.isActive ? toggleValue
               ? hover
                   ? CretaColor.primary[500]!
                   : CretaColor.primary
               : hover
                   ? CretaColor.primary[300]!
-                  : CretaColor.primary[200]!,
+                  : CretaColor.primary[200]!
+            : CretaColor.text[200]!
         ),
         child: InkWell(
           onHover: (value) {
@@ -65,10 +68,12 @@ class _CretaRadioButton2State extends State<CretaToggleButton> {
             });
           },
           onTap: () {
-            setState(() {
-              toggleValue = !toggleValue;
-            });
-            widget.onSelected.call(toggleValue);
+            if(widget.isActive) {
+              setState(() {
+                toggleValue = !toggleValue;
+              });
+              widget.onSelected.call(toggleValue);
+            }
           },
           child: Stack(
             alignment: AlignmentDirectional.centerStart,
