@@ -23,9 +23,9 @@ class UserPropertyModel extends CretaModel {
   late LanguageType language;                  // 언어
   late JobType job;                       // 직업
 
-  // late bool useDigitalSignage;        // 디지털 사이니지 사용 여부
-  // late bool isPublicProfile;          // 프로필 공개 여부  
-  // late String channelBannerImg;       // 배경 이미지 url (채널 배너)
+  late bool useDigitalSignage;        // 디지털 사이니지 사용 여부
+  late bool isPublicProfile;          // 프로필 공개 여부  
+  late String channelBannerImg;       // 배경 이미지 url (채널 배너)
   // late bool usePushNotice;            // 푸시 알림 사용 여부
   // late bool useEmailNotice;           // 이메일 알림 사용 여부
 
@@ -57,6 +57,9 @@ class UserPropertyModel extends CretaModel {
         country,
         language,
         job,
+        useDigitalSignage,
+        isPublicProfile,
+        channelBannerImg,
         cretaGrade,
         ratePlan,
         freeSpace,
@@ -79,6 +82,9 @@ class UserPropertyModel extends CretaModel {
     country = CountryType.none;
     language = LanguageType.none;
     job = JobType.none;
+    useDigitalSignage = false;
+    isPublicProfile = true;
+    channelBannerImg = '';
     cretaGrade = CretaGradeType.none;
     ratePlan = RatePlanType.none;
     freeSpace = 0;
@@ -102,6 +108,9 @@ class UserPropertyModel extends CretaModel {
     this.country = CountryType.none,
     this.language = LanguageType.none,
     this.job = JobType.none,
+    this.useDigitalSignage = false,
+    this.isPublicProfile = true,
+    this.channelBannerImg = '',
     this.cretaGrade = CretaGradeType.none,
     this.ratePlan = RatePlanType.none,
     this.freeSpace = 0,
@@ -127,6 +136,9 @@ class UserPropertyModel extends CretaModel {
     country = srcUser.country;
     language = srcUser.language;
     job = srcUser.job;
+    useDigitalSignage = srcUser.useDigitalSignage;
+    isPublicProfile = srcUser.isPublicProfile;
+    channelBannerImg = srcUser.channelBannerImg;
     cretaGrade = srcUser.cretaGrade;
     ratePlan = srcUser.ratePlan;
     freeSpace = srcUser.freeSpace;
@@ -152,6 +164,9 @@ class UserPropertyModel extends CretaModel {
     country = CountryType.fromInt(map["country"] ?? 0);
     language = LanguageType.fromInt(map["language"] ?? 0);
     job = JobType.fromInt(map["job"] ?? 0);
+    useDigitalSignage = map["useDigitalSignage"];
+    isPublicProfile = map["isPublicProfile"];
+    channelBannerImg = map["channelBannerImg"];
     cretaGrade = CretaGradeType.fromInt(map["cretaGrade"] ?? 0);
     ratePlan = RatePlanType.fromInt(map["ratePlan"] ?? 0);
     freeSpace = map["freeSpace"];
@@ -177,6 +192,9 @@ class UserPropertyModel extends CretaModel {
         "country": country.index,
         "language": language.index,
         "job": job.index,
+        "useDigitalSignage" : useDigitalSignage,
+        "isPublicProfile" : isPublicProfile,
+        "channelBannerImg" : channelBannerImg,
         "cretaGrade": cretaGrade.index,
         "ratePlan": ratePlan.index,
         "freeSpace": freeSpace,
