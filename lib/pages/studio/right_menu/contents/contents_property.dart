@@ -8,19 +8,14 @@ import 'package:hycop/hycop/account/account_manager.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_tab_button.dart';
-import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
-import '../../../../design_system/component/time_input_widget.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
-import '../../../../design_system/menu/creta_drop_down_button.dart';
-import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../studio_getx_controller.dart';
-import '../../studio_snippet.dart';
 import '../property_mixin.dart';
 
 class ContentsProperty extends StatefulWidget {
@@ -44,9 +39,6 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   ContentsEventController? _sendEvent;
   //ContentsEventController? _receiveEvent;
 
-  late TextStyle _titleStyle;
-  late TextStyle _dataStyle;
-
   @override
   void initState() {
     logger.finest('_ContentsPropertyState.initState');
@@ -60,9 +52,6 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     //_receiveEvent = receiveEvent;
 
     //_contentsManager = widget.frameManager.getContentsManager(widget.model.parentMid.value);
-
-    _titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
-    _dataStyle = CretaFont.bodySmall;
   }
 
   @override
@@ -77,94 +66,94 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            propertyDivider(height: 14),
-            ..._info(),
-          ],
-        ),
-      ),
-      propertyDivider(height: 28),
-      Padding(
-        padding: EdgeInsets.only(
-            left: horizontalPadding, right: horizontalPadding - (isAuthor() ? 16 : 0)),
-        child: _copyRight(),
-      ),
+      // propertyDivider(height: 28),
+      // Padding(
+      //   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.start,
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     children: [
+      //       ..._info(),
+      //     ],
+      //   ),
+      // ),
+      // propertyDivider(height: 28),
+      // Padding(
+      //   padding: EdgeInsets.only(
+      //       left: horizontalPadding, right: horizontalPadding - (isAuthor() ? 16 : 0)),
+      //   child: _copyRight(),
+      // ),
       propertyDivider(height: 28),
       _imageControl(),
-      propertyDivider(),
+      propertyDivider(height: 28),
       if (widget.model.isImage()) _imageFilter(),
-      if (widget.model.isImage()) propertyDivider(),
+      if (widget.model.isImage()) propertyDivider(height: 28),
     ]);
     //});
   }
 
-  List<Widget> _info() {
-    return [
-      Padding(
-        padding: const EdgeInsets.only(top: 18, bottom: 12),
-        child: Text(CretaStudioLang.infomation, style: CretaFont.titleSmall),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 6, bottom: 6),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              CretaStudioLang.contentyType,
-              style: _titleStyle,
-            ),
-            Text(CretaLang.contentsTypeString[widget.model.contentsType.index], style: _dataStyle),
-          ],
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 6, bottom: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              CretaStudioLang.fileSize,
-              style: _titleStyle,
-            ),
-            Text(widget.model.size, style: _dataStyle),
-          ],
-        ),
-      ),
-      if (widget.model.isImage()) _imageDurationWidget(),
-      if (widget.model.isVideo()) _videoDurationWidget(),
-    ];
-  }
+  // List<Widget> _info() {
+  //   return [
+  //     Padding(
+  //       padding: const EdgeInsets.only(top: 6, bottom: 12),
+  //       child: Text(CretaStudioLang.infomation, style: CretaFont.titleSmall),
+  //     ),
+  //     Padding(
+  //       padding: const EdgeInsets.only(top: 6, bottom: 6),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text(
+  //             CretaStudioLang.contentyType,
+  //             style: titleStyle,
+  //           ),
+  //           Text(CretaLang.contentsTypeString[widget.model.contentsType.index], style: dataStyle),
+  //         ],
+  //       ),
+  //     ),
+  //     Padding(
+  //       padding: const EdgeInsets.only(top: 6, bottom: 6),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text(
+  //             CretaStudioLang.fileSize,
+  //             style: titleStyle,
+  //           ),
+  //           Text(widget.model.size, style: dataStyle),
+  //         ],
+  //       ),
+  //     ),
+  //     if (widget.model.isImage()) _imageDurationWidget(),
+  //     if (widget.model.isVideo()) _videoDurationWidget(),
+  //   ];
+  // }
 
-  Widget _copyRight() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 0, bottom: 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(CretaStudioLang.copyRight, style: CretaFont.titleSmall),
-          widget.book != null && widget.book!.creator == AccountManager.currentLoginUser.email
-              ? CretaDropDownButton(
-                  selectedColor: CretaColor.text[700]!,
-                  textStyle: _dataStyle,
-                  width: 260,
-                  height: 36,
-                  itemHeight: 24,
-                  dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
-                      defaultValue: widget.model.copyRight.value,
-                      onChanged: (val) {
-                        widget.model.copyRight.set(val);
-                      }))
-              : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
-                  style: _dataStyle),
-        ],
-      ),
-    );
-  }
+  // Widget _copyRight() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 0, bottom: 0),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Text(CretaStudioLang.copyRight, style: CretaFont.titleSmall),
+  //         widget.book != null && widget.book!.creator == AccountManager.currentLoginUser.email
+  //             ? CretaDropDownButton(
+  //                 selectedColor: CretaColor.text[700]!,
+  //                 textStyle: dataStyle,
+  //                 width: 260,
+  //                 height: 36,
+  //                 itemHeight: 24,
+  //                 dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
+  //                     defaultValue: widget.model.copyRight.value,
+  //                     onChanged: (val) {
+  //                       widget.model.copyRight.set(val);
+  //                     }))
+  //             : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
+  //                 style: dataStyle),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _imageControl() {
     return Padding(
@@ -269,66 +258,66 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     }
   }
 
-  Widget _imageDurationWidget() {
-    return Padding(
-      padding: EdgeInsets.only(top: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(CretaLang.playTime, style: titleStyle),
-          if (widget.model.playTime.value >= 0)
-            TimeInputWidget(
-              textWidth: 30,
-              textStyle: titleStyle,
-              initValue: (widget.model.playTime.value / 1000).round(),
-              onValueChnaged: (duration) {
-                logger.info('save : ${widget.model.mid}');
-                widget.model.playTime.set(duration.inSeconds * 1000.0);
-              },
-            ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 2.0),
-                child: Text(CretaLang.forever, style: titleStyle),
-              ),
-              CretaToggleButton(
-                  width: 54 * 0.75,
-                  height: 28 * 0.75,
-                  onSelected: (value) {
-                    setState(() {
-                      if (value) {
-                        widget.model.reservPlayTime();
-                        widget.model.playTime.set(-1);
-                      } else {
-                        widget.model.resetPlayTime();
-                      }
-                    });
-                  },
-                  defaultValue: widget.model.playTime.value < 0),
-            ],
-          )
-        ],
-      ),
-    );
-  }
+  // Widget _imageDurationWidget() {
+  //   return Padding(
+  //     padding: EdgeInsets.only(top: 6, bottom: 6),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(CretaLang.playTime, style: titleStyle),
+  //         if (widget.model.playTime.value >= 0)
+  //           TimeInputWidget(
+  //             textWidth: 30,
+  //             textStyle: titleStyle,
+  //             initValue: (widget.model.playTime.value / 1000).round(),
+  //             onValueChnaged: (duration) {
+  //               logger.info('save : ${widget.model.mid}');
+  //               widget.model.playTime.set(duration.inSeconds * 1000.0);
+  //             },
+  //           ),
+  //         Column(
+  //           crossAxisAlignment: CrossAxisAlignment.end,
+  //           children: [
+  //             Padding(
+  //               padding: const EdgeInsets.only(bottom: 2.0),
+  //               child: Text(CretaLang.forever, style: titleStyle),
+  //             ),
+  //             CretaToggleButton(
+  //                 width: 54 * 0.75,
+  //                 height: 28 * 0.75,
+  //                 onSelected: (value) {
+  //                   setState(() {
+  //                     if (value) {
+  //                       widget.model.reservPlayTime();
+  //                       widget.model.playTime.set(-1);
+  //                     } else {
+  //                       widget.model.resetPlayTime();
+  //                     }
+  //                   });
+  //                 },
+  //                 defaultValue: widget.model.playTime.value < 0),
+  //           ],
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _videoDurationWidget() {
-    return Padding(
-      padding: EdgeInsets.only(top: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(CretaLang.playTime, style: titleStyle),
-          Text(CretaUtils.secToDurationString(widget.model.videoPlayTime.value / 1000),
-              style: dataStyle),
-        ],
-      ),
-    );
-  }
+  // Widget _videoDurationWidget() {
+  //   return Padding(
+  //     padding: EdgeInsets.only(top: 6, bottom: 6),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       //crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Text(CretaLang.playTime, style: titleStyle),
+  //         Text(CretaUtils.secToDurationString(widget.model.videoPlayTime.value / 1000),
+  //             style: dataStyle),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _imageFilter() {
     return Padding(

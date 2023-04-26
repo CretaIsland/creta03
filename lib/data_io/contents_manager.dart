@@ -177,7 +177,6 @@ class ContentsManager extends CretaManager {
 
   Future<void> removeSelected(BuildContext context) async {
     iamBusy = true;
-
     ContentsModel? model = getSelected() as ContentsModel?;
     if (model == null) {
       showSnackBar(context, CretaLang.contentsNotDeleted, duration: _snackBarDuration);
@@ -187,30 +186,44 @@ class ContentsManager extends CretaManager {
     }
 
     if (playTimer != null && playTimer!.isInit()) {
-      //await pause();
-
-      model.isRemoved.set(true, save: false);
-      await setToDB(model);
-      remove(model);
-      logger.info('remove contents ${model.name}, ${model.mid}');
-      await playTimer?.reOrdering();
-
-      if (getAvailLength() == 0) {
-        BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
-      }
-
-      // ignore: use_build_context_synchronously
-      showSnackBar(context, model.name + CretaLang.contentsDeleted, duration: _snackBarDuration);
-      await Future.delayed(_snackBarDuration);
+      await _removeContents(context, model);
       iamBusy = false;
-
-      //MiniMenu.minuMenuKey
-      BookMainPage.containeeNotifier!.notify();
       return;
     }
     showSnackBar(context, CretaLang.contentsNotDeleted, duration: _snackBarDuration);
     await Future.delayed(_snackBarDuration);
     iamBusy = false;
+    return;
+  }
+
+  Future<bool> removeContents(BuildContext context, ContentsModel model) async {
+    if (iamBusy) return false;
+    iamBusy = true;
+    await _removeContents(context, model);
+    iamBusy = false;
+    return true;
+  }
+
+  Future<void> _removeContents(BuildContext context, ContentsModel model) async {
+    //await pause();
+
+    model.isRemoved.set(true, save: false);
+    await setToDB(model);
+    remove(model);
+    logger.info('remove contents ${model.name}, ${model.mid}');
+    await playTimer?.reOrdering();
+
+    if (getAvailLength() == 0) {
+      BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+    }
+
+    // ignore: use_build_context_synchronously
+    showSnackBar(context, model.name + CretaLang.contentsDeleted, duration: _snackBarDuration);
+    await Future.delayed(_snackBarDuration);
+
+    //MiniMenu.minuMenuKey
+    BookMainPage.containeeNotifier!.notify();
+    return;
   }
 
   Future<void> setSoundOff() async {
@@ -229,7 +242,7 @@ class ContentsManager extends CretaManager {
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
-        if (video.wcontroller != null) {
+        if (video.wcontroller != null && player.model!.mute.value == false) {
           logger.info('contents.resumeSound()********');
           await video.wcontroller!.setVolume(video.model!.volume.value);
         }
@@ -272,6 +285,155 @@ class ContentsManager extends CretaManager {
     await playTimer?.setCurrentOrder(order);
   }
 
+  Future<void> gotoNext() async {
+    await playTimer?.next();
+  }
+
+  List<CretaModel> valueList() {
+    return valueEntries().toList().reversed.toList();
+  }
+
+  List<double> keyList() {
+    return keyEntries().toList().reversed.toList();
+  }
+
+  int isShowLength() {
+    int counter = 0;
+    orderMapIterator((val) {
+      ContentsModel model = val as ContentsModel;
+      if (model.isShow.value && model.isRemoved.value == false) {
+        counter++;
+      }
+    });
+    return counter;
+  }
+
+  @override
+  double lastOrder() {
+    if (isNotEmpty()) {
+      double lastOrder = keyEntries().last;
+      ContentsModel? model = getNthOrder(lastOrder) as ContentsModel?;
+      if (model != null && model.isShow.value == true) {
+        return lastOrder;
+      }
+      return nextOrder(lastOrder);
+    }
+    return -1;
+  }
+
+  @override
+  double nextOrder(double currentOrder) {
+    int counter = 0;
+    int len = getAvailLength();
+    double input = currentOrder;
+    while (counter < len) {
+      double order = _nextOrder(input);
+      if (order < 0) {
+        return order;
+      }
+      ContentsModel? model = getNthOrder(order) as ContentsModel?;
+      if (model != null && model.isShow.value == true) {
+        return order;
+      }
+      counter++;
+      input = order;
+    }
+    return -1;
+  }
+
+  double _nextOrder(double currentOrder) {
+    bool matched = false;
+
+    Iterable<double> keys = keyEntries().toList().reversed;
+
+    for (double ele in keys) {
+      if (matched == true) {
+        return ele;
+      }
+      if (ele == currentOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    if (matched == true) {
+      // 끝까지 온것이다.  처음으로 돌아간다.
+      return keys.first;
+    }
+    return -1;
+  }
+
+  double nextOrderNoLoop(double currentOrder) {
+    bool matched = false;
+
+    Iterable<double> keys = keyEntries().toList().reversed;
+
+    for (double ele in keys) {
+      if (matched == true) {
+        return ele;
+      }
+      if (ele == currentOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    return -1;
+  }
+
+  @override
+  double prevOrder(double currentOrder) {
+    int counter = 0;
+    int len = getAvailLength();
+    double input = currentOrder;
+    while (counter < len) {
+      double order = _prevOrder(input);
+      if (order < 0) {
+        return order;
+      }
+      ContentsModel? model = getNthOrder(order) as ContentsModel?;
+      if (model != null && model.isShow.value == true) {
+        return order;
+      }
+      counter++;
+      input = order;
+    }
+    return -1;
+  }
+
+  double _prevOrder(double currentOrder) {
+    bool matched = false;
+    late Iterable<double> keys = keyEntries();
+    for (double ele in keys) {
+      if (matched == true) {
+        return ele;
+      }
+      if (ele == currentOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    if (matched == true) {
+      return keys.first;
+    }
+    return -1;
+  }
+
+  double prevOrderNoLoop(double currentOrder) {
+    bool matched = false;
+    late Iterable<double> keys = keyEntries();
+
+    for (double ele in keys) {
+      if (matched == true) {
+        return ele;
+      }
+      if (ele == currentOrder) {
+        matched = true;
+        continue;
+      }
+    }
+
+    return -1;
+  }
+
   // Future<void> pause() async {
   //   await playTimer?.pause();
   // }
@@ -287,4 +449,59 @@ class ContentsManager extends CretaManager {
   // void setLoop(bool loop) {
   //   playTimer?.setLoop(loop);
   // }
+
+  void pushReverseOrder(String aMovedMid, String aPushedMid, String hint) {
+    CretaModel? aMoved = getModel(aMovedMid) as CretaModel?;
+    CretaModel? aPushed = getModel(aPushedMid) as CretaModel?;
+    if (aMoved == null) {
+      logger.warning('$aMovedMid does not exist in modelList');
+      return;
+    }
+    if (aPushed == null) {
+      logger.warning('$aPushedMid does not exist in modelList');
+      return;
+    }
+    logger.info('Frame $hint :   ${aMoved.order.value} <--> ${aPushed.order.value}');
+
+    double aMovedOrder = aMoved.order.value;
+    double aPushedOrder = aPushed.order.value;
+
+    // 콘텐츠의 경우 역순이라는 점에 유의하라.
+
+    late double aNewOrder;
+    if (aMovedOrder > aPushedOrder) {
+      // 내려온 것이다.
+      // moved 가 pushed 자리로 들어간 것이므로,
+      // moved 가  pushed 의 order 를 자치하고,
+      // pushed 는 무조건 moved 보다 위로 올라가게 된다.
+      // 이때,pushed 는 원래 원래 pushed 이전 것의 중간값을 가지고,
+      // 이전것이 없을 경우,movedOrder 값을 진다.
+      double prevValue = prevOrderNoLoop(aPushedOrder);
+      if (prevValue == aMovedOrder || prevValue < 0) {
+        aNewOrder = aMovedOrder;
+      } else {
+        // 이전 order 가 있다.
+        aNewOrder = (prevValue + aPushedOrder) / 2.0;
+      }
+    } else {
+      // 올라간 것이다.
+      // moved 가 pushed 자리로 들어간 것이므로,
+      // moved 가  pushed 의 order 를 자치하고,
+      // pushed 는 무조건 moved 보다 밀려나게 된다.
+      // 이때,pushed 는 원래 pushed 다음 것의 중간값을 가지고,
+      // 다음것이 없을 경우, pushed 는 원래 자기 값의 절반으로 줄어든다.
+
+      double nextValue = nextOrderNoLoop(aPushedOrder);
+      if (nextValue == aMovedOrder || nextValue < 0) {
+        aNewOrder = aMovedOrder;
+      } else {
+        // 다음 order 가 있다.
+        aNewOrder = (nextValue + aPushedOrder) / 2.0;
+      }
+    }
+    mychangeStack.startTrans();
+    aMoved.order.set(aPushedOrder);
+    aPushed.order.set(aNewOrder);
+    mychangeStack.endTrans();
+  }
 }

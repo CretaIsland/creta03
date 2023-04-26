@@ -7,6 +7,7 @@ import '../creta_color.dart';
 
 enum ToggleButtonStyle {
   floating_l,
+  fill_gray_i_m,
   fill_gray_i_s,
 }
 
@@ -18,6 +19,7 @@ class CretaIconToggleButton extends StatefulWidget {
   final String? tooltip;
   final ToggleButtonStyle buttonStyle;
   final double buttonSize;
+  final bool doToggle;
 
   const CretaIconToggleButton(
       {super.key,
@@ -25,6 +27,7 @@ class CretaIconToggleButton extends StatefulWidget {
       required this.icon1,
       required this.icon2,
       required this.onPressed,
+      this.doToggle = true,
       this.buttonSize = 28,
       this.buttonStyle = ToggleButtonStyle.floating_l,
       this.tooltip});
@@ -44,6 +47,9 @@ class _CretaIconToggleButtonState extends State<CretaIconToggleButton> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.doToggle == false) {
+      _toggleValue = widget.toggleValue;
+    }
     switch (widget.buttonStyle) {
       case ToggleButtonStyle.fill_gray_i_s:
         return BTN.fill_gray_i_s(
@@ -52,9 +58,26 @@ class _CretaIconToggleButtonState extends State<CretaIconToggleButton> {
           tooltipBg: CretaColor.text[700]!,
           icon: _toggleValue ? widget.icon1 : widget.icon2,
           onPressed: () {
-            setState(() {
-              _toggleValue = !_toggleValue;
-            });
+            if (widget.doToggle) {
+              setState(() {
+                _toggleValue = !_toggleValue;
+              });
+            }
+            widget.onPressed.call();
+          },
+        );
+      case ToggleButtonStyle.fill_gray_i_m:
+        return BTN.fill_gray_i_m(
+          buttonSize: widget.buttonSize,
+          tooltip: widget.tooltip,
+          tooltipBg: CretaColor.text[700]!,
+          icon: _toggleValue ? widget.icon1 : widget.icon2,
+          onPressed: () {
+            if (widget.doToggle) {
+              setState(() {
+                _toggleValue = !_toggleValue;
+              });
+            }
             widget.onPressed.call();
           },
         );
@@ -62,9 +85,11 @@ class _CretaIconToggleButtonState extends State<CretaIconToggleButton> {
         return BTN.floating_l(
           icon: _toggleValue ? widget.icon1 : widget.icon2,
           onPressed: () {
-            setState(() {
-              _toggleValue = !_toggleValue;
-            });
+            if (widget.doToggle) {
+              setState(() {
+                _toggleValue = !_toggleValue;
+              });
+            }
             widget.onPressed.call();
           },
           hasShadow: false,

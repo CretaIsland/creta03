@@ -338,6 +338,8 @@ class CretaStudioLang {
 
   static String playList = '플레이 리스트';
 
+  static String contentsCannotBeUnshowd = "최소한 하나 이상의 콘텐츠는 보여져야 합니다.";
+
   // static Map<String, String> shadowInList = {
   //   '외부 그림자': 'outSide',
   //   '내부 그림자': 'inSide',

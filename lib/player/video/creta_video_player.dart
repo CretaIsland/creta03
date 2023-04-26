@@ -41,10 +41,10 @@ class CretaVideoPlayer extends CretaAbsPlayer {
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
       ..initialize().then((_) {
         logger.info('initialize complete(${model!.name}, ${acc.getAvailLength()})');
-        if (StudioVariables.isSilent == false) {
-          setSound(model!.volume.value);
+        if (StudioVariables.isSilent == false && model!.mute.value == false) {
+          wcontroller!.setVolume(model!.volume.value);
         } else {
-          setSound(0.0);
+          wcontroller!.setVolume(0.0);
         }
 
         model!.videoPlayTime

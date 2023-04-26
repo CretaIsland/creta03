@@ -212,6 +212,7 @@ class BTN {
   static CretaButton fill_gray_i_m(
       {required IconData icon,
       required Function onPressed,
+      double buttonSize = 32,
       String? tooltip,
       Color? tooltipFg,
       Color? tooltipBg,
@@ -221,8 +222,8 @@ class BTN {
       tooltip: tooltip,
       tooltipFg: tooltipFg,
       tooltipBg: tooltipBg,
-      width: 32,
-      height: 32,
+      width: buttonSize,
+      height: buttonSize,
       buttonType: CretaButtonType.child,
       buttonColor: CretaButtonColor.white,
       onPressed: onPressed,

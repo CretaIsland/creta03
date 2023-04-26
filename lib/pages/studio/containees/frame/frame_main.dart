@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
@@ -213,25 +212,26 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   }
 
   void _exchangeOrder(String aMid, String bMid, String hint) {
-    FrameModel? aModel = frameManager!.getModel(aMid) as FrameModel?;
-    FrameModel? bModel = frameManager!.getModel(bMid) as FrameModel?;
-    if (aModel == null) {
-      logger.fine('$aMid does not exist in modelList');
-      return;
-    }
-    if (bModel == null) {
-      logger.fine('$bMid does not exist in modelList');
-      return;
-    }
-    logger.fine('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
+    // FrameModel? aModel = frameManager!.getModel(aMid) as FrameModel?;
+    // FrameModel? bModel = frameManager!.getModel(bMid) as FrameModel?;
+    // if (aModel == null) {
+    //   logger.fine('$aMid does not exist in modelList');
+    //   return;
+    // }
+    // if (bModel == null) {
+    //   logger.fine('$bMid does not exist in modelList');
+    //   return;
+    // }
+    // logger.fine('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
 
-    double aOrder = aModel.order.value;
-    double bOrder = bModel.order.value;
+    // double aOrder = aModel.order.value;
+    // double bOrder = bModel.order.value;
 
-    mychangeStack.startTrans();
-    aModel.order.set(bOrder);
-    bModel.order.set(aOrder);
-    mychangeStack.endTrans();
+    // mychangeStack.startTrans();
+    // aModel.order.set(bOrder);
+    // bModel.order.set(aOrder);
+    // mychangeStack.endTrans();
+    frameManager?.exchangeOrder(aMid, bMid, hint);
   }
 
   List<Sticker> getStickerList() {

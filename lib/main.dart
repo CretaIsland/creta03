@@ -25,7 +25,8 @@ void main() async {
   SampleData.initSample();
 
   // test code
-  myConfig!.serverConfig!.storageConnInfo.bucketId = "${HycopUtils.genBucketId(AccountManager.currentLoginUser.email, AccountManager.currentLoginUser.userId)}/";
+  myConfig!.serverConfig!.storageConnInfo.bucketId =
+      "${HycopUtils.genBucketId(AccountManager.currentLoginUser.email, AccountManager.currentLoginUser.userId)}/";
 
   runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(const ProviderScope(child: MainRouteApp()));
@@ -58,6 +59,7 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
       title: 'Creta creates',
       initialBinding: InitBinding(),
       debugShowCheckedModeBanner: false,
+      scrollBehavior: MaterialScrollBehavior().copyWith(scrollbars: false),
       theme: ThemeData.light().copyWith(
         //useMaterial3: true,
         //primaryColor: CretaColor.primary,

@@ -138,7 +138,8 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
         logger.info('ContentsProperty ${contents.mid}');
         return Column(
           children: [
-            if (contentsManager != null) ContentsOrderedList(contentsManager: contentsManager),
+            if (contentsManager != null)
+              ContentsOrderedList(book: model, contentsManager: contentsManager),
             ContentsProperty(
                 key: ValueKey(contents.mid),
                 model: contents,

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:deep_collection/deep_collection.dart';
 import 'package:hycop/hycop/utils/hycop_utils.dart';
@@ -643,12 +644,12 @@ abstract class CretaManager extends AbsExModelManager {
     return -1;
   }
 
-  List<CretaModel> valueList() {
-    return _orderMap.deepReverse().values.toList();
+  Iterable<CretaModel> valueEntries() {
+    return _orderMap.deepSortByKey().values;
   }
 
-  List<double> keyList() {
-    return _orderMap.deepReverse().keys.toList();
+  Iterable<double> keyEntries() {
+    return _orderMap.deepSortByKey().keys;
   }
 
   double lastOrder() {
@@ -661,27 +662,10 @@ abstract class CretaManager extends AbsExModelManager {
   double nextOrder(double currentOrder) {
     bool matched = false;
 
-    late Iterable<double> keys;
-    if (collectionId == "creta_contents") {
-      // 콘텐츠는 역순으로 정력해야 한다.
-      keys = _orderMap.deepReverse().keys;
-    } else {
-      keys = _orderMap.deepSortByKey().keys;
-    }
+    late Iterable<double> keys = _orderMap.deepSortByKey().keys;
 
     for (double ele in keys) {
       if (matched == true) {
-        if (collectionId == "creta_contents") {
-          //ContentsModel next = _orderMap[ele] as ContentsModel;
-          if (currentOrder >= 0) {
-            //ContentsModel curr = _orderMap[currentOrder] as ContentsModel;
-            //logger.info(
-            //    'currentOrder $currentOrder, cur=${curr.name.substring(0, 6)}, nextOrder : ${ele.round()}, nex=${next.name.substring(0, 6)}');
-          } else {
-            //logger.info(
-            //    'currentOrder $currentOrder, cur=NULL, nextOrder : ${ele.round()}, nex=${next.name.substring(0, 6)}');
-          }
-        }
         return ele;
       }
       if (ele == currentOrder) {
@@ -691,15 +675,6 @@ abstract class CretaManager extends AbsExModelManager {
     }
     if (matched == true) {
       // 끝까지 온것이다.  처음으로 돌아간다.
-      //ContentsModel next = _orderMap[keys.first] as ContentsModel;
-      // if (currentOrder >= 0) {
-      //   ContentsModel curr = _orderMap[currentOrder] as ContentsModel;
-      //   logger.info(
-      //       'currentOrder $currentOrder, cur=${curr.name.substring(0, 6)}, nextOrder : ${keys.first.round()}, nex=${next.name}');
-      // } else {
-      //   logger.info(
-      //       'currentOrder $currentOrder, cur=NULL, nextOrder : ${keys.first.round()}, nex=${next.name}');
-      // }
       return keys.first;
     }
     return -1;
@@ -707,13 +682,7 @@ abstract class CretaManager extends AbsExModelManager {
 
   double prevOrder(double currentOrder) {
     bool matched = false;
-    late Iterable<double> keys;
-    if (collectionId == "creta_contents") {
-      // 콘텐츠는 역순으로 정력해야 한다.
-      keys = _orderMap.deepSortByKey().keys;
-    } else {
-      keys = _orderMap.deepReverse().keys;
-    }
+    late Iterable<double> keys = keyEntries().toList().reversed;
 
     for (double ele in keys) {
       if (matched == true) {
@@ -733,48 +702,15 @@ abstract class CretaManager extends AbsExModelManager {
   void reOrdering() {
     lock();
     _orderMap.clear();
-    // if (collectionId == "creta_contents") {
-    //   // 콘텐츠는 역순으로 정력해야 한다.
-    //   for (var ele in modelList) {
-    //     if (ele.isRemoved.value == true) {
-    //       continue;
-    //     }
-    //     _orderMap[StudioConst.bigNumber - ele.order.value] = ele as CretaModel;
-    //   }
-    //   logger.finest('reOrdering  ${_orderMap.length}');
-
-    //   unlock();
-    //   return;
-    // }
     for (var ele in modelList) {
       if (ele.isRemoved.value == true) {
         continue;
       }
       _orderMap[ele.order.value] = ele as CretaModel;
     }
-    logger.finest('reOrdering  ${_orderMap.length}');
-
     unlock();
     return;
   }
-
-  // void reversOrdering() {
-  //   lock();
-  //   // order 의 역순으로 ordering 한다.
-  //   _orderMap.clear();
-  //   //double bigNumber = 100000000.0;
-  //   for (var ele in modelList) {
-  //     if (ele.isRemoved.value == true) {
-  //       continue;
-  //     }
-  //     _orderMap[StudioConst.bigNumber - ele.order.value] = ele as CretaModel;
-  //   }
-
-  //   logger.finest('reOrdering  ${_orderMap.length}');
-
-  //   unlock();
-  //   return;
-  // }
 
   List<T> orderMapIterator<T>(T Function(AbsExModel) toElement) {
     List<T> retval = [];
@@ -987,5 +923,27 @@ abstract class CretaManager extends AbsExModelManager {
     }
     unlock();
     return retval;
+  }
+
+  void exchangeOrder(String aMid, String bMid, String hint) {
+    CretaModel? aModel = getModel(aMid) as CretaModel?;
+    CretaModel? bModel = getModel(bMid) as CretaModel?;
+    if (aModel == null) {
+      logger.warning('$aMid does not exist in modelList');
+      return;
+    }
+    if (bModel == null) {
+      logger.warning('$bMid does not exist in modelList');
+      return;
+    }
+    logger.info('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
+
+    double aOrder = aModel.order.value;
+    double bOrder = bModel.order.value;
+
+    mychangeStack.startTrans();
+    aModel.order.set(bOrder);
+    bModel.order.set(aOrder);
+    mychangeStack.endTrans();
   }
 }
