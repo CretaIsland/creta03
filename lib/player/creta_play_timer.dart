@@ -25,10 +25,11 @@ class CretaPlayTimer extends ChangeNotifier {
 
   CretaPlayTimer(this.contentsManager);
   Timer? _timer;
-  final int _timeGap = 100; //
+  final int _timeGap = 250; //
   final Lock _lock = Lock();
   double _currentOrder = -1;
   double _currentPlaySec = 0.0;
+  Duration _completeWaitTime = Duration.zero;
 
   ContentsModel? _currentModel;
   ContentsModel? get currentModel => _currentModel;
@@ -55,11 +56,25 @@ class CretaPlayTimer extends ChangeNotifier {
     _isPauseTimer = !_isPauseTimer;
 
     if (_currentModel != null && _currentModel!.contentsType == ContentsType.video) {
+      _currentModel!.setIsPauseTimer(_isPauseTimer);
       if (_isPauseTimer) {
         await pause();
       } else {
         await play();
       }
+    }
+  }
+
+  Future<void> releasePause() async {
+    _isPauseTimer = false;
+    _isPrevPauseTimer = false;
+    if (_currentModel != null && _currentModel!.contentsType == ContentsType.video) {
+      _currentModel!.setIsPauseTimer(_isPauseTimer);
+      // if (_isPauseTimer) {
+      //   await pause();
+      // } else {
+      //   await play();
+      // }
     }
   }
 
@@ -265,21 +280,22 @@ class CretaPlayTimer extends ChangeNotifier {
           keyString: key,
           model: model,
           acc: contentsManager,
-          onAfterEvent: () {},
+          onAfterEvent: (postion, duration) {
+            _completeWaitTime = duration - postion;
+          },
         );
       case ContentsType.image:
         return CretaImagePlayer(
           keyString: key,
           model: model,
           acc: contentsManager,
-          onAfterEvent: () {},
+          onAfterEvent: (position, duration) {},
         );
       default:
         return CretaEmptyPlayer(
           keyString: key,
           acc: contentsManager,
-          onAfterEvent: () {},
-          autoStart: false,
+          onAfterEvent: (postion, duration) {},
         );
     }
   }
@@ -389,7 +405,10 @@ class CretaPlayTimer extends ChangeNotifier {
             _currentModel!.setPlayState(PlayState.none);
             logger.info('before next, currentOrder=$_currentOrder');
             // 비디오가 마무리 작업을 할 시간을 준다.
-            // await Future.delayed(Duration(milliseconds: (_timeGap / 4).round()));
+            if (_completeWaitTime != Duration.zero) {
+              await Future.delayed(_completeWaitTime);
+              _completeWaitTime = Duration.zero;
+            }
             _next();
 
             logger.info('after next, currentOrder=$_currentOrder');

@@ -21,7 +21,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
   bool _isHover = false;
   @override
   Widget build(BuildContext context) {
-    final int contentsCount = widget.playTimer!.getAvailLength();
+    final int contentsCount = widget.playTimer!.contentsManager.getShowLength();
     return MouseRegion(
       onEnter: ((event) {
         //logger.info('onEnter');
@@ -68,7 +68,9 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                         if (widget.playTimer != null &&
                             widget.playTimer!.isPrevButtonBusy == false) {
                           logger.info('prev Button pressed');
+                          await widget.playTimer?.releasePause();
                           await widget.playTimer?.prev();
+                          setState(() {});
                         }
                       }),
                 ),
@@ -81,7 +83,9 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                         if (widget.playTimer != null &&
                             widget.playTimer!.isNextButtonBusy == false) {
                           logger.info('next Button pressed');
+                          await widget.playTimer?.releasePause();
                           await widget.playTimer?.next();
+                          setState(() {});
                         } else {
                           logger.info('next Button is busy');
                         }

@@ -70,21 +70,22 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     frameManager = widget.frameManager;
     _contentsManager = frameManager!.findContentsManager(widget.model.mid);
     if (_contentsManager == null) {
+      logger.info('new ContentsManager created (${widget.model.mid})');
       _contentsManager = frameManager!.newContentsManager(widget.model);
       _contentsManager!.clearAll();
-
-      _playTimer = CretaPlayTimer(_contentsManager!);
-      _contentsManager!.setPlayerHandler(_playTimer!);
-
-      await _contentsManager!.getContents();
-      _contentsManager!.addRealTimeListen();
-      _contentsManager!.reOrdering();
     } else {
+      logger.info('old ContentsManager used (${widget.model.mid})');
+    }
+    if (_contentsManager!.playTimer == null) {
       _playTimer = CretaPlayTimer(_contentsManager!);
       _contentsManager!.setPlayerHandler(_playTimer!);
     }
+    if (_contentsManager!.onceDBGetComplete == false) {
+      await _contentsManager!.getContents();
+      _contentsManager!.addRealTimeListen();
+      _contentsManager!.reOrdering();
+    }
     logger.info('initChildren(${_contentsManager!.getAvailLength()})');
-
     _isInitialized = true;
   }
 
@@ -219,7 +220,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     );
   }
 
-  void _onDropFrame(String frameId, List<ContentsModel> contentsModelList) async {
+  Future<void> _onDropFrame(String frameId, List<ContentsModel> contentsModelList) async {
     // 콘텐츠 매니저를 생성한다.
     FrameModel? frameModel = frameManager!.getModel(frameId) as FrameModel?;
     if (frameModel == null) {

@@ -36,6 +36,8 @@ class ContentsManager extends CretaManager {
     return retval;
   }
 
+  bool _onceDBGetComplete = false;
+  bool get onceDBGetComplete => _onceDBGetComplete;
   final Map<String, CretaAbsPlayer> _playerMap = {};
   CretaAbsPlayer? getPlayer(String key) => _playerMap[key];
   void setPlayer(String key, CretaAbsPlayer player) => _playerMap[key] = player;
@@ -65,9 +67,11 @@ class ContentsManager extends CretaManager {
   }
 
   Future<ContentsModel> createNextContents(ContentsModel model, {bool doNotify = true}) async {
-    model.order.set(lastOrder() + 1, save: false, noUndo: true);
+    model.order.set(getMaxModelOrder() + 1, save: false, noUndo: true);
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
+    logger
+        .info('createNextContents complete ${model.name},${model.order.value},${model.parentMid}');
     if (playTimer != null) {
       if (playTimer!.isInit()) {
         await playTimer?.rewind();
@@ -81,11 +85,12 @@ class ContentsManager extends CretaManager {
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> getContents() async {
-    logger.info('getContents-------------------------------------------');
+    logger.info('getContents---------------${frameModel.mid}----------------------------');
     int contentsCount = 0;
     startTransaction();
     try {
       contentsCount = await _getContents();
+      _onceDBGetComplete = true;
     } catch (e) {
       logger.finest('something wrong $e');
     }
@@ -226,25 +231,39 @@ class ContentsManager extends CretaManager {
     return;
   }
 
-  Future<void> setSoundOff() async {
+  Future<void> setSoundOff({String mid = ''}) async {
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
         if (video.wcontroller != null) {
-          logger.info('contents.setSoundOff()********');
-          await video.wcontroller!.setVolume(0.0);
+          if (mid.isEmpty) {
+            logger.info('contents.setSoundOff()********');
+            await video.wcontroller!.setVolume(0.0);
+          } else {
+            if (mid == player.model!.mid) {
+              logger.info('contents.setSoundOff($mid)********');
+              await video.wcontroller!.setVolume(0.0);
+            }
+          }
         }
       }
     }
   }
 
-  Future<void> resumeSound() async {
+  Future<void> resumeSound({String mid = ''}) async {
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
         if (video.wcontroller != null && player.model!.mute.value == false) {
-          logger.info('contents.resumeSound()********');
-          await video.wcontroller!.setVolume(video.model!.volume.value);
+          if (mid.isEmpty) {
+            logger.info('contents.setSoundOff()********');
+            await video.wcontroller!.setVolume(video.model!.volume.value);
+          } else {
+            if (mid == player.model!.mid) {
+              logger.info('contents.setSoundOff($mid)********');
+              await video.wcontroller!.setVolume(video.model!.volume.value);
+            }
+          }
         }
       }
     }
@@ -260,6 +279,7 @@ class ContentsManager extends CretaManager {
             playTimer!.isCurrentModel(player.model!.mid)) {
           logger.info('contents.pause');
           await video.wcontroller!.pause();
+          logger.info('contents.pause end');
         }
       }
     }
@@ -297,7 +317,7 @@ class ContentsManager extends CretaManager {
     return keyEntries().toList().reversed.toList();
   }
 
-  int isShowLength() {
+  int getShowLength() {
     int counter = 0;
     orderMapIterator((val) {
       ContentsModel model = val as ContentsModel;
@@ -319,6 +339,16 @@ class ContentsManager extends CretaManager {
       return nextOrder(lastOrder);
     }
     return -1;
+  }
+
+  double getMaxModelOrder() {
+    double retval = 0;
+    for (var model in modelList) {
+      if (model.order.value > retval) {
+        retval = model.order.value;
+      }
+    }
+    return retval;
   }
 
   @override

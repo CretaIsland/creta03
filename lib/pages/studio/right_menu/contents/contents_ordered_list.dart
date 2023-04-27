@@ -148,6 +148,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               _dragHandler(index),
               GestureDetector(
                 onLongPressDown: (detail) {
+                  widget.contentsManager.playTimer?.releasePause();
                   widget.contentsManager.goto(model.order.value).then((v) {
                     widget.contentsManager.setSelectedMid(model.mid);
                   });
@@ -246,13 +247,13 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           icon1: Icons.volume_off,
           icon2: Icons.volume_up,
           buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-          tooltip: CretaLang.mute,
+          //tooltip: CretaLang.mute,
           onPressed: () {
             model.mute.set(!model.mute.value);
             if (model.mute.value == true) {
-              widget.contentsManager.setSoundOff();
+              widget.contentsManager.setSoundOff(mid: model.mid);
             } else {
-              widget.contentsManager.resumeSound();
+              widget.contentsManager.resumeSound(mid: model.mid);
             }
           },
         ),
@@ -263,17 +264,17 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           icon1: Icons.visibility_outlined,
           icon2: Icons.visibility_off_outlined,
           buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-          tooltip: CretaStudioLang.showUnshow,
+          //tooltip: CretaStudioLang.showUnshow,
           onPressed: () {
             if (model.isShow.value == true) {
-              if (widget.contentsManager.isShowLength() < 2) {
+              if (widget.contentsManager.getShowLength() <= 1) {
                 // 가장 마지막 것은 unshow 할 수 없다.
                 logger.warning('It is last one!! can not be unshowed');
                 showSnackBar(context, CretaStudioLang.contentsCannotBeUnshowd);
                 setState(() {});
                 return;
               }
-            }
+            } else {}
             model.isShow.set(!model.isShow.value);
             if (model.isShow.value == false) {
               ContentsModel? current = widget.contentsManager.getCurrentModel();
@@ -283,6 +284,15 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                   widget.contentsManager.gotoNext();
                 }
               }
+              if (widget.contentsManager.getShowLength() == 1) {
+                // 원래 둘이었는데 하나가 되었다.
+                widget.contentsManager.notify();
+              }
+            } else {
+              if (widget.contentsManager.getShowLength() == 2) {
+                // 원래 하나 인데, 둘이 되었다.
+                widget.contentsManager.notify();
+              }
             }
             setState(() {});
           },
@@ -290,10 +300,18 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         BTN.fill_gray_image_m(
           buttonSize: lineHeight,
           iconSize: 12,
-          tooltip: CretaStudioLang.tooltipDelete,
-          tooltipBg: CretaColor.text[700]!,
+          //tooltip: CretaStudioLang.tooltipDelete,
+          //tooltipBg: CretaColor.text[700]!,
           iconImageFile: "assets/delete.svg",
           onPressed: () {
+            int showLen = widget.contentsManager.getShowLength();
+            int availLen = widget.contentsManager.getAvailLength();
+            if (model.isShow.value == true && showLen == 1 && showLen < availLen) {
+              logger.warning('It is last one!! can not be unshowed');
+              showSnackBar(context, CretaStudioLang.contentsCannotBeUnshowd);
+              setState(() {});
+              return;
+            }
             widget.contentsManager.removeContents(context, model).then((value) {
               if (value == true) {
                 setState(() {
@@ -301,6 +319,10 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 });
               }
             });
+            if (widget.contentsManager.getShowLength() == 1) {
+              // 원래 둘이었는데 하나가 되었다.
+              widget.contentsManager.notify();
+            }
           },
         ),
       ],

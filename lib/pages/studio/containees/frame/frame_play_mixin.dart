@@ -26,6 +26,7 @@ mixin FramePlayMixin {
     // 콘텐츠 매니저를 생성한다.
     ContentsManager? contentsManager = frameManager!.findContentsManager(frameModel.mid);
     contentsManager ??= frameManager!.newContentsManager(frameModel);
+    //int counter = contentsModelList.length;
 
     for (var contentsModel in contentsModelList) {
       contentsModel.parentMid.set(frameModel.mid, save: false, noUndo: true);
@@ -117,11 +118,19 @@ mixin FramePlayMixin {
       return;
     }
 
+    //bool uploadComplete = false;
     html.FileReader fileReader = html.FileReader();
-    fileReader.onLoadEnd.listen((event) {
+    fileReader.onLoadEnd.listen((event) async {
+      logger.info('upload waiting ...............${contentsModel.name}');
       StudioSnippet.uploadFile(contentsModel, contentsManager, fileReader.result as Uint8List);
       fileReader = html.FileReader(); // file reader 초기화
+      //uploadComplete = true;
+      logger.info('upload complete');
     });
+
+    // while (uploadComplete) {
+    //   await Future.delayed(const Duration(milliseconds: 100));
+    // }
 
     fileReader.onError.listen((err) {
       logger.severe('message: ${err.toString()}');

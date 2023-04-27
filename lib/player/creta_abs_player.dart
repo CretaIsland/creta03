@@ -26,19 +26,18 @@ abstract class CretaAbsPlayer extends ChangeNotifier {
   final String keyString;
   final ContentsModel? model;
   final ContentsManager acc;
-  final bool autoStart;
+
   //BasicOverayWidget? videoProgress;
 
   CretaAbsPlayer({
     required this.keyString,
     required this.onAfterEvent,
     required this.acc,
-    required this.autoStart,
     this.model,
     //this.videoProgress,
   });
 
-  void Function()? onAfterEvent;
+  void Function(Duration, Duration)? onAfterEvent;
 
   void notify() => notifyListeners();
 
@@ -137,9 +136,9 @@ abstract class CretaAbsPlayer extends ChangeNotifier {
 }
 
 class CretaEmptyPlayer extends CretaAbsPlayer {
-  CretaEmptyPlayer(
-      {required super.keyString,
-      required super.onAfterEvent,
-      required super.acc,
-      required super.autoStart});
+  CretaEmptyPlayer({
+    required super.keyString,
+    required super.onAfterEvent,
+    required super.acc,
+  });
 }

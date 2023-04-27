@@ -89,25 +89,24 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
     logger.info('_DraggableStickersState build');
 
-    return stickers.isNotEmpty && stickers != []
-        ? Stack(
-            fit: StackFit.expand,
-            children: [
-              // Positioned.fill(
-              //   child: GestureDetector(
-              //     key: const Key('stickersView_background_gestureDetector'),
-              //     onTap: () {
-              //       logger.finest('GestureDetector.onTap');
-              //     },
-              //   ),
-              // ),
-              _pageDropZone(),
-              for (final sticker in stickers) _drawEachStiker(sticker),
-              if (_selectedSticker != null) _drawMiniMenu(),
-              //if (_selectedSticker != null) _drawMiniMenuContents(),
-            ],
-          )
-        : Container();
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Positioned.fill(
+        //   child: GestureDetector(
+        //     key: const Key('stickersView_background_gestureDetector'),
+        //     onTap: () {
+        //       logger.finest('GestureDetector.onTap');
+        //     },
+        //   ),
+        // ),
+        _pageDropZone(),
+        //if (stickers.isNotEmpty && stickers != [])
+        for (final sticker in stickers) _drawEachStiker(sticker),
+        if (_selectedSticker != null) _drawMiniMenu(),
+        //if (_selectedSticker != null) _drawMiniMenuContents(),
+      ],
+    );
   }
 
   Widget _drawEachStiker(Sticker sticker) {

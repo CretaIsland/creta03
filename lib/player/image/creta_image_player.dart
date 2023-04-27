@@ -15,7 +15,6 @@ class CretaImagePlayer extends CretaAbsPlayer {
     required super.model,
     required super.acc,
     super.onAfterEvent,
-    super.autoStart = true,
   });
 
   @override
@@ -66,7 +65,7 @@ class CretaImagePlayer extends CretaAbsPlayer {
   @override
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      onAfterEvent?.call();
+      onAfterEvent?.call(Duration.zero, Duration.zero);
     });
   }
 }
