@@ -150,6 +150,10 @@ class CretaPlayTimer extends ChangeNotifier {
     });
   }
 
+  void setLooping(bool val) {
+    _currentPlayer?.setLooping(val);
+  }
+
   Future<void> reOrdering({bool isRewind = false}) async {
     await _lock.synchronized(() {
       contentsManager.reOrdering();
@@ -210,10 +214,10 @@ class CretaPlayTimer extends ChangeNotifier {
     logger.info('prev button pressed');
     await _lock.synchronized(() async {
       if (isInit()) {
-        if (contentsManager.getAvailLength() > 1) {
-          await pause();
-          await rewind();
-        }
+        //if (contentsManager.getAvailLength() > 1) {
+        await pause();
+        await rewind();
+        //}
         _currentOrder = contentsManager.prevOrder(_currentOrder);
       }
     });
@@ -223,11 +227,11 @@ class CretaPlayTimer extends ChangeNotifier {
     setIsNextButtonBusy(true);
     await _lock.synchronized(() async {
       if (isInit()) {
-        if (contentsManager.getAvailLength() > 1) {
-          await pause();
-          await rewind();
-          logger.info('${_currentModel!.name} is paused');
-        }
+        //if (contentsManager.getAvailLength() > 1) {
+        await pause();
+        await rewind();
+        logger.info('${_currentModel!.name} is paused');
+        //}
         _next();
       }
     });

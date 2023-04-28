@@ -476,9 +476,20 @@ class ContentsManager extends CretaManager {
   //   await playTimer?.globalResume();
   // }
 
-  // void setLoop(bool loop) {
-  //   playTimer?.setLoop(loop);
-  // }
+  void setLooping(bool loop) {
+    playTimer?.setLooping(loop);
+  }
+
+  void setLoopingAll(bool loop) {
+    for (var player in _playerMap.values) {
+      if (player.model != null && player.model!.isVideo()) {
+        CretaVideoPlayer video = player as CretaVideoPlayer;
+        if (video.wcontroller != null) {
+          video.wcontroller?.setLooping(loop);
+        }
+      }
+    }
+  }
 
   void pushReverseOrder(String aMovedMid, String aPushedMid, String hint) {
     CretaModel? aMoved = getModel(aMovedMid) as CretaModel?;

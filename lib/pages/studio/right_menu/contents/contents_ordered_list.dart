@@ -266,35 +266,34 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           buttonStyle: ToggleButtonStyle.fill_gray_i_m,
           //tooltip: CretaStudioLang.showUnshow,
           onPressed: () {
-            if (model.isShow.value == true) {
-              if (widget.contentsManager.getShowLength() <= 1) {
-                // 가장 마지막 것은 unshow 할 수 없다.
-                logger.warning('It is last one!! can not be unshowed');
-                showSnackBar(context, CretaStudioLang.contentsCannotBeUnshowd);
-                setState(() {});
-                return;
-              }
-            } else {}
-            model.isShow.set(!model.isShow.value);
+            bool doNotify = false;
+            int len = widget.contentsManager.getShowLength();
             if (model.isShow.value == false) {
-              ContentsModel? current = widget.contentsManager.getCurrentModel();
-              if (current != null) {
-                if (current.mid == model.mid) {
-                  // 현재 방송중인 것을 unshow 하려고 한다.
-                  widget.contentsManager.gotoNext();
-                }
-              }
-              if (widget.contentsManager.getShowLength() == 1) {
-                // 원래 둘이었는데 하나가 되었다.
-                widget.contentsManager.notify();
+              // true 로 간다는 뜻이다.
+              if (len == 0) {
+                // 0 --> 1 로 되려고 하고 있다.
+                doNotify = true;
+              } else if (len == 1) {
+                // 1--> 2 로 되겨고 한다.
+                //widget.contentsManager.notify();
+                widget.contentsManager.setLoopingAll(false);
               }
             } else {
-              if (widget.contentsManager.getShowLength() == 2) {
-                // 원래 하나 인데, 둘이 되었다.
-                widget.contentsManager.notify();
+              // false 로 간다는 뜻이다.
+              if (len == 1) {
+                // 1 --> 0 로 되려고 하고 있다.
+                doNotify = true;
+              } else if (len == 2) {
+                // 2 --> 1 로 되려고 하고 있다.
+                //widget.contentsManager.notify();
+                widget.contentsManager.setLooping(true);
               }
             }
+            model.isShow.set(!model.isShow.value);
             setState(() {});
+            if (doNotify) {
+              widget.contentsManager.notify();
+            }
           },
         ),
         BTN.fill_gray_image_m(
@@ -304,14 +303,14 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           //tooltipBg: CretaColor.text[700]!,
           iconImageFile: "assets/delete.svg",
           onPressed: () {
-            int showLen = widget.contentsManager.getShowLength();
-            int availLen = widget.contentsManager.getAvailLength();
-            if (model.isShow.value == true && showLen == 1 && showLen < availLen) {
-              logger.warning('It is last one!! can not be unshowed');
-              showSnackBar(context, CretaStudioLang.contentsCannotBeUnshowd);
-              setState(() {});
-              return;
-            }
+            // int showLen = widget.contentsManager.getShowLength();
+            // int availLen = widget.contentsManager.getAvailLength();
+            // if (model.isShow.value == true && showLen == 1 && showLen < availLen) {
+            //   logger.warning('It is last one!! can not be unshowed');
+            //   showSnackBar(context, CretaStudioLang.contentsCannotBeUnshowd);
+            //   setState(() {});
+            //   return;
+            // }
             widget.contentsManager.removeContents(context, model).then((value) {
               if (value == true) {
                 setState(() {

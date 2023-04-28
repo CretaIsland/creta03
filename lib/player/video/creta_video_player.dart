@@ -171,6 +171,11 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   }
 
   @override
+  Future<void> setLooping(bool val) async {
+    await wcontroller?.setLooping(val);
+  }
+
+  @override
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       logger.info('afterBuild video');

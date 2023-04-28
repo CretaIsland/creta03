@@ -56,6 +56,7 @@ abstract class CretaAbsPlayer extends ChangeNotifier {
   Future<void> next() async {}
   Future<void> prev() async {}
   Future<void> rewind() async {}
+  Future<void> setLooping(bool val) async {}
 
   bool isInit() {
     return true;
