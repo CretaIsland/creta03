@@ -146,7 +146,7 @@ class FrameManager extends CretaManager {
 
     double dx = frameModel.posX.value;
     double dy = frameModel.posY.value;
-
+    logger.info('resizeFrame()===============================');
     logger.info(
         'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$contentsWidth, imageH=$contentsHeight, dx=$dx, dy=$dy --------------------');
 

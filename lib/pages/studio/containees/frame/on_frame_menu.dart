@@ -59,7 +59,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                         widget.playTimer?.togglePause();
                       });
                     }),
-              if (_isHover && contentsCount > 1)
+              if (_isHover && contentsCount > 0)
                 Align(
                   alignment: const Alignment(-0.5, 0),
                   child: BTN.fill_i_s(
@@ -74,7 +74,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                         }
                       }),
                 ),
-              if (_isHover && contentsCount > 1)
+              if (_isHover && contentsCount > 0)
                 Align(
                   alignment: const Alignment(0.5, 0),
                   child: BTN.fill_i_s(

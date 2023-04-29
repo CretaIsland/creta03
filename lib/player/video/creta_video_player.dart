@@ -26,6 +26,8 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   Size? _outSize;
   Size? getSize() => _outSize;
   //bool _isMute = false;
+  bool _isInitAlreadyDone = false;
+  bool get isInitAlreadyDone => _isInitAlreadyDone;
 
   @override
   Future<void> init() async {
@@ -189,24 +191,34 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   }
 
   Future<bool> waitInit() async {
+    if (_isInitAlreadyDone) {
+      if (wcontroller!.value.isInitialized == false) {
+        logger.severe('!!!!!!!! Already initialize but, initialize is false !!!!!!!!');
+        logger.severe('!!!!!!!! init again start !!!!!!!!');
+        await init();
+        logger.severe('!!!!!!!! init again end !!!!!!!!');
+      } else {
+        await playVideo();
+        return true;
+      }
+    }
     logger.info('waitInit........ ${model!.name}');
     //int waitCount = 0;
     while (!wcontroller!.value.isInitialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
+    _isInitAlreadyDone = true;
     logger.info('waitInit end .........  ${model!.name}');
-    await wcontroller!.setLooping(acc.getShowLength() == 1 && model!.isShow.value == true);
-
+    //await wcontroller!.setLooping(acc.getShowLength() == 1 && model!.isShow.value == true);
     if (_outSize == null) {
       _outSize = getOuterSize(wcontroller!.value.aspectRatio);
       await acc.resizeFrame(wcontroller!.value.aspectRatio, _outSize!, true);
     }
-
-    await _playVideo();
+    await playVideo();
     return true;
   }
 
-  Future<void> _playVideo() async {
+  Future<void> playVideo() async {
     if (StudioVariables.isAutoPlay &&
         model!.isState(PlayState.start) == false &&
         acc.playTimer!.isCurrentModel(model!.mid) &&

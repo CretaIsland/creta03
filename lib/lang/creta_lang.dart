@@ -67,4 +67,6 @@ class CretaLang {
 
   static String contentsDeleted = ' 콘텐츠가 삭제되었습니다';
   static String contentsNotDeleted = ' 콘텐츠가 삭제되지 않았습니다. 잠시 후에 다시 시도하십시오';
+
+  static String count = "개";
 }

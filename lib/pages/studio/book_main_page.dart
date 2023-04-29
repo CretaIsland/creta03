@@ -169,6 +169,9 @@ class _BookMainPageState extends State<BookMainPage> {
     await BookMainPage.userPropertyManagerHolder!.initUserProperty();
 
     _onceDBGetComplete = true;
+
+    //StudioVariables.isSilent = LoginPage.userPropertyManagerHolder?.getSilent();
+    //StudioVariables.isAutoPlay = LoginPage.userPropertyManagerHolder?.getAutoPlay();
   }
 
   //   Future<int> _getPolygonFrameTemplates() async {
@@ -529,6 +532,8 @@ class _BookMainPageState extends State<BookMainPage> {
                 tooltip: CretaStudioLang.tooltipVolume,
                 onPressed: () {
                   StudioVariables.isSilent = !StudioVariables.isSilent;
+                  //LoginPage.userPropertyManagerHolder?.setSilent(StudioVariables.isSilent);
+
                   if (BookMainPage.pageManagerHolder == null) {
                     return;
                   }
@@ -571,6 +576,7 @@ class _BookMainPageState extends State<BookMainPage> {
                 tooltip: CretaStudioLang.tooltipPause,
                 onPressed: () {
                   StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
+                  //LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
                   if (BookMainPage.pageManagerHolder == null) {
                     return;
                   }

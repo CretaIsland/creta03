@@ -206,7 +206,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         FrameModel frameModel = await frameManager!.createNextFrame(doNotify: false);
         // 코텐츠를 play 하고 DB 에 Crete 하고 업로드까지 한다.
         logger.info('frameCretated(${frameModel.mid}');
-        await createContents(modelList, frameModel, widget.pageModel);
+        await ContentsManager.createContents(frameManager, modelList, frameModel, widget.pageModel);
       },
 
       stickerList: getStickerList(),

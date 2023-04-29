@@ -5,6 +5,7 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter/gestures.dart';
 
+import '../data_io/user_property_manager.dart';
 import '../design_system/buttons/creta_button_wrapper.dart';
 import '../routes.dart';
 import '../design_system/component/snippet.dart';
@@ -29,6 +30,14 @@ enum IntroPageType {
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  static UserPropertyManager? userPropertyManagerHolder;
+  static void initUserProperty() {
+    LoginPage.userPropertyManagerHolder = UserPropertyManager();
+    LoginPage.userPropertyManagerHolder!.configEvent();
+    LoginPage.userPropertyManagerHolder!.clearAll();
+    LoginPage.userPropertyManagerHolder!.initUserProperty();
+  }
 
   @override
   State<LoginPage> createState() => _LoginPageState();

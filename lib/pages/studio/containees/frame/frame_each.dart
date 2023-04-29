@@ -227,7 +227,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       return;
     }
 
-    await createContents(
+    await ContentsManager.createContents(
+      frameManager,
       contentsModelList,
       frameModel,
       widget.pageModel,

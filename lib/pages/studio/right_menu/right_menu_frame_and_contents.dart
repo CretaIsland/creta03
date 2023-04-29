@@ -148,7 +148,8 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
       return Column(
         children: [
           if (contentsManager != null)
-            ContentsOrderedList(book: model, contentsManager: contentsManager),
+            ContentsOrderedList(
+                book: model, frameManager: frameManager, contentsManager: contentsManager),
           if (contents != null)
             ContentsProperty(
                 key: ValueKey(contents.mid),
