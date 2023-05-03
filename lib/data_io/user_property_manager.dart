@@ -111,7 +111,9 @@ class UserPropertyManager extends CretaManager {
         Colors.yellow,
         Colors.green,
         Colors.purple,
-      ]
+      ],
+      autoPlay: true,
+      mute: false
     );
     await createToDB(propertyModel!);
     insert(propertyModel!, postion: getAvailLength());

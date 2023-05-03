@@ -45,7 +45,10 @@ class UserPropertyModel extends CretaModel {
 
   late String lastestBook;            // 마지막으로 편집한 크레타북의 아이디
   late List<String> lastestUseFrames; // 가장 최근에 사용한 프레임 7개
-  late List<Color> lastestUseColors; // 가장 최근에 사용한 색깔 7개
+  late List<Color> lastestUseColors;  // 가장 최근에 사용한 색깔 7개
+
+  late bool autoPlay;                 // 크레타 북 내 콘텐츠 자동 재생 여부
+  late bool mute;                     // 크레타 북 내 콘텐츠 음소거 여부 
 
   @override
   List<Object?> get props => [
@@ -77,6 +80,8 @@ class UserPropertyModel extends CretaModel {
         lastestBook,
         lastestUseFrames,
         lastestUseColors,
+        autoPlay,
+        mute
       ];
 
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
@@ -107,6 +112,8 @@ class UserPropertyModel extends CretaModel {
     lastestBook = '';
     lastestUseFrames = [];
     lastestUseColors = [];
+    autoPlay = true;
+    mute = false;
   }
 
   UserPropertyModel.withName({
@@ -138,6 +145,8 @@ class UserPropertyModel extends CretaModel {
     this.lastestBook = '',
     this.lastestUseColors = const [],
     this.lastestUseFrames = const [],
+    this.autoPlay = true,
+    this.mute = false
   }) : super(pmid: '', type: ExModelType.user, parent: pparentMid);
 
   @override
@@ -171,6 +180,8 @@ class UserPropertyModel extends CretaModel {
     lastestBook = srcUser.lastestBook;
     lastestUseColors = [...srcUser.lastestUseColors];
     lastestUseFrames = [...srcUser.lastestUseFrames];
+    autoPlay = srcUser.autoPlay;
+    mute = srcUser.mute;
     logger.finest('UserCopied($mid)');
   }
 
@@ -204,6 +215,8 @@ class UserPropertyModel extends CretaModel {
     lastestBook = map["lastestBook"];
     lastestUseColors = CretaUtils.string2ColorList(map["lastestUseColors"]);
     lastestUseFrames = CretaUtils.jsonStringToList(map["lastestUseFrames"]);
+    autoPlay = map["autoPlay"];
+    mute = map["mute"];
   }
 
   @override
@@ -237,6 +250,8 @@ class UserPropertyModel extends CretaModel {
         "lastestBook": lastestBook,
         "lastestUseColors": CretaUtils.colorList2String(lastestUseColors),
         "lastestUseFrames": CretaUtils.listToString(lastestUseFrames),
+        "autoPlay" : autoPlay,
+        "mute" : mute
       }.entries);
   }
 }
