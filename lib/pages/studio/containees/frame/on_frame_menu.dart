@@ -24,13 +24,13 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
     final int contentsCount = widget.playTimer!.contentsManager.getShowLength();
     return MouseRegion(
       onEnter: ((event) {
-        //logger.info('onEnter');
+        logger.info('onEnter');
         setState(() {
           _isHover = true;
         });
       }),
       onExit: ((event) {
-        //logger.info('onExit');
+        logger.info('onExit');
         setState(() {
           _isHover = false;
         });

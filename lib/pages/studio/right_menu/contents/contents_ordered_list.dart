@@ -143,7 +143,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               ),
               //),
               if (_selectedIndex >= 0 && itemCount > 0 && _selectedIndex < itemCount)
-                ..._info(items[_selectedIndex] as ContentsModel),
+                ..._info(items),
             ],
           ),
         ),
@@ -415,7 +415,22 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     );
   }
 
-  List<Widget> _info(ContentsModel model) {
+  List<Widget> _info(List<CretaModel> items) {
+    ContentsModel? model;
+    int index = 0;
+    for (var item in items) {
+      if (widget.contentsManager.isSelected(item.mid)) {
+        model = item as ContentsModel;
+        break;
+      }
+      index++;
+    }
+    if (model == null) {
+      return [];
+    }
+    _selectedIndex = index;
+    logger.info('===$_selectedIndex=======model=${model.name}');
+
     return [
       propertyDivider(height: 28),
       // Padding(
@@ -470,7 +485,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
                         defaultValue: model.copyRight.value,
                         onChanged: (val) {
-                          model.copyRight.set(val);
+                          model!.copyRight.set(val);
                         }))
                 : Text(CretaStudioLang.copyWrightList[model.copyRight.value.index],
                     style: dataStyle),

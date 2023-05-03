@@ -44,20 +44,24 @@ class SelectedBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedBox = Container(
-      key: Key('selectedBox-$mid'),
-      alignment: Alignment.center,
-      height: normalizedHeight + LayoutConst.stikerOffset,
-      width: normalizedWidth + LayoutConst.stikerOffset,
+    final selectedBox = IgnorePointer(
       child: Container(
-          height: normalizedHeight,
-          width: normalizedWidth,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: LayoutConst.selectBoxBorder,
-              color: CretaColor.primary,
-            ),
-          )),
+        key: Key('selectedBox-$mid'),
+        alignment: Alignment.center,
+        height: normalizedHeight + LayoutConst.stikerOffset,
+        width: normalizedWidth + LayoutConst.stikerOffset,
+        color: Colors.transparent,
+        child: Container(
+            height: normalizedHeight,
+            width: normalizedWidth,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              border: Border.all(
+                width: LayoutConst.selectBoxBorder,
+                color: CretaColor.primary,
+              ),
+            )),
+      ),
     );
 
     final topLeftCorner = ResizePoint(

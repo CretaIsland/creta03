@@ -608,6 +608,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                     onUpdate('onRotate');
                   },
                   child: Stack(
+                    alignment: Alignment.center,
                     children: [
                       decoratedChild,
                       SelectedBox(
