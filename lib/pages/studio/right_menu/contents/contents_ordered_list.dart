@@ -4,12 +4,14 @@ import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
+import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/component/creta_icon_toggle_button.dart';
 import '../../../../design_system/component/time_input_widget.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
 import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -24,7 +26,9 @@ class ContentsOrderedList extends StatefulWidget {
   final BookModel? book;
 
   final ContentsManager contentsManager;
-  const ContentsOrderedList({super.key, required this.book, required this.contentsManager});
+  final FrameManager? frameManager;
+  const ContentsOrderedList(
+      {super.key, required this.book, required this.frameManager, required this.contentsManager});
 
   @override
   State<ContentsOrderedList> createState() => _ContentsOrderedListState();
@@ -74,7 +78,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           });
         },
         titleWidget: Text(CretaStudioLang.playList, style: CretaFont.titleSmall),
-        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: Text('$itemCount ${CretaLang.count}', style: dataStyle),
+        showTrail: true,
         hasRemoveButton: false,
         onDelete: () {},
         bodyWidget: Padding(
@@ -82,15 +87,31 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Scrollbar(
-                controller: scrollController,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: LayoutConst.rightMenuWidth,
-                      height: boxHeight,
+              // Scrollbar(
+              //   controller: scrollController,
+              //   thumbVisibility: false,
+              //   trackVisibility: false,
+              //   child:
+              Column(
+                children: [
+                  SizedBox(
+                    width: LayoutConst.rightMenuWidth,
+                    height: boxHeight,
+                    child: DropZoneWidget(
+                      parentId: '',
+                      onDroppedFile: (modelList) {
+                        String frameId = widget.contentsManager.frameModel.mid;
+                        logger.info('ContentsOrderedList dropzone contents added to $frameId');
+                        ContentsManager.createContents(
+                          widget.frameManager,
+                          modelList,
+                          widget.contentsManager.frameModel,
+                          widget.contentsManager.pageModel,
+                          isResizeFrame: false,
+                        );
+                      },
                       child: ReorderableListView.builder(
-                        scrollController: scrollController,
+                        //scrollController: scrollController,
                         itemCount: itemCount,
                         buildDefaultDragHandles: false,
                         onReorder: (int oldIndex, int newIndex) {
@@ -121,15 +142,17 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                         },
                       ),
                     ),
-                    //if (itemCount > 5) _expandButton(),
-                  ],
-                ),
+                  ),
+                  //if (itemCount > 5) _expandButton(),
+                ],
               ),
+              //),
               if (itemCount > 0 && _selectedIndex < itemCount)
                 ..._info(items[_selectedIndex] as ContentsModel),
             ],
           ),
         ),
+        //),
       ),
     );
   }
@@ -148,6 +171,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               _dragHandler(index),
               GestureDetector(
                 onLongPressDown: (detail) {
+                  widget.contentsManager.playTimer?.releasePause();
                   widget.contentsManager.goto(model.order.value).then((v) {
                     widget.contentsManager.setSelectedMid(model.mid);
                   });
@@ -158,7 +182,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _leadings(index, uri),
+                    _leadings(index, uri, model),
                     _title(model),
                   ],
                 ),
@@ -187,7 +211,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     );
   }
 
-  Widget _leadings(int index, String? uri) {
+  Widget _leadings(int index, String? uri, ContentsModel model) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -196,7 +220,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           width: 28,
           child: Text(
             index < 9 ? '0${index + 1}' : '${index + 1}',
-            style: CretaFont.bodySmall,
+            style: model.isShow.value
+                ? CretaFont.bodySmall
+                : CretaFont.bodySmall.copyWith(color: CretaColor.text[300]!),
             textAlign: TextAlign.left,
           ),
         ),
@@ -213,6 +239,13 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 ? DecorationImage(
                     fit: BoxFit.fill,
                     image: NetworkImage(uri),
+                    colorFilter: model.isShow.value
+                        ? null
+                        : ColorFilter.mode(
+                            //CretaColor.text.withOpacity(0.25),
+                            Colors.blue.withOpacity(0.5),
+                            BlendMode.srcOver,
+                          ),
                   )
                 : null,
           ),
@@ -230,7 +263,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         child: Text(
           ' ${model.name}',
           maxLines: 1,
-          style: CretaFont.bodySmall,
+          style: model.isShow.value
+              ? CretaFont.bodySmall
+              : CretaFont.bodySmall.copyWith(color: CretaColor.text[200]!),
           textAlign: TextAlign.left,
           overflow: TextOverflow.clip,
         ));
@@ -246,13 +281,13 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           icon1: Icons.volume_off,
           icon2: Icons.volume_up,
           buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-          tooltip: CretaLang.mute,
+          //tooltip: CretaLang.mute,
           onPressed: () {
             model.mute.set(!model.mute.value);
             if (model.mute.value == true) {
-              widget.contentsManager.setSoundOff();
+              widget.contentsManager.setSoundOff(mid: model.mid);
             } else {
-              widget.contentsManager.resumeSound();
+              widget.contentsManager.resumeSound(mid: model.mid);
             }
           },
         ),
@@ -263,44 +298,100 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           icon1: Icons.visibility_outlined,
           icon2: Icons.visibility_off_outlined,
           buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-          tooltip: CretaStudioLang.showUnshow,
+          //tooltip: CretaStudioLang.showUnshow,
           onPressed: () {
-            if (model.isShow.value == true) {
-              if (widget.contentsManager.isShowLength() < 2) {
-                // 가장 마지막 것은 unshow 할 수 없다.
-                logger.warning('It is last one!! can not be unshowed');
-                showSnackBar(context, CretaStudioLang.contentsCannotBeUnshowd);
-                setState(() {});
-                return;
-              }
-            }
+            // bool doNotify = false;
+            // int len = widget.contentsManager.getShowLength();
+            // if (model.isShow.value == false) {
+            //   // true 로 간다는 뜻이다.
+            //   if (len == 0) {
+            //     // 0 --> 1 로 되려고 하고 있다.
+            //     doNotify = true;
+            //   } else if (len == 1) {
+            //     // 1--> 2 로 되겨고 한다.
+            //     //widget.contentsManager.notify();
+            //     widget.contentsManager.setLoopingAll(false);
+            //   }
+            // } else {
+            //   // false 로 간다는 뜻이다.
+            //   if (len == 1) {
+            //     // 1 --> 0 로 되려고 하고 있다.
+            //     doNotify = true;
+            //   } else if (len == 2) {
+            //     // 2 --> 1 로 되려고 하고 있다.
+            //     //widget.contentsManager.notify();
+            //     widget.contentsManager.setLooping(true);
+            //   }
+            // }
             model.isShow.set(!model.isShow.value);
+            widget.contentsManager.reOrdering();
+            int len = widget.contentsManager.getShowLength();
+
+            // 돌릴게 없을때,
+            if (len == 0) {
+              widget.contentsManager.clearCurrentModel();
+              setState(() {});
+              widget.contentsManager.notify();
+              return;
+            }
+
+            ContentsModel? current = widget.contentsManager.getCurrentModel();
             if (model.isShow.value == false) {
-              ContentsModel? current = widget.contentsManager.getCurrentModel();
-              if (current != null) {
-                if (current.mid == model.mid) {
-                  // 현재 방송중인 것을 unshow 하려고 한다.
+              if (current != null && current.mid == model.mid) {
+                // 현재 방송중인 것을 unshow 하려고 한다.
+                if (len > 0) {
                   widget.contentsManager.gotoNext();
+                  setState(() {});
+                  return;
+                }
+              }
+            } else {
+              // show 했는데, current 가 null 이다.
+              if (current == null && widget.contentsManager.isEmptySelected()) {
+                if (len > 0) {
+                  widget.contentsManager.setSelectedMid(model.mid);
+                  widget.contentsManager.gotoNext();
+                  setState(() {});
+                  return;
                 }
               }
             }
+            //if(current != null && current.mid == model.mid || len <= 2) {
             setState(() {});
+            widget.contentsManager.notify();
+            //}
+            // if (doNotify) {
+            //   widget.contentsManager.notify();
+            // }
           },
         ),
         BTN.fill_gray_image_m(
           buttonSize: lineHeight,
           iconSize: 12,
-          tooltip: CretaStudioLang.tooltipDelete,
-          tooltipBg: CretaColor.text[700]!,
+          //tooltip: CretaStudioLang.tooltipDelete,
+          //tooltipBg: CretaColor.text[700]!,
           iconImageFile: "assets/delete.svg",
           onPressed: () {
+            // int showLen = widget.contentsManager.getShowLength();
+            // int availLen = widget.contentsManager.getAvailLength();
+            // if (model.isShow.value == true && showLen == 1 && showLen < availLen) {
+            //   logger.warning('It is last one!! can not be unshowed');
+            //   showSnackBar(context, CretaStudioLang.contentsCannotBeUnshowd);
+            //   setState(() {});
+            //   return;
+            // }
+            setState(() {
+              items.removeAt(index);
+            });
             widget.contentsManager.removeContents(context, model).then((value) {
               if (value == true) {
-                setState(() {
-                  items.removeAt(index);
-                });
+                showSnackBar(context, model.name + CretaLang.contentsDeleted);
               }
             });
+            // if (widget.contentsManager.getShowLength() == 1) {
+            //   // 원래 둘이었는데 하나가 되었다.
+            //   widget.contentsManager.notify();
+            // }
           },
         ),
       ],

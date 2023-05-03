@@ -20,6 +20,12 @@ class ContentsModel extends CretaModel {
   TextAniType prevAniType = TextAniType.none;
   Color prevFontColor = Colors.transparent;
   double prevOutLineWidth = 0;
+  bool _isPauseTimer = false;
+  bool get isPauseTimer => _isPauseTimer;
+  void setIsPauseTimer(bool val) {
+    _isPauseTimer = val;
+  }
+
   //bool forceToChange = false;
   //bool changeToggle = false;
   // ]

@@ -1,6 +1,6 @@
 //import 'package:flutter/cupertino.dart';
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
+import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +32,11 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
   late DropzoneViewController controller;
   // a variable just to update UI color when user hover or leave the drop zone
   bool highlight = false;
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +77,7 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
 
   Future<ContentsModel> uploadedFile(dynamic event) async {
     // this method is called when user drop the file in drop area in flutter
-    File file = event as File;
+    html.File file = event as html.File;
     final name = event.name;
     final mime = await controller.getFileMIME(event);
     final byte = await controller.getFileSize(event);

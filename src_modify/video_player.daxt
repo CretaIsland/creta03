@@ -301,7 +301,11 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 
   //skpark
   final Lock _playLock = Lock();
-  DateTime completeTime = DateTime.now();
+  //DateTime completeTime = DateTime.now();
+  bool _isPlayComplete = false;
+  void resetComplete() {
+    _isPlayComplete = true;
+  }
 
   /// The id of a texture that hasn't been initialized.
   @visibleForTesting
@@ -314,7 +318,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   int get textureId => _textureId;
 
   //skpark add
-  void Function(VideoEvent event)? onAfterVideoEvent;
+  void Function(VideoEvent event, Duration postion, Duration duration)? onAfterVideoEvent;
 
   /// Attempts to open the given [dataSource] and load metadata about the video.
   Future<void> initialize() async {
@@ -393,14 +397,18 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 
           //skpark
           // complete 가 연달아서 계속 오기 때문에, 0.6 초 미만차이로 오는 것은 버린다.         DateTime now = DateTime.now();
-          DateTime now = DateTime.now();
-          Duration duration = now.difference(completeTime);
-          completeTime = now;
-          if (duration.inMilliseconds > 600) {
+          // DateTime now = DateTime.now();
+          // Duration duration = now.difference(completeTime);
+          // completeTime = now;
+          // if (duration.inMilliseconds > 600) {
+          print(
+              '_isPlayComplete $_isPlayComplete..${value.position} = ${value.duration}.............................................');
+          if (_isPlayComplete == false) {
+            _isPlayComplete = true;
             pause().then((void pauseResult) {
               seekTo(value.duration);
               if (onAfterVideoEvent != null) {
-                onAfterVideoEvent!(event);
+                onAfterVideoEvent!(event, value.position, value.duration);
               }
             });
           }
@@ -467,6 +475,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// finished.
   Future<void> play() async {
     //skpark add lock
+    _isPlayComplete = false;
     await _playLock.synchronized(() async {
       print('play VideoPlayerController -------');
       if (value.position == value.duration) {

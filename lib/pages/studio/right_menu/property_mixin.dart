@@ -53,6 +53,7 @@ mixin PropertyMixin {
     required Function onPressed,
     required Widget titleWidget,
     Widget? trailWidget,
+    bool? showTrail,
     required Widget bodyWidget,
     required bool hasRemoveButton,
     required Function onDelete,
@@ -88,7 +89,7 @@ mixin PropertyMixin {
                   ),
                 ],
               ),
-              isOpen
+              isOpen && (showTrail == null || showTrail == false)
                   ? hasRemoveButton
                       ? BTN.fill_gray_i_m(
                           icon: Icons.close_outlined,

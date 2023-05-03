@@ -13,6 +13,8 @@ import '../../../data_io/frame_manager.dart';
 import '../../../model/contents_model.dart';
 import '../../../model/frame_model.dart';
 import '../book_main_page.dart';
+import '../containees/containee_nofifier.dart';
+import '../containees/frame/sticker/mini_menu.dart';
 import '../studio_constant.dart';
 import 'contents/contents_ordered_list.dart';
 import 'contents/contents_property.dart';
@@ -36,7 +38,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   @override
   void initState() {
     //_scrollController.addListener(_scrollListener);
-    logger.finer('_RightMenuFrameAndContentsState.initState');
+    logger.info('_RightMenuFrameAndContentsState.initState');
     //_scrollController = ScrollController(initialScrollOffset: 0.0);
     _selectedTab = widget.selectedTap;
     super.initState();
@@ -70,6 +72,14 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
         padding: const EdgeInsets.only(right: 150),
         child: CustomRadioButton(
           radioButtonValue: (value) {
+            List<String> menu = CretaStudioLang.frameTabBar.values.toList();
+            if (value == menu[0]) {
+              MiniMenu.showFrame = true;
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
+            } else if (value == menu[1]) {
+              MiniMenu.showFrame = false;
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
+            }
             setState(() {
               _selectedTab = value;
             });
@@ -134,20 +144,20 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     if (frame != null && frameManager != null) {
       ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
       ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
-      if (contents != null) {
-        logger.info('ContentsProperty ${contents.mid}');
-        return Column(
-          children: [
-            if (contentsManager != null)
-              ContentsOrderedList(book: model, contentsManager: contentsManager),
+      //logger.info('ContentsProperty ${contents.mid}');
+      return Column(
+        children: [
+          if (contentsManager != null)
+            ContentsOrderedList(
+                book: model, frameManager: frameManager, contentsManager: contentsManager),
+          if (contents != null)
             ContentsProperty(
                 key: ValueKey(contents.mid),
                 model: contents,
                 frameManager: frameManager,
                 book: model),
-          ],
-        );
-      }
+        ],
+      );
     }
     return Container();
   }

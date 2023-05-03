@@ -846,6 +846,11 @@ abstract class CretaManager extends AbsExModelManager {
     return selectedMid == mid;
   }
 
+  bool isEmptySelected() {
+    //rlogHolder.log('isPageSelected($mid)');
+    return selectedMid.isEmpty;
+  }
+
   // void updateLastOrder() {
   //   lock();
   //   for (var ele in modelList) {

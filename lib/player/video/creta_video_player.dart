@@ -17,9 +17,8 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     required super.onAfterEvent,
     required super.model,
     required super.acc,
-    super.autoStart = true,
   }) {
-    logger.info("CretaVideoPlayer(isAutoPlay=$autoStart)");
+    logger.info("CretaVideoPlayer(isAutoPlay=${StudioVariables.isAutoPlay})");
   }
 
   VideoPlayerController? wcontroller;
@@ -27,6 +26,8 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   Size? _outSize;
   Size? getSize() => _outSize;
   //bool _isMute = false;
+  bool _isInitAlreadyDone = false;
+  bool get isInitAlreadyDone => _isInitAlreadyDone;
 
   @override
   Future<void> init() async {
@@ -50,18 +51,13 @@ class CretaVideoPlayer extends CretaAbsPlayer {
         model!.videoPlayTime
             .set(wcontroller!.value.duration.inMilliseconds.toDouble(), noUndo: true, save: false);
         wcontroller!.setLooping(false);
-        wcontroller!.onAfterVideoEvent = (event) {
-          if (event.duration != null) {
-            logger.info(
-                'video event ${event.eventType.toString()}, ${event.duration.toString()},(${model!.name})');
-          } else {
-            logger.warning('event duration is null,(${model!.name})');
-          }
+        wcontroller!.onAfterVideoEvent = (event, position, duration) {
           if (event.eventType == VideoEventType.completed) {
             // bufferingEnd and completed 가 시간이 다 되서 종료한 것임.
-            logger.info('video play completed(${model!.name})');
+            logger
+                .info('video play completed(${model!.name},postion=$position, duration=$duration)');
             model!.setPlayState(PlayState.end);
-            onAfterEvent?.call();
+            onAfterEvent?.call(position, duration);
           }
           prevEvent = event.eventType;
         };
@@ -177,6 +173,11 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   }
 
   @override
+  Future<void> setLooping(bool val) async {
+    await wcontroller?.setLooping(val);
+  }
+
+  @override
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       logger.info('afterBuild video');
@@ -190,24 +191,38 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   }
 
   Future<bool> waitInit() async {
+    if (_isInitAlreadyDone) {
+      if (wcontroller!.value.isInitialized == false) {
+        logger.severe('!!!!!!!! Already initialize but, initialize is false !!!!!!!!');
+        logger.severe('!!!!!!!! init again start !!!!!!!!');
+        await init();
+        logger.severe('!!!!!!!! init again end !!!!!!!!');
+      } else {
+        await playVideo();
+        return true;
+      }
+    }
     logger.info('waitInit........ ${model!.name}');
     //int waitCount = 0;
     while (!wcontroller!.value.isInitialized) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
+    _isInitAlreadyDone = true;
     logger.info('waitInit end .........  ${model!.name}');
-    await wcontroller!.setLooping(acc.getAvailLength() == 1);
-
+    //await wcontroller!.setLooping(acc.getShowLength() == 1 && model!.isShow.value == true);
     if (_outSize == null) {
       _outSize = getOuterSize(wcontroller!.value.aspectRatio);
       await acc.resizeFrame(wcontroller!.value.aspectRatio, _outSize!, true);
     }
-    await _playVideo();
+    await playVideo();
     return true;
   }
 
-  Future<void> _playVideo() async {
-    if (autoStart && model!.isState(PlayState.start) == false) {
+  Future<void> playVideo() async {
+    if (StudioVariables.isAutoPlay &&
+        model!.isState(PlayState.start) == false &&
+        acc.playTimer!.isCurrentModel(model!.mid) &&
+        model!.isPauseTimer == false) {
       logger.info('video state = ${model!.playState}');
       await play(); //awat를 못한다....이거 문제임...
     }
