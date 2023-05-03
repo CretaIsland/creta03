@@ -258,17 +258,20 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   }
 
   Widget _title(ContentsModel model) {
-    return SizedBox(
-        width: 130,
-        child: Text(
-          ' ${model.name}',
-          maxLines: 1,
-          style: model.isShow.value
-              ? CretaFont.bodySmall
-              : CretaFont.bodySmall.copyWith(color: CretaColor.text[200]!),
-          textAlign: TextAlign.left,
-          overflow: TextOverflow.clip,
-        ));
+    return Tooltip(
+      message: model.name,
+      child: SizedBox(
+          width: 130,
+          child: Text(
+            ' ${model.name}',
+            maxLines: 1,
+            style: model.isShow.value
+                ? CretaFont.bodySmall
+                : CretaFont.bodySmall.copyWith(color: CretaColor.text[200]!),
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.clip,
+          )),
+    );
   }
 
   Widget _buttons(ContentsModel model, int index, List<CretaModel> items) {
