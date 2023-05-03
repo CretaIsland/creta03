@@ -35,7 +35,7 @@ class ContentsOrderedList extends StatefulWidget {
 }
 
 class _ContentsOrderedListState extends State<ContentsOrderedList> with PropertyMixin {
-  final ScrollController scrollController = ScrollController();
+  //final ScrollController scrollController = ScrollController();
 
   bool _isPlayListOpen = true;
   final double spacing = 6.0;
@@ -92,62 +92,57 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               //   thumbVisibility: false,
               //   trackVisibility: false,
               //   child:
-              Column(
-                children: [
-                  SizedBox(
-                    width: LayoutConst.rightMenuWidth,
-                    height: boxHeight,
-                    child: DropZoneWidget(
-                      parentId: '',
-                      onDroppedFile: (modelList) {
-                        String frameId = widget.contentsManager.frameModel.mid;
-                        logger.info('ContentsOrderedList dropzone contents added to $frameId');
-                        ContentsManager.createContents(
-                          widget.frameManager,
-                          modelList,
-                          widget.contentsManager.frameModel,
-                          widget.contentsManager.pageModel,
-                          isResizeFrame: false,
-                        );
-                      },
-                      child: ReorderableListView.builder(
-                        //scrollController: scrollController,
-                        itemCount: itemCount,
-                        buildDefaultDragHandles: false,
-                        onReorder: (int oldIndex, int newIndex) {
-                          setState(() {
-                            if (newIndex > oldIndex) {
-                              newIndex -= 1;
-                            }
-                            final ContentsModel pushedOne = items[newIndex] as ContentsModel;
-                            ContentsModel movedOne = items[oldIndex] as ContentsModel;
+              SizedBox(
+                width: LayoutConst.rightMenuWidth,
+                height: boxHeight,
+                child: DropZoneWidget(
+                  parentId: '',
+                  onDroppedFile: (modelList) {
+                    String frameId = widget.contentsManager.frameModel.mid;
+                    logger.info('ContentsOrderedList dropzone contents added to $frameId');
+                    ContentsManager.createContents(
+                      widget.frameManager,
+                      modelList,
+                      widget.contentsManager.frameModel,
+                      widget.contentsManager.pageModel,
+                      isResizeFrame: false,
+                    );
+                  },
+                  child: ReorderableListView.builder(
+                    //scrollController: scrollController,
+                    itemCount: itemCount,
+                    buildDefaultDragHandles: false,
+                    onReorder: (int oldIndex, int newIndex) {
+                      setState(() {
+                        if (newIndex > oldIndex) {
+                          newIndex -= 1;
+                        }
+                        final ContentsModel pushedOne = items[newIndex] as ContentsModel;
+                        ContentsModel movedOne = items[oldIndex] as ContentsModel;
 
-                            logger.info(
-                                '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
-                            widget.contentsManager
-                                .pushReverseOrder(movedOne.mid, pushedOne.mid, "playList");
-                            widget.contentsManager.reOrdering();
+                        logger.info(
+                            '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
+                        widget.contentsManager
+                            .pushReverseOrder(movedOne.mid, pushedOne.mid, "playList");
+                        widget.contentsManager.reOrdering();
 
-                            // oldOne = items.removeAt(oldIndex) as ContentsModel;
-                            // items.insert(newIndex, oldOne);
-                          });
-                        },
-                        itemBuilder: (BuildContext context, int index) {
-                          return _itemWidget(index, items);
-                          // return ListTile(
-                          //   key: Key('$index'),
-                          //   title: Text(model.name, style: CretaFont.bodySmall),
-                          //   leading: const Icon(Icons.drag_handle),
-                          // );
-                        },
-                      ),
-                    ),
+                        // oldOne = items.removeAt(oldIndex) as ContentsModel;
+                        // items.insert(newIndex, oldOne);
+                      });
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      return _itemWidget(index, items);
+                      // return ListTile(
+                      //   key: Key('$index'),
+                      //   title: Text(model.name, style: CretaFont.bodySmall),
+                      //   leading: const Icon(Icons.drag_handle),
+                      // );
+                    },
                   ),
-                  //if (itemCount > 5) _expandButton(),
-                ],
+                ),
               ),
               //),
-              if (itemCount > 0 && _selectedIndex < itemCount)
+              if (_selectedIndex >= 0 && itemCount > 0 && _selectedIndex < itemCount)
                 ..._info(items[_selectedIndex] as ContentsModel),
             ],
           ),
@@ -160,6 +155,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   Widget _itemWidget(int index, List<CretaModel> items) {
     ContentsModel model = items[index] as ContentsModel;
     String? uri = model.thumbnail;
+    if (widget.contentsManager.isSelected(model.mid)) {
+      _selectedIndex = index;
+    }
     return Stack(
       key: Key('$index${model.order.value}${model.mid}'),
       children: [
@@ -171,13 +169,17 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               _dragHandler(index),
               GestureDetector(
                 onLongPressDown: (detail) {
-                  widget.contentsManager.playTimer?.releasePause();
-                  widget.contentsManager.goto(model.order.value).then((v) {
-                    widget.contentsManager.setSelectedMid(model.mid);
-                  });
-                  setState(() {
-                    _selectedIndex = index;
-                  });
+                  if (_selectedIndex != index) {
+                    logger.info('ContentsOrderedList $_selectedIndex $index');
+                    widget.contentsManager.playTimer?.releasePause();
+                    widget.contentsManager.goto(model.order.value).then((v) {
+                      widget.contentsManager.setSelectedMid(model.mid);
+                    });
+                    setState(() {
+                      _selectedIndex = index;
+                      logger.info('ContentsOrderedList $_selectedIndex $index');
+                    });
+                  }
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

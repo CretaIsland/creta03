@@ -18,9 +18,24 @@ import 'draggable_resizable.dart';
 import 'mini_menu.dart';
 import 'stickerview.dart';
 
+class FrameSelectNotifier extends ChangeNotifier {
+  String? _selectedAssetId;
+  String? get selectedAssetId => _selectedAssetId;
+
+  void set(String val, {bool doNotify = true}) {
+    _selectedAssetId = val;
+    if (doNotify) {
+      notifyListeners();
+    }
+  }
+
+  void notify() => notifyListeners();
+}
+
 class DraggableStickers extends StatefulWidget {
-  static String? selectedAssetId;
+  //static String? selectedAssetId;
   static bool isFrontBackHover = false;
+  static FrameSelectNotifier? frameSelectNotifier;
 
   //List of stickers (elements)
   final double pageWidth;
@@ -70,7 +85,7 @@ class DraggableStickers extends StatefulWidget {
 class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
   final _initialStickerScale = 5.0;
-  Sticker? _selectedSticker;
+
   //final bool _isContents = false;
 
   List<Sticker> stickers = [];
@@ -79,33 +94,30 @@ class _DraggableStickersState extends State<DraggableStickers> {
     // setState(() {
     //   stickers = widget.stickerList ?? [];
     // });
+    DraggableStickers.frameSelectNotifier ??= FrameSelectNotifier();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     stickers = widget.stickerList;
-    _selectedSticker = _getSelectedSticker();
 
     logger.info('_DraggableStickersState build');
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // Positioned.fill(
-        //   child: GestureDetector(
-        //     key: const Key('stickersView_background_gestureDetector'),
-        //     onTap: () {
-        //       logger.finest('GestureDetector.onTap');
-        //     },
-        //   ),
-        // ),
-        _pageDropZone(),
-        //if (stickers.isNotEmpty && stickers != [])
-        for (final sticker in stickers) _drawEachStiker(sticker),
-        if (_selectedSticker != null) _drawMiniMenu(),
-        //if (_selectedSticker != null) _drawMiniMenuContents(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<FrameSelectNotifier>.value(
+          value: DraggableStickers.frameSelectNotifier!,
+        ),
       ],
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _pageDropZone(),
+          for (final sticker in stickers) _drawEachStiker(sticker),
+          _drawMiniMenu(),
+        ],
+      ),
     );
   }
 
@@ -130,7 +142,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //: Size(64 * _initialStickerScale, 64 * _initialStickerScale),
           : sticker.size,
 
-      canTransform: DraggableStickers.selectedAssetId == sticker.id ? true : false,
+      //canTransform: DraggableStickers.selectedAssetId == sticker.id ? true : false,
       onResizeButtonTap: widget.onResizeButtonTap,
       //  true
       /*sticker.id == state.selectedAssetId*/
@@ -167,8 +179,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         } else {
           stickers.insert(listLength - 1, sticker);
         }
-
-        DraggableStickers.selectedAssetId = sticker.id;
+        DraggableStickers.frameSelectNotifier?.set(sticker.id, doNotify: false);
         logger.finest('onLayerTapped');
         setState(() {});
       },
@@ -221,10 +232,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   splashColor: Colors.transparent,
                   onTap: () {
                     // To update the selected widget
-                    DraggableStickers.selectedAssetId = sticker.id;
-                    logger.fine('InkWell onTap from draggable_stickers...');
-                    setState(() {});
-                    widget.onTap?.call(DraggableStickers.selectedAssetId!);
+                    DraggableStickers.frameSelectNotifier?.set(sticker.id);
+                    logger.info('InkWell onTap from draggable_stickers...');
+                    //setState(() {});
+                    widget.onTap?.call(sticker.id);
                   },
                   child:
                       // _frameDropZone(
@@ -250,11 +261,12 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   Sticker? _getSelectedSticker() {
-    if (DraggableStickers.selectedAssetId == null) {
+    if (DraggableStickers.frameSelectNotifier == null ||
+        DraggableStickers.frameSelectNotifier!.selectedAssetId == null) {
       return null;
     }
     for (Sticker sticker in widget.stickerList) {
-      if (sticker.id == DraggableStickers.selectedAssetId!) {
+      if (sticker.id == DraggableStickers.frameSelectNotifier!.selectedAssetId!) {
         return sticker;
       }
     }
@@ -262,10 +274,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   Widget _drawMiniMenu() {
-    FrameModel? frameModel = widget.frameManager!.getModel(_selectedSticker!.id) as FrameModel?;
-
     return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
       logger.info('_drawMiniMenu()');
+
+      Sticker? selectedSticker = _getSelectedSticker();
+      if (selectedSticker == null) {
+        return const SizedBox.shrink();
+      }
+      FrameModel? frameModel = widget.frameManager!.getModel(selectedSticker.id) as FrameModel?;
 
       FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
       if (frameManager == null) {
@@ -298,26 +314,26 @@ class _DraggableStickersState extends State<DraggableStickers> {
           : MiniMenu(
               key: const ValueKey('MiniMenu'),
               contentsManager: contentsManager,
-              parentPosition: _selectedSticker!.position,
-              parentSize: _selectedSticker!.size,
-              parentBorderWidth: _selectedSticker!.borderWidth,
+              parentPosition: selectedSticker.position,
+              parentSize: selectedSticker.size,
+              parentBorderWidth: selectedSticker.borderWidth,
               pageHeight: widget.pageHeight,
               onFrameDelete: () {
                 logger.fine('onFrameDelete');
-                stickers.remove(_selectedSticker!);
-                widget.onFrameDelete.call(_selectedSticker!.id);
+                stickers.remove(selectedSticker);
+                widget.onFrameDelete.call(selectedSticker.id);
                 //setState(() {});
               },
               onFrameBack: () {
                 logger.fine('onFrameBack');
-                var ind = stickers.indexOf(_selectedSticker!);
+                var ind = stickers.indexOf(selectedSticker);
                 if (ind > 0) {
                   // 제일 뒤에 있는것은 제외한다.
                   // 뒤로 빼는 것이므로, 현재 보다 한숫자 작은 인덱스로 보내야 한다.
-                  stickers.remove(_selectedSticker!);
-                  stickers.insert(ind - 1, _selectedSticker!);
+                  stickers.remove(selectedSticker);
+                  stickers.insert(ind - 1, selectedSticker);
                   Sticker target = stickers[ind];
-                  widget.onFrameBack.call(_selectedSticker!.id, target.id);
+                  widget.onFrameBack.call(selectedSticker.id, target.id);
                   setState(() {});
                 }
               },
@@ -325,37 +341,37 @@ class _DraggableStickersState extends State<DraggableStickers> {
               onFrameFront: () {
                 logger.fine('onFrameFront');
                 var listLength = stickers.length;
-                var ind = stickers.indexOf(_selectedSticker!);
+                var ind = stickers.indexOf(selectedSticker);
                 if (ind < listLength - 1) {
                   // 제일 앞에 있는것은 제외한다.
                   // 앞으로 빼는 것이므로, 현재 보다 한숫자 큰 인덱스로 보내야 한다.
-                  stickers.remove(_selectedSticker!);
-                  stickers.insert(ind + 1, _selectedSticker!);
+                  stickers.remove(selectedSticker);
+                  stickers.insert(ind + 1, selectedSticker);
                   Sticker target = stickers[ind];
-                  widget.onFrameFront.call(_selectedSticker!.id, target.id);
+                  widget.onFrameFront.call(selectedSticker.id, target.id);
                   setState(() {});
                 }
               },
               onFrameMain: () {
                 logger.fine('onFrameMain');
-                _selectedSticker!.isMain = true;
-                widget.onFrameMain.call(_selectedSticker!.id);
+                selectedSticker.isMain = true;
+                widget.onFrameMain.call(selectedSticker.id);
                 //setState(() {});
               },
               onFrameCopy: () {
                 logger.fine('onFrameCopy');
-                widget.onFrameCopy.call(_selectedSticker!.id);
+                widget.onFrameCopy.call(selectedSticker.id);
                 //setState(() {});
               },
               onFrameRotate: () {
                 double reverse = 180 / pi;
-                double before = (_selectedSticker!.angle * reverse).roundToDouble();
+                double before = (selectedSticker.angle * reverse).roundToDouble();
                 logger.info('onFrameRotate  before $before');
                 int turns = (before / 15).round() + 1;
                 double after = ((turns * 15.0) % 360).roundToDouble();
-                _selectedSticker!.angle = after / reverse;
+                selectedSticker.angle = after / reverse;
                 logger.info('onFrameRotate  after $after');
-                widget.onFrameRotate.call(_selectedSticker!.id, after);
+                widget.onFrameRotate.call(selectedSticker.id, after);
                 setState(() {});
               },
               onContentsFlip: () {
@@ -407,9 +423,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //     return MiniMenuContents(
   //       key: const ValueKey('MiniMenuContents'),
   //       contentsManager: contentsManager,
-  //       parentPosition: _selectedSticker!.position,
-  //       parentSize: _selectedSticker!.size,
-  //       parentBorderWidth: _selectedSticker!.borderWidth,
+  //       parentPosition: selectedSticker!.position,
+  //       parentSize: selectedSticker!.size,
+  //       parentBorderWidth: selectedSticker!.borderWidth,
   //       pageHeight: widget.pageHeight,
   //       onContentsFlip: () {
   //         logger.fine('onContentsFlip');

@@ -64,12 +64,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         return RightMenu(
           key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
           onClose: () {
-            setState(() {
-              if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book) {
-                //BookMainPage.onceBookInfoOpened = true;
-              }
-              BookMainPage.containeeNotifier!.clear();
-            });
+            BookMainPage.containeeNotifier!.set(ContaineeEnum.None);
           },
         );
       }

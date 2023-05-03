@@ -63,11 +63,14 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   void initState() {
     super.initState();
     initChildren();
-    logger.info('==========================FrameEach initialized================');
   }
 
   Future<void> initChildren() async {
+    logger.info('==========================FrameEach initialized================');
     frameManager = widget.frameManager;
+    if (frameManager == null) {
+      logger.severe('frame manager is null');
+    }
     _contentsManager = frameManager!.findContentsManager(widget.model.mid);
     if (_contentsManager == null) {
       logger.info('new ContentsManager created (${widget.model.mid})');
@@ -76,7 +79,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     } else {
       logger.info('old ContentsManager used (${widget.model.mid})');
     }
-    if (_contentsManager!.playTimer == null) {
+    if (_playTimer == null) {
       _playTimer = CretaPlayTimer(_contentsManager!);
       _contentsManager!.setPlayerHandler(_playTimer!);
     }
@@ -92,6 +95,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   @override
   Widget build(BuildContext context) {
     applyScale = widget.applyScale;
+    if (_playTimer == null) {
+      logger.severe('_playTimer is null');
+    }
     _playTimer!.start();
     return MultiProvider(
       providers: [

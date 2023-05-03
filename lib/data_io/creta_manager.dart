@@ -659,7 +659,7 @@ abstract class CretaManager extends AbsExModelManager {
     return -1;
   }
 
-  double nextOrder(double currentOrder) {
+  double nextOrder(double currentOrder, {bool alwaysOneExist = false}) {
     bool matched = false;
 
     late Iterable<double> keys = _orderMap.deepSortByKey().keys;
@@ -866,7 +866,7 @@ abstract class CretaManager extends AbsExModelManager {
     selectedMid = modelList[0].mid;
     String className = HycopUtils.getClassName(selectedMid);
     if (className != 'frame' && className != 'contents') {
-      DraggableStickers.selectedAssetId = "";
+      DraggableStickers.frameSelectNotifier?.set("");
     }
     logger.info('selected1=$selectedMid, prev=$prevSelectedMid');
   }
@@ -878,7 +878,7 @@ abstract class CretaManager extends AbsExModelManager {
 
     String className = HycopUtils.getClassName(selectedMid);
     if (className != 'frame' && className != 'contents') {
-      DraggableStickers.selectedAssetId = "";
+      DraggableStickers.frameSelectNotifier?.set("", doNotify: doNotify);
     }
     if (doNotify) {
       notify();
@@ -889,7 +889,7 @@ abstract class CretaManager extends AbsExModelManager {
     prevSelectedMid = selectedMid;
     selectedMid = "";
     logger.finest('unselected, prev=$prevSelectedMid');
-    DraggableStickers.selectedAssetId = "";
+    DraggableStickers.frameSelectNotifier?.set("", doNotify: false);
 
     notify();
   }

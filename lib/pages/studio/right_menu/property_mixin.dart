@@ -57,7 +57,7 @@ mixin PropertyMixin {
     required Widget bodyWidget,
     required bool hasRemoveButton,
     required Function onDelete,
-    bool animate = true,
+    bool animate = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

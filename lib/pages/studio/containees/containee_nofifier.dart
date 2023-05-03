@@ -52,7 +52,15 @@ class ContaineeNotifier extends ChangeNotifier {
 }
 
 class MiniMenuNotifier extends ChangeNotifier {
-  bool isShow = true;
+  bool _isShow = true;
+  bool get isShow => _isShow;
+  void set(bool val, {bool doNoti = true}) {
+    _isShow = val;
+    if (doNoti) {
+      notify();
+    }
+  }
+
   void notify() => notifyListeners();
 }
 

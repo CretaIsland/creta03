@@ -79,9 +79,14 @@ class PageManager extends CretaManager {
   FrameManager? getSelectedFrameManager() {
     PageModel? pageModel = getSelected() as PageModel?;
     if (pageModel == null) {
+      logger.severe('pageModel is null');
       return null;
     }
     FrameManager? frameManager = frameManagerList[pageModel.mid];
+    if (frameManager == null) {
+      logger.severe('frameManager is null');
+      return null;
+    }
     return frameManager;
   }
 

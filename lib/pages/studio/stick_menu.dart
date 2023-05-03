@@ -1,12 +1,15 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields
 
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../lang/creta_studio_lang.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import 'book_main_page.dart';
+import 'left_menu/left_menu.dart';
 import 'studio_constant.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
@@ -60,7 +63,7 @@ class _StickMenuState extends State<StickMenu> {
     if (StudioVariables.workHeight < 1) {
       return Container();
     }
-    logger.finest('StickMenu.build: ${BookMainPage.selectedStick}');
+    logger.finest('StickMenu.build: ${BookMainPage.leftMenuNotifier!.selectedStick}');
     // if (BookMainPage.selectedStick == LeftMenuEnum.None) {
     //   StickMenu.initSelect();
     // }
@@ -85,13 +88,14 @@ class _StickMenuState extends State<StickMenu> {
               title: CretaStudioLang.menuStick[idx],
               onTap: () {
                 LeftMenuEnum selectedButton = LeftMenuEnum.values[idx];
-                if (BookMainPage.selectedStick == selectedButton) {
-                  BookMainPage.selectedStick = LeftMenuEnum.None;
+                if (BookMainPage.leftMenuNotifier!.selectedStick == selectedButton) {
+                  BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
                 } else {
-                  BookMainPage.selectedStick = selectedButton;
+                  BookMainPage.leftMenuNotifier!.set(selectedButton);
                 }
                 widget.selectFunction(selectedButton);
-                logger.finest('onTap ${BookMainPage.selectedStick.toString()}, $idx');
+                logger.finest(
+                    'onTap ${BookMainPage.leftMenuNotifier!.selectedStick.toString()}, $idx');
                 setState(() {
                   //StickMenu.select(idx);
                 });
@@ -134,68 +138,70 @@ class _NavBarItemState extends State<NavBarItem> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _selected = (BookMainPage.selectedStick == widget.menuType);
+    _selected = (BookMainPage.leftMenuNotifier!.selectedStick == widget.menuType);
     //logger.finest('build NavBarItem $_selected');
-    return GestureDetector(
-      onTap: () {
-        widget.onTap();
-        // setState(() {
-        //   logger.finest('setState NavBarItem $_selected');
-        //   //_selected = !_selected;
-        // });
-      },
-      child: MouseRegion(
-        onEnter: (value) {
-          setState(() {
-            _hovered = true;
-          });
+    return Consumer<LeftMenuNotifier>(builder: (context, leftMenuNotifier, child) {
+      return GestureDetector(
+        onTap: () {
+          widget.onTap();
+          // setState(() {
+          //   logger.finest('setState NavBarItem $_selected');
+          //   //_selected = !_selected;
+          // });
         },
-        onExit: (value) {
-          setState(() {
-            _hovered = false;
-          });
-        },
-        child: Container(
-          width: LayoutConst.menuStickWidth,
-          decoration: BoxDecoration(
-            color: _selected ? CretaColor.primary[100] : Colors.transparent,
-            border: _selected ? Border.all(width: 1, color: CretaColor.primary) : null,
-          ),
-          child: Stack(
-            children: [
-              SizedBox(
-                height: LayoutConst.menuStickIconAreaHeight,
-                width: LayoutConst.menuStickWidth,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        widget.iconData,
-                        color:
-                            _selected ? CretaColor.primary : CretaColor.text[700], //_color.value,
-                        size: _hovered
-                            ? LayoutConst.menuStickIconSize + 4
-                            : LayoutConst.menuStickIconSize,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
-                        child: Text(
-                          widget.title,
-                          style: CretaFont.titleSmall.copyWith(
-                            color: _selected ? CretaColor.primary : CretaColor.text[700],
-                          ),
-                          textAlign: TextAlign.center,
+        child: MouseRegion(
+          onEnter: (value) {
+            setState(() {
+              _hovered = true;
+            });
+          },
+          onExit: (value) {
+            setState(() {
+              _hovered = false;
+            });
+          },
+          child: Container(
+            width: LayoutConst.menuStickWidth,
+            decoration: BoxDecoration(
+              color: _selected ? CretaColor.primary[100] : Colors.transparent,
+              border: _selected ? Border.all(width: 1, color: CretaColor.primary) : null,
+            ),
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: LayoutConst.menuStickIconAreaHeight,
+                  width: LayoutConst.menuStickWidth,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          widget.iconData,
+                          color:
+                              _selected ? CretaColor.primary : CretaColor.text[700], //_color.value,
+                          size: _hovered
+                              ? LayoutConst.menuStickIconSize + 4
+                              : LayoutConst.menuStickIconSize,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text(
+                            widget.title,
+                            style: CretaFont.titleSmall.copyWith(
+                              color: _selected ? CretaColor.primary : CretaColor.text[700],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

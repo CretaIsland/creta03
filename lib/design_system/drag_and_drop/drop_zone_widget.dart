@@ -47,6 +47,7 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
           if (widget.child != null) widget.child!,
           if (kIsWeb)
             IgnorePointer(
+              //child: SizedBox.shrink(),
               child: DropzoneView(
                 onCreated: (controller) => this.controller = controller,
                 //onDrop: uploadedFile,

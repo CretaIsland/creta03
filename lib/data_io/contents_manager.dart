@@ -228,13 +228,10 @@ class ContentsManager extends CretaManager {
     await playTimer?.reOrdering();
 
     if (getAvailLength() == 0) {
-      BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+      BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
+    } else {
+      BookMainPage.containeeNotifier!.notify();
     }
-
-    // ignore: use_build_context_synchronously
-
-    //MiniMenu.minuMenuKey
-    BookMainPage.containeeNotifier!.notify();
     return;
   }
 
@@ -359,7 +356,7 @@ class ContentsManager extends CretaManager {
   }
 
   @override
-  double nextOrder(double currentOrder) {
+  double nextOrder(double currentOrder, {bool alwaysOneExist = false}) {
     int counter = 0;
     int len = getAvailLength();
     double input = currentOrder;
@@ -378,7 +375,10 @@ class ContentsManager extends CretaManager {
       counter++;
       input = order;
     }
-    //logger.warning('no avail order 2');
+    //logger.warning('no avail order $currentOrder');
+    // if (getShowLength() == 0 && alwaysOneExist) {
+    //   return currentOrder;
+    // }
     return -1;
   }
 
@@ -589,7 +589,7 @@ class ContentsManager extends CretaManager {
       await contentsManager.createNextContents(contentsModel, doNotify: false);
     }
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
-    DraggableStickers.selectedAssetId = frameModel.mid;
+    DraggableStickers.frameSelectNotifier!.set(frameModel.mid, doNotify: false);
     frameManager.setSelectedMid(frameModel.mid);
     //frameManager!.notify();
     // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.

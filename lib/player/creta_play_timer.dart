@@ -259,7 +259,7 @@ class CretaPlayTimer extends ChangeNotifier {
     //   }
     // }
     double oldOrder = _currentOrder;
-    _currentOrder = contentsManager.nextOrder(oldOrder);
+    _currentOrder = contentsManager.nextOrder(oldOrder, alwaysOneExist: true);
     if (oldOrder == _currentOrder) {
       _forceToChange = true;
     }
@@ -268,8 +268,10 @@ class CretaPlayTimer extends ChangeNotifier {
   void notifyToProperty() {
     if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Contents) {
       ContentsModel? content = contentsManager.getCurrentModel();
-      if (content != null) {
-        if (content.parentMid.value == DraggableStickers.selectedAssetId) {
+      if (content != null &&
+          DraggableStickers.frameSelectNotifier != null &&
+          DraggableStickers.frameSelectNotifier!.selectedAssetId != null) {
+        if (content.parentMid.value == DraggableStickers.frameSelectNotifier!.selectedAssetId) {
           logger.info('notifyToProperty');
           contentsManager.setSelectedMid(content.mid, doNotify: false);
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);

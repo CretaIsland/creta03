@@ -54,7 +54,7 @@ class UserPropertyManager extends CretaManager {
       await createNext();
       userCount = 1;
     }
-    endTransaction(); 
+    endTransaction();
     return userCount;
   }
 
@@ -76,45 +76,44 @@ class UserPropertyManager extends CretaManager {
   Future<UserPropertyModel> createNext() async {
     //updateLastOrder();
     propertyModel = UserPropertyModel.withName(
-      pparentMid: userModel.userId,
-      email: userModel.email,
-      nickname: userModel.name,
-      phoneNumber: userModel.phone,
-      profileImg: '',
-      teamMembers: [],
-      country: CountryType.none,
-      language: LanguageType.none,
-      job: JobType.none,
-      useDigitalSignage: false,
-      isPublicProfile: true,
-      channelBannerImg: '',
-      usePushNotice: false,
-      useEmailNotice: false,
-      themeStyle: ThemeType.none,
-      cretaInitPage: InitPageType.none,
-      cookie: CookieType.none,
-      cretaGrade: CretaGradeType.none,
-      ratePlan: RatePlanType.none,
-      freeSpace: 0,
-      bookCount: 0,
-      bookViewCount: 0,
-      bookViewTime: 0,
-      likeCount: 0,
-      commentCount: 0,
-      lastestBook: '',
-      lastestUseFrames: [],
-      lastestUseColors: [
-        Colors.white,
-        Colors.black,
-        Colors.red,
-        Colors.blue,
-        Colors.yellow,
-        Colors.green,
-        Colors.purple,
-      ],
-      autoPlay: true,
-      mute: false
-    );
+        pparentMid: userModel.userId,
+        email: userModel.email,
+        nickname: userModel.name,
+        phoneNumber: userModel.phone,
+        profileImg: '',
+        teamMembers: [],
+        country: CountryType.none,
+        language: LanguageType.none,
+        job: JobType.none,
+        useDigitalSignage: false,
+        isPublicProfile: true,
+        channelBannerImg: '',
+        usePushNotice: false,
+        useEmailNotice: false,
+        themeStyle: ThemeType.none,
+        cretaInitPage: InitPageType.none,
+        cookie: CookieType.none,
+        cretaGrade: CretaGradeType.none,
+        ratePlan: RatePlanType.none,
+        freeSpace: 0,
+        bookCount: 0,
+        bookViewCount: 0,
+        bookViewTime: 0,
+        likeCount: 0,
+        commentCount: 0,
+        lastestBook: '',
+        lastestUseFrames: [],
+        lastestUseColors: [
+          Colors.white,
+          Colors.black,
+          Colors.red,
+          Colors.blue,
+          Colors.yellow,
+          Colors.green,
+          Colors.purple,
+        ],
+        autoPlay: true,
+        mute: false);
     await createToDB(propertyModel!);
     insert(propertyModel!, postion: getAvailLength());
     selectedMid = propertyModel!.mid;
@@ -212,5 +211,33 @@ class UserPropertyManager extends CretaManager {
 
     logger.finest('getAnyLattestFrames ${propertyModel!.lastestUseFrames.toString()}');
     return _frameModelList;
+  }
+
+  void setMute(bool val) {
+    if (propertyModel != null) {
+      propertyModel!.mute = val;
+      setToDB(propertyModel!);
+    }
+  }
+
+  bool getMute() {
+    if (propertyModel == null) {
+      return false;
+    }
+    return propertyModel!.mute;
+  }
+
+  void setAutoPlay(bool val) {
+    if (propertyModel != null) {
+      propertyModel!.autoPlay = val;
+      setToDB(propertyModel!);
+    }
+  }
+
+  bool getAutoPlay() {
+    if (propertyModel == null) {
+      return false;
+    }
+    return propertyModel!.autoPlay;
   }
 }

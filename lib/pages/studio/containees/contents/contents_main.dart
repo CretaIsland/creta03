@@ -98,8 +98,8 @@ class ContentsMainState extends State<ContentsMain> {
 
   Widget _consumerFunc() {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
-      int contentsCount = contentsManager.getShowLength();
-      //int contentsCount = contentsManager.getAvailLength();
+      //int contentsCount = contentsManager.getShowLength();
+      int contentsCount = contentsManager.getAvailLength();
       logger.info('ContentsMain = Consumer<ContentsManager>');
       return Consumer<CretaPlayTimer>(builder: (context, playTimer, child) {
         logger.info('Consumer<CretaPlayTimer>');

@@ -10,7 +10,7 @@ import '../studio_snippet.dart';
 mixin LeftMenuMixin {
   late AnimationController _animationController;
 
-  void initAnimation(TickerProvider tp, {int duration = 150}) {
+  void initAnimation(TickerProvider tp, {int duration = 50}) {
     _animationController = AnimationController(
       duration: Duration(milliseconds: duration),
       reverseDuration: Duration(milliseconds: duration + 50),

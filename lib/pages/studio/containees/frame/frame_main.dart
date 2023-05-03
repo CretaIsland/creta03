@@ -14,6 +14,7 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
+import '../../right_menu/right_menu.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../containee_nofifier.dart';
@@ -146,6 +147,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
               frameManager?.setSelectedMid(mid, doNotify: false);
               contentsManager.setSelectedMid(content.mid, doNotify: false);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
+              BookMainPage.miniMenuNotifier!.set(true);
               return;
             }
           }
@@ -154,10 +156,12 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         FrameModel? frame = frameManager?.getSelected() as FrameModel?;
         if (frame == null ||
             frame.mid != mid ||
-            BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame) {
+            BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame ||
+            RightMenu.isOpen == false) {
           //setState(() {
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
-          frameManager?.setSelectedMid(mid);
+          frameManager?.setSelectedMid(mid, doNotify: false);
+          BookMainPage.miniMenuNotifier!.set(true);
           //});
         }
         frame = frameManager?.getSelected() as FrameModel?;
@@ -179,9 +183,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           //model.save();
           logger.info('onComplete');
           _sendEvent?.sendEvent(model);
-          BookMainPage.miniMenuNotifier!.isShow = true;
+          BookMainPage.miniMenuNotifier!.set(true);
           //BookMainPage.miniMenuContentsNotifier!.isShow = true;
-          BookMainPage.miniMenuNotifier?.notify();
           //BookMainPage.miniMenuContentsNotifier?.notify();
         }
       },
@@ -189,9 +192,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           logger.info('onScaleStart');
-          BookMainPage.miniMenuNotifier!.isShow = false;
+          BookMainPage.miniMenuNotifier!.set(false);
           //BookMainPage.miniMenuContentsNotifier!.isShow = false;
-          BookMainPage.miniMenuNotifier?.notify();
           //BookMainPage.miniMenuContentsNotifier?.notify();
         }
       },

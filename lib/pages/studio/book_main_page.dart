@@ -27,6 +27,7 @@ import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
+import '../login_page.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
 import 'left_menu/left_menu.dart';
@@ -50,7 +51,8 @@ class BookMainPage extends StatefulWidget {
   static MiniMenuNotifier? miniMenuNotifier;
   //static MiniMenuContentsNotifier? miniMenuContentsNotifier;
 
-  static LeftMenuEnum selectedStick = LeftMenuEnum.None;
+  //static LeftMenuEnum selectedStick = LeftMenuEnum.None;
+  static LeftMenuNotifier? leftMenuNotifier;
   static ClickReceiverHandler clickReceiverHandler = ClickReceiverHandler();
   static ClickEventHandler clickEventHandler = ClickEventHandler();
 
@@ -65,7 +67,6 @@ class BookMainPage extends StatefulWidget {
 class _BookMainPageState extends State<BookMainPage> {
   late BookModel _bookModel;
   bool _onceDBGetComplete = false;
-  bool _isFirstOpen = true;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
   // final ScrollController controller = ScrollController();
@@ -92,13 +93,13 @@ class _BookMainPageState extends State<BookMainPage> {
 
     BookMainPage.containeeNotifier = ContaineeNotifier();
     BookMainPage.miniMenuNotifier = MiniMenuNotifier();
+    BookMainPage.leftMenuNotifier = LeftMenuNotifier();
     //BookMainPage.miniMenuContentsNotifier = MiniMenuContentsNotifier();
 
     // 같은 페이지에서 객체만 바뀌면 static value 들은 그대로 남아있게 되므로
     // static value 도 초기화해준다.
     //BookMainPage.selectedMid = '';
     //BookMainPage.onceBookInfoOpened = false;
-    BookMainPage.selectedStick = LeftMenuEnum.None;
 
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: false);
 
@@ -143,7 +144,7 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     }
-    BookMainPage.selectedStick = LeftMenuEnum.Page; // 페이지가 열린 상태로 시작하게 한다.
+    BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.Page, doNotify: false); // 페이지가 열린 상태로 시작하게 한다.
     saveManagerHolder?.runSaveTimer();
 
     BookMainPage.clickReceiverHandler.init();
@@ -170,8 +171,10 @@ class _BookMainPageState extends State<BookMainPage> {
 
     _onceDBGetComplete = true;
 
-    //StudioVariables.isSilent = LoginPage.userPropertyManagerHolder?.getSilent();
-    //StudioVariables.isAutoPlay = LoginPage.userPropertyManagerHolder?.getAutoPlay();
+    if (LoginPage.userPropertyManagerHolder != null) {
+      StudioVariables.isMute = LoginPage.userPropertyManagerHolder!.getMute();
+      StudioVariables.isAutoPlay = LoginPage.userPropertyManagerHolder!.getAutoPlay();
+    }
   }
 
   //   Future<int> _getPolygonFrameTemplates() async {
@@ -248,6 +251,10 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<MiniMenuNotifier>.value(
           value: BookMainPage.miniMenuNotifier!,
         ),
+        ChangeNotifierProvider<LeftMenuNotifier>.value(
+          value: BookMainPage.leftMenuNotifier!,
+        ),
+
         // ChangeNotifierProvider<MiniMenuContentsNotifier>.value(
         //   value: BookMainPage.miniMenuContentsNotifier!,
         // ),
@@ -404,51 +411,22 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _openLeftMenu() {
-    return BookMainPage.selectedStick != LeftMenuEnum.None
-        ? LeftMenu(
-            onClose: () {
-              setState(() {
-                BookMainPage.selectedStick = LeftMenuEnum.None;
-              });
-            },
-          )
-        : SizedBox.shrink();
+    return LeftMenu(
+      onClose: () {
+        BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
+      },
+    );
   }
 
   Widget _openRightMenu() {
-    return Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
-      return _shouldRightMenuOpen()
-          ? Positioned(
-              top: 0,
-              left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
-              child: RightMenu(
-                //key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
-                onClose: () {
-                  setState(() {
-                    if (containeeNotifier.selectedClass == ContaineeEnum.Book) {
-                      //BookMainPage.onceBookInfoOpened = true;
-                    }
-                    containeeNotifier.clear();
-                  });
-                },
-              ))
-          : SizedBox.shrink();
-    });
-  }
-
-  bool _shouldRightMenuOpen() {
-    if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.None) {
-      return false;
-    }
-    if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book ||
-        _isFirstOpen == true) {
-      _isFirstOpen = false;
-      // if (BookMainPage.onceBookInfoOpened == true) {
-      //   return false;
-      // }
-      return true;
-    }
-    return true;
+    return Positioned(
+        top: 0,
+        left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
+        child: RightMenu(
+            //key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
+            onClose: () {
+          BookMainPage.containeeNotifier!.set(ContaineeEnum.None);
+        }));
   }
 
   Widget _topMenu() {
@@ -526,13 +504,13 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
               SizedBox(width: padding),
               CretaIconToggleButton(
-                toggleValue: StudioVariables.isSilent,
+                toggleValue: StudioVariables.isMute,
                 icon1: Icons.volume_off_outlined,
                 icon2: Icons.volume_up_outlined,
                 tooltip: CretaStudioLang.tooltipVolume,
                 onPressed: () {
-                  StudioVariables.isSilent = !StudioVariables.isSilent;
-                  //LoginPage.userPropertyManagerHolder?.setSilent(StudioVariables.isSilent);
+                  StudioVariables.isMute = !StudioVariables.isMute;
+                  LoginPage.userPropertyManagerHolder?.setMute(StudioVariables.isMute);
 
                   if (BookMainPage.pageManagerHolder == null) {
                     return;
@@ -547,7 +525,7 @@ class _BookMainPageState extends State<BookMainPage> {
                   if (frameManager == null) {
                     return;
                   }
-                  if (StudioVariables.isSilent == true) {
+                  if (StudioVariables.isMute == true) {
                     logger.info('frameManager.setSoundOff()--------');
                     frameManager.setSoundOff();
                   } else {
@@ -576,7 +554,7 @@ class _BookMainPageState extends State<BookMainPage> {
                 tooltip: CretaStudioLang.tooltipPause,
                 onPressed: () {
                   StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
-                  //LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
+                  LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
                   if (BookMainPage.pageManagerHolder == null) {
                     return;
                   }
@@ -648,10 +626,7 @@ class _BookMainPageState extends State<BookMainPage> {
               });
             },
             onLabelHovered: () {
-              setState(() {
-                //BookMainPage.onceBookInfoOpened = false;
-                BookMainPage.containeeNotifier!.set(ContaineeEnum.Book);
-              });
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.Book);
             },
           ),
         ],
@@ -856,7 +831,7 @@ class _BookMainPageState extends State<BookMainPage> {
     if (BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.None) {
       retval = retval - LayoutConst.rightMenuWidth;
     }
-    if (BookMainPage.selectedStick != LeftMenuEnum.None) {
+    if (BookMainPage.leftMenuNotifier!.selectedStick != LeftMenuEnum.None) {
       retval = retval - LayoutConst.leftMenuWidth;
     }
     return retval;
@@ -914,13 +889,13 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _showLeftMenu(LeftMenuEnum idx) {
-    logger.finest("showLeftMenu ${idx.name}");
-    setState(() {
-      // if (BookMainPage.selectedStick == idx) {
-      //   BookMainPage.selectedStick = LeftMenuEnum.None;
-      // } else {
-      //   BookMainPage.selectedStick = idx;
-      // }
-    });
+    logger.info("showLeftMenu ${idx.name}");
+    // setState(() {
+    //   // if (BookMainPage.selectedStick == idx) {
+    //   //   BookMainPage.selectedStick = LeftMenuEnum.None;
+    //   // } else {
+    //   //   BookMainPage.selectedStick = idx;
+    //   // }
+    // });
   }
 }

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../data_io/frame_manager.dart';
@@ -25,6 +25,7 @@ import 'page/page_property.dart';
 import 'right_menu_frame_and_contents.dart';
 
 class RightMenu extends StatefulWidget {
+  static bool isOpen = false;
   //final ContaineeEnum selectedStick;
   final Function onClose;
   const RightMenu({super.key, required this.onClose});
@@ -37,6 +38,9 @@ class _RightMenuState
     extends State<RightMenu> /* with SingleTickerProviderStateMixin, LeftMenuMixin */ {
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
   //late ScrollController _scrollController;
+
+  bool _isFirstOpen = true;
+
   @override
   void initState() {
     //_scrollController = ScrollController(initialScrollOffset: 0.0);
@@ -50,9 +54,23 @@ class _RightMenuState
     super.dispose();
   }
 
+  bool _shouldRightMenuOpen() {
+    if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.None) {
+      return false;
+    }
+    if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book ||
+        _isFirstOpen == true) {
+      _isFirstOpen = false;
+      // if (BookMainPage.onceBookInfoOpened == true) {
+      //   return false;
+      // }
+      return true;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget title = _eachTitle(BookMainPage.containeeNotifier!.selectedClass);
     return
         // SizedBox(
         //   height: StudioVariables.workHeight,
@@ -62,64 +80,79 @@ class _RightMenuState
         //   width: LayoutConst.rightMenuWidth,
         //   shadowDirection: ShadowDirection.leftTop,
         //   child:
-        Container(
-      height: StudioVariables.workHeight,
-      width: LayoutConst.rightMenuWidth,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.leftTop),
-      ),
-      child: ListView(
-        shrinkWrap: true,
-        //controller: _scrollController,
-        //mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: LayoutConst.rightMenuTitleHeight -
-                (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book ? 0 : 4),
-            width: LayoutConst.rightMenuWidth,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Positioned(
-                  top: 8, left: 8,
-                  child: BTN.fill_gray_i_m(
-                    tooltip: CretaStudioLang.close,
-                    tooltipBg: CretaColor.text[700]!,
-                    icon: Icons.keyboard_double_arrow_right_outlined,
-                    onPressed: () async {
-                      //await _animationController.reverse();
-                      widget.onClose.call();
-                    },
+        Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
+      if (_shouldRightMenuOpen() == false) {
+        RightMenu.isOpen = false;
+        return SizedBox.shrink();
+      }
+      Widget title = _eachTitle(BookMainPage.containeeNotifier!.selectedClass);
+      RightMenu.isOpen = true;
+
+      return Container(
+        height: StudioVariables.workHeight,
+        width: LayoutConst.rightMenuWidth,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.leftTop),
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          //controller: _scrollController,
+          //mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: LayoutConst.rightMenuTitleHeight -
+                  (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book ? 0 : 4),
+              width: LayoutConst.rightMenuWidth,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned(
+                    top: 8, left: 8,
+                    child: BTN.fill_gray_i_m(
+                      tooltip: CretaStudioLang.close,
+                      tooltipBg: CretaColor.text[700]!,
+                      icon: Icons.keyboard_double_arrow_right_outlined,
+                      onPressed: () async {
+                        //await _animationController.reverse();
+                        RightMenu.isOpen = false;
+                        widget.onClose.call();
+                      },
+                    ),
+                    // super.closeButton(
+                    //     icon: Icons.keyboard_double_arrow_right_outlined,
+                    //     onClose: widget.onClose),
                   ),
-                  // super.closeButton(
-                  //     icon: Icons.keyboard_double_arrow_right_outlined,
-                  //     onClose: widget.onClose),
-                ),
-                SizedBox(
-                  width: 300,
-                  child: title,
-                ),
-              ],
+                  SizedBox(
+                    width: 300,
+                    child: title,
+                  ),
+                ],
+              ),
             ),
-          ),
-          // BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book
-          //     ? SizedBox.shrink()
-          //     : Divider(
-          //         height: 4,
-          //         color: CretaColor.text[200]!,
-          //         indent: 0,
-          //         endIndent: 0,
-          //       ),
-          SizedBox(
-            width: LayoutConst.rightMenuWidth,
-            child: _eachWidget(BookMainPage.containeeNotifier!.selectedClass),
-          )
-        ],
-      ),
-      //),
-      //),
-    ).animate().scaleX(alignment: Alignment.centerRight);
+            // BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Book
+            //     ? SizedBox.shrink()
+            //     : Divider(
+            //         height: 4,
+            //         color: CretaColor.text[200]!,
+            //         indent: 0,
+            //         endIndent: 0,
+            //       ),
+            SizedBox(
+              width: LayoutConst.rightMenuWidth,
+              child: _eachWidget(BookMainPage.containeeNotifier!.selectedClass),
+            )
+          ],
+        ),
+        //),
+        //),
+        //).animate().scaleX(alignment: Alignment.centerRight);
+        // ).animate().scaleX(
+        //         alignment: Alignment.centerRight,
+        //         delay: Duration.zero,
+        //         duration: Duration(milliseconds: 50));
+      );
+    });
   }
 
   Widget _eachWidget(ContaineeEnum selected) {

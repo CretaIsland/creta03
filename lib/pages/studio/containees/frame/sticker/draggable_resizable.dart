@@ -9,8 +9,8 @@ import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../studio_constant.dart';
 import 'draggable_point.dart';
+import 'seleted_box.dart';
 //import 'floating_action_icon.dart';
-import 'resize_point.dart';
 
 /// {@template drag_update}
 /// Drag update model which includes the position and size.
@@ -66,7 +66,7 @@ class DraggableResizable extends StatefulWidget {
     this.onLayerTapped,
     this.onEdit,
     this.onFrameDelete,
-    this.canTransform = false,
+    //this.canTransform = false,
   }) : //constraints = constraints ?? BoxConstraints.loose(Size.infinite),
         super(key: key);
 
@@ -90,7 +90,7 @@ class DraggableResizable extends StatefulWidget {
 
   /// Whether or not the asset can be dragged or resized.
   /// Defaults to false.
-  final bool canTransform;
+  //final bool canTransform;
 
   /// The child's original size.
   final String mid;
@@ -375,23 +375,28 @@ class _DraggableResizableState extends State<DraggableResizable> {
           alignment: Alignment.center,
           height: normalizedHeight + LayoutConst.stikerOffset,
           width: normalizedWidth + LayoutConst.stikerOffset,
-          // decoration: BoxDecoration(
-          //   border: Border.all(width: 1, color: Colors.red),
-          // ),
-          child: Container(
+          child: SizedBox(
             height: normalizedHeight,
             width: normalizedWidth,
-            decoration: widget.canTransform
-                ? BoxDecoration(
-                    border: Border.all(
-                      width: LayoutConst.selectBoxBorder,
-                      color: CretaColor.primary,
-                    ),
-                  )
-                : null,
             child: Center(child: widget.child),
           ),
         );
+
+        // final selectedBox = Container(
+        //   key: Key('selectedBox-$widget.mid}'),
+        //   alignment: Alignment.center,
+        //   height: normalizedHeight + LayoutConst.stikerOffset,
+        //   width: normalizedWidth + LayoutConst.stikerOffset,
+        //   child: Container(
+        //       height: normalizedHeight,
+        //       width: normalizedWidth,
+        //       decoration: BoxDecoration(
+        //         border: Border.all(
+        //           width: LayoutConst.selectBoxBorder,
+        //           color: CretaColor.primary,
+        //         ),
+        //       )),
+        // );
 
         final mainSymbol = Positioned(
           left: LayoutConst.stikerOffset / 2 + 4,
@@ -411,77 +416,77 @@ class _DraggableResizableState extends State<DraggableResizable> {
           ),
         );
 
-        final topLeftCorner = ResizePoint(
-          key: Key('draggableResizable_topLeft_resizePoint-${widget.mid}'),
-          type: ResizePointType.topLeft,
-          onDrag: onDragTopLeft,
-          onTap: widget.onResizeButtonTap,
-          //iconData: Icons.zoom_out_map,
-          onComplete: widget.onComplete,
-        );
+        // final topLeftCorner = ResizePoint(
+        //   key: Key('draggableResizable_topLeft_resizePoint-${widget.mid}'),
+        //   type: ResizePointType.topLeft,
+        //   onDrag: onDragTopLeft,
+        //   onTap: widget.onResizeButtonTap,
+        //   //iconData: Icons.zoom_out_map,
+        //   onComplete: widget.onComplete,
+        // );
 
-        final bottomRightCorner = ResizePoint(
-          key: Key('draggableResizable_bottomRight_resizePoint-${widget.mid}'),
-          type: ResizePointType.bottomRight,
-          onDrag: onDragBottomRight,
-          onTap: widget.onResizeButtonTap,
-          //iconData: Icons.zoom_out_map,
-          onComplete: widget.onComplete,
-        );
+        // final bottomRightCorner = ResizePoint(
+        //   key: Key('draggableResizable_bottomRight_resizePoint-${widget.mid}'),
+        //   type: ResizePointType.bottomRight,
+        //   onDrag: onDragBottomRight,
+        //   onTap: widget.onResizeButtonTap,
+        //   //iconData: Icons.zoom_out_map,
+        //   onComplete: widget.onComplete,
+        // );
 
-        final topRightCorner = ResizePoint(
-          key: Key('draggableResizable_topRight_resizePoint-${widget.mid}'),
-          type: ResizePointType.topRight,
-          onDrag: onDragTopRight,
-          onTap: widget.onResizeButtonTap,
-          //iconData: Icons.zoom_out_map,
-          onComplete: widget.onComplete,
-        );
+        // final topRightCorner = ResizePoint(
+        //   key: Key('draggableResizable_topRight_resizePoint-${widget.mid}'),
+        //   type: ResizePointType.topRight,
+        //   onDrag: onDragTopRight,
+        //   onTap: widget.onResizeButtonTap,
+        //   //iconData: Icons.zoom_out_map,
+        //   onComplete: widget.onComplete,
+        // );
 
-        final bottomLeftCorner = ResizePoint(
-          key: Key('draggableResizable_bottomLeft_resizePoint-${widget.mid}'),
-          type: ResizePointType.bottomLeft,
-          onDrag: onDragBottomLeft,
-          onTap: widget.onResizeButtonTap,
-          //iconData: Icons.zoom_out_map,
-          onComplete: widget.onComplete,
-        );
+        // final bottomLeftCorner = ResizePoint(
+        //   key: Key('draggableResizable_bottomLeft_resizePoint-${widget.mid}'),
+        //   type: ResizePointType.bottomLeft,
+        //   onDrag: onDragBottomLeft,
+        //   onTap: widget.onResizeButtonTap,
+        //   //iconData: Icons.zoom_out_map,
+        //   onComplete: widget.onComplete,
+        // );
 
-        final upPlane = ResizePoint(
-          key: Key('draggableResizable_upPlane_resizePoint-${widget.mid}'),
-          type: ResizePointType.up,
-          onDrag: onDragUp,
-          onTap: widget.onResizeButtonTap,
-          //iconData: Icons.zoom_out_map,
-          onComplete: widget.onComplete,
-        );
+        // final upPlane = ResizePoint(
+        //   key: Key('draggableResizable_upPlane_resizePoint-${widget.mid}'),
+        //   type: ResizePointType.up,
+        //   onDrag: onDragUp,
+        //   onTap: widget.onResizeButtonTap,
+        //   //iconData: Icons.zoom_out_map,
+        //   onComplete: widget.onComplete,
+        // );
 
-        final rightPlane = ResizePoint(
-          key: Key('draggableResizable_rightPlane_resizePoint-${widget.mid}'),
-          type: ResizePointType.right,
-          onDrag: onDragRight,
-          onTap: widget.onResizeButtonTap,
-          //iconData: Icons.zoom_out_map,
-          onComplete: widget.onComplete,
-        );
+        // final rightPlane = ResizePoint(
+        //   key: Key('draggableResizable_rightPlane_resizePoint-${widget.mid}'),
+        //   type: ResizePointType.right,
+        //   onDrag: onDragRight,
+        //   onTap: widget.onResizeButtonTap,
+        //   //iconData: Icons.zoom_out_map,
+        //   onComplete: widget.onComplete,
+        // );
 
-        final downPlane = ResizePoint(
-          key: Key('draggableResizable_downPlane_resizePoint-${widget.mid}'),
-          type: ResizePointType.down,
-          onDrag: onDragDown,
-          onTap: widget.onResizeButtonTap,
-          //iconData: Icons.zoom_out_map,
-          onComplete: widget.onComplete,
-        );
+        // final downPlane = ResizePoint(
+        //   key: Key('draggableResizable_downPlane_resizePoint-${widget.mid}'),
+        //   type: ResizePointType.down,
+        //   onDrag: onDragDown,
+        //   onTap: widget.onResizeButtonTap,
+        //   //iconData: Icons.zoom_out_map,
+        //   onComplete: widget.onComplete,
+        // );
 
-        final leftPlane = ResizePoint(
-          key: Key('draggableResizable_leftPlane_resizePoint-${widget.mid}'),
-          type: ResizePointType.left,
-          onDrag: onDragLeft,
-          onTap: widget.onResizeButtonTap,
-          //iconData: Icons.zoom_out_map,
-          onComplete: widget.onComplete,
-        );
+        // final leftPlane = ResizePoint(
+        //   key: Key('draggableResizable_leftPlane_resizePoint-${widget.mid}'),
+        //   type: ResizePointType.left,
+        //   onDrag: onDragLeft,
+        //   onTap: widget.onResizeButtonTap,
+        //   //iconData: Icons.zoom_out_map,
+        //   onComplete: widget.onComplete,
+        // );
 
         // final center = Offset(
         //   -((normalizedWidth +
@@ -538,8 +543,8 @@ class _DraggableResizableState extends State<DraggableResizable> {
             (LayoutConst.selectBoxBorder + LayoutConst.stikerOffset - LayoutConst.cornerDiameter) /
                 2;
 
-        double heightCenter = normalizedHeight / 2 + resizePointerOffset;
-        double widthCenter = normalizedWidth / 2 + resizePointerOffset;
+        // double heightCenter = normalizedHeight / 2 + resizePointerOffset;
+        // double widthCenter = normalizedWidth / 2 + resizePointerOffset;
 
         return Stack(
           children: <Widget>[
@@ -605,65 +610,82 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   child: Stack(
                     children: [
                       decoratedChild,
+                      SelectedBox(
+                        mid: widget.mid,
+                        normalizedHeight: normalizedHeight,
+                        normalizedWidth: normalizedWidth,
+                        resizePointerOffset: resizePointerOffset,
+                        onDragTopLeft: onDragTopLeft,
+                        onDragBottomRight: onDragBottomRight,
+                        onDragTopRight: onDragTopRight,
+                        onDragBottomLeft: onDragBottomLeft,
+                        onDragUp: onDragUp,
+                        onDragRight: onDragRight,
+                        onDragDown: onDragDown,
+                        onDragLeft: onDragLeft,
+                        onResizeButtonTap: widget.onResizeButtonTap,
+                        onComplete: widget.onComplete,
+                        key: Key('SelectedBox-$widget.mid}'),
+                      ),
                       if (widget.isMain) mainSymbol,
-                      if (widget.canTransform && isTouchInputSupported) ...[
-                        // Positioned(
-                        //   // upPlane
-                        //   left: widthCenter,
-                        //   child: rotateAnchor,
-                        // ),
-                        Positioned(
-                          //topLeft
-                          top: resizePointerOffset,
-                          left: resizePointerOffset,
-                          child: topLeftCorner,
-                        ),
-                        Positioned(
-                          // bottomLeft
-                          bottom: resizePointerOffset,
-                          left: resizePointerOffset,
-                          child: bottomLeftCorner,
-                        ),
-                        Positioned(
-                          //bottomRight
-                          bottom: resizePointerOffset,
-                          right: resizePointerOffset,
-                          child: bottomRightCorner,
-                        ),
-                        Positioned(
-                          // topRight
-                          top: resizePointerOffset,
-                          right: resizePointerOffset,
-                          child: topRightCorner,
-                        ),
+                      // if (widget.canTransform && isTouchInputSupported) ...[
+                      //   // Positioned(
+                      //   //   // upPlane
+                      //   //   left: widthCenter,
+                      //   //   child: rotateAnchor,
+                      //   // ),
+                      //   Positioned(
+                      //     //topLeft
+                      //     top: resizePointerOffset,
+                      //     left: resizePointerOffset,
+                      //     child: topLeftCorner,
+                      //   ),
+                      //   Positioned(
+                      //     // bottomLeft
+                      //     bottom: resizePointerOffset,
+                      //     left: resizePointerOffset,
+                      //     child: bottomLeftCorner,
+                      //   ),
+                      //   Positioned(
+                      //     //bottomRight
+                      //     bottom: resizePointerOffset,
+                      //     right: resizePointerOffset,
+                      //     child: bottomRightCorner,
+                      //   ),
+                      //   Positioned(
+                      //     // topRight
+                      //     top: resizePointerOffset,
+                      //     right: resizePointerOffset,
+                      //     child: topRightCorner,
+                      //   ),
 
-                        // centerButtons !!!
+                      //   // centerButtons !!!
 
-                        Positioned(
-                          //topMidle
-                          top: resizePointerOffset,
-                          left: widthCenter,
-                          child: upPlane,
-                        ),
-                        Positioned(
-                          // leftMiddle
-                          top: heightCenter,
-                          left: resizePointerOffset,
-                          child: leftPlane,
-                        ),
-                        Positioned(
-                          //bottomMiddle
-                          bottom: resizePointerOffset,
-                          left: widthCenter,
-                          child: downPlane,
-                        ),
-                        Positioned(
-                          // rightMiddle
-                          top: heightCenter,
-                          right: resizePointerOffset,
-                          child: rightPlane,
-                        ),
-                      ],
+                      //   Positioned(
+                      //     //topMidle
+                      //     top: resizePointerOffset,
+                      //     left: widthCenter,
+                      //     child: upPlane,
+                      //   ),
+                      //   Positioned(
+                      //     // leftMiddle
+                      //     top: heightCenter,
+                      //     left: resizePointerOffset,
+                      //     child: leftPlane,
+                      //   ),
+                      //   Positioned(
+                      //     //bottomMiddle
+                      //     bottom: resizePointerOffset,
+                      //     left: widthCenter,
+                      //     child: downPlane,
+                      //   ),
+                      //   Positioned(
+                      //     // rightMiddle
+                      //     top: heightCenter,
+                      //     right: resizePointerOffset,
+                      //     child: rightPlane,
+                      //   ),
+                      // ],
                     ],
                   ),
                 ),
