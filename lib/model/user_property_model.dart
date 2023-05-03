@@ -19,21 +19,22 @@ class UserPropertyModel extends CretaModel {
   late String profileImg;             // 프로필 이미지 url
   late List<String> teamMembers;      // 팀원
   
-  late CountryType country;                   // 국가
-  late LanguageType language;                  // 언어
-  late JobType job;                       // 직업
+  late CountryType country;           // 국가
+  late LanguageType language;         // 언어
+  late JobType job;                   // 직업
 
   late bool useDigitalSignage;        // 디지털 사이니지 사용 여부
   late bool isPublicProfile;          // 프로필 공개 여부  
   late String channelBannerImg;       // 배경 이미지 url (채널 배너)
-  // late bool usePushNotice;            // 푸시 알림 사용 여부
-  // late bool useEmailNotice;           // 이메일 알림 사용 여부
+  late bool usePushNotice;            // 푸시 알림 사용 여부
+  late bool useEmailNotice;           // 이메일 알림 사용 여부
 
-  // late int themeStyle;                // 크레타 테마 (라이트모드, 다크 모드)
-  // late int cretaInitPage;             // 크레타 처음 시작 페이지 (커뮤니티, 스튜디오)
+  late ThemeType themeStyle;          // 크레타 테마 (라이트모드, 다크 모드)
+  late InitPageType cretaInitPage;    // 크레타 처음 시작 페이지 (커뮤니티, 스튜디오)
+  late CookieType cookie;             // 쿠키 설정
 
-  late CretaGradeType cretaGrade;             // 크레타 등급
-  late RatePlanType ratePlan;               // 요금제 등급
+  late CretaGradeType cretaGrade;     // 크레타 등급
+  late RatePlanType ratePlan;         // 요금제 등급
   late int freeSpace;                 // 남은 용량
 
   late int bookCount;                 // 본인의 북 개수
@@ -44,7 +45,10 @@ class UserPropertyModel extends CretaModel {
 
   late String lastestBook;            // 마지막으로 편집한 크레타북의 아이디
   late List<String> lastestUseFrames; // 가장 최근에 사용한 프레임 7개
-  late List<Color> lastestUseColors; // 가장 최근에 사용한 색깔 7개
+  late List<Color> lastestUseColors;  // 가장 최근에 사용한 색깔 7개
+
+  late bool autoPlay;                 // 크레타 북 내 콘텐츠 자동 재생 여부
+  late bool mute;                     // 크레타 북 내 콘텐츠 음소거 여부 
 
   @override
   List<Object?> get props => [
@@ -60,6 +64,11 @@ class UserPropertyModel extends CretaModel {
         useDigitalSignage,
         isPublicProfile,
         channelBannerImg,
+        usePushNotice,
+        useEmailNotice,
+        themeStyle,
+        cretaInitPage,
+        cookie,
         cretaGrade,
         ratePlan,
         freeSpace,
@@ -71,6 +80,8 @@ class UserPropertyModel extends CretaModel {
         lastestBook,
         lastestUseFrames,
         lastestUseColors,
+        autoPlay,
+        mute
       ];
 
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
@@ -85,6 +96,11 @@ class UserPropertyModel extends CretaModel {
     useDigitalSignage = false;
     isPublicProfile = true;
     channelBannerImg = '';
+    usePushNotice = false;
+    useEmailNotice = false;
+    themeStyle = ThemeType.none;
+    cretaInitPage = InitPageType.none;
+    cookie = CookieType.none;
     cretaGrade = CretaGradeType.none;
     ratePlan = RatePlanType.none;
     freeSpace = 0;
@@ -96,6 +112,8 @@ class UserPropertyModel extends CretaModel {
     lastestBook = '';
     lastestUseFrames = [];
     lastestUseColors = [];
+    autoPlay = true;
+    mute = false;
   }
 
   UserPropertyModel.withName({
@@ -111,6 +129,11 @@ class UserPropertyModel extends CretaModel {
     this.useDigitalSignage = false,
     this.isPublicProfile = true,
     this.channelBannerImg = '',
+    this.usePushNotice = false,
+    this.useEmailNotice = false,
+    this.themeStyle = ThemeType.none,
+    this.cretaInitPage = InitPageType.none,
+    this.cookie = CookieType.none,
     this.cretaGrade = CretaGradeType.none,
     this.ratePlan = RatePlanType.none,
     this.freeSpace = 0,
@@ -122,6 +145,8 @@ class UserPropertyModel extends CretaModel {
     this.lastestBook = '',
     this.lastestUseColors = const [],
     this.lastestUseFrames = const [],
+    this.autoPlay = true,
+    this.mute = false
   }) : super(pmid: '', type: ExModelType.user, parent: pparentMid);
 
   @override
@@ -139,6 +164,11 @@ class UserPropertyModel extends CretaModel {
     useDigitalSignage = srcUser.useDigitalSignage;
     isPublicProfile = srcUser.isPublicProfile;
     channelBannerImg = srcUser.channelBannerImg;
+    usePushNotice = srcUser.usePushNotice;
+    useEmailNotice = srcUser.useEmailNotice;
+    themeStyle = srcUser.themeStyle;
+    cretaInitPage = srcUser.cretaInitPage;
+    cookie = srcUser.cookie;
     cretaGrade = srcUser.cretaGrade;
     ratePlan = srcUser.ratePlan;
     freeSpace = srcUser.freeSpace;
@@ -150,6 +180,8 @@ class UserPropertyModel extends CretaModel {
     lastestBook = srcUser.lastestBook;
     lastestUseColors = [...srcUser.lastestUseColors];
     lastestUseFrames = [...srcUser.lastestUseFrames];
+    autoPlay = srcUser.autoPlay;
+    mute = srcUser.mute;
     logger.finest('UserCopied($mid)');
   }
 
@@ -167,6 +199,11 @@ class UserPropertyModel extends CretaModel {
     useDigitalSignage = map["useDigitalSignage"];
     isPublicProfile = map["isPublicProfile"];
     channelBannerImg = map["channelBannerImg"];
+    usePushNotice = map["usePushNotice"];
+    useEmailNotice = map["useEmailNotice"];
+    themeStyle = ThemeType.fromInt(map["themeStyle"]);
+    cretaInitPage = InitPageType.fromInt(map["cretaInitPage"]);
+    cookie = CookieType.fromInt(map["cookie"]);
     cretaGrade = CretaGradeType.fromInt(map["cretaGrade"] ?? 0);
     ratePlan = RatePlanType.fromInt(map["ratePlan"] ?? 0);
     freeSpace = map["freeSpace"];
@@ -178,6 +215,8 @@ class UserPropertyModel extends CretaModel {
     lastestBook = map["lastestBook"];
     lastestUseColors = CretaUtils.string2ColorList(map["lastestUseColors"]);
     lastestUseFrames = CretaUtils.jsonStringToList(map["lastestUseFrames"]);
+    autoPlay = map["autoPlay"];
+    mute = map["mute"];
   }
 
   @override
@@ -195,6 +234,11 @@ class UserPropertyModel extends CretaModel {
         "useDigitalSignage" : useDigitalSignage,
         "isPublicProfile" : isPublicProfile,
         "channelBannerImg" : channelBannerImg,
+        "usePushNotice" : usePushNotice,
+        "useEmailNotice" : useEmailNotice,
+        "themeStyle" : themeStyle.index,
+        "cretaInitPage" : cretaInitPage.index,
+        "cookie" : cookie.index,
         "cretaGrade": cretaGrade.index,
         "ratePlan": ratePlan.index,
         "freeSpace": freeSpace,
@@ -206,6 +250,8 @@ class UserPropertyModel extends CretaModel {
         "lastestBook": lastestBook,
         "lastestUseColors": CretaUtils.colorList2String(lastestUseColors),
         "lastestUseFrames": CretaUtils.listToString(lastestUseFrames),
+        "autoPlay" : autoPlay,
+        "mute" : mute
       }.entries);
   }
 }

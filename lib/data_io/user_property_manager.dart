@@ -88,6 +88,11 @@ class UserPropertyManager extends CretaManager {
       useDigitalSignage: false,
       isPublicProfile: true,
       channelBannerImg: '',
+      usePushNotice: false,
+      useEmailNotice: false,
+      themeStyle: ThemeType.none,
+      cretaInitPage: InitPageType.none,
+      cookie: CookieType.none,
       cretaGrade: CretaGradeType.none,
       ratePlan: RatePlanType.none,
       freeSpace: 0,
@@ -106,7 +111,9 @@ class UserPropertyManager extends CretaManager {
         Colors.yellow,
         Colors.green,
         Colors.purple,
-      ]
+      ],
+      autoPlay: true,
+      mute: false
     );
     await createToDB(propertyModel!);
     insert(propertyModel!, postion: getAvailLength());

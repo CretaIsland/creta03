@@ -382,7 +382,39 @@ enum JobType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static JobType fromInt(int? val) => JobType.values[validCheck(val ?? none.index)];
+} 
+
+enum ThemeType{
+  none,
+  light,
+  dark,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static ThemeType fromInt(int? val) => ThemeType.values[validCheck(val ?? none.index)];
 }
+
+enum InitPageType {
+  none,
+  community,
+  studio,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static InitPageType fromInt(int? val) => InitPageType.values[validCheck(val ?? none.index)];
+}
+
+enum CookieType {
+  none,
+  allow,
+  refuse,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static CookieType fromInt(int? val) => CookieType.values[validCheck(val ?? none.index)];
+} 
+
+
 
 TextAlign intToTextAlign(int t) {
   switch (t) {
