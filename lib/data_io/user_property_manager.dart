@@ -81,7 +81,7 @@ class UserPropertyManager extends CretaManager {
         nickname: userModel.name,
         phoneNumber: userModel.phone,
         profileImg: '',
-        teamMembers: [],
+        teams: [],
         country: CountryType.none,
         language: LanguageType.none,
         job: JobType.none,

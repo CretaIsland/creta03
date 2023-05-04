@@ -193,7 +193,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for(var element in propertyManager.propertyModel!.teamMembers)...[
+                for(var element in propertyManager.propertyModel!.teams)...[
                   Text(element, style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
                 ]

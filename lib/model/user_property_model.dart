@@ -17,7 +17,7 @@ class UserPropertyModel extends CretaModel {
   late String nickname;               // 닉네임
   late String phoneNumber;            // 연락처
   late String profileImg;             // 프로필 이미지 url
-  late List<String> teamMembers;      // 팀원
+  late List<String> teams;            // 속한 팀 리스트
   
   late CountryType country;           // 국가
   late LanguageType language;         // 언어
@@ -57,7 +57,7 @@ class UserPropertyModel extends CretaModel {
         nickname,
         phoneNumber,
         profileImg,
-        teamMembers,
+        teams,
         country,
         language,
         job,
@@ -89,7 +89,7 @@ class UserPropertyModel extends CretaModel {
     nickname = '';
     phoneNumber = '';
     profileImg = '';
-    teamMembers = [];
+    teams = [];
     country = CountryType.none;
     language = LanguageType.none;
     job = JobType.none;
@@ -122,7 +122,7 @@ class UserPropertyModel extends CretaModel {
     this.nickname = '',
     this.phoneNumber = '',
     this.profileImg = '',
-    this.teamMembers = const [],
+    this.teams = const [],
     this.country = CountryType.none,
     this.language = LanguageType.none,
     this.job = JobType.none,
@@ -157,7 +157,7 @@ class UserPropertyModel extends CretaModel {
     nickname = srcUser.nickname;
     phoneNumber = srcUser.phoneNumber;
     profileImg = srcUser.profileImg;
-    teamMembers = [...srcUser.teamMembers];
+    teams = [...srcUser.teams];
     country = srcUser.country;
     language = srcUser.language;
     job = srcUser.job;
@@ -192,7 +192,7 @@ class UserPropertyModel extends CretaModel {
     nickname = map["nickname"];
     phoneNumber = map["phoneNumber"];
     profileImg = map["profileImg"];
-    teamMembers = CretaUtils.jsonStringToList(map["teamMembers"]);
+    teams = CretaUtils.jsonStringToList(map["teams"]);
     country = CountryType.fromInt(map["country"] ?? 0);
     language = LanguageType.fromInt(map["language"] ?? 0);
     job = JobType.fromInt(map["job"] ?? 0);
@@ -227,7 +227,7 @@ class UserPropertyModel extends CretaModel {
         "nickname": nickname,
         "phoneNumber" : phoneNumber,
         "profileImg": profileImg,
-        "teamMembers": CretaUtils.listToString(teamMembers),
+        "teams": CretaUtils.listToString(teams),
         "country": country.index,
         "language": language.index,
         "job": job.index,
