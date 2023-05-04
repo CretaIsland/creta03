@@ -194,6 +194,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     if (_isInitAlreadyDone) {
       if (wcontroller!.value.isInitialized == false) {
         logger.severe('!!!!!!!! Already initialize but, initialize is false !!!!!!!!');
+        await wcontroller!.dispose();
         logger.severe('!!!!!!!! init again start !!!!!!!!');
         await init();
         logger.severe('!!!!!!!! init again end !!!!!!!!');

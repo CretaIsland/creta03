@@ -69,6 +69,12 @@ class CretaStudioLang {
     '콘텐츠 설정': 'contentsTab',
   };
 
+  static Map<String, String> textMenuTabBar = {
+    '텍스트 추가': 'add_text',
+    '워드 패드': 'word_pad',
+    '특수 문자': 'special_char',
+  };
+
   static List<String> menuStick = [
     "템플릿",
     "페이지",
@@ -152,6 +158,13 @@ class CretaStudioLang {
   static const String treePage = '자세히 보기';
   static const String noNamepage = '이름없는 페이지';
   static const String noNameframe = '이름없는 프레임';
+  static const String newText = '기본 텍스트';
+  static const String hugeText = '아주 큰 텍스트';
+  static const String bigText = '큰 텍스트';
+  static const String middleText = '기본 텍스트';
+  static const String smallText = '작은 텍스트';
+  static const String listText = '';
+  static const String defaultText = '샘플 텍스트 입니다.';
 
   static const String wide = "전체 페이지 보기";
   static const String close = "닫기";

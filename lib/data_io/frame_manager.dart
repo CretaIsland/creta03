@@ -46,8 +46,11 @@ class FrameManager extends CretaManager {
     return retval;
   }
 
-  Future<FrameModel> createNextFrame({bool doNotify = true}) async {
+  Future<FrameModel> createNextFrame(
+      {bool doNotify = true, Size size = const Size(600, 400)}) async {
     FrameModel defaultFrame = FrameModel.makeSample(lastOrder() + 1, pageModel.mid);
+    defaultFrame.width.set(size.width, save: false, noUndo: true);
+    defaultFrame.height.set(size.height, save: false, noUndo: true);
     await createToDB(defaultFrame);
     insert(defaultFrame, postion: getLength(), doNotify: doNotify);
     selectedMid = defaultFrame.mid;

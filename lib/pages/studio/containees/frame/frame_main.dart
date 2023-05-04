@@ -70,7 +70,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
-    frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    initFrameManager();
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
@@ -203,12 +203,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         });
       },
       onDropPage: (modelList) async {
-        // 프레임을 생성한다.
         logger.info('onDropPage(${modelList.length})');
-        FrameModel frameModel = await frameManager!.createNextFrame(doNotify: false);
-        // 코텐츠를 play 하고 DB 에 Crete 하고 업로드까지 한다.
-        logger.info('frameCretated(${frameModel.mid}');
-        await ContentsManager.createContents(frameManager, modelList, frameModel, widget.pageModel);
+        await createNewFrameAndContentList(modelList, widget.pageModel);
       },
 
       stickerList: getStickerList(),
