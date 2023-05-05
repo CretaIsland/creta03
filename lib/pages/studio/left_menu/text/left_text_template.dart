@@ -120,6 +120,11 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
       type: FrameType.text,
     );
     ContentsModel model = await _defaultTextModel(fontSize, frameModel.mid);
-    await createContent(model, pageModel, frameModel);
+
+    await createNewFrameAndContents(
+      [model],
+      pageModel,
+      frameModel: frameModel,
+    );
   }
 }

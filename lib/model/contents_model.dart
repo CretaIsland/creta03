@@ -293,7 +293,7 @@ class ContentsModel extends CretaModel {
     super.fromMap(map);
     name = map["name"];
     bytes = map["bytes"];
-    // url = map["url"] ?? ''; // 값을 가져오지 않는다.
+    url = map["url"] ?? ''; // 값을 가져오지 않는다.
     //file = null; // file 의 desialize 하지 않는다.  즉 DB 로 부터 가져오지 않는다.
     mime = map["mime"];
     contentsType = ContentsType.fromInt(map["contentsType"] ?? 0);
