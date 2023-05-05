@@ -111,8 +111,8 @@ class CretaTextPlayer extends CretaAbsPlayer {
     }
 
     if (model!.aniType.value != TextAniType.none) {
-      return animationText(
-          text, shadowStyle ?? style, outLineAndShadowText(text, shadowStyle ?? style), realSize);
+      return animationText(text, shadowStyle ?? style,
+          outLineAndShadowText(text, shadowStyle ?? style), realSize, fontSize);
     }
     return outLineAndShadowText(text, shadowStyle ?? style);
   }
@@ -152,7 +152,8 @@ class CretaTextPlayer extends CretaAbsPlayer {
         : Text(text, textAlign: model!.align.value, style: style);
   }
 
-  Widget animationText(String text, TextStyle style, Widget? textWidget, Size realSize) {
+  Widget animationText(
+      String text, TextStyle style, Widget? textWidget, Size realSize, double fontSize) {
     int textSize = CretaUtils.getStringSize(text);
     // duration 이 50 이면 실제로는 5초 정도에  문자열을 다 흘려보내다.
     // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
@@ -169,7 +170,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
         );
       }
       if (model!.aniType.value != TextAniType.shimmer) {
-        style = style.copyWith(fontSize: getAutoFontSize(textSize, realSize));
+        style = style.copyWith(fontSize: getAutoFontSize(textSize, realSize, fontSize));
       }
     }
 
@@ -328,8 +329,8 @@ class CretaTextPlayer extends CretaAbsPlayer {
     }
   }
 
-  double getAutoFontSize(int textSize, Size realSize) {
-    double fontSize = model!.fontSize.value;
+  double getAutoFontSize(int textSize, Size realSize, double fontSize) {
+    //double fontSize = model!.fontSize.value;
 
     if (model!.isAutoSize.value == false) {
       return fontSize;

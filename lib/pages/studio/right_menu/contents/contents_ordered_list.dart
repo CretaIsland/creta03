@@ -124,10 +124,11 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                             '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
                         widget.contentsManager
                             .pushReverseOrder(movedOne.mid, pushedOne.mid, "playList");
-                        widget.contentsManager.reOrdering();
 
-                        // oldOne = items.removeAt(oldIndex) as ContentsModel;
-                        // items.insert(newIndex, oldOne);
+                        widget.contentsManager.reOrdering();
+                        // widget.contentsManager.reOrdering().then((value) {
+                        //   return null;
+                        // });
                       });
                     },
                     itemBuilder: (BuildContext context, int index) {
@@ -364,6 +365,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             //if(current != null && current.mid == model.mid || len <= 2) {
             setState(() {});
             widget.contentsManager.notify();
+
             //}
             // if (doNotify) {
             //   widget.contentsManager.notify();

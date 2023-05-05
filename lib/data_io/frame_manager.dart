@@ -3,6 +3,7 @@ import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
+import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
@@ -47,14 +48,28 @@ class FrameManager extends CretaManager {
   }
 
   Future<FrameModel> createNextFrame(
-      {bool doNotify = true, Size size = const Size(600, 400)}) async {
+      {bool doNotify = true,
+      Size size = const Size(600, 400),
+      Offset? pos,
+      Color? bgColor1,
+      FrameType? type}) async {
+    logger.info('createNextFrame()');
     FrameModel defaultFrame = FrameModel.makeSample(lastOrder() + 1, pageModel.mid);
     defaultFrame.width.set(size.width, save: false, noUndo: true);
     defaultFrame.height.set(size.height, save: false, noUndo: true);
+    if (pos != null) {
+      defaultFrame.posX.set(pos.dx, save: false, noUndo: true);
+      defaultFrame.posY.set(pos.dy, save: false, noUndo: true);
+    }
+    if (bgColor1 != null) {
+      defaultFrame.bgColor1.set(bgColor1, save: false, noUndo: true);
+    }
+    if (type != null) {
+      defaultFrame.frameType = type;
+    }
     await createToDB(defaultFrame);
     insert(defaultFrame, postion: getLength(), doNotify: doNotify);
     selectedMid = defaultFrame.mid;
-    //reOrdering();
     return defaultFrame;
   }
 
@@ -71,7 +86,6 @@ class FrameManager extends CretaManager {
     await createToDB(newModel);
     insert(newModel, postion: getLength());
     selectedMid = newModel.mid;
-    //reOrdering();
     return newModel;
   }
 
@@ -89,7 +103,6 @@ class FrameManager extends CretaManager {
       await createNextFrame();
       frameCount = 1;
     }
-    //reOrdering();
     endTransaction();
     return frameCount;
   }
@@ -232,5 +245,11 @@ class FrameManager extends CretaManager {
       logger.info('frameManager.resumeSound()********');
       await manager.resume();
     }
+  }
+
+  @override
+  void removeChild(String parentMid) {
+    ContentsManager? contentsManager = getContentsManager(parentMid);
+    contentsManager?.removeAll();
   }
 }

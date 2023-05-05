@@ -25,7 +25,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
   @override
   void initState() {
     super.initState();
-    widget.player.afterBuild();
+    //widget.player.afterBuild();
   }
 
   @override

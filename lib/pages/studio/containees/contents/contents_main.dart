@@ -111,7 +111,6 @@ class ContentsMainState extends State<ContentsMain> {
                 contentsManager.updateModel(model);
               }
 
-              //contentsManager.reOrdering();
               if (contentsCount > 0) {
                 ContentsModel? model = playTimer.getCurrentModel();
 

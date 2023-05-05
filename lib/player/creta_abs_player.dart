@@ -126,11 +126,11 @@ abstract class CretaAbsPlayer extends ChangeNotifier {
   }
 
   String getURI(ContentsModel model) {
-    if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
-      return model.remoteUrl!;
-    }
     if (model.url.isNotEmpty) {
       return model.url;
+    }
+    if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
+      return model.remoteUrl!;
     }
     return '';
   }

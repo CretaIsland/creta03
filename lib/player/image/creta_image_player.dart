@@ -2,7 +2,6 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages, must_be_immutable
 
 import 'dart:ui';
-import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:http/http.dart' as http;
 
@@ -62,10 +61,10 @@ class CretaImagePlayer extends CretaAbsPlayer {
     return uiImage.width / uiImage.height;
   }
 
-  @override
-  Future<void> afterBuild() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      onAfterEvent?.call(Duration.zero, Duration.zero);
-    });
-  }
+  // @override
+  // Future<void> afterBuild() async {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //     onAfterEvent?.call(Duration.zero, Duration.zero);
+  //   });
+  // }
 }

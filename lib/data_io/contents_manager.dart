@@ -79,8 +79,7 @@ class ContentsManager extends CretaManager {
     model.order.set(getMaxModelOrder() + 1, save: false, noUndo: true);
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
-    logger
-        .info('createNextContents complete ${model.name},${model.order.value},${model.parentMid}');
+    logger.info('createNextContents complete ${model.name},${model.order.value},${model.url}');
     if (playTimer != null) {
       if (playTimer!.isInit()) {
         await playTimer?.rewind();

@@ -105,7 +105,6 @@ class PageManager extends CretaManager {
     await createToDB(defaultPage);
     insert(defaultPage, postion: getLength());
     selectedMid = defaultPage.mid;
-    //reOrdering();
     return defaultPage;
   }
 
@@ -123,7 +122,6 @@ class PageManager extends CretaManager {
       await createNextPage();
       pageCount = 1;
     }
-    //reOrdering();
     endTransaction();
     return pageCount;
   }
@@ -152,5 +150,11 @@ class PageManager extends CretaManager {
       );
     }
     unlock();
+  }
+
+  @override
+  void removeChild(String parentMid) {
+    FrameManager? frameManager = frameManagerList[parentMid];
+    frameManager?.removeAll();
   }
 }

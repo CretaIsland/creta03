@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
@@ -78,6 +79,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             FrameModel model = snapshot.data! as FrameModel;
             frameManager!.updateModel(model);
           }
+          //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
           return showFrame();
         });
   }
@@ -105,6 +107,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       onFrameDelete: (mid) {
         logger.fine('Frame onFrameDelete $mid');
         removeItem(mid);
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
         setState(() {});
       },
       onFrameBack: (aMid, bMid) {
@@ -204,7 +207,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       },
       onDropPage: (modelList) async {
         logger.info('onDropPage(${modelList.length})');
-        await createNewFrameAndContentList(modelList, widget.pageModel);
+        await createNewFrameAndContents(modelList, widget.pageModel);
       },
 
       stickerList: getStickerList(),
@@ -538,12 +541,15 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     }
   }
 
-  void removeItem(String mid) async {
+  void removeItem(String mid) {
+    mychangeStack.startTrans();
     for (var item in frameManager!.modelList) {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
       model.isRemoved.set(true);
+      frameManager!.removeChild(model.mid);
     }
+    mychangeStack.endTrans();
     // for (var item in frameManager!.modelList) {
     //   if (item.mid != mid) continue;
     //   frameManager!.modelList.remove(item);

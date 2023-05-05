@@ -8,7 +8,6 @@
 // import 'package:hycop/hycop/enum/model_enums.dart';
 
 // import '../../../../data_io/contents_manager.dart';
-import 'dart:ui';
 
 import 'package:hycop/common/util/logger.dart';
 
@@ -33,35 +32,25 @@ mixin FramePlayMixin {
     frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
   }
 
-  Future<void> createNewFrameAndContentList(List<ContentsModel> modelList, PageModel pageModel,
-      {Size? frameSize, Offset? framePos}) async {
+  Future<void> createNewFrameAndContents(List<ContentsModel> modelList, PageModel pageModel,
+      {FrameModel? frameModel}) async {
     // 프레임을 생성한다.
-    FrameModel frameModel = await frameManager!.createNextFrame(doNotify: false);
-    if (frameSize != null) {
-      frameModel.width.set(frameSize.width, save: false, noUndo: true);
-      frameModel.height.set(frameSize.height, save: false, noUndo: true);
-    }
-    if (framePos != null) {
-      frameModel.posX.set(framePos.dx, save: false, noUndo: true);
-      frameModel.posY.set(framePos.dy, save: false, noUndo: true);
-    }
-    if (frameSize != null && framePos != null) {
-      await frameManager!.setToDB(frameModel);
-    }
-
+    frameModel ??= await frameManager!.createNextFrame(doNotify: false);
     // 코텐츠를 play 하고 DB 에 Crete 하고 업로드까지 한다.
     logger.info('frameCretated(${frameModel.mid}');
     await ContentsManager.createContents(frameManager, modelList, frameModel, pageModel);
   }
 
-  Future<void> createNewFrameAndContent(
-      ContentsModel model, PageModel? pageModel, Offset framePos, Size frameSize) async {
+  Future<void> createContent(
+    ContentsModel model,
+    PageModel? pageModel,
+    FrameModel frameModel,
+  ) async {
     if (pageModel != null) {
-      return await createNewFrameAndContentList(
+      return await createNewFrameAndContents(
         [model],
         pageModel,
-        frameSize: frameSize,
-        framePos: framePos,
+        frameModel: frameModel,
       );
     }
   }

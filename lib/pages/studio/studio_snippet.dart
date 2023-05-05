@@ -172,22 +172,33 @@ class StudioSnippet {
       ext = '';
     }
 
+    //String initUrl = model.url;
     String uniqFileName = '${name}_${model.bytes}$ext';
 
     FileModel? fileModel = await HycopFactory.storage!.uploadFile(uniqFileName, model.mime, blob);
 
     if (fileModel != null) {
-      // modelList 가 그사이 갱신되었을 수가 있기 때문에, 다시 가져온다.
-      ContentsModel? reModel = contentsManager.getModel(model.mid) as ContentsModel?;
-      reModel ??= model;
-      reModel.remoteUrl = fileModel.fileView;
-      reModel.thumbnail = fileModel.thumbnailUrl;
-      logger.info('uploaded url = ${reModel.url}');
-      logger.info('uploaded fileName = ${reModel.name}');
-      logger.info('uploaded remoteUrl = ${reModel.remoteUrl!}');
-      logger.info('uploaded aspectRatio = ${reModel.aspectRatio.value}');
+      //// modelList 가 그사이 갱신되었을 수가 있기 때문에, 다시 가져온다.
+      //ContentsModel? reModel = contentsManager.getModel(model.mid) as ContentsModel?;
+      //reModel ??= model;
+      // reModel.remoteUrl = fileModel.fileView;
+      // reModel.thumbnail = fileModel.thumbnailUrl;
+      // reModel.url = initUrl;
+      // logger.info('uploaded url = ${reModel.url}');
+      // logger.info('uploaded fileName = ${reModel.name}');
+      // logger.info('uploaded remoteUrl = ${reModel.remoteUrl!}');
+      // logger.info('uploaded aspectRatio = ${reModel.aspectRatio.value}');
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
-      await contentsManager.setToDB(reModel);
+      //await contentsManager.setToDB(reModel);
+
+      model.remoteUrl = fileModel.fileView;
+      model.thumbnail = fileModel.thumbnailUrl;
+      logger.info('uploaded url = ${model.url}');
+      logger.info('uploaded fileName = ${model.name}');
+      logger.info('uploaded remoteUrl = ${model.remoteUrl!}');
+      logger.info('uploaded aspectRatio = ${model.aspectRatio.value}');
+      //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
+      await contentsManager.setToDB(model);
     } else {
       logger.severe('upload failed ${model.file!.name}');
     }

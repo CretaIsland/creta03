@@ -60,7 +60,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
     player.buttonIdle();
 
     Size realSize = player.acc.getRealSize();
-    double fontSize = player.model!.fontSize.value;
+    double fontSize = player.model!.fontSize.value * StudioVariables.applyScale;
 
     if (player.model!.isAutoSize.value == true &&
         (player.model!.aniType.value != TextAniType.rotate ||
@@ -70,7 +70,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
             player.model!.aniType.value != TextAniType.typewriter ||
             player.model!.aniType.value != TextAniType.wavy ||
             player.model!.aniType.value != TextAniType.fidget)) {
-      fontSize = StudioConst.maxFontSize;
+      fontSize = StudioConst.maxFontSize * StudioVariables.applyScale;
     }
 
     TextStyle style = DefaultTextStyle.of(context).style.copyWith(

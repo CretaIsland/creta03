@@ -47,7 +47,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
         } else {
           wcontroller!.setVolume(0.0);
         }
-
+        model!.aspectRatio.set(wcontroller!.value.aspectRatio, noUndo: true, save: false);
         model!.videoPlayTime
             .set(wcontroller!.value.duration.inMilliseconds.toDouble(), noUndo: true, save: false);
         wcontroller!.setLooping(false);
@@ -177,18 +177,18 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     await wcontroller?.setLooping(val);
   }
 
-  @override
-  Future<void> afterBuild() async {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      logger.info('afterBuild video');
-      if (wcontroller != null && model != null) {
-        logger.info('video : ${model!.name}');
-        model!.aspectRatio.set(wcontroller!.value.aspectRatio, noUndo: true, save: false);
-      }
-      super.afterBuild();
-      logger.info('afterBuild video end');
-    });
-  }
+  // @override
+  // Future<void> afterBuild() async {
+  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+  //     logger.info('afterBuild video');
+  //     // if (wcontroller != null && model != null) {
+  //     //   logger.info('video : ${model!.name}');
+  //     //   model!.aspectRatio.set(wcontroller!.value.aspectRatio, noUndo: true, save: false);
+  //     // }
+  //     // super.afterBuild();
+  //     logger.info('afterBuild video end');
+  //   });
+  // }
 
   Future<bool> waitInit() async {
     if (_isInitAlreadyDone) {
