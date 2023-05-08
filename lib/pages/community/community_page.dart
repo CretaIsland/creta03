@@ -24,6 +24,8 @@ import '../../design_system/component/custom_image.dart';
 import '../../design_system/creta_font.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/app_enums.dart';
+import '../../pages/studio/studio_constant.dart';
+import '../../pages/studio/studio_snippet.dart';
 
 import 'community_sample_data.dart';
 import 'sub_pages/community_right_home_pane.dart';
@@ -33,6 +35,7 @@ import 'sub_pages/community_right_playlist_pane.dart';
 import 'sub_pages/community_right_playlist_detail_pane.dart';
 import 'sub_pages/community_right_subscription_pane.dart';
 import 'sub_pages/community_right_watch_history_pane.dart';
+import 'sub_pages/community_right_book_pane.dart';
 
 class CommunityPage extends StatefulWidget {
   final String subPageUrl;
@@ -179,6 +182,17 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           scrollChangedCallback: _scrollChangedCallback,
           bannerMinHeight: 160,
           bannerMaxHeight: 160,
+        );
+        break;
+      case AppRoutes.communityBook:
+        // _leftMenuItemList[4].selected = true;
+        // _leftMenuItemList[4].onPressed = () {};
+        // _leftMenuItemList[4].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+          bannerMinHeight: 140,
+          bannerMaxHeight: 140,
         );
         break;
       case AppRoutes.communityHome:
@@ -840,6 +854,106 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     );
   }
 
+
+  Widget _getCommunityBookTitlePane(Size size) {
+    print('width=${size.width}, height=${size.height}');
+    return Container(
+      width: size.width - LayoutConst.cretaScrollbarWidth,
+      height: 140,//size.height,
+      padding: EdgeInsets.fromLTRB(40, 40, 40 - LayoutConst.cretaScrollbarWidth, 20),
+      color: Colors.white,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[800],
+          borderRadius: BorderRadius.circular(7.6),
+          boxShadow: StudioSnippet.fullShadow(),
+        ),
+        clipBehavior: Clip.antiAlias,
+        padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
+                      overflow: TextOverflow.ellipsis,
+                      style: CretaFont.titleELarge.copyWith(color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  BTN.fill_gray_it_m(
+                    text: '이지금 [IU Official]',
+                    icon: Icons.account_circle,
+                    onPressed: () {},
+                    width: null,
+                    buttonColor: CretaButtonColor.transparent,
+                    textColor: Colors.white,
+                    textStyle: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                    alwaysShowIcon: true,
+                  ),
+                  SizedBox(width: 20),
+                  Text(
+                    '2023.03.01',
+                    style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                  SizedBox(width: 20),
+                  Text(
+                    '조회수 123,456회',
+                    style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 12),
+            Row(
+              children: [
+                BTN.fill_gray_i_l(
+                  icon: Icons.edit_outlined,
+                  onPressed: () {},
+                  buttonColor: CretaButtonColor.blueAndWhiteTitle,
+                  iconColor: Colors.white,
+                ),
+                SizedBox(width: 12),
+                BTN.fill_gray_it_l(
+                  icon: Icons.favorite_border_outlined,
+                  text: '123',
+                  onPressed: () {},
+                  buttonColor: CretaButtonColor.transparent,
+                  textColor: Colors.white,
+                  width: null,
+                  sidePadding: CretaButtonSidePadding.fromLR(8, 8),
+                ),
+                SizedBox(width: 13),
+                BTN.fill_gray_itt_l(
+                  icon: Icons.copy_rounded,
+                  text: '복제하기',
+                  subText: '123',
+                  onPressed: () {},
+                  buttonColor: CretaButtonColor.skyTitle,
+                  textColor: Colors.white,
+                  subTextColor: CretaColor.primary[200],
+                  width: null,
+                  sidePadding: CretaButtonSidePadding.fromLR(8, 0),
+                ),
+                SizedBox(width: 12),
+                BTN.fill_gray_i_l(
+                  icon: Icons.menu_outlined,
+                  onPressed: () {},
+                  buttonColor: CretaButtonColor.transparent,
+                  iconColor: Colors.white,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _getSmallTitlePane({
     Size? size,
     IconData? headIcon,
@@ -982,6 +1096,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             ],
           ),
         );
+      case AppRoutes.communityBook:
+        return _getCommunityBookTitlePane(size);
       case AppRoutes.communityHome:
       default:
         return _getCommunityHomeTitlePane(size);
@@ -999,6 +1115,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       case AppRoutes.playlist:
         return [_dropDownMenuItemListSort];
       case AppRoutes.playlistDetail:
+      case AppRoutes.communityBook:
         break;
       case AppRoutes.communityHome:
       case AppRoutes.channel:
@@ -1019,7 +1136,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         break;
       case AppRoutes.playlistDetail:
         break;
+      case AppRoutes.communityBook:
+        break;
       case AppRoutes.communityHome:
+        break;
       case AppRoutes.channel:
         break;
       //return [_dropDownMenuItemListSort];
@@ -1038,8 +1158,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       case AppRoutes.playlist:
         return (value) {};
       case AppRoutes.communityHome:
+        return (value) {};
       case AppRoutes.channel:
         return (value) {};
+      default:
+        break;
     }
     return null;
   }
@@ -1049,7 +1172,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   Widget _getRightPane(BuildContext context) {
-    Size size = gridArea;
+    Size size = Size(rightPaneRect.childWidth, rightPaneRect.childHeight);
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         return CommunityRightChannelPane(
@@ -1089,6 +1212,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           pageHeight: size.height,
           scrollController: getBannerScrollController,
         );
+      case AppRoutes.communityBook:
+        return CommunityRightBookPane(
+          pageWidth: size.width,
+          pageHeight: size.height,
+          scrollController: getBannerScrollController,
+        );
       case AppRoutes.communityHome:
       default:
         return CommunityRightHomePane(
@@ -1104,7 +1233,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     }
   }
 
-  Widget _getRightOverlayPane(Size size) {
+  Widget _getRightOverlayPane() {
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         break;
@@ -1114,7 +1243,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           top: 140, //196 - 40 - 20 + 4,
           child: Container(
             width: 286,
-            height: gridArea.height + 40,
+            height: rightPaneRect.childHeight + 40,
             padding: EdgeInsets.fromLTRB(20, 20, 5, 20),
             decoration: BoxDecoration(
               color: CretaColor.text[100],
@@ -1135,6 +1264,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       case AppRoutes.favorites:
       case AppRoutes.playlist:
       case AppRoutes.playlistDetail:
+      case AppRoutes.communityBook:
       case AppRoutes.communityHome:
       default:
         break;
@@ -1197,13 +1327,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             mainWidget: _getRightPane,//(gridArea),
             listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
             titlePane: _titlePane,
+            bannerPane: (widget.subPageUrl == AppRoutes.communityBook) ? _titlePane : null,
             leftPaddingOnFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 306 : null,
-            leftPaddingOnRightPane: 0,
-            topPaddingOnRightPane: 3,
-            rightPaddingOnRightPane: 2,
-            bottomPaddingOnRightPane: 3,
+            leftMarginOnRightPane: 0,
+            topMarginOnRightPane: 3,
+            rightMarginOnRightPane: 2,
+            bottomMarginOnRightPane: 3,
           ),
-          _getRightOverlayPane(gridArea),
+          _getRightOverlayPane(),
         ],
       ),
     );

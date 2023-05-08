@@ -274,7 +274,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     double itemHeight = -1;
 
     int columnCount =
-        (gridArea.width - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
+        (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
     if (columnCount == 0) columnCount = 1;
 
     bool isValidIndex(int index) {

@@ -161,7 +161,6 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
           crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
-          if (kDebugMode) print('GridView.builder');
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
                   key: GlobalObjectKey(bookManagerHolder!.modelList[index].mid),

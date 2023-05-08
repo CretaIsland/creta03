@@ -112,7 +112,8 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                 ),
               ),
               SizedBox(width: 20),
-              SizedBox(
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
                 child: SizedBox(
                   width: 120,
                   height: 67,

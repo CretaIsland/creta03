@@ -16,7 +16,7 @@ import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
 //import 'pages/studio/sample_data.dart';
 import 'pages/community/community_page.dart';
-import 'pages/community/community_book_page.dart';
+//import 'pages/community/community_book_page.dart';
 
 abstract class AppRoutes {
   static Future<bool> launchTab(String url, {bool isHttps = false}) async {
@@ -135,7 +135,7 @@ final routesLoggedOut = RouteMap(
           ),
         ),
     AppRoutes.communityBook: (_) => TransitionPage(
-          child: CommunityBookPage(
+          child: CommunityPage(
             key: GlobalKey(),
             subPageUrl: AppRoutes.communityBook,
           ),

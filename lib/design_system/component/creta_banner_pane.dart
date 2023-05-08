@@ -50,7 +50,7 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
   Widget build(BuildContext context) {
     bool isExistFilter = widget.listOfListFilter.isNotEmpty
         || (widget.onSearch != null && !(widget.isSearchbarInBanner ?? false))
-        || (widget.listOfListFilterOnRight != null && widget.listOfListFilterOnRight!.isNotEmpty);
+        || (widget.listOfListFilterOnRight?.isNotEmpty ?? false);
     double internalWidth =
         widget.width - LayoutConst.cretaTopTitlePaddingLT.width - LayoutConst.cretaTopTitlePaddingRB.width;
     double heightDelta = widget.height -

@@ -140,7 +140,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   Widget leftMenu() {
     return Container(
       width: CretaComponentLocation.TabBar.width,
-      height: leftBarArea.height,
+      height: leftPaneRect.height,
       color: CretaColor.text[100],
       padding: CretaComponentLocation.TabBar.padding,
       child: ListView.builder(
@@ -168,15 +168,15 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   Widget rightArea() {
     switch(widget.selectedPage) {
       case AppRoutes.myPageInfo:
-        return MyPageInfo(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageInfo(width: rightPaneRect.width, height: rightPaneRect.height);
       case AppRoutes.myPageAccountManage:
-        return MyPageAccountManage(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageAccountManage(width: rightPaneRect.width, height: rightPaneRect.height);
       case AppRoutes.myPageSettings:
-        return MyPageSettings(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageSettings(width: rightPaneRect.width, height: rightPaneRect.height);
       case AppRoutes.myPageTeamManage:
-        return MyPageTeamManage(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageTeamManage(width: rightPaneRect.width, height: rightPaneRect.height);
       default:
-        return MyPageDashBoard(width: gridArea.width, height: gridArea.height + LayoutConst.cretaBannerMinHeight);
+        return MyPageDashBoard(width: rightPaneRect.width, height: rightPaneRect.height);
     }
   }
 
@@ -194,8 +194,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       children: [
         leftMenu(),
         SizedBox(
-          width: gridArea.width, 
-          height: gridArea.height + LayoutConst.cretaBannerMinHeight,
+          width: rightPaneRect.childWidth,
+          height: rightPaneRect.childHeight + LayoutConst.cretaBannerMinHeight,
           child: CretaModelSnippet.waitData(consumerFunc: rightArea, manager: LoginPage.teamManagerHolder!)
         )
       ],

@@ -10,12 +10,13 @@ import 'creta_banner_pane.dart';
 import 'creta_leftbar.dart';
 import 'snippet.dart';
 //import 'creta_filter_pane.dart';
+import 'creta_layout_rect.dart';
 
 mixin CretaBasicLayoutMixin {
   final ScrollController _bannerScrollController = ScrollController();
   double _bannerHeight = LayoutConst.cretaBannerMinHeight;
-  double _topPaneMaxHeight = LayoutConst.cretaBannerMinHeight;
-  double _topPaneMinHeight = LayoutConst.cretaBannerMinHeight;
+  double _bannerPaneMaxHeight = LayoutConst.cretaBannerMinHeight;
+  double _bannerPaneMinHeight = LayoutConst.cretaBannerMinHeight;
   double _scrollOffset = 0;
   bool _usingBannerScrollbar = false;
   void Function(bool)? _scrollChangedCallback;
@@ -23,7 +24,7 @@ mixin CretaBasicLayoutMixin {
   double get getBannerHeight => _bannerHeight;
   ScrollController get getBannerScrollController => _bannerScrollController;
   void setScrollOffset(double offset) {
-    _scrollOffset = 0;
+    _scrollOffset = offset;
     _bannerScrollController.jumpTo(_scrollOffset);
   }
 
@@ -33,8 +34,8 @@ mixin CretaBasicLayoutMixin {
     double bannerMinHeight = LayoutConst.cretaBannerMinHeight,
   }) {
     _bannerHeight = bannerMaxHeight;
-    _topPaneMaxHeight = bannerMaxHeight;
-    _topPaneMinHeight = bannerMinHeight;
+    _bannerPaneMaxHeight = bannerMaxHeight;
+    _bannerPaneMinHeight = bannerMinHeight;
     _usingBannerScrollbar = true;
     _bannerScrollController.addListener(_scrollListener);
     _scrollChangedCallback = scrollChangedCallback;
@@ -45,37 +46,69 @@ mixin CretaBasicLayoutMixin {
     _scrollOffset = _bannerScrollController.offset;
     // 스크롤에 따른 배너 높이 재설정
     if (kDebugMode) print('_scrollOffset=$_scrollOffset');
-    double bannerHeight = _topPaneMaxHeight - _bannerScrollController.offset;
-    if (bannerHeight < _topPaneMinHeight) bannerHeight = _topPaneMinHeight;
+    double bannerHeight = _bannerPaneMaxHeight - _bannerScrollController.offset;
+    if (bannerHeight < _bannerPaneMinHeight) bannerHeight = _bannerPaneMinHeight;
     // 스크롤 변경 콜백
-    if (_scrollChangedCallback != null) _scrollChangedCallback!.call(bannerHeight != _bannerHeight);
+    _scrollChangedCallback?.call(bannerHeight != _bannerHeight);
     _bannerHeight = bannerHeight;
   }
 
-  Size availArea = Size.zero;
-  Size leftBarArea = Size.zero;
-  Size rightPaneArea = Size.zero;
-  Size topBannerArea = Size.zero;
-  Size gridArea = Size.zero;
+  Size displaySize = Size.zero; // 전체 화면크기 (최상단 앱바 제외)
+  CretaLayoutRect leftPaneRect = CretaLayoutRect.zero;
+  CretaLayoutRect rightPaneRect = CretaLayoutRect.zero;
+  CretaLayoutRect bannerPaneRect = CretaLayoutRect.zero;
+  //CretaLayoutRect gridArea = CretaLayoutRect.zero;
 
   double paddingLeft = 0;
 
   void resize(
     BuildContext context, {
-    double leftPaddingOnRightPane = 0,
-    double topPaddingOnRightPane = 0,
-    double rightPaddingOnRightPane = 0,
-    double bottomPaddingOnRightPane = 0,
+    bool isExistFilterOnBanner = true,
+    double leftMarginOnRightPane = 0,
+    double topMarginOnRightPane = 0,
+    double rightMarginOnRightPane = 0,
+    double bottomMarginOnRightPane = 0,
   }) {
-    CretaUtils.getDisplaySize(context);
-    availArea =
-        Size(StudioVariables.displayWidth, StudioVariables.displayHeight - CretaComponentLocation.BarTop.height);
-    leftBarArea = Size(CretaComponentLocation.TabBar.width, availArea.height);
-    rightPaneArea = Size(
-        StudioVariables.displayWidth - leftBarArea.width - leftPaddingOnRightPane - rightPaddingOnRightPane,
-        availArea.height - topPaddingOnRightPane - bottomPaddingOnRightPane);
-    topBannerArea = Size(rightPaneArea.width, _bannerHeight);
-    gridArea = Size(rightPaneArea.width, rightPaneArea.height - LayoutConst.cretaBannerMinHeight);
+    Size size = CretaUtils.getDisplaySize(context);
+    // 전체 화면크기 (최상단 앱바 제외)
+    displaySize = Size(size.width, size.height - CretaComponentLocation.BarTop.height);
+    leftPaneRect = CretaLayoutRect.fromPadding(
+      CretaComponentLocation.TabBar.width,
+      displaySize.height,
+      CretaComponentLocation.TabBar.padding.left,
+      CretaComponentLocation.TabBar.padding.top,
+      CretaComponentLocation.TabBar.padding.right,
+      CretaComponentLocation.TabBar.padding.bottom,
+    );
+    rightPaneRect = CretaLayoutRect.fromPadding(
+      displaySize.width - leftPaneRect.width,
+      displaySize.height,
+      40,//CretaComponentLocation.TabBar.padding.left,
+      _usingBannerScrollbar ? _bannerPaneMaxHeight : 0,
+      40,//CretaComponentLocation.TabBar.padding.right,
+      40,//CretaComponentLocation.TabBar.padding.bottom,
+      leftMargin: leftMarginOnRightPane,
+      topMargin: topMarginOnRightPane,
+      rightMargin: rightMarginOnRightPane,
+      bottomMargin: bottomMarginOnRightPane,
+    );
+    bannerPaneRect = CretaLayoutRect.fromPadding(
+      rightPaneRect.width,
+      _bannerHeight,
+      40,
+      40,
+      40,
+      isExistFilterOnBanner ? CretaComponentLocation.TabBar.padding.bottom : 20,
+    );
+    // gridArea = CretaLayoutRect.fromPadding(
+    //   rightPaneRect.width,
+    //   rightPaneRect.height, // - LayoutConst.cretaBannerMinHeight,
+    //   40,
+    //   40,
+    //   40,
+    //   40,
+    // );
+    //gridArea = Size(rightPaneArea.width, rightPaneArea.height - LayoutConst.cretaBannerMinHeight);
     // logger.finest(
     //     'displayWidth=${StudioVariables.displayWidth}, displayHeight=${StudioVariables.displayHeight}');
     // logger.finest('topBannerArea=${topBannerArea.width}, ${topBannerArea.height}');
@@ -121,54 +154,62 @@ mixin CretaBasicLayoutMixin {
     required List<List<CretaMenuItem>> listOfListFilter,
     required Widget Function(BuildContext) mainWidget,
     Widget Function(Size)? titlePane,
+    Widget Function(Size)? bannerPane,
     void Function(String)? onSearch,
     bool isSearchbarInBanner = false,
     List<List<CretaMenuItem>>? listOfListFilterOnRight,
     Size gridMinArea = const Size(300, 300),
     double? leftPaddingOnFilter,
-    double leftPaddingOnRightPane = 0,
-    double topPaddingOnRightPane = 0,
-    double rightPaddingOnRightPane = 0,
-    double bottomPaddingOnRightPane = 0,
+    double leftMarginOnRightPane = 0,
+    double topMarginOnRightPane = 0,
+    double rightMarginOnRightPane = 0,
+    double bottomMarginOnRightPane = 0,
   }) {
     // cacluate pane-size
     resize(
       context,
-      leftPaddingOnRightPane: leftPaddingOnRightPane,
-      topPaddingOnRightPane: topPaddingOnRightPane,
-      rightPaddingOnRightPane: rightPaddingOnRightPane,
-      bottomPaddingOnRightPane: bottomPaddingOnRightPane,
+      isExistFilterOnBanner: listOfListFilter.isNotEmpty ||
+          (listOfListFilterOnRight?.isNotEmpty ?? false) ||
+          (onSearch != null && isSearchbarInBanner == false),
+      leftMarginOnRightPane: leftMarginOnRightPane,
+      topMarginOnRightPane: topMarginOnRightPane,
+      rightMarginOnRightPane: rightMarginOnRightPane,
+      bottomMarginOnRightPane: bottomMarginOnRightPane,
     );
     //
     return Row(
       key: key,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CretaLeftBar(
-          width: leftBarArea.width,
-          height: leftBarArea.height,
+          width: leftPaneRect.width,
+          height: leftPaneRect.height,
           menuItem: leftMenuItemList,
           gotoButtonPressed: gotoButtonPressed,
           gotoButtonTitle: gotoButtonTitle,
         ),
         Container(
-          width: rightPaneArea.width,
-          height: rightPaneArea.height,
+          width: rightPaneRect.width,
+          height: rightPaneRect.height,
           color: Colors.white,
           child: _usingBannerScrollbar
               ? Stack(
                   children: [
+                    // item pane
                     Container(
                       color: Colors.white,
-                      width: rightPaneArea.width,
-                      height: rightPaneArea.height,
-                      padding: EdgeInsets.fromLTRB(
-                        leftPaddingOnRightPane,
-                        topPaddingOnRightPane,
-                        rightPaddingOnRightPane,
-                        bottomPaddingOnRightPane,
+                      width: rightPaneRect.width,
+                      height: rightPaneRect.height,
+                      margin: EdgeInsets.fromLTRB(
+                        leftMarginOnRightPane,
+                        topMarginOnRightPane,
+                        rightMarginOnRightPane,
+                        bottomMarginOnRightPane,
                       ),
                       child: mainWidget(context),
                     ),
+                    // banner pane (over on item pane)
                     Listener(
                       onPointerSignal: (PointerSignalEvent event) {
                         if (event is PointerScrollEvent) {
@@ -180,28 +221,31 @@ mixin CretaBasicLayoutMixin {
                           _bannerScrollController.jumpTo(_scrollOffset);
                         }
                       },
-                      child: getBannerPane(
-                        width: topBannerArea.width,
-                        height: topBannerArea.height,
-                        title: bannerTitle,
-                        description: bannerDescription,
-                        listOfListFilter: listOfListFilter,
-                        titlePane: titlePane,
-                        isSearchbarInBanner: isSearchbarInBanner,
-                        scrollbarOnRight: true,
-                        listOfListFilterOnRight: listOfListFilterOnRight,
-                        onSearch: onSearch,
-                        leftPaddingOnFilter: leftPaddingOnFilter,
-                      ),
+                      child: (bannerPane != null)
+                          ? bannerPane.call(bannerPaneRect.size)
+                          : getBannerPane(
+                              width: bannerPaneRect.width,
+                              height: bannerPaneRect.height,
+                              title: bannerTitle,
+                              description: bannerDescription,
+                              listOfListFilter: listOfListFilter,
+                              titlePane: titlePane,
+                              isSearchbarInBanner: isSearchbarInBanner,
+                              scrollbarOnRight: true,
+                              listOfListFilterOnRight: listOfListFilterOnRight,
+                              onSearch: onSearch,
+                              leftPaddingOnFilter: leftPaddingOnFilter,
+                            ),
                     ),
                   ],
                 )
               : Column(
                   children: [
-                    StudioVariables.displayHeight > topBannerArea.height + CretaComponentLocation.BarTop.height
+                    // banner pane
+                    StudioVariables.displayHeight > bannerPaneRect.height + CretaComponentLocation.BarTop.height
                         ? getBannerPane(
-                            width: topBannerArea.width,
-                            height: topBannerArea.height,
+                            width: bannerPaneRect.width,
+                            height: bannerPaneRect.height,
                             title: bannerTitle,
                             description: bannerDescription,
                             listOfListFilter: listOfListFilter,
@@ -210,15 +254,16 @@ mixin CretaBasicLayoutMixin {
                             onSearch: onSearch,
                             leftPaddingOnFilter: leftPaddingOnFilter,
                           )
-                        : Container(),
-                    gridArea.height > gridMinArea.height && gridArea.width > gridMinArea.width
+                        : const SizedBox.shrink(),
+                    // child pane
+                    rightPaneRect.childHeight > gridMinArea.height && rightPaneRect.childWidth > gridMinArea.width
                         ? Container(
                             color: Colors.white,
-                            width: gridArea.width,
-                            height: gridArea.height,
+                            width: rightPaneRect.childWidth,
+                            height: rightPaneRect.childHeight,
                             child: mainWidget(context),
                           )
-                        : Container()
+                        : const SizedBox.shrink(),
                   ],
                 ),
         ),

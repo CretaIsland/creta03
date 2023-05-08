@@ -46,8 +46,12 @@ class CommunityRightPlaylistPane extends StatefulWidget {
   final double pageWidth;
   final double pageHeight;
   final ScrollController scrollController;
-  const CommunityRightPlaylistPane(
-      {super.key, required this.pageWidth, required this.pageHeight, required this.scrollController});
+  const CommunityRightPlaylistPane({
+    super.key,
+    required this.pageWidth,
+    required this.pageHeight,
+    required this.scrollController,
+  });
 
   @override
   State<CommunityRightPlaylistPane> createState() => _CommunityRightPlaylistPaneState();

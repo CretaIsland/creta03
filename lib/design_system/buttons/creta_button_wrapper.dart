@@ -418,6 +418,7 @@ class BTN {
     required Function onPressed,
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color? textColor,
+    TextStyle? textStyle,
     double? width = 96,
     CretaButtonSidePadding? sidePadding,
     bool alwaysShowIcon = false,
@@ -438,7 +439,7 @@ class BTN {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(text,
-                style: CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
+                style: textStyle ?? CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
           ],
         ),
       ),
@@ -1646,7 +1647,7 @@ class BTN {
                 Text(text,
                     style:
                         CretaFont.buttonLarge.copyWith(color: textColor ?? CretaColor.text[700]!)),
-                const SizedBox(width: 21),
+                const SizedBox(width: 8),
                 Text(subText,
                     style: CretaFont.buttonSmall
                         .copyWith(color: subTextColor ?? CretaColor.primary[200]!)),
