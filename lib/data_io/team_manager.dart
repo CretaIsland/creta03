@@ -1,3 +1,5 @@
+import 'package:creta03/data_io/user_property_manager.dart';
+import 'package:creta03/model/user_property_model.dart';
 import 'package:creta03/pages/login_page.dart';
 import 'package:hycop/hycop.dart';
 import '../model/creta_model.dart';
@@ -10,6 +12,10 @@ class TeamManager extends CretaManager {
 
   TeamModel? nowTeam;
   List<TeamModel> teamModelList = [];
+  
+  UserPropertyManager memberPropertyManager = UserPropertyManager();
+  Map<String, List<UserPropertyModel>> teamMemberMap = {};
+
 
   TeamManager() : super('creta_team');
   @override
@@ -25,8 +31,9 @@ class TeamManager extends CretaManager {
   Future<void> initTeam() async {
     clearAll();
     await getTeams(teamMids: LoginPage.userPropertyManagerHolder!.propertyModel!.teams);
-
-    logger.info("initTeam 종료");
+    if(teamModelList.isNotEmpty) {
+      selectedTeam(0);
+    }
   }
 
   // create team object
@@ -68,6 +75,7 @@ class TeamManager extends CretaManager {
 
       if(modelList.isNotEmpty && !teamModelList.contains(onlyOne() as TeamModel)) {
         teamModelList.add(onlyOne() as TeamModel);
+        getTeamMember(tmMid: teamMid, memberMids: teamModelList.last.teamMembers);
       }
     } catch (error) {
       logger.info("error! $error");
@@ -76,6 +84,50 @@ class TeamManager extends CretaManager {
     
     endTransaction();
     return modelList.length;
+  }
+
+  // get team Member object
+  Future<int> getTeamMember({required String tmMid, required List<String> memberMids, int limit = 99}) async {
+    List<UserPropertyModel> memberList = [];
+
+    try {
+      teamMemberMap[tmMid] = [];
+      for(var mid in memberMids) {
+        UserPropertyModel? property = UserPropertyModel(mid);
+        property = await memberPropertyManager.getMemberProperty(memberMid: mid);
+        if(property != null) {
+          teamMemberMap[tmMid]!.add(property);
+        }
+      }
+    } catch (error) {
+      logger.info("something wrong $error");
+      return 0;
+    }
+    return memberList.length;
+  }
+
+  void deleteMember(String memberMid) {
+    try {
+       if(nowTeam!.managers.contains(memberMid)) {
+        nowTeam!.managers.remove(memberMid);
+      } else {
+        nowTeam!.generalMembers.remove(memberMid);
+      }
+      nowTeam!.teamMembers = [nowTeam!.owner, ...nowTeam!.managers, ...nowTeam!.generalMembers];
+      nowTeam!.removedMembers.add(memberMid);
+
+      teamModelList[teamModelList.indexWhere((element) => element.mid == nowTeam!.mid)] = nowTeam!;
+
+      setToDB(nowTeam!);
+    } catch (error) {
+      logger.info(error);
+    }
+   
+  }
+
+
+  void selectedTeam(int index) {
+    nowTeam = teamModelList[index];
   }
 
 

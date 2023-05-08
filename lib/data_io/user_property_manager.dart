@@ -240,4 +240,29 @@ class UserPropertyManager extends CretaManager {
     }
     return propertyModel!.autoPlay;
   }
+
+  // get team member property
+  Future<UserPropertyModel?> getMemberProperty({required String memberMid, int limit = 99}) async {
+    startTransaction();
+    try {
+      logger.finest('getMemberProperty $memberMid');
+      Map<String, QueryValue> query = {};
+      query['parentMid'] = QueryValue(value: memberMid);
+      query['isRemoved'] = QueryValue(value: false);
+      Map<String, OrderDirection> orderBy = {};
+      orderBy['order'] = OrderDirection.ascending;
+      await queryFromDB(query, orderBy: orderBy, limit: limit);
+      logger.finest('getProperty ${modelList.length}');
+
+      if(modelList.isNotEmpty) {
+        return onlyOne() as UserPropertyModel;
+      }
+    } catch (e) {
+      logger.info(e);
+      return null;
+    }
+    endTransaction();
+    return null;
+  }
+
 }

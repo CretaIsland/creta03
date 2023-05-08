@@ -9,6 +9,7 @@ import '../creta_font.dart';
 enum CretaDropDownType {
   normal,
   small,
+  large
 }
 
 class CretaDropDown extends StatefulWidget {
@@ -37,6 +38,16 @@ class CretaDropDown extends StatefulWidget {
     this.width = 74,
     this.height = 28,
     this.dropDownType = CretaDropDownType.small,
+  });
+
+  const CretaDropDown.large({
+    super.key,
+    required this.items,
+    required this.defaultValue,
+    required this.onSelected,
+    this.width = 117,
+    this.height = 32,
+    this.dropDownType = CretaDropDownType.large,
   });
 
   @override

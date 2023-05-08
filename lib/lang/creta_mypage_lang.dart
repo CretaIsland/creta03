@@ -118,7 +118,9 @@ class CretaMyPageLang {
 
   // 팀 관리
   static String teamInfo = '팀 정보';
+  static String teamName = '팀 이름';
   static String teamChannel = '팀 채널';
+  static String backgroundImg = '배경 이미지';
   static String teamMemberManage = '팀원 관리';
   static String inviteablePeopleNumber = '초대 가능 인원';
 

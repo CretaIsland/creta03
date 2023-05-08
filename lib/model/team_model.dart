@@ -11,14 +11,15 @@ import 'creta_model.dart';
 // ignore: camel_case_types
 class TeamModel extends CretaModel {
 
-  late String name;                 // 팀의 이름
-  late String profileImg;           // 팀 프로필 사진
-  late String channelBannerImg;     // 팀 채널 배너 사진
-  late String owner;                // 팀 요금제를 가입한 사람
-  late List<String> managers;       // owner가 manager로 지정한 사람들 
+  late String name;                  // 팀의 이름
+  late String profileImg;            // 팀 프로필 사진
+  late String channelBannerImg;      // 팀 채널 배너 사진
+  late String owner;                 // 팀 요금제를 가입한 사람
+  late List<String> managers;        // owner가 manager로 지정한 사람들 
   late List<String> generalMembers;  // 일반 멤버
-  late bool isPublicProfile;        // 팀 채널 공개 여부
-  late List<String> teamMembers;    // manager, member, owner 모든 value를 통합한 List (where 검색을 위한 필드)
+  late List<String> removedMembers;    // 방출된 멤버
+  late bool isPublicProfile;         // 팀 채널 공개 여부
+  late List<String> teamMembers;     // manager, member, owner 모든 value를 통합한 List (where 검색을 위한 필드)
 
   @override
   List<Object?> get props => [
@@ -29,6 +30,7 @@ class TeamModel extends CretaModel {
         owner,
         managers,
         generalMembers,
+        removedMembers,
         isPublicProfile,
         teamMembers
       ];
@@ -40,6 +42,7 @@ class TeamModel extends CretaModel {
     owner = '';
     managers = [];
     generalMembers = [];
+    removedMembers = [];
     isPublicProfile = true;
     teamMembers = [];
   }
@@ -51,6 +54,7 @@ class TeamModel extends CretaModel {
     this.channelBannerImg = '',
     this.managers = const [],
     this.generalMembers = const [],
+    this.removedMembers = const [],
     this.isPublicProfile = true
   }) : super(pmid: '', type: ExModelType.team, parent: '') {
     teamMembers = [owner, ...managers, ...generalMembers];
@@ -66,6 +70,7 @@ class TeamModel extends CretaModel {
     owner = srcTeam.owner;
     managers = [...srcTeam.managers];
     generalMembers = [...srcTeam.generalMembers];
+    removedMembers = [...srcTeam.removedMembers];
     isPublicProfile = srcTeam.isPublicProfile;
     teamMembers = [srcTeam.owner, ...srcTeam.managers, ...srcTeam.generalMembers];
     logger.finest('TeamCopied($mid)');
@@ -80,6 +85,7 @@ class TeamModel extends CretaModel {
     owner = map["owner"] ?? '';
     managers = CretaUtils.jsonStringToList(map["managers"]);
     generalMembers = CretaUtils.jsonStringToList(map["generalMembers"]);
+    removedMembers = CretaUtils.jsonStringToList(map["removedMembers"]);
     isPublicProfile = map["isPublicProfile"];
     teamMembers = List<String>.from(map["teamMembers"]);
   }
@@ -94,6 +100,7 @@ class TeamModel extends CretaModel {
         "owner" : owner,
         "managers" : CretaUtils.listToString(managers),
         "generalMembers" : CretaUtils.listToString(generalMembers),
+        "removedMembers" : CretaUtils.listToString(removedMembers),
         "isPublicProfile" : isPublicProfile,
         "teamMembers" : teamMembers
       }.entries);
