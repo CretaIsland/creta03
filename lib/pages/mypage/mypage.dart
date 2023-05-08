@@ -1,5 +1,7 @@
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta03/design_system/component/creta_basic_layout_mixin.dart';
 import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/pages/login_page.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_account_manage.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_dashboard.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_info.dart';
@@ -33,7 +35,6 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
 
   
   late List<CretaMenuItem> _leftMeunItem;
-  UserPropertyManager? userPropertyManagerHolder;
   bool _alreadyDataGet = false;
 
   @override
@@ -115,11 +116,6 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
         break;
     }
 
-    userPropertyManagerHolder = UserPropertyManager();
-    userPropertyManagerHolder!.configEvent();
-    userPropertyManagerHolder!.clearAll();
-    userPropertyManagerHolder!.initUserProperty();
-
   }
 
   Widget _getCretaTapBarButton(CretaMenuItem item) {
@@ -200,7 +196,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
         SizedBox(
           width: gridArea.width, 
           height: gridArea.height + LayoutConst.cretaBannerMinHeight,
-          child: CretaModelSnippet.waitData(consumerFunc: rightArea, manager: userPropertyManagerHolder!)
+          child: CretaModelSnippet.waitData(consumerFunc: rightArea, manager: LoginPage.teamManagerHolder!)
         )
       ],
     );
@@ -213,7 +209,10 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   Widget build(BuildContext context) {
     resize(context);
     return MultiProvider(
-      providers: [ ChangeNotifierProvider<UserPropertyManager>.value(value: userPropertyManagerHolder!) ],
+      providers: [ 
+        ChangeNotifierProvider<UserPropertyManager>.value(value: LoginPage.userPropertyManagerHolder!),
+        ChangeNotifierProvider<TeamManager>.value(value: LoginPage.teamManagerHolder!),
+      ],
       child: Snippet.CretaScaffoldOfMyPage(
         title:  Container(
           padding: const EdgeInsets.only(left: 24),

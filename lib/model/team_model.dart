@@ -18,7 +18,7 @@ class TeamModel extends CretaModel {
   late List<String> managers;       // owner가 manager로 지정한 사람들 
   late List<String> generalMembers;  // 일반 멤버
   late bool isPublicProfile;        // 팀 채널 공개 여부
-  late List<String> allMembers;    // manager, member, owner 모든 value를 통합한 List (where 검색을 위한 필드)
+  late List<String> teamMembers;    // manager, member, owner 모든 value를 통합한 List (where 검색을 위한 필드)
 
   @override
   List<Object?> get props => [
@@ -30,7 +30,7 @@ class TeamModel extends CretaModel {
         managers,
         generalMembers,
         isPublicProfile,
-        allMembers
+        teamMembers
       ];
 
   TeamModel(String pmid) : super(pmid: pmid, type: ExModelType.team, parent: '') {
@@ -41,7 +41,7 @@ class TeamModel extends CretaModel {
     managers = [];
     generalMembers = [];
     isPublicProfile = true;
-    allMembers = [];
+    teamMembers = [];
   }
 
   TeamModel.withName({
@@ -53,7 +53,7 @@ class TeamModel extends CretaModel {
     this.generalMembers = const [],
     this.isPublicProfile = true
   }) : super(pmid: '', type: ExModelType.team, parent: '') {
-    allMembers = [owner, ...managers, ...generalMembers];
+    teamMembers = [owner, ...managers, ...generalMembers];
   }
 
   @override
@@ -67,7 +67,7 @@ class TeamModel extends CretaModel {
     managers = [...srcTeam.managers];
     generalMembers = [...srcTeam.generalMembers];
     isPublicProfile = srcTeam.isPublicProfile;
-    allMembers = [srcTeam.owner, ...srcTeam.managers, ...srcTeam.generalMembers];
+    teamMembers = [srcTeam.owner, ...srcTeam.managers, ...srcTeam.generalMembers];
     logger.finest('TeamCopied($mid)');
   }
 
@@ -81,7 +81,7 @@ class TeamModel extends CretaModel {
     managers = CretaUtils.jsonStringToList(map["managers"]);
     generalMembers = CretaUtils.jsonStringToList(map["generalMembers"]);
     isPublicProfile = map["isPublicProfile"];
-    allMembers = CretaUtils.jsonStringToList(map["allMembers"]);
+    teamMembers = List<String>.from(map["teamMembers"]);
   }
 
   @override
@@ -95,7 +95,7 @@ class TeamModel extends CretaModel {
         "managers" : CretaUtils.listToString(managers),
         "generalMembers" : CretaUtils.listToString(generalMembers),
         "isPublicProfile" : isPublicProfile,
-        "allMembers" : CretaUtils.listToString(allMembers)
+        "teamMembers" : teamMembers
       }.entries);
   }
 }

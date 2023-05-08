@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/creta_color.dart';
@@ -172,7 +173,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   }
 
   // 내 팀
-  Widget myTeamInfoBox(UserPropertyManager propertyManager) {
+  Widget myTeamInfoBox(TeamManager teamManager) {
     return Container(
       width: 400,
       height: 400,
@@ -193,8 +194,8 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for(var element in propertyManager.propertyModel!.teams)...[
-                  Text(element, style: CretaFont.bodyMedium),
+                for(var element in teamManager.teamModelList)...[
+                  Text(element.name, style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
                 ]
               ],
@@ -206,8 +207,8 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
   }
 
   Widget mainComponent() {
-    return Consumer<UserPropertyManager>(
-      builder: (context, userPropertyManager, child) {
+    return Consumer2<UserPropertyManager, TeamManager>(
+      builder: (context, userPropertyManager, teamManager, child) {
         return SizedBox(
         width: widget.width,
         height: widget.height,
@@ -230,7 +231,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                     const SizedBox(width: 40.0),
                     recentInfoBox(userPropertyManager),
                     const SizedBox(width: 40.0),
-                    myTeamInfoBox(userPropertyManager)
+                    myTeamInfoBox(teamManager)
                   ],
                 ) : 
                 Column(
@@ -240,7 +241,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                     const SizedBox(height: 40.0),
                     recentInfoBox(userPropertyManager),
                     const SizedBox(height: 40.0),
-                    myTeamInfoBox(userPropertyManager)
+                    myTeamInfoBox(teamManager)
                   ],
                 ),
               const SizedBox(height: 100)

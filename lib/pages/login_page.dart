@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, avoid_web_libraries_in_flutter
 
+import 'package:creta03/data_io/team_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
@@ -32,12 +33,26 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   static UserPropertyManager? userPropertyManagerHolder;
+  static TeamManager? teamManagerHolder;
+
   static void initUserProperty() {
     LoginPage.userPropertyManagerHolder = UserPropertyManager();
     LoginPage.userPropertyManagerHolder!.configEvent();
     LoginPage.userPropertyManagerHolder!.clearAll();
-    LoginPage.userPropertyManagerHolder!.initUserProperty();
+    LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {
+      LoginPage.teamManagerHolder = TeamManager();
+      LoginPage.teamManagerHolder!.configEvent();
+      LoginPage.teamManagerHolder!.clearAll();
+      LoginPage.teamManagerHolder!.initTeam();
+    });
   }
+
+  // static void initTeam() {
+  //   LoginPage.teamManagerHolder = TeamManager();
+  //   LoginPage.teamManagerHolder!.configEvent();
+  //   LoginPage.teamManagerHolder!.clearAll();
+  //   LoginPage.teamManagerHolder!.initTeam();
+  // }
 
   @override
   State<LoginPage> createState() => _LoginPageState();

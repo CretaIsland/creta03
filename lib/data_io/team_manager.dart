@@ -1,3 +1,4 @@
+import 'package:creta03/pages/login_page.dart';
 import 'package:hycop/hycop.dart';
 import '../model/creta_model.dart';
 import '../model/team_model.dart';
@@ -7,8 +8,8 @@ TeamManager? pageManagerHolder;
 
 class TeamManager extends CretaManager {
 
+  TeamModel? nowTeam;
   List<TeamModel> teamModelList = [];
-
 
   TeamManager() : super('creta_team');
   @override
@@ -19,6 +20,13 @@ class TeamManager extends CretaManager {
     TeamModel retval = newModel(src.mid) as TeamModel;
     src.copyTo(retval);
     return retval;
+  }
+
+  Future<void> initTeam() async {
+    clearAll();
+    await getTeams(teamMids: LoginPage.userPropertyManagerHolder!.propertyModel!.teams);
+
+    logger.info("initTeam 종료");
   }
 
   // create team object
@@ -51,16 +59,21 @@ class TeamManager extends CretaManager {
   Future<int> _getTeam({required String teamMid, int limit = 99}) async {
     startTransaction();
 
-    Map<String, QueryValue> query = {};
-    query["mid"] = QueryValue(value: teamMid);
-    query["isRemoved"] = QueryValue(value: false);
+    try {
+      Map<String, QueryValue> query = {};
+      query["mid"] = QueryValue(value: teamMid);
+      query["isRemoved"] = QueryValue(value: false);
 
-    await queryFromDB(query, limit: limit);
+      await queryFromDB(query, limit: limit);
 
-    if(modelList.isNotEmpty && !teamModelList.contains(onlyOne() as TeamModel)) {
-      teamModelList.add(onlyOne() as TeamModel);
+      if(modelList.isNotEmpty && !teamModelList.contains(onlyOne() as TeamModel)) {
+        teamModelList.add(onlyOne() as TeamModel);
+      }
+    } catch (error) {
+      logger.info("error! $error");
+      return 0;
     }
-
+    
     endTransaction();
     return modelList.length;
   }
