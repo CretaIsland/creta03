@@ -951,4 +951,45 @@ abstract class CretaManager extends AbsExModelManager {
     bModel.order.set(aOrder);
     mychangeStack.endTrans();
   }
+
+  void removeChild(String parentMid) async {}
+  void removeAll() {
+    for (var model in modelList) {
+      model.isRemoved.set(true);
+      logger.info('${model.mid} removed');
+      removeChild(model.mid);
+    }
+    reOrdering();
+  }
+
+  // static Future<bool> _reOdering(CretaManager manager) async {
+  //   await manager.reOrdering();
+  //   return true;
+  // }
+
+  // static FutureBuilder<bool> waitReorder({
+  //   required CretaManager manager,
+  //   required Widget child,
+  // }) {
+  //   return FutureBuilder<bool>(
+  //       future: _reOdering(manager),
+  //       builder: (context, AsyncSnapshot<bool> snapshot) {
+  //         if (snapshot.hasError) {
+  //           //error가 발생하게 될 경우 반환하게 되는 부분
+  //           logger.severe("data fetch error(WaitDatum)");
+  //           return const Center(child: Text('data fetch error(WaitDatum)'));
+  //         }
+  //         if (snapshot.hasData == false) {
+  //           logger.info("wait data ...(WaitData)");
+  //           return Center(
+  //             child: Snippet.showWaitSign(),
+  //           );
+  //         }
+  //         if (snapshot.connectionState == ConnectionState.done) {
+  //           logger.info("founded ${snapshot.data!}");
+  //           return child;
+  //         }
+  //         return const SizedBox.shrink();
+  //       });
+  // }
 }

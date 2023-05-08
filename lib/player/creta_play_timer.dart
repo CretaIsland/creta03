@@ -17,6 +17,8 @@ import 'creta_abs_player.dart';
 import 'creta_abs_media_widget.dart';
 import 'image/creta_image_player.dart';
 import 'image/creta_image_widget.dart';
+import 'text/creta_text_player.dart';
+import 'text/creta_text_widget.dart';
 import 'video/creta_video_player.dart';
 import 'video/creta_video_widget.dart';
 
@@ -314,6 +316,13 @@ class CretaPlayTimer extends ChangeNotifier {
           acc: contentsManager,
           onAfterEvent: (position, duration) {},
         );
+      case ContentsType.text:
+        return CretaTextPlayer(
+          keyString: key,
+          model: model,
+          acc: contentsManager,
+          onAfterEvent: (position, duration) {},
+        );
       default:
         return CretaEmptyPlayer(
           keyString: key,
@@ -337,6 +346,12 @@ class CretaPlayTimer extends ChangeNotifier {
           key: GlobalObjectKey(player.keyString),
           player: player,
         );
+      case ContentsType.text:
+        return CretaTextWidget(
+          key: GlobalObjectKey(player.keyString),
+          player: player,
+        );
+
       default:
         return CretaEmptyPlayerWidget(
           key: GlobalObjectKey(player.keyString),

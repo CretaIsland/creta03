@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
@@ -70,7 +71,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
-    frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    initFrameManager();
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
@@ -78,6 +79,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             FrameModel model = snapshot.data! as FrameModel;
             frameManager!.updateModel(model);
           }
+          //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
           return showFrame();
         });
   }
@@ -105,6 +107,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       onFrameDelete: (mid) {
         logger.fine('Frame onFrameDelete $mid');
         removeItem(mid);
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
         setState(() {});
       },
       onFrameBack: (aMid, bMid) {
@@ -203,12 +206,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         });
       },
       onDropPage: (modelList) async {
-        // 프레임을 생성한다.
         logger.info('onDropPage(${modelList.length})');
-        FrameModel frameModel = await frameManager!.createNextFrame(doNotify: false);
-        // 코텐츠를 play 하고 DB 에 Crete 하고 업로드까지 한다.
-        logger.info('frameCretated(${frameModel.mid}');
-        await ContentsManager.createContents(frameManager, modelList, frameModel, widget.pageModel);
+        await createNewFrameAndContents(modelList, widget.pageModel);
       },
 
       stickerList: getStickerList(),
@@ -542,12 +541,15 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     }
   }
 
-  void removeItem(String mid) async {
+  void removeItem(String mid) {
+    mychangeStack.startTrans();
     for (var item in frameManager!.modelList) {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
       model.isRemoved.set(true);
+      frameManager!.removeChild(model.mid);
     }
+    mychangeStack.endTrans();
     // for (var item in frameManager!.modelList) {
     //   if (item.mid != mid) continue;
     //   frameManager!.modelList.remove(item);

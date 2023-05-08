@@ -5,18 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../model/app_enums.dart';
+import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
-import 'creta_image_player.dart';
+import 'creta_text_player.dart';
 
-class CretaImagerWidget extends CretaAbsPlayerWidget {
-  const CretaImagerWidget({super.key, required super.player});
+class CretaTextWidget extends CretaAbsPlayerWidget {
+  const CretaTextWidget({super.key, required super.player});
 
   @override
-  CretaImagePlayerWidgetState createState() => CretaImagePlayerWidgetState();
+  CretaTextPlayerWidgetState createState() => CretaTextPlayerWidgetState();
 }
 
-class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
+class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
   @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
@@ -25,7 +26,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
   @override
   void initState() {
     super.initState();
-    //widget.player.afterBuild();
+    widget.player.afterBuild();
   }
 
   @override
@@ -36,7 +37,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final CretaImagePlayer player = widget.player as CretaImagePlayer;
+    final CretaTextPlayer player = widget.player as CretaTextPlayer;
 
     if (StudioVariables.isAutoPlay) {
       player.model!.setPlayState(PlayState.start);
@@ -57,6 +58,34 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
     }
     logger.fine("uri=<$uri>");
     player.buttonIdle();
+
+    Size realSize = player.acc.getRealSize();
+    double fontSize = player.model!.fontSize.value * StudioVariables.applyScale;
+
+    if (player.model!.isAutoSize.value == true &&
+        (player.model!.aniType.value != TextAniType.rotate ||
+            player.model!.aniType.value != TextAniType.bounce ||
+            player.model!.aniType.value != TextAniType.fade ||
+            player.model!.aniType.value != TextAniType.shimmer ||
+            player.model!.aniType.value != TextAniType.typewriter ||
+            player.model!.aniType.value != TextAniType.wavy ||
+            player.model!.aniType.value != TextAniType.fidget)) {
+      fontSize = StudioConst.maxFontSize * StudioVariables.applyScale;
+    }
+
+    TextStyle style = DefaultTextStyle.of(context).style.copyWith(
+        fontFamily: player.model!.font.value,
+        color: player.model!.fontColor.value.withOpacity(player.model!.opacity.value),
+        fontSize: fontSize,
+        decoration: TextLineType.getTextDecoration(player.model!.line.value),
+        fontWeight: player.model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+        fontStyle: player.model!.isItalic.value ? FontStyle.italic : FontStyle.normal);
+
+    if (player.model!.isAutoSize.value == false) {
+      style.copyWith(
+        fontSize: fontSize,
+      );
+    }
 
     // return ClipRRect(
     //   borderRadius: BorderRadius.only(
@@ -90,15 +119,22 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
 
     return Container(
       decoration: BoxDecoration(
-          //shape: BoxShape.circle,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(topLeft),
-            topRight: Radius.circular(topRight),
-            bottomLeft: Radius.circular(bottomLeft),
-            bottomRight: Radius.circular(bottomRight),
-          ),
-          //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(widget.model!.url))),
-          image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(uri))),
+        //shape: BoxShape.circle,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(topLeft),
+          topRight: Radius.circular(topRight),
+          bottomLeft: Radius.circular(bottomLeft),
+          bottomRight: Radius.circular(bottomRight),
+        ),
+        //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(widget.model!.url))),
+        color: Colors.transparent,
+      ),
+      padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
+          realSize.width * 0.05, realSize.height * 0.05),
+      alignment: AlignmentDirectional.center,
+      width: realSize.width,
+      height: realSize.height,
+      child: player.playText(uri, style, fontSize, realSize),
     );
   }
 }

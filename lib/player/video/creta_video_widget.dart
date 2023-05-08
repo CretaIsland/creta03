@@ -27,7 +27,7 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
   @override
   void initState() {
     super.initState();
-    widget.player.afterBuild();
+    //widget.player.afterBuild();
   }
 
   @override

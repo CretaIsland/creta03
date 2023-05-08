@@ -79,15 +79,18 @@ class ContentsManager extends CretaManager {
     model.order.set(getMaxModelOrder() + 1, save: false, noUndo: true);
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
-    logger
-        .info('createNextContents complete ${model.name},${model.order.value},${model.parentMid}');
+
     if (playTimer != null) {
       if (playTimer!.isInit()) {
+        logger.info('prev exist =============================================');
         await playTimer?.rewind();
         await playTimer?.pause();
       }
       await playTimer?.reOrdering(isRewind: true);
+    } else {
+      reOrdering();
     }
+    logger.info('createNextContents complete ${model.name},${model.order.value},${model.url}');
     return model;
   }
 

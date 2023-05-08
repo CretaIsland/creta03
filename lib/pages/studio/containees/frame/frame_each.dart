@@ -142,92 +142,36 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
   Widget _frameDropZone() {
     logger.info('_frameDropZone');
-    return Center(
-      child: DropZoneWidget(
-        parentId: '',
-        onDroppedFile: (modelList) {
-          // logger.info('frame dropzone contents added ${model.mid}');
-          //model.isDynamicSize.set(true, save: false, noUndo: true);
-          _onDropFrame(widget.model.mid, modelList); // 동영상에 맞게 frame size 를 조절하라는 뜻
-        },
 
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            _applyAnimate(widget.model),
-            OnFrameMenu(
-              playTimer: _playTimer,
-              model: widget.model,
-            ),
-          ],
+    Widget frameBody = Stack(
+      alignment: Alignment.center,
+      children: [
+        _applyAnimate(widget.model),
+        OnFrameMenu(
+          playTimer: _playTimer,
+          model: widget.model,
         ),
-        //),
-        // child: MouseRegion(
-        //     onEnter: ((event) {
-        //       //logger.info('onEnter');
-        //       setState(() {
-        //         _isHover = true;
-        //       });
-        //     }),
-        //     onExit: ((event) {
-        //       //logger.info('onExit');
-        //       setState(() {
-        //         _isHover = false;
-        //       });
-        //     }),
-        //     // onHover: ((event) {
-        //     //   //logger.info('onHover');
-        //     //   setState(() {
-        //     //     _isHover = true;
-        //     //   });
-        //     // }),
-        //     child: Stack(
-        //       alignment: Alignment.center,
-        //       children: [
-        //         _applyAnimate(widget.model),
-        //         if (_isHover)
-        //           BTN.fill_i_s(
-        //               icon: _playTimer != null && _playTimer!.isPause()
-        //                   ? Icons.play_arrow
-        //                   : Icons.pause_outlined,
-        //               onPressed: () {
-        //                 logger.info('play Button pressed');
-        //                 _playTimer?.toggleIsPause();
-        //               }),
-        //         if (_isHover)
-        //           Align(
-        //             alignment: const Alignment(-0.25, 0),
-        //             child: BTN.fill_i_s(
-        //                 icon: Icons.skip_previous,
-        //                 onPressed: () {
-        //                   logger.info('prev Button pressed');
-        //                   _playTimer?.prev();
-        //                 }),
-        //           ),
-        //         if (_isHover)
-        //           Align(
-        //             alignment: const Alignment(0.25, 0),
-        //             child: BTN.fill_i_s(
-        //                 icon: Icons.skip_next,
-        //                 onPressed: () {
-        //                   logger.info('next Button pressed');
-        //                   _playTimer?.next();
-        //                 }),
-        //           ),
-        //         if (DraggableStickers.isFrontBackHover)
-        //           Text(
-        //             '${widget.model.order.value} : $contentsCount',
-        //             style: CretaFont.titleELarge.copyWith(color: Colors.white),
-        //           ),
-        //         if (DraggableStickers.isFrontBackHover)
-        //           Text(
-        //             '${widget.model.order.value} : $contentsCount',
-        //             style: CretaFont.titleLarge,
-        //           ),
-        //       ],
-        //     )),
-      ),
+      ],
     );
+
+    return Center(
+      child: _isDropAble(widget.model)
+          ? DropZoneWidget(
+              parentId: '',
+              onDroppedFile: (modelList) {
+                _onDropFrame(widget.model.mid, modelList);
+              },
+              child: frameBody,
+            )
+          : frameBody,
+    );
+  }
+
+  bool _isDropAble(FrameModel model) {
+    if (model.frameType == FrameType.text) {
+      return false;
+    }
+    return true;
   }
 
   Future<void> _onDropFrame(String frameId, List<ContentsModel> contentsModelList) async {

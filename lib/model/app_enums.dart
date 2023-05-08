@@ -33,6 +33,8 @@ enum FrameType {
   latest,
   polygon,
   animation,
+  text,
+  youtube,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
@@ -341,7 +343,7 @@ enum RatePlanType {
   static RatePlanType fromInt(int? val) => RatePlanType.values[validCheck(val ?? none.index)];
 }
 
-enum CountryType{
+enum CountryType {
   none,
   korea,
   usa,
@@ -382,9 +384,9 @@ enum JobType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static JobType fromInt(int? val) => JobType.values[validCheck(val ?? none.index)];
-} 
+}
 
-enum ThemeType{
+enum ThemeType {
   none,
   light,
   dark,
@@ -412,9 +414,7 @@ enum CookieType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static CookieType fromInt(int? val) => CookieType.values[validCheck(val ?? none.index)];
-} 
-
-
+}
 
 TextAlign intToTextAlign(int t) {
   switch (t) {

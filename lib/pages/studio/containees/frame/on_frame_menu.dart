@@ -3,6 +3,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../model/app_enums.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../player/creta_play_timer.dart';
 import 'sticker/draggable_stickers.dart';
@@ -24,13 +25,11 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
     final int contentsCount = widget.playTimer!.contentsManager.getShowLength();
     return MouseRegion(
       onEnter: ((event) {
-        logger.info('onEnter');
         setState(() {
           _isHover = true;
         });
       }),
       onExit: ((event) {
-        logger.info('onExit');
         setState(() {
           _isHover = false;
         });
@@ -48,7 +47,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              if (_isHover && contentsCount > 0)
+              if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
                 BTN.fill_i_s(
                     icon: widget.playTimer != null && widget.playTimer!.isPause()
                         ? Icons.play_arrow
@@ -59,7 +58,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                         widget.playTimer?.togglePause();
                       });
                     }),
-              if (_isHover && contentsCount > 0)
+              if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
                 Align(
                   alignment: const Alignment(-0.5, 0),
                   child: BTN.fill_i_s(
@@ -74,7 +73,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                         }
                       }),
                 ),
-              if (_isHover && contentsCount > 0)
+              if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
                 Align(
                   alignment: const Alignment(0.5, 0),
                   child: BTN.fill_i_s(
@@ -109,5 +108,12 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
             ],
           )),
     );
+  }
+
+  bool _isPlayAble(FrameModel model) {
+    if (model.frameType == FrameType.text) {
+      return false;
+    }
+    return true;
   }
 }

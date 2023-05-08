@@ -13,6 +13,7 @@ import '../../../lang/creta_studio_lang.dart';
 import '../../../design_system/creta_font.dart';
 import '../studio_constant.dart';
 import 'left_menu_page.dart';
+import 'left_menu_text.dart';
 
 class LeftMenuNotifier extends ChangeNotifier {
   LeftMenuEnum _selectedStick = LeftMenuEnum.None;
@@ -147,7 +148,7 @@ class _LeftMenuState
       case LeftMenuEnum.Video:
         return Container();
       case LeftMenuEnum.Text:
-        return Container();
+        return LeftMenuText();
       case LeftMenuEnum.Figure:
         return Container();
       case LeftMenuEnum.Widget:

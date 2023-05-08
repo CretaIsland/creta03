@@ -96,6 +96,10 @@ class ContentsMainState extends State<ContentsMain> {
     return retval;
   }
 
+  bool isURINotNull(ContentsModel model) {
+    return model.url.isNotEmpty || (model.remoteUrl != null && model.remoteUrl!.isNotEmpty);
+  }
+
   Widget _consumerFunc() {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       //int contentsCount = contentsManager.getShowLength();
@@ -109,14 +113,14 @@ class ContentsMainState extends State<ContentsMain> {
               if (snapshot.data != null) {
                 ContentsModel model = snapshot.data! as ContentsModel;
                 contentsManager.updateModel(model);
+                logger.info('model updated ${model.name}, ${model.url}');
               }
-
-              //contentsManager.reOrdering();
+              logger.info('StreamBuilder<AbsExModel> $contentsCount');
               if (contentsCount > 0) {
                 ContentsModel? model = playTimer.getCurrentModel();
-
-                if (model != null) {
-                  logger.fine('Consumer<ContentsManager> ${model.contentsType}, ${model.mid}');
+                logger.severe('URI is null ----');
+                if (model != null && isURINotNull(model)) {
+                  logger.info('Consumer<ContentsManager> ${model.url}, ${model.name}');
                   if (model.opacity.value > 0) {
                     return Opacity(
                       opacity: model.opacity.value,
@@ -127,6 +131,7 @@ class ContentsMainState extends State<ContentsMain> {
                 }
 
                 logger.info('current model is null');
+                return Center(child: Text('uri is null'));
               }
               // ignore: sized_box_for_whitespace
               return SizedBox.shrink();

@@ -2,6 +2,7 @@
 
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -249,7 +250,10 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   iconImageFile: "assets/delete.svg",
                   onPressed: () {
                     // Delete Page
+                    mychangeStack.startTrans();
                     model.isRemoved.set(true);
+                    _pageManager!.removeChild(model.mid);
+                    mychangeStack.endTrans();
                     _pageManager!.notify();
                   },
                 ),
