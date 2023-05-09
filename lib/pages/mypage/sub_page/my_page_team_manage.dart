@@ -6,6 +6,7 @@ import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/menu/creta_drop_down.dart';
+import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/model/user_property_model.dart';
 import 'package:creta03/pages/login_page.dart';
@@ -31,12 +32,20 @@ class MyPageTeamManage extends StatefulWidget {
 class _MyPageTeamManageState extends State<MyPageTeamManage> {
 
   List<String> teamList = [];
+  List<Text> teamPermissionList = [];
+  
   XFile? _pickedFile;
+
 
 
   @override
   void initState() {
     super.initState();
+    
+    for(var element in CretaMyPageLang.teamPermissionList) {
+      teamPermissionList.add(Text(element, style: CretaFont.bodyMedium));
+    }
+    
     if(LoginPage.teamManagerHolder!.teamModelList.isNotEmpty) {
       for (var element in LoginPage.teamManagerHolder!.teamModelList) {
         teamList.add(element.name);
@@ -207,8 +216,22 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                   ),
               ),
               const SizedBox(width: 14.0),
-              Text(member.nickname),
-              const SizedBox(width: 190.0),
+              SizedBox(
+                width: 120.0,
+                child: Text(
+                  member.nickname,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 50.0),
+              CretaWidgetDropDown(
+                items: teamPermissionList, 
+                defaultValue: 0, 
+                onSelected: (value) {
+
+                }
+              ), 
+              const SizedBox(width: 20.0),
               member.parentMid.value == userPropertyManager.userModel.userId ? const SizedBox() : 
                 BTN.line_blue_t_m(text: CretaMyPageLang.throwBTN, onPressed: () {
                   
@@ -230,7 +253,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
           height: widget.height,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: widget.width > 400 ? 
+            child: widget.width > 700 ? 
               Padding(
                 padding: const EdgeInsets.only(left: 165.0, top: 72.0),
                 child: Column(
@@ -272,7 +295,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                 children: [
                                   Text(CretaMyPageLang.profileImage, style: CretaFont.titleMedium),
                                   const SizedBox(height: 215.0),
-                                  Text(CretaMyPageLang.nickname, style: CretaFont.titleMedium),
+                                  Text(CretaMyPageLang.teamName, style: CretaFont.titleMedium),
                                   const SizedBox(height: 32.0),
                                   Text('팀 for 4', style: CretaFont.titleMedium)
                                 ],
@@ -326,7 +349,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                               Text(CretaMyPageLang.backgroundImgSetting,
                                 style: CretaFont.titleMedium),
                               const SizedBox(width: 24.0),
-                              channelBannerImageBox(teamManager, 865.0, 180, 20.0)
+                              channelBannerImageBox(teamManager, widget.width * .53, 180, 20.0)
                             ]
                           )
                         ],
@@ -365,7 +388,34 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 120.0)
+                    divideLine(topPadding: 32.0, bottomPadding: 32.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            CretaMyPageLang.teamExit,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(width: 25),
+                          BTN.line_red_t_m(
+                            text: CretaMyPageLang.exitBTN,
+                            onPressed: () {}
+                          ),
+                          const SizedBox(width: 80),
+                          Text(
+                            CretaMyPageLang.deleteTeam,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(width: 25),
+                          BTN.fill_red_t_m(
+                            text: CretaMyPageLang.deleteTeamBTN, 
+                            onPressed: () {}
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 120)
                   ],
                 ),
               ) : Container()

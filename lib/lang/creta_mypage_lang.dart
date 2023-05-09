@@ -123,9 +123,14 @@ class CretaMyPageLang {
   static String backgroundImg = '배경 이미지';
   static String teamMemberManage = '팀원 관리';
   static String inviteablePeopleNumber = '초대 가능 인원';
+  static String teamExit = '팀에서 나가기';
+  static String deleteTeam = '팀 삭제';
 
   static String throwBTN = '내보내기';
   static String addMemberBTN = '팀원 추가';
+  static String exitBTN = '나가기';
+  static String deleteTeamBTN = '팀 삭제';
+
 
 
   // 크레타 등급
@@ -135,12 +140,19 @@ class CretaMyPageLang {
     '크레타 셀럽'
   ];
 
-  // 크레타 등급
+  // 요금제 등급
   static List<String> ratePlanList = [
     '개인 무료',
     '개인 유료',
     '팀 유료',
     '엔터프라이즈'
+  ];
+
+  // 팀 등급
+  static List<String> teamPermissionList = [
+    '소유자',
+    '관리자',
+    '팀원'
   ];
 
 
