@@ -856,7 +856,6 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
 
   Widget _getCommunityBookTitlePane(Size size) {
-    print('width=${size.width}, height=${size.height}');
     return Container(
       width: size.width - LayoutConst.cretaScrollbarWidth,
       height: 140,//size.height,
