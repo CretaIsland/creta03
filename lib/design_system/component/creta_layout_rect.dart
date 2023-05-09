@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class CretaLayoutRect {
   CretaLayoutRect({
     required this.size,
@@ -86,6 +85,20 @@ class CretaLayoutRect {
     childPadding: EdgeInsets.zero,
   );
 
+  CretaLayoutRect copyWith({
+    Size? size,
+    EdgeInsets? margin,
+    Rect? childRect,
+    EdgeInsets? childPadding,
+  }) {
+    return CretaLayoutRect(
+      size: size ?? this.size,
+      margin: margin ?? this.margin,
+      childRect: childRect ?? this.childRect,
+      childPadding: childPadding ?? this.childPadding,
+    );
+  }
+
   final Size size;
   final EdgeInsets margin;
 
@@ -105,6 +118,6 @@ class CretaLayoutRect {
 
   double get childLeftPadding => childPadding.left;
   double get childRightPadding => childPadding.right;
-  double get childtopPadding => childPadding.top;
-  double get childbottomPadding => childPadding.bottom;
+  double get childTopPadding => childPadding.top;
+  double get childBottomPadding => childPadding.bottom;
 }

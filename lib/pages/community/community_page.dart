@@ -1,27 +1,24 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/material.dart';
 //import 'dart:async';
+import 'package:flutter/material.dart';
 //import 'package:flutter/gestures.dart';
 import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
+import '../../routes.dart';
+//import '../../common/cross_common_job.dart';
+import '../../design_system/creta_font.dart';
+import '../../design_system/creta_color.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_button.dart';
+import '../../design_system/component/creta_basic_layout_mixin.dart';
+import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-import '../../design_system/creta_color.dart';
-//import 'package:image_network/image_network.dart';
-//import 'package:cached_network_image/cached_network_image.dart';
-//import '../../common/cross_common_job.dart';
-import '../../routes.dart';
-//import 'sub_pages/community_left_menu_pane.dart';
-import '../../design_system/component/creta_basic_layout_mixin.dart';
-import '../../design_system/component/custom_image.dart';
-import '../../design_system/creta_font.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/app_enums.dart';
 import '../../pages/studio/studio_constant.dart';
@@ -597,7 +594,6 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         Row(children: _getHashtagListOnBanner()),
       ]);
     }
-
     return Container(
       width: size.width,
       height: size.height,
@@ -854,12 +850,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     );
   }
 
-
   Widget _getCommunityBookTitlePane(Size size) {
-    print('width=${size.width}, height=${size.height}');
     return Container(
       width: size.width - LayoutConst.cretaScrollbarWidth,
-      height: 140,//size.height,
+      height: 140, //size.height,
       padding: EdgeInsets.fromLTRB(40, 40, 40 - LayoutConst.cretaScrollbarWidth, 20),
       color: Colors.white,
       child: Container(
@@ -1167,8 +1161,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return null;
   }
 
-  ValueKey _getRightPaneKey() {
-    return ValueKey('${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}');
+  GlobalObjectKey _getRightPaneKey() {
+    return GlobalObjectKey('${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}');
   }
 
   Widget _getRightPane(BuildContext context) {
@@ -1176,40 +1170,34 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         return CommunityRightChannelPane(
-          pageWidth: size.width,
-          pageHeight: size.height,
+          cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.subscriptionList:
         return CommunityRightSubscriptionPane(
-          key: ValueKey(_selectedSubscriptionUserId),
-          pageWidth: size.width,
-          pageHeight: size.height,
+          key: GlobalObjectKey(_selectedSubscriptionUserId),
+          cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
           selectedUserId: _selectedSubscriptionUserId,
         );
       case AppRoutes.watchHistory:
         return CommunityRightWatchHistoryPane(
-          pageWidth: size.width,
-          pageHeight: size.height,
+          cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.favorites:
         return CommunityRightFavoritesPane(
-          pageWidth: size.width,
-          pageHeight: size.height,
+          cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.playlist:
         return CommunityRightPlaylistPane(
-          pageWidth: size.width,
-          pageHeight: size.height,
+          cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.playlistDetail:
         return CommunityRightPlaylistDetailPane(
-          pageWidth: size.width,
-          pageHeight: size.height,
+          cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.communityBook:
@@ -1222,8 +1210,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       default:
         return CommunityRightHomePane(
           key: _getRightPaneKey(),
-          pageWidth: size.width,
-          pageHeight: size.height,
+          cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
           filterBookType: _filterBookType,
           filterBookSort: _filterBookSort,
@@ -1324,14 +1311,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             bannerDescription: 'description',
             listOfListFilter: _getLeftDropdownMenuOnBanner(),
             onSearch: _getSearchFunction(),
-            mainWidget: _getRightPane,//(gridArea),
+            mainWidget: _getRightPane, //(gridArea),
             listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
             titlePane: _titlePane,
             bannerPane: (widget.subPageUrl == AppRoutes.communityBook) ? _titlePane : null,
             leftPaddingOnFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 306 : null,
             leftMarginOnRightPane: 0,
             topMarginOnRightPane: 3,
-            rightMarginOnRightPane: 2,
+            rightMarginOnRightPane: 1,
             bottomMarginOnRightPane: 3,
           ),
           _getRightOverlayPane(),

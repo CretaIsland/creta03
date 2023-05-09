@@ -6,6 +6,7 @@ import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/menu/creta_drop_down.dart';
+import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/model/user_property_model.dart';
 import 'package:creta03/pages/login_page.dart';
@@ -31,12 +32,20 @@ class MyPageTeamManage extends StatefulWidget {
 class _MyPageTeamManageState extends State<MyPageTeamManage> {
 
   List<String> teamList = [];
+  List<Text> teamPermissionList = [];
+  
   XFile? _pickedFile;
+
 
 
   @override
   void initState() {
     super.initState();
+    
+    for(var element in CretaMyPageLang.teamPermissionList) {
+      teamPermissionList.add(Text(element, style: CretaFont.bodyMedium));
+    }
+    
     if(LoginPage.teamManagerHolder!.teamModelList.isNotEmpty) {
       for (var element in LoginPage.teamManagerHolder!.teamModelList) {
         teamList.add(element.name);
@@ -69,15 +78,15 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
-        color: teamManager.nowTeam!.profileImg != '' ? Colors.transparent : Colors.primaries[Random().nextInt(Colors.primaries.length)],
-        image: teamManager.nowTeam!.profileImg != '' ? DecorationImage(image: Image.network(teamManager.nowTeam!.profileImg).image, fit: BoxFit.cover) : null
+        color: teamManager.currentTeam!.profileImg != '' ? Colors.transparent : Colors.primaries[Random().nextInt(Colors.primaries.length)],
+        image: teamManager.currentTeam!.profileImg != '' ? DecorationImage(image: Image.network(teamManager.currentTeam!.profileImg).image, fit: BoxFit.cover) : null
       ),
       child: Stack(
         children: [
-          teamManager.nowTeam!.profileImg != '' ? const SizedBox() : 
+          teamManager.currentTeam!.profileImg != '' ? const SizedBox() : 
             Center(
               child: Text(
-                teamManager.nowTeam!.name.substring(0, 1),
+                teamManager.currentTeam!.name.substring(0, 1),
                 style: const TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: CretaFont.semiBold,
@@ -97,8 +106,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                       HycopFactory.storage!.uploadFile('profile/${_pickedFile!.name}', _pickedFile!.mimeType.toString(), fileBytes).then((value){
                         setState(() {
                           if(value != null) {
-                            teamManager.nowTeam!.profileImg = value.fileView;
-                            teamManager.setToDB(teamManager.nowTeam!);
+                            teamManager.currentTeam!.profileImg = value.fileView;
+                            teamManager.setToDB(teamManager.currentTeam!);
                           } else {
                             logger.info("upload error");
                           }
@@ -126,7 +135,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
         color: CretaColor.primary,
-        image: teamManager.nowTeam!.channelBannerImg != '' ? DecorationImage(image: Image.network(teamManager.nowTeam!.channelBannerImg).image, fit: BoxFit.cover) : null
+        image: teamManager.currentTeam!.channelBannerImg != '' ? DecorationImage(image: Image.network(teamManager.currentTeam!.channelBannerImg).image, fit: BoxFit.cover) : null
       ),
       child: Stack(
         children: [
@@ -146,8 +155,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                           HycopFactory.storage!.uploadFile('banner /${_pickedFile!.name}', _pickedFile!.mimeType.toString(), fileBytes).then((value){
                             setState(() {
                               if(value != null) {
-                                teamManager.nowTeam!.channelBannerImg = value.fileView;
-                                teamManager.setToDB(teamManager.nowTeam!);
+                                teamManager.currentTeam!.channelBannerImg = value.fileView;
+                                teamManager.setToDB(teamManager.currentTeam!);
                               } else {
                                 logger.info("upload error");
                               }
@@ -207,8 +216,22 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                   ),
               ),
               const SizedBox(width: 14.0),
-              Text(member.nickname),
-              const SizedBox(width: 190.0),
+              SizedBox(
+                width: 120.0,
+                child: Text(
+                  member.nickname,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(width: 50.0),
+              CretaWidgetDropDown(
+                items: teamPermissionList, 
+                defaultValue: 0, 
+                onSelected: (value) {
+
+                }
+              ), 
+              const SizedBox(width: 20.0),
               member.parentMid.value == userPropertyManager.userModel.userId ? const SizedBox() : 
                 BTN.line_blue_t_m(text: CretaMyPageLang.throwBTN, onPressed: () {
                   
@@ -230,7 +253,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
           height: widget.height,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: widget.width > 400 ? 
+            child: widget.width > 700 ? 
               Padding(
                 padding: const EdgeInsets.only(left: 165.0, top: 72.0),
                 child: Column(
@@ -244,7 +267,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                         const SizedBox(width: 32.0),
                         CretaDropDown.large(
                           items: teamList,
-                          defaultValue: teamManager.nowTeam!.name,
+                          defaultValue: teamManager.currentTeam!.name,
                           onSelected: (value) {
                             setState(() {
                               teamManager.selectedTeam(teamManager.teamModelList.indexWhere((element) => element.name == value));
@@ -272,7 +295,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                 children: [
                                   Text(CretaMyPageLang.profileImage, style: CretaFont.titleMedium),
                                   const SizedBox(height: 215.0),
-                                  Text(CretaMyPageLang.nickname, style: CretaFont.titleMedium),
+                                  Text(CretaMyPageLang.teamName, style: CretaFont.titleMedium),
                                   const SizedBox(height: 32.0),
                                   Text('팀 for 4', style: CretaFont.titleMedium)
                                 ],
@@ -283,7 +306,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                 children: [
                                   teamProfileImageBox(teamManager, 200.0, 200.0, 20.0),
                                   const SizedBox(height: 32.0),
-                                  Text(teamManager.nowTeam!.name),
+                                  Text(teamManager.currentTeam!.name),
                                   const SizedBox(height: 28.0),
                                   BTN.line_blue_t_m(
                                     text: CretaMyPageLang.ratePlanChangeBTN, 
@@ -309,10 +332,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                               Text(CretaMyPageLang.publicProfile, style: CretaFont.titleMedium),
                               const SizedBox(width: 199.0),
                               CretaToggleButton(
-                                defaultValue: teamManager.nowTeam!.isPublicProfile,
+                                defaultValue: teamManager.currentTeam!.isPublicProfile,
                                 onSelected: (value) {
-                                  teamManager.nowTeam!.isPublicProfile = value;
-                                  teamManager.setToDB(teamManager.nowTeam!);
+                                  teamManager.currentTeam!.isPublicProfile = value;
+                                  teamManager.setToDB(teamManager.currentTeam!);
                                 }
                               )
                             ],
@@ -326,7 +349,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                               Text(CretaMyPageLang.backgroundImgSetting,
                                 style: CretaFont.titleMedium),
                               const SizedBox(width: 24.0),
-                              channelBannerImageBox(teamManager, 865.0, 180, 20.0)
+                              channelBannerImageBox(teamManager, widget.width * .53, 180, 20.0)
                             ]
                           )
                         ],
@@ -354,7 +377,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                           const SizedBox(height: 32.0),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: memberComponent(teamManager, userPropertyManager, teamManager.teamMemberMap[teamManager.nowTeam!.mid]!, 24.0, 24.0, 20),
+                            children: memberComponent(teamManager, userPropertyManager, teamManager.teamMemberMap[teamManager.currentTeam!.mid]!, 24.0, 24.0, 20),
                           ),
                           const SizedBox(height: 32.0),
                           BTN.fill_blue_t_m(
@@ -365,7 +388,34 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 120.0)
+                    divideLine(topPadding: 32.0, bottomPadding: 32.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            CretaMyPageLang.teamExit,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(width: 25),
+                          BTN.line_red_t_m(
+                            text: CretaMyPageLang.exitBTN,
+                            onPressed: () {}
+                          ),
+                          const SizedBox(width: 80),
+                          Text(
+                            CretaMyPageLang.deleteTeam,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(width: 25),
+                          BTN.fill_red_t_m(
+                            text: CretaMyPageLang.deleteTeamBTN, 
+                            onPressed: () {}
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 120)
                   ],
                 ),
               ) : Container()

@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
 //import '../creta_book_ui_item.dart';
+import '../../../design_system/component/creta_layout_rect.dart';
 import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 import '../creta_playlist_detail_ui_item.dart';
@@ -32,26 +33,27 @@ import '../creta_playlist_detail_ui_item.dart';
 //import 'package:creta03/design_system/component/custom_image.dart';
 
 //const double _rightViewTopPane = 40;
-const double _rightViewLeftPane = 40-4;
-const double _rightViewRightPane = 40-4;
-const double _rightViewBottomPane = 40-4;
+//const double _rightViewLeftPane = 40-4;
+//const double _rightViewRightPane = 40-4;
+//const double _rightViewBottomPane = 40-4;
 // const double _rightViewItemGapX = 20;
 // const double _rightViewItemGapY = 20;
 // //const double _scrollbarWidth = 13;
 // const double _rightViewBannerMaxHeight = 436;
-const double _rightViewBannerMinHeight = 168-4;
+//const double _rightViewBannerMinHeight = 168-4;
 // const double _rightViewToolbarHeight = 76;
 //
 //const double _itemDefaultWidth = 290.0;
-// const double _itemDefaultHeight = 256.0;
+// const double _itemDefaultHeight = 230.0;
 
 class CommunityRightPlaylistDetailPane extends StatefulWidget {
-  final double pageWidth;
-  final double pageHeight;
+  final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
-  const CommunityRightPlaylistDetailPane(
-      {super.key, required this.pageWidth, required this.pageHeight,
-        required this.scrollController});
+  const CommunityRightPlaylistDetailPane({
+    super.key,
+    required this.cretaLayoutRect,
+    required this.scrollController,
+  });
 
   @override
   State<CommunityRightPlaylistDetailPane> createState() => _CommunityRightPlaylistDetailPaneState();
@@ -86,10 +88,11 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
           });
         },
         padding: EdgeInsets.fromLTRB(
-          _rightViewLeftPane,
-          _rightViewBannerMinHeight,
-          _rightViewRightPane,
-          _rightViewBottomPane,),
+          widget.cretaLayoutRect.childLeftPadding,
+          widget.cretaLayoutRect.childTopPadding,
+          widget.cretaLayoutRect.childRightPadding,
+          widget.cretaLayoutRect.childBottomPadding,
+        ),
         itemCount: _cretaPlaylistData.cretaBookDataList.length,
         //itemExtent: 204, // <== 아이템 드래그시 버그 있음
         itemBuilder: (context, index) {
@@ -97,7 +100,7 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
           return CretaPlaylistDetailItem(
             key: data.uiKey,
             cretaBookData: data,
-            width: widget.pageWidth,
+            width: widget.cretaLayoutRect.childWidth,
             index: index,
           );
         },
@@ -107,6 +110,14 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
 
   @override
   Widget build(BuildContext context) {
-    return getItemPane();
+    return Container(
+      margin: EdgeInsets.fromLTRB(
+        widget.cretaLayoutRect.margin.left,
+        widget.cretaLayoutRect.margin.top,
+        widget.cretaLayoutRect.margin.right,
+        widget.cretaLayoutRect.margin.bottom,
+      ),
+      child: getItemPane(),
+    );
   }
 }

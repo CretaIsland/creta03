@@ -374,4 +374,8 @@ class CretaUtils {
 
     return "Pretendard";
   }
+
+  static int getItemColumnCount(double pageWidth, double itemMinWidth, double itemXGap) {
+    return (pageWidth < itemMinWidth) ? 1 : ((pageWidth + itemXGap) ~/ (itemMinWidth + itemXGap));
+  }
 }

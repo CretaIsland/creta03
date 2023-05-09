@@ -447,6 +447,18 @@ enum CookieType {
   static CookieType fromInt(int? val) => CookieType.values[validCheck(val ?? none.index)];
 }
 
+enum TeamPermissionType {
+  none,
+  owner,
+  manager,
+  general,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static TeamPermissionType fromInt(int? val) => TeamPermissionType.values[validCheck(val ?? none.index)];
+}
+
+
 TextAlign intToTextAlign(int t) {
   switch (t) {
     case 0:
