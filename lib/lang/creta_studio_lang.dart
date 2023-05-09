@@ -159,10 +159,7 @@ class CretaStudioLang {
   static const String noNamepage = '이름없는 페이지';
   static const String noNameframe = '이름없는 프레임';
   static const String newText = '기본 텍스트';
-  static const String hugeText = '아주 큰 텍스트';
-  static const String bigText = '큰 텍스트';
-  static const String middleText = '기본 텍스트';
-  static const String smallText = '작은 텍스트';
+
   static const String listText = '';
   static const String defaultText = '샘플 텍스트 입니다.';
 
@@ -357,4 +354,19 @@ class CretaStudioLang {
   //   '외부 그림자': 'outSide',
   //   '내부 그림자': 'inSide',
   // };
+
+  static const String hugeText = '아주 큰 텍스트';
+  static const String bigText = '큰 텍스트';
+  static const String middleText = '중간 텍스트';
+  static const String smallText = '작은 텍스트';
+  static const String userDefineText = '사용자 정의';
+  static const Map<String, double> textSizeMap = {
+    hugeText: 64,
+    bigText: 48,
+    middleText: 36,
+    smallText: 24,
+    userDefineText: 40,
+  };
+
+  static const String autoSizeFont = '프레임 크기에 자동맞춤';
 }

@@ -170,3 +170,30 @@ flutter:
           weight: 800
         - asset: fonts/Pretendard/Pretendard-Black.otf
           weight: 900
+    - family: NanumMyeongjo
+      fonts:
+        - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-Bold.ttf
+        - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-ExtraBold.ttf
+        - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-Regular.ttf
+    - family: Jua
+      fonts:
+        - asset: fonts/Jua/Jua-Regular.ttf
+    - family: NanumGothic
+      fonts:
+        - asset: fonts/Nanum_Gothic/NanumGothic-Bold.ttf
+        - asset: fonts/Nanum_Gothic/NanumGothic-ExtraBold.ttf
+        - asset: fonts/Nanum_Gothic/NanumGothic-Regular.ttf
+    - family: NanumPenScript
+      fonts:
+        - asset: fonts/Nanum_Pen_Script/NanumPenScript-Regular.ttf
+    - family: NotoSansKR
+      fonts:
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Black.otf
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Bold.otf
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Light.otf
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Medium.otf
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Regular.otf
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Thin.otf
+    - family: Macondo
+      fonts:
+        - asset: fonts/Macondo/Macondo-Regular.ttf

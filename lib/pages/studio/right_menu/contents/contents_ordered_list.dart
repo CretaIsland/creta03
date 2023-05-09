@@ -1,3 +1,4 @@
+import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
@@ -63,6 +64,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     if (itemCount == 0) {
       return const SizedBox.shrink();
     }
+    ContentsModel? model = widget.contentsManager.getSelected() as ContentsModel?;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -77,79 +79,87 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             _isPlayListOpen = !_isPlayListOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.playList, style: CretaFont.titleSmall),
+        titleWidget: Text(
+            (model != null && model.isText()) ? CretaLang.text : CretaStudioLang.playList,
+            style: CretaFont.titleSmall),
         trailWidget: Text('$itemCount ${CretaLang.count}', style: dataStyle),
         showTrail: true,
         hasRemoveButton: false,
         onDelete: () {},
         bodyWidget: Padding(
           padding: const EdgeInsets.only(top: 12.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              // Scrollbar(
-              //   controller: scrollController,
-              //   thumbVisibility: false,
-              //   trackVisibility: false,
-              //   child:
-              SizedBox(
-                width: LayoutConst.rightMenuWidth,
-                height: boxHeight,
-                child: DropZoneWidget(
-                  parentId: '',
-                  onDroppedFile: (modelList) {
-                    String frameId = widget.contentsManager.frameModel.mid;
-                    logger.info('ContentsOrderedList dropzone contents added to $frameId');
-                    ContentsManager.createContents(
-                      widget.frameManager,
-                      modelList,
-                      widget.contentsManager.frameModel,
-                      widget.contentsManager.pageModel,
-                      isResizeFrame: false,
-                    );
-                  },
-                  child: ReorderableListView.builder(
-                    //scrollController: scrollController,
-                    itemCount: itemCount,
-                    buildDefaultDragHandles: false,
-                    onReorder: (int oldIndex, int newIndex) {
-                      setState(() {
-                        if (newIndex > oldIndex) {
-                          newIndex -= 1;
-                        }
-                        final ContentsModel pushedOne = items[newIndex] as ContentsModel;
-                        ContentsModel movedOne = items[oldIndex] as ContentsModel;
-
-                        logger.info(
-                            '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
-                        widget.contentsManager
-                            .pushReverseOrder(movedOne.mid, pushedOne.mid, "playList");
-
-                        widget.contentsManager.reOrdering();
-                        // widget.contentsManager.reOrdering().then((value) {
-                        //   return null;
-                        // });
-                      });
-                    },
-                    itemBuilder: (BuildContext context, int index) {
-                      return _itemWidget(index, items);
-                      // return ListTile(
-                      //   key: Key('$index'),
-                      //   title: Text(model.name, style: CretaFont.bodySmall),
-                      //   leading: const Icon(Icons.drag_handle),
-                      // );
-                    },
-                  ),
-                ),
-              ),
-              //),
-              if (_selectedIndex >= 0 && itemCount > 0 && _selectedIndex < itemCount)
-                ..._info(items),
-            ],
-          ),
+          child: _orderColumn(model, items, itemCount, boxHeight),
         ),
         //),
       ),
+    );
+  }
+
+  Widget _orderColumn(
+      ContentsModel? model, List<CretaModel> items, int itemCount, double boxHeight) {
+    if (model != null && model.isText()) {
+      return _textEditor(model);
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        // Scrollbar(
+        //   controller: scrollController,
+        //   thumbVisibility: false,
+        //   trackVisibility: false,
+        //   child:
+        SizedBox(
+          width: LayoutConst.rightMenuWidth,
+          height: boxHeight,
+          child: DropZoneWidget(
+            parentId: '',
+            onDroppedFile: (modelList) {
+              String frameId = widget.contentsManager.frameModel.mid;
+              logger.info('ContentsOrderedList dropzone contents added to $frameId');
+              ContentsManager.createContents(
+                widget.frameManager,
+                modelList,
+                widget.contentsManager.frameModel,
+                widget.contentsManager.pageModel,
+                isResizeFrame: false,
+              );
+            },
+            child: ReorderableListView.builder(
+              //scrollController: scrollController,
+              itemCount: itemCount,
+              buildDefaultDragHandles: false,
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  if (newIndex > oldIndex) {
+                    newIndex -= 1;
+                  }
+                  final ContentsModel pushedOne = items[newIndex] as ContentsModel;
+                  ContentsModel movedOne = items[oldIndex] as ContentsModel;
+
+                  logger.info(
+                      '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
+                  widget.contentsManager.pushReverseOrder(movedOne.mid, pushedOne.mid, "playList");
+
+                  widget.contentsManager.reOrdering();
+                  // widget.contentsManager.reOrdering().then((value) {
+                  //   return null;
+                  // });
+                });
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return _itemWidget(index, items);
+                // return ListTile(
+                //   key: Key('$index'),
+                //   title: Text(model.name, style: CretaFont.bodySmall),
+                //   leading: const Icon(Icons.drag_handle),
+                // );
+              },
+            ),
+          ),
+        ),
+        //),
+        if (_selectedIndex >= 0 && itemCount > 0 && _selectedIndex < itemCount) ..._info(items),
+      ],
     );
   }
 
@@ -170,7 +180,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               _dragHandler(index),
               GestureDetector(
                 onLongPressDown: (detail) {
-                  if (_selectedIndex != index) {
+                  if (_selectedIndex != index && model.isShow.value == true) {
                     logger.info('ContentsOrderedList $_selectedIndex $index');
                     widget.contentsManager.playTimer?.releasePause();
                     widget.contentsManager.goto(model.order.value).then((v) {
@@ -287,8 +297,11 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           icon1: Icons.volume_off,
           icon2: Icons.volume_up,
           buttonStyle: ToggleButtonStyle.fill_gray_i_m,
+          iconColor: model.isShow.value == true ? CretaColor.text[700]! : CretaColor.text[300]!,
           //tooltip: CretaLang.mute,
           onPressed: () {
+            if (model.isShow.value == false) return;
+
             model.mute.set(!model.mute.value);
             if (model.mute.value == true) {
               widget.contentsManager.setSoundOff(mid: model.mid);
@@ -573,4 +586,26 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //   );
   //keyboard_double_arrow_down_outlined
   //}
+
+  Widget _textEditor(ContentsModel model) {
+    GlobalKey<CretaTextFieldState> key = GlobalKey<CretaTextFieldState>();
+    return CretaTextField.long(
+      textFieldKey: key,
+      value: model.remoteUrl ?? '',
+      hintText: model.name,
+      selectAtInit: true,
+      autoComplete: true,
+      autoHeight: true,
+      height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
+      keyboardType: TextInputType.multiline,
+      maxLines: null,
+      textInputAction: TextInputAction.newline,
+      alignVertical: TextAlignVertical.top,
+      onEditComplete: (value) {
+        model.remoteUrl = value;
+        widget.contentsManager.setToDB(model);
+        widget.contentsManager.notify();
+      },
+    );
+  }
 }

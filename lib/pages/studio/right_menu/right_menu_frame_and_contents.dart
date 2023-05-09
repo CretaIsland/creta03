@@ -141,24 +141,26 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
     FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-    if (frame != null && frameManager != null) {
-      ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
-      ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
-      //logger.info('ContentsProperty ${contents.mid}');
-      return Column(
-        children: [
-          if (contentsManager != null)
-            ContentsOrderedList(
-                book: model, frameManager: frameManager, contentsManager: contentsManager),
-          if (contents != null)
-            ContentsProperty(
-                key: ValueKey(contents.mid),
-                model: contents,
-                frameManager: frameManager,
-                book: model),
-        ],
-      );
+    if (frame == null || frameManager == null) {
+      return SizedBox.shrink();
     }
-    return Container();
+    ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
+    if (contentsManager == null) {
+      return SizedBox.shrink();
+    }
+    ContentsModel? contents = contentsManager.getCurrentModel();
+    if (contents == null) {
+      return SizedBox.shrink();
+    }
+    logger.info('ContentsProperty ${contents.mid}-----------------');
+    logger.info('ContentsProperty ${contents.font.value}----------');
+    return Column(
+      children: [
+        ContentsOrderedList(
+            book: model, frameManager: frameManager, contentsManager: contentsManager),
+        ContentsProperty(
+            key: ValueKey(contents.mid), model: contents, frameManager: frameManager, book: model),
+      ],
+    );
   }
 }

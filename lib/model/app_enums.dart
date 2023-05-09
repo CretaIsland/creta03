@@ -305,6 +305,37 @@ enum TextLineType {
   }
 }
 
+enum FontSizeType {
+  none,
+  huge,
+  big,
+  middle,
+  small,
+  userDefine,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static FontSizeType fromInt(int? val) => FontSizeType.values[validCheck(val ?? none.index)];
+  static Map<FontSizeType, double> enumToVal = {
+    FontSizeType.none: 0,
+    FontSizeType.huge: 64,
+    FontSizeType.big: 48,
+    FontSizeType.middle: 36,
+    FontSizeType.small: 24,
+    FontSizeType.userDefine: 40,
+    FontSizeType.end: -1,
+  };
+  static Map<double, FontSizeType> valToEnum = {
+    0: FontSizeType.none,
+    64: FontSizeType.huge,
+    48: FontSizeType.big,
+    36: FontSizeType.middle,
+    24: FontSizeType.small,
+    40: FontSizeType.userDefine,
+    -1: FontSizeType.end,
+  };
+}
+
 enum PlayState {
   none,
   init,

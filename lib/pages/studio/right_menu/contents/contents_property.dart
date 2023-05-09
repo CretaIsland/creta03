@@ -7,15 +7,22 @@ import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/buttons/creta_slider.dart';
 import '../../../../design_system/buttons/creta_tab_button.dart';
+import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../design_system/menu/creta_drop_down_button.dart';
+import '../../../../design_system/menu/creta_popup_menu.dart';
+import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
+import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
+import '../../studio_snippet.dart';
 import '../property_mixin.dart';
 
 class ContentsProperty extends StatefulWidget {
@@ -34,6 +41,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
 
   // static bool _isInfoOpen = false;
   static bool _isPlayControlOpen = false;
+  static bool _isTextFontlOpen = false;
   // static bool _isImageFilterOpen = false;
 
   ContentsEventController? _sendEvent;
@@ -84,12 +92,172 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       //   child: _copyRight(),
       // ),
       propertyDivider(height: 28),
-      _imageControl(),
+      if (!widget.model.isText()) _imageControl(),
+      if (widget.model.isText()) _textFont(),
       propertyDivider(height: 28),
       if (widget.model.isImage()) _imageFilter(),
       if (widget.model.isImage()) propertyDivider(height: 28),
     ]);
     //});
+  }
+
+  Widget _textFont() {
+    String fontName = CretaUtils.getFontName(widget.model.font.value);
+    return Padding(
+      padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
+      child: propertyCard(
+        isOpen: _isTextFontlOpen,
+        onPressed: () {
+          setState(() {
+            _isTextFontlOpen = !_isTextFontlOpen;
+          });
+        },
+        titleWidget: Text(CretaLang.font, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: Text(
+          '$fontName ${widget.model.fontSize.value}',
+          textAlign: TextAlign.right,
+          style: CretaFont.titleSmall.copyWith(
+            overflow: TextOverflow.fade,
+            color: widget.model.fontColor.value,
+          ),
+        ),
+        hasRemoveButton: false,
+        onDelete: () {},
+        bodyWidget: _fontBody(),
+      ),
+    );
+  }
+
+  Widget _fontBody() {
+    return Padding(
+      // 폰트
+      padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CretaDropDownButton(
+                align: MainAxisAlignment.start,
+                selectedColor: CretaColor.text[700]!,
+                textStyle: dataStyle,
+                width: 260,
+                height: 36,
+                itemHeight: 24,
+                dropDownMenuItemList: StudioSnippet.getFontListItem(
+                    defaultValue: widget.model.font.value,
+                    onChanged: (val) {
+                      widget.model.font.set(val);
+                      logger.info('save ${widget.model.mid}-----------------');
+                      logger.info('save ${widget.model.font.value}----------');
+                      _sendEvent!.sendEvent(widget.model);
+                    }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Text(CretaStudioLang.autoSizeFont, style: titleStyle),
+                  ),
+                  CretaToggleButton(
+                    width: 54 * 0.75,
+                    height: 28 * 0.75,
+                    defaultValue: widget.model.isAutoSize.value,
+                    onSelected: (value) {
+                      widget.model.isAutoSize.set(value);
+                      _sendEvent!.sendEvent(widget.model);
+                      setState(() {});
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+          if (widget.model.isAutoSize.value == false) ..._fontSizeArea(),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _fontSizeArea() {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CretaDropDownButton(
+            align: MainAxisAlignment.start,
+            selectedColor: CretaColor.text[700]!,
+            textStyle: dataStyle,
+            width: 176,
+            height: 36,
+            itemHeight: 24,
+            dropDownMenuItemList: getFontSizeItem(
+                defaultValue: widget.model.fontSizeType.value,
+                onChanged: (val) {
+                  widget.model.fontSizeType.set(val);
+                  if (FontSizeType.userDefine != widget.model.fontSizeType.value) {
+                    widget.model.fontSize.set(FontSizeType.enumToVal[val]!);
+                  }
+                  _sendEvent!.sendEvent(widget.model);
+                  setState(() {});
+                }),
+          ),
+          SizedBox(
+            width: 160,
+            child: CretaSlider(
+              //disabled: widget.model.fontSizeType.value != FontSizeType.userDefine,
+              key: GlobalKey(),
+              min: 6,
+              max: StudioConst.maxFontSize,
+              value: widget.model.fontSize.value,
+              onDragComplete: (val) {
+                setState(() {
+                  widget.model.fontSize.set(val);
+                  FontSizeType? fontSyzeType = FontSizeType.valToEnum[val];
+                  if (fontSyzeType == null ||
+                      fontSyzeType == FontSizeType.userDefine ||
+                      fontSyzeType == FontSizeType.none ||
+                      fontSyzeType == FontSizeType.end) {
+                    if (widget.model.fontSizeType.value != FontSizeType.userDefine) {
+                      widget.model.fontSizeType.set(FontSizeType.userDefine);
+                    }
+                  } else {
+                    if (widget.model.fontSizeType.value != fontSyzeType) {
+                      widget.model.fontSizeType.set(fontSyzeType);
+                    }
+                  }
+                  _sendEvent!.sendEvent(widget.model);
+                });
+              },
+              onDragging: (val) {
+                widget.model.fontSize.set(val);
+                _sendEvent!.sendEvent(widget.model);
+              },
+            ),
+          ),
+          Text('${widget.model.fontSize.value}', style: dataStyle),
+        ],
+      ),
+    ];
+  }
+
+  List<CretaMenuItem> getFontSizeItem(
+      {required FontSizeType defaultValue, required void Function(FontSizeType) onChanged}) {
+    return CretaStudioLang.textSizeMap.keys.map(
+      (sizeStr) {
+        double sizeVal = CretaStudioLang.textSizeMap[sizeStr]!;
+        double currentVal = FontSizeType.enumToVal[defaultValue]!;
+        return CretaMenuItem(
+            caption: sizeStr,
+            onPressed: () {
+              onChanged(FontSizeType.valToEnum[sizeVal]!);
+            },
+            selected: sizeVal == currentVal);
+      },
+    ).toList();
   }
 
   // List<Widget> _info() {
@@ -203,7 +371,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             valueType: SliderValueType.reverse,
             onChannged: (value) {
               widget.model.opacity.set(value);
-              widget.model.save();
+              //widget.model.save();
               logger.info('opacity=${widget.model.opacity.value}');
               _sendEvent!.sendEvent(widget.model);
             },

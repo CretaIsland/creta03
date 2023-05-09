@@ -20,6 +20,7 @@ class CretaIconToggleButton extends StatefulWidget {
   final ToggleButtonStyle buttonStyle;
   final double buttonSize;
   final bool doToggle;
+  final Color? iconColor;
 
   const CretaIconToggleButton(
       {super.key,
@@ -27,6 +28,7 @@ class CretaIconToggleButton extends StatefulWidget {
       required this.icon1,
       required this.icon2,
       required this.onPressed,
+      this.iconColor,
       this.doToggle = true,
       this.buttonSize = 28,
       this.buttonStyle = ToggleButtonStyle.floating_l,
@@ -68,6 +70,7 @@ class _CretaIconToggleButtonState extends State<CretaIconToggleButton> {
         );
       case ToggleButtonStyle.fill_gray_i_m:
         return BTN.fill_gray_i_m(
+          iconColor: widget.iconColor,
           buttonSize: widget.buttonSize,
           tooltip: widget.tooltip,
           tooltipBg: CretaColor.text[700]!,

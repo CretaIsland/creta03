@@ -15,6 +15,7 @@ import '../../../model/frame_model.dart';
 import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 //import '../studio_constant.dart';
+import '../studio_constant.dart';
 import '../studio_variables.dart';
 
 class LeftMenuFrame extends StatefulWidget {
@@ -132,6 +133,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
                   _frameManager!.createNextFrame();
                   _frameManager!.notify();
                   //BookMainPage.bookManagerHolder!.notify();
+                  BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
                 })),
           ),
           //BTN.fill_gray_100_i_s(icon: Icons.delete_outlined, onPressed: (() {})),

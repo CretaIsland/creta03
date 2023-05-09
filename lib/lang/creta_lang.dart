@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class CretaLang {
   static const String billInfo = '요금제 정보';
   static const String searchBar = '검색어를 입력하세요';
@@ -69,4 +71,24 @@ class CretaLang {
   static String contentsNotDeleted = ' 콘텐츠가 삭제되지 않았습니다. 잠시 후에 다시 시도하십시오';
 
   static String count = "개";
+
+  static String text = "텍스트";
+  static String font = "폰트";
+
+  static String fontNanum_Myeongjo = '나눔명조';
+  static String fontJua = '유아';
+  static String fontNanum_Gothic = '나눔고딕';
+  static String fontNanum_Pen_Script = '나눔펜스크립트';
+  static String fontNoto_Sans_KR = '노토산스KR';
+  static String fontPretendard = '프리텐다드';
+  static String fontMacondo = 'Macondo마콘도';
+  static List<String> fontStringList = [
+    fontNanum_Myeongjo,
+    fontJua,
+    fontNanum_Gothic,
+    fontNanum_Pen_Script,
+    fontNoto_Sans_KR,
+    fontPretendard,
+    fontMacondo,
+  ];
 }

@@ -12,6 +12,7 @@ class CretaSlider extends StatefulWidget {
   final double value;
   final void Function(double value) onDragComplete;
   final void Function(double value)? onDragging;
+  final bool disabled;
 
   const CretaSlider({
     super.key,
@@ -20,6 +21,7 @@ class CretaSlider extends StatefulWidget {
     required this.value,
     required this.onDragComplete,
     this.onDragging,
+    this.disabled = false,
   });
 
   @override
@@ -64,6 +66,7 @@ class _CretaSliderState extends State<CretaSlider> {
         });
       },
       child: FlutterSlider(
+        disabled: widget.disabled,
         //foregroundDecoration:
         //BoxDecoration(color: clicked ? CretaColor.primary[500] : CretaColor.primary),
         onDragStarted: (handlerIndex, lowerValue, upperValue) {

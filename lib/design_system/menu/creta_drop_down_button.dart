@@ -268,7 +268,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
                             hintList == null || hintList.length < _itemIndex
                                 ? Text(
                                     item.caption,
-                                    style: widget.textStyle,
+                                    style: widget.textStyle!.copyWith(fontFamily: item.fontFamily),
                                     overflow: TextOverflow.fade,
                                   )
                                 : Text.rich(

@@ -13,6 +13,7 @@ class CretaMenuItem {
   bool selected;
   String? linkUrl;
   final bool isIconText;
+  final String fontFamily;
 
   CretaMenuItem({
     required this.caption,
@@ -24,6 +25,7 @@ class CretaMenuItem {
     this.referencedAttr,
     this.isDescending,
     this.isIconText = false,
+    this.fontFamily = 'Pretendard',
   });
 }
 
@@ -90,7 +92,7 @@ class CretaPopupMenu {
                               item.caption,
                               style: TextStyle(
                                 fontSize: 13,
-                                fontFamily: 'Pretendard',
+                                fontFamily: item.fontFamily,
                               ),
                             ),
                           ),

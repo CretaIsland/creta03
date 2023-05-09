@@ -318,4 +318,60 @@ class CretaUtils {
     final line = tp.computeLineMetrics().length;
     return line;
   }
+
+  // 특정 문자열에서 findChar 가 몇개나 포함되어 있는지 알려주는 함수이다.
+  static int countAs(String input, String findChar) {
+    return input.split('').where((char) => char == findChar).length;
+  }
+
+  static String getFontName(String font) {
+    if (font == "NanumMyeongjo") {
+      return CretaLang.fontNanum_Myeongjo;
+    }
+    if (font == "NotoSansKR") {
+      return CretaLang.fontNoto_Sans_KR;
+    }
+    if (font == "Jua") {
+      return CretaLang.fontJua;
+    }
+    if (font == "NanumGothic") {
+      return CretaLang.fontNanum_Gothic;
+    }
+    if (font == "NanumPenScript") {
+      return CretaLang.fontNanum_Pen_Script;
+    }
+    if (font == "NotoSansKR") {
+      return CretaLang.fontNoto_Sans_KR;
+    }
+    if (font == "Macondo") {
+      return CretaLang.fontMacondo;
+    }
+    return CretaLang.fontPretendard;
+  }
+
+  static String getFontFamily(String font) {
+    if (font == CretaLang.fontNanum_Myeongjo) {
+      return "NanumMyeongjo";
+    }
+    if (font == CretaLang.fontNoto_Sans_KR) {
+      return "NotoSansKR";
+    }
+    if (font == CretaLang.fontJua) {
+      return "Jua";
+    }
+    if (font == CretaLang.fontNanum_Gothic) {
+      return "NanumGothic";
+    }
+    if (font == CretaLang.fontNanum_Pen_Script) {
+      return "NanumPenScript";
+    }
+    if (font == CretaLang.fontNoto_Sans_KR) {
+      return "NotoSansKR";
+    }
+    if (font == CretaLang.fontMacondo) {
+      return "Macondo";
+    }
+
+    return "Pretendard";
+  }
 }

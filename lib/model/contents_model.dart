@@ -62,6 +62,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<double> glassFill; // 글라스질
   late UndoAble<double> opacity; // 투명도
   late UndoAble<double> fontSize;
+  late UndoAble<FontSizeType> fontSizeType;
   late UndoAble<Color> fontColor;
   late UndoAble<Color> shadowColor;
   late UndoAble<double> shadowBlur;
@@ -109,6 +110,7 @@ class ContentsModel extends CretaModel {
         glassFill,
         opacity,
         fontSize,
+        fontSizeType,
         fontColor,
         shadowColor,
         shadowBlur,
@@ -132,6 +134,20 @@ class ContentsModel extends CretaModel {
     genType();
     remoteUrl = '';
     thumbnail = '';
+    _initValues();
+  }
+
+  ContentsModel.withFrame({required String parent})
+      : super(pmid: '', type: ExModelType.contents, parent: parent) {
+    name = ''; // aaa.jpg
+    bytes = 0;
+    url = '';
+    mime = '';
+    file = null;
+    remoteUrl = '';
+    thumbnail = '';
+    contentsType = ContentsType.none;
+
     _initValues();
   }
 
@@ -168,6 +184,7 @@ class ContentsModel extends CretaModel {
     glassFill = UndoAble<double>(0, mid);
     opacity = UndoAble<double>(1, mid);
     fontSize = UndoAble<double>(14, mid);
+    fontSizeType = UndoAble<FontSizeType>(FontSizeType.userDefine, mid);
     fontColor = UndoAble<Color>(Colors.black, mid);
     shadowColor = UndoAble<Color>(Colors.transparent, mid);
     shadowBlur = UndoAble<double>(0, mid);
@@ -229,6 +246,7 @@ class ContentsModel extends CretaModel {
     glassFill = UndoAble<double>(srcContents.glassFill.value, mid);
     opacity = UndoAble<double>(srcContents.opacity.value, mid);
     fontSize = UndoAble<double>(srcContents.fontSize.value, mid);
+    fontSizeType = UndoAble<FontSizeType>(srcContents.fontSizeType.value, mid);
     fontColor = UndoAble<Color>(srcContents.fontColor.value, mid);
     shadowColor = UndoAble<Color>(srcContents.shadowColor.value, mid);
     shadowBlur = UndoAble<double>(srcContents.shadowBlur.value, mid);
@@ -322,6 +340,7 @@ class ContentsModel extends CretaModel {
     glassFill.set(map["glassFill"] ?? 0, save: false, noUndo: true);
     opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
     fontSize.set(map["fontSize"] ?? 14, save: false, noUndo: true);
+    fontSizeType.set(FontSizeType.fromInt(map["fontSizeType"] ?? 5), save: false, noUndo: true);
     fontColor.set(CretaUtils.string2Color(map["fontColor"])!, save: false, noUndo: true);
     shadowColor.set(CretaUtils.string2Color(map["shadowColor"])!, save: false, noUndo: true);
     shadowBlur.set(map["shadowBlur"] ?? 0, save: false, noUndo: true);
@@ -371,6 +390,7 @@ class ContentsModel extends CretaModel {
         "glassFill": glassFill.value,
         "opacity": opacity.value,
         "fontSize": fontSize.value,
+        "fontSizeType": fontSizeType.value.index,
         "fontColor": fontColor.value.toString(),
         "shadowColor": shadowColor.value.toString(),
         "shadowBlur": shadowBlur.value,

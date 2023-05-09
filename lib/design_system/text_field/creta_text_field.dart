@@ -1,11 +1,14 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, must_be_immutable, valid_regexps
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 
+import '../../common/creta_utils.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -65,7 +68,7 @@ class CretaTextField extends LastClickable {
   final double height;
   final String hintText;
   final String value;
-  final int maxLines;
+  final int? maxLines;
   final double radius;
   Size? widgetSize;
   final GlobalKey<CretaTextFieldState> textFieldKey;
@@ -79,6 +82,11 @@ class CretaTextField extends LastClickable {
   final Border? defaultBorder;
   final Function(String)? onChanged;
   final bool enabled;
+  final TextInputAction? textInputAction;
+  final TextInputType? keyboardType;
+  final TextAlignVertical alignVertical;
+  final bool autoComplete;
+  final bool autoHeight;
 
   CretaTextField({
     required this.textFieldKey,
@@ -99,6 +107,11 @@ class CretaTextField extends LastClickable {
     this.enabled = true,
     this.defaultBorder,
     this.onChanged,
+    this.textInputAction,
+    this.keyboardType,
+    this.alignVertical = TextAlignVertical.center,
+    this.autoComplete = false,
+    this.autoHeight = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -120,6 +133,11 @@ class CretaTextField extends LastClickable {
     this.enabled = true,
     this.defaultBorder,
     this.onChanged,
+    this.textInputAction,
+    this.keyboardType,
+    this.alignVertical = TextAlignVertical.center,
+    this.autoComplete = false,
+    this.autoHeight = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -141,6 +159,11 @@ class CretaTextField extends LastClickable {
     this.enabled = true,
     this.defaultBorder,
     this.onChanged,
+    this.textInputAction,
+    this.keyboardType,
+    this.alignVertical = TextAlignVertical.center,
+    this.autoComplete = false,
+    this.autoHeight = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -162,6 +185,11 @@ class CretaTextField extends LastClickable {
     this.enabled = true,
     this.defaultBorder,
     this.onChanged,
+    this.textInputAction,
+    this.keyboardType,
+    this.alignVertical = TextAlignVertical.center,
+    this.autoComplete = false,
+    this.autoHeight = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -183,6 +211,11 @@ class CretaTextField extends LastClickable {
     this.enabled = true,
     this.defaultBorder,
     this.onChanged,
+    this.textInputAction,
+    this.keyboardType,
+    this.alignVertical = TextAlignVertical.center,
+    this.autoComplete = false,
+    this.autoHeight = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -193,7 +226,7 @@ class CretaTextField extends LastClickable {
     this.controller,
     this.width = 332,
     this.height = 158,
-    this.maxLines = 10,
+    this.maxLines,
     this.radius = 5,
     this.textType = CretaTextFieldType.longText,
     this.limit = 1023,
@@ -204,6 +237,11 @@ class CretaTextField extends LastClickable {
     this.enabled = true,
     this.defaultBorder,
     this.onChanged,
+    this.textInputAction,
+    this.keyboardType,
+    this.alignVertical = TextAlignVertical.center,
+    this.autoComplete = false,
+    this.autoHeight = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -225,6 +263,11 @@ class CretaTextField extends LastClickable {
     this.enabled = true,
     this.defaultBorder,
     this.onChanged,
+    this.textInputAction,
+    this.keyboardType,
+    this.alignVertical = TextAlignVertical.center,
+    this.autoComplete = false,
+    this.autoHeight = false,
   }) : super(key: textFieldKey);
 
   @override
@@ -254,6 +297,9 @@ class CretaTextFieldState extends State<CretaTextField> {
   bool _clicked = false;
   bool _hovered = false;
 
+  Timer? _timer;
+  int _lineCount = 1;
+
   void setLastClicked() {
     logger.finest('setLastClicked');
     LastClicked.set(widget);
@@ -263,6 +309,11 @@ class CretaTextFieldState extends State<CretaTextField> {
   void initState() {
     _controller = widget.controller ?? TextEditingController();
     _controller.text = widget.value;
+    if (widget.autoHeight) {
+      _lineCount = CretaUtils.countAs(widget.value, '\n');
+      if (_lineCount > 10) _lineCount = 10;
+      if (_lineCount < 1) _lineCount = 1;
+    }
     if (widget.selectAtInit) {
       _focusNode = FocusNode(
         // onKey: (node, event) {
@@ -294,6 +345,17 @@ class CretaTextFieldState extends State<CretaTextField> {
               return KeyEventResult.handled;
             }
           }
+          // if (event.logicalKey == LogicalKeyboardKey.enter) {
+          //   logger.info('enter key pressed');
+          //   _controller.value = TextEditingValue(
+          //       text: '${_controller.text}\n',
+          //       selection: TextSelection.fromPosition(
+          //         TextPosition(offset: _controller.text.length + 1),
+          //       ));
+
+          //   return KeyEventResult.handled;
+          // }
+
           return KeyEventResult.ignored;
         },
       );
@@ -313,6 +375,7 @@ class CretaTextFieldState extends State<CretaTextField> {
   void dispose() {
     //_controller.clear();
     super.dispose();
+    _timer?.cancel();
   }
 
   @override
@@ -334,7 +397,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         //child:
         (widget.height > 0 && widget.width > 0)
             ? SizedBox(
-                height: widget.height,
+                height: widget.autoHeight ? widget.height * (_lineCount + 1) + 10 : widget.height,
                 width: widget.width,
                 child: _cupertinoTextField(),
               )
@@ -355,13 +418,16 @@ class CretaTextFieldState extends State<CretaTextField> {
         });
       },
       child: CupertinoTextField(
+        cursorColor: CretaColor.primary,
+        textInputAction: widget.textInputAction,
         enabled: widget.enabled,
         textAlign: widget.align,
-        keyboardType: widget.textType == CretaTextFieldType.number
-            ? TextInputType.number
-            : TextInputType.none,
+        keyboardType: widget.keyboardType ??
+            (widget.textType == CretaTextFieldType.number
+                ? TextInputType.number
+                : TextInputType.none),
         focusNode: _focusNode,
-        textAlignVertical: TextAlignVertical.center,
+        textAlignVertical: widget.alignVertical,
         clearButtonMode: _clicked
             ? widget.selectAtInit == false
                 ? OverlayVisibilityMode.editing
@@ -379,6 +445,7 @@ class CretaTextFieldState extends State<CretaTextField> {
                     FilteringTextInputFormatter.allow(RegExp('^[0-9#A-Fa-f]{0,${widget.limit}}\$')),
                   ]
                 : null,
+        //maxLines: widget.maxLines,
         maxLines: widget.maxLines,
         autofocus: false,
         //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
@@ -393,6 +460,9 @@ class CretaTextFieldState extends State<CretaTextField> {
         placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
         style: CretaFont.bodySmall.copyWith(color: CretaColor.text[900]!),
         suffixMode: OverlayVisibilityMode.always,
+        // onEditingComplete: () {
+        //   _focusNode?.requestFocus();
+        // },
         onSubmitted: ((value) {
           if (isNumeric()) {
             int num = int.parse(value);
@@ -418,7 +488,33 @@ class CretaTextFieldState extends State<CretaTextField> {
         //   widget.onEditComplete(_searchValue);
         // },
         onChanged: (value) {
-          logger.finest('onChanged');
+          // Replace any Enter key presses with a line feed character
+          if (widget.autoHeight) {
+            int newLineNo = CretaUtils.countAs(value, '\n');
+            if (_lineCount < 10 || (newLineNo < 10 && newLineNo > 1)) {
+              if (newLineNo != _lineCount) {
+                if (newLineNo > 10) {
+                  _lineCount = 10;
+                } else if (newLineNo < 1) {
+                  _lineCount = 1;
+                } else {
+                  _lineCount = newLineNo;
+                }
+                setState(() {});
+              }
+            }
+          }
+          if (widget.autoComplete) {
+            _timer?.cancel();
+
+            // start a new timer to call the function after 2 seconds of no text input
+            _timer = Timer(Duration(seconds: 2), () {
+              preprocess(value);
+              logger.finest('onSubmitted $_searchValue');
+              widget.onEditComplete(_searchValue);
+              LastClicked.clear();
+            });
+          }
           setLastClicked();
           if (_clicked == false) {
             setState(() {

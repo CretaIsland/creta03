@@ -12,6 +12,7 @@ import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../containees/frame/frame_play_mixin.dart';
+import '../../studio_constant.dart';
 import '../left_template_mixin.dart';
 
 class LeftTextTemplate extends StatefulWidget {
@@ -57,7 +58,8 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
         child: CretaRectButton(
           title: CretaStudioLang.hugeText,
           onPressed: () {
-            _createText(64.0, 0.8);
+            _createText(0.8, FontSizeType.enumToVal[FontSizeType.huge]!, FontSizeType.huge);
+            BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
           },
         ),
       ),
@@ -66,7 +68,8 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
         child: CretaRectButton(
           title: CretaStudioLang.bigText,
           onPressed: () {
-            _createText(48.0, 0.6);
+            _createText(0.6, FontSizeType.enumToVal[FontSizeType.big]!, FontSizeType.big);
+            BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
           },
         ),
       ),
@@ -75,7 +78,8 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
         child: CretaRectButton(
           title: CretaStudioLang.middleText,
           onPressed: () {
-            _createText(36.0, 0.4);
+            _createText(0.4, FontSizeType.enumToVal[FontSizeType.middle]!, FontSizeType.middle);
+            BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
           },
         ),
       ),
@@ -84,25 +88,29 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
         child: CretaRectButton(
           title: CretaStudioLang.smallText,
           onPressed: () {
-            _createText(24.0, 0.2);
+            _createText(0.2, FontSizeType.enumToVal[FontSizeType.small]!, FontSizeType.small);
+            BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
           },
         ),
       ),
     ];
   }
 
-  Future<ContentsModel> _defaultTextModel(double fontSize, String frameMid) async {
-    ContentsModel retval = ContentsModel(frameMid);
+  Future<ContentsModel> _defaultTextModel(
+      FontSizeType fontSizeType, double fontSize, String frameMid) async {
+    ContentsModel retval = ContentsModel.withFrame(parent: frameMid);
 
     retval.contentsType = ContentsType.text;
+
     retval.name = CretaStudioLang.defaultText;
     retval.remoteUrl = CretaStudioLang.defaultText;
     retval.fontSize.set(fontSize, noUndo: true, save: false);
+    retval.fontSizeType.set(fontSizeType, noUndo: true, save: false);
     retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }
 
-  Future<void> _createText(double fontSize, double widthRatio) async {
+  Future<void> _createText(double widthRatio, double fontSize, FontSizeType fontSizeType) async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
@@ -119,7 +127,7 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
       bgColor1: Colors.transparent,
       type: FrameType.text,
     );
-    ContentsModel model = await _defaultTextModel(fontSize, frameModel.mid);
+    ContentsModel model = await _defaultTextModel(fontSizeType, fontSize, frameModel.mid);
 
     await createNewFrameAndContents(
       [model],

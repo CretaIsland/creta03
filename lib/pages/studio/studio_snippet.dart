@@ -5,8 +5,10 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/model/file_model.dart';
 
+import '../../common/creta_utils.dart';
 import '../../data_io/contents_manager.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
+import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
@@ -232,5 +234,22 @@ class StudioSnippet {
           },
           selected: defaultValue == CopyRightType.needPermition),
     ];
+  }
+
+  static List<CretaMenuItem> getFontListItem(
+      {required String defaultValue, required void Function(String) onChanged}) {
+    return CretaLang.fontStringList.map(
+      (fontStr) {
+        String font = CretaUtils.getFontFamily(fontStr);
+        logger.info('font=$font');
+        return CretaMenuItem(
+            caption: fontStr,
+            fontFamily: font,
+            onPressed: () {
+              onChanged(font);
+            },
+            selected: defaultValue == font);
+      },
+    ).toList();
   }
 }
