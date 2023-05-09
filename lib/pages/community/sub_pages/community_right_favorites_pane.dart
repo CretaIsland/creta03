@@ -23,35 +23,32 @@ import 'package:flutter/material.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
+import '../../../common/creta_utils.dart';
+import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
 import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 
 //const double _rightViewTopPane = 40;
-const double _rightViewLeftPane = 40;
-const double _rightViewRightPane = 40;
-const double _rightViewBottomPane = 40;
+//const double _rightViewLeftPane = 40;
+//const double _rightViewRightPane = 40;
+//const double _rightViewBottomPane = 40;
 const double _rightViewItemGapX = 20;
 const double _rightViewItemGapY = 20;
 //const double _scrollbarWidth = 13;
 //const double _rightViewBannerMaxHeight = 436;
-const double _rightViewBannerMinHeight = 188 + 4 + 4;
+//const double _rightViewBannerMinHeight = 188 + 4 + 4;
 //const double _rightViewToolbarHeight = 76;
 //
-const double _itemDefaultWidth = 290.0;
-const double _itemDefaultHeight = 256.0;
+const double _itemMinWidth = 290.0;
+const double _itemMinHeight = 230.0;
 
 bool isInUsingCanvaskit = false;
 
 class CommunityRightFavoritesPane extends StatefulWidget {
-  final double pageWidth;
-  final double pageHeight;
+  final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
-  const CommunityRightFavoritesPane(
-      {super.key,
-        required this.pageWidth,
-        required this.pageHeight,
-        required this.scrollController});
+  const CommunityRightFavoritesPane({super.key, required this.cretaLayoutRect, required this.scrollController});
 
   @override
   State<CommunityRightFavoritesPane> createState() => _CommunityRightFavoritesPaneState();
@@ -59,6 +56,7 @@ class CommunityRightFavoritesPane extends StatefulWidget {
 
 class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPane> {
   late List<CretaBookData> _cretaBookList;
+  final _itemSizeRatio = _itemMinWidth / _itemMinHeight;
 
   @override
   void initState() {
@@ -67,9 +65,9 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
     _cretaBookList = CommunitySampleData.getCretaBookList();
   }
 
-  Widget getItemPane(Size paneSize) {
-    int columnCount = (paneSize.width - _rightViewLeftPane - _rightViewRightPane) ~/ _itemDefaultWidth;
-    if (columnCount == 0) columnCount = 1;
+  Widget getItemPane() {
+    final int columnCount =
+        CretaUtils.getItemColumnCount(widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 
     double itemWidth = -1;
     double itemHeight = -1;
@@ -82,14 +80,15 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
       child: GridView.builder(
         controller: widget.scrollController,
         padding: EdgeInsets.fromLTRB(
-            _rightViewLeftPane,
-            _rightViewBannerMinHeight,
-            _rightViewRightPane,
-            _rightViewBottomPane),
+          widget.cretaLayoutRect.childLeftPadding,
+          widget.cretaLayoutRect.childTopPadding,
+          widget.cretaLayoutRect.childRightPadding,
+          widget.cretaLayoutRect.childBottomPadding,
+        ),
         itemCount: _cretaBookList.length, //item 개수
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-          childAspectRatio: _itemDefaultWidth / _itemDefaultHeight, // 가로÷세로 비율
+          childAspectRatio: _itemSizeRatio, // 가로÷세로 비율
           mainAxisSpacing: _rightViewItemGapX, //item간 수평 Padding
           crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
         ),
@@ -120,86 +119,14 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
 
   @override
   Widget build(BuildContext context) {
-    return getItemPane(Size(widget.pageWidth, widget.pageHeight));
-  }
-}
-
-class HoverImage extends StatefulWidget {
-  final String image;
-
-  const HoverImage({super.key, required this.image});
-
-  @override
-  State<HoverImage> createState() => _HoverImageState();
-}
-
-class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation _animation;
-  late Animation padding;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 275),
-      vsync: this,
-    );
-    _animation = Tween(begin: 1.0, end: 1.2)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
-    padding = Tween(begin: 0.0, end: -25.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
-    _controller.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (value) {
-        setState(() {
-          _controller.forward();
-        });
-      },
-      onExit: (value) {
-        setState(() {
-          _controller.reverse();
-        });
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0.0, 20.0),
-              spreadRadius: -10.0,
-              blurRadius: 20.0,
-            )
-          ],
-        ),
-        child: Container(
-          height: 220.0,
-          width: 170.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          clipBehavior: Clip.hardEdge,
-          transform: Matrix4(
-              _animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0, padding.value, padding.value, 0, 1),
-          child: Image.network(
-            widget.image,
-            fit: BoxFit.cover,
-          ),
-        ),
+    return Container(
+      margin: EdgeInsets.fromLTRB(
+        widget.cretaLayoutRect.margin.left,
+        widget.cretaLayoutRect.margin.top,
+        widget.cretaLayoutRect.margin.right,
+        widget.cretaLayoutRect.margin.bottom,
       ),
+      child: getItemPane(),
     );
   }
 }

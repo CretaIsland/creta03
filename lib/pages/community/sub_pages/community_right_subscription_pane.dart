@@ -23,34 +23,34 @@ import 'package:flutter/material.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
+import '../../../common/creta_utils.dart';
+import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
 import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 //import '../creta_playlist_ui_item.dart';
 
 //const double _rightViewTopPane = 40;
-const double _rightViewLeftPane = (40 + 286 + 20);
-const double _rightViewRightPane = 40;
+//const double _rightViewLeftPane = (40 + 286 + 20);
+//const double _rightViewRightPane = 40;
 //const double _rightViewBottomPane = 40;
-// const double _rightViewItemGapX = 20;
-// const double _rightViewItemGapY = 20;
+const double _rightViewItemGapX = 20;
+const double _rightViewItemGapY = 20;
 // //const double _scrollbarWidth = 13;
 // const double _rightViewBannerMaxHeight = 436;
 //const double _rightViewBannerMinHeight = 196;
 // const double _rightViewToolbarHeight = 76;
-//
-const double _itemDefaultWidth = 290.0;
-const double _itemDefaultHeight = 256.0;
+
+const double _itemMinWidth = 290.0;
+const double _itemMinHeight = 230.0;
 
 class CommunityRightSubscriptionPane extends StatefulWidget {
-  final double pageWidth;
-  final double pageHeight;
+  final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
   final String selectedUserId;
   const CommunityRightSubscriptionPane({
     super.key,
-    required this.pageWidth,
-    required this.pageHeight,
+    required this.cretaLayoutRect,
     required this.scrollController,
     this.selectedUserId = '',
   });
@@ -61,7 +61,7 @@ class CommunityRightSubscriptionPane extends StatefulWidget {
 
 class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscriptionPane> {
   late List<CretaBookData> _cretaBookList;
-  final _itemSizeRatio = _itemDefaultHeight / _itemDefaultWidth;
+  final _itemSizeRatio = _itemMinHeight / _itemMinWidth;
   double _itemWidth = 0;
   double _itemHeight = 0;
 
@@ -74,7 +74,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     } else {
       List<CretaBookData> allCretaBookList = CommunitySampleData.getCretaBookList();
       _cretaBookList = [];
-      for(final cretaBookData in allCretaBookList) {
+      for (final cretaBookData in allCretaBookList) {
         if (cretaBookData.creator != widget.selectedUserId) continue;
         _cretaBookList.add(cretaBookData);
       }
@@ -96,16 +96,15 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     return widgetList;
   }
 
-  Widget getItemPane(Size paneSize) {
-    final width = paneSize.width - _rightViewLeftPane - _rightViewRightPane;
-    int columnCount = width ~/ _itemDefaultWidth;
-    if (columnCount == 0) columnCount = 1;
-    _itemWidth = ((width + 20) ~/ columnCount) - 20;
+  Widget getItemPane() {
+    final width = widget.cretaLayoutRect.childWidth - 286 - 20;
+    final int columnCount = CretaUtils.getItemColumnCount(width, _itemMinWidth, _rightViewItemGapX);
+    _itemWidth = ((width + _rightViewItemGapX) ~/ columnCount) - _rightViewItemGapX;
     _itemHeight = _itemWidth * _itemSizeRatio;
 
     return SizedBox(
-      width: paneSize.width, // - 286,
-      height: paneSize.height, // - 40,
+      width: widget.cretaLayoutRect.childWidth, // - 286,
+      height: widget.cretaLayoutRect.childHeight, // - 40,
       child: Scrollbar(
         controller: widget.scrollController,
         thumbVisibility: true,
@@ -113,11 +112,16 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
           controller: widget.scrollController,
           scrollDirection: Axis.vertical,
           child: Container(
-            padding: EdgeInsets.fromLTRB(_rightViewLeftPane, 196, _rightViewRightPane, 40),
+            padding: EdgeInsets.fromLTRB(
+              widget.cretaLayoutRect.childLeftPadding + 286 + 20,
+              widget.cretaLayoutRect.childTopPadding,
+              widget.cretaLayoutRect.childRightPadding,
+              widget.cretaLayoutRect.childBottomPadding,
+            ),
             child: Wrap(
               direction: Axis.horizontal,
-              spacing: 20,
-              runSpacing: 20,
+              spacing: _rightViewItemGapX, // 좌우 간격
+              runSpacing: _rightViewItemGapY, // 상하 간격
               children: _getSubscriptionUserList(),
             ),
           ),
@@ -128,6 +132,14 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
 
   @override
   Widget build(BuildContext context) {
-    return getItemPane(Size(widget.pageWidth, widget.pageHeight));
+    return Container(
+      margin: EdgeInsets.fromLTRB(
+        widget.cretaLayoutRect.margin.left,
+        widget.cretaLayoutRect.margin.top,
+        widget.cretaLayoutRect.margin.right,
+        widget.cretaLayoutRect.margin.bottom,
+      ),
+      child: getItemPane(),
+    );
   }
 }
