@@ -69,15 +69,15 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
-        color: teamManager.nowTeam!.profileImg != '' ? Colors.transparent : Colors.primaries[Random().nextInt(Colors.primaries.length)],
-        image: teamManager.nowTeam!.profileImg != '' ? DecorationImage(image: Image.network(teamManager.nowTeam!.profileImg).image, fit: BoxFit.cover) : null
+        color: teamManager.currentTeam!.profileImg != '' ? Colors.transparent : Colors.primaries[Random().nextInt(Colors.primaries.length)],
+        image: teamManager.currentTeam!.profileImg != '' ? DecorationImage(image: Image.network(teamManager.currentTeam!.profileImg).image, fit: BoxFit.cover) : null
       ),
       child: Stack(
         children: [
-          teamManager.nowTeam!.profileImg != '' ? const SizedBox() : 
+          teamManager.currentTeam!.profileImg != '' ? const SizedBox() : 
             Center(
               child: Text(
-                teamManager.nowTeam!.name.substring(0, 1),
+                teamManager.currentTeam!.name.substring(0, 1),
                 style: const TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: CretaFont.semiBold,
@@ -97,8 +97,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                       HycopFactory.storage!.uploadFile('profile/${_pickedFile!.name}', _pickedFile!.mimeType.toString(), fileBytes).then((value){
                         setState(() {
                           if(value != null) {
-                            teamManager.nowTeam!.profileImg = value.fileView;
-                            teamManager.setToDB(teamManager.nowTeam!);
+                            teamManager.currentTeam!.profileImg = value.fileView;
+                            teamManager.setToDB(teamManager.currentTeam!);
                           } else {
                             logger.info("upload error");
                           }
@@ -126,7 +126,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
         color: CretaColor.primary,
-        image: teamManager.nowTeam!.channelBannerImg != '' ? DecorationImage(image: Image.network(teamManager.nowTeam!.channelBannerImg).image, fit: BoxFit.cover) : null
+        image: teamManager.currentTeam!.channelBannerImg != '' ? DecorationImage(image: Image.network(teamManager.currentTeam!.channelBannerImg).image, fit: BoxFit.cover) : null
       ),
       child: Stack(
         children: [
@@ -146,8 +146,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                           HycopFactory.storage!.uploadFile('banner /${_pickedFile!.name}', _pickedFile!.mimeType.toString(), fileBytes).then((value){
                             setState(() {
                               if(value != null) {
-                                teamManager.nowTeam!.channelBannerImg = value.fileView;
-                                teamManager.setToDB(teamManager.nowTeam!);
+                                teamManager.currentTeam!.channelBannerImg = value.fileView;
+                                teamManager.setToDB(teamManager.currentTeam!);
                               } else {
                                 logger.info("upload error");
                               }
@@ -244,7 +244,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                         const SizedBox(width: 32.0),
                         CretaDropDown.large(
                           items: teamList,
-                          defaultValue: teamManager.nowTeam!.name,
+                          defaultValue: teamManager.currentTeam!.name,
                           onSelected: (value) {
                             setState(() {
                               teamManager.selectedTeam(teamManager.teamModelList.indexWhere((element) => element.name == value));
@@ -283,7 +283,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                 children: [
                                   teamProfileImageBox(teamManager, 200.0, 200.0, 20.0),
                                   const SizedBox(height: 32.0),
-                                  Text(teamManager.nowTeam!.name),
+                                  Text(teamManager.currentTeam!.name),
                                   const SizedBox(height: 28.0),
                                   BTN.line_blue_t_m(
                                     text: CretaMyPageLang.ratePlanChangeBTN, 
@@ -309,10 +309,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                               Text(CretaMyPageLang.publicProfile, style: CretaFont.titleMedium),
                               const SizedBox(width: 199.0),
                               CretaToggleButton(
-                                defaultValue: teamManager.nowTeam!.isPublicProfile,
+                                defaultValue: teamManager.currentTeam!.isPublicProfile,
                                 onSelected: (value) {
-                                  teamManager.nowTeam!.isPublicProfile = value;
-                                  teamManager.setToDB(teamManager.nowTeam!);
+                                  teamManager.currentTeam!.isPublicProfile = value;
+                                  teamManager.setToDB(teamManager.currentTeam!);
                                 }
                               )
                             ],
@@ -354,7 +354,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                           const SizedBox(height: 32.0),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: memberComponent(teamManager, userPropertyManager, teamManager.teamMemberMap[teamManager.nowTeam!.mid]!, 24.0, 24.0, 20),
+                            children: memberComponent(teamManager, userPropertyManager, teamManager.teamMemberMap[teamManager.currentTeam!.mid]!, 24.0, 24.0, 20),
                           ),
                           const SizedBox(height: 32.0),
                           BTN.fill_blue_t_m(
