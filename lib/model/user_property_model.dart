@@ -189,34 +189,34 @@ class UserPropertyModel extends CretaModel {
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     email = map["email"] ?? '';
-    nickname = map["nickname"];
-    phoneNumber = map["phoneNumber"];
-    profileImg = map["profileImg"];
-    teams = CretaUtils.jsonStringToList(map["teams"]);
+    nickname = map["nickname"] ?? '';
+    phoneNumber = map["phoneNumber"] ?? '';
+    profileImg = map["profileImg"] ?? '';
+    teams = CretaUtils.jsonStringToList(map["teams"] ?? "[]");
     country = CountryType.fromInt(map["country"] ?? 0);
     language = LanguageType.fromInt(map["language"] ?? 0);
     job = JobType.fromInt(map["job"] ?? 0);
-    useDigitalSignage = map["useDigitalSignage"];
-    isPublicProfile = map["isPublicProfile"];
-    channelBannerImg = map["channelBannerImg"];
-    usePushNotice = map["usePushNotice"];
-    useEmailNotice = map["useEmailNotice"];
-    themeStyle = ThemeType.fromInt(map["themeStyle"]);
-    cretaInitPage = InitPageType.fromInt(map["cretaInitPage"]);
-    cookie = CookieType.fromInt(map["cookie"]);
+    useDigitalSignage = map["useDigitalSignage"] ?? false;
+    isPublicProfile = map["isPublicProfile"] ?? true;
+    channelBannerImg = map["channelBannerImg"] ?? '';
+    usePushNotice = map["usePushNotice"] ?? false;
+    useEmailNotice = map["useEmailNotice"] ?? false;
+    themeStyle = ThemeType.fromInt(map["themeStyle"] ?? 0);
+    cretaInitPage = InitPageType.fromInt(map["cretaInitPage"] ?? 0);
+    cookie = CookieType.fromInt(map["cookie"] ?? 0);
     cretaGrade = CretaGradeType.fromInt(map["cretaGrade"] ?? 0);
     ratePlan = RatePlanType.fromInt(map["ratePlan"] ?? 0);
-    freeSpace = map["freeSpace"];
-    bookCount = map["bookCount"];
-    bookViewCount = map["bookViewCount"];
-    bookViewTime = map["bookViewTime"];
-    likeCount = map["likeCount"];
-    commentCount = map["commentCount"];
-    lastestBook = map["lastestBook"];
-    lastestUseColors = CretaUtils.string2ColorList(map["lastestUseColors"]);
-    lastestUseFrames = CretaUtils.jsonStringToList(map["lastestUseFrames"]);
-    autoPlay = map["autoPlay"];
-    mute = map["mute"];
+    freeSpace = map["freeSpace"] ?? 0;
+    bookCount = map["bookCount"] ?? 0;
+    bookViewCount = map["bookViewCount"] ?? 0;
+    bookViewTime = map["bookViewTime"] ?? 0;
+    likeCount = map["likeCount"] ?? 0;
+    commentCount = map["commentCount"] ?? 0;
+    lastestBook = map["lastestBook"] ?? '';
+    lastestUseColors = CretaUtils.string2ColorList(map["lastestUseColors"] ?? "[]");
+    lastestUseFrames = CretaUtils.jsonStringToList(map["lastestUseFrames"] ?? "[]");
+    autoPlay = map["autoPlay"] ?? true;
+    mute = map["mute"] ?? false;
   }
 
   @override
