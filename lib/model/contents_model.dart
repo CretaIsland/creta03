@@ -57,6 +57,7 @@ class ContentsModel extends CretaModel {
 
 // text 관련
   late UndoAble<String> font;
+  late UndoAble<int> fontWeight;
   late UndoAble<bool> isBold; //bold
   late UndoAble<bool> isAutoSize; //자동 크기
   late UndoAble<double> glassFill; // 글라스질
@@ -105,6 +106,7 @@ class ContentsModel extends CretaModel {
         fit,
         //isDynamicSize,
         font,
+        fontWeight,
         isBold,
         isAutoSize,
         glassFill,
@@ -179,6 +181,7 @@ class ContentsModel extends CretaModel {
     filter = UndoAble<ImageFilterType>(ImageFilterType.none, mid);
     fit = UndoAble<ContentsFitType>(ContentsFitType.cover, mid);
     font = UndoAble<String>(CretaFont.fontFamily, mid);
+    fontWeight = UndoAble<int>(400, mid);
     isBold = UndoAble<bool>(false, mid); //bold
     isAutoSize = UndoAble<bool>(true, mid); //bold
     glassFill = UndoAble<double>(0, mid);
@@ -241,6 +244,7 @@ class ContentsModel extends CretaModel {
     lastModifiedTime = DateTime.now().toString();
 
     font = UndoAble<String>(srcContents.font.value, mid);
+    fontWeight = UndoAble<int>(srcContents.fontWeight.value, mid);
     isBold = UndoAble<bool>(srcContents.isBold.value, mid); //bold
     isAutoSize = UndoAble<bool>(srcContents.isAutoSize.value, mid); //bold
     glassFill = UndoAble<double>(srcContents.glassFill.value, mid);
@@ -335,6 +339,7 @@ class ContentsModel extends CretaModel {
     prevPlayTime = map["prevPlayTime"] ?? '';
 
     font.set(map["font"] ?? CretaFont.fontFamily, save: false, noUndo: true);
+    fontWeight.set(map["fontWeight"] ?? 400, save: false, noUndo: true);
     isBold.set(map["isBold"] ?? false, save: false, noUndo: true);
     isAutoSize.set(map["isAutoSize"] ?? true, save: false, noUndo: true);
     glassFill.set(map["glassFill"] ?? 0, save: false, noUndo: true);
@@ -385,6 +390,7 @@ class ContentsModel extends CretaModel {
         "remoteUrl": remoteUrl ?? '',
         "thumbnail": thumbnail ?? '',
         "font": font.value,
+        "fontWeight": fontWeight.value,
         "isBold": isBold.value,
         "isAutoSize": isAutoSize.value,
         "glassFill": glassFill.value,

@@ -12,6 +12,7 @@ import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
+import 'studio_constant.dart';
 
 enum ShadowDirection {
   rightBottum,
@@ -249,6 +250,29 @@ class StudioSnippet {
               onChanged(font);
             },
             selected: defaultValue == font);
+      },
+    ).toList();
+  }
+
+  static List<CretaMenuItem> getFontWeightListItem({
+    required String font,
+    required int defaultValue,
+    required void Function(int) onChanged,
+  }) {
+    List<int>? weightList = StudioConst.fontWeightListMap[font];
+    weightList ??= [400];
+
+    return weightList.map(
+      (weight) {
+        String? fontStr = StudioConst.fontWeightInt2Str[weight];
+        return CretaMenuItem(
+            caption: fontStr!,
+            fontFamily: font,
+            fontWeight: StudioConst.fontWeight2Type[weight],
+            onPressed: () {
+              onChanged(weight);
+            },
+            selected: defaultValue == weight);
       },
     ).toList();
   }

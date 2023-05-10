@@ -57,6 +57,9 @@ class StudioGetXController extends GetxController {
     Get.put(ContentsEventController(), tag: 'contents-property-to-main');
     Get.put(ContentsEventController(), tag: 'contents-main-to-property');
 
+    Get.put(ContentsEventController(), tag: 'text-property-to-textplayer');
+    Get.put(ContentsEventController(), tag: 'textplayer-to-text-property');
+
     // Initialize EventController2 instance with a tag
     //Get.put(PageEventController(), tag: 'page-property-to-main');
     super.onInit();

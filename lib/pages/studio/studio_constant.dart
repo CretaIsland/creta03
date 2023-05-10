@@ -228,4 +228,50 @@ class StudioConst {
   }
 
   static const double bigNumber = 100000000;
+
+  static Map<String, int> fontWeightStr2Int = {
+    'Thin': 100,
+    'ExtraLight': 200,
+    'Light': 300,
+    'Regular': 400,
+    'Medium': 500,
+    'SemiBold': 600,
+    'Bold': 700,
+    'ExtraBold': 800,
+    'Black': 900,
+  };
+
+  static Map<int, String> fontWeightInt2Str = {
+    100: 'Thin',
+    200: 'ExtraLight',
+    300: 'Light',
+    400: 'Regular',
+    500: 'Medium',
+    600: 'SemiBold',
+    700: 'Bold',
+    800: 'ExtraBold',
+    900: 'Black',
+  };
+
+  static Map<int, FontWeight> fontWeight2Type = {
+    100: FontWeight.w100,
+    200: FontWeight.w200,
+    300: FontWeight.w300,
+    400: FontWeight.w400,
+    500: FontWeight.w500,
+    600: FontWeight.w600,
+    700: FontWeight.w700,
+    800: FontWeight.w800,
+    900: FontWeight.w900,
+  };
+
+  static Map<String, List<int>> fontWeightListMap = {
+    'Pretendard': [100, 200, 300, 400, 500, 600, 700, 800, 900],
+    'NanumMyeongjo': [400, 700, 800],
+    'Jua': [400],
+    'NanumGothic': [400, 700, 800],
+    'NanumPenScript': [400],
+    'NotoSansKR': [100, 300, 400, 500, 700, 900],
+    'Macondo': [400],
+  };
 }

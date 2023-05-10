@@ -14,6 +14,7 @@ class CretaMenuItem {
   String? linkUrl;
   final bool isIconText;
   final String fontFamily;
+  final FontWeight? fontWeight;
 
   CretaMenuItem({
     required this.caption,
@@ -26,6 +27,7 @@ class CretaMenuItem {
     this.isDescending,
     this.isIconText = false,
     this.fontFamily = 'Pretendard',
+    this.fontWeight,
   });
 }
 
@@ -92,6 +94,7 @@ class CretaPopupMenu {
                               item.caption,
                               style: TextStyle(
                                 fontSize: 13,
+                                fontWeight: item.fontWeight,
                                 fontFamily: item.fontFamily,
                               ),
                             ),

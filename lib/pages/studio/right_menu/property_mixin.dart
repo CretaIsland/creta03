@@ -167,7 +167,7 @@ mixin PropertyMixin {
   }
 
   Widget propertyLine2({
-    required String name,
+    String? name,
     required Widget widget1,
     required Widget widget2,
     double topPadding = 20.0,
@@ -178,7 +178,7 @@ mixin PropertyMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(width: nameWidth, child: Text(name, style: titleStyle)),
+          if (name != null) SizedBox(width: nameWidth, child: Text(name, style: titleStyle)),
           widget1,
           widget2,
         ],

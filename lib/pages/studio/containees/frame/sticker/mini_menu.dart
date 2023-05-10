@@ -142,10 +142,10 @@ class MiniMenuState extends State<MiniMenu> {
           ),
           borderRadius: hasContents && MiniMenu.showFrame
               ? const BorderRadius.only(
-                  topLeft: Radius.circular(45),
-                  bottomLeft: Radius.circular(45),
+                  topLeft: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
                 )
-              : const BorderRadius.all(Radius.circular(45)),
+              : const BorderRadius.all(Radius.circular(20)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -279,10 +279,10 @@ class MiniMenuState extends State<MiniMenu> {
             color: CretaColor.secondary,
           ),
           borderRadius: MiniMenu.showFrame
-              ? const BorderRadius.all(Radius.circular(45))
+              ? const BorderRadius.all(Radius.circular(20))
               : const BorderRadius.only(
-                  topLeft: Radius.circular(45),
-                  bottomLeft: Radius.circular(45),
+                  topLeft: Radius.circular(20),
+                  bottomLeft: Radius.circular(20),
                 ),
         ),
         child: Row(

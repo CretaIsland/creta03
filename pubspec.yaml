@@ -152,14 +152,14 @@ flutter:
   fonts:
     - family: Pretendard
       fonts:
-        - asset: fonts/Pretendard/Pretendard-Regular.otf
-          weight: 400
         - asset: fonts/Pretendard/Pretendard-Thin.otf
           weight: 100
         - asset: fonts/Pretendard/Pretendard-ExtraLight.otf
           weight: 200
         - asset: fonts/Pretendard/Pretendard-Light.otf
           weight: 300
+        - asset: fonts/Pretendard/Pretendard-Regular.otf
+          weight: 400
         - asset: fonts/Pretendard/Pretendard-Medium.otf
           weight: 500
         - asset: fonts/Pretendard/Pretendard-SemiBold.otf
@@ -172,28 +172,44 @@ flutter:
           weight: 900
     - family: NanumMyeongjo
       fonts:
-        - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-Bold.ttf
-        - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-ExtraBold.ttf
         - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-Regular.ttf
+          weight: 400
+        - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-Bold.ttf
+          weight: 700
+        - asset: fonts/Nanum_Myeongjo/NanumMyeongjo-ExtraBold.ttf
+          weight: 800
     - family: Jua
       fonts:
         - asset: fonts/Jua/Jua-Regular.ttf
+          weight: 400
     - family: NanumGothic
       fonts:
-        - asset: fonts/Nanum_Gothic/NanumGothic-Bold.ttf
-        - asset: fonts/Nanum_Gothic/NanumGothic-ExtraBold.ttf
         - asset: fonts/Nanum_Gothic/NanumGothic-Regular.ttf
+          weight: 400
+        - asset: fonts/Nanum_Gothic/NanumGothic-Bold.ttf
+          weight: 700
+        - asset: fonts/Nanum_Gothic/NanumGothic-ExtraBold.ttf
+          weight: 800
     - family: NanumPenScript
       fonts:
         - asset: fonts/Nanum_Pen_Script/NanumPenScript-Regular.ttf
+          weight: 400
     - family: NotoSansKR
       fonts:
-        - asset: fonts/Noto_Sans_KR/NotoSansKR-Black.otf
-        - asset: fonts/Noto_Sans_KR/NotoSansKR-Bold.otf
-        - asset: fonts/Noto_Sans_KR/NotoSansKR-Light.otf
-        - asset: fonts/Noto_Sans_KR/NotoSansKR-Medium.otf
-        - asset: fonts/Noto_Sans_KR/NotoSansKR-Regular.otf
         - asset: fonts/Noto_Sans_KR/NotoSansKR-Thin.otf
+          weight: 100
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Light.otf
+          weight: 300
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Regular.otf
+          weight: 400
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Medium.otf
+          weight: 500
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Bold.otf
+          weight: 700
+        - asset: fonts/Noto_Sans_KR/NotoSansKR-Black.otf
+          weight: 900
     - family: Macondo
       fonts:
         - asset: fonts/Macondo/Macondo-Regular.ttf
+          weight: 400
+

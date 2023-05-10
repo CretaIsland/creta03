@@ -89,7 +89,7 @@ class CretaStudioLang {
     "코멘트",
   ];
   static List<IconData> menuIconList = [
-    Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
+    Icons.library_books_outlined, //Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
     Icons.insert_drive_file_outlined, //MaterialIcons.insert_drive_file,
     Icons.space_dashboard_outlined,
     Icons.inventory_2_outlined,
