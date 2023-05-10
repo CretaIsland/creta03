@@ -279,31 +279,31 @@ enum TextAniType {
   static TextAniType fromInt(int? val) => TextAniType.values[validCheck(val ?? none.index)];
 }
 
-enum TextLineType {
-  none,
-  underline,
-  overline,
-  lineThrough,
-  end;
+// enum TextLineType {
+//   none,
+//   underline,
+//   overline,
+//   lineThrough,
+//   end;
 
-  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static TextLineType fromInt(int? val) => TextLineType.values[validCheck(val ?? none.index)];
+//   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+//   static TextLineType fromInt(int? val) => TextLineType.values[validCheck(val ?? none.index)];
 
-  static TextDecoration getTextDecoration(TextLineType value) {
-    switch (value) {
-      case TextLineType.none:
-        return TextDecoration.none;
-      case TextLineType.underline:
-        return TextDecoration.underline;
-      case TextLineType.overline:
-        return TextDecoration.overline;
-      case TextLineType.lineThrough:
-        return TextDecoration.lineThrough;
-      default:
-        return TextDecoration.none;
-    }
-  }
-}
+//   static TextDecoration getTextDecoration(TextLineType value) {
+//     switch (value) {
+//       case TextLineType.none:
+//         return TextDecoration.none;
+//       case TextLineType.underline:
+//         return TextDecoration.underline;
+//       case TextLineType.overline:
+//         return TextDecoration.overline;
+//       case TextLineType.lineThrough:
+//         return TextDecoration.lineThrough;
+//       default:
+//         return TextDecoration.none;
+//     }
+//   }
+// }
 
 enum FontSizeType {
   none,

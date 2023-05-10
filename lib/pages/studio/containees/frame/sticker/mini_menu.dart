@@ -65,6 +65,7 @@ class MiniMenu extends StatefulWidget {
 
 class MiniMenuState extends State<MiniMenu> {
   //bool showFrame = false;
+  final double radius = LayoutConst.miniMenuHeight / 2;
 
   @override
   void initState() {
@@ -141,11 +142,11 @@ class MiniMenuState extends State<MiniMenu> {
             color: CretaColor.primary,
           ),
           borderRadius: hasContents && MiniMenu.showFrame
-              ? const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(radius),
+                  bottomLeft: Radius.circular(radius),
                 )
-              : const BorderRadius.all(Radius.circular(20)),
+              : BorderRadius.all(Radius.circular(radius)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -279,10 +280,10 @@ class MiniMenuState extends State<MiniMenu> {
             color: CretaColor.secondary,
           ),
           borderRadius: MiniMenu.showFrame
-              ? const BorderRadius.all(Radius.circular(20))
-              : const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
+              ? BorderRadius.all(Radius.circular(radius))
+              : BorderRadius.only(
+                  topLeft: Radius.circular(radius),
+                  bottomLeft: Radius.circular(radius),
                 ),
         ),
         child: Row(

@@ -1,5 +1,6 @@
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:translator/translator.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
@@ -14,6 +15,7 @@ import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
+import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
@@ -589,23 +591,91 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
   Widget _textEditor(ContentsModel model) {
     GlobalKey<CretaTextFieldState> key = GlobalKey<CretaTextFieldState>();
-    return CretaTextField.long(
-      textFieldKey: key,
-      value: model.remoteUrl ?? '',
-      hintText: model.name,
-      selectAtInit: true,
-      autoComplete: true,
-      autoHeight: true,
-      height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
-      keyboardType: TextInputType.multiline,
-      maxLines: null,
-      textInputAction: TextInputAction.newline,
-      alignVertical: TextAlignVertical.top,
-      onEditComplete: (value) {
-        model.remoteUrl = value;
-        widget.contentsManager.setToDB(model);
-        widget.contentsManager.notify();
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CretaTextField.long(
+          textFieldKey: key,
+          value: model.remoteUrl ?? '',
+          hintText: model.name,
+          selectAtInit: true,
+          autoComplete: true,
+          autoHeight: true,
+          height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+          textInputAction: TextInputAction.newline,
+          alignVertical: TextAlignVertical.top,
+          onEditComplete: (value) {
+            model.remoteUrl = value;
+            widget.contentsManager.setToDB(model);
+            widget.contentsManager.notify();
+          },
+        ),
+        _translateRow(model),
+        propertyLine(
+          // TTS
+          topPadding: 10,
+          name: CretaStudioLang.tts,
+          widget: CretaToggleButton(
+            width: 54 * 0.75,
+            height: 28 * 0.75,
+            defaultValue: model.isTTS.value,
+            onSelected: (value) {
+              model.isTTS.set(value);
+              model.mute.set(!value);
+              widget.contentsManager.notify();
+              setState(() {});
+            },
+          ),
+        ),
+      ],
     );
+  }
+
+  Widget _translateRow(ContentsModel model) {
+    return propertyLine(
+      topPadding: 10,
+      name: CretaStudioLang.translate,
+      widget: CretaDropDownButton(
+        align: MainAxisAlignment.start,
+        selectedColor: CretaColor.text[700]!,
+        textStyle: dataStyle,
+        width: 200,
+        height: 36,
+        itemHeight: 24,
+        dropDownMenuItemList: _getLangItem(
+            defaultValue: model.lang.value,
+            onChanged: (val) async {
+              model.lang.set(val);
+              if (model.remoteUrl != null) {
+                Translation result = await model.remoteUrl!.translate(to: model.lang.value);
+                model.remoteUrl = result.text;
+                model.url = result.text;
+                model.name = result.text;
+                model.save();
+              }
+              widget.contentsManager.notify();
+              setState(() {});
+            }),
+      ),
+    );
+  }
+
+  List<CretaMenuItem> _getLangItem(
+      {required String defaultValue, required void Function(String) onChanged}) {
+    return StudioConst.code2LangMap.keys.map(
+      (code) {
+        String langStr = StudioConst.code2LangMap[code]!;
+
+        return CretaMenuItem(
+          caption: langStr,
+          onPressed: () {
+            onChanged(StudioConst.lang2CodeMap[langStr]!);
+          },
+          selected: code == defaultValue,
+        );
+      },
+    ).toList();
   }
 }

@@ -32,7 +32,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
   @override
   void initState() {
     super.initState();
-    widget.player.afterBuild();
+    //widget.player.afterBuild();
     final ContentsEventController receiveEvent = Get.find(tag: 'text-property-to-textplayer');
     _receiveEvent = receiveEvent;
   }
@@ -127,7 +127,13 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
               fontFamily: player.model!.font.value,
               color: player.model!.fontColor.value.withOpacity(player.model!.opacity.value),
               fontSize: fontSize,
-              decoration: TextLineType.getTextDecoration(player.model!.line.value),
+              decoration: (player.model!.isUnderline.value && player.model!.isStrike.value)
+                  ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+                  : player.model!.isUnderline.value
+                      ? TextDecoration.underline
+                      : player.model!.isStrike.value
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
               //fontWeight: player.model!.isBold.value ? FontWeight.bold : FontWeight.normal,
               fontWeight: fontWeight,
               fontStyle: player.model!.isItalic.value ? FontStyle.italic : FontStyle.normal);

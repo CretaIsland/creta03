@@ -11,6 +11,7 @@ import 'package:logging/logging.dart';
 import 'package:get/get.dart';
 import 'common/creta_constant.dart';
 import 'common/cross_common_job.dart';
+import 'pages/studio/studio_constant.dart';
 import 'pages/studio/studio_getx_controller.dart';
 import 'routes.dart';
 
@@ -23,6 +24,7 @@ void main() async {
   await HycopFactory.initAll();
 
   SampleData.initSample();
+  StudioConst.initLangMap();
 
   // test code
   myConfig!.serverConfig!.storageConnInfo.bucketId =

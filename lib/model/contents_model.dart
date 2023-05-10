@@ -71,7 +71,9 @@ class ContentsModel extends CretaModel {
   late UndoAble<double> outLineWidth;
   late UndoAble<Color> outLineColor;
   late UndoAble<bool> isItalic;
-  late UndoAble<TextLineType> line;
+  late UndoAble<bool> isUnderline;
+  late UndoAble<bool> isStrike;
+  //late UndoAble<TextLineType> line;
   late UndoAble<double> letterSpacing;
   late UndoAble<double> wordSpacing;
   late UndoAble<TextAniType> aniType;
@@ -120,7 +122,9 @@ class ContentsModel extends CretaModel {
         outLineWidth,
         outLineColor,
         isItalic,
-        line,
+        isUnderline,
+        isStrike,
+        //line,
         letterSpacing,
         wordSpacing,
         aniType,
@@ -195,14 +199,16 @@ class ContentsModel extends CretaModel {
     outLineWidth = UndoAble<double>(0, mid);
     outLineColor = UndoAble<Color>(Colors.transparent, mid);
     isItalic = UndoAble<bool>(false, mid);
-    line = UndoAble<TextLineType>(TextLineType.none, mid);
+    isUnderline = UndoAble<bool>(false, mid);
+    isStrike = UndoAble<bool>(false, mid);
+    //line = UndoAble<TextLineType>(TextLineType.none, mid);
     letterSpacing = UndoAble<double>(0, mid);
     wordSpacing = UndoAble<double>(0, mid);
     aniType = UndoAble<TextAniType>(TextAniType.none, mid);
     align = UndoAble<TextAlign>(TextAlign.center, mid);
     anyDuration = UndoAble<double>(0, mid);
     isTTS = UndoAble<bool>(false, mid);
-    lang = UndoAble<String>('kr', mid);
+    lang = UndoAble<String>('ko', mid);
   }
 
   // ContentsModel.copy(ContentsModel src, String parentId,
@@ -258,7 +264,9 @@ class ContentsModel extends CretaModel {
     outLineWidth = UndoAble<double>(srcContents.outLineWidth.value, mid);
     outLineColor = UndoAble<Color>(srcContents.outLineColor.value, mid);
     isItalic = UndoAble<bool>(srcContents.isItalic.value, mid);
-    line = UndoAble<TextLineType>(srcContents.line.value, mid);
+    isUnderline = UndoAble<bool>(srcContents.isUnderline.value, mid);
+    isStrike = UndoAble<bool>(srcContents.isStrike.value, mid);
+    //line = UndoAble<TextLineType>(srcContents.line.value, mid);
     letterSpacing = UndoAble<double>(srcContents.letterSpacing.value, mid);
     wordSpacing = UndoAble<double>(srcContents.wordSpacing.value, mid);
     align = UndoAble<TextAlign>(srcContents.align.value, mid);
@@ -353,14 +361,16 @@ class ContentsModel extends CretaModel {
     outLineWidth.set(map["outLineWidth"] ?? 0, save: false, noUndo: true);
     outLineColor.set(CretaUtils.string2Color(map["outLineColor"])!, save: false, noUndo: true);
     isItalic.set(map["isItalic"] ?? false, save: false, noUndo: true);
-    line.set(TextLineType.fromInt(map["line"] ?? 0), save: false, noUndo: true);
+    isUnderline.set(map["isUnderline"] ?? false, save: false, noUndo: true);
+    isStrike.set(map["isStrike"] ?? false, save: false, noUndo: true);
+    //line.set(TextLineType.fromInt(map["line"] ?? 0), save: false, noUndo: true);
     letterSpacing.set(map["letterSpacing"] ?? 0, save: false, noUndo: true);
     wordSpacing.set(map["wordSpacing"] ?? 0, save: false, noUndo: true);
     align.set(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
     aniType.set(TextAniType.fromInt(map["aniType"] ?? 0), save: false, noUndo: true);
     anyDuration.set(map["anyDuration"] ?? 0, save: false, noUndo: true);
     isTTS.set(map["isTTS"] ?? false, save: false, noUndo: true);
-    lang.set(map["lang"] ?? 'kr', save: false, noUndo: true);
+    lang.set(map["lang"] ?? 'ko', save: false, noUndo: true);
   }
 
   @override
@@ -404,7 +414,9 @@ class ContentsModel extends CretaModel {
         "outLineWidth": outLineWidth.value,
         "outLineColor": outLineColor.value.toString(),
         "isItalic": isItalic.value,
-        "line": line.value.index,
+        "isUnderline": isUnderline.value,
+        "isStrike": isStrike.value,
+        //"line": line.value.index,
         "letterSpacing": letterSpacing.value,
         "wordSpacing": wordSpacing.value,
         "align": align.value.index,

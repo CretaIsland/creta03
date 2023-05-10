@@ -368,5 +368,7 @@ class CretaStudioLang {
     userDefineText: 40,
   };
 
-  static const String autoSizeFont = '프레임 크기에 자동맞춤';
+  static const String autoSizeFont = '프레임 크기에 맞춤';
+  static const String tts = '음성으로 방송';
+  static const String translate = '번역';
 }

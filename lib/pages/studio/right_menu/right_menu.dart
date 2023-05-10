@@ -287,8 +287,12 @@ class _RightMenuState
           if (contents == null) {
             return Container();
           }
+          String title = contents.name;
+          if (contents.isText()) {
+            title = "TEXT";
+          }
           return Text(
-            contents.name,
+            title,
             textAlign: TextAlign.center,
             style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
           );
