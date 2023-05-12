@@ -525,7 +525,7 @@ mixin PropertyMixin {
         textAlign: TextAlign.right,
         style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
       ),
-      hasRemoveButton: imageFilterType != TextureType.none,
+      hasRemoveButton: imageFilterType != ImageFilterType.none,
       onDelete: onDelete,
       bodyWidget: imageFilterTypeListView(
         imageFilterType,
