@@ -198,14 +198,6 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        widget.cretaLayoutRect.margin.left,
-        widget.cretaLayoutRect.margin.top,
-        widget.cretaLayoutRect.margin.right,
-        widget.cretaLayoutRect.margin.bottom,
-      ),
-      child: _getItemPane(),
-    );
+    return _getItemPane();
   }
 }

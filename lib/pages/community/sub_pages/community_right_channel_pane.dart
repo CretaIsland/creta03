@@ -65,7 +65,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
     _cretaBookList = CommunitySampleData.getCretaBookList();
   }
 
-  Widget getItemPane() {
+  Widget _getItemPane() {
     final int columnCount =
         CretaUtils.getItemColumnCount(widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 
@@ -79,8 +79,12 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기
       child: GridView.builder(
         controller: widget.scrollController,
-        padding: EdgeInsets.fromLTRB(widget.cretaLayoutRect.childLeftPadding, widget.cretaLayoutRect.childTopPadding,
-            widget.cretaLayoutRect.childRightPadding, widget.cretaLayoutRect.childBottomPadding),
+        padding: EdgeInsets.fromLTRB(
+          widget.cretaLayoutRect.childLeftPadding,
+          widget.cretaLayoutRect.childTopPadding,
+          widget.cretaLayoutRect.childRightPadding,
+          widget.cretaLayoutRect.childBottomPadding,
+        ),
         itemCount: _cretaBookList.length, //item 개수
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
@@ -115,14 +119,6 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        widget.cretaLayoutRect.margin.left,
-        widget.cretaLayoutRect.margin.top,
-        widget.cretaLayoutRect.margin.right,
-        widget.cretaLayoutRect.margin.bottom,
-      ),
-      child: getItemPane(),
-    );
+    return _getItemPane();
   }
 }

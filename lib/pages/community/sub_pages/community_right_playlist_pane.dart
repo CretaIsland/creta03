@@ -66,7 +66,7 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
     _cretaPlaylistList = CommunitySampleData.getCretaPlaylistList();
   }
 
-  Widget getItemPane() {
+  Widget _getItemPane() {
     return Scrollbar(
       thumbVisibility: true,
       controller: widget.scrollController,
@@ -93,14 +93,6 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        widget.cretaLayoutRect.margin.left,
-        widget.cretaLayoutRect.margin.top,
-        widget.cretaLayoutRect.margin.right,
-        widget.cretaLayoutRect.margin.bottom,
-      ),
-      child: getItemPane(),
-    );
+    return _getItemPane();
   }
 }
