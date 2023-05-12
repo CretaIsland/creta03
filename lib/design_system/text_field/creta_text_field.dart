@@ -309,6 +309,13 @@ class CretaTextFieldState extends State<CretaTextField> {
   void initState() {
     _controller = widget.controller ?? TextEditingController();
     _controller.text = widget.value;
+    // _controller.addListener(() {
+    //   if (_controller.text.isNotEmpty) {
+    //     // 키보드 이벤트 처리
+    //     _handleKeyboardEvent(_controller.text[_controller.text.length - 1]);
+    //   }
+    // });
+
     if (widget.autoHeight) {
       _lineCount = CretaUtils.countAs(widget.value, '\n');
       if (_lineCount > 10) _lineCount = 10;
@@ -445,8 +452,8 @@ class CretaTextFieldState extends State<CretaTextField> {
                     FilteringTextInputFormatter.allow(RegExp('^[0-9#A-Fa-f]{0,${widget.limit}}\$')),
                   ]
                 : null,
-        //maxLines: widget.maxLines,
         maxLines: widget.maxLines,
+        //maxLines: 1,
         autofocus: false,
         //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
         decoration: _basicDecoBox(),
@@ -492,7 +499,7 @@ class CretaTextFieldState extends State<CretaTextField> {
           if (widget.autoHeight) {
             int newLineNo = CretaUtils.countAs(value, '\n');
             if (_lineCount < 10 || (newLineNo < 10 && newLineNo > 1)) {
-              if (newLineNo != _lineCount) {
+              if (newLineNo != 0 && newLineNo != _lineCount) {
                 if (newLineNo > 10) {
                   _lineCount = 10;
                 } else if (newLineNo < 1) {
@@ -500,6 +507,7 @@ class CretaTextFieldState extends State<CretaTextField> {
                 } else {
                   _lineCount = newLineNo;
                 }
+                logger.info('line count chaged');
                 setState(() {});
               }
             }
@@ -517,22 +525,22 @@ class CretaTextFieldState extends State<CretaTextField> {
           }
           setLastClicked();
           if (_clicked == false) {
-            setState(() {
-              _clicked = true;
-            });
+            //setState(() {
+            _clicked = true;
+            //});
           }
           widget.onChanged?.call(value);
         },
         onTap: () {
           logger.finest('onTapped');
           setLastClicked();
-          setState(() {
-            _clicked = true;
-          });
+          //setState(() {
+          _clicked = true;
+          //});
         },
-        // onTapOutside: (event) {
-        //   widget.onEditComplete(_searchValue);
-        // },
+        onTapOutside: (event) {
+          widget.onEditComplete(_searchValue);
+        },
       ),
     );
   }

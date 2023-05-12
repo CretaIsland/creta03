@@ -85,12 +85,14 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
             player.acc.updateModel(model);
             logger.info('model updated ${model.name}, ${model.font.value}');
           }
-          logger.info('Text StreamBuilder<AbsExModel>');
+          logger.fine('Text StreamBuilder<AbsExModel>');
 
           if (StudioVariables.isAutoPlay) {
-            player.model!.setPlayState(PlayState.start);
+            //player.model!.setPlayState(PlayState.start);
+            player.play();
           } else {
-            player.model!.setPlayState(PlayState.pause);
+            //player.model!.setPlayState(PlayState.pause);
+            player.pause();
           }
           //Size outSize = widget.getOuterSize(widget.model!.aspectRatio.value);
 

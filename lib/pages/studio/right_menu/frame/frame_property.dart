@@ -540,7 +540,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       style: titleStyle,
                     ),
                     CretaTextField.xshortNumber(
-                      maxNumber: 360,
+                      maxNumber: 999,
                       defaultBorder: Border.all(color: CretaColor.text[100]!),
                       width: 45,
                       limit: 5,
@@ -553,13 +553,15 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         if (widget.model.radius.value == newValue) {
                           return;
                         }
-                        mychangeStack.startTrans();
-                        widget.model.radius.set(newValue);
-                        widget.model.radiusLeftTop.set(newValue);
-                        widget.model.radiusRightTop.set(newValue);
-                        widget.model.radiusRightBottom.set(newValue);
-                        widget.model.radiusLeftBottom.set(newValue);
-                        mychangeStack.endTrans();
+                        setState(() {
+                          mychangeStack.startTrans();
+                          widget.model.radius.set(newValue);
+                          widget.model.radiusLeftTop.set(newValue);
+                          widget.model.radiusRightTop.set(newValue);
+                          widget.model.radiusRightBottom.set(newValue);
+                          widget.model.radiusLeftBottom.set(newValue);
+                          mychangeStack.endTrans();
+                        });
                         //BookMainPage.bookManagerHolder!.notify();
                         _sendEvent!.sendEvent(widget.model);
                         logger.finest('onEditComplete ${widget.model.radius.value}');
@@ -596,7 +598,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         children: [
                           _cornerRadius(
                             cornerValue: widget.model.radiusLeftTop,
-                            onEditComplete: ((value) {}),
+                            onEditComplete: ((value) {
+                              widget.model.radiusLeftTop.set(value);
+                              _sendEvent!.sendEvent(widget.model);
+                              logger.info('onEditComplete applied=$value');
+                            }),
                             onSelected: (name, value, nvMap) {},
                           ),
                           SizedBox(
@@ -604,7 +610,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                           ),
                           _cornerRadius(
                             cornerValue: widget.model.radiusLeftBottom,
-                            onEditComplete: ((value) {}),
+                            onEditComplete: ((value) {
+                              widget.model.radiusLeftBottom.set(value);
+                              _sendEvent!.sendEvent(widget.model);
+                              logger.info('onEditComplete applied=$value');
+                            }),
                             onSelected: (name, value, nvMap) {},
                           ),
                         ],
@@ -659,7 +669,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         children: [
                           _cornerRadius(
                             cornerValue: widget.model.radiusRightTop,
-                            onEditComplete: ((value) {}),
+                            onEditComplete: ((value) {
+                              widget.model.radiusRightTop.set(value);
+                              _sendEvent!.sendEvent(widget.model);
+                              logger.info('onEditComplete applied=$value');
+                            }),
                             onSelected: (name, value, nvMap) {},
                           ),
                           SizedBox(
@@ -667,7 +681,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                           ),
                           _cornerRadius(
                             cornerValue: widget.model.radiusRightBottom,
-                            onEditComplete: ((value) {}),
+                            onEditComplete: ((value) {
+                              widget.model.radiusRightBottom.set(value);
+                              _sendEvent!.sendEvent(widget.model);
+                              logger.info('onEditComplete applied=$value');
+                            }),
                             onSelected: (name, value, nvMap) {},
                           ),
                         ],
@@ -685,13 +703,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     // required bool isLeftWidget,
     // required CornerOpenFlag openFlag,
     required UndoAble<double> cornerValue,
-    required void Function(String) onEditComplete,
+    required void Function(double) onEditComplete,
     required void Function(String, bool, Map<String, bool>) onSelected,
   }) {
     return CretaTextField.xshortNumber(
       //enabled: openFlag.value,
       align: TextAlign.center,
-      maxNumber: 360,
+      maxNumber: 999,
       defaultBorder: Border.all(color: CretaColor.text[100]!),
       width: 45,
       limit: 5,
@@ -699,16 +717,12 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       value: cornerValue.value.round().toString(),
       hintText: '',
       onEditComplete: ((value) {
-        logger.finest('onEditComplete $value');
+        logger.info('onEditComplete org=$value');
         double newValue = int.parse(value).toDouble();
-        if (cornerValue.value == newValue) {
-          return;
-        }
-        cornerValue.set(newValue);
-        //BookMainPage.bookManagerHolder!.notify();
-        _sendEvent!.sendEvent(widget.model);
-        logger.finest('onEditComplete ${cornerValue.value}');
-        onEditComplete.call(value);
+        // if (cornerValue.value == newValue) {
+        //   return;
+        // }
+        onEditComplete.call(newValue);
       }),
       minNumber: 0,
     );

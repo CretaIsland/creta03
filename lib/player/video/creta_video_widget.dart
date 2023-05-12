@@ -70,10 +70,10 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
     return ClipRRect(
       //clipper: MyContentsClipper(),
       borderRadius: BorderRadius.only(
-        topRight: Radius.circular(frameModel.radiusRightTop.value),
-        topLeft: Radius.circular(frameModel.radiusLeftTop.value),
-        bottomRight: Radius.circular(frameModel.radiusRightBottom.value),
-        bottomLeft: Radius.circular(frameModel.radiusLeftBottom.value),
+        topRight: Radius.circular(frameModel.getRealradiusRightTop()),
+        topLeft: Radius.circular(frameModel.getRealradiusLeftTop()),
+        bottomRight: Radius.circular(frameModel.getRealradiusRightBottom()),
+        bottomLeft: Radius.circular(frameModel.getRealradiusLeftBottom()),
       ),
       child: SizedBox.expand(
           child: FittedBox(

@@ -15,7 +15,6 @@ import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';
-import '../../data_io/user_property_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/buttons/creta_scale_button.dart';
@@ -27,6 +26,7 @@ import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
+import '../../routes.dart';
 import '../login_page.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
@@ -46,7 +46,7 @@ class BookMainPage extends StatefulWidget {
   static PageManager? pageManagerHolder;
   // static FrameTemplateManager? polygonFrameManagerHolder;
   // static FrameTemplateManager? animationFrameManagerHolder;
-  static UserPropertyManager? userPropertyManagerHolder;
+  //static UserPropertyManager? userPropertyManagerHolder;
   static ContaineeNotifier? containeeNotifier;
   static MiniMenuNotifier? miniMenuNotifier;
   //static MiniMenuContentsNotifier? miniMenuContentsNotifier;
@@ -57,8 +57,10 @@ class BookMainPage extends StatefulWidget {
   static ClickEventHandler clickEventHandler = ClickEventHandler();
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
-
-  const BookMainPage({super.key});
+  final bool isPreview;
+  BookMainPage({super.key, this.isPreview = false}) {
+    StudioVariables.isPreview = isPreview;
+  }
 
   @override
   State<BookMainPage> createState() => _BookMainPageState();
@@ -109,7 +111,7 @@ class _BookMainPageState extends State<BookMainPage> {
     BookMainPage.pageManagerHolder = PageManager();
     // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
     // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
-    BookMainPage.userPropertyManagerHolder = UserPropertyManager();
+    //BookMainPage.userPropertyManagerHolder = UserPropertyManager();
 
     String url = Uri.base.origin;
     String query = Uri.base.query;
@@ -167,7 +169,7 @@ class _BookMainPageState extends State<BookMainPage> {
     // await _getAnimationFrameTemplates();
 
     // Get User property
-    await BookMainPage.userPropertyManagerHolder!.initUserProperty();
+    //await BookMainPage.userPropertyManagerHolder!.initUserProperty();
 
     _onceDBGetComplete = true;
 
@@ -262,11 +264,13 @@ class _BookMainPageState extends State<BookMainPage> {
           value: BookMainPage.bookManagerHolder!,
         ),
       ],
-      child: Snippet.CretaScaffold(
-        title: Snippet.logo('studio'),
-        context: context,
-        child: _waitBook(),
-      ),
+      child: widget.isPreview
+          ? Scaffold(body: _waitBook())
+          : Snippet.CretaScaffold(
+              title: Snippet.logo('studio'),
+              context: context,
+              child: _waitBook(),
+            ),
     );
   }
 
@@ -282,7 +286,7 @@ class _BookMainPageState extends State<BookMainPage> {
         BookMainPage.pageManagerHolder!,
         // BookMainPage.polygonFrameManagerHolder!,
         // BookMainPage.animationFrameManagerHolder!,
-        BookMainPage.userPropertyManagerHolder!,
+        // LoginPage.userPropertyManagerHolder!,
       ],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
@@ -327,9 +331,10 @@ class _BookMainPageState extends State<BookMainPage> {
                 height: StudioVariables.workHeight,
                 child: Row(
                   children: [
-                    StickMenu(
-                      selectFunction: _showLeftMenu,
-                    ),
+                    if (widget.isPreview == false)
+                      StickMenu(
+                        selectFunction: _showLeftMenu,
+                      ),
                     Expanded(
                       child: _workArea(),
                     ),
@@ -346,7 +351,7 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
             ],
           ),
-          _topMenu(),
+          if (widget.isPreview == false) _topMenu(),
         ],
       ),
     );
@@ -404,8 +409,8 @@ class _BookMainPageState extends State<BookMainPage> {
     return Stack(
       children: [
         _scrollArea(context),
-        _openLeftMenu(),
-        _openRightMenu(),
+        if (widget.isPreview == false) _openLeftMenu(),
+        if (widget.isPreview == false) _openRightMenu(),
       ],
     );
   }
@@ -509,72 +514,18 @@ class _BookMainPageState extends State<BookMainPage> {
                 icon2: Icons.volume_up_outlined,
                 tooltip: CretaStudioLang.tooltipVolume,
                 onPressed: () {
-                  StudioVariables.isMute = !StudioVariables.isMute;
-                  LoginPage.userPropertyManagerHolder?.setMute(StudioVariables.isMute);
-
-                  if (BookMainPage.pageManagerHolder == null) {
-                    return;
-                  }
-                  PageModel? pageModel =
-                      BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-                  if (pageModel == null) {
-                    return;
-                  }
-                  FrameManager? frameManager =
-                      BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
-                  if (frameManager == null) {
-                    return;
-                  }
-                  if (StudioVariables.isMute == true) {
-                    logger.info('frameManager.setSoundOff()--------');
-                    frameManager.setSoundOff();
-                  } else {
-                    logger.info('frameManager.resumeSound()--------');
-                    frameManager.resumeSound();
-                  }
+                  _globalToggleMute();
                 },
               ),
 
               SizedBox(width: padding),
-              // BTN.floating_l(
-              //   icon: StudioVariables.isAutoPlay ? Icons.pause_outlined : Icons.play_arrow_outlined,
-              //   iconSize: StudioVariables.isAutoPlay ? 20 : 24,
-              //   onPressed: () {
-              //     setState(() {
-              //       StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
-              //     });
-              //   },
-              //   hasShadow: false,
-              //   tooltip: CretaStudioLang.tooltipPause,
-              // ),
               CretaIconToggleButton(
                 toggleValue: StudioVariables.isAutoPlay,
                 icon1: Icons.pause_outlined,
                 icon2: Icons.play_arrow_outlined,
                 tooltip: CretaStudioLang.tooltipPause,
                 onPressed: () {
-                  StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
-                  LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
-                  if (BookMainPage.pageManagerHolder == null) {
-                    return;
-                  }
-                  PageModel? pageModel =
-                      BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-                  if (pageModel == null) {
-                    return;
-                  }
-                  FrameManager? frameManager =
-                      BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
-                  if (frameManager == null) {
-                    return;
-                  }
-                  if (StudioVariables.isAutoPlay == true) {
-                    logger.info('frameManager.resume()--------');
-                    frameManager.resume();
-                  } else {
-                    logger.info('frameManager.pause()--------');
-                    frameManager.pause();
-                  }
+                  _globalToggleAutoPlay();
                 },
               ),
               SizedBox(width: padding),
@@ -757,7 +708,14 @@ class _BookMainPageState extends State<BookMainPage> {
           SizedBox(width: padding),
           BTN.floating_l(
             icon: Icons.smart_display_outlined,
-            onPressed: () {},
+            onPressed: () {
+              if (StudioVariables.isAutoPlay) {
+                _globalToggleAutoPlay();
+              }
+              String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
+              AppRoutes.launchTab(url);
+              //Routemaster.of(context).push(AppRoutes.studioBookPreviewPage);
+            },
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipPlay,
           ),
@@ -897,5 +855,51 @@ class _BookMainPageState extends State<BookMainPage> {
     //   //   BookMainPage.selectedStick = idx;
     //   // }
     // });
+  }
+
+  void _globalToggleMute() {
+    StudioVariables.isMute = !StudioVariables.isMute;
+    LoginPage.userPropertyManagerHolder?.setMute(StudioVariables.isMute);
+    if (BookMainPage.pageManagerHolder == null) {
+      return;
+    }
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) {
+      return;
+    }
+    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+    if (frameManager == null) {
+      return;
+    }
+    if (StudioVariables.isMute == true) {
+      logger.info('frameManager.setSoundOff()--------');
+      frameManager.setSoundOff();
+    } else {
+      logger.info('frameManager.resumeSound()--------');
+      frameManager.resumeSound();
+    }
+  }
+
+  void _globalToggleAutoPlay() {
+    StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
+    LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
+    if (BookMainPage.pageManagerHolder == null) {
+      return;
+    }
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) {
+      return;
+    }
+    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+    if (frameManager == null) {
+      return;
+    }
+    if (StudioVariables.isAutoPlay == true) {
+      logger.info('frameManager.resume()--------');
+      frameManager.resume();
+    } else {
+      logger.info('frameManager.pause()--------');
+      frameManager.pause();
+    }
   }
 }

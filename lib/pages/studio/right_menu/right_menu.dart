@@ -220,7 +220,7 @@ class _RightMenuState
   }
 
   Widget _eachTitle(ContaineeEnum selected) {
-    logger.info('_eachTitle $selected');
+    logger.fine('_eachTitle $selected');
     switch (selected) {
       case ContaineeEnum.Book:
         {

@@ -45,10 +45,10 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
     }
     //Size outSize = widget.getOuterSize(widget.model!.aspectRatio.value);
 
-    double topLeft = player.acc.frameModel.radiusLeftTop.value;
-    double topRight = player.acc.frameModel.radiusRightTop.value;
-    double bottomLeft = player.acc.frameModel.radiusLeftBottom.value;
-    double bottomRight = player.acc.frameModel.radiusRightBottom.value;
+    double topLeft = player.acc.frameModel.getRealradiusLeftTop();
+    double topRight = player.acc.frameModel.getRealradiusRightTop();
+    double bottomLeft = player.acc.frameModel.getRealradiusLeftBottom();
+    double bottomRight = player.acc.frameModel.getRealradiusRightBottom();
 
     String uri = player.getURI(player.model!);
     String errMsg = '${player.model!.name} uri is null';

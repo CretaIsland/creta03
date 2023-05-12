@@ -45,7 +45,9 @@ class CretaLang {
   static String minutes = '분';
   static String seconds = '초';
   static String playTime = '플레이 시간';
+  static String playDuration = '플레이 간격';
   static String forever = '영구히';
+  static String onlyOnce = '한번만';
 
   static List<String> contentsTypeString = [
     "없음",

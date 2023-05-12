@@ -104,9 +104,9 @@ class ContentsMainState extends State<ContentsMain> {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       //int contentsCount = contentsManager.getShowLength();
       int contentsCount = contentsManager.getAvailLength();
-      logger.info('ContentsMain = Consumer<ContentsManager>');
+      //logger.info('ContentsMain = Consumer<ContentsManager>');
       return Consumer<CretaPlayTimer>(builder: (context, playTimer, child) {
-        logger.info('Consumer<CretaPlayTimer>');
+        //logger.info('Consumer<CretaPlayTimer>');
         return StreamBuilder<AbsExModel>(
             stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {
@@ -115,12 +115,12 @@ class ContentsMainState extends State<ContentsMain> {
                 contentsManager.updateModel(model);
                 logger.info('model updated ${model.name}, ${model.url}');
               }
-              logger.info('StreamBuilder<AbsExModel> $contentsCount');
+              logger.fine('StreamBuilder<AbsExModel> $contentsCount');
               if (contentsCount > 0) {
                 ContentsModel? model = playTimer.getCurrentModel();
-                logger.severe('URI is null ----');
+                logger.info('URI is null ----');
                 if (model != null && isURINotNull(model)) {
-                  logger.info('Consumer<ContentsManager> ${model.url}, ${model.name}');
+                  logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
                   if (model.opacity.value > 0) {
                     return Opacity(
                       opacity: model.opacity.value,
@@ -131,7 +131,8 @@ class ContentsMainState extends State<ContentsMain> {
                 }
 
                 logger.info('current model is null');
-                return Center(child: Text('uri is null'));
+                //return Center(child: Text('uri is null'));
+                return SizedBox.shrink();
               }
               // ignore: sized_box_for_whitespace
               return SizedBox.shrink();

@@ -48,6 +48,7 @@ abstract class AppRoutes {
   static const String buttonDemoPage = '/buttonDemoPage';
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String studioBookMainPage = '/studio/bookMainPage';
+  static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
   static const String studioBookMyPage = '/studio/bookMyPage';
   static const String studioBookSharedPage = '/studio/bookMySharedPage';
   static const String studioBookTeamPage = '/studio/bookMyTeamPage';
@@ -95,6 +96,15 @@ final routesLoggedOut = RouteMap(
       logger.finest('selectedMid=${BookMainPage.selectedMid}');
       return TransitionPage(child: BookMainPage(key: ValueKey(BookMainPage.selectedMid)));
     },
+    AppRoutes.studioBookPreviewPage: (_) {
+      //skpark test code
+      if (BookMainPage.selectedMid.isEmpty) {
+        BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+      }
+      logger.finest('selectedMid=${BookMainPage.selectedMid}');
+      return TransitionPage(
+          child: BookMainPage(key: ValueKey(BookMainPage.selectedMid), isPreview: true));
+    },
     AppRoutes.studioBookMyPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
         ),
@@ -141,17 +151,17 @@ final routesLoggedOut = RouteMap(
           ),
         ),
     AppRoutes.watchHistory: (_) => TransitionPage(
-      child: CommunityPage(
-        key: GlobalKey(),
-        subPageUrl: AppRoutes.watchHistory,
-      ),
-    ),
+          child: CommunityPage(
+            key: GlobalKey(),
+            subPageUrl: AppRoutes.watchHistory,
+          ),
+        ),
     AppRoutes.favorites: (_) => TransitionPage(
-      child: CommunityPage(
-        key: GlobalKey(),
-        subPageUrl: AppRoutes.favorites,
-      ),
-    ),
+          child: CommunityPage(
+            key: GlobalKey(),
+            subPageUrl: AppRoutes.favorites,
+          ),
+        ),
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
         ),

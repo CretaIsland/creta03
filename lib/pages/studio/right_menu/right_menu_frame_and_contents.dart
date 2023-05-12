@@ -61,7 +61,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   }
 
   Widget _tabBar() {
-    logger.info('selectedTab = $_selectedTab--------------------------------');
+    logger.fine('selectedTab = $_selectedTab--------------------------------');
 
     return Container(
       height: LayoutConst.innerMenuBarHeight,
@@ -152,8 +152,8 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     if (contents == null) {
       return SizedBox.shrink();
     }
-    logger.info('ContentsProperty ${contents.mid}-----------------');
-    logger.info('ContentsProperty ${contents.font.value}----------');
+    //logger.info('ContentsProperty ${contents.mid}-----------------');
+    //logger.info('ContentsProperty ${contents.font.value}----------');
     return Column(
       children: [
         ContentsOrderedList(

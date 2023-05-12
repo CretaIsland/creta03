@@ -209,12 +209,14 @@ class CretaPlayTimer extends ChangeNotifier {
 
     if (_currentModel != null &&
         (_currentModel!.mid != _prevModel!.mid || _forceToChange == true)) {
-      logger.info('CurrentModel changed from ${_prevModel!.name}');
+      logger.fine('CurrentModel changed from ${_prevModel!.name}');
       _forceToChange = false;
       _currentModel!.copyTo(_prevModel!);
       notify();
-      notifyToProperty();
-      logger.info('CurrentModel changed to ${_currentModel!.name}');
+      if (_currentModel!.mid != _prevModel!.mid) {
+        notifyToProperty();
+      }
+      logger.fine('CurrentModel changed to ${_currentModel!.name}');
     }
 
     return;
@@ -274,7 +276,7 @@ class CretaPlayTimer extends ChangeNotifier {
           DraggableStickers.frameSelectNotifier != null &&
           DraggableStickers.frameSelectNotifier!.selectedAssetId != null) {
         if (content.parentMid.value == DraggableStickers.frameSelectNotifier!.selectedAssetId) {
-          logger.info('notifyToProperty');
+          logger.finest('notifyToProperty');
           contentsManager.setSelectedMid(content.mid, doNotify: false);
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
         }

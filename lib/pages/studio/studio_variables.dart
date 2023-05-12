@@ -26,4 +26,6 @@ class StudioVariables {
   static bool isMute = false;
   static bool isReadOnly = false;
   static bool isAutoPlay = true;
+
+  static bool isPreview = false;
 }

@@ -874,7 +874,7 @@ abstract class CretaManager extends AbsExModelManager {
   Future<void> setSelectedMid(String mid, {bool doNotify = true}) async {
     prevSelectedMid = selectedMid;
     selectedMid = mid;
-    logger.info('selected2=$selectedMid, prev=$prevSelectedMid');
+    logger.fine('selected2=$selectedMid, prev=$prevSelectedMid');
 
     String className = HycopUtils.getClassName(selectedMid);
     if (className != 'frame' && className != 'contents') {

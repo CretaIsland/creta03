@@ -13,6 +13,7 @@ import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../model/frame_model.dart';
 import '../../../model/page_model.dart';
+import '../../login_page.dart';
 import '../book_main_page.dart';
 //import '../studio_constant.dart';
 import '../studio_constant.dart';
@@ -194,7 +195,7 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
   }
 
   Widget _lattests() {
-    List<FrameModel> modelList = BookMainPage.userPropertyManagerHolder!.getFrameList();
+    List<FrameModel> modelList = LoginPage.userPropertyManagerHolder!.getFrameList();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

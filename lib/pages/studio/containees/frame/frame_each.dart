@@ -212,10 +212,10 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       // height: widget.height,
       strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
       strokeColor: model.borderColor.value,
-      radiusLeftBottom: model.radiusLeftBottom.value,
-      radiusLeftTop: model.radiusLeftTop.value,
-      radiusRightBottom: model.radiusRightBottom.value,
-      radiusRightTop: model.radiusRightTop.value,
+      radiusLeftBottom: model.getRealradiusLeftBottom(),
+      radiusLeftTop: model.getRealradiusLeftTop(),
+      radiusRightBottom: model.getRealradiusRightBottom(),
+      radiusRightTop: model.getRealradiusRightTop(),
       borderCap: model.borderCap.value,
     );
   }

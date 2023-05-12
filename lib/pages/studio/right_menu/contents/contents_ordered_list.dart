@@ -558,6 +558,52 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     );
   }
 
+  Widget _textDurationWidget(ContentsModel model) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, bottom: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(CretaLang.playDuration, style: titleStyle),
+          if (model.playTime.value >= 0)
+            TimeInputWidget(
+              textWidth: 30,
+              textStyle: titleStyle,
+              initValue: (model.playTime.value / 1000).round(),
+              onValueChnaged: (duration) {
+                logger.info('save : ${model.mid}');
+                model.playTime.set(duration.inSeconds * 1000.0);
+              },
+            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2.0),
+                child: Text(CretaLang.onlyOnce, style: titleStyle),
+              ),
+              CretaToggleButton(
+                  width: 54 * 0.75,
+                  height: 28 * 0.75,
+                  onSelected: (value) {
+                    setState(() {
+                      if (value) {
+                        model.reservPlayTime();
+                        model.playTime.set(-1);
+                      } else {
+                        model.resetPlayTime();
+                      }
+                    });
+                  },
+                  defaultValue: model.playTime.value < 0),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _videoDurationWidget(ContentsModel model) {
     return Padding(
       padding: const EdgeInsets.only(top: 6, bottom: 6),
@@ -629,6 +675,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             },
           ),
         ),
+        if (model.isTTS.value) const SizedBox(height: 14),
+        if (model.isTTS.value) _textDurationWidget(model),
       ],
     );
   }

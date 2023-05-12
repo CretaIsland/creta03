@@ -177,10 +177,10 @@ class CretaShadowRRectPainter extends CretaShadowPainter {
         size.width + blurSpread,
         size.height + blurSpread,
       ),
-      bottomLeft: Radius.circular(radiusLeftBottom),
-      bottomRight: Radius.circular(radiusRightBottom),
-      topLeft: Radius.circular(radiusLeftTop),
-      topRight: Radius.circular(radiusRightTop),
+      bottomLeft: Radius.circular(lb),
+      bottomRight: Radius.circular(rb),
+      topLeft: Radius.circular(lt),
+      topRight: Radius.circular(rt),
     );
   }
 }

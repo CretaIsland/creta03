@@ -106,7 +106,7 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
     retval.remoteUrl = CretaStudioLang.defaultText;
     retval.fontSize.set(fontSize, noUndo: true, save: false);
     retval.fontSizeType.set(fontSizeType, noUndo: true, save: false);
-    retval.playTime.set(-1, noUndo: true, save: false);
+    //retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }
 
