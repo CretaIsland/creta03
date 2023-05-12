@@ -125,63 +125,55 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     // );
   }
 
-  Widget getItemPane() {
+  Widget _getItemPane() {
     final int columnCount =
         CretaUtils.getItemColumnCount(widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 
     double itemWidth = -1;
     double itemHeight = -1;
 
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        widget.cretaLayoutRect.margin.left,
-        widget.cretaLayoutRect.margin.top,
-        widget.cretaLayoutRect.margin.right,
-        widget.cretaLayoutRect.margin.bottom,
-      ),
-      child: Scrollbar(
-        key: _key,
-        thumbVisibility: true,
+    return Scrollbar(
+      key: _key,
+      thumbVisibility: true,
+      controller: widget.scrollController,
+      // return ScrollConfiguration( // 스크롤바 감추기
+      //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기
+      child: GridView.builder(
         controller: widget.scrollController,
-        // return ScrollConfiguration( // 스크롤바 감추기
-        //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기
-        child: GridView.builder(
-          controller: widget.scrollController,
-          padding: EdgeInsets.fromLTRB(
-            widget.cretaLayoutRect.childLeftPadding,
-            widget.cretaLayoutRect.childTopPadding,
-            widget.cretaLayoutRect.childRightPadding,
-            widget.cretaLayoutRect.childBottomPadding,
-          ),
-          itemCount: bookManagerHolder!.modelList.length, //item 개수
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
-            childAspectRatio: _itemSizeRatio, // 가로÷세로 비율
-            mainAxisSpacing: _rightViewItemGapX, //item간 수평 Padding
-            crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            return (itemWidth >= 0 && itemHeight >= 0)
-                ? CretaBookUIItem(
-                    key: GlobalObjectKey(bookManagerHolder!.modelList[index].mid),
-                    bookModel: bookManagerHolder!.modelList[index] as BookModel,
-                    width: itemWidth,
-                    height: itemHeight,
-                  )
-                : LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      itemWidth = constraints.maxWidth;
-                      itemHeight = constraints.maxHeight;
-                      return CretaBookUIItem(
-                        key: GlobalObjectKey(bookManagerHolder!.modelList[index].mid),
-                        bookModel: bookManagerHolder!.modelList[index] as BookModel,
-                        width: itemWidth,
-                        height: itemHeight,
-                      );
-                    },
-                  );
-          },
+        padding: EdgeInsets.fromLTRB(
+          widget.cretaLayoutRect.childLeftPadding,
+          widget.cretaLayoutRect.childTopPadding,
+          widget.cretaLayoutRect.childRightPadding,
+          widget.cretaLayoutRect.childBottomPadding,
         ),
+        itemCount: bookManagerHolder!.modelList.length, //item 개수
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
+          childAspectRatio: _itemSizeRatio, // 가로÷세로 비율
+          mainAxisSpacing: _rightViewItemGapX, //item간 수평 Padding
+          crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return (itemWidth >= 0 && itemHeight >= 0)
+              ? CretaBookUIItem(
+                  key: GlobalObjectKey(bookManagerHolder!.modelList[index].mid),
+                  bookModel: bookManagerHolder!.modelList[index] as BookModel,
+                  width: itemWidth,
+                  height: itemHeight,
+                )
+              : LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    itemWidth = constraints.maxWidth;
+                    itemHeight = constraints.maxHeight;
+                    return CretaBookUIItem(
+                      key: GlobalObjectKey(bookManagerHolder!.modelList[index].mid),
+                      bookModel: bookManagerHolder!.modelList[index] as BookModel,
+                      width: itemWidth,
+                      height: itemHeight,
+                    );
+                  },
+                );
+        },
       ),
     );
   }
@@ -189,12 +181,12 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   @override
   Widget build(BuildContext context) {
     if (_onceDBGetComplete) {
-      return getItemPane();
+      return _getItemPane();
     }
     var retval = CretaModelSnippet.waitData(
       manager: bookManagerHolder!,
       //userId: AccountManager.currentLoginUser.email,
-      consumerFunc: getItemPane,
+      consumerFunc: _getItemPane,
     );
     _onceDBGetComplete = true;
     return retval;

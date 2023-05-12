@@ -96,7 +96,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     return widgetList;
   }
 
-  Widget getItemPane() {
+  Widget _getItemPane() {
     final width = widget.cretaLayoutRect.childWidth - 286 - 20;
     final int columnCount = CretaUtils.getItemColumnCount(width, _itemMinWidth, _rightViewItemGapX);
     _itemWidth = ((width + _rightViewItemGapX) ~/ columnCount) - _rightViewItemGapX;
@@ -132,14 +132,6 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        widget.cretaLayoutRect.margin.left,
-        widget.cretaLayoutRect.margin.top,
-        widget.cretaLayoutRect.margin.right,
-        widget.cretaLayoutRect.margin.bottom,
-      ),
-      child: getItemPane(),
-    );
+    return _getItemPane();
   }
 }

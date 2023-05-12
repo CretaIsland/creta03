@@ -14,6 +14,7 @@ import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_elibated_button.dart';
 //import '../../design_system/buttons/creta_button.dart';
 import '../../../design_system/component/snippet.dart';
+import '../../../design_system/component/creta_layout_rect.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
@@ -37,13 +38,11 @@ import 'community_comment_pane.dart';
 //bool _isInUsingCanvaskit = false;
 
 class CommunityRightBookPane extends StatefulWidget {
-  final double pageWidth;
-  final double pageHeight;
+  final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
   const CommunityRightBookPane({
     super.key,
-    required this.pageWidth,
-    required this.pageHeight,
+    required this.cretaLayoutRect,
     required this.scrollController,
   });
 
@@ -95,20 +94,20 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       _getHashtagWidget('#스페이싱'),
       _getHashtagWidget('#스페이싱'),
       _getHashtagWidget('#스페이싱'),
-      BTN.opacity_gray_it_s(
-        text: '#크레타북',
-        textStyle: CretaFont.buttonMedium,
-        //width: null,
-        onPressed: () {},
-        width: null,
-      ),
-      BTN.opacity_gray_it_s(
-        text: '#추천',
-        textStyle: CretaFont.buttonMedium,
-        //width: null,
-        onPressed: () {},
-        width: null,
-      ),
+      // BTN.opacity_gray_it_s(
+      //   text: '#크레타북',
+      //   textStyle: CretaFont.buttonMedium,
+      //   //width: null,
+      //   onPressed: () {},
+      //   width: null,
+      // ),
+      // BTN.opacity_gray_it_s(
+      //   text: '#추천',
+      //   textStyle: CretaFont.buttonMedium,
+      //   //width: null,
+      //   onPressed: () {},
+      //   width: null,
+      // ),
       // SizedBox(width: 12),
       // BTN.opacity_gray_it_s(
       //   text: '#인기',
@@ -128,7 +127,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   final GlobalKey bookKey = GlobalKey();
 
-  Widget _getBook(Size size) {
+  Widget _getBookPreview(Size size) {
     if (_cretaRelatedBookList.isNotEmpty) {
       return Container(
         decoration: BoxDecoration(
@@ -175,13 +174,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           bookMouseOver = false;
         });
       },
-      child: Container(
+      child: SizedBox(
         width: size.width,
         height: size.height,
-        margin: EdgeInsets.fromLTRB(80, 0, 0, 0),
+        //margin: EdgeInsets.fromLTRB(80, 0, 0, 0),
         child: Stack(
           children: [
-            _getBook(size),
+            _getBookPreview(size),
+            // top-buttons (share, download, add-to-playlist)
             !bookMouseOver
                 ? Container()
                 : Container(
@@ -197,21 +197,22 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                         ),
                         SizedBox(width: 12),
                         BTN.fill_blue_i_l(
-                          icon: Icons.file_download_outlined,
+                          icon: Icons.playlist_add_outlined,
                           buttonColor: CretaButtonColor.blueGray,
                           onPressed: () {},
                         ),
                         SizedBox(width: 12),
                         BTN.fill_blue_i_l(
-                          icon: Icons.playlist_add_outlined,
+                          icon: Icons.file_download_outlined,
                           buttonColor: CretaButtonColor.blueGray,
                           onPressed: () {},
                         ),
                       ],
                     ),
                   ),
+            // center play button
             !bookMouseOver
-                ? Container()
+                ? SizedBox.shrink()
                 : SizedBox(
                     width: size.width,
                     height: size.height,
@@ -222,8 +223,17 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                       ),
                     ),
                   ),
+            //
+            //
+            //
+            //
+            // bottom-buttons (fullscreen, mute) //////////////////////////////////////////////////////////
+            //
+            //
+            //
+            // progress-bar
             !bookMouseOver
-                ? Container()
+                ? SizedBox.shrink()
                 : Container(
                     height: size.height,
                     padding: EdgeInsets.fromLTRB(20, 24, 20, 16 - 4),
@@ -260,134 +270,221 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
 
-  Widget _getBookDescriptionPane(Size size) {
+  Widget _getBookDescriptionPane() {
     _descriptionOld = _description;
     return SizedBox(
-      width: size.width,
+      width: _usingContentsRect.width,
       //height: size.height,
       //padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Stack(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '내용',
-                style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
-                textAlign: TextAlign.left,
-              ),
-              SizedBox(height: 19),
-              RawKeyboardListener(
-                focusNode: FocusNode(),
-                onKey: (RawKeyEvent event) {
-                  if (event.logicalKey == LogicalKeyboardKey.escape) {
-                    // Do something when ESC key is pressed
+          Padding(
+            padding: EdgeInsets.fromLTRB(12, 37, 22, 0),
+            child: Row(
+              children: [
+                Container(
+                  height: 32,
+                  padding: EdgeInsets.fromLTRB(0, 3, 0, 2),
+                  child: Text(
+                    '내용',
+                    style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Expanded(child: Container()),
+                _clickedDescriptionEditButton
+                    ? Container()
+                    : BTN.fill_gray_200_i_s(
+                        icon: Icons.edit_outlined,
+                        onPressed: () {
+                          setState(() {
+                            _clickedDescriptionEditButton = true;
+                          });
+                        },
+                      ),
+              ],
+            ),
+          ),
+          SizedBox(height: 4),
+          RawKeyboardListener(
+            focusNode: FocusNode(),
+            onKey: (RawKeyEvent event) {
+              if (event.logicalKey == LogicalKeyboardKey.escape) {
+                // Do something when ESC key is pressed
+                setState(() {
+                  //print('_description(1)=$_description');
+                  _controller.text = _description;
+                  _clickedDescriptionEditButton = false;
+                });
+              }
+            },
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, (22 - _usingContentsRect.childLeftPadding), 0),
+              child: CupertinoTextField(
+                //customizedDisableColor: Colors.white,
+                minLines: 1,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                focusNode: _focusNode,
+                padding: EdgeInsets.fromLTRB(
+                  _usingContentsRect.childLeftPadding,
+                  0,
+                  _usingContentsRect.childLeftPadding,
+                  _usingContentsRect.childLeftPadding,
+                ),
+                enabled: _clickedDescriptionEditButton,
+                autofocus: false,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: _clickedDescriptionEditButton
+                      ? Border.all(color: CretaColor.text[200]!)
+                      : Border.all(color: Colors.white /*Color.fromARGB(255, 250, 250, 250)*/),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                controller: _controller,
+                //placeholder: _clicked ? null : widget.hintText,
+                placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
+                // prefixInsets: EdgeInsetsDirectional.only(start: 18),
+                // prefixIcon: Container(),
+                style: CretaFont.bodyMedium.copyWith(
+                  color: CretaColor.text[700],
+                  height: 2.0,
+                ),
+                // suffixInsets: EdgeInsetsDirectional.only(end: 18),
+                // suffixIcon: Icon(CupertinoIcons.search),
+                suffixMode: OverlayVisibilityMode.always,
+                onChanged: (value) {
+                  _descriptionOld = value;
+                },
+                onSubmitted: ((value) {
+                  _descriptionOld = value;
+                }),
+                onTapOutside: (event) {
+                  //logger.fine('onTapOutside($_searchValue)');
+                  if (_clickedDescriptionEditButton) {
                     setState(() {
-                      //print('_description(1)=$_description');
-                      _controller.text = _description;
+                      _description = _descriptionOld;
+                      //print('_description(2)=$_description');
                       _clickedDescriptionEditButton = false;
                     });
                   }
                 },
-                child: CupertinoTextField(
-                  minLines: 1,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  focusNode: _focusNode,
-                  padding: EdgeInsets.fromLTRB(15, 0, 15, 6),
-                  enabled: _clickedDescriptionEditButton,
-                  autofocus: false,
-                  decoration: BoxDecoration(
-                    color: _clickedDescriptionEditButton ? Colors.white : Color.fromARGB(255, 250, 250, 250),
-                    border: _clickedDescriptionEditButton
-                        ? Border.all(color: CretaColor.text[200]!)
-                        : Border.all(color: Color.fromARGB(255, 250, 250, 250)),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  controller: _controller,
-                  //placeholder: _clicked ? null : widget.hintText,
-                  placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
-                  // prefixInsets: EdgeInsetsDirectional.only(start: 18),
-                  // prefixIcon: Container(),
-                  style: CretaFont.bodyMedium.copyWith(
-                    color: CretaColor.text[700],
-                    height: 2.0,
-                  ),
-                  // suffixInsets: EdgeInsetsDirectional.only(end: 18),
-                  // suffixIcon: Icon(CupertinoIcons.search),
-                  suffixMode: OverlayVisibilityMode.always,
-                  onChanged: (value) {
-                    _descriptionOld = value;
-                  },
-                  onSubmitted: ((value) {
-                    _descriptionOld = value;
-                  }),
-                  onTapOutside: (event) {
-                    //logger.fine('onTapOutside($_searchValue)');
-                    if (_clickedDescriptionEditButton) {
-                      setState(() {
-                        _description = _descriptionOld;
-                        //print('_description(2)=$_description');
-                        _clickedDescriptionEditButton = false;
-                      });
-                    }
-                  },
-                  // onSuffixTap: () {
-                  //   _searchValue = _controller.text;
-                  //   logger.finest('search $_searchValue');
-                  //   widget.onSearch(_searchValue);
-                  // },
-                  onTap: () {
-                    // setState(() {
-                    //   _clicked = true;
-                    // });
-                  },
-                ),
-              )
-              // Wrap(
-              //   direction: Axis.vertical,
-              //   spacing: 13, // 상하 간격
-              //   children: descList
-              //       .map((item) => SizedBox(
-              //             width: size.width,
-              //             child: Text(
-              //               item,
-              //               style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
-              //               overflow: TextOverflow.ellipsis,
-              //             ),
-              //           ))
-              //       .toList(),
-              // ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: Container()),
-              _clickedDescriptionEditButton
-                  ? Container()
-                  : BTN.fill_gray_200_i_s(
-                      icon: Icons.edit_outlined,
-                      onPressed: () {
-                        setState(() {
-                          _clickedDescriptionEditButton = true;
-                        });
-                      },
-                    ),
-            ],
-          ),
+                // onSuffixTap: () {
+                //   _searchValue = _controller.text;
+                //   logger.finest('search $_searchValue');
+                //   widget.onSearch(_searchValue);
+                // },
+                onTap: () {
+                  // setState(() {
+                  //   _clicked = true;
+                  // });
+                },
+              ),
+            ),
+          )
+          // Wrap(
+          //   direction: Axis.vertical,
+          //   spacing: 13, // 상하 간격
+          //   children: descList
+          //       .map((item) => SizedBox(
+          //             width: size.width,
+          //             child: Text(
+          //               item,
+          //               style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
+          //               overflow: TextOverflow.ellipsis,
+          //             ),
+          //           ))
+          //       .toList(),
+          // ),
         ],
       ),
     );
   }
 
-  Widget _getCommentsPane(Size size) {
-    return SizedBox(
-      width: size.width,
+  final ScrollController _usingContentsScrollController = ScrollController();
+
+  Widget _getUsinContentsPane() {
+    return _usingContentsRect.childContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '위 크레타북에서 사용된 콘텐츠',
+            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+            textAlign: TextAlign.left,
+          ),
+          Expanded(child: Container()),
+
+          SizedBox(
+            width: _usingContentsRect.childWidth,
+            height: 160,
+            //color: Colors.green,
+            child: Scrollbar(
+              thumbVisibility: false,
+              controller: _usingContentsScrollController,
+              child: ListView(
+                controller: _usingContentsScrollController,
+                // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
+                scrollDirection: Axis.horizontal,
+                // 컨테이너들을 ListView의 자식들로 추가
+                children: [
+                  Wrap(
+                    direction: Axis.horizontal, // 나열 방향
+                    //alignment: WrapAlignment.start, // 정렬 방식
+                    spacing: 20, // 좌우 간격
+                    //runSpacing: 20, // 상하 간격
+                    children: _cretaRelatedBookList.map((item) {
+                      return CustomImage(
+                        //key: ValueKey('related-${item.thumbnailUrl}'),
+                        duration: 500,
+                        hasMouseOverEffect: false,
+                        hasAni: false,
+                        image: item.thumbnailUrl,
+                        width: 210,
+                        height: 160,
+                      );
+                      //return Container(width: 210, height:160, color: Colors.purple);
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Container(
+          //   width: _usingContentsRect.childWidth,
+          //   height: 160,
+          //   color: Colors.green,
+          //   child: Wrap(
+          //     direction: Axis.horizontal, // 나열 방향
+          //     //alignment: WrapAlignment.start, // 정렬 방식
+          //     spacing: 20, // 좌우 간격
+          //     //runSpacing: 20, // 상하 간격
+          //     children: _cretaRelatedBookList.map((item) {
+          //       return CustomImage(
+          //         key: ValueKey(item.thumbnailUrl),
+          //         duration: 500,
+          //         hasMouseOverEffect: false,
+          //         image: item.thumbnailUrl,
+          //         width: 306,
+          //         height: 230,
+          //       );
+          //     }).toList(),
+          //   ),
+          // ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getCommentsPane() {
+    return Container(
+      //color: Colors.red,
+      width: _usingContentsRect.width,
       //height: size.height,
-      //padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+      padding: EdgeInsets.fromLTRB(_usingContentsRect.childLeftPadding, 0, _usingContentsRect.childRightPadding, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,7 +502,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           //   thumb: Icon(Icons.account_circle),
           // ),
           CommunityCommentPane(
-            paneWidth: size.width,
+            paneWidth: _usingContentsRect.childWidth,
             paneHeight: null,
             showAddCommentBar: true,
           ),
@@ -414,14 +511,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     );
   }
 
-  Widget _getRelatedBookList(Size size) {
-    double height = _cretaRelatedBookList.length * 256;
-    if (_cretaRelatedBookList.isNotEmpty) {
-      height += ((_cretaRelatedBookList.length - 1) * 20);
-    }
+  Widget _getRelatedBookList(double width) {
+    // double height = _cretaRelatedBookList.length * 256;
+    // if (_cretaRelatedBookList.isNotEmpty) {
+    //   height += ((_cretaRelatedBookList.length - 1) * 20);
+    // }
     return SizedBox(
-      width: size.width,
-      height: height,
+      width: width,
+      //height: height,
       //height: size.height,
       //padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
       child: Wrap(
@@ -433,55 +530,56 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           return CretaBookItem(
             key: item.uiKey,
             cretaBookData: item,
-            width: 365,
-            height: 256,
+            width: 306,
+            height: 230,
           );
         }).toList(),
       ),
     );
   }
 
-  //Size titleArea = Size.zero;
-  Size bookArea = Size.zero;
-  //Size descriptionArea = Size.zero;
-  Size sideArea = Size.zero;
+  Size _bookAreaSize = Size.zero;
+  Size _sideAreaSize = Size.zero;
+  CretaLayoutRect _usingContentsRect = CretaLayoutRect.zero;
+  final double _bookAreaRatio = (9 / 16);
   void _resize(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    //double height = MediaQuery.of(context).size.height;
-    //titleArea = Size(width, 116);
-    sideArea = Size(525, double.infinity);
-    bookArea = Size(width - sideArea.width, (width - 525 - 80) / 16 * 9);
-    //descriptionArea = Size(bookArea.width, double.infinity);
+    _sideAreaSize = Size(346, 1000);
+    double bookAreaWidth = widget.cretaLayoutRect.childWidth - 20 - _sideAreaSize.width;
+    double bookAreaHeight = bookAreaWidth * _bookAreaRatio;
+    _bookAreaSize = Size(bookAreaWidth, bookAreaHeight);
+    _usingContentsRect = CretaLayoutRect.fromPadding(bookAreaWidth, 206 + 40 + 40 - 12 - 5, 12, 40 - 12 - 5, 22, 40);
   }
 
   Widget _getMainPane() {
     return SizedBox(
-      width: bookArea.width,
+      width: _bookAreaSize.width,
+      // padding: EdgeInsets.fromLTRB(
+      //   widget.cretaLayoutRect.childLeftPadding,
+      //   widget.cretaLayoutRect.childTopPadding,
+      //   0,
+      //   widget.cretaLayoutRect.childBottomPadding,
+      // ),
       child: Column(
         children: [
           // book
-          _getBookMainPane(Size(bookArea.width - 80, bookArea.height)),
+          _getBookMainPane(_bookAreaSize),
           // description
-          Container(
-            padding: EdgeInsets.fromLTRB(100, 40, 20, 0),
-            child: Center(
-              child: Column(
-                children: [
-                  // description
-                  _getBookDescriptionPane(Size(bookArea.width - 100, 600)),
-                  // using contents list
-                  // Container(
-                  //   color: Colors.red[300],
-                  //   height: 600,
-                  //   child: Center(child: Text('using contents list area')),
-                  // ),
-                  SizedBox(height: 12),
-                  // comments
-                  _getCommentsPane(Size(bookArea.width - 100 - 20, 600)),
-                ],
-              ),
-            ),
-          ),
+          // SizedBox(
+          //   //child: Center(
+          //     child: Column(
+          //       children: [
+          // description
+          _getBookDescriptionPane(),
+          // using contents list
+          _getUsinContentsPane(),
+          // comments
+          _getCommentsPane(),
+          // gap-space
+          SizedBox(height: 40),
+          //     ],
+          //   ),
+          // ),
+          //),
         ],
       ),
     );
@@ -489,15 +587,15 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   Widget _getSidePane() {
     return SizedBox(
-      width: sideArea.width,
+      width: _sideAreaSize.width,
       child: Column(
         children: [
           // hashtag
-          Container(
+          SizedBox(
             //height: 210,
-            padding: EdgeInsets.fromLTRB(60, 20, 0, 0),
             child: Column(
               children: [
+                // hashtag title
                 Row(
                   children: [
                     Text(
@@ -506,32 +604,34 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                     ),
                     Expanded(child: Container()),
                     BTN.fill_gray_200_i_s(icon: Icons.edit_outlined, onPressed: () {}),
-                    SizedBox(width: 46),
                   ],
                 ),
+                // gap-space
                 SizedBox(height: 20),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 365 + 16 + 16,
-                      child: Wrap(
-                        direction: Axis.horizontal, // 나열 방향
-                        alignment: WrapAlignment.start, // 정렬 방식
-                        spacing: 16, // 좌우 간격
-                        runSpacing: 20, // 상하 간격
-                        children: _getHashtagList(),
-                      ),
-                    ),
-                    Expanded(child: Container()),
-                  ],
+                // hashtag body
+                //Row(
+                //  children: [
+                SizedBox(
+                  //color: Colors.blue,
+                  width: _sideAreaSize.width,
+                  child: Wrap(
+                    //direction: Axis.horizontal, // 나열 방향
+                    //alignment: WrapAlignment.start, // 정렬 방식
+                    spacing: 8, // 좌우 간격
+                    runSpacing: 8, // 상하 간격
+                    children: _getHashtagList(),
+                  ),
                 ),
+                //    Expanded(child: Container()),
+                //  ],
+                //),
               ],
             ),
           ),
           // related book
           Container(
             //height: 1000,
-            padding: EdgeInsets.fromLTRB(60, 60, 100, 40),
+            padding: EdgeInsets.fromLTRB(12, 20, 12, 0),
             child: Column(
               children: [
                 Row(
@@ -544,7 +644,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   ],
                 ),
                 SizedBox(height: 20),
-                _getRelatedBookList(Size(sideArea.width - 60 - 100, 1000)),
+                _getRelatedBookList(_sideAreaSize.width - 20 - 20),
               ],
             ),
           ),
@@ -553,19 +653,36 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     );
   }
 
+  final GlobalKey _key = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     _resize(context);
-    return SingleChildScrollView(
-      child:
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // main
-          _getMainPane(),
-          // side
-          _getSidePane(),
-        ],
+    return Scrollbar(
+      key: _key,
+      thumbVisibility: true,
+      controller: widget.scrollController,
+      child: SingleChildScrollView(
+        controller: widget.scrollController,
+        child: Container(
+          padding: EdgeInsets.fromLTRB(
+            widget.cretaLayoutRect.childLeftPadding,
+            widget.cretaLayoutRect.childTopPadding,
+            widget.cretaLayoutRect.childRightPadding,
+            widget.cretaLayoutRect.childBottomPadding,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // main (book, descriptio, comment, etc...)
+              _getMainPane(),
+              // gap-space
+              SizedBox(width: 20),
+              // side (playlist, hashtag, related book, etc...)
+              _getSidePane(),
+            ],
+          ),
+        ),
       ),
     );
   }

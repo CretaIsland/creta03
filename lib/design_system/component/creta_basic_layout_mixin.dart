@@ -83,10 +83,10 @@ mixin CretaBasicLayoutMixin {
     rightPaneRect = CretaLayoutRect.fromPadding(
       displaySize.width - leftPaneRect.width,
       displaySize.height,
-      40,//CretaComponentLocation.TabBar.padding.left,
+      40, //CretaComponentLocation.TabBar.padding.left,
       _usingBannerScrollbar ? _bannerPaneMaxHeight : 0,
-      40,//CretaComponentLocation.TabBar.padding.right,
-      40,//CretaComponentLocation.TabBar.padding.bottom,
+      40, //CretaComponentLocation.TabBar.padding.right,
+      40, //CretaComponentLocation.TabBar.padding.bottom,
       leftMargin: leftMarginOnRightPane,
       topMargin: topMarginOnRightPane,
       rightMargin: rightMarginOnRightPane,
@@ -197,6 +197,10 @@ mixin CretaBasicLayoutMixin {
               ? Stack(
                   children: [
                     // item pane
+                    // rightPaneRect.childContainer(
+                    //   color: Colors.white,
+                    //   child: mainWidget(context),
+                    // ),
                     Container(
                       color: Colors.white,
                       width: rightPaneRect.width,
@@ -257,10 +261,8 @@ mixin CretaBasicLayoutMixin {
                         : const SizedBox.shrink(),
                     // child pane
                     rightPaneRect.childHeight > gridMinArea.height && rightPaneRect.childWidth > gridMinArea.width
-                        ? Container(
+                        ? rightPaneRect.childContainer(
                             color: Colors.white,
-                            width: rightPaneRect.childWidth,
-                            height: rightPaneRect.childHeight,
                             child: mainWidget(context),
                           )
                         : const SizedBox.shrink(),

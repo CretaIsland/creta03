@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CretaLayoutRect {
   CretaLayoutRect({
     required this.size,
-    required this.margin,
+    required this.childMargin,
     required this.childRect,
     required this.childPadding,
   });
@@ -20,7 +20,7 @@ class CretaLayoutRect {
     double bottomMargin = 0,
   }) : this(
           size: Size(width, height),
-          margin: EdgeInsets.fromLTRB(leftMargin, topMargin, rightMargin, bottomMargin),
+          childMargin: EdgeInsets.fromLTRB(leftMargin, topMargin, rightMargin, bottomMargin),
           childRect: Rect.fromLTWH(childLeft, childTop, childWidth, childHeight),
           childPadding: EdgeInsets.fromLTRB(
             childLeft,
@@ -42,7 +42,7 @@ class CretaLayoutRect {
     double bottomMargin = 0,
   }) : this(
           size: Size(width, height),
-          margin: EdgeInsets.fromLTRB(leftMargin, topMargin, rightMargin, bottomMargin),
+          childMargin: EdgeInsets.fromLTRB(leftMargin, topMargin, rightMargin, bottomMargin),
           childRect: Rect.fromLTRB(childLeft, childTop, childRight, childBottom),
           childPadding: EdgeInsets.fromLTRB(
             childLeft,
@@ -64,7 +64,7 @@ class CretaLayoutRect {
     double bottomMargin = 0,
   }) : this(
           size: Size(width, height),
-          margin: EdgeInsets.fromLTRB(leftMargin, topMargin, rightMargin, bottomMargin),
+          childMargin: EdgeInsets.fromLTRB(leftMargin, topMargin, rightMargin, bottomMargin),
           childRect: Rect.fromLTRB(
             leftMargin + leftPadding,
             topMargin + topPadding,
@@ -80,27 +80,65 @@ class CretaLayoutRect {
         );
   static CretaLayoutRect zero = CretaLayoutRect(
     size: Size.zero,
-    margin: EdgeInsets.zero,
+    childMargin: EdgeInsets.zero,
     childRect: Rect.zero,
     childPadding: EdgeInsets.zero,
   );
 
   CretaLayoutRect copyWith({
     Size? size,
-    EdgeInsets? margin,
+    EdgeInsets? childMargin,
     Rect? childRect,
     EdgeInsets? childPadding,
   }) {
     return CretaLayoutRect(
       size: size ?? this.size,
-      margin: margin ?? this.margin,
+      childMargin: childMargin ?? this.childMargin,
       childRect: childRect ?? this.childRect,
       childPadding: childPadding ?? this.childPadding,
     );
   }
 
+  Widget childContainer({
+    Key? key,
+    AlignmentGeometry? alignment,
+    //EdgeInsetsGeometry? padding,
+    Color? color,
+    Decoration? decoration,
+    Decoration? foregroundDecoration,
+    //double? width,
+    //double? height,
+    BoxConstraints? constraints,
+    //EdgeInsetsGeometry? margin,
+    Matrix4? transform,
+    AlignmentGeometry? transformAlignment,
+    Widget? child,
+    Clip clipBehavior = Clip.none,
+  }) {
+    return SizedBox(
+      width: size.width,
+      height: size.height,
+      child: Container(
+        key: key,
+        alignment: alignment,
+        padding: childPadding,
+        color: color,
+        decoration: decoration,
+        foregroundDecoration: foregroundDecoration,
+        width: childRect.width,
+        height: childRect.height,
+        constraints: constraints,
+        margin: childMargin,
+        transform: transform,
+        transformAlignment: transformAlignment,
+        clipBehavior: clipBehavior,
+        child: child,
+      ),
+    );
+  }
+
   final Size size;
-  final EdgeInsets margin;
+  final EdgeInsets childMargin;
 
   double get width => size.width;
   double get height => size.height;

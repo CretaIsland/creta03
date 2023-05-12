@@ -1166,7 +1166,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   Widget _getRightPane(BuildContext context) {
-    Size size = Size(rightPaneRect.childWidth, rightPaneRect.childHeight);
+    //Size size = Size(rightPaneRect.childWidth, rightPaneRect.childHeight);
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         return CommunityRightChannelPane(
@@ -1202,8 +1202,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         );
       case AppRoutes.communityBook:
         return CommunityRightBookPane(
-          pageWidth: size.width,
-          pageHeight: size.height,
+          cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.communityHome:

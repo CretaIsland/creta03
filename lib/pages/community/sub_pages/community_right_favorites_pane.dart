@@ -65,7 +65,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
     _cretaBookList = CommunitySampleData.getCretaBookList();
   }
 
-  Widget getItemPane() {
+  Widget _getItemPane() {
     final int columnCount =
         CretaUtils.getItemColumnCount(widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 
@@ -119,14 +119,6 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(
-        widget.cretaLayoutRect.margin.left,
-        widget.cretaLayoutRect.margin.top,
-        widget.cretaLayoutRect.margin.right,
-        widget.cretaLayoutRect.margin.bottom,
-      ),
-      child: getItemPane(),
-    );
+    return _getItemPane();
   }
 }
