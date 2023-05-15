@@ -5,7 +5,7 @@ class CustomRadioButton<T> extends StatefulWidget {
   CustomRadioButton({
     super.key,
     required this.buttonLables,
-    this.buttonIcons,  //skpark
+    this.buttonIcons, //skpark
     required this.buttonValues,
     this.buttonTextStyle = const ButtonTextStyle(),
     this.autoWidth = false,
@@ -30,8 +30,14 @@ class CustomRadioButton<T> extends StatefulWidget {
     this.absoluteZeroSpacing = false,
     this.margin,
     this.wrapAlignment = WrapAlignment.start,
+    this.disabledValues = const [],
+    this.disabledColor,
   })  : assert(buttonLables.length == buttonValues.length,
             "Button values list and button lables list should have same number of eliments "),
+        // assert(
+        //     buttonValues.toSet().intersection(disabledValues.toSet()) ==
+        //         disabledValues.toSet(),
+        //     "Disabled values should be present in button values"),
         assert(buttonValues.toSet().length == buttonValues.length,
             "Multiple buttons with same value cannot exist") {
     if (absoluteZeroSpacing) {
@@ -76,7 +82,9 @@ class CustomRadioButton<T> extends StatefulWidget {
   final double width;
 
   final List<String> buttonLables;
-  final List<IconData>? buttonIcons;  //skpark buttonIcons
+  final List<IconData>? buttonIcons; //skpark buttonIcons
+  ///List of disabled values
+  final List<T> disabledValues;
 
   ///Styling class for label
   final ButtonTextStyle buttonTextStyle;
@@ -88,6 +96,10 @@ class CustomRadioButton<T> extends StatefulWidget {
 
   ///Selected Color of button
   final Color selectedColor;
+
+  ///Disabled Color of button
+  ///If not provided will use [unSelectedColor]
+  final Color? disabledColor;
 
   ///Unselected Color of the button border
   final Color? unSelectedBorderColor;
@@ -115,88 +127,103 @@ class CustomRadioButton<T> extends StatefulWidget {
   /// Radius for shape radio button
   final double shapeRadius;
 
-  _CustomRadioButtonState<T> createState() => _CustomRadioButtonState<T>();
+  CustomRadioButtonState<T> createState() => CustomRadioButtonState<T>();
 }
 
-class _CustomRadioButtonState<T> extends State<CustomRadioButton<T>> {
-  String? _currentSelectedLabel;
+class CustomRadioButtonState<T> extends State<CustomRadioButton<T>> {
+  T? _currentSelectedValue;
 
-  Color borderColor(index) {
-      return (_currentSelectedLabel == widget.buttonLables[index]
-          ? widget.selectedBorderColor
-          : widget.unSelectedBorderColor) ??
+  Color _borderColor(T e) =>
+      (_currentSelectedValue == e ? widget.selectedBorderColor : widget.unSelectedBorderColor) ??
       Theme.of(context).primaryColor;
-  }
 
   @override
   void initState() {
     super.initState();
     if (widget.defaultSelected != null) {
       if (widget.buttonValues.contains(widget.defaultSelected)) {
-        int index = widget.buttonValues.indexOf(widget.defaultSelected!);
-        _currentSelectedLabel = widget.buttonLables[index];
+        _currentSelectedValue = widget.defaultSelected;
       } else
         throw Exception("Default Value not found in button value list");
     }
   }
 
+  List<T> get buttonValues => widget.buttonValues;
+
+  List<String> get buttonLables => widget.buttonLables;
+
+  List<T> get disabledValues => widget.disabledValues;
+
+  /// This function will select the button and update the state
+  /// THis can be access from outside to change the selected value programatically
+  /// Please note that this will all call the [radioButtonValue] callback
+  void selectButton(T selectedValue) {
+    widget.radioButtonValue(selectedValue);
+    if (mounted) setState(() {});
+    _currentSelectedValue = selectedValue;
+  }
+
   List<Widget> _buildButtonsColumn() {
-    return widget.buttonValues.map((e) {
-      int index = widget.buttonValues.indexOf(e);
+    return buttonValues.map((e) {
+      int index = buttonValues.indexOf(e);
+      bool disabled = disabledValues.contains(e);
       return Padding(
         padding: EdgeInsets.all(widget.padding),
         child: Card(
           margin: widget.margin ?? EdgeInsets.all(widget.absoluteZeroSpacing ? 0 : 4),
-          color: _currentSelectedLabel == widget.buttonLables[index]
-              ? widget.selectedColor
-              : widget.unSelectedColor,
+          color: disabled
+              ? widget.disabledColor ?? widget.unSelectedColor
+              : _currentSelectedValue == e
+                  ? widget.selectedColor
+                  : widget.unSelectedColor,
           elevation: widget.elevation,
           shape: widget.enableShape
-              ? widget.customShape == null
-                  ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(widget.shapeRadius)),
-                    )
-                  : widget.customShape
+              ? widget.customShape ??
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(widget.shapeRadius)),
+                  )
               : null,
           child: Container(
             height: widget.height,
             child: MaterialButton(
               shape: widget.enableShape
-                  ? widget.customShape == null
-                      ? OutlineInputBorder(
-                          borderSide: BorderSide(color: borderColor(index), width: 1),
-                          borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
-                        )
-                      : widget.customShape
+                  ? widget.customShape ??
+                      OutlineInputBorder(
+                        borderSide: BorderSide(color: _borderColor(e), width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
+                      )
                   : OutlineInputBorder(
-                      borderSide: BorderSide(color: borderColor(index), width: 1),
+                      borderSide: BorderSide(color: _borderColor(e), width: 1),
                       borderRadius: BorderRadius.zero,
                     ),
-              onPressed: () {
-                widget.radioButtonValue(e);
-                setState(() {
-                  _currentSelectedLabel = widget.buttonLables[index];
-                });
-              }, 
-                //skpark
-              child:  widget.buttonIcons == null ? Text(   //skpark
-                widget.buttonLables[index],   //skpark
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: widget.buttonTextStyle.textStyle.copyWith(
-                  color: _currentSelectedLabel == widget.buttonLables[index]
-                      ? widget.buttonTextStyle.selectedColor
-                      : widget.buttonTextStyle.unSelectedColor,
-                ),
-              ):
-              Center (child:
-              Icon( widget.buttonIcons![index],
-              size: widget.width / 2, 
-                  color: _currentSelectedLabel == widget.buttonLables[index]
-                      ? widget.buttonTextStyle.selectedColor
-                      : widget.buttonTextStyle.unSelectedColor,
-                              ),),
+              onPressed: disabled ? null : () => selectButton(e),
+              child: widget.buttonIcons == null
+                  ? Text(
+                      //skpark
+                      widget.buttonLables[index],
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: widget.buttonTextStyle.textStyle.copyWith(
+                        color: disabled
+                            ? widget.buttonTextStyle.disabledColor
+                            : _currentSelectedValue == e
+                                ? widget.buttonTextStyle.selectedColor
+                                : widget.buttonTextStyle.unSelectedColor,
+                      ),
+                    )
+                  : //skpark
+                  Center(
+                      child: Icon(
+                        widget.buttonIcons![index],
+                        size: widget.width / 2,
+                        color: disabled
+                            ? widget.buttonTextStyle.disabledColor
+                            : _currentSelectedValue == e
+                                ? widget.buttonTextStyle.selectedColor
+                                : widget.buttonTextStyle.unSelectedColor,
+                      ),
+                    ),
             ),
           ),
         ),
@@ -205,64 +232,69 @@ class _CustomRadioButtonState<T> extends State<CustomRadioButton<T>> {
   }
 
   List<Widget> _buildButtonsRow() {
-    return widget.buttonValues.map((e) {
-      int index = widget.buttonValues.indexOf(e);
+    return buttonValues.map((e) {
+      int index = buttonValues.indexOf(e);
+      bool disabled = disabledValues.contains(e);
       return Card(
         margin: widget.margin ?? EdgeInsets.all(widget.absoluteZeroSpacing ? 0 : 4),
-        color: _currentSelectedLabel == widget.buttonLables[index]
-            ? widget.selectedColor
-            : widget.unSelectedColor,
+        color: disabled
+            ? widget.disabledColor ?? widget.unSelectedColor
+            : _currentSelectedValue == e
+                ? widget.selectedColor
+                : widget.unSelectedColor,
         elevation: widget.elevation,
         shape: widget.enableShape
-            ? widget.customShape == null
-                ? RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(widget.shapeRadius)),
-                  )
-                : widget.customShape
+            ? widget.customShape ??
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(widget.shapeRadius)),
+                )
             : null,
         child: Container(
           height: widget.height,
           width: widget.autoWidth ? null : widget.width,
           constraints: widget.autoWidth ? null : BoxConstraints(maxWidth: 250),
           child: MaterialButton(
-            hoverColor: _currentSelectedLabel == widget.buttonLables[index]
+            hoverColor: _currentSelectedValue == widget.buttonLables[index]
                 ? widget.selectedColor
                 : null, //skpark modify
             shape: widget.enableShape
-                ? widget.customShape == null
-                    ? OutlineInputBorder(
-                        borderSide: BorderSide(color: borderColor(index), width: 1),
-                        borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
-                      )
-                    : widget.customShape
+                ? widget.customShape ??
+                    OutlineInputBorder(
+                      borderSide: BorderSide(color: _borderColor(e), width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
+                    )
                 : OutlineInputBorder(
-                    borderSide: BorderSide(color: borderColor(index), width: 1),
+                    borderSide: BorderSide(color: _borderColor(e), width: 1),
                     borderRadius: BorderRadius.zero,
                   ),
-            onPressed: () {
-              widget.radioButtonValue(e);
-              setState(() {
-                _currentSelectedLabel = widget.buttonLables[index];
-              });
-            },
-            child: widget.buttonIcons == null ? Text(   //skpark
-              widget.buttonLables[index],
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: widget.buttonTextStyle.textStyle.copyWith(
-                color: _currentSelectedLabel == widget.buttonLables[index]
-                    ? widget.buttonTextStyle.selectedColor
-                    : widget.buttonTextStyle.unSelectedColor,
-              ),
-            ):  //skpark
-              Center (child:
-              Icon( widget.buttonIcons![index],
-              size: widget.width / 2, 
-                  color: _currentSelectedLabel == widget.buttonLables[index]
-                      ? widget.buttonTextStyle.selectedColor
-                      : widget.buttonTextStyle.unSelectedColor,
-                              ),),
+            onPressed: disabled ? null : () => selectButton(e),
+            child: widget.buttonIcons == null
+                ? Text(
+                    //skpark
+                    widget.buttonLables[index],
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: widget.buttonTextStyle.textStyle.copyWith(
+                      color: disabled
+                          ? widget.buttonTextStyle.disabledColor
+                          : _currentSelectedValue == e
+                              ? widget.buttonTextStyle.selectedColor
+                              : widget.buttonTextStyle.unSelectedColor,
+                    ),
+                  )
+                : //skpark
+                Center(
+                    child: Icon(
+                      widget.buttonIcons![index],
+                      size: widget.width / 2,
+                      color: disabled
+                          ? widget.buttonTextStyle.disabledColor
+                          : _currentSelectedValue == e
+                              ? widget.buttonTextStyle.selectedColor
+                              : widget.buttonTextStyle.unSelectedColor,
+                    ),
+                  ),
           ),
         ),
       );

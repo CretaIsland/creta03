@@ -2,6 +2,7 @@
 
 //import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/model/connected_user_model.dart';
 import 'package:creta03/pages/studio/sample_data.dart';
+import 'package:routemaster/routemaster.dart';
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/frame_manager.dart';
@@ -28,6 +30,7 @@ import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
 import '../../routes.dart';
 import '../login_page.dart';
+import 'book_preview_menu.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
 import 'left_menu/left_menu.dart';
@@ -57,9 +60,9 @@ class BookMainPage extends StatefulWidget {
   static ClickEventHandler clickEventHandler = ClickEventHandler();
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
-  final bool isPreview;
-  BookMainPage({super.key, this.isPreview = false}) {
-    StudioVariables.isPreview = isPreview;
+  final bool isPreviewX;
+  BookMainPage({super.key, this.isPreviewX = false}) {
+    StudioVariables.isPreview = isPreviewX;
   }
 
   @override
@@ -264,7 +267,7 @@ class _BookMainPageState extends State<BookMainPage> {
           value: BookMainPage.bookManagerHolder!,
         ),
       ],
-      child: widget.isPreview
+      child: StudioVariables.isPreview
           ? Scaffold(body: _waitBook())
           : Snippet.CretaScaffold(
               title: Snippet.logo('studio'),
@@ -325,13 +328,13 @@ class _BookMainPageState extends State<BookMainPage> {
         children: [
           Column(
             children: [
-              SizedBox(height: LayoutConst.topMenuBarHeight),
+              SizedBox(height: StudioVariables.topMenuBarHeight),
               Container(
                 color: LayoutConst.studioBGColor,
                 height: StudioVariables.workHeight,
                 child: Row(
                   children: [
-                    if (widget.isPreview == false)
+                    if (StudioVariables.isPreview == false)
                       StickMenu(
                         selectFunction: _showLeftMenu,
                       ),
@@ -351,19 +354,32 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
             ],
           ),
-          if (widget.isPreview == false) _topMenu(),
+          if (StudioVariables.isPreview == false) _topMenu(),
         ],
       ),
     );
   }
 
   void _resize() {
+    double pageDisplayRate = 0.9;
+    if (StudioVariables.isPreview) {
+      StudioVariables.topMenuBarHeight = 0;
+      StudioVariables.menuStickWidth = 0;
+      StudioVariables.appbarHeight = 0;
+      pageDisplayRate = 1;
+    } else {
+      StudioVariables.topMenuBarHeight = LayoutConst.topMenuBarHeight;
+      StudioVariables.menuStickWidth = LayoutConst.menuStickWidth;
+      StudioVariables.appbarHeight = CretaConstant.appbarHeight;
+    }
+
     StudioVariables.displayWidth = MediaQuery.of(context).size.width;
     StudioVariables.displayHeight = MediaQuery.of(context).size.height;
 
-    StudioVariables.workWidth = StudioVariables.displayWidth - LayoutConst.menuStickWidth;
-    StudioVariables.workHeight =
-        StudioVariables.displayHeight - CretaConstant.appbarHeight - LayoutConst.topMenuBarHeight;
+    StudioVariables.workWidth = StudioVariables.displayWidth - StudioVariables.menuStickWidth;
+    StudioVariables.workHeight = StudioVariables.displayHeight -
+        StudioVariables.appbarHeight -
+        StudioVariables.topMenuBarHeight;
     StudioVariables.workRatio = StudioVariables.workHeight / StudioVariables.workWidth;
 
     StudioVariables.applyScale = StudioVariables.scale / StudioVariables.fitScale;
@@ -373,8 +389,8 @@ class _BookMainPageState extends State<BookMainPage> {
     }
     scaleChanged = false;
 
-    StudioVariables.availWidth = StudioVariables.virtualWidth * 0.9;
-    StudioVariables.availHeight = StudioVariables.virtualHeight * 0.9;
+    StudioVariables.availWidth = StudioVariables.virtualWidth * pageDisplayRate;
+    StudioVariables.availHeight = StudioVariables.virtualHeight * pageDisplayRate;
 
     widthRatio = StudioVariables.availWidth / _bookModel.width.value;
     heightRatio = StudioVariables.availHeight / _bookModel.height.value;
@@ -409,8 +425,8 @@ class _BookMainPageState extends State<BookMainPage> {
     return Stack(
       children: [
         _scrollArea(context),
-        if (widget.isPreview == false) _openLeftMenu(),
-        if (widget.isPreview == false) _openRightMenu(),
+        if (StudioVariables.isPreview == false) _openLeftMenu(),
+        if (StudioVariables.isPreview == false) _openRightMenu(),
       ],
     );
   }
@@ -712,9 +728,12 @@ class _BookMainPageState extends State<BookMainPage> {
               if (StudioVariables.isAutoPlay) {
                 _globalToggleAutoPlay();
               }
-              String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
-              AppRoutes.launchTab(url);
-              //Routemaster.of(context).push(AppRoutes.studioBookPreviewPage);
+              if (kReleaseMode) {
+                String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
+                AppRoutes.launchTab(url);
+              } else {
+                Routemaster.of(context).push(AppRoutes.studioBookPreviewPage);
+              }
             },
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipPlay,
@@ -767,9 +786,51 @@ class _BookMainPageState extends State<BookMainPage> {
           currentVerticalScrollBarOffset: (value) {
             vericalScrollOffset = value;
           },
-          child: Center(child: _drawPage(context)),
+          child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
+            pageManager.reOrdering();
+            PageModel? pageModel = pageManager.getSelected() as PageModel?;
+            return _drawPage(context, pageModel);
+          })),
         ),
       ),
+    );
+
+    Widget noneScrollBox = Container(
+      width: StudioVariables.workWidth, //scrollWidth,
+      height: StudioVariables.workHeight,
+      color: LayoutConst.studioBGColor,
+      //color: Colors.green,
+      child: Consumer<PageManager>(builder: (context, pageManager, child) {
+        pageManager.reOrdering();
+        int? pageNo = pageManager.getSelectedPageNo();
+        if (pageNo == null) {
+          return SizedBox.shrink();
+        }
+        PageModel? pageModel = pageManager.getSelected() as PageModel?;
+        int totalPage = pageManager.getAvailLength();
+        return Stack(
+          children: [
+            Center(child: _drawPage(context, pageModel)),
+            BookPreviewMenu(
+              goBackProcess: () {
+                setState(() {
+                  StudioVariables.isPreview = false;
+                });
+              },
+              muteFunction: _globalToggleMute,
+              playFunction: _globalToggleAutoPlay,
+              gotoNext: () {
+                pageManager.gotoNext();
+              },
+              gotoPrev: () {
+                pageManager.gotoPrev();
+              },
+              pageNo: pageNo,
+              totalPage: totalPage,
+            ),
+          ],
+        );
+      }),
     );
 
     // if (BookMainPage.selectedStick != LeftMenuEnum.None) {
@@ -780,7 +841,7 @@ class _BookMainPageState extends State<BookMainPage> {
     //   );
     // }
 
-    return Center(child: scrollBox);
+    return Center(child: StudioVariables.isPreview ? noneScrollBox : scrollBox);
     //});
   }
 
@@ -826,24 +887,21 @@ class _BookMainPageState extends State<BookMainPage> {
   //   );
   // }
 
-  Widget _drawPage(BuildContext context) {
-    return Consumer<PageManager>(builder: (context, pageManager, child) {
-      PageModel? pageModel = pageManager.getSelected() as PageModel?;
-      if (pageModel == null) {
-        return const SizedBox.shrink();
-      }
-      pageModel.width.set(_bookModel.width.value, save: false, noUndo: true);
-      pageModel.height.set(_bookModel.height.value, save: false, noUndo: true);
-      logger.fine('PageMain Invoked ***** ${pageModel.width.value}');
+  Widget _drawPage(BuildContext context, PageModel? pageModel) {
+    if (pageModel == null) {
+      return const SizedBox.shrink();
+    }
+    pageModel.width.set(_bookModel.width.value, save: false, noUndo: true);
+    pageModel.height.set(_bookModel.height.value, save: false, noUndo: true);
+    logger.fine('PageMain Invoked ***** ${pageModel.width.value}');
 
-      return PageMain(
-        key: ValueKey(pageModel.mid),
-        bookModel: _bookModel,
-        pageModel: pageModel,
-        pageWidth: pageWidth,
-        pageHeight: pageHeight,
-      );
-    });
+    return PageMain(
+      key: ValueKey(pageModel.mid),
+      bookModel: _bookModel,
+      pageModel: pageModel,
+      pageWidth: pageWidth,
+      pageHeight: pageHeight,
+    );
   }
 
   void _showLeftMenu(LeftMenuEnum idx) {

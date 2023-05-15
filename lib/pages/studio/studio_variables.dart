@@ -1,6 +1,13 @@
 import 'dart:ui';
 
+import '../../common/creta_constant.dart';
+import 'studio_constant.dart';
+
 class StudioVariables {
+  static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
+  static double menuStickWidth = LayoutConst.menuStickWidth;
+  static double appbarHeight = CretaConstant.appbarHeight;
+
   static double fitScale = 1.0;
   static double scale = 1.0;
   static bool autoScale = true;

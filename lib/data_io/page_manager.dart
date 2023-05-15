@@ -108,6 +108,86 @@ class PageManager extends CretaManager {
     return defaultPage;
   }
 
+  int? getSelectedPageNo() {
+    if (selectedMid.isEmpty) {
+      return null;
+    }
+    int retval = 1;
+    for (var ele in modelList) {
+      if (ele.mid == selectedMid) {
+        break;
+      }
+      retval++;
+    }
+    return retval;
+  }
+
+  void gotoNext() {
+    String? mid = getNextMid();
+    if (mid != null) {
+      setSelectedMid(mid);
+    }
+  }
+
+  void gotoPrev() {
+    String? mid = getPrevMid();
+    if (mid != null) {
+      setSelectedMid(mid);
+    }
+  }
+
+  String? getNextMid() {
+    bool matched = false;
+    double selectedOrder = getSelectedOrder();
+    if (selectedOrder < 0) {
+      return null;
+    }
+
+    Iterable<double> keys = keyEntries().toList();
+    for (double ele in keys) {
+      if (matched == true) {
+        return getNthMid(ele);
+      }
+      if (ele == selectedOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    if (matched == true) {
+      // 끝까지 온것이다.  처음으로 돌아간다.
+      return getNthMid(keys.first);
+    }
+    return null;
+  }
+
+  String? getPrevMid() {
+    bool matched = false;
+    double selectedOrder = getSelectedOrder();
+    if (selectedOrder < 0) {
+      return null;
+    }
+
+    Iterable<double> keys = keyEntries().toList().reversed;
+    for (double ele in keys) {
+      if (matched == true) {
+        return getNthMid(ele);
+      }
+      if (ele == selectedOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    if (matched == true) {
+      // 끝까지 온것이다.  처음으로 돌아간다.
+      return getNthMid(keys.first);
+    }
+    return null;
+  }
+
+  bool isVisible(double order) {
+    return true;
+  }
+
   Future<int> getPages() async {
     int pageCount = 0;
     startTransaction();

@@ -644,6 +644,18 @@ abstract class CretaManager extends AbsExModelManager {
     return -1;
   }
 
+  AbsExModel? getNth(double order) {
+    return _orderMap[order];
+  }
+
+  String? getNthMid(double order) {
+    AbsExModel? model = _orderMap[order];
+    if (model == null) {
+      return null;
+    }
+    return model.mid;
+  }
+
   Iterable<CretaModel> valueEntries() {
     return _orderMap.deepSortByKey().values;
   }
@@ -904,6 +916,18 @@ abstract class CretaManager extends AbsExModelManager {
       }
     }
     return null;
+  }
+
+  double getSelectedOrder() {
+    if (selectedMid.isEmpty) {
+      return -1;
+    }
+    for (var ele in modelList) {
+      if (ele.mid == selectedMid) {
+        return ele.order.value;
+      }
+    }
+    return -2;
   }
 
   void printLog() {

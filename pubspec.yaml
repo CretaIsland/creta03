@@ -39,7 +39,7 @@ dependencies:
   routemaster: ^1.0.1
   hycop: ^0.1.5
   outline_search_bar: ^2.3.0
-  custom_radio_grouped_button: ^2.1.2+2
+  custom_radio_grouped_button: ^2.2.0
   # elegant_radio_button_group: ^0.0.1
   # roundcheckbox: ^2.0.5
   # flutter_awesome_select: ^6.5.0
@@ -77,7 +77,7 @@ dependencies:
   starsview: ^0.0.2
   flutter_dropzone: ^3.0.5
   blobs: ^2.0.0
-  video_player: ^2.6.0
+  video_player: ^2.6.1
   youtube_player_iframe: ^3.1.0
   animated_text_kit: ^4.2.2
   auto_size_text: ^3.0.0

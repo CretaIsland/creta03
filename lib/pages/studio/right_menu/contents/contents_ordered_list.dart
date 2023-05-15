@@ -649,7 +649,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           autoHeight: true,
           height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
           keyboardType: TextInputType.multiline,
-          maxLines: null,
+          maxLines: 5,
           textInputAction: TextInputAction.newline,
           alignVertical: TextAlignVertical.top,
           onEditComplete: (value) {

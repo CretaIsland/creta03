@@ -103,7 +103,7 @@ final routesLoggedOut = RouteMap(
       }
       logger.finest('selectedMid=${BookMainPage.selectedMid}');
       return TransitionPage(
-          child: BookMainPage(key: ValueKey(BookMainPage.selectedMid), isPreview: true));
+          child: BookMainPage(key: ValueKey(BookMainPage.selectedMid), isPreviewX: true));
     },
     AppRoutes.studioBookMyPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),

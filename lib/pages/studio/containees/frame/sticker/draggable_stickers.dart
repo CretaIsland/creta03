@@ -163,7 +163,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
         // setState(() {});
       },
       onComplete: () {
-        widget.onComplete.call(sticker.id);
+        logger.info('onComplete : from DraggableResizable');
+        setState(() {
+          widget.onComplete.call(sticker.id);
+        });
       },
       onScaleStart: () {
         widget.onScaleStart.call(sticker.id);

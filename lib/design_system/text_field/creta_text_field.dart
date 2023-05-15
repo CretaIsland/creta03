@@ -453,6 +453,7 @@ class CretaTextFieldState extends State<CretaTextField> {
                   ]
                 : null,
         maxLines: widget.maxLines,
+        minLines: widget.maxLines,
         //maxLines: 1,
         autofocus: false,
         //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
@@ -538,9 +539,10 @@ class CretaTextFieldState extends State<CretaTextField> {
           _clicked = true;
           //});
         },
-        onTapOutside: (event) {
-          widget.onEditComplete(_searchValue);
-        },
+        // onTapOutside: (event) {
+        //   logger.info('onTappOutside');
+        //   widget.onEditComplete(_searchValue);
+        // },
       ),
     );
   }
