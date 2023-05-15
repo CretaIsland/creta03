@@ -11,13 +11,14 @@ import 'package:flutter/services.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../design_system/buttons/creta_elibated_button.dart';
+//import '../../../design_system/buttons/creta_elibated_button.dart';
 //import '../../design_system/buttons/creta_button.dart';
 import '../../../design_system/component/snippet.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
+import '../../../design_system/text_field/creta_text_field.dart';
 import '../../../design_system/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
@@ -52,12 +53,17 @@ class CommunityRightBookPane extends StatefulWidget {
 
 class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   late List<CretaBookData> _cretaRelatedBookList;
+  late List<String> _hashtagValueList;
+  bool _hashtagEditMode = false;
+  final TextEditingController _hashtagController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
     _cretaRelatedBookList = CommunitySampleData.getCretaBookList();
+
+    _hashtagValueList = ['#크레타북', '#추천', '#인기', '#해시태그', '#목록입니다', '#스페이싱', '#스페이싱', '#스페이싱', '#스페이싱'];
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
@@ -68,61 +74,76 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   }
 
   Widget _getHashtagWidget(String hashtag) {
-    return CretaElevatedButton(
+    // return CretaElevatedButton(
+    //   height: 32,
+    //   caption: hashtag,
+    //   captionStyle: CretaFont.bodyMedium.copyWith(fontSize: 13),
+    //   onPressed: () {},
+    //   bgHoverColor: CretaColor.text[100]!,
+    //   bgHoverSelectedColor: CretaColor.text[100]!,
+    //   bgSelectedColor: Colors.white,
+    //   borderColor: CretaColor.text[700]!,
+    //   borderSelectedColor: CretaColor.text[700]!,
+    //   fgColor: CretaColor.text[700]!,
+    //   fgSelectedColor: CretaColor.text[700]!,
+    // );
+    return BTN.line_gray_t_m(
+      width: null,
       height: 32,
-      caption: hashtag,
-      captionStyle: CretaFont.bodyMedium.copyWith(fontSize: 13),
-      onPressed: () {},
-      bgHoverColor: CretaColor.text[100]!,
-      bgHoverSelectedColor: CretaColor.text[100]!,
-      bgSelectedColor: Colors.white,
-      borderColor: CretaColor.text[700]!,
-      borderSelectedColor: CretaColor.text[700]!,
-      fgColor: CretaColor.text[700]!,
-      fgSelectedColor: CretaColor.text[700]!,
+      isSelectedWidget: false,
+      text: _hashtagEditMode ? '$hashtag x' : hashtag,
+      sidePadding: CretaButtonSidePadding(left: 8, right: 8),
+      onPressed: () {
+        if (_hashtagEditMode) {
+          setState(() {
+            _hashtagValueList = _hashtagValueList.where((item) => item != hashtag).toList();
+          });
+        }
+      },
     );
   }
 
   List<Widget> _getHashtagList() {
-    return [
-      _getHashtagWidget('#크레타북'),
-      _getHashtagWidget('#추천'),
-      _getHashtagWidget('#인기'),
-      _getHashtagWidget('#해시태그'),
-      _getHashtagWidget('#목록입니다'),
-      _getHashtagWidget('#스페이싱'),
-      _getHashtagWidget('#스페이싱'),
-      _getHashtagWidget('#스페이싱'),
-      _getHashtagWidget('#스페이싱'),
-      // BTN.opacity_gray_it_s(
-      //   text: '#크레타북',
-      //   textStyle: CretaFont.buttonMedium,
-      //   //width: null,
-      //   onPressed: () {},
-      //   width: null,
-      // ),
-      // BTN.opacity_gray_it_s(
-      //   text: '#추천',
-      //   textStyle: CretaFont.buttonMedium,
-      //   //width: null,
-      //   onPressed: () {},
-      //   width: null,
-      // ),
-      // SizedBox(width: 12),
-      // BTN.opacity_gray_it_s(
-      //   text: '#인기',
-      //   textStyle: CretaFont.buttonMedium,
-      //   //width: null,
-      //   onPressed: () {},
-      // ),
-      // SizedBox(width: 12),
-      // BTN.opacity_gray_it_s(
-      //   text: '#해시태그',
-      //   textStyle: CretaFont.buttonMedium,
-      //   //width: null,
-      //   onPressed: () {},
-      // ),
-    ];
+    return _hashtagValueList.map((e) => _getHashtagWidget(e)).toList();
+    // return [
+    //   _getHashtagWidget('#크레타북'),
+    //   _getHashtagWidget('#추천'),
+    //   _getHashtagWidget('#인기'),
+    //   _getHashtagWidget('#해시태그'),
+    //   _getHashtagWidget('#목록입니다'),
+    //   _getHashtagWidget('#스페이싱'),
+    //   _getHashtagWidget('#스페이싱'),
+    //   _getHashtagWidget('#스페이싱'),
+    //   _getHashtagWidget('#스페이싱'),
+    //   // BTN.opacity_gray_it_s(
+    //   //   text: '#크레타북',
+    //   //   textStyle: CretaFont.buttonMedium,
+    //   //   //width: null,
+    //   //   onPressed: () {},
+    //   //   width: null,
+    //   // ),
+    //   // BTN.opacity_gray_it_s(
+    //   //   text: '#추천',
+    //   //   textStyle: CretaFont.buttonMedium,
+    //   //   //width: null,
+    //   //   onPressed: () {},
+    //   //   width: null,
+    //   // ),
+    //   // SizedBox(width: 12),
+    //   // BTN.opacity_gray_it_s(
+    //   //   text: '#인기',
+    //   //   textStyle: CretaFont.buttonMedium,
+    //   //   //width: null,
+    //   //   onPressed: () {},
+    //   // ),
+    //   // SizedBox(width: 12),
+    //   // BTN.opacity_gray_it_s(
+    //   //   text: '#해시태그',
+    //   //   textStyle: CretaFont.buttonMedium,
+    //   //   //width: null,
+    //   //   onPressed: () {},
+    //   // ),
+    // ];
   }
 
   final GlobalKey bookKey = GlobalKey();
@@ -149,7 +170,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             Container(
               width: size.width,
               height: size.height,
-              decoration: bookMouseOver ? Snippet.gradationShadowDeco() : null,
+              decoration: bookMouseOver ? Snippet.shadowDeco() : null,
             ),
           ],
         ),
@@ -185,27 +206,64 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             !bookMouseOver
                 ? Container()
                 : Container(
-                    padding: EdgeInsets.fromLTRB(20, 24, 20, 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 16 - 8),
+                    child: Column(
                       children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(child: Container()),
+                            BTN.fill_blue_i_l(
+                              icon: Icons.share_outlined,
+                              buttonColor: CretaButtonColor.blueGray,
+                              onPressed: () {},
+                            ),
+                            SizedBox(width: 12),
+                            BTN.fill_blue_i_l(
+                              icon: Icons.playlist_add_outlined,
+                              buttonColor: CretaButtonColor.blueGray,
+                              onPressed: () {},
+                            ),
+                            SizedBox(width: 12),
+                            BTN.fill_blue_i_l(
+                              icon: Icons.file_download_outlined,
+                              buttonColor: CretaButtonColor.blueGray,
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
                         Expanded(child: Container()),
-                        BTN.fill_blue_i_l(
-                          icon: Icons.share_outlined,
-                          buttonColor: CretaButtonColor.blueGray,
-                          onPressed: () {},
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(child: Container()),
+                            BTN.fill_blue_i_l(
+                              icon: Icons.volume_up_outlined,
+                              buttonColor: CretaButtonColor.blueGray,
+                              onPressed: () {},
+                            ),
+                            SizedBox(width: 8),
+                            BTN.fill_blue_i_l(
+                              icon: Icons.fullscreen_outlined,
+                              buttonColor: CretaButtonColor.blueGray,
+                              onPressed: () {},
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 12),
-                        BTN.fill_blue_i_l(
-                          icon: Icons.playlist_add_outlined,
-                          buttonColor: CretaButtonColor.blueGray,
-                          onPressed: () {},
-                        ),
-                        SizedBox(width: 12),
-                        BTN.fill_blue_i_l(
-                          icon: Icons.file_download_outlined,
-                          buttonColor: CretaButtonColor.blueGray,
-                          onPressed: () {},
+                        SizedBox(height: 8),
+                        CretaProgressSlider(
+                          height: 24,
+                          barThickness: 8,
+                          min: 0,
+                          max: 100,
+                          value: _value,
+                          inactiveTrackColor: Colors.white,
+                          onChanged: (value) {
+                            setState(() {
+                              _value = value;
+                              //print('value=$value');
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -232,31 +290,31 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             //
             //
             // progress-bar
-            !bookMouseOver
-                ? SizedBox.shrink()
-                : Container(
-                    height: size.height,
-                    padding: EdgeInsets.fromLTRB(20, 24, 20, 16 - 4),
-                    child: Column(
-                      children: [
-                        Expanded(child: Container()),
-                        CretaProgressSlider(
-                          height: 24,
-                          barThickness: 8,
-                          min: 0,
-                          max: 100,
-                          value: _value,
-                          inactiveTrackColor: Colors.white,
-                          onChanged: (value) {
-                            setState(() {
-                              _value = value;
-                              //print('value=$value');
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+            // !bookMouseOver
+            //     ? SizedBox.shrink()
+            //     : Container(
+            //         height: size.height,
+            //         padding: EdgeInsets.fromLTRB(20, 24, 20, 16 - 4),
+            //         child: Column(
+            //           children: [
+            //             Expanded(child: Container()),
+            //             CretaProgressSlider(
+            //               height: 24,
+            //               barThickness: 8,
+            //               min: 0,
+            //               max: 100,
+            //               value: _value,
+            //               inactiveTrackColor: Colors.white,
+            //               onChanged: (value) {
+            //                 setState(() {
+            //                   _value = value;
+            //                   //print('value=$value');
+            //                 });
+            //               },
+            //             ),
+            //           ],
+            //         ),
+            //       ),
           ],
         ),
       ),
@@ -324,8 +382,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
               padding: EdgeInsets.fromLTRB(0, 0, (22 - _usingContentsRect.childLeftPadding), 0),
               child: CupertinoTextField(
                 //customizedDisableColor: Colors.white,
-                minLines: 1,
-                maxLines: null,
+                minLines: 3,
+                maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 focusNode: _focusNode,
                 padding: EdgeInsets.fromLTRB(
@@ -539,12 +597,13 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   }
 
   Size _bookAreaSize = Size.zero;
-  Size _sideAreaSize = Size.zero;
+  CretaLayoutRect _sideAreaRect = CretaLayoutRect.zero;
   CretaLayoutRect _usingContentsRect = CretaLayoutRect.zero;
   final double _bookAreaRatio = (9 / 16);
   void _resize(BuildContext context) {
-    _sideAreaSize = Size(346, 1000);
-    double bookAreaWidth = widget.cretaLayoutRect.childWidth - 20 - _sideAreaSize.width;
+    //_sideAreaSize = Size(346, 1000);
+    _sideAreaRect = CretaLayoutRect.fromPadding(346, 1000, 20, 20, 20, 20);
+    double bookAreaWidth = widget.cretaLayoutRect.childWidth - 20 - _sideAreaRect.width;
     double bookAreaHeight = bookAreaWidth * _bookAreaRatio;
     _bookAreaSize = Size(bookAreaWidth, bookAreaHeight);
     _usingContentsRect = CretaLayoutRect.fromPadding(bookAreaWidth, 206 + 40 + 40 - 12 - 5, 12, 40 - 12 - 5, 22, 40);
@@ -587,12 +646,24 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   Widget _getSidePane() {
     return SizedBox(
-      width: _sideAreaSize.width,
+      width: _sideAreaRect.width,
       child: Column(
         children: [
           // hashtag
-          SizedBox(
+          Container(
             //height: 210,
+            padding: EdgeInsets.fromLTRB(
+              _sideAreaRect.childLeftPadding,
+              _sideAreaRect.childTopPadding,
+              _sideAreaRect.childRightPadding,
+              _sideAreaRect.childBottomPadding,
+            ),
+            decoration: BoxDecoration(
+              color: CretaColor.text[100],
+              border: Border.all(color: CretaColor.text[100]!),
+              borderRadius: BorderRadius.circular(20),
+            ),
+
             child: Column(
               children: [
                 // hashtag title
@@ -600,20 +671,25 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   children: [
                     Text(
                       '해시태그',
-                      style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+                      style: CretaFont.titleELarge.copyWith(fontSize: 20, color: CretaColor.text[700]),
                     ),
                     Expanded(child: Container()),
-                    BTN.fill_gray_200_i_s(icon: Icons.edit_outlined, onPressed: () {}),
+                    BTN.fill_gray_200_i_s(
+                      icon: _hashtagEditMode ? Icons.check_outlined : Icons.edit_outlined,
+                      onPressed: () {
+                        setState(() {
+                          _hashtagEditMode = !_hashtagEditMode;
+                        });
+                      },
+                    ),
                   ],
                 ),
                 // gap-space
                 SizedBox(height: 20),
                 // hashtag body
-                //Row(
-                //  children: [
                 SizedBox(
                   //color: Colors.blue,
-                  width: _sideAreaSize.width,
+                  width: _sideAreaRect.childWidth,
                   child: Wrap(
                     //direction: Axis.horizontal, // 나열 방향
                     //alignment: WrapAlignment.start, // 정렬 방식
@@ -622,9 +698,33 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                     children: _getHashtagList(),
                   ),
                 ),
-                //    Expanded(child: Container()),
-                //  ],
-                //),
+                _hashtagEditMode ? SizedBox(height: 20) : SizedBox.shrink(),
+                _hashtagEditMode
+                    // ? CretaSearchBar(
+                    //     hintText: '해시태그를 입력하세요',
+                    //     onSearch: (value) {
+                    //       setState(() {
+                    //         _hashtagValueList.add(value);
+                    //       });
+                    //     },
+                    //   )
+                    ? CretaTextField(
+                        textFieldKey: GlobalKey(),
+                        controller: _hashtagController,
+                        value: '',
+                        hintText: '',
+                        width: _sideAreaRect.childWidth,
+                        height: 30,
+                        onEditComplete: (value) {
+                          if (_hashtagEditMode && value.isNotEmpty) {
+                            setState(() {
+                              _hashtagController.text = '';
+                              _hashtagValueList.add(value);
+                            });
+                          }
+                        },
+                      )
+                    : SizedBox.shrink(),
               ],
             ),
           ),
@@ -644,7 +744,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   ],
                 ),
                 SizedBox(height: 20),
-                _getRelatedBookList(_sideAreaSize.width - 20 - 20),
+                _getRelatedBookList(_sideAreaRect.childWidth),
               ],
             ),
           ),
