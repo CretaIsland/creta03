@@ -10,26 +10,23 @@ import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
-import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../model/app_enums.dart';
-import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
-import '../../../../player/creta_play_timer.dart';
 import '../../studio_snippet.dart';
 import '../containee_mixin.dart';
-import '../contents/contents_main.dart';
+import '../contents/contents_thumbnail.dart';
 import 'frame_play_mixin.dart';
-import 'on_frame_menu.dart';
 
-class FrameEach extends StatefulWidget {
+class FrameThumbnail extends StatefulWidget {
   final FrameManager frameManager;
   final PageModel pageModel;
   final FrameModel model;
   final double applyScale;
   final double width;
   final double height;
-  const FrameEach({
+  final bool isThumbnail;
+  const FrameThumbnail({
     super.key,
     required this.frameManager,
     required this.pageModel,
@@ -37,17 +34,17 @@ class FrameEach extends StatefulWidget {
     required this.applyScale,
     required this.width,
     required this.height,
+    this.isThumbnail = false,
   });
 
   @override
-  State<FrameEach> createState() => _FrameEachState();
+  State<FrameThumbnail> createState() => _FrameThumbnailState();
 }
 
-class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixin {
+class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
   double applyScale = 1;
 
   ContentsManager? _contentsManager;
-  CretaPlayTimer? _playTimer;
 
   bool _isInitialized = false;
   //final bool _isHover = false;
@@ -55,8 +52,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   @override
   void dispose() {
     super.dispose();
-    _playTimer?.stop();
-    logger.info('==========================FrameEach dispose================');
+    logger.info('==========================FrameThumbnail dispose================');
   }
 
   @override
@@ -66,7 +62,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Future<void> initChildren() async {
-    logger.info('==========================FrameEach initialized================');
+    logger.info('==========================FrameThumbnail initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
       logger.severe('frame manager is null');
@@ -79,10 +75,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     } else {
       logger.info('old ContentsManager used (${widget.model.mid})');
     }
-    if (_playTimer == null) {
-      _playTimer = CretaPlayTimer(_contentsManager!);
-      _contentsManager!.setPlayerHandler(_playTimer!);
-    }
+
     if (_contentsManager!.onceDBGetComplete == false) {
       await _contentsManager!.getContents();
       _contentsManager!.addRealTimeListen();
@@ -95,17 +88,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   @override
   Widget build(BuildContext context) {
     applyScale = widget.applyScale;
-    if (_playTimer == null) {
-      logger.severe('_playTimer is null');
-    }
-    _playTimer?.start();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ContentsManager>.value(
           value: _contentsManager!,
-        ),
-        ChangeNotifierProvider<CretaPlayTimer>.value(
-          value: _playTimer!,
         ),
       ],
       child: _isInitialized ? _frameDropZone() : _futureBuider(),
@@ -142,61 +129,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
   Widget _frameDropZone() {
     logger.info('_frameDropZone');
-
-    Widget frameBody = Stack(
-      alignment: Alignment.center,
-      children: [
-        _applyAnimate(widget.model),
-        OnFrameMenu(
-          playTimer: _playTimer,
-          model: widget.model,
-        ),
-      ],
-    );
-
-    return Center(
-      child: _isDropAble(widget.model)
-          ? DropZoneWidget(
-              parentId: '',
-              onDroppedFile: (modelList) {
-                _onDropFrame(widget.model.mid, modelList);
-              },
-              child: frameBody,
-            )
-          : frameBody,
-    );
-  }
-
-  bool _isDropAble(FrameModel model) {
-    if (model.frameType == FrameType.text) {
-      return false;
-    }
-    return true;
-  }
-
-  Future<void> _onDropFrame(String frameId, List<ContentsModel> contentsModelList) async {
-    // 콘텐츠 매니저를 생성한다.
-    FrameModel? frameModel = frameManager!.getModel(frameId) as FrameModel?;
-    if (frameModel == null) {
-      return;
-    }
-
-    await ContentsManager.createContents(
-      frameManager,
-      contentsModelList,
-      frameModel,
-      widget.pageModel,
-      isResizeFrame: false,
-    );
-  }
-
-  Widget _applyAnimate(FrameModel model) {
-    List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
-    logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
-    if (animations.isEmpty) {
-      return _shapeBox(model);
-    }
-    return getAnimation(_shapeBox(model), animations);
+    return Center(child: _shapeBox(widget.model));
   }
 
   Widget _shapeBox(FrameModel model) {
@@ -274,12 +207,14 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       height: double.infinity,
       child: ClipRect(
         clipBehavior: Clip.hardEdge,
-        child: ContentsMain(
-          key: GlobalObjectKey<ContentsMainState>('ContentsMain${model.mid}'),
+        child: ContentsThumbnail(
+          key: GlobalObjectKey<ContentsThumbnailState>('ContentsThumbnail${model.mid}'),
           frameModel: model,
           pageModel: widget.pageModel,
           frameManager: frameManager!,
           contentsManager: _contentsManager!,
+          width: widget.width,
+          height: widget.height,
         ),
         // child: Image.asset(
         //   'assets/creta_default.png',

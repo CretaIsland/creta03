@@ -22,6 +22,9 @@ class FrameManager extends CretaManager {
   Map<String, GlobalKey> frameKeyMap = {};
   Map<String, ContentsManager> contentsManagerMap = {};
 
+  bool _initFrameComplete = false;
+  bool get initFrameComplete => _initFrameComplete;
+
   void setContentsManager(String frameId, ContentsManager c) {
     contentsManagerMap[frameId] = c;
   }
@@ -54,7 +57,7 @@ class FrameManager extends CretaManager {
       Color? bgColor1,
       FrameType? type}) async {
     logger.info('createNextFrame()');
-    FrameModel defaultFrame = FrameModel.makeSample(lastOrder() + 1, pageModel.mid);
+    FrameModel defaultFrame = FrameModel.makeSample(safeLastOrder() + 1, pageModel.mid);
     defaultFrame.width.set(size.width, save: false, noUndo: true);
     defaultFrame.height.set(size.height, save: false, noUndo: true);
     if (pos != null) {
@@ -79,7 +82,7 @@ class FrameManager extends CretaManager {
 
     newModel.posX.set(src.posX.value + 20, save: false, noUndo: true);
     newModel.posY.set(src.posY.value + 20, save: false, noUndo: true);
-    newModel.order.set(lastOrder() + 1, save: false, noUndo: true);
+    newModel.order.set(safeLastOrder() + 1, save: false, noUndo: true);
 
     logger.fine('create new frame ${newModel.mid}');
 
@@ -104,6 +107,7 @@ class FrameManager extends CretaManager {
       frameCount = 1;
     }
     endTransaction();
+    _initFrameComplete = true;
     return frameCount;
   }
 
@@ -251,5 +255,34 @@ class FrameManager extends CretaManager {
   void removeChild(String parentMid) {
     ContentsManager? contentsManager = getContentsManager(parentMid);
     contentsManager?.removeAll();
+  }
+
+  Future<void> findOrInitContentsManager() async {
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      FrameModel frameModel = ele as FrameModel;
+      ContentsManager? contentsManager = findContentsManager(frameModel.mid);
+      if (contentsManager == null) {
+        logger.info('new ContentsManager created (${frameModel.mid})');
+        contentsManager = newContentsManager(frameModel);
+        contentsManager.clearAll();
+      } else {
+        logger.info('old ContentsManager used (${frameModel.mid})');
+      }
+    }
+    for (var contentsManager in contentsManagerMap.values.toList()) {
+      await _initContentsManager(contentsManager);
+    }
+  }
+
+  Future<void> _initContentsManager(ContentsManager contentsManager) async {
+    if (contentsManager.onceDBGetComplete == false) {
+      await contentsManager.getContents();
+      contentsManager.addRealTimeListen();
+      contentsManager.reOrdering();
+    }
+    logger.info('initChildren(${contentsManager.getAvailLength()})');
   }
 }

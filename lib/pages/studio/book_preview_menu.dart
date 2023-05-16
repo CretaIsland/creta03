@@ -30,71 +30,87 @@ class BookPreviewMenu extends StatefulWidget {
 }
 
 class _BookPreviewMenuState extends State<BookPreviewMenu> {
+  bool _isHover = false;
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
       left: 0,
       bottom: 0,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        width: StudioVariables.workWidth,
-        height: LayoutConst.previewMenuHeight,
-        color: CretaColor.text.withOpacity(0.25),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                CretaTrasparentButton(
-                  onPressed: widget.muteFunction,
-                  icon1: Icons.volume_off_outlined,
-                  icon2: Icons.volume_up_outlined,
-                  iconSize: 20,
-                  toggleValue: StudioVariables.isMute,
-                ),
-                const SizedBox(width: 15),
-                CretaTrasparentButton(
-                  toggleValue: StudioVariables.isAutoPlay,
-                  icon1: Icons.pause_outlined,
-                  icon2: Icons.play_arrow_outlined,
-                  onPressed: widget.playFunction,
-                  iconSize: 20,
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                CretaTrasparentButton(
-                  onPressed: widget.gotoPrev,
-                  icon1: Icons.arrow_back_ios_new_outlined,
-                  icon2: Icons.arrow_back_ios_new_outlined,
-                  toggleValue: true,
-                  iconSize: 20,
-                  doToggle: false,
-                ),
-                Text(
-                  ' ${widget.pageNo}/${widget.totalPage} ',
-                  style: CretaFont.buttonLarge.copyWith(color: Colors.white),
-                ),
-                CretaTrasparentButton(
-                  onPressed: widget.gotoNext,
-                  icon1: Icons.arrow_forward_ios_outlined,
-                  icon2: Icons.arrow_forward_ios_outlined,
-                  toggleValue: true,
-                  iconSize: 20,
-                  doToggle: false,
-                ),
-              ],
-            ),
-            CretaTrasparentButton(
-              onPressed: widget.goBackProcess,
-              icon1: Icons.close_fullscreen_outlined,
-              icon2: Icons.close_fullscreen_outlined,
-              toggleValue: StudioVariables.isPreview,
-              iconSize: 20,
-              doToggle: false,
-            ),
-          ],
+      child: MouseRegion(
+        onExit: (val) {
+          setState(() {
+            _isHover = false;
+          });
+        },
+        onEnter: (val) {
+          setState(() {
+            _isHover = true;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          width: StudioVariables.workWidth,
+          height: LayoutConst.previewMenuHeight,
+          color: CretaColor.text.withOpacity(_isHover ? 0.25 : 0.0),
+          child: _isHover
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CretaTrasparentButton(
+                          onPressed: widget.muteFunction,
+                          icon1: Icons.volume_off_outlined,
+                          icon2: Icons.volume_up_outlined,
+                          iconSize: 20,
+                          toggleValue: StudioVariables.isMute,
+                        ),
+                        const SizedBox(width: 15),
+                        CretaTrasparentButton(
+                          toggleValue: StudioVariables.isAutoPlay,
+                          icon1: Icons.pause_outlined,
+                          icon2: Icons.play_arrow_outlined,
+                          onPressed: widget.playFunction,
+                          iconSize: 20,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        CretaTrasparentButton(
+                          onPressed: widget.gotoPrev,
+                          icon1: Icons.arrow_back_ios_new_outlined,
+                          icon2: Icons.arrow_back_ios_new_outlined,
+                          toggleValue: true,
+                          iconSize: 20,
+                          doToggle: false,
+                        ),
+                        Text(
+                          ' ${widget.pageNo}/${widget.totalPage} ',
+                          style: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                        ),
+                        CretaTrasparentButton(
+                          onPressed: widget.gotoNext,
+                          icon1: Icons.arrow_forward_ios_outlined,
+                          icon2: Icons.arrow_forward_ios_outlined,
+                          toggleValue: true,
+                          iconSize: 20,
+                          doToggle: false,
+                        ),
+                      ],
+                    ),
+                    CretaTrasparentButton(
+                      onPressed: widget.goBackProcess,
+                      icon1: Icons.close_fullscreen_outlined,
+                      icon2: Icons.close_fullscreen_outlined,
+                      toggleValue: StudioVariables.isPreview,
+                      iconSize: 20,
+                      doToggle: false,
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
         ),
       ),
     );

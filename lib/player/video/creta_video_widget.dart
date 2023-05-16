@@ -6,6 +6,7 @@ import 'package:video_player/video_player.dart';
 
 import '../../design_system/component/snippet.dart';
 import '../../model/frame_model.dart';
+import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
 import 'creta_video_player.dart';
 
@@ -70,10 +71,11 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
     return ClipRRect(
       //clipper: MyContentsClipper(),
       borderRadius: BorderRadius.only(
-        topRight: Radius.circular(frameModel.getRealradiusRightTop()),
-        topLeft: Radius.circular(frameModel.getRealradiusLeftTop()),
-        bottomRight: Radius.circular(frameModel.getRealradiusRightBottom()),
-        bottomLeft: Radius.circular(frameModel.getRealradiusLeftBottom()),
+        topRight: Radius.circular(frameModel.getRealradiusRightTop(StudioVariables.applyScale)),
+        topLeft: Radius.circular(frameModel.getRealradiusLeftTop(StudioVariables.applyScale)),
+        bottomRight:
+            Radius.circular(frameModel.getRealradiusRightBottom(StudioVariables.applyScale)),
+        bottomLeft: Radius.circular(frameModel.getRealradiusLeftBottom(StudioVariables.applyScale)),
       ),
       child: SizedBox.expand(
           child: FittedBox(

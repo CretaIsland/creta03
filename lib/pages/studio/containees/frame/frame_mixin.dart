@@ -9,7 +9,7 @@ mixin FrameMixin {
       color: model.opacity.value == 1
           ? model.bgColor1.value
           : model.bgColor1.value.withOpacity(model.opacity.value),
-      borderRadius: BorderRadius.all(Radius.circular(model.angle.value)),
+      borderRadius: BorderRadius.all(Radius.circular(model.radius.value)),
       gradient: StudioSnippet.gradient(
         model.gradationType.value,
         model.bgColor1.value,

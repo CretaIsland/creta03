@@ -671,6 +671,15 @@ abstract class CretaManager extends AbsExModelManager {
     return -1;
   }
 
+  // 최소한 0을 리턴한다.
+  double safeLastOrder() {
+    double retval = lastOrder();
+    if (retval < 0) {
+      return 0;
+    }
+    return retval;
+  }
+
   double nextOrder(double currentOrder, {bool alwaysOneExist = false}) {
     bool matched = false;
 
@@ -831,6 +840,21 @@ abstract class CretaManager extends AbsExModelManager {
     return modelList.first;
   }
 
+  // 해당 객체가 몇번째에 있는지를 알려준다.
+  int? getSelectedNumber() {
+    if (selectedMid.isEmpty) {
+      return null;
+    }
+    int retval = 1;
+    for (var ele in _orderMap.deepSortByKey().values) {
+      if (ele.mid == selectedMid) {
+        break;
+      }
+      retval++;
+    }
+    return retval;
+  }
+
   ///
   ///  select 관련
   ///
@@ -920,13 +944,16 @@ abstract class CretaManager extends AbsExModelManager {
 
   double getSelectedOrder() {
     if (selectedMid.isEmpty) {
+      logger.severe('No selected mid');
       return -1;
     }
     for (var ele in modelList) {
       if (ele.mid == selectedMid) {
+        logger.info('selected mid=$selectedMid, order=${ele.order.value}');
         return ele.order.value;
       }
     }
+    logger.severe('No matched mid');
     return -2;
   }
 

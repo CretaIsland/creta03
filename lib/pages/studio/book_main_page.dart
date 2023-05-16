@@ -61,7 +61,12 @@ class BookMainPage extends StatefulWidget {
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
-  BookMainPage({super.key, this.isPreviewX = false}) {
+  final bool isThumbnailX;
+  BookMainPage({
+    super.key,
+    this.isPreviewX = false,
+    this.isThumbnailX = false,
+  }) {
     StudioVariables.isPreview = isPreviewX;
   }
 
@@ -164,6 +169,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     // Get Pages
     await BookMainPage.pageManagerHolder!.initPage(model);
+    await BookMainPage.pageManagerHolder!.findOrInitAllFrameManager(model);
 
     // Get Template Frames
     // BookMainPage.polygonFrameManagerHolder!.clearAll();
@@ -277,28 +283,31 @@ class _BookMainPageState extends State<BookMainPage> {
     );
   }
 
+  // Widget _waitBook() {
+  //   while (_onceDBGetComplete == false) {
+  //     logger.finest('wait until _onceDBGetComplete');
+  //     Future.delayed(
+  //       Duration(microseconds: 500),
+  //     );
+  //   }
+  //   return consumerFunc();
+  // }
+
   Widget _waitBook() {
     if (_onceDBGetComplete) {
       logger.finest('already _onceDBGetComplete');
       return consumerFunc();
     }
-    //var retval = CretaModelSnippet.waitData(
     var retval = CretaModelSnippet.waitDatum(
       managerList: [
         BookMainPage.bookManagerHolder!,
         BookMainPage.pageManagerHolder!,
-        // BookMainPage.polygonFrameManagerHolder!,
-        // BookMainPage.animationFrameManagerHolder!,
-        // LoginPage.userPropertyManagerHolder!,
       ],
-      //userId: AccountManager.currentLoginUser.email,
       consumerFunc: consumerFunc,
     );
 
-    //_onceDBGetComplete = true;
     logger.finest('first_onceDBGetComplete bookmain');
     return retval;
-    //return consumerFunc();
   }
 
   Widget consumerFunc() {
@@ -725,8 +734,17 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.smart_display_outlined,
             onPressed: () {
+              PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+              if (pageModel == null) {
+                return;
+              }
+              if (pageModel.isShow.value == false) {
+                showSnackBar(context, CretaStudioLang.noUnshowPage);
+                return;
+              }
+
               if (StudioVariables.isAutoPlay) {
-                _globalToggleAutoPlay();
+                _globalToggleAutoPlay(save: false);
               }
               if (kReleaseMode) {
                 String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
@@ -802,7 +820,7 @@ class _BookMainPageState extends State<BookMainPage> {
       //color: Colors.green,
       child: Consumer<PageManager>(builder: (context, pageManager, child) {
         pageManager.reOrdering();
-        int? pageNo = pageManager.getSelectedPageNo();
+        int? pageNo = pageManager.getSelectedNumber();
         if (pageNo == null) {
           return SizedBox.shrink();
         }
@@ -817,8 +835,12 @@ class _BookMainPageState extends State<BookMainPage> {
                   StudioVariables.isPreview = false;
                 });
               },
-              muteFunction: _globalToggleMute,
-              playFunction: _globalToggleAutoPlay,
+              muteFunction: () {
+                _globalToggleMute(save: false);
+              },
+              playFunction: () {
+                _globalToggleAutoPlay(save: false);
+              },
               gotoNext: () {
                 pageManager.gotoNext();
               },
@@ -915,9 +937,11 @@ class _BookMainPageState extends State<BookMainPage> {
     // });
   }
 
-  void _globalToggleMute() {
+  void _globalToggleMute({bool save = true}) {
     StudioVariables.isMute = !StudioVariables.isMute;
-    LoginPage.userPropertyManagerHolder?.setMute(StudioVariables.isMute);
+    if (save) {
+      LoginPage.userPropertyManagerHolder?.setMute(StudioVariables.isMute);
+    }
     if (BookMainPage.pageManagerHolder == null) {
       return;
     }
@@ -938,9 +962,11 @@ class _BookMainPageState extends State<BookMainPage> {
     }
   }
 
-  void _globalToggleAutoPlay() {
+  void _globalToggleAutoPlay({bool save = true}) {
     StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
-    LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
+    if (save) {
+      LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
+    }
     if (BookMainPage.pageManagerHolder == null) {
       return;
     }

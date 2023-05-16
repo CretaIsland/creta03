@@ -371,4 +371,6 @@ class CretaStudioLang {
   static const String autoSizeFont = '프레임 크기에 맞춤';
   static const String tts = '음성으로 방송';
   static const String translate = '번역';
+
+  static const String noUnshowPage = "안보이기로 한 페이지는 미리보기 할 수 없습니다. 안보이기를 해제하세요";
 }

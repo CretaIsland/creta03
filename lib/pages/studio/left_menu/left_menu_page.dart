@@ -16,6 +16,7 @@ import '../../../lang/creta_studio_lang.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/page_model.dart';
 import '../containees/containee_nofifier.dart';
+import '../containees/page/page_thumbnail.dart';
 import '../studio_constant.dart';
 import '../studio_variables.dart';
 
@@ -339,7 +340,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
               child: Stack(
                 alignment: AlignmentDirectional.center,
                 children: [
-                  _thumnailArea(pageWidth, pageHeight, model.thumbnailUrl.value),
+                  //_thumnailArea(pageWidth, pageHeight, model.thumbnailUrl.value),
+                  _thumnailAreaReal(pageWidth, pageHeight, model),
                   model.isShow.value == false
                       ? Container(
                           height: pageHeight,
@@ -355,14 +357,38 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     );
   }
 
-  Widget _thumnailArea(double width, double height, String url) {
-    return CustomImage(
-        key: UniqueKey(),
-        hasMouseOverEffect: false,
-        hasAni: false,
-        width: width,
-        height: height,
-        image: url);
+  // Widget _thumnailArea(double width, double height, String url) {
+  //   return CustomImage(
+  //       key: UniqueKey(),
+  //       hasMouseOverEffect: false,
+  //       hasAni: false,
+  //       width: width,
+  //       height: height,
+  //       image: url);
+  // }
+
+  Widget _thumnailAreaReal(double width, double height, PageModel pageModel) {
+    if (pageModel.thumbnailUrl.value.isNotEmpty &&
+        pageModel.thumbnailUrl.value.substring(0, 'https://picsum.photos/'.length) !=
+            'https://picsum.photos/') {
+      logger.info('pageThumnail exist ${pageModel.thumbnailUrl.value}');
+
+      return CustomImage(
+          key: GlobalKey(),
+          hasMouseOverEffect: false,
+          hasAni: false,
+          width: width,
+          height: height,
+          image: pageModel.thumbnailUrl.value);
+    }
+    logger.info('pageThumnail not exist');
+    return PageThumbnail(
+      key: GlobalKey(),
+      bookModel: _pageManager!.bookModel!,
+      pageModel: pageModel,
+      pageWidth: width,
+      pageHeight: height,
+    );
   }
 
   Widget _addCard() {

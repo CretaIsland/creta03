@@ -10,7 +10,6 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../common/creta_utils.dart';
 import '../lang/creta_studio_lang.dart';
-import '../pages/studio/studio_variables.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
 import 'creta_style_mixin.dart';
@@ -287,43 +286,43 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return false;
   }
 
-  double getRealradiusLeftTop() {
+  double getRealradiusLeftTop(double scale) {
     double maxRadius = ((width.value < height.value) ? width.value / 2 : height.value / 2);
-    double retval = radiusLeftTop.value * StudioVariables.applyScale;
+    double retval = radiusLeftTop.value * scale;
     if (radiusLeftTop.value > maxRadius) {
-      retval = maxRadius * StudioVariables.applyScale;
+      retval = maxRadius * scale;
     }
-    logger.info('applied LeftTop : $retval');
+    logger.fine('applied LeftTop : $retval');
     return retval;
   }
 
-  double getRealradiusRightTop() {
+  double getRealradiusRightTop(double scale) {
     double maxRadius = ((width.value < height.value) ? width.value / 2 : height.value / 2);
-    double retval = radiusRightTop.value * StudioVariables.applyScale;
+    double retval = radiusRightTop.value * scale;
     if (radiusLeftTop.value > maxRadius) {
-      retval = maxRadius * StudioVariables.applyScale;
+      retval = maxRadius * scale;
     }
-    logger.info('applied RightTop : $retval');
+    logger.fine('applied RightTop : $retval');
     return retval;
   }
 
-  double getRealradiusLeftBottom() {
+  double getRealradiusLeftBottom(double scale) {
     double maxRadius = ((width.value < height.value) ? width.value / 2 : height.value / 2);
-    double retval = radiusLeftBottom.value * StudioVariables.applyScale;
+    double retval = radiusLeftBottom.value * scale;
     if (radiusLeftTop.value > maxRadius) {
-      retval = maxRadius * StudioVariables.applyScale;
+      retval = maxRadius * scale;
     }
-    logger.info('applied LeftBottom : $retval');
+    logger.fine('applied LeftBottom : $retval');
     return retval;
   }
 
-  double getRealradiusRightBottom() {
+  double getRealradiusRightBottom(double scale) {
     double maxRadius = ((width.value < height.value) ? width.value / 2 : height.value / 2);
-    double retval = radiusRightBottom.value * StudioVariables.applyScale;
+    double retval = radiusRightBottom.value * scale;
     if (radiusLeftTop.value > maxRadius) {
-      retval = maxRadius * StudioVariables.applyScale;
+      retval = maxRadius * scale;
     }
-    logger.info('applied RightBottom : $retval');
+    logger.fine('applied RightBottom : $retval');
     return retval;
   }
 }

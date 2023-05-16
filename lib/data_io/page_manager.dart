@@ -57,10 +57,33 @@ class PageManager extends CretaManager {
     return retval;
   }
 
+  Future<void> findOrInitAllFrameManager(BookModel bookModel) async {
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      PageModel pageModel = ele as PageModel;
+      FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+      if (frameManager != null) {
+        continue;
+      }
+      frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
+        bookModel,
+        pageModel,
+      );
+    }
+    for (var frameManager in frameManagerList.values.toList()) {
+      await initFrameManager(frameManager!);
+      await frameManager.findOrInitContentsManager();
+    }
+    return;
+  }
+
   Future<void> initFrameManager(FrameManager frameManager) async {
     frameManager.clearAll();
     frameManager.addRealTimeListen();
     await frameManager.getFrames();
+    logger.info('frameManager init complete');
     //frameManager.setSelected(0);  처음에 프레임에 선택되어 있지 않다.
   }
 
@@ -101,28 +124,15 @@ class PageManager extends CretaManager {
   AbsExModel newModel(String mid) => PageModel(mid);
 
   Future<PageModel> createNextPage() async {
-    PageModel defaultPage = PageModel.makeSample(lastOrder() + 1, bookModel!.mid);
+    PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid);
     await createToDB(defaultPage);
     insert(defaultPage, postion: getLength());
     selectedMid = defaultPage.mid;
     return defaultPage;
   }
 
-  int? getSelectedPageNo() {
-    if (selectedMid.isEmpty) {
-      return null;
-    }
-    int retval = 1;
-    for (var ele in modelList) {
-      if (ele.mid == selectedMid) {
-        break;
-      }
-      retval++;
-    }
-    return retval;
-  }
-
   void gotoNext() {
+    logger.info('gotoNext');
     String? mid = getNextMid();
     if (mid != null) {
       setSelectedMid(mid);
@@ -130,6 +140,7 @@ class PageManager extends CretaManager {
   }
 
   void gotoPrev() {
+    logger.info('gotoPrev');
     String? mid = getPrevMid();
     if (mid != null) {
       setSelectedMid(mid);
@@ -139,13 +150,21 @@ class PageManager extends CretaManager {
   String? getNextMid() {
     bool matched = false;
     double selectedOrder = getSelectedOrder();
+    logger.info('selectedOrder=$selectedOrder');
     if (selectedOrder < 0) {
       return null;
     }
-
     Iterable<double> keys = keyEntries().toList();
     for (double ele in keys) {
       if (matched == true) {
+        PageModel? pageModel = getNth(ele) as PageModel?;
+        if (pageModel == null) {
+          continue;
+        }
+        if (pageModel.isShow.value == false) {
+          continue;
+        }
+
         return getNthMid(ele);
       }
       if (ele == selectedOrder) {
@@ -154,8 +173,9 @@ class PageManager extends CretaManager {
       }
     }
     if (matched == true) {
-      // 끝까지 온것이다.  처음으로 돌아간다.
-      return getNthMid(keys.first);
+      // 끝까지 온것이다.  이 경우는 페이지를 넘기는 것이기 때문에 돌지 않는다.
+      //      return getNthMid(keys.first);
+      return null;
     }
     return null;
   }
@@ -166,10 +186,17 @@ class PageManager extends CretaManager {
     if (selectedOrder < 0) {
       return null;
     }
-
+    logger.info('selectedOrder=$selectedOrder');
     Iterable<double> keys = keyEntries().toList().reversed;
     for (double ele in keys) {
       if (matched == true) {
+        PageModel? pageModel = getNth(ele) as PageModel?;
+        if (pageModel == null) {
+          continue;
+        }
+        if (pageModel.isShow.value == false) {
+          continue;
+        }
         return getNthMid(ele);
       }
       if (ele == selectedOrder) {
@@ -178,8 +205,9 @@ class PageManager extends CretaManager {
       }
     }
     if (matched == true) {
-      // 끝까지 온것이다.  처음으로 돌아간다.
-      return getNthMid(keys.first);
+      // 끝까지 온것이다.  이 경우는 페이지를 넘기는 것이기 때문에 돌지 않는다.
+      //      return getNthMid(keys.first);
+      return null;
     }
     return null;
   }

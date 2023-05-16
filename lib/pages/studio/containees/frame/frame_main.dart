@@ -18,6 +18,7 @@ import '../../book_main_page.dart';
 import '../../right_menu/right_menu.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
+import '../../studio_variables.dart';
 import '../containee_nofifier.dart';
 import 'frame_each.dart';
 import 'frame_play_mixin.dart';
@@ -68,6 +69,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     //applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
     applyScale = widget.pageWidth / widget.bookModel.width.value;
+    StudioVariables.applyScale = applyScale;
     logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
@@ -86,7 +88,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
   Widget showFrame() {
     //FrameModel? model = frameManager!.getSelected() as FrameModel?;
-    logger.info('showFrame');
+    logger.info('showFrame $applyScale  ${StudioVariables.applyScale}');
+
     return StickerView(
       //key: ValueKey('StickerView-${widget.pageModel.mid}'),
       pageMid: widget.pageModel.mid,
@@ -132,6 +135,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         }
         frame.angle.set(angle);
         logger.info('FrameMain.onFrameRotate 2');
+        _sendEvent?.sendEvent(frame);
+
         //setState(() {});
       },
       onFrameMain: (mid) {
@@ -181,7 +186,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       },
       onComplete: (mid) {
-        FrameModel? model = frameManager!.getSelected() as FrameModel?;
+        FrameModel? model = frameManager!.getModel(mid) as FrameModel?;
+        //FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           //model.save();
           logger.info('onComplete');
