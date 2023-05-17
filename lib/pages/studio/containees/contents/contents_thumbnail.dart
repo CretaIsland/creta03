@@ -41,62 +41,35 @@ class ContentsThumbnail extends StatefulWidget {
 class ContentsThumbnailState extends State<ContentsThumbnail> {
   //ContentsManager? _contentsManager;
   //CretaPlayTimer? _playerHandler;
-  bool _onceDBGetComplete = false;
   ContentsEventController? _receiveEvent;
   //ContentsEventController? _sendEvent;
 
   @override
   void initState() {
     logger.info('ContentsThumbnail initState');
-    //saveManagerHolder!.addBookChildren('contents=');
-    //_onceDBGetComplete = true;
-    //initChildren();
     super.initState();
 
     final ContentsEventController receiveEvent = Get.find(tag: 'contents-property-to-main');
-    //final ContentsEventController sendEvent = Get.find(tag: 'contents-main-to-property');
     _receiveEvent = receiveEvent;
-    //_sendEvent = sendEvent;
   }
-
-  // Future<void> initChildren() async {
-  //   saveManagerHolder!.addBookChildren('contents=');
-
-  //   _playerHandler = CretaPlayTimer();
-
-  //   _contentsManager = widget.frameManager.newContentsManager(widget.frameModel);
-  //   _contentsManager!.clearAll();
-  //   await _contentsManager!.getContents();
-  //   _contentsManager!.addRealTimeListen();
-  //   _onceDBGetComplete = true;
-  //   _contentsManager!.reversOrdering();
-
-  //   _contentsManager!.setPlayerHandler(_playerHandler!);
-
-  //   _playerHandler!.start(_contentsManager!);
-  // }
 
   @override
   void dispose() {
     logger.fine('dispose');
-    //_contentsManager?.removeRealTimeListen();
-    //saveManagerHolder?.unregisterManager('contents', postfix: widget.frameModel.mid);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBGetComplete) {
-      logger.finest('already _onceDBGetComplete');
+    if (widget.contentsManager.onceDBGetComplete) {
+      logger.info('already onceDBGetComplete');
       return _consumerFunc();
     }
-
+    logger.info('wait onceDBGetComplete');
     var retval = CretaModelSnippet.waitDatum(
       managerList: [widget.contentsManager],
       consumerFunc: _consumerFunc,
     );
-    _onceDBGetComplete = true;
-    logger.info('first_onceDBGetComplete contents');
     return retval;
   }
 
@@ -106,26 +79,24 @@ class ContentsThumbnailState extends State<ContentsThumbnail> {
 
   Widget _consumerFunc() {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
-      //int contentsCount = contentsManager.getShowLength();
       int contentsCount = contentsManager.getAvailLength();
-      //logger.info('ContentsThumbnail = Consumer<ContentsManager>');
 
-      //logger.info('Consumer<CretaPlayTimer>');
       return StreamBuilder<AbsExModel>(
           stream: _receiveEvent!.eventStream.stream,
           builder: (context, snapshot) {
-            if (snapshot.data != null) {
+            if (snapshot.data != null && snapshot.data is ContentsModel) {
               ContentsModel model = snapshot.data! as ContentsModel;
               contentsManager.updateModel(model);
-              logger.info('model updated ${model.name}, ${model.url}');
+              logger.fine('model updated ${model.name}, ${model.url}');
             }
             logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
 
             if (contentsCount > 0) {
               String? url = contentsManager.getThumbnail();
+              logger.info('ContentsThumbnail $url');
               if (url != null) {
                 return CustomImage(
-                  key: GlobalKey(),
+                  key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$url'),
                   hasMouseOverEffect: false,
                   hasAni: false,
                   width: widget.width,
@@ -134,8 +105,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail> {
                 );
               }
             }
-            logger.info('current model is null');
-            //return Center(child: Text('uri is null'));
+            logger.info('there is no contents');
             return SizedBox.shrink();
           });
     });

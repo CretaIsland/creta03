@@ -63,11 +63,13 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (_frameManager == null) {
+      logger.info('framManger newly creation start---------------------');
       _frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
       );
       await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!);
+      logger.info('framManger newly creation end---------------------');
     }
     _onceDBGetComplete = true;
   }
@@ -206,28 +208,40 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
       double applyScale = widget.pageWidth / widget.pageModel.width.value;
-      logger.fine('_drawFrames applyScale = $applyScale');
+      logger.info('_drawFrames start = ${widget.pageModel.name.value}==================');
+      logger.info('widget.pageWidth=${widget.pageWidth}==================');
+      logger.info('widget.pageModel.width.value=${widget.pageModel.width.value}==================');
+      logger.info('applyScale=$applyScale==================');
 
       return StreamBuilder<AbsExModel>(
           stream: _receiveEventFromMain!.eventStream.stream,
           builder: (context, snapshot) {
             if (snapshot.data != null) {
-              FrameModel model = snapshot.data! as FrameModel;
-              frameManager.updateModel(model);
+              if (snapshot.data! is FrameModel) {
+                logger.info('_receiveEventFromMain-----FrameModel');
+                FrameModel model = snapshot.data! as FrameModel;
+                frameManager.updateModel(model);
+              } else {
+                logger.info('_receiveEventFromMain-----Unknown Model');
+              }
             }
-            logger.info('_receiveEventFromMain-------------------');
             return StreamBuilder<AbsExModel>(
                 stream: _receiveEventFromProperty!.eventStream.stream,
                 builder: (context, snapshot) {
                   if (snapshot.data != null) {
-                    FrameModel model = snapshot.data! as FrameModel;
-                    frameManager.updateModel(model);
+                    if (snapshot.data! is FrameModel) {
+                      logger.info('_receiveEventFromProperty-----FrameModel');
+                      FrameModel model = snapshot.data! as FrameModel;
+                      frameManager.updateModel(model);
+                    } else {
+                      logger.info('_receiveEventFromProperty-----Unknown Model');
+                    }
                   }
-                  logger.info('_receiveEventFromProperty-------------------');
 
                   return Stack(
-                    children: frameManager.orderMapIterator((model) {
+                    children: _frameManager!.orderMapIterator((model) {
                       FrameModel frameModel = model as FrameModel;
+                      logger.info('frameManager.orderMapIterator-------${frameModel.name.value}');
                       double frameWidth =
                           (model.width.value + model.shadowSpread.value) * applyScale;
                       double frameHeight =

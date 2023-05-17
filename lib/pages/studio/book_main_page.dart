@@ -26,7 +26,6 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
-import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
 import '../../routes.dart';
 import '../login_page.dart';
@@ -136,6 +135,7 @@ class _BookMainPageState extends State<BookMainPage> {
     }
 
     if (mid.isNotEmpty) {
+      logger.info("1) --_BookMainPageState-----------------------------------------");
       BookMainPage.bookManagerHolder!.getFromDB(mid).then((value) async {
         BookMainPage.bookManagerHolder!.addRealTimeListen();
         if (BookMainPage.bookManagerHolder!.getLength() > 0) {
@@ -144,6 +144,7 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     } else {
+      logger.info("2) --_BookMainPageState-----------------------------------------");
       BookModel sampleBook = BookMainPage.bookManagerHolder!.createSample();
       mid = sampleBook.mid;
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
@@ -158,6 +159,7 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder?.runSaveTimer();
 
     BookMainPage.clickReceiverHandler.init();
+    logger.info("end ---_BookMainPageState-----------------------------------------");
   }
 
   Future<void> initChildren(BookModel model) async {
@@ -167,9 +169,13 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder!.addBookChildren('frame=');
     saveManagerHolder!.addBookChildren('contents=');
 
+    logger.info("3) --_BookMainPageState-----------------------------------------");
+
     // Get Pages
     await BookMainPage.pageManagerHolder!.initPage(model);
+    logger.info("4) --_BookMainPageState-----------------------------------------");
     await BookMainPage.pageManagerHolder!.findOrInitAllFrameManager(model);
+    logger.info("5) --_BookMainPageState-----------------------------------------");
 
     // Get Template Frames
     // BookMainPage.polygonFrameManagerHolder!.clearAll();
@@ -298,16 +304,49 @@ class _BookMainPageState extends State<BookMainPage> {
       logger.finest('already _onceDBGetComplete');
       return consumerFunc();
     }
-    var retval = CretaModelSnippet.waitDatum(
-      managerList: [
-        BookMainPage.bookManagerHolder!,
-        BookMainPage.pageManagerHolder!,
-      ],
-      consumerFunc: consumerFunc,
-    );
+    // var retval = CretaModelSnippet.waitDatum(
+    //   managerList: [
+    //     BookMainPage.bookManagerHolder!,
+    //     BookMainPage.pageManagerHolder!,
+    //   ],
+    //   consumerFunc: consumerFunc,
+    // );
 
-    logger.finest('first_onceDBGetComplete bookmain');
+    logger.info('wait _onceDBGetComplete');
+
+    var retval = FutureBuilder<bool>(
+        future: _waitDBJob(),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            logger.severe("data fetch error(WaitDatum)");
+            return const Center(child: Text('data fetch error(WaitDatum)'));
+          }
+          if (snapshot.hasData == false) {
+            logger.finest("wait data ...(WaitData)");
+            return Center(
+              child: Snippet.showWaitSign(),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            logger.finest("founded ${snapshot.data!}");
+            // if (snapshot.data!.isEmpty) {
+            //   return const Center(child: Text('no book founded'));
+            // }
+            return consumerFunc();
+          }
+          return const SizedBox.shrink();
+        });
+
     return retval;
+  }
+
+  Future<bool> _waitDBJob() async {
+    while (_onceDBGetComplete == false) {
+      await Future.delayed(Duration(microseconds: 500));
+    }
+    logger.info('_onceDBGetComplete=$_onceDBGetComplete wait end');
+    return _onceDBGetComplete;
   }
 
   Widget consumerFunc() {

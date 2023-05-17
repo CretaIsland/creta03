@@ -77,7 +77,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
-          if (snapshot.data != null) {
+          if (snapshot.data != null && snapshot.data is FrameModel) {
             FrameModel model = snapshot.data! as FrameModel;
             frameManager!.updateModel(model);
           }

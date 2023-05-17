@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
 import '../lang/creta_lang.dart';
 import '../model/contents_model.dart';
@@ -14,6 +15,7 @@ import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import '../pages/studio/studio_getx_controller.dart';
 import '../pages/studio/studio_snippet.dart';
 import '../pages/studio/studio_variables.dart';
 import '../player/creta_abs_player.dart';
@@ -26,8 +28,12 @@ class ContentsManager extends CretaManager {
   final PageModel pageModel;
   final FrameModel frameModel;
 
+  ContentsEventController? sendEvent;
+
   ContentsManager({required this.pageModel, required this.frameModel}) : super('creta_contents') {
     saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
+    final ContentsEventController sendEventVar = Get.find(tag: 'contents-property-to-main');
+    sendEvent = sendEventVar;
   }
 
   @override
@@ -694,7 +700,11 @@ class ContentsManager extends CretaManager {
     html.FileReader fileReader = html.FileReader();
     fileReader.onLoadEnd.listen((event) async {
       logger.info('upload waiting ...............${contentsModel.name}');
-      StudioSnippet.uploadFile(contentsModel, contentsManager, fileReader.result as Uint8List);
+      StudioSnippet.uploadFile(
+        contentsModel,
+        contentsManager,
+        fileReader.result as Uint8List,
+      );
       fileReader = html.FileReader(); // file reader 초기화
       //uploadComplete = true;
       logger.info('upload complete');

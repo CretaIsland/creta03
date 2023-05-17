@@ -80,7 +80,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
-          if (snapshot.data != null) {
+          if (snapshot.data != null && snapshot.data! is ContentsModel) {
             ContentsModel model = snapshot.data! as ContentsModel;
             player.acc.updateModel(model);
             logger.info('model updated ${model.name}, ${model.font.value}');

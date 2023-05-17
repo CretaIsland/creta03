@@ -272,17 +272,18 @@ class FrameManager extends CretaManager {
         logger.info('old ContentsManager used (${frameModel.mid})');
       }
     }
-    for (var contentsManager in contentsManagerMap.values.toList()) {
-      await _initContentsManager(contentsManager);
+    for (var mid in contentsManagerMap.keys.toList()) {
+      ContentsManager contentsManager = contentsManagerMap[mid]!;
+      await _initContentsManager(mid, contentsManager);
     }
   }
 
-  Future<void> _initContentsManager(ContentsManager contentsManager) async {
+  Future<void> _initContentsManager(String frameMid, ContentsManager contentsManager) async {
     if (contentsManager.onceDBGetComplete == false) {
       await contentsManager.getContents();
       contentsManager.addRealTimeListen();
       contentsManager.reOrdering();
     }
-    logger.info('initChildren(${contentsManager.getAvailLength()})');
+    logger.info('$frameMid=initChildren(${contentsManager.getAvailLength()})');
   }
 }

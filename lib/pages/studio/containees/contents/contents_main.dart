@@ -110,7 +110,7 @@ class ContentsMainState extends State<ContentsMain> {
         return StreamBuilder<AbsExModel>(
             stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {
-              if (snapshot.data != null) {
+              if (snapshot.data != null && snapshot.data is ContentsModel) {
                 ContentsModel model = snapshot.data! as ContentsModel;
                 contentsManager.updateModel(model);
                 logger.info('model updated ${model.name}, ${model.url}');

@@ -83,6 +83,7 @@ class PageManager extends CretaManager {
     frameManager.clearAll();
     frameManager.addRealTimeListen();
     await frameManager.getFrames();
+    frameManager.reOrdering();
     logger.info('frameManager init complete');
     //frameManager.setSelected(0);  처음에 프레임에 선택되어 있지 않다.
   }
@@ -256,6 +257,17 @@ class PageManager extends CretaManager {
         null,
         this,
       );
+    }
+    unlock();
+  }
+
+  void resetPageSize() {
+    lock();
+    if (bookModel == null) return;
+    for (var ele in modelList) {
+      PageModel pageModel = ele as PageModel;
+      pageModel.width.set(bookModel!.width.value, save: false, noUndo: true);
+      pageModel.height.set(bookModel!.height.value, save: false, noUndo: true);
     }
     unlock();
   }

@@ -52,7 +52,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   @override
   void dispose() {
     super.dispose();
-    logger.info('==========================FrameThumbnail dispose================');
+    logger.info('FrameThumbnail dispose================');
   }
 
   @override
@@ -62,7 +62,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Future<void> initChildren() async {
-    logger.info('==========================FrameThumbnail initialized================');
+    logger.info('FrameThumbnail initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
       logger.severe('frame manager is null');
@@ -128,7 +128,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
-    logger.info('_frameDropZone');
+    logger.info('_frameDropZone $applyScale');
     return Center(child: _shapeBox(widget.model));
   }
 
@@ -141,8 +141,6 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       blurSpread: model.shadowSpread.value * applyScale,
       opacity: model.shadowOpacity.value,
       shadowColor: model.shadowColor.value,
-      // width: widget.width,
-      // height: widget.height,
       strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
       strokeColor: model.borderColor.value,
       radiusLeftBottom: model.getRealradiusLeftBottom(applyScale),
@@ -167,36 +165,10 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
         opacity: opacity,
         bgColor1: bgColor1,
         bgColor2: bgColor2,
-        //clipBorderRadius: _getBorderRadius(model),
-        //radius: _getBorderRadius(model, addRadius: model.borderWidth.value * 0.7),
-        //border: _getBorder(model),
-        //borderStyle: model.borderType.value,
-        //borderWidth: model.borderWidth.value,
-        //boxShadow: _getShadow(model),
       );
     }
     return _frameBox(model, true);
   }
-
-  // Widget _shadowBox(FrameModel model, bool useColor) {
-  //   if (model.isNoShadow() == false && model.shadowIn.value == true) {
-  //     return InnerShadow(
-  //       shadows: [
-  //         Shadow(
-  //           blurRadius:
-  //               model.shadowBlur.value > 0 ? model.shadowBlur.value : model.shadowSpread.value,
-  //           color: model.shadowOpacity.value == 1
-  //               ? model.shadowColor.value
-  //               : model.shadowColor.value.withOpacity(model.shadowOpacity.value),
-  //           offset: CretaUtils.getShadowOffset(
-  //               (180 + model.shadowDirection.value) % 360, model.shadowOffset.value),
-  //         ),
-  //       ],
-  //       child: _frameBox(model, useColor),
-  //     );
-  //   }
-  //   return _frameBox(model, useColor);
-  // }
 
   Widget _frameBox(FrameModel model, bool useColor) {
     logger.info('_frameBox');
@@ -239,65 +211,4 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       //boxShadow: model.isNoShadow() == true ? null : [_getShadow(model)],
     );
   }
-
-  // BoxShadow _getShadow(FrameModel model) {
-  //   return BoxShadow(
-  //     color: model.shadowColor.value
-  //         .withOpacity(CretaUtils.validCheckDouble(model.shadowOpacity.value, 0, 1)),
-  //     offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
-  //     blurRadius: model.shadowBlur.value,
-  //     spreadRadius: model.shadowSpread.value,
-  //     //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
-  //   );
-  // }
-
-  // BoxBorder? _getBorder(FrameModel model) {
-  //   if (model.borderColor.value == Colors.transparent ||
-  //       model.borderWidth.value == 0 ||
-  //       model.borderType.value == 0) {
-  //     return null;
-  //   }
-
-  //   BorderSide bs = BorderSide(
-  //       color: model.borderColor.value,
-  //       width: model.borderWidth.value,
-  //       style: BorderStyle.solid,
-  //       strokeAlign: CretaUtils.borderPosition(model.borderPosition.value));
-
-  //   if (model.borderType.value > 1) {
-  //     return RDottedLineBorder(
-  //       dottedLength: CretaUtils.borderStyle[model.borderType.value - 1][0],
-  //       dottedSpace: CretaUtils.borderStyle[model.borderType.value - 1][1],
-  //       bottom: bs,
-  //       top: bs,
-  //       left: bs,
-  //       right: bs,
-  //     );
-  //   }
-  //   return Border.all(
-  //     color: model.borderColor.value,
-  //     width: model.borderWidth.value,
-  //     style: BorderStyle.solid,
-  //     strokeAlign: CretaUtils.borderPosition(model.borderPosition.value),
-  //   );
-  // }
-
-  // BorderRadius? _getBorderRadius(FrameModel model, {double addRadius = 0}) {
-  //   double lt = model.radiusLeftTop.value + addRadius;
-  //   double rt = model.radiusRightTop.value + addRadius;
-  //   double rb = model.radiusRightBottom.value + addRadius;
-  //   double lb = model.radiusLeftBottom.value + addRadius;
-  //   if (lt == rt && rt == rb && rb == lb) {
-  //     if (lt == 0) {
-  //       return BorderRadius.zero;
-  //     }
-  //     return BorderRadius.all(Radius.circular(model.radiusLeftTop.value));
-  //   }
-  //   return BorderRadius.only(
-  //     topLeft: Radius.circular(lt),
-  //     topRight: Radius.circular(rt),
-  //     bottomLeft: Radius.circular(lb),
-  //     bottomRight: Radius.circular(rb),
-  //   );
-  // }
 }

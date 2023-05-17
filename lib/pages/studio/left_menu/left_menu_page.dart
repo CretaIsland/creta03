@@ -75,6 +75,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     return Consumer<PageManager>(builder: (context, pageManager, child) {
       _pageManager = pageManager;
       pageManager.reOrdering();
+      pageManager.resetPageSize();
       _pageCount = pageManager.getAvailLength();
       logger.finest('PageManager Consumer  $_pageCount');
       if (pageManager.getSelected() == null && _pageCount > 0) {

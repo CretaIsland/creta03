@@ -205,6 +205,8 @@ class StudioSnippet {
     } else {
       logger.severe('upload failed ${model.file!.name}');
     }
+    logger.info('send event to property');
+    contentsManager.sendEvent?.sendEvent(model);
   }
 
   static List<CretaMenuItem> getCopyRightListItem(
