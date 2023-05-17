@@ -7,6 +7,7 @@ import 'studio_constant.dart';
 import 'studio_variables.dart';
 
 class BookPreviewMenu extends StatefulWidget {
+  static bool previewMenuPressed = false;
   final int pageNo;
   final int totalPage;
   final void Function() goBackProcess;
@@ -87,7 +88,7 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                           doToggle: false,
                         ),
                         Text(
-                          ' ${widget.pageNo}/${widget.totalPage} ',
+                          _pageNoString(),
                           style: CretaFont.buttonLarge.copyWith(color: Colors.white),
                         ),
                         CretaTrasparentButton(
@@ -114,5 +115,11 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
         ),
       ),
     );
+  }
+
+  String _pageNoString() {
+    String pageNo = widget.pageNo < 10 ? '0${widget.pageNo}' : '${widget.pageNo}';
+    String totalPage = widget.totalPage < 10 ? '0${widget.totalPage}' : '${widget.totalPage}';
+    return ' $pageNo / $totalPage ';
   }
 }

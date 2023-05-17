@@ -132,6 +132,16 @@ class PageManager extends CretaManager {
     return defaultPage;
   }
 
+  bool gotoFirst() {
+    logger.info('gotoFirst');
+    String? mid = getFirstMid();
+    if (mid != null) {
+      setSelectedMid(mid);
+      return true;
+    }
+    return false;
+  }
+
   void gotoNext() {
     logger.info('gotoNext');
     String? mid = getNextMid();
@@ -146,6 +156,28 @@ class PageManager extends CretaManager {
     if (mid != null) {
       setSelectedMid(mid);
     }
+  }
+
+  String? getFirstMid() {
+    Iterable<double> keys = keyEntries().toList();
+    for (double ele in keys) {
+      PageModel? pageModel = getNth(ele) as PageModel?;
+      if (pageModel == null) {
+        continue;
+      }
+      if (pageModel.isShow.value == false) {
+        continue;
+      }
+      return getNthMid(ele);
+    }
+    // for (double ele in keys) {
+    //   PageModel? pageModel = getNth(ele) as PageModel?;
+    //   if (pageModel == null) {
+    //     continue;
+    //   }
+    //   return getNthMid(ele);
+    // }
+    return null;
   }
 
   String? getNextMid() {

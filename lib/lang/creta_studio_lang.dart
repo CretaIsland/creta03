@@ -348,8 +348,6 @@ class CretaStudioLang {
 
   static String playList = '플레이 리스트';
 
-  static String contentsCannotBeUnshowd = "최소한 하나 이상의 콘텐츠는 보여져야 합니다.";
-
   // static Map<String, String> shadowInList = {
   //   '외부 그림자': 'outSide',
   //   '내부 그림자': 'inSide',
@@ -372,5 +370,5 @@ class CretaStudioLang {
   static const String tts = '음성으로 방송';
   static const String translate = '번역';
 
-  static const String noUnshowPage = "안보이기로 한 페이지는 미리보기 할 수 없습니다. 안보이기를 해제하세요";
+  static const String noUnshowPage = "볼 수 있는 페이지가 없습니다. 안보이기를 해제하세요";
 }

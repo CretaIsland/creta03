@@ -100,6 +100,8 @@ class _BookMainPageState extends State<BookMainPage> {
     super.initState();
     logger.info("---_BookMainPageState-----------------------------------------");
 
+    BookPreviewMenu.previewMenuPressed = false;
+
     BookMainPage.containeeNotifier = ContaineeNotifier();
     BookMainPage.miniMenuNotifier = MiniMenuNotifier();
     BookMainPage.leftMenuNotifier = LeftMenuNotifier();
@@ -351,6 +353,9 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget consumerFunc() {
     logger.finest('consumerFunc');
+
+    if (StudioVariables.isPreview == true) {}
+
     return Consumer<BookManager>(
         key: ValueKey('consumerFunc+${BookMainPage.selectedMid}'),
         builder: (context, bookManager, child) {
@@ -773,14 +778,15 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.smart_display_outlined,
             onPressed: () {
-              PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-              if (pageModel == null) {
-                return;
-              }
-              if (pageModel.isShow.value == false) {
-                showSnackBar(context, CretaStudioLang.noUnshowPage);
-                return;
-              }
+              // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+              // if (pageModel == null) {
+              //   return;
+              // }
+              // if (pageModel.isShow.value == false) {
+              //   showSnackBar(context, CretaStudioLang.noUnshowPage);
+              //   return;
+              // }
+              BookPreviewMenu.previewMenuPressed = false;
 
               if (StudioVariables.isAutoPlay) {
                 _globalToggleAutoPlay(save: false);
@@ -817,6 +823,8 @@ class _BookMainPageState extends State<BookMainPage> {
     double marginY = (StudioVariables.workHeight - StudioVariables.virtualHeight) / 2;
     if (marginX < 0) marginX = 0;
     if (marginY < 0) marginY = 0;
+
+    bool isPageExist = true;
 
     double totalWidth =
         StudioVariables.virtualWidth + LayoutConst.rightMenuWidth + LayoutConst.leftMenuWidth;
@@ -859,6 +867,9 @@ class _BookMainPageState extends State<BookMainPage> {
       //color: Colors.green,
       child: Consumer<PageManager>(builder: (context, pageManager, child) {
         pageManager.reOrdering();
+        if (BookPreviewMenu.previewMenuPressed == false) {
+          isPageExist = pageManager.gotoFirst();
+        }
         int? pageNo = pageManager.getSelectedNumber();
         if (pageNo == null) {
           return SizedBox.shrink();
@@ -867,7 +878,14 @@ class _BookMainPageState extends State<BookMainPage> {
         int totalPage = pageManager.getAvailLength();
         return Stack(
           children: [
-            Center(child: _drawPage(context, pageModel)),
+            Center(
+              child: isPageExist
+                  ? _drawPage(context, pageModel)
+                  : Text(
+                      CretaStudioLang.noUnshowPage,
+                      style: CretaFont.headlineLarge,
+                    ),
+            ),
             BookPreviewMenu(
               goBackProcess: () {
                 setState(() {
@@ -881,9 +899,11 @@ class _BookMainPageState extends State<BookMainPage> {
                 _globalToggleAutoPlay(save: false);
               },
               gotoNext: () {
+                BookPreviewMenu.previewMenuPressed = true;
                 pageManager.gotoNext();
               },
               gotoPrev: () {
+                BookPreviewMenu.previewMenuPressed = true;
                 pageManager.gotoPrev();
               },
               pageNo: pageNo,
