@@ -21,6 +21,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> posX;
   late UndoAble<double> posY;
   late UndoAble<double> angle;
+  late UndoAble<bool> isInsideRotate;
   late UndoAble<double> radius;
   late UndoAble<double> radiusLeftTop;
   late UndoAble<double> radiusRightTop;
@@ -78,6 +79,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         posX,
         posY,
         angle,
+        isInsideRotate,
         frameType,
         radius,
         radiusLeftTop,
@@ -107,6 +109,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posX = UndoAble<double>(0, mid);
     posY = UndoAble<double>(0, mid);
     angle = UndoAble<double>(0, mid);
+    isInsideRotate = UndoAble<bool>(false, mid);
     radius = UndoAble<double>(0, mid);
     radiusLeftTop = UndoAble<double>(0, mid);
     radiusRightTop = UndoAble<double>(0, mid);
@@ -140,6 +143,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posX = UndoAble<double>(100, mid);
     posY = UndoAble<double>(100, mid);
     angle = UndoAble<double>(0, mid);
+    isInsideRotate = UndoAble<bool>(false, mid);
     radius = UndoAble<double>(0, mid);
     radiusLeftTop = UndoAble<double>(0, mid);
     radiusRightTop = UndoAble<double>(0, mid);
@@ -173,6 +177,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posX = UndoAble<double>(srcFrame.posX.value, mid);
     posY = UndoAble<double>(srcFrame.posY.value, mid);
     angle = UndoAble<double>(srcFrame.angle.value, mid);
+    isInsideRotate = UndoAble<bool>(srcFrame.isInsideRotate.value, mid);
     radius = UndoAble<double>(srcFrame.radius.value, mid);
     radiusLeftTop = UndoAble<double>(srcFrame.radiusLeftTop.value, mid);
     radiusRightTop = UndoAble<double>(srcFrame.radiusRightTop.value, mid);
@@ -212,6 +217,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posY.set(y < 0 ? 0 : y, save: false, noUndo: true);
 
     angle.set((map["angle"] ?? 0), save: false, noUndo: true);
+    isInsideRotate.set((map["isInsideRotate"] ?? false), save: false, noUndo: true);
 
     radius.set((map["radius"] ?? 0), save: false, noUndo: true);
     radiusLeftTop.set((map["radiusLeftTop"] ?? 0), save: false, noUndo: true);
@@ -250,6 +256,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "posX": posX.value,
         "posY": posY.value,
         "angle": angle.value,
+        "isInsideRotate": isInsideRotate.value,
         "radius": radius.value,
         "radiusLeftTop": radiusLeftTop.value,
         "radiusRightTop": radiusRightTop.value,
@@ -324,5 +331,13 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     }
     logger.fine('applied RightBottom : $retval');
     return retval;
+  }
+
+  bool shouldOutsideRotate() {
+    return (angle.value > 0 && isInsideRotate.value == false);
+  }
+
+  bool shouldInsideRotate() {
+    return (angle.value > 0 && isInsideRotate.value == true);
   }
 }

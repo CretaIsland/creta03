@@ -56,7 +56,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   void dispose() {
     super.dispose();
     _playTimer?.stop();
-    logger.info('==========================FrameEach dispose================');
+    //logger.info('==========================FrameEach dispose================');
   }
 
   @override
@@ -141,18 +141,19 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameDropZone() {
-    logger.info('_frameDropZone');
+    logger.info('_frameDropZone...');
 
-    Widget frameBody = Stack(
-      alignment: Alignment.center,
-      children: [
-        _applyAnimate(widget.model),
-        OnFrameMenu(
-          playTimer: _playTimer,
-          model: widget.model,
-        ),
-      ],
-    );
+    // Widget frameBody = Stack(
+    //   alignment: Alignment.center,
+    //   children: [
+    //     _applyAnimate(widget.model),
+    //     OnFrameMenu(
+    //       key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
+    //       playTimer: _playTimer,
+    //       model: widget.model,
+    //     ),
+    //   ],
+    // );
 
     return Center(
       child: _isDropAble(widget.model)
@@ -161,10 +162,38 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               onDroppedFile: (modelList) {
                 _onDropFrame(widget.model.mid, modelList);
               },
-              child: frameBody,
+              child: _frameBody(),
             )
-          : frameBody,
+          : _frameBody(),
     );
+  }
+
+  Widget _frameBody() {
+    Widget frameBody = Stack(
+      alignment: Alignment.center,
+      children: [
+        _applyAnimate(widget.model),
+        OnFrameMenu(
+          key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
+          playTimer: _playTimer,
+          model: widget.model,
+        ),
+      ],
+    );
+
+    logger.info('================angle=${widget.model.angle.value}');
+
+    if (widget.model.shouldInsideRotate()) {
+      return Transform(
+        key: GlobalObjectKey('Transform${widget.model.mid}'),
+        alignment: Alignment.center,
+        transform: Matrix4.identity()
+          ..scale(1.0)
+          ..rotateZ(CretaUtils.degreeToRadian(widget.model.angle.value)),
+        child: frameBody,
+      );
+    }
+    return frameBody;
   }
 
   bool _isDropAble(FrameModel model) {

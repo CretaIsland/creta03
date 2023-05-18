@@ -64,7 +64,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
   @override
   Widget build(BuildContext context) {
     if (widget.contentsManager.onceDBGetComplete) {
-      logger.info('already onceDBGetComplete');
+      //logger.info('already onceDBGetComplete');
       return _consumerFunc();
     }
     logger.info('wait onceDBGetComplete');
@@ -91,7 +91,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
               contentsManager.updateModel(model);
               logger.fine('model updated ${model.name}, ${model.url}');
             }
-            logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
+            //logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
 
             if (contentsCount > 0) {
               if (widget.frameModel.frameType == FrameType.text) {
