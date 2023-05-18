@@ -124,16 +124,6 @@ abstract class CretaAbsPlayer extends ChangeNotifier {
         styles: BlobStyles(color: Colors.green, fillType: BlobFillType.stroke, strokeWidth: 2),
         child: child);
   }
-
-  String getURI(ContentsModel model) {
-    if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
-      return model.remoteUrl!;
-    }
-    if (model.url.isNotEmpty) {
-      return model.url;
-    }
-    return '';
-  }
 }
 
 class CretaEmptyPlayer extends CretaAbsPlayer {

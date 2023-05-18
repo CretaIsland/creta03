@@ -31,7 +31,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
 
   @override
   Future<void> init() async {
-    String uri = getURI(model!);
+    String uri = model!.getURI();
     String errMsg = '${model!.name} uri is null';
     if (uri.isEmpty) {
       logger.severe(errMsg);

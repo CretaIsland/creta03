@@ -50,7 +50,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
     double bottomLeft = player.acc.frameModel.getRealradiusLeftBottom(StudioVariables.applyScale);
     double bottomRight = player.acc.frameModel.getRealradiusRightBottom(StudioVariables.applyScale);
 
-    String uri = player.getURI(player.model!);
+    String uri = player.model!.getURI();
     String errMsg = '${player.model!.name} uri is null';
     if (uri.isEmpty) {
       logger.fine(errMsg);

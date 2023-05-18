@@ -10,10 +10,12 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/custom_image.dart';
+import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
+import '../../../../player/text/creta_text_mixin.dart';
 import '../../studio_getx_controller.dart';
 
 class ContentsThumbnail extends StatefulWidget {
@@ -38,7 +40,7 @@ class ContentsThumbnail extends StatefulWidget {
   State<ContentsThumbnail> createState() => ContentsThumbnailState();
 }
 
-class ContentsThumbnailState extends State<ContentsThumbnail> {
+class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixin {
   //ContentsManager? _contentsManager;
   //CretaPlayTimer? _playerHandler;
   ContentsEventController? _receiveEvent;
@@ -92,17 +94,24 @@ class ContentsThumbnailState extends State<ContentsThumbnail> {
             logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
 
             if (contentsCount > 0) {
-              String? url = contentsManager.getThumbnail();
-              logger.info('ContentsThumbnail $url');
-              if (url != null) {
-                return CustomImage(
-                  key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$url'),
-                  hasMouseOverEffect: false,
-                  hasAni: false,
-                  width: widget.width,
-                  height: widget.height,
-                  image: url,
-                );
+              if (widget.frameModel.frameType == FrameType.text) {
+                ContentsModel? model = contentsManager.getFirstModel();
+                if (model != null) {
+                  return playText(context, null, model, contentsManager.getRealSize(),
+                      isPagePreview: true);
+                }
+              } else {
+                String? thumbnailUrl = contentsManager.getThumbnail();
+                if (thumbnailUrl != null) {
+                  return CustomImage(
+                    key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$thumbnailUrl'),
+                    hasMouseOverEffect: false,
+                    hasAni: false,
+                    width: widget.width,
+                    height: widget.height,
+                    image: thumbnailUrl,
+                  );
+                }
               }
             }
             logger.info('there is no contents');
