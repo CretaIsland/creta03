@@ -268,7 +268,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
                             hintList == null || hintList.length < _itemIndex
                                 ? Text(
                                     item.caption,
-                                    style: widget.textStyle!.copyWith(
+                                    style: widget.textStyle?.copyWith(
                                       fontFamily: item.fontFamily,
                                       fontWeight: item.fontWeight,
                                     ),
@@ -287,15 +287,13 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
                                           ),
                                         ]),
                                   ),
-                            Expanded(
-                              child: Container(),
-                            ),
+                            Expanded(child: Container()),
                             item.selected
                                 ? Icon(
                                     Icons.check,
                                     size: iconSize,
                                   )
-                                : Container(),
+                                : SizedBox.shrink(),
                           ],
                         ),
                       ),

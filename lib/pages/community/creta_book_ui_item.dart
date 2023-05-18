@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -576,6 +577,22 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
     ];
   }
 
+  Widget _getDebugInfo() {
+    return Container(
+      width: widget.width,
+      height: widget.height,
+      padding: EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime), style: CretaFont.buttonSmall),
+          Text('likeCount=${widget.bookModel.likeCount}', style: CretaFont.buttonSmall),
+          Text('viewCount=${widget.bookModel.viewCount}', style: CretaFont.buttonSmall),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -633,6 +650,10 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                         ),
                         // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
                         ..._getOverlayMenu(),
+                        // 디버그 정보
+                        (kDebugMode)
+                            ? _getDebugInfo()
+                            : SizedBox.shrink(),
                       ],
                     ),
                   ),

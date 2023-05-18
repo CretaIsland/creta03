@@ -116,6 +116,24 @@ class CretaUtils {
     return name;
   }
 
+  static String getDateTimeString(DateTime dt,
+      {String deli1 = '/', String deli2 = ' ', String deli3 = ':', String deli4 = '.'}) {
+    String name = '${dt.year}';
+    name += deli1;
+    name += '${dt.month}'.padLeft(2, '0');
+    name += deli1;
+    name += '${dt.day}'.padLeft(2, '0');
+    name += deli2;
+    name += '${dt.hour}'.padLeft(2, '0');
+    name += deli3;
+    name += '${dt.minute}'.padLeft(2, '0');
+    name += deli3;
+    name += '${dt.second}'.padLeft(2, '0');
+    name += deli4;
+    name += '${dt.millisecond}'.padLeft(3, '0');
+    return name;
+  }
+
   static Color? string2Color(String? colorStr, {String defaultValue = 'Color(0xFFFFFFFF)'}) {
     if (defaultValue.isEmpty) {
       if (colorStr == null || colorStr.length < 16) {
