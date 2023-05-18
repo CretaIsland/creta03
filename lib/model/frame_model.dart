@@ -333,6 +333,10 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return retval;
   }
 
+  bool shouldRotate() {
+    return (angle.value > 0);
+  }
+
   bool shouldOutsideRotate() {
     return (angle.value > 0 && isInsideRotate.value == false);
   }
