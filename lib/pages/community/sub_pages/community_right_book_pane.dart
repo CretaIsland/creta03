@@ -56,6 +56,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   late List<String> _hashtagValueList;
   bool _hashtagEditMode = false;
   final TextEditingController _hashtagController = TextEditingController();
+  bool _usingContentsFullView = false;
 
   @override
   void initState() {
@@ -96,7 +97,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       onPressed: () {
         if (_hashtagEditMode) {
           setState(() {
-            _hashtagValueList = _hashtagValueList.where((item) => item != hashtag).toList();
+            //_hashtagValueList = _hashtagValueList.where((item) => item != hashtag).toList();
+            _hashtagValueList.remove(hashtag);
           });
         }
       },
@@ -347,7 +349,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   padding: EdgeInsets.fromLTRB(0, 3, 0, 2),
                   child: Text(
                     '내용',
-                    style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+                    style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
                     textAlign: TextAlign.left,
                   ),
                 ),
@@ -464,37 +466,121 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   final ScrollController _usingContentsScrollController = ScrollController();
 
   Widget _getUsinContentsPane() {
+    if (_usingContentsFullView) {
+      return Container(
+        width: _usingContentsRect.width,
+        padding: EdgeInsets.fromLTRB(
+          _usingContentsRect.childLeftPadding,
+          _usingContentsRect.childTopPadding,
+          _usingContentsRect.childRightPadding,
+          _usingContentsRect.childBottomPadding,
+        ),
+        margin: EdgeInsets.fromLTRB(
+          _usingContentsRect.childMargin.left,
+          _usingContentsRect.childMargin.top,
+          _usingContentsRect.childMargin.right,
+          _usingContentsRect.childMargin.bottom,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  '위 크레타북에서 사용된 콘텐츠',
+                  style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                  textAlign: TextAlign.left,
+                ),
+                Expanded(child: Container()),
+                BTN.fill_gray_t_es(
+                  text: '접어두기',
+                  width: 58,
+                  textColor: CretaColor.text[400],
+                  onPressed: () {
+                    setState(() {
+                      _usingContentsFullView = !_usingContentsFullView;
+                    });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            SizedBox(
+              width: _usingContentsRect.childWidth,
+              child: Wrap(
+                direction: Axis.horizontal, // 나열 방향
+                //alignment: WrapAlignment.start, // 정렬 방식
+                spacing: 20, // 좌우 간격
+                runSpacing: 20, // 상하 간격
+                children: _cretaRelatedBookList.map((item) {
+                  return SizedBox(
+                    width: 210,
+                    height: 160,
+                    child: CustomImage(
+                      //key: ValueKey('related-${item.thumbnailUrl}'),
+                      duration: 500,
+                      hasMouseOverEffect: false,
+                      hasAni: false,
+                      image: item.thumbnailUrl,
+                      width: 210,
+                      height: 160,
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     return _usingContentsRect.childContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '위 크레타북에서 사용된 콘텐츠',
-            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
-            textAlign: TextAlign.left,
+          Row(
+            children: [
+              Text(
+                '위 크레타북에서 사용된 콘텐츠',
+                style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                textAlign: TextAlign.left,
+              ),
+              Expanded(child: Container()),
+              BTN.fill_gray_t_es(
+                text: '전체보기',
+                width: 58,
+                textColor: CretaColor.text[400],
+                onPressed: () {
+                  setState(() {
+                    _usingContentsFullView = !_usingContentsFullView;
+                  });
+                },
+              ),
+            ],
           ),
           Expanded(child: Container()),
-
           SizedBox(
             width: _usingContentsRect.childWidth,
             height: 160,
             //color: Colors.green,
-            child: Scrollbar(
-              thumbVisibility: false,
+            // child: Scrollbar(
+            //   thumbVisibility: false,
+            //   controller: _usingContentsScrollController,
+            child: ListView(
               controller: _usingContentsScrollController,
-              child: ListView(
-                controller: _usingContentsScrollController,
-                // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
-                scrollDirection: Axis.horizontal,
-                // 컨테이너들을 ListView의 자식들로 추가
-                children: [
-                  Wrap(
-                    direction: Axis.horizontal, // 나열 방향
-                    //alignment: WrapAlignment.start, // 정렬 방식
-                    spacing: 20, // 좌우 간격
-                    //runSpacing: 20, // 상하 간격
-                    children: _cretaRelatedBookList.map((item) {
-                      return CustomImage(
+              // 스크롤 방향 설정. 수평적으로 스크롤되도록 설정
+              scrollDirection: Axis.horizontal,
+              // 컨테이너들을 ListView의 자식들로 추가
+              children: [
+                Wrap(
+                  direction: Axis.horizontal, // 나열 방향
+                  //alignment: WrapAlignment.start, // 정렬 방식
+                  spacing: 20, // 좌우 간격
+                  //runSpacing: 20, // 상하 간격
+                  children: _cretaRelatedBookList.map((item) {
+                    return SizedBox(
+                      width: 210,
+                      height: 160,
+                      child: CustomImage(
                         //key: ValueKey('related-${item.thumbnailUrl}'),
                         duration: 500,
                         hasMouseOverEffect: false,
@@ -502,36 +588,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                         image: item.thumbnailUrl,
                         width: 210,
                         height: 160,
-                      );
-                      //return Container(width: 210, height:160, color: Colors.purple);
-                    }).toList(),
-                  ),
-                ],
-              ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+              //),
             ),
           ),
-
-          // Container(
-          //   width: _usingContentsRect.childWidth,
-          //   height: 160,
-          //   color: Colors.green,
-          //   child: Wrap(
-          //     direction: Axis.horizontal, // 나열 방향
-          //     //alignment: WrapAlignment.start, // 정렬 방식
-          //     spacing: 20, // 좌우 간격
-          //     //runSpacing: 20, // 상하 간격
-          //     children: _cretaRelatedBookList.map((item) {
-          //       return CustomImage(
-          //         key: ValueKey(item.thumbnailUrl),
-          //         duration: 500,
-          //         hasMouseOverEffect: false,
-          //         image: item.thumbnailUrl,
-          //         width: 306,
-          //         height: 230,
-          //       );
-          //     }).toList(),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -549,7 +613,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         children: [
           Text(
             '댓글',
-            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
             textAlign: TextAlign.left,
           ),
           SizedBox(height: 20),
@@ -671,7 +735,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   children: [
                     Text(
                       '해시태그',
-                      style: CretaFont.titleELarge.copyWith(fontSize: 20, color: CretaColor.text[700]),
+                      style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
                     ),
                     Expanded(child: Container()),
                     BTN.fill_gray_200_i_s(
@@ -738,7 +802,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   children: [
                     Text(
                       '연관 크레타북',
-                      style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+                      style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
                     ),
                     Expanded(child: Container()),
                   ],

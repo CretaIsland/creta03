@@ -29,6 +29,21 @@ class CretaMenuItem {
     this.fontFamily = 'Pretendard',
     this.fontWeight,
   });
+
+  CretaMenuItem.clone(CretaMenuItem src)
+      : this(
+  caption: src.caption,
+  iconData: src.iconData,
+  iconSize: src.iconSize,
+  onPressed: src.onPressed,
+  referencedAttr: src.referencedAttr,
+  isDescending: src.isDescending,
+  selected: src.selected,
+  linkUrl: src.linkUrl,
+  isIconText: src.isIconText,
+  fontFamily: src.fontFamily,
+  fontWeight: src.fontWeight,
+  );
 }
 
 class CretaPopupMenu {

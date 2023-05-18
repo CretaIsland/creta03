@@ -56,8 +56,8 @@ enum CopyRightType {
 enum PermissionType {
   none,
   owner, // 소유자
-  editor, // 편집자
-  viewer, // 뷰어
+  writer, // 편집자
+  reader, // 뷰어
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 //import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/gestures.dart';
 import 'package:hycop/hycop.dart';
@@ -56,7 +57,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   BookType _filterBookType = BookType.none;
   BookSort _filterBookSort = BookSort.updateTime;
   PermissionType _filterPermissionType = PermissionType.none;
-  //String _filterSearchKeyword = '';
+  String _filterSearchKeyword = '';
 
   void _scrollChangedCallback(bool bannerSizeChanged) {
     setState(() {
@@ -281,7 +282,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         iconData: Icons.power,
         onPressed: () {
           setState(() {
-            _filterPermissionType = PermissionType.editor;
+            _filterPermissionType = PermissionType.writer;
             setScrollOffset(0);
           });
         },
@@ -292,7 +293,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         iconData: Icons.power,
         onPressed: () {
           setState(() {
-            _filterPermissionType = PermissionType.viewer;
+            _filterPermissionType = PermissionType.reader;
             setScrollOffset(0);
           });
         },
@@ -1152,7 +1153,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       case AppRoutes.playlist:
         return (value) {};
       case AppRoutes.communityHome:
-        return (value) {};
+        return (value) {
+          setState(() {
+            _filterSearchKeyword = value;
+            setScrollOffset(0);
+          });
+        };
       case AppRoutes.channel:
         return (value) {};
       default:
@@ -1162,7 +1168,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   GlobalObjectKey _getRightPaneKey() {
-    return GlobalObjectKey('${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}');
+    String key = '${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
+    if (kDebugMode) print('_getRightPaneKey=$key');
+    return GlobalObjectKey(key);
   }
 
   Widget _getRightPane(BuildContext context) {
@@ -1214,7 +1222,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           filterBookType: _filterBookType,
           filterBookSort: _filterBookSort,
           filterPermissionType: _filterPermissionType,
-          // filterSearchKeyword: ,
+          filterSearchKeyword: _filterSearchKeyword,
         );
     }
   }
