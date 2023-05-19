@@ -28,7 +28,7 @@ import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
 //import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
-import '../../../data_io/book_manager.dart';
+//import '../../../data_io/book_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/book_model.dart';
