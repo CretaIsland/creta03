@@ -34,6 +34,9 @@ class BookModel extends CretaModel with CretaStyleMixin {
   List<String> readers = [];
   List<String> writers = [];
   List<String> shares = [];
+  String publishMid = ''; // 원본Book의 발행된 BookMid
+  String sourceMid = ''; // 발행된 Book의 원본BookMid
+  List<String> hashtags = [];
 
   Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
 
@@ -59,6 +62,9 @@ class BookModel extends CretaModel with CretaStyleMixin {
         readers,
         writers,
         shares,
+        publishMid,
+        sourceMid,
+        hashtags,
         ...super.propsMixin,
       ];
   BookModel(String pmid) : super(pmid: pmid, type: ExModelType.book, parent: '') {
@@ -78,6 +84,9 @@ class BookModel extends CretaModel with CretaStyleMixin {
     readers = [];
     writers = [];
     shares = [];
+    //publishMid = '';
+    //sourceMid = '';
+    //hashtags = [];
     description = UndoAble<String>("You could do it simple and plain", mid);
     super.initMixin(mid);
   }
@@ -96,7 +105,10 @@ class BookModel extends CretaModel with CretaStyleMixin {
     List<String> readerList = const [],
     List<String> writerList = const [],
     String? desc,
-  }) : super(pmid: '', type: ExModelType.book, parent: '') {
+    String? publishMid,
+    String? sourceMid,
+    List<String>? hashtags,
+      }) : super(pmid: '', type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     thumbnailUrl = UndoAble<String>(imageUrl, mid);
     thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid);
@@ -115,6 +127,9 @@ class BookModel extends CretaModel with CretaStyleMixin {
     writers = [...writerList];
     //shares = [...ownerList, ...writerList, ...readerList];
     shares = _getShares(ownerList, writerList, readerList);
+    if (publishMid != null) this.publishMid = publishMid;
+    if (sourceMid != null) this.sourceMid = sourceMid;
+    if (hashtags != null) this.hashtags = [...hashtags];
     if (desc != null) {
       description = UndoAble<String>(desc, mid);
     }
@@ -146,6 +161,9 @@ class BookModel extends CretaModel with CretaStyleMixin {
     writers = [...srcBook.writers];
     //shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
     shares = _getShares(srcBook.owners, srcBook.writers, srcBook.readers);
+    publishMid = srcBook.publishMid;
+    sourceMid = srcBook.sourceMid;
+    hashtags = [...srcBook.hashtags];
 
     super.copyFromMixin(mid, srcBook);
     logger.finest('BookCopied($mid)');
@@ -171,6 +189,9 @@ class BookModel extends CretaModel with CretaStyleMixin {
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
     //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
+    publishMid = map["publishMid"] ?? '';
+    sourceMid = map["sourceMid"] ?? '';
+    hashtags = map["hashtags"] ?? [];
 
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);
@@ -203,7 +224,10 @@ class BookModel extends CretaModel with CretaStyleMixin {
         "readers": CretaUtils.listToString(readers),
         "writers": CretaUtils.listToString(writers),
         "shares": shares, //DB 에 쓰기는 쓴다, 검색용이다.
-        ...super.toMapMixin(),
+        "publishMid": publishMid,
+        "sourceMid": sourceMid,
+        "hashtags": hashtags,
+      ...super.toMapMixin(),
       }.entries);
   }
 
