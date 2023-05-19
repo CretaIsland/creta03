@@ -30,6 +30,7 @@ import '../../model/page_model.dart';
 import '../../routes.dart';
 import '../login_page.dart';
 import 'book_preview_menu.dart';
+import 'book_publish.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
 import 'left_menu/left_menu.dart';
@@ -562,7 +563,7 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
               SizedBox(width: padding),
               CretaScaleButton(
-                width: 162,
+                width: 180,
                 onManualScale: () {
                   setState(() {
                     scaleChanged = true;
@@ -575,6 +576,19 @@ class _BookMainPageState extends State<BookMainPage> {
                 },
                 hasShadow: false,
                 tooltip: CretaStudioLang.tooltipScale,
+                extended: CretaIconToggleButton(
+                  buttonStyle: ToggleButtonStyle.fill_gray_i_m,
+                  toggleValue: StudioVariables.handToolMode,
+                  icon1: Icons.transit_enterexit_outlined,
+                  icon2: Icons.pan_tool_outlined,
+                  tooltip: StudioVariables.handToolMode
+                      ? CretaStudioLang.tooltipEdit
+                      : CretaStudioLang.tooltipNoneEdit,
+                  onPressed: () {
+                    StudioVariables.handToolMode = !StudioVariables.handToolMode;
+                    BookMainPage.bookManagerHolder!.notify();
+                  },
+                ),
               ),
               SizedBox(width: padding),
               CretaIconToggleButton(
@@ -582,42 +596,24 @@ class _BookMainPageState extends State<BookMainPage> {
                 icon1: Icons.volume_off_outlined,
                 icon2: Icons.volume_up_outlined,
                 tooltip: CretaStudioLang.tooltipVolume,
+                buttonSize: 20,
                 onPressed: () {
                   _globalToggleMute();
                 },
               ),
-
-              SizedBox(width: padding),
+              SizedBox(width: padding / 2),
               CretaIconToggleButton(
                 toggleValue: StudioVariables.isAutoPlay,
                 icon1: Icons.pause_outlined,
-                icon2: Icons.play_arrow_outlined,
+                icon2: Icons.play_arrow,
                 tooltip: CretaStudioLang.tooltipPause,
+                buttonSize: StudioVariables.isAutoPlay ? 20 : 30,
                 onPressed: () {
                   _globalToggleAutoPlay();
                 },
               ),
-              SizedBox(width: padding),
-              BTN.floating_l(
-                icon: Icons.transit_enterexit_outlined,
-                onPressed: () {
-                  StudioVariables.handToolMode = false;
-                  BookMainPage.bookManagerHolder!.notify();
-                },
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipEdit,
-              ),
-              SizedBox(width: padding),
-              BTN.floating_l(
-                icon: Icons.pan_tool_outlined,
-                onPressed: () {
-                  StudioVariables.handToolMode = true;
-                  BookMainPage.bookManagerHolder!.notify();
-                },
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipNoneEdit,
-              ),
-              //VerticalDivider(),
+              //SizedBox(width: padding),
+//VerticalDivider(),
             ],
           ),
         ),
@@ -805,7 +801,13 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.line_blue_it_m_animation(
               text: CretaStudioLang.publish,
               image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-              onPressed: () {}),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return BookPublishDialog();
+                    });
+              }),
           SizedBox(width: padding * 2.5),
         ],
       ),

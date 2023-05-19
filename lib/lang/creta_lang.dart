@@ -93,4 +93,7 @@ class CretaLang {
     fontPretendard,
     fontMacondo,
   ];
+
+  static String next = "다음";
+  static String prev = "이전";
 }

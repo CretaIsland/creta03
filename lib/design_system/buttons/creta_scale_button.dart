@@ -27,6 +27,7 @@ class CretaScaleButton extends StatefulWidget {
   Color? bgColor;
   final bool hasShadow;
   final String? tooltip;
+  final Widget? extended;
 
   CretaScaleButton({
     super.key,
@@ -45,6 +46,7 @@ class CretaScaleButton extends StatefulWidget {
     this.fgColor = CretaColor.text,
     this.hasShadow = true,
     this.tooltip,
+    this.extended,
   }) {
     clickColor ??= CretaColor.text[200]!;
     hoverColor ??= CretaColor.text[100]!;
@@ -96,6 +98,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
                     fgColor: widget.fgColor!,
                     child: _buttonAuto())
                 : _buttonAuto(),
+            if (widget.extended != null) widget.extended!,
           ],
         ));
   }

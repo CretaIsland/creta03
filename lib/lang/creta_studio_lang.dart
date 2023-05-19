@@ -139,8 +139,8 @@ class CretaStudioLang {
   static const String tooltipNoti = '알림이 있습니다';
   static const String tooltipNoNoti = '알림이 없습니다';
   static const String tooltipVolume = '작업하는 동안 소리를 끄거나 켭니다';
-  static const String tooltipEdit = '화면 편집모드';
-  static const String tooltipNoneEdit = '화면 보기모드';
+  static const String tooltipEdit = '화면 편집모드로 이동';
+  static const String tooltipNoneEdit = '화면 보기모드로 이동';
   static const String tooltipPause = '작업하는 동안 동영상을 정지하거나 플레이합니다';
   static const String tooltipUndo = '취소';
   static const String tooltipRedo = '복원';
@@ -372,4 +372,12 @@ class CretaStudioLang {
 
   static const String noUnshowPage = '볼 수 있는 페이지가 없습니다. 안보이기를 해제하세요';
   static const String inSideRotate = '상자 안에서 돌리기';
+
+  static const String publishSettings = '발행 설정';
+  static const List<String> publishSteps = [
+    '정보 수정',
+    '공개 범위',
+    '채널 선택',
+    '발행 완료',
+  ];
 }

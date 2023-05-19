@@ -88,6 +88,7 @@ dependencies:
   intl: ^0.18.0
   flutter_svg: ^2.0.5
   translator: ^0.1.7
+  progress_bar_steppers: ^0.0.2+2
   
 dev_dependencies:
   flutter_test:

@@ -86,6 +86,7 @@ class _CretaIconToggleButtonState extends State<CretaIconToggleButton> {
         );
       default:
         return BTN.floating_l(
+          iconSize: widget.buttonSize,
           icon: _toggleValue ? widget.icon1 : widget.icon2,
           onPressed: () {
             if (widget.doToggle) {

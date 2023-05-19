@@ -7,6 +7,7 @@ import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:material_tag_editor/tag_editor.dart';
 
 import '../../../../common/creta_utils.dart';
+import '../../../../design_system/creta_chip.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
@@ -144,7 +145,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
               right: 4,
               bottom: 4,
             ),
-            child: _Chip(
+            child: CretaChip(
               index: index,
               label: hashTagList[index],
               onDeleted: (idx) {
@@ -245,44 +246,5 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
         ),
       )
     ];
-  }
-}
-
-class _Chip extends StatelessWidget {
-  const _Chip({
-    required this.label,
-    required this.onDeleted,
-    required this.index,
-  });
-
-  final String label;
-  final ValueChanged<int> onDeleted;
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      clipBehavior: Clip.antiAlias,
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
-        side: BorderSide(
-          width: 1,
-          color: CretaColor.text[700]!,
-        ),
-      ),
-      labelPadding: const EdgeInsets.only(left: 6.0, right: 1.0),
-      label: Text(
-        '#$label',
-        style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
-      ),
-      deleteIcon: Icon(
-        Icons.close,
-        size: 16,
-      ),
-      onDeleted: () {
-        onDeleted(index);
-      },
-    );
   }
 }
