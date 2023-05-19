@@ -41,6 +41,9 @@ class LeftMenu extends StatefulWidget {
 class _LeftMenuState
     extends State<LeftMenu> /* with SingleTickerProviderStateMixin,  LeftMenuMixin  */ {
   //final bool _closeWidget = false;
+  bool isCollapsed = false;
+  double _leftMenuWidth = LayoutConst.leftMenuWidth;
+  bool _isButtonSelected(LeftMenuEnum val) => BookMainPage.leftMenuNotifier!.selectedStick == val;
 
   @override
   void initState() {
@@ -52,6 +55,20 @@ class _LeftMenuState
   void dispose() {
     //super.disposeAnimation();
     super.dispose();
+  }
+
+  void changeState() {
+    super.setState(() {
+      isCollapsed = !isCollapsed;
+    });
+  }
+
+  void _resize() {
+    if (_isButtonSelected(LeftMenuEnum.Page) && isCollapsed) {
+      _leftMenuWidth = LayoutConst.leftMenuWidthCollapsed + 20;
+    } else {
+      _leftMenuWidth = LayoutConst.leftMenuWidth;
+    }
   }
 
   @override
@@ -66,11 +83,12 @@ class _LeftMenuState
         //   width: LayoutConst.leftMenuWidth,
         //   child:
         Consumer<LeftMenuNotifier>(builder: (context, leftMenuNotifier, child) {
-      if (BookMainPage.leftMenuNotifier!.selectedStick == LeftMenuEnum.None) {
+      if (_isButtonSelected(LeftMenuEnum.None)) {
         return SizedBox.shrink();
       }
+      _resize();
       return Container(
-        width: LayoutConst.leftMenuWidth,
+        width: _leftMenuWidth,
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.rightBottum),
@@ -83,17 +101,29 @@ class _LeftMenuState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    BTN.fill_gray_i_m(
-                      tooltip: CretaStudioLang.wide,
-                      tooltipBg: CretaColor.text[700]!,
-                      icon: Icons.open_in_full_outlined,
-                      iconSize: 14,
-                      onPressed: () async {},
-                    ),
+                    if ((_isButtonSelected(LeftMenuEnum.Page) && !isCollapsed) |
+                        (!_isButtonSelected(LeftMenuEnum.Page) && isCollapsed) |
+                        !isCollapsed)
+                      BTN.fill_gray_i_m(
+                        tooltip: CretaStudioLang.wide,
+                        tooltipBg: CretaColor.text[700]!,
+                        icon: Icons.open_in_full_outlined,
+                        iconSize: 14,
+                        onPressed: () async {},
+                      ),
+                    if (_isButtonSelected(LeftMenuEnum.Page))
+                      BTN.fill_gray_i_m(
+                        tooltip: isCollapsed ? CretaStudioLang.open : CretaStudioLang.collapsed,
+                        tooltipBg: CretaColor.text[700]!,
+                        icon: isCollapsed
+                            ? Icons.keyboard_double_arrow_right_outlined
+                            : Icons.keyboard_double_arrow_left_outlined,
+                        onPressed: changeState,
+                      ),
                     BTN.fill_gray_i_m(
                       tooltip: CretaStudioLang.close,
                       tooltipBg: CretaColor.text[700]!,
-                      icon: Icons.keyboard_double_arrow_left_outlined,
+                      icon: Icons.close_sharp,
                       onPressed: () async {
                         //await _animationController.reverse();
                         widget.onClose.call();
@@ -107,9 +137,9 @@ class _LeftMenuState
                   ],
                 )),
             Positioned(
-                left: 28,
-                top: 24,
-                child: BookMainPage.leftMenuNotifier!.selectedStick == LeftMenuEnum.None
+                left: isCollapsed ? 24 : 28, // ----- added by Mai 230517 ------
+                top: isCollapsed ? 44 : 24, // ----- added by Mai 230517 ------
+                child: _isButtonSelected(LeftMenuEnum.None)
                     ? SizedBox.shrink()
                     : Text(
                         CretaStudioLang
@@ -118,7 +148,7 @@ class _LeftMenuState
             Positioned(
               top: 76,
               left: 0,
-              width: LayoutConst.leftMenuWidth,
+              width: _leftMenuWidth, // ----- added on 230518 ------
               child: eachWidget(BookMainPage.leftMenuNotifier!.selectedStick),
             )
           ],
@@ -138,7 +168,7 @@ class _LeftMenuState
       case LeftMenuEnum.Template:
         return Container();
       case LeftMenuEnum.Page:
-        return LeftMenuPage();
+        return LeftMenuPage(isFolded: isCollapsed);
       case LeftMenuEnum.Frame:
         return LeftMenuFrame();
       case LeftMenuEnum.Storage:

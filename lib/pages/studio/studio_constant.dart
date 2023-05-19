@@ -35,6 +35,7 @@ class LayoutConst {
   // left/Right menu
   //static const double leftMenuWidth = 420;
   static const double leftMenuWidth = 380;
+  static const double leftMenuWidthCollapsed = 100; // added by Mai 230516
   static const double rightMenuWidth = 380;
   static const double rightMenuTitleHeight = 76;
   static const double innerMenuBarHeight = 36;
@@ -78,11 +79,14 @@ class LayoutConst {
   static const double cretaTopTitleFilterHeightGap = 20;
   static const double cretaTopFilterHeight = 76;
   static const double cretaTopFilterItemHeight = 36;
-  static const Size cretaTopTitlePaddingLT = Size(cretaPaddingPixel, cretaPaddingPixel);
-  static const Size cretaTopTitlePaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel);
-  static const Size cretaTopFilterPaddingLT = Size(
-      cretaPaddingPixel, cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
-  static const Size cretaTopFilterPaddingRB = Size(cretaPaddingPixel, cretaPaddingPixel / 2);
+  static const Size cretaTopTitlePaddingLT =
+      Size(cretaPaddingPixel, cretaPaddingPixel);
+  static const Size cretaTopTitlePaddingRB =
+      Size(cretaPaddingPixel, cretaPaddingPixel);
+  static const Size cretaTopFilterPaddingLT = Size(cretaPaddingPixel,
+      cretaPaddingPixel + cretaTopTitleHeight + cretaTopTitleFilterHeightGap);
+  static const Size cretaTopFilterPaddingRB =
+      Size(cretaPaddingPixel, cretaPaddingPixel / 2);
 
   static const double cornerDiameter = 20.0;
   //static const double floatingActionPadding = 24;
