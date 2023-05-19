@@ -416,127 +416,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
           ),
         );
 
-        // final topLeftCorner = ResizePoint(
-        //   key: Key('draggableResizable_topLeft_resizePoint-${widget.mid}'),
-        //   type: ResizePointType.topLeft,
-        //   onDrag: onDragTopLeft,
-        //   onTap: widget.onResizeButtonTap,
-        //   //iconData: Icons.zoom_out_map,
-        //   onComplete: widget.onComplete,
-        // );
-
-        // final bottomRightCorner = ResizePoint(
-        //   key: Key('draggableResizable_bottomRight_resizePoint-${widget.mid}'),
-        //   type: ResizePointType.bottomRight,
-        //   onDrag: onDragBottomRight,
-        //   onTap: widget.onResizeButtonTap,
-        //   //iconData: Icons.zoom_out_map,
-        //   onComplete: widget.onComplete,
-        // );
-
-        // final topRightCorner = ResizePoint(
-        //   key: Key('draggableResizable_topRight_resizePoint-${widget.mid}'),
-        //   type: ResizePointType.topRight,
-        //   onDrag: onDragTopRight,
-        //   onTap: widget.onResizeButtonTap,
-        //   //iconData: Icons.zoom_out_map,
-        //   onComplete: widget.onComplete,
-        // );
-
-        // final bottomLeftCorner = ResizePoint(
-        //   key: Key('draggableResizable_bottomLeft_resizePoint-${widget.mid}'),
-        //   type: ResizePointType.bottomLeft,
-        //   onDrag: onDragBottomLeft,
-        //   onTap: widget.onResizeButtonTap,
-        //   //iconData: Icons.zoom_out_map,
-        //   onComplete: widget.onComplete,
-        // );
-
-        // final upPlane = ResizePoint(
-        //   key: Key('draggableResizable_upPlane_resizePoint-${widget.mid}'),
-        //   type: ResizePointType.up,
-        //   onDrag: onDragUp,
-        //   onTap: widget.onResizeButtonTap,
-        //   //iconData: Icons.zoom_out_map,
-        //   onComplete: widget.onComplete,
-        // );
-
-        // final rightPlane = ResizePoint(
-        //   key: Key('draggableResizable_rightPlane_resizePoint-${widget.mid}'),
-        //   type: ResizePointType.right,
-        //   onDrag: onDragRight,
-        //   onTap: widget.onResizeButtonTap,
-        //   //iconData: Icons.zoom_out_map,
-        //   onComplete: widget.onComplete,
-        // );
-
-        // final downPlane = ResizePoint(
-        //   key: Key('draggableResizable_downPlane_resizePoint-${widget.mid}'),
-        //   type: ResizePointType.down,
-        //   onDrag: onDragDown,
-        //   onTap: widget.onResizeButtonTap,
-        //   //iconData: Icons.zoom_out_map,
-        //   onComplete: widget.onComplete,
-        // );
-
-        // final leftPlane = ResizePoint(
-        //   key: Key('draggableResizable_leftPlane_resizePoint-${widget.mid}'),
-        //   type: ResizePointType.left,
-        //   onDrag: onDragLeft,
-        //   onTap: widget.onResizeButtonTap,
-        //   //iconData: Icons.zoom_out_map,
-        //   onComplete: widget.onComplete,
-        // );
-
-        // final center = Offset(
-        //   -((normalizedWidth +
-        //           FloatingActionIcon.floatingActionDiameter +
-        //           LayoutConst.stikerOffset) /
-        //       2),
-        //   (normalizedHeight +
-        //           FloatingActionIcon.floatingActionDiameter +
-        //           LayoutConst.stikerOffset) /
-        //       2,
-        // );
-
-        // final rotateAnchor = GestureDetector(
-        //   behavior: HitTestBehavior.translucent,
-        //   key: Key('draggableResizable_rotate_gestureDetecto-${widget.mid}'),
-        //   onScaleStart: (details) {
-        //     logger.finest('draggableResizable_rotate_gestureDetector.onScaleStart-${widget.mid}');
-        //     final offsetFromCenter = details.localFocalPoint - center;
-        //     setState(() {
-        //       _angleDelta = _baseAngle -
-        //           offsetFromCenter.direction -
-        //           FloatingActionIcon.floatingActionDiameter;
-        //     });
-        //   },
-        //   onScaleUpdate: (details) {
-        //     logger.finest('draggableResizable_rotate_gestureDetector.onScaleUpdate-${widget.mid}');
-        //     final offsetFromCenter = details.localFocalPoint - center;
-        //     setState(
-        //       () {
-        //         //_angle = offsetFromCenter.direction + _angleDelta * 0.5;
-        //         _angle = offsetFromCenter.direction + _angleDelta;
-        //         logger.finest('org :$_angle:$_angleDelta,');
-        //         double degree = _angle * 180 / pi % -360;
-        //         _angle = degree * pi / 180;
-        //       },
-        //     );
-        //     onUpdate('onScaleUpdate');
-        //   },
-        //   onScaleEnd: (_) => setState(() {
-        //     logger.finest('onScaleEnd $_angle');
-        //     _baseAngle = _angle;
-        //     widget.onComplete();
-        //   }),
-        //   child: FloatingActionIcon(
-        //     key: Key('draggableResizable_rotate_floatingActionIcon-${widget.mid}'),
-        //     iconData: Icons.rotate_90_degrees_ccw,
-        //     onTap: () {},
-        //   ),
-        // );
-
         logger.finest('DraggableResizable : $normalizedTop, $normalizedLeft');
 
         double resizePointerOffset =
@@ -546,151 +425,96 @@ class _DraggableResizableState extends State<DraggableResizable> {
         // double heightCenter = normalizedHeight / 2 + resizePointerOffset;
         // double widthCenter = normalizedWidth / 2 + resizePointerOffset;
 
+        Widget dragablePoint = DraggablePoint(
+          //mode: PositionMode.local,
+          key: Key('draggableResizable_child_draggablePoint-${widget.mid}'),
+          onComplete: () {
+            widget.onComplete();
+          },
+          onScaleStart: () {
+            widget.onScaleStart();
+          },
+          onTap: () {
+            onUpdate('onTap', save: false);
+          },
+          onDrag: (details) {
+            Offset newPosition = Offset(_position.dx + details.dx, _position.dy + details.dy);
+            if (_moveValidCheck(_size, newPosition, details) == false) {
+              return;
+            }
+            setState(() {
+              _position = newPosition;
+            });
+            onUpdate('onDrag');
+          },
+          onScale: (s) {
+            logger.fine('onScale($s)');
+            final updatedSize = Size(
+              widget.size.width * s,
+              widget.size.height * s,
+            );
+
+            //if (!widget.constraints.isSatisfiedBy(updatedSize)) return;
+
+            final midX = _position.dx + (_size.width / 2);
+            final midY = _position.dy + (_size.height / 2);
+            final updatedPosition = Offset(
+              midX - (updatedSize.width / 2),
+              midY - (updatedSize.height / 2),
+            );
+
+            setState(() {
+              _size = updatedSize;
+              _position = updatedPosition;
+            });
+            onUpdate('onScale');
+          },
+          onRotate: (a) {
+            setState(() => _angle = a * 0.5);
+            logger.finest('onRotate $a');
+            //setState(() => _angle = a);
+            onUpdate('onRotate');
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              decoratedChild,
+              SelectedBox(
+                mid: widget.mid,
+                normalizedHeight: normalizedHeight,
+                normalizedWidth: normalizedWidth,
+                resizePointerOffset: resizePointerOffset,
+                onDragTopLeft: onDragTopLeft,
+                onDragBottomRight: onDragBottomRight,
+                onDragTopRight: onDragTopRight,
+                onDragBottomLeft: onDragBottomLeft,
+                onDragUp: onDragUp,
+                onDragRight: onDragRight,
+                onDragDown: onDragDown,
+                onDragLeft: onDragLeft,
+                onResizeButtonTap: widget.onResizeButtonTap,
+                onComplete: widget.onComplete,
+                key: Key('SelectedBox-$widget.mid}'),
+              ),
+              if (widget.isMain) mainSymbol,
+            ],
+          ),
+        );
+
         return Stack(
           children: <Widget>[
             Positioned(
               top: normalizedTop,
               left: normalizedLeft,
-              child: Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.identity()
-                  ..scale(1.0)
-                  ..rotateZ(_angle),
-                child: DraggablePoint(
-                  //mode: PositionMode.local,
-                  key: Key('draggableResizable_child_draggablePoint-${widget.mid}'),
-                  onComplete: () {
-                    widget.onComplete();
-                  },
-                  onScaleStart: () {
-                    widget.onScaleStart();
-                  },
-                  onTap: () {
-                    onUpdate('onTap', save: false);
-                  },
-                  onDrag: (details) {
-                    Offset newPosition =
-                        Offset(_position.dx + details.dx, _position.dy + details.dy);
-                    if (_moveValidCheck(_size, newPosition, details) == false) {
-                      return;
-                    }
-                    setState(() {
-                      _position = newPosition;
-                    });
-                    onUpdate('onDrag');
-                  },
-                  onScale: (s) {
-                    logger.fine('onScale($s)');
-                    final updatedSize = Size(
-                      widget.size.width * s,
-                      widget.size.height * s,
-                    );
-
-                    //if (!widget.constraints.isSatisfiedBy(updatedSize)) return;
-
-                    final midX = _position.dx + (_size.width / 2);
-                    final midY = _position.dy + (_size.height / 2);
-                    final updatedPosition = Offset(
-                      midX - (updatedSize.width / 2),
-                      midY - (updatedSize.height / 2),
-                    );
-
-                    setState(() {
-                      _size = updatedSize;
-                      _position = updatedPosition;
-                    });
-                    onUpdate('onScale');
-                  },
-                  onRotate: (a) {
-                    setState(() => _angle = a * 0.5);
-                    logger.finest('onRotate $a');
-                    //setState(() => _angle = a);
-                    onUpdate('onRotate');
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      decoratedChild,
-                      SelectedBox(
-                        mid: widget.mid,
-                        normalizedHeight: normalizedHeight,
-                        normalizedWidth: normalizedWidth,
-                        resizePointerOffset: resizePointerOffset,
-                        onDragTopLeft: onDragTopLeft,
-                        onDragBottomRight: onDragBottomRight,
-                        onDragTopRight: onDragTopRight,
-                        onDragBottomLeft: onDragBottomLeft,
-                        onDragUp: onDragUp,
-                        onDragRight: onDragRight,
-                        onDragDown: onDragDown,
-                        onDragLeft: onDragLeft,
-                        onResizeButtonTap: widget.onResizeButtonTap,
-                        onComplete: widget.onComplete,
-                        key: Key('SelectedBox-$widget.mid}'),
-                      ),
-                      if (widget.isMain) mainSymbol,
-                      // if (widget.canTransform && isTouchInputSupported) ...[
-                      //   // Positioned(
-                      //   //   // upPlane
-                      //   //   left: widthCenter,
-                      //   //   child: rotateAnchor,
-                      //   // ),
-                      //   Positioned(
-                      //     //topLeft
-                      //     top: resizePointerOffset,
-                      //     left: resizePointerOffset,
-                      //     child: topLeftCorner,
-                      //   ),
-                      //   Positioned(
-                      //     // bottomLeft
-                      //     bottom: resizePointerOffset,
-                      //     left: resizePointerOffset,
-                      //     child: bottomLeftCorner,
-                      //   ),
-                      //   Positioned(
-                      //     //bottomRight
-                      //     bottom: resizePointerOffset,
-                      //     right: resizePointerOffset,
-                      //     child: bottomRightCorner,
-                      //   ),
-                      //   Positioned(
-                      //     // topRight
-                      //     top: resizePointerOffset,
-                      //     right: resizePointerOffset,
-                      //     child: topRightCorner,
-                      //   ),
-
-                      //   // centerButtons !!!
-
-                      //   Positioned(
-                      //     //topMidle
-                      //     top: resizePointerOffset,
-                      //     left: widthCenter,
-                      //     child: upPlane,
-                      //   ),
-                      //   Positioned(
-                      //     // leftMiddle
-                      //     top: heightCenter,
-                      //     left: resizePointerOffset,
-                      //     child: leftPlane,
-                      //   ),
-                      //   Positioned(
-                      //     //bottomMiddle
-                      //     bottom: resizePointerOffset,
-                      //     left: widthCenter,
-                      //     child: downPlane,
-                      //   ),
-                      //   Positioned(
-                      //     // rightMiddle
-                      //     top: heightCenter,
-                      //     right: resizePointerOffset,
-                      //     child: rightPlane,
-                      //   ),
-                      // ],
-                    ],
-                  ),
-                ),
-              ),
+              child: isRotate()
+                  ? Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()
+                        ..scale(1.0)
+                        ..rotateZ(_angle),
+                      child: dragablePoint,
+                    )
+                  : dragablePoint,
             ),
           ],
         );
@@ -761,5 +585,9 @@ class _DraggableResizableState extends State<DraggableResizable> {
     }
 
     return true;
+  }
+
+  bool isRotate() {
+    return (widget.frameModel != null && widget.frameModel!.shouldOutsideRotate());
   }
 }

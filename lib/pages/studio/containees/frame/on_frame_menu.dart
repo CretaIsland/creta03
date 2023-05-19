@@ -40,10 +40,17 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
       //     _isHover = true;
       //   });
       // }),
+      // child: Transform(
+      //   key: GlobalObjectKey('Transform${widget.model.mid}'),
+      //   alignment: Alignment.center,
+      //   transform: Matrix4.identity()
+      //     ..scale(1.0)
+      //     ..rotateZ(CretaUtils.degreeToRadian(widget.model.angle.value)),
       child: Container(
           width: double.infinity,
           height: double.infinity,
-          color: _isHover ? Colors.white.withOpacity(0.25) : Colors.transparent,
+          //color: Colors.white,
+          color: _isHover ? Colors.white.withOpacity(0.75) : Colors.transparent,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -107,6 +114,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
                 ),
             ],
           )),
+      //),
     );
   }
 

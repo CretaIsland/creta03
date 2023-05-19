@@ -155,6 +155,28 @@ class ContentsManager extends CretaManager {
     }
     return null;
   }
+
+  ContentsModel? getFirstModel() {
+    for (var ele in modelList) {
+      ContentsModel model = ele as ContentsModel;
+      if (model.isRemoved.value == true) {
+        continue;
+      }
+      if (model.isShow.value == false) {
+        continue;
+      }
+      return model;
+    }
+    // 여기까지 오면 없다는 뜻이다.  isShow 라도 리턴해본다.
+    for (var ele in modelList) {
+      ContentsModel model = ele as ContentsModel;
+      if (model.isRemoved.value == true) {
+        continue;
+      }
+      return model;
+    }
+    return null;
+  }
   // void resizeFrame(double ratio, double imageWidth, double imageHeight,
   //     {bool invalidate = true, bool initPosition = true}) {
   //   //abs_palyer에서만 호출된다.

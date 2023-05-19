@@ -52,7 +52,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   @override
   void dispose() {
     super.dispose();
-    logger.info('FrameThumbnail dispose================');
+    //logger.info('FrameThumbnail dispose================');
   }
 
   @override
@@ -62,7 +62,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Future<void> initChildren() async {
-    logger.info('FrameThumbnail initialized================');
+    //logger.info('FrameThumbnail initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
       logger.severe('frame manager is null');
@@ -128,26 +128,37 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
-    logger.info('_frameDropZone $applyScale');
-    return Center(child: _shapeBox(widget.model));
+    if (widget.model.shouldInsideRotate()) {
+      return Transform(
+        key: GlobalObjectKey('Transform${widget.model.mid}'),
+        alignment: Alignment.center,
+        transform: Matrix4.identity()
+          ..scale(1.0)
+          ..rotateZ(CretaUtils.degreeToRadian(widget.model.angle.value)),
+        child: _shapeBox(widget.model),
+      );
+    }
+    return _shapeBox(widget.model);
   }
 
   Widget _shapeBox(FrameModel model) {
-    return _textureBox(model).asShape(
-      mid: model.mid,
-      shapeType: model.shape.value,
-      offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
-      blurRadius: model.shadowBlur.value,
-      blurSpread: model.shadowSpread.value * applyScale,
-      opacity: model.shadowOpacity.value,
-      shadowColor: model.shadowColor.value,
-      strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
-      strokeColor: model.borderColor.value,
-      radiusLeftBottom: model.getRealradiusLeftBottom(applyScale),
-      radiusLeftTop: model.getRealradiusLeftTop(applyScale),
-      radiusRightBottom: model.getRealradiusRightBottom(applyScale),
-      radiusRightTop: model.getRealradiusRightTop(applyScale),
-      borderCap: model.borderCap.value,
+    return Center(
+      child: _textureBox(model).asShape(
+        mid: model.mid,
+        shapeType: model.shape.value,
+        offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
+        blurRadius: model.shadowBlur.value,
+        blurSpread: model.shadowSpread.value * applyScale,
+        opacity: model.shadowOpacity.value,
+        shadowColor: model.shadowColor.value,
+        strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
+        strokeColor: model.borderColor.value,
+        radiusLeftBottom: model.getRealradiusLeftBottom(applyScale),
+        radiusLeftTop: model.getRealradiusLeftTop(applyScale),
+        radiusRightBottom: model.getRealradiusRightBottom(applyScale),
+        radiusRightTop: model.getRealradiusRightTop(applyScale),
+        borderCap: model.borderCap.value,
+      ),
     );
   }
 
@@ -171,7 +182,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameBox(FrameModel model, bool useColor) {
-    logger.info('_frameBox');
+    //logger.info('_frameBox');
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,

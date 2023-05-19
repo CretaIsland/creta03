@@ -504,4 +504,14 @@ class ContentsModel extends CretaModel {
   void printIt() {
     logger.finest('name=[$name],mime=[$mime],bytes=[$bytes],url=[$url]');
   }
+
+  String getURI() {
+    if (remoteUrl != null && remoteUrl!.isNotEmpty) {
+      return remoteUrl!;
+    }
+    if (url.isNotEmpty) {
+      return url;
+    }
+    return '';
+  }
 }

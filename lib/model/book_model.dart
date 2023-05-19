@@ -113,7 +113,8 @@ class BookModel extends CretaModel with CretaStyleMixin {
     owners = [...ownerList];
     readers = [...readerList];
     writers = [...writerList];
-    shares = [...ownerList, ...writerList, ...readerList];
+    //shares = [...ownerList, ...writerList, ...readerList];
+    shares = _getShares(ownerList, writerList, readerList);
     if (desc != null) {
       description = UndoAble<String>(desc, mid);
     }
@@ -143,7 +144,8 @@ class BookModel extends CretaModel with CretaStyleMixin {
     owners = [...srcBook.owners];
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];
-    shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
+    //shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
+    shares = _getShares(srcBook.owners, srcBook.writers, srcBook.readers);
 
     super.copyFromMixin(mid, srcBook);
     logger.finest('BookCopied($mid)');
@@ -178,7 +180,8 @@ class BookModel extends CretaModel with CretaStyleMixin {
 
   @override
   Map<String, dynamic> toMap() {
-    shares = [...owners, ...writers, ...readers];
+    //shares = [...owners, ...writers, ...readers];
+    shares = _getShares(owners, writers, readers);
     return super.toMap()
       ..addEntries({
         "name": name.value,
@@ -224,5 +227,19 @@ class BookModel extends CretaModel with CretaStyleMixin {
   Size getRealRatio() {
     Size size = getRealSize();
     return Size(size.width / width.value, size.height / height.value);
+  }
+
+  List<String> _getShares(List<String> ownerList, List<String> writerList, List<String> readerList) {
+    List<String> valueList = [];
+    for(var val in ownerList) {
+      valueList.add('<${PermissionType.owner.name}>$val');
+    }
+    for(var val in writerList) {
+      valueList.add('<${PermissionType.writer.name}>$val');
+    }
+    for(var val in readerList) {
+      valueList.add('<${PermissionType.reader.name}>$val');
+    }
+    return valueList;
   }
 }

@@ -247,28 +247,32 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       double frameHeight =
                           (model.height.value + model.shadowSpread.value) * applyScale;
 
+                      Widget frameBox = SizedBox(
+                        width: frameWidth,
+                        height: frameHeight,
+                        child: FrameThumbnail(
+                          key: GlobalKey(),
+                          model: model,
+                          pageModel: widget.pageModel,
+                          frameManager: _frameManager!,
+                          applyScale: applyScale,
+                          width: frameWidth,
+                          height: frameHeight,
+                        ),
+                      );
+
                       return Positioned(
                         left: frameModel.posX.value * applyScale,
                         top: frameModel.posY.value * applyScale,
-                        child: Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.identity()
-                            ..scale(1.0)
-                            ..rotateZ(CretaUtils.degreeToRadian(frameModel.angle.value)),
-                          child: SizedBox(
-                            width: frameWidth,
-                            height: frameHeight,
-                            child: FrameThumbnail(
-                              key: GlobalKey(),
-                              model: model,
-                              pageModel: widget.pageModel,
-                              frameManager: _frameManager!,
-                              applyScale: applyScale,
-                              width: frameWidth,
-                              height: frameHeight,
-                            ),
-                          ),
-                        ),
+                        child: frameModel.shouldOutsideRotate()
+                            ? Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.identity()
+                                  ..scale(1.0)
+                                  ..rotateZ(CretaUtils.degreeToRadian(frameModel.angle.value)),
+                                child: frameBox,
+                              )
+                            : frameBox,
                       );
                     }).toList(),
 

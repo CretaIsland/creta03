@@ -6,12 +6,10 @@ import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
-import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
-import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_getx_controller.dart';
-import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
+import 'creta_text_mixin.dart';
 import 'creta_text_player.dart';
 
 class CretaTextWidget extends CretaAbsPlayerWidget {
@@ -21,7 +19,7 @@ class CretaTextWidget extends CretaAbsPlayerWidget {
   CretaTextPlayerWidgetState createState() => CretaTextPlayerWidgetState();
 }
 
-class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
+class CretaTextPlayerWidgetState extends State<CretaTextWidget> with CretaTextMixin {
   ContentsEventController? _receiveEvent;
 
   @override
@@ -87,88 +85,80 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> {
           }
           logger.fine('Text StreamBuilder<AbsExModel>');
 
-          if (StudioVariables.isAutoPlay) {
-            //player.model!.setPlayState(PlayState.start);
-            player.play();
-          } else {
-            //player.model!.setPlayState(PlayState.pause);
-            player.pause();
-          }
-          //Size outSize = widget.getOuterSize(widget.model!.aspectRatio.value);
+          return playText(context, player, player.model!, player.acc.getRealSize());
 
-          double topLeft = player.acc.frameModel.radiusLeftTop.value;
-          double topRight = player.acc.frameModel.radiusRightTop.value;
-          double bottomLeft = player.acc.frameModel.radiusLeftBottom.value;
-          double bottomRight = player.acc.frameModel.radiusRightBottom.value;
+          // if (StudioVariables.isAutoPlay) {
+          //   //player.model!.setPlayState(PlayState.start);
+          //   player.play();
+          // } else {
+          //   //player.model!.setPlayState(PlayState.pause);
+          //   player.pause();
+          // }
+          // //Size outSize = widget.getOuterSize(widget.model!.aspectRatio.value);
 
-          String uri = player.getURI(player.model!);
-          String errMsg = '${player.model!.name} uri is null';
-          if (uri.isEmpty) {
-            logger.fine(errMsg);
-          }
-          logger.fine("uri=<$uri>");
-          player.buttonIdle();
+          // // double topLeft = player.acc.frameModel.radiusLeftTop.value;
+          // // double topRight = player.acc.frameModel.radiusRightTop.value;
+          // // double bottomLeft = player.acc.frameModel.radiusLeftBottom.value;
+          // // double bottomRight = player.acc.frameModel.radiusRightBottom.value;
 
-          Size realSize = player.acc.getRealSize();
-          double fontSize = player.model!.fontSize.value * StudioVariables.applyScale;
+          // String uri = player.getURI(player.model!);
+          // String errMsg = '${player.model!.name} uri is null';
+          // if (uri.isEmpty) {
+          //   logger.fine(errMsg);
+          // }
+          // logger.fine("uri=<$uri>");
+          // player.buttonIdle();
 
-          if (player.model!.isAutoSize.value == true &&
-              (player.model!.aniType.value != TextAniType.rotate ||
-                  player.model!.aniType.value != TextAniType.bounce ||
-                  player.model!.aniType.value != TextAniType.fade ||
-                  player.model!.aniType.value != TextAniType.shimmer ||
-                  player.model!.aniType.value != TextAniType.typewriter ||
-                  player.model!.aniType.value != TextAniType.wavy ||
-                  player.model!.aniType.value != TextAniType.fidget)) {
-            fontSize = StudioConst.maxFontSize * StudioVariables.applyScale;
-          }
+          // Size realSize = player.acc.getRealSize();
+          // double fontSize = player.model!.fontSize.value * StudioVariables.applyScale;
 
-          FontWeight? fontWeight = StudioConst.fontWeight2Type[player.model!.fontWeight.value];
+          // if (player.model!.isAutoSize.value == true &&
+          //     (player.model!.aniType.value != TextAniType.rotate ||
+          //         player.model!.aniType.value != TextAniType.bounce ||
+          //         player.model!.aniType.value != TextAniType.fade ||
+          //         player.model!.aniType.value != TextAniType.shimmer ||
+          //         player.model!.aniType.value != TextAniType.typewriter ||
+          //         player.model!.aniType.value != TextAniType.wavy ||
+          //         player.model!.aniType.value != TextAniType.fidget)) {
+          //   fontSize = StudioConst.maxFontSize * StudioVariables.applyScale;
+          // }
 
-          TextStyle style = DefaultTextStyle.of(context).style.copyWith(
-              fontFamily: player.model!.font.value,
-              color: player.model!.fontColor.value.withOpacity(player.model!.opacity.value),
-              fontSize: fontSize,
-              decoration: (player.model!.isUnderline.value && player.model!.isStrike.value)
-                  ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
-                  : player.model!.isUnderline.value
-                      ? TextDecoration.underline
-                      : player.model!.isStrike.value
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-              //fontWeight: player.model!.isBold.value ? FontWeight.bold : FontWeight.normal,
-              fontWeight: fontWeight,
-              fontStyle: player.model!.isItalic.value ? FontStyle.italic : FontStyle.normal);
+          // FontWeight? fontWeight = StudioConst.fontWeight2Type[player.model!.fontWeight.value];
 
-          if (player.model!.isBold.value) {
-            style = style.copyWith(fontWeight: FontWeight.bold);
-          }
+          // TextStyle style = DefaultTextStyle.of(context).style.copyWith(
+          //     fontFamily: player.model!.font.value,
+          //     color: player.model!.fontColor.value.withOpacity(player.model!.opacity.value),
+          //     fontSize: fontSize,
+          //     decoration: (player.model!.isUnderline.value && player.model!.isStrike.value)
+          //         ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+          //         : player.model!.isUnderline.value
+          //             ? TextDecoration.underline
+          //             : player.model!.isStrike.value
+          //                 ? TextDecoration.lineThrough
+          //                 : TextDecoration.none,
+          //     //fontWeight: player.model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+          //     fontWeight: fontWeight,
+          //     fontStyle: player.model!.isItalic.value ? FontStyle.italic : FontStyle.normal);
 
-          if (player.model!.isAutoSize.value == false) {
-            style.copyWith(
-              fontSize: fontSize,
-            );
-          }
+          // if (player.model!.isBold.value) {
+          //   style = style.copyWith(fontWeight: FontWeight.bold);
+          // }
 
-          return Container(
-            decoration: BoxDecoration(
-              //shape: BoxShape.circle,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(topLeft),
-                topRight: Radius.circular(topRight),
-                bottomLeft: Radius.circular(bottomLeft),
-                bottomRight: Radius.circular(bottomRight),
-              ),
-              //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(widget.model!.url))),
-              color: Colors.transparent,
-            ),
-            padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
-                realSize.width * 0.05, realSize.height * 0.05),
-            alignment: AlignmentDirectional.center,
-            width: realSize.width,
-            height: realSize.height,
-            child: player.playText(uri, style, fontSize, realSize),
-          );
+          // if (player.model!.isAutoSize.value == false) {
+          //   style.copyWith(
+          //     fontSize: fontSize,
+          //   );
+          // }
+
+          // return Container(
+          //   color: Colors.transparent,
+          //   padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
+          //       realSize.width * 0.05, realSize.height * 0.05),
+          //   alignment: AlignmentDirectional.center,
+          //   width: realSize.width,
+          //   height: realSize.height,
+          //   child: playText(player.model, uri, style, fontSize, realSize),
+          // );
         });
   }
 }

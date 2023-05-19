@@ -442,7 +442,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         Padding(
           padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
                 width: 97,
@@ -489,38 +489,57 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   ],
                 ),
               ),
-              SizedBox(width: 17),
-              BTN.fill_gray_i_m(
-                  tooltip: CretaStudioLang.angleTooltip,
-                  tooltipBg: CretaColor.text[400]!,
-                  iconSize: 18,
-                  icon: Icons.rotate_90_degrees_ccw_outlined,
-                  onPressed: () {
-                    setState(() {
-                      int turns = (widget.model.angle.value / 15).round() - 1;
-                      double angle = (turns * 15.0) % 360;
-                      if (angle < 0) {
-                        angle = 360 - angle;
-                      }
-                      widget.model.angle.set(angle);
-                    });
-                    logger.finest('sendEvent');
-                    _sendEvent!.sendEvent(widget.model);
-                  }),
-              BTN.fill_gray_i_m(
-                  tooltip: CretaStudioLang.angleTooltip,
-                  tooltipBg: CretaColor.text[400]!,
-                  iconSize: 18,
-                  icon: Icons.rotate_90_degrees_cw_outlined,
-                  onPressed: () {
-                    setState(() {
-                      int turns = (widget.model.angle.value / 15).round() + 1;
-                      widget.model.angle.set((turns * 15.0) % 360);
-                    });
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BTN.fill_gray_i_m(
+                      tooltip: CretaStudioLang.angleTooltip,
+                      tooltipBg: CretaColor.text[400]!,
+                      iconSize: 18,
+                      icon: Icons.rotate_90_degrees_ccw_outlined,
+                      onPressed: () {
+                        setState(() {
+                          int turns = (widget.model.angle.value / 15).round() - 1;
+                          double angle = (turns * 15.0) % 360;
+                          if (angle < 0) {
+                            angle = 360 - angle;
+                          }
+                          widget.model.angle.set(angle);
+                        });
+                        logger.finest('sendEvent');
+                        _sendEvent!.sendEvent(widget.model);
+                      }),
+                  BTN.fill_gray_i_m(
+                      tooltip: CretaStudioLang.angleTooltip,
+                      tooltipBg: CretaColor.text[400]!,
+                      iconSize: 18,
+                      icon: Icons.rotate_90_degrees_cw_outlined,
+                      onPressed: () {
+                        setState(() {
+                          int turns = (widget.model.angle.value / 15).round() + 1;
+                          widget.model.angle.set((turns * 15.0) % 360);
+                        });
 
-                    logger.finest('sendEvent');
-                    _sendEvent!.sendEvent(widget.model);
-                  }),
+                        logger.finest('sendEvent');
+                        _sendEvent!.sendEvent(widget.model);
+                      }),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('${CretaStudioLang.inSideRotate} ', style: titleStyle),
+                  CretaToggleButton(
+                    width: 54 * 0.75,
+                    height: 28 * 0.75,
+                    defaultValue: widget.model.isInsideRotate.value,
+                    onSelected: (value) {
+                      widget.model.isInsideRotate.set(value);
+                      _sendEvent!.sendEvent(widget.model);
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -1409,8 +1428,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       double direction, //'assets/grid.png'
       double distance,
       double opacity,
-    )
-        onShadowSampleSelected,
+    ) onShadowSampleSelected,
     // required Function(double) onOpacityChangeComplete,
     // required Function(double) onSpreadChangeComplete,
     // required Function(double) onBlurChangeComplete,
@@ -1530,8 +1548,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       double direction, //'assets/grid.png'
       double distance,
       double opacity,
-    )
-        onTapPressed,
+    ) onTapPressed,
   ) {
     List<Widget> shadowList = [];
     // 그림자 없음 버튼

@@ -116,6 +116,24 @@ class CretaUtils {
     return name;
   }
 
+  static String getDateTimeString(DateTime dt,
+      {String deli1 = '/', String deli2 = ' ', String deli3 = ':', String deli4 = '.'}) {
+    String name = '${dt.year}';
+    name += deli1;
+    name += '${dt.month}'.padLeft(2, '0');
+    name += deli1;
+    name += '${dt.day}'.padLeft(2, '0');
+    name += deli2;
+    name += '${dt.hour}'.padLeft(2, '0');
+    name += deli3;
+    name += '${dt.minute}'.padLeft(2, '0');
+    name += deli3;
+    name += '${dt.second}'.padLeft(2, '0');
+    name += deli4;
+    name += '${dt.millisecond}'.padLeft(3, '0');
+    return name;
+  }
+
   static Color? string2Color(String? colorStr, {String defaultValue = 'Color(0xFFFFFFFF)'}) {
     if (defaultValue.isEmpty) {
       if (colorStr == null || colorStr.length < 16) {
@@ -215,6 +233,117 @@ class CretaUtils {
     }
     return null;
   }
+
+  static double getOuterWidth(double w, double h, double degree) {
+    // 직각 삼각형에서,
+    // 우리는 빗변의 길이 w 과  빗변과 하변 사이의 각 degree 를 알고 있다.
+    // 이때,  하변 x 는 다음과 같다.
+    double rad = degree * (pi / 180); // degree 를 radian 으로 전환한다.
+    double x = w * cos(rad);
+    // 직각 삼각형에서,
+    // 우리는 빗변의 길이 h 과  빗변과 하변 사이의 각 degree 를 알고 있다.
+    // 이때,  수직한변 y 는 다음과 같다.
+    double y = h * sin(rad);
+    // 이 두값을 더하면, 기울여진 사각형의  외접 Width 가 된다.
+    return x + y;
+  }
+
+  static double getOuterHeight(double w, double h, double degree) {
+    // 직각 삼각형에서,
+    // 우리는 빗변의 길이 h 과  빗변과 하변 사이의 각 degree 를 알고 있다.
+    // 이때,  하변 x 는 다음과 같다.
+    double rad = degree * (pi / 180); // degree 를 radian 으로 전환한다.
+    double x = h * cos(rad);
+    // 직각 삼각형에서,
+    // 우리는 빗변의 길이 w 과  빗변과 하변 사이의 각 degree 를 알고 있다.
+    // 이때,  수직한변 y 는 다음과 같다.
+    double y = w * sin(rad);
+    // 이 두값을 더하면, 기울여진 사각형의  외접 Width 가 된다.
+    return x + y;
+  }
+
+  static Size getOuterRotateSize(Size frameSize, double degree) {
+    // Size 가  frameSize 인 사각형을 degree 만큼 회전시켰을 때,
+    // 이 회전된 사각형의 외접 사각형의 사이즈를 구현다.
+    double w = frameSize.width;
+    double h = frameSize.height;
+
+    double retW = getOuterWidth(w, h, degree);
+    double retH = getOuterHeight(w, h, degree);
+    return Size(retW, retH);
+  }
+
+  static double getInnerWidth(double w, double h, double degree) {
+    // x 가 구하고자 하는 height 이고, y 가 구하고자하는 width 라면
+    // sin(rad) * x + cos(rad) * y = w
+    // sin(rad) * y + cos(rad) * x = h  이다..
+    // 따라서 y 는
+    double rad = degree * (pi / 180); // degree 를 radian 으로 전환한다.
+    double s = sin(rad);
+    double c = cos(rad);
+
+    double y = (s * h - c * w) / (s * s - c * c);
+    return y;
+  }
+
+  static double getInnerHeight(double w, double h, double degree) {
+    // x 가 구하고자 하는 height 이고, y 가 구하고자하는 width 라면
+    // sin(rad) * x + cos(rad) * y = w
+    // sin(rad) * y + cos(rad) * x = h  이다..
+    // 따라서 y 는
+    double rad = degree * (pi / 180); // degree 를 radian 으로 전환한다.
+    double s = sin(rad);
+    double c = cos(rad);
+
+    double x = (s * w - c * h) / (s * s - c * c);
+    return x;
+  }
+
+  static Size getInnerRotateSize(Size frameSize, double degree) {
+    // Size 가  frameSize 인 사각형을 degree 만큼 회전시켰을 때,
+    // 이 회전된 사각형의 외접 사각형의 사이즈를 구현다.
+    double w = frameSize.width;
+    double h = frameSize.height;
+
+    double retW = getInnerWidth(w, h, degree);
+    double retH = getInnerHeight(w, h, degree);
+    return Size(retW, retH);
+  }
+
+  // static double getTriangleHeight(double r, double degree) {
+  //   // 직각 삼각형에서,
+  //   // 직각 삼각형에서,
+  //   // 밑변은 r 이고, 몉변과 빗변의 각이 degree 일때, 수직한 변의 길이를 구한다.
+  //   double rad = degree * (pi / 180); // degree 를 radian 으로 전환한다.
+  //   return r * tan(rad);
+  // }
+
+  // static double getTriangleWidth(double r, double degree) {
+  //   // 직각 삼각형에서,
+  //   // 직각 삼각형에서,
+  //   // 수직한 변은 r 이고, 몉변과 빗변의 각이 degree 일때, 빗변의 길이를 구한다.
+  //   double rad = degree * (pi / 180); // degree 를 radian 으로 전환한다.
+  //   return r / sin(rad);
+  // }
+
+  // static Size getRotateSize(Size frameSize, double degree) {
+  //   // Size 가  frameSize 인 사각형을 degree 만큼 회전시켰을 때,
+  //   // frameSize 에 내졉하는 사각형의 사이즐 구한다.
+
+  //   double w = frameSize.width / 2;
+  //   double h = frameSize.height / 2;
+
+  //   double retW = 0;
+  //   double retH = 0;
+  //   if (w > h) {
+  //     retW = getTriangleWidth(h, degree);
+  //     retH = getTriangleHeight(h, degree);
+  //   } else {
+  //     retW = getTriangleHeight(w, degree);
+  //     retH = getTriangleWidth(w, degree);
+  //   }
+  //   return Size(retW, retH);
+  // }
 
   static double degreeToRadian(double degree) {
     return degree * (pi / 180);
