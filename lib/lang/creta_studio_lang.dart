@@ -89,7 +89,8 @@ class CretaStudioLang {
     "코멘트",
   ];
   static List<IconData> menuIconList = [
-    Icons.library_books_outlined, //Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
+    Icons
+        .library_books_outlined, //Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
     Icons.insert_drive_file_outlined, //MaterialIcons.insert_drive_file,
     Icons.space_dashboard_outlined,
     Icons.inventory_2_outlined,
@@ -164,7 +165,10 @@ class CretaStudioLang {
   static const String defaultText = '샘플 텍스트 입니다.';
 
   static const String wide = "전체 페이지 보기";
+  static const String usual = "원본 보기"; // added by Mai 230517
   static const String close = "닫기";
+  static const String collapsed = "접기"; // added by Mai 230516
+  static const String open = "열기"; // added by Mai 230516
 
   static const String copy = "복사하기";
   static var showUnshow = "보이기/안보이기";

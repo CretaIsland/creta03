@@ -25,7 +25,8 @@ class RightMenuFrameAndContents extends StatefulWidget {
   const RightMenuFrameAndContents({super.key, required this.selectedTap});
 
   @override
-  State<RightMenuFrameAndContents> createState() => _RightMenuFrameAndContentsState();
+  State<RightMenuFrameAndContents> createState() =>
+      _RightMenuFrameAndContentsState();
 }
 
 class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
@@ -140,11 +141,13 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   Widget _contentsProperty() {
     BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
     FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    FrameManager? frameManager =
+        BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     if (frame == null || frameManager == null) {
       return SizedBox.shrink();
     }
-    ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
+    ContentsManager? contentsManager =
+        frameManager.getContentsManager(frame.mid);
     if (contentsManager == null) {
       return SizedBox.shrink();
     }
@@ -157,9 +160,14 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     return Column(
       children: [
         ContentsOrderedList(
-            book: model, frameManager: frameManager, contentsManager: contentsManager),
+            book: model,
+            frameManager: frameManager,
+            contentsManager: contentsManager),
         ContentsProperty(
-            key: ValueKey(contents.mid), model: contents, frameManager: frameManager, book: model),
+            key: ValueKey(contents.mid),
+            model: contents,
+            frameManager: frameManager,
+            book: model),
       ],
     );
   }

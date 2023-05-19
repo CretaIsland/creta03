@@ -21,7 +21,8 @@ import '../studio_constant.dart';
 import '../studio_variables.dart';
 
 class LeftMenuPage extends StatefulWidget {
-  const LeftMenuPage({super.key});
+  final bool isFolded;
+  const LeftMenuPage({super.key, this.isFolded = false});
 
   @override
   State<LeftMenuPage> createState() => _LeftMenuPageState();
@@ -43,6 +44,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   late double bodyHeight;
   late double bodyWidth;
   late double cardHeight;
+  late double addCardSpace;
+
+  late double _bodyHeight; // ----------------- added by Mai 230518
+  late double _bodyWidth; // ----------------- added by Mai 230518
+  late double _cardHeight; // ----------------- added by Mai 230518
+  late double _addCardSpace; // ----------------- added by Mai 230519
+  double widthScale = 1;
 
   int _pageCount = 0;
 
@@ -61,6 +69,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     //bodyHeight = cardHeight - headerHeight;
     bodyHeight = bodyWidth * (1080 / 1920);
     cardHeight = bodyHeight + headerHeight;
+    addCardSpace = headerHeight + verticalPadding;
     super.initState();
   }
 
@@ -68,6 +77,22 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   void dispose() {
     //_scrollController.stop();
     super.dispose();
+  }
+
+  // ----------------- Added by Mai 230518 -----------------
+  void _resize() {
+    if (widget.isFolded) {
+      widthScale = LayoutConst.leftMenuWidthCollapsed / LayoutConst.leftMenuWidth;
+      _bodyWidth = LayoutConst.leftMenuWidthCollapsed - horizontalPadding * widthScale * 2;
+    } else {
+      widthScale = 1;
+      _bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * widthScale * 2;
+    }
+    _bodyHeight = bodyHeight * widthScale;
+    // _bodyWidth = bodyWidth * widthScale;
+
+    _cardHeight = cardHeight * widthScale;
+    _addCardSpace = addCardSpace * widthScale;
   }
 
   @override
@@ -82,6 +107,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         pageManager.setSelected(0);
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       }
+      _resize(); // ----------------- Added by Mai 230516 -----------------
       return Column(
         children: [
           _menuBar(),
@@ -111,14 +137,15 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                 })),
           ),
           //BTN.fill_gray_100_i_s(icon: Icons.delete_outlined, onPressed: (() {})),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: BTN.fill_gray_100_i_m(
-                tooltip: CretaStudioLang.treePage,
-                tooltipBg: CretaColor.text[700]!,
-                icon: Icons.account_tree_outlined,
-                onPressed: (() {})),
-          ),
+          if (!widget.isFolded)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: BTN.fill_gray_100_i_m(
+                  tooltip: CretaStudioLang.treePage,
+                  tooltipBg: CretaColor.text[700]!,
+                  icon: Icons.account_tree_outlined,
+                  onPressed: (() {})),
+            ),
         ],
       ),
     );
@@ -127,7 +154,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   Widget _pageView() {
     return Container(
       padding: const EdgeInsets.only(top: 10),
-      height: StudioVariables.workHeight,
+      height: StudioVariables.workHeight - 100,
       child: ReorderableListView(
         buildDefaultDragHandles: false,
         scrollController: _scrollController,
@@ -175,12 +202,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       index: pageIndex,
       child: Column(children: [
         Container(
-          margin: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding),
+          margin: EdgeInsets.symmetric(
+              vertical: verticalPadding * widthScale, horizontal: horizontalPadding * widthScale),
           //height: pageIndex == _pageCount - 1 ? cardHeight * 3 : cardHeight,
-          height: cardHeight,
+          height: _cardHeight,
           child: Column(
             children: [
-              _header(pageIndex, model),
+              if (!widget.isFolded) _header(pageIndex, model),
               _body(pageIndex, model),
               //pageIndex == _pageCount - 1 ? _emptyCard() : Container(),
             ],
@@ -298,8 +326,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       },
       child: SizedBox(
         // 실제 페이지를 그리는 부분
-        height: bodyHeight,
-        width: bodyWidth,
+        height: _bodyHeight,
+        width: _bodyWidth,
         child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
           // width = constraints.maxWidth - borderThick * 2;
           // height = constraints.maxHeight - borderThick * 2;
@@ -342,7 +370,19 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                 alignment: AlignmentDirectional.center,
                 children: [
                   //_thumnailArea(pageWidth, pageHeight, model.thumbnailUrl.value),
-                  _thumnailAreaReal(pageWidth, pageHeight, model),
+                  widget.isFolded
+                      ? Container(
+                          color: Colors.white,
+                          child: Center(
+                            child: Text(
+                              (pageIndex + 1).toString().padLeft(2, '0'),
+                              style: model.isShow.value
+                                  ? CretaFont.titleLarge
+                                  : CretaFont.titleLarge.copyWith(color: CretaColor.text[300]!),
+                            ),
+                          ),
+                        )
+                      : _thumnailAreaReal(pageWidth, pageHeight, model),
                   model.isShow.value == false
                       ? Container(
                           height: pageHeight,
@@ -400,17 +440,18 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       key: UniqueKey(),
       children: [
         SizedBox(
-          height: headerHeight + verticalPadding,
+          height: _addCardSpace,
         ),
         DottedBorder(
           dashPattern: const [6, 6],
           strokeWidth: borderThick / 2,
           strokeCap: StrokeCap.round,
           color: CretaColor.primary[300]!,
+          // padding: EdgeInsets.symmetric(horizontal: horizontalPadding * widthScale),
           child: SizedBox(
             // 실제 페이지를 그리는 부분
-            height: bodyHeight,
-            width: bodyWidth,
+            height: _bodyHeight,
+            width: _bodyWidth,
             // decoration: BoxDecoration(
             //   border: Border.all(width: 2, color: CretaColor.text[300]!),
             // ),
@@ -420,18 +461,19 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                 children: [
                   //_addButton(),
                   BTN.fill_blue_i_l(
-                      size: Size(48, 48),
+                      size: widget.isFolded ? Size(25, 25) : Size(48, 48),
                       icon: Icons.add_outlined,
                       onPressed: () {
                         setState(() {
                           _pageManager!.createNextPage();
                         });
                       }),
-                  SizedBox(height: 12),
-                  Text(
-                    CretaStudioLang.newPage,
-                    style: CretaFont.buttonLarge,
-                  )
+                  SizedBox(height: widget.isFolded ? 12 * widthScale : 12), // added by Mai 230516
+                  if (!widget.isFolded)
+                    Text(
+                      CretaStudioLang.newPage,
+                      style: CretaFont.buttonLarge,
+                    )
                 ],
               ),
             ),
@@ -444,11 +486,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   Widget _emptyCard() {
     // double bodyHeight = cardHeight - headerHeight;
     // double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
-    logger.finest('emptyCard($bodyHeight,$bodyWidth)');
+    logger.info('emptyCard($bodyHeight,$bodyWidth)');
     return SizedBox(
       key: UniqueKey(),
-      height: bodyHeight,
-      width: bodyWidth,
+      height: _bodyHeight,
+      width: _bodyWidth,
     );
   }
 
