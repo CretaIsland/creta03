@@ -15,6 +15,7 @@ class CretaLabelTextEditor extends StatefulWidget {
   final void Function() onLabelHovered;
   final int? maxLine;
   final TextAlign align;
+  final bool alwaysEditable;
 
   CretaLabelTextEditor({
     required this.textFieldKey,
@@ -27,6 +28,7 @@ class CretaLabelTextEditor extends StatefulWidget {
     required this.onLabelHovered,
     this.maxLine,
     this.align = TextAlign.left,
+    this.alwaysEditable = false,
   });
 
   @override
@@ -82,7 +84,7 @@ class CretaLabelTextEditorState extends State<CretaLabelTextEditor> {
       //       _isClicked = true;
       //     });
       //   },
-      child: _isClicked == true
+      child: _isClicked == true || widget.alwaysEditable
           ? CretaTextField(
               height: widget.height,
               width: widget.width,

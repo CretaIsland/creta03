@@ -1,33 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import 'package:progress_bar_steppers/steppers.dart';
 
+import '../../common/creta_utils.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/creta_font.dart';
+import '../../design_system/text_field/creta_text_field.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
+import '../../model/book_model.dart';
+import 'book_info_mixin.dart';
+import 'book_main_page.dart';
 
 class BookPublishDialog extends StatefulWidget {
-  const BookPublishDialog({super.key});
+  final BookModel? model;
+  const BookPublishDialog({super.key, required this.model});
 
   @override
   State<BookPublishDialog> createState() => _BookPublishDialogState();
 }
 
-class _BookPublishDialogState extends State<BookPublishDialog> {
+class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixin {
+  final TextEditingController scopeController = TextEditingController();
   var currentStep = 1;
   var totalSteps = 0;
   late List<StepperData> stepsData;
   late List<Widget> stepsWidget;
 
+  final double width = 364;
+  final double height = 583;
+
   @override
   void initState() {
     super.initState();
+    horizontalPadding = 16;
+    hashTagList = CretaUtils.jsonStringToList(widget.model!.hashTag.value);
+    logger.info('hashTagList=$hashTagList');
     stepsData = [
       StepperData(label: CretaStudioLang.publishSteps[0]),
       StepperData(label: CretaStudioLang.publishSteps[1]),
       StepperData(label: CretaStudioLang.publishSteps[2]),
       StepperData(label: CretaStudioLang.publishSteps[3]),
     ];
+    totalSteps = stepsData.length;
     stepsWidget = [
       step1(),
       step2(),
@@ -35,7 +50,6 @@ class _BookPublishDialogState extends State<BookPublishDialog> {
       step4(),
       const SizedBox.shrink(),
     ];
-    totalSteps = stepsData.length;
   }
 
   @override
@@ -47,15 +61,15 @@ class _BookPublishDialogState extends State<BookPublishDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       child: SafeArea(
         child: SizedBox(
-          width: 364,
-          height: 583,
+          width: width,
+          height: height,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18),
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -72,11 +86,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> {
                   ),
                 ),
                 const Divider(
-                  height: 24,
+                  height: 22,
                   indent: 0,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: Steppers(
                     direction: StepperDirection.horizontal,
                     labels: stepsData,
@@ -89,11 +103,20 @@ class _BookPublishDialogState extends State<BookPublishDialog> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  padding: EdgeInsets.only(
+                    top: 16,
+                    left: horizontalPadding,
+                    right: horizontalPadding,
+                    bottom: 8,
+                  ),
                   child: stepsWidget[currentStep - 1],
                 ),
+                const Divider(
+                  height: 22,
+                  indent: 0,
+                ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -125,9 +148,21 @@ class _BookPublishDialogState extends State<BookPublishDialog> {
   }
 
   Widget step1() {
-    return Container(
-      color: Colors.amber,
+    return SizedBox(
       height: 365,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ..._bookTitle(),
+            const SizedBox(height: 16),
+            ..._description(),
+            const SizedBox(height: 16),
+            ..._tag(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -135,6 +170,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> {
     return Container(
       color: Colors.blue,
       height: 365,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ..._scope(),
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 
@@ -178,5 +221,76 @@ class _BookPublishDialogState extends State<BookPublishDialog> {
       stepsData[2].state = StepperState.normal;
       currentStep++;
     }
+  }
+
+//
+// step 1
+//
+  List<Widget> _bookTitle() {
+    return bookTitle(
+        model: widget.model,
+        alwaysEdit: true,
+        onEditComplete: (value) {
+          setState(() {});
+          BookMainPage.bookManagerHolder?.notify();
+        });
+  }
+
+  List<Widget> _description() {
+    return description(
+        model: widget.model,
+        onEditComplete: (value) {
+          setState(() {});
+        });
+  }
+
+  List<Widget> _tag() {
+    return hashTag(
+      top: 0,
+      model: widget.model!,
+      minTextFieldWidth: width - horizontalPadding * 2,
+      onTagChanged: (value) {
+        setState(() {});
+      },
+      onSubmitted: (value) {
+        setState(() {});
+      },
+      onDeleted: (value) {
+        setState(() {});
+      },
+    );
+  }
+
+//
+// step 2
+//
+
+  List<Widget> _scope() {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Text(CretaLang.inPublic, style: CretaFont.titleSmall),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CretaTextField(
+              height: 32,
+              width: 244,
+              textFieldKey: GlobalKey(),
+              value: '',
+              hintText: '',
+              controller: scopeController,
+              onEditComplete: (val) {
+                setState(() {});
+              }),
+          BTN.line_blue_t_m(
+              text: CretaLang.invite,
+              onPressed: () {
+                // 여기서, team 명과 userId 를 검증하여, 임시로 readers 에 넣는다.
+              })
+        ],
+      )
+    ];
   }
 }

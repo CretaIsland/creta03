@@ -205,20 +205,6 @@ class _RightMenuState
     }
   }
 
-  Widget _showTitleText({required String title, required void Function(String) onEditComplete}) {
-    logger.finest('_showTitletext $title');
-    return CretaLabelTextEditor(
-      textFieldKey: textFieldKey,
-      height: 32,
-      width: StudioVariables.displayWidth * 0.25,
-      text: title,
-      textStyle: CretaFont.titleLarge,
-      align: TextAlign.center,
-      onEditComplete: onEditComplete,
-      onLabelHovered: () {},
-    );
-  }
-
   Widget _eachTitle(ContaineeEnum selected) {
     logger.fine('_eachTitle $selected');
     switch (selected) {
@@ -230,7 +216,7 @@ class _RightMenuState
             return Container();
           }
           title = model.name.value;
-          return _showTitleText(
+          return StudioSnippet.showTitleText(
             title: title,
             onEditComplete: (value) {
               setState(() {
@@ -248,7 +234,7 @@ class _RightMenuState
             return Container();
           }
           title = model.name.value;
-          return _showTitleText(
+          return StudioSnippet.showTitleText(
             title: title,
             onEditComplete: (value) {
               setState(() {
@@ -266,7 +252,7 @@ class _RightMenuState
             return Container();
           }
           title = model.name.value;
-          return _showTitleText(
+          return StudioSnippet.showTitleText(
             title: title,
             onEditComplete: (value) {
               setState(() {

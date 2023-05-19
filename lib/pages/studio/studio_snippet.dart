@@ -7,12 +7,15 @@ import 'package:hycop/hycop/model/file_model.dart';
 
 import '../../common/creta_utils.dart';
 import '../../data_io/contents_manager.dart';
+import '../../design_system/buttons/creta_label_text_editor.dart';
+import '../../design_system/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
 import 'studio_constant.dart';
+import 'studio_variables.dart';
 
 enum ShadowDirection {
   rightBottum,
@@ -277,5 +280,29 @@ class StudioSnippet {
             selected: defaultValue == weight);
       },
     ).toList();
+  }
+
+  static Widget showTitleText({
+    required String title,
+    required void Function(String) onEditComplete,
+    double? height,
+    double? width,
+    bool alwaysEditable = false,
+  }) {
+    logger.finest('_showTitletext $title');
+    height ??= 32;
+    width ??= StudioVariables.displayWidth * 0.25;
+
+    return CretaLabelTextEditor(
+      textFieldKey: GlobalKey<CretaLabelTextEditorState>(),
+      alwaysEditable: alwaysEditable,
+      height: height,
+      width: width,
+      text: title,
+      textStyle: CretaFont.titleLarge,
+      align: TextAlign.center,
+      onEditComplete: onEditComplete,
+      onLabelHovered: () {},
+    );
   }
 }

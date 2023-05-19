@@ -805,7 +805,8 @@ class _BookMainPageState extends State<BookMainPage> {
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return BookPublishDialog();
+                      return BookPublishDialog(
+                          model: BookMainPage.bookManagerHolder?.onlyOne() as BookModel?);
                     });
               }),
           SizedBox(width: padding * 2.5),

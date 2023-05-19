@@ -96,4 +96,7 @@ class CretaLang {
 
   static String next = "다음";
   static String prev = "이전";
+  static String cretaBookName = "크레타북 이름";
+  static String inPublic = "공개하기";
+  static String invite = "초대하기";
 }

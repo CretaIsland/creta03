@@ -1,19 +1,16 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
-import 'package:material_tag_editor/tag_editor.dart';
 
 import '../../../../common/creta_utils.dart';
-import '../../../../design_system/creta_chip.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
-import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
+import '../../book_info_mixin.dart';
 import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
 
@@ -26,13 +23,9 @@ class BookInfoProperty extends StatefulWidget {
   State<BookInfoProperty> createState() => _BookInfoPropertyState();
 }
 
-class _BookInfoPropertyState extends State<BookInfoProperty> {
+class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin {
   // ignore: unused_field
   //late ScrollController _scrollController;
-
-  final double horizontalPadding = 24;
-
-  List<String> hashTagList = [];
 
   late TextStyle _titleStyle;
   late TextStyle _dataStyle;
@@ -75,92 +68,95 @@ class _BookInfoPropertyState extends State<BookInfoProperty> {
   }
 
   List<Widget> _description() {
-    return [
-      Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Text(CretaStudioLang.description, style: CretaFont.titleSmall),
-      ),
-      CretaTextField.long(
-        radius: 12,
-        hintText: '',
-        textFieldKey: GlobalKey(),
-        onEditComplete: (String value) {
-          setState(() {
-            widget.model.description.set(value);
-          });
-        },
-        value: widget.model.description.value,
-      ),
-    ];
+    return description(
+        model: widget.model,
+        onEditComplete: (value) {
+          setState(() {});
+        });
   }
 
   List<Widget> _tag() {
-    return [
-      Padding(
-        padding: const EdgeInsets.only(top: 24, bottom: 12),
-        child: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
-      ),
-      TagEditor(
-        textFieldHeight: 36,
-        minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
-        tagSpacing: 0,
-        textStyle: CretaFont.buttonMedium,
-        length: hashTagList.length,
-        delimiters: const [',', ' '],
-        hasAddButton: true,
-        resetTextOnSubmitted: true,
-        inputDecoration: InputDecoration(
-          iconColor: CretaColor.text[200]!,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(
-              width: 1,
-              color: CretaColor.text[200]!,
-            ),
-          ),
-          //hintText: '당신의 크레타북에 적절한 검섹어 태그를 붙이세요',
-        ),
-        inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[/\\]'))],
-        onTagChanged: (newValue) {
-          setState(() {
-            hashTagList.add(newValue);
-            String val = CretaUtils.listToString(hashTagList);
-            logger.finest('hashTag=$val');
-            widget.model.hashTag.set(val);
-          });
-          logger.finest('onTagChanged $newValue input');
-        },
-        onSubmitted: (outstandingValue) {
-          setState(() {
-            hashTagList.add(outstandingValue);
-            String val = CretaUtils.listToString(hashTagList);
-            logger.finest('hashTag=$val');
-            widget.model.hashTag.set(val);
-            logger.finest('onSubmitted $outstandingValue input');
-          });
-        },
-        tagBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(
-              right: 4,
-              bottom: 4,
-            ),
-            child: CretaChip(
-              index: index,
-              label: hashTagList[index],
-              onDeleted: (idx) {
-                setState(() {
-                  hashTagList.removeAt(index);
-                  String val = CretaUtils.listToString(hashTagList);
-                  widget.model.hashTag.set(val);
-                  logger.finest('onDelete $index');
-                });
-              },
-            ),
-          );
-        },
-      )
-    ];
+    return hashTag(
+      top: 24,
+      model: widget.model,
+      minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
+      onTagChanged: (value) {
+        setState(() {});
+      },
+      onSubmitted: (value) {
+        setState(() {});
+      },
+      onDeleted: (value) {
+        setState(() {});
+      },
+    );
+
+    // return [
+    //   Padding(
+    //     padding: const EdgeInsets.only(top: 24, bottom: 12),
+    //     child: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
+    //   ),
+    //   TagEditor(
+    //     textFieldHeight: 36,
+    //     minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
+    //     tagSpacing: 0,
+    //     textStyle: CretaFont.buttonMedium,
+    //     length: hashTagList.length,
+    //     delimiters: const [',', ' '],
+    //     hasAddButton: true,
+    //     resetTextOnSubmitted: true,
+    //     inputDecoration: InputDecoration(
+    //       iconColor: CretaColor.text[200]!,
+    //       border: OutlineInputBorder(
+    //         borderRadius: BorderRadius.circular(30),
+    //         borderSide: BorderSide(
+    //           width: 1,
+    //           color: CretaColor.text[200]!,
+    //         ),
+    //       ),
+    //       //hintText: '당신의 크레타북에 적절한 검섹어 태그를 붙이세요',
+    //     ),
+    //     inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[/\\]'))],
+    //     onTagChanged: (newValue) {
+    //       setState(() {
+    //         hashTagList.add(newValue);
+    //         String val = CretaUtils.listToString(hashTagList);
+    //         logger.finest('hashTag=$val');
+    //         widget.model.hashTag.set(val);
+    //       });
+    //       logger.finest('onTagChanged $newValue input');
+    //     },
+    //     onSubmitted: (outstandingValue) {
+    //       setState(() {
+    //         hashTagList.add(outstandingValue);
+    //         String val = CretaUtils.listToString(hashTagList);
+    //         logger.finest('hashTag=$val');
+    //         widget.model.hashTag.set(val);
+    //         logger.finest('onSubmitted $outstandingValue input');
+    //       });
+    //     },
+    //     tagBuilder: (context, index) {
+    //       return Padding(
+    //         padding: const EdgeInsets.only(
+    //           right: 4,
+    //           bottom: 4,
+    //         ),
+    //         child: CretaChip(
+    //           index: index,
+    //           label: hashTagList[index],
+    //           onDeleted: (idx) {
+    //             setState(() {
+    //               hashTagList.removeAt(index);
+    //               String val = CretaUtils.listToString(hashTagList);
+    //               widget.model.hashTag.set(val);
+    //               logger.finest('onDelete $index');
+    //             });
+    //           },
+    //         ),
+    //       );
+    //     },
+    //   )
+    // ];
   }
 
   Widget _copyRight() {
