@@ -802,11 +802,15 @@ class _BookMainPageState extends State<BookMainPage> {
               text: CretaStudioLang.publish,
               image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
               onPressed: () {
+                BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return BookPublishDialog(
-                          model: BookMainPage.bookManagerHolder?.onlyOne() as BookModel?);
+                        key: GlobalKey(),
+                        model: model,
+                      );
                     });
               }),
           SizedBox(width: padding * 2.5),

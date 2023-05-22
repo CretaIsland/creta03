@@ -20,6 +20,7 @@ import 'studio_snippet.dart';
 
 class BookPublishDialog extends StatefulWidget {
   final BookModel? model;
+
   const BookPublishDialog({super.key, required this.model});
 
   @override
@@ -56,26 +57,22 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     ];
     totalSteps = stepsData.length;
 
-    Map<String, PermissionType> shares = widget.model!.getSharesAsMap();
-    emailList = shares.keys.toList();
-    permitionList = shares.values.toList();
+    _resetList();
 
     LoginPage.userPropertyManagerHolder!.getUserPropertyFromEmail(emailList).then((value) {
       userModelList = [...value];
       for (var ele in userModelList) {
-        logger.info('user_property ${ele.nickname}, ${ele.email} founded');
+        logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
       }
       _onceDBGetComplete = true;
       return value;
     });
+  }
 
-    stepsWidget = [
-      step1(),
-      step2(),
-      step3(),
-      step4(),
-      const SizedBox.shrink(),
-    ];
+  void _resetList() {
+    Map<String, PermissionType> shares = widget.model!.getSharesAsMap();
+    emailList = shares.keys.toList();
+    permitionList = shares.values.toList();
   }
 
   Future<bool> _waitDBJob() async {
@@ -91,102 +88,114 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     if (currentStep > totalSteps) {
       Navigator.of(context).pop();
     }
-    return FutureBuilder(
-        future: _waitDBJob(),
-        builder: (context, AsyncSnapshot<bool> snapshot) {
-          return Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-            child: SafeArea(
-              child: SizedBox(
-                width: width,
-                height: height,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              CretaStudioLang.publishSettings,
-                              style: CretaFont.titleMedium,
-                            ),
-                            BTN.fill_gray_i_m(
-                                icon: Icons.close_outlined,
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                }),
-                          ],
-                        ),
-                      ),
-                      const Divider(
-                        height: 22,
-                        indent: 0,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                        child: Steppers(
-                          direction: StepperDirection.horizontal,
-                          labels: stepsData,
-                          currentStep: currentStep,
-                          stepBarStyle: StepperStyle(
-                            // activeColor: StepperColors.red500,
-                            maxLineLabel: 2,
-                            // inactiveColor: StepperColors.grey400
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      child: StatefulBuilder(builder: (BuildContext context, StateSetter setState1) {
+        stepsWidget = [
+          step1(),
+          step2(),
+          step3(),
+          step4(),
+          const SizedBox.shrink(),
+        ];
+
+        return FutureBuilder(
+            future: _waitDBJob(),
+            builder: (context, AsyncSnapshot<bool> snapshot) {
+              return SafeArea(
+                child: SizedBox(
+                  width: width,
+                  height: height,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                CretaStudioLang.publishSettings,
+                                style: CretaFont.titleMedium,
+                              ),
+                              BTN.fill_gray_i_m(
+                                  icon: Icons.close_outlined,
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }),
+                            ],
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 16,
-                          left: horizontalPadding,
-                          right: horizontalPadding,
-                          bottom: 8,
+                        const Divider(
+                          height: 22,
+                          indent: 0,
                         ),
-                        child: stepsWidget[currentStep - 1],
-                      ),
-                      const Divider(
-                        height: 22,
-                        indent: 0,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            if (currentStep > 1)
-                              BTN.line_blue_t_m(
-                                width: 24,
-                                text: CretaLang.prev,
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                          child: Steppers(
+                            direction: StepperDirection.horizontal,
+                            labels: stepsData,
+                            currentStep: currentStep,
+                            stepBarStyle: StepperStyle(
+                              // activeColor: StepperColors.red500,
+                              maxLineLabel: 2,
+                              // inactiveColor: StepperColors.grey400
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: 16,
+                            left: horizontalPadding,
+                            right: horizontalPadding,
+                            bottom: 8,
+                          ),
+                          child: stepsWidget[currentStep - 1],
+                        ),
+                        const Divider(
+                          height: 22,
+                          indent: 0,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if (currentStep > 1)
+                                BTN.line_blue_t_m(
+                                  width: 24,
+                                  text: CretaLang.prev,
+                                  onPressed: () {
+                                    setState(() {
+                                      _prevStep();
+                                    });
+                                  },
+                                ),
+                              const SizedBox(width: 8),
+                              BTN.fill_blue_t_m(
+                                width: 55,
+                                text: CretaLang.next,
                                 onPressed: () {
                                   setState(() {
-                                    _prevStep();
+                                    _nextStep();
                                   });
                                 },
                               ),
-                            const SizedBox(width: 8),
-                            BTN.fill_blue_t_m(
-                              width: 55,
-                              text: CretaLang.next,
-                              onPressed: () {
-                                setState(() {
-                                  _nextStep();
-                                });
-                              },
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        });
+              );
+            });
+      }),
+    );
+    //});
   }
 
   Widget step1() {
@@ -355,9 +364,16 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                 icon2: Icons.add_outlined,
                 text: CretaLang.entire,
                 onPressed: () {
-                  setState(() {
-                    widget.model!.readers.add('public');
-                  });
+                  UserPropertyModel? user = _findModel('public');
+                  if (user == null) {
+                    //아직 전체가 없을 때만 넣는다.
+                    setState(() {
+                      widget.model!.readers.add('public');
+                      widget.model!.save();
+                      userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel());
+                      _resetList();
+                    });
+                  }
                 }),
             ..._myTeams(),
           ],
@@ -446,7 +462,22 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                   isNotCreator
                       ? BTN.fill_gray_i_s(
                           icon: Icons.close,
-                          onPressed: () {},
+                          onPressed: () {
+                            if (permitionList[index] == PermissionType.owner) {
+                              // deleteFrom owners
+                              widget.model!.owners.remove(email);
+                            } else if (permitionList[index] == PermissionType.writer) {
+                              // deleteFrom writers
+                              widget.model!.writers.remove(email);
+                            } else if (permitionList[index] == PermissionType.reader) {
+                              // deleteFrom readers
+                              widget.model!.readers.remove(email);
+                            }
+                            setState(() {
+                              widget.model!.save();
+                              _resetList();
+                            });
+                          },
                           buttonSize: 24,
                         )
                       : const SizedBox.shrink(),
@@ -462,6 +493,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   String _nameWrap(UserPropertyModel? model, String email, bool isNotCreator) {
     String name = email;
     if (model != null) {
+      logger.info('===============>>>_nameWrap(${model.nickname}, email, isNotCreator)');
       name = model.nickname;
     }
     if (isNotCreator) {
