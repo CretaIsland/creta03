@@ -197,7 +197,7 @@ class UserPropertyModel extends CretaModel {
         'commentCount': commentCount,
         'useDigitalSignage': useDigitalSignage,
         'usePushNotice': usePushNotice,
-        'useEmailNotice0': useEmailNotice,
+        'useEmailNotice': useEmailNotice,
         'isPublicProfile': isPublicProfile,
         'theme': theme.index,
         'initPage': initPage.index,
