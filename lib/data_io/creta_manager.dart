@@ -444,10 +444,10 @@ abstract class CretaManager extends AbsExModelManager {
       //reOrdering();
       return retval;
     } catch (e) {
-      logger.severe('databaseError $e');
+      logger.severe('databaseError $collectionId $e ');
       _dbState = DBState.idle;
       unlock();
-      throw HycopException(message: 'databaseError', exception: e as Exception);
+      throw HycopException(message: 'databaseError $collectionId', exception: e as Exception);
     }
   }
 

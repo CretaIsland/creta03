@@ -25,5 +25,6 @@ creta_frame	frameType 오름차순 isRemoved 오름차순 parentMid 오름차순
 creta_frame	isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순
 
 creta_user_property	isRemoved 오름차순 parentMid 오름차순 order 오름차순 updateTime 내림차순
+creta_user_property	email 오름차순 isRemoved 오름차순
 
 creta_contents	isRemoved 오름차순 parentMid 오름차순 order 오름차순 updateTime 내림차순 __name__ 내림차순

@@ -108,7 +108,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     String? publishMid,
     String? sourceMid,
     List<String>? hashtags,
-      }) : super(pmid: '', type: ExModelType.book, parent: '') {
+  }) : super(pmid: '', type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     thumbnailUrl = UndoAble<String>(imageUrl, mid);
     thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid);
@@ -204,6 +204,10 @@ class BookModel extends CretaModel with CretaStyleMixin {
   Map<String, dynamic> toMap() {
     //shares = [...owners, ...writers, ...readers];
     shares = _getShares(owners, writers, readers);
+    if (owners.isEmpty) {
+      owners.add(creator);
+    }
+
     return super.toMap()
       ..addEntries({
         "name": name.value,
@@ -228,7 +232,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
         "publishMid": publishMid,
         "sourceMid": sourceMid,
         "hashtags": hashtags,
-      ...super.toMapMixin(),
+        ...super.toMapMixin(),
       }.entries);
   }
 
@@ -254,17 +258,32 @@ class BookModel extends CretaModel with CretaStyleMixin {
     return Size(size.width / width.value, size.height / height.value);
   }
 
-  List<String> _getShares(List<String> ownerList, List<String> writerList, List<String> readerList) {
+  List<String> _getShares(
+      List<String> ownerList, List<String> writerList, List<String> readerList) {
     List<String> valueList = [];
-    for(var val in ownerList) {
+    for (var val in ownerList) {
       valueList.add('<${PermissionType.owner.name}>$val');
     }
-    for(var val in writerList) {
+    for (var val in writerList) {
       valueList.add('<${PermissionType.writer.name}>$val');
     }
-    for(var val in readerList) {
+    for (var val in readerList) {
       valueList.add('<${PermissionType.reader.name}>$val');
     }
     return valueList;
+  }
+
+  Map<String, PermissionType> getSharesAsMap() {
+    Map<String, PermissionType> retval = {};
+    for (var val in owners) {
+      retval[val] = PermissionType.owner;
+    }
+    for (var val in writers) {
+      retval[val] = PermissionType.writer;
+    }
+    for (var val in readers) {
+      retval[val] = PermissionType.reader;
+    }
+    return retval;
   }
 }

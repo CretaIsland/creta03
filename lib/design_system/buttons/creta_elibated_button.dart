@@ -20,6 +20,7 @@ class CretaElevatedButton extends StatefulWidget {
   final Color borderColor;
 
   final double height;
+  final double? width;
   final double radius;
 
   final bool isVertical;
@@ -39,6 +40,7 @@ class CretaElevatedButton extends StatefulWidget {
     this.borderColor = Colors.lightBlue,
     this.borderSelectedColor = Colors.blue,
     this.height = 24,
+    this.width,
     this.radius = 36,
     this.isVertical = false,
   });
@@ -88,7 +90,7 @@ class _CretaElevatedButtonState extends State<CretaElevatedButton> {
         widget.onPressed();
       },
       child: SizedBox(
-          //width: double.infinity,
+          width: widget.width,
           //color: Colors.amber,
           height: widget.height,
           child: widget.isVertical

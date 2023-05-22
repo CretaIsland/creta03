@@ -611,10 +611,11 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                     const Text('line_blue_iti_m'),
                     const SizedBox(height: 20),
                     BTN.line_blue_iti_m(
-                      image: NetworkImage(
-                          'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                      // image: NetworkImage(
+                      //     'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                       text: 'button',
-                      icon: Icons.add_outlined,
+                      icon1: Icons.groups_outlined,
+                      icon2: Icons.add_outlined,
                       onPressed: () {},
                     ),
                   ],

@@ -383,4 +383,6 @@ class CretaStudioLang {
     '채널 선택',
     '발행 완료',
   ];
+
+  static const String publishTo = '공개할 사람';
 }

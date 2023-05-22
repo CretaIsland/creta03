@@ -25,7 +25,7 @@ class CretaLang {
     "권한별(전체)",
     "소유자",
     "편집자",
-    "뷰어",
+    "뷰  어",
   ];
 
   static const String edit = '편집하기';
@@ -99,4 +99,7 @@ class CretaLang {
   static String cretaBookName = "크레타북 이름";
   static String inPublic = "공개하기";
   static String invite = "초대하기";
+  static String entire = "전체";
+  static String team = "팀";
+  static String creator = "생성자";
 }

@@ -169,10 +169,10 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
           widget.model.creator == AccountManager.currentLoginUser.email
               ? CretaDropDownButton(
                   selectedColor: CretaColor.text[700]!,
-                  textStyle: _dataStyle,
-                  width: 260,
-                  height: 36,
-                  itemHeight: 24,
+                  textStyle: CretaFont.bodyESmall,
+                  width: 87,
+                  height: 28,
+                  itemHeight: 12,
                   dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
                       defaultValue: widget.model.copyRight.value,
                       onChanged: (val) {

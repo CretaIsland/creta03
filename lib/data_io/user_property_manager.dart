@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:hycop/hycop.dart';
@@ -9,20 +11,19 @@ import 'package:creta03/model/user_property_model.dart';
 import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:creta03/model/creta_model.dart';
 
-
+import '../design_system/creta_font.dart';
+import '../lang/creta_lang.dart';
 
 class UserPropertyManager extends CretaManager {
-
   late UserModel userModel;
   final List<FrameModel> _frameModelList = [];
   UserPropertyModel? userPropertyModel;
-
 
   UserPropertyManager() : super('creta_user_property') {
     userModel = AccountManager.currentLoginUser;
     saveManagerHolder?.registerManager('user', this);
   }
-  
+
   @override
   CretaModel cloneModel(CretaModel src) {
     UserPropertyModel retval = newModel(src.mid) as UserPropertyModel;
@@ -44,13 +45,13 @@ class UserPropertyManager extends CretaManager {
 
     try {
       userPropertyCount = await _getUserProperty();
-      if(userPropertyCount == 0) {
+      if (userPropertyCount == 0) {
         await createUserProperty();
         userPropertyCount = 1;
       }
     } catch (error) {
-      logger.info('something wrong in userPropertyManager >> $error');
-      await createUserProperty();
+      logger.severe('something wrong in userPropertyManager >> $error');
+      //await createUserProperty();
       userPropertyCount = 1;
     }
 
@@ -74,45 +75,44 @@ class UserPropertyManager extends CretaManager {
 
   Future<UserPropertyModel> createUserProperty() async {
     userPropertyModel = UserPropertyModel.withName(
-      pparentMid: userModel.userId,
-      email: userModel.email,
-      nickname: userModel.name,
-      phoneNumber: userModel.phone,
-      cretaGrade: CretaGradeType.none,
-      ratePlan: RatePlanType.none,
-      profileImg: '',
-      channelBannerImg: '',
-      country: CountryType.none,
-      language: LanguageType.none,
-      job: JobType.none,
-      freeSpace: 1042,
-      bookCount: 0,
-      bookViewCount: 0,
-      bookViewTime: 0,
-      likeCount: 0,
-      commentCount: 0,
-      useDigitalSignage: false,
-      usePushNotice: false,
-      useEmailNotice: false,
-      isPublicProfile: true,
-      theme: ThemeType.none,
-      initPage: InitPageType.none,
-      cookie: CookieType.none,
-      autoPlay: true,
-      mute: false,
-      latestBook: '',
-      latestUseFrames: const [],
-      latestUseColors: const [
-        Colors.white,
-        Colors.black,
-        Colors.red,
-        Colors.blue,
-        Colors.yellow,
-        Colors.green,
-        Colors.purple
-      ],
-      teams: const []
-    );
+        pparentMid: userModel.userId,
+        email: userModel.email,
+        nickname: userModel.name,
+        phoneNumber: userModel.phone,
+        cretaGrade: CretaGradeType.none,
+        ratePlan: RatePlanType.none,
+        profileImg: '',
+        channelBannerImg: '',
+        country: CountryType.none,
+        language: LanguageType.none,
+        job: JobType.none,
+        freeSpace: 1042,
+        bookCount: 0,
+        bookViewCount: 0,
+        bookViewTime: 0,
+        likeCount: 0,
+        commentCount: 0,
+        useDigitalSignage: false,
+        usePushNotice: false,
+        useEmailNotice: false,
+        isPublicProfile: true,
+        theme: ThemeType.none,
+        initPage: InitPageType.none,
+        cookie: CookieType.none,
+        autoPlay: true,
+        mute: false,
+        latestBook: '',
+        latestUseFrames: const [],
+        latestUseColors: const [
+          Colors.white,
+          Colors.black,
+          Colors.red,
+          Colors.blue,
+          Colors.yellow,
+          Colors.green,
+          Colors.purple
+        ],
+        teams: const []);
 
     await createToDB(userPropertyModel!);
     insert(userPropertyModel!, postion: getAvailLength());
@@ -212,7 +212,6 @@ class UserPropertyManager extends CretaManager {
     return userPropertyModel!.latestUseColors;
   }
 
-
   void setMute(bool val) {
     if (userPropertyModel != null) {
       userPropertyModel!.mute = val;
@@ -252,7 +251,7 @@ class UserPropertyManager extends CretaManager {
       await queryFromDB(query, orderBy: orderBy, limit: limit);
       logger.finest('getProperty ${modelList.length}');
 
-      if(modelList.isNotEmpty) {
+      if (modelList.isNotEmpty) {
         return onlyOne() as UserPropertyModel;
       }
     } catch (error) {
@@ -262,6 +261,56 @@ class UserPropertyManager extends CretaManager {
     endTransaction();
     return null;
   }
-  
 
+  Future<List<UserPropertyModel>> getUserPropertyFromEmail(List<String> emailList) async {
+    List<UserPropertyModel> userModelList = [];
+    for (String email in emailList) {
+      if (email == "public") {
+        UserPropertyModel user = UserPropertyModel('');
+        user.nickname = CretaLang.entire;
+        userModelList.add(user);
+      } else {
+        UserPropertyModel? user = await _emailToModel(email);
+        if (user != null) {
+          userModelList.add(user);
+        }
+      }
+    }
+    return userModelList;
+  }
+
+  Future<UserPropertyModel?> _emailToModel(String email) async {
+    Map<String, QueryValue> query = {};
+    query['email'] = QueryValue(value: email);
+    query['isRemoved'] = QueryValue(value: false);
+    final userList = await queryFromDB(query);
+    for (var ele in userList) {
+      UserPropertyModel user = ele as UserPropertyModel;
+      return user;
+    }
+    return null;
+  }
+
+  Widget profileImageBox({UserPropertyModel? model, double radius = 200}) {
+    model ??= userPropertyModel;
+
+    return Container(
+        width: radius,
+        height: radius,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(radius),
+            color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+            image: model!.profileImg == ''
+                ? null
+                : DecorationImage(image: Image.network(model.profileImg).image, fit: BoxFit.cover)),
+        child: model.profileImg == ''
+            ? Center(
+                child: Text(model.email.substring(0, 1),
+                    style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: CretaFont.semiBold,
+                        fontSize: (64 / 200) * radius,
+                        color: Colors.white)))
+            : Container());
+  }
 }

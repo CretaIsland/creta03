@@ -439,7 +439,8 @@ class BTN {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(text,
-                style: textStyle ?? CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
+                style: textStyle ??
+                    CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
           ],
         ),
       ),
@@ -1151,9 +1152,12 @@ class BTN {
   static CretaElevatedButton line_blue_t_m({
     required String text,
     required Function onPressed,
+    double? width,
+    double height = 34,
   }) {
     return CretaElevatedButton(
-      height: 32,
+      width: width,
+      height: height,
       radius: 30,
       onPressed: onPressed,
       caption: text,
@@ -1202,7 +1206,7 @@ class BTN {
     );
   }
 
-  static CretaButton line_blue_iti_m({
+  static CretaButton line_blue_imti_m({
     required String text,
     required IconData icon,
     required ImageProvider image,
@@ -1242,6 +1246,59 @@ class BTN {
             icon,
             size: 16,
             color: CretaColor.primary,
+          ),
+        ],
+      ),
+    );
+  }
+
+  static CretaButton line_blue_iti_m({
+    required String text,
+    required IconData icon1,
+    required IconData icon2,
+    required Function onPressed,
+    double? width,
+    CretaButtonSidePadding? sidePadding,
+  }) {
+    return CretaButton(
+      width: width,
+      height: 32,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.sky,
+      decoType: CretaButtonDeco.line,
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          //Padding(
+          //padding: const EdgeInsets.only(left: 8.0),
+          //child:
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Icon(
+              icon1,
+              size: 16,
+              color: CretaColor.primary,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Icon(
+              icon2,
+              size: 16,
+              color: CretaColor.primary,
+            ),
           ),
         ],
       ),
