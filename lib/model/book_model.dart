@@ -191,7 +191,8 @@ class BookModel extends CretaModel with CretaStyleMixin {
     //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
     publishMid = map["publishMid"] ?? '';
     sourceMid = map["sourceMid"] ?? '';
-    hashtags = map["hashtags"] ?? [];
+    //hashtags = map["hashtags"] ?? [];
+    hashtags = CretaUtils.dynamicListToStringList(map["hashtags"]);
 
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);

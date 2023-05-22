@@ -84,6 +84,18 @@ class CretaUtils {
     return [];
   }
 
+
+  static List<String> dynamicListToStringList(List<dynamic>? list) {
+    List<String> retList = [];
+    if (list == null) return retList;
+    for(var value in list) {
+      if (value is String) {
+        retList.add(value);
+      }
+    }
+    return retList;
+  }
+
   static String listToString(List<String> list) {
     logger.finest('listToString=[${list.toString()}]');
     String retval = '';
