@@ -79,10 +79,10 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                                 const SizedBox(height: 16.0),
                                 CretaToggleButton(
                                   onSelected: (value) {
-                                    userPropertyManagerHolder.propertyModel!.useDigitalSignage = value;
-                                    userPropertyManagerHolder.setToDB(userPropertyManagerHolder.propertyModel!);
+                                    userPropertyManagerHolder.userPropertyModel!.useDigitalSignage = value;
+                                    userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
                                   }, 
-                                  defaultValue: userPropertyManagerHolder.propertyModel!.useDigitalSignage
+                                  defaultValue: userPropertyManagerHolder.userPropertyModel!.useDigitalSignage
                                 )
                               ] 
                             )
@@ -101,7 +101,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                         const SizedBox(height: 32.0),
                         Row(
                           children: [
-                            Text(CretaMyPageLang.ratePlanList[userPropertyManagerHolder.propertyModel!.ratePlan.index], style: CretaFont.titleMedium),
+                            Text(CretaMyPageLang.ratePlanList[userPropertyManagerHolder.userPropertyModel!.ratePlan.index], style: CretaFont.titleMedium),
                             const SizedBox(width: 24.0),
                             BTN.line_blue_t_m(text: CretaMyPageLang.ratePlanChangeBTN, onPressed: () {})
                           ],
@@ -125,10 +125,10 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                             const SizedBox(width: 199.0),
                             CretaToggleButton(
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.isPublicProfile = value;
-                                userPropertyManagerHolder.setToDB(userPropertyManagerHolder.propertyModel!);
+                                userPropertyManagerHolder.userPropertyModel!.isPublicProfile = value;
+                                userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
                               }, 
-                              defaultValue: userPropertyManagerHolder.propertyModel!.isPublicProfile
+                              defaultValue: userPropertyManagerHolder.userPropertyModel!.isPublicProfile
                             )
                           ]
                         ),

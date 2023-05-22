@@ -1,33 +1,28 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
-
-import 'package:creta03/model/app_enums.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/undo/save_manager.dart';
-import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
-import 'package:hycop/hycop/database/abs_database.dart';
-import 'package:hycop/hycop/hycop_factory.dart';
-import 'package:hycop/hycop/model/user_model.dart';
-import 'package:hycop/hycop/utils/hycop_exceptions.dart';
-import '../model/creta_model.dart';
-import '../model/frame_model.dart';
-import '../model/user_property_model.dart';
-import '../pages/studio/studio_constant.dart';
-import 'creta_manager.dart';
+
+import 'package:hycop/hycop.dart';
+
+import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta03/model/app_enums.dart';
+import 'package:creta03/model/frame_model.dart';
+import 'package:creta03/model/user_property_model.dart';
+import 'package:creta03/pages/studio/studio_constant.dart';
+import 'package:creta03/model/creta_model.dart';
+
+
 
 class UserPropertyManager extends CretaManager {
+
   late UserModel userModel;
   final List<FrameModel> _frameModelList = [];
-  UserPropertyModel? propertyModel;
+  UserPropertyModel? userPropertyModel;
+
 
   UserPropertyManager() : super('creta_user_property') {
     userModel = AccountManager.currentLoginUser;
     saveManagerHolder?.registerManager('user', this);
   }
-  @override
-  AbsExModel newModel(String mid) => UserPropertyModel(mid);
-
+  
   @override
   CretaModel cloneModel(CretaModel src) {
     UserPropertyModel retval = newModel(src.mid) as UserPropertyModel;
@@ -35,111 +30,100 @@ class UserPropertyManager extends CretaManager {
     return retval;
   }
 
+  @override
+  AbsExModel newModel(String mid) => UserPropertyModel(mid);
+
   Future<void> initUserProperty() async {
     clearAll();
     await getUserProperty();
   }
 
   Future<int> getUserProperty() async {
-    int userCount = 0;
+    int userPropertyCount = 0;
     startTransaction();
+
     try {
-      userCount = await getProperty();
-      if (userCount == 0) {
-        await createNext();
-        userCount = 1;
+      userPropertyCount = await _getUserProperty();
+      if(userPropertyCount == 0) {
+        await createUserProperty();
+        userPropertyCount = 1;
       }
-    } catch (e) {
-      logger.finest('something wrong $e');
-      await createNext();
-      userCount = 1;
+    } catch (error) {
+      logger.info('something wrong in userPropertyManager >> $error');
+      await createUserProperty();
+      userPropertyCount = 1;
     }
+
     endTransaction();
-    return userCount;
+    return userPropertyCount;
   }
 
-  void addFavColor(Color color) {
-    if (propertyModel == null) {
-      return;
-    }
-    propertyModel!.lastestUseColors.add(color);
-    propertyModel!.save();
-  }
-
-  List<Color> getColorList() {
-    if (propertyModel == null) {
-      return [];
-    }
-    return propertyModel!.lastestUseColors;
-  }
-
-  Future<UserPropertyModel> createNext() async {
-    //updateLastOrder();
-    propertyModel = UserPropertyModel.withName(
-        pparentMid: userModel.userId,
-        email: userModel.email,
-        nickname: userModel.name,
-        phoneNumber: userModel.phone,
-        profileImg: '',
-        teams: [],
-        country: CountryType.none,
-        language: LanguageType.none,
-        job: JobType.none,
-        useDigitalSignage: false,
-        isPublicProfile: true,
-        channelBannerImg: '',
-        usePushNotice: false,
-        useEmailNotice: false,
-        themeStyle: ThemeType.none,
-        cretaInitPage: InitPageType.none,
-        cookie: CookieType.none,
-        cretaGrade: CretaGradeType.none,
-        ratePlan: RatePlanType.none,
-        freeSpace: 0,
-        bookCount: 0,
-        bookViewCount: 0,
-        bookViewTime: 0,
-        likeCount: 0,
-        commentCount: 0,
-        lastestBook: '',
-        lastestUseFrames: [],
-        lastestUseColors: [
-          Colors.white,
-          Colors.black,
-          Colors.red,
-          Colors.blue,
-          Colors.yellow,
-          Colors.green,
-          Colors.purple,
-        ],
-        autoPlay: true,
-        mute: false);
-    await createToDB(propertyModel!);
-    insert(propertyModel!, postion: getAvailLength());
-    selectedMid = propertyModel!.mid;
-    await getLinkedObject();
-    return propertyModel!;
-  }
-
-  Future<int> getProperty({int limit = 99}) async {
-    logger.finest('getProperty ${userModel.userId}');
+  Future<int> _getUserProperty({int limit = 99}) async {
     Map<String, QueryValue> query = {};
     query['parentMid'] = QueryValue(value: userModel.userId);
     query['isRemoved'] = QueryValue(value: false);
     Map<String, OrderDirection> orderBy = {};
     orderBy['order'] = OrderDirection.ascending;
     await queryFromDB(query, orderBy: orderBy, limit: limit);
-    logger.finest('getProperty ${modelList.length}');
-    //updateLastOrder();
 
-    propertyModel = onlyOne() as UserPropertyModel?;
+    userPropertyModel = onlyOne() as UserPropertyModel?;
     await getLinkedObject();
 
     return modelList.length;
   }
 
+  Future<UserPropertyModel> createUserProperty() async {
+    userPropertyModel = UserPropertyModel.withName(
+      pparentMid: userModel.userId,
+      email: userModel.email,
+      nickname: userModel.name,
+      phoneNumber: userModel.phone,
+      cretaGrade: CretaGradeType.none,
+      ratePlan: RatePlanType.none,
+      profileImg: '',
+      channelBannerImg: '',
+      country: CountryType.none,
+      language: LanguageType.none,
+      job: JobType.none,
+      freeSpace: 1042,
+      bookCount: 0,
+      bookViewCount: 0,
+      bookViewTime: 0,
+      likeCount: 0,
+      commentCount: 0,
+      useDigitalSignage: false,
+      usePushNotice: false,
+      useEmailNotice: false,
+      isPublicProfile: true,
+      theme: ThemeType.none,
+      initPage: InitPageType.none,
+      cookie: CookieType.none,
+      autoPlay: true,
+      mute: false,
+      latestBook: '',
+      latestUseFrames: const [],
+      latestUseColors: const [
+        Colors.white,
+        Colors.black,
+        Colors.red,
+        Colors.blue,
+        Colors.yellow,
+        Colors.green,
+        Colors.purple
+      ],
+      teams: const []
+    );
+
+    await createToDB(userPropertyModel!);
+    insert(userPropertyModel!, postion: getAvailLength());
+    selectedMid = userPropertyModel!.mid;
+    await getLinkedObject();
+
+    return userPropertyModel!;
+  }
+
   Future<void> getLinkedObject() async {
-    if (propertyModel != null) {
+    if (userPropertyModel != null) {
       await getFrameListFromDB();
     }
   }
@@ -156,11 +140,11 @@ class UserPropertyManager extends CretaManager {
   }
 
   Future<List<FrameModel>> getFrameListFromDB() async {
-    if (propertyModel!.lastestUseFrames.isEmpty) {
+    if (userPropertyModel!.latestUseFrames.isEmpty) {
       return await _getAnyLattestFrames();
     }
 
-    for (String mid in propertyModel!.lastestUseFrames) {
+    for (String mid in userPropertyModel!.latestUseFrames) {
       FrameModel model = await _getFrameFromDB(mid);
       _frameModelList.add(model);
     }
@@ -188,7 +172,7 @@ class UserPropertyManager extends CretaManager {
 
     logger.finest('_getAnyLattestFrames ${resultList.length}');
 
-    if (propertyModel == null) {
+    if (userPropertyModel == null) {
       logger.severe('propertyModel == null');
       return _frameModelList;
     }
@@ -200,52 +184,66 @@ class UserPropertyManager extends CretaManager {
       logger.finest('ele = ${model.mid}');
       _frameModelList.add(model);
       logger.finest('ele = ${model.mid}');
-      propertyModel!.lastestUseFrames.add(model.mid);
+      userPropertyModel!.latestUseFrames.add(model.mid);
       logger.finest('ele = ${model.mid}');
       if (_frameModelList.length >= 4) {
         break;
       }
     }
     logger.finest('save ${_frameModelList.length}');
-    propertyModel?.save();
+    userPropertyModel?.save();
 
-    logger.finest('getAnyLattestFrames ${propertyModel!.lastestUseFrames.toString()}');
+    logger.finest('getAnyLattestFrames ${userPropertyModel!.latestUseFrames.toString()}');
     return _frameModelList;
   }
 
+  void addFavColor(Color color) {
+    if (userPropertyModel == null) {
+      return;
+    }
+    userPropertyModel!.latestUseColors.add(color);
+    userPropertyModel!.save();
+  }
+
+  List<Color> getColorList() {
+    if (userPropertyModel == null) {
+      return [];
+    }
+    return userPropertyModel!.latestUseColors;
+  }
+
+
   void setMute(bool val) {
-    if (propertyModel != null) {
-      propertyModel!.mute = val;
-      setToDB(propertyModel!);
+    if (userPropertyModel != null) {
+      userPropertyModel!.mute = val;
+      setToDB(userPropertyModel!);
     }
   }
 
   bool getMute() {
-    if (propertyModel == null) {
+    if (userPropertyModel == null) {
       return false;
     }
-    return propertyModel!.mute;
+    return userPropertyModel!.mute;
   }
 
   void setAutoPlay(bool val) {
-    if (propertyModel != null) {
-      propertyModel!.autoPlay = val;
-      setToDB(propertyModel!);
+    if (userPropertyModel != null) {
+      userPropertyModel!.autoPlay = val;
+      setToDB(userPropertyModel!);
     }
   }
 
   bool getAutoPlay() {
-    if (propertyModel == null) {
+    if (userPropertyModel == null) {
       return false;
     }
-    return propertyModel!.autoPlay;
+    return userPropertyModel!.autoPlay;
   }
 
-  // get team member property
   Future<UserPropertyModel?> getMemberProperty({required String memberMid, int limit = 99}) async {
     startTransaction();
     try {
-      logger.finest('getMemberProperty $memberMid');
       Map<String, QueryValue> query = {};
       query['parentMid'] = QueryValue(value: memberMid);
       query['isRemoved'] = QueryValue(value: false);
@@ -257,12 +255,13 @@ class UserPropertyManager extends CretaManager {
       if(modelList.isNotEmpty) {
         return onlyOne() as UserPropertyModel;
       }
-    } catch (e) {
-      logger.info(e);
+    } catch (error) {
+      logger.info('something wrong in userPropertyManager >> $error');
       return null;
     }
     endTransaction();
     return null;
   }
+  
 
 }

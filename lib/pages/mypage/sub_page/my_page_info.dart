@@ -73,15 +73,15 @@ class _MyPageInfoState extends State<MyPageInfo> {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
-        color: userPropertyManager.propertyModel!.profileImg != '' ? Colors.transparent : Colors.primaries[Random().nextInt(Colors.primaries.length)],
-        image: userPropertyManager.propertyModel!.profileImg != '' ? DecorationImage(image: Image.network(userPropertyManager.propertyModel!.profileImg).image, fit: BoxFit.cover) : null
+        color: userPropertyManager.userPropertyModel!.profileImg != '' ? Colors.transparent : Colors.primaries[Random().nextInt(Colors.primaries.length)],
+        image: userPropertyManager.userPropertyModel!.profileImg != '' ? DecorationImage(image: Image.network(userPropertyManager.userPropertyModel!.profileImg).image, fit: BoxFit.cover) : null
       ),
       child: Stack(
         children: [
-          userPropertyManager.propertyModel!.profileImg != '' ? const SizedBox() : 
+          userPropertyManager.userPropertyModel!.profileImg != '' ? const SizedBox() : 
             Center(
               child: Text(
-                userPropertyManager.propertyModel!.nickname.substring(0, 1),
+                userPropertyManager.userPropertyModel!.nickname.substring(0, 1),
                 style: const TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: CretaFont.semiBold,
@@ -100,7 +100,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                     _pickedFile!.readAsBytes().then((fileBytes) {
                       HycopFactory.storage!.uploadFile('profile/${_pickedFile!.name}', _pickedFile!.mimeType.toString(), fileBytes).then((value){
                         setState(() {
-                          value != null ? userPropertyManager.propertyModel!.profileImg = value.fileView : logger.info("upload error");
+                          value != null ? userPropertyManager.userPropertyModel!.profileImg = value.fileView : logger.info("upload error");
                         });
                       });
                       _pickedFile = null;
@@ -155,7 +155,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                           text: CretaMyPageLang.basicProfileImgBTN, 
                           onPressed: () {
                             setState(() {
-                              userPropertyManagerHolder.propertyModel!.profileImg = '';
+                              userPropertyManagerHolder.userPropertyModel!.profileImg = '';
                             });
                           }
                         ),
@@ -176,11 +176,11 @@ class _MyPageInfoState extends State<MyPageInfo> {
                           const SizedBox(width: 81.0),
                           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             const SizedBox(height: 8.0),
-                            Text(userPropertyManagerHolder.propertyModel!.nickname, style: CretaFont.bodyMedium),
+                            Text(userPropertyManagerHolder.userPropertyModel!.nickname, style: CretaFont.bodyMedium),
                             const SizedBox(height: 26.0),
-                            Text(userPropertyManagerHolder.propertyModel!.email, style: CretaFont.bodyMedium),
+                            Text(userPropertyManagerHolder.userPropertyModel!.email, style: CretaFont.bodyMedium),
                             const SizedBox(height: 33.0),
-                            Text(userPropertyManagerHolder.propertyModel!.phoneNumber, style: CretaFont.bodyMedium),
+                            Text(userPropertyManagerHolder.userPropertyModel!.phoneNumber, style: CretaFont.bodyMedium),
                             const SizedBox(height: 24.0),
                             BTN.line_blue_t_m(
                               text: CretaMyPageLang.passwordChangeBTN, 
@@ -205,25 +205,25 @@ class _MyPageInfoState extends State<MyPageInfo> {
                             CretaWidgetDropDown(
                               width: 116,
                               items: countryItemList,
-                              defaultValue: userPropertyManagerHolder.propertyModel!.country.index,
+                              defaultValue: userPropertyManagerHolder.userPropertyModel!.country.index,
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.country = CountryType.fromInt(value);
+                                userPropertyManagerHolder.userPropertyModel!.country = CountryType.fromInt(value);
                               }),
                             const SizedBox(height: 17.0),
                             CretaWidgetDropDown(
                               width: 102,
                               items: languageItemList,
-                              defaultValue: userPropertyManagerHolder.propertyModel!.language.index,
+                              defaultValue: userPropertyManagerHolder.userPropertyModel!.language.index,
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.language = LanguageType.fromInt(value);
+                                userPropertyManagerHolder.userPropertyModel!.language = LanguageType.fromInt(value);
                               }),
                             const SizedBox(height: 17.0),                            
                             CretaWidgetDropDown(
                               width: 102,
                               items: jobItemList,
-                              defaultValue: userPropertyManagerHolder.propertyModel!.job.index,
+                              defaultValue: userPropertyManagerHolder.userPropertyModel!.job.index,
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.job = JobType.fromInt(value);
+                                userPropertyManagerHolder.userPropertyModel!.job = JobType.fromInt(value);
                               })
                           ])
                         ])
@@ -232,7 +232,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                       BTN.fill_blue_t_el(
                         text: CretaMyPageLang.saveChangeBTN, 
                         onPressed: () {
-                          userPropertyManagerHolder.setToDB(userPropertyManagerHolder.propertyModel!);
+                          userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
                         }
                       ),
                       const SizedBox(height: 60.0),

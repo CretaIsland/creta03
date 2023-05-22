@@ -97,18 +97,18 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                               children: [
                                 CretaToggleButton(
                                   onSelected: (value) {
-                                    userPropertyManagerHolder.propertyModel!.usePushNotice = value;
-                                    userPropertyManagerHolder.setToDB(userPropertyManagerHolder.propertyModel!);
+                                    userPropertyManagerHolder.userPropertyModel!.usePushNotice = value;
+                                    userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
                                   }, 
-                                  defaultValue: userPropertyManagerHolder.propertyModel!.usePushNotice
+                                  defaultValue: userPropertyManagerHolder.userPropertyModel!.usePushNotice
                                 ),
                                 const SizedBox(height: 16.0),
                                 CretaToggleButton(
                                   onSelected: (value) {
-                                    userPropertyManagerHolder.propertyModel!.useEmailNotice = value;
-                                    userPropertyManagerHolder.setToDB(userPropertyManagerHolder.propertyModel!);
+                                    userPropertyManagerHolder.userPropertyModel!.useEmailNotice = value;
+                                    userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
                                   }, 
-                                  defaultValue: userPropertyManagerHolder.propertyModel!.useEmailNotice
+                                  defaultValue: userPropertyManagerHolder.userPropertyModel!.useEmailNotice
                                 )
                               ]
                             )
@@ -132,10 +132,10 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                             CretaWidgetDropDown(
                               width: 134.0,
                               items: themeItemList, 
-                              defaultValue: userPropertyManagerHolder.propertyModel!.themeStyle.index, 
+                              defaultValue: userPropertyManagerHolder.userPropertyModel!.theme.index, 
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.themeStyle = ThemeType.fromInt(value);
-                                userPropertyManagerHolder.setToDB(userPropertyManagerHolder.propertyModel!);
+                                userPropertyManagerHolder.userPropertyModel!.theme = ThemeType.fromInt(value);
+                                userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
                               }
                             )
                           ],
@@ -150,10 +150,10 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                             CretaWidgetDropDown(
                               width: 116.0,
                               items: initPageItemList, 
-                              defaultValue: userPropertyManagerHolder.propertyModel!.cretaInitPage.index, 
+                              defaultValue: userPropertyManagerHolder.userPropertyModel!.initPage.index, 
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.cretaInitPage = InitPageType.fromInt(value);
-                                userPropertyManagerHolder.setToDB(userPropertyManagerHolder.propertyModel!);
+                                userPropertyManagerHolder.userPropertyModel!.initPage = InitPageType.fromInt(value);
+                                userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
                               }
                             )
                           ],
@@ -168,10 +168,10 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                             CretaWidgetDropDown(
                               width: 120.0,
                               items: cookieItemList, 
-                              defaultValue: userPropertyManagerHolder.propertyModel!.cookie.index, 
+                              defaultValue: userPropertyManagerHolder.userPropertyModel!.cookie.index, 
                               onSelected: (value) {
-                                userPropertyManagerHolder.propertyModel!.cookie = CookieType.fromInt(value);
-                                userPropertyManagerHolder.setToDB(userPropertyManagerHolder.propertyModel!);
+                                userPropertyManagerHolder.userPropertyModel!.cookie = CookieType.fromInt(value);
+                                userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
                               }
                             )
                           ],

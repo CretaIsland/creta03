@@ -1,12 +1,11 @@
+import 'package:hycop/hycop.dart';
 
+import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta03/model/creta_model.dart';
+import 'package:creta03/model/team_model.dart';
 import 'package:creta03/model/user_property_model.dart';
 import 'package:creta03/pages/login_page.dart';
-import 'package:hycop/hycop.dart';
-import '../model/creta_model.dart';
-import '../model/team_model.dart';
-import 'creta_manager.dart';
 
-TeamManager? pageManagerHolder;
 
 class TeamManager extends CretaManager {
 
@@ -16,8 +15,6 @@ class TeamManager extends CretaManager {
 
 
   TeamManager() : super('creta_team');
-  @override
-  AbsExModel newModel(String mid) => TeamModel(mid);
 
   @override
   CretaModel cloneModel(CretaModel src) {
@@ -26,39 +23,33 @@ class TeamManager extends CretaManager {
     return retval;
   }
 
+  @override
+  AbsExModel newModel(String mid) => TeamModel(mid);
+
   Future<void> initTeam() async {
     clearAll();
-    await getTeams(teamMids: LoginPage.userPropertyManagerHolder!.propertyModel!.teams);
+    await getTeam();
     if(teamModelList.isNotEmpty) {
       selectedTeam(0);
     }
   }
 
-  // create team object
-  Future<TeamModel> createTeam({required String teamName, required String ownerId}) async {
-    TeamModel newTeam = TeamModel.withName(name: teamName, owner: ownerId);
-
-    await createToDB(newTeam);
-    insert(newTeam, postion: getAvailLength());
-
-    return newTeam;
-  }
-
-  // get team object
-  Future<int> getTeams({required List<String> teamMids, int limit = 99}) async {
+  Future<int> getTeam() async {
     int teamCount = 0;
-
     try {
-      for(var mid in teamMids) {
-        if(await _getTeam(teamMid: mid) == 1) {
+      for(var teamMid in LoginPage.userPropertyManagerHolder!.userPropertyModel!.teams) {
+        if(await _getTeam(teamMid: teamMid) > 0) {
           teamCount += 1;
         }
+        // if(await _getTeam(teamMid: teamMid.keys.first) > 0) {
+        //   teamCount += 1;
+        // }
       }
+      return teamCount;
     } catch (error) {
-      logger.info("something wrong $error");
-      return 0;
+      logger.info('something wrong in teamManager >> $error');
+      return teamCount;
     }
-    return teamCount;
   }
 
   Future<int> _getTeam({required String teamMid, int limit = 99}) async {
@@ -66,71 +57,44 @@ class TeamManager extends CretaManager {
 
     try {
       Map<String, QueryValue> query = {};
-      query["mid"] = QueryValue(value: teamMid);
-      query["isRemoved"] = QueryValue(value: false);
-
+      query['mid'] = QueryValue(value: teamMid);
+      query['isRemoved'] = QueryValue(value: false);
       await queryFromDB(query, limit: limit);
 
-      if(modelList.isNotEmpty && !teamModelList.contains(onlyOne() as TeamModel)) {
+      if(modelList.isNotEmpty) {
         teamModelList.add(onlyOne() as TeamModel);
-        teamMemberMap[teamMid] = await getTeamMember(tmMid: teamMid, memberMids: teamModelList.last.teamMembers);
+        teamMemberMap[teamMid] = await getTeamMembers(tmMid: teamMid, memberMids: teamModelList.last.teamMembers);
       }
+
     } catch (error) {
-      logger.info("error! $error");
+      logger.info('something wrong in teamManager >> $error');
       return 0;
     }
-    
+
     endTransaction();
     return modelList.length;
   }
 
-  // get team Member object
-  Future<List<UserPropertyModel>> getTeamMember({required String tmMid, required List<String> memberMids, int limit = 99}) async {
-    List<UserPropertyModel> memberList = [];
+  Future<List<UserPropertyModel>> getTeamMembers({required String tmMid, required List<String> memberMids, int limit = 99}) async {
+    List<UserPropertyModel> teamMemberList = [];
 
     try {
-      for(var mid in memberMids) {
-        UserPropertyModel? property = UserPropertyModel(mid);
-        property = await LoginPage.userPropertyManagerHolder!.getMemberProperty(memberMid: mid);
-        if(property != null) {
-          memberList.add(property);
+      for(var memberMid in memberMids) {
+        UserPropertyModel? memberProperty = await LoginPage.userPropertyManagerHolder!.getMemberProperty(memberMid: memberMid);
+        if(memberProperty != null) {
+          teamMemberList.add(memberProperty);
         }
       }
+      return teamMemberList;
     } catch (error) {
-      logger.info("something wrong $error");
+      logger.info('something wrong in teamManager >> $error');
       return [];
     }
-    return memberList;
+  
   }
-
-  void deleteMember(String memberMid) {
-    try {
-      if(currentTeam!.managers.contains(memberMid)) {
-        currentTeam!.managers.remove(memberMid);
-      } else {
-        currentTeam!.generalMembers.remove(memberMid);
-      }
-      currentTeam!.teamMembers = [currentTeam!.owner, ...currentTeam!.managers, ...currentTeam!.generalMembers];
-      currentTeam!.removedMembers.add(memberMid);
-      
-      teamModelList[teamModelList.indexWhere((element) => element.mid == currentTeam!.mid)] = currentTeam!;
-
-      setToDB(currentTeam!);
-    } catch (error) {
-      logger.info(error);
-    }
-   
-  }
-
 
   void selectedTeam(int index) {
     currentTeam = teamModelList[index];
   }
-
-
-
-
-
-
 
 }

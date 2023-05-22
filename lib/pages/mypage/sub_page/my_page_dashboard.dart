@@ -44,10 +44,10 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(200.0),
             color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-            image: userPropertyManager.propertyModel!.profileImg == ''
+            image: userPropertyManager.userPropertyModel!.profileImg == ''
                 ? null
-                : DecorationImage(image: Image.network(userPropertyManager.propertyModel!.profileImg).image, fit: BoxFit.cover)),
-        child: userPropertyManager.propertyModel!.profileImg == '' ?
+                : DecorationImage(image: Image.network(userPropertyManager.userPropertyModel!.profileImg).image, fit: BoxFit.cover)),
+        child: userPropertyManager.userPropertyModel!.profileImg == '' ?
           Center(
             child: Text(userPropertyManager.userModel.name.substring(0, 1),
             style: const TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 64, color: Colors.white))
@@ -92,19 +92,19 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(CretaMyPageLang.cretaGradeList[propertyManager.propertyModel!.cretaGrade.index], style: CretaFont.bodyMedium),
+                  Text(CretaMyPageLang.cretaGradeList[propertyManager.userPropertyModel!.cretaGrade.index], style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
-                  Text("${propertyManager.propertyModel!.bookCount}", style: CretaFont.bodyMedium),
+                  Text("${propertyManager.userPropertyModel!.bookCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 22.0),
                   Row(
                     children: [
-                      Text(CretaMyPageLang.ratePlanList[propertyManager.propertyModel!.ratePlan.index], style: CretaFont.bodyMedium),
+                      Text(CretaMyPageLang.ratePlanList[propertyManager.userPropertyModel!.ratePlan.index], style: CretaFont.bodyMedium),
                       const SizedBox(width: 24),
                       BTN.line_blue_t_m(text: CretaMyPageLang.ratePlanChangeBTN, onPressed: (){ })
                     ],
                   ),
                   const SizedBox(height: 22.0),
-                  Text("${propertyManager.propertyModel!.freeSpace}MB (전체 1024MB)", style: CretaFont.bodyMedium)
+                  Text("${propertyManager.userPropertyModel!.freeSpace}MB (전체 1024MB)", style: CretaFont.bodyMedium)
                 ],
               ),
             ],
@@ -156,13 +156,13 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("${propertyManager.propertyModel!.bookViewCount}", style: CretaFont.bodyMedium),
+                  Text("${propertyManager.userPropertyModel!.bookViewCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
-                  Text("${propertyManager.propertyModel!.bookViewTime} 시간", style: CretaFont.bodyMedium),
+                  Text("${propertyManager.userPropertyModel!.bookViewTime} 시간", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
-                  Text("${propertyManager.propertyModel!.likeCount}", style: CretaFont.bodyMedium),
+                  Text("${propertyManager.userPropertyModel!.likeCount}", style: CretaFont.bodyMedium),
                   const SizedBox(height: 28.0),
-                  Text("${propertyManager.propertyModel!.commentCount}", style: CretaFont.bodyMedium)
+                  Text("${propertyManager.userPropertyModel!.commentCount}", style: CretaFont.bodyMedium)
                 ],
               ),
             ],
@@ -219,7 +219,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               const SizedBox(height: 60),
               profileImageBox(userPropertyManager),
               const SizedBox(height: 40),
-              Text(userPropertyManager.propertyModel!.nickname, style: const TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 40, color: CretaColor.text)),
+              Text(userPropertyManager.userPropertyModel!.nickname, style: const TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 40, color: CretaColor.text)),
               const SizedBox(height: 16),
               Text(userPropertyManager.userModel.email, style: CretaFont.buttonLarge),
               const SizedBox(height: 86),

@@ -248,7 +248,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
   Widget mainComponent() {
     return Consumer2<UserPropertyManager, TeamManager>(
       builder: (context, userPropertyManager, teamManager, child) {
-        return SizedBox(
+        if(teamManager.teamModelList.isNotEmpty) {
+          return SizedBox(
           width: widget.width,
           height: widget.height,
           child: SingleChildScrollView(
@@ -421,6 +422,14 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
               ) : Container()
           ),
         );
+        } else {
+          return SizedBox(
+            width: widget.width,
+            height: widget.height,
+            child: const Center(child: Text("현재 가입한 팀이 존재하지 않습니다")),
+          );
+        }
+        
       }
     );
   }
