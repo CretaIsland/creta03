@@ -266,9 +266,7 @@ class UserPropertyManager extends CretaManager {
     List<UserPropertyModel> userModelList = [];
     for (String email in emailList) {
       if (email == "public") {
-        UserPropertyModel user = UserPropertyModel('');
-        user.nickname = CretaLang.entire;
-        userModelList.add(user);
+        userModelList.add(makeDummyModel());
       } else {
         UserPropertyModel? user = await _emailToModel(email);
         if (user != null) {
@@ -277,6 +275,13 @@ class UserPropertyManager extends CretaManager {
       }
     }
     return userModelList;
+  }
+
+  UserPropertyModel makeDummyModel() {
+    UserPropertyModel user = UserPropertyModel('');
+    user.nickname = CretaLang.entire;
+    user.email = 'public';
+    return user;
   }
 
   Future<UserPropertyModel?> _emailToModel(String email) async {
@@ -305,7 +310,8 @@ class UserPropertyManager extends CretaManager {
                 : DecorationImage(image: Image.network(model.profileImg).image, fit: BoxFit.cover)),
         child: model.profileImg == ''
             ? Center(
-                child: Text(model.email.substring(0, 1),
+                child: Text(model.nickname.substring(0, 1),
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'Pretendard',
                         fontWeight: CretaFont.semiBold,
