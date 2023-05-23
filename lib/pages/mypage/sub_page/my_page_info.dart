@@ -1,86 +1,93 @@
-import 'dart:math';
-
-import 'package:creta03/data_io/user_property_manager.dart';
-import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
-import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/design_system/creta_font.dart';
-import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
-import 'package:creta03/lang/creta_mypage_lang.dart';
-import 'package:creta03/model/app_enums.dart';
+import 'package:creta03/design_system/dialog/creta_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/hycop.dart';
-import 'package:image_picker/image_picker.dart';
 
+import 'dart:typed_data';
+import 'package:hycop/hycop.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'package:creta03/data_io/team_manager.dart';
+import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
+import 'package:creta03/model/app_enums.dart';
+import 'package:creta03/data_io/user_property_manager.dart';
+import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
+import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta03/design_system/text_field/creta_text_field.dart';
+import 'package:creta03/lang/creta_mypage_lang.dart';
+
+
 
 
 class MyPageInfo extends StatefulWidget {
   final double width;
   final double height;
-  const MyPageInfo({super.key, required this.width, required this.height});
+  final Color replaceColor;
+  const MyPageInfo({super.key, required this.width, required this.height, required this.replaceColor});
 
   @override
   State<MyPageInfo> createState() => _MyPageInfoState();
 }
 
 class _MyPageInfoState extends State<MyPageInfo> {
+
+  // dropdown menu item
   List<Text> countryItemList = [];
   List<Text> languageItemList = [];
   List<Text> jobItemList = [];
 
+  // local load image for profile
   XFile? _pickedFile;
+
 
   @override
   void initState() {
     super.initState();
 
-    // 나라 드롭다운 아이템 정의
+    // set country dropdown menu item
     for (var element in CretaMyPageLang.countryList) {
       countryItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
-    // 언어 드롭다운 아이템 정의
+    // set language dropdown menu item
     for (var element in CretaMyPageLang.languageList) {
       languageItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
-    // 직업 드롭다운 아이템 정의
+    // set job dropdown menu item
     for (var element in CretaMyPageLang.jobList) {
       jobItemList.add(Text(element, style: CretaFont.bodyMedium));
     }
   }
 
-  // 구분선
-  Widget divideLine(
-      {double leftPadding = 0,
-      double topPadding = 0,
-      double rightPadding = 0,
-      double bottomPadding = 0}) {
+  
+  Widget divideLine({double leftPadding = 0.0, double topPadding = 0.0, double rightPadding = 0.0, double bottomPadding = 0.0, double width = 10.0, double height = 1.0}) {
     return Padding(
-      padding: EdgeInsets.only(
-          left: leftPadding, top: topPadding, right: rightPadding, bottom: bottomPadding),
+      padding: EdgeInsets.fromLTRB(leftPadding, topPadding, rightPadding, bottomPadding),
       child: Container(
-        width: widget.width * .7,
-        height: 1,
+        width: width,
+        height: height,
         color: Colors.grey.shade200,
       ),
     );
   }
 
-  // 프로필 이미지 박스
-  Widget profileImageBox(UserPropertyManager userPropertyManager, double width, double height, double radius) {
+  Widget profileImageComponent(UserPropertyManager userPropertyManager) {
     return Container(
-      width: width,
-      height: height,
+      width: 200.0,
+      height: 200.0,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(radius),
-        color: userPropertyManager.userPropertyModel!.profileImg != '' ? Colors.transparent : Colors.primaries[Random().nextInt(Colors.primaries.length)],
-        image: userPropertyManager.userPropertyModel!.profileImg != '' ? DecorationImage(image: Image.network(userPropertyManager.userPropertyModel!.profileImg).image, fit: BoxFit.cover) : null
+        borderRadius: BorderRadius.circular(20.0),
+        color: widget.replaceColor,
+        image: userPropertyManager.userPropertyModel!.profileImg == '' ? null : DecorationImage(
+          image: Image.network(userPropertyManager.userPropertyModel!.profileImg).image,
+          fit: BoxFit.cover
+        )
       ),
-      child: Stack(
-        children: [
-          userPropertyManager.userPropertyModel!.profileImg != '' ? const SizedBox() : 
-            Center(
-              child: Text(
+      child: Center(
+        child: Stack(
+          children: [
+            userPropertyManager.userPropertyModel!.profileImg != '' ? const SizedBox() : 
+              Text(
                 userPropertyManager.userPropertyModel!.nickname.substring(0, 1),
                 style: const TextStyle(
                   fontFamily: 'Pretendard',
@@ -88,168 +95,270 @@ class _MyPageInfoState extends State<MyPageInfo> {
                   fontSize: 64,
                   color: Colors.white
                 )
-              )
-            ),
-          Center(
-            child: BTN.opacity_gray_i_l(
+              ),
+            BTN.opacity_gray_i_l(
               icon: Icons.photo_camera_outlined, 
               onPressed: () async {
                 try {
                   _pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
                   if(_pickedFile != null) {
-                    _pickedFile!.readAsBytes().then((fileBytes) {
-                      HycopFactory.storage!.uploadFile('profile/${_pickedFile!.name}', _pickedFile!.mimeType.toString(), fileBytes).then((value){
-                        setState(() {
-                          value != null ? userPropertyManager.userPropertyModel!.profileImg = value.fileView : logger.info("upload error");
-                        });
+                    Uint8List fileBytes = await _pickedFile!.readAsBytes();
+                    if(fileBytes.isNotEmpty) {
+                      HycopFactory.storage!.uploadFile('profile/${_pickedFile!.name}', _pickedFile!.mimeType!, fileBytes).then((fileModel) {
+                        if(fileModel != null) {
+                          userPropertyManager.userPropertyModel!.profileImg = fileModel.fileView;
+                          userPropertyManager.notify();
+                        }
                       });
-                      _pickedFile = null;
-                    });
+                    }
+                    _pickedFile = null;
                   }
                 } catch (error) {
-                  logger.info(error);
+                  logger.info('something wrong in my_page_info >> $error');
                 }
               }
-            ),
-          )
-        ],
+            ) 
+          ],
+        ),
       ),
     );
   }
 
-  Widget mainComponent() {
-    return Consumer<UserPropertyManager>(
-      builder: (context, userPropertyManagerHolder, child) {
+  Widget changePwdPopUp() {
+    return CretaDialog(
+      width: 406.0,
+      height: 289.0,
+      title: '비밀번호 변경',
+      crossAxisAlign: CrossAxisAlignment.center,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 28.0),
+          CretaTextField(
+              textFieldKey: GlobalKey(),
+              value: '', 
+              hintText: '현재 비밀번호', 
+              width: 294.0,
+              height: 30.0,
+              onEditComplete: (value) { }
+            ),
+            const SizedBox(height: 20.0),
+            CretaTextField(
+              textFieldKey: GlobalKey(),
+              value: '', 
+              hintText: '새 비밀번호', 
+              width: 294.0,
+              height: 30.0,
+              onEditComplete: (value) { }
+            ),
+            const SizedBox(height: 20.0),
+            CretaTextField(
+              textFieldKey: GlobalKey(),
+              value: '', 
+              hintText: '새 비밀번호 확인', 
+              width: 294.0,
+              height: 30.0,
+              onEditComplete: (value) { }
+            ),
+            const SizedBox(height: 24.0),
+            BTN.fill_blue_t_m(
+              text: CretaMyPageLang.passwordChangeBTN, 
+              width: 294.0,
+              height: 32.0,
+              onPressed: () {
+
+              }
+            )
+        ],
+      ),
+    );
+  }
+ 
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer2<UserPropertyManager, TeamManager>(
+      builder: (context, userPropertyManager, teamManager, child) {
         return SizedBox(
           width: widget.width,
           height: widget.height,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child: widget.width > 300
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 165.0, top: 72.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, 
+            child: widget.width > 300 ? Padding(
+              padding: const EdgeInsets.only(left: 165.0, top: 72.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    CretaMyPageLang.info,
+                    style: const TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: CretaFont.semiBold,
+                      fontSize: 40,
+                      color: CretaColor.text
+                    )
+                  ),
+                  divideLine(width: widget.width * .7, topPadding: 22.0, bottomPadding: 32.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      const SizedBox(width: 12.0),
                       Text(
-                        CretaMyPageLang.info,
-                        style: const TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: CretaFont.semiBold,
-                          fontSize: 40,
-                          color: CretaColor.text
-                        )
+                        CretaMyPageLang.profileImage,
+                        style: CretaFont.titleMedium,
                       ),
-                      divideLine(topPadding: 22.0, bottomPadding: 32.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(CretaMyPageLang.profileImage, style: CretaFont.titleMedium),
-                          const SizedBox(width: 95.0),
-                          profileImageBox(userPropertyManagerHolder, 200.0, 200.0, 20.0)
-                        ])
+                      const SizedBox(width: 95.0),
+                      profileImageComponent(userPropertyManager)
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 135.0, top: 24.0),
+                    child: BTN.line_blue_t_m(
+                      text: CretaMyPageLang.basicProfileImgBTN, 
+                      onPressed: () {
+                        userPropertyManager.userPropertyModel!.profileImg = '';
+                        userPropertyManager.notify();
+                      }
+                    ),
+                  ),
+                  divideLine(width: widget.width * .7, topPadding: 32.0, bottomPadding: 39.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 12.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            CretaMyPageLang.nickname,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(height: 30.0),
+                          Text(
+                            CretaMyPageLang.email,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(height: 30.0),
+                          Text(
+                            CretaMyPageLang.phoneNumber,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(height: 30.0),
+                          Text(
+                            CretaMyPageLang.password,
+                            style: CretaFont.titleMedium,
+                          )
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 135.0, top: 24.0),
-                        child: BTN.line_blue_t_m(
-                          text: CretaMyPageLang.basicProfileImgBTN, 
-                          onPressed: () {
-                            setState(() {
-                              userPropertyManagerHolder.userPropertyModel!.profileImg = '';
-                            });
-                          }
-                        ),
+                      const SizedBox(width: 67.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userPropertyManager.userPropertyModel!.nickname,
+                            style: CretaFont.bodyMedium,
+                          ),
+                          const SizedBox(height: 28.0),
+                          Text(
+                            userPropertyManager.userPropertyModel!.email,
+                            style: CretaFont.bodyMedium,
+                          ),
+                          const SizedBox(height: 28.0),
+                          Text(
+                            '01012345678',
+                            //userPropertyManager.userPropertyModel!.phoneNumber,
+                            style: CretaFont.bodyMedium,
+                          ),
+                          const SizedBox(height: 28.0),
+                          BTN.line_blue_t_m(
+                            text: CretaMyPageLang.passwordChangeBTN, 
+                            onPressed: () {
+                              showDialog(
+                                context: context, 
+                                builder: (context) => changePwdPopUp()
+                              );
+                            }
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  divideLine(width: widget.width * .7, topPadding: 32.0, bottomPadding: 39.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 12.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            CretaMyPageLang.country,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(height: 30.0),
+                          Text(
+                            CretaMyPageLang.language,
+                            style: CretaFont.titleMedium,
+                          ),
+                          const SizedBox(height: 30.0),
+                          Text(
+                            CretaMyPageLang.job,
+                            style: CretaFont.titleMedium,
+                          )
+                        ],
                       ),
-                      divideLine(topPadding: 32.0, bottomPadding: 39.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: Row(children: [
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(CretaMyPageLang.nickname, style: CretaFont.titleMedium),
-                            const SizedBox(height: 30.0),
-                            Text(CretaMyPageLang.email, style: CretaFont.titleMedium),
-                            const SizedBox(height: 30.0),
-                            Text(CretaMyPageLang.phoneNumber, style: CretaFont.titleMedium),
-                            const SizedBox(height: 30.0),
-                            Text(CretaMyPageLang.password, style: CretaFont.titleMedium),
-                          ]),
-                          const SizedBox(width: 81.0),
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            const SizedBox(height: 8.0),
-                            Text(userPropertyManagerHolder.userPropertyModel!.nickname, style: CretaFont.bodyMedium),
-                            const SizedBox(height: 26.0),
-                            Text(userPropertyManagerHolder.userPropertyModel!.email, style: CretaFont.bodyMedium),
-                            const SizedBox(height: 33.0),
-                            Text(userPropertyManagerHolder.userPropertyModel!.phoneNumber, style: CretaFont.bodyMedium),
-                            const SizedBox(height: 24.0),
-                            BTN.line_blue_t_m(
-                              text: CretaMyPageLang.passwordChangeBTN, 
-                              onPressed: () {}
-                            )
-                          ])
-                        ])
-                      ),
-                      divideLine(topPadding: 32.0, bottomPadding: 39.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: Row(children: [
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(CretaMyPageLang.country, style: CretaFont.titleMedium),
-                            const SizedBox(height: 30.0),
-                            Text(CretaMyPageLang.language, style: CretaFont.titleMedium),
-                            const SizedBox(height: 30.0),
-                            Text(CretaMyPageLang.job, style: CretaFont.titleMedium),
-                          ]),
-                          const SizedBox(width: 111.0),
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            CretaWidgetDropDown(
-                              width: 116,
-                              items: countryItemList,
-                              defaultValue: userPropertyManagerHolder.userPropertyModel!.country.index,
-                              onSelected: (value) {
-                                userPropertyManagerHolder.userPropertyModel!.country = CountryType.fromInt(value);
-                              }),
-                            const SizedBox(height: 17.0),
-                            CretaWidgetDropDown(
-                              width: 102,
-                              items: languageItemList,
-                              defaultValue: userPropertyManagerHolder.userPropertyModel!.language.index,
-                              onSelected: (value) {
-                                userPropertyManagerHolder.userPropertyModel!.language = LanguageType.fromInt(value);
-                              }),
-                            const SizedBox(height: 17.0),                            
-                            CretaWidgetDropDown(
-                              width: 102,
-                              items: jobItemList,
-                              defaultValue: userPropertyManagerHolder.userPropertyModel!.job.index,
-                              onSelected: (value) {
-                                userPropertyManagerHolder.userPropertyModel!.job = JobType.fromInt(value);
-                              })
-                          ])
-                        ])
-                      ),
-                      const SizedBox(height: 40.0),
-                      BTN.fill_blue_t_el(
-                        text: CretaMyPageLang.saveChangeBTN, 
-                        onPressed: () {
-                          userPropertyManagerHolder.setToDB(userPropertyManagerHolder.userPropertyModel!);
-                        }
-                      ),
-                      const SizedBox(height: 60.0),
-                  ])
-                ) : Container()
-              )
+                      const SizedBox(width: 67.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CretaWidgetDropDown(
+                            items: countryItemList, 
+                            defaultValue: userPropertyManager.userPropertyModel!.country.index, 
+                            width: 116,
+                            height: 32,
+                            onSelected: (value) {
+                              userPropertyManager.userPropertyModel!.country = CountryType.fromInt(value);
+                            }
+                          ),
+                          const SizedBox(height: 17.0),
+                          CretaWidgetDropDown(
+                            items: languageItemList, 
+                            defaultValue: userPropertyManager.userPropertyModel!.language.index, 
+                            width: 102,
+                            height: 32,
+                            onSelected: (value) {
+                              userPropertyManager.userPropertyModel!.language = LanguageType.fromInt(value);
+                            }
+                          ),
+                          const SizedBox(height: 17.0),
+                          CretaWidgetDropDown(
+                            items: jobItemList, 
+                            defaultValue: userPropertyManager.userPropertyModel!.job.index, 
+                            width: 102,
+                            height: 32,
+                            onSelected: (value) {
+                              userPropertyManager.userPropertyModel!.job = JobType.fromInt(value);
+                            }
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 40.0, bottom: 60.0),
+                    child: BTN.fill_blue_t_el(
+                      text: CretaMyPageLang.saveChangeBTN, 
+                      onPressed: () {
+                        userPropertyManager.setToDB(userPropertyManager.userPropertyModel!);
+                      }
+                    ),
+                  )
+                ],
+              ),
+            ) : const SizedBox()
+          ),
         );
       },
     );
-
-
-
-    
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return mainComponent();
   }
 }
