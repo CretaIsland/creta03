@@ -247,7 +247,7 @@ class UserPropertyManager extends CretaManager {
     startTransaction();
     try {
       Map<String, QueryValue> query = {};
-      query['parentMid'] = QueryValue(value: memberMid);
+      query['email'] = QueryValue(value: memberMid);
       query['isRemoved'] = QueryValue(value: false);
       Map<String, OrderDirection> orderBy = {};
       orderBy['order'] = OrderDirection.ascending;
