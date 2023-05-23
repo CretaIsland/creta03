@@ -20,6 +20,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
   late UndoAble<String> name;
   late UndoAble<bool> isSilent;
   late UndoAble<bool> isAutoPlay;
+  late UndoAble<bool> isAllowReply;
   late UndoAble<BookType> bookType;
   late UndoAble<int> pageSizeType;
   late UndoAble<CopyRightType> copyRight;
@@ -37,6 +38,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
   String publishMid = ''; // 원본Book의 발행된 BookMid
   String sourceMid = ''; // 발행된 Book의 원본BookMid
   List<String> hashtags = [];
+  List<String> channels = [];
 
   Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
 
@@ -48,6 +50,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
         name,
         isSilent,
         isAutoPlay,
+        isAllowReply,
         bookType,
         pageSizeType,
         copyRight,
@@ -65,6 +68,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
         publishMid,
         sourceMid,
         hashtags,
+        channels,
         ...super.propsMixin,
       ];
   BookModel(String pmid) : super(pmid: pmid, type: ExModelType.book, parent: '') {
@@ -74,6 +78,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     thumbnailAspectRatio = UndoAble<double>(1, mid);
     isSilent = UndoAble<bool>(false, mid);
     isAutoPlay = UndoAble<bool>(true, mid);
+    isAllowReply = UndoAble<bool>(true, mid);
     bookType = UndoAble<BookType>(BookType.presentaion, mid);
     pageSizeType = UndoAble<int>(0, mid);
     copyRight = UndoAble<CopyRightType>(CopyRightType.free, mid);
@@ -108,6 +113,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     String? publishMid,
     String? sourceMid,
     List<String>? hashtags,
+    List<String>? channels,
   }) : super(pmid: '', type: ExModelType.book, parent: '') {
     name = UndoAble<String>(nameStr, mid);
     thumbnailUrl = UndoAble<String>(imageUrl, mid);
@@ -115,6 +121,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     thumbnailAspectRatio = UndoAble<double>(imageRatio, mid);
     isSilent = UndoAble<bool>(false, mid);
     isAutoPlay = UndoAble<bool>(true, mid);
+    isAllowReply = UndoAble<bool>(true, mid);
     bookType = UndoAble<BookType>(bookTypeVal, mid);
     pageSizeType = UndoAble<int>(0, mid);
     copyRight = UndoAble<CopyRightType>(copyRightVal, mid);
@@ -130,6 +137,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     if (publishMid != null) this.publishMid = publishMid;
     if (sourceMid != null) this.sourceMid = sourceMid;
     if (hashtags != null) this.hashtags = [...hashtags];
+    if (channels != null) this.channels = [...channels];
     if (desc != null) {
       description = UndoAble<String>(desc, mid);
     }
@@ -149,6 +157,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     thumbnailAspectRatio = UndoAble<double>(srcBook.thumbnailAspectRatio.value, mid);
     isSilent = UndoAble<bool>(srcBook.isSilent.value, mid);
     isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid);
+    isAllowReply = UndoAble<bool>(srcBook.isAllowReply.value, mid);
     bookType = UndoAble<BookType>(srcBook.bookType.value, mid);
     pageSizeType = UndoAble<int>(srcBook.pageSizeType.value, mid);
     copyRight = UndoAble<CopyRightType>(srcBook.copyRight.value, mid);
@@ -164,6 +173,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     publishMid = srcBook.publishMid;
     sourceMid = srcBook.sourceMid;
     hashtags = [...srcBook.hashtags];
+    channels = [...srcBook.channels];
 
     super.copyFromMixin(mid, srcBook);
     logger.finest('BookCopied($mid)');
@@ -177,6 +187,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
     creatorName = map["creatorName"] ?? '';
     isSilent.set(map["isSilent"] ?? false, save: false, noUndo: true);
     isAutoPlay.set(map["isAutoPlay"] ?? true, save: false, noUndo: true);
+    isAllowReply.set(map["isAllowReply"] ?? true, save: false, noUndo: true);
     isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
     bookType.set(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
     pageSizeType.set(map["pageSizeType"] ?? 0, save: false, noUndo: true);
@@ -186,6 +197,9 @@ class BookModel extends CretaModel with CretaStyleMixin {
     thumbnailType.set(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);
     thumbnailAspectRatio.set((map["thumbnailAspectRatio"] ?? 1), save: false, noUndo: true);
     owners = CretaUtils.jsonStringToList(map["owners"] ?? '');
+    if (owners.isEmpty) {
+      owners.add(creator);
+    }
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
     //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
@@ -193,7 +207,10 @@ class BookModel extends CretaModel with CretaStyleMixin {
     sourceMid = map["sourceMid"] ?? '';
     //hashtags = map["hashtags"] ?? [];
     hashtags = CretaUtils.dynamicListToStringList(map["hashtags"]);
-
+    channels = CretaUtils.dynamicListToStringList(map["channels"]);
+    if (channels.isEmpty) {
+      channels.add(creator);
+    }
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);
 
@@ -207,7 +224,9 @@ class BookModel extends CretaModel with CretaStyleMixin {
     if (owners.isEmpty) {
       owners.add(creator);
     }
-
+    if (channels.isEmpty) {
+      channels.add(creator);
+    }
     return super.toMap()
       ..addEntries({
         "name": name.value,
@@ -215,6 +234,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
         "creatorName": creatorName,
         "isSilent": isSilent.value,
         "isAutoPlay": isAutoPlay.value,
+        "isAllowReply": isAllowReply.value,
         "isReadOnly": isReadOnly.value,
         "bookType": bookType.value.index,
         "pageSizeType": pageSizeType.value,
@@ -232,6 +252,7 @@ class BookModel extends CretaModel with CretaStyleMixin {
         "publishMid": publishMid,
         "sourceMid": sourceMid,
         "hashtags": hashtags,
+        "channels": channels,
         ...super.toMapMixin(),
       }.entries);
   }

@@ -84,11 +84,10 @@ class CretaUtils {
     return [];
   }
 
-
   static List<String> dynamicListToStringList(List<dynamic>? list) {
     List<String> retList = [];
     if (list == null) return retList;
-    for(var value in list) {
+    for (var value in list) {
       if (value is String) {
         retList.add(value);
       }
@@ -518,5 +517,10 @@ class CretaUtils {
 
   static int getItemColumnCount(double pageWidth, double itemMinWidth, double itemXGap) {
     return (pageWidth < itemMinWidth) ? 1 : ((pageWidth + itemXGap) ~/ (itemMinWidth + itemXGap));
+  }
+
+  static bool isValidEmail(String email) {
+    RegExp regex = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+$');
+    return regex.hasMatch(email);
   }
 }

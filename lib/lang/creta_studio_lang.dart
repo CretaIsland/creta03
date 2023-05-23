@@ -208,6 +208,7 @@ class CretaStudioLang {
   static const String outlineWidth = '두께';
   static const String option = '옵션';
   static const String autoPlay = '자동 페이지 넘김';
+  static const String allowReply = '좋아요/댓글 허용';
   static const String widthHeight = '(가로x세로)';
   static const String gradation = '그라데이션';
 
@@ -385,4 +386,7 @@ class CretaStudioLang {
   ];
 
   static const String publishTo = '공개할 사람';
+
+  static const String wrongEmail = '올바른 이메일 포맷이 아니며, 해당하는 팀명이 없습니다.  이메일 주소 또는 팀명을 입력하세요';
+  static const String noExitEmail = '등록된 사용자가 아닙니다. 자동 초대 기능은 아직 구현되지 않았습니다';
 }

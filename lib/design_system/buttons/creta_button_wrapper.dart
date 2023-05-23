@@ -1206,12 +1206,13 @@ class BTN {
     );
   }
 
-  static CretaButton line_blue_imti_m({
+  static CretaButton line_blue_wmi_m({
     required String text,
     required IconData icon,
-    required ImageProvider image,
+    required Widget leftWidget,
     required Function onPressed,
     double? width = 120,
+    double? textWidth,
     CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
@@ -1223,29 +1224,28 @@ class BTN {
       onPressed: onPressed,
       sidePadding: sidePadding,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          //Padding(
-          //padding: const EdgeInsets.only(left: 8.0),
-          //child:
-          CircleAvatar(
-            radius: 8,
-            backgroundImage: image,
-          ),
-          //),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary)),
-              ],
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: leftWidget,
           ),
-          Icon(
-            icon,
-            size: 16,
-            color: CretaColor.primary,
+          SizedBox(
+              width: textWidth ?? width! / 3,
+              child: Center(
+                  child: Text(
+                text,
+                style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary),
+                overflow: TextOverflow.clip,
+                maxLines: 1,
+              ))),
+          Padding(
+            padding: const EdgeInsets.only(left: 6.0, right: 8.0),
+            child: Icon(
+              icon,
+              size: 16,
+              color: CretaColor.primary,
+            ),
           ),
         ],
       ),

@@ -11,8 +11,11 @@ import 'package:creta03/model/user_property_model.dart';
 import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:creta03/model/creta_model.dart';
 
+import '../common/creta_utils.dart';
 import '../design_system/creta_font.dart';
 import '../lang/creta_lang.dart';
+import '../model/team_model.dart';
+import '../pages/login_page.dart';
 
 class UserPropertyManager extends CretaManager {
   late UserModel userModel;
@@ -266,25 +269,32 @@ class UserPropertyManager extends CretaManager {
     List<UserPropertyModel> userModelList = [];
     for (String email in emailList) {
       if (email == "public") {
-        userModelList.add(makeDummyModel());
-      } else {
-        UserPropertyModel? user = await _emailToModel(email);
+        userModelList.add(makeDummyModel(null));
+      } else if (CretaUtils.isValidEmail(email)) {
+        UserPropertyModel? user = await emailToModel(email);
         if (user != null) {
           userModelList.add(user);
+        }
+      } else {
+        // 팀 mid 라고 생각한다. 보통 자기 팀이므로, 자기팀에서 먼저 찾는다.
+        TeamModel? team = await LoginPage.teamManagerHolder!.findTeamModel(email);
+        if (team != null) {
+          userModelList.add(makeDummyModel(team));
         }
       }
     }
     return userModelList;
   }
 
-  UserPropertyModel makeDummyModel() {
+  UserPropertyModel makeDummyModel(TeamModel? team) {
     UserPropertyModel user = UserPropertyModel('');
-    user.nickname = CretaLang.entire;
-    user.email = 'public';
+    user.nickname = team == null ? CretaLang.entire : team.name;
+    user.email = team == null ? 'public' : team.mid;
+    if (team != null) user.profileImg = team.profileImg;
     return user;
   }
 
-  Future<UserPropertyModel?> _emailToModel(String email) async {
+  Future<UserPropertyModel?> emailToModel(String email) async {
     Map<String, QueryValue> query = {};
     query['email'] = QueryValue(value: email);
     query['isRemoved'] = QueryValue(value: false);
@@ -296,22 +306,20 @@ class UserPropertyManager extends CretaManager {
     return null;
   }
 
-  Widget profileImageBox({UserPropertyModel? model, double radius = 200}) {
+  Widget profileImageBox({UserPropertyModel? model, Color? color, double radius = 200}) {
     model ??= userPropertyModel;
+    return imageCircle(model!.profileImg, model.nickname, radius: radius, color: color);
+  }
 
-    return Container(
-        width: radius,
-        height: radius,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(radius),
-            color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-            image: model!.profileImg == ''
-                ? null
-                : DecorationImage(image: Image.network(model.profileImg).image, fit: BoxFit.cover)),
-        child: model.profileImg == ''
+  Widget imageCircle(String img, String name, {Color? color, double radius = 200}) {
+    return CircleAvatar(
+        radius: radius,
+        backgroundColor: color ?? Colors.primaries[Random().nextInt(Colors.primaries.length)],
+        backgroundImage: img == '' ? null : Image.network(img).image,
+        child: img == ''
             ? Center(
-                child: Text(model.nickname.substring(0, 1),
-                    textAlign: TextAlign.center,
+                child: Text(name.substring(0, 1),
+                    textAlign: TextAlign.left,
                     style: TextStyle(
                         fontFamily: 'Pretendard',
                         fontWeight: CretaFont.semiBold,

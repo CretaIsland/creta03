@@ -102,4 +102,6 @@ class CretaLang {
   static String entire = "전체";
   static String team = "팀";
   static String creator = "생성자";
+
+  static String myChannel = "내 채널";
 }

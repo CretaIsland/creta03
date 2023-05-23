@@ -5,6 +5,7 @@ import 'package:progress_bar_steppers/steppers.dart';
 
 import '../../common/creta_utils.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/buttons/creta_toggle_button.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../design_system/menu/creta_drop_down_button.dart';
@@ -13,6 +14,7 @@ import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
+import '../../model/team_model.dart';
 import '../login_page.dart';
 import 'book_info_mixin.dart';
 import 'book_main_page.dart';
@@ -41,7 +43,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   List<PermissionType> permitionList = [];
   List<UserPropertyModel> userModelList = [];
 
-  bool _onceDBGetComplete = false;
+  List<String> channelEmailList = [];
+  List<UserPropertyModel> channelUserModelList = [];
+
+  bool _onceDBGetComplete1 = false;
+  bool _onceDBGetComplete2 = false;
 
   @override
   void initState() {
@@ -57,6 +63,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     ];
     totalSteps = stepsData.length;
 
+    titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
+    dataStyle = CretaFont.bodySmall;
+
     _resetList();
 
     LoginPage.userPropertyManagerHolder!.getUserPropertyFromEmail(emailList).then((value) {
@@ -64,7 +73,17 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       for (var ele in userModelList) {
         logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
       }
-      _onceDBGetComplete = true;
+      _onceDBGetComplete1 = true;
+      return value;
+    });
+    LoginPage.userPropertyManagerHolder!
+        .getUserPropertyFromEmail(widget.model!.channels)
+        .then((value) {
+      channelUserModelList = [...value];
+      for (var ele in channelUserModelList) {
+        logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
+      }
+      _onceDBGetComplete2 = true;
       return value;
     });
   }
@@ -76,11 +95,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   Future<bool> _waitDBJob() async {
-    while (_onceDBGetComplete == false) {
+    while (_onceDBGetComplete1 == false || _onceDBGetComplete2 == false) {
       await Future.delayed(const Duration(microseconds: 500));
     }
-    logger.info('_onceDBGetComplete=$_onceDBGetComplete wait end');
-    return _onceDBGetComplete;
+    logger.info('_onceDBGetComplete=$_onceDBGetComplete1 wait end');
+    return _onceDBGetComplete1;
   }
 
   @override
@@ -233,9 +252,18 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   Widget step3() {
-    return Container(
-      color: Colors.purple,
+    return SizedBox(
       height: 365,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ..._channelScope(),
+          ..._channelTo(),
+          copyRight(widget.model!),
+          _optionBody(),
+        ],
+      ),
     );
   }
 
@@ -339,16 +367,63 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
               hintText: '',
               controller: scopeController,
               onEditComplete: (val) {
-                setState(() {});
+                _addUser(scopeController.text).then((value) {
+                  if (value) {
+                    setState(() {});
+                  }
+                  return value;
+                });
               }),
           BTN.line_blue_t_m(
               text: CretaLang.invite,
               onPressed: () {
-                // 여기서, team 명과 userId 를 검증하여, 임시로 readers 에 넣는다.
+                _addUser(scopeController.text).then((value) {
+                  if (value) {
+                    setState(() {});
+                  }
+                  return value;
+                });
               })
         ],
       )
     ];
+  }
+
+  Future<bool> _addUser(String email) async {
+    // email 이거나, 팀명이다.
+    bool isEmail = CretaUtils.isValidEmail(email);
+    if (isEmail) {
+      // 헤당 유저가 회원인지 찾는다.
+      UserPropertyModel? user = await LoginPage.userPropertyManagerHolder!.emailToModel(email);
+      if (user != null) {
+        setState(() {
+          widget.model!.readers.add(email);
+          widget.model!.save();
+          userModelList.add(user);
+          _resetList();
+        });
+        return true;
+      }
+      // 여기서, 초대를 해야 한다.
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, CretaStudioLang.noExitEmail, duration: const Duration(seconds: 3));
+      return false;
+    }
+    // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
+    TeamModel? team = await LoginPage.teamManagerHolder!.findTeamModelByName(email, 'creta');
+    if (team != null) {
+      setState(() {
+        widget.model!.readers.add(team.mid);
+        widget.model!.save();
+        userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(team));
+        _resetList();
+      });
+      return true;
+    }
+    // 해당하는 Team 명이 없다. 이메일등을 넣도록 경고한다.
+    // ignore: use_build_context_synchronously
+    showSnackBar(context, CretaStudioLang.wrongEmail, duration: const Duration(seconds: 3));
+    return false;
   }
 
   List<Widget> _defaultScope() {
@@ -359,9 +434,10 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           spacing: 8.0,
           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            BTN.line_blue_iti_m(
-                icon1: Icons.groups_outlined,
-                icon2: Icons.add_outlined,
+            BTN.line_blue_wmi_m(
+                leftWidget: LoginPage.userPropertyManagerHolder!
+                    .imageCircle('', CretaLang.entire, radius: 24, color: CretaColor.primary),
+                icon: Icons.add_outlined,
                 text: CretaLang.entire,
                 onPressed: () {
                   UserPropertyModel? user = _findModel('public');
@@ -370,7 +446,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                     setState(() {
                       widget.model!.readers.add('public');
                       widget.model!.save();
-                      userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel());
+                      userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
                       _resetList();
                     });
                   }
@@ -384,12 +460,20 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   List<Widget> _myTeams() {
     return LoginPage.teamManagerHolder!.teamModelList.map((e) {
-      return BTN.line_blue_iti_m(
-          icon1: Icons.people_outlined,
-          icon2: Icons.add_outlined,
+      return BTN.line_blue_wmi_m(
+          leftWidget:
+              LoginPage.userPropertyManagerHolder!.imageCircle(e.profileImg, e.name, radius: 24),
+          icon: Icons.add_outlined,
           text: '${e.name} ${CretaLang.team}',
+          width: 180,
+          textWidth: 90,
           onPressed: () {
-            // 여기서, team 명과 userId 를 검증하여, 임시로 readers 에 넣는다.
+            setState(() {
+              widget.model!.readers.add(e.mid);
+              widget.model!.save();
+              userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
+              _resetList();
+            });
           });
     }).toList();
   }
@@ -403,94 +487,126 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       Container(
         width: 333,
         height: 207,
-        padding: const EdgeInsets.all(16),
+        //padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
             color: CretaColor.text[200]!,
             width: 2,
           ),
         ),
-        child: ListView.builder(
-          itemCount: emailList.length,
-          itemBuilder: (BuildContext context, int index) {
-            String email = emailList[index];
-            bool isNotCreator = (email != widget.model!.creator);
-            UserPropertyModel? userModel = _findModel(email);
-            return Container(
-              padding: const EdgeInsets.only(bottom: 2),
-              height: 28,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 4),
-                    child: LoginPage.userPropertyManagerHolder!
-                        .profileImageBox(model: userModel, radius: 24),
+        child: Scrollbar(
+          thumbVisibility: true,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: emailList.length,
+              itemBuilder: (BuildContext context, int index) {
+                String email = emailList[index];
+                bool isNotCreator = (email != widget.model!.creator);
+                UserPropertyModel? userModel = _findModel(email);
+                return Container(
+                  padding: const EdgeInsets.only(left: 0, bottom: 6),
+                  height: 30,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      LoginPage.userPropertyManagerHolder!.profileImageBox(
+                          model: userModel,
+                          radius: 28,
+                          color: email == 'public' ? CretaColor.primary : null),
+                      //const Icon(Icons.account_circle_outlined),
+                      SizedBox(
+                        //color: Colors.amber,
+                        width: isNotCreator ? 120 : 120 + 96 + 24,
+                        child: Tooltip(
+                          message: userModel != null ? userModel.email : '',
+                          child: Text(
+                            _nameWrap(userModel, email, isNotCreator, false),
+                            style: isNotCreator
+                                ? CretaFont.bodySmall
+                                : CretaFont.bodySmall.copyWith(
+                                    color: CretaColor.primary,
+                                  ),
+                            overflow: TextOverflow.clip,
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      if (isNotCreator)
+                        Container(
+                          width: 96,
+                          alignment: Alignment.centerLeft,
+                          child: CretaDropDownButton(
+                              selectedColor: CretaColor.text[700]!,
+                              textStyle: CretaFont.bodyESmall,
+                              width: 87,
+                              height: 28,
+                              itemHeight: 28,
+                              dropDownMenuItemList: StudioSnippet.getPermitionListItem(
+                                  defaultValue: permitionList[index],
+                                  onChanged: (val) {
+                                    if (val == PermissionType.owner) {
+                                      widget.model!.owners.add(email);
+                                      widget.model!.writers.remove(email);
+                                      widget.model!.readers.remove(email);
+                                    } else if (val == PermissionType.writer) {
+                                      widget.model!.owners.remove(email);
+                                      widget.model!.writers.add(email);
+                                      widget.model!.readers.remove(email);
+                                    } else if (val == PermissionType.reader) {
+                                      widget.model!.owners.remove(email);
+                                      widget.model!.writers.remove(email);
+                                      widget.model!.readers.add(email);
+                                    }
+                                    setState(() {
+                                      widget.model!.save();
+                                      _resetList();
+                                    });
+                                  })),
+                        ),
+                      isNotCreator
+                          ? BTN.fill_gray_i_s(
+                              icon: Icons.close,
+                              onPressed: () {
+                                if (permitionList[index] == PermissionType.owner) {
+                                  // deleteFrom owners
+                                  widget.model!.owners.remove(email);
+                                } else if (permitionList[index] == PermissionType.writer) {
+                                  // deleteFrom writers
+                                  widget.model!.writers.remove(email);
+                                } else if (permitionList[index] == PermissionType.reader) {
+                                  // deleteFrom readers
+                                  widget.model!.readers.remove(email);
+                                }
+                                for (var ele in userModelList) {
+                                  if (ele.email == email) {
+                                    userModelList.remove(ele);
+                                    break;
+                                  }
+                                }
+
+                                setState(() {
+                                  widget.model!.save();
+                                  _resetList();
+                                });
+                              },
+                              buttonSize: 24,
+                            )
+                          : const SizedBox.shrink(),
+                    ],
                   ),
-                  //const Icon(Icons.account_circle_outlined),
-                  SizedBox(
-                    //color: Colors.amber,
-                    width: isNotCreator ? 148 : 148 + 96 + 24,
-                    child: Text(
-                      _nameWrap(userModel, email, isNotCreator),
-                      style: isNotCreator
-                          ? CretaFont.bodySmall
-                          : CretaFont.bodySmall.copyWith(
-                              color: CretaColor.primary,
-                            ),
-                      overflow: TextOverflow.clip,
-                      maxLines: 1,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  if (isNotCreator)
-                    Container(
-                      width: 96,
-                      alignment: Alignment.centerLeft,
-                      child: CretaDropDownButton(
-                          selectedColor: CretaColor.text[700]!,
-                          textStyle: CretaFont.bodyESmall,
-                          width: 87,
-                          height: 28,
-                          itemHeight: 28,
-                          dropDownMenuItemList: StudioSnippet.getPermitionListItem(
-                              defaultValue: permitionList[index],
-                              onChanged: (val) {
-                                //widget.model.copyRight.set(val);
-                              })),
-                    ),
-                  isNotCreator
-                      ? BTN.fill_gray_i_s(
-                          icon: Icons.close,
-                          onPressed: () {
-                            if (permitionList[index] == PermissionType.owner) {
-                              // deleteFrom owners
-                              widget.model!.owners.remove(email);
-                            } else if (permitionList[index] == PermissionType.writer) {
-                              // deleteFrom writers
-                              widget.model!.writers.remove(email);
-                            } else if (permitionList[index] == PermissionType.reader) {
-                              // deleteFrom readers
-                              widget.model!.readers.remove(email);
-                            }
-                            setState(() {
-                              widget.model!.save();
-                              _resetList();
-                            });
-                          },
-                          buttonSize: 24,
-                        )
-                      : const SizedBox.shrink(),
-                ],
-              ),
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     ];
   }
 
-  String _nameWrap(UserPropertyModel? model, String email, bool isNotCreator) {
+  String _nameWrap(UserPropertyModel? model, String email, bool isNotCreator, bool isChannel) {
     String name = email;
     if (model != null) {
       logger.info('===============>>>_nameWrap(${model.nickname}, email, isNotCreator)');
@@ -499,7 +615,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     if (isNotCreator) {
       return name;
     }
-    return '$name(${CretaLang.creator})';
+    return '$name(${isChannel ? CretaLang.myChannel : CretaLang.creator})';
   }
 
   UserPropertyModel? _findModel(String email) {
@@ -509,5 +625,176 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       }
     }
     return null;
+  }
+
+  UserPropertyModel? _findChannelModel(String email) {
+    for (var model in channelUserModelList) {
+      if (model.email == email) {
+        return model;
+      }
+    }
+    return null;
+  }
+
+  //
+  // step3
+  //
+
+  List<Widget> _channelScope() {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: Text(CretaStudioLang.publish, style: CretaFont.titleSmall),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 12, bottom: 12),
+        child: Wrap(
+          spacing: 8.0,
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            BTN.line_blue_wmi_m(
+                leftWidget: LoginPage.userPropertyManagerHolder!
+                    .imageCircle('', CretaLang.entire, radius: 24, color: CretaColor.primary),
+                icon: Icons.add_outlined,
+                text: CretaLang.entire,
+                onPressed: () {
+                  UserPropertyModel? user = _findChannelModel('public');
+                  if (user == null) {
+                    //아직 전체가 없을 때만 넣는다.
+                    setState(() {
+                      widget.model!.channels.add('public');
+                      widget.model!.save();
+                      channelUserModelList
+                          .add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
+                    });
+                  }
+                }),
+            ..._myChannelTeams(),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _myChannelTeams() {
+    return LoginPage.teamManagerHolder!.teamModelList.map((e) {
+      return BTN.line_blue_wmi_m(
+          leftWidget:
+              LoginPage.userPropertyManagerHolder!.imageCircle(e.profileImg, e.name, radius: 24),
+          icon: Icons.add_outlined,
+          text: '${e.name} ${CretaLang.team}',
+          width: 180,
+          textWidth: 90,
+          onPressed: () {
+            setState(() {
+              widget.model!.channels.add(e.mid);
+              widget.model!.save();
+              channelUserModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
+            });
+          });
+    }).toList();
+  }
+
+  List<Widget> _channelTo() {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(top: 12, bottom: 12),
+        child: Text(CretaStudioLang.publishTo, style: CretaFont.titleSmall),
+      ),
+      Container(
+        width: 333,
+        height: 124,
+        //padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: CretaColor.text[200]!,
+            width: 2,
+          ),
+        ),
+        child: Scrollbar(
+          thumbVisibility: true,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: channelUserModelList.length,
+              itemBuilder: (BuildContext context, int index) {
+                UserPropertyModel userModel = channelUserModelList[index];
+                bool isNotCreator = (userModel.email != widget.model!.creator);
+                return Container(
+                  padding: const EdgeInsets.only(left: 0, bottom: 6),
+                  height: 30,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      LoginPage.userPropertyManagerHolder!.profileImageBox(
+                          model: userModel,
+                          radius: 28,
+                          color: userModel.email == 'public' ? CretaColor.primary : null),
+                      //const Icon(Icons.account_circle_outlined),
+                      SizedBox(
+                        //color: Colors.amber,
+                        width: isNotCreator ? 120 + 96 : 120 + 96 + 24,
+                        child: Tooltip(
+                          message: userModel.email,
+                          child: Text(
+                            _nameWrap(userModel, userModel.email, isNotCreator, true),
+                            style: isNotCreator
+                                ? CretaFont.bodySmall
+                                : CretaFont.bodySmall.copyWith(
+                                    color: CretaColor.primary,
+                                  ),
+                            overflow: TextOverflow.clip,
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+
+                      isNotCreator
+                          ? BTN.fill_gray_i_s(
+                              icon: Icons.close,
+                              onPressed: () {
+                                widget.model!.channels.remove(userModel.email);
+                                for (var ele in channelUserModelList) {
+                                  if (ele.email == userModel.email) {
+                                    channelUserModelList.remove(ele);
+                                    break;
+                                  }
+                                }
+                                setState(() {
+                                  widget.model!.save();
+                                });
+                              },
+                              buttonSize: 24,
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  Widget _optionBody() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(CretaStudioLang.allowReply, style: titleStyle),
+          CretaToggleButton(
+            defaultValue: widget.model!.isAllowReply.value,
+            onSelected: (value) {
+              widget.model!.isAllowReply.set(value);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

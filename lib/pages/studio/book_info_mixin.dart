@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:material_tag_editor/tag_editor.dart';
 
 import '../../common/creta_utils.dart';
 import '../../design_system/creta_chip.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
+import '../../design_system/menu/creta_drop_down_button.dart';
 import '../../design_system/text_field/creta_text_field.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
@@ -16,6 +18,8 @@ import 'studio_snippet.dart';
 mixin BookInfoMixin {
   double horizontalPadding = 24;
   List<String> hashTagList = [];
+  late TextStyle titleStyle;
+  late TextStyle dataStyle;
 
   List<Widget> bookTitle(
       {required BookModel? model,
@@ -136,5 +140,30 @@ mixin BookInfoMixin {
         },
       )
     ];
+  }
+
+  Widget copyRight(BookModel model) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 24, bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(CretaStudioLang.copyRight, style: CretaFont.titleSmall),
+          model.creator == AccountManager.currentLoginUser.email
+              ? CretaDropDownButton(
+                  selectedColor: CretaColor.text[700]!,
+                  textStyle: CretaFont.bodyESmall,
+                  width: 87,
+                  height: 28,
+                  itemHeight: 12,
+                  dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
+                      defaultValue: model.copyRight.value,
+                      onChanged: (val) {
+                        model.copyRight.set(val);
+                      }))
+              : Text(CretaStudioLang.copyWrightList[model.copyRight.value.index], style: dataStyle),
+        ],
+      ),
+    );
   }
 }
