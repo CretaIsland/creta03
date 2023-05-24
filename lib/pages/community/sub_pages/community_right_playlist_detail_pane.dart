@@ -47,13 +47,15 @@ import '../creta_playlist_detail_ui_item.dart';
 // const double _itemDefaultHeight = 230.0;
 
 class CommunityRightPlaylistDetailPane extends StatefulWidget {
-  final CretaLayoutRect cretaLayoutRect;
-  final ScrollController scrollController;
   const CommunityRightPlaylistDetailPane({
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
   });
+  final CretaLayoutRect cretaLayoutRect;
+  final ScrollController scrollController;
+
+  static String playlistId = '';
 
   @override
   State<CommunityRightPlaylistDetailPane> createState() => _CommunityRightPlaylistDetailPaneState();

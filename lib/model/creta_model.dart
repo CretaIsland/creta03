@@ -12,6 +12,7 @@ class CretaModelSnippet {
     required CretaManager manager,
     //required String userId,
     required Widget Function()? consumerFunc,
+    Function()? completeFunc,
   }) {
     return FutureBuilder<List<AbsExModel>>(
         future: manager.isGetListFromDBComplete(),
@@ -32,6 +33,7 @@ class CretaModelSnippet {
             // if (snapshot.data!.isEmpty) {
             //   return const Center(child: Text('no book founded'));
             // }
+            completeFunc?.call();
             if (consumerFunc != null) {
               return consumerFunc();
             }

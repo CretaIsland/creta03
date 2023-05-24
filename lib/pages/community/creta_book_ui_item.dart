@@ -595,6 +595,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   @override
   Widget build(BuildContext context) {
+    String linkUrl = '${AppRoutes.communityBook}?${widget.bookModel.mid}';
     return MouseRegion(
       onEnter: (value) {
         setState(() {
@@ -607,11 +608,11 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         });
       },
       child: Link(
-        uri: Uri.parse(AppRoutes.communityBook),
+        uri: Uri.parse(linkUrl),
         builder: (context, function) {
           return InkWell(
             onTap: () {
-              Routemaster.of(context).push(AppRoutes.communityBook);
+              Routemaster.of(context).push(linkUrl);
             },
             child: Container(
               width: widget.width,

@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'dart:async';
+import 'dart:async';
 //import 'package:flutter/gestures.dart';
-//import 'package:hycop/hycop.dart';
+import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
@@ -27,11 +28,17 @@ import '../../../design_system/creta_color.dart';
 import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
-import '../community_sample_data.dart';
+//import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 //import '../creta_playlist_ui_item.dart';
 //import 'package:deep_collection/deep_collection.dart';
 import '../../../design_system/creta_font.dart';
+import '../../../data_io/watch_history_manager.dart';
+import '../../../data_io/book_published_manager.dart';
+import '../../../model/creta_model.dart';
+import '../../../design_system/component/snippet.dart';
+import '../../../model/book_model.dart';
+import '../../../model/watch_history_model.dart';
 
 //const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -61,16 +68,36 @@ class CommunityRightWatchHistoryPane extends StatefulWidget {
 }
 
 class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHistoryPane> {
-  late Map<String, List<CretaBookData>> _cretaBookDataMap;
+  final Map<String, List<BookModel>> _cretaBookDataMap = {};
   final _itemSizeRatio = _itemMinHeight / _itemMinWidth;
   double _itemWidth = 0;
   double _itemHeight = 0;
+
+  BookPublishedManager? bookPublishedManagerHolder;
+  WatchHistoryManager? watchHistoryManagerHolder;
+  bool _onceDBIDListGetComplete = false;
+  bool _onceDBDataListGetComplete = false;
 
   @override
   void initState() {
     super.initState();
 
-    _cretaBookDataMap = _rearrangeCretaBookData(CommunitySampleData.getCretaBookList());
+    //_cretaBookDataMap = _rearrangeCretaBookData(CommunitySampleData.getCretaBookList());
+    bookPublishedManagerHolder = BookPublishedManager();
+    watchHistoryManagerHolder = WatchHistoryManager();
+
+    Map<String, QueryValue> query = {};
+    query['isRemoved'] = QueryValue(value: false);
+    query['userId'] = QueryValue(value: AccountManager.currentLoginUser.userId, operType: OperType.isEqualTo);
+
+    Map<String, OrderDirection> orderBy = {};
+    orderBy['watchTime'] = OrderDirection.descending;
+
+    watchHistoryManagerHolder!.queryFromDB(
+      query,
+      //limit: ,
+      orderBy: orderBy,
+    );
   }
 
   // <!-- my code
@@ -99,14 +126,14 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
   // }
   // -->
   // <!-- final code
-  Map<String, List<CretaBookData>> _rearrangeCretaBookData(List<CretaBookData> bookDataList) {
-    final Map<String, List<CretaBookData>> rearrangeMap = {};
-    for (final bookData in bookDataList) {
-      final String createDate = DateFormat('yyyy.MM.dd').format(bookData.createDate);
-      rearrangeMap.putIfAbsent(createDate, () => []).add(bookData);
-    }
-    return rearrangeMap;
-  }
+  // Map<String, List<CretaBookData>> _rearrangeCretaBookData(List<CretaBookData> bookDataList) {
+  //   final Map<String, List<CretaBookData>> rearrangeMap = {};
+  //   for (final bookData in bookDataList) {
+  //     final String createDate = DateFormat('yyyy.MM.dd').format(bookData.createDate);
+  //     rearrangeMap.putIfAbsent(createDate, () => []).add(bookData);
+  //   }
+  //   return rearrangeMap;
+  // }
   // -->
 
   // <!-- my code
@@ -148,7 +175,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     final List<Widget> itemWidgetList = [];
     final List<String> keyList = _cretaBookDataMap.keys.toList()..sort();
     for (final key in keyList.reversed) {
-      final List<CretaBookData> dataList = _cretaBookDataMap[key] ?? [];
+      final List<BookModel> dataList = _cretaBookDataMap[key] ?? [];
       itemWidgetList
         ..add(Container(
           padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -163,7 +190,12 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
           runSpacing: _rightViewItemGapY, // 상하 간격
           children: dataList
               .map(
-                  (data) => CretaBookItem(key: data.uiKey, cretaBookData: data, width: _itemWidth, height: _itemHeight))
+                  (data) => CretaBookUIItem(
+                    key: GlobalKey(),//GlobalObjectKey('${index++}+${data.mid}'),
+                    bookModel: data,
+                    width: _itemWidth,
+                    height: _itemHeight,
+                  ))
               .toList(),
         ));
     }
@@ -171,7 +203,23 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
   }
   // -->
 
+  void _rearrangeCretaBookData() {
+    if (kDebugMode) print('---_rearrangeCretaBookData');
+    for(var exModel in watchHistoryManagerHolder!.modelList) {
+      final whModel = exModel as WatchHistoryModel;
+      for(var model in bookPublishedManagerHolder!.modelList) {
+        final bookModel = model as BookModel;
+        if (bookModel.mid == whModel.bookId) {
+          final String watchTime = DateFormat('yyyy.MM.dd').format(whModel.watchTime);
+          _cretaBookDataMap.putIfAbsent(watchTime, () => []).add(bookModel);
+        }
+      }
+    }
+  }
+
   Widget _getItemPane() {
+    if (kDebugMode) print('---_getItemPane');
+    if (_cretaBookDataMap.isEmpty) _rearrangeCretaBookData();
     final width = widget.cretaLayoutRect.childWidth;
     final int columnCount = CretaUtils.getItemColumnCount(width, _itemMinWidth, _rightViewItemGapX);
     _itemWidth = ((width + _rightViewItemGapX) ~/ columnCount) - _rightViewItemGapX;
@@ -196,8 +244,59 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     );
   }
 
+  void _getDBDataList() {
+    if (kDebugMode) print('---_getDBDataList');
+    Map<String, QueryValue> query = {};
+    query['isRemoved'] = QueryValue(value: false);
+
+    List<String> bookIdList = [];
+    for(var exModel in watchHistoryManagerHolder!.modelList) {
+      WatchHistoryModel whModel = exModel as WatchHistoryModel;
+      bookIdList.add(whModel.bookId);
+    }
+    query['mid'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
+
+    bookPublishedManagerHolder!.queryFromDB(
+      query,
+      //limit: ,
+      //orderBy: orderBy,
+    );
+
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      timer.cancel();
+      setState(() {});
+    });
+  }
+
+  Widget _waitSignWidget() {
+    if (kDebugMode) print('---_waitSignWidget');
+    return Center(child: Snippet.showWaitSign());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _getItemPane();
+    if (_onceDBIDListGetComplete && _onceDBDataListGetComplete) {
+      if (kDebugMode) print('---build-1');
+      return _getItemPane();
+    }
+    Widget retval = SizedBox.shrink();
+    if (watchHistoryManagerHolder!.modelList.isEmpty) {
+      if (kDebugMode) print('---build-2');
+      retval = CretaModelSnippet.waitData(
+        manager: watchHistoryManagerHolder!,
+        consumerFunc: _waitSignWidget,
+        completeFunc: _getDBDataList,
+      );
+      _onceDBIDListGetComplete = true;
+    }
+    else if (_onceDBDataListGetComplete == false) {
+      if (kDebugMode) print('---build-3');
+      retval = CretaModelSnippet.waitData(
+        manager: bookPublishedManagerHolder!,
+        consumerFunc: _getItemPane,
+      );
+      _onceDBDataListGetComplete = true;
+    }
+    return retval;
   }
 }
