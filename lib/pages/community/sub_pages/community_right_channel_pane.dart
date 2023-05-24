@@ -46,9 +46,15 @@ const double _itemMinHeight = 230.0;
 bool isInUsingCanvaskit = false;
 
 class CommunityRightChannelPane extends StatefulWidget {
+  const CommunityRightChannelPane({
+    super.key,
+    required this.cretaLayoutRect,
+    required this.scrollController,
+  });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
-  const CommunityRightChannelPane({super.key, required this.cretaLayoutRect, required this.scrollController});
+
+  static String channelId = '';
 
   @override
   State<CommunityRightChannelPane> createState() => _CommunityRightChannelPaneState();

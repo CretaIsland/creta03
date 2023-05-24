@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
+import 'package:creta03/model/watch_history_model.dart';
+//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:hycop/hycop.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
@@ -35,17 +38,20 @@ import '../creta_book_ui_item.dart';
 import '../../../design_system/buttons/creta_progress_slider.dart';
 //import '../../design_system/text_field/creta_comment_bar.dart';
 import 'community_comment_pane.dart';
+import '../../../data_io/watch_history_manager.dart';
 
 //bool _isInUsingCanvaskit = false;
 
 class CommunityRightBookPane extends StatefulWidget {
-  final CretaLayoutRect cretaLayoutRect;
-  final ScrollController scrollController;
   const CommunityRightBookPane({
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
   });
+  final CretaLayoutRect cretaLayoutRect;
+  final ScrollController scrollController;
+
+  static String bookId = '';
 
   @override
   State<CommunityRightBookPane> createState() => _CommunityRightBookPaneState();
@@ -58,9 +64,19 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   final TextEditingController _hashtagController = TextEditingController();
   bool _usingContentsFullView = false;
 
+  WatchHistoryManager? watchHistoryManagerHolder;
+
   @override
   void initState() {
     super.initState();
+
+    if (CommunityRightBookPane.bookId.isEmpty) {
+      //String url = Uri.base.origin;
+      String query = Uri.base.query;
+
+      int pos = query.indexOf('&');
+      CommunityRightBookPane.bookId = (pos > 0) ? query.substring(0, pos) : query;
+    }
 
     _cretaRelatedBookList = CommunitySampleData.getCretaBookList();
 
@@ -72,6 +88,16 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       }
     });
     _controller.text = _description;
+
+    WatchHistoryModel whModel = WatchHistoryModel.withName(
+      userId: AccountManager.currentLoginUser.userId,
+      bookId: CommunityRightBookPane.bookId,
+      watchTime: DateTime.now(),
+    );
+    watchHistoryManagerHolder = WatchHistoryManager();
+    watchHistoryManagerHolder?.createToDB(whModel);
+    //bookManagerHolder!.configEvent(notifyModify: false);
+    //watchHistoryManagerHolder!.clearAll();
   }
 
   Widget _getHashtagWidget(String hashtag) {

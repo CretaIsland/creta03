@@ -116,9 +116,9 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     query['shares'] = QueryValue(value: sharesList, operType: OperType.arrayContainsAny);
 
     if (widget.filterSearchKeyword.isNotEmpty) {
+      // Elasticsearch 될때까지 막아둠
       //query['name'] = QueryValue(value: widget.filterSearchKeyword, operType: OperType.like ??? );
     }
-
 
     Map<String, OrderDirection> orderBy = {};
     switch (widget.filterBookSort) {
@@ -142,9 +142,6 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       //limit: ,
       orderBy: orderBy,
     );
-    // bookManagerHolder!.myDataOnly(
-    //   AccountManager.currentLoginUser.email,
-    // );
   }
 
   int saveIdx = 0;
