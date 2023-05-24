@@ -1,11 +1,18 @@
+import 'dart:math';
+
+import 'package:creta03/design_system/animation/staggerd_animation.dart';
 import 'package:creta03/model/user_property_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:progress_bar_steppers/steppers.dart';
 
 import '../../common/creta_utils.dart';
+import '../../data_io/book_published_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
+import '../../design_system/component/custom_image.dart';
+import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../design_system/menu/creta_drop_down_button.dart';
@@ -15,6 +22,7 @@ import '../../lang/creta_studio_lang.dart';
 import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
 import '../../model/team_model.dart';
+import '../../routes.dart';
 import '../login_page.dart';
 import 'book_info_mixin.dart';
 import 'book_main_page.dart';
@@ -48,6 +56,13 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   bool _onceDBGetComplete1 = false;
   bool _onceDBGetComplete2 = false;
+  bool _onceDBPublishComplete = false;
+
+  final ScrollController _scrollController1 = ScrollController();
+  final ScrollController _scrollController2 = ScrollController();
+
+  String _modifier = '';
+  String _publishResultStr = CretaStudioLang.publishFailed;
 
   @override
   void initState() {
@@ -102,6 +117,21 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     return _onceDBGetComplete1;
   }
 
+  Widget _stepsWidget(int steps) {
+    switch (steps) {
+      case 1:
+        return step1();
+      case 2:
+        return step2();
+      case 3:
+        return step3();
+      case 4:
+        return step4();
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (currentStep > totalSteps) {
@@ -110,90 +140,90 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      child: StatefulBuilder(builder: (BuildContext context, StateSetter setState1) {
-        stepsWidget = [
-          step1(),
-          step2(),
-          step3(),
-          step4(),
-          const SizedBox.shrink(),
-        ];
-
-        return FutureBuilder(
-            future: _waitDBJob(),
-            builder: (context, AsyncSnapshot<bool> snapshot) {
-              return SafeArea(
-                child: SizedBox(
-                  width: width,
-                  height: height,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                CretaStudioLang.publishSettings,
-                                style: CretaFont.titleMedium,
-                              ),
-                              BTN.fill_gray_i_m(
-                                  icon: Icons.close_outlined,
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  }),
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          height: 22,
-                          indent: 0,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                          child: Steppers(
-                            direction: StepperDirection.horizontal,
-                            labels: stepsData,
-                            currentStep: currentStep,
-                            stepBarStyle: StepperStyle(
-                              // activeColor: StepperColors.red500,
-                              maxLineLabel: 2,
-                              // inactiveColor: StepperColors.grey400
+      child: FutureBuilder(
+          future: _waitDBJob(),
+          builder: (context, AsyncSnapshot<bool> snapshot) {
+            if (snapshot.hasData == false) {
+              //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
+              return Snippet.showWaitSign();
+            }
+            if (snapshot.hasError) {
+              //error가 발생하게 될 경우 반환하게 되는 부분
+              return Snippet.errMsgWidget(snapshot);
+            }
+            return SafeArea(
+              child: SizedBox(
+                width: width,
+                height: height,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              CretaStudioLang.publishSettings,
+                              style: CretaFont.titleMedium,
                             ),
+                            BTN.fill_gray_i_m(
+                                icon: Icons.close_outlined,
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                }),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        height: 22,
+                        indent: 0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        child: Steppers(
+                          direction: StepperDirection.horizontal,
+                          labels: stepsData,
+                          currentStep: currentStep,
+                          stepBarStyle: StepperStyle(
+                            // activeColor: StepperColors.red500,
+                            maxLineLabel: 2,
+                            // inactiveColor: StepperColors.grey400
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: 16,
-                            left: horizontalPadding,
-                            right: horizontalPadding,
-                            bottom: 8,
-                          ),
-                          child: stepsWidget[currentStep - 1],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 16,
+                          left: horizontalPadding,
+                          right: horizontalPadding,
+                          bottom: 8,
                         ),
-                        const Divider(
-                          height: 22,
-                          indent: 0,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              if (currentStep > 1)
-                                BTN.line_blue_t_m(
-                                  width: 24,
-                                  text: CretaLang.prev,
-                                  onPressed: () {
-                                    setState(() {
-                                      _prevStep();
-                                    });
-                                  },
-                                ),
-                              const SizedBox(width: 8),
+                        child: _stepsWidget(currentStep),
+                      ),
+                      const Divider(
+                        height: 22,
+                        indent: 0,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (currentStep > 1 && currentStep < 4)
+                              BTN.line_blue_t_m(
+                                width: 24,
+                                text: CretaLang.prev,
+                                onPressed: () {
+                                  setState(() {
+                                    _prevStep();
+                                  });
+                                },
+                              ),
+                            const SizedBox(width: 8),
+                            if (currentStep < 4)
                               BTN.fill_blue_t_m(
                                 width: 55,
                                 text: CretaLang.next,
@@ -203,16 +233,43 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                                   });
                                 },
                               ),
-                            ],
-                          ),
+                            if (currentStep == 4)
+                              SizedBox(
+                                width: 240,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    BTN.fill_blue_t_m(
+                                      width: 150,
+                                      text: CretaLang.gotoCommunity,
+                                      onPressed: () {
+                                        AppRoutes.launchTab(AppRoutes.communityHome);
+                                        setState(() {
+                                          _nextStep();
+                                        });
+                                      },
+                                    ),
+                                    BTN.fill_blue_t_m(
+                                      width: 55,
+                                      text: CretaLang.next,
+                                      onPressed: () {
+                                        setState(() {
+                                          _nextStep();
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            });
-      }),
+              ),
+            );
+          }),
     );
     //});
   }
@@ -268,10 +325,63 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   Widget step4() {
-    return Container(
-      color: Colors.orange,
-      height: 365,
-    );
+    return FutureBuilder(
+        future: _waitPublish(),
+        builder: (context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.hasData == false) {
+            //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
+            return Snippet.showWaitSign();
+          }
+          if (snapshot.hasError) {
+            //error가 발생하게 될 경우 반환하게 되는 부분
+            return Snippet.errMsgWidget(snapshot);
+          }
+          if (snapshot.data == false) {
+            return const SizedBox.shrink();
+          }
+          return SizedBox(
+            height: 365,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                StaggeredAnimation(
+                  child: _drawThumbnail(),
+                ),
+                Center(
+                    child: Text(
+                  '$_modifier $_publishResultStr',
+                  style: CretaFont.titleELarge,
+                )
+                        .animate(delay: const Duration(microseconds: 1500))
+                        .then()
+                        .fade()
+                        .slide()
+                        .then()
+                        .tint()
+                        .then()
+                        .shake()),
+              ],
+            ),
+          );
+        });
+  }
+
+  Widget _drawThumbnail() {
+    final Random random = Random();
+    int randomNumber = random.nextInt(100);
+    String image = widget.model!.thumbnailUrl.value.isEmpty
+        ? 'https://picsum.photos/200/?random=$randomNumber'
+        : widget.model!.thumbnailUrl.value;
+    // String image =
+    //     'https://oaidalleapiprodscus.blob.core.windows.net/private/org-wu0lAWU8sN5CR4ZUjC13D0XH/user-U7GAXXruTXKgCHDICrqUDVT0/img-NiOCRrCd1oEPpOjIdOfa2v8r.png?st=2023-05-24T07%3A53%3A57Z&se=2023-05-24T09%3A53%3A57Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-05-24T00%3A07%3A46Z&ske=2023-05-25T00%3A07%3A46Z&sks=b&skv=2021-08-06&sig=ISd6MJBNwyCJoSuo25O1rKD1%2BCbdJafY5UISDnotaZg%3D';
+
+    return CustomImage(
+        key: GlobalKey(),
+        hasMouseOverEffect: false,
+        hasAni: false,
+        width: width,
+        height: height,
+        image: image);
   }
 
   void _nextStep() {
@@ -293,10 +403,49 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   void _doWork() {
-    if (currentStep == 3) {
-      // fake error happens at step 3 when do work
-      //stepsData[2].state = StepperState.error;
+    if (currentStep < 3) {
+      _onceDBPublishComplete = false;
+    } else if (currentStep == 3) {
+      _publish();
     }
+  }
+
+  Future<bool> _waitPublish() async {
+    while (_onceDBPublishComplete == false) {
+      await Future.delayed(const Duration(microseconds: 500));
+    }
+    return true;
+  }
+
+  Future<bool> _publish() async {
+    BookPublishedManager bookPublishedManagerHolder = BookPublishedManager();
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    bool isNew = false;
+
+    BookModel? published = await bookPublishedManagerHolder.findPublished(widget.model!.mid);
+    if (published == null) {
+      isNew = true;
+      published = BookModel('');
+      widget.model!.publishMid = published.mid;
+      widget.model!.save();
+    }
+    // creat_book_published data 를 만든다.
+    published.copyFrom(widget.model!, newMid: published.mid, pMid: published.parentMid.value);
+    published.sourceMid = widget.model!.mid;
+    if (isNew) {
+      await bookPublishedManagerHolder.createToDB(published);
+      logger.info('published created ${published.mid}, source=${published.sourceMid}');
+      _modifier = CretaStudioLang.newely;
+      _publishResultStr = CretaStudioLang.publishComplete;
+      _onceDBPublishComplete = true;
+      return true;
+    }
+    await bookPublishedManagerHolder.setToDB(published);
+    logger.info('published updated ${published.mid}, , source=${published.sourceMid}');
+    _modifier = CretaStudioLang.update;
+    _publishResultStr = CretaStudioLang.publishComplete;
+    _onceDBPublishComplete = true;
+    return true;
   }
 
   // ignore: unused_element
@@ -494,11 +643,13 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
             width: 2,
           ),
         ),
-        child: Scrollbar(
-          thumbVisibility: true,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 1.0, top: 16, bottom: 16),
+          child: Scrollbar(
+            thumbVisibility: true,
+            controller: _scrollController1,
             child: ListView.builder(
+              controller: _scrollController1,
               scrollDirection: Axis.vertical,
               itemCount: emailList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -506,7 +657,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                 bool isNotCreator = (email != widget.model!.creator);
                 UserPropertyModel? userModel = _findModel(email);
                 return Container(
-                  padding: const EdgeInsets.only(left: 0, bottom: 6),
+                  padding: const EdgeInsets.only(left: 0, bottom: 6, right: 12.0),
                   height: 30,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -711,18 +862,21 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
             width: 2,
           ),
         ),
-        child: Scrollbar(
-          thumbVisibility: true,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 1.0, top: 16, bottom: 16),
+          child: Scrollbar(
+            thumbVisibility: true,
+            controller: _scrollController2,
             child: ListView.builder(
+              controller: _scrollController2,
               scrollDirection: Axis.vertical,
               itemCount: channelUserModelList.length,
               itemBuilder: (BuildContext context, int index) {
                 UserPropertyModel userModel = channelUserModelList[index];
                 bool isNotCreator = (userModel.email != widget.model!.creator);
                 return Container(
-                  padding: const EdgeInsets.only(left: 0, bottom: 6),
+                  padding: const EdgeInsets.only(left: 0, bottom: 6, right: 12.0),
                   height: 30,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -389,4 +389,9 @@ class CretaStudioLang {
 
   static const String wrongEmail = '올바른 이메일 포맷이 아니며, 해당하는 팀명이 없습니다.  이메일 주소 또는 팀명을 입력하세요';
   static const String noExitEmail = '등록된 사용자가 아닙니다. 자동 초대 기능은 아직 구현되지 않았습니다';
+
+  static const String publishComplete = '발행이 완료되었습니다';
+  static const String publishFailed = '발행이 실패하였습니다';
+  static const String update = '수정';
+  static const String newely = '신규';
 }

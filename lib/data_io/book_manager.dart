@@ -119,6 +119,7 @@ class BookManager extends CretaManager {
         imageUrl: url);
     sampleBook.width.set(width, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.height.set(height, save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.thumbnailUrl.set(url, save: false, noUndo: true, dontChangeBookTime: true);
     return sampleBook;
   }
 

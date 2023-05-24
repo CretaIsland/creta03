@@ -53,6 +53,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   double widthScale = 1;
 
   int _pageCount = 0;
+  int _firstPage = 100;
 
   // void _scrollListener() {
   //   setState(() {
@@ -382,7 +383,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                             ),
                           ),
                         )
-                      : _thumnailAreaReal(pageWidth, pageHeight, model),
+                      : _thumnailAreaReal(pageIndex, pageWidth, pageHeight, model),
                   model.isShow.value == false
                       ? Container(
                           height: pageHeight,
@@ -408,11 +409,18 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   //       image: url);
   // }
 
-  Widget _thumnailAreaReal(double width, double height, PageModel pageModel) {
+  Widget _thumnailAreaReal(int pageIndex, double width, double height, PageModel pageModel) {
     if (pageModel.thumbnailUrl.value.isNotEmpty &&
         pageModel.thumbnailUrl.value.substring(0, 'https://picsum.photos/'.length) !=
             'https://picsum.photos/') {
       logger.info('pageThumnail exist ${pageModel.thumbnailUrl.value}');
+
+      if (pageModel.isShow.value) {
+        if (_firstPage > pageIndex) {
+          _firstPage = pageIndex;
+          _pageManager!.bookModel!.thumbnailUrl.set(pageModel.thumbnailUrl.value);
+        }
+      }
 
       return CustomImage(
           key: GlobalKey(),

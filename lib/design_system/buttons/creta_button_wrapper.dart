@@ -685,6 +685,52 @@ class BTN {
     );
   }
 
+  static CretaButton fill_gray_wti_l({
+    required String text,
+    required IconData icon,
+    required Widget leftWidget,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Color fgColor = Colors.white,
+    required Function onPressed,
+    double? width = 166,
+    CretaButtonSidePadding? sidePadding,
+  }) {
+    return CretaButton(
+      width: width,
+      height: 40,
+      buttonType: CretaButtonType.child,
+      buttonColor: buttonColor,
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: leftWidget,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  text,
+                  overflow: TextOverflow.ellipsis,
+                  style: CretaFont.buttonLarge.copyWith(color: fgColor),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            icon,
+            size: 20,
+            color: fgColor,
+          ),
+        ],
+      ),
+    );
+  }
+
   static CretaButton fill_blue_i_m({
     required IconData icon,
     required Function onPressed,

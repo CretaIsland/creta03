@@ -32,18 +32,18 @@ class CretaMenuItem {
 
   CretaMenuItem.clone(CretaMenuItem src)
       : this(
-  caption: src.caption,
-  iconData: src.iconData,
-  iconSize: src.iconSize,
-  onPressed: src.onPressed,
-  referencedAttr: src.referencedAttr,
-  isDescending: src.isDescending,
-  selected: src.selected,
-  linkUrl: src.linkUrl,
-  isIconText: src.isIconText,
-  fontFamily: src.fontFamily,
-  fontWeight: src.fontWeight,
-  );
+          caption: src.caption,
+          iconData: src.iconData,
+          iconSize: src.iconSize,
+          onPressed: src.onPressed,
+          referencedAttr: src.referencedAttr,
+          isDescending: src.isDescending,
+          selected: src.selected,
+          linkUrl: src.linkUrl,
+          isIconText: src.isIconText,
+          fontFamily: src.fontFamily,
+          fontWeight: src.fontWeight,
+        );
 }
 
 class CretaPopupMenu {
@@ -128,6 +128,9 @@ class CretaPopupMenu {
       {required BuildContext context,
       required GlobalKey globalKey,
       required List<CretaMenuItem> popupMenu,
+      double width = 114,
+      double xOffset = 0,
+      double yOffset = 0,
       Function? initFunc}) async {
     await showDialog(
       context: context,
@@ -145,9 +148,9 @@ class CretaPopupMenu {
 
         return _createPopupMenu(
           context,
-          x,
-          y,
-          114,
+          x + xOffset,
+          y + yOffset,
+          width,
           popupMenu,
         );
       },

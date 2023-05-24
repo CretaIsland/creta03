@@ -28,6 +28,13 @@ class CretaLang {
     "뷰  어",
   ];
 
+  static const String makeCopy = '사본 만들기';
+  static const String newBook = '새 크레타북';
+  static const String open = '목록으로 돌아가기';
+  static const String print = '인쇄';
+  static const String details = '상세정보';
+  static const String delete = '휴지통으로 보내기';
+
   static const String edit = '편집하기';
   static const String play = '재생하기';
   static const String addToPlayList = '재생목록에 추가';
@@ -94,6 +101,7 @@ class CretaLang {
     fontMacondo,
   ];
 
+  static String close = "종료";
   static String next = "다음";
   static String prev = "이전";
   static String cretaBookName = "크레타북 이름";
@@ -104,4 +112,5 @@ class CretaLang {
   static String creator = "생성자";
 
   static String myChannel = "내 채널";
+  static String gotoCommunity = "커뮤니티로 바로가기";
 }

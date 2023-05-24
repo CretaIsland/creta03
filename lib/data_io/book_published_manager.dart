@@ -138,4 +138,16 @@ class BookPublishedManager extends CretaManager {
   }
 
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
+
+  Future<BookModel?> findPublished(String sourceMid) async {
+    logger.info('findPublished');
+    Map<String, QueryValue> query = {};
+    query['sourceMid'] = QueryValue(value: sourceMid);
+    query['isRemoved'] = QueryValue(value: false);
+    List<AbsExModel> retval = await queryFromDB(query);
+    if (retval.isEmpty) {
+      return null;
+    }
+    return retval[0] as BookModel?;
+  }
 }

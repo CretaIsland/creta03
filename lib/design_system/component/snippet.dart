@@ -290,6 +290,15 @@ class Snippet {
         Center(
           child: SizedBox(
             height: 40,
+            // child: BTN.fill_gray_wti_l(
+            //   buttonColor: CretaButtonColor.blue,
+            //   text: AccountManager.currentLoginUser.name,
+            //   icon: Icons.arrow_drop_down_outlined,
+            //   leftWidget: LoginPage.userPropertyManagerHolder!.profileImageBox(
+            //     radius: 28,
+            //   ),
+            //   onPressed: () {},
+            // ),
             child: BTN.fill_gray_iti_l(
               buttonColor: CretaButtonColor.blue,
               text: AccountManager.currentLoginUser.name,

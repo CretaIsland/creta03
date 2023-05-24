@@ -24,6 +24,8 @@ import '../../design_system/component/creta_icon_toggle_button.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
+import '../../design_system/menu/creta_popup_menu.dart';
+import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/page_model.dart';
@@ -96,10 +98,43 @@ class _BookMainPageState extends State<BookMainPage> {
   double? vericalScrollOffset;
   double? horizontalScrollOffset;
 
+  bool dropDownButtonOpened = false;
+  late List<CretaMenuItem> _popupMenuList;
   @override
   void initState() {
     super.initState();
     logger.info("---_BookMainPageState-----------------------------------------");
+
+    _popupMenuList = [
+      CretaMenuItem(
+        caption: CretaLang.newBook,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.makeCopy,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.open,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.download,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.print,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.details,
+        onPressed: () {},
+      ),
+      CretaMenuItem(
+        caption: CretaLang.delete,
+        onPressed: () {},
+      ),
+    ];
 
     BookPreviewMenu.previewMenuPressed = false;
 
@@ -534,6 +569,8 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _controllers() {
+    GlobalKey menuKey = GlobalKey();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -541,7 +578,30 @@ class _BookMainPageState extends State<BookMainPage> {
         SizedBox(
           width: padding * 1.75,
         ),
-        Icon(Icons.menu_outlined),
+        IconButton(
+          key: menuKey,
+          icon: Icon(Icons.menu_outlined),
+          onPressed: () {
+            logger.finest('menu pressed');
+            setState(() {
+              CretaPopupMenu.showMenu(
+                  width: 150,
+                  xOffset: 20,
+                  context: context,
+                  globalKey: menuKey,
+                  popupMenu: _popupMenuList,
+                  initFunc: () {
+                    dropDownButtonOpened = true;
+                  }).then((value) {
+                logger.finest('팝업메뉴 닫기');
+                setState(() {
+                  dropDownButtonOpened = false;
+                });
+              });
+              dropDownButtonOpened = !dropDownButtonOpened;
+            });
+          },
+        ),
         SizedBox(width: padding),
         Visibility(
           // Scale, Undo
