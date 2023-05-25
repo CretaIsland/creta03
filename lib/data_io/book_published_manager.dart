@@ -150,4 +150,31 @@ class BookPublishedManager extends CretaManager {
     }
     return retval[0] as BookModel?;
   }
+
+  Future<bool> publish(
+      {required BookModel src, void Function()? newCase, void Function()? updateCase}) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    bool isNew = false;
+
+    BookModel? published = await findPublished(src.mid);
+    if (published == null) {
+      isNew = true;
+      published = BookModel('');
+      src.publishMid = published.mid;
+      src.save();
+    }
+    // creat_book_published data 를 만든다.
+    published.copyFrom(src, newMid: published.mid, pMid: published.parentMid.value);
+    published.sourceMid = src.mid;
+    if (isNew) {
+      await createToDB(published);
+      logger.info('published created ${published.mid}, source=${published.sourceMid}');
+      newCase?.call();
+      return true;
+    }
+    await setToDB(published);
+    logger.info('published updated ${published.mid}, , source=${published.sourceMid}');
+    updateCase?.call();
+    return true;
+  }
 }

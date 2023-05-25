@@ -139,4 +139,18 @@ class BookManager extends CretaManager {
   }
 
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
+
+  Future<BookModel> makeCopy(BookModel src) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+
+    BookModel newOne = BookModel('');
+    // creat_book_published data 를 만든다.
+    newOne.copyFrom(src, newMid: newOne.mid, pMid: newOne.parentMid.value);
+    newOne.name.set('${src.name.value}${CretaLang.copyOf}');
+    newOne.sourceMid = "";
+    newOne.publishMid = "";
+    await createToDB(newOne);
+    logger.info('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
+    return newOne;
+  }
 }

@@ -52,8 +52,9 @@ class CretaPopupMenu {
     double x,
     double y,
     double width,
-    List<CretaMenuItem> menuItem,
-  ) {
+    List<CretaMenuItem> menuItem, {
+    TextAlign textAlign = TextAlign.center,
+  }) {
     return Stack(
       children: [
         Positioned(
@@ -107,6 +108,7 @@ class CretaPopupMenu {
                             },
                             child: Text(
                               item.caption,
+                              textAlign: textAlign,
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: item.fontWeight,
@@ -131,6 +133,7 @@ class CretaPopupMenu {
       double width = 114,
       double xOffset = 0,
       double yOffset = 0,
+      TextAlign textAlign = TextAlign.center,
       Function? initFunc}) async {
     await showDialog(
       context: context,
@@ -152,6 +155,7 @@ class CretaPopupMenu {
           y + yOffset,
           width,
           popupMenu,
+          textAlign: textAlign,
         );
       },
     );

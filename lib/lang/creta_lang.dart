@@ -55,6 +55,7 @@ class CretaLang {
   static String playDuration = '플레이 간격';
   static String forever = '영구히';
   static String onlyOnce = '한번만';
+  static String copyOf = '의 사본';
 
   static List<String> contentsTypeString = [
     "없음",

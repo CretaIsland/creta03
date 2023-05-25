@@ -107,30 +107,51 @@ class _BookMainPageState extends State<BookMainPage> {
 
     _popupMenuList = [
       CretaMenuItem(
-        caption: CretaLang.newBook,
-        onPressed: () {},
-      ),
+          // 새로운 북을 만든다.
+          caption: CretaLang.newBook,
+          onPressed: () {
+            BookModel newBook = BookMainPage.bookManagerHolder!.createSample();
+            BookMainPage.bookManagerHolder!.saveSample(newBook).then((value) {
+              String url = '${AppRoutes.studioBookMainPage}?${newBook.mid}';
+              AppRoutes.launchTab(url);
+            });
+          }),
       CretaMenuItem(
+        // 사본을 만든다.
         caption: CretaLang.makeCopy,
-        onPressed: () {},
+        onPressed: () {
+          BookMainPage.bookManagerHolder!
+              .makeCopy(BookMainPage.bookManagerHolder!.onlyOne() as BookModel)
+              .then((newOne) {
+            String url = '${AppRoutes.studioBookMainPage}?${newOne.mid}';
+            AppRoutes.launchTab(url);
+
+            return null;
+          });
+        },
       ),
       CretaMenuItem(
+        // 목록화면을 오픈다.
         caption: CretaLang.open,
         onPressed: () {},
       ),
       CretaMenuItem(
+        // 다운로드 한다.
         caption: CretaLang.download,
         onPressed: () {},
       ),
       CretaMenuItem(
+        // 출력한다.
         caption: CretaLang.print,
         onPressed: () {},
       ),
       CretaMenuItem(
+        // 상세정보를 보여준다
         caption: CretaLang.details,
         onPressed: () {},
       ),
       CretaMenuItem(
+        // 삭제한다.
         caption: CretaLang.delete,
         onPressed: () {},
       ),
@@ -579,29 +600,20 @@ class _BookMainPageState extends State<BookMainPage> {
           width: padding * 1.75,
         ),
         IconButton(
-          key: menuKey,
-          icon: Icon(Icons.menu_outlined),
-          onPressed: () {
-            logger.finest('menu pressed');
-            setState(() {
+            key: menuKey,
+            icon: Icon(Icons.menu_outlined),
+            onPressed: () {
+              logger.finest('menu pressed');
               CretaPopupMenu.showMenu(
-                  width: 150,
-                  xOffset: 20,
-                  context: context,
-                  globalKey: menuKey,
-                  popupMenu: _popupMenuList,
-                  initFunc: () {
-                    dropDownButtonOpened = true;
-                  }).then((value) {
-                logger.finest('팝업메뉴 닫기');
-                setState(() {
-                  dropDownButtonOpened = false;
-                });
-              });
-              dropDownButtonOpened = !dropDownButtonOpened;
-            });
-          },
-        ),
+                width: 150,
+                xOffset: 20,
+                context: context,
+                globalKey: menuKey,
+                popupMenu: _popupMenuList,
+                textAlign: TextAlign.left,
+                initFunc: () {},
+              );
+            }),
         SizedBox(width: padding),
         Visibility(
           // Scale, Undo

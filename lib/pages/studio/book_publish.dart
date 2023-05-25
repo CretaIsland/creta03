@@ -420,32 +420,18 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   Future<bool> _publish() async {
     BookPublishedManager bookPublishedManagerHolder = BookPublishedManager();
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
-    bool isNew = false;
-
-    BookModel? published = await bookPublishedManagerHolder.findPublished(widget.model!.mid);
-    if (published == null) {
-      isNew = true;
-      published = BookModel('');
-      widget.model!.publishMid = published.mid;
-      widget.model!.save();
-    }
-    // creat_book_published data 를 만든다.
-    published.copyFrom(widget.model!, newMid: published.mid, pMid: published.parentMid.value);
-    published.sourceMid = widget.model!.mid;
-    if (isNew) {
-      await bookPublishedManagerHolder.createToDB(published);
-      logger.info('published created ${published.mid}, source=${published.sourceMid}');
-      _modifier = CretaStudioLang.newely;
-      _publishResultStr = CretaStudioLang.publishComplete;
-      _onceDBPublishComplete = true;
-      return true;
-    }
-    await bookPublishedManagerHolder.setToDB(published);
-    logger.info('published updated ${published.mid}, , source=${published.sourceMid}');
-    _modifier = CretaStudioLang.update;
-    _publishResultStr = CretaStudioLang.publishComplete;
-    _onceDBPublishComplete = true;
-    return true;
+    return bookPublishedManagerHolder.publish(
+        src: widget.model!,
+        newCase: () {
+          _modifier = CretaStudioLang.newely;
+          _publishResultStr = CretaStudioLang.publishComplete;
+          _onceDBPublishComplete = true;
+        },
+        updateCase: () {
+          _modifier = CretaStudioLang.update;
+          _publishResultStr = CretaStudioLang.publishComplete;
+          _onceDBPublishComplete = true;
+        });
   }
 
   // ignore: unused_element
