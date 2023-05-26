@@ -18,6 +18,7 @@ import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
+import '../../design_system/dialog/creta_alert_dialog.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
@@ -269,15 +270,46 @@ class BookGridItemState extends State<BookGridItem> {
                             icon: Icons.delete_outline,
                             onPressed: () {
                               logger.finest('delete pressed');
-                              removeItem(widget.index).then((value) {
-                                if (widget.bookManager.isShort(offset: 1)) {
-                                  widget.bookManager.reGet(AccountManager.currentLoginUser.email,
-                                      onModelFiltered: () {
-                                    widget.bookManager.notify();
+                              // removeItem(widget.index).then((value) {
+                              //   if (widget.bookManager.isShort(offset: 1)) {
+                              //     widget.bookManager.reGet(AccountManager.currentLoginUser.email,
+                              //         onModelFiltered: () {
+                              //       widget.bookManager.notify();
+                              //     });
+                              //   }
+                              //   return null;
+                              // });
+
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CretaAlertDialog(
+                                      height: 140,
+                                      content: Text(
+                                        CretaLang.deleteConfirm,
+                                        style: CretaFont.titleMedium,
+                                      ),
+                                      onPressedOK: () async {
+                                        logger.info('onPressedOK()');
+
+                                        removeItem(widget.index).then((value) {
+                                          if (widget.bookManager.isShort(offset: 1)) {
+                                            widget.bookManager
+                                                .reGet(AccountManager.currentLoginUser.email,
+                                                    onModelFiltered: () {
+                                              widget.bookManager.notify();
+                                              return value;
+                                            });
+                                          }
+                                          // ignore: use_build_context_synchronously
+
+                                          return value;
+                                        });
+                                        // ignore: use_build_context_synchronously
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
                                   });
-                                }
-                                return null;
-                              });
                             },
                             tooltip: CretaStudioLang.tooltipDelete,
                           ),
@@ -304,7 +336,7 @@ class BookGridItemState extends State<BookGridItem> {
                                 dropDownButtonOpened = !dropDownButtonOpened;
                               });
                             },
-                            tooltip: CretaStudioLang.tooltipDelete,
+                            tooltip: CretaStudioLang.tooltipMenu,
                           ),
                         ),
                       ],
@@ -458,11 +490,13 @@ class BookGridItemState extends State<BookGridItem> {
     widget.bookManager.insert(book);
   }
 
-  Future<void> removeItem(int index) async {
+  Future<BookModel?> removeItem(int index) async {
     BookModel? removedItem = widget.bookManager.findByIndex(index) as BookModel?;
     if (removedItem != null) {
+      await widget.bookManager.removeChild(removedItem.mid);
       await widget.bookManager.removeToDB(removedItem.mid);
       widget.bookManager.remove(removedItem);
     }
+    return removedItem;
   }
 }

@@ -251,7 +251,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                                     ),
                                     BTN.fill_blue_t_m(
                                       width: 55,
-                                      text: CretaLang.next,
+                                      text: CretaLang.close,
                                       onPressed: () {
                                         setState(() {
                                           _nextStep();
@@ -421,17 +421,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     BookPublishedManager bookPublishedManagerHolder = BookPublishedManager();
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     return bookPublishedManagerHolder.publish(
-        src: widget.model!,
-        newCase: () {
-          _modifier = CretaStudioLang.newely;
-          _publishResultStr = CretaStudioLang.publishComplete;
-          _onceDBPublishComplete = true;
-        },
-        updateCase: () {
-          _modifier = CretaStudioLang.update;
-          _publishResultStr = CretaStudioLang.publishComplete;
-          _onceDBPublishComplete = true;
-        });
+      src: widget.model!,
+      pageManager: BookMainPage.pageManagerHolder!,
+      onComplete: (isNew) {
+        _modifier = isNew ? CretaStudioLang.newely : CretaStudioLang.update;
+        _publishResultStr = CretaStudioLang.publishComplete;
+        _onceDBPublishComplete = true;
+      },
+    );
   }
 
   // ignore: unused_element

@@ -323,6 +323,7 @@ class StudioSnippet {
       height: height,
       width: width,
       text: title,
+      maxLine: 2,
       textStyle: CretaFont.titleLarge,
       align: TextAlign.center,
       onEditComplete: onEditComplete,

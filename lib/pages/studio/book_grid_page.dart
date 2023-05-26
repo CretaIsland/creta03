@@ -104,7 +104,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       CretaMenuItem(
         caption: CretaStudioLang.myCretaBook,
         onPressed: () {
-          Routemaster.of(context).push(AppRoutes.studioBookMyPage);
+          Routemaster.of(context).push(AppRoutes.studioBookGridPage);
         },
         selected: widget.selectedPage == SelectedPage.myPage,
         iconData: Icons.import_contacts_outlined,
@@ -212,7 +212,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
             onSearch: (value) {
               bookManagerHolder!.onSearch(value, () => setState(() {}));
             },
-            mainWidget: _bookGrid,//_bookGrid(context),
+            mainWidget: _bookGrid, //_bookGrid(context),
           )),
     );
   }
@@ -273,8 +273,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     double itemWidth = -1;
     double itemHeight = -1;
 
-    int columnCount =
-        (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/ LayoutConst.bookThumbSize.width;
+    int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
+        LayoutConst.bookThumbSize.width;
     if (columnCount == 0) columnCount = 1;
 
     bool isValidIndex(int index) {

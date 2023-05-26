@@ -2,6 +2,7 @@
 
 //import 'dart:ui';
 
+import 'package:creta03/pages/studio/studio_main_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
@@ -24,8 +25,6 @@ import '../../design_system/component/creta_icon_toggle_button.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
-import '../../design_system/menu/creta_popup_menu.dart';
-import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/page_model.dart';
@@ -99,63 +98,10 @@ class _BookMainPageState extends State<BookMainPage> {
   double? horizontalScrollOffset;
 
   bool dropDownButtonOpened = false;
-  late List<CretaMenuItem> _popupMenuList;
   @override
   void initState() {
     super.initState();
     logger.info("---_BookMainPageState-----------------------------------------");
-
-    _popupMenuList = [
-      CretaMenuItem(
-          // 새로운 북을 만든다.
-          caption: CretaLang.newBook,
-          onPressed: () {
-            BookModel newBook = BookMainPage.bookManagerHolder!.createSample();
-            BookMainPage.bookManagerHolder!.saveSample(newBook).then((value) {
-              String url = '${AppRoutes.studioBookMainPage}?${newBook.mid}';
-              AppRoutes.launchTab(url);
-            });
-          }),
-      CretaMenuItem(
-        // 사본을 만든다.
-        caption: CretaLang.makeCopy,
-        onPressed: () {
-          BookMainPage.bookManagerHolder!
-              .makeCopy(BookMainPage.bookManagerHolder!.onlyOne() as BookModel)
-              .then((newOne) {
-            String url = '${AppRoutes.studioBookMainPage}?${newOne.mid}';
-            AppRoutes.launchTab(url);
-
-            return null;
-          });
-        },
-      ),
-      CretaMenuItem(
-        // 목록화면을 오픈다.
-        caption: CretaLang.open,
-        onPressed: () {},
-      ),
-      CretaMenuItem(
-        // 다운로드 한다.
-        caption: CretaLang.download,
-        onPressed: () {},
-      ),
-      CretaMenuItem(
-        // 출력한다.
-        caption: CretaLang.print,
-        onPressed: () {},
-      ),
-      CretaMenuItem(
-        // 상세정보를 보여준다
-        caption: CretaLang.details,
-        onPressed: () {},
-      ),
-      CretaMenuItem(
-        // 삭제한다.
-        caption: CretaLang.delete,
-        onPressed: () {},
-      ),
-    ];
 
     BookPreviewMenu.previewMenuPressed = false;
 
@@ -590,8 +536,6 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _controllers() {
-    GlobalKey menuKey = GlobalKey();
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -599,21 +543,7 @@ class _BookMainPageState extends State<BookMainPage> {
         SizedBox(
           width: padding * 1.75,
         ),
-        IconButton(
-            key: menuKey,
-            icon: Icon(Icons.menu_outlined),
-            onPressed: () {
-              logger.finest('menu pressed');
-              CretaPopupMenu.showMenu(
-                width: 150,
-                xOffset: 20,
-                context: context,
-                globalKey: menuKey,
-                popupMenu: _popupMenuList,
-                textAlign: TextAlign.left,
-                initFunc: () {},
-              );
-            }),
+        StudioMainMenu(),
         SizedBox(width: padding),
         Visibility(
           // Scale, Undo

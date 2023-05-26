@@ -30,7 +30,9 @@ class ContentsManager extends CretaManager {
 
   ContentsEventController? sendEvent;
 
-  ContentsManager({required this.pageModel, required this.frameModel}) : super('creta_contents') {
+  ContentsManager(
+      {required this.pageModel, required this.frameModel, String tableName = 'creta_contents'})
+      : super(tableName) {
     saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
     final ContentsEventController sendEventVar = Get.find(tag: 'contents-property-to-main');
     sendEvent = sendEventVar;

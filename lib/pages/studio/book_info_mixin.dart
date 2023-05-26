@@ -153,7 +153,7 @@ mixin BookInfoMixin {
               ? CretaDropDownButton(
                   selectedColor: CretaColor.text[700]!,
                   textStyle: CretaFont.bodyESmall,
-                  width: 203,
+                  width: 225,
                   height: 28,
                   itemHeight: 24,
                   dropDownMenuItemList: StudioSnippet.getCopyRightListItem(

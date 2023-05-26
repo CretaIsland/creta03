@@ -1003,14 +1003,40 @@ abstract class CretaManager extends AbsExModelManager {
     mychangeStack.endTrans();
   }
 
-  void removeChild(String parentMid) async {}
-  void removeAll() {
+  Future<void> removeChild(String parentMid) async {}
+  Future<void> removeAll() async {
     for (var model in modelList) {
-      model.isRemoved.set(true);
+      model.isRemoved.set(true, save: false, noUndo: true);
+      await setToDB(model);
       logger.info('${model.mid} removed');
-      removeChild(model.mid);
+      await removeChild(model.mid);
     }
     reOrdering();
+  }
+
+  Future<AbsExModel> makeCopy(AbsExModel src, String? newParentMid) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+
+    AbsExModel newOne = newModel('');
+    // creat_book_published data 를 만든다.
+    newOne.copyFrom(src, newMid: newOne.mid, pMid: newParentMid ?? newOne.parentMid.value);
+    await createToDB(newOne);
+    return newOne;
+  }
+
+  Future<int> makeCopyAll(String? newParentMid) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    lock();
+    int counter = 0;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      await makeCopy(ele, newParentMid);
+      counter++;
+    }
+    unlock();
+    return counter;
   }
 
   // static Future<bool> _reOdering(CretaManager manager) async {

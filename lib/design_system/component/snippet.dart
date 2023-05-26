@@ -466,7 +466,7 @@ class Snippet {
           label: 'Studio Book List',
           child: Icon(Icons.list_alt_outlined),
           onTap: () {
-            Routemaster.of(context).push(AppRoutes.studioBookMyPage);
+            Routemaster.of(context).push(AppRoutes.studioBookGridPage);
           },
         ),
         SpeedDialChild(

@@ -518,7 +518,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           ),
         ]);
       }
-      Widget hashtagWidget = (size.width > 630) ? Row(children: _getHashtagListOnBanner()) : Container();
+      Widget hashtagWidget =
+          (size.width > 630) ? Row(children: _getHashtagListOnBanner()) : Container();
       return SizedBox(
         width: size.width,
         height: size.height,
@@ -814,7 +815,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
               SizedBox(width: 12),
               Text(
                 '${AccountManager.currentLoginUser.name}님의 채널',
-                style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                style: CretaFont.titleELarge
+                    .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
               ),
               SizedBox(width: 20),
               Text(
@@ -1102,11 +1104,23 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   List<List<CretaMenuItem>> _getLeftDropdownMenuOnBanner() {
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
-        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+        return [
+          _dropDownMenuItemListPurpose,
+          _dropDownMenuItemListPermission,
+          _dropDownMenuItemListSort
+        ];
       case AppRoutes.watchHistory:
-        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+        return [
+          _dropDownMenuItemListPurpose,
+          _dropDownMenuItemListPermission,
+          _dropDownMenuItemListSort
+        ];
       case AppRoutes.favorites:
-        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+        return [
+          _dropDownMenuItemListPurpose,
+          _dropDownMenuItemListPermission,
+          _dropDownMenuItemListSort
+        ];
       case AppRoutes.playlist:
         return [_dropDownMenuItemListSort];
       case AppRoutes.playlistDetail:
@@ -1114,7 +1128,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         break;
       case AppRoutes.communityHome:
       case AppRoutes.channel:
-        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+        return [
+          _dropDownMenuItemListPurpose,
+          _dropDownMenuItemListPermission,
+          _dropDownMenuItemListSort
+        ];
     }
     return [];
   }
@@ -1310,7 +1328,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           mainPage(
             context,
             gotoButtonPressed: () {
-              Routemaster.of(context).push(AppRoutes.studioBookMyPage);
+              Routemaster.of(context).push(AppRoutes.studioBookGridPage);
             },
             gotoButtonTitle: '내 크레타북 관리',
             leftMenuItemList: _leftMenuItemList,

@@ -51,7 +51,7 @@ abstract class AppRoutes {
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String studioBookMainPage = '/studio/bookMainPage';
   static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
-  static const String studioBookMyPage = '/studio/bookMyPage';
+  static const String studioBookGridPage = '/studio/bookGridPage';
   static const String studioBookSharedPage = '/studio/bookMySharedPage';
   static const String studioBookTeamPage = '/studio/bookMyTeamPage';
   static const String login = '/login';
@@ -107,7 +107,7 @@ final routesLoggedOut = RouteMap(
       return TransitionPage(
           child: BookMainPage(key: ValueKey(BookMainPage.selectedMid), isPreviewX: true));
     },
-    AppRoutes.studioBookMyPage: (_) => TransitionPage(
+    AppRoutes.studioBookGridPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
         ),
     AppRoutes.studioBookSharedPage: (_) => TransitionPage(

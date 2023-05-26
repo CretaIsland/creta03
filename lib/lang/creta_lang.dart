@@ -77,7 +77,9 @@ class CretaLang {
     "끝",
   ];
 
+  static String deleteConfirm = '정말로 삭제하시겠습니까 ?';
   static String contentsDeleted = ' 콘텐츠가 삭제되었습니다';
+  static String bookDeleted = ' 삭제되었습니다';
   static String contentsNotDeleted = ' 콘텐츠가 삭제되지 않았습니다. 잠시 후에 다시 시도하십시오';
 
   static String count = "개";

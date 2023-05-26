@@ -149,6 +149,7 @@ class CretaStudioLang {
   static const String tooltipPlay = '미리보기';
   static const String tooltipScale = '항상 화면 크기에 알맞게 맞춥니다.';
   static const String tooltipDelete = '삭제하기';
+  static const String tooltipMenu = '메뉴';
 
   static const String gotoCommunity = '커뮤니티로 이동';
 

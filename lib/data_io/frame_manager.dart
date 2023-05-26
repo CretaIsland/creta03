@@ -36,7 +36,8 @@ class FrameManager extends CretaManager {
   //   _playerHandler = p;
   // }
 
-  FrameManager({required this.pageModel, required this.bookModel}) : super('creta_frame') {
+  FrameManager({required this.pageModel, required this.bookModel, String tableName = 'creta_frame'})
+      : super(tableName) {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
   }
 
@@ -252,9 +253,9 @@ class FrameManager extends CretaManager {
   }
 
   @override
-  void removeChild(String parentMid) {
+  Future<void> removeChild(String parentMid) async {
     ContentsManager? contentsManager = getContentsManager(parentMid);
-    contentsManager?.removeAll();
+    await contentsManager?.removeAll();
   }
 
   Future<void> findOrInitContentsManager() async {
@@ -285,5 +286,23 @@ class FrameManager extends CretaManager {
       contentsManager.reOrdering();
     }
     logger.info('$frameMid=initChildren(${contentsManager.getAvailLength()})');
+  }
+
+  @override
+  Future<int> makeCopyAll(String? newParentMid) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    lock();
+    int counter = 0;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      AbsExModel newOne = await makeCopy(ele, newParentMid);
+      ContentsManager? contentsManager = findContentsManager(ele.mid);
+      await contentsManager?.makeCopyAll(newOne.mid);
+      counter++;
+    }
+    unlock();
+    return counter;
   }
 }

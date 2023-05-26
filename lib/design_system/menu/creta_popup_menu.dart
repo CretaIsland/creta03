@@ -128,11 +128,12 @@ class CretaPopupMenu {
 
   static Future<void> showMenu(
       {required BuildContext context,
-      required GlobalKey globalKey,
+      GlobalKey? globalKey,
       required List<CretaMenuItem> popupMenu,
       double width = 114,
       double xOffset = 0,
       double yOffset = 0,
+      Offset? position,
       TextAlign textAlign = TextAlign.center,
       Function? initFunc}) async {
     await showDialog(
@@ -142,12 +143,24 @@ class CretaPopupMenu {
       builder: (BuildContext context) {
         if (initFunc != null) initFunc();
 
-        final RenderBox renderBox = globalKey.currentContext!.findRenderObject() as RenderBox;
-        final position = renderBox.localToGlobal(Offset.zero);
-        final size = renderBox.size;
+        double x = 0;
+        double y = 0;
+        if (position == null && globalKey != null) {
+          final RenderBox? renderBox = globalKey.currentContext!.findRenderObject() as RenderBox?;
+          if (renderBox == null) {
+            return SizedBox.shrink();
+          }
 
-        double x = position.dx + size.width - 70;
-        double y = position.dy + 40;
+          final position = renderBox.localToGlobal(Offset.zero);
+          final size = renderBox.size;
+
+          x = position.dx + size.width - 70;
+          y = position.dy + 40;
+        } else {
+          x = position!.dx;
+          y = position.dy;
+        }
+        //logger.severe('=========================$x,$y===============');
 
         return _createPopupMenu(
           context,
