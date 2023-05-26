@@ -91,6 +91,53 @@ class TeamManager extends CretaManager {
     }
   }
 
+  void deleteTeamMember(String targetEmail, int permission) {
+    if(permission == 1) { //manager
+      currentTeam!.managers.remove(targetEmail);
+    } else {  // general
+      currentTeam!.generalMembers.remove(targetEmail);
+    }
+
+    currentTeam!.teamMembers.remove(targetEmail);
+    currentTeam!.removedMembers.add(targetEmail);
+
+    teamMemberMap[currentTeam!.mid]!.removeWhere((element) => element.email == targetEmail);
+    setToDB(currentTeam!);
+  }
+
+  void addTeamMember(String targetEmail) {
+    currentTeam!.generalMembers.add(targetEmail);
+    currentTeam!.teamMembers.add(targetEmail);
+    if(currentTeam!.removedMembers.contains(targetEmail)) {
+      currentTeam!.removedMembers.remove(targetEmail);
+    }
+    setToDB(currentTeam!);
+    LoginPage.userPropertyManagerHolder!.emailToModel(targetEmail).then((value) {
+      if(value != null) {
+        logger.info(teamMemberMap[currentTeam!.mid]!.length);
+        teamMemberMap[currentTeam!.mid]!.add(value);
+        logger.info(teamMemberMap[currentTeam!.mid]!.length);
+        notify();
+      }
+    });
+  }
+
+  void changePermission(String targetEmail, int presentPermission, int newPermission) {
+    if(presentPermission == 1) { //manager
+      currentTeam!.managers.remove(targetEmail);
+    } else {  // general
+      currentTeam!.generalMembers.remove(targetEmail);
+    }
+
+    if(newPermission == 1) { //manager
+      currentTeam!.managers.add(targetEmail);
+    } else {  // general
+      currentTeam!.generalMembers.add(targetEmail);
+    }
+    setToDB(currentTeam!);
+    notify();
+  }
+
   void selectedTeam(int index) {
     currentTeam = teamModelList[index];
   }
