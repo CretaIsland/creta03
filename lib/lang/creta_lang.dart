@@ -114,4 +114,7 @@ class CretaLang {
 
   static String myChannel = "내 채널";
   static String gotoCommunity = "커뮤니티로 바로가기";
+
+  static const String confirm = '확인';
+  static const String cancel = '취소';
 }

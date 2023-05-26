@@ -5,11 +5,11 @@ import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 class CretaDialog extends StatelessWidget {
   
 
-  final double? width;
-  final double? height;
-  final String? title;
+  final double width;
+  final double height;
+  final String title;
   final CrossAxisAlignment crossAxisAlign;
-  final Widget? content;
+  final Widget content;
 
 
   const CretaDialog({
@@ -18,7 +18,7 @@ class CretaDialog extends StatelessWidget {
     this.height = 289.0,
     this.title = '',
     this.crossAxisAlign = CrossAxisAlignment.start,
-    this.content = const SizedBox(), 
+    required this.content, 
   });
 
 
@@ -40,7 +40,7 @@ class CretaDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    title!,
+                    title,
                     style: CretaFont.titleMedium,
                   ),
                   BTN.fill_gray_i_s(
@@ -58,7 +58,7 @@ class CretaDialog extends StatelessWidget {
                 color: Colors.grey.shade200,
               ),
             ),
-            content!
+            content
           ],
         ),
       ),
