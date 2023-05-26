@@ -67,9 +67,10 @@ class _MyPageSettingsState extends State<MyPageSettings> {
   Widget build(BuildContext context) {
     return Consumer2<UserPropertyManager, TeamManager>(
       builder: (context, userPropertyManager, teamManager, child) {
-        return SizedBox(
+        return Container(
           width: widget.width,
           height: widget.height,
+          color: Colors.white,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: widget.width > 400 ? Padding(

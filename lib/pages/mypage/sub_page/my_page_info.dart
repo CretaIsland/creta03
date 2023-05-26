@@ -76,6 +76,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
       width: 200.0,
       height: 200.0,
       decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(20.0),
         color: widget.replaceColor,
         image: userPropertyManager.userPropertyModel!.profileImg == '' ? null : DecorationImage(
@@ -179,9 +180,10 @@ class _MyPageInfoState extends State<MyPageInfo> {
   Widget build(BuildContext context) {
     return Consumer2<UserPropertyManager, TeamManager>(
       builder: (context, userPropertyManager, teamManager, child) {
-        return SizedBox(
+        return Container(
           width: widget.width,
           height: widget.height,
+          color: Colors.white,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: widget.width > 300 ? Padding(
