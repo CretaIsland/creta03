@@ -114,9 +114,7 @@ class TeamManager extends CretaManager {
     setToDB(currentTeam!);
     LoginPage.userPropertyManagerHolder!.emailToModel(targetEmail).then((value) {
       if(value != null) {
-        logger.info(teamMemberMap[currentTeam!.mid]!.length);
         teamMemberMap[currentTeam!.mid]!.add(value);
-        logger.info(teamMemberMap[currentTeam!.mid]!.length);
         notify();
       }
     });

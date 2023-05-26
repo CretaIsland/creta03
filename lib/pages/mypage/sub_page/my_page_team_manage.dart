@@ -9,7 +9,6 @@ import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/dialog/creta_alert_dialog.dart';
 import 'package:creta03/design_system/dialog/creta_dialog.dart';
-import 'package:creta03/design_system/menu/creta_drop_down.dart';
 import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
