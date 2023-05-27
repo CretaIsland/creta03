@@ -176,7 +176,7 @@ class BTN {
     required Function onPressed,
     double width = 24,
     double height = 24,
-    double iconSize = 18,
+    double iconSize = 16,
     CretaButtonSidePadding? sidePadding,
     String? tooltip,
     Color? tooltipFg,

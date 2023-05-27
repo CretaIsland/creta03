@@ -618,17 +618,18 @@ class _BookMainPageState extends State<BookMainPage> {
               //SizedBox(width: padding),
 //VerticalDivider(),
               SizedBox(width: padding / 2),
-              BTN.floating_lc(
-                icon:
-                    Icon(Icons.radio_button_checked_outlined, size: 20, color: CretaColor.primary),
-                onPressed: () {
-                  setState(() {
-                    StudioVariables.isLinkMode = true;
-                  });
-                },
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipLink,
-              ),
+              if (StudioVariables.isHandToolMode == false)
+                BTN.floating_lc(
+                  icon: Icon(Icons.radio_button_checked_outlined,
+                      size: 20, color: CretaColor.primary),
+                  onPressed: () {
+                    setState(() {
+                      StudioVariables.isLinkMode = true;
+                    });
+                  },
+                  hasShadow: false,
+                  tooltip: CretaStudioLang.tooltipLink,
+                ),
             ],
           ),
         ),
@@ -864,9 +865,9 @@ class _BookMainPageState extends State<BookMainPage> {
           //width: StudioVariables.workWidth,
           marginX: marginX,
           marginY: marginY,
-          initialScrollOffsetX:
-              horizontalScrollOffset ?? (totalWidth - StudioVariables.workWidth) * 0.5,
-          initialScrollOffsetY: vericalScrollOffset ?? StudioVariables.workHeight * 0.1,
+          // initialScrollOffsetX:
+          //     horizontalScrollOffset ?? (totalWidth - StudioVariables.workWidth) * 0.5,
+          // initialScrollOffsetY: vericalScrollOffset ?? StudioVariables.workHeight * 0.1,
           currentHorizontalScrollBarOffset: (value) {
             horizontalScrollOffset = value;
           },
