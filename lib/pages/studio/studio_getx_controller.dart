@@ -24,6 +24,16 @@ class FrameEventController extends StudioEventController {
   // }
 }
 
+class PageEventController extends StudioEventController {
+  // Define an event stream
+  // final eventStream = StreamController<FrameModel>.broadcast();
+
+  // // Method to send an event
+  // void sendEvent(FrameModel model) {
+  //   eventStream.add(model);
+  // }
+}
+
 class ContentsEventController extends StudioEventController {
   // Define an event stream
   // final eventStream = StreamController<FrameModel>.broadcast();
@@ -51,6 +61,9 @@ class StudioGetXController extends GetxController {
   void onInit() {
     // Initialize EventController1 instance with a tag
     logger.fine('==========================StudioGetXController initialized================');
+    Get.put(PageEventController(), tag: 'page-property-to-main');
+    Get.put(PageEventController(), tag: 'page-main-to-property');
+
     Get.put(FrameEventController(), tag: 'frame-property-to-main');
     Get.put(FrameEventController(), tag: 'frame-main-to-property');
 

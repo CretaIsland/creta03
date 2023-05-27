@@ -2,6 +2,7 @@
 
 import 'package:creta03/data_io/page_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -14,6 +15,7 @@ import '../../../../model/book_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../containees/containee_nofifier.dart';
+import '../../studio_getx_controller.dart';
 import '../property_mixin.dart';
 import '../right_menu.dart';
 
@@ -34,11 +36,16 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   PageManager? _pageManager;
   static bool _isTransitionOpen = false;
 
+  PageEventController? _sendEvent;
+
   @override
   void initState() {
     logger.finer('_PagePropertyState.initState');
     super.initMixin();
     super.initState();
+
+    final PageEventController sendEvent = Get.find(tag: 'page-property-to-main');
+    _sendEvent = sendEvent;
   }
 
   @override
@@ -128,18 +135,21 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
             _model!.opacity.set(value);
             logger.finest('opacity1=${_model!.opacity.value}');
           });
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
         onOpacityDrag: (value) {
           _model!.opacity.set(value);
           logger.finest('opacity1=${_model!.opacity.value}');
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
         onColor1Changed: (val) {
           setState(() {
             _model!.bgColor1.set(val);
           });
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
         onColorIndicatorClicked: () {
           PropertyMixin.isColorOpen = true;
@@ -147,9 +157,10 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         },
         onDelete: () {
           setState(() {
-            _model!.bgColor1.set(Colors.transparent);
+            _model!.bgColor1.set(Colors.white);
           });
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
       ),
     );
@@ -175,13 +186,15 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
               _model!.gradationType.set(type);
             }
           });
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
         onColor2Changed: (Color val) {
           //setState(() {
           _model!.bgColor2.set(val);
           //});
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
         onColorIndicatorClicked: () {
           setState(() {
@@ -192,7 +205,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           setState(() {
             _model!.gradationType.set(GradationType.none);
           });
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
       ),
     );
@@ -210,13 +224,15 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           setState(() {
             _model!.textureType.set(val);
           });
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
         onDelete: () {
           setState(() {
             _model!.textureType.set(TextureType.none);
           });
-          BookMainPage.bookManagerHolder?.notify();
+          //BookMainPage.bookManagerHolder?.notify();
+          _sendEvent?.sendEvent(_model!);
         },
       ),
     );

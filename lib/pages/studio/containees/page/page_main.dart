@@ -2,6 +2,8 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -15,6 +17,7 @@ import '../../../../model/page_model.dart';
 //import '../../../../player/abs_player.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
+import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
 import '../containee_mixin.dart';
@@ -43,10 +46,19 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   FrameManager? _frameManager;
   bool _onceDBGetComplete = false;
 
+  double opacity = 1;
+  Color bgColor1 = Colors.transparent;
+  Color bgColor2 = Colors.transparent;
+  GradationType gradationType = GradationType.none;
+  TextureType textureType = TextureType.none;
+  PageEventController? _receiveEvent;
+
   @override
   void initState() {
     initChildren();
     super.initState();
+    final PageEventController receiveEvent = Get.find(tag: 'page-property-to-main');
+    _receiveEvent = receiveEvent;
   }
 
   Future<void> initChildren() async {
@@ -74,6 +86,47 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<AbsExModel>(
+        stream: _receiveEvent!.eventStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data != null && snapshot.data is PageModel) {
+            PageModel model = snapshot.data! as PageModel;
+            BookMainPage.pageManagerHolder!.updateModel(model);
+          }
+          //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
+          return _build(context);
+        });
+  }
+
+  Widget _build(BuildContext context) {
+    // if (widget.pageModel.bgColor1.value != Colors.transparent) {
+    opacity = widget.pageModel.opacity.value;
+    bgColor1 = widget.pageModel.bgColor1.value;
+    bgColor2 = widget.pageModel.bgColor2.value;
+    gradationType = widget.pageModel.gradationType.value;
+    // } else {
+    //   opacity = widget.bookModel.opacity.value;
+    //   bgColor1 = widget.bookModel.bgColor1.value;
+    //   bgColor2 = widget.bookModel.bgColor2.value;
+    //   gradationType = widget.bookModel.gradationType.value;
+    // }
+
+    //if (widget.pageModel.textureType.value != TextureType.none) {
+    textureType = widget.pageModel.textureType.value;
+    //} else {
+    //  textureType = widget.bookModel.textureType.value;
+    //}
+
+    if (bgColor1 == Colors.transparent) {
+      // 배경색이 transparent 일때,  모든 배경색 관련 값은 무효다.
+      gradationType = GradationType.none;
+      opacity = 1;
+      bgColor2 = Colors.transparent;
+      if (textureType == TextureType.glass) {
+        textureType = TextureType.none;
+      }
+    }
+
     return Center(
       child: Container(
         width: StudioVariables.virtualWidth,
@@ -96,21 +149,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _textureBox() {
-    TextureType textureType = getTextureType(widget.bookModel, widget.pageModel);
-
     if (textureType == TextureType.glass) {
       logger.finest('GrassType!!!');
-      double opacity = widget.bookModel.opacity.value;
-      Color bgColor1 = widget.bookModel.bgColor1.value;
-      Color bgColor2 = widget.bookModel.bgColor2.value;
-      GradationType gradationType = widget.bookModel.gradationType.value;
-
-      if (widget.pageModel.bgColor1.value != Colors.transparent) {
-        opacity = widget.pageModel.opacity.value;
-        bgColor1 = widget.pageModel.bgColor1.value;
-        bgColor2 = widget.pageModel.bgColor2.value;
-        gradationType = widget.pageModel.gradationType.value;
-      }
       return _drawPage(true).asCretaGlass(
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
@@ -123,7 +163,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _drawPage(bool useColor) {
-    return StudioVariables.handToolMode == false
+    return StudioVariables.isHandToolMode == false
         ? GestureDetector(
             behavior: HitTestBehavior.deferToChild,
             onLongPressDown: pageClicked,
@@ -162,22 +202,15 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   BoxDecoration _pageDeco() {
-    double opacity = widget.bookModel.opacity.value;
-    Color bgColor1 = widget.bookModel.bgColor1.value;
-    Color bgColor2 = widget.bookModel.bgColor2.value;
-    GradationType gradationType = widget.bookModel.gradationType.value;
-
-    if (widget.pageModel.bgColor1.value != Colors.transparent) {
-      opacity = widget.pageModel.opacity.value;
-      bgColor1 = widget.pageModel.bgColor1.value;
-      bgColor2 = widget.pageModel.bgColor2.value;
-      gradationType = widget.pageModel.gradationType.value;
-    }
+    Color c1 = opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity);
+    Color c2 = opacity == 1 ? bgColor2 : bgColor2.withOpacity(opacity);
 
     return BoxDecoration(
-      color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
+      color: c1,
       boxShadow: StudioSnippet.basicShadow(),
-      gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
+      gradient: (bgColor1 != Colors.transparent && bgColor2 != Colors.transparent)
+          ? StudioSnippet.gradient(gradationType, c1, c2)
+          : null,
     );
   }
 

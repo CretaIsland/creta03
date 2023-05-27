@@ -158,12 +158,14 @@ class BTN {
       isSelectedWidget: true,
       onPressed: onPressed,
       onHover: onHover,
-      child: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: Icon(
-          icon,
-          size: iconSize,
-          color: iconColor,
+      child: Center(
+        child: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          child: Icon(
+            icon,
+            size: iconSize,
+            color: iconColor,
+          ),
         ),
       ),
     );
@@ -1608,6 +1610,21 @@ class BTN {
         size: iconSize,
         color: CretaColor.text[700]!,
       ),
+      onPressed: onPressed,
+    );
+  }
+
+  static CretaButton floating_lc(
+      {required Icon icon, required Function onPressed, bool hasShadow = true, String? tooltip}) {
+    return CretaButton(
+      tooltip: tooltip,
+      hasShadow: hasShadow,
+      width: 36,
+      height: 36,
+      buttonType: CretaButtonType.iconOnly,
+      //decoType: hasShadow ? CretaButtonDeco.shadow : CretaButtonDeco.line,
+      buttonColor: CretaButtonColor.whiteShadow,
+      icon: icon,
       onPressed: onPressed,
     );
   }

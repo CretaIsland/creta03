@@ -11,10 +11,10 @@ import '../common/creta_utils.dart';
 import '../pages/studio/studio_constant.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
-import 'creta_style_mixin.dart';
+import 'book_mixin.dart';
 
 // ignore: camel_case_types
-class BookModel extends CretaModel with CretaStyleMixin {
+class BookModel extends CretaModel with BookMixin {
   String creator = '';
   String creatorName = '';
   late UndoAble<String> name;

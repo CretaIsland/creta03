@@ -35,8 +35,8 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   //late ScrollController _scrollController;
 
   //bool isColorOpen = false;
-  static bool _isOptionOpen = false;
-  static bool _isSizeOpen = false;
+  static bool _isOptionOpen = true;
+  static bool _isSizeOpen = true;
 
   final GlobalKey<CretaTextFieldState> textFieldKey = GlobalKey<CretaTextFieldState>();
   GlobalKey popupKey = GlobalKey();
@@ -64,12 +64,12 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
       children: [
         _pageSize(),
         propertyDivider(),
-        _pageColor(),
-        propertyDivider(),
-        _gradation(),
-        propertyDivider(),
-        _texture(),
-        propertyDivider(),
+        //_pageColor(),
+        //propertyDivider(),
+        //_gradation(),
+        // propertyDivider(),
+        //_texture(),
+        //propertyDivider(),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: _bookOption(),
@@ -79,94 +79,93 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     );
   }
 
-  // ignore: unused_element
-  Widget _pageColor() {
-    logger.finest('opacity3=${widget.model.opacity.value}');
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: colorPropertyCard(
-        title: CretaStudioLang.bookBgColor,
-        color1: widget.model.bgColor1.value,
-        color2: widget.model.bgColor2.value,
-        opacity: widget.model.opacity.value,
-        gradationType: widget.model.gradationType.value,
-        cardOpenPressed: () {
-          setState(() {});
-        },
-        onOpacityDragComplete: (value) {
-          //setState(() {
-          widget.model.opacity.set(value);
-          logger.finest('opacity1=${widget.model.opacity.value}');
-          //});
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onOpacityDrag: (value) {
-          widget.model.opacity.set(value);
-          logger.finest('opacity1=${widget.model.opacity.value}');
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onColor1Changed: (val) {
-          //setState(() {
-          widget.model.bgColor1.set(val);
-          //});
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onColorIndicatorClicked: () {
-          PropertyMixin.isColorOpen = true;
-          setState(() {});
-        },
-        onDelete: () {
-          //setState(() {
-          widget.model.bgColor1.set(Colors.transparent);
-          //});
-          BookMainPage.bookManagerHolder?.notify();
-        },
-      ),
-    );
-  }
+  // Widget _pageColor() {
+  //   logger.finest('opacity3=${widget.model.opacity.value}');
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+  //     child: colorPropertyCard(
+  //       title: CretaStudioLang.bookBgColor,
+  //       color1: widget.model.bgColor1.value,
+  //       color2: widget.model.bgColor2.value,
+  //       opacity: widget.model.opacity.value,
+  //       gradationType: widget.model.gradationType.value,
+  //       cardOpenPressed: () {
+  //         setState(() {});
+  //       },
+  //       onOpacityDragComplete: (value) {
+  //         //setState(() {
+  //         widget.model.opacity.set(value);
+  //         logger.finest('opacity1=${widget.model.opacity.value}');
+  //         //});
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //       onOpacityDrag: (value) {
+  //         widget.model.opacity.set(value);
+  //         logger.finest('opacity1=${widget.model.opacity.value}');
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //       onColor1Changed: (val) {
+  //         //setState(() {
+  //         widget.model.bgColor1.set(val);
+  //         //});
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //       onColorIndicatorClicked: () {
+  //         PropertyMixin.isColorOpen = true;
+  //         setState(() {});
+  //       },
+  //       onDelete: () {
+  //         //setState(() {
+  //         widget.model.bgColor1.set(Colors.transparent);
+  //         //});
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //     ),
+  //   );
+  // }
 
-  Widget _gradation() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: gradationCard(
-        onPressed: () {
-          setState(() {});
-        },
-        bgColor1: widget.model.bgColor1.value,
-        bgColor2: widget.model.bgColor2.value,
-        opacity: widget.model.opacity.value,
-        gradationType: widget.model.gradationType.value,
-        onGradationTapPressed: (GradationType type, Color color1, Color color2) {
-          logger.finest('GradationIndicator clicked');
-          //setState(() {
-          if (widget.model.gradationType.value == type) {
-            widget.model.gradationType.set(GradationType.none);
-          } else {
-            widget.model.gradationType.set(type);
-          }
-          //});
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onColor2Changed: (Color val) {
-          //setState(() {
-          widget.model.bgColor2.set(val);
-          //});
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onColorIndicatorClicked: () {
-          setState(() {
-            PropertyMixin.isGradationOpen = true;
-          });
-        },
-        onDelete: () {
-          //setState(() {
-          widget.model.gradationType.set(GradationType.none);
-          //});
-          BookMainPage.bookManagerHolder?.notify();
-        },
-      ),
-    );
-  }
+  // Widget _gradation() {
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+  //     child: gradationCard(
+  //       onPressed: () {
+  //         setState(() {});
+  //       },
+  //       bgColor1: widget.model.bgColor1.value,
+  //       bgColor2: widget.model.bgColor2.value,
+  //       opacity: widget.model.opacity.value,
+  //       gradationType: widget.model.gradationType.value,
+  //       onGradationTapPressed: (GradationType type, Color color1, Color color2) {
+  //         logger.finest('GradationIndicator clicked');
+  //         //setState(() {
+  //         if (widget.model.gradationType.value == type) {
+  //           widget.model.gradationType.set(GradationType.none);
+  //         } else {
+  //           widget.model.gradationType.set(type);
+  //         }
+  //         //});
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //       onColor2Changed: (Color val) {
+  //         //setState(() {
+  //         widget.model.bgColor2.set(val);
+  //         //});
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //       onColorIndicatorClicked: () {
+  //         setState(() {
+  //           PropertyMixin.isGradationOpen = true;
+  //         });
+  //       },
+  //       onDelete: () {
+  //         //setState(() {
+  //         widget.model.gradationType.set(GradationType.none);
+  //         //});
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget _pageSize() {
     double height = widget.model.height.value;
@@ -199,6 +198,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
               Row(
                 children: [
                   CretaDropDownButton(
+                    iconSize: 16,
                     padding: EdgeInsets.only(left: 8, right: 4),
                     height: 28,
                     itemHeight: 24,
@@ -244,59 +244,82 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
           //padding: const EdgeInsets.only(top: 12, left: 20, right: 24),
           padding: const EdgeInsets.only(top: 6, left: 30, right: 24),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                CretaStudioLang.width,
-                style: titleStyle,
+              SizedBox(
+                width: 258,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 97,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            CretaStudioLang.width,
+                            style: titleStyle,
+                          ),
+                          CretaTextField.xshortNumber(
+                            defaultBorder: Border.all(color: CretaColor.text[100]!),
+                            width: 45,
+                            limit: 5,
+                            textFieldKey: GlobalKey(),
+                            value: widget.model.width.value.round().toString(),
+                            hintText: '',
+                            minNumber: 10,
+                            onEditComplete: ((value) {
+                              _sizeChanged(value, widget.model.width, widget.model.height);
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+                    BTN.fill_gray_i_m(
+                        tooltip: CretaStudioLang.fixedRatio,
+                        tooltipBg: CretaColor.text[400]!,
+                        icon: widget.model.isFixedRatio.value
+                            ? Icons.lock_outlined
+                            : Icons.lock_open_outlined,
+                        iconColor: widget.model.isFixedRatio.value
+                            ? CretaColor.primary
+                            : CretaColor.text[700]!,
+                        onPressed: () {
+                          setState(() {
+                            widget.model.isFixedRatio.set(!widget.model.isFixedRatio.value);
+                          });
+                        }),
+                    SizedBox(
+                      width: 97,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            CretaStudioLang.height,
+                            style: titleStyle,
+                          ),
+                          SizedBox(width: 15),
+                          CretaTextField.xshortNumber(
+                            defaultBorder: Border.all(color: CretaColor.text[100]!),
+                            width: 45,
+                            limit: 5,
+                            textFieldKey: GlobalKey(),
+                            value: widget.model.height.value.round().toString(),
+                            hintText: '',
+                            minNumber: 10,
+                            onEditComplete: ((value) {
+                              _sizeChanged(value, widget.model.height, widget.model.width);
+                            }),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(width: 10),
-              CretaTextField.xshortNumber(
-                defaultBorder: Border.all(color: CretaColor.text[100]!),
-                width: 45,
-                limit: 5,
-                textFieldKey: GlobalKey(),
-                value: widget.model.width.value.round().toString(),
-                hintText: '',
-                minNumber: 10,
-                onEditComplete: ((value) {
-                  _sizeChanged(value, widget.model.width, widget.model.height);
-                }),
-              ),
-
-              SizedBox(width: 10),
-              BTN.fill_gray_i_m(
-                  tooltip: CretaStudioLang.fixedRatio,
-                  tooltipBg: CretaColor.text[400]!,
-                  icon: widget.model.isFixedRatio.value
-                      ? Icons.lock_outlined
-                      : Icons.lock_open_outlined,
-                  iconColor:
-                      widget.model.isFixedRatio.value ? CretaColor.primary : CretaColor.text[700]!,
-                  onPressed: () {
-                    setState(() {
-                      widget.model.isFixedRatio.set(!widget.model.isFixedRatio.value);
-                    });
-                  }),
-              SizedBox(width: 10),
-              Text(
-                CretaStudioLang.height,
-                style: titleStyle,
-              ),
-              SizedBox(width: 10),
-              // widget.model.pageSizeType.value == 0
-              //     ?
-              CretaTextField.xshortNumber(
-                defaultBorder: Border.all(color: CretaColor.text[100]!),
-                width: 45,
-                limit: 5,
-                textFieldKey: GlobalKey(),
-                value: widget.model.height.value.round().toString(),
-                hintText: '',
-                minNumber: 10,
-                onEditComplete: ((value) {
-                  _sizeChanged(value, widget.model.height, widget.model.width);
-                }),
-              ),
+              SizedBox(
+                width: 32,
+              )
             ],
           ),
         ),
@@ -516,27 +539,27 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
         ));
   }
 
-  Widget _texture() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: textureCard(
-        textureType: widget.model.textureType.value,
-        onPressed: () {
-          setState(() {});
-        },
-        onTextureTapPressed: (val) {
-          setState(() {
-            widget.model.textureType.set(val);
-          });
-          BookMainPage.bookManagerHolder?.notify();
-        },
-        onDelete: () {
-          //setState(() {
-          widget.model.textureType.set(TextureType.none);
-          //});
-          BookMainPage.bookManagerHolder?.notify();
-        },
-      ),
-    );
-  }
+  // Widget _texture() {
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+  //     child: textureCard(
+  //       textureType: widget.model.textureType.value,
+  //       onPressed: () {
+  //         setState(() {});
+  //       },
+  //       onTextureTapPressed: (val) {
+  //         setState(() {
+  //           widget.model.textureType.set(val);
+  //         });
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //       onDelete: () {
+  //         //setState(() {
+  //         widget.model.textureType.set(TextureType.none);
+  //         //});
+  //         BookMainPage.bookManagerHolder?.notify();
+  //       },
+  //     ),
+  //   );
+  // }
 }

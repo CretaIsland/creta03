@@ -14,6 +14,7 @@ import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/model/connected_user_model.dart';
 import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:routemaster/routemaster.dart';
+
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/frame_manager.dart';
@@ -580,14 +581,14 @@ class _BookMainPageState extends State<BookMainPage> {
                 tooltip: CretaStudioLang.tooltipScale,
                 extended: CretaIconToggleButton(
                   buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-                  toggleValue: StudioVariables.handToolMode,
+                  toggleValue: StudioVariables.isHandToolMode,
                   icon1: Icons.transit_enterexit_outlined,
                   icon2: Icons.pan_tool_outlined,
-                  tooltip: StudioVariables.handToolMode
+                  tooltip: StudioVariables.isHandToolMode
                       ? CretaStudioLang.tooltipEdit
                       : CretaStudioLang.tooltipNoneEdit,
                   onPressed: () {
-                    StudioVariables.handToolMode = !StudioVariables.handToolMode;
+                    StudioVariables.isHandToolMode = !StudioVariables.isHandToolMode;
                     BookMainPage.bookManagerHolder!.notify();
                   },
                 ),
@@ -616,6 +617,18 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
               //SizedBox(width: padding),
 //VerticalDivider(),
+              SizedBox(width: padding / 2),
+              BTN.floating_lc(
+                icon:
+                    Icon(Icons.radio_button_checked_outlined, size: 20, color: CretaColor.primary),
+                onPressed: () {
+                  setState(() {
+                    StudioVariables.isLinkMode = true;
+                  });
+                },
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipLink,
+              ),
             ],
           ),
         ),

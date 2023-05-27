@@ -629,7 +629,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         child: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 1.0, top: 16, bottom: 16),
           child: Scrollbar(
-            thumbVisibility: true,
+            //thumbVisibility: true,
             controller: _scrollController1,
             child: ListView.builder(
               controller: _scrollController1,

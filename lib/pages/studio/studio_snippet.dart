@@ -106,6 +106,12 @@ class StudioSnippet {
           end: endAlignment(currentType),
           colors: [color1, color2, color2, color1]);
     }
+    if (currentType == GradationType.middle) {
+      return LinearGradient(
+          begin: beginAlignment(currentType),
+          end: endAlignment(currentType),
+          colors: [color2, color1, color1, color2]);
+    }
     return LinearGradient(
         begin: beginAlignment(currentType),
         end: endAlignment(currentType),

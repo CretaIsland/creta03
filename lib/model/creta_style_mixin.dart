@@ -43,8 +43,8 @@ mixin CretaStyleMixin {
     width = UndoAble<double>(0, mid);
     height = UndoAble<double>(0, mid);
 
-    bgColor1 = UndoAble<Color>(Colors.transparent, mid);
-    bgColor2 = UndoAble<Color>(Colors.black, mid);
+    bgColor1 = UndoAble<Color>(Colors.white, mid);
+    bgColor2 = UndoAble<Color>(Colors.blue, mid);
     opacity = UndoAble<double>(1, mid);
     gradationType = UndoAble<GradationType>(GradationType.none, mid);
     textureType = UndoAble<TextureType>(TextureType.none, mid);
@@ -61,8 +61,8 @@ mixin CretaStyleMixin {
     width = UndoAble<double>(600, mid);
     height = UndoAble<double>(400, mid);
 
-    bgColor1 = UndoAble<Color>(Colors.transparent, mid);
-    bgColor2 = UndoAble<Color>(Colors.black, mid);
+    bgColor1 = UndoAble<Color>(Colors.white, mid);
+    bgColor2 = UndoAble<Color>(Colors.blue, mid);
     opacity = UndoAble<double>(1, mid);
     gradationType = UndoAble<GradationType>(GradationType.none, mid);
     textureType = UndoAble<TextureType>(TextureType.none, mid);

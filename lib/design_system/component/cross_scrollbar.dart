@@ -2,6 +2,7 @@ import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_color.dart';
 
@@ -55,7 +56,15 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
     // verticalScroll.addListener(() {
     //   verticalScroll.jumpTo(0);
     // });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    horizontalScroll.dispose();
+    verticalScroll.dispose();
   }
 
   @override
@@ -65,7 +74,7 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
 
   @override
   Widget build(BuildContext context) {
-    return StudioVariables.handToolMode == true
+    return StudioVariables.isHandToolMode == true
         ? MouseRegion(
             cursor: SystemMouseCursors.grabbing,
             child: GestureDetector(
@@ -86,7 +95,21 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
               child: _scrolledWidget(),
             ),
           )
-        : _scrolledWidget();
+        : StudioVariables.isLinkMode == true
+            ? MouseRegion(
+                cursor: SystemMouseCursors.cell,
+                child: GestureDetector(
+                  onLongPressDown: (details) {
+                    logger.info(
+                        'linkCursor clicked here ${details.localPosition.dx}, ${details.localPosition.dy}');
+
+                    StudioVariables.isLinkMode = false;
+                    BookMainPage.bookManagerHolder!.notify();
+                  },
+                  child: _scrolledWidget(),
+                ),
+              )
+            : _scrolledWidget();
 
     // return Listener(
     //   behavior: HitTestBehavior.translucent,

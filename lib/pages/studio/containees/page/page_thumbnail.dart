@@ -47,6 +47,12 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   FrameEventController? _receiveEventFromProperty;
   FrameEventController? _receiveEventFromMain;
 
+  double opacity = 1;
+  Color bgColor1 = Colors.transparent;
+  Color bgColor2 = Colors.transparent;
+  GradationType gradationType = GradationType.none;
+  TextureType textureType = TextureType.none;
+
   @override
   void initState() {
     super.initState();
@@ -84,6 +90,22 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
 
   @override
   Widget build(BuildContext context) {
+    opacity = widget.pageModel.opacity.value;
+    bgColor1 = widget.pageModel.bgColor1.value;
+    bgColor2 = widget.pageModel.bgColor2.value;
+    gradationType = widget.pageModel.gradationType.value;
+    textureType = widget.pageModel.textureType.value;
+
+    if (bgColor1 == Colors.transparent) {
+      // 배경색이 transparent 일때,  모든 배경색 관련 값은 무효다.
+      gradationType = GradationType.none;
+      opacity = 1;
+      bgColor2 = Colors.transparent;
+      if (textureType == TextureType.glass) {
+        textureType = TextureType.none;
+      }
+    }
+
     return Center(
       child: Container(
         width: widget.pageWidth,
@@ -97,21 +119,9 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   }
 
   Widget _textureBox() {
-    TextureType textureType = getTextureType(widget.bookModel, widget.pageModel);
-
     if (textureType == TextureType.glass) {
       logger.finest('GrassType!!!');
-      double opacity = widget.bookModel.opacity.value;
-      Color bgColor1 = widget.bookModel.bgColor1.value;
-      Color bgColor2 = widget.bookModel.bgColor2.value;
-      GradationType gradationType = widget.bookModel.gradationType.value;
 
-      if (widget.pageModel.bgColor1.value != Colors.transparent) {
-        opacity = widget.pageModel.opacity.value;
-        bgColor1 = widget.pageModel.bgColor1.value;
-        bgColor2 = widget.pageModel.bgColor2.value;
-        gradationType = widget.pageModel.gradationType.value;
-      }
       return _drawPage(true).asCretaGlass(
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
@@ -136,18 +146,6 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   }
 
   BoxDecoration _pageDeco() {
-    double opacity = widget.bookModel.opacity.value;
-    Color bgColor1 = widget.bookModel.bgColor1.value;
-    Color bgColor2 = widget.bookModel.bgColor2.value;
-    GradationType gradationType = widget.bookModel.gradationType.value;
-
-    if (widget.pageModel.bgColor1.value != Colors.transparent) {
-      opacity = widget.pageModel.opacity.value;
-      bgColor1 = widget.pageModel.bgColor1.value;
-      bgColor2 = widget.pageModel.bgColor2.value;
-      gradationType = widget.pageModel.gradationType.value;
-    }
-
     return BoxDecoration(
       color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
       boxShadow: StudioSnippet.basicShadow(),
@@ -208,10 +206,6 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
       double applyScale = widget.pageWidth / widget.pageModel.width.value;
-      logger.info('_drawFrames start = ${widget.pageModel.name.value}==================');
-      logger.info('widget.pageWidth=${widget.pageWidth}==================');
-      logger.info('widget.pageModel.width.value=${widget.pageModel.width.value}==================');
-      logger.info('applyScale=$applyScale==================');
 
       return StreamBuilder<AbsExModel>(
           stream: _receiveEventFromMain!.eventStream.stream,

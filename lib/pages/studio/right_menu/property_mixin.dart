@@ -342,11 +342,11 @@ mixin PropertyMixin {
         onPressed.call();
       },
       titleWidget: Text(CretaStudioLang.gradation, style: CretaFont.titleSmall),
-      trailWidget: gradationType == GradationType.none
+      trailWidget: gradationType == GradationType.none || bgColor1 == Colors.transparent
           ? const SizedBox.shrink()
           : colorIndicatorTotal(bgColor1, bgColor2, opacity, gradationType,
               onColorChanged: onColor2Changed, onColorIndicatorClicked: onColorIndicatorClicked),
-      hasRemoveButton: gradationType != GradationType.none,
+      hasRemoveButton: gradationType != GradationType.none && bgColor1 != Colors.transparent,
       onDelete: onDelete,
       bodyWidget: gradationListView(
         bgColor1,
@@ -368,16 +368,16 @@ mixin PropertyMixin {
     void Function(Color) onColor2Changed,
   ) {
     List<Widget> gradientList = [];
-    gradientList.add(GradationIndicator(
-      color1: color1,
-      color2: color2,
-      gradationType: GradationType.none,
-      isSelected: gradationType == GradationType.none,
-      onTapPressed: onTapPressed,
-      width: 44,
-      height: 44,
-      radius: 5,
-    ));
+    // gradientList.add(GradationIndicator(
+    //   color1: color1,
+    //   color2: color2,
+    //   gradationType: GradationType.none,
+    //   isSelected: gradationType == GradationType.none,
+    //   onTapPressed: onTapPressed,
+    //   width: 44,
+    //   height: 44,
+    //   radius: 5,
+    // ));
     for (int i = 1; i < GradationType.end.index; i++) {
       //logger.finest('gradient: ${GradationType.values[i].toString()}');
       GradationType gType = GradationType.values[i];
@@ -421,10 +421,12 @@ mixin PropertyMixin {
   Widget colorIndicatorTotal(
       Color color1, Color color2, double opacity, GradationType gradationType,
       {required void Function(Color) onColorChanged, required Function() onColorIndicatorClicked}) {
+    Gradient? gradient = StudioSnippet.gradient(gradationType, color1, color2);
+
     return MyColorIndicator(
       opacity: opacity,
-      gradient: StudioSnippet.gradient(gradationType, color1, color2),
-      color: color1,
+      gradient: gradient,
+      color: (gradient == null) ? color2 : color1,
       onColorChanged: onColorChanged,
       onClicked: onColorIndicatorClicked,
     );
