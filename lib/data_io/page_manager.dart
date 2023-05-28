@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -328,5 +329,17 @@ class PageManager extends CretaManager {
     }
     unlock();
     return counter;
+  }
+
+  FrameModel? findFrameByPos(Offset pos) {
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    FrameManager? frameManager = findFrameManager(pageModel.mid);
+    if (frameManager == null) {
+      return null;
+    }
+    return frameManager.findFrameByPos(pos);
   }
 }

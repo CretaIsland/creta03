@@ -40,7 +40,7 @@ class DraggablePointState extends State<DraggablePoint> {
 
   @override
   Widget build(BuildContext context) {
-    return StudioVariables.isHandToolMode == false
+    return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
         ? GestureDetector(
             behavior: HitTestBehavior.deferToChild,
             onLongPressDown: (detail) {

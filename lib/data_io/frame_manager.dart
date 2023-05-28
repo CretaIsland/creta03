@@ -3,21 +3,26 @@ import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
+import '../common/creta_utils.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
+import '../model/link_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/studio_constant.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
+import 'link_manager.dart';
 
 //FrameManager? frameManagerHolder;
 
 class FrameManager extends CretaManager {
-  PageModel pageModel;
-  BookModel bookModel;
+  final PageModel pageModel;
+  final BookModel bookModel;
+
+  LinkManager linkManager = LinkManager();
   //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey> frameKeyMap = {};
   Map<String, ContentsManager> contentsManagerMap = {};
@@ -304,5 +309,44 @@ class FrameManager extends CretaManager {
     }
     unlock();
     return counter;
+  }
+
+  FrameModel? findFrameByPos(Offset pos) {
+    FrameModel? retval;
+    reverseMapIterator((model) {
+      FrameModel frame = model as FrameModel;
+      GlobalKey? stickerKey = frameKeyMap[frame.mid];
+      if (stickerKey == null) {
+        return null;
+      }
+      bool founded = CretaUtils.isMousePointerOnWidget(stickerKey, pos);
+      if (founded) {
+        logger.info('pointer is on widget order ${frame.order.value}');
+        retval = frame;
+        return frame;
+      }
+    });
+    return retval;
+  }
+
+  Future<LinkModel?> createLink({
+    required String frameId,
+    required double posX,
+    required double posY,
+    String? name,
+    String? connectedMid,
+    String? connectedClass,
+    bool doNotify = true,
+  }) async {
+    //if (linkManager == null) return null;
+    await linkManager.createNext(
+      frameId: frameId,
+      posX: posX,
+      posY: posY,
+      name: name,
+      connectedClass: connectedClass,
+      connectedMid: connectedMid,
+    );
+    return null;
   }
 }

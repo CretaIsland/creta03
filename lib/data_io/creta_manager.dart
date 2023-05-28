@@ -742,6 +742,15 @@ abstract class CretaManager extends AbsExModelManager {
     return retval;
   }
 
+  List<T> reverseMapIterator<T>(T Function(AbsExModel) toElement) {
+    List<T> retval = [];
+    for (var model in _orderMap.deepSortByKey().values.toList().reversed) {
+      var ele = toElement(model);
+      retval.add(ele);
+    }
+    return retval;
+  }
+
   CretaModel? getNthOrder(double order) {
     return _orderMap[order];
   }

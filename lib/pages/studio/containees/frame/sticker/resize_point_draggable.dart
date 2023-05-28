@@ -39,7 +39,7 @@ class ResizePointDraggableState extends State<ResizePointDraggable> {
 
   @override
   Widget build(BuildContext context) {
-    return StudioVariables.isHandToolMode == false
+    return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
         ? GestureDetector(
             // onLongPressDown: (detail) {
             //   logger.fine('Gest2 : onLongPressDown in ResizePointDraggable for Extended Area');

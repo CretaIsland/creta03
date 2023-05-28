@@ -163,7 +163,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _drawPage(bool useColor) {
-    return StudioVariables.isHandToolMode == false
+    return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
         ? GestureDetector(
             behavior: HitTestBehavior.deferToChild,
             onLongPressDown: pageClicked,

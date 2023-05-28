@@ -23,7 +23,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
   bool _isHover = false;
   @override
   Widget build(BuildContext context) {
-    return StudioVariables.isHandToolMode == false
+    return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
         ? MouseRegion(
             onEnter: ((event) {
               setState(() {

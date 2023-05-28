@@ -230,7 +230,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //     child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
           //   ),
           // ),
-          StudioVariables.isHandToolMode == false
+          StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
               ? InkWell(
                   splashColor: Colors.transparent,
                   onTap: () {

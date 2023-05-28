@@ -15,6 +15,7 @@ class CrossScrollBar extends StatefulWidget {
   final double initialScrollOffsetY;
   final void Function(double value) currentVerticalScrollBarOffset;
   final void Function(double value) currentHorizontalScrollBarOffset;
+  final void Function(Offset pos) onLinkCreate;
 
   const CrossScrollBar({
     super.key,
@@ -24,6 +25,7 @@ class CrossScrollBar extends StatefulWidget {
     required this.width,
     required this.currentHorizontalScrollBarOffset,
     required this.currentVerticalScrollBarOffset,
+    required this.onLinkCreate,
     this.initialScrollOffsetX = 0,
     this.initialScrollOffsetY = 0,
   });
@@ -101,10 +103,12 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
                 child: GestureDetector(
                   onLongPressDown: (details) {
                     logger.info(
-                        'linkCursor clicked here ${details.localPosition.dx}, ${details.localPosition.dy}');
+                        'linkCursor clicked here ${details.globalPosition.dx}, ${details.globalPosition.dy}');
 
                     StudioVariables.isLinkMode = false;
                     BookMainPage.bookManagerHolder!.notify();
+
+                    widget.onLinkCreate.call(details.globalPosition);
                   },
                   child: _scrolledWidget(),
                 ),

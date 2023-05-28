@@ -157,13 +157,22 @@ class CretaUtils {
     }
     // MaterialColor(primary value: Color(0xfff44336)) 케이스와
     // Color(0xffffffff) 케이스가 있다.
-    String example = 'MaterialColor(primary value: Color(0xfff44336))';
-    String prefix = 'MaterialColor(primary value: Color(0x';
+    // ColorSwatch(primary value: Color(0xff2196f3)) 케이스도 있다.
+    // 따라서 일단 Color(0x........) 을 추출해야 한다.
+    String extract = CretaUtils.extractColorString(colorStr);
+    //logger.severe('^^^^^$colorStr ==> $extract^^^^^^^^^^');
 
-    if (colorStr.length >= example.length && colorStr.substring(0, prefix.length) == prefix) {
-      return Color(int.parse(colorStr.substring(prefix.length, prefix.length + 8), radix: 16));
+    if (extract.length == 8) {
+      return Color(int.parse(extract, radix: 16));
     }
-    return Color(int.parse(colorStr.substring(8, 16), radix: 16));
+    return null;
+    // String example = 'MaterialColor(primary value: Color(0xfff44336))';
+    // String prefix = 'MaterialColor(primary value: Color(0x';
+
+    // if (colorStr.length >= example.length && colorStr.substring(0, prefix.length) == prefix) {
+    //   return Color(int.parse(colorStr.substring(prefix.length, prefix.length + 8), radix: 16));
+    // }
+    // return Color(int.parse(colorStr.substring(8, 16), radix: 16));
   }
 
   static List<Color> string2ColorList(String? colorStrList) {
@@ -180,6 +189,17 @@ class CretaUtils {
       }
     }
     return retval;
+  }
+
+  static String extractColorString(String input) {
+    final RegExp colorRegex = RegExp(r'Color\(0x(.{8})\)');
+
+    final Match? match = colorRegex.firstMatch(input);
+    if (match != null && match.groupCount >= 1) {
+      return match.group(1)!;
+    }
+
+    return '';
   }
 
   static String colorList2String(List<Color> colorList) {
@@ -209,6 +229,19 @@ class CretaUtils {
       }
     }
     return Colors.white;
+  }
+
+  static bool isMousePointerOnWidget(GlobalKey widgetKey, Offset pointerPosition) {
+    final RenderBox? box = widgetKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) return false;
+
+    final Offset widgetOffset = box.localToGlobal(Offset.zero);
+    final Size size = box.size;
+
+    return pointerPosition.dx >= widgetOffset.dx &&
+        pointerPosition.dx < widgetOffset.dx + size.width &&
+        pointerPosition.dy >= widgetOffset.dy &&
+        pointerPosition.dy < widgetOffset.dy + size.height;
   }
 
   static bool isPointInsideWidget(GlobalKey widgetKey, Offset point, double margin) {
