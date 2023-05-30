@@ -15,33 +15,33 @@ import 'creta_model.dart';
 //import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types
-class WatchHistoryModel extends CretaModel {
+class FavoritesModel extends CretaModel {
   String userId = '';
   String bookId = '';
-  DateTime watchTime = DateTime.now(); // 추후에 createTime 으로 대체
+  DateTime favoriteTime = DateTime.now();
 
   @override
   List<Object?> get props => [
         ...super.props,
         userId,
         bookId,
-        watchTime,
+        favoriteTime,
       ];
-  WatchHistoryModel(String pmid) : super(pmid: pmid, type: ExModelType.watchHistory, parent: '');
+  FavoritesModel(String pmid) : super(pmid: pmid, type: ExModelType.favorites, parent: '');
 
-  WatchHistoryModel.withName({
+  FavoritesModel.withName({
     required this.userId,
     required this.bookId,
-    required this.watchTime,
-  }) : super(pmid: '', type: ExModelType.watchHistory, parent: '');
+    required this.favoriteTime,
+  }) : super(pmid: '', type: ExModelType.favorites, parent: '');
 
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
     super.copyFrom(src, newMid: newMid, pMid: pMid);
-    WatchHistoryModel srcWatchHistory = src as WatchHistoryModel;
-    userId = srcWatchHistory.userId;
-    bookId = srcWatchHistory.bookId;
-    watchTime = srcWatchHistory.watchTime;
+    FavoritesModel srcFavorite = src as FavoritesModel;
+    userId = srcFavorite.userId;
+    bookId = srcFavorite.bookId;
+    favoriteTime = srcFavorite.favoriteTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
@@ -58,7 +58,7 @@ class WatchHistoryModel extends CretaModel {
     super.fromMap(map);
     userId = map["userId"] ?? '';
     bookId = map["bookId"] ?? '';
-    watchTime = _convert(map["watchTime"]);
+    favoriteTime = _convert(map["favoriteTime"]);
   }
 
   @override
@@ -67,7 +67,7 @@ class WatchHistoryModel extends CretaModel {
       ..addEntries({
         "userId": userId,
         "bookId": bookId,
-        "watchTime": watchTime,
+        "favoriteTime": favoriteTime,
       }.entries);
   }
 }

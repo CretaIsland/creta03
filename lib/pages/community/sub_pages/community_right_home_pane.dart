@@ -30,9 +30,11 @@ import '../creta_book_ui_item.dart';
 //import 'community_right_pane_mixin.dart';
 //import '../../../data_io/book_manager.dart';
 import '../../../data_io/book_published_manager.dart';
+import '../../../data_io/favorites_manager.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/creta_model.dart';
+import '../../../model/favorites_model.dart';
 
 //const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -75,7 +77,8 @@ class CommunityRightHomePane extends StatefulWidget {
 class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   //late List<CretaBookData> _cretaBookList;
   bool _onceDBGetComplete = false;
-  BookPublishedManager? bookPublishedManagerHolder;
+  late BookPublishedManager bookPublishedManagerHolder;
+  late FavoritesManager favoritesManagerHolder;
   //BookManager? bookManagerHolder;
   //late final ValueKey _key = ValueKey('CRHP-${widget.filterBookType.name}-${widget.filterBookSort.name}-${widget.filterPermissionType.name}');
   final GlobalKey _key = GlobalKey();
@@ -88,11 +91,15 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     //_cretaBookList = CommunitySampleData.getCretaBookList();
     bookPublishedManagerHolder = BookPublishedManager();
     //bookManagerHolder!.configEvent(notifyModify: false);
-    bookPublishedManagerHolder!.clearAll();
+    bookPublishedManagerHolder.clearAll();
 
     // bookManagerHolder = BookManager();
     // //bookManagerHolder!.configEvent(notifyModify: false);
     // bookManagerHolder!.clearAll();
+
+    favoritesManagerHolder = FavoritesManager();
+    //bookManagerHolder!.configEvent(notifyModify: false);
+    favoritesManagerHolder.clearAll();
 
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
@@ -100,18 +107,20 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     if (widget.filterBookType.index > 0) {
       query['bookType'] = QueryValue(value: widget.filterBookType.index);
     }
-    List<String> sharesList = ['public'];
+    final List<String> sharesList = [];
     if (widget.filterPermissionType == PermissionType.owner) {
       sharesList.add('<${PermissionType.owner.name}>${AccountManager.currentLoginUser.userId}');
-    }
-    if (widget.filterPermissionType == PermissionType.writer) {
+      //sharesList.add('<${PermissionType.owner.name}>public'); // <owner>public 은 없음
+    } else if (widget.filterPermissionType == PermissionType.writer) {
       sharesList.add('<${PermissionType.owner.name}>${AccountManager.currentLoginUser.userId}');
       sharesList.add('<${PermissionType.writer.name}>${AccountManager.currentLoginUser.userId}');
-    }
-    if (widget.filterPermissionType == PermissionType.reader) {
+      sharesList.add('<${PermissionType.writer.name}>public');
+    } else /*if (widget.filterPermissionType == PermissionType.reader)*/ {
       sharesList.add('<${PermissionType.owner.name}>${AccountManager.currentLoginUser.userId}');
       sharesList.add('<${PermissionType.writer.name}>${AccountManager.currentLoginUser.userId}');
+      sharesList.add('<${PermissionType.writer.name}>public');
       sharesList.add('<${PermissionType.reader.name}>${AccountManager.currentLoginUser.userId}');
+      sharesList.add('<${PermissionType.reader.name}>public');
     }
     query['shares'] = QueryValue(value: sharesList, operType: OperType.arrayContainsAny);
 
@@ -137,7 +146,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         break;
     }
 
-    bookPublishedManagerHolder!.queryFromDB(
+    bookPublishedManagerHolder.queryFromDB(
       query,
       //limit: ,
       orderBy: orderBy,
@@ -167,7 +176,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
           widget.cretaLayoutRect.childRightPadding,
           widget.cretaLayoutRect.childBottomPadding,
         ),
-        itemCount: bookPublishedManagerHolder!.modelList.length, //item 개수
+        itemCount: bookPublishedManagerHolder.modelList.length, //item 개수
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
           childAspectRatio: _itemSizeRatio, // 가로÷세로 비율
@@ -177,18 +186,26 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         itemBuilder: (BuildContext context, int index) {
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
-                  key: GlobalObjectKey(bookPublishedManagerHolder!.modelList[index].mid),
-                  bookModel: bookPublishedManagerHolder!.modelList[index] as BookModel,
+                  key: GlobalObjectKey(bookPublishedManagerHolder.modelList[index].mid),
+                  bookModel: bookPublishedManagerHolder.modelList[index] as BookModel,
                   width: itemWidth,
                   height: itemHeight,
+                  addToFavorites: (bookId) {
+                    FavoritesModel favModel = FavoritesModel.withName(
+                      userId: AccountManager.currentLoginUser.userId,
+                      bookId: bookId,
+                      favoriteTime: DateTime.now(),
+                    );
+                    favoritesManagerHolder.createToDB(favModel);
+                  },
                 )
               : LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     itemWidth = constraints.maxWidth;
                     itemHeight = constraints.maxHeight;
                     return CretaBookUIItem(
-                      key: GlobalObjectKey(bookPublishedManagerHolder!.modelList[index].mid),
-                      bookModel: bookPublishedManagerHolder!.modelList[index] as BookModel,
+                      key: GlobalObjectKey(bookPublishedManagerHolder.modelList[index].mid),
+                      bookModel: bookPublishedManagerHolder.modelList[index] as BookModel,
                       width: itemWidth,
                       height: itemHeight,
                     );
@@ -216,7 +233,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       return _getItemPane();
     }
     var retval = CretaModelSnippet.waitData(
-      manager: bookPublishedManagerHolder!,
+      manager: bookPublishedManagerHolder,
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _getItemPane,
     );
