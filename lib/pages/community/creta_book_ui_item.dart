@@ -429,16 +429,20 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
   }
 }
 
+
+//////////////////////////////////////////////////////////////////////
 class CretaBookUIItem extends StatefulWidget {
   final BookModel bookModel;
   final double width;
   final double height;
+  final Function(String)? addToFavorites;
 
   const CretaBookUIItem({
     required super.key,
     required this.bookModel,
     required this.width,
     required this.height,
+    this.addToFavorites,
   });
 
   @override
@@ -550,7 +554,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
             BTN.opacity_gray_i_s(
               icon: Icons.favorite_border,
               iconColor: CretaColor.text[100],
-              onPressed: () {},
+              onPressed: () { widget.addToFavorites?.call(widget.bookModel.mid); },
             ),
             SizedBox(width: 4),
             BTN.opacity_gray_i_s(

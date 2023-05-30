@@ -2,7 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
+//import 'dart:async';
 //import 'package:flutter/gestures.dart';
 import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
@@ -33,10 +33,11 @@ import '../creta_book_ui_item.dart';
 //import '../creta_playlist_ui_item.dart';
 //import 'package:deep_collection/deep_collection.dart';
 import '../../../design_system/creta_font.dart';
+//import '../../../data_io/creta_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../model/creta_model.dart';
-import '../../../design_system/component/snippet.dart';
+//import '../../../design_system/component/snippet.dart';
 import '../../../model/book_model.dart';
 import '../../../model/watch_history_model.dart';
 
@@ -75,7 +76,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
 
   BookPublishedManager? bookPublishedManagerHolder;
   WatchHistoryManager? watchHistoryManagerHolder;
-  bool _onceDBIDListGetComplete = false;
+  //bool _onceDBIDListGetComplete = false;
   bool _onceDBDataListGetComplete = false;
 
   @override
@@ -98,6 +99,10 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
       //limit: ,
       orderBy: orderBy,
     );
+
+    watchHistoryManagerHolder!.isGetListFromDBComplete().then((value) {
+      _getDBDataList();
+    });
   }
 
   // <!-- my code
@@ -189,9 +194,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
           spacing: _rightViewItemGapX, // 좌우 간격
           runSpacing: _rightViewItemGapY, // 상하 간격
           children: dataList
-              .map(
-                  (data) => CretaBookUIItem(
-                    key: GlobalKey(),//GlobalObjectKey('${index++}+${data.mid}'),
+              .map((data) => CretaBookUIItem(
+                    key: GlobalKey(), //GlobalObjectKey('${index++}+${data.mid}'),
                     bookModel: data,
                     width: _itemWidth,
                     height: _itemHeight,
@@ -205,9 +209,9 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
 
   void _rearrangeCretaBookData() {
     if (kDebugMode) print('---_rearrangeCretaBookData');
-    for(var exModel in watchHistoryManagerHolder!.modelList) {
+    for (var exModel in watchHistoryManagerHolder!.modelList) {
       final whModel = exModel as WatchHistoryModel;
-      for(var model in bookPublishedManagerHolder!.modelList) {
+      for (var model in bookPublishedManagerHolder!.modelList) {
         final bookModel = model as BookModel;
         if (bookModel.mid == whModel.bookId) {
           final String watchTime = DateFormat('yyyy.MM.dd').format(whModel.watchTime);
@@ -248,9 +252,9 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     if (kDebugMode) print('---_getDBDataList');
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
-
+    // join 이 불가능하므로, ID리스트로부터 데이터를 get
     List<String> bookIdList = [];
-    for(var exModel in watchHistoryManagerHolder!.modelList) {
+    for (var exModel in watchHistoryManagerHolder!.modelList) {
       WatchHistoryModel whModel = exModel as WatchHistoryModel;
       bookIdList.add(whModel.bookId);
     }
@@ -262,41 +266,89 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
       //orderBy: orderBy,
     );
 
-    Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      timer.cancel();
-      setState(() {});
+    // Timer.periodic(const Duration(milliseconds: 100), (timer) {
+    //   timer.cancel();
+    //   setState(() {
+    //     _onceDBIDListGetComplete = true;
+    //   });
+    // });
+
+    bookPublishedManagerHolder!.isGetListFromDBComplete().then((value) {
+      _onceDBDataListGetComplete = true;
     });
   }
 
-  Widget _waitSignWidget() {
-    if (kDebugMode) print('---_waitSignWidget');
-    return Center(child: Snippet.showWaitSign());
-  }
+  // Widget _waitSignWidget() {
+  //   if (kDebugMode) print('---_waitSignWidget');
+  //   return Center(child: Snippet.showWaitSign());
+  // }
+
+  // Future<List<AbsExModel>>? wait() async {
+  //   List<CretaManager> mngList = [watchHistoryManagerHolder!, bookPublishedManagerHolder!];
+  //   List<AbsExModel>? value;
+  //   for (var mng in mngList) {
+  //     value = await mng.isGetListFromDBComplete();
+  //   }
+  //   if (kDebugMode) print('---_onceDBDataListGetComplete(true)');
+  //   _onceDBDataListGetComplete = true;
+  //   return Future.value(value);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBIDListGetComplete && _onceDBDataListGetComplete) {
-      if (kDebugMode) print('---build-1');
-      return _getItemPane();
-    }
-    Widget retval = SizedBox.shrink();
-    if (watchHistoryManagerHolder!.modelList.isEmpty) {
-      if (kDebugMode) print('---build-2');
-      retval = CretaModelSnippet.waitData(
-        manager: watchHistoryManagerHolder!,
-        consumerFunc: _waitSignWidget,
-        completeFunc: _getDBDataList,
-      );
-      _onceDBIDListGetComplete = true;
-    }
-    else if (_onceDBDataListGetComplete == false) {
+    //if (_onceDBIDListGetComplete && _onceDBDataListGetComplete) {
+    // if (_onceDBDataListGetComplete) {
+    //   if (kDebugMode) print('---build-1');
+    //   return _getItemPane();
+    // }
+    // Widget retval = SizedBox.shrink();
+    // if (_onceDBIDListGetComplete == false) {
+    //   if (kDebugMode) print('---build-2');
+    //   retval = CretaModelSnippet.waitData(
+    //     manager: watchHistoryManagerHolder!,
+    //     consumerFunc: _waitSignWidget,
+    //     completeFunc: _getDBDataList,
+    //   );
+    // }
+    // else if (_onceDBDataListGetComplete == false) {
+    //   if (kDebugMode) print('---build-3');
+    //   retval = CretaModelSnippet.waitData(
+    //     manager: bookPublishedManagerHolder!,
+    //     consumerFunc: _getItemPane,
+    //     completeFunc: () { _onceDBDataListGetComplete = true; },
+    //   );
+    // }
+    // var retval = FutureBuilder<List<AbsExModel>>(
+    //     future: wait(),
+    //     builder: (context, AsyncSnapshot<List<AbsExModel>> snapshot) {
+    //       if (snapshot.hasError) {
+    //         //error가 발생하게 될 경우 반환하게 되는 부분
+    //         logger.severe("data fetch error(WaitDatat)");
+    //         return const Center(child: Text('data fetch error(WaitDatat)'));
+    //       }
+    //       if (snapshot.hasData == false) {
+    //         logger.finest("wait data ...(WaitDatat)");
+    //         return Center(
+    //           child: Snippet.showWaitSign(),
+    //         );
+    //       }
+    //       if (snapshot.connectionState == ConnectionState.done) {
+    //         logger.finest("founded ${snapshot.data!.length}");
+    //         // if (snapshot.data!.isEmpty) {
+    //         //   return const Center(child: Text('no book founded'));
+    //         // }
+    //         if (kDebugMode) print('FutureBuilder end');
+    //         return _getItemPane();
+    //       }
+    //       return Container();
+    //     });
+    if (_onceDBDataListGetComplete == false) {
       if (kDebugMode) print('---build-3');
-      retval = CretaModelSnippet.waitData(
-        manager: bookPublishedManagerHolder!,
+      return CretaModelSnippet.waitDatum(
+        managerList: [watchHistoryManagerHolder!, bookPublishedManagerHolder!],
         consumerFunc: _getItemPane,
       );
-      _onceDBDataListGetComplete = true;
     }
-    return retval;
+    return _getItemPane();
   }
 }
