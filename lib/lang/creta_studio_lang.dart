@@ -396,4 +396,7 @@ class CretaStudioLang {
   static const String publishFailed = '발행이 실패하였습니다';
   static const String update = '수정';
   static const String newely = '신규';
+
+  static const String showGrid = '그리드 보기';
+  static const String showRuler = '눈금자 보기';
 }

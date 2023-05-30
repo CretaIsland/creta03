@@ -25,18 +25,19 @@ import '../containee_nofifier.dart';
 import '../frame/frame_main.dart';
 
 class PageMain extends StatefulWidget {
+  final GlobalObjectKey pageKey;
   final BookModel bookModel;
   final PageModel pageModel;
   final double pageWidth;
   final double pageHeight;
 
   const PageMain({
-    super.key,
+    required this.pageKey,
     required this.bookModel,
     required this.pageModel,
     required this.pageWidth,
     required this.pageHeight,
-  });
+  }) : super(key: pageKey);
 
   @override
   State<PageMain> createState() => PageMainState();
@@ -44,6 +45,7 @@ class PageMain extends StatefulWidget {
 
 class PageMainState extends State<PageMain> with ContaineeMixin {
   FrameManager? _frameManager;
+
   bool _onceDBGetComplete = false;
 
   double opacity = 1;
@@ -168,8 +170,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
             behavior: HitTestBehavior.deferToChild,
             onLongPressDown: pageClicked,
             onTapUp: (details) {
-              logger
-                  .info('onTapUp======================================${details.localPosition.dx}');
+              //logger
+              //    .info('onTapUp======================================${details.localPosition.dx}');
             },
             child: Container(
               decoration: useColor ? _pageDeco() : null,
@@ -221,7 +223,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     }
     //var retval = CretaModelSnippet.waitData(
     var retval = CretaModelSnippet.waitDatum(
-      managerList: [_frameManager!],
+      managerList: [
+        _frameManager!,
+      ],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _consumerFunc,
     );
@@ -266,9 +270,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
-      logger.info('_drawFrame()');
+      //logger.info('_drawFrame()');
       return FrameMain(
-        key: GlobalKey(),
+        frameMainKey: GlobalKey(),
         pageWidth: widget.pageWidth,
         pageHeight: widget.pageHeight,
         pageModel: widget.pageModel,

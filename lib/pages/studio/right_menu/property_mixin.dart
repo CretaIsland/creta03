@@ -246,7 +246,7 @@ mixin PropertyMixin {
     required Color color1,
     required Color color2,
     required String title,
-    required double opacity,
+    double? opacity,
     required GradationType gradationType,
     required Function cardOpenPressed,
     required void Function(double) onOpacityDragComplete,
@@ -266,7 +266,7 @@ mixin PropertyMixin {
       hasRemoveButton: color1 != Colors.transparent,
       trailWidget: colorIndicator(
         color1,
-        opacity,
+        opacity ?? 1,
         onColorChanged: onColor1Changed,
         onClicked: onColorIndicatorClicked,
       ),
@@ -288,7 +288,7 @@ mixin PropertyMixin {
   Widget _colorBody({
     required Color color1,
     required Color color2,
-    required double opacity,
+    double? opacity,
     required GradationType gradationType,
     required void Function(double) onOpactityChanged,
     required void Function(double) onOpactityChangedComplete,
@@ -304,22 +304,23 @@ mixin PropertyMixin {
           name: CretaStudioLang.color,
           widget: colorIndicator(
             color1,
-            opacity,
+            opacity ?? 1,
             onColorChanged: onColor1Changed,
             onClicked: () {},
           ),
         ),
-        CretaPropertySlider(
-          // 투명도
-          name: CretaStudioLang.opacity,
-          min: 0,
-          max: 100,
-          value: opacity,
-          valueType: SliderValueType.reverse,
-          onChannged: onOpactityChanged,
-          onChanngeComplete: onOpactityChangedComplete,
-          postfix: '%',
-        ),
+        if (opacity != null)
+          CretaPropertySlider(
+            // 투명도
+            name: CretaStudioLang.opacity,
+            min: 0,
+            max: 100,
+            value: opacity,
+            valueType: SliderValueType.reverse,
+            onChannged: onOpactityChanged,
+            onChanngeComplete: onOpactityChangedComplete,
+            postfix: '%',
+          ),
       ],
     );
   }
@@ -342,11 +343,11 @@ mixin PropertyMixin {
         onPressed.call();
       },
       titleWidget: Text(CretaStudioLang.gradation, style: CretaFont.titleSmall),
-      trailWidget: gradationType == GradationType.none || bgColor1 == Colors.transparent
+      trailWidget: gradationType == GradationType.none
           ? const SizedBox.shrink()
           : colorIndicatorTotal(bgColor1, bgColor2, opacity, gradationType,
               onColorChanged: onColor2Changed, onColorIndicatorClicked: onColorIndicatorClicked),
-      hasRemoveButton: gradationType != GradationType.none && bgColor1 != Colors.transparent,
+      hasRemoveButton: gradationType != GradationType.none || bgColor2 != Colors.transparent,
       onDelete: onDelete,
       bodyWidget: gradationListView(
         bgColor1,
@@ -426,7 +427,8 @@ mixin PropertyMixin {
     return MyColorIndicator(
       opacity: opacity,
       gradient: gradient,
-      color: (gradient == null) ? color2 : color1,
+      //color: (gradient == null) ? color2 : color1,
+      color: color2,
       onColorChanged: onColorChanged,
       onClicked: onColorIndicatorClicked,
     );

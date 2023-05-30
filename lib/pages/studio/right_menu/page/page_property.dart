@@ -125,7 +125,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         title: CretaStudioLang.pageBgColor,
         color1: _model!.bgColor1.value,
         color2: _model!.bgColor2.value,
-        opacity: _model!.opacity.value,
+        //opacity: _model!.opacity.value,
         gradationType: _model!.gradationType.value,
         cardOpenPressed: () {
           setState(() {});

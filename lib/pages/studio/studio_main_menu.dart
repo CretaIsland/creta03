@@ -6,6 +6,7 @@ import '../../design_system/creta_font.dart';
 import '../../design_system/dialog/creta_alert_dialog.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
+import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
 import '../../routes.dart';
 import 'book_main_page.dart';
@@ -69,11 +70,25 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         // 다운로드 한다.
         caption: CretaLang.download,
         onPressed: () {},
+        disabled: true,
       ),
       CretaMenuItem(
         // 출력한다.
         caption: CretaLang.print,
         onPressed: () {},
+        disabled: true,
+      ),
+      CretaMenuItem(
+        // 그리드 보기.
+        caption: CretaStudioLang.showGrid,
+        onPressed: () {},
+        disabled: true,
+      ),
+      CretaMenuItem(
+        // 눈금자 보기.
+        caption: CretaStudioLang.showRuler,
+        onPressed: () {},
+        disabled: true,
       ),
       CretaMenuItem(
         // 상세정보를 보여준다
@@ -136,7 +151,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
             position: const Offset(10, 100),
             context: context,
             popupMenu: _popupMenuList,
-            textAlign: TextAlign.left,
+            textAlign: Alignment.centerLeft,
             initFunc: () {},
           );
         },

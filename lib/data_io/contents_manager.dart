@@ -90,7 +90,7 @@ class ContentsManager extends CretaManager {
 
     if (playTimer != null) {
       if (playTimer!.isInit()) {
-        logger.info('prev exist =============================================');
+        //logger.info('prev exist =============================================');
         await playTimer?.rewind();
         await playTimer?.pause();
       }
@@ -105,7 +105,7 @@ class ContentsManager extends CretaManager {
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> getContents() async {
-    logger.info('getContents---------------${frameModel.mid}----------------------------');
+    //logger.info('getContents---------------${frameModel.mid}----------------------------');
     int contentsCount = 0;
     startTransaction();
     try {

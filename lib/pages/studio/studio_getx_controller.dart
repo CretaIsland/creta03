@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'package:hycop/common/util/logger.dart';
 
 import '../../model/creta_model.dart';
 
@@ -11,6 +11,15 @@ class StudioEventController extends GetxController {
   // Method to send an event
   void sendEvent(CretaModel model) {
     eventStream.add(model);
+  }
+}
+
+class OffsetEventController extends GetxController {
+  final eventStream = StreamController<Offset>.broadcast();
+
+  // Method to send an event
+  void sendEvent(Offset offset) {
+    eventStream.add(offset);
   }
 }
 
@@ -60,7 +69,7 @@ class StudioGetXController extends GetxController {
   @override
   void onInit() {
     // Initialize EventController1 instance with a tag
-    logger.fine('==========================StudioGetXController initialized================');
+    //logger.fine('==========================StudioGetXController initialized================');
     Get.put(PageEventController(), tag: 'page-property-to-main');
     Get.put(PageEventController(), tag: 'page-main-to-property');
 
@@ -73,6 +82,8 @@ class StudioGetXController extends GetxController {
     Get.put(ContentsEventController(), tag: 'text-property-to-textplayer');
     Get.put(ContentsEventController(), tag: 'textplayer-to-text-property');
 
+    Get.put(OffsetEventController(), tag: 'cross-scrollbar-to-page-main');
+
     // Initialize EventController2 instance with a tag
     //Get.put(PageEventController(), tag: 'page-property-to-main');
     super.onInit();
@@ -80,7 +91,7 @@ class StudioGetXController extends GetxController {
 
   @override
   void onClose() {
-    logger.fine('==========================StudioGetXController onClose================');
+    //logger.fine('==========================StudioGetXController onClose================');
     super.onClose();
     //Dispose of eventController here
     // frameEvent?.onClose();

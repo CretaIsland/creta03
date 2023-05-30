@@ -22,6 +22,12 @@ class FrameManager extends CretaManager {
   final PageModel pageModel;
   final BookModel bookModel;
 
+  Offset _pageOffset = Offset.zero;
+  Offset get pageOffset => _pageOffset;
+  void setPageOffset(Offset offset) {
+    _pageOffset = offset;
+  }
+
   LinkManager linkManager = LinkManager();
   //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey> frameKeyMap = {};
@@ -172,9 +178,9 @@ class FrameManager extends CretaManager {
 
     double dx = frameModel.posX.value;
     double dy = frameModel.posY.value;
-    logger.info('resizeFrame()===============================');
-    logger.info(
-        'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$contentsWidth, imageH=$contentsHeight, dx=$dx, dy=$dy --------------------');
+    //logger.info('resizeFrame()===============================');
+    //logger.info(
+    //   'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$contentsWidth, imageH=$contentsHeight, dx=$dx, dy=$dy --------------------');
 
     // if (contentsWidth <= pageWidth && contentsHeight <= pageHeight) {
     //   w = contentsWidth;
@@ -271,11 +277,11 @@ class FrameManager extends CretaManager {
       FrameModel frameModel = ele as FrameModel;
       ContentsManager? contentsManager = findContentsManager(frameModel.mid);
       if (contentsManager == null) {
-        logger.info('new ContentsManager created (${frameModel.mid})');
+        //logger.info('new ContentsManager created (${frameModel.mid})');
         contentsManager = newContentsManager(frameModel);
         contentsManager.clearAll();
       } else {
-        logger.info('old ContentsManager used (${frameModel.mid})');
+        //logger.info('old ContentsManager used (${frameModel.mid})');
       }
     }
     for (var mid in contentsManagerMap.keys.toList()) {

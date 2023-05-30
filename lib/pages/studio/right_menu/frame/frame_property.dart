@@ -1000,6 +1000,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         onDelete: () {
           setState(() {
             widget.model.gradationType.set(GradationType.none);
+            widget.model.bgColor2.set(Colors.transparent);
           });
           _sendEvent!.sendEvent(widget.model);
         },
@@ -1333,6 +1334,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             widget.model.shadowBlur.set(0);
             widget.model.shadowDirection.set(0);
             widget.model.shadowOffset.set(0);
+            widget.model.shadowColor.set(Colors.transparent);
           });
           _sendEvent!.sendEvent(widget.model);
         },
@@ -1551,18 +1553,18 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     ) onTapPressed,
   ) {
     List<Widget> shadowList = [];
-    // 그림자 없음 버튼
-    shadowList.add(ShadowIndicator(
-      color: model.shadowColor.value,
-      spread: 0,
-      blur: 0,
-      direction: 0,
-      distance: 0,
-      opacity: 0,
-      isSelected: model.isNoShadow(),
-      onTapPressed: onTapPressed,
-      hintText: CretaStudioLang.nothing,
-    ));
+    // // 그림자 없음 버튼
+    // shadowList.add(ShadowIndicator(
+    //   color: model.shadowColor.value,
+    //   spread: 0,
+    //   blur: 0,
+    //   direction: 0,
+    //   distance: 0,
+    //   opacity: 0,
+    //   isSelected: model.isNoShadow(),
+    //   onTapPressed: onTapPressed,
+    //   hintText: CretaStudioLang.nothing,
+    // ));
 
     int len = CretaUtils.shadowDataList.length;
     for (int i = 0; i < len; i++) {

@@ -456,6 +456,7 @@ class CretaUtils {
     ShadowData(spread: 3, blur: 4, direction: 135, distance: 3, opacity: 0.5),
     ShadowData(spread: 0, blur: 0, direction: 135, distance: 3, opacity: 0.5),
     ShadowData(spread: 0, blur: 0, direction: 90, distance: 3, opacity: 0.5),
+    ShadowData(spread: 0, blur: 0, direction: 45, distance: 3, opacity: 0.5),
 
     //   ShadowData(spread: 3, blur: 4, direction: 0, distance: 0),
     //   ShadowData(spread: 3, blur: 0, direction: 0, distance: 0),

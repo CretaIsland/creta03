@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -10,6 +11,7 @@ import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
+import '../../../../design_system/creta_color.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
@@ -43,6 +45,7 @@ class FrameThumbnail extends StatefulWidget {
 
 class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
   double applyScale = 1;
+  bool _showBorder = false;
 
   ContentsManager? _contentsManager;
 
@@ -69,11 +72,11 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     }
     _contentsManager = frameManager!.findContentsManager(widget.model.mid);
     if (_contentsManager == null) {
-      logger.info('new ContentsManager created (${widget.model.mid})');
+      //logger.info('new ContentsManager created (${widget.model.mid})');
       _contentsManager = frameManager!.newContentsManager(widget.model);
       _contentsManager!.clearAll();
     } else {
-      logger.info('old ContentsManager used (${widget.model.mid})');
+      //logger.info('old ContentsManager used (${widget.model.mid})');
     }
 
     if (_contentsManager!.onceDBGetComplete == false) {
@@ -128,6 +131,13 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
+    _showBorder = _contentsManager!.length() == 0 &&
+        (widget.model.bgColor1.value == widget.pageModel.bgColor1.value ||
+            widget.model.bgColor1.value == Colors.transparent) &&
+        (widget.model.borderWidth.value == 0 ||
+            widget.model.borderColor.value == widget.pageModel.bgColor1.value) &&
+        (widget.model.isNoShadow());
+
     if (widget.model.shouldInsideRotate()) {
       return Transform(
         key: GlobalObjectKey('Transform${widget.model.mid}'),
@@ -135,10 +145,20 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
         transform: Matrix4.identity()
           ..scale(1.0)
           ..rotateZ(CretaUtils.degreeToRadian(widget.model.angle.value)),
-        child: _shapeBox(widget.model),
+        child: _showBorder ? _dottedShapeBox(widget.model) : _shapeBox(widget.model),
       );
     }
-    return _shapeBox(widget.model);
+    return _showBorder ? _dottedShapeBox(widget.model) : _shapeBox(widget.model);
+  }
+
+  Widget _dottedShapeBox(FrameModel model) {
+    return DottedBorder(
+      dashPattern: const [2, 2],
+      strokeWidth: 1,
+      strokeCap: StrokeCap.round,
+      color: CretaColor.text[700]!,
+      child: _shapeBox(model),
+    );
   }
 
   Widget _shapeBox(FrameModel model) {
@@ -150,7 +170,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
         blurRadius: model.shadowBlur.value,
         blurSpread: model.shadowSpread.value * applyScale,
         opacity: model.shadowOpacity.value,
-        shadowColor: model.shadowColor.value,
+        shadowColor: model.isNoShadow() ? Colors.transparent : model.shadowColor.value,
         strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
         strokeColor: model.borderColor.value,
         radiusLeftBottom: model.getRealradiusLeftBottom(applyScale),

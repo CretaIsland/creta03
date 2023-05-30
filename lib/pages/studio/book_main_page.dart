@@ -28,7 +28,6 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
-import '../../model/frame_model.dart';
 import '../../model/page_model.dart';
 import '../../routes.dart';
 import '../login_page.dart';
@@ -875,17 +874,7 @@ class _BookMainPageState extends State<BookMainPage> {
           currentVerticalScrollBarOffset: (value) {
             vericalScrollOffset = value;
           },
-          onLinkCreate: (pos) {
-            FrameModel? frame = BookMainPage.pageManagerHolder!.findFrameByPos(pos);
-            if (frame == null) {
-              logger.info('no frame');
-              return;
-            }
-            logger.info('----------------------------frame founded ${frame.order.value}');
 
-            FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-            frameManager?.createLink(frameId: frame.mid, posX: pos.dx, posY: pos.dy);
-          },
           child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
             pageManager.reOrdering();
             PageModel? pageModel = pageManager.getSelected() as PageModel?;
@@ -1012,7 +1001,7 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.fine('PageMain Invoked ***** ${pageModel.width.value}');
 
     return PageMain(
-      key: ValueKey(pageModel.mid),
+      pageKey: GlobalObjectKey('PageKey${pageModel.mid}'),
       bookModel: _bookModel,
       pageModel: pageModel,
       pageWidth: pageWidth,

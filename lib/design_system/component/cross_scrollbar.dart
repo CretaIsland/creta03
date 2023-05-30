@@ -2,7 +2,6 @@ import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_color.dart';
 
@@ -15,7 +14,7 @@ class CrossScrollBar extends StatefulWidget {
   final double initialScrollOffsetY;
   final void Function(double value) currentVerticalScrollBarOffset;
   final void Function(double value) currentHorizontalScrollBarOffset;
-  final void Function(Offset pos) onLinkCreate;
+  //final void Function(Offset pos) onLinkCreate;
 
   const CrossScrollBar({
     super.key,
@@ -25,7 +24,7 @@ class CrossScrollBar extends StatefulWidget {
     required this.width,
     required this.currentHorizontalScrollBarOffset,
     required this.currentVerticalScrollBarOffset,
-    required this.onLinkCreate,
+    //required this.onLinkCreate,
     this.initialScrollOffsetX = 0,
     this.initialScrollOffsetY = 0,
   });
@@ -38,11 +37,14 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
   late ScrollController horizontalScroll;
   late ScrollController verticalScroll;
   final double barWidth = 12;
+  //OffsetEventController? _sendEvent;
 
   Offset? initHandToolPoint;
 
   @override
   void initState() {
+    super.initState();
+
     horizontalScroll = ScrollController(initialScrollOffset: widget.initialScrollOffsetX);
     verticalScroll = ScrollController(initialScrollOffset: widget.initialScrollOffsetY);
     horizontalScroll.addListener(() {
@@ -59,7 +61,8 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
     //   verticalScroll.jumpTo(0);
     // });
 
-    super.initState();
+    // final OffsetEventController sendEvent = Get.find(tag: 'cross-scrollbar-to-page-main');
+    // _sendEvent = sendEvent;
   }
 
   @override
@@ -97,23 +100,27 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
               child: _scrolledWidget(),
             ),
           )
-        : StudioVariables.isLinkMode == true
-            ? MouseRegion(
-                cursor: SystemMouseCursors.cell,
-                child: GestureDetector(
-                  onLongPressDown: (details) {
-                    logger.info(
-                        'linkCursor clicked here ${details.globalPosition.dx}, ${details.globalPosition.dy}');
+        // : StudioVariables.isLinkMode == true
+        //     ? MouseRegion(
+        //         cursor: SystemMouseCursors.none,
+        //         onHover: (event) {
+        //           //logger.info('sendEvent ${event.position}');
+        //           _sendEvent?.sendEvent(event.position);
+        //         },
+        //         child: GestureDetector(
+        //           onLongPressDown: (details) {
+        //             logger.info(
+        //                 'linkCursor clicked here ${details.globalPosition.dx}, ${details.globalPosition.dy}');
 
-                    StudioVariables.isLinkMode = false;
-                    BookMainPage.bookManagerHolder!.notify();
+        //             StudioVariables.isLinkMode = false;
+        //             BookMainPage.bookManagerHolder!.notify();
 
-                    widget.onLinkCreate.call(details.globalPosition);
-                  },
-                  child: _scrolledWidget(),
-                ),
-              )
-            : _scrolledWidget();
+        //             widget.onLinkCreate.call(details.globalPosition);
+        //           },
+        //           child: _scrolledWidget(),
+        //         ),
+        //       )
+        : _scrolledWidget();
 
     // return Listener(
     //   behavior: HitTestBehavior.translucent,
