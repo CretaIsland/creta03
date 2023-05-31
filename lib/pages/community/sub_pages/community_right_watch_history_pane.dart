@@ -36,10 +36,12 @@ import '../../../design_system/creta_font.dart';
 //import '../../../data_io/creta_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
 import '../../../data_io/book_published_manager.dart';
+import '../../../data_io/favorites_manager.dart';
 import '../../../model/creta_model.dart';
 //import '../../../design_system/component/snippet.dart';
 import '../../../model/book_model.dart';
 import '../../../model/watch_history_model.dart';
+import '../../../model/favorites_model.dart';
 
 //const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -74,8 +76,10 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
   double _itemWidth = 0;
   double _itemHeight = 0;
 
-  BookPublishedManager? bookPublishedManagerHolder;
-  WatchHistoryManager? watchHistoryManagerHolder;
+  late BookPublishedManager bookPublishedManagerHolder;
+  late WatchHistoryManager watchHistoryManagerHolder;
+  late FavoritesManager favoritesManagerHolder;
+  final Map<String, bool> _favoritesBookIdMap = {};
   //bool _onceDBIDListGetComplete = false;
   bool _onceDBDataListGetComplete = false;
 
@@ -86,6 +90,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     //_cretaBookDataMap = _rearrangeCretaBookData(CommunitySampleData.getCretaBookList());
     bookPublishedManagerHolder = BookPublishedManager();
     watchHistoryManagerHolder = WatchHistoryManager();
+    favoritesManagerHolder = FavoritesManager();
 
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
@@ -94,13 +99,13 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     Map<String, OrderDirection> orderBy = {};
     orderBy['watchTime'] = OrderDirection.descending;
 
-    watchHistoryManagerHolder!.queryFromDB(
+    watchHistoryManagerHolder.queryFromDB(
       query,
       //limit: ,
       orderBy: orderBy,
     );
 
-    watchHistoryManagerHolder!.isGetListFromDBComplete().then((value) {
+    watchHistoryManagerHolder.isGetListFromDBComplete().then((value) {
       _getDBDataList();
     });
   }
@@ -199,6 +204,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
                     bookModel: data,
                     width: _itemWidth,
                     height: _itemHeight,
+                    isFavorites: _favoritesBookIdMap[data.mid] ?? false,
                   ))
               .toList(),
         ));
@@ -209,9 +215,9 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
 
   void _rearrangeCretaBookData() {
     if (kDebugMode) print('---_rearrangeCretaBookData');
-    for (var exModel in watchHistoryManagerHolder!.modelList) {
+    for (var exModel in watchHistoryManagerHolder.modelList) {
       final whModel = exModel as WatchHistoryModel;
-      for (var model in bookPublishedManagerHolder!.modelList) {
+      for (var model in bookPublishedManagerHolder.modelList) {
         final bookModel = model as BookModel;
         if (bookModel.mid == whModel.bookId) {
           final String watchTime = DateFormat('yyyy.MM.dd').format(whModel.watchTime);
@@ -254,13 +260,13 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     query['isRemoved'] = QueryValue(value: false);
     // join 이 불가능하므로, ID리스트로부터 데이터를 get
     List<String> bookIdList = [];
-    for (var exModel in watchHistoryManagerHolder!.modelList) {
+    for (var exModel in watchHistoryManagerHolder.modelList) {
       WatchHistoryModel whModel = exModel as WatchHistoryModel;
       bookIdList.add(whModel.bookId);
     }
     query['mid'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
 
-    bookPublishedManagerHolder!.queryFromDB(
+    bookPublishedManagerHolder.queryFromDB(
       query,
       //limit: ,
       //orderBy: orderBy,
@@ -273,9 +279,33 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     //   });
     // });
 
-    bookPublishedManagerHolder!.isGetListFromDBComplete().then((value) {
-      _onceDBDataListGetComplete = true;
+    bookPublishedManagerHolder.isGetListFromDBComplete().then((value) {
+      _getFavoritesFromDB();
     });
+  }
+
+  void _getFavoritesFromDB() {
+    if (bookPublishedManagerHolder.modelList.isEmpty) {
+      setState(() {
+        _onceDBDataListGetComplete = true;
+      });
+    } else {
+      List<String> bookIdList = [];
+      for (var exModel in bookPublishedManagerHolder.modelList) {
+        BookModel bookModel = exModel as BookModel;
+        bookIdList.add(bookModel.mid);
+        _favoritesBookIdMap[bookModel.mid] = false;
+      }
+      favoritesManagerHolder.getFavoritesFromBookIdList(bookIdList);
+      favoritesManagerHolder.isGetListFromDBComplete().then((value) {
+        for(var model in favoritesManagerHolder.modelList) {
+          FavoritesModel fModel = model as FavoritesModel;
+          _favoritesBookIdMap[fModel.bookId] = true;
+        }
+        _onceDBDataListGetComplete = true;
+        // CretaModelSnippet.waitDatum 에서 화면 갱신됨
+      });
+    }
   }
 
   // Widget _waitSignWidget() {
@@ -345,7 +375,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     if (_onceDBDataListGetComplete == false) {
       if (kDebugMode) print('---build-3');
       return CretaModelSnippet.waitDatum(
-        managerList: [watchHistoryManagerHolder!, bookPublishedManagerHolder!],
+        managerList: [watchHistoryManagerHolder, bookPublishedManagerHolder, favoritesManagerHolder],
         consumerFunc: _getItemPane,
       );
     }

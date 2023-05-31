@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 //import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -79,6 +80,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   bool _onceDBGetComplete = false;
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager favoritesManagerHolder;
+  final Map<String, bool> _favoritesBookIdMap = {};
   //BookManager? bookManagerHolder;
   //late final ValueKey _key = ValueKey('CRHP-${widget.filterBookType.name}-${widget.filterBookSort.name}-${widget.filterPermissionType.name}');
   final GlobalKey _key = GlobalKey();
@@ -151,9 +153,87 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       //limit: ,
       orderBy: orderBy,
     );
+
+    bookPublishedManagerHolder.isGetListFromDBComplete().then((value) {
+      _getFavoritesFromDB();
+    });
   }
 
-  int saveIdx = 0;
+  void _getFavoritesFromDB() {
+    if (kDebugMode) print('_getFavoritesFromDB');
+    if (bookPublishedManagerHolder.modelList.isEmpty) {
+      if (kDebugMode) print('bookPublishedManagerHolder.modelList is empty');
+      setState(() {
+        _onceDBGetComplete = true;
+      });
+    } else {
+      List<String> bookIdList = [];
+      if (kDebugMode) print('bookPublishedManagerHolder.modelList count=${bookPublishedManagerHolder.modelList.length}');
+      for (var exModel in bookPublishedManagerHolder.modelList) {
+        BookModel bookModel = exModel as BookModel;
+        bookIdList.add(bookModel.mid);
+        if (kDebugMode) print('_favoritesBookIdMap add ${bookModel.mid}');
+        _favoritesBookIdMap[bookModel.mid] = false;
+      }
+      if (kDebugMode) print('getFavoritesFromBookIdList');
+      favoritesManagerHolder.getFavoritesFromBookIdList(bookIdList);
+      favoritesManagerHolder.isGetListFromDBComplete().then((value) {
+        if (kDebugMode) print('favoritesManagerHolder.modelList count=${favoritesManagerHolder.modelList.length}');
+        for(var model in favoritesManagerHolder.modelList) {
+          FavoritesModel fModel = model as FavoritesModel;
+          if (kDebugMode) print('_favoritesBookIdMap[${fModel.bookId}] = true');
+          _favoritesBookIdMap[fModel.bookId] = true;
+        }
+        _onceDBGetComplete = true;
+        // CretaModelSnippet.waitDatum 에서 화면 갱신됨
+      });
+    }
+  }
+
+  void _addToFavorites(String bookId, bool isFavorites) {
+    // check already exist
+    Map<String, QueryValue> query = {};
+    query['isRemoved'] = QueryValue(value: false);
+    query['userId'] = QueryValue(value: AccountManager.currentLoginUser.userId);
+    query['bookId'] = QueryValue(value: bookId);
+    favoritesManagerHolder.queryFromDB(query);
+    favoritesManagerHolder.isGetListFromDBComplete().then((value) {
+      if (favoritesManagerHolder.modelList.isEmpty) {
+        if (isFavorites) {
+          // already favorites => not exist in DB, remove from DB => do nothing
+        } else {
+          // not favorites => not exist in DB, add to DB
+          FavoritesModel favModel = FavoritesModel.withName(
+            userId: AccountManager.currentLoginUser.userId,
+            bookId: bookId,
+            favoriteTime: DateTime.now(),
+          );
+          favoritesManagerHolder.createToDB(favModel);
+          favoritesManagerHolder.isGetListFromDBComplete().then((value) {
+            setState(() {
+              _favoritesBookIdMap[bookId] = true;
+            });
+          });
+        }
+      } else {
+        if (isFavorites) {
+          // already favorites => exist in DB, remove from DB
+          for(var model in favoritesManagerHolder.modelList) {
+            FavoritesModel fModel = model as FavoritesModel;
+            favoritesManagerHolder.removeToDB(fModel.mid);
+          }
+          favoritesManagerHolder.isGetListFromDBComplete().then((value) {
+            setState(() {
+              _favoritesBookIdMap[bookId] = false;
+            });
+          });
+        } else {
+          // not favorites => exist in DB, add to DB => do nothing
+        }
+      }
+    });
+  }
+  //int saveIdx = 0;
 
   Widget _getItemPane() {
     final int columnCount =
@@ -184,30 +264,28 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
           crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
+          BookModel bookModel = bookPublishedManagerHolder.modelList[index] as BookModel;
+          if (kDebugMode) print('${bookModel.mid} is Favorites=${_favoritesBookIdMap[bookModel.mid]}');
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
-                  key: GlobalObjectKey(bookPublishedManagerHolder.modelList[index].mid),
-                  bookModel: bookPublishedManagerHolder.modelList[index] as BookModel,
+                  key: GlobalObjectKey(bookModel.mid),
+                  bookModel: bookModel,
                   width: itemWidth,
                   height: itemHeight,
-                  addToFavorites: (bookId) {
-                    FavoritesModel favModel = FavoritesModel.withName(
-                      userId: AccountManager.currentLoginUser.userId,
-                      bookId: bookId,
-                      favoriteTime: DateTime.now(),
-                    );
-                    favoritesManagerHolder.createToDB(favModel);
-                  },
+                  isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
+                  addToFavorites: _addToFavorites,
                 )
               : LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     itemWidth = constraints.maxWidth;
                     itemHeight = constraints.maxHeight;
                     return CretaBookUIItem(
-                      key: GlobalObjectKey(bookPublishedManagerHolder.modelList[index].mid),
-                      bookModel: bookPublishedManagerHolder.modelList[index] as BookModel,
+                      key: GlobalObjectKey(bookModel.mid),
+                      bookModel: bookModel,
                       width: itemWidth,
                       height: itemHeight,
+                      isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
+                      addToFavorites: _addToFavorites,
                     );
                     // return SizedBox(
                     //   width: itemWidth,
@@ -232,12 +310,12 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     if (_onceDBGetComplete) {
       return _getItemPane();
     }
-    var retval = CretaModelSnippet.waitData(
-      manager: bookPublishedManagerHolder,
+    var retval = CretaModelSnippet.waitDatum(
+      managerList: [bookPublishedManagerHolder, favoritesManagerHolder],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _getItemPane,
     );
-    _onceDBGetComplete = true;
+    //_onceDBGetComplete = true;
     return retval;
   }
 }

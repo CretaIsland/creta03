@@ -136,5 +136,16 @@ class FavoritesManager extends CretaManager {
   //   return retval;
   // }
 
+  void getFavoritesFromBookIdList(List<String> bookIdList) {
+    Map<String, QueryValue> query = {};
+    query['isRemoved'] = QueryValue(value: false);
+    query['bookId'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
+    queryFromDB(
+      query,
+      //limit: ,
+      //orderBy: orderBy,
+    );
+  }
+
   String prefix() => CretaManager.modelPrefix(ExModelType.favorites);
 }
