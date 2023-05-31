@@ -66,7 +66,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     _receiveEvent = receiveEvent;
     _sendEvent = sendEvent;
 
-    // final OffsetEventController linkReceiveEvent = Get.find(tag: 'cross-scrollbar-to-page-main');
+    // final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkReceiveEvent = linkReceiveEvent;
 
     afterBuild();

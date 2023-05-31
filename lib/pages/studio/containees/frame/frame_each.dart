@@ -75,7 +75,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     super.initState();
     initChildren();
 
-    final OffsetEventController sendEvent = Get.find(tag: 'cross-scrollbar-to-page-main');
+    final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
     _sendEvent = sendEvent;
   }
 
@@ -229,27 +229,39 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameBody3() {
+    if (_contentsManager == null) {
+      return const SizedBox.shrink();
+    }
+
     return Stack(
       alignment: Alignment.center,
       children: [
         _applyAnimate(widget.model),
-        StudioVariables.isLinkMode == false
+        StudioVariables.isLinkMode == false && StudioVariables.isAutoPlay == true
             ? OnFrameMenu(
                 key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
                 playTimer: _playTimer,
                 model: widget.model,
               )
-            : _isLinkEnter == true
-                ? OnLinkCursor(
-                    key: GlobalObjectKey('OnLinkCursor${widget.model.mid}'),
-                    pageOffset: widget.frameManager.pageOffset,
-                    frameOffset: widget.frameOffset,
-                    frameManager: frameManager!,
-                    model: widget.model,
-                    applyScale: widget.applyScale,
-                  )
+            : _isLinkEnter == true && _contentsManager!.length() > 0
+                ? _onLinkCursor()
                 : const SizedBox.shrink(),
       ],
+    );
+  }
+
+  Widget _onLinkCursor() {
+    if (_contentsManager == null) {
+      return const SizedBox.shrink();
+    }
+    return OnLinkCursor(
+      key: GlobalObjectKey('OnLinkCursor${widget.model.mid}'),
+      pageOffset: widget.frameManager.pageOffset,
+      frameOffset: widget.frameOffset,
+      frameManager: frameManager!,
+      frameModel: widget.model,
+      contentsManager: _contentsManager!,
+      applyScale: widget.applyScale,
     );
   }
 
@@ -379,6 +391,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
           pageModel: widget.pageModel,
           frameManager: frameManager!,
           contentsManager: _contentsManager!,
+          applyScale: applyScale,
         ),
         // child: Image.asset(
         //   'assets/creta_default.png',

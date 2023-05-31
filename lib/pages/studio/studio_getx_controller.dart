@@ -82,7 +82,8 @@ class StudioGetXController extends GetxController {
     Get.put(ContentsEventController(), tag: 'text-property-to-textplayer');
     Get.put(ContentsEventController(), tag: 'textplayer-to-text-property');
 
-    Get.put(OffsetEventController(), tag: 'cross-scrollbar-to-page-main');
+    Get.put(OffsetEventController(), tag: 'frame-each-to-on-link');
+    Get.put(OffsetEventController(), tag: 'on-link-to-link-widget');
 
     // Initialize EventController2 instance with a tag
     //Get.put(PageEventController(), tag: 'page-property-to-main');

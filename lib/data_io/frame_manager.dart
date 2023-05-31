@@ -9,12 +9,10 @@ import '../model/book_model.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
-import '../model/link_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/studio_constant.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
-import 'link_manager.dart';
 
 //FrameManager? frameManagerHolder;
 
@@ -28,7 +26,6 @@ class FrameManager extends CretaManager {
     _pageOffset = offset;
   }
 
-  LinkManager linkManager = LinkManager();
   //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey> frameKeyMap = {};
   Map<String, ContentsManager> contentsManagerMap = {};
@@ -333,26 +330,5 @@ class FrameManager extends CretaManager {
       }
     });
     return retval;
-  }
-
-  Future<LinkModel?> createLink({
-    required String frameId,
-    required double posX,
-    required double posY,
-    String? name,
-    String? connectedMid,
-    String? connectedClass,
-    bool doNotify = true,
-  }) async {
-    //if (linkManager == null) return null;
-    await linkManager.createNext(
-      frameId: frameId,
-      posX: posX,
-      posY: posY,
-      name: name,
-      connectedClass: connectedClass,
-      connectedMid: connectedMid,
-    );
-    return null;
   }
 }

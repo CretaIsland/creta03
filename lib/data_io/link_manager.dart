@@ -18,13 +18,14 @@ class LinkManager extends CretaManager {
   @override
   AbsExModel newModel(String mid) => LinkModel(mid);
 
-  Future<int> getLink({required String frameId}) async {
+  Future<int> getLink({required String contentsId}) async {
     startTransaction();
     try {
       Map<String, QueryValue> query = {};
-      query['parentMid'] = QueryValue(value: frameId);
+      query['parentMid'] = QueryValue(value: contentsId);
       query['isRemoved'] = QueryValue(value: false);
       await queryFromDB(query);
+      reOrdering();
     } catch (error) {
       logger.info('something wrong in LinkManager >> $error');
       return 0;
@@ -34,7 +35,7 @@ class LinkManager extends CretaManager {
   }
 
   Future<LinkModel> createNext({
-    required String frameId,
+    required String contentsId,
     required double posX,
     required double posY,
     String? name,
@@ -44,16 +45,48 @@ class LinkManager extends CretaManager {
   }) async {
     logger.info('createNext()');
     LinkModel link = LinkModel('');
-    link.parentMid.set(frameId, save: false, noUndo: true);
+    link.parentMid.set(contentsId, save: false, noUndo: true);
     link.posX = posX;
     link.posY = posY;
     link.name = name ?? '';
     link.conenctedMid = connectedMid ?? '';
     link.connectedClass = connectedClass ?? '';
+    link.order.set(getMaxOrder() + 1, save: false, noUndo: true);
 
     await createToDB(link);
     insert(link, postion: getLength(), doNotify: doNotify);
     selectedMid = link.mid;
+
+    if (doNotify) notify();
+
+    return link;
+  }
+
+  Future<LinkModel> update({
+    required LinkModel link,
+    bool doNotify = true,
+  }) async {
+    logger.info('update()');
+    await setToDB(link);
+    updateModel(link);
+    selectedMid = link.mid;
+    if (doNotify) notify();
+
+    return link;
+  }
+
+  Future<LinkModel> delete({
+    required LinkModel link,
+    bool doNotify = true,
+  }) async {
+    logger.info('update()');
+    link.isRemoved.set(true, save: false);
+    await setToDB(link);
+    updateModel(link);
+    selectedMid = link.mid;
+
+    if (doNotify) notify();
+
     return link;
   }
 }

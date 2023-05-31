@@ -36,4 +36,5 @@ class StudioVariables {
   static bool isAutoPlay = true;
 
   static bool isPreview = false;
+  static bool isLinkSelectMode = false;
 }

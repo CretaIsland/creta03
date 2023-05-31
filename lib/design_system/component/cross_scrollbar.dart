@@ -61,7 +61,7 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
     //   verticalScroll.jumpTo(0);
     // });
 
-    // final OffsetEventController sendEvent = Get.find(tag: 'cross-scrollbar-to-page-main');
+    // final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
     // _sendEvent = sendEvent;
   }
 

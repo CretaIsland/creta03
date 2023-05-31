@@ -5,6 +5,7 @@
 import 'package:creta03/pages/studio/studio_main_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -40,6 +41,7 @@ import 'containees/page/page_main.dart';
 import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
+import 'studio_getx_controller.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
 
@@ -99,10 +101,15 @@ class _BookMainPageState extends State<BookMainPage> {
   double? horizontalScrollOffset;
 
   bool dropDownButtonOpened = false;
+
+  OffsetEventController? _linkSendEvent;
+
   @override
   void initState() {
     super.initState();
     logger.info("---_BookMainPageState-----------------------------------------");
+    final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
+    _linkSendEvent = linkSendEvent;
 
     BookPreviewMenu.previewMenuPressed = false;
 
@@ -625,6 +632,7 @@ class _BookMainPageState extends State<BookMainPage> {
                   onPressed: () {
                     setState(() {
                       StudioVariables.isLinkMode = true;
+                      _globalToggleAutoPlay(forceValue: false);
                     });
                   },
                   hasShadow: false,
@@ -1045,11 +1053,19 @@ class _BookMainPageState extends State<BookMainPage> {
     }
   }
 
-  void _globalToggleAutoPlay({bool save = true}) {
-    StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
+  void _globalToggleAutoPlay({bool save = true, bool? forceValue}) {
+    if (forceValue == null) {
+      StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
+    } else {
+      StudioVariables.isAutoPlay = forceValue;
+    }
     if (save) {
       LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
     }
+
+    // _sendEvent 가 필요
+    _linkSendEvent?.sendEvent(Offset(1, 1));
+
     if (BookMainPage.pageManagerHolder == null) {
       return;
     }

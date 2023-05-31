@@ -399,4 +399,5 @@ class CretaStudioLang {
 
   static const String showGrid = '그리드 보기';
   static const String showRuler = '눈금자 보기';
+  static const String linkIntro = '연결할 페이지나 프레임을 선택하세요.';
 }

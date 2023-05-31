@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_color.dart';
+import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
@@ -14,14 +16,16 @@ class OnLinkCursor extends StatefulWidget {
   final Offset pageOffset;
   final Offset frameOffset;
   final FrameManager frameManager;
-  final FrameModel model;
+  final FrameModel frameModel;
+  final ContentsManager contentsManager;
   final double applyScale;
   const OnLinkCursor({
     super.key,
     required this.pageOffset,
     required this.frameOffset,
     required this.frameManager,
-    required this.model,
+    required this.frameModel,
+    required this.contentsManager,
     required this.applyScale,
   });
 
@@ -31,13 +35,16 @@ class OnLinkCursor extends StatefulWidget {
 
 class _OnLinkCursorState extends State<OnLinkCursor> {
   OffsetEventController? _linkReceiveEvent;
+  OffsetEventController? _linkSendEvent;
 
   @override
   void initState() {
     super.initState();
 
-    final OffsetEventController linkReceiveEvent = Get.find(tag: 'cross-scrollbar-to-page-main');
+    final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
     _linkReceiveEvent = linkReceiveEvent;
+    final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
+    _linkSendEvent = linkSendEvent;
   }
 
   @override
@@ -84,12 +91,27 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           logger.info(
               'linkCursor clicked here ${details.globalPosition.dx}, ${details.globalPosition.dy}');
 
+          ContentsModel? contentsModel = widget.contentsManager.getCurrentModel();
+          if (contentsModel == null) {
+            return;
+          }
+
           double dataX = posX / widget.applyScale + LayoutConst.stikerOffset / 2;
           double dataY = posY / widget.applyScale + LayoutConst.stikerOffset / 2;
 
           StudioVariables.isLinkMode = false;
           BookMainPage.bookManagerHolder!.notify();
-          widget.frameManager.createLink(frameId: widget.model.mid, posX: dataX, posY: dataY);
+          widget.contentsManager
+              .createLink(
+            contentsId: contentsModel.mid,
+            posX: dataX,
+            posY: dataY,
+            doNotify: false,
+          )
+              .then((value) {
+            _linkSendEvent!.sendEvent(Offset(posX, posY));
+            return value;
+          });
         },
         child: const Icon(
           Icons.radio_button_checked_outlined,

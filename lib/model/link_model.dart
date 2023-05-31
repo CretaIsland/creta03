@@ -32,7 +32,7 @@ class LinkModel extends CretaModel {
     super.fromMap(map);
     name = map['name'] ?? '';
     posX = map['posX'] ?? 0;
-    posY = map['posX'] ?? 0;
+    posY = map['posY'] ?? 0;
     conenctedMid = map['conenctedMid'] ?? '';
     connectedClass = map['connectedClass'] ?? '';
   }
