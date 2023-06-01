@@ -37,7 +37,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.1.5
+  hycop: ^0.1.9
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: ^2.2.0
   # elegant_radio_button_group: ^0.0.1
@@ -89,7 +89,9 @@ dependencies:
   flutter_svg: ^2.0.5
   translator: ^0.1.7
   progress_bar_steppers: ^0.0.2+2
-  
+  flutter_sequence_animation: ^4.0.0
+  cloud_firestore: ^4.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

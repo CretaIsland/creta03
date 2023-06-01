@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:creta03/data_io/page_manager.dart';
 import 'package:hycop/hycop.dart';
 import '../common/creta_utils.dart';
 import '../design_system/menu/creta_popup_menu.dart';
@@ -9,6 +10,7 @@ import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/creta_model.dart';
 import 'creta_manager.dart';
+import 'page_published_manager.dart';
 
 class BookPublishedManager extends CretaManager {
   BookPublishedManager() : super('creta_book_published') {
@@ -138,4 +140,47 @@ class BookPublishedManager extends CretaManager {
   }
 
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
+
+  Future<BookModel?> findPublished(String sourceMid) async {
+    logger.info('findPublished');
+    Map<String, QueryValue> query = {};
+    query['sourceMid'] = QueryValue(value: sourceMid);
+    query['isRemoved'] = QueryValue(value: false);
+    List<AbsExModel> retval = await queryFromDB(query);
+    if (retval.isEmpty) {
+      return null;
+    }
+    return retval[0] as BookModel?;
+  }
+
+  Future<bool> publish({
+    required BookModel src,
+    required PageManager pageManager,
+    void Function(bool)? onComplete,
+  }) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    bool isNew = false;
+
+    BookModel? published = await findPublished(src.mid);
+    if (published == null) {
+      isNew = true;
+      published = BookModel('');
+      src.publishMid = published.mid;
+      src.save();
+    }
+    // creat_book_published data 를 만든다.
+    published.copyFrom(src, newMid: published.mid, pMid: published.parentMid.value);
+    published.sourceMid = src.mid;
+    PagePublishedManager publishedManager = PagePublishedManager(pageManager);
+    if (isNew) {
+      await createToDB(published);
+      logger.info('published created ${published.mid}, source=${published.sourceMid}');
+    } else {
+      await setToDB(published);
+      logger.info('published updated ${published.mid}, , source=${published.sourceMid}');
+    }
+    await publishedManager.makeCopyAll(published.mid);
+    onComplete?.call(isNew);
+    return true;
+  }
 }

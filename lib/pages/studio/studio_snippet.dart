@@ -106,6 +106,12 @@ class StudioSnippet {
           end: endAlignment(currentType),
           colors: [color1, color2, color2, color1]);
     }
+    if (currentType == GradationType.middle) {
+      return LinearGradient(
+          begin: beginAlignment(currentType),
+          end: endAlignment(currentType),
+          colors: [color2, color1, color1, color2]);
+    }
     return LinearGradient(
         begin: beginAlignment(currentType),
         end: endAlignment(currentType),
@@ -242,6 +248,30 @@ class StudioSnippet {
     ];
   }
 
+  static List<CretaMenuItem> getPermitionListItem(
+      {required PermissionType defaultValue, required void Function(PermissionType) onChanged}) {
+    return [
+      CretaMenuItem(
+          caption: CretaLang.basicBookPermissionFilter[1],
+          onPressed: () {
+            onChanged(PermissionType.owner);
+          },
+          selected: defaultValue == PermissionType.owner),
+      CretaMenuItem(
+          caption: CretaLang.basicBookPermissionFilter[2],
+          onPressed: () {
+            onChanged(PermissionType.writer);
+          },
+          selected: defaultValue == PermissionType.writer),
+      CretaMenuItem(
+          caption: CretaLang.basicBookPermissionFilter[3],
+          onPressed: () {
+            onChanged(PermissionType.reader);
+          },
+          selected: defaultValue == PermissionType.reader),
+    ];
+  }
+
   static List<CretaMenuItem> getFontListItem(
       {required String defaultValue, required void Function(String) onChanged}) {
     return CretaLang.fontStringList.map(
@@ -299,6 +329,7 @@ class StudioSnippet {
       height: height,
       width: width,
       text: title,
+      maxLine: 2,
       textStyle: CretaFont.titleLarge,
       align: TextAlign.center,
       onEditComplete: onEditComplete,

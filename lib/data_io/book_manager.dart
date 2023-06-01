@@ -9,6 +9,7 @@ import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/creta_model.dart';
 import 'creta_manager.dart';
+import 'page_manager.dart';
 
 class BookManager extends CretaManager {
   BookManager() : super('creta_book') {
@@ -119,6 +120,7 @@ class BookManager extends CretaManager {
         imageUrl: url);
     sampleBook.width.set(width, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.height.set(height, save: false, noUndo: true, dontChangeBookTime: true);
+    sampleBook.thumbnailUrl.set(url, save: false, noUndo: true, dontChangeBookTime: true);
     return sampleBook;
   }
 
@@ -138,4 +140,36 @@ class BookManager extends CretaManager {
   }
 
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
+
+  @override
+  Future<AbsExModel> makeCopy(AbsExModel src, String? newParentMid) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+
+    BookModel newOne = BookModel('');
+    BookModel srcModel = src as BookModel;
+    // creat_book_published data 를 만든다.
+    newOne.copyFrom(srcModel, newMid: newOne.mid, pMid: newParentMid ?? newOne.parentMid.value);
+    newOne.name.set('${srcModel.name.value}${CretaLang.copyOf}');
+    newOne.sourceMid = "";
+    newOne.publishMid = "";
+    await createToDB(newOne);
+    logger.info('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
+    return newOne;
+  }
+
+  Future<void> removeBook(PageManager pageManager) async {
+    logger.info('removeBook()');
+    await pageManager.removeAll();
+    await removeAll();
+  }
+
+  @override
+  Future<void> removeChild(String parentMid) async {
+    PageManager pageManager = PageManager();
+    Map<String, QueryValue> query = {};
+    query['parentMid'] = QueryValue(value: parentMid);
+    query['isRemoved'] = QueryValue(value: false);
+    await pageManager.queryFromDB(query);
+    await pageManager.removeAll();
+  }
 }

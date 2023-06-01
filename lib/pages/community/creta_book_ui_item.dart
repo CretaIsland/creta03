@@ -429,16 +429,22 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
   }
 }
 
+
+//////////////////////////////////////////////////////////////////////
 class CretaBookUIItem extends StatefulWidget {
   final BookModel bookModel;
   final double width;
   final double height;
+  final Function(String, bool)? addToFavorites;
+  final bool isFavorites;
 
   const CretaBookUIItem({
     required super.key,
     required this.bookModel,
     required this.width,
     required this.height,
+    required this.isFavorites,
+    this.addToFavorites,
   });
 
   @override
@@ -548,9 +554,11 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
             ),
             Expanded(child: Container()),
             BTN.opacity_gray_i_s(
-              icon: Icons.favorite_border,
+              icon: widget.isFavorites ? Icons.favorite : Icons.favorite_border,
               iconColor: CretaColor.text[100],
-              onPressed: () {},
+              onPressed: () {
+                widget.addToFavorites?.call(widget.bookModel.mid, widget.isFavorites);
+              },
             ),
             SizedBox(width: 4),
             BTN.opacity_gray_i_s(
@@ -595,6 +603,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   @override
   Widget build(BuildContext context) {
+    String linkUrl = '${AppRoutes.communityBook}?${widget.bookModel.mid}';
     return MouseRegion(
       onEnter: (value) {
         setState(() {
@@ -607,11 +616,11 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         });
       },
       child: Link(
-        uri: Uri.parse(AppRoutes.communityBook),
+        uri: Uri.parse(linkUrl),
         builder: (context, function) {
           return InkWell(
             onTap: () {
-              Routemaster.of(context).push(AppRoutes.communityBook);
+              Routemaster.of(context).push(linkUrl);
             },
             child: Container(
               width: widget.width,
@@ -651,9 +660,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                         // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
                         ..._getOverlayMenu(),
                         // 디버그 정보
-                        (kDebugMode)
-                            ? _getDebugInfo()
-                            : SizedBox.shrink(),
+                        (kDebugMode) ? _getDebugInfo() : SizedBox.shrink(),
                       ],
                     ),
                   ),
@@ -706,190 +713,6 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
           );
         },
       ),
-      // child: InkWell(
-      //   onTap: () {
-      //     Routemaster.of(context).push(AppRoutes.communityBook);
-      //   },
-      //   child: Container(
-      //     width: widget.width,
-      //     height: widget.height,
-      //     decoration: BoxDecoration(
-      //       // crop
-      //       borderRadius: BorderRadius.circular(20.0),
-      //     ),
-      //     clipBehavior: Clip.antiAlias, // crop method
-      //     child: Column(
-      //       children: [
-      //         // 이미지 부분
-      //         Container(
-      //           width: widget.width,
-      //           height: widget.height - _itemDescriptionHeight,
-      //           color: Colors.white,
-      //           child: Stack(
-      //             children: [
-      //               // 썸네일 이미지
-      //               ClipRect(
-      //                 child: CustomImage(
-      //                   key: ValueKey(widget.bookModel.thumbnailUrl.value),
-      //                   duration: 500,
-      //                   //hasMouseOverEffect: true,
-      //                   width: widget.width,
-      //                   height: widget.height - _itemDescriptionHeight,
-      //                   image: widget.bookModel.thumbnailUrl.value,
-      //                   hasAni: false,
-      //                 ),
-      //               ),
-      //               // 그라데이션
-      //               Container(
-      //                 width: widget.width,
-      //                 height: widget.height - _itemDescriptionHeight,
-      //                 decoration: (_mouseOver || _popmenuOpen) ? Snippet.shadowDeco() : null,
-      //               ),
-      //               // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
-      //               ..._getOverlayMenu(),
-      //             ],
-      //           ),
-      //         ),
-      //         // 텍스트 부분
-      //         Container(
-      //           width: widget.width,
-      //           height: _itemDescriptionHeight,
-      //           color: (_mouseOver || _popmenuOpen) ? CretaColor.text[100] : Colors.white,
-      //           padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
-      //           child: Column(
-      //             children: [
-      //               SizedBox(
-      //                 width: widget.width - 16 - 16,
-      //                 child: Text(
-      //                   widget.bookModel.name.value,
-      //                   overflow: TextOverflow.ellipsis,
-      //                   textAlign: TextAlign.left,
-      //                   style: CretaFont.titleMedium.copyWith(color: CretaColor.text[700]),
-      //                 ),
-      //               ),
-      //               SizedBox(height: 5),
-      //               Row(
-      //                 children: [
-      //                   // creator
-      //                   Expanded(
-      //                     child: Text(
-      //                       widget.bookModel.creator,
-      //                       overflow: TextOverflow.ellipsis,
-      //                       textAlign: TextAlign.left,
-      //                       style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
-      //                     ),
-      //                   ),
-      //                   // gap
-      //                   SizedBox(width: 8),
-      //                   // time
-      //                   Text(
-      //                     CretaUtils.dateToDurationString(widget.bookModel.updateTime),
-      //                     overflow: TextOverflow.ellipsis,
-      //                     textAlign: TextAlign.left,
-      //                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[300]),
-      //                   ),
-      //                 ],
-      //               ),
-      //             ],
-      //           ),
-      //           // child: Row(
-      //           //   children: [
-      //           //     Expanded(
-      //           //       //width: widget.width - 15 - 8 - 36 - 8,
-      //           //       child: Column(
-      //           //         mainAxisAlignment: MainAxisAlignment.start,
-      //           //         crossAxisAlignment: CrossAxisAlignment.start,
-      //           //         children: [
-      //           //           SizedBox(height: 8),
-      //           //           Text(
-      //           //             widget.bookModel.name.value,
-      //           //             overflow: TextOverflow.ellipsis,
-      //           //             textAlign: TextAlign.left,
-      //           //             style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
-      //           //           ),
-      //           //           SizedBox(height: 4),
-      //           //           Text(
-      //           //             widget.bookModel.creator,
-      //           //             overflow: TextOverflow.ellipsis,
-      //           //             textAlign: TextAlign.left,
-      //           //             style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
-      //           //           ),
-      //           //         ],
-      //           //       ),
-      //           //     ),
-      //           //     //Expanded(child: Container()),
-      //           //     SizedBox(width: 8),
-      //           //     Column(
-      //           //       mainAxisAlignment: MainAxisAlignment.start,
-      //           //       children: [
-      //           //         SizedBox(height: 9),
-      //           //         BTN.fill_gray_i_l(
-      //           //           icon: Icons.content_copy_rounded,
-      //           //           buttonColor: CretaButtonColor.transparent,
-      //           //           onPressed: () {},
-      //           //         ),
-      //           //       ],
-      //           //     ),
-      //           //     SizedBox(width: 8),
-      //           //   ],
-      //           // ),
-      //           // child: Stack(
-      //           //   children: [
-      //           //     Positioned(
-      //           //         left: widget.width - 37,
-      //           //         top: 17,
-      //           //         child: Container(
-      //           //           width: 20,
-      //           //           height: 20,
-      //           //           color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-      //           //           child: Icon(
-      //           //             Icons.favorite_outline,
-      //           //             size: 20.0,
-      //           //             color: Colors.grey[700],
-      //           //           ),
-      //           //         )),
-      //           //     Positioned(
-      //           //       left: 15,
-      //           //       top: 7,
-      //           //       child: Container(
-      //           //           width: widget.width - 45 - 15,
-      //           //           color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-      //           //           child: Text(
-      //           //             widget.cretaBookData.name,
-      //           //             overflow: TextOverflow.ellipsis,
-      //           //             textAlign: TextAlign.left,
-      //           //             style: TextStyle(
-      //           //               fontSize: 16,
-      //           //               color: Colors.grey[700],
-      //           //               fontFamily: 'Pretendard',
-      //           //             ),
-      //           //           )),
-      //           //     ),
-      //           //     Positioned(
-      //           //       left: 16,
-      //           //       top: 29,
-      //           //       child: Container(
-      //           //         width: widget.width - 45 - 15,
-      //           //         color: (mouseOver || popmenuOpen) ? Colors.grey[100] : Colors.white,
-      //           //         child: Text(
-      //           //           widget.cretaBookData.creator,
-      //           //           overflow: TextOverflow.ellipsis,
-      //           //           textAlign: TextAlign.left,
-      //           //           style: TextStyle(
-      //           //             fontSize: 13,
-      //           //             color: Colors.grey[500],
-      //           //             fontFamily: 'Pretendard',
-      //           //           ),
-      //           //         ),
-      //           //       ),
-      //           //     ),
-      //           //   ],
-      //           // ),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

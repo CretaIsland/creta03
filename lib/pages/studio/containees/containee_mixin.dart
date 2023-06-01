@@ -38,15 +38,6 @@ mixin ContaineeMixin {
     return ani;
   }
 
-  TextureType getTextureType(CretaStyleMixin bookModel, CretaStyleMixin mddel) {
-    if (mddel.bgColor1.value == Colors.transparent) {
-      if (mddel.textureType.value == TextureType.none) {
-        return bookModel.textureType.value;
-      }
-    }
-    return mddel.textureType.value;
-  }
-
   Widget effectWidget(CretaStyleMixin model) {
     switch (model.effect.value) {
       case EffectType.conffeti:

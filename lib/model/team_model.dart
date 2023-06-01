@@ -1,12 +1,9 @@
-
 import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/model/creta_model.dart';
 import 'package:hycop/hycop.dart';
 
-
 // ignore: must_be_immutable
 class TeamModel extends CretaModel {
-
   late String name;
   late String profileImg;
   late String channelBannerImg;
@@ -18,21 +15,19 @@ class TeamModel extends CretaModel {
   late List<String> removedMembers;
   late List<String> teamMembers;
 
-
   @override
   List<Object?> get props => [
-    ...super.props,
-    name,
-    profileImg,
-    channelBannerImg,
-    isPublicProfile,
-    owner,
-    managers,
-    generalMembers,
-    removedMembers,
-    teamMembers
-  ];
-
+        ...super.props,
+        name,
+        profileImg,
+        channelBannerImg,
+        isPublicProfile,
+        owner,
+        managers,
+        generalMembers,
+        removedMembers,
+        teamMembers
+      ];
 
   TeamModel(String pmid) : super(pmid: pmid, type: ExModelType.team, parent: '') {
     name = '';
@@ -46,16 +41,16 @@ class TeamModel extends CretaModel {
     teamMembers = [];
   }
 
-  TeamModel.withName({
-    required this.name,
-    required this.owner,
-    this.profileImg = '',
-    this.channelBannerImg = '',
-    this.isPublicProfile = true,
-    this.managers = const [],
-    this.generalMembers = const [],
-    this.removedMembers = const []
-  }) : super(pmid: '', type: ExModelType.team, parent: '') {
+  TeamModel.withName(
+      {required this.name,
+      required this.owner,
+      this.profileImg = '',
+      this.channelBannerImg = '',
+      this.isPublicProfile = true,
+      this.managers = const [],
+      this.generalMembers = const [],
+      this.removedMembers = const []})
+      : super(pmid: '', type: ExModelType.team, parent: '') {
     teamMembers = [owner, ...managers, ...generalMembers];
   }
 
@@ -70,24 +65,22 @@ class TeamModel extends CretaModel {
     managers = CretaUtils.jsonStringToList(map['managers'] ?? '[]');
     generalMembers = CretaUtils.jsonStringToList(map['generalMembers'] ?? '[]');
     removedMembers = CretaUtils.jsonStringToList(map['removedMembers'] ?? '[]');
-    teamMembers = List<String>.from(map['teamMembers'] as List);
+    teamMembers = List<String>.from(map['teamMembers'] ?? "[]" as List);
   }
 
   @override
   Map<String, dynamic> toMap() {
     return super.toMap()
       ..addEntries({
-        'name' : name,
-        'profileImg' : profileImg,
-        'channelBannerImg' : channelBannerImg,
-        'isPublicProfile' : isPublicProfile,
-        'owner' : owner,
-        'managers' : CretaUtils.listToString(managers),
-        'generalMembers' : CretaUtils.listToString(generalMembers),
-        'removedMembers' : CretaUtils.listToString(removedMembers),
-        'teamMembers' : teamMembers,
+        'name': name,
+        'profileImg': profileImg,
+        'channelBannerImg': channelBannerImg,
+        'isPublicProfile': isPublicProfile,
+        'owner': owner,
+        'managers': CretaUtils.listToString(managers),
+        'generalMembers': CretaUtils.listToString(generalMembers),
+        'removedMembers': CretaUtils.listToString(removedMembers),
+        'teamMembers': teamMembers,
       }.entries);
   }
-
-  
 }

@@ -12,6 +12,7 @@ import '../../../../../design_system/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
+import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
 
 class MiniMenu extends StatefulWidget {
@@ -27,7 +28,8 @@ class MiniMenu extends StatefulWidget {
   final void Function() onFrameFront;
   final void Function() onFrameBack;
   final void Function() onFrameCopy;
-  final void Function() onFrameRotate;
+  //final void Function() onFrameRotate;
+  final void Function() onFrameLink;
   final void Function() onFrameMain;
   final void Function(bool) onFrontBackHover;
   final void Function() onContentsFlip;
@@ -48,7 +50,8 @@ class MiniMenu extends StatefulWidget {
     required this.onFrameFront,
     required this.onFrameBack,
     required this.onFrameCopy,
-    required this.onFrameRotate,
+    //required this.onFrameRotate,
+    required this.onFrameLink,
     required this.onFrameMain,
     required this.onFrontBackHover,
     required this.onContentsFlip,
@@ -66,10 +69,13 @@ class MiniMenu extends StatefulWidget {
 class MiniMenuState extends State<MiniMenu> {
   //bool showFrame = false;
   final double radius = LayoutConst.miniMenuHeight / 2;
+  //OffsetEventController? _linkSendEvent;
 
   @override
   void initState() {
     super.initState();
+    //final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
+    //_linkSendEvent = linkSendEvent;
   }
 
   @override
@@ -212,18 +218,39 @@ class MiniMenuState extends State<MiniMenu> {
             logger.fine("MinuMenu onFrameCopy");
             widget.onFrameCopy.call();
           }),
+      // BTN.fill_blue_i_menu(
+      //     tooltip: CretaStudioLang.rotateFrameTooltip,
+      //     tooltipFg: CretaColor.text,
+      //     icon: Icons.screen_rotation_outlined,
+      //     decoType: CretaButtonDeco.opacity,
+      //     iconColor: CretaColor.primary,
+      //     buttonColor: CretaButtonColor.primary,
+      //     onPressed: () {
+      //       BookMainPage.containeeNotifier!.setFrameClick(true);
+      //       logger.info("MinuMenu onFrameRotate");
+      //       widget.onFrameRotate.call();
+      //     }),
       BTN.fill_blue_i_menu(
-          tooltip: CretaStudioLang.rotateFrameTooltip,
+          tooltip: CretaStudioLang.linkFrameTooltip,
           tooltipFg: CretaColor.text,
-          icon: Icons.screen_rotation_outlined,
+          icon: Icons.radio_button_checked_outlined,
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
           onPressed: () {
+            logger.info("MinuMenu onFrameLink");
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onFrameRotate");
-            widget.onFrameRotate.call();
+            if (StudioVariables.isLinkMode == false) {
+              StudioVariables.isLinkMode = true;
+              if (StudioVariables.isAutoPlay = true) {
+                StudioVariables.globalToggleAutoPlay(null, null, forceValue: false);
+              } else {
+                //_linkSendEvent?.sendEvent(const Offset(1, 1));
+              }
+              widget.onFrameLink.call();
+            }
           }),
+
       // BTN.fill_blue_i_menu(
       //     tooltipFg: CretaColor.text,
       //     tooltip: CretaStudioLang.deleteFrameTooltip,

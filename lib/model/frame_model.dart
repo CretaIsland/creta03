@@ -157,7 +157,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderType = UndoAble<int>(0, mid);
     borderCap = UndoAble<BorderCapType>(BorderCapType.none, mid);
     shadowColor = UndoAble<Color>(Colors.transparent, mid);
-    shadowOpacity = UndoAble<double>(0, mid);
+    shadowOpacity = UndoAble<double>(0.5, mid);
     shadowSpread = UndoAble<double>(0, mid);
     shadowBlur = UndoAble<double>(0, mid);
     shadowDirection = UndoAble<double>(0, mid);

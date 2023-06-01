@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'package:hycop/common/util/logger.dart';
 
 import '../../model/creta_model.dart';
 
@@ -14,7 +14,35 @@ class StudioEventController extends GetxController {
   }
 }
 
+class OffsetEventController extends GetxController {
+  final eventStream = StreamController<Offset>.broadcast();
+
+  // Method to send an event
+  void sendEvent(Offset offset) {
+    eventStream.add(offset);
+  }
+}
+
+class AutoPlayChangeEventController extends GetxController {
+  final eventStream = StreamController<bool>.broadcast();
+
+  // Method to send an event
+  void sendEvent(bool val) {
+    eventStream.add(val);
+  }
+}
+
 class FrameEventController extends StudioEventController {
+  // Define an event stream
+  // final eventStream = StreamController<FrameModel>.broadcast();
+
+  // // Method to send an event
+  // void sendEvent(FrameModel model) {
+  //   eventStream.add(model);
+  // }
+}
+
+class PageEventController extends StudioEventController {
   // Define an event stream
   // final eventStream = StreamController<FrameModel>.broadcast();
 
@@ -50,7 +78,10 @@ class StudioGetXController extends GetxController {
   @override
   void onInit() {
     // Initialize EventController1 instance with a tag
-    logger.fine('==========================StudioGetXController initialized================');
+    //logger.fine('==========================StudioGetXController initialized================');
+    Get.put(PageEventController(), tag: 'page-property-to-main');
+    Get.put(PageEventController(), tag: 'page-main-to-property');
+
     Get.put(FrameEventController(), tag: 'frame-property-to-main');
     Get.put(FrameEventController(), tag: 'frame-main-to-property');
 
@@ -60,6 +91,11 @@ class StudioGetXController extends GetxController {
     Get.put(ContentsEventController(), tag: 'text-property-to-textplayer');
     Get.put(ContentsEventController(), tag: 'textplayer-to-text-property');
 
+    Get.put(OffsetEventController(), tag: 'frame-each-to-on-link');
+    Get.put(OffsetEventController(), tag: 'on-link-to-link-widget');
+
+    Get.put(AutoPlayChangeEventController(), tag: 'auto-play-to-frame');
+
     // Initialize EventController2 instance with a tag
     //Get.put(PageEventController(), tag: 'page-property-to-main');
     super.onInit();
@@ -67,7 +103,7 @@ class StudioGetXController extends GetxController {
 
   @override
   void onClose() {
-    logger.fine('==========================StudioGetXController onClose================');
+    //logger.fine('==========================StudioGetXController onClose================');
     super.onClose();
     //Dispose of eventController here
     // frameEvent?.onClose();

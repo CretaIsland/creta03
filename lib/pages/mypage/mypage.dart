@@ -1,26 +1,30 @@
 import 'package:creta03/data_io/team_manager.dart';
+import 'package:creta03/data_io/user_property_manager.dart';
+import 'package:flutter/material.dart';
+
+import 'dart:math';
+// ignore: depend_on_referenced_packages
+import 'package:provider/provider.dart';
+import 'package:routemaster/routemaster.dart';
+import 'package:url_launcher/link.dart';
+
+import 'package:creta03/design_system/buttons/creta_tapbar_button.dart';
 import 'package:creta03/design_system/component/creta_basic_layout_mixin.dart';
+import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/design_system/menu/creta_popup_menu.dart';
+import 'package:creta03/lang/creta_mypage_lang.dart';
+import 'package:creta03/model/creta_model.dart';
 import 'package:creta03/pages/login_page.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_account_manage.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_dashboard.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_info.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_settings.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_team_manage.dart';
-import 'package:flutter/material.dart';
-import 'package:routemaster/routemaster.dart';
-import 'package:url_launcher/link.dart';
-// ignore: depend_on_referenced_packages
-import 'package:provider/provider.dart';
+import 'package:creta03/pages/studio/studio_constant.dart';
+import 'package:creta03/routes.dart';
 
-import '../../data_io/user_property_manager.dart';
-import '../../design_system/buttons/creta_tapbar_button.dart';
-import '../../design_system/component/snippet.dart';
-import '../../design_system/menu/creta_popup_menu.dart';
-import '../../lang/creta_mypage_lang.dart';
-import '../../model/creta_model.dart';
-import '../../routes.dart';
-import '../studio/studio_constant.dart';
+
 
 class MyPage extends StatefulWidget {
 
@@ -33,19 +37,21 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
 
-  
-  late List<CretaMenuItem> _leftMeunItem;
+  late List<CretaMenuItem> _leftMenuItem;
+  Color replaceColor = Colors.primaries[Random().nextInt(Colors.primaries.length)];
   bool _alreadyDataGet = false;
-
+  
+  
   @override
   void initState() {
     super.initState();
-    _leftMeunItem = [
+
+    _leftMenuItem = [
       CretaMenuItem(
         caption: CretaMyPageLang.dashboard, 
         iconData: Icons.account_circle_outlined,
-        linkUrl: AppRoutes.myPageDashBoard,
         isIconText: true,
+        linkUrl: AppRoutes.myPageDashBoard,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.myPageDashBoard);
         }
@@ -53,8 +59,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       CretaMenuItem(
         caption: CretaMyPageLang.info, 
         iconData: Icons.lock_person_outlined,
-        linkUrl: AppRoutes.myPageInfo,
         isIconText: true,
+        linkUrl: AppRoutes.myPageInfo,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.myPageInfo);
         }
@@ -62,8 +68,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       CretaMenuItem(
         caption: CretaMyPageLang.accountManage, 
         iconData: Icons.manage_accounts_outlined,
-        linkUrl: AppRoutes.myPageAccountManage,
         isIconText: true,
+        linkUrl: AppRoutes.myPageAccountManage,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.myPageAccountManage);
         }
@@ -71,8 +77,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       CretaMenuItem(
         caption: CretaMyPageLang.settings, 
         iconData: Icons.notifications_outlined,
-        linkUrl: AppRoutes.myPageSettings,
         isIconText: true,
+        linkUrl: AppRoutes.myPageSettings,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.myPageSettings);
         }
@@ -80,43 +86,34 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       CretaMenuItem(
         caption: CretaMyPageLang.teamManage, 
         iconData: Icons.group_outlined,
-        linkUrl: AppRoutes.myPageTeamManage,
         isIconText: true,
+        linkUrl: AppRoutes.myPageTeamManage,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.myPageTeamManage);
         }
-      ),
+      )
     ];
 
     switch(widget.selectedPage) {
       case AppRoutes.myPageInfo:
-        _leftMeunItem[1].selected = true;
-        _leftMeunItem[1].onPressed = () {};
-        _leftMeunItem[1].linkUrl = null;
+        _leftMenuItem[1].selected = true;
         break;
       case AppRoutes.myPageAccountManage:
-        _leftMeunItem[2].selected = true;
-        _leftMeunItem[2].onPressed = () {};
-        _leftMeunItem[2].linkUrl = null;
+        _leftMenuItem[2].selected = true;
         break;
       case AppRoutes.myPageSettings:
-        _leftMeunItem[3].selected = true;
-        _leftMeunItem[3].onPressed = () {};
-        _leftMeunItem[3].linkUrl = null;
+        _leftMenuItem[3].selected = true;
         break;
       case AppRoutes.myPageTeamManage:
-        _leftMeunItem[4].selected = true;
-        _leftMeunItem[4].onPressed = () {};
-        _leftMeunItem[4].linkUrl = null;
+        _leftMenuItem[4].selected = true;
         break;
       default:
-        _leftMeunItem[0].selected = true;
-        _leftMeunItem[0].onPressed = () {};
-        _leftMeunItem[0].linkUrl = null;
+        _leftMenuItem[0].selected = true;
         break;
     }
 
   }
+
 
   Widget _getCretaTapBarButton(CretaMenuItem item) {
     return CretaTapBarButton(
@@ -127,7 +124,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       selected: item.selected, 
       onPressed: () {
         setState(() {
-          for(var element in _leftMeunItem) {
+          for(var element in _leftMenuItem) {
             element.selected = false;
           }
           item.selected = true;
@@ -150,7 +147,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
           return Wrap(
             direction: Axis.vertical,
             spacing: 8, // <-- Spacing between children
-            children: _leftMeunItem.map((item) => (item.linkUrl == null) ? _getCretaTapBarButton(item) : Link(
+            children: _leftMenuItem.map((item) => (item.linkUrl == null) ? _getCretaTapBarButton(item) : Link(
               uri: Uri.parse(item.linkUrl!),
               builder: (context, function) {
                 return InkWell(
@@ -168,15 +165,15 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   Widget rightArea() {
     switch(widget.selectedPage) {
       case AppRoutes.myPageInfo:
-        return MyPageInfo(width: rightPaneRect.width, height: rightPaneRect.height);
+        return MyPageInfo(width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
       case AppRoutes.myPageAccountManage:
         return MyPageAccountManage(width: rightPaneRect.width, height: rightPaneRect.height);
       case AppRoutes.myPageSettings:
         return MyPageSettings(width: rightPaneRect.width, height: rightPaneRect.height);
       case AppRoutes.myPageTeamManage:
-        return MyPageTeamManage(width: rightPaneRect.width, height: rightPaneRect.height);
+        return MyPageTeamManage(width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
       default:
-        return MyPageDashBoard(width: rightPaneRect.width, height: rightPaneRect.height);
+        return MyPageDashBoard(width: rightPaneRect.width, height: rightPaneRect.height, replaceColor: replaceColor);
     }
   }
 
@@ -204,6 +201,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
 
     return retval;
   }
+
 
   @override
   Widget build(BuildContext context) {

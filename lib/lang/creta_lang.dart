@@ -25,8 +25,15 @@ class CretaLang {
     "권한별(전체)",
     "소유자",
     "편집자",
-    "뷰어",
+    "뷰  어",
   ];
+
+  static const String makeCopy = '사본 만들기';
+  static const String newBook = '새 크레타북';
+  static const String open = '목록으로 돌아가기';
+  static const String print = '인쇄';
+  static const String details = '상세정보';
+  static const String delete = '휴지통으로 보내기';
 
   static const String edit = '편집하기';
   static const String play = '재생하기';
@@ -48,6 +55,7 @@ class CretaLang {
   static String playDuration = '플레이 간격';
   static String forever = '영구히';
   static String onlyOnce = '한번만';
+  static String copyOf = '의 사본';
 
   static List<String> contentsTypeString = [
     "없음",
@@ -69,7 +77,9 @@ class CretaLang {
     "끝",
   ];
 
+  static String deleteConfirm = '정말로 삭제하시겠습니까 ?';
   static String contentsDeleted = ' 콘텐츠가 삭제되었습니다';
+  static String bookDeleted = ' 삭제되었습니다';
   static String contentsNotDeleted = ' 콘텐츠가 삭제되지 않았습니다. 잠시 후에 다시 시도하십시오';
 
   static String count = "개";
@@ -94,9 +104,19 @@ class CretaLang {
     fontMacondo,
   ];
 
+  static String close = "종료";
   static String next = "다음";
   static String prev = "이전";
   static String cretaBookName = "크레타북 이름";
   static String inPublic = "공개하기";
   static String invite = "초대하기";
+  static String entire = "전체";
+  static String team = "팀";
+  static String creator = "생성자";
+
+  static String myChannel = "내 채널";
+  static String gotoCommunity = "커뮤니티로 바로가기";
+
+  static const String confirm = '확인';
+  static const String cancel = '취소';
 }

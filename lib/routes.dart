@@ -16,7 +16,9 @@ import 'pages/studio/book_main_page.dart';
 import 'package:hycop/hycop.dart';
 //import 'pages/studio/sample_data.dart';
 import 'pages/community/community_page.dart';
-//import 'pages/community/community_book_page.dart';
+import 'pages/community/sub_pages/community_right_book_pane.dart';
+import 'pages/community/sub_pages/community_right_channel_pane.dart';
+import 'pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 
 abstract class AppRoutes {
   static Future<bool> launchTab(String url, {bool isHttps = false}) async {
@@ -49,7 +51,7 @@ abstract class AppRoutes {
   static const String textFieldDemoPage = '/textFieldDemoPage';
   static const String studioBookMainPage = '/studio/bookMainPage';
   static const String studioBookPreviewPage = '/studio/studioBookMainPreviewPage';
-  static const String studioBookMyPage = '/studio/bookMyPage';
+  static const String studioBookGridPage = '/studio/bookGridPage';
   static const String studioBookSharedPage = '/studio/bookMySharedPage';
   static const String studioBookTeamPage = '/studio/bookMyTeamPage';
   static const String login = '/login';
@@ -105,7 +107,7 @@ final routesLoggedOut = RouteMap(
       return TransitionPage(
           child: BookMainPage(key: ValueKey(BookMainPage.selectedMid), isPreviewX: true));
     },
-    AppRoutes.studioBookMyPage: (_) => TransitionPage(
+    AppRoutes.studioBookGridPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
         ),
     AppRoutes.studioBookSharedPage: (_) => TransitionPage(
@@ -116,49 +118,67 @@ final routesLoggedOut = RouteMap(
         ),
     AppRoutes.communityHome: (_) => TransitionPage(
           child: CommunityPage(
-            key: GlobalKey(),
+            key: GlobalObjectKey('AppRoutes.communityHome'),
             subPageUrl: AppRoutes.communityHome,
           ),
         ),
-    AppRoutes.channel: (_) => TransitionPage(
-          child: CommunityPage(
-            key: GlobalKey(),
-            subPageUrl: AppRoutes.channel,
-          ),
+    AppRoutes.channel: (routeData) {
+      String url = routeData.fullPath;
+      int pos = url.indexOf('channel=');
+      String channelMid = (pos > 0) ? url.substring(pos) : '';
+      CommunityRightChannelPane.channelId = channelMid;
+      return TransitionPage(
+        child: CommunityPage(
+          key: GlobalObjectKey(channelMid.isNotEmpty ? channelMid : 'NoChannelMid'),
+          subPageUrl: AppRoutes.channel,
         ),
+      );
+    },
     AppRoutes.subscriptionList: (_) => TransitionPage(
           child: CommunityPage(
-            key: GlobalKey(),
+            key: GlobalObjectKey('AppRoutes.subscriptionList'),
             subPageUrl: AppRoutes.subscriptionList,
           ),
         ),
     AppRoutes.playlist: (_) => TransitionPage(
           child: CommunityPage(
-            key: GlobalKey(),
+            key: GlobalObjectKey('AppRoutes.playlist'),
             subPageUrl: AppRoutes.playlist,
           ),
         ),
-    AppRoutes.playlistDetail: (_) => TransitionPage(
-          child: CommunityPage(
-            key: GlobalKey(),
-            subPageUrl: AppRoutes.playlistDetail,
-          ),
+    AppRoutes.playlistDetail: (routeData) {
+      String url = routeData.fullPath;
+      int pos = url.indexOf('playlist=');
+      String playlistMid = (pos > 0) ? url.substring(pos) : '';
+      CommunityRightPlaylistDetailPane.playlistId = playlistMid;
+      return TransitionPage(
+        child: CommunityPage(
+          key: GlobalObjectKey(playlistMid.isNotEmpty ? playlistMid : 'NoPlaylistMid'),
+          subPageUrl: AppRoutes.playlistDetail,
         ),
-    AppRoutes.communityBook: (_) => TransitionPage(
-          child: CommunityPage(
-            key: GlobalKey(),
-            subPageUrl: AppRoutes.communityBook,
-          ),
+      );
+    },
+    AppRoutes.communityBook: (routeData) {
+      String url = routeData.fullPath;
+      int pos = url.indexOf('book=');
+      String bookMid = (pos > 0) ? url.substring(pos) : '';
+      CommunityRightBookPane.bookId = bookMid;
+      return TransitionPage(
+        child: CommunityPage(
+          key: GlobalObjectKey(bookMid.isNotEmpty ? bookMid : 'NoBookMid'),
+          subPageUrl: AppRoutes.communityBook,
         ),
+      );
+    },
     AppRoutes.watchHistory: (_) => TransitionPage(
           child: CommunityPage(
-            key: GlobalKey(),
+            key: GlobalObjectKey('AppRoutes.watchHistory'),
             subPageUrl: AppRoutes.watchHistory,
           ),
         ),
     AppRoutes.favorites: (_) => TransitionPage(
           child: CommunityPage(
-            key: GlobalKey(),
+            key: GlobalObjectKey('AppRoutes.favorites'),
             subPageUrl: AppRoutes.favorites,
           ),
         ),

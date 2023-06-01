@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'package:creta03/pages/studio/containees/contents/link_widget.dart';
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -9,6 +11,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../data_io/link_manager.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
@@ -21,6 +24,7 @@ class ContentsMain extends StatefulWidget {
   final PageModel pageModel;
   final FrameManager frameManager;
   final ContentsManager contentsManager;
+  final double applyScale;
 
   const ContentsMain({
     super.key,
@@ -28,6 +32,7 @@ class ContentsMain extends StatefulWidget {
     required this.pageModel,
     required this.frameManager,
     required this.contentsManager,
+    required this.applyScale,
   });
 
   @override
@@ -44,9 +49,8 @@ class ContentsMainState extends State<ContentsMain> {
   @override
   void initState() {
     logger.info('ContentsMain initState');
-    //saveManagerHolder!.addBookChildren('contents=');
-    //_onceDBGetComplete = true;
-    //initChildren();
+
+    _onceDBGetComplete = true;
     super.initState();
 
     final ContentsEventController receiveEvent = Get.find(tag: 'contents-property-to-main');
@@ -54,23 +58,6 @@ class ContentsMainState extends State<ContentsMain> {
     _receiveEvent = receiveEvent;
     //_sendEvent = sendEvent;
   }
-
-  // Future<void> initChildren() async {
-  //   saveManagerHolder!.addBookChildren('contents=');
-
-  //   _playerHandler = CretaPlayTimer();
-
-  //   _contentsManager = widget.frameManager.newContentsManager(widget.frameModel);
-  //   _contentsManager!.clearAll();
-  //   await _contentsManager!.getContents();
-  //   _contentsManager!.addRealTimeListen();
-  //   _onceDBGetComplete = true;
-  //   _contentsManager!.reversOrdering();
-
-  //   _contentsManager!.setPlayerHandler(_playerHandler!);
-
-  //   _playerHandler!.start(_contentsManager!);
-  // }
 
   @override
   void dispose() {
@@ -121,13 +108,20 @@ class ContentsMainState extends State<ContentsMain> {
                 logger.info('URI is null ----');
                 if (model != null && isURINotNull(model)) {
                   logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
-                  if (model.opacity.value > 0) {
-                    return Opacity(
-                      opacity: model.opacity.value,
-                      child: playTimer.createWidget(model),
+                  LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
+                  if (linkManager != null && linkManager.getAvailLength() > 0) {
+                    return Stack(
+                      children: [
+                        _mainBuild(model, playTimer),
+                        LinkWidget(
+                            key: GlobalObjectKey('LinkWidget${model.mid}'),
+                            applyScale: widget.applyScale,
+                            contentsManager: contentsManager,
+                            contentsModel: model)
+                      ],
                     );
                   }
-                  return playTimer.createWidget(model);
+                  return _mainBuild(model, playTimer);
                 }
 
                 logger.info('current model is null');
@@ -150,5 +144,15 @@ class ContentsMainState extends State<ContentsMain> {
             });
       });
     });
+  }
+
+  Widget _mainBuild(ContentsModel model, CretaPlayTimer playTimer) {
+    if (model.opacity.value > 0) {
+      return Opacity(
+        opacity: model.opacity.value,
+        child: playTimer.createWidget(model),
+      );
+    }
+    return playTimer.createWidget(model);
   }
 }

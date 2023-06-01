@@ -2,11 +2,9 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../lang/creta_studio_lang.dart';
 import '../../../model/app_enums.dart';
 import '../../../pages/studio/studio_snippet.dart';
 import '../../creta_color.dart';
-import '../../creta_font.dart';
 
 class GradationIndicator extends StatefulWidget {
   final GradationType gradationType;
@@ -46,7 +44,11 @@ class _GradationIndicatorState extends State<GradationIndicator> {
           decoration: BoxDecoration(
             color: Colors.transparent,
             border: Border.all(
-              color: widget.isSelected ? CretaColor.primary : Colors.white,
+              color: widget.isSelected
+                  ? CretaColor.primary
+                  : widget.color2 == Colors.white && widget.color1 == Colors.white
+                      ? CretaColor.text[200]!
+                      : Colors.white,
               width: 2,
             ),
             borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
@@ -67,12 +69,12 @@ class _GradationIndicatorState extends State<GradationIndicator> {
                       borderRadius: BorderRadius.all(Radius.circular(widget.radius)),
                       color: widget.gradationType == GradationType.none ? widget.color1 : null,
                     ),
-              child: widget.gradationType == GradationType.none
-                  ? Center(
-                      child: Text(CretaStudioLang.nothing,
-                          textAlign: TextAlign.center, style: CretaFont.titleSmall),
-                    )
-                  : null,
+              // child: widget.gradationType == GradationType.none
+              //     ? Center(
+              //         child: Text(CretaStudioLang.nothing,
+              //             textAlign: TextAlign.center, style: CretaFont.titleSmall),
+              //       )
+              //     : null,
             ),
           ),
         ));

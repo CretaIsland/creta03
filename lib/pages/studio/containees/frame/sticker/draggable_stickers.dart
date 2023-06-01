@@ -1,7 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +42,8 @@ class DraggableStickers extends StatefulWidget {
   final List<Sticker> stickerList;
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onFrameDelete;
-  final void Function(String, double) onFrameRotate;
+  //final void Function(String, double) onFrameRotate;
+  final void Function(String) onFrameLink;
   final void Function(String, String) onFrameBack;
   final void Function(String, String) onFrameFront;
   final void Function(String) onFrameCopy;
@@ -65,7 +64,8 @@ class DraggableStickers extends StatefulWidget {
     required this.stickerList,
     required this.onUpdate,
     required this.onFrameDelete,
-    required this.onFrameRotate,
+    //required this.onFrameRotate,
+    required this.onFrameLink,
     required this.onFrameBack,
     required this.onFrameFront,
     required this.onFrameCopy,
@@ -230,7 +230,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //     child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
           //   ),
           // ),
-          StudioVariables.handToolMode == false
+          StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
               ? InkWell(
                   splashColor: Colors.transparent,
                   onTap: () {
@@ -366,17 +366,23 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 widget.onFrameCopy.call(selectedSticker.id);
                 //setState(() {});
               },
-              onFrameRotate: () {
-                double reverse = 180 / pi;
-                double before = (selectedSticker.angle * reverse).roundToDouble();
-                logger.info('onFrameRotate  before $before');
-                int turns = (before / 15).round() + 1;
-                double after = ((turns * 15.0) % 360).roundToDouble();
-                selectedSticker.angle = after / reverse;
-                logger.info('onFrameRotate  after $after');
-                widget.onFrameRotate.call(selectedSticker.id, after);
-                setState(() {});
+              // onFrameRotate: () {
+              //   double reverse = 180 / pi;
+              //   double before = (selectedSticker.angle * reverse).roundToDouble();
+              //   logger.info('onFrameRotate  before $before');
+              //   int turns = (before / 15).round() + 1;
+              //   double after = ((turns * 15.0) % 360).roundToDouble();
+              //   selectedSticker.angle = after / reverse;
+              //   logger.info('onFrameRotate  after $after');
+              //   widget.onFrameRotate.call(selectedSticker.id, after);
+              //   setState(() {});
+              // },
+              onFrameLink: () {
+                logger.fine('onFrameLink');
+                widget.onFrameLink.call(selectedSticker.id);
+                //setState(() {});
               },
+
               onContentsFlip: () {
                 logger.fine('onContentsFlip');
               },

@@ -246,7 +246,7 @@ mixin PropertyMixin {
     required Color color1,
     required Color color2,
     required String title,
-    required double opacity,
+    double? opacity,
     required GradationType gradationType,
     required Function cardOpenPressed,
     required void Function(double) onOpacityDragComplete,
@@ -266,7 +266,7 @@ mixin PropertyMixin {
       hasRemoveButton: color1 != Colors.transparent,
       trailWidget: colorIndicator(
         color1,
-        opacity,
+        opacity ?? 1,
         onColorChanged: onColor1Changed,
         onClicked: onColorIndicatorClicked,
       ),
@@ -288,7 +288,7 @@ mixin PropertyMixin {
   Widget _colorBody({
     required Color color1,
     required Color color2,
-    required double opacity,
+    double? opacity,
     required GradationType gradationType,
     required void Function(double) onOpactityChanged,
     required void Function(double) onOpactityChangedComplete,
@@ -304,22 +304,23 @@ mixin PropertyMixin {
           name: CretaStudioLang.color,
           widget: colorIndicator(
             color1,
-            opacity,
+            opacity ?? 1,
             onColorChanged: onColor1Changed,
             onClicked: () {},
           ),
         ),
-        CretaPropertySlider(
-          // 투명도
-          name: CretaStudioLang.opacity,
-          min: 0,
-          max: 100,
-          value: opacity,
-          valueType: SliderValueType.reverse,
-          onChannged: onOpactityChanged,
-          onChanngeComplete: onOpactityChangedComplete,
-          postfix: '%',
-        ),
+        if (opacity != null)
+          CretaPropertySlider(
+            // 투명도
+            name: CretaStudioLang.opacity,
+            min: 0,
+            max: 100,
+            value: opacity,
+            valueType: SliderValueType.reverse,
+            onChannged: onOpactityChanged,
+            onChanngeComplete: onOpactityChangedComplete,
+            postfix: '%',
+          ),
       ],
     );
   }
@@ -346,7 +347,7 @@ mixin PropertyMixin {
           ? const SizedBox.shrink()
           : colorIndicatorTotal(bgColor1, bgColor2, opacity, gradationType,
               onColorChanged: onColor2Changed, onColorIndicatorClicked: onColorIndicatorClicked),
-      hasRemoveButton: gradationType != GradationType.none,
+      hasRemoveButton: gradationType != GradationType.none || bgColor2 != Colors.transparent,
       onDelete: onDelete,
       bodyWidget: gradationListView(
         bgColor1,
@@ -368,16 +369,16 @@ mixin PropertyMixin {
     void Function(Color) onColor2Changed,
   ) {
     List<Widget> gradientList = [];
-    gradientList.add(GradationIndicator(
-      color1: color1,
-      color2: color2,
-      gradationType: GradationType.none,
-      isSelected: gradationType == GradationType.none,
-      onTapPressed: onTapPressed,
-      width: 44,
-      height: 44,
-      radius: 5,
-    ));
+    // gradientList.add(GradationIndicator(
+    //   color1: color1,
+    //   color2: color2,
+    //   gradationType: GradationType.none,
+    //   isSelected: gradationType == GradationType.none,
+    //   onTapPressed: onTapPressed,
+    //   width: 44,
+    //   height: 44,
+    //   radius: 5,
+    // ));
     for (int i = 1; i < GradationType.end.index; i++) {
       //logger.finest('gradient: ${GradationType.values[i].toString()}');
       GradationType gType = GradationType.values[i];
@@ -421,10 +422,13 @@ mixin PropertyMixin {
   Widget colorIndicatorTotal(
       Color color1, Color color2, double opacity, GradationType gradationType,
       {required void Function(Color) onColorChanged, required Function() onColorIndicatorClicked}) {
+    Gradient? gradient = StudioSnippet.gradient(gradationType, color1, color2);
+
     return MyColorIndicator(
       opacity: opacity,
-      gradient: StudioSnippet.gradient(gradationType, color1, color2),
-      color: color1,
+      gradient: gradient,
+      //color: (gradient == null) ? color2 : color1,
+      color: color2,
       onColorChanged: onColorChanged,
       onClicked: onColorIndicatorClicked,
     );

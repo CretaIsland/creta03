@@ -28,18 +28,19 @@ import 'sticker/mini_menu.dart';
 import 'sticker/stickerview.dart';
 
 class FrameMain extends StatefulWidget {
+  final GlobalKey frameMainKey;
   final BookModel bookModel;
   final PageModel pageModel;
   final double pageWidth;
   final double pageHeight;
 
   const FrameMain({
-    super.key,
+    required this.frameMainKey,
     required this.bookModel,
     required this.pageModel,
     required this.pageWidth,
     required this.pageHeight,
-  });
+  }) : super(key: frameMainKey);
 
   @override
   State<FrameMain> createState() => _FrameMainState();
@@ -51,16 +52,36 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   // ignore: unused_field
   FrameEventController? _receiveEvent;
   FrameEventController? _sendEvent;
+
+  //final Offset _pageOffset = Offset.zero;
+
   @override
   void initState() {
     super.initState();
 
-    logger.finest('==========================FrameMain initialized================');
+    //logger.finest('==========================FrameMain initialized================');
 
     final FrameEventController receiveEvent = Get.find(tag: 'frame-property-to-main');
     final FrameEventController sendEvent = Get.find(tag: 'frame-main-to-property');
     _receiveEvent = receiveEvent;
     _sendEvent = sendEvent;
+
+    // final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
+    // _linkReceiveEvent = linkReceiveEvent;
+
+    afterBuild();
+  }
+
+  Future<void> afterBuild() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final RenderBox? box = widget.frameMainKey.currentContext?.findRenderObject() as RenderBox?;
+      if (box != null) {
+        logger.info('box.size=${box.size}');
+        Offset pageOffset = box.localToGlobal(Offset.zero);
+        frameManager?.setPageOffset(pageOffset);
+        logger.info('box.position=$pageOffset');
+      }
+    });
   }
 
   @override
@@ -88,7 +109,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
   Widget showFrame() {
     //FrameModel? model = frameManager!.getSelected() as FrameModel?;
-    logger.info('showFrame $applyScale  ${StudioVariables.applyScale}');
+    //logger.info('showFrame $applyScale  ${StudioVariables.applyScale}');
 
     return StickerView(
       //key: ValueKey('StickerView-${widget.pageModel.mid}'),
@@ -130,16 +151,21 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         await frameManager?.copyFrame(frame!);
         setState(() {});
       },
-      onFrameRotate: (mid, angle) {
-        logger.info('FrameMain.onFrameRotate 1');
-        FrameModel? frame = frameManager?.getSelected() as FrameModel?;
-        if (frame == null) {
-          return;
-        }
-        frame.angle.set(angle);
-        logger.info('FrameMain.onFrameRotate 2');
-        _sendEvent?.sendEvent(frame);
+      // onFrameRotate: (mid, angle) {
+      //   logger.info('FrameMain.onFrameRotate 1');
+      //   FrameModel? frame = frameManager?.getSelected() as FrameModel?;
+      //   if (frame == null) {
+      //     return;
+      //   }
+      //   frame.angle.set(angle);
+      //   logger.info('FrameMain.onFrameRotate 2');
+      //   _sendEvent?.sendEvent(frame);
 
+      //   //setState(() {});
+      // },
+      onFrameLink: (mid) {
+        logger.info('FrameMain.onFrameLink  ${StudioVariables.isLinkMode}');
+        BookMainPage.bookManagerHolder!.notify();
         //setState(() {});
       },
       onFrameMain: (mid) {
@@ -292,6 +318,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             applyScale: applyScale,
             width: frameWidth,
             height: frameHeight,
+            frameOffset: Offset(posX, posY),
           ),
         ),
       );
@@ -578,4 +605,42 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       }
     }
   }
+
+  // Widget _drawLinkCursor() {
+  //   const double iconSize = 24;
+  //   Offset offset = Offset.zero;
+
+  //   return StreamBuilder<Offset>(
+  //       stream: _linkReceiveEvent!.eventStream.stream,
+  //       builder: (context, snapshot) {
+  //         if (snapshot.data != null && snapshot.data is Offset) {
+  //           offset = snapshot.data!;
+  //         }
+  //         //logger.info('_drawLinkCursor ($offset)');
+  //         if (StudioVariables.isLinkMode == false || offset == Offset.zero) {
+  //           return const SizedBox.shrink();
+  //         }
+
+  //         // double posX = offset.dx - iconSize / 2;
+  //         // double posY = offset.dy - iconSize / 2;
+  //         double posX = offset.dx - iconSize / 2 - _pageOffset.dx;
+  //         double posY = offset.dy - iconSize / 2 - _pageOffset.dy;
+
+  //         //logger.info('_drawLinkCursor ($posX, $posY)');
+
+  //         if (posX < 0 || posY < 0) {
+  //           return const SizedBox.shrink();
+  //         }
+
+  //         return Positioned(
+  //           left: posX,
+  //           top: posY,
+  //           child: const Icon(
+  //             Icons.radio_button_checked_outlined,
+  //             size: iconSize,
+  //             color: CretaColor.primary,
+  //           ),
+  //         );
+  //       });
+  // }
 }

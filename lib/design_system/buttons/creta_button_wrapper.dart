@@ -158,12 +158,14 @@ class BTN {
       isSelectedWidget: true,
       onPressed: onPressed,
       onHover: onHover,
-      child: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: Icon(
-          icon,
-          size: iconSize,
-          color: iconColor,
+      child: Center(
+        child: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          child: Icon(
+            icon,
+            size: iconSize,
+            color: iconColor,
+          ),
         ),
       ),
     );
@@ -174,7 +176,7 @@ class BTN {
     required Function onPressed,
     double width = 24,
     double height = 24,
-    double iconSize = 18,
+    double iconSize = 16,
     CretaButtonSidePadding? sidePadding,
     String? tooltip,
     Color? tooltipFg,
@@ -439,7 +441,8 @@ class BTN {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(text,
-                style: textStyle ?? CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
+                style: textStyle ??
+                    CretaFont.buttonMedium.copyWith(color: textColor ?? CretaColor.text[700]!)),
           ],
         ),
       ),
@@ -660,6 +663,52 @@ class BTN {
               radius: 12,
               backgroundImage: image,
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  text,
+                  overflow: TextOverflow.ellipsis,
+                  style: CretaFont.buttonLarge.copyWith(color: fgColor),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            icon,
+            size: 20,
+            color: fgColor,
+          ),
+        ],
+      ),
+    );
+  }
+
+  static CretaButton fill_gray_wti_l({
+    required String text,
+    required IconData icon,
+    required Widget leftWidget,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Color fgColor = Colors.white,
+    required Function onPressed,
+    double? width = 166,
+    CretaButtonSidePadding? sidePadding,
+  }) {
+    return CretaButton(
+      width: width,
+      height: 40,
+      buttonType: CretaButtonType.child,
+      buttonColor: buttonColor,
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: leftWidget,
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -1151,9 +1200,12 @@ class BTN {
   static CretaElevatedButton line_blue_t_m({
     required String text,
     required Function onPressed,
+    double? width,
+    double height = 34,
   }) {
     return CretaElevatedButton(
-      height: 32,
+      width: width,
+      height: height,
       radius: 30,
       onPressed: onPressed,
       caption: text,
@@ -1202,12 +1254,58 @@ class BTN {
     );
   }
 
-  static CretaButton line_blue_iti_m({
+  static CretaButton line_blue_wmi_m({
     required String text,
     required IconData icon,
-    required ImageProvider image,
+    required Widget leftWidget,
     required Function onPressed,
     double? width = 120,
+    double? textWidth,
+    CretaButtonSidePadding? sidePadding,
+  }) {
+    return CretaButton(
+      width: width,
+      height: 32,
+      buttonType: CretaButtonType.child,
+      buttonColor: CretaButtonColor.sky,
+      decoType: CretaButtonDeco.line,
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: leftWidget,
+          ),
+          SizedBox(
+              width: textWidth ?? width! / 3,
+              child: Center(
+                  child: Text(
+                text,
+                style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary),
+                overflow: TextOverflow.clip,
+                maxLines: 1,
+              ))),
+          Padding(
+            padding: const EdgeInsets.only(left: 6.0, right: 8.0),
+            child: Icon(
+              icon,
+              size: 16,
+              color: CretaColor.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static CretaButton line_blue_iti_m({
+    required String text,
+    required IconData icon1,
+    required IconData icon2,
+    required Function onPressed,
+    double? width,
     CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
@@ -1220,17 +1318,21 @@ class BTN {
       sidePadding: sidePadding,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           //Padding(
           //padding: const EdgeInsets.only(left: 8.0),
           //child:
-          CircleAvatar(
-            radius: 8,
-            backgroundImage: image,
-          ),
-          //),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+            padding: const EdgeInsets.only(left: 12.0),
+            child: Icon(
+              icon1,
+              size: 16,
+              color: CretaColor.primary,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -1238,10 +1340,13 @@ class BTN {
               ],
             ),
           ),
-          Icon(
-            icon,
-            size: 16,
-            color: CretaColor.primary,
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Icon(
+              icon2,
+              size: 16,
+              color: CretaColor.primary,
+            ),
           ),
         ],
       ),
@@ -1505,6 +1610,21 @@ class BTN {
         size: iconSize,
         color: CretaColor.text[700]!,
       ),
+      onPressed: onPressed,
+    );
+  }
+
+  static CretaButton floating_lc(
+      {required Icon icon, required Function onPressed, bool hasShadow = true, String? tooltip}) {
+    return CretaButton(
+      tooltip: tooltip,
+      hasShadow: hasShadow,
+      width: 36,
+      height: 36,
+      buttonType: CretaButtonType.iconOnly,
+      //decoType: hasShadow ? CretaButtonDeco.shadow : CretaButtonDeco.line,
+      buttonColor: CretaButtonColor.whiteShadow,
+      icon: icon,
       onPressed: onPressed,
     );
   }

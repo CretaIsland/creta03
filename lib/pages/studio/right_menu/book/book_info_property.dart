@@ -2,17 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
-import '../../../../design_system/menu/creta_drop_down_button.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../book_info_mixin.dart';
 import '../../studio_constant.dart';
-import '../../studio_snippet.dart';
 
 class BookInfoProperty extends StatefulWidget {
   final BookModel model;
@@ -27,9 +24,6 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
   // ignore: unused_field
   //late ScrollController _scrollController;
 
-  late TextStyle _titleStyle;
-  late TextStyle _dataStyle;
-
   @override
   void initState() {
     //_scrollController.addListener(_scrollListener);
@@ -39,8 +33,8 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     hashTagList = CretaUtils.jsonStringToList(widget.model.hashTag.value);
     logger.finest('hashTagList=$hashTagList');
 
-    _titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
-    _dataStyle = CretaFont.bodySmall;
+    titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
+    dataStyle = CretaFont.bodySmall;
 
     //BookMainPage.onceBookInfoOpened = true; // 처음한번만 열리도록 한다.
 
@@ -61,7 +55,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
       children: [
         ..._description(),
         ..._tag(),
-        _copyRight(),
+        copyRight(widget.model),
         ..._info(),
       ],
     );
@@ -159,31 +153,31 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     // ];
   }
 
-  Widget _copyRight() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 24, bottom: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(CretaStudioLang.copyRight, style: CretaFont.titleSmall),
-          widget.model.creator == AccountManager.currentLoginUser.email
-              ? CretaDropDownButton(
-                  selectedColor: CretaColor.text[700]!,
-                  textStyle: _dataStyle,
-                  width: 260,
-                  height: 36,
-                  itemHeight: 24,
-                  dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
-                      defaultValue: widget.model.copyRight.value,
-                      onChanged: (val) {
-                        widget.model.copyRight.set(val);
-                      }))
-              : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
-                  style: _dataStyle),
-        ],
-      ),
-    );
-  }
+  // Widget _copyRight() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 24, bottom: 12),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Text(CretaStudioLang.copyRight, style: CretaFont.titleSmall),
+  //         widget.model.creator == AccountManager.currentLoginUser.email
+  //             ? CretaDropDownButton(
+  //                 selectedColor: CretaColor.text[700]!,
+  //                 textStyle: CretaFont.bodyESmall,
+  //                 width: 87,
+  //                 height: 28,
+  //                 itemHeight: 12,
+  //                 dropDownMenuItemList: StudioSnippet.getCopyRightListItem(
+  //                     defaultValue: widget.model.copyRight.value,
+  //                     onChanged: (val) {
+  //                       widget.model.copyRight.set(val);
+  //                     }))
+  //             : Text(CretaStudioLang.copyWrightList[widget.model.copyRight.value.index],
+  //                 style: dataStyle),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   List<Widget> _info() {
     return [
@@ -198,9 +192,9 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
           children: [
             Text(
               CretaStudioLang.createDate,
-              style: _titleStyle,
+              style: titleStyle,
             ),
-            Text(widget.model.createTime.toString().substring(0, 19), style: _dataStyle),
+            Text(widget.model.createTime.toString().substring(0, 19), style: dataStyle),
           ],
         ),
       ),
@@ -211,9 +205,9 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
           children: [
             Text(
               CretaStudioLang.updateDate,
-              style: _titleStyle,
+              style: titleStyle,
             ),
-            Text(widget.model.updateTime.toString().substring(0, 19), style: _dataStyle),
+            Text(widget.model.updateTime.toString().substring(0, 19), style: dataStyle),
           ],
         ),
       ),
@@ -224,9 +218,9 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
           children: [
             Text(
               CretaStudioLang.creator,
-              style: _titleStyle,
+              style: titleStyle,
             ),
-            Text(widget.model.creator, style: _dataStyle),
+            Text(widget.model.creator, style: dataStyle),
           ],
         ),
       ),
@@ -235,9 +229,8 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(CretaStudioLang.bookType, style: _titleStyle),
-            Text(CretaStudioLang.bookTypeList[widget.model.bookType.value.index],
-                style: _dataStyle),
+            Text(CretaStudioLang.bookType, style: titleStyle),
+            Text(CretaStudioLang.bookTypeList[widget.model.bookType.value.index], style: dataStyle),
           ],
         ),
       )

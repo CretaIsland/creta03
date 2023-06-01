@@ -3,6 +3,7 @@ import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
+import '../common/creta_utils.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/contents_model.dart';
@@ -16,8 +17,15 @@ import 'creta_manager.dart';
 //FrameManager? frameManagerHolder;
 
 class FrameManager extends CretaManager {
-  PageModel pageModel;
-  BookModel bookModel;
+  final PageModel pageModel;
+  final BookModel bookModel;
+
+  Offset _pageOffset = Offset.zero;
+  Offset get pageOffset => _pageOffset;
+  void setPageOffset(Offset offset) {
+    _pageOffset = offset;
+  }
+
   //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey> frameKeyMap = {};
   Map<String, ContentsManager> contentsManagerMap = {};
@@ -36,7 +44,8 @@ class FrameManager extends CretaManager {
   //   _playerHandler = p;
   // }
 
-  FrameManager({required this.pageModel, required this.bookModel}) : super('creta_frame') {
+  FrameManager({required this.pageModel, required this.bookModel, String tableName = 'creta_frame'})
+      : super(tableName) {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
   }
 
@@ -166,9 +175,9 @@ class FrameManager extends CretaManager {
 
     double dx = frameModel.posX.value;
     double dy = frameModel.posY.value;
-    logger.info('resizeFrame()===============================');
-    logger.info(
-        'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$contentsWidth, imageH=$contentsHeight, dx=$dx, dy=$dy --------------------');
+    //logger.info('resizeFrame()===============================');
+    //logger.info(
+    //   'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$contentsWidth, imageH=$contentsHeight, dx=$dx, dy=$dy --------------------');
 
     // if (contentsWidth <= pageWidth && contentsHeight <= pageHeight) {
     //   w = contentsWidth;
@@ -252,9 +261,9 @@ class FrameManager extends CretaManager {
   }
 
   @override
-  void removeChild(String parentMid) {
+  Future<void> removeChild(String parentMid) async {
     ContentsManager? contentsManager = getContentsManager(parentMid);
-    contentsManager?.removeAll();
+    await contentsManager?.removeAll();
   }
 
   Future<void> findOrInitContentsManager() async {
@@ -265,11 +274,11 @@ class FrameManager extends CretaManager {
       FrameModel frameModel = ele as FrameModel;
       ContentsManager? contentsManager = findContentsManager(frameModel.mid);
       if (contentsManager == null) {
-        logger.info('new ContentsManager created (${frameModel.mid})');
+        //logger.info('new ContentsManager created (${frameModel.mid})');
         contentsManager = newContentsManager(frameModel);
         contentsManager.clearAll();
       } else {
-        logger.info('old ContentsManager used (${frameModel.mid})');
+        //logger.info('old ContentsManager used (${frameModel.mid})');
       }
     }
     for (var mid in contentsManagerMap.keys.toList()) {
@@ -285,5 +294,41 @@ class FrameManager extends CretaManager {
       contentsManager.reOrdering();
     }
     logger.info('$frameMid=initChildren(${contentsManager.getAvailLength()})');
+  }
+
+  @override
+  Future<int> makeCopyAll(String? newParentMid) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    lock();
+    int counter = 0;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      AbsExModel newOne = await makeCopy(ele, newParentMid);
+      ContentsManager? contentsManager = findContentsManager(ele.mid);
+      await contentsManager?.makeCopyAll(newOne.mid);
+      counter++;
+    }
+    unlock();
+    return counter;
+  }
+
+  FrameModel? findFrameByPos(Offset pos) {
+    FrameModel? retval;
+    reverseMapIterator((model) {
+      FrameModel frame = model as FrameModel;
+      GlobalKey? stickerKey = frameKeyMap[frame.mid];
+      if (stickerKey == null) {
+        return null;
+      }
+      bool founded = CretaUtils.isMousePointerOnWidget(stickerKey, pos);
+      if (founded) {
+        logger.info('pointer is on widget order ${frame.order.value}');
+        retval = frame;
+        return frame;
+      }
+    });
+    return retval;
   }
 }

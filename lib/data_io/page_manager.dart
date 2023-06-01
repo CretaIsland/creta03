@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_final_fields
 
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -18,9 +21,19 @@ class PageManager extends CretaManager {
   BookModel? bookModel;
   Map<String, FrameManager?> frameManagerList = {};
 
-  PageManager() : super('creta_page') {
+  PageManager({String tableName = 'creta_page'}) : super(tableName) {
     saveManagerHolder?.registerManager('page', this);
   }
+  @override
+  CretaModel cloneModel(CretaModel src) {
+    PageModel retval = newModel(src.mid) as PageModel;
+    src.copyTo(retval);
+    return retval;
+  }
+
+  @override
+  AbsExModel newModel(String mid) => PageModel(mid);
+
   void setBook(BookModel book) {
     bookModel = book;
   }
@@ -113,16 +126,6 @@ class PageManager extends CretaManager {
     }
     return frameManager;
   }
-
-  @override
-  CretaModel cloneModel(CretaModel src) {
-    PageModel retval = newModel(src.mid) as PageModel;
-    src.copyTo(retval);
-    return retval;
-  }
-
-  @override
-  AbsExModel newModel(String mid) => PageModel(mid);
 
   Future<PageModel> createNextPage() async {
     PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid);
@@ -305,8 +308,38 @@ class PageManager extends CretaManager {
   }
 
   @override
-  void removeChild(String parentMid) {
+  Future<void> removeChild(String parentMid) async {
     FrameManager? frameManager = frameManagerList[parentMid];
-    frameManager?.removeAll();
+    await frameManager?.removeAll();
+  }
+
+  @override
+  Future<int> makeCopyAll(String? newParentMid) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    lock();
+    int counter = 0;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      AbsExModel newOne = await makeCopy(ele, newParentMid);
+      FrameManager? frameManager = findFrameManager(ele.mid);
+      await frameManager?.makeCopyAll(newOne.mid);
+      counter++;
+    }
+    unlock();
+    return counter;
+  }
+
+  FrameModel? findFrameByPos(Offset pos) {
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    FrameManager? frameManager = findFrameManager(pageModel.mid);
+    if (frameManager == null) {
+      return null;
+    }
+    return frameManager.findFrameByPos(pos);
   }
 }

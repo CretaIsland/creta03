@@ -23,7 +23,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
   bool _isHover = false;
   @override
   Widget build(BuildContext context) {
-    return StudioVariables.handToolMode == false
+    return StudioVariables.isHandToolMode == false
         ? MouseRegion(
             onEnter: ((event) {
               setState(() {
@@ -47,7 +47,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
         width: double.infinity,
         height: double.infinity,
         //color: Colors.white,
-        color: _isHover ? Colors.white.withOpacity(0.75) : Colors.transparent,
+        color: _isHover ? Colors.white.withOpacity(0.15) : Colors.transparent,
         child: Stack(
           alignment: Alignment.center,
           children: [

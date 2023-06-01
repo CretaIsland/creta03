@@ -101,6 +101,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
               child: Icon(
                 color: allText == displayString ? CretaColor.text[700] : widget.selectedColor,
                 Icons.keyboard_arrow_down,
+                size: iconSize,
               ),
             ),
           ],
@@ -182,7 +183,12 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         if (y + dialogHeight > StudioVariables.displayHeight) {
           //dialogHeight = StudioVariables.workHeight - y;
           y = y - dialogHeight - widget.height;
+          if (y < 0) {
+            //y = LayoutConst.topMenuBarHeight + CretaConstant.appbarHeight + 5;
+            y = 5;
+          }
         }
+
         if (popupMenu.length > 1 && dialogHeight < widget.itemHeight + itemSpacing * 2) {
           dialogHeight = widget.itemHeight + itemSpacing * 2;
         }

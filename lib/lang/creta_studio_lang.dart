@@ -156,6 +156,8 @@ class CretaStudioLang {
   static const String tooltipPlay = '미리보기';
   static const String tooltipScale = '항상 화면 크기에 알맞게 맞춥니다.';
   static const String tooltipDelete = '삭제하기';
+  static const String tooltipMenu = '메뉴';
+  static const String tooltipLink = '연결하기';
 
   static const String gotoCommunity = '커뮤니티로 이동';
 
@@ -215,6 +217,7 @@ class CretaStudioLang {
   static const String outlineWidth = '두께';
   static const String option = '옵션';
   static const String autoPlay = '자동 페이지 넘김';
+  static const String allowReply = '좋아요/댓글 허용';
   static const String widthHeight = '(가로x세로)';
   static const String gradation = '그라데이션';
 
@@ -333,6 +336,7 @@ class CretaStudioLang {
   static String frontFrameTooltip = '앞으로 당기기';
   static String backFrameTooltip = '뒤로 보내기';
   static String rotateFrameTooltip = '15도씩 회전합니다';
+  static String linkFrameTooltip = '다른 프레임 콘텐츠에 연결합니다';
   static String mainFrameTooltip = '메인 프레임으로 지정합니다';
 
   static String flipConTooltip = '콘텐츠 플립';
@@ -401,4 +405,18 @@ class CretaStudioLang {
     '채널 선택',
     '발행 완료',
   ];
+
+  static const String publishTo = '공개할 사람';
+
+  static const String wrongEmail = '올바른 이메일 포맷이 아니며, 해당하는 팀명이 없습니다.  이메일 주소 또는 팀명을 입력하세요';
+  static const String noExitEmail = '등록된 사용자가 아닙니다. 자동 초대 기능은 아직 구현되지 않았습니다';
+
+  static const String publishComplete = '발행이 완료되었습니다';
+  static const String publishFailed = '발행이 실패하였습니다';
+  static const String update = '수정';
+  static const String newely = '신규';
+
+  static const String showGrid = '그리드 보기';
+  static const String showRuler = '눈금자 보기';
+  static const String linkIntro = '연결할 페이지나 프레임을 선택하세요.';
 }

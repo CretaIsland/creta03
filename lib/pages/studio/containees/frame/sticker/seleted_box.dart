@@ -64,6 +64,35 @@ class SelectedBox extends StatelessWidget {
       ),
     );
 
+    // ignore: unused_local_variable
+    final linkCandiator = ScaleAniContainer(
+      width: normalizedWidth,
+      height: normalizedHeight,
+    );
+
+    double heightCenter = normalizedHeight / 2 + resizePointerOffset;
+    double widthCenter = normalizedWidth / 2 + resizePointerOffset;
+
+    return Consumer<FrameSelectNotifier>(builder: (context, frameSelectNotifier, childW) {
+      //if (StudioVariables.isLinkSelectMode == false) {
+      if (frameSelectNotifier.selectedAssetId == mid) {
+        return Stack(
+          children: [
+            selectedBox,
+            ..._dragBoxes(heightCenter, widthCenter),
+          ],
+        );
+      }
+      // } else {
+      //   if (frameSelectNotifier.selectedAssetId != mid) {
+      //     return linkCandiator;
+      //   }
+      // }
+      return const SizedBox.shrink();
+    });
+  }
+
+  List<Widget> _dragBoxes(double heightCenter, double widthCenter) {
     final topLeftCorner = ResizePoint(
       key: Key('draggableResizable_topLeft_resizePoint-$mid'),
       type: ResizePointType.topLeft,
@@ -136,69 +165,109 @@ class SelectedBox extends StatelessWidget {
       onComplete: onComplete,
     );
 
-    double heightCenter = normalizedHeight / 2 + resizePointerOffset;
-    double widthCenter = normalizedWidth / 2 + resizePointerOffset;
+    return [
+      Positioned(
+        //topLeft
+        top: resizePointerOffset,
+        left: resizePointerOffset,
+        child: topLeftCorner,
+      ),
+      Positioned(
+        // bottomLeft
+        bottom: resizePointerOffset,
+        left: resizePointerOffset,
+        child: bottomLeftCorner,
+      ),
+      Positioned(
+        //bottomRight
+        bottom: resizePointerOffset,
+        right: resizePointerOffset,
+        child: bottomRightCorner,
+      ),
+      Positioned(
+        // topRight
+        top: resizePointerOffset,
+        right: resizePointerOffset,
+        child: topRightCorner,
+      ),
 
-    return Consumer<FrameSelectNotifier>(builder: (context, frameSelectNotifier, childW) {
-      if (frameSelectNotifier.selectedAssetId == mid) {
-        return Stack(
-          children: [
-            selectedBox,
-            Positioned(
-              //topLeft
-              top: resizePointerOffset,
-              left: resizePointerOffset,
-              child: topLeftCorner,
-            ),
-            Positioned(
-              // bottomLeft
-              bottom: resizePointerOffset,
-              left: resizePointerOffset,
-              child: bottomLeftCorner,
-            ),
-            Positioned(
-              //bottomRight
-              bottom: resizePointerOffset,
-              right: resizePointerOffset,
-              child: bottomRightCorner,
-            ),
-            Positioned(
-              // topRight
-              top: resizePointerOffset,
-              right: resizePointerOffset,
-              child: topRightCorner,
-            ),
+      // centerButtons !!!
 
-            // centerButtons !!!
+      Positioned(
+        //topMidle
+        top: resizePointerOffset,
+        left: widthCenter,
+        child: upPlane,
+      ),
+      Positioned(
+        // leftMiddle
+        top: heightCenter,
+        left: resizePointerOffset,
+        child: leftPlane,
+      ),
+      Positioned(
+        //bottomMiddle
+        bottom: resizePointerOffset,
+        left: widthCenter,
+        child: downPlane,
+      ),
+      Positioned(
+        // rightMiddle
+        top: heightCenter,
+        right: resizePointerOffset,
+        child: rightPlane,
+      ),
+    ];
+  }
+}
 
-            Positioned(
-              //topMidle
-              top: resizePointerOffset,
-              left: widthCenter,
-              child: upPlane,
-            ),
-            Positioned(
-              // leftMiddle
-              top: heightCenter,
-              left: resizePointerOffset,
-              child: leftPlane,
-            ),
-            Positioned(
-              //bottomMiddle
-              bottom: resizePointerOffset,
-              left: widthCenter,
-              child: downPlane,
-            ),
-            Positioned(
-              // rightMiddle
-              top: heightCenter,
-              right: resizePointerOffset,
-              child: rightPlane,
-            ),
-          ],
-        );
-      }
-      return const SizedBox.shrink();
-    });
+class ScaleAniContainer extends StatefulWidget {
+  final double width;
+  final double height;
+  const ScaleAniContainer({super.key, required this.width, required this.height});
+
+  @override
+  State<ScaleAniContainer> createState() => _ScaleAniContainerState();
+}
+
+class _ScaleAniContainerState extends State<ScaleAniContainer> with TickerProviderStateMixin {
+  AnimationController? _controller;
+  final Tween<double> _tween = Tween(begin: 1, end: 1.1);
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+    _controller?.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+        scale: _tween.animate(
+          CurvedAnimation(parent: _controller!, curve: Curves.easeIn),
+        ),
+        child: Container(
+          height: widget.height,
+          width: widget.width,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.25),
+                offset: const Offset(0.0, 1.0),
+                blurRadius: 1.0,
+              ),
+            ],
+          ),
+        ));
   }
 }

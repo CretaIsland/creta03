@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+
+import '../creta_color.dart';
+import '../creta_font.dart';
 // import 'package:hycop/common/util/logger.dart';
 
 class CretaMenuItem {
@@ -15,6 +18,7 @@ class CretaMenuItem {
   final bool isIconText;
   final String fontFamily;
   final FontWeight? fontWeight;
+  final bool disabled;
 
   CretaMenuItem({
     required this.caption,
@@ -28,22 +32,24 @@ class CretaMenuItem {
     this.isIconText = false,
     this.fontFamily = 'Pretendard',
     this.fontWeight,
+    this.disabled = false,
   });
 
   CretaMenuItem.clone(CretaMenuItem src)
       : this(
-  caption: src.caption,
-  iconData: src.iconData,
-  iconSize: src.iconSize,
-  onPressed: src.onPressed,
-  referencedAttr: src.referencedAttr,
-  isDescending: src.isDescending,
-  selected: src.selected,
-  linkUrl: src.linkUrl,
-  isIconText: src.isIconText,
-  fontFamily: src.fontFamily,
-  fontWeight: src.fontWeight,
-  );
+          caption: src.caption,
+          iconData: src.iconData,
+          iconSize: src.iconSize,
+          onPressed: src.onPressed,
+          referencedAttr: src.referencedAttr,
+          isDescending: src.isDescending,
+          selected: src.selected,
+          linkUrl: src.linkUrl,
+          isIconText: src.isIconText,
+          fontFamily: src.fontFamily,
+          fontWeight: src.fontWeight,
+          disabled: src.disabled,
+        );
 }
 
 class CretaPopupMenu {
@@ -52,8 +58,9 @@ class CretaPopupMenu {
     double x,
     double y,
     double width,
-    List<CretaMenuItem> menuItem,
-  ) {
+    List<CretaMenuItem> menuItem, {
+    Alignment textAlign = Alignment.center,
+  }) {
     return Stack(
       children: [
         Positioned(
@@ -79,42 +86,7 @@ class CretaPopupMenu {
               spacing: 4, // <-- Spacing between children
               children: <Widget>[
                 ...menuItem
-                    .map((item) => SizedBox(
-                          width: width,
-                          height: 32,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.hovered)) {
-                                    return Color.fromARGB(255, 242, 242, 242);
-                                  }
-                                  return Colors.white;
-                                },
-                              ),
-                              elevation: MaterialStateProperty.all<double>(0.0),
-                              shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                              foregroundColor: MaterialStateProperty.all<Color>(Colors.grey[700]!),
-                              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(18.0),
-                                      side: BorderSide(color: Colors.white))),
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              item.onPressed?.call();
-                            },
-                            child: Text(
-                              item.caption,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: item.fontWeight,
-                                fontFamily: item.fontFamily,
-                              ),
-                            ),
-                          ),
-                        ))
+                    .map((item) => _elevatedButton(context, item, width, textAlign))
                     .toList(),
               ],
             ),
@@ -124,10 +96,57 @@ class CretaPopupMenu {
     );
   }
 
+  static Widget _elevatedButton(
+      BuildContext context, CretaMenuItem item, double width, Alignment textAlign) {
+    return SizedBox(
+      width: width,
+      height: 32,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+              if (states.contains(MaterialState.hovered)) {
+                return Color.fromARGB(255, 242, 242, 242);
+              }
+              return Colors.white;
+            },
+          ),
+          alignment: textAlign,
+          elevation: MaterialStateProperty.all<double>(0.0),
+          shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          foregroundColor: item.disabled
+              ? MaterialStateProperty.all<Color>(CretaColor.text[300]!)
+              : MaterialStateProperty.all<Color>(CretaColor.text[700]!),
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0), side: BorderSide(color: Colors.white))),
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+          item.onPressed?.call();
+        },
+        child: Text(
+          item.caption,
+          style: item.disabled ? CretaFont.buttonMedium.copyWith() : CretaFont.buttonMedium,
+          // TextStyle(
+          //   fontSize: 13,
+          //   fontWeight: item.fontWeight,
+          //   fontFamily: item.fontFamily,
+          // ),
+        ),
+      ),
+    );
+  }
+
   static Future<void> showMenu(
       {required BuildContext context,
-      required GlobalKey globalKey,
+      GlobalKey? globalKey,
       required List<CretaMenuItem> popupMenu,
+      double width = 114,
+      double xOffset = 0,
+      double yOffset = 0,
+      Offset? position,
+      Alignment textAlign = Alignment.center,
       Function? initFunc}) async {
     await showDialog(
       context: context,
@@ -136,19 +155,32 @@ class CretaPopupMenu {
       builder: (BuildContext context) {
         if (initFunc != null) initFunc();
 
-        final RenderBox renderBox = globalKey.currentContext!.findRenderObject() as RenderBox;
-        final position = renderBox.localToGlobal(Offset.zero);
-        final size = renderBox.size;
+        double x = 0;
+        double y = 0;
+        if (position == null && globalKey != null) {
+          final RenderBox? renderBox = globalKey.currentContext!.findRenderObject() as RenderBox?;
+          if (renderBox == null) {
+            return SizedBox.shrink();
+          }
 
-        double x = position.dx + size.width - 70;
-        double y = position.dy + 40;
+          final position = renderBox.localToGlobal(Offset.zero);
+          final size = renderBox.size;
+
+          x = position.dx + size.width - 70;
+          y = position.dy + 40;
+        } else {
+          x = position!.dx;
+          y = position.dy;
+        }
+        //logger.severe('=========================$x,$y===============');
 
         return _createPopupMenu(
           context,
-          x,
-          y,
-          114,
+          x + xOffset,
+          y + yOffset,
+          width,
           popupMenu,
+          textAlign: textAlign,
         );
       },
     );

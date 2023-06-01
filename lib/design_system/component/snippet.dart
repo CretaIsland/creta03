@@ -87,7 +87,7 @@ class Snippet {
       appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
       floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: StudioVariables.handToolMode == false
+      body: StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
           ? GestureDetector(
               behavior: HitTestBehavior.opaque,
               onLongPressDown: ((details) {
@@ -290,6 +290,15 @@ class Snippet {
         Center(
           child: SizedBox(
             height: 40,
+            // child: BTN.fill_gray_wti_l(
+            //   buttonColor: CretaButtonColor.blue,
+            //   text: AccountManager.currentLoginUser.name,
+            //   icon: Icons.arrow_drop_down_outlined,
+            //   leftWidget: LoginPage.userPropertyManagerHolder!.profileImageBox(
+            //     radius: 28,
+            //   ),
+            //   onPressed: () {},
+            // ),
             child: BTN.fill_gray_iti_l(
               buttonColor: CretaButtonColor.blue,
               text: AccountManager.currentLoginUser.name,
@@ -457,7 +466,7 @@ class Snippet {
           label: 'Studio Book List',
           child: Icon(Icons.list_alt_outlined),
           onTap: () {
-            Routemaster.of(context).push(AppRoutes.studioBookMyPage);
+            Routemaster.of(context).push(AppRoutes.studioBookGridPage);
           },
         ),
         SpeedDialChild(

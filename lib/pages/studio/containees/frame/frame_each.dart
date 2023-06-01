@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
+import 'package:dotted_border/dotted_border.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -10,17 +12,21 @@ import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
+import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
+import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
+import '../../studio_variables.dart';
 import '../containee_mixin.dart';
 import '../contents/contents_main.dart';
 import 'frame_play_mixin.dart';
 import 'on_frame_menu.dart';
+import 'on_link_cursor.dart';
 
 class FrameEach extends StatefulWidget {
   final FrameManager frameManager;
@@ -29,6 +35,7 @@ class FrameEach extends StatefulWidget {
   final double applyScale;
   final double width;
   final double height;
+  final Offset frameOffset;
   const FrameEach({
     super.key,
     required this.frameManager,
@@ -37,6 +44,7 @@ class FrameEach extends StatefulWidget {
     required this.applyScale,
     required this.width,
     required this.height,
+    required this.frameOffset,
   });
 
   @override
@@ -51,6 +59,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
   bool _isInitialized = false;
   //final bool _isHover = false;
+  bool _showBorder = false;
+
+  OffsetEventController? _linkSendEvent;
+  AutoPlayChangeEventController? _linkReceiveEvent;
+  bool _isLinkEnter = false;
 
   @override
   void dispose() {
@@ -63,21 +76,26 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   void initState() {
     super.initState();
     initChildren();
+
+    final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
+    _linkSendEvent = sendEvent;
+    final AutoPlayChangeEventController linkReceiveEvent = Get.find(tag: 'auto-play-to-frame');
+    _linkReceiveEvent = linkReceiveEvent;
   }
 
   Future<void> initChildren() async {
-    logger.info('==========================FrameEach initialized================');
+    //logger.info('==========================FrameEach initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
       logger.severe('frame manager is null');
     }
     _contentsManager = frameManager!.findContentsManager(widget.model.mid);
     if (_contentsManager == null) {
-      logger.info('new ContentsManager created (${widget.model.mid})');
+      //logger.info('new ContentsManager created (${widget.model.mid})');
       _contentsManager = frameManager!.newContentsManager(widget.model);
       _contentsManager!.clearAll();
     } else {
-      logger.info('old ContentsManager used (${widget.model.mid})');
+      //logger.info('old ContentsManager used (${widget.model.mid})');
     }
     if (_playTimer == null) {
       _playTimer = CretaPlayTimer(_contentsManager!);
@@ -141,8 +159,14 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameDropZone() {
-    logger.info('_frameDropZone...');
+    //logger.info('_frameDropZone...');
 
+    _showBorder = _contentsManager!.length() == 0 &&
+        (widget.model.bgColor1.value == widget.pageModel.bgColor1.value ||
+            widget.model.bgColor1.value == Colors.transparent) &&
+        (widget.model.borderWidth.value == 0 ||
+            widget.model.borderColor.value == widget.pageModel.bgColor1.value) &&
+        (widget.model.isNoShadow());
     // Widget frameBody = Stack(
     //   alignment: Alignment.center,
     //   children: [
@@ -162,26 +186,14 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               onDroppedFile: (modelList) {
                 _onDropFrame(widget.model.mid, modelList);
               },
-              child: _frameBody(),
+              child: _frameBody1(),
             )
-          : _frameBody(),
+          : _frameBody1(),
     );
   }
 
-  Widget _frameBody() {
-    Widget frameBody = Stack(
-      alignment: Alignment.center,
-      children: [
-        _applyAnimate(widget.model),
-        OnFrameMenu(
-          key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
-          playTimer: _playTimer,
-          model: widget.model,
-        ),
-      ],
-    );
-
-    logger.info('================angle=${widget.model.angle.value}');
+  Widget _frameBody1() {
+    //logger.info('================angle=${widget.model.angle.value}');
 
     if (widget.model.shouldInsideRotate()) {
       return Transform(
@@ -190,13 +202,89 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         transform: Matrix4.identity()
           ..scale(1.0)
           ..rotateZ(CretaUtils.degreeToRadian(widget.model.angle.value)),
-        child: frameBody,
+        child: _frameBody2(),
       );
     }
-    return frameBody;
+    return _frameBody2();
+  }
+
+  Widget _frameBody2() {
+    logger.info('frameBody2----------${StudioVariables.isLinkMode}---------');
+    if (StudioVariables.isLinkMode == true) {
+      return MouseRegion(
+        cursor: SystemMouseCursors.none,
+        onEnter: (event) {
+          setState(() {
+            logger.info('_isLinkEnter');
+            _isLinkEnter = true;
+          });
+        },
+        onExit: (event) {
+          logger.info('_isLinkExit');
+          setState(() {
+            _isLinkEnter = false;
+          });
+        },
+        onHover: (event) {
+          logger.info('sendEvent ${event.position}');
+          _linkSendEvent?.sendEvent(event.position);
+        },
+        child: _frameBody3(),
+      );
+    }
+    return _frameBody3();
+  }
+
+  Widget _frameBody3() {
+    if (_contentsManager == null) {
+      return const SizedBox.shrink();
+    }
+    logger.info('_frameBody3 ${StudioVariables.isLinkMode}');
+    return StreamBuilder<bool>(
+        stream: _linkReceiveEvent!.eventStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data != null && snapshot.data is bool) {
+            logger.info('_frameBody3 _linkReceiveEvent (AutoPlay=$snapshot.data)');
+          }
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              _applyAnimate(widget.model),
+              StudioVariables.isLinkMode == false && StudioVariables.isAutoPlay == true
+                  ? OnFrameMenu(
+                      key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
+                      playTimer: _playTimer,
+                      model: widget.model,
+                    )
+                  : StudioVariables.isPreview == false &&
+                          _isLinkEnter == true &&
+                          _contentsManager!.length() > 0
+                      ? _onLinkCursor()
+                      : const SizedBox.shrink(),
+            ],
+          );
+        });
+  }
+
+  Widget _onLinkCursor() {
+    if (_contentsManager == null) {
+      return const SizedBox.shrink();
+    }
+    return OnLinkCursor(
+      key: GlobalObjectKey('OnLinkCursor${widget.model.mid}'),
+      pageOffset: widget.frameManager.pageOffset,
+      frameOffset: widget.frameOffset,
+      frameManager: frameManager!,
+      frameModel: widget.model,
+      contentsManager: _contentsManager!,
+      applyScale: widget.applyScale,
+    );
   }
 
   bool _isDropAble(FrameModel model) {
+    if (StudioVariables.isLinkMode == true) {
+      return false;
+    }
     if (model.frameType == FrameType.text) {
       return false;
     }
@@ -223,9 +311,19 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
     logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
     if (animations.isEmpty) {
-      return _shapeBox(model);
+      return _showBorder ? _dottedShapeBox(model) : _shapeBox(model);
     }
-    return getAnimation(_shapeBox(model), animations);
+    return getAnimation(_showBorder ? _dottedShapeBox(model) : _shapeBox(model), animations);
+  }
+
+  Widget _dottedShapeBox(FrameModel model) {
+    return DottedBorder(
+      dashPattern: const [6, 6],
+      strokeWidth: 2,
+      strokeCap: StrokeCap.round,
+      color: CretaColor.text[700]!,
+      child: _shapeBox(model),
+    );
   }
 
   Widget _shapeBox(FrameModel model) {
@@ -236,7 +334,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       blurRadius: model.shadowBlur.value,
       blurSpread: model.shadowSpread.value * applyScale,
       opacity: model.shadowOpacity.value,
-      shadowColor: model.shadowColor.value,
+      shadowColor: model.isNoShadow() ? Colors.transparent : model.shadowColor.value,
       // width: widget.width,
       // height: widget.height,
       strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
@@ -295,7 +393,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   // }
 
   Widget _frameBox(FrameModel model, bool useColor) {
-    logger.info('_frameBox');
+    //logger.info('_frameBox');
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,
@@ -309,6 +407,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
           pageModel: widget.pageModel,
           frameManager: frameManager!,
           contentsManager: _contentsManager!,
+          applyScale: applyScale,
         ),
         // child: Image.asset(
         //   'assets/creta_default.png',

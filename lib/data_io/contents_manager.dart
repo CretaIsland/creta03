@@ -11,6 +11,7 @@ import '../lang/creta_lang.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
+import '../model/link_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
@@ -23,6 +24,7 @@ import '../player/creta_play_timer.dart';
 import '../player/video/creta_video_player.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
+import 'link_manager.dart';
 
 class ContentsManager extends CretaManager {
   final PageModel pageModel;
@@ -30,7 +32,9 @@ class ContentsManager extends CretaManager {
 
   ContentsEventController? sendEvent;
 
-  ContentsManager({required this.pageModel, required this.frameModel}) : super('creta_contents') {
+  ContentsManager(
+      {required this.pageModel, required this.frameModel, String tableName = 'creta_contents'})
+      : super(tableName) {
     saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
     final ContentsEventController sendEventVar = Get.find(tag: 'contents-property-to-main');
     sendEvent = sendEventVar;
@@ -51,6 +55,7 @@ class ContentsManager extends CretaManager {
   final Map<String, CretaAbsPlayer> _playerMap = {};
   CretaAbsPlayer? getPlayer(String key) => _playerMap[key];
   void setPlayer(String key, CretaAbsPlayer player) => _playerMap[key] = player;
+  Map<String, LinkManager> linkManagerMap = {};
 
   final Duration _snackBarDuration = const Duration(seconds: 3);
   bool iamBusy = false;
@@ -88,7 +93,7 @@ class ContentsManager extends CretaManager {
 
     if (playTimer != null) {
       if (playTimer!.isInit()) {
-        logger.info('prev exist =============================================');
+        //logger.info('prev exist =============================================');
         await playTimer?.rewind();
         await playTimer?.pause();
       }
@@ -103,11 +108,12 @@ class ContentsManager extends CretaManager {
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> getContents() async {
-    logger.info('getContents---------------${frameModel.mid}----------------------------');
+    //logger.info('getContents---------------${frameModel.mid}----------------------------');
     int contentsCount = 0;
     startTransaction();
     try {
       contentsCount = await _getContents();
+      await _getAllLinks();
       _onceDBGetComplete = true;
     } catch (e) {
       logger.finest('something wrong $e');
@@ -742,5 +748,59 @@ class ContentsManager extends CretaManager {
 
     fileReader.readAsArrayBuffer(contentsModel.file!);
     return;
+  }
+
+  Future<int> _getAllLinks() async {
+    int counter = 0;
+    //startTransaction();
+    reOrdering();
+    logger.info('_getAllLinks---------------${getAvailLength()}----------------------------');
+    orderMapIterator(
+      (model) {
+        LinkManager linkManager = newLinkManager(model.mid);
+        linkManager.getLink(contentsId: model.mid);
+        counter++;
+      },
+    );
+    //endTransaction();
+    return counter;
+  }
+
+  LinkManager newLinkManager(String contentsId) {
+    logger.info('newLinkManager()*******$contentsId');
+
+    LinkManager? retval = linkManagerMap[contentsId];
+    if (retval == null) {
+      retval = LinkManager();
+      linkManagerMap[contentsId] = retval;
+    }
+    return retval;
+  }
+
+  LinkManager? findLinkManager(String contentsId) {
+    logger.fine('findLinkManager()*******');
+    return linkManagerMap[contentsId];
+  }
+
+  Future<LinkModel?> createLink({
+    required String contentsId,
+    required double posX,
+    required double posY,
+    String? name,
+    String? connectedMid,
+    String? connectedClass,
+    bool doNotify = true,
+  }) async {
+    LinkManager linkManager = newLinkManager(contentsId);
+    await linkManager.createNext(
+      contentsId: contentsId,
+      posX: posX,
+      posY: posY,
+      name: name,
+      connectedClass: connectedClass,
+      connectedMid: connectedMid,
+      doNotify: doNotify,
+    );
+    return null;
   }
 }

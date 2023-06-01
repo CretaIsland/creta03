@@ -1,7 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 
+import '../../pages/studio/studio_variables.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../creta_color.dart';
 
@@ -52,6 +54,8 @@ class _CretaIconToggleButtonState extends State<CretaIconToggleButton> {
     if (widget.doToggle == false) {
       _toggleValue = widget.toggleValue;
     }
+    logger.info('---${widget.key.toString()} ${StudioVariables.isAutoPlay}---$_toggleValue---');
+
     switch (widget.buttonStyle) {
       case ToggleButtonStyle.fill_gray_i_s:
         return BTN.fill_gray_i_s(
