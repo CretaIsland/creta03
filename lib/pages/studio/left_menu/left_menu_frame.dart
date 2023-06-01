@@ -175,7 +175,6 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
 
   Widget _header(String title) {
     return SizedBox(
-      //color: Colors.amber,
       height: headerHeight,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
