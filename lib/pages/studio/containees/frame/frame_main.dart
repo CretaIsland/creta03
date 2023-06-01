@@ -151,16 +151,21 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         await frameManager?.copyFrame(frame!);
         setState(() {});
       },
-      onFrameRotate: (mid, angle) {
-        logger.info('FrameMain.onFrameRotate 1');
-        FrameModel? frame = frameManager?.getSelected() as FrameModel?;
-        if (frame == null) {
-          return;
-        }
-        frame.angle.set(angle);
-        logger.info('FrameMain.onFrameRotate 2');
-        _sendEvent?.sendEvent(frame);
+      // onFrameRotate: (mid, angle) {
+      //   logger.info('FrameMain.onFrameRotate 1');
+      //   FrameModel? frame = frameManager?.getSelected() as FrameModel?;
+      //   if (frame == null) {
+      //     return;
+      //   }
+      //   frame.angle.set(angle);
+      //   logger.info('FrameMain.onFrameRotate 2');
+      //   _sendEvent?.sendEvent(frame);
 
+      //   //setState(() {});
+      // },
+      onFrameLink: (mid) {
+        logger.info('FrameMain.onFrameLink  ${StudioVariables.isLinkMode}');
+        BookMainPage.bookManagerHolder!.notify();
         //setState(() {});
       },
       onFrameMain: (mid) {

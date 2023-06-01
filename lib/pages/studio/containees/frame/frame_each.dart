@@ -60,7 +60,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   bool _isInitialized = false;
   //final bool _isHover = false;
   bool _showBorder = false;
-  OffsetEventController? _sendEvent;
+
+  OffsetEventController? _linkSendEvent;
+  AutoPlayChangeEventController? _linkReceiveEvent;
   bool _isLinkEnter = false;
 
   @override
@@ -76,7 +78,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     initChildren();
 
     final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
-    _sendEvent = sendEvent;
+    _linkSendEvent = sendEvent;
+    final AutoPlayChangeEventController linkReceiveEvent = Get.find(tag: 'auto-play-to-frame');
+    _linkReceiveEvent = linkReceiveEvent;
   }
 
   Future<void> initChildren() async {
@@ -205,22 +209,25 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameBody2() {
+    logger.info('frameBody2----------${StudioVariables.isLinkMode}---------');
     if (StudioVariables.isLinkMode == true) {
       return MouseRegion(
         cursor: SystemMouseCursors.none,
         onEnter: (event) {
           setState(() {
+            logger.info('_isLinkEnter');
             _isLinkEnter = true;
           });
         },
         onExit: (event) {
+          logger.info('_isLinkExit');
           setState(() {
             _isLinkEnter = false;
           });
         },
         onHover: (event) {
-          //logger.info('sendEvent ${event.position}');
-          _sendEvent?.sendEvent(event.position);
+          logger.info('sendEvent ${event.position}');
+          _linkSendEvent?.sendEvent(event.position);
         },
         child: _frameBody3(),
       );
@@ -232,22 +239,31 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (_contentsManager == null) {
       return const SizedBox.shrink();
     }
-
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        _applyAnimate(widget.model),
-        StudioVariables.isLinkMode == false && StudioVariables.isAutoPlay == true
-            ? OnFrameMenu(
-                key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
-                playTimer: _playTimer,
-                model: widget.model,
-              )
-            : _isLinkEnter == true && _contentsManager!.length() > 0
-                ? _onLinkCursor()
-                : const SizedBox.shrink(),
-      ],
-    );
+    logger.info('_frameBody3 ${StudioVariables.isLinkMode}');
+    return StreamBuilder<bool>(
+        stream: _linkReceiveEvent!.eventStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data != null && snapshot.data is bool) {
+            logger.info('_frameBody3 _linkReceiveEvent (AutoPlay=$snapshot.data)');
+          }
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              _applyAnimate(widget.model),
+              StudioVariables.isLinkMode == false && StudioVariables.isAutoPlay == true
+                  ? OnFrameMenu(
+                      key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
+                      playTimer: _playTimer,
+                      model: widget.model,
+                    )
+                  : StudioVariables.isPreview == false &&
+                          _isLinkEnter == true &&
+                          _contentsManager!.length() > 0
+                      ? _onLinkCursor()
+                      : const SizedBox.shrink(),
+            ],
+          );
+        });
   }
 
   Widget _onLinkCursor() {

@@ -18,7 +18,6 @@ import 'package:routemaster/routemaster.dart';
 
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
-import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
@@ -103,6 +102,7 @@ class _BookMainPageState extends State<BookMainPage> {
   bool dropDownButtonOpened = false;
 
   OffsetEventController? _linkSendEvent;
+  AutoPlayChangeEventController? _autoPlaySendEvent;
 
   @override
   void initState() {
@@ -110,6 +110,8 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.info("---_BookMainPageState-----------------------------------------");
     final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     _linkSendEvent = linkSendEvent;
+    final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
+    _autoPlaySendEvent = autoPlaySendEvent;
 
     BookPreviewMenu.previewMenuPressed = false;
 
@@ -544,6 +546,7 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _controllers() {
+    logger.info('_controller----${StudioVariables.isAutoPlay}---------');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -587,6 +590,7 @@ class _BookMainPageState extends State<BookMainPage> {
                 hasShadow: false,
                 tooltip: CretaStudioLang.tooltipScale,
                 extended: CretaIconToggleButton(
+                  key: ValueKey('HandToolToggleButton'),
                   buttonStyle: ToggleButtonStyle.fill_gray_i_m,
                   toggleValue: StudioVariables.isHandToolMode,
                   icon1: Icons.transit_enterexit_outlined,
@@ -602,42 +606,44 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
               SizedBox(width: padding),
               CretaIconToggleButton(
+                key: ValueKey('MuteToggleButton'),
                 toggleValue: StudioVariables.isMute,
                 icon1: Icons.volume_off_outlined,
                 icon2: Icons.volume_up_outlined,
                 tooltip: CretaStudioLang.tooltipVolume,
                 buttonSize: 20,
                 onPressed: () {
-                  _globalToggleMute();
+                  StudioVariables.globalToggleMute();
                 },
               ),
               SizedBox(width: padding / 2),
               CretaIconToggleButton(
+                key: ValueKey('AutoPlayToggleButton ${StudioVariables.isAutoPlay}'),
                 toggleValue: StudioVariables.isAutoPlay,
                 icon1: Icons.pause_outlined,
                 icon2: Icons.play_arrow,
                 tooltip: CretaStudioLang.tooltipPause,
                 buttonSize: StudioVariables.isAutoPlay ? 20 : 30,
                 onPressed: () {
-                  _globalToggleAutoPlay();
+                  StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent);
                 },
               ),
               //SizedBox(width: padding),
 //VerticalDivider(),
-              SizedBox(width: padding / 2),
-              if (StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false)
-                BTN.floating_lc(
-                  icon: Icon(Icons.radio_button_checked_outlined,
-                      size: 20, color: CretaColor.primary),
-                  onPressed: () {
-                    setState(() {
-                      StudioVariables.isLinkMode = true;
-                      _globalToggleAutoPlay(forceValue: false);
-                    });
-                  },
-                  hasShadow: false,
-                  tooltip: CretaStudioLang.tooltipLink,
-                ),
+              // SizedBox(width: padding / 2),
+              // if (StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false)
+              //   BTN.floating_lc(
+              //     icon: Icon(Icons.radio_button_checked_outlined,
+              //         size: 20, color: CretaColor.primary),
+              //     onPressed: () {
+              //       setState(() {
+              //         StudioVariables.isLinkMode = true;
+              //         _globalToggleAutoPlay(forceValue: false);
+              //       });
+              //     },
+              //     hasShadow: false,
+              //     tooltip: CretaStudioLang.tooltipLink,
+              //   ),
             ],
           ),
         ),
@@ -807,10 +813,9 @@ class _BookMainPageState extends State<BookMainPage> {
               //   return;
               // }
               BookPreviewMenu.previewMenuPressed = false;
-
-              if (StudioVariables.isAutoPlay) {
-                _globalToggleAutoPlay(save: false);
-              }
+              StudioVariables.isLinkMode = false;
+              StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
+                  forceValue: false, save: false);
               if (kReleaseMode) {
                 String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
                 AppRoutes.launchTab(url);
@@ -925,10 +930,11 @@ class _BookMainPageState extends State<BookMainPage> {
                 });
               },
               muteFunction: () {
-                _globalToggleMute(save: false);
+                StudioVariables.globalToggleMute(save: false);
               },
               playFunction: () {
-                _globalToggleAutoPlay(save: false);
+                StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
+                    save: false);
               },
               gotoNext: () {
                 BookPreviewMenu.previewMenuPressed = true;
@@ -1026,63 +1032,5 @@ class _BookMainPageState extends State<BookMainPage> {
     //   //   BookMainPage.selectedStick = idx;
     //   // }
     // });
-  }
-
-  void _globalToggleMute({bool save = true}) {
-    StudioVariables.isMute = !StudioVariables.isMute;
-    if (save) {
-      LoginPage.userPropertyManagerHolder?.setMute(StudioVariables.isMute);
-    }
-    if (BookMainPage.pageManagerHolder == null) {
-      return;
-    }
-    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-    if (pageModel == null) {
-      return;
-    }
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
-    if (frameManager == null) {
-      return;
-    }
-    if (StudioVariables.isMute == true) {
-      logger.info('frameManager.setSoundOff()--------');
-      frameManager.setSoundOff();
-    } else {
-      logger.info('frameManager.resumeSound()--------');
-      frameManager.resumeSound();
-    }
-  }
-
-  void _globalToggleAutoPlay({bool save = true, bool? forceValue}) {
-    if (forceValue == null) {
-      StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
-    } else {
-      StudioVariables.isAutoPlay = forceValue;
-    }
-    if (save) {
-      LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
-    }
-
-    // _sendEvent 가 필요
-    _linkSendEvent?.sendEvent(Offset(1, 1));
-
-    if (BookMainPage.pageManagerHolder == null) {
-      return;
-    }
-    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-    if (pageModel == null) {
-      return;
-    }
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
-    if (frameManager == null) {
-      return;
-    }
-    if (StudioVariables.isAutoPlay == true) {
-      logger.info('frameManager.resume()--------');
-      frameManager.resume();
-    } else {
-      logger.info('frameManager.pause()--------');
-      frameManager.pause();
-    }
   }
 }

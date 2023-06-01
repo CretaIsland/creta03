@@ -7,6 +7,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import '../../../data_io/page_manager.dart';
+import '../../../design_system/buttons/creta_button.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/component/custom_image.dart';
@@ -243,7 +244,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   textStyle: model.isShow.value
                       ? CretaFont.titleSmall
                       : CretaFont.titleSmall.copyWith(color: CretaColor.text[300]!),
-                  width: 200,
+                  width: 180,
                   height: 20,
                   onEditComplete: (value) {
                     setState(() {
@@ -256,6 +257,26 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
             ),
             Row(
               children: [
+                BTN.fill_blue_i_menu(
+                    tooltip: CretaStudioLang.linkFrameTooltip,
+                    tooltipFg: CretaColor.text,
+                    icon: Icons.radio_button_checked_outlined,
+                    decoType: CretaButtonDeco.opacity,
+                    iconColor: CretaColor.primary,
+                    buttonColor: CretaButtonColor.primary,
+                    onPressed: () {
+                      logger.info("page header onPageLink");
+                      // BookMainPage.containeeNotifier!.setFrameClick(true);
+                      // if (StudioVariables.isLinkMode == false) {
+                      //   StudioVariables.isLinkMode = true;
+                      //   if (StudioVariables.isAutoPlay = true) {
+                      //     StudioVariables.globalToggleAutoPlay(null, null, forceValue: false);
+                      //   } else {
+                      //     //_linkSendEvent?.sendEvent(const Offset(1, 1));
+                      //   }
+                      //   //widget.onFrameLink.call();
+                      // }
+                    }),
                 BTN.fill_gray_i_m(
                   tooltip: CretaStudioLang.copy,
                   tooltipBg: CretaColor.text[700]!,

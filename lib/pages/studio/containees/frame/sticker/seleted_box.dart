@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../design_system/creta_color.dart';
 import '../../../studio_constant.dart';
-import '../../../studio_variables.dart';
 import 'draggable_stickers.dart';
 import 'resize_point.dart';
 
@@ -65,6 +64,7 @@ class SelectedBox extends StatelessWidget {
       ),
     );
 
+    // ignore: unused_local_variable
     final linkCandiator = ScaleAniContainer(
       width: normalizedWidth,
       height: normalizedHeight,
@@ -74,20 +74,20 @@ class SelectedBox extends StatelessWidget {
     double widthCenter = normalizedWidth / 2 + resizePointerOffset;
 
     return Consumer<FrameSelectNotifier>(builder: (context, frameSelectNotifier, childW) {
-      if (StudioVariables.isLinkSelectMode == false) {
-        if (frameSelectNotifier.selectedAssetId == mid) {
-          return Stack(
-            children: [
-              selectedBox,
-              ..._dragBoxes(heightCenter, widthCenter),
-            ],
-          );
-        }
-      } else {
-        if (frameSelectNotifier.selectedAssetId != mid) {
-          return linkCandiator;
-        }
+      //if (StudioVariables.isLinkSelectMode == false) {
+      if (frameSelectNotifier.selectedAssetId == mid) {
+        return Stack(
+          children: [
+            selectedBox,
+            ..._dragBoxes(heightCenter, widthCenter),
+          ],
+        );
       }
+      // } else {
+      //   if (frameSelectNotifier.selectedAssetId != mid) {
+      //     return linkCandiator;
+      //   }
+      // }
       return const SizedBox.shrink();
     });
   }

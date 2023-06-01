@@ -21,7 +21,8 @@ class StickerView extends StatefulWidget {
   final void Function(String, String) onFrameBack;
   final void Function(String, String) onFrameFront;
   final void Function(String) onFrameMain;
-  final void Function(String, double) onFrameRotate;
+  //final void Function(String, double) onFrameRotate;
+  final void Function(String) onFrameLink;
   final void Function(String) onFrameCopy;
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
@@ -46,7 +47,8 @@ class StickerView extends StatefulWidget {
     required this.onFrameBack,
     required this.onFrameFront,
     required this.onFrameMain,
-    required this.onFrameRotate,
+    //required this.onFrameRotate,
+    required this.onFrameLink,
     required this.onFrameCopy,
     required this.onTap,
     required this.onComplete,
@@ -143,7 +145,8 @@ class StickerViewState extends State<StickerView> {
                     onFrameFront: widget.onFrameFront,
                     onFrameCopy: widget.onFrameCopy,
                     onFrameMain: widget.onFrameMain,
-                    onFrameRotate: widget.onFrameRotate,
+                    //onFrameRotate: widget.onFrameRotate,
+                    onFrameLink: widget.onFrameLink,
                     onTap: widget.onTap,
                     onResizeButtonTap: widget.onResizeButtonTap,
                     onComplete: widget.onComplete,

@@ -318,6 +318,7 @@ class CretaStudioLang {
   static String frontFrameTooltip = '앞으로 당기기';
   static String backFrameTooltip = '뒤로 보내기';
   static String rotateFrameTooltip = '15도씩 회전합니다';
+  static String linkFrameTooltip = '다른 프레임 콘텐츠에 연결합니다';
   static String mainFrameTooltip = '메인 프레임으로 지정합니다';
 
   static String flipConTooltip = '콘텐츠 플립';

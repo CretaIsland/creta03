@@ -1,7 +1,14 @@
 import 'dart:ui';
 
+import 'package:hycop/common/util/logger.dart';
+
 import '../../common/creta_constant.dart';
+import '../../data_io/frame_manager.dart';
+import '../../model/page_model.dart';
+import '../login_page.dart';
+import 'book_main_page.dart';
 import 'studio_constant.dart';
+import 'studio_getx_controller.dart';
 
 class StudioVariables {
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
@@ -37,4 +44,65 @@ class StudioVariables {
 
   static bool isPreview = false;
   static bool isLinkSelectMode = false;
+
+  static void globalToggleMute({bool save = true}) {
+    StudioVariables.isMute = !StudioVariables.isMute;
+    if (save) {
+      LoginPage.userPropertyManagerHolder?.setMute(StudioVariables.isMute);
+    }
+    if (BookMainPage.pageManagerHolder == null) {
+      return;
+    }
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) {
+      return;
+    }
+    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+    if (frameManager == null) {
+      return;
+    }
+    if (StudioVariables.isMute == true) {
+      logger.info('frameManager.setSoundOff()--------');
+      frameManager.setSoundOff();
+    } else {
+      logger.info('frameManager.resumeSound()--------');
+      frameManager.resumeSound();
+    }
+  }
+
+  static void globalToggleAutoPlay(
+      OffsetEventController? linkSendEvent, AutoPlayChangeEventController? autoPlaySendEvent,
+      {bool save = true, bool? forceValue}) {
+    if (forceValue == null) {
+      StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
+    } else {
+      StudioVariables.isAutoPlay = forceValue;
+    }
+    if (save) {
+      LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
+    }
+
+    // _sendEvent 가 필요
+    linkSendEvent?.sendEvent(const Offset(1, 1));
+    autoPlaySendEvent?.sendEvent(StudioVariables.isAutoPlay);
+
+    if (BookMainPage.pageManagerHolder == null) {
+      return;
+    }
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) {
+      return;
+    }
+    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+    if (frameManager == null) {
+      return;
+    }
+    if (StudioVariables.isAutoPlay == true) {
+      logger.info('frameManager.resume()--------');
+      frameManager.resume();
+    } else {
+      logger.info('frameManager.pause()--------');
+      frameManager.pause();
+    }
+  }
 }

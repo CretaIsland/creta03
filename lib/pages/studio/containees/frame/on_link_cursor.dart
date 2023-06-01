@@ -100,6 +100,7 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           double dataY = posY / widget.applyScale + LayoutConst.stikerOffset / 2;
 
           StudioVariables.isLinkMode = false;
+          logger.info('OnLinkCursor ${StudioVariables.isLinkMode}');
           BookMainPage.bookManagerHolder!.notify();
           widget.contentsManager
               .createLink(

@@ -129,7 +129,7 @@ class _LinkWidgetState extends State<LinkWidget> {
             return value;
           });
         },
-        child: StudioVariables.isAutoPlay == true
+        child: StudioVariables.isAutoPlay == true || StudioVariables.isPreview == true
             ? _mainButton(model)
             : Stack(
                 //alignment: Alignment.bottomRight,
@@ -145,7 +145,7 @@ class _LinkWidgetState extends State<LinkWidget> {
   Widget _mainButton(LinkModel model) {
     const double iconSize = 24;
     return GestureDetector(
-      onLongPressDown: (detail) {
+      onTapUp: (d) {
         logger.info('button pressed ${model.mid}');
         if (StudioVariables.isAutoPlay == true) {
           // 플레이모드에서는 연결된  프레임이나 페이지를 띄운다.
