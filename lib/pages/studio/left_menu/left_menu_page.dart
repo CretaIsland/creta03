@@ -23,6 +23,7 @@ import '../studio_variables.dart';
 
 class LeftMenuPage extends StatefulWidget {
   final bool isFolded;
+
   const LeftMenuPage({super.key, this.isFolded = false});
 
   @override
@@ -56,6 +57,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   int _pageCount = 0;
   int _firstPage = 100;
 
+  //OffsetEventController? _linkSendEvent;
+
   // void _scrollListener() {
   //   setState(() {
   //     scrollOffset = _scrollController.offset;
@@ -64,6 +67,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   @override
   void initState() {
+    super.initState();
     //_scrollController.addListener(_scrollListener);
     logger.finer('_LeftMenuPageState.initState');
     _scrollController = ScrollController(initialScrollOffset: 0.0);
@@ -72,7 +76,9 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     bodyHeight = bodyWidth * (1080 / 1920);
     cardHeight = bodyHeight + headerHeight;
     addCardSpace = headerHeight + verticalPadding;
-    super.initState();
+
+    //final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
+    //_linkSendEvent = linkSendEvent;
   }
 
   @override
@@ -266,16 +272,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                     buttonColor: CretaButtonColor.primary,
                     onPressed: () {
                       logger.info("page header onPageLink");
-                      // BookMainPage.containeeNotifier!.setFrameClick(true);
-                      // if (StudioVariables.isLinkMode == false) {
-                      //   StudioVariables.isLinkMode = true;
-                      //   if (StudioVariables.isAutoPlay = true) {
-                      //     StudioVariables.globalToggleAutoPlay(null, null, forceValue: false);
-                      //   } else {
-                      //     //_linkSendEvent?.sendEvent(const Offset(1, 1));
-                      //   }
-                      //   //widget.onFrameLink.call();
-                      // }
+                      //BookMainPage.containeeNotifier!.setFrameClick(true);
+                      if (StudioVariables.linkNew()) {
+                        //_linkSendEvent?.sendEvent(Offset(1, 1));
+                        BookMainPage.bookManagerHolder?.notify();
+                      }
                     }),
                 BTN.fill_gray_i_m(
                   tooltip: CretaStudioLang.copy,

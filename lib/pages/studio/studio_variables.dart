@@ -8,7 +8,6 @@ import '../../model/page_model.dart';
 import '../login_page.dart';
 import 'book_main_page.dart';
 import 'studio_constant.dart';
-import 'studio_getx_controller.dart';
 
 class StudioVariables {
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
@@ -34,7 +33,8 @@ class StudioVariables {
   static double virtualHeight = 961;
 
   static bool isHandToolMode = false;
-  static bool isLinkMode = false;
+  static bool isLinkNewMode = false;
+  static bool isLinkEditMode = false;
 
   static double applyScale = 1;
 
@@ -43,7 +43,6 @@ class StudioVariables {
   static bool isAutoPlay = true;
 
   static bool isPreview = false;
-  static bool isLinkSelectMode = false;
 
   static void globalToggleMute({bool save = true}) {
     StudioVariables.isMute = !StudioVariables.isMute;
@@ -71,8 +70,12 @@ class StudioVariables {
   }
 
   static void globalToggleAutoPlay(
-      OffsetEventController? linkSendEvent, AutoPlayChangeEventController? autoPlaySendEvent,
-      {bool save = true, bool? forceValue}) {
+      // OffsetEventController? linkSendEvent,
+      // AutoPlayChangeEventController? autoPlaySendEvent,
+      {
+    bool save = true,
+    bool? forceValue,
+  }) {
     if (forceValue == null) {
       StudioVariables.isAutoPlay = !StudioVariables.isAutoPlay;
     } else {
@@ -83,8 +86,8 @@ class StudioVariables {
     }
 
     // _sendEvent 가 필요
-    linkSendEvent?.sendEvent(const Offset(1, 1));
-    autoPlaySendEvent?.sendEvent(StudioVariables.isAutoPlay);
+    //linkSendEvent?.sendEvent(const Offset(1, 1));
+    //autoPlaySendEvent?.sendEvent(StudioVariables.isAutoPlay);
 
     if (BookMainPage.pageManagerHolder == null) {
       return;
@@ -104,5 +107,22 @@ class StudioVariables {
       logger.info('frameManager.pause()--------');
       frameManager.pause();
     }
+  }
+
+  static bool get isLinkState => isLinkEditMode || isLinkNewMode;
+  static bool get isNotLinkState => !isLinkEditMode && !isLinkNewMode;
+
+  static bool linkNew() {
+    if (StudioVariables.isLinkNewMode == false) {
+      StudioVariables.isLinkNewMode = true;
+      if (StudioVariables.isAutoPlay = true) {
+        StudioVariables.globalToggleAutoPlay(forceValue: false);
+      }
+      // if (StudioVariables.isLinkEditMode == false) {
+      //   StudioVariables.isLinkEditMode = true;
+      // }
+      return true;
+    }
+    return false;
   }
 }

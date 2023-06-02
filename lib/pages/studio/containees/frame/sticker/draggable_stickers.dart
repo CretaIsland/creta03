@@ -43,7 +43,7 @@ class DraggableStickers extends StatefulWidget {
   final void Function(DragUpdate, String) onUpdate;
   final void Function(String) onFrameDelete;
   //final void Function(String, double) onFrameRotate;
-  final void Function(String) onFrameLink;
+  //final void Function(String) onFrameLink;
   final void Function(String, String) onFrameBack;
   final void Function(String, String) onFrameFront;
   final void Function(String) onFrameCopy;
@@ -65,7 +65,7 @@ class DraggableStickers extends StatefulWidget {
     required this.onUpdate,
     required this.onFrameDelete,
     //required this.onFrameRotate,
-    required this.onFrameLink,
+    //required this.onFrameLink,
     required this.onFrameBack,
     required this.onFrameFront,
     required this.onFrameCopy,
@@ -230,7 +230,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //     child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
           //   ),
           // ),
-          StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
+          StudioVariables.isHandToolMode == false //&& StudioVariables.isNotLinkState
               ? InkWell(
                   splashColor: Colors.transparent,
                   onTap: () {
@@ -377,11 +377,11 @@ class _DraggableStickersState extends State<DraggableStickers> {
               //   widget.onFrameRotate.call(selectedSticker.id, after);
               //   setState(() {});
               // },
-              onFrameLink: () {
-                logger.fine('onFrameLink');
-                widget.onFrameLink.call(selectedSticker.id);
-                //setState(() {});
-              },
+              // onFrameLink: () {
+              //   logger.fine('onFrameLink');
+              //   widget.onFrameLink.call(selectedSticker.id);
+              //   //setState(() {});
+              // },
 
               onContentsFlip: () {
                 logger.fine('onContentsFlip');

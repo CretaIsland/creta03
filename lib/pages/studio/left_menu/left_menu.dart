@@ -32,7 +32,10 @@ class LeftMenuNotifier extends ChangeNotifier {
 class LeftMenu extends StatefulWidget {
   //final LeftMenuEnum selectedStick;
   final Function onClose;
-  const LeftMenu({super.key, required this.onClose});
+  const LeftMenu({
+    super.key,
+    required this.onClose,
+  });
 
   @override
   State<LeftMenu> createState() => _LeftMenuState();

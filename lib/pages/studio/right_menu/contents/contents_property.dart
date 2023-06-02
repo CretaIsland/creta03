@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
 
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -41,6 +42,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //ContentsManager? _contentsManager;
 
   // static bool _isInfoOpen = false;
+  static bool _isLinkControlOpen = false;
   static bool _isPlayControlOpen = false;
   static bool _isTextFontOpen = false;
   static bool _isTextBorderOpen = false;
@@ -48,6 +50,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
 
   ContentsEventController? _sendEvent;
   //ContentsEventController? _receiveEvent;
+  OffsetEventController? _linkSendEvent;
 
   @override
   void initState() {
@@ -64,6 +67,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     } else {
       _sendEvent = sendEvent;
     }
+
+    final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
+    _linkSendEvent = linkSendEvent;
+
     //final ContentsEventController receiveEvent = Get.find(tag: 'contents-main-to-property');
     //_receiveEvent = receiveEvent;
 
@@ -99,6 +106,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       //       left: horizontalPadding, right: horizontalPadding - (isAuthor() ? 16 : 0)),
       //   child: _copyRight(),
       // ),
+      propertyDivider(height: 28),
+      if (!widget.model.isText()) _linkControl(),
       propertyDivider(height: 28),
       if (!widget.model.isText()) _imageControl(),
       if (widget.model.isText()) _textFont(),
@@ -524,6 +533,53 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           ),
         ),
       ],
+    );
+  }
+
+  Widget _linkControl() {
+    return Padding(
+      padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
+      child: propertyCard(
+        isOpen: _isLinkControlOpen,
+        onPressed: () {
+          setState(() {
+            _isLinkControlOpen = !_isLinkControlOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.linkControl, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: _linkToggle(),
+        hasRemoveButton: false,
+        onDelete: () {},
+        bodyWidget: _linkControlBody(),
+      ),
+    );
+  }
+
+  Widget _linkControlBody() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: propertyLine(
+        // 링크 편집 모드
+        name: CretaStudioLang.linkControl,
+        widget: _linkToggle(),
+      ),
+    );
+  }
+
+  Widget _linkToggle() {
+    return CretaToggleButton(
+      width: 54 * 0.75,
+      height: 28 * 0.75,
+      defaultValue: StudioVariables.isLinkEditMode,
+      onSelected: (value) {
+        StudioVariables.isLinkEditMode = value;
+        if (StudioVariables.isLinkEditMode == true) {
+          StudioVariables.isAutoPlay = true;
+        }
+        _linkSendEvent!.sendEvent(Offset(1, 1));
+        setState(() {});
+      },
     );
   }
 }
