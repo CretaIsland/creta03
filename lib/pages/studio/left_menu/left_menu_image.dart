@@ -1,13 +1,18 @@
 import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta03/design_system/text_field/creta_text_field.dart';
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../design_system/component/custom_image.dart';
+import '../../../design_system/component/snippet.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../studio_constant.dart';
+import 'image/api_services.dart';
 
 class LeftMenuImage extends StatefulWidget {
   const LeftMenuImage({super.key});
@@ -22,6 +27,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   final double verticalPadding = 18;
   final double horizontalPadding = 24;
 
+  String searchText = '';
   late String _selectedTab;
   late double bodyWidth;
 
@@ -29,7 +35,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   final TextEditingController _textController = TextEditingController();
 
   List<String> imgUrl = [];
-  // AIState _state = AIState.ready;
+  AIState _state = AIState.ready;
 
   final imageTitle = [
     {
@@ -119,7 +125,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
       width: bodyWidth,
       hintText: CretaStudioLang.queryHintText,
       onSearch: (value) {
-        value = _textController.text;
+        searchText = value;
       },
     );
   }
@@ -132,12 +138,12 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         children: [
           _textQuery(),
           Container(
-            height: 400,
+            height: StudioVariables.workHeight - 250,
             padding: const EdgeInsets.only(top: 10),
             child: ListView.builder(
               itemCount: imageTitle.length,
               itemBuilder: (BuildContext context, int index) {
-                return imageDisplay00(
+                return imageDisplay(
                   title: imageTitle[index]["title"] as String,
                   colorname: imageTitle[index]["color"] as Color,
                 );
@@ -160,7 +166,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 BTN.line_blue_t_m(text: CretaStudioLang.myUploadedImage, onPressed: () {}),
-                _imageDisplay01(),
+                _imageDisplayUploaded(),
               ],
             ),
           ),
@@ -170,28 +176,31 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
     //AI 생성
     if (_selectedTab == menu[2]) {
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: verticalPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(CretaStudioLang.aiImageGeneration, style: CretaFont.titleSmall),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              child: _textQuery(),
-            ),
-            Container(
-              color: Colors.purple.shade100,
-              height: 350,
-            ),
-          ],
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _state == AIState.ready
+              ? Text(CretaStudioLang.aiImageGeneration, style: CretaFont.titleSmall)
+              : Text(CretaStudioLang.aiGeneratedImage, style: CretaFont.titleSmall),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: CretaTextField.short(
+                controller: _textController,
+                textFieldKey: GlobalKey(),
+                value: '',
+                hintText: '플레이스홀더',
+                onEditComplete: (value) {
+                  logger.info('onEditComplete value=$value');
+                }),
+          ),
+          _imageDisplayAI(),
+        ],
       );
     }
     return const SizedBox.shrink();
   }
 
-  Container imageDisplay00({String title = "Title", Color colorname = Colors.black}) {
+  Container imageDisplay({String title = "Title", Color colorname = Colors.black}) {
     // ignore: sized_box_for_whitespace, avoid_unnecessary_containers
     return Container(
       child: Column(
@@ -219,7 +228,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     );
   }
 
-  Widget _imageDisplay01() {
+  Widget _imageDisplayUploaded() {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -234,5 +243,105 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         ],
       ),
     );
+  }
+
+  Widget _imageDisplayAI() {
+    return SizedBox(
+      height: StudioVariables.workHeight,
+      child: Column(
+        children: [
+          _state == AIState.ready
+              ? Column(
+                  children: [
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: Text(CretaStudioLang.imageStyle, style: CretaFont.titleSmall)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      color: Colors.pink.shade100,
+                      height: 50,
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.symmetric(vertical: verticalPadding),
+                      child: _state != AIState.processing
+                          ? BTN.line_blue_t_m(
+                              text: CretaStudioLang.aiImageGeneration,
+                              onPressed: () async {
+                                if (_textController.text.isNotEmpty) {
+                                  setState(() {
+                                    _state = AIState.processing;
+                                  });
+                                  imgUrl =
+                                      (await Api.generateImageAI(_textController.text, numImg));
+                                  setState(() {
+                                    _state = imgUrl.isNotEmpty ? AIState.succeed : AIState.fail;
+                                  });
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                      content: Text(
+                                          'Please enter text description for image generation')));
+                                }
+                              },
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                )
+              : _aiResult()
+        ],
+      ),
+    );
+  }
+
+  Widget _aiResult() {
+    switch (_state) {
+      case AIState.succeed:
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              height: 400,
+              child: GridView.builder(
+                itemCount: imgUrl.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, childAspectRatio: 1 / 1),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (BuildContext context, int index) {
+                  return CustomImage(
+                      key: GlobalKey(),
+                      width: 160,
+                      height: 160,
+                      image: imgUrl[index],
+                      hasAni: false);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BTN.line_blue_t_m(text: CretaStudioLang.generateImageAgain, onPressed: () {}),
+                  const SizedBox(width: 5.0),
+                  BTN.line_blue_t_m(text: CretaStudioLang.generateFromBeginning, onPressed: () {}),
+                ],
+              ),
+            ),
+          ],
+        );
+      case AIState.processing:
+        return Container(
+          color: Colors.white, // Placeholder color
+          child: Center(
+            child: Snippet.showWaitSign(),
+          ),
+        );
+      case AIState.fail:
+        return const Center(child: Text('ERROR'));
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }

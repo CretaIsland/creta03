@@ -53,7 +53,7 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
                   CretaSearchBar.long(
                       hintText: '플레이스홀더',
                       onSearch: (value) {
-                        logger.finest('alue=$value');
+                        logger.finest('value=$value');
                       }),
                 ],
               ),

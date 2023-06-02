@@ -248,8 +248,6 @@ class CretaStudioLang {
   static const String poligonFrameError = "준비된 도형 프레임이 없습니다.";
   static const String animationFrameError = "준비된 애니메이션 프레임이 없습니다.";
 
-  static const String aiImageGeneration = '생성할 이미지'; // added by Mai 230531
-  static const String aiGeneratedImage = '생성된 이미지'; // added by Mai 230531
   static const String queryHintText = '플레이스 홀더'; // added by Mai 230531
 
   static const String recentUsedImage = '최근 사용한 이미지'; // added by Mai 230601
@@ -258,6 +256,13 @@ class CretaStudioLang {
 
   static const String myUploadedImage = '내 파일 가져오기'; // added by Mai 230601
   static const String recentUploadedImage = '최근 가져온 이미지'; // added by Mai 230601
+
+  static const String aiImageGeneration = '생성할 이미지'; // added by Mai 230531
+  static const String aiGeneratedImage = '생성된 이미지'; // added by Mai 230531
+  static const String imageStyle = '이미지 스타일'; // added by Mai 230601
+  static const String generateAIImage = '이미지 생ㅇ성하기'; // added by Mai 230602
+  static const String generateImageAgain = '다시 생성하기'; // added by Mai 230602
+  static const String generateFromBeginning = '처음부터 시작'; // added by Mai 230602
 
   static const String fixedRatio = "가로세로비를 고정합니다";
 

@@ -1,7 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
 import 'package:creta03/pages/studio/containees/contents/link_widget.dart';
-import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
