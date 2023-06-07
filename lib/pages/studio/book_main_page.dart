@@ -810,7 +810,7 @@ class _BookMainPageState extends State<BookMainPage> {
               // }
               BookPreviewMenu.previewMenuPressed = false;
               StudioVariables.isLinkNewMode = false;
-              StudioVariables.isLinkEditMode = false;
+              //StudioVariables.isLinkEditMode = false;
               //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
               StudioVariables.globalToggleAutoPlay(forceValue: false, save: false);
               if (kReleaseMode) {

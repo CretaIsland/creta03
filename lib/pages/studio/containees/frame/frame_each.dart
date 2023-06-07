@@ -288,7 +288,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   // }
 
   bool _isDropAble(FrameModel model) {
-    if (StudioVariables.isLinkState) {
+    if (StudioVariables.isLinkNewMode) {
       return false;
     }
     if (model.frameType == FrameType.text) {

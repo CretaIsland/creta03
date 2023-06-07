@@ -571,10 +571,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     return CretaToggleButton(
       width: 54 * 0.75,
       height: 28 * 0.75,
-      defaultValue: StudioVariables.isLinkEditMode,
+      defaultValue: widget.model.isLinkEditMode,
       onSelected: (value) {
-        StudioVariables.isLinkEditMode = value;
-        if (StudioVariables.isLinkEditMode == true) {
+        widget.model.isLinkEditMode = value;
+        if (widget.model.isLinkEditMode == true) {
           StudioVariables.isAutoPlay = true;
         }
         _linkSendEvent!.sendEvent(Offset(1, 1));

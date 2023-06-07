@@ -102,7 +102,7 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           StudioVariables.isLinkNewMode = false;
           //StudioVariables.isLinkEditMode = true;
           logger.info(
-              'OnLinkCursor linkNew=${StudioVariables.isLinkNewMode}, linkEdit=${StudioVariables.isLinkEditMode}');
+              'OnLinkCursor linkNew=${StudioVariables.isLinkNewMode}, linkEdit=${contentsModel.isLinkEditMode}');
           BookMainPage.bookManagerHolder!.notify();
           widget.contentsManager
               .createLink(

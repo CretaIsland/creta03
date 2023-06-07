@@ -263,21 +263,22 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
             ),
             Row(
               children: [
-                BTN.fill_blue_i_menu(
-                    tooltip: CretaStudioLang.linkFrameTooltip,
-                    tooltipFg: CretaColor.text,
-                    icon: Icons.radio_button_checked_outlined,
-                    decoType: CretaButtonDeco.opacity,
-                    iconColor: CretaColor.primary,
-                    buttonColor: CretaButtonColor.primary,
-                    onPressed: () {
-                      logger.info("page header onPageLink");
-                      //BookMainPage.containeeNotifier!.setFrameClick(true);
-                      if (StudioVariables.linkNew()) {
-                        //_linkSendEvent?.sendEvent(Offset(1, 1));
-                        BookMainPage.bookManagerHolder?.notify();
-                      }
-                    }),
+                if (_pageManager!.isSelected(model.mid) == false)
+                  BTN.fill_blue_i_menu(
+                      tooltip: CretaStudioLang.linkFrameTooltip,
+                      tooltipFg: CretaColor.text,
+                      icon: Icons.radio_button_checked_outlined,
+                      decoType: CretaButtonDeco.opacity,
+                      iconColor: CretaColor.primary,
+                      buttonColor: CretaButtonColor.primary,
+                      onPressed: () {
+                        logger.info("page header onPageLink");
+                        //BookMainPage.containeeNotifier!.setFrameClick(true);
+                        if (StudioVariables.linkNew()) {
+                          //_linkSendEvent?.sendEvent(Offset(1, 1));
+                          BookMainPage.bookManagerHolder?.notify();
+                        }
+                      }),
                 BTN.fill_gray_i_m(
                   tooltip: CretaStudioLang.copy,
                   tooltipBg: CretaColor.text[700]!,

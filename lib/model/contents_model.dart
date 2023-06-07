@@ -26,6 +26,8 @@ class ContentsModel extends CretaModel {
     _isPauseTimer = val;
   }
 
+  bool isLinkEditMode = false;
+
   //bool forceToChange = false;
   //bool changeToggle = false;
   // ]

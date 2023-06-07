@@ -111,7 +111,10 @@ class _LinkWidgetState extends State<LinkWidget> {
                     alignment: Alignment.center,
                     children: [
                       ..._drawLinkCursor(linkManager),
-                      if (_isHover && _isPlayAble() && StudioVariables.isNotLinkState)
+                      if (_isHover &&
+                          _isPlayAble() &&
+                          StudioVariables.isLinkNewMode == false &&
+                          widget.contentsModel.isLinkEditMode == false)
                         PlayButton(
                           key: GlobalObjectKey(
                               'PlayButton${widget.frameModel.mid}${widget.applyScale}'),
@@ -166,7 +169,9 @@ class _LinkWidgetState extends State<LinkWidget> {
     return Positioned(
       left: _position.dx,
       top: _position.dy,
-      child: StudioVariables.isPreview || StudioVariables.isNotLinkState
+      child: StudioVariables.isPreview ||
+              (StudioVariables.isLinkNewMode == false &&
+                  widget.contentsModel.isLinkEditMode == false)
           ? _mainButton(model)
           : GestureDetector(
               onScaleStart: (details) {
@@ -199,7 +204,9 @@ class _LinkWidgetState extends State<LinkWidget> {
                 //alignment: Alignment.bottomRight,
                 children: [
                   _mainButton(model),
-                  if (StudioVariables.isLinkEditMode) _delButton(model, linkManager),
+                  if (StudioVariables.isLinkNewMode == false &&
+                      widget.contentsModel.isLinkEditMode == false)
+                    _delButton(model, linkManager),
                 ],
               ),
             ),

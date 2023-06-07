@@ -87,7 +87,7 @@ class Snippet {
       appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
       floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: StudioVariables.isHandToolMode == false && StudioVariables.isNotLinkState
+      body: StudioVariables.isHandToolMode == false && StudioVariables.isLinkNewMode == false
           ? GestureDetector(
               behavior: HitTestBehavior.opaque,
               onLongPressDown: ((details) {

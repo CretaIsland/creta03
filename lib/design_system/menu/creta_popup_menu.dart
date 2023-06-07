@@ -127,7 +127,9 @@ class CretaPopupMenu {
         },
         child: Text(
           item.caption,
-          style: item.disabled ? CretaFont.buttonMedium.copyWith() : CretaFont.buttonMedium,
+          style: item.disabled
+              ? CretaFont.buttonMedium.copyWith(color: CretaColor.text[300]!)
+              : CretaFont.buttonMedium,
           // TextStyle(
           //   fontSize: 13,
           //   fontWeight: item.fontWeight,

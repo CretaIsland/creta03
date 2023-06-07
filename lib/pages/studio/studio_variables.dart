@@ -34,7 +34,7 @@ class StudioVariables {
 
   static bool isHandToolMode = false;
   static bool isLinkNewMode = false;
-  static bool isLinkEditMode = false;
+  //static bool isLinkEditMode = false;
 
   static double applyScale = 1;
 
@@ -109,8 +109,8 @@ class StudioVariables {
     }
   }
 
-  static bool get isLinkState => isLinkEditMode || isLinkNewMode;
-  static bool get isNotLinkState => !isLinkEditMode && !isLinkNewMode;
+  //static bool get isLinkState => isLinkEditMode || isLinkNewMode;
+  //static bool get isNotLinkState => !isLinkEditMode && !isLinkNewMode;
 
   static bool linkNew() {
     if (StudioVariables.isLinkNewMode == false) {
