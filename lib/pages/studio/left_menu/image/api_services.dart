@@ -35,16 +35,12 @@ class Api {
             // print(imageData);
           }
         }
-        // ignore: avoid_print
-        print('------ ULRs are ready!!! ------');
+        logger.info('------ URLs are ready!!! ------');
       } else {
-        // ignore: avoid_print
-        print('Cannot find Image URL');
+        logger.info('------ Cannot find Image URL ------');
       }
     } else {
-      // ignore: avoid_print
       logger.warning("Fail to fetch image: ${res.statusCode}");
-      // print("Fail to fetch image: ${res.statusCode}");
     }
     return resultUrl;
   }

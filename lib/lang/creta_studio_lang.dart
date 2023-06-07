@@ -260,7 +260,7 @@ class CretaStudioLang {
   static const String aiImageGeneration = '생성할 이미지'; // added by Mai 230531
   static const String aiGeneratedImage = '생성된 이미지'; // added by Mai 230531
   static const String imageStyle = '이미지 스타일'; // added by Mai 230601
-  static const String generateAIImage = '이미지 생ㅇ성하기'; // added by Mai 230602
+  static const String generateAIImage = '이미지 생성하기'; // added by Mai 230602
   static const String generateImageAgain = '다시 생성하기'; // added by Mai 230602
   static const String generateFromBeginning = '처음부터 시작'; // added by Mai 230602
 
