@@ -89,6 +89,8 @@ class CretaButton extends StatefulWidget {
 
   final void Function(bool)? onHover;
 
+  final bool useTapUp;
+
   CretaButton({
     required this.buttonType,
     required this.onPressed,
@@ -114,6 +116,7 @@ class CretaButton extends StatefulWidget {
     //this.sidePaddingSize = 0,
     this.sidePadding,
     this.onHover,
+    this.useTapUp = false,
     Key? key,
   }) : super(key: key) {
     _setColor();
@@ -288,14 +291,16 @@ class _CretaButtonState extends State<CretaButton> {
   Widget _myButton() {
     return GestureDetector(
       onLongPressDown: (details) {
-        logger.fine("Gest : CretaButton onLongPressDown");
-        setState(() {
-          clicked = true;
-          if (widget.isSelectedWidget) {
-            selected = !selected;
-          }
-        });
-        widget.onPressed.call();
+        if (widget.useTapUp == false) {
+          logger.fine("Gest : CretaButton onLongPressDown");
+          setState(() {
+            clicked = true;
+            if (widget.isSelectedWidget) {
+              selected = !selected;
+            }
+          });
+          widget.onPressed.call();
+        }
       },
       onLongPressUp: () {
         logger.fine("onLongPressUp");
@@ -305,11 +310,22 @@ class _CretaButtonState extends State<CretaButton> {
         //widget.onPressed.call();
       },
       onTapUp: (details) {
-        logger.fine("onTapUp");
-        setState(() {
-          clicked = false;
-        });
-        //widget.onPressed.call();
+        if (widget.useTapUp == false) {
+          logger.info("onTapUp");
+          setState(() {
+            clicked = false;
+          });
+          //widget.onPressed.call();
+        } else {
+          logger.fine("Gest : CretaButton onTapUp");
+          setState(() {
+            clicked = false;
+            if (widget.isSelectedWidget) {
+              selected = !selected;
+            }
+          });
+          widget.onPressed.call();
+        }
       },
       child: MouseRegion(
         cursor: widget.showClickableCursor ? SystemMouseCursors.click : MouseCursor.defer,
@@ -350,7 +366,8 @@ class _CretaButtonState extends State<CretaButton> {
             clipBehavior: Clip.antiAlias,
             //child: Center(
             child: Container(
-              margin: EdgeInsets.fromLTRB(widget.sidePadding?.left ?? 0, 0, widget.sidePadding?.right ?? 0, 0),
+              margin: EdgeInsets.fromLTRB(
+                  widget.sidePadding?.left ?? 0, 0, widget.sidePadding?.right ?? 0, 0),
               child: _getChild(),
             ),
             //),
@@ -610,9 +627,9 @@ class CretaButtonSidePadding {
 
   CretaButtonSidePadding.fromLR(double left, double right)
       : this(
-    left: left,
-    right: right,
-  );
+          left: left,
+          right: right,
+        );
 
   final double left;
   final double right;

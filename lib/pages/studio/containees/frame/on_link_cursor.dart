@@ -56,8 +56,8 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           if (snapshot.data != null && snapshot.data is Offset) {
             offset = snapshot.data!;
           }
-          //logger.info('_drawLinkCursor ($offset)');
-          if (StudioVariables.isLinkMode == false || offset == Offset.zero) {
+          logger.info('_drawLinkCursor ($offset)');
+          if (offset == Offset.zero) {
             return const SizedBox.shrink();
           }
           return _drawLinkCursor(offset);
@@ -77,7 +77,7 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
     double posX = position.dx - iconSize / 2 - widget.pageOffset.dx - widget.frameOffset.dx;
     double posY = position.dy - iconSize / 2 - widget.pageOffset.dy - widget.frameOffset.dy;
 
-    //logger.info('_drawLinkCursor ($posX, $posY)');
+    logger.info('_drawLinkCursor ($posX, $posY)');
 
     if (posX < 0 || posY < 0) {
       return const SizedBox.shrink();
@@ -99,8 +99,10 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           double dataX = posX / widget.applyScale + LayoutConst.stikerOffset / 2;
           double dataY = posY / widget.applyScale + LayoutConst.stikerOffset / 2;
 
-          StudioVariables.isLinkMode = false;
-          logger.info('OnLinkCursor ${StudioVariables.isLinkMode}');
+          StudioVariables.isLinkNewMode = false;
+          //StudioVariables.isLinkEditMode = true;
+          logger.info(
+              'OnLinkCursor linkNew=${StudioVariables.isLinkNewMode}, linkEdit=${StudioVariables.isLinkEditMode}');
           BookMainPage.bookManagerHolder!.notify();
           widget.contentsManager
               .createLink(

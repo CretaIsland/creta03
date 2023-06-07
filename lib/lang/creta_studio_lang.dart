@@ -357,6 +357,7 @@ class CretaStudioLang {
   static String fileSize = '파일 크기';
   static String imageFilter = '이미지 필터';
   static String imageControl = '이미지 조정';
+  static String linkControl = '링크 편집';
 
   static const List<String> imageFilterTypeList = [
     "화사한",

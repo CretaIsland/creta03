@@ -29,7 +29,7 @@ class MiniMenu extends StatefulWidget {
   final void Function() onFrameBack;
   final void Function() onFrameCopy;
   //final void Function() onFrameRotate;
-  final void Function() onFrameLink;
+
   final void Function() onFrameMain;
   final void Function(bool) onFrontBackHover;
   final void Function() onContentsFlip;
@@ -51,7 +51,7 @@ class MiniMenu extends StatefulWidget {
     required this.onFrameBack,
     required this.onFrameCopy,
     //required this.onFrameRotate,
-    required this.onFrameLink,
+
     required this.onFrameMain,
     required this.onFrontBackHover,
     required this.onContentsFlip,
@@ -240,14 +240,9 @@ class MiniMenuState extends State<MiniMenu> {
           onPressed: () {
             logger.info("MinuMenu onFrameLink");
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            if (StudioVariables.isLinkMode == false) {
-              StudioVariables.isLinkMode = true;
-              if (StudioVariables.isAutoPlay = true) {
-                StudioVariables.globalToggleAutoPlay(null, null, forceValue: false);
-              } else {
-                //_linkSendEvent?.sendEvent(const Offset(1, 1));
-              }
-              widget.onFrameLink.call();
+            if (StudioVariables.linkNew()) {
+              //_linkSendEvent?.sendEvent(const Offset(1, 1));
+              BookMainPage.bookManagerHolder!.notify();
             }
           }),
 

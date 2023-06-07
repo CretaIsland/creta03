@@ -163,11 +163,11 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
       //   //setState(() {});
       // },
-      onFrameLink: (mid) {
-        logger.info('FrameMain.onFrameLink  ${StudioVariables.isLinkMode}');
-        BookMainPage.bookManagerHolder!.notify();
-        //setState(() {});
-      },
+      // onFrameLink: (mid) {
+      //   logger.info('FrameMain.onFrameLink  ${StudioVariables.isLinkNewMode}');
+      //   BookMainPage.bookManagerHolder!.notify();
+      //   //setState(() {});
+      // },
       onFrameMain: (mid) {
         logger.fine('Frame onFrameMain');
         _setMain(mid);

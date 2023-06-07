@@ -25,8 +25,6 @@ import '../../studio_variables.dart';
 import '../containee_mixin.dart';
 import '../contents/contents_main.dart';
 import 'frame_play_mixin.dart';
-import 'on_frame_menu.dart';
-import 'on_link_cursor.dart';
 
 class FrameEach extends StatefulWidget {
   final FrameManager frameManager;
@@ -61,9 +59,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   //final bool _isHover = false;
   bool _showBorder = false;
 
-  OffsetEventController? _linkSendEvent;
+  //OffsetEventController? _linkSendEvent;
   AutoPlayChangeEventController? _linkReceiveEvent;
-  bool _isLinkEnter = false;
+  //bool _isLinkEnter = false;
 
   @override
   void dispose() {
@@ -77,8 +75,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     super.initState();
     initChildren();
 
-    final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
-    _linkSendEvent = sendEvent;
+    // final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
+    // _linkSendEvent = sendEvent;
     final AutoPlayChangeEventController linkReceiveEvent = Get.find(tag: 'auto-play-to-frame');
     _linkReceiveEvent = linkReceiveEvent;
   }
@@ -208,81 +206,89 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     return _frameBody2();
   }
 
-  Widget _frameBody2() {
-    logger.info('frameBody2----------${StudioVariables.isLinkMode}---------');
-    if (StudioVariables.isLinkMode == true) {
-      return MouseRegion(
-        cursor: SystemMouseCursors.none,
-        onEnter: (event) {
-          setState(() {
-            logger.info('_isLinkEnter');
-            _isLinkEnter = true;
-          });
-        },
-        onExit: (event) {
-          logger.info('_isLinkExit');
-          setState(() {
-            _isLinkEnter = false;
-          });
-        },
-        onHover: (event) {
-          logger.info('sendEvent ${event.position}');
-          _linkSendEvent?.sendEvent(event.position);
-        },
-        child: _frameBody3(),
-      );
-    }
-    return _frameBody3();
-  }
+  // Widget _frameBody2() {
+  //   logger.info('frameBody2----------${StudioVariables.isLinkNewMode}---------');
+  //   if (StudioVariables.isLinkNewMode == true) {
+  //     return MouseRegion(
+  //       cursor: SystemMouseCursors.none,
+  //       onEnter: (event) {
+  //         setState(() {
+  //           logger.info('_isLinkEnter');
+  //           _isLinkEnter = true;
+  //         });
+  //       },
+  //       onExit: (event) {
+  //         logger.info('_isLinkExit');
+  //         setState(() {
+  //           _isLinkEnter = false;
+  //         });
+  //       },
+  //       onHover: (event) {
+  //         logger.info('sendEvent ${event.position}');
+  //         _linkSendEvent?.sendEvent(event.position);
+  //       },
+  //       child: _frameBody3(),
+  //     );
+  //   }
+  //   return _frameBody3();
+  // }
 
-  Widget _frameBody3() {
+  Widget _frameBody2() {
     if (_contentsManager == null) {
       return const SizedBox.shrink();
     }
-    logger.info('_frameBody3 ${StudioVariables.isLinkMode}');
+    logger.info('_frameBody2 ${StudioVariables.isLinkNewMode}');
     return StreamBuilder<bool>(
         stream: _linkReceiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data is bool) {
             logger.info('_frameBody3 _linkReceiveEvent (AutoPlay=$snapshot.data)');
           }
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              _applyAnimate(widget.model),
-              StudioVariables.isLinkMode == false && StudioVariables.isAutoPlay == true
-                  ? OnFrameMenu(
-                      key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
-                      playTimer: _playTimer,
-                      model: widget.model,
-                    )
-                  : StudioVariables.isPreview == false &&
-                          _isLinkEnter == true &&
-                          _contentsManager!.length() > 0
-                      ? _onLinkCursor()
-                      : const SizedBox.shrink(),
-            ],
-          );
+          return _applyAnimate(widget.model);
+          // return Stack(
+          //   alignment: Alignment.center,
+          //   children: [
+          //     _applyAnimate(widget.model),
+          //     StudioVariables.isLinkNewMode &&
+          //             StudioVariables.isPreview == false &&
+          //             _isLinkEnter == true &&
+          //             _contentsManager!.length() > 0
+          //         ? _onLinkNewCursor()
+          //         : const SizedBox.shrink(),
+          //     // StudioVariables.isNotLinkState
+          //     //     ? OnFrameMenu(
+          //     //         key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
+          //     //         playTimer: _playTimer,
+          //     //         model: widget.model,
+          //     //       )
+          //     //     : StudioVariables.isPreview == false &&
+          //     //             _isLinkEnter == true &&
+          //     //             _contentsManager!.length() > 0
+          //     //         ? _onLinkNewCursor()
+          //     //         : const SizedBox.shrink(),
+          //   ],
+          // );
         });
   }
 
-  Widget _onLinkCursor() {
-    if (_contentsManager == null) {
-      return const SizedBox.shrink();
-    }
-    return OnLinkCursor(
-      key: GlobalObjectKey('OnLinkCursor${widget.model.mid}'),
-      pageOffset: widget.frameManager.pageOffset,
-      frameOffset: widget.frameOffset,
-      frameManager: frameManager!,
-      frameModel: widget.model,
-      contentsManager: _contentsManager!,
-      applyScale: widget.applyScale,
-    );
-  }
+  // Widget _onLinkNewCursor() {
+  //   if (_contentsManager == null) {
+  //     return const SizedBox.shrink();
+  //   }
+  //   // 새로운 링크를 만들때만 나타나는 투명판이다.
+  //   return OnLinkCursor(
+  //     key: GlobalObjectKey('OnLinkCursor${widget.model.mid}'),
+  //     pageOffset: widget.frameManager.pageOffset,
+  //     frameOffset: widget.frameOffset,
+  //     frameManager: frameManager!,
+  //     frameModel: widget.model,
+  //     contentsManager: _contentsManager!,
+  //     applyScale: widget.applyScale,
+  //   );
+  // }
 
   bool _isDropAble(FrameModel model) {
-    if (StudioVariables.isLinkMode == true) {
+    if (StudioVariables.isLinkState) {
       return false;
     }
     if (model.frameType == FrameType.text) {
@@ -404,6 +410,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         child: ContentsMain(
           key: GlobalObjectKey<ContentsMainState>('ContentsMain${model.mid}'),
           frameModel: model,
+          frameOffset: widget.frameOffset,
           pageModel: widget.pageModel,
           frameManager: frameManager!,
           contentsManager: _contentsManager!,

@@ -10,7 +10,6 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../data_io/link_manager.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
@@ -20,6 +19,7 @@ import '../../studio_getx_controller.dart';
 
 class ContentsMain extends StatefulWidget {
   final FrameModel frameModel;
+  final Offset frameOffset;
   final PageModel pageModel;
   final FrameManager frameManager;
   final ContentsManager contentsManager;
@@ -28,6 +28,7 @@ class ContentsMain extends StatefulWidget {
   const ContentsMain({
     super.key,
     required this.frameModel,
+    required this.frameOffset,
     required this.pageModel,
     required this.frameManager,
     required this.contentsManager,
@@ -102,30 +103,32 @@ class ContentsMainState extends State<ContentsMain> {
                 logger.info('model updated ${model.name}, ${model.url}');
               }
               logger.fine('StreamBuilder<AbsExModel> $contentsCount');
-              if (contentsCount > 0) {
-                ContentsModel? model = playTimer.getCurrentModel();
-                logger.info('URI is null ----');
-                if (model != null && isURINotNull(model)) {
-                  logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
-                  LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
-                  if (linkManager != null && linkManager.getAvailLength() > 0) {
-                    return Stack(
-                      children: [
-                        _mainBuild(model, playTimer),
-                        LinkWidget(
-                            key: GlobalObjectKey('LinkWidget${model.mid}'),
-                            applyScale: widget.applyScale,
-                            contentsManager: contentsManager,
-                            contentsModel: model)
-                      ],
-                    );
-                  }
-                  return _mainBuild(model, playTimer);
-                }
-
+              if (contentsCount == 0) {
                 logger.info('current model is null');
-                //return Center(child: Text('uri is null'));
                 return SizedBox.shrink();
+              }
+              ContentsModel? model = playTimer.getCurrentModel();
+              logger.info('URI is null ----');
+              if (model != null && isURINotNull(model)) {
+                logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
+                // LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
+                // if (linkManager != null && linkManager.getAvailLength() > 0) {
+                return Stack(
+                  children: [
+                    _mainBuild(model, playTimer),
+                    LinkWidget(
+                        key: GlobalObjectKey('LinkWidget${model.mid}'),
+                        applyScale: widget.applyScale,
+                        frameManager: widget.frameManager,
+                        frameOffset: widget.frameOffset,
+                        contentsManager: contentsManager,
+                        playTimer: playTimer,
+                        contentsModel: model,
+                        frameModel: widget.frameModel)
+                  ],
+                );
+                //}
+                //return _mainBuild(model, playTimer);
               }
               // ignore: sized_box_for_whitespace
               return SizedBox.shrink();

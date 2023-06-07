@@ -5,7 +5,6 @@
 import 'package:creta03/pages/studio/studio_main_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -40,7 +39,6 @@ import 'containees/page/page_main.dart';
 import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
-import 'studio_getx_controller.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
 
@@ -101,17 +99,17 @@ class _BookMainPageState extends State<BookMainPage> {
 
   bool dropDownButtonOpened = false;
 
-  OffsetEventController? _linkSendEvent;
-  AutoPlayChangeEventController? _autoPlaySendEvent;
+  //OffsetEventController? _linkSendEvent;
+  //AutoPlayChangeEventController? _autoPlaySendEvent;
 
   @override
   void initState() {
     super.initState();
     logger.info("---_BookMainPageState-----------------------------------------");
-    final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
-    _linkSendEvent = linkSendEvent;
-    final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
-    _autoPlaySendEvent = autoPlaySendEvent;
+    // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
+    // _linkSendEvent = linkSendEvent;
+    // final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
+    // _autoPlaySendEvent = autoPlaySendEvent;
 
     BookPreviewMenu.previewMenuPressed = false;
 
@@ -547,7 +545,6 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _controllers() {
-    logger.info('_controller----${StudioVariables.isAutoPlay}---------');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -626,7 +623,8 @@ class _BookMainPageState extends State<BookMainPage> {
                 tooltip: CretaStudioLang.tooltipPause,
                 buttonSize: StudioVariables.isAutoPlay ? 20 : 30,
                 onPressed: () {
-                  StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent);
+                  //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent);
+                  StudioVariables.globalToggleAutoPlay();
                 },
               ),
               //SizedBox(width: padding),
@@ -814,9 +812,10 @@ class _BookMainPageState extends State<BookMainPage> {
               //   return;
               // }
               BookPreviewMenu.previewMenuPressed = false;
-              StudioVariables.isLinkMode = false;
-              StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
-                  forceValue: false, save: false);
+              StudioVariables.isLinkNewMode = false;
+              StudioVariables.isLinkEditMode = false;
+              //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
+              StudioVariables.globalToggleAutoPlay(forceValue: false, save: false);
               if (kReleaseMode) {
                 String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
                 AppRoutes.launchTab(url);
@@ -934,8 +933,8 @@ class _BookMainPageState extends State<BookMainPage> {
                 StudioVariables.globalToggleMute(save: false);
               },
               playFunction: () {
-                StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
-                    save: false);
+                //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
+                StudioVariables.globalToggleAutoPlay(save: false);
               },
               gotoNext: () {
                 BookPreviewMenu.previewMenuPressed = true;

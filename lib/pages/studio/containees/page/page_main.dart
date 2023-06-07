@@ -23,7 +23,6 @@ import '../../studio_variables.dart';
 import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
 import '../frame/frame_main.dart';
-import '../frame/sticker/draggable_stickers.dart';
 
 class PageMain extends StatefulWidget {
   final GlobalObjectKey pageKey;
@@ -202,16 +201,11 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     //setState(() {
     _frameManager?.clearSelectedMid();
     //});
-    if (StudioVariables.isLinkMode == true) {
-      StudioVariables.isLinkMode = false;
+    if (StudioVariables.isLinkNewMode == true) {
+      StudioVariables.isLinkNewMode = false;
       BookMainPage.bookManagerHolder!.notify();
     } else {
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
-    }
-
-    if (StudioVariables.isLinkSelectMode == true) {
-      StudioVariables.isLinkSelectMode = false;
-      DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
     }
   }
 

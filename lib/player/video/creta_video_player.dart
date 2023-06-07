@@ -18,7 +18,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     required super.model,
     required super.acc,
   }) {
-    logger.info("CretaVideoPlayer(isAutoPlay=${StudioVariables.isAutoPlay})");
+    //logger.info("CretaVideoPlayer(isAutoPlay=${StudioVariables.isAutoPlay})");
   }
 
   VideoPlayerController? wcontroller;
