@@ -1,5 +1,6 @@
+// -------------- NO COMMIT --------------
 // OpenAI API key for image generation
 
-String apiOpenAIKey =
-    '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'; // New API created on 06.2
+// New API created on 06.7
+String apiOpenAIKey = 'YOUR_OPENAI_API_KEY';
 String baseUrl = 'https://api.openai.com';

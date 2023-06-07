@@ -126,6 +126,57 @@ class CretaStudioLang {
     "그라데이션",
   ];
 
+  static List<Map<String, String>> imageStyleList = [
+    {
+      "styleENG": "photo",
+      "styleKR": "사진",
+    },
+    {
+      "styleENG": "illustration",
+      "styleKR": "일러스트",
+    },
+    {
+      "styleENG": "digital art",
+      "styleKR": "디지털 아트",
+    },
+    {
+      "styleENG": "pop Art",
+      "styleKR": "팝아트",
+    },
+    {
+      "styleENG": "watercolor",
+      "styleKR": "수채화",
+    },
+    {
+      "styleENG": "oil painting",
+      "styleKR": "유화",
+    },
+    {
+      "styleENG": "printmaking",
+      "styleKR": "판화",
+    },
+    {
+      "styleENG": "drawing",
+      "styleKR": "드로잉",
+    },
+    {
+      "styleENG": "oriental painting",
+      "styleKR": "동양화",
+    },
+    {
+      "styleENG": "outline drawing",
+      "styleKR": "소묘",
+    },
+    {
+      "styleENG": "crayon",
+      "styleKR": "크레피스",
+    },
+    {
+      "styleENG": "sketch",
+      "styleKR": "스케치",
+    },
+  ];
+
   static const String myCretaBook = "내 크레타북";
   static const String sharedCretaBook = "공유 크레타북";
   static const String teamCretaBook = "팀북";
