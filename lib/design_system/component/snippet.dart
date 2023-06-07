@@ -12,6 +12,7 @@ import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
 import '../../lang/creta_studio_lang.dart';
+import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
 import '../creta_color.dart';
@@ -87,12 +88,28 @@ class Snippet {
       appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
       floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: StudioVariables.isHandToolMode == false && StudioVariables.isLinkNewMode == false
+      body: StudioVariables.isHandToolMode == false
           ? GestureDetector(
               behavior: HitTestBehavior.opaque,
               onLongPressDown: ((details) {
+                // if (StudioVariables.isLinkNewMode == true) {
+                //   if (StudioVariables.conenctedClass == 'page' &&
+                //       !BookMainPage.containeeNotifier!.isPage()) {
+                //     logger.info('StudioVariables.isLinkNewMode cancel');
+                //     StudioVariables.isLinkNewMode = false;
+                //     StudioVariables.conenctedClass = '';
+                //     StudioVariables.conenctedMid = '';
+                //   }
+                //   if (StudioVariables.conenctedClass == 'frame' &&
+                //       !BookMainPage.containeeNotifier!.isFrame()) {
+                //     logger.info('StudioVariables.isLinkNewMode cancel');
+                //     StudioVariables.isLinkNewMode = false;
+                //     StudioVariables.conenctedClass = '';
+                //     StudioVariables.conenctedMid = '';
+                //   }
+                // }
                 LastClicked.clickedOutSide(details.globalPosition);
-                logger.finest('LastClicked pressed');
+                logger.info('LastClicked pressed ${BookMainPage.containeeNotifier!.selectedClass}');
               }),
               child: child,
             )

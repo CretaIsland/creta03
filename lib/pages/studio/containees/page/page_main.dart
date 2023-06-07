@@ -203,6 +203,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     //});
     if (StudioVariables.isLinkNewMode == true) {
       StudioVariables.isLinkNewMode = false;
+      StudioVariables.conenctedClass = '';
+      StudioVariables.conenctedMid = '';
       BookMainPage.bookManagerHolder!.notify();
     } else {
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);

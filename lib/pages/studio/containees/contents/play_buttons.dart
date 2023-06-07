@@ -11,11 +11,13 @@ class PlayButton extends StatefulWidget {
   final double applyScale;
   final CretaPlayTimer playTimer;
   final FrameModel frameModel;
+  final bool canMove;
   const PlayButton({
     super.key,
     required this.applyScale,
     required this.playTimer,
     required this.frameModel,
+    this.canMove = true,
   });
 
   @override
@@ -53,77 +55,84 @@ class _PlayButtonState extends State<PlayButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: _position.dx,
-      top: _position.dy,
-      child: GestureDetector(
-          onScaleStart: (details) {
-            _prev = details.localFocalPoint;
-            setState(() {
-              _isMove = true;
-            });
-          },
-          onScaleUpdate: (details) {
-            if (_isMove == false) return;
+    return widget.canMove
+        ? Positioned(
+            left: _position.dx,
+            top: _position.dy,
+            child: GestureDetector(
+              onScaleStart: (details) {
+                _prev = details.localFocalPoint;
+                setState(() {
+                  _isMove = true;
+                });
+              },
+              onScaleUpdate: (details) {
+                if (_isMove == false) return;
 
-            double dx = (details.localFocalPoint.dx - _prev.dx) / widget.applyScale;
-            double dy = (details.localFocalPoint.dy - _prev.dy) / widget.applyScale;
-            _prev = details.localFocalPoint;
+                double dx = (details.localFocalPoint.dx - _prev.dx) / widget.applyScale;
+                double dy = (details.localFocalPoint.dy - _prev.dy) / widget.applyScale;
+                _prev = details.localFocalPoint;
 
-            setState(() {
-              _position = Offset(_position.dx + dx, _position.dy + dy);
-            });
-          },
-          onScaleEnd: (details) {
-            setState(() {
-              _isMove = false;
-            });
-          },
-          child: SizedBox(
-            width: _width,
-            height: _height,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                BTN.fill_i_s(
-                    useTapUp: true,
-                    icon: Icons.skip_previous,
-                    onPressed: () async {
-                      BookMainPage.containeeNotifier!.setFrameClick(true);
-                      if (widget.playTimer.isPrevButtonBusy == false) {
-                        logger.info('prev Button pressed');
-                        await widget.playTimer.releasePause();
-                        await widget.playTimer.prev();
-                        setState(() {});
-                      }
-                    }),
-                BTN.fill_i_s(
-                    useTapUp: true,
-                    icon: widget.playTimer.isPause() ? Icons.play_arrow : Icons.pause_outlined,
-                    onPressed: () {
-                      BookMainPage.containeeNotifier!.setFrameClick(true);
-                      logger.info('play Button pressed');
-                      setState(() {
-                        widget.playTimer.togglePause();
-                      });
-                    }),
-                BTN.fill_i_s(
-                    useTapUp: true,
-                    icon: Icons.skip_next,
-                    onPressed: () async {
-                      BookMainPage.containeeNotifier!.setFrameClick(true);
-                      if (widget.playTimer.isNextButtonBusy == false) {
-                        logger.info('next Button pressed');
-                        await widget.playTimer.releasePause();
-                        await widget.playTimer.next();
-                        setState(() {});
-                      } else {
-                        logger.info('next Button is busy');
-                      }
-                    }),
-              ],
+                setState(() {
+                  _position = Offset(_position.dx + dx, _position.dy + dy);
+                });
+              },
+              onScaleEnd: (details) {
+                setState(() {
+                  _isMove = false;
+                });
+              },
+              child: _buttons(),
             ),
-          )),
+          )
+        : _buttons();
+  }
+
+  Widget _buttons() {
+    return SizedBox(
+      width: _width,
+      height: _height,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          BTN.fill_i_s(
+              useTapUp: true,
+              icon: Icons.skip_previous,
+              onPressed: () async {
+                BookMainPage.containeeNotifier!.setFrameClick(true);
+                if (widget.playTimer.isPrevButtonBusy == false) {
+                  logger.info('prev Button pressed');
+                  await widget.playTimer.releasePause();
+                  await widget.playTimer.prev();
+                  setState(() {});
+                }
+              }),
+          BTN.fill_i_s(
+              useTapUp: true,
+              icon: widget.playTimer.isPause() ? Icons.play_arrow : Icons.pause_outlined,
+              onPressed: () {
+                BookMainPage.containeeNotifier!.setFrameClick(true);
+                logger.info('play Button pressed');
+                setState(() {
+                  widget.playTimer.togglePause();
+                });
+              }),
+          BTN.fill_i_s(
+              useTapUp: true,
+              icon: Icons.skip_next,
+              onPressed: () async {
+                BookMainPage.containeeNotifier!.setFrameClick(true);
+                if (widget.playTimer.isNextButtonBusy == false) {
+                  logger.info('next Button pressed');
+                  await widget.playTimer.releasePause();
+                  await widget.playTimer.next();
+                  setState(() {});
+                } else {
+                  logger.info('next Button is busy');
+                }
+              }),
+        ],
+      ),
     );
   }
 }

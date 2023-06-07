@@ -36,6 +36,7 @@ class OnLinkCursor extends StatefulWidget {
 class _OnLinkCursorState extends State<OnLinkCursor> {
   OffsetEventController? _linkReceiveEvent;
   OffsetEventController? _linkSendEvent;
+  BoolEventController? _linkSendEvent2;
 
   @override
   void initState() {
@@ -45,6 +46,8 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
     _linkReceiveEvent = linkReceiveEvent;
     final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     _linkSendEvent = linkSendEvent;
+    final BoolEventController linkSendEvent2 = Get.find(tag: 'link-widget-to-property');
+    _linkSendEvent2 = linkSendEvent2;
   }
 
   @override
@@ -110,9 +113,16 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
             posX: dataX,
             posY: dataY,
             doNotify: false,
+            connectedMid: StudioVariables.conenctedMid,
+            connectedClass: StudioVariables.conenctedClass,
           )
               .then((value) {
+            contentsModel.isLinkEditMode = true;
+            _linkSendEvent2!.sendEvent(contentsModel.isLinkEditMode);
             _linkSendEvent!.sendEvent(Offset(posX, posY));
+            StudioVariables.conenctedClass = '';
+            StudioVariables.conenctedMid = '';
+
             return value;
           });
         },

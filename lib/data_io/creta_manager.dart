@@ -1048,6 +1048,17 @@ abstract class CretaManager extends AbsExModelManager {
     return counter;
   }
 
+  int getIndex(String mid) {
+    int count = 1;
+    for (var ele in _orderMap.deepSortByKey().values) {
+      if (ele.mid == mid) {
+        return count;
+      }
+      count++;
+    }
+    return -1;
+  }
+
   // static Future<bool> _reOdering(CretaManager manager) async {
   //   await manager.reOrdering();
   //   return true;

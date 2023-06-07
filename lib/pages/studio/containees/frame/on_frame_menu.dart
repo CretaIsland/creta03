@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
+//import 'package:hycop/common/util/logger.dart';
 
-import '../../../../design_system/buttons/creta_button_wrapper.dart';
+//import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/creta_font.dart';
-import '../../../../model/app_enums.dart';
+//import '../../../../model/app_enums.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../player/creta_play_timer.dart';
 import '../../studio_variables.dart';
@@ -20,24 +20,25 @@ class OnFrameMenu extends StatefulWidget {
 }
 
 class _OnFrameMenuState extends State<OnFrameMenu> {
-  bool _isHover = false;
+  //bool _isHover = false;
   @override
   Widget build(BuildContext context) {
     return StudioVariables.isHandToolMode == false
-        ? MouseRegion(
-            onEnter: ((event) {
-              setState(() {
-                _isHover = true;
-              });
-            }),
-            onExit: ((event) {
-              setState(() {
-                _isHover = false;
-              });
-            }),
-            child: _buttonArea(),
-            //),
-          )
+        ? _buttonArea()
+        // ? MouseRegion(
+        //     onEnter: ((event) {
+        //       setState(() {
+        //         _isHover = true;
+        //       });
+        //     }),
+        //     onExit: ((event) {
+        //       setState(() {
+        //         _isHover = false;
+        //       });
+        //     }),
+        //     child: _buttonArea(),
+        //     //),
+        //   )
         : const SizedBox.shrink();
   }
 
@@ -47,74 +48,77 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
         width: double.infinity,
         height: double.infinity,
         //color: Colors.white,
-        color: _isHover ? Colors.white.withOpacity(0.15) : Colors.transparent,
+        //color: _isHover ? Colors.white.withOpacity(0.15) : Colors.transparent,
+        color: Colors.transparent,
         child: Stack(
           alignment: Alignment.center,
           children: [
-            if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
-              BTN.fill_i_s(
-                  icon: widget.playTimer != null && widget.playTimer!.isPause()
-                      ? Icons.play_arrow
-                      : Icons.pause_outlined,
-                  onPressed: () {
-                    logger.info('play Button pressed');
-                    setState(() {
-                      widget.playTimer?.togglePause();
-                    });
-                  }),
-            if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
-              Align(
-                alignment: const Alignment(-0.5, 0),
-                child: BTN.fill_i_s(
-                    icon: Icons.skip_previous,
-                    onPressed: () async {
-                      if (widget.playTimer != null && widget.playTimer!.isPrevButtonBusy == false) {
-                        logger.info('prev Button pressed');
-                        await widget.playTimer?.releasePause();
-                        await widget.playTimer?.prev();
-                        setState(() {});
-                      }
-                    }),
-              ),
-            if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
-              Align(
-                alignment: const Alignment(0.5, 0),
-                child: BTN.fill_i_s(
-                    icon: Icons.skip_next,
-                    onPressed: () async {
-                      if (widget.playTimer != null && widget.playTimer!.isNextButtonBusy == false) {
-                        logger.info('next Button pressed');
-                        await widget.playTimer?.releasePause();
-                        await widget.playTimer?.next();
-                        setState(() {});
-                      } else {
-                        logger.info('next Button is busy');
-                      }
-                    }),
-              ),
-            if (_isHover && contentsCount == 0)
+            // if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
+            //   BTN.fill_i_s(
+            //       icon: widget.playTimer != null && widget.playTimer!.isPause()
+            //           ? Icons.play_arrow
+            //           : Icons.pause_outlined,
+            //       onPressed: () {
+            //         logger.info('play Button pressed');
+            //         setState(() {
+            //           widget.playTimer?.togglePause();
+            //         });
+            //       }),
+            // if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
+            //   Align(
+            //     alignment: const Alignment(-0.5, 0),
+            //     child: BTN.fill_i_s(
+            //         icon: Icons.skip_previous,
+            //         onPressed: () async {
+            //           if (widget.playTimer != null && widget.playTimer!.isPrevButtonBusy == false) {
+            //             logger.info('prev Button pressed');
+            //             await widget.playTimer?.releasePause();
+            //             await widget.playTimer?.prev();
+            //             setState(() {});
+            //           }
+            //         }),
+            //   ),
+            // if (_isHover && contentsCount > 0 && _isPlayAble(widget.model))
+            //   Align(
+            //     alignment: const Alignment(0.5, 0),
+            //     child: BTN.fill_i_s(
+            //         icon: Icons.skip_next,
+            //         onPressed: () async {
+            //           if (widget.playTimer != null && widget.playTimer!.isNextButtonBusy == false) {
+            //             logger.info('next Button pressed');
+            //             await widget.playTimer?.releasePause();
+            //             await widget.playTimer?.next();
+            //             setState(() {});
+            //           } else {
+            //             logger.info('next Button is busy');
+            //           }
+            //         }),
+            //   ),
+            if (contentsCount == 0)
               Text(
                 '${widget.model.order.value}',
                 style: CretaFont.titleELarge.copyWith(color: Colors.black),
               ),
             if (DraggableStickers.isFrontBackHover)
               Text(
-                '${widget.model.order.value} : $contentsCount',
+                '${widget.model.order.value}',
+                //'${widget.model.order.value} : $contentsCount',
                 style: CretaFont.titleELarge.copyWith(color: Colors.white),
               ),
             if (DraggableStickers.isFrontBackHover)
               Text(
-                '${widget.model.order.value} : $contentsCount',
+                '${widget.model.order.value}',
+                //'${widget.model.order.value} : $contentsCount',
                 style: CretaFont.titleLarge,
               ),
           ],
         ));
   }
 
-  bool _isPlayAble(FrameModel model) {
-    if (model.frameType == FrameType.text) {
-      return false;
-    }
-    return true;
-  }
+  // bool _isPlayAble(FrameModel model) {
+  //   if (model.frameType == FrameType.text) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 }

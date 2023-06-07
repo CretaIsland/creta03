@@ -321,6 +321,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               parentSize: selectedSticker.size,
               parentBorderWidth: selectedSticker.borderWidth,
               pageHeight: widget.pageHeight,
+              frameModel: frameModel,
               onFrameDelete: () {
                 logger.fine('onFrameDelete');
                 stickers.remove(selectedSticker);

@@ -30,6 +30,18 @@ class ContaineeNotifier extends ChangeNotifier {
 
   ContaineeNotifier();
 
+  bool isBook() {
+    return _selectedClass == ContaineeEnum.Book;
+  }
+
+  bool isPage() {
+    return _selectedClass == ContaineeEnum.Page;
+  }
+
+  bool isFrame() {
+    return _selectedClass == ContaineeEnum.Frame;
+  }
+
   void set(ContaineeEnum val, {bool doNoti = true}) {
     _selectedClass = val;
     if (doNoti) {

@@ -25,6 +25,7 @@ import '../../studio_variables.dart';
 import '../containee_mixin.dart';
 import '../contents/contents_main.dart';
 import 'frame_play_mixin.dart';
+import 'on_frame_menu.dart';
 
 class FrameEach extends StatefulWidget {
   final FrameManager frameManager;
@@ -244,30 +245,34 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
           if (snapshot.data != null && snapshot.data is bool) {
             logger.info('_frameBody3 _linkReceiveEvent (AutoPlay=$snapshot.data)');
           }
-          return _applyAnimate(widget.model);
-          // return Stack(
-          //   alignment: Alignment.center,
-          //   children: [
-          //     _applyAnimate(widget.model),
-          //     StudioVariables.isLinkNewMode &&
-          //             StudioVariables.isPreview == false &&
-          //             _isLinkEnter == true &&
-          //             _contentsManager!.length() > 0
-          //         ? _onLinkNewCursor()
-          //         : const SizedBox.shrink(),
-          //     // StudioVariables.isNotLinkState
-          //     //     ? OnFrameMenu(
-          //     //         key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
-          //     //         playTimer: _playTimer,
-          //     //         model: widget.model,
-          //     //       )
-          //     //     : StudioVariables.isPreview == false &&
-          //     //             _isLinkEnter == true &&
-          //     //             _contentsManager!.length() > 0
-          //     //         ? _onLinkNewCursor()
-          //     //         : const SizedBox.shrink(),
-          //   ],
-          // );
+          //return _applyAnimate(widget.model);
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              _applyAnimate(widget.model),
+              //     StudioVariables.isLinkNewMode &&
+              //             StudioVariables.isPreview == false &&
+              //             _isLinkEnter == true &&
+              //             _contentsManager!.length() > 0
+              //         ? _onLinkNewCursor()
+              //         : const SizedBox.shrink(),
+              StudioVariables.isLinkNewMode == false && StudioVariables.isPreview == false
+                  ? IgnorePointer(
+                      child: OnFrameMenu(
+                        key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
+                        playTimer: _playTimer,
+                        model: widget.model,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ],
+            //     //     : StudioVariables.isPreview == false &&
+            //     //             _isLinkEnter == true &&
+            //     //             _contentsManager!.length() > 0
+            //     //         ? _onLinkNewCursor()
+            //     //         : const SizedBox.shrink(),
+            //],
+          );
         });
   }
 

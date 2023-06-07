@@ -51,6 +51,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   ContentsEventController? _sendEvent;
   //ContentsEventController? _receiveEvent;
   OffsetEventController? _linkSendEvent;
+  BoolEventController? _linkReceiveEvent;
 
   @override
   void initState() {
@@ -71,6 +72,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     _linkSendEvent = linkSendEvent;
 
+    final BoolEventController linkReceiveEvent = Get.find(tag: 'link-widget-to-property');
+    _linkReceiveEvent = linkReceiveEvent;
     //final ContentsEventController receiveEvent = Get.find(tag: 'contents-main-to-property');
     //_receiveEvent = receiveEvent;
 
@@ -537,41 +540,57 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   }
 
   Widget _linkControl() {
-    return Padding(
-      padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
-      child: propertyCard(
-        isOpen: _isLinkControlOpen,
-        onPressed: () {
-          setState(() {
-            _isLinkControlOpen = !_isLinkControlOpen;
-          });
-        },
-        titleWidget: Text(CretaStudioLang.linkControl, style: CretaFont.titleSmall),
-        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: _linkToggle(),
-        hasRemoveButton: false,
-        onDelete: () {},
-        bodyWidget: _linkControlBody(),
-      ),
-    );
+    bool isLinkEditMode = widget.model.isLinkEditMode;
+    return StreamBuilder<bool>(
+        stream: _linkReceiveEvent!.eventStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data != null && snapshot.data is bool) {
+            if (snapshot.data != null) {
+              isLinkEditMode = snapshot.data!;
+            }
+          }
+          logger.info('_linkControl ($isLinkEditMode)');
+          // if (offset == Offset.zero) {
+          //   return const SizedBox.shrink();
+          // }
+          return Padding(
+            padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
+            child: propertyCard(
+              isOpen: _isLinkControlOpen,
+              onPressed: () {
+                setState(() {
+                  _isLinkControlOpen = !_isLinkControlOpen;
+                });
+              },
+              titleWidget: Text(CretaStudioLang.linkControl, style: CretaFont.titleSmall),
+              //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+              trailWidget: _linkToggle(isLinkEditMode),
+              hasRemoveButton: false,
+              onDelete: () {},
+              bodyWidget: _linkControlBody(isLinkEditMode),
+            ),
+          );
+        });
   }
 
-  Widget _linkControlBody() {
+  Widget _linkControlBody(bool isLinkEditMode) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: propertyLine(
         // 링크 편집 모드
         name: CretaStudioLang.linkControl,
-        widget: _linkToggle(),
+        widget: _linkToggle(isLinkEditMode),
       ),
     );
   }
 
-  Widget _linkToggle() {
+  Widget _linkToggle(bool isLinkEditMode) {
+    logger.info('_linkToggle ($isLinkEditMode)');
     return CretaToggleButton(
+      key: GlobalObjectKey('_linkToggle$isLinkEditMode${widget.model.mid}'),
       width: 54 * 0.75,
       height: 28 * 0.75,
-      defaultValue: widget.model.isLinkEditMode,
+      defaultValue: isLinkEditMode,
       onSelected: (value) {
         widget.model.isLinkEditMode = value;
         if (widget.model.isLinkEditMode == true) {

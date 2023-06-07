@@ -4,6 +4,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../common/creta_constant.dart';
 import '../../data_io/frame_manager.dart';
+import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
 import '../login_page.dart';
 import 'book_main_page.dart';
@@ -34,7 +35,9 @@ class StudioVariables {
 
   static bool isHandToolMode = false;
   static bool isLinkNewMode = false;
-  //static bool isLinkEditMode = false;
+  static bool isLinkEditMode = false;
+  static String conenctedMid = '';
+  static String conenctedClass = '';
 
   static double applyScale = 1;
 
@@ -112,12 +115,26 @@ class StudioVariables {
   //static bool get isLinkState => isLinkEditMode || isLinkNewMode;
   //static bool get isNotLinkState => !isLinkEditMode && !isLinkNewMode;
 
-  static bool linkNew() {
-    if (StudioVariables.isLinkNewMode == false) {
-      StudioVariables.isLinkNewMode = true;
-      if (StudioVariables.isAutoPlay = true) {
+  static bool linkNew(CretaModel model) {
+    if (StudioVariables.isLinkNewMode == true) {
+      if (StudioVariables.isAutoPlay == true) {
         StudioVariables.globalToggleAutoPlay(forceValue: false);
       }
+      StudioVariables.conenctedMid = model.mid;
+      StudioVariables.conenctedClass = model.type.name;
+      // if (StudioVariables.isLinkEditMode == false) {
+      //   StudioVariables.isLinkEditMode = true;
+      // }
+      return true;
+    }
+    return false;
+  }
+
+  static bool linkCancel(CretaModel model) {
+    if (StudioVariables.isLinkNewMode == false) {
+      StudioVariables.conenctedMid = '';
+      StudioVariables.conenctedClass = '';
+
       // if (StudioVariables.isLinkEditMode == false) {
       //   StudioVariables.isLinkEditMode = true;
       // }

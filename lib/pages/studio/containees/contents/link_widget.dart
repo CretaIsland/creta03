@@ -10,6 +10,7 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
 import '../../../../design_system/creta_color.dart';
+import '../../../../design_system/creta_font.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/link_model.dart';
@@ -18,6 +19,7 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../frame/on_link_cursor.dart';
+import '../frame/sticker/draggable_stickers.dart';
 import 'play_buttons.dart';
 
 class LinkWidget extends StatefulWidget {
@@ -84,11 +86,14 @@ class _LinkWidgetState extends State<LinkWidget> {
               // if (linkManager == null) {
               //   return const SizedBox.shrink();
               // }
+
               return SizedBox(
                 width: double.infinity,
                 height: double.infinity,
                 //color: Colors.amber,
                 child: MouseRegion(
+                  cursor:
+                      StudioVariables.isLinkNewMode ? SystemMouseCursors.none : MouseCursor.defer,
                   onEnter: ((event) {
                     setState(() {
                       _isHover = true;
@@ -111,10 +116,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                     alignment: Alignment.center,
                     children: [
                       ..._drawLinkCursor(linkManager),
-                      if (_isHover &&
-                          _isPlayAble() &&
-                          StudioVariables.isLinkNewMode == false &&
-                          widget.contentsModel.isLinkEditMode == false)
+                      if (_showPlayButton())
                         PlayButton(
                           key: GlobalObjectKey(
                               'PlayButton${widget.frameModel.mid}${widget.applyScale}'),
@@ -122,10 +124,11 @@ class _LinkWidgetState extends State<LinkWidget> {
                           frameModel: widget.frameModel,
                           playTimer: widget.playTimer,
                         ),
-                      if (StudioVariables.isLinkNewMode &&
-                          StudioVariables.isPreview == false &&
-                          _isHover &&
-                          hasContents)
+                      if (_isHover &&
+                          StudioVariables.isLinkNewMode == false &&
+                          widget.contentsModel.isLinkEditMode == false)
+                        _drawOrder(hasContents),
+                      if (_showLinkCursor(hasContents))
                         OnLinkCursor(
                           key: GlobalObjectKey('OnLinkCursor${widget.frameModel.mid}'),
                           pageOffset: widget.frameManager.pageOffset,
@@ -142,6 +145,28 @@ class _LinkWidgetState extends State<LinkWidget> {
             });
           }),
     );
+  }
+
+  bool _showLinkCursor(bool hasContents) {
+    if (!_isHover) return false;
+    if (!hasContents) return false;
+    if (StudioVariables.isPreview) return false;
+    if (StudioVariables.isLinkNewMode) return false;
+    if (StudioVariables.conenctedClass == 'frame') {
+      if (StudioVariables.conenctedMid == widget.frameModel.mid) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool _showPlayButton() {
+    logger.info('_showPlayButton(${StudioVariables.isLinkNewMode})');
+    if (!_isHover) return false;
+    if (!_isPlayAble()) return false;
+    if (StudioVariables.isLinkNewMode) return false;
+    if (widget.contentsModel.isLinkEditMode) return false;
+    return true;
   }
 
   List<Widget> _drawLinkCursor(LinkManager linkManager) {
@@ -204,9 +229,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                 //alignment: Alignment.bottomRight,
                 children: [
                   _mainButton(model),
-                  if (StudioVariables.isLinkNewMode == false &&
-                      widget.contentsModel.isLinkEditMode == false)
-                    _delButton(model, linkManager),
+                  if (widget.contentsModel.isLinkEditMode == true) _delButton(model, linkManager),
                 ],
               ),
             ),
@@ -215,19 +238,62 @@ class _LinkWidgetState extends State<LinkWidget> {
 
   Widget _mainButton(LinkModel model) {
     const double iconSize = 24;
+    int index = -1;
+    if (model.connectedClass == 'page') {
+      // 이경우 페이지 번호를 구해야 한다.
+      index = BookMainPage.pageManagerHolder!.getIndex(model.conenctedMid);
+    }
     return GestureDetector(
       onTapUp: (d) {
         logger.info('button pressed ${model.mid}');
         BookMainPage.containeeNotifier!.setFrameClick(true);
+
+        if (widget.contentsModel.isLinkEditMode == true) return;
+        if (StudioVariables.isLinkNewMode == true) return;
+
+        if (model.connectedClass == 'page') {
+          BookMainPage.pageManagerHolder?.setSelectedMid(model.conenctedMid);
+        } else if (model.connectedClass == 'frame') {
+          // show frame
+        }
+
         //여기서 연결된  프레임이나 페이지를 띄운다.
         //DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
         return;
       },
-      child: Icon(
-        Icons.radio_button_checked_outlined,
-        size: iconSize,
-        color: _isMove ? CretaColor.primary : CretaColor.secondary,
-      ),
+      child: index < 0 || StudioVariables.isPreview == true
+          ? Container(
+              width: iconSize + 4,
+              height: iconSize + 4,
+              //color: Colors.amber.withOpacity(0.5),
+              alignment: Alignment.topLeft,
+              child: Icon(
+                Icons.radio_button_checked_outlined,
+                size: iconSize,
+                color: _isMove ? CretaColor.primary : CretaColor.secondary,
+              ),
+            )
+          : Stack(
+              alignment: Alignment.centerLeft,
+              children: [
+                Container(
+                  width: iconSize + 6,
+                  height: iconSize,
+                  //color: Colors.amber.withOpacity(0.5),
+                  alignment: Alignment.topLeft,
+                  child: Icon(
+                    Icons.radio_button_checked_outlined,
+                    size: iconSize,
+                    color: _isMove ? CretaColor.primary : CretaColor.secondary,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 6.0),
+                  child: Text(index > 9 ? '$index' : '0$index',
+                      style: CretaFont.bodyESmall.copyWith(fontSize: 6, color: Colors.white)),
+                ),
+              ],
+            ),
     );
     // return IconButton(
     //   icon: Icon(
@@ -261,5 +327,27 @@ class _LinkWidgetState extends State<LinkWidget> {
       return false;
     }
     return true;
+  }
+
+  Widget _drawOrder(bool hasContents) {
+    if (_isHover && !hasContents) {
+      return Text(
+        '${widget.contentsModel.order.value}',
+        style: CretaFont.titleELarge.copyWith(color: Colors.black),
+      );
+    }
+    if (DraggableStickers.isFrontBackHover) {
+      return Text(
+        '${widget.contentsModel.order.value} : $hasContents',
+        style: CretaFont.titleELarge.copyWith(color: Colors.white),
+      );
+    }
+    if (DraggableStickers.isFrontBackHover) {
+      return Text(
+        '${widget.contentsModel.order.value} : $hasContents',
+        style: CretaFont.titleLarge,
+      );
+    }
+    return const SizedBox.shrink();
   }
 }

@@ -10,6 +10,7 @@ import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
+import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
@@ -24,6 +25,7 @@ class MiniMenu extends StatefulWidget {
   final Size parentSize;
   final double parentBorderWidth;
   final double pageHeight;
+  final FrameModel frameModel;
   final void Function() onFrameDelete;
   final void Function() onFrameFront;
   final void Function() onFrameBack;
@@ -41,6 +43,7 @@ class MiniMenu extends StatefulWidget {
 
   const MiniMenu({
     super.key,
+    required this.frameModel,
     required this.contentsManager,
     required this.parentPosition,
     required this.parentSize,
@@ -233,16 +236,23 @@ class MiniMenuState extends State<MiniMenu> {
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.linkFrameTooltip,
           tooltipFg: CretaColor.text,
-          icon: Icons.radio_button_checked_outlined,
+          icon: StudioVariables.isLinkNewMode ? Icons.close : Icons.radio_button_checked_outlined,
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
           onPressed: () {
             logger.info("MinuMenu onFrameLink");
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            if (StudioVariables.linkNew()) {
-              //_linkSendEvent?.sendEvent(const Offset(1, 1));
-              BookMainPage.bookManagerHolder!.notify();
+            setState(() {
+              StudioVariables.isLinkNewMode = !StudioVariables.isLinkNewMode;
+            });
+            if (StudioVariables.isLinkNewMode) {
+              if (StudioVariables.linkNew(widget.frameModel)) {
+                //_linkSendEvent?.sendEvent(const Offset(1, 1));
+                BookMainPage.bookManagerHolder!.notify();
+              }
+            } else {
+              StudioVariables.linkCancel(widget.frameModel);
             }
           }),
 
