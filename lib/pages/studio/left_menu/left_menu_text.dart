@@ -48,7 +48,7 @@ class _LeftMenuTextState extends State<LeftMenuText> {
 
   @override
   void initState() {
-    logger.finer('_LeftMenuPageState.initState');
+    logger.fine('_LeftMenuPageState.initState');
     _selectedTab = CretaStudioLang.textMenuTabBar.values.first;
     super.initState();
   }

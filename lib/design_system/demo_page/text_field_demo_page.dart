@@ -31,7 +31,7 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('TF_sarchbar'),
+                  Text('TF_searchbar'),
                   SizedBox(width: 30),
                   Text('CretaSearchBar()'),
                   SizedBox(width: 30),
@@ -46,14 +46,14 @@ class _TextFieldDemoPageState extends State<TextFieldDemoPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('TF_sarchbar_long'),
+                  Text('TF_searchbar_long'),
                   SizedBox(width: 30),
                   Text('CretaSearchBar.long()'),
                   SizedBox(width: 30),
                   CretaSearchBar.long(
                       hintText: '플레이스홀더',
                       onSearch: (value) {
-                        logger.finest('alue=$value');
+                        logger.finest('value=$value');
                       }),
                 ],
               ),

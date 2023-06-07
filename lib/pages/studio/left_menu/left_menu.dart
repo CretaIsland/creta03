@@ -8,6 +8,7 @@ import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../book_main_page.dart';
 import '../studio_snippet.dart';
+import 'left_menu_image.dart';
 import 'left_menu_frame.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../design_system/creta_font.dart';
@@ -177,7 +178,7 @@ class _LeftMenuState
       case LeftMenuEnum.Storage:
         return Container();
       case LeftMenuEnum.Image:
-        return Container();
+        return LeftMenuImage(key: GlobalObjectKey('AIImage'));
       case LeftMenuEnum.Video:
         return Container();
       case LeftMenuEnum.Text:

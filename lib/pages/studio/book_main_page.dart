@@ -496,9 +496,12 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _openLeftMenu() {
-    return LeftMenu(onClose: () {
-      BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
-    });
+    return LeftMenu(
+      key: GlobalObjectKey('LeftMenu'),
+      onClose: () {
+        BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
+      },
+    );
   }
 
   Widget _openRightMenu() {

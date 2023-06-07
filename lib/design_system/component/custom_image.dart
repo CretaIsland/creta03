@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'snippet.dart';
 
+// import 'snippet.dart';
+
 class ImageDetail {
   late bool isLoaded = false;
   late int cumulativeBytesLoaded = 0;
@@ -115,11 +117,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
     return ValueListenableBuilder(
       valueListenable: _imageValueNotifier,
       builder: ((context, value, child) {
-        return !value.isLoaded
-            ? Center(
-                child: Snippet.showWaitSign(),
-              )
-            : Center(child: _show());
+        return !value.isLoaded ? Snippet.showWaitSign() : Center(child: _show());
       }),
     );
   }
