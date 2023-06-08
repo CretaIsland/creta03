@@ -127,6 +127,7 @@ flutter:
     - assets/delete_content.svg
     - assets/delete_frame.svg
     - assets/no_image.png
+    - assets/ai_tip_image.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

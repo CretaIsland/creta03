@@ -79,7 +79,7 @@ class CretaStudioLang {
   static Map<String, String> imageMenuTabBar = {
     '이미지': 'image',
     '가져오기': 'upload_image',
-    'AI 생선': 'AI_generated_image',
+    'AI 생성': 'AI_generated_image',
   };
 
   static List<String> menuStick = [
@@ -311,9 +311,13 @@ class CretaStudioLang {
   static const String aiImageGeneration = '생성할 이미지'; // added by Mai 230531
   static const String aiGeneratedImage = '생성된 이미지'; // added by Mai 230531
   static const String imageStyle = '이미지 스타일'; // added by Mai 230601
-  static const String generateAIImage = '이미지 생성하기'; // added by Mai 230602
-  static const String generateImageAgain = '다시 생성하기'; // added by Mai 230602
-  static const String generateFromBeginning = '처음부터 시작'; // added by Mai 230602
+  static const String genAIImage = '이미지 생성하기'; // added by Mai 230602
+  static const String genImageAgain = '다시 생성하기'; // added by Mai 230602
+  static const String genFromBeginning = '처음부터 시작'; // added by Mai 230602
+
+  static const String genAIimageTooltip = '팁'; // added by Mai 230608
+  static const String tipMessage = '자세하게 작성할수록 원하는 이미지를 그릴 수 있습니다.'; // added by Mai 230608
+  static const String tipSearchExample = '크레타선+드로잉+모내스타일'; // added by Mai 230608
 
   static const String fixedRatio = "가로세로비를 고정합니다";
 

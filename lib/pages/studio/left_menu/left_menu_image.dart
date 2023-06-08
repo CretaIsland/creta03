@@ -1,3 +1,5 @@
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
@@ -41,10 +43,9 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   String searchValue = '';
 
-  bool _isStyleOpen = true;
+  bool _isStyleOpened = true;
   final bool _isTrailShowed = false;
-  // bool _isHovered = false;
-
+  bool _isHovered = false;
   List<String> imgUrl = [];
   AIState _state = AIState.ready;
 
@@ -72,6 +73,12 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         _state = imgUrl.isNotEmpty ? AIState.succeed : AIState.fail;
       });
     });
+  }
+
+  void downloadImage(String urlImages) {
+    AnchorElement anchorElement = AnchorElement(href: urlImages);
+    anchorElement.download = "OpenAI_Image";
+    anchorElement.click();
   }
 
   @override
@@ -199,7 +206,46 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _state == AIState.ready
-              ? Text(CretaStudioLang.aiImageGeneration, style: CretaFont.titleSmall)
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(CretaStudioLang.aiImageGeneration, style: CretaFont.titleSmall),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Row(
+                          children: <Widget>[
+                            MouseRegion(
+                              onEnter: (event) {
+                                setState(() {
+                                  _isHovered = true;
+                                });
+                              },
+                              onExit: (event) {
+                                setState(() {
+                                  _isHovered = false;
+                                });
+                              },
+                              child: BTN.fill_gray_i_s(
+                                icon: Icons.lightbulb_outline_sharp,
+                                iconColor: CretaColor.primary[400],
+                                bgColor: CretaColor.primary[100],
+                                tooltip: CretaStudioLang.genAIimageTooltip,
+                                tooltipFg: CretaColor.text[200],
+                                tooltipBg: Colors.transparent,
+                                onPressed: () {},
+                              ),
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          right: -425.0,
+                          child: searchTip(),
+                        ),
+                      ],
+                    )
+                  ],
+                )
               : Text(CretaStudioLang.aiGeneratedImage, style: CretaFont.titleSmall),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -214,13 +260,75 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                 }),
           ),
           imageAIDisplay(),
-          // _styleWidget(),
-          // if (_state != AIState.ready) _aiResult(),
-          // _generatedButton(),
         ],
       );
     }
     return const SizedBox.shrink();
+  }
+
+  Widget searchTip() {
+    return Visibility(
+        visible: _isHovered,
+        child: Container(
+          height: 436.0,
+          width: LayoutConst.rightMenuWidth - (verticalPadding - 2.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.white,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.all(12.0),
+                width: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
+                height: 52.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                  color: CretaColor.text[100],
+                ),
+                child: Center(
+                  child: Text(
+                    CretaStudioLang.tipMessage,
+                    style: CretaFont.bodySmall,
+                  ),
+                ),
+              ),
+              Stack(children: [
+                SizedBox(
+                  height: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
+                  width: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
+                  child: Image.asset('assets/ai_tip_image.png'),
+                ),
+                Positioned(
+                    left: 16.0,
+                    top: 16.0,
+                    child: Align(
+                      child: Container(
+                        // width: 120.0,
+                        width: 140.0,
+                        height: 25.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(9.0),
+                          color: Colors.transparent.withOpacity(0.2),
+                        ),
+                        child: const Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            CretaStudioLang.tipSearchExample,
+                            style: TextStyle(
+                              fontSize: 9.0,
+                              fontWeight: CretaFont.semiBold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )),
+              ]),
+            ],
+          ),
+        ));
   }
 
   Widget imageAIDisplay() {
@@ -240,12 +348,12 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   Widget _styleWidget() {
     return CretaPropertyUtility.propertyCard(
-      //isOpen: _state == AIState.ready ? _isStyleOpen : !_isStyleOpen,
-      isOpen: _isStyleOpen,
+      //isOpen: _state == AIState.ready ? _isStyleOpened : !_isStyleOpened,
+      isOpen: _isStyleOpened,
       onPressed: () {
         setState(() {
-          _isStyleOpen = !_isStyleOpen;
-          logger.info('------ Style open state: $_isStyleOpen---------');
+          _isStyleOpened = !_isStyleOpened;
+          logger.info('------ Style open state: $_isStyleOpened---------');
         });
       },
       titleWidget: Text(CretaStudioLang.imageStyle, style: CretaFont.titleSmall),
@@ -286,7 +394,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                     if (isSelected) {
                       selectedCard = -1;
                       logger.info(
-                          '------Deselect sard #$styleIndex, ${CretaStudioLang.imageStyleList[styleIndex]["styleENG"]}------');
+                          '------Deselect card #$styleIndex, ${CretaStudioLang.imageStyleList[styleIndex]["styleENG"]}------');
                     } else {
                       selectedCard = styleIndex;
                       logger.info(
@@ -346,18 +454,41 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                         selectedAIImage = imageIndex;
                       });
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: (selectedAIImage == imageIndex)
-                              ? Border.all(color: CretaColor.primary, width: 2.0)
-                              : null),
-                      child: CustomImage(
-                          key: GlobalKey(),
-                          width: 160,
-                          height: 160,
-                          image: imgUrl[imageIndex],
-                          hasAni: false),
-                    ),
+                    child: Stack(children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            color: (selectedAIImage == imageIndex)
+                                ? Colors.transparent.withOpacity(0.4)
+                                : null,
+                            border: (selectedAIImage == imageIndex)
+                                ? Border.all(color: CretaColor.primary, width: 2.0)
+                                : null),
+                        child: CustomImage(
+                            key: GlobalKey(),
+                            width: 160,
+                            height: 160,
+                            image: imgUrl[imageIndex],
+                            hasAni: false),
+                      ),
+                      Positioned(
+                        right: 45.0,
+                        bottom: 8.0,
+                        child: BTN.opacity_gray_i_s(
+                          icon: Icons.file_download_outlined,
+                          onPressed: () {
+                            downloadImage(imgUrl[imageIndex]);
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        right: 10.0,
+                        bottom: 8.0,
+                        child: BTN.opacity_gray_i_s(
+                          icon: Icons.inventory_2_outlined,
+                          onPressed: () {},
+                        ),
+                      ),
+                    ]),
                   );
                 },
               ),
@@ -387,7 +518,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   void _onPressed() {
     setState(() {
-      _isStyleOpen = false;
+      _isStyleOpened = false;
       String selectedStyle =
           selectedCard != -1 ? CretaStudioLang.imageStyleList[selectedCard]["styleENG"]! : '';
       originalText = _textController.text;
@@ -403,7 +534,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(vertical: verticalPadding + 2.0),
             child: BTN.line_blue_t_m(
-              text: CretaStudioLang.aiImageGeneration,
+              text: CretaStudioLang.genAIImage,
               onPressed: _onPressed,
             ));
       case AIState.processing:
@@ -415,17 +546,18 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BTN.line_blue_t_m(
-                text: CretaStudioLang.generateImageAgain,
+                text: CretaStudioLang.genImageAgain,
                 onPressed: _onPressed,
               ),
               const SizedBox(width: 5.0),
               BTN.line_blue_t_m(
-                text: CretaStudioLang.generateFromBeginning,
+                text: CretaStudioLang.genFromBeginning,
                 onPressed: () {
                   setState(() {
+                    _isStyleOpened = true;
                     _state = AIState.ready;
-                    originalText = '';
                     selectedCard = -1;
+                    originalText = '';
                   });
                 },
               ),
@@ -434,12 +566,8 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         );
       case AIState.fail:
         return BTN.line_blue_t_m(
-          text: CretaStudioLang.generateImageAgain,
-          onPressed: () {
-            setState(() {
-              generateImage(promptText);
-            });
-          },
+          text: CretaStudioLang.genImageAgain,
+          onPressed: _onPressed,
         );
     }
   }
