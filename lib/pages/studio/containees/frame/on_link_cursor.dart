@@ -56,10 +56,11 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
     return StreamBuilder<Offset>(
         stream: _linkReceiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
+          logger.info('_drawLinkCursor1 ($offset)');
           if (snapshot.data != null && snapshot.data is Offset) {
             offset = snapshot.data!;
           }
-          logger.info('_drawLinkCursor ($offset)');
+          logger.info('_drawLinkCursor2 ($offset)');
           if (offset == Offset.zero) {
             return const SizedBox.shrink();
           }
@@ -117,7 +118,16 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
             connectedClass: StudioVariables.conenctedClass,
           )
               .then((value) {
-            contentsModel.isLinkEditMode = true;
+            FrameModel? connectedFrame =
+                widget.frameManager.getModel(StudioVariables.conenctedMid) as FrameModel?;
+            if (connectedFrame != null) {
+              //mychangeStack.startTrans();
+              connectedFrame.isShow.set(false);
+              //mychangeStack.endTrans();
+              widget.frameManager.notify();
+            }
+            //contentsModel.isLinkEditMode = true;
+            //contentsModel.isLinkEditMode = false;
             _linkSendEvent2!.sendEvent(contentsModel.isLinkEditMode);
             _linkSendEvent!.sendEvent(Offset(posX, posY));
             StudioVariables.conenctedClass = '';

@@ -339,15 +339,20 @@ class ContentsManager extends CretaManager {
 
   Future<void> pause() async {
     for (var player in _playerMap.values) {
-      if (player.model != null && player.model!.isVideo()) {
-        CretaVideoPlayer video = player as CretaVideoPlayer;
-        if (video.wcontroller != null &&
-            video.isInit() &&
-            playTimer != null &&
-            playTimer!.isCurrentModel(player.model!.mid)) {
-          logger.info('contents.pause');
-          await video.wcontroller!.pause();
-          logger.info('contents.pause end');
+      if (player.model != null) {
+        if (player.model!.isVideo()) {
+          CretaVideoPlayer video = player as CretaVideoPlayer;
+          if (video.wcontroller != null &&
+              video.isInit() &&
+              playTimer != null &&
+              playTimer!.isCurrentModel(player.model!.mid)) {
+            logger.info('contents.pause');
+            await video.wcontroller!.pause();
+            logger.info('contents.pause end');
+          }
+        }
+        if (player.model!.isImage()) {
+          notify();
         }
       }
     }
@@ -355,14 +360,19 @@ class ContentsManager extends CretaManager {
 
   Future<void> resume() async {
     for (var player in _playerMap.values) {
-      if (player.model != null && player.model!.isVideo()) {
-        CretaVideoPlayer video = player as CretaVideoPlayer;
-        if (video.wcontroller != null &&
-            video.isInit() &&
-            playTimer != null &&
-            playTimer!.isCurrentModel(player.model!.mid)) {
-          logger.info('contents.resume');
-          await video.wcontroller!.play();
+      if (player.model != null) {
+        if (player.model!.isVideo()) {
+          CretaVideoPlayer video = player as CretaVideoPlayer;
+          if (video.wcontroller != null &&
+              video.isInit() &&
+              playTimer != null &&
+              playTimer!.isCurrentModel(player.model!.mid)) {
+            logger.info('contents.resume');
+            await video.wcontroller!.play();
+          }
+        }
+        if (player.model!.isImage()) {
+          notify();
         }
       }
     }
@@ -778,7 +788,12 @@ class ContentsManager extends CretaManager {
   }
 
   LinkManager? findLinkManager(String contentsId) {
+    LinkManager? retval = linkManagerMap[contentsId];
     logger.fine('findLinkManager()*******');
+    if (retval == null) {
+      retval = LinkManager();
+      linkManagerMap[contentsId] = retval;
+    }
     return linkManagerMap[contentsId];
   }
 

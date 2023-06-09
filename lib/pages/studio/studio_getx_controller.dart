@@ -107,6 +107,8 @@ class StudioGetXController extends GetxController {
 
     Get.put(AutoPlayChangeEventController(), tag: 'auto-play-to-frame');
 
+    Get.put(BoolEventController(), tag: 'draw-link');
+
     // Initialize EventController2 instance with a tag
     //Get.put(PageEventController(), tag: 'page-property-to-main');
     super.onInit();

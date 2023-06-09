@@ -108,7 +108,7 @@ class ContentsMainState extends State<ContentsMain> {
                 return SizedBox.shrink();
               }
               ContentsModel? model = playTimer.getCurrentModel();
-              logger.info('URI is null ----');
+              //logger.info('URI is null ----');
               if (model != null && isURINotNull(model)) {
                 logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
                 // LinkManager? linkManager = contentsManager.findLinkManager(model.mid);

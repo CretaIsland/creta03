@@ -19,7 +19,6 @@ class PageModel extends CretaModel with CretaStyleMixin {
   late UndoAble<String> name;
   late UndoAble<String> description;
   late UndoAble<String> shortCut;
-  late UndoAble<bool> isShow;
   late UndoAble<bool> isCircle;
   late UndoAble<String> thumbnailUrl;
 
@@ -32,7 +31,6 @@ class PageModel extends CretaModel with CretaStyleMixin {
         description,
         thumbnailUrl,
         shortCut,
-        isShow,
         isCircle,
         ...super.propsMixin,
       ];
@@ -41,7 +39,7 @@ class PageModel extends CretaModel with CretaStyleMixin {
     name = UndoAble<String>('', mid);
     shortCut = UndoAble<String>('', mid);
     isCircle = UndoAble<bool>(false, mid);
-    isShow = UndoAble<bool>(true, mid);
+
     description = UndoAble<String>("You could do it simple and plain", mid);
     thumbnailUrl = UndoAble<String>('', mid);
     super.initMixin(mid);
@@ -58,7 +56,7 @@ class PageModel extends CretaModel with CretaStyleMixin {
     description = UndoAble<String>('You could do it simple and plain', mid);
     thumbnailUrl = UndoAble<String>(url, mid);
     isCircle = UndoAble<bool>(false, mid);
-    isShow = UndoAble<bool>(true, mid);
+
     shortCut = UndoAble<String>('', mid);
 
     super.makeSampleMixin(mid);
@@ -75,7 +73,7 @@ class PageModel extends CretaModel with CretaStyleMixin {
     description = UndoAble<String>(srcPage.description.value, mid);
     thumbnailUrl = UndoAble<String>(srcPage.thumbnailUrl.value, mid);
     shortCut = UndoAble<String>(srcPage.shortCut.value, mid);
-    isShow = UndoAble<bool>(srcPage.isShow.value, mid);
+
     isCircle = UndoAble<bool>(srcPage.isCircle.value, mid);
     super.copyFromMixin(mid, src);
   }
@@ -84,7 +82,7 @@ class PageModel extends CretaModel with CretaStyleMixin {
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);
-    isShow.set(map["isShow"] ?? true, save: false, noUndo: true);
+
     isCircle.set(map["isCircle"] ?? false, save: false, noUndo: true);
     shortCut.set(map["shortCut"] ?? '', save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
@@ -100,7 +98,6 @@ class PageModel extends CretaModel with CretaStyleMixin {
         "description": description.value,
         "thumbnailUrl": thumbnailUrl.value,
         "shortCut": shortCut.value,
-        "isShow": isShow.value,
         "isCircle": isCircle.value,
         ...super.toMapMixin(),
       }.entries);
