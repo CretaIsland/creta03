@@ -42,6 +42,7 @@ class UserPropertyModel extends CretaModel {
   late List<Color> latestUseColors;
 
   late List<String> teams;
+  late String enterprise;
 
   @override
   List<Object?> get props => [
@@ -69,7 +70,8 @@ class UserPropertyModel extends CretaModel {
         latestBook,
         latestUseFrames,
         latestUseColors,
-        teams
+        teams,
+        enterprise
       ];
 
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
@@ -102,6 +104,7 @@ class UserPropertyModel extends CretaModel {
     latestUseFrames = [];
     latestUseColors = [];
     teams = [];
+    enterprise = '';
   }
 
   UserPropertyModel.withName(
@@ -134,7 +137,9 @@ class UserPropertyModel extends CretaModel {
       this.latestBook = '',
       this.latestUseFrames = const [],
       this.latestUseColors = const [],
-      this.teams = const []})
+      this.teams = const [],
+      this.enterprise = ''
+      })
       : super(pmid: '', type: ExModelType.user, parent: pparentMid);
 
   @override
@@ -173,6 +178,7 @@ class UserPropertyModel extends CretaModel {
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
     teams = CretaUtils.dynamicListToStringList(map["teams"]);
+    enterprise = map['enterprise'] ?? '';
   }
 
   @override
@@ -208,7 +214,8 @@ class UserPropertyModel extends CretaModel {
         'latestUseFrames': CretaUtils.listToString(latestUseFrames),
         'latestUseColors': CretaUtils.colorList2String(latestUseColors),
         // 'teams' : CretaUtils.mapListToString(teams)
-        'teams': teams
+        'teams': teams,
+        'enterprise' : enterprise
       }.entries);
   }
 }
