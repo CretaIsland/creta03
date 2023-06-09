@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
+import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:deep_collection/deep_collection.dart';
@@ -18,6 +19,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
 
 import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_popup_menu.dart';
+import '../model/app_enums.dart';
 import '../model/creta_model.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/studio_constant.dart';
@@ -1089,4 +1091,95 @@ abstract class CretaManager extends AbsExModelManager {
   //         return const SizedBox.shrink();
   //       });
   // }
+
+  Map<String, QueryValue> _whereCaluse = {};
+  Map<String, OrderDirection> _orderBy = {};
+
+  void clearConditions() {
+    _whereCaluse = {};
+    _orderBy = {};
+  }
+
+  void addWhereClause(String key, QueryValue queryValue) {
+    _whereCaluse[key] = queryValue;
+  }
+
+  void addOrderBy(String key, OrderDirection orderBy) {
+    _orderBy[key] = orderBy;
+  }
+
+  void addCretaFilters({
+    final BookType? bookType,
+    final BookSort? bookSort,
+    final OrderDirection? sortOrderDirection,
+    final PermissionType? permissionType,
+    final String searchKeyword = '',
+    final bool isRemoved = false,
+    String? userId, // default value is {AccountManager.currentLoginUser.userId}
+    String sortTimeName = 'updateTime',
+  }) {
+    // make query
+    addWhereClause('isRemoved', QueryValue(value: isRemoved));
+    // default user is {AccountManager.currentLoginUser}
+    userId ??= AccountManager.currentLoginUser.userId;
+    // bookType
+    if ((bookType?.index ?? 0) > 0) {
+      addWhereClause('bookType', QueryValue(value: bookType!.index));
+    }
+    // permission
+    if (permissionType != null) {
+      final List<String> sharesList = [];
+      if (permissionType == PermissionType.owner) {
+        sharesList.add('<${PermissionType.owner.name}>$userId');
+        //sharesList.add('<${PermissionType.owner.name}>public'); // <owner>public 은 없음
+      } else if (permissionType == PermissionType.writer) {
+        sharesList.add('<${PermissionType.owner.name}>$userId');
+        //sharesList.add('<${PermissionType.owner.name}>public'); // <owner>public 은 없음
+        sharesList.add('<${PermissionType.writer.name}>$userId');
+        sharesList.add('<${PermissionType.writer.name}>public');
+      } else /*if (widget.filterPermissionType == PermissionType.reader)*/ {
+        sharesList.add('<${PermissionType.owner.name}>$userId');
+        //sharesList.add('<${PermissionType.owner.name}>public'); // <owner>public 은 없음
+        sharesList.add('<${PermissionType.writer.name}>$userId');
+        sharesList.add('<${PermissionType.writer.name}>public');
+        sharesList.add('<${PermissionType.reader.name}>$userId');
+        sharesList.add('<${PermissionType.reader.name}>public');
+      }
+      addWhereClause('shares', QueryValue(value: sharesList, operType: OperType.arrayContainsAny));
+    }
+    // search keyword
+    if (searchKeyword.isNotEmpty) {
+      // Elasticsearch 될때까지 막아둠
+      //query['name'] = QueryValue(value: widget.filterSearchKeyword, operType: OperType.like ??? );
+    }
+    // sort order
+    if (bookSort != null) {
+      switch (bookSort) {
+        case BookSort.name:
+          addOrderBy('name', sortOrderDirection ?? OrderDirection.ascending);
+          break;
+        case BookSort.likeCount:
+          addOrderBy('likeCount', sortOrderDirection ?? OrderDirection.descending);
+          break;
+        case BookSort.viewCount:
+          addOrderBy('viewCount', sortOrderDirection ?? OrderDirection.descending);
+          break;
+        case BookSort.updateTime:
+        default:
+          addOrderBy(sortTimeName, sortOrderDirection ?? OrderDirection.descending);
+          break;
+      }
+    }
+  }
+
+  Future<List<AbsExModel>> queryByAddedContitions() {
+    // query
+    Future<List<AbsExModel>> retVal = queryFromDB(
+      _whereCaluse,
+      //limit: ,
+      orderBy: _orderBy,
+    );
+    clearConditions();
+    return retVal;
+  }
 }

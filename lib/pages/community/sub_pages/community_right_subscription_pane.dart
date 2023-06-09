@@ -45,15 +45,15 @@ const double _itemMinWidth = 290.0;
 const double _itemMinHeight = 230.0;
 
 class CommunityRightSubscriptionPane extends StatefulWidget {
-  final CretaLayoutRect cretaLayoutRect;
-  final ScrollController scrollController;
-  final String selectedUserId;
   const CommunityRightSubscriptionPane({
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
     this.selectedUserId = '',
   });
+  final CretaLayoutRect cretaLayoutRect;
+  final ScrollController scrollController;
+  final String selectedUserId;
 
   @override
   State<CommunityRightSubscriptionPane> createState() => _CommunityRightSubscriptionPaneState();

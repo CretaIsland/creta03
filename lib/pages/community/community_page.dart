@@ -1111,15 +1111,15 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         ];
       case AppRoutes.watchHistory:
         return [
-          _dropDownMenuItemListPurpose,
-          _dropDownMenuItemListPermission,
-          _dropDownMenuItemListSort
+          // _dropDownMenuItemListPurpose,
+          // _dropDownMenuItemListPermission,
+          // _dropDownMenuItemListSort
         ];
       case AppRoutes.favorites:
         return [
-          _dropDownMenuItemListPurpose,
-          _dropDownMenuItemListPermission,
-          _dropDownMenuItemListSort
+          // _dropDownMenuItemListPurpose,
+          // _dropDownMenuItemListPermission,
+          // _dropDownMenuItemListSort
         ];
       case AppRoutes.playlist:
         return [_dropDownMenuItemListSort];
@@ -1186,7 +1186,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   GlobalObjectKey _getRightPaneKey() {
-    String key = '${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
+    String key =
+        '${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
     if (kDebugMode) print('_getRightPaneKey=$key');
     return GlobalObjectKey(key);
   }
@@ -1196,38 +1197,52 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         return CommunityRightChannelPane(
+          key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.subscriptionList:
         return CommunityRightSubscriptionPane(
-          key: GlobalObjectKey(_selectedSubscriptionUserId),
+          key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
           selectedUserId: _selectedSubscriptionUserId,
         );
       case AppRoutes.watchHistory:
         return CommunityRightWatchHistoryPane(
+          key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
+          filterBookType: _filterBookType,
+          filterBookSort: _filterBookSort,
+          filterPermissionType: _filterPermissionType,
+          filterSearchKeyword: _filterSearchKeyword,
         );
       case AppRoutes.favorites:
         return CommunityRightFavoritesPane(
+          key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
+          filterBookType: _filterBookType,
+          filterBookSort: _filterBookSort,
+          filterPermissionType: _filterPermissionType,
+          filterSearchKeyword: _filterSearchKeyword,
         );
       case AppRoutes.playlist:
         return CommunityRightPlaylistPane(
+          key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.playlistDetail:
         return CommunityRightPlaylistDetailPane(
+          key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );
       case AppRoutes.communityBook:
         return CommunityRightBookPane(
+          key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
         );

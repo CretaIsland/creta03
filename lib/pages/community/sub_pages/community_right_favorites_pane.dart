@@ -1,9 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+//import 'package:flutter/foundation.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
-//import 'package:hycop/hycop.dart';
+import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
@@ -26,8 +28,14 @@ import 'package:flutter/material.dart';
 import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
-import '../community_sample_data.dart';
+import '../../../data_io/favorites_manager.dart';
+import '../../../data_io/book_published_manager.dart';
+//import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
+import '../../../model/app_enums.dart';
+import '../../../model/creta_model.dart';
+import '../../../model/book_model.dart';
+import '../../../model/favorites_model.dart';
 
 //const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -46,23 +54,104 @@ const double _itemMinHeight = 230.0;
 bool isInUsingCanvaskit = false;
 
 class CommunityRightFavoritesPane extends StatefulWidget {
+  const CommunityRightFavoritesPane({
+    super.key,
+    required this.cretaLayoutRect,
+    required this.scrollController,
+    required this.filterBookType,
+    required this.filterBookSort,
+    required this.filterPermissionType,
+    required this.filterSearchKeyword,
+  });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
-  const CommunityRightFavoritesPane({super.key, required this.cretaLayoutRect, required this.scrollController});
+  final BookType filterBookType;
+  final BookSort filterBookSort;
+  final PermissionType filterPermissionType;
+  final String filterSearchKeyword;
 
   @override
   State<CommunityRightFavoritesPane> createState() => _CommunityRightFavoritesPaneState();
 }
 
 class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPane> {
-  late List<CretaBookData> _cretaBookList;
   final _itemSizeRatio = _itemMinWidth / _itemMinHeight;
+  final GlobalKey _key = GlobalKey();
+
+  late BookPublishedManager bookPublishedManagerHolder;
+  late FavoritesManager favoritesManagerHolder;
+  final Map<String, BookModel> _cretaBookMap = {};
+  final List<FavoritesModel> _favoritesBookList = []; // <Book.mid, isFavorites>
+  final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
+  bool _onceDBGetComplete = false;
 
   @override
   void initState() {
     super.initState();
 
-    _cretaBookList = CommunitySampleData.getCretaBookList();
+    bookPublishedManagerHolder = BookPublishedManager();
+    favoritesManagerHolder = FavoritesManager();
+
+    favoritesManagerHolder.addCretaFilters(
+      //bookType: widget.filterBookType,
+      bookSort: widget.filterBookSort,
+      //permissionType: widget.filterPermissionType,
+      searchKeyword: widget.filterSearchKeyword,
+      sortTimeName: 'favoriteTime',
+    );
+    favoritesManagerHolder.addWhereClause(
+      'userId',
+      QueryValue(value: AccountManager.currentLoginUser.userId, operType: OperType.isEqualTo),
+    );
+    favoritesManagerHolder.queryByAddedContitions();
+    favoritesManagerHolder.isGetListFromDBComplete().then((value) {
+      if (kDebugMode) print('favoritesManagerHolder.model.length=${favoritesManagerHolder.modelList.length}');
+      _getBookDataFromDB();
+    });
+  }
+
+  void _getBookDataFromDB() {
+    if (favoritesManagerHolder.modelList.isEmpty) {
+      setState(() {
+        _onceDBGetComplete = true;
+      });
+    } else {
+      List<String> bookIdList = [];
+      for (var exModel in favoritesManagerHolder.modelList) {
+        FavoritesModel fModel = exModel as FavoritesModel;
+        bookIdList.add(fModel.bookId);
+        _favoritesBookList.add(fModel);
+        _favoritesBookIdMap[fModel.bookId] = true;
+      }
+      bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+      bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+      bookPublishedManagerHolder.queryByAddedContitions();
+      bookPublishedManagerHolder.isGetListFromDBComplete().then((value) {
+        if (kDebugMode) print('bookPublishedManagerHolder.model.length=${bookPublishedManagerHolder.modelList.length}');
+        for (var model in bookPublishedManagerHolder.modelList) {
+          BookModel bModel = model as BookModel;
+          _cretaBookMap[bModel.mid] = bModel;
+        }
+        _onceDBGetComplete = true;
+        // CretaModelSnippet.waitDatum 에서 화면 갱신됨
+      });
+    }
+  }
+
+  void _addToFavorites(String bookId, bool isFavorites) async {
+    if (isFavorites) {
+      // already in favorites => remove favorites from DB
+      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.userId);
+      setState(() {
+        _favoritesBookIdMap[bookId] = false;
+      });
+    } else {
+      // not exist in favorites => add favorites to DB
+      await favoritesManagerHolder.addFavoritesToDB(bookId, AccountManager.currentLoginUser.userId);
+      setState(() {
+        _favoritesBookIdMap[bookId] = true;
+      });
+    }
   }
 
   Widget _getItemPane() {
@@ -72,7 +161,10 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
     double itemWidth = -1;
     double itemHeight = -1;
 
+    BookModel dummyBookModel = BookModel('');
+
     return Scrollbar(
+      key: _key,
       thumbVisibility: true,
       controller: widget.scrollController,
       // return ScrollConfiguration( // 스크롤바 감추기
@@ -85,7 +177,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
           widget.cretaLayoutRect.childRightPadding,
           widget.cretaLayoutRect.childBottomPadding,
         ),
-        itemCount: _cretaBookList.length, //item 개수
+        itemCount: _favoritesBookList.length, //item 개수
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
           childAspectRatio: _itemSizeRatio, // 가로÷세로 비율
@@ -93,23 +185,40 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
           crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
+          FavoritesModel fModel = _favoritesBookList[index];
+          BookModel bookModel = _cretaBookMap[fModel.bookId] ?? dummyBookModel;
           return (itemWidth >= 0 && itemHeight >= 0)
-              ? CretaBookItem(
-                  key: _cretaBookList[index].uiKey,
-                  cretaBookData: _cretaBookList[index],
+              ? CretaBookUIItem(
+                  key: GlobalObjectKey(bookModel.mid),
+                  bookModel: bookModel,
                   width: itemWidth,
                   height: itemHeight,
+                  isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
+                  addToFavorites: _addToFavorites,
                 )
               : LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     itemWidth = constraints.maxWidth;
                     itemHeight = constraints.maxHeight;
-                    return CretaBookItem(
-                      key: _cretaBookList[index].uiKey,
-                      cretaBookData: _cretaBookList[index],
+                    return CretaBookUIItem(
+                      key: GlobalObjectKey(bookModel.mid),
+                      bookModel: bookModel,
                       width: itemWidth,
                       height: itemHeight,
+                      isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
+                      addToFavorites: _addToFavorites,
                     );
+                    // return SizedBox(
+                    //   width: itemWidth,
+                    //   height: itemHeight,
+                    //   child: Center(child: BTN.fill_gray_t_es(text: 'create sample', onPressed: () {
+                    //     if (saveIdx < bookManagerHolder!.modelList.length) {
+                    //       BookModel bookData = bookManagerHolder!.modelList[saveIdx] as BookModel;
+                    //       bookPublishedManagerHolder!.saveSample(bookData);
+                    //       saveIdx++;
+                    //     }
+                    //   })),
+                    // );
                   },
                 );
         },
@@ -119,6 +228,15 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
 
   @override
   Widget build(BuildContext context) {
-    return _getItemPane();
+    if (_onceDBGetComplete) {
+      return _getItemPane();
+    }
+    var retval = CretaModelSnippet.waitDatum(
+      managerList: [bookPublishedManagerHolder, favoritesManagerHolder],
+      //userId: AccountManager.currentLoginUser.email,
+      consumerFunc: _getItemPane,
+    );
+    //_onceDBGetComplete = true;
+    return retval;
   }
 }

@@ -55,12 +55,6 @@ const double _itemMinHeight = 230.0;
 bool isInUsingCanvaskit = false;
 
 class CommunityRightHomePane extends StatefulWidget {
-  final CretaLayoutRect cretaLayoutRect;
-  final ScrollController scrollController;
-  final BookType filterBookType;
-  final BookSort filterBookSort;
-  final PermissionType filterPermissionType;
-  final String filterSearchKeyword;
   const CommunityRightHomePane({
     super.key,
     required this.cretaLayoutRect,
@@ -70,6 +64,12 @@ class CommunityRightHomePane extends StatefulWidget {
     required this.filterPermissionType,
     required this.filterSearchKeyword,
   });
+  final CretaLayoutRect cretaLayoutRect;
+  final ScrollController scrollController;
+  final BookType filterBookType;
+  final BookSort filterBookSort;
+  final PermissionType filterPermissionType;
+  final String filterSearchKeyword;
 
   @override
   State<CommunityRightHomePane> createState() => _CommunityRightHomePaneState();
@@ -80,7 +80,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   bool _onceDBGetComplete = false;
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager favoritesManagerHolder;
-  final Map<String, bool> _favoritesBookIdMap = {};
+  final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   //BookManager? bookManagerHolder;
   //late final ValueKey _key = ValueKey('CRHP-${widget.filterBookType.name}-${widget.filterBookSort.name}-${widget.filterPermissionType.name}');
   final GlobalKey _key = GlobalKey();
@@ -103,6 +103,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     //bookManagerHolder!.configEvent(notifyModify: false);
     favoritesManagerHolder.clearAll();
 
+/*
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
     //query['isPublic'] = QueryValue(value: false);
@@ -153,7 +154,14 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       //limit: ,
       orderBy: orderBy,
     );
-
+ */
+    bookPublishedManagerHolder.addCretaFilters(
+      bookType: widget.filterBookType,
+      bookSort: widget.filterBookSort,
+      permissionType: widget.filterPermissionType,
+      searchKeyword: widget.filterSearchKeyword,
+    );
+    bookPublishedManagerHolder.queryByAddedContitions();
     bookPublishedManagerHolder.isGetListFromDBComplete().then((value) {
       _getFavoritesFromDB();
     });
@@ -167,19 +175,20 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         _onceDBGetComplete = true;
       });
     } else {
-      List<String> bookIdList = [];
-      if (kDebugMode) print('bookPublishedManagerHolder.modelList count=${bookPublishedManagerHolder.modelList.length}');
-      for (var exModel in bookPublishedManagerHolder.modelList) {
-        BookModel bookModel = exModel as BookModel;
-        bookIdList.add(bookModel.mid);
-        if (kDebugMode) print('_favoritesBookIdMap add ${bookModel.mid}');
-        _favoritesBookIdMap[bookModel.mid] = false;
-      }
-      if (kDebugMode) print('getFavoritesFromBookIdList');
-      favoritesManagerHolder.getFavoritesFromBookIdList(bookIdList);
+      // List<String> bookIdList = [];
+      // if (kDebugMode) print('bookPublishedManagerHolder.modelList count=${bookPublishedManagerHolder.modelList.length}');
+      // for (var exModel in bookPublishedManagerHolder.modelList) {
+      //   BookModel bookModel = exModel as BookModel;
+      //   bookIdList.add(bookModel.mid);
+      //   if (kDebugMode) print('_favoritesBookIdMap add ${bookModel.mid}');
+      //   _favoritesBookIdMap[bookModel.mid] = false;
+      // }
+      // if (kDebugMode) print('getFavoritesFromBookIdList');
+      // favoritesManagerHolder.getFavoritesFromBookIdList(bookIdList);
+      favoritesManagerHolder.queryFavoritesFromBookModelList(bookPublishedManagerHolder.modelList);
       favoritesManagerHolder.isGetListFromDBComplete().then((value) {
         if (kDebugMode) print('favoritesManagerHolder.modelList count=${favoritesManagerHolder.modelList.length}');
-        for(var model in favoritesManagerHolder.modelList) {
+        for (var model in favoritesManagerHolder.modelList) {
           FavoritesModel fModel = model as FavoritesModel;
           if (kDebugMode) print('_favoritesBookIdMap[${fModel.bookId}] = true');
           _favoritesBookIdMap[fModel.bookId] = true;
@@ -190,48 +199,20 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     }
   }
 
-  void _addToFavorites(String bookId, bool isFavorites) {
-    // check already exist
-    Map<String, QueryValue> query = {};
-    query['isRemoved'] = QueryValue(value: false);
-    query['userId'] = QueryValue(value: AccountManager.currentLoginUser.userId);
-    query['bookId'] = QueryValue(value: bookId);
-    favoritesManagerHolder.queryFromDB(query);
-    favoritesManagerHolder.isGetListFromDBComplete().then((value) {
-      if (favoritesManagerHolder.modelList.isEmpty) {
-        if (isFavorites) {
-          // already favorites => not exist in DB, remove from DB => do nothing
-        } else {
-          // not favorites => not exist in DB, add to DB
-          FavoritesModel favModel = FavoritesModel.withName(
-            userId: AccountManager.currentLoginUser.userId,
-            bookId: bookId,
-            favoriteTime: DateTime.now(),
-          );
-          favoritesManagerHolder.createToDB(favModel);
-          favoritesManagerHolder.isGetListFromDBComplete().then((value) {
-            setState(() {
-              _favoritesBookIdMap[bookId] = true;
-            });
-          });
-        }
-      } else {
-        if (isFavorites) {
-          // already favorites => exist in DB, remove from DB
-          for(var model in favoritesManagerHolder.modelList) {
-            FavoritesModel fModel = model as FavoritesModel;
-            favoritesManagerHolder.removeToDB(fModel.mid);
-          }
-          favoritesManagerHolder.isGetListFromDBComplete().then((value) {
-            setState(() {
-              _favoritesBookIdMap[bookId] = false;
-            });
-          });
-        } else {
-          // not favorites => exist in DB, add to DB => do nothing
-        }
-      }
-    });
+  void _addToFavorites(String bookId, bool isFavorites) async {
+    if (isFavorites) {
+      // already in favorites => remove favorites from DB
+      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.userId);
+      setState(() {
+        _favoritesBookIdMap[bookId] = false;
+      });
+    } else {
+      // not exist in favorites => add favorites to DB
+      await favoritesManagerHolder.addFavoritesToDB(bookId, AccountManager.currentLoginUser.userId);
+      setState(() {
+        _favoritesBookIdMap[bookId] = true;
+      });
+    }
   }
   //int saveIdx = 0;
 
