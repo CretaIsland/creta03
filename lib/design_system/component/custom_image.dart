@@ -117,7 +117,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
     return ValueListenableBuilder(
       valueListenable: _imageValueNotifier,
       builder: ((context, value, child) {
-        return !value.isLoaded ? Snippet.showWaitSign() : Center(child: _show());
+        return !value.isLoaded ? Center(child: Snippet.showWaitSign()) : Center(child: _show());
       }),
     );
   }

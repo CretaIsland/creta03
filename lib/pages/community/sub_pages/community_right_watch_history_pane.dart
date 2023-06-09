@@ -37,6 +37,7 @@ import '../../../design_system/creta_font.dart';
 import '../../../data_io/watch_history_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/favorites_manager.dart';
+import '../../../model/app_enums.dart';
 import '../../../model/creta_model.dart';
 //import '../../../design_system/component/snippet.dart';
 import '../../../model/book_model.dart';
@@ -58,13 +59,21 @@ const double _itemMinWidth = 290.0;
 const double _itemMinHeight = 230.0;
 
 class CommunityRightWatchHistoryPane extends StatefulWidget {
-  final CretaLayoutRect cretaLayoutRect;
-  final ScrollController scrollController;
   const CommunityRightWatchHistoryPane({
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
+    required this.filterBookType,
+    required this.filterBookSort,
+    required this.filterPermissionType,
+    required this.filterSearchKeyword,
   });
+  final CretaLayoutRect cretaLayoutRect;
+  final ScrollController scrollController;
+  final BookType filterBookType;
+  final BookSort filterBookSort;
+  final PermissionType filterPermissionType;
+  final String filterSearchKeyword;
 
   @override
   State<CommunityRightWatchHistoryPane> createState() => _CommunityRightWatchHistoryPaneState();
@@ -92,21 +101,20 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     watchHistoryManagerHolder = WatchHistoryManager();
     favoritesManagerHolder = FavoritesManager();
 
-    Map<String, QueryValue> query = {};
-    query['isRemoved'] = QueryValue(value: false);
-    query['userId'] = QueryValue(value: AccountManager.currentLoginUser.userId, operType: OperType.isEqualTo);
-
-    Map<String, OrderDirection> orderBy = {};
-    orderBy['watchTime'] = OrderDirection.descending;
-
-    watchHistoryManagerHolder.queryFromDB(
-      query,
-      //limit: ,
-      orderBy: orderBy,
+    watchHistoryManagerHolder.addCretaFilters(
+      //bookType: widget.filterBookType,
+      bookSort: widget.filterBookSort,
+      //permissionType: widget.filterPermissionType,
+      searchKeyword: widget.filterSearchKeyword,
+      sortTimeName: 'watchTime',
     );
-
+    watchHistoryManagerHolder.addWhereClause(
+      'userId',
+      QueryValue(value: AccountManager.currentLoginUser.userId, operType: OperType.isEqualTo),
+    );
+    watchHistoryManagerHolder.queryByAddedContitions();
     watchHistoryManagerHolder.isGetListFromDBComplete().then((value) {
-      _getDBDataList();
+      _getBookDataFromDB();
     });
   }
 
@@ -254,31 +262,17 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     );
   }
 
-  void _getDBDataList() {
+  void _getBookDataFromDB() {
     if (kDebugMode) print('---_getDBDataList');
-    Map<String, QueryValue> query = {};
-    query['isRemoved'] = QueryValue(value: false);
     // join 이 불가능하므로, ID리스트로부터 데이터를 get
     List<String> bookIdList = [];
     for (var exModel in watchHistoryManagerHolder.modelList) {
       WatchHistoryModel whModel = exModel as WatchHistoryModel;
       bookIdList.add(whModel.bookId);
     }
-    query['mid'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
-
-    bookPublishedManagerHolder.queryFromDB(
-      query,
-      //limit: ,
-      //orderBy: orderBy,
-    );
-
-    // Timer.periodic(const Duration(milliseconds: 100), (timer) {
-    //   timer.cancel();
-    //   setState(() {
-    //     _onceDBIDListGetComplete = true;
-    //   });
-    // });
-
+    bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.queryByAddedContitions();
     bookPublishedManagerHolder.isGetListFromDBComplete().then((value) {
       _getFavoritesFromDB();
     });
@@ -296,9 +290,9 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
         bookIdList.add(bookModel.mid);
         _favoritesBookIdMap[bookModel.mid] = false;
       }
-      favoritesManagerHolder.getFavoritesFromBookIdList(bookIdList);
+      favoritesManagerHolder.queryFavoritesFromBookIdList(bookIdList);
       favoritesManagerHolder.isGetListFromDBComplete().then((value) {
-        for(var model in favoritesManagerHolder.modelList) {
+        for (var model in favoritesManagerHolder.modelList) {
           FavoritesModel fModel = model as FavoritesModel;
           _favoritesBookIdMap[fModel.bookId] = true;
         }
