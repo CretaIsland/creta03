@@ -1,6 +1,7 @@
 import 'package:creta03/model/creta_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
+// ignore: must_be_immutable
 class EnterpriseModel extends CretaModel {
 
   late String name;
