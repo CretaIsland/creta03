@@ -35,7 +35,7 @@ class _PlayButtonState extends State<PlayButton> {
   void initState() {
     super.initState();
 
-    logger.info('PlayButton initState');
+    //logger.info('PlayButton initState');
 
     _width = widget.frameModel.width.value / 2 * widget.applyScale;
     if (_width < 28 * 3) {

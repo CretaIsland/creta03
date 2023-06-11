@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, avoid_web_libraries_in_flutter
 
+import 'package:creta03/data_io/enterprise_manager.dart';
 import 'package:creta03/data_io/team_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -34,6 +35,7 @@ class LoginPage extends StatefulWidget {
 
   static UserPropertyManager? userPropertyManagerHolder;
   static TeamManager? teamManagerHolder;
+  static EnterpriseManager? enterpriseHolder;
 
   static void initUserProperty() {
     LoginPage.userPropertyManagerHolder = UserPropertyManager();
@@ -42,8 +44,12 @@ class LoginPage extends StatefulWidget {
     LoginPage.teamManagerHolder = TeamManager();
     LoginPage.teamManagerHolder!.configEvent();
     LoginPage.teamManagerHolder!.clearAll();
+    LoginPage.enterpriseHolder = EnterpriseManager();
+    LoginPage.enterpriseHolder!.configEvent();
+    LoginPage.enterpriseHolder!.clearAll();
     LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {    
       LoginPage.teamManagerHolder!.initTeam();
+      LoginPage.enterpriseHolder!.initEnterprise();
     });
   }
 

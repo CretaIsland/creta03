@@ -22,6 +22,7 @@ mixin CretaStyleMixin {
   late UndoAble<bool> showWhenEventReceived;
   late UndoAble<DurationType> durationType;
   late UndoAble<int> duration;
+  late UndoAble<bool> isShow;
 
   List<Object?> get propsMixin => [
         width,
@@ -37,6 +38,7 @@ mixin CretaStyleMixin {
         showWhenEventReceived,
         durationType,
         duration,
+        isShow,
       ];
 
   void initMixin(String mid) {
@@ -55,6 +57,7 @@ mixin CretaStyleMixin {
     showWhenEventReceived = UndoAble<bool>(false, mid);
     durationType = UndoAble<DurationType>(DurationType.none, mid);
     duration = UndoAble<int>(0, mid);
+    isShow = UndoAble<bool>(true, mid);
   }
 
   void makeSampleMixin(String mid) {
@@ -74,6 +77,7 @@ mixin CretaStyleMixin {
     showWhenEventReceived = UndoAble<bool>(false, mid);
     durationType = UndoAble<DurationType>(DurationType.none, mid);
     duration = UndoAble<int>(0, mid);
+    isShow = UndoAble<bool>(true, mid);
   }
 
   void copyFromMixin(String mid, CretaStyleMixin src) {
@@ -92,6 +96,7 @@ mixin CretaStyleMixin {
     showWhenEventReceived = UndoAble<bool>(src.showWhenEventReceived.value, mid);
     durationType = UndoAble<DurationType>(src.durationType.value, mid);
     duration = UndoAble<int>(src.duration.value, mid);
+    isShow = UndoAble<bool>(src.isShow.value, mid);
   }
 
   void fromMapMixin(Map<String, dynamic> map) {
@@ -113,6 +118,7 @@ mixin CretaStyleMixin {
     showWhenEventReceived.set(map["showWhenEventReceived"] ?? false, save: false, noUndo: true);
     durationType.set(DurationType.fromInt(map["durationType"] ?? 0), save: false, noUndo: true);
     duration.set(map["duration"] ?? 0, save: false, noUndo: true);
+    isShow.set(map["isShow"] ?? true, save: false, noUndo: true);
   }
 
   Map<String, dynamic> toMapMixin() {
@@ -131,6 +137,7 @@ mixin CretaStyleMixin {
       "showWhenEventReceived": showWhenEventReceived.value,
       "durationType": durationType.value.index,
       "duration": duration.value,
+      "isShow": isShow.value,
     };
   }
 }

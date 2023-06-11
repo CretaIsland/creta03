@@ -97,7 +97,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       //logger.info('old ContentsManager used (${widget.model.mid})');
     }
     if (_playTimer == null) {
-      _playTimer = CretaPlayTimer(_contentsManager!);
+      _playTimer = CretaPlayTimer(_contentsManager!, widget.frameManager);
       _contentsManager!.setPlayerHandler(_playTimer!);
     }
     if (_contentsManager!.onceDBGetComplete == false) {

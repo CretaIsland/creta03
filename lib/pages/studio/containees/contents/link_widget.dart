@@ -49,6 +49,7 @@ class _LinkWidgetState extends State<LinkWidget> {
   LinkManager? _linkManager;
   OffsetEventController? _linkReceiveEvent;
   OffsetEventController? _linkSendEvent;
+  //BoolEventController? _lineDrawSendEvent;
   bool _isMove = false;
   Offset _position = Offset.zero;
   Offset _prev = Offset.zero;
@@ -60,8 +61,10 @@ class _LinkWidgetState extends State<LinkWidget> {
     _linkManager = widget.contentsManager.findLinkManager(widget.contentsModel.mid);
     final OffsetEventController linkReceiveEvent = Get.find(tag: 'on-link-to-link-widget');
     _linkReceiveEvent = linkReceiveEvent;
-    final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
-    _linkSendEvent = sendEvent;
+    final OffsetEventController linkSendEvent = Get.find(tag: 'frame-each-to-on-link');
+    _linkSendEvent = linkSendEvent;
+    // final BoolEventController lineDrawSendEvent = Get.find(tag: 'draw-link');
+    // _lineDrawSendEvent = lineDrawSendEvent;
   }
 
   @override
@@ -79,7 +82,7 @@ class _LinkWidgetState extends State<LinkWidget> {
             if (snapshot.data != null && snapshot.data is Offset) {
               _position = snapshot.data!;
             }
-            logger.info('_linkReceiveEvent ($_position) ${StudioVariables.isLinkNewMode}');
+            //logger.info('_linkReceiveEvent ($_position) ${StudioVariables.isLinkNewMode}');
             return Consumer<LinkManager>(builder: (context, linkManager, child) {
               // LinkManager? linkManager =
               //     widget.contentsManager.findLinkManager(widget.contentsModel.mid);
@@ -149,9 +152,9 @@ class _LinkWidgetState extends State<LinkWidget> {
 
   bool _showLinkCursor(bool hasContents) {
     if (!_isHover) return false;
+    if (!StudioVariables.isLinkNewMode) return false;
     if (!hasContents) return false;
     if (StudioVariables.isPreview) return false;
-    if (StudioVariables.isLinkNewMode) return false;
     if (StudioVariables.conenctedClass == 'frame') {
       if (StudioVariables.conenctedMid == widget.frameModel.mid) {
         return false;
@@ -161,7 +164,7 @@ class _LinkWidgetState extends State<LinkWidget> {
   }
 
   bool _showPlayButton() {
-    logger.info('_showPlayButton(${StudioVariables.isLinkNewMode})');
+    //logger.info('_showPlayButton(${StudioVariables.isLinkNewMode})');
     if (!_isHover) return false;
     if (!_isPlayAble()) return false;
     if (StudioVariables.isLinkNewMode) return false;
@@ -177,19 +180,20 @@ class _LinkWidgetState extends State<LinkWidget> {
     }
     //logger.info('^^^^^^^^^^^^^^^^^^drawEachLink----$len');
     return linkManager
-        .orderMapIterator((model) => _drawEachLik(model as LinkModel, linkManager))
+        .orderMapIterator((model) => _drawEachLink(model as LinkModel, linkManager))
         .toList();
   }
 
-  Widget _drawEachLik(LinkModel model, LinkManager linkManager) {
+  Widget _drawEachLink(LinkModel model, LinkManager linkManager) {
+    model.iconKey = GlobalObjectKey('linkIcon${model.mid}');
     const double stickerOffset = LayoutConst.stikerOffset / 2;
     double posX = (model.posX - stickerOffset) * widget.applyScale;
     double posY = (model.posY - stickerOffset) * widget.applyScale;
-    //logger.info('^^^^^^^^^^^^^^^^^^drawEachLink----${model.mid}, ${posX.round()}, ${posY.round()}');
     if (posX < 0 || posY < 0) {
       return const SizedBox.shrink();
     }
     _position = Offset(posX, posY);
+    //logger.info('^^^^^^^^^^^^^^^^^^_position----$posX, $posY,,,');
 
     return Positioned(
       left: _position.dx,
@@ -245,7 +249,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     }
     return GestureDetector(
       onTapUp: (d) {
-        logger.info('button pressed ${model.mid}');
+        logger.info('link button pressed ${model.mid}');
         BookMainPage.containeeNotifier!.setFrameClick(true);
 
         if (widget.contentsModel.isLinkEditMode == true) return;
@@ -255,10 +259,21 @@ class _LinkWidgetState extends State<LinkWidget> {
           BookMainPage.pageManagerHolder?.setSelectedMid(model.conenctedMid);
         } else if (model.connectedClass == 'frame') {
           // show frame
+          FrameModel? frameModel = widget.frameManager.getModel(model.conenctedMid) as FrameModel?;
+          if (frameModel != null) {
+            bool isShow = !frameModel.isTempVisible;
+            frameModel.isTempVisible = isShow;
+            if (isShow == true) {
+              double order = widget.frameManager.getMaxOrder() + 1;
+              frameModel.order.set(order);
+              // 여기서 연결선을 연결한다....
+            }
+            model.showLinkLine = isShow;
+            //_lineDrawSendEvent?.sendEvent(isShow);
+            widget.frameManager.notify();
+            //_linkManager?.notify();
+          }
         }
-
-        //여기서 연결된  프레임이나 페이지를 띄운다.
-        //DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
         return;
       },
       child: index < 0 || StudioVariables.isPreview == true
@@ -268,6 +283,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               //color: Colors.amber.withOpacity(0.5),
               alignment: Alignment.topLeft,
               child: Icon(
+                key: model.iconKey,
                 Icons.radio_button_checked_outlined,
                 size: iconSize,
                 color: _isMove ? CretaColor.primary : CretaColor.secondary,
@@ -282,6 +298,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                   //color: Colors.amber.withOpacity(0.5),
                   alignment: Alignment.topLeft,
                   child: Icon(
+                    key: model.iconKey,
                     Icons.radio_button_checked_outlined,
                     size: iconSize,
                     color: _isMove ? CretaColor.primary : CretaColor.secondary,

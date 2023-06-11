@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,10 +11,15 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
+import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../data_io/link_manager.dart';
+import '../../../../design_system/component/polygon_connection_painter.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
+import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
+import '../../../../model/link_model.dart';
 import '../../../../model/page_model.dart';
 //import '../../../../player/abs_player.dart';
 import '../../book_main_page.dart';
@@ -54,6 +61,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   GradationType gradationType = GradationType.none;
   TextureType textureType = TextureType.none;
   PageEventController? _receiveEvent;
+  //BoolEventController? _lineDrawReceiveEvent;
+  //FrameEventController? _receiveEventFromProperty;
 
   @override
   void initState() {
@@ -61,6 +70,10 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     super.initState();
     final PageEventController receiveEvent = Get.find(tag: 'page-property-to-main');
     _receiveEvent = receiveEvent;
+    //final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main');
+    //_receiveEventFromProperty = receiveEventFromProperty;
+    //final BoolEventController lineDrawReceiveEvent = Get.find(tag: 'draw-link');
+    //_lineDrawReceiveEvent = lineDrawReceiveEvent;
   }
 
   Future<void> initChildren() async {
@@ -278,7 +291,20 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
-      //logger.info('_drawFrame()');
+      if (StudioVariables.isPreview) {
+        return Stack(
+          children: [
+            FrameMain(
+              frameMainKey: GlobalKey(),
+              pageWidth: widget.pageWidth,
+              pageHeight: widget.pageHeight,
+              pageModel: widget.pageModel,
+              bookModel: widget.bookModel,
+            ),
+            _drawLinks(frameManager),
+          ],
+        );
+      }
       return FrameMain(
         frameMainKey: GlobalKey(),
         pageWidth: widget.pageWidth,
@@ -287,5 +313,139 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         bookModel: widget.bookModel,
       );
     });
+  }
+
+  Widget _drawLinks(FrameManager frameManager) {
+    // return StreamBuilder<AbsExModel>(
+    //     stream: _receiveEventFromProperty!.eventStream.stream,
+    //     builder: (context, snapshot) {
+    //       if (snapshot.data != null) {
+    //         if (snapshot.data! is FrameModel) {
+    //           FrameModel model = snapshot.data! as FrameModel;
+    //           frameManager.updateModel(model);
+    //           logger.info('_drawLinks _receiveEventFromProperty-----${model.posY.value}');
+    //         } else {
+    //           logger.info('_receiveEventFromProperty-----Unknown Model');
+    //         }
+    //       }
+    //       return Stack(
+    //         children: [
+    //           ..._drawLines(frameManager),
+    //         ],
+    //       );
+    //     });
+    return Stack(
+      children: [
+        ..._drawLines(frameManager),
+      ],
+    );
+  }
+
+  List<Widget> _drawLines(FrameManager frameManager) {
+    logger.info('_drawLines()--------------------------------------------');
+    List<LinkModel> linkList = [];
+    frameManager.listIterator((frameModel) {
+      ContentsManager? contentsManager = frameManager.findContentsManager(frameModel.mid);
+      if (contentsManager == null) {
+        return null;
+      }
+      ContentsModel? contentsModel = contentsManager.getCurrentModel();
+      if (contentsModel == null) {
+        return null;
+      }
+      LinkManager? linkManager = contentsManager.findLinkManager(contentsModel.mid);
+      if (linkManager == null) {
+        return SizedBox.shrink();
+      }
+      if (linkManager.length() == 0) {
+        return SizedBox.shrink();
+      }
+      logger.info(
+          '_drawLines()-${linkManager.length()}-----${contentsModel.name}--------------------------------------');
+
+      linkList = [
+        ...linkList,
+        ...linkManager.orderMapIterator((ele) {
+          LinkModel model = ele as LinkModel;
+          model.stickerKey = frameManager.frameKeyMap[model.conenctedMid];
+          return model;
+        }).toList()
+      ];
+
+      return null;
+    });
+    return linkList.map((model) => _drawEachLine(model, frameManager.pageOffset)).toList();
+  }
+
+  Widget _drawEachLine(LinkModel model, Offset pageOffset) {
+    if (model.connectedClass == 'page') {
+      return const SizedBox.shrink();
+    }
+    if (model.showLinkLine == false) {
+      return const SizedBox.shrink();
+    }
+    logger.info('_drawEachLine()--------------------------------------------');
+
+    final GlobalKey? stickerKey = model.stickerKey;
+    final GlobalObjectKey? iconKey = model.iconKey;
+    if (stickerKey == null || iconKey == null) {
+      return const SizedBox.shrink();
+    }
+
+    final RenderBox? frame = stickerKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? icon = iconKey.currentContext?.findRenderObject() as RenderBox?;
+    if (frame == null || icon == null) {
+      return const SizedBox.shrink();
+    }
+
+    Offset frameOffset = frame.localToGlobal(Offset.zero);
+    frameOffset = frameOffset - pageOffset;
+    final Size frameSize = frame.size;
+
+    final Offset frameTop = Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy);
+    final Offset frameBottom =
+        Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy + frameSize.height);
+    final Offset frameLeft = Offset(frameOffset.dx, frameSize.height / 2 + frameOffset.dy);
+    final Offset frameRight =
+        Offset(frameOffset.dx + frameSize.width, frameSize.height / 2 + frameOffset.dy);
+
+    Offset iconOffset = icon.localToGlobal(Offset.zero);
+    iconOffset = iconOffset - pageOffset;
+    final Size iconSize = icon.size;
+    // icon center;
+    final double iconX = iconOffset.dx + iconSize.width / 2; // center
+    final double iconY = iconOffset.dy + iconSize.height / 2;
+
+    final num dist1 = pow((frameTop.dx - iconX), 2) + pow((frameTop.dy - iconY), 2);
+    final num dist2 = pow((frameBottom.dx - iconX), 2) + pow((frameBottom.dy - iconY), 2);
+    final num dist3 = pow((frameLeft.dx - iconX), 2) + pow((frameLeft.dy - iconY), 2);
+    final num dist4 = pow((frameRight.dx - iconX), 2) + pow((frameRight.dy - iconY), 2);
+
+    final num smallestDist = min(min(dist1, dist2), min(dist3, dist4));
+
+    Offset finalFrameOffset = Offset.zero;
+    if (dist1 == smallestDist) {
+      finalFrameOffset = frameTop;
+    } else if (dist2 == smallestDist) {
+      finalFrameOffset = frameBottom;
+    } else if (dist3 == smallestDist) {
+      finalFrameOffset = frameLeft;
+    } else if (dist4 == smallestDist) {
+      finalFrameOffset = frameRight;
+    }
+
+    if (finalFrameOffset == Offset.zero) {
+      return const SizedBox.shrink();
+    }
+
+    logger
+        .info('Line ------ (${finalFrameOffset.dx},${finalFrameOffset.dy}) <--- ($iconX,$iconY) ');
+
+    return CustomPaint(
+      painter: PolygonConnectionPainter(
+        startPoint: Offset(iconX, iconY),
+        endPoint: finalFrameOffset,
+      ),
+    );
   }
 }

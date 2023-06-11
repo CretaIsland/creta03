@@ -1,4 +1,5 @@
 import 'package:creta03/model/creta_model.dart';
+import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 
 // ignore: must_be_immutable
@@ -8,6 +9,10 @@ class LinkModel extends CretaModel {
   late double posY;
   late String conenctedMid;
   late String connectedClass;
+
+  bool showLinkLine = false;
+  GlobalObjectKey? iconKey; // DB 에 저장되지 않는 값
+  GlobalKey? stickerKey; // DB 에 저장되지 않는 값
 
   @override
   List<Object?> get props => [

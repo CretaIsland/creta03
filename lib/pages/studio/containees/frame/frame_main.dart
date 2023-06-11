@@ -381,6 +381,10 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     //   }
     //   return false;
     // }
+    if (model.isShow.value == false) {
+      if (model.isTempVisible) return true;
+      return false;
+    }
     return true;
   }
 

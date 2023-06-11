@@ -2,13 +2,18 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+//import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:synchronized/synchronized.dart';
 
 import '../data_io/contents_manager.dart';
+import '../data_io/frame_manager.dart';
+import '../data_io/link_manager.dart';
 import '../model/app_enums.dart';
 import '../model/contents_model.dart';
+import '../model/frame_model.dart';
+import '../model/link_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
@@ -24,8 +29,12 @@ import 'video/creta_video_widget.dart';
 
 class CretaPlayTimer extends ChangeNotifier {
   final ContentsManager contentsManager;
+  final FrameManager frameManager;
 
-  CretaPlayTimer(this.contentsManager);
+  CretaPlayTimer(this.contentsManager, this.frameManager) {
+    //final BoolEventController lineDrawSendEvent = Get.find(tag: 'draw-link');
+    //_lineDrawSendEvent = lineDrawSendEvent;
+  }
   Timer? _timer;
   final int _timeGap = 500; //
   final Lock _lock = Lock();
@@ -55,16 +64,23 @@ class CretaPlayTimer extends ChangeNotifier {
   bool _initComplete = false;
   CretaAbsPlayer? _currentPlayer;
 
+  //BoolEventController? _lineDrawSendEvent;
+
   Future<void> togglePause() async {
     _isPrevPauseTimer = _isPauseTimer;
     _isPauseTimer = !_isPauseTimer;
 
-    if (_currentModel != null && _currentModel!.contentsType == ContentsType.video) {
-      _currentModel!.setIsPauseTimer(_isPauseTimer);
-      if (_isPauseTimer) {
-        await pause();
-      } else {
-        await play();
+    if (_currentModel != null) {
+      if (_currentModel!.isVideo()) {
+        _currentModel!.setIsPauseTimer(_isPauseTimer);
+        if (_isPauseTimer) {
+          await pause();
+        } else {
+          await play();
+        }
+      }
+      if (_currentModel!.isImage()) {
+        contentsManager.notify();
       }
     }
   }
@@ -211,11 +227,25 @@ class CretaPlayTimer extends ChangeNotifier {
         (_currentModel!.mid != _prevModel!.mid || _forceToChange == true)) {
       logger.fine('CurrentModel changed from ${_prevModel!.name}');
       _forceToChange = false;
-      _currentModel!.copyTo(_prevModel!);
       notify();
       if (_currentModel!.mid != _prevModel!.mid) {
         notifyToProperty();
+
+        // prev 모델의 frame를 inVisible 하게 만들어야 한다.
+        LinkManager? linkManager = contentsManager.findLinkManager(_prevModel!.mid);
+        if (linkManager != null) {
+          linkManager.listIterator((value) {
+            LinkModel link = value as LinkModel;
+            FrameModel? frame = frameManager.getModel(link.conenctedMid) as FrameModel?;
+            if (frame != null) {
+              frame.isTempVisible = false;
+              frameManager.notify();
+            }
+            return null;
+          });
+        }
       }
+      _currentModel!.copyTo(_prevModel!);
       logger.fine('CurrentModel changed to ${_currentModel!.name}');
     }
 
@@ -282,6 +312,8 @@ class CretaPlayTimer extends ChangeNotifier {
         }
       }
     }
+    //print('6666666666666666666666666');
+    //_lineDrawSendEvent?.sendEvent(false);
   }
 
   CretaAbsPlayer createPlayer(ContentsModel model) {
