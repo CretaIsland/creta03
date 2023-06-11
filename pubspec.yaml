@@ -128,6 +128,22 @@ flutter:
     - assets/delete_frame.svg
     - assets/no_image.png
     - assets/ai_tip_image.png
+    - assets/creta-photo.png
+    - assets/creta-illustration.png
+    - assets/creta-digital-art.png
+    - assets/creta-popart.png
+    - assets/creta-watercolor.png
+    - assets/creta-oilpainting.png
+    - assets/creta-printmaking.png
+    - assets/creta-drawing.png
+    - assets/creta-orientalpainting.png
+    - assets/creta-outlinedrawing.png
+    - assets/creta-crayon.png
+    - assets/creta-sketch.png
+
+
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
