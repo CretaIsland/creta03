@@ -208,8 +208,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   // Widget _frameBody2() {
-  //   logger.info('frameBody2----------${StudioVariables.isLinkNewMode}---------');
-  //   if (StudioVariables.isLinkNewMode == true) {
+  //   logger.info('frameBody2----------${LinkParams.isLinkNewMode}---------');
+  //   if (LinkParams.isLinkNewMode == true) {
   //     return MouseRegion(
   //       cursor: SystemMouseCursors.none,
   //       onEnter: (event) {
@@ -238,7 +238,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (_contentsManager == null) {
       return const SizedBox.shrink();
     }
-    logger.info('_frameBody2 ${StudioVariables.isLinkNewMode}');
+    logger.info('_frameBody2 ${LinkParams.isLinkNewMode}');
     return StreamBuilder<bool>(
         stream: _linkReceiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
@@ -250,13 +250,13 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
             alignment: Alignment.center,
             children: [
               _applyAnimate(widget.model),
-              //     StudioVariables.isLinkNewMode &&
+              //     LinkParams.isLinkNewMode &&
               //             StudioVariables.isPreview == false &&
               //             _isLinkEnter == true &&
               //             _contentsManager!.length() > 0
               //         ? _onLinkNewCursor()
               //         : const SizedBox.shrink(),
-              StudioVariables.isLinkNewMode == false && StudioVariables.isPreview == false
+              LinkParams.isLinkNewMode == false && StudioVariables.isPreview == false
                   ? IgnorePointer(
                       child: OnFrameMenu(
                         key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
@@ -293,7 +293,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   // }
 
   bool _isDropAble(FrameModel model) {
-    if (StudioVariables.isLinkNewMode) {
+    if (LinkParams.isLinkNewMode) {
       return false;
     }
     if (model.frameType == FrameType.text) {
@@ -324,7 +324,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (animations.isEmpty) {
       return _showBorder ? _dottedShapeBox(model) : _shapeBox(model);
     }
-    return getAnimation(_showBorder ? _dottedShapeBox(model) : _shapeBox(model), animations);
+    return getAnimation(
+      _showBorder ? _dottedShapeBox(model) : _shapeBox(model),
+      animations,
+      model.mid,
+    );
   }
 
   Widget _dottedShapeBox(FrameModel model) {

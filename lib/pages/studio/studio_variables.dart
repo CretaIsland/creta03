@@ -34,10 +34,6 @@ class StudioVariables {
   static double virtualHeight = 961;
 
   static bool isHandToolMode = false;
-  static bool isLinkNewMode = false;
-  static bool isLinkEditMode = false;
-  static String conenctedMid = '';
-  static String conenctedClass = '';
 
   static double applyScale = 1;
 
@@ -111,17 +107,27 @@ class StudioVariables {
       frameManager.pause();
     }
   }
+}
+
+class LinkParams {
+  static bool isLinkNewMode = false;
+  static bool isLinkEditMode = false;
+  static String connectedMid = '';
+  static String connectedClass = '';
+  static Offset? linkPostion;
+  static Offset? orgPostion;
+  static String? invokerMid;
 
   //static bool get isLinkState => isLinkEditMode || isLinkNewMode;
   //static bool get isNotLinkState => !isLinkEditMode && !isLinkNewMode;
 
   static bool linkNew(CretaModel model) {
-    if (StudioVariables.isLinkNewMode == true) {
+    if (LinkParams.isLinkNewMode == true) {
       if (StudioVariables.isAutoPlay == true) {
         StudioVariables.globalToggleAutoPlay(forceValue: false);
       }
-      StudioVariables.conenctedMid = model.mid;
-      StudioVariables.conenctedClass = model.type.name;
+      LinkParams.connectedMid = model.mid;
+      LinkParams.connectedClass = model.type.name;
       // if (StudioVariables.isLinkEditMode == false) {
       //   StudioVariables.isLinkEditMode = true;
       // }
@@ -131,9 +137,9 @@ class StudioVariables {
   }
 
   static bool linkCancel(CretaModel model) {
-    if (StudioVariables.isLinkNewMode == false) {
-      StudioVariables.conenctedMid = '';
-      StudioVariables.conenctedClass = '';
+    if (LinkParams.isLinkNewMode == false) {
+      LinkParams.connectedMid = '';
+      LinkParams.connectedClass = '';
 
       // if (StudioVariables.isLinkEditMode == false) {
       //   StudioVariables.isLinkEditMode = true;

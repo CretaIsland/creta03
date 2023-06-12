@@ -24,6 +24,8 @@ mixin CretaStyleMixin {
   late UndoAble<int> duration;
   late UndoAble<bool> isShow;
 
+  bool isTempVisible = false;
+
   List<Object?> get propsMixin => [
         width,
         height,

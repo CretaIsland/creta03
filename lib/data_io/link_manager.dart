@@ -49,7 +49,7 @@ class LinkManager extends CretaManager {
     link.posX = posX;
     link.posY = posY;
     link.name = name ?? '';
-    link.conenctedMid = connectedMid ?? '';
+    link.connectedMid = connectedMid ?? '';
     link.connectedClass = connectedClass ?? '';
     link.order.set(getMaxOrder() + 1, save: false, noUndo: true);
 

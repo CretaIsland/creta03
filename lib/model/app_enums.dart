@@ -112,6 +112,7 @@ enum AnimationType {
   flip(2),
   shake(4),
   shimmer(8),
+  scaleXY(16),
   end(999999);
 
   const AnimationType(this.value);

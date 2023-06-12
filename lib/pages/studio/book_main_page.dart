@@ -34,6 +34,7 @@ import 'book_preview_menu.dart';
 import 'book_publish.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
+import 'containees/page/prev_page.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
 import 'right_menu/right_menu.dart';
@@ -812,7 +813,7 @@ class _BookMainPageState extends State<BookMainPage> {
               //   return;
               // }
               BookPreviewMenu.previewMenuPressed = false;
-              StudioVariables.isLinkNewMode = false;
+              LinkParams.isLinkNewMode = false;
               //StudioVariables.isLinkEditMode = false;
               //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
               StudioVariables.globalToggleAutoPlay(forceValue: false, save: false);
@@ -915,6 +916,9 @@ class _BookMainPageState extends State<BookMainPage> {
         int totalPage = pageManager.getAvailLength();
         return Stack(
           children: [
+            // Center(
+            //   child: _drawPrevPage(context, pageManager),
+            // ),
             Center(
               child: isPageExist
                   ? _drawPage(context, pageModel)
@@ -1012,10 +1016,32 @@ class _BookMainPageState extends State<BookMainPage> {
     }
     pageModel.width.set(_bookModel.width.value, save: false, noUndo: true);
     pageModel.height.set(_bookModel.height.value, save: false, noUndo: true);
-    logger.fine('PageMain Invoked ***** ${pageModel.width.value}');
+    logger.info('PageMain Invoked ***** ${pageModel.width.value}');
 
     return PageMain(
       pageKey: GlobalObjectKey('PageKey${pageModel.mid}'),
+      bookModel: _bookModel,
+      pageModel: pageModel,
+      pageWidth: pageWidth,
+      pageHeight: pageHeight,
+    );
+  }
+
+  // ignore: unused_element
+  Widget _drawPrevPage(BuildContext context, PageManager pageManager) {
+    if (LinkParams.invokerMid == null) {
+      return const SizedBox.shrink();
+    }
+    PageModel? pageModel = pageManager.getModel(LinkParams.invokerMid!) as PageModel?;
+    if (pageModel == null) {
+      return const SizedBox.shrink();
+    }
+    pageModel.width.set(_bookModel.width.value, save: false, noUndo: true);
+    pageModel.height.set(_bookModel.height.value, save: false, noUndo: true);
+    logger.info('PageMain Invoked ***** ${pageModel.width.value}');
+
+    return PrevPage(
+      pageKey: GlobalObjectKey('PagePrevKey${pageModel.mid}'),
       bookModel: _bookModel,
       pageModel: pageModel,
       pageWidth: pageWidth,

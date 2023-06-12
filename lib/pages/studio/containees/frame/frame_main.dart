@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -164,7 +165,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       //   //setState(() {});
       // },
       // onFrameLink: (mid) {
-      //   logger.info('FrameMain.onFrameLink  ${StudioVariables.isLinkNewMode}');
+      //   logger.info('FrameMain.onFrameLink  ${LinkParams.isLinkNewMode}');
       //   BookMainPage.bookManagerHolder!.notify();
       //   //setState(() {});
       // },
@@ -300,6 +301,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         frameManager!.frameKeyMap[model.mid] = stickerKey;
       }
 
+      Widget eachFrame = FrameEach(
+        model: model,
+        pageModel: widget.pageModel,
+        frameManager: frameManager!,
+        applyScale: applyScale,
+        width: frameWidth,
+        height: frameHeight,
+        frameOffset: Offset(posX, posY),
+      );
+
       return Sticker(
         key: stickerKey,
         id: model.mid,
@@ -311,15 +322,20 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         child: Visibility(
           //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
           visible: _isVisible(model),
-          child: FrameEach(
-            model: model,
-            pageModel: widget.pageModel,
-            frameManager: frameManager!,
-            applyScale: applyScale,
-            width: frameWidth,
-            height: frameHeight,
-            frameOffset: Offset(posX, posY),
-          ),
+          child: LinkParams.connectedMid == model.mid &&
+                  LinkParams.linkPostion != null &&
+                  LinkParams.orgPostion != null
+              ? eachFrame
+                  .animate()
+                  .scaleXY(duration: const Duration(milliseconds: 750), curve: Curves.easeInOut)
+                  .move(
+                      duration: const Duration(milliseconds: 1500),
+                      curve: Curves.easeInOut,
+                      begin: LinkParams.linkPostion! +
+                          LinkParams.orgPostion! -
+                          Offset(frameWidth / 2, frameHeight / 2) -
+                          Offset(posX, posY))
+              : eachFrame,
         ),
       );
     });

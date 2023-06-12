@@ -267,7 +267,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   BTN.fill_blue_i_menu(
                       tooltip: CretaStudioLang.linkFrameTooltip,
                       tooltipFg: CretaColor.text,
-                      icon: StudioVariables.isLinkNewMode
+                      icon: LinkParams.isLinkNewMode
                           ? Icons.close
                           : Icons.radio_button_checked_outlined,
                       decoType: CretaButtonDeco.opacity,
@@ -278,15 +278,15 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                         //BookMainPage.containeeNotifier!.setFrameClick(true);
                         //BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
                         setState(() {
-                          StudioVariables.isLinkNewMode = !StudioVariables.isLinkNewMode;
+                          LinkParams.isLinkNewMode = !LinkParams.isLinkNewMode;
                         });
-                        if (StudioVariables.isLinkNewMode) {
-                          if (StudioVariables.linkNew(model)) {
+                        if (LinkParams.isLinkNewMode) {
+                          if (LinkParams.linkNew(model)) {
                             //_linkSendEvent?.sendEvent(Offset(1, 1));
                             BookMainPage.bookManagerHolder?.notify();
                           }
                         } else {
-                          StudioVariables.linkCancel(model);
+                          LinkParams.linkCancel(model);
                         }
                       }),
                 BTN.fill_gray_i_m(

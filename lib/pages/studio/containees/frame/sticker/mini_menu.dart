@@ -236,7 +236,7 @@ class MiniMenuState extends State<MiniMenu> {
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.linkFrameTooltip,
           tooltipFg: CretaColor.text,
-          icon: StudioVariables.isLinkNewMode ? Icons.close : Icons.radio_button_checked_outlined,
+          icon: LinkParams.isLinkNewMode ? Icons.close : Icons.radio_button_checked_outlined,
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
@@ -244,15 +244,15 @@ class MiniMenuState extends State<MiniMenu> {
             logger.info("MinuMenu onFrameLink");
             BookMainPage.containeeNotifier!.setFrameClick(true);
             setState(() {
-              StudioVariables.isLinkNewMode = !StudioVariables.isLinkNewMode;
+              LinkParams.isLinkNewMode = !LinkParams.isLinkNewMode;
             });
-            if (StudioVariables.isLinkNewMode) {
-              if (StudioVariables.linkNew(widget.frameModel)) {
+            if (LinkParams.isLinkNewMode) {
+              if (LinkParams.linkNew(widget.frameModel)) {
                 //_linkSendEvent?.sendEvent(const Offset(1, 1));
                 BookMainPage.bookManagerHolder!.notify();
               }
             } else {
-              StudioVariables.linkCancel(widget.frameModel);
+              LinkParams.linkCancel(widget.frameModel);
             }
           }),
 

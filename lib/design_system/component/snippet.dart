@@ -92,20 +92,20 @@ class Snippet {
           ? GestureDetector(
               behavior: HitTestBehavior.opaque,
               onLongPressDown: ((details) {
-                // if (StudioVariables.isLinkNewMode == true) {
-                //   if (StudioVariables.conenctedClass == 'page' &&
+                // if (LinkParams.isLinkNewMode == true) {
+                //   if (LinkParams.connectedClass == 'page' &&
                 //       !BookMainPage.containeeNotifier!.isPage()) {
-                //     logger.info('StudioVariables.isLinkNewMode cancel');
-                //     StudioVariables.isLinkNewMode = false;
-                //     StudioVariables.conenctedClass = '';
-                //     StudioVariables.conenctedMid = '';
+                //     logger.info('LinkParams.isLinkNewMode cancel');
+                //     LinkParams.isLinkNewMode = false;
+                //     LinkParams.connectedClass = '';
+                //     LinkParams.connectedMid = '';
                 //   }
-                //   if (StudioVariables.conenctedClass == 'frame' &&
+                //   if (LinkParams.connectedClass == 'frame' &&
                 //       !BookMainPage.containeeNotifier!.isFrame()) {
-                //     logger.info('StudioVariables.isLinkNewMode cancel');
-                //     StudioVariables.isLinkNewMode = false;
-                //     StudioVariables.conenctedClass = '';
-                //     StudioVariables.conenctedMid = '';
+                //     logger.info('LinkParams.isLinkNewMode cancel');
+                //     LinkParams.isLinkNewMode = false;
+                //     LinkParams.connectedClass = '';
+                //     LinkParams.connectedMid = '';
                 //   }
                 // }
                 LastClicked.clickedOutSide(details.globalPosition);

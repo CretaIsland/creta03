@@ -103,10 +103,10 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           double dataX = posX / widget.applyScale + LayoutConst.stikerOffset / 2;
           double dataY = posY / widget.applyScale + LayoutConst.stikerOffset / 2;
 
-          StudioVariables.isLinkNewMode = false;
+          LinkParams.isLinkNewMode = false;
           //StudioVariables.isLinkEditMode = true;
           logger.info(
-              'OnLinkCursor linkNew=${StudioVariables.isLinkNewMode}, linkEdit=${contentsModel.isLinkEditMode}');
+              'OnLinkCursor linkNew=${LinkParams.isLinkNewMode}, linkEdit=${contentsModel.isLinkEditMode}');
           BookMainPage.bookManagerHolder!.notify();
           widget.contentsManager
               .createLink(
@@ -114,12 +114,12 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
             posX: dataX,
             posY: dataY,
             doNotify: false,
-            connectedMid: StudioVariables.conenctedMid,
-            connectedClass: StudioVariables.conenctedClass,
+            connectedMid: LinkParams.connectedMid,
+            connectedClass: LinkParams.connectedClass,
           )
               .then((value) {
             FrameModel? connectedFrame =
-                widget.frameManager.getModel(StudioVariables.conenctedMid) as FrameModel?;
+                widget.frameManager.getModel(LinkParams.connectedMid) as FrameModel?;
             if (connectedFrame != null) {
               //mychangeStack.startTrans();
               connectedFrame.isShow.set(false);
@@ -130,8 +130,8 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
             //contentsModel.isLinkEditMode = false;
             _linkSendEvent2!.sendEvent(contentsModel.isLinkEditMode);
             _linkSendEvent!.sendEvent(Offset(posX, posY));
-            StudioVariables.conenctedClass = '';
-            StudioVariables.conenctedMid = '';
+            LinkParams.connectedClass = '';
+            LinkParams.connectedMid = '';
 
             return value;
           });
