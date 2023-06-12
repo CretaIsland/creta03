@@ -3,27 +3,34 @@ import 'dart:js_util';
 import 'package:hycop/hycop.dart';
 import 'dart:js_interop';
 
-
 @JS()
 external dynamic jsScreenshot(double x, double y, double width, double height);
 
 class WindowScreenshot {
-
-  static Future<String> screenshot({required String bookId, double x = 0, double y = 0, double width = 210, double height = 150}) async {
+  static Future<String> screenshot(
+      {required String bookId,
+      double x = 0,
+      double y = 0,
+      double width = 210,
+      double height = 150,
+      bool doUpload = true}) async {
     try {
       dynamic screenshot = await promiseToFuture(jsScreenshot(x, y, width, height));
-      if(screenshot != null) {
+      if (screenshot != null) {
         UriData screenshotBytes = Uri.parse(screenshot).data!;
-        FileModel? result = await HycopFactory.storage!.uploadFile('${bookId}_thumbnail.png', screenshotBytes.mimeType , screenshotBytes.contentAsBytes(), makeThumbnail: false);
-        if(result != null) {
-          return result.fileView;
+        if (doUpload) {
+          FileModel? result = await HycopFactory.storage!.uploadFile(
+              '${bookId}_thumbnail.png', screenshotBytes.mimeType, screenshotBytes.contentAsBytes(),
+              makeThumbnail: false);
+          if (result != null) {
+            return result.fileView;
+          }
         }
+        return '${bookId}_thumbnail.png';
       }
     } catch (error) {
       return '';
     }
     return '';
   }
-
-
 }

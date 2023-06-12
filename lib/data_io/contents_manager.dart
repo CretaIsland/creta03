@@ -144,6 +144,11 @@ class ContentsManager extends CretaManager {
         continue;
       }
       if (model.thumbnail == null || model.thumbnail!.isEmpty) {
+        if (model.isImage()) {
+          if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
+            return model.remoteUrl!;
+          }
+        }
         continue;
       }
       return model.thumbnail!;

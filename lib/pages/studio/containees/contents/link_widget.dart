@@ -272,6 +272,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.connectedMid = model.connectedMid;
               LinkParams.connectedClass = 'page';
               LinkParams.invokerMid = widget.frameManager.pageModel.mid;
+              print('LinkParams.invokerMid ----${LinkParams.invokerMid}');
             } else {
               LinkParams.linkPostion = null;
               LinkParams.orgPostion = null;

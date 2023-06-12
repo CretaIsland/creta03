@@ -111,6 +111,14 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
                     height: widget.height,
                     image: thumbnailUrl,
                   );
+
+                  // return Container(
+                  //   width: widget.width,
+                  //   height: widget.height,
+                  //   decoration: BoxDecoration(
+                  //       image:
+                  //           DecorationImage(fit: BoxFit.fill, image: NetworkImage(thumbnailUrl))),
+                  // );
                 }
               }
             }

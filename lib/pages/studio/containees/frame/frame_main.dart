@@ -34,6 +34,7 @@ class FrameMain extends StatefulWidget {
   final PageModel pageModel;
   final double pageWidth;
   final double pageHeight;
+  final bool isPrevious;
 
   const FrameMain({
     required this.frameMainKey,
@@ -41,6 +42,7 @@ class FrameMain extends StatefulWidget {
     required this.pageModel,
     required this.pageWidth,
     required this.pageHeight,
+    this.isPrevious = false,
   }) : super(key: frameMainKey);
 
   @override
@@ -295,10 +297,15 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
       double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 
-      GlobalKey? stickerKey = frameManager!.frameKeyMap[model.mid];
-      if (stickerKey == null) {
+      GlobalKey? stickerKey;
+      if (widget.isPrevious == false) {
+        stickerKey = frameManager!.frameKeyMap[model.mid];
+        if (stickerKey == null) {
+          stickerKey = GlobalKey();
+          frameManager!.frameKeyMap[model.mid] = stickerKey;
+        }
+      } else {
         stickerKey = GlobalKey();
-        frameManager!.frameKeyMap[model.mid] = stickerKey;
       }
 
       Widget eachFrame = FrameEach(
