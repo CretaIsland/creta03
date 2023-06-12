@@ -43,13 +43,20 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   String searchValue = '';
 
+  late OverlayEntry _overlayEntry;
+
   bool _isStyleOpened = true;
   final bool _isTrailShowed = false;
   bool _isHovered = false;
-  bool _isHoveredStyle = false;
+  final bool _isHoveredStyle = false;
   bool _isHoveredTip = false;
   List<String> imgUrl = [];
   AIState _state = AIState.ready;
+
+  // PageController
+  final PageController _pageController = PageController(initialPage: 0, viewportFraction: 1.0);
+
+  int _activePage = 0;
 
   final imageTitle = [
     CretaStudioLang.recentUsedImage,
@@ -70,6 +77,24 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     'assets/creta-outlinedrawing.png',
     'assets/creta-crayon.png',
     'assets/creta-sketch.png',
+  ];
+
+  final tipImage1 = [
+    "assets/tipImage-1-1.png",
+    "assets/tipImage-1-2.png",
+    "assets/tipImage-1-3.png",
+    "assets/tipImage-1-4.png",
+    "assets/tipImage-2-1.png",
+    "assets/tipImage-2-2.png",
+    "assets/tipImage-2-3.png",
+    "assets/tipImage-2-4.png",
+  ];
+
+  final tipImage2 = [
+    "assets/tipImage-2-1.png",
+    "assets/tipImage-2-2.png",
+    "assets/tipImage-2-3.png",
+    "assets/tipImage-2-4.png",
   ];
 
   late String originalText;
@@ -98,6 +123,19 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     anchorElement.click();
   }
 
+  void _changePage(int page) {
+    if (page >= 0 && page < 2) {
+      _pageController.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+      setState(() {
+        _activePage = page;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -114,12 +152,25 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     _selectedTab = CretaStudioLang.imageMenuTabBar.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     originalText = '';
+    _overlayEntry = OverlayEntry(builder: (BuildContext context) => searchTip());
     super.initState();
   }
 
   @override
   void dispose() {
+    _overlayEntry.remove();
     super.dispose();
+  }
+
+  void _toggleSearchTip() {
+    setState(() {
+      _isHoveredTip = !_isHoveredTip;
+      if (_isHoveredTip) {
+        Overlay.of(context).insert(_overlayEntry);
+      } else {
+        _overlayEntry.remove();
+      }
+    });
   }
 
   Widget _menuBar() {
@@ -226,37 +277,16 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
             _state == AIState.ready
                 ? Text(CretaStudioLang.aiImageGeneration, style: CretaFont.titleSmall)
                 : Text(CretaStudioLang.aiGeneratedImage, style: CretaFont.titleSmall),
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                MouseRegion(
-                  onEnter: (event) {
-                    setState(() {
-                      _isHoveredTip = true;
-                    });
-                  },
-                  onExit: (event) {
-                    setState(() {
-                      _isHoveredTip = false;
-                    });
-                  },
-                  child: BTN.fill_gray_i_s(
-                    icon: Icons.lightbulb_outline_sharp,
-                    iconColor: CretaColor.primary[400],
-                    bgColor: CretaColor.primary[100],
-                    tooltip: CretaStudioLang.genAIimageTooltip,
-                    tooltipFg: CretaColor.text[200],
-                    tooltipBg: Colors.transparent,
-                    onPressed: () {},
-                  ),
-                ),
-                if (_isHoveredTip)
-                  Positioned(
-                    right: -425.0,
-                    child: searchTip(),
-                  ),
-              ],
-            ),
+            BTN.fill_gray_i_s(
+                icon: Icons.lightbulb_outline_sharp,
+                iconColor: CretaColor.primary[400],
+                bgColor: CretaColor.primary[100],
+                tooltip: CretaStudioLang.genAIimageTooltip,
+                tooltipFg: CretaColor.text[200],
+                tooltipBg: Colors.transparent,
+                onPressed: () {
+                  _toggleSearchTip();
+                }),
           ]),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -278,64 +308,135 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   }
 
   Widget searchTip() {
-    return Container(
-      height: 436.0,
-      width: LayoutConst.rightMenuWidth - (verticalPadding - 2.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
-        color: Colors.pink[100],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.all(12.0),
-            width: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
-            height: 52.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.0),
-              color: CretaColor.text[100],
-            ),
-            child: Center(
-              child: Text(
-                CretaStudioLang.tipMessage,
-                style: CretaFont.bodySmall,
-              ),
-            ),
+    return Positioned(
+      left: 485.0,
+      top: 243.0,
+      child: Material(
+        child: Container(
+          height: 455.0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.pink[200],
           ),
-          Stack(children: [
-            SizedBox(
-              height: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
-              width: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
-              child: Image.asset('assets/ai_tip_image.png'),
-            ),
-            Positioned(
-                left: 16.0,
-                top: 16.0,
-                child: Align(
-                  child: Container(
-                    // width: 120.0,
-                    width: 140.0,
-                    height: 25.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9.0),
-                      color: Colors.transparent.withOpacity(0.2),
+          width: LayoutConst.rightMenuWidth,
+          child: PageView.builder(
+            controller: _pageController,
+            onPageChanged: (int page) {
+              setState(() {
+                _activePage = page;
+              });
+            },
+            itemCount: CretaStudioLang.tipMessage.length,
+            itemBuilder: (BuildContext context, pageIndex) {
+              return Stack(clipBehavior: Clip.none, children: [
+                Container(
+                  key: UniqueKey(),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: verticalPadding),
+                      width: LayoutConst.rightMenuWidth - 2 * (horizontalPadding),
+                      height: 52.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        color: CretaColor.text[100],
+                      ),
+                      child: Center(
+                          child: Text(CretaStudioLang.tipMessage[pageIndex],
+                              style: CretaFont.bodyESmall)),
                     ),
-                    child: const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        CretaStudioLang.tipSearchExample,
-                        style: TextStyle(
-                          fontSize: 9.0,
-                          fontWeight: CretaFont.semiBold,
-                          color: Colors.white,
-                        ),
+                    SizedBox(
+                      height: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
+                      width: LayoutConst.rightMenuWidth - 2 * (horizontalPadding),
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // Vertical axis
+                            mainAxisSpacing: 12.0,
+                            crossAxisSpacing: 12.0,
+                            childAspectRatio: 1 / 1),
+                        itemCount: 4,
+                        itemBuilder: (context, int tipIndex) {
+                          return Stack(clipBehavior: Clip.none, children: [
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 2.0),
+                              decoration: BoxDecoration(color: CretaColor.text[200]),
+                              height: 156.0,
+                              width: 156.0,
+                              child: _activePage == 0
+                                  ? Image.asset(tipImage1[tipIndex])
+                                  : Image.asset(tipImage2[tipIndex]),
+                            ),
+                            Positioned(
+                              top: 8.0,
+                              left: 8.0,
+                              child: Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  width: 140.0,
+                                  height: 36.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(9.0),
+                                    color: Colors.transparent.withOpacity(0.5),
+                                  ),
+                                  child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 12.0),
+                                        child: Text(
+                                          _activePage == 0
+                                              ? CretaStudioLang.detailTipMessage1[tipIndex]
+                                              : CretaStudioLang.detailTipMessage2[tipIndex],
+                                          style: const TextStyle(
+                                            fontSize: 8.0,
+                                            fontWeight: CretaFont.semiBold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              ),
+                            ),
+                          ]);
+                        },
                       ),
                     ),
+                    Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(2, (pageIndex) {
+                        return Container(
+                          alignment: Alignment.center,
+                          height: 4.0,
+                          width: 12.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _activePage == pageIndex
+                                ? CretaColor.primary[400]
+                                : CretaColor.text[200],
+                          ),
+                        );
+                      }),
+                    )),
+                  ]),
+                ),
+                Positioned(
+                  top: 230.0,
+                  left: _activePage > 0 ? 8.0 : 333.0,
+                  child: BTN.floating_l(
+                    icon: _activePage == 0 ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+                    onPressed: () {
+                      logger.info('-----------switch page in tip-----------');
+                      if (_activePage == 0) {
+                        _changePage(_activePage + 1);
+                      } else if (_activePage > 0) {
+                        _changePage(_activePage - 1);
+                      }
+                    },
                   ),
-                )),
-          ]),
-        ],
+                )
+              ]);
+            },
+          ),
+        ),
       ),
     );
   }
@@ -392,23 +493,17 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         itemBuilder: (context, int styleIndex) {
           return Column(
             children: [
-              MouseRegion(
-                onEnter: (event) {
+              GestureDetector(
+                onTap: () {
                   setState(() {
-                    _isHoveredStyle = true;
                     selectedCard = styleIndex;
-                  });
-                },
-                onExit: (event) {
-                  setState(() {
-                    _isHoveredStyle = false;
                   });
                 },
                 child: Container(
                   padding: const EdgeInsets.only(bottom: 2.0),
                   decoration: BoxDecoration(
                       // color: CretaColor.text[200],
-                      border: _isHoveredStyle && selectedCard == styleIndex
+                      border: selectedCard == styleIndex
                           ? Border.all(color: CretaColor.primary, width: 2.0)
                           : null),
                   height: 68.0,
@@ -520,7 +615,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         return const SizedBox(
             height: 350.0,
             child: Center(
-              child: Text('서버가 사용 중입니다. 잠시 후 다시 시도하세요!'),
+              child: Text('서버가 혼잡하여 현재 이용할 수 없습니다. \n잠시 후에 다시 시도해주세요. \n불편을 드려 죄송합니다.'),
             ));
       default:
         return const SizedBox.shrink();

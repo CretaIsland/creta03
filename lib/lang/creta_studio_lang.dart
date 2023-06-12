@@ -177,6 +177,43 @@ class CretaStudioLang {
     },
   ];
 
+  static const List<String> tipMessage = [
+    "생성하고자 하는 문구나 문장을 자세하고 명확하게 입력합니다.",
+    "원하는 예술가의 스타일을 입력하여 이미지를 생성할 수 있습니다."
+  ];
+
+  // static const List<String> detailTipMessage1 = [
+  //   "파란색 배경, 디지털 아트로 어항에 있는 귀여운 열대어의 3D 렌더링",
+  //   "성운의 폭발로 묘사된 농구 선수의 덩크를 유화로 표현",
+  //   "타임스퀘어에서 스케이트보드를 타는 테디베어의 사진",
+  //   "우주선 안의 뾰루퉁한 고양이를 오일 파스텔로 그린 작품",
+  // ];
+
+  // static const List<String> detailTipMessage2 = [
+  //   "크레타 섬의 풍경을 모네 스타일의 드로잉으로 그린 그림",
+  //   "요하네스 베르메르의 “진주 귀걸이를 한소녀” 작품을 해달로 표현",
+  //   "헤드폰 디제잉을 하고 있는 미켈란젤로의 다비드 조각상 사진",
+  //   "앤디 워홀 스타일의 선글라스를 쓴 프렌치 불독 그림",
+  // ];
+
+  static const List<String> detailTipMessage1 = [
+    "파란색 배경, 디지털 아트로 어항에 있는 귀여운 열대어의 3D 렌더링",
+    "성운의 폭발로 묘사된 농구 선수의 덩크를 유화로 표현",
+    "타임스퀘어에서 스케이트보드를 타는 테디베어의 사진",
+    "우주선 안의 뾰루퉁한 고양이를 오일 파스텔로 그린 작품",
+    "크레타 섬의 풍경을 모네 스타일의 드로잉으로 그린 그림",
+    "요하네스 베르메르의 “진주 귀걸이를 한소녀” 작품을 해달로 표현",
+    "헤드폰 디제잉을 하고 있는 미켈란젤로의 다비드 조각상 사진",
+    "앤디 워홀 스타일의 선글라스를 쓴 프렌치 불독 그림",
+  ];
+
+  static const List<String> detailTipMessage2 = [
+    "크레타 섬의 풍경을 모네 스타일의 드로잉으로 그린 그림",
+    "요하네스 베르메르의 “진주 귀걸이를 한소녀” 작품을 해달로 표현",
+    "헤드폰 디제잉을 하고 있는 미켈란젤로의 다비드 조각상 사진",
+    "앤디 워홀 스타일의 선글라스를 쓴 프렌치 불독 그림",
+  ];
+
   static const String myCretaBook = "내 크레타북";
   static const String sharedCretaBook = "공유 크레타북";
   static const String teamCretaBook = "팀북";
@@ -316,7 +353,6 @@ class CretaStudioLang {
   static const String genFromBeginning = '처음부터 시작'; // added by Mai 230602
 
   static const String genAIimageTooltip = '팁'; // added by Mai 230608
-  static const String tipMessage = '자세하게 작성할수록 원하는 이미지를 그릴 수 있습니다.'; // added by Mai 230608
   static const String tipSearchExample = '크레타선+드로잉+모내스타일'; // added by Mai 230608
 
   static const String fixedRatio = "가로세로비를 고정합니다";
