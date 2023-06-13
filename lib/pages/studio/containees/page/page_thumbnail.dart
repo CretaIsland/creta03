@@ -4,14 +4,12 @@ import 'package:creta03/pages/studio/containees/frame/frame_thumbnail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
-import 'package:hycop/hycop/enum/model_enums.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../common/creta_utils.dart';
-import '../../../../common/window_screenshot.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
@@ -57,9 +55,6 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   GradationType gradationType = GradationType.none;
   TextureType textureType = TextureType.none;
 
-  DateTime? _lastTakeScreenShotTime;
-  bool _buildComplete = false;
-
   @override
   void initState() {
     super.initState();
@@ -69,15 +64,14 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
     _receiveEventFromMain = receiveEventFromMain;
     _receiveEventFromProperty = receiveEventFromProperty;
 
-    afterBuild();
+    //afterBuild();
   }
 
-  Future<void> afterBuild() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _buildComplete = true;
-      if (widget.pageIndex == 0) _takeAScreenShot();
-    });
-  }
+  // Future<void> afterBuild() async {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //     //if (widget.pageIndex == 0) _takeAScreenShot();
+  //   });
+  // }
 
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
@@ -247,8 +241,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       logger.info('_receiveEventFromProperty-----Unknown Model');
                     }
                   }
-
-                  if (widget.pageIndex == 0) _takeAScreenShot();
+                  BookMainPage.thumbnailChanged = true;
                   return Stack(
                     children: _frameManager!.orderMapIterator((model) {
                       FrameModel frameModel = model as FrameModel;
@@ -291,45 +284,6 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                   );
                 });
           });
-    });
-  }
-
-  void _takeAScreenShot() {
-    if (_buildComplete == false || BookMainPage.firstThumbnailKey == null) {
-      print('11111111111111111111111111111111111111111');
-      return;
-    }
-
-    if (_lastTakeScreenShotTime != null) {
-      if (DateTime.now().difference(_lastTakeScreenShotTime!) < const Duration(seconds: 2)) {
-        Duration duration = DateTime.now().difference(_lastTakeScreenShotTime!);
-        print('33333333333333333333333333333333333333333 $duration');
-        return;
-      } // 마지막으로 사진을 찍은지 2초가 되지 않았다.
-    }
-    _lastTakeScreenShotTime = DateTime.now();
-
-    RenderBox? box =
-        BookMainPage.firstThumbnailKey!.currentContext?.findRenderObject() as RenderBox?;
-    if (box == null) {
-      print('444444444444444444444444444444444444444444');
-      return;
-    }
-    Offset position = box.localToGlobal(Offset.zero);
-    logger.info('box.size=${box.size}');
-    print('55555555555555555555555555555555555555');
-    WindowScreenshot.screenshot(
-      bookId: widget.bookModel.mid,
-      x: position.dx,
-      y: position.dy,
-      width: box.size.width,
-      height: box.size.height,
-    ).then((value) {
-      widget.bookModel.thumbnailUrl.set(value, noUndo: true);
-      widget.bookModel.thumbnailType.set(ContentsType.image, noUndo: true);
-      _lastTakeScreenShotTime = DateTime.now();
-      logger.info('book Thumbnail saved !!! ${widget.bookModel.mid}, $value');
-      return null;
     });
   }
 

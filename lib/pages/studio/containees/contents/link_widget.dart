@@ -112,7 +112,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                     if (LinkParams.isLinkNewMode &&
                         StudioVariables.isPreview == false &&
                         hasContents) {
-                      logger.info('sendEvent ${event.position}');
+                      //logger.info('sendEvent ${event.position}');
                       _linkSendEvent?.sendEvent(event.position);
                     }
                   },
@@ -249,7 +249,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     }
     return GestureDetector(
       onTapUp: (d) {
-        logger.info('link button pressed ${model.mid}');
+        logger.info('link button pressed ${model.connectedMid},${model.connectedClass}');
         BookMainPage.containeeNotifier!.setFrameClick(true);
 
         if (widget.contentsModel.isLinkEditMode == true) return;
@@ -272,7 +272,6 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.connectedMid = model.connectedMid;
               LinkParams.connectedClass = 'page';
               LinkParams.invokerMid = widget.frameManager.pageModel.mid;
-              print('LinkParams.invokerMid ----${LinkParams.invokerMid}');
             } else {
               LinkParams.linkPostion = null;
               LinkParams.orgPostion = null;
@@ -289,11 +288,12 @@ class _LinkWidgetState extends State<LinkWidget> {
           // show frame
           FrameModel? frameModel = widget.frameManager.getModel(model.connectedMid) as FrameModel?;
           if (frameModel != null) {
-            bool isShow = !frameModel.isTempVisible;
-            frameModel.isTempVisible = isShow;
-            if (isShow == true) {
-              double order = widget.frameManager.getMaxOrder() + 1;
-              frameModel.order.set(order);
+            frameModel.isShow.set(!frameModel.isShow.value);
+            if (frameModel.isShow.value == true) {
+              double order = widget.frameManager.getMaxOrder();
+              if (frameModel.order.value < order) {
+                frameModel.order.set(order + 1, save: false);
+              }
               // 여기서 연결선을 연결한다....
               LinkParams.linkPostion = Offset(posX, posY);
               LinkParams.orgPostion = widget.frameOffset;
@@ -305,7 +305,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.connectedMid = '';
               LinkParams.connectedClass = '';
             }
-            model.showLinkLine = isShow;
+            model.showLinkLine = frameModel.isShow.value;
             //_lineDrawSendEvent?.sendEvent(isShow);
             widget.frameManager.notify();
             //_linkManager?.notify();

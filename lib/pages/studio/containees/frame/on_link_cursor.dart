@@ -56,11 +56,11 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
     return StreamBuilder<Offset>(
         stream: _linkReceiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
-          logger.info('_drawLinkCursor1 ($offset)');
+          //logger.info('_drawLinkCursor1 ($offset)');
           if (snapshot.data != null && snapshot.data is Offset) {
             offset = snapshot.data!;
           }
-          logger.info('_drawLinkCursor2 ($offset)');
+          //logger.info('_drawLinkCursor2 ($offset)');
           if (offset == Offset.zero) {
             return const SizedBox.shrink();
           }

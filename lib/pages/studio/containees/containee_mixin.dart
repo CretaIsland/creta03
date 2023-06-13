@@ -41,19 +41,20 @@ mixin ContaineeMixin {
       }
       if (ele == AnimationType.scaleXY) {
         logger.finest('scaleXY');
-        if (mid != LinkParams.connectedMid) {
+        if (LinkParams.connectedClass == 'page' || mid != LinkParams.connectedMid) {
           ani = ani.scaleXY().then();
-        } else if (LinkParams.connectedClass == 'page') {
-          ani = ani
-              .scaleXY(duration: const Duration(milliseconds: 750), curve: Curves.easeInOut)
-              .move(
-                  duration: const Duration(milliseconds: 1500),
-                  curve: Curves.easeInOut,
-                  begin: LinkParams.linkPostion! + LinkParams.orgPostion!); // -
-          // Offset(frameWidth / 2, frameHeight / 2) -
-          // Offset(posX, posY))
         }
       }
+      //  else if (LinkParams.connectedClass == 'page') {
+      //   ani = ani
+      //       .scaleXY(duration: const Duration(milliseconds: 750), curve: Curves.easeInOut)
+      //       .move(
+      //           duration: const Duration(milliseconds: 1500),
+      //           curve: Curves.easeInOut,
+      //           begin: LinkParams.linkPostion! + LinkParams.orgPostion!); // -
+      //   // Offset(frameWidth / 2, frameHeight / 2) -
+      //   // Offset(posX, posY))
+      // }
     }
     return ani;
   }

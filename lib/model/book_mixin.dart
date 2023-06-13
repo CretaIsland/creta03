@@ -36,16 +36,16 @@ mixin BookMixin {
       ];
 
   void initMixin(String mid) {
-    width = UndoAble<double>(0, mid);
-    height = UndoAble<double>(0, mid);
+    width = UndoAble<double>(0, mid, 'width');
+    height = UndoAble<double>(0, mid, 'height');
 
     // bgColor1 = UndoAble<Color>(Colors.transparent, mid);
     // bgColor2 = UndoAble<Color>(Colors.transparent, mid);
     // opacity = UndoAble<double>(1, mid);
     // gradationType = UndoAble<GradationType>(GradationType.none, mid);
     // textureType = UndoAble<TextureType>(TextureType.none, mid);
-    transitionEffect = UndoAble<int>(0, mid);
-    isFixedRatio = UndoAble<bool>(false, mid);
+    transitionEffect = UndoAble<int>(0, mid, 'transitionEffect');
+    isFixedRatio = UndoAble<bool>(false, mid, 'isFixedRatio');
     // effect = UndoAble<EffectType>(EffectType.none, mid);
     // eventReceive = UndoAble<String>('', mid);
     // showWhenEventReceived = UndoAble<bool>(false, mid);
@@ -54,8 +54,8 @@ mixin BookMixin {
   }
 
   void makeSampleMixin(String mid) {
-    width = UndoAble<double>(600, mid);
-    height = UndoAble<double>(400, mid);
+    width = UndoAble<double>(600, mid, 'width');
+    height = UndoAble<double>(400, mid, 'height');
 
     // bgColor1 = UndoAble<Color>(Colors.transparent, mid);
     // bgColor2 = UndoAble<Color>(Colors.transparent, mid);
@@ -63,8 +63,8 @@ mixin BookMixin {
     // gradationType = UndoAble<GradationType>(GradationType.none, mid);
     // textureType = UndoAble<TextureType>(TextureType.none, mid);
 
-    transitionEffect = UndoAble<int>(0, mid);
-    isFixedRatio = UndoAble<bool>(false, mid);
+    transitionEffect = UndoAble<int>(0, mid, 'transitionEffect');
+    isFixedRatio = UndoAble<bool>(false, mid, 'isFixedRatio');
     // effect = UndoAble<EffectType>(EffectType.none, mid);
     // eventReceive = UndoAble<String>('', mid);
     // showWhenEventReceived = UndoAble<bool>(false, mid);
@@ -73,16 +73,16 @@ mixin BookMixin {
   }
 
   void copyFromMixin(String mid, BookMixin src) {
-    width = UndoAble<double>(src.width.value, mid);
-    height = UndoAble<double>(src.height.value, mid);
+    width = UndoAble<double>(src.width.value, mid, 'width');
+    height = UndoAble<double>(src.height.value, mid, 'height');
 
     // bgColor1 = UndoAble<Color>(src.bgColor1.value, mid);
     // bgColor2 = UndoAble<Color>(src.bgColor2.value, mid);
     // opacity = UndoAble<double>(src.opacity.value, mid);
     // gradationType = UndoAble<GradationType>(src.gradationType.value, mid);
     // textureType = UndoAble<TextureType>(src.textureType.value, mid);
-    transitionEffect = UndoAble<int>(src.transitionEffect.value, mid);
-    isFixedRatio = UndoAble<bool>(src.isFixedRatio.value, mid);
+    transitionEffect = UndoAble<int>(src.transitionEffect.value, mid, 'transitionEffect');
+    isFixedRatio = UndoAble<bool>(src.isFixedRatio.value, mid, 'isFixedRatio');
     // effect = UndoAble<EffectType>(src.effect.value, mid);
     // eventReceive = UndoAble<String>(src.eventReceive.value, mid);
     // showWhenEventReceived = UndoAble<bool>(src.showWhenEventReceived.value, mid);

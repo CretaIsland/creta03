@@ -238,7 +238,7 @@ class CretaPlayTimer extends ChangeNotifier {
             LinkModel link = value as LinkModel;
             FrameModel? frame = frameManager.getModel(link.connectedMid) as FrameModel?;
             if (frame != null) {
-              frame.isTempVisible = false;
+              frame.isShow.set(false);
               frameManager.notify();
             }
             return null;

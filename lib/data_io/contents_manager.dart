@@ -135,13 +135,13 @@ class ContentsManager extends CretaManager {
   }
 
   String? getThumbnail() {
-    for (var ele in modelList) {
-      ContentsModel model = ele as ContentsModel;
+    List<String?> list = valueList().map((value) {
+      ContentsModel model = value as ContentsModel;
       if (model.isRemoved.value == true) {
-        continue;
+        return null;
       }
       if (model.isShow.value == false) {
-        continue;
+        return null;
       }
       if (model.thumbnail == null || model.thumbnail!.isEmpty) {
         if (model.isImage()) {
@@ -149,11 +149,16 @@ class ContentsManager extends CretaManager {
             return model.remoteUrl!;
           }
         }
-        continue;
+        return null;
       }
       return model.thumbnail!;
+    }).toList();
+    for (String? ele in list) {
+      if (ele != null) {
+        return ele;
+      }
     }
-    // 여기까지 오면 없다는 뜻이다.  isShow 라도 리턴해본다.
+
     for (var ele in modelList) {
       ContentsModel model = ele as ContentsModel;
       if (model.isRemoved.value == true) {

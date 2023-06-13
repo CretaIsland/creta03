@@ -24,8 +24,6 @@ mixin CretaStyleMixin {
   late UndoAble<int> duration;
   late UndoAble<bool> isShow;
 
-  bool isTempVisible = false;
-
   List<Object?> get propsMixin => [
         width,
         height,
@@ -44,61 +42,61 @@ mixin CretaStyleMixin {
       ];
 
   void initMixin(String mid) {
-    width = UndoAble<double>(0, mid);
-    height = UndoAble<double>(0, mid);
-
-    bgColor1 = UndoAble<Color>(Colors.white, mid);
-    bgColor2 = UndoAble<Color>(Colors.blue, mid);
-    opacity = UndoAble<double>(1, mid);
-    gradationType = UndoAble<GradationType>(GradationType.none, mid);
-    textureType = UndoAble<TextureType>(TextureType.none, mid);
-    transitionEffect = UndoAble<int>(0, mid);
-    isFixedRatio = UndoAble<bool>(false, mid);
-    effect = UndoAble<EffectType>(EffectType.none, mid);
-    eventReceive = UndoAble<String>('', mid);
-    showWhenEventReceived = UndoAble<bool>(false, mid);
-    durationType = UndoAble<DurationType>(DurationType.none, mid);
-    duration = UndoAble<int>(0, mid);
-    isShow = UndoAble<bool>(true, mid);
+    width = UndoAble<double>(0, mid, 'width');
+    height = UndoAble<double>(0, mid, 'height');
+    bgColor1 = UndoAble<Color>(Colors.white, mid, 'bgColor1');
+    bgColor2 = UndoAble<Color>(Colors.blue, mid, 'bgColor2');
+    opacity = UndoAble<double>(1, mid, 'opacity');
+    gradationType = UndoAble<GradationType>(GradationType.none, mid, 'gradationType');
+    textureType = UndoAble<TextureType>(TextureType.none, mid, 'textureType');
+    transitionEffect = UndoAble<int>(0, mid, 'transitionEffect');
+    isFixedRatio = UndoAble<bool>(false, mid, 'isFixedRatio');
+    effect = UndoAble<EffectType>(EffectType.none, mid, 'effect');
+    eventReceive = UndoAble<String>('', mid, 'eventReceive');
+    showWhenEventReceived = UndoAble<bool>(false, mid, 'showWhenEventReceived');
+    durationType = UndoAble<DurationType>(DurationType.none, mid, 'durationType');
+    duration = UndoAble<int>(0, mid, 'duration');
+    isShow = UndoAble<bool>(true, mid, 'isShow');
   }
 
   void makeSampleMixin(String mid) {
-    width = UndoAble<double>(600, mid);
-    height = UndoAble<double>(400, mid);
+    width = UndoAble<double>(600, mid, 'width');
+    height = UndoAble<double>(400, mid, 'height');
 
-    bgColor1 = UndoAble<Color>(Colors.white, mid);
-    bgColor2 = UndoAble<Color>(Colors.blue, mid);
-    opacity = UndoAble<double>(1, mid);
-    gradationType = UndoAble<GradationType>(GradationType.none, mid);
-    textureType = UndoAble<TextureType>(TextureType.none, mid);
+    bgColor1 = UndoAble<Color>(Colors.white, mid, 'bgColor1');
+    bgColor2 = UndoAble<Color>(Colors.blue, mid, 'bgColor2');
+    opacity = UndoAble<double>(1, mid, 'opacity');
+    gradationType = UndoAble<GradationType>(GradationType.none, mid, 'gradationType');
+    textureType = UndoAble<TextureType>(TextureType.none, mid, 'textureType');
 
-    transitionEffect = UndoAble<int>(0, mid);
-    isFixedRatio = UndoAble<bool>(false, mid);
-    effect = UndoAble<EffectType>(EffectType.none, mid);
-    eventReceive = UndoAble<String>('', mid);
-    showWhenEventReceived = UndoAble<bool>(false, mid);
-    durationType = UndoAble<DurationType>(DurationType.none, mid);
-    duration = UndoAble<int>(0, mid);
-    isShow = UndoAble<bool>(true, mid);
+    transitionEffect = UndoAble<int>(0, mid, 'transitionEffect');
+    isFixedRatio = UndoAble<bool>(false, mid, 'isFixedRatio');
+    effect = UndoAble<EffectType>(EffectType.none, mid, 'effect');
+    eventReceive = UndoAble<String>('', mid, 'eventReceive');
+    showWhenEventReceived = UndoAble<bool>(false, mid, 'showWhenEventReceived');
+    durationType = UndoAble<DurationType>(DurationType.none, mid, 'durationType');
+    duration = UndoAble<int>(0, mid, 'duration');
+    isShow = UndoAble<bool>(true, mid, 'isShow');
   }
 
   void copyFromMixin(String mid, CretaStyleMixin src) {
-    width = UndoAble<double>(src.width.value, mid);
-    height = UndoAble<double>(src.height.value, mid);
+    width = UndoAble<double>(src.width.value, mid, 'width');
+    height = UndoAble<double>(src.height.value, mid, 'height');
 
-    bgColor1 = UndoAble<Color>(src.bgColor1.value, mid);
-    bgColor2 = UndoAble<Color>(src.bgColor2.value, mid);
-    opacity = UndoAble<double>(src.opacity.value, mid);
-    gradationType = UndoAble<GradationType>(src.gradationType.value, mid);
-    textureType = UndoAble<TextureType>(src.textureType.value, mid);
-    transitionEffect = UndoAble<int>(src.transitionEffect.value, mid);
-    isFixedRatio = UndoAble<bool>(src.isFixedRatio.value, mid);
-    effect = UndoAble<EffectType>(src.effect.value, mid);
-    eventReceive = UndoAble<String>(src.eventReceive.value, mid);
-    showWhenEventReceived = UndoAble<bool>(src.showWhenEventReceived.value, mid);
-    durationType = UndoAble<DurationType>(src.durationType.value, mid);
-    duration = UndoAble<int>(src.duration.value, mid);
-    isShow = UndoAble<bool>(src.isShow.value, mid);
+    bgColor1 = UndoAble<Color>(src.bgColor1.value, mid, 'bgColor1');
+    bgColor2 = UndoAble<Color>(src.bgColor2.value, mid, 'bgColor2');
+    opacity = UndoAble<double>(src.opacity.value, mid, 'opacity');
+    gradationType = UndoAble<GradationType>(src.gradationType.value, mid, 'gradationType');
+    textureType = UndoAble<TextureType>(src.textureType.value, mid, 'textureType');
+    transitionEffect = UndoAble<int>(src.transitionEffect.value, mid, 'transitionEffect');
+    isFixedRatio = UndoAble<bool>(src.isFixedRatio.value, mid, 'isFixedRatio');
+    effect = UndoAble<EffectType>(src.effect.value, mid, 'effect');
+    eventReceive = UndoAble<String>(src.eventReceive.value, mid, 'eventReceive');
+    showWhenEventReceived =
+        UndoAble<bool>(src.showWhenEventReceived.value, mid, 'showWhenEventReceived');
+    durationType = UndoAble<DurationType>(src.durationType.value, mid, 'durationType');
+    duration = UndoAble<int>(src.duration.value, mid, 'duration');
+    isShow = UndoAble<bool>(src.isShow.value, mid, 'isShow');
   }
 
   void fromMapMixin(Map<String, dynamic> map) {

@@ -171,6 +171,10 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       //   BookMainPage.bookManagerHolder!.notify();
       //   //setState(() {});
       // },
+      onFrameShowUnshow: (mid) {
+        logger.fine('Frame onFrameShowUnshow');
+        setState(() {});
+      },
       onFrameMain: (mid) {
         logger.fine('Frame onFrameMain');
         _setMain(mid);
@@ -404,11 +408,14 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     //   }
     //   return false;
     // }
-    if (model.isShow.value == false) {
-      if (model.isTempVisible) return true;
-      return false;
-    }
-    return true;
+    // if (model.isShow.value == false) {
+    //   if (model.isTempVisible) return true;
+    //   return false;
+    // } else {
+    //   if (!model.isTempVisible) return false;
+    //   return true;
+    // }
+    return model.isShow.value;
   }
 
   // Widget _applyAnimate(FrameModel model) {

@@ -140,8 +140,10 @@ class PageManager extends CretaManager {
     logger.info('gotoFirst');
     String? mid = getFirstMid();
     if (mid != null) {
-      setSelectedMid(mid);
+      //if (selectedMid != mid) {
+      setSelectedMid(mid, doNotify: false);
       return true;
+      //}
     }
     return false;
   }

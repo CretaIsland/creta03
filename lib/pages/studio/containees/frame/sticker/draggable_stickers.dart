@@ -48,6 +48,7 @@ class DraggableStickers extends StatefulWidget {
   final void Function(String, String) onFrameFront;
   final void Function(String) onFrameCopy;
   final void Function(String) onFrameMain;
+  final void Function(String) onFrameShowUnshow;
   final void Function(String)? onTap;
   final void Function() onResizeButtonTap;
   final void Function(String) onComplete;
@@ -70,6 +71,7 @@ class DraggableStickers extends StatefulWidget {
     required this.onFrameFront,
     required this.onFrameCopy,
     required this.onFrameMain,
+    required this.onFrameShowUnshow,
     required this.onTap,
     required this.onComplete,
     required this.onScaleStart,
@@ -360,6 +362,12 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 logger.fine('onFrameMain');
                 selectedSticker.isMain = true;
                 widget.onFrameMain.call(selectedSticker.id);
+                //setState(() {});
+              },
+              onFrameShowUnshow: () {
+                logger.fine('onFrameShowUnshow');
+                selectedSticker.isMain = true;
+                widget.onFrameShowUnshow.call(selectedSticker.id);
                 //setState(() {});
               },
               onFrameCopy: () {

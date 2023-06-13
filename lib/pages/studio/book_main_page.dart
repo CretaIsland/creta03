@@ -2,10 +2,13 @@
 
 //import 'dart:ui';
 
+import 'dart:async';
+
 import 'package:creta03/pages/studio/studio_main_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -16,6 +19,7 @@ import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../common/creta_constant.dart';
+import '../../common/window_screenshot.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -62,15 +66,18 @@ class BookMainPage extends StatefulWidget {
   static ClickEventHandler clickEventHandler = ClickEventHandler();
 
   static GlobalObjectKey? firstThumbnailKey;
+  static bool thumbnailChanged = false;
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
   final bool isThumbnailX;
+  final GlobalKey bookKey;
+
   BookMainPage({
-    super.key,
+    required this.bookKey,
     this.isPreviewX = false,
     this.isThumbnailX = false,
-  }) {
+  }) : super(key: bookKey) {
     StudioVariables.isPreview = isPreviewX;
   }
 
@@ -101,6 +108,8 @@ class _BookMainPageState extends State<BookMainPage> {
   double? horizontalScrollOffset;
 
   bool dropDownButtonOpened = false;
+
+  Timer? _screenshotTimer;
 
   //OffsetEventController? _linkSendEvent;
   //AutoPlayChangeEventController? _autoPlaySendEvent;
@@ -176,6 +185,22 @@ class _BookMainPageState extends State<BookMainPage> {
 
     BookMainPage.clickReceiverHandler.init();
     logger.info("end ---_BookMainPageState-----------------------------------------");
+
+    afterBuild();
+  }
+
+  Future<void> afterBuild() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      logger.info("BookMainPage ---_BookMainPageState-----------------------------------------");
+      while (_onceDBGetComplete == false) {
+        await Future.delayed(Duration(seconds: 1));
+      }
+      if (StudioVariables.isPreview) {
+        _takeAScreenShot();
+      } else {
+        _startScreenshotTimer();
+      }
+    });
   }
 
   Future<void> initChildren(BookModel model) async {
@@ -261,6 +286,8 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.severe('BookMainPage.dispose');
 
     super.dispose();
+    _stopScreenshotTimer();
+
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.clearFrameManager();
@@ -367,9 +394,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget consumerFunc() {
     logger.finest('consumerFunc');
-
-    if (StudioVariables.isPreview == true) {}
-
+    _startScreenshotTimer();
     return Consumer<BookManager>(
         key: ValueKey('consumerFunc+${BookMainPage.selectedMid}'),
         builder: (context, bookManager, child) {
@@ -868,7 +893,23 @@ class _BookMainPageState extends State<BookMainPage> {
     double totalWidth =
         StudioVariables.virtualWidth + LayoutConst.rightMenuWidth + LayoutConst.leftMenuWidth;
 
-    Widget scrollBox = Container(
+    // if (BookMainPage.selectedStick != LeftMenuEnum.None) {
+    //   return Positioned(
+    //     left: LayoutConst.leftMenuWidth,
+    //     top: 0,
+    //     child: scrollBox,
+    //   );
+    // }
+
+    return Center(
+        child: StudioVariables.isPreview
+            ? noneScrollBox(isPageExist)
+            : scrollBox(totalWidth, marginX, marginY));
+    //});
+  }
+
+  Widget scrollBox(double totalWidth, double marginX, double marginY) {
+    return Container(
       width: StudioVariables.workWidth, //scrollWidth,
       height: StudioVariables.workHeight,
       color: LayoutConst.studioBGColor,
@@ -899,8 +940,10 @@ class _BookMainPageState extends State<BookMainPage> {
         ),
       ),
     );
+  }
 
-    Widget noneScrollBox = Container(
+  Widget noneScrollBox(bool isPageExist) {
+    return Container(
       width: StudioVariables.workWidth, //scrollWidth,
       height: StudioVariables.workHeight,
       color: LayoutConst.studioBGColor,
@@ -957,17 +1000,6 @@ class _BookMainPageState extends State<BookMainPage> {
         );
       }),
     );
-
-    // if (BookMainPage.selectedStick != LeftMenuEnum.None) {
-    //   return Positioned(
-    //     left: LayoutConst.leftMenuWidth,
-    //     top: 0,
-    //     child: scrollBox,
-    //   );
-    // }
-
-    return Center(child: StudioVariables.isPreview ? noneScrollBox : scrollBox);
-    //});
   }
 
   double getScrollWidth() {
@@ -1064,5 +1096,54 @@ class _BookMainPageState extends State<BookMainPage> {
     //   //   BookMainPage.selectedStick = idx;
     //   // }
     // });
+  }
+
+  void _takeAScreenShot() {
+    RenderBox? box = widget.bookKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) {
+      return;
+    }
+    Offset position = box.localToGlobal(Offset.zero);
+    logger.info('start _takeAScreenShot()');
+    BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+    if (bookModel == null) {
+      logger.warning('book model is null');
+      return;
+    }
+    WindowScreenshot.screenshot(
+      bookId: bookModel.mid,
+      x: position.dx,
+      y: position.dy,
+      width: box.size.width,
+      height: box.size.height,
+    ).then((value) {
+      bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
+      bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
+      logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
+      // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
+      BookMainPage.bookManagerHolder?.setToDB(bookModel);
+
+      return null;
+    });
+  }
+
+  void _startScreenshotTimer() {
+    _screenshotTimer ??= Timer.periodic(Duration(minutes: 1), (t) {
+      if (BookMainPage.firstThumbnailKey == null) {
+        return;
+      }
+      if (saveManagerHolder!.isSomethingSaved() == false) {
+        return;
+      }
+      if (BookMainPage.thumbnailChanged == false) {
+        return;
+      }
+      BookMainPage.thumbnailChanged = false;
+      _takeAScreenShot();
+    });
+  }
+
+  void _stopScreenshotTimer() {
+    _screenshotTimer?.cancel();
   }
 }
