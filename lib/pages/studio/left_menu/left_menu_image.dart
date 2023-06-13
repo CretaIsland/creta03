@@ -6,7 +6,7 @@ import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
-
+import 'package:translator/translator.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/component/creta_property_card.dart';
 import '../../../design_system/component/custom_image.dart';
@@ -41,13 +41,26 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   int selectedImage = -1;
   int selectedAIImage = -1;
 
+  late String originalText;
+  String promptText = '';
   String searchValue = '';
+
+  late OverlayEntry _overlayEntry;
 
   bool _isStyleOpened = true;
   final bool _isTrailShowed = false;
-  bool _isHovered = false;
+  // bool _isTipOpened = false;
+  bool _isTipOpened = false;
   List<String> imgUrl = [];
+
+  GoogleTranslator translator = GoogleTranslator();
+
   AIState _state = AIState.ready;
+
+  // PageController
+  final PageController _pageController = PageController(initialPage: 0, viewportFraction: 1.0);
+
+  int _activePage = 0;
 
   final imageTitle = [
     CretaStudioLang.recentUsedImage,
@@ -55,16 +68,42 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     CretaStudioLang.myImage,
   ];
 
-  late String originalText;
-  String promptText = '';
+  final imageSample = [
+    'assets/creta-photo.png',
+    'assets/creta-illustration.png',
+    'assets/creta-digital-art.png',
+    'assets/creta-popart.png',
+    'assets/creta-watercolor.png',
+    'assets/creta-oilpainting.png',
+    'assets/creta-printmaking.png',
+    'assets/creta-drawing.png',
+    'assets/creta-orientalpainting.png',
+    'assets/creta-outlinedrawing.png',
+    'assets/creta-crayon.png',
+    'assets/creta-sketch.png',
+  ];
+
+  final tipImage1 = [
+    "assets/tipImage-1-1.png",
+    "assets/tipImage-1-2.png",
+    "assets/tipImage-1-3.png",
+    "assets/tipImage-1-4.png",
+  ];
+
+  final tipImage2 = [
+    "assets/tipImage-2-1.png",
+    "assets/tipImage-2-2.png",
+    "assets/tipImage-2-3.png",
+    "assets/tipImage-2-4.png",
+  ];
 
   Future<void> generateImage(String text) async {
     if (_textController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter text description for image generation')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('이미지 생성을 위한 텍스트 설명을 입력하세요.')));
       return;
     }
-    //setState(() {
+
     _state = AIState.processing;
     Api.generateImageAI(text, numImg).then((values) {
       setState(() {
@@ -79,6 +118,19 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     AnchorElement anchorElement = AnchorElement(href: urlImages);
     anchorElement.download = "OpenAI_Image";
     anchorElement.click();
+  }
+
+  void _changePage(int page) {
+    if (page >= 0 && page < CretaStudioLang.tipMessage.length) {
+      _pageController.animateToPage(
+        page,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+      setState(() {
+        _activePage = page;
+      });
+    }
   }
 
   @override
@@ -97,12 +149,25 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     _selectedTab = CretaStudioLang.imageMenuTabBar.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     originalText = '';
+    _overlayEntry = OverlayEntry(builder: (BuildContext context) => searchTip());
     super.initState();
   }
 
   @override
   void dispose() {
+    _overlayEntry.remove();
     super.dispose();
+  }
+
+  void _toggleSearchTip() {
+    setState(() {
+      _isTipOpened = !_isTipOpened;
+      if (_isTipOpened) {
+        Overlay.of(context).insert(_overlayEntry);
+      } else {
+        _overlayEntry.remove();
+      }
+    });
   }
 
   Widget _menuBar() {
@@ -205,48 +270,21 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _state == AIState.ready
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(CretaStudioLang.aiImageGeneration, style: CretaFont.titleSmall),
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Row(
-                          children: <Widget>[
-                            MouseRegion(
-                              onEnter: (event) {
-                                setState(() {
-                                  _isHovered = true;
-                                });
-                              },
-                              onExit: (event) {
-                                setState(() {
-                                  _isHovered = false;
-                                });
-                              },
-                              child: BTN.fill_gray_i_s(
-                                icon: Icons.lightbulb_outline_sharp,
-                                iconColor: CretaColor.primary[400],
-                                bgColor: CretaColor.primary[100],
-                                tooltip: CretaStudioLang.genAIimageTooltip,
-                                tooltipFg: CretaColor.text[200],
-                                tooltipBg: Colors.transparent,
-                                onPressed: () {},
-                              ),
-                            ),
-                          ],
-                        ),
-                        Positioned(
-                          right: -425.0,
-                          child: searchTip(),
-                        ),
-                      ],
-                    )
-                  ],
-                )
-              : Text(CretaStudioLang.aiGeneratedImage, style: CretaFont.titleSmall),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            _state == AIState.ready
+                ? Text(CretaStudioLang.aiImageGeneration, style: CretaFont.titleSmall)
+                : Text(CretaStudioLang.aiGeneratedImage, style: CretaFont.titleSmall),
+            BTN.fill_gray_i_s(
+                icon: Icons.lightbulb_outline_sharp,
+                iconColor: CretaColor.primary[400],
+                bgColor: CretaColor.primary[100],
+                tooltip: CretaStudioLang.genAIimageTooltip,
+                tooltipFg: CretaColor.text[200],
+                tooltipBg: Colors.transparent,
+                onPressed: () {
+                  _toggleSearchTip();
+                }),
+          ]),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: CretaTextField.short(
@@ -267,68 +305,53 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   }
 
   Widget searchTip() {
-    return Visibility(
-        visible: _isHovered,
-        child: Container(
-          height: 436.0,
-          width: LayoutConst.rightMenuWidth - (verticalPadding - 2.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: Colors.white,
+    return Positioned(
+      left: 485.0,
+      top: 243.0,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.0),
+        child: Material(
+          child: Container(
+            key: UniqueKey(),
+            height: 455.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.white,
+            ),
+            width: LayoutConst.rightMenuWidth,
+            child: PageView.builder(
+              controller: _pageController,
+              onPageChanged: (int page) {
+                setState(() {
+                  _activePage = page;
+                });
+              },
+              itemCount: CretaStudioLang.tipMessage.length,
+              itemBuilder: (BuildContext context, pageIndex) {
+                return Stack(clipBehavior: Clip.none, children: [
+                  tipContent(pageIndex),
+                  Positioned(
+                    top: 230.0,
+                    left: _activePage > 0 ? 8.0 : 333.0,
+                    child: BTN.floating_l(
+                      icon: _activePage == 0 ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
+                      onPressed: () {
+                        logger.info('----------swipe page------------');
+                        if (_activePage == 0) {
+                          _changePage(_activePage + 1);
+                        } else if (_activePage > 0) {
+                          _changePage(_activePage - 1);
+                        }
+                      },
+                    ),
+                  )
+                ]);
+              },
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                margin: const EdgeInsets.all(12.0),
-                width: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
-                height: 52.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  color: CretaColor.text[100],
-                ),
-                child: Center(
-                  child: Text(
-                    CretaStudioLang.tipMessage,
-                    style: CretaFont.bodySmall,
-                  ),
-                ),
-              ),
-              Stack(children: [
-                SizedBox(
-                  height: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
-                  width: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
-                  child: Image.asset('assets/ai_tip_image.png'),
-                ),
-                Positioned(
-                    left: 16.0,
-                    top: 16.0,
-                    child: Align(
-                      child: Container(
-                        // width: 120.0,
-                        width: 140.0,
-                        height: 25.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(9.0),
-                          color: Colors.transparent.withOpacity(0.2),
-                        ),
-                        child: const Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            CretaStudioLang.tipSearchExample,
-                            style: TextStyle(
-                              fontSize: 9.0,
-                              fontWeight: CretaFont.semiBold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )),
-              ]),
-            ],
-          ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget imageAIDisplay() {
@@ -358,8 +381,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
       },
       titleWidget: Text(CretaStudioLang.imageStyle, style: CretaFont.titleSmall),
       bodyWidget: _styleOptions(),
-      trailWidget:
-          Text(selectedCard != -1 ? CretaStudioLang.imageStyleList[selectedCard]["styleKR"]! : ''),
+      trailWidget: Text(selectedCard != -1 ? CretaStudioLang.imageStyleList[selectedCard] : ''),
       showTrail: _state == AIState.ready ? _isTrailShowed : !_isTrailShowed,
       hasRemoveButton: selectedCard >= 0 ? true : false,
       onDelete: () {
@@ -381,43 +403,31 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
             childAspectRatio: 1 / 1),
         itemCount: CretaStudioLang.imageStyleList.length,
         itemBuilder: (context, int styleIndex) {
-          bool isSelected = selectedCard == styleIndex;
           return Column(
             children: [
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    // logger.info(
-                    //     '------Select card #$styleIndex, ${CretaStudioLang.imageStyleList[styleIndex]["styleENG"]}------');
-                    // selectedCard = styleIndex;
-                    //--------------Select/ Deselect car effect
-                    if (isSelected) {
-                      selectedCard = -1;
-                      logger.info(
-                          '------Deselect card #$styleIndex, ${CretaStudioLang.imageStyleList[styleIndex]["styleENG"]}------');
-                    } else {
-                      selectedCard = styleIndex;
-                      logger.info(
-                          '------Select card #$styleIndex, ${CretaStudioLang.imageStyleList[styleIndex]["styleENG"]}------');
-                    }
+                    selectedCard = styleIndex;
                   });
                 },
                 child: Container(
                   padding: const EdgeInsets.only(bottom: 2.0),
                   decoration: BoxDecoration(
-                      color: CretaColor.text[200],
+                      // color: CretaColor.text[200],
                       border: selectedCard == styleIndex
                           ? Border.all(color: CretaColor.primary, width: 2.0)
                           : null),
                   height: 68.0,
                   width: 68.0,
+                  child: Image.asset(imageSample[styleIndex]),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.only(top: 2.0),
                 alignment: Alignment.center,
                 child: Text(
-                  CretaStudioLang.imageStyleList[styleIndex]["styleKR"]!,
+                  CretaStudioLang.imageStyleList[styleIndex],
                   style: CretaFont.buttonSmall,
                 ),
               )
@@ -447,48 +457,20 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                 ),
                 scrollDirection: Axis.vertical,
                 itemBuilder: (BuildContext context, int imageIndex) {
+                  bool isImageSelected = selectedAIImage == imageIndex;
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        logger.info('-------- Select image $imageIndex--------');
-                        selectedAIImage = imageIndex;
+                        if (isImageSelected) {
+                          logger.info('----------Deselect generated image $imageIndex----------');
+                          selectedAIImage = -1;
+                        } else {
+                          logger.info('----------Select generated image $imageIndex----------');
+                          selectedAIImage = imageIndex;
+                        }
                       });
                     },
-                    child: Stack(children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            color: (selectedAIImage == imageIndex)
-                                ? Colors.transparent.withOpacity(0.4)
-                                : null,
-                            border: (selectedAIImage == imageIndex)
-                                ? Border.all(color: CretaColor.primary, width: 2.0)
-                                : null),
-                        child: CustomImage(
-                            key: GlobalKey(),
-                            width: 160,
-                            height: 160,
-                            image: imgUrl[imageIndex],
-                            hasAni: false),
-                      ),
-                      Positioned(
-                        right: 45.0,
-                        bottom: 8.0,
-                        child: BTN.opacity_gray_i_s(
-                          icon: Icons.file_download_outlined,
-                          onPressed: () {
-                            downloadImage(imgUrl[imageIndex]);
-                          },
-                        ),
-                      ),
-                      Positioned(
-                        right: 10.0,
-                        bottom: 8.0,
-                        child: BTN.opacity_gray_i_s(
-                          icon: Icons.inventory_2_outlined,
-                          onPressed: () {},
-                        ),
-                      ),
-                    ]),
+                    child: generatedImage(imageIndex, isImageSelected),
                   );
                 },
               ),
@@ -508,22 +490,71 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
       case AIState.fail:
         return const SizedBox(
             height: 350.0,
-            child: Center(
-              child: Text('서버가 사용 중입니다./n 잠시 후 다시 시도하세요!'),
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(CretaStudioLang.genAIerrorMsg),
             ));
       default:
         return const SizedBox.shrink();
     }
   }
 
+  Widget generatedImage(int imageIndex, bool isImageSelected) {
+    return Stack(children: [
+      CustomImage(
+        key: GlobalKey(),
+        width: 160,
+        height: 160,
+        image: imgUrl[imageIndex],
+        hasAni: false,
+      ),
+      if (isImageSelected)
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent.withOpacity(0.4),
+          ),
+        ),
+      if (isImageSelected)
+        Positioned(
+          right: 8.0,
+          bottom: 8.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // download to local folder
+              BTN.opacity_gray_i_s(
+                icon: Icons.file_download_outlined,
+                onPressed: () {
+                  downloadImage(imgUrl[imageIndex]);
+                },
+              ),
+              const SizedBox(width: 4.0),
+              // add to my storage
+              BTN.opacity_gray_i_s(
+                icon: Icons.inventory_2_outlined,
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
+    ]);
+  }
+
+  // with promptText translation
   void _onPressed() {
-    setState(() {
-      _isStyleOpened = false;
-      String selectedStyle =
-          selectedCard != -1 ? CretaStudioLang.imageStyleList[selectedCard]["styleENG"]! : '';
-      originalText = _textController.text;
-      promptText = selectedStyle.isNotEmpty ? '$originalText, $selectedStyle' : originalText;
-      generateImage(promptText);
+    String textToGen = _textController.text;
+    originalText = textToGen;
+    String selectedStyle = selectedCard != -1 ? CretaStudioLang.imageStyleList[selectedCard] : '';
+    if (selectedStyle.isNotEmpty) textToGen += ' , $selectedStyle';
+    translator.translate(textToGen, to: "en").then((value) {
+      setState(() {
+        _isStyleOpened = false;
+        if (_isTipOpened == true) {
+          _overlayEntry.remove();
+        }
+        promptText = value.toString();
+        generateImage(promptText);
+      });
     });
   }
 
@@ -555,6 +586,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                 onPressed: () {
                   setState(() {
                     _isStyleOpened = true;
+                    _isTipOpened = false;
                     _state = AIState.ready;
                     selectedCard = -1;
                     originalText = '';
@@ -566,10 +598,120 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         );
       case AIState.fail:
         return BTN.line_blue_t_m(
-          text: CretaStudioLang.genImageAgain,
-          onPressed: _onPressed,
+          text: CretaStudioLang.genFromBeginning,
+          onPressed: () {
+            setState(() {
+              _isStyleOpened = true;
+              _isTipOpened = false;
+              _state = AIState.ready;
+              selectedCard = -1;
+              originalText = '';
+            });
+          },
         );
     }
+  }
+
+  Widget tipContent(int pageIndex) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      Container(
+        margin: EdgeInsets.symmetric(vertical: verticalPadding),
+        width: LayoutConst.rightMenuWidth - 2 * (horizontalPadding),
+        height: 52.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.0),
+          color: CretaColor.text[100],
+        ),
+        child:
+            Center(child: Text(CretaStudioLang.tipMessage[pageIndex], style: CretaFont.bodyESmall)),
+      ),
+      // image and text examples
+      SizedBox(
+        height: LayoutConst.rightMenuWidth - 2 * (verticalPadding),
+        width: LayoutConst.rightMenuWidth - 2 * (horizontalPadding),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Vertical axis
+              mainAxisSpacing: 12.0,
+              crossAxisSpacing: 12.0,
+              childAspectRatio: 1 / 1),
+          itemCount: tipImage1.length,
+          itemBuilder: (context, int tipIndex) {
+            return InkWell(
+              onTap: () {
+                logger.info(
+                    "-----Example search text '${CretaStudioLang.detailTipMessage1[tipIndex]}' -------");
+                _textController.text = _activePage == 0
+                    ? CretaStudioLang.detailTipMessage1[tipIndex]
+                    : CretaStudioLang.detailTipMessage2[tipIndex];
+              },
+              child: tipExample(tipIndex),
+            );
+          },
+        ),
+      ),
+      // page indicator
+      Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(2, (pageIndex) {
+          return Container(
+            alignment: Alignment.center,
+            height: 4.0,
+            width: 12.0,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _activePage == pageIndex ? CretaColor.primary[400] : CretaColor.text[200],
+            ),
+          );
+        }),
+      )),
+    ]);
+  }
+
+  Widget tipExample(int tipIndex) {
+    return Stack(clipBehavior: Clip.none, children: [
+      // image examples
+      SizedBox(
+        height: 156.0,
+        width: 156.0,
+        child: _activePage == 0
+            ? Image.asset(tipImage1[tipIndex], fit: BoxFit.fill)
+            : Image.asset(tipImage2[tipIndex], fit: BoxFit.fill),
+      ),
+      // text examples
+      Positioned(
+        top: 8.0,
+        left: 8.0,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            width: 140.0,
+            height: 36.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(9.0),
+              color: Colors.transparent.withOpacity(0.5),
+            ),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Text(
+                  _activePage == 0
+                      ? CretaStudioLang.detailTipMessage1[tipIndex]
+                      : CretaStudioLang.detailTipMessage2[tipIndex],
+                  style: const TextStyle(
+                    fontSize: 8.0,
+                    fontWeight: CretaFont.semiBold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
   }
 
   Widget imageDisplay(String title, int listViewIndex) {
