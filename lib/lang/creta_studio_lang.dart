@@ -126,85 +126,31 @@ class CretaStudioLang {
     "그라데이션",
   ];
 
-  static List<Map<String, String>> imageStyleList = [
-    {
-      "styleENG": "photo",
-      "styleKR": "사진",
-    },
-    {
-      "styleENG": "illustration",
-      "styleKR": "일러스트",
-    },
-    {
-      "styleENG": "digital art",
-      "styleKR": "디지털 아트",
-    },
-    {
-      "styleENG": "pop Art",
-      "styleKR": "팝아트",
-    },
-    {
-      "styleENG": "watercolor",
-      "styleKR": "수채화",
-    },
-    {
-      "styleENG": "oil painting",
-      "styleKR": "유화",
-    },
-    {
-      "styleENG": "printmaking",
-      "styleKR": "판화",
-    },
-    {
-      "styleENG": "drawing",
-      "styleKR": "드로잉",
-    },
-    {
-      "styleENG": "oriental painting",
-      "styleKR": "동양화",
-    },
-    {
-      "styleENG": "outline drawing",
-      "styleKR": "소묘",
-    },
-    {
-      "styleENG": "crayon",
-      "styleKR": "크레피스",
-    },
-    {
-      "styleENG": "sketch",
-      "styleKR": "스케치",
-    },
+  static List<String> imageStyleList = [
+    "사진",
+    "일러스트",
+    "디지털 아트",
+    "팝아트",
+    "수채화",
+    "유화",
+    "판화",
+    "드로잉",
+    "동양화",
+    "소묘",
+    "크레피스",
+    "스케치",
   ];
 
   static const List<String> tipMessage = [
-    "생성하고자 하는 문구나 문장을 자세하고 명확하게 입력합니다.",
+    "아래에 예제와 같이 생성하고자 하는 문구를 자세하게 입력합니다.",
     "원하는 예술가의 스타일을 입력하여 이미지를 생성할 수 있습니다."
   ];
-
-  // static const List<String> detailTipMessage1 = [
-  //   "파란색 배경, 디지털 아트로 어항에 있는 귀여운 열대어의 3D 렌더링",
-  //   "성운의 폭발로 묘사된 농구 선수의 덩크를 유화로 표현",
-  //   "타임스퀘어에서 스케이트보드를 타는 테디베어의 사진",
-  //   "우주선 안의 뾰루퉁한 고양이를 오일 파스텔로 그린 작품",
-  // ];
-
-  // static const List<String> detailTipMessage2 = [
-  //   "크레타 섬의 풍경을 모네 스타일의 드로잉으로 그린 그림",
-  //   "요하네스 베르메르의 “진주 귀걸이를 한소녀” 작품을 해달로 표현",
-  //   "헤드폰 디제잉을 하고 있는 미켈란젤로의 다비드 조각상 사진",
-  //   "앤디 워홀 스타일의 선글라스를 쓴 프렌치 불독 그림",
-  // ];
 
   static const List<String> detailTipMessage1 = [
     "파란색 배경, 디지털 아트로 어항에 있는 귀여운 열대어의 3D 렌더링",
     "성운의 폭발로 묘사된 농구 선수의 덩크를 유화로 표현",
     "타임스퀘어에서 스케이트보드를 타는 테디베어의 사진",
     "우주선 안의 뾰루퉁한 고양이를 오일 파스텔로 그린 작품",
-    "크레타 섬의 풍경을 모네 스타일의 드로잉으로 그린 그림",
-    "요하네스 베르메르의 “진주 귀걸이를 한소녀” 작품을 해달로 표현",
-    "헤드폰 디제잉을 하고 있는 미켈란젤로의 다비드 조각상 사진",
-    "앤디 워홀 스타일의 선글라스를 쓴 프렌치 불독 그림",
   ];
 
   static const List<String> detailTipMessage2 = [
@@ -354,6 +300,9 @@ class CretaStudioLang {
 
   static const String genAIimageTooltip = '팁'; // added by Mai 230608
   static const String tipSearchExample = '크레타선+드로잉+모내스타일'; // added by Mai 230608
+
+  static const String genAIerrorMsg =
+      '서버가 혼잡하여 현재 이용할 수 없습니다. \n잠시 후에 다시 시도해주세요. \n불편을 드려 죄송합니다.'; // added by Mai 230613
 
   static const String fixedRatio = "가로세로비를 고정합니다";
 
