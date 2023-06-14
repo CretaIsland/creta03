@@ -2,15 +2,13 @@
 
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/undo/undo.dart';
-import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import '../../../data_io/page_manager.dart';
 import '../../../design_system/buttons/creta_button.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
-import '../../../design_system/component/custom_image.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
@@ -55,7 +53,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   double widthScale = 1;
 
   int _pageCount = 0;
-  int _firstPage = 100;
+  //final int _firstPage = 100;
 
   //OffsetEventController? _linkSendEvent;
 
@@ -79,6 +77,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
     //final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     //_linkSendEvent = linkSendEvent;
+    afterBuild();
+  }
+
+  Future<void> afterBuild() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
 
   @override
@@ -267,7 +270,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   BTN.fill_blue_i_menu(
                       tooltip: CretaStudioLang.linkFrameTooltip,
                       tooltipFg: CretaColor.text,
-                      icon: StudioVariables.isLinkNewMode
+                      icon: LinkParams.isLinkNewMode
                           ? Icons.close
                           : Icons.radio_button_checked_outlined,
                       decoType: CretaButtonDeco.opacity,
@@ -278,15 +281,15 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                         //BookMainPage.containeeNotifier!.setFrameClick(true);
                         //BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
                         setState(() {
-                          StudioVariables.isLinkNewMode = !StudioVariables.isLinkNewMode;
+                          LinkParams.isLinkNewMode = !LinkParams.isLinkNewMode;
                         });
-                        if (StudioVariables.isLinkNewMode) {
-                          if (StudioVariables.linkNew(model)) {
+                        if (LinkParams.isLinkNewMode) {
+                          if (LinkParams.linkNew(model)) {
                             //_linkSendEvent?.sendEvent(Offset(1, 1));
                             BookMainPage.bookManagerHolder?.notify();
                           }
                         } else {
-                          StudioVariables.linkCancel(model);
+                          LinkParams.linkCancel(model);
                         }
                       }),
                 BTN.fill_gray_i_m(
@@ -339,6 +342,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   Widget _body(int pageIndex, PageModel model) {
     //logger.finest('_body($bodyHeight, $bodyWidth)');
+
     double pageRatio = _pageManager!.bookModel!.getRatio();
     double width = 0;
     double height = 0;
@@ -443,29 +447,36 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   // }
 
   Widget _thumnailAreaReal(int pageIndex, double width, double height, PageModel pageModel) {
-    if (pageModel.thumbnailUrl.value.isNotEmpty &&
-        pageModel.thumbnailUrl.value.substring(0, 'https://picsum.photos/'.length) !=
-            'https://picsum.photos/') {
-      logger.info('pageThumnail exist ${pageModel.thumbnailUrl.value}');
+    // if (pageModel.thumbnailUrl.value.isNotEmpty &&
+    //     pageModel.thumbnailUrl.value.substring(0, 'https://picsum.photos/'.length) !=
+    //         'https://picsum.photos/') {
+    //   logger.info('pageThumnail exist ${pageModel.thumbnailUrl.value}');
 
-      if (pageModel.isShow.value) {
-        if (_firstPage > pageIndex) {
-          _firstPage = pageIndex;
-          _pageManager!.bookModel!.thumbnailUrl.set(pageModel.thumbnailUrl.value);
-        }
-      }
+    //   if (pageModel.isShow.value) {
+    //     if (_firstPage > pageIndex) {
+    //       _firstPage = pageIndex;
+    //       _pageManager!.bookModel!.thumbnailUrl.set(pageModel.thumbnailUrl.value);
+    //     }
+    //   }
 
-      return CustomImage(
-          key: GlobalKey(),
-          hasMouseOverEffect: false,
-          hasAni: false,
-          width: width,
-          height: height,
-          image: pageModel.thumbnailUrl.value);
+    //   return CustomImage(
+    //       key: GlobalKey(),
+    //       hasMouseOverEffect: false,
+    //       hasAni: false,
+    //       width: width,
+    //       height: height,
+    //       image: pageModel.thumbnailUrl.value);
+    // }
+    //logger.info('pageThumnail not exist');
+
+    if (pageIndex == 0) {
+      BookMainPage.firstThumbnailKey = GlobalObjectKey('firstPageKey${pageModel.mid}');
     }
-    logger.info('pageThumnail not exist');
     return PageThumbnail(
-      key: GlobalKey(),
+      key: pageIndex == 0
+          ? BookMainPage.firstThumbnailKey
+          : ValueKey('PageThumbnail$pageIndex${pageModel.mid}'),
+      pageIndex: pageIndex,
       bookModel: _pageManager!.bookModel!,
       pageModel: pageModel,
       pageWidth: width,

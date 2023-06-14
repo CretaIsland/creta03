@@ -12,6 +12,7 @@ import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
+import '../pages/studio/studio_variables.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
 
@@ -139,8 +140,10 @@ class PageManager extends CretaManager {
     logger.info('gotoFirst');
     String? mid = getFirstMid();
     if (mid != null) {
-      setSelectedMid(mid);
+      //if (selectedMid != mid) {
+      setSelectedMid(mid, doNotify: false);
       return true;
+      //}
     }
     return false;
   }
@@ -198,7 +201,12 @@ class PageManager extends CretaManager {
           continue;
         }
         if (pageModel.isShow.value == false) {
-          continue;
+          if (pageModel.isTempVisible == false) {
+            continue;
+          }
+          if (pageModel.mid != LinkParams.connectedMid) {
+            continue;
+          }
         }
 
         return getNthMid(ele);

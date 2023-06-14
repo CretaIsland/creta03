@@ -74,6 +74,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     //_receiveEventFromProperty = receiveEventFromProperty;
     //final BoolEventController lineDrawReceiveEvent = Get.find(tag: 'draw-link');
     //_lineDrawReceiveEvent = lineDrawReceiveEvent;
+    afterBuild();
   }
 
   Future<void> initChildren() async {
@@ -89,6 +90,20 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
       await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!);
     }
     _onceDBGetComplete = true;
+  }
+
+  Future<void> afterBuild() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // final RenderBox? box = widget.pageKey.currentContext?.findRenderObject() as RenderBox?;
+      // if (box != null) {
+      //   logger.info('box.size=${box.size}');
+      //   Offset pageOffset = box.localToGlobal(Offset.zero);
+      //   logger.info('box.position=$pageOffset');
+      // }
+      if (LinkParams.connectedClass == 'page') {
+        LinkParams.connectedMid = '';
+      }
+    });
   }
 
   @override
@@ -160,7 +175,11 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     if (animations.isEmpty || BookMainPage.pageManagerHolder!.isSelectedChanged() == false) {
       return _textureBox();
     }
-    return getAnimation(_textureBox(), animations);
+    return getAnimation(
+      _textureBox(),
+      animations,
+      widget.pageModel.mid,
+    );
   }
 
   Widget _textureBox() {
@@ -214,10 +233,10 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     //setState(() {
     _frameManager?.clearSelectedMid();
     //});
-    if (StudioVariables.isLinkNewMode == true) {
-      StudioVariables.isLinkNewMode = false;
-      StudioVariables.conenctedClass = '';
-      StudioVariables.conenctedMid = '';
+    if (LinkParams.isLinkNewMode == true) {
+      LinkParams.isLinkNewMode = false;
+      LinkParams.connectedClass = '';
+      LinkParams.connectedMid = '';
       BookMainPage.bookManagerHolder!.notify();
     } else {
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
@@ -291,20 +310,20 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
-      if (StudioVariables.isPreview) {
-        return Stack(
-          children: [
-            FrameMain(
-              frameMainKey: GlobalKey(),
-              pageWidth: widget.pageWidth,
-              pageHeight: widget.pageHeight,
-              pageModel: widget.pageModel,
-              bookModel: widget.bookModel,
-            ),
-            _drawLinks(frameManager),
-          ],
-        );
-      }
+      // if (StudioVariables.isPreview) {
+      //   return Stack(
+      //     children: [
+      //       FrameMain(
+      //         frameMainKey: GlobalKey(),
+      //         pageWidth: widget.pageWidth,
+      //         pageHeight: widget.pageHeight,
+      //         pageModel: widget.pageModel,
+      //         bookModel: widget.bookModel,
+      //       ),
+      //       _drawLinks(frameManager),
+      //     ],
+      //   );
+      // }
       return FrameMain(
         frameMainKey: GlobalKey(),
         pageWidth: widget.pageWidth,
@@ -315,6 +334,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     });
   }
 
+  // ignore: unused_element
   Widget _drawLinks(FrameManager frameManager) {
     // return StreamBuilder<AbsExModel>(
     //     stream: _receiveEventFromProperty!.eventStream.stream,
@@ -367,7 +387,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         ...linkList,
         ...linkManager.orderMapIterator((ele) {
           LinkModel model = ele as LinkModel;
-          model.stickerKey = frameManager.frameKeyMap[model.conenctedMid];
+          model.stickerKey = frameManager.frameKeyMap[model.connectedMid];
           return model;
         }).toList()
       ];

@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -33,6 +34,7 @@ class FrameMain extends StatefulWidget {
   final PageModel pageModel;
   final double pageWidth;
   final double pageHeight;
+  final bool isPrevious;
 
   const FrameMain({
     required this.frameMainKey,
@@ -40,6 +42,7 @@ class FrameMain extends StatefulWidget {
     required this.pageModel,
     required this.pageWidth,
     required this.pageHeight,
+    this.isPrevious = false,
   }) : super(key: frameMainKey);
 
   @override
@@ -164,10 +167,14 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       //   //setState(() {});
       // },
       // onFrameLink: (mid) {
-      //   logger.info('FrameMain.onFrameLink  ${StudioVariables.isLinkNewMode}');
+      //   logger.info('FrameMain.onFrameLink  ${LinkParams.isLinkNewMode}');
       //   BookMainPage.bookManagerHolder!.notify();
       //   //setState(() {});
       // },
+      onFrameShowUnshow: (mid) {
+        logger.fine('Frame onFrameShowUnshow');
+        setState(() {});
+      },
       onFrameMain: (mid) {
         logger.fine('Frame onFrameMain');
         _setMain(mid);
@@ -294,11 +301,26 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
       double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 
-      GlobalKey? stickerKey = frameManager!.frameKeyMap[model.mid];
-      if (stickerKey == null) {
+      GlobalKey? stickerKey;
+      if (widget.isPrevious == false) {
+        stickerKey = frameManager!.frameKeyMap[model.mid];
+        if (stickerKey == null) {
+          stickerKey = GlobalKey();
+          frameManager!.frameKeyMap[model.mid] = stickerKey;
+        }
+      } else {
         stickerKey = GlobalKey();
-        frameManager!.frameKeyMap[model.mid] = stickerKey;
       }
+
+      Widget eachFrame = FrameEach(
+        model: model,
+        pageModel: widget.pageModel,
+        frameManager: frameManager!,
+        applyScale: applyScale,
+        width: frameWidth,
+        height: frameHeight,
+        frameOffset: Offset(posX, posY),
+      );
 
       return Sticker(
         key: stickerKey,
@@ -311,15 +333,20 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         child: Visibility(
           //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
           visible: _isVisible(model),
-          child: FrameEach(
-            model: model,
-            pageModel: widget.pageModel,
-            frameManager: frameManager!,
-            applyScale: applyScale,
-            width: frameWidth,
-            height: frameHeight,
-            frameOffset: Offset(posX, posY),
-          ),
+          child: LinkParams.connectedMid == model.mid &&
+                  LinkParams.linkPostion != null &&
+                  LinkParams.orgPostion != null
+              ? eachFrame
+                  .animate()
+                  .scaleXY(duration: const Duration(milliseconds: 750), curve: Curves.easeInOut)
+                  .move(
+                      duration: const Duration(milliseconds: 1500),
+                      curve: Curves.easeInOut,
+                      begin: LinkParams.linkPostion! +
+                          LinkParams.orgPostion! -
+                          Offset(frameWidth / 2, frameHeight / 2) -
+                          Offset(posX, posY))
+              : eachFrame,
         ),
       );
     });
@@ -381,11 +408,14 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     //   }
     //   return false;
     // }
-    if (model.isShow.value == false) {
-      if (model.isTempVisible) return true;
-      return false;
-    }
-    return true;
+    // if (model.isShow.value == false) {
+    //   if (model.isTempVisible) return true;
+    //   return false;
+    // } else {
+    //   if (!model.isTempVisible) return false;
+    //   return true;
+    // }
+    return model.isShow.value;
   }
 
   // Widget _applyAnimate(FrameModel model) {

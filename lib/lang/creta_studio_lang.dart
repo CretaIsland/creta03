@@ -272,6 +272,7 @@ class CretaStudioLang {
     "플립",
     "흔들기",
     "반짝이기",
+    "커지기",
   ];
 
   static const String lastestFrame = "최근에 사용한 프레임";

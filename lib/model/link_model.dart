@@ -7,7 +7,7 @@ class LinkModel extends CretaModel {
   late String name;
   late double posX;
   late double posY;
-  late String conenctedMid;
+  late String connectedMid;
   late String connectedClass;
 
   bool showLinkLine = false;
@@ -20,7 +20,7 @@ class LinkModel extends CretaModel {
         name,
         posX,
         posY,
-        conenctedMid,
+        connectedMid,
         connectedClass,
       ];
 
@@ -28,7 +28,7 @@ class LinkModel extends CretaModel {
     name = '';
     posX = 0;
     posY = 0;
-    conenctedMid = '';
+    connectedMid = '';
     connectedClass = '';
   }
 
@@ -38,7 +38,7 @@ class LinkModel extends CretaModel {
     name = map['name'] ?? '';
     posX = map['posX'] ?? 0;
     posY = map['posY'] ?? 0;
-    conenctedMid = map['conenctedMid'] ?? '';
+    connectedMid = map['connectedMid'] ?? '';
     connectedClass = map['connectedClass'] ?? '';
   }
 
@@ -47,7 +47,7 @@ class LinkModel extends CretaModel {
     return super.toMap()
       ..addEntries({
         'name': name,
-        'conenctedMid': conenctedMid,
+        'connectedMid': connectedMid,
         'connectedClass': connectedClass,
         'posX': posX,
         'posY': posY,

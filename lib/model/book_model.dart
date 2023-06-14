@@ -72,17 +72,17 @@ class BookModel extends CretaModel with BookMixin {
         ...super.propsMixin,
       ];
   BookModel(String pmid) : super(pmid: pmid, type: ExModelType.book, parent: '') {
-    name = UndoAble<String>('', mid);
-    thumbnailUrl = UndoAble<String>('', mid);
-    thumbnailType = UndoAble<ContentsType>(ContentsType.none, mid);
-    thumbnailAspectRatio = UndoAble<double>(1, mid);
-    isSilent = UndoAble<bool>(false, mid);
-    isAutoPlay = UndoAble<bool>(true, mid);
-    isAllowReply = UndoAble<bool>(true, mid);
-    bookType = UndoAble<BookType>(BookType.presentaion, mid);
-    pageSizeType = UndoAble<int>(0, mid);
-    copyRight = UndoAble<CopyRightType>(CopyRightType.free, mid);
-    isReadOnly = UndoAble<bool>(false, mid);
+    name = UndoAble<String>('', mid, 'name');
+    thumbnailUrl = UndoAble<String>('', mid, 'thumbnailUrl');
+    thumbnailType = UndoAble<ContentsType>(ContentsType.none, mid, 'thumbnailType');
+    thumbnailAspectRatio = UndoAble<double>(1, mid, 'thumbnailAspectRatio');
+    isSilent = UndoAble<bool>(false, mid, 'isSilent');
+    isAutoPlay = UndoAble<bool>(true, mid, 'isAutoPlay');
+    isAllowReply = UndoAble<bool>(true, mid, 'isAllowReply');
+    bookType = UndoAble<BookType>(BookType.presentaion, mid, 'bookType');
+    pageSizeType = UndoAble<int>(0, mid, 'pageSizeType');
+    copyRight = UndoAble<CopyRightType>(CopyRightType.free, mid, 'copyRight');
+    isReadOnly = UndoAble<bool>(false, mid, 'isReadOnly');
     viewCount = 0;
     likeCount = 0;
     owners = [];
@@ -92,7 +92,7 @@ class BookModel extends CretaModel with BookMixin {
     //publishMid = '';
     //sourceMid = '';
     //hashtags = [];
-    description = UndoAble<String>("You could do it simple and plain", mid);
+    description = UndoAble<String>("You could do it simple and plain", mid, 'description');
     super.initMixin(mid);
   }
 
@@ -115,20 +115,20 @@ class BookModel extends CretaModel with BookMixin {
     List<String>? hashtags,
     List<String>? channels,
   }) : super(pmid: '', type: ExModelType.book, parent: '') {
-    name = UndoAble<String>(nameStr, mid);
-    thumbnailUrl = UndoAble<String>(imageUrl, mid);
-    thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid);
-    thumbnailAspectRatio = UndoAble<double>(imageRatio, mid);
-    isSilent = UndoAble<bool>(false, mid);
-    isAutoPlay = UndoAble<bool>(true, mid);
-    isAllowReply = UndoAble<bool>(true, mid);
-    bookType = UndoAble<BookType>(bookTypeVal, mid);
-    pageSizeType = UndoAble<int>(0, mid);
-    copyRight = UndoAble<CopyRightType>(copyRightVal, mid);
-    isReadOnly = UndoAble<bool>(false, mid);
+    name = UndoAble<String>(nameStr, mid, 'name');
+    thumbnailUrl = UndoAble<String>(imageUrl, mid, 'thumbnailType');
+    thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid, 'thumbnailType');
+    thumbnailAspectRatio = UndoAble<double>(imageRatio, mid, 'thumbnailAspectRatio');
+    isSilent = UndoAble<bool>(false, mid, 'isSilent');
+    isAutoPlay = UndoAble<bool>(true, mid, 'isAutoPlay');
+    isAllowReply = UndoAble<bool>(true, mid, 'isAllowReply');
+    bookType = UndoAble<BookType>(bookTypeVal, mid, 'bookType');
+    pageSizeType = UndoAble<int>(0, mid, 'pageSizeType');
+    copyRight = UndoAble<CopyRightType>(copyRightVal, mid, 'copyRight');
+    isReadOnly = UndoAble<bool>(false, mid, 'isReadOnly');
     viewCount = likeNo;
     likeCount = viewNo;
-    description = UndoAble<String>("You could do it simple and plain", mid);
+    description = UndoAble<String>("You could do it simple and plain", mid, 'description');
     owners = [...ownerList];
     readers = [...readerList];
     writers = [...writerList];
@@ -139,7 +139,7 @@ class BookModel extends CretaModel with BookMixin {
     if (hashtags != null) this.hashtags = [...hashtags];
     if (channels != null) this.channels = [...channels];
     if (desc != null) {
-      description = UndoAble<String>(desc, mid);
+      description = UndoAble<String>(desc, mid, 'description');
     }
     super.makeSampleMixin(mid);
 
@@ -151,20 +151,21 @@ class BookModel extends CretaModel with BookMixin {
     BookModel srcBook = src as BookModel;
     creator = src.creator;
     creatorName = src.creatorName;
-    name = UndoAble<String>(srcBook.name.value, mid);
-    thumbnailUrl = UndoAble<String>(srcBook.thumbnailUrl.value, mid);
-    thumbnailType = UndoAble<ContentsType>(srcBook.thumbnailType.value, mid);
-    thumbnailAspectRatio = UndoAble<double>(srcBook.thumbnailAspectRatio.value, mid);
-    isSilent = UndoAble<bool>(srcBook.isSilent.value, mid);
-    isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid);
-    isAllowReply = UndoAble<bool>(srcBook.isAllowReply.value, mid);
-    bookType = UndoAble<BookType>(srcBook.bookType.value, mid);
-    pageSizeType = UndoAble<int>(srcBook.pageSizeType.value, mid);
-    copyRight = UndoAble<CopyRightType>(srcBook.copyRight.value, mid);
-    isReadOnly = UndoAble<bool>(srcBook.isReadOnly.value, mid);
+    name = UndoAble<String>(srcBook.name.value, mid, 'name');
+    thumbnailUrl = UndoAble<String>(srcBook.thumbnailUrl.value, mid, 'thumbnailUrl');
+    thumbnailType = UndoAble<ContentsType>(srcBook.thumbnailType.value, mid, 'thumbnailType');
+    thumbnailAspectRatio =
+        UndoAble<double>(srcBook.thumbnailAspectRatio.value, mid, 'thumbnailAspectRatio');
+    isSilent = UndoAble<bool>(srcBook.isSilent.value, mid, 'isSilent');
+    isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid, 'isAutoPlay');
+    isAllowReply = UndoAble<bool>(srcBook.isAllowReply.value, mid, 'isAllowReply');
+    bookType = UndoAble<BookType>(srcBook.bookType.value, mid, 'bookType');
+    pageSizeType = UndoAble<int>(srcBook.pageSizeType.value, mid, 'pageSizeType');
+    copyRight = UndoAble<CopyRightType>(srcBook.copyRight.value, mid, 'copyRight');
+    isReadOnly = UndoAble<bool>(srcBook.isReadOnly.value, mid, 'isReadOnly');
+    description = UndoAble<String>(srcBook.description.value, mid, 'description');
     viewCount = srcBook.viewCount;
     likeCount = srcBook.likeCount;
-    description = UndoAble<String>(srcBook.description.value, mid);
     owners = [...srcBook.owners];
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];

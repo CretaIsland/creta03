@@ -445,6 +445,8 @@ class _AniExampleBoxState extends State<AniExampleBox> with ExampleBoxStateMixin
         return isAni() ? _aniBox().shake() : normalBox(widget.name);
       case AnimationType.shimmer:
         return isAni() ? _aniBox().shimmer() : normalBox(widget.name);
+      case AnimationType.scaleXY:
+        return isAni() ? _aniBox().scaleXY() : normalBox(widget.name);
       default:
         return noAnimation(widget.name, onNormalSelected: onNormalSelected);
     }

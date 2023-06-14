@@ -96,7 +96,8 @@ final routesLoggedOut = RouteMap(
         BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
       }
       logger.finest('selectedMid=${BookMainPage.selectedMid}');
-      return TransitionPage(child: BookMainPage(key: ValueKey(BookMainPage.selectedMid)));
+      return TransitionPage(
+          child: BookMainPage(bookKey: GlobalObjectKey('Book${BookMainPage.selectedMid}')));
     },
     AppRoutes.studioBookPreviewPage: (_) {
       //skpark test code
@@ -105,7 +106,10 @@ final routesLoggedOut = RouteMap(
       }
       logger.finest('selectedMid=${BookMainPage.selectedMid}');
       return TransitionPage(
-          child: BookMainPage(key: ValueKey(BookMainPage.selectedMid), isPreviewX: true));
+          child: BookMainPage(
+              //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
+              bookKey: GlobalKey(),
+              isPreviewX: true));
     },
     AppRoutes.studioBookGridPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),

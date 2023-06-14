@@ -13,9 +13,14 @@ import 'package:starsview/starsview.dart';
 import '../../../design_system/effect/confetti.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/creta_style_mixin.dart';
+import '../studio_variables.dart';
 
 mixin ContaineeMixin {
-  Animate getAnimation(Widget target, List<AnimationType> animations) {
+  Animate getAnimation(
+    Widget target,
+    List<AnimationType> animations,
+    String mid,
+  ) {
     Animate ani = target.animate();
     for (var ele in animations) {
       if (ele == AnimationType.fadeIn) {
@@ -34,6 +39,22 @@ mixin ContaineeMixin {
         logger.finest('shimmer');
         ani = ani.shimmer().then();
       }
+      if (ele == AnimationType.scaleXY) {
+        logger.finest('scaleXY');
+        if (LinkParams.connectedClass == 'page' || mid != LinkParams.connectedMid) {
+          ani = ani.scaleXY().then();
+        }
+      }
+      //  else if (LinkParams.connectedClass == 'page') {
+      //   ani = ani
+      //       .scaleXY(duration: const Duration(milliseconds: 750), curve: Curves.easeInOut)
+      //       .move(
+      //           duration: const Duration(milliseconds: 1500),
+      //           curve: Curves.easeInOut,
+      //           begin: LinkParams.linkPostion! + LinkParams.orgPostion!); // -
+      //   // Offset(frameWidth / 2, frameHeight / 2) -
+      //   // Offset(posX, posY))
+      // }
     }
     return ani;
   }

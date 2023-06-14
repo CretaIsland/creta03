@@ -23,6 +23,7 @@ class PageModel extends CretaModel with CretaStyleMixin {
   late UndoAble<String> thumbnailUrl;
 
   List<FrameModel> frameList = []; // db get 전용
+  bool isTempVisible = false;
 
   @override
   List<Object?> get props => [
@@ -36,12 +37,12 @@ class PageModel extends CretaModel with CretaStyleMixin {
       ];
 
   PageModel(String pmid) : super(pmid: pmid, type: ExModelType.page, parent: '') {
-    name = UndoAble<String>('', mid);
-    shortCut = UndoAble<String>('', mid);
-    isCircle = UndoAble<bool>(false, mid);
+    name = UndoAble<String>('', mid, 'name');
+    shortCut = UndoAble<String>('', mid, 'shortCut');
+    isCircle = UndoAble<bool>(false, mid, 'isCircle');
 
-    description = UndoAble<String>("You could do it simple and plain", mid);
-    thumbnailUrl = UndoAble<String>('', mid);
+    description = UndoAble<String>("You could do it simple and plain", mid, 'description');
+    thumbnailUrl = UndoAble<String>('', mid, 'thumbnailUrl');
     super.initMixin(mid);
   }
 
@@ -51,14 +52,13 @@ class PageModel extends CretaModel with CretaStyleMixin {
     int randomNumber = random.nextInt(10);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
     logger.finest('url=$url');
-    order = UndoAble<double>(porder, mid);
-    name = UndoAble<String>('${CretaStudioLang.noNamepage} ${order.value.toString()}', mid);
-    description = UndoAble<String>('You could do it simple and plain', mid);
-    thumbnailUrl = UndoAble<String>(url, mid);
-    isCircle = UndoAble<bool>(false, mid);
+    order = UndoAble<double>(porder, mid, 'order');
+    name = UndoAble<String>('${CretaStudioLang.noNamepage} ${order.value.toString()}', mid, 'name');
+    description = UndoAble<String>('You could do it simple and plain', mid, 'description');
+    thumbnailUrl = UndoAble<String>(url, mid, 'thumbnailUrl');
+    isCircle = UndoAble<bool>(false, mid, 'isCircle');
 
-    shortCut = UndoAble<String>('', mid);
-
+    shortCut = UndoAble<String>('', mid, 'shortCut');
     super.makeSampleMixin(mid);
 
     logger.finest('mid=$mid');
@@ -69,12 +69,13 @@ class PageModel extends CretaModel with CretaStyleMixin {
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
     super.copyFrom(src, newMid: newMid, pMid: pMid);
     PageModel srcPage = src as PageModel;
-    name = UndoAble<String>(srcPage.name.value, mid);
-    description = UndoAble<String>(srcPage.description.value, mid);
-    thumbnailUrl = UndoAble<String>(srcPage.thumbnailUrl.value, mid);
-    shortCut = UndoAble<String>(srcPage.shortCut.value, mid);
+    name = UndoAble<String>(srcPage.name.value, mid, 'name');
+    description = UndoAble<String>(srcPage.description.value, mid, 'description');
+    thumbnailUrl = UndoAble<String>(srcPage.thumbnailUrl.value, mid, 'thumbnailUrl');
+    shortCut = UndoAble<String>(srcPage.shortCut.value, mid, 'shortCut');
 
-    isCircle = UndoAble<bool>(srcPage.isCircle.value, mid);
+    isCircle = UndoAble<bool>(srcPage.isCircle.value, mid, 'isCircle');
+
     super.copyFromMixin(mid, src);
   }
 

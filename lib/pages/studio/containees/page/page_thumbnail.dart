@@ -28,9 +28,11 @@ class PageThumbnail extends StatefulWidget {
   final PageModel pageModel;
   final double pageWidth;
   final double pageHeight;
+  final int pageIndex;
 
   const PageThumbnail({
     super.key,
+    required this.pageIndex,
     required this.bookModel,
     required this.pageModel,
     required this.pageWidth,
@@ -61,7 +63,15 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
     final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main');
     _receiveEventFromMain = receiveEventFromMain;
     _receiveEventFromProperty = receiveEventFromProperty;
+
+    //afterBuild();
   }
+
+  // Future<void> afterBuild() async {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //     //if (widget.pageIndex == 0) _takeAScreenShot();
+  //   });
+  // }
 
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
@@ -231,7 +241,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       logger.info('_receiveEventFromProperty-----Unknown Model');
                     }
                   }
-
+                  BookMainPage.thumbnailChanged = true;
                   return Stack(
                     children: _frameManager!.orderMapIterator((model) {
                       FrameModel frameModel = model as FrameModel;
