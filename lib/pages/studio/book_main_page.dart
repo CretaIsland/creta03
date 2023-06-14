@@ -1119,12 +1119,10 @@ class _BookMainPageState extends State<BookMainPage> {
       logger.warning('book model is null');
       return;
     }
-    WindowScreenshot.screenshot(
+    WindowScreenshot.uploadScreenshot(
       bookId: bookModel.mid,
-      x: position.dx,
-      y: position.dy,
-      width: box.size.width,
-      height: box.size.height,
+      offset: position,
+      size: box.size,
     ).then((value) {
       bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
       bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
