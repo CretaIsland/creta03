@@ -181,6 +181,40 @@ class BookModel extends CretaModel with BookMixin {
   }
 
   @override
+  void updateFrom(AbsExModel src) {
+    super.updateFrom(src);
+    BookModel srcBook = src as BookModel;
+    creator = src.creator;
+    creatorName = src.creatorName;
+    name.init(srcBook.name.value);
+    thumbnailUrl.init(srcBook.thumbnailUrl.value);
+    thumbnailType.init(srcBook.thumbnailType.value);
+    thumbnailAspectRatio.init(srcBook.thumbnailAspectRatio.value);
+    isSilent.init(srcBook.isSilent.value);
+    isAutoPlay.init(srcBook.isAutoPlay.value);
+    isAllowReply.init(srcBook.isAllowReply.value);
+    bookType.init(srcBook.bookType.value);
+    pageSizeType.init(srcBook.pageSizeType.value);
+    copyRight.init(srcBook.copyRight.value);
+    isReadOnly.init(srcBook.isReadOnly.value);
+    description.init(srcBook.description.value);
+    viewCount = srcBook.viewCount;
+    likeCount = srcBook.likeCount;
+    owners = [...srcBook.owners];
+    readers = [...srcBook.readers];
+    writers = [...srcBook.writers];
+    //shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
+    shares = _getShares(srcBook.owners, srcBook.writers, srcBook.readers);
+    publishMid = srcBook.publishMid;
+    sourceMid = srcBook.sourceMid;
+    hashtags = [...srcBook.hashtags];
+    channels = [...srcBook.channels];
+
+    super.updateFromMixin(srcBook);
+    logger.finest('BookCopied($mid)');
+  }
+
+  @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);

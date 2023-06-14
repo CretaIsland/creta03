@@ -88,6 +88,26 @@ class ContentsManager extends CretaManager {
 
   Future<ContentsModel> createNextContents(ContentsModel model, {bool doNotify = true}) async {
     model.order.set(getMaxModelOrder() + 1, save: false, noUndo: true);
+    await _createNextContents(model, doNotify);
+
+    MyChange<ContentsModel> c = MyChange<ContentsModel>(
+      model,
+      execute: () async {
+        //await _createNextContents(model, doNotify);
+      },
+      redo: () async {
+        await _redoCreateNextContents(model, doNotify);
+      },
+      undo: (ContentsModel old) async {
+        await _undoCreateNextContents(old, doNotify);
+      },
+    );
+    mychangeStack.add(c);
+
+    return model;
+  }
+
+  Future<ContentsModel> _createNextContents(ContentsModel model, bool doNotify) async {
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
 
@@ -101,7 +121,48 @@ class ContentsManager extends CretaManager {
     } else {
       reOrdering();
     }
-    logger.info('createNextContents complete ${model.name},${model.order.value},${model.url}');
+    logger.info('_createNextContents complete ${model.name},${model.order.value},${model.url}');
+    return model;
+  }
+
+  Future<ContentsModel> _redoCreateNextContents(ContentsModel model, bool doNotify) async {
+    model.isRemoved.set(false, noUndo: true, save: false);
+    await setToDB(model);
+    insert(model, postion: getLength(), doNotify: doNotify);
+
+    if (playTimer != null) {
+      if (playTimer!.isInit()) {
+        //logger.info('prev exist =============================================');
+        await playTimer?.rewind();
+        await playTimer?.pause();
+      }
+      await playTimer?.reOrdering(isRewind: true);
+    } else {
+      reOrdering();
+    }
+    logger.info('_redoCreateNextContents complete ${model.name},${model.order.value},${model.url}');
+    return model;
+  }
+
+  Future<ContentsModel> _undoCreateNextContents(ContentsModel model, bool doNotify) async {
+    model.isRemoved.set(true, noUndo: true, save: false);
+    remove(model);
+    if (doNotify) {
+      notify();
+    }
+
+    if (playTimer != null) {
+      if (playTimer!.isInit()) {
+        //logger.info('prev exist =============================================');
+        await playTimer?.rewind();
+        await playTimer?.pause();
+      }
+      await playTimer?.reOrdering(isRewind: true);
+    } else {
+      reOrdering();
+    }
+    logger.info('_undoCreateNextContents complete ${model.name},${model.order.value},${model.url}');
+    await setToDB(model);
     return model;
   }
 
@@ -295,8 +356,19 @@ class ContentsManager extends CretaManager {
   Future<void> _removeContents(BuildContext context, ContentsModel model) async {
     //await pause();
 
-    model.isRemoved.set(true, save: false);
-    await setToDB(model);
+    model.isRemoved.set(
+      true,
+      //save: false,
+      doComplete: (val) {
+        remove(model);
+        playTimer?.reOrdering();
+      },
+      undoComplete: (val) {
+        insert(model);
+        playTimer?.reOrdering();
+      },
+    );
+    //await setToDB(model);
     remove(model);
     logger.info('remove contents ${model.name}, ${model.mid}');
     await playTimer?.reOrdering();

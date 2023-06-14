@@ -277,6 +277,69 @@ class ContentsModel extends CretaModel {
     _manualState = srcContents._manualState;
   }
 
+  @override
+  void updateFrom(AbsExModel src) {
+    super.updateFrom(src);
+
+    ContentsModel srcContents = src as ContentsModel;
+
+    name = srcContents.name; // aaa.jpg
+    bytes = srcContents.bytes;
+    url = srcContents.url;
+    mime = srcContents.mime;
+    file = srcContents.file;
+    remoteUrl = srcContents.remoteUrl;
+    thumbnail = srcContents.thumbnail;
+    contentsType = srcContents.contentsType;
+
+    subList.init(srcContents.subList.value);
+    playTime.init(srcContents.playTime.value);
+    videoPlayTime.init(srcContents.videoPlayTime.value);
+    mute.init(srcContents.mute.value);
+    isShow.init(srcContents.isShow.value);
+    volume.init(srcContents.volume.value);
+    aspectRatio.init(srcContents.aspectRatio.value);
+    width.init(srcContents.width.value);
+    height.init(srcContents.height.value);
+    copyRight.init(srcContents.copyRight.value);
+    filter.init(srcContents.filter.value);
+    fit.init(srcContents.fit.value);
+
+    if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
+    if (srcContents.thumbnail != null) thumbnail = srcContents.thumbnail;
+    contentsType = srcContents.contentsType;
+    lastModifiedTime = DateTime.now().toString();
+
+    font.init(srcContents.font.value);
+    fontWeight.init(srcContents.fontWeight.value);
+    isBold.init(srcContents.isBold.value);
+    isAutoSize.init(srcContents.isAutoSize.value);
+    glassFill.init(srcContents.glassFill.value);
+    opacity.init(srcContents.opacity.value);
+    fontSize.init(srcContents.fontSize.value);
+    fontSizeType.init(srcContents.fontSizeType.value);
+    fontColor.init(srcContents.fontColor.value);
+    shadowColor.init(srcContents.shadowColor.value);
+    shadowBlur.init(srcContents.shadowBlur.value);
+    shadowIntensity.init(srcContents.shadowIntensity.value);
+    outLineWidth.init(srcContents.outLineWidth.value);
+    outLineColor.init(srcContents.outLineColor.value);
+    isItalic.init(srcContents.isItalic.value);
+    isUnderline.init(srcContents.isUnderline.value);
+    isStrike.init(srcContents.isStrike.value);
+    letterSpacing.init(srcContents.letterSpacing.value);
+    wordSpacing.init(srcContents.wordSpacing.value);
+    align.init(srcContents.align.value);
+    aniType.init(srcContents.aniType.value);
+    anyDuration.init(srcContents.anyDuration.value);
+    isTTS.init(srcContents.isTTS.value);
+    lang.init(srcContents.lang.value);
+
+    _playState = srcContents._playState;
+    _prevState = srcContents._prevState;
+    _manualState = srcContents._manualState;
+  }
+
   // ignore: prefer_final_fields
   PlayState _playState = PlayState.none;
   PlayState _prevState = PlayState.none;

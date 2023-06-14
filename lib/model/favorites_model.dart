@@ -45,6 +45,16 @@ class FavoritesModel extends CretaModel {
     logger.finest('WatchHistoryCopied($mid)');
   }
 
+  @override
+  void updateFrom(AbsExModel src) {
+    super.updateFrom(src);
+    FavoritesModel srcFavorite = src as FavoritesModel;
+    userId = srcFavorite.userId;
+    bookId = srcFavorite.bookId;
+    favoriteTime = srcFavorite.favoriteTime;
+    logger.finest('WatchHistoryCopied($mid)');
+  }
+
   DateTime _convert(dynamic val) {
     if (val is Timestamp) {
       Timestamp ts = val;

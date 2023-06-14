@@ -128,7 +128,9 @@ class _ResizePointState extends State<ResizePoint> {
           });
           widget.onDrag.call(value);
         },
-        onScale: widget.onScale,
+        onScale: (val) {
+          widget.onScale?.call(val);
+        },
         onTap: widget.onTap,
         onComplete: () {
           setState(() {

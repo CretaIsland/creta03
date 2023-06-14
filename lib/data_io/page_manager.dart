@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
@@ -85,11 +86,13 @@ class PageManager extends CretaManager {
         bookModel,
         pageModel,
       );
-    }
-    for (var frameManager in frameManagerList.values.toList()) {
-      await initFrameManager(frameManager!);
+      await initFrameManager(frameManager);
       await frameManager.findOrInitContentsManager();
     }
+    // for (var frameManager in frameManagerList.values.toList()) {
+    //   await initFrameManager(frameManager!);
+    //   await frameManager.findOrInitContentsManager();
+    // }
     return;
   }
 
@@ -130,10 +133,48 @@ class PageManager extends CretaManager {
 
   Future<PageModel> createNextPage() async {
     PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid);
+    await _createNextPage(defaultPage);
+    MyChange<PageModel> c = MyChange<PageModel>(
+      defaultPage,
+      execute: () async {},
+      redo: () async {
+        await _redoCreateNextPage(defaultPage);
+      },
+      undo: (PageModel old) async {
+        await _undoCreateNextPage(old);
+      },
+    );
+    mychangeStack.add(c);
+    return defaultPage;
+  }
+
+  Future<PageModel> _createNextPage(PageModel defaultPage) async {
+    //PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid);
+    defaultPage.isRemoved.set(false, noUndo: true, save: false);
     await createToDB(defaultPage);
     insert(defaultPage, postion: getLength());
     selectedMid = defaultPage.mid;
     return defaultPage;
+  }
+
+  Future<PageModel> _redoCreateNextPage(PageModel defaultPage) async {
+    //PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid);
+    defaultPage.isRemoved.set(false, noUndo: true, save: false);
+    await setToDB(defaultPage);
+    insert(defaultPage, postion: getLength());
+    selectedMid = defaultPage.mid;
+    return defaultPage;
+  }
+
+  Future<PageModel> _undoCreateNextPage(PageModel old) async {
+    //PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid);
+    old.isRemoved.set(true, noUndo: true, save: false);
+    remove(old);
+    if (selectedMid == old.mid) {
+      gotoFirst();
+    }
+    await setToDB(old);
+    return old;
   }
 
   bool gotoFirst() {

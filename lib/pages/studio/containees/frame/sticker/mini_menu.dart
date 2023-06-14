@@ -404,7 +404,7 @@ class MiniMenuState extends State<MiniMenu> {
             decoType: CretaButtonDeco.opacity,
             onPressed: () {
               BookMainPage.containeeNotifier!.setFrameClick(true);
-              logger.fine("MinuMenu onFrameDelete");
+              logger.fine("MinuMenu onContentsDelete");
               widget.onContentsDelete.call();
             }),
       // BTN.fill_blue_i_menu(

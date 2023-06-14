@@ -982,8 +982,9 @@ abstract class CretaManager extends AbsExModelManager {
     for (var ele in modelList) {
       CretaModel model = ele as CretaModel;
       if (model.mid == newModel.mid) {
-        newModel.copyTo(model);
+        newModel.updateFrom(model);
         logger.info('updateModel ${newModel.mid}');
+        //print('updateModel ${newModel.mid}');
         retval = true;
         break;
       }
@@ -1017,8 +1018,14 @@ abstract class CretaManager extends AbsExModelManager {
   Future<void> removeChild(String parentMid) async {}
   Future<void> removeAll() async {
     for (var model in modelList) {
-      model.isRemoved.set(true, save: false, noUndo: true);
-      await setToDB(model);
+      model.isRemoved.set(
+        true,
+        //save: false,
+        doComplete: (val) => reOrdering(),
+        undoComplete: (val) => reOrdering(),
+      );
+
+      //await setToDB(model);
       logger.info('${model.mid} removed');
       await removeChild(model.mid);
     }
@@ -1027,7 +1034,6 @@ abstract class CretaManager extends AbsExModelManager {
 
   Future<AbsExModel> makeCopy(AbsExModel src, String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
-
     AbsExModel newOne = newModel('');
     // creat_book_published data 를 만든다.
     newOne.copyFrom(src, newMid: newOne.mid, pMid: newParentMid ?? newOne.parentMid.value);

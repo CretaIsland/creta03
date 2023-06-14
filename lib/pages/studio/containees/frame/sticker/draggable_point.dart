@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../studio_variables.dart';
@@ -51,6 +52,7 @@ class DraggablePointState extends State<DraggablePoint> {
               widget.onTap!();
             },
             onScaleStart: (details) {
+              mychangeStack.startTrans();
               switch (widget.mode) {
                 case PositionMode.global:
                   initPoint = details.focalPoint;
@@ -99,6 +101,7 @@ class DraggablePointState extends State<DraggablePoint> {
             onScaleEnd: (details) {
               logger.fine('onScaleEnd ${details.toString()}');
               widget.onComplete();
+              mychangeStack.endTrans();
             },
             child: widget.child,
           )

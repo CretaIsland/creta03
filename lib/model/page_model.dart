@@ -80,6 +80,18 @@ class PageModel extends CretaModel with CretaStyleMixin {
   }
 
   @override
+  void updateFrom(AbsExModel src) {
+    super.updateFrom(src);
+    PageModel srcPage = src as PageModel;
+    name.init(srcPage.name.value);
+    description.init(srcPage.description.value);
+    thumbnailUrl.init(srcPage.thumbnailUrl.value);
+    shortCut.init(srcPage.shortCut.value);
+    isCircle.init(srcPage.isCircle.value);
+    super.updateFromMixin(src);
+  }
+
+  @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);

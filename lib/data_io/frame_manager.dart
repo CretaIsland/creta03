@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
@@ -54,6 +55,7 @@ class FrameManager extends CretaManager {
 
   @override
   CretaModel cloneModel(CretaModel src) {
+    //print('cloneModel ${src.mid}');
     FrameModel retval = newModel(src.mid) as FrameModel;
     src.copyTo(retval);
     return retval;
@@ -79,13 +81,55 @@ class FrameManager extends CretaManager {
     if (type != null) {
       defaultFrame.frameType = type;
     }
+    await _createNextFrame(defaultFrame, doNotify);
+    MyChange<FrameModel> c = MyChange<FrameModel>(
+      defaultFrame,
+      execute: () async {},
+      redo: () async {
+        await _redoCreateNextFrame(defaultFrame, doNotify);
+      },
+      undo: (FrameModel old) async {
+        await _undoCreateNextFrame(old, doNotify);
+      },
+    );
+    mychangeStack.add(c);
+
+    return defaultFrame;
+  }
+
+  Future<FrameModel> _createNextFrame(FrameModel defaultFrame, bool doNotify) async {
+    logger.info('createNextFrame()');
+
     await createToDB(defaultFrame);
     insert(defaultFrame, postion: getLength(), doNotify: doNotify);
     selectedMid = defaultFrame.mid;
     return defaultFrame;
   }
 
+  Future<FrameModel> _redoCreateNextFrame(FrameModel defaultFrame, bool doNotify) async {
+    logger.info('_redoCreateNextFrame()');
+
+    defaultFrame.isRemoved.set(false, noUndo: true, save: false);
+    await setToDB(defaultFrame);
+    insert(defaultFrame, postion: getLength(), doNotify: true);
+    selectedMid = defaultFrame.mid;
+    return defaultFrame;
+  }
+
+  Future<FrameModel> _undoCreateNextFrame(FrameModel old, bool doNotify) async {
+    logger.info('_undoCreateNextFrame()');
+    old.isRemoved.set(true, noUndo: true, save: false);
+    remove(old);
+    if (selectedMid == old.mid) {
+      selectedMid = prevSelectedMid;
+    }
+    await setToDB(old);
+    return old;
+  }
+
   Future<FrameModel> copyFrame(FrameModel src) async {
+    //print('copyFrame**************--------------------------');
+
     FrameModel newModel = FrameModel('');
     newModel.copyFrom(src, newMid: newModel.mid);
 

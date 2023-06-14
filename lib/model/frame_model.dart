@@ -208,6 +208,42 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   }
 
   @override
+  void updateFrom(AbsExModel src) {
+    super.updateFrom(src);
+    FrameModel srcFrame = src as FrameModel;
+    name.init(srcFrame.name.value);
+    bgUrl.init(srcFrame.bgUrl.value);
+    posX.init(srcFrame.posX.value);
+    posY.init(srcFrame.posY.value);
+    angle.init(srcFrame.angle.value);
+    isInsideRotate.init(srcFrame.isInsideRotate.value);
+    radius.init(srcFrame.radius.value);
+    radiusLeftTop.init(srcFrame.radiusLeftTop.value);
+    radiusRightTop.init(srcFrame.radiusRightTop.value);
+    radiusRightBottom.init(srcFrame.radiusRightBottom.value);
+    radiusLeftBottom.init(srcFrame.radiusLeftBottom.value);
+    isAutoFit.init(srcFrame.isAutoFit.value);
+    isMain.init(srcFrame.isMain.value);
+    borderColor.init(srcFrame.borderColor.value);
+    borderWidth.init(srcFrame.borderWidth.value);
+    borderType.init(srcFrame.borderType.value);
+    borderCap.init(srcFrame.borderCap.value);
+    shadowColor.init(srcFrame.shadowColor.value);
+    shadowOpacity.init(srcFrame.shadowOpacity.value);
+    shadowSpread.init(srcFrame.shadowSpread.value);
+    shadowBlur.init(srcFrame.shadowBlur.value);
+    shadowDirection.init(srcFrame.shadowDirection.value);
+    shadowOffset.init(srcFrame.shadowOffset.value);
+    shape.init(srcFrame.shape.value);
+    eventSend.init(srcFrame.eventSend.value);
+    //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
+
+    frameType = srcFrame.frameType;
+    super.updateFromMixin(srcFrame);
+    logger.finest('FrameCopied($mid)');
+  }
+
+  @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);

@@ -8,6 +8,7 @@ import 'package:creta03/pages/studio/studio_main_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -589,14 +590,22 @@ class _BookMainPageState extends State<BookMainPage> {
             children: [
               BTN.floating_l(
                 icon: Icons.undo_outlined,
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    mychangeStack.undo();
+                  });
+                },
                 hasShadow: false,
                 tooltip: CretaStudioLang.tooltipUndo,
               ),
               SizedBox(width: padding / 2),
               BTN.floating_l(
                 icon: Icons.redo_outlined,
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    mychangeStack.redo();
+                  });
+                },
                 hasShadow: false,
                 tooltip: CretaStudioLang.tooltipRedo,
               ),
@@ -1128,7 +1137,7 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _startScreenshotTimer() {
-    _screenshotTimer ??= Timer.periodic(Duration(minutes: 1), (t) {
+    _screenshotTimer ??= Timer.periodic(Duration(minutes: 3), (t) {
       if (BookMainPage.firstThumbnailKey == null) {
         return;
       }

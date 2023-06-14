@@ -319,9 +319,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                     // Delete Page
                     mychangeStack.startTrans();
                     model.isRemoved.set(true);
-                    _pageManager!.removeChild(model.mid);
-                    mychangeStack.endTrans();
-                    _pageManager!.notify();
+                    _pageManager!.removeChild(model.mid).then((value) {
+                      mychangeStack.endTrans();
+                      _pageManager!.notify();
+                      return null;
+                    });
                   },
                 ),
                 //  BTN.fill_gray_i_m(

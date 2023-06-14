@@ -99,6 +99,24 @@ mixin CretaStyleMixin {
     isShow = UndoAble<bool>(src.isShow.value, mid, 'isShow');
   }
 
+  void updateFromMixin(CretaStyleMixin src) {
+    width.init(src.width.value);
+    height.init(src.height.value);
+    bgColor1.init(src.bgColor1.value);
+    bgColor2.init(src.bgColor2.value);
+    opacity.init(src.opacity.value);
+    gradationType.init(src.gradationType.value);
+    textureType.init(src.textureType.value);
+    transitionEffect.init(src.transitionEffect.value);
+    isFixedRatio.init(src.isFixedRatio.value);
+    effect.init(src.effect.value);
+    eventReceive.init(src.eventReceive.value);
+    showWhenEventReceived.init(src.showWhenEventReceived.value);
+    durationType.init(src.durationType.value);
+    duration.init(src.duration.value);
+    isShow.init(src.isShow.value);
+  }
+
   void fromMapMixin(Map<String, dynamic> map) {
     double w = map["width"] ?? 10;
     double h = map["height"] ?? 10;

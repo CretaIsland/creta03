@@ -45,6 +45,16 @@ class WatchHistoryModel extends CretaModel {
     logger.finest('WatchHistoryCopied($mid)');
   }
 
+  @override
+  void updateFrom(AbsExModel src) {
+    super.updateFrom(src);
+    WatchHistoryModel srcWatchHistory = src as WatchHistoryModel;
+    userId = srcWatchHistory.userId;
+    bookId = srcWatchHistory.bookId;
+    watchTime = srcWatchHistory.watchTime;
+    logger.finest('WatchHistoryCopied($mid)');
+  }
+
   DateTime _convert(dynamic val) {
     if (val is Timestamp) {
       Timestamp ts = val;

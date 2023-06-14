@@ -90,6 +90,24 @@ mixin BookMixin {
     // duration = UndoAble<int>(src.duration.value, mid);
   }
 
+  void updateFromMixin(BookMixin src) {
+    width.init(src.width.value);
+    height.init(src.height.value);
+
+    // bgColor1 = UndoAble<Color>(src.bgColor1.value, mid);
+    // bgColor2 = UndoAble<Color>(src.bgColor2.value, mid);
+    // opacity = UndoAble<double>(src.opacity.value, mid);
+    // gradationType = UndoAble<GradationType>(src.gradationType.value, mid);
+    // textureType = UndoAble<TextureType>(src.textureType.value, mid);
+    transitionEffect.init(src.transitionEffect.value);
+    isFixedRatio.init(src.isFixedRatio.value);
+    // effect = UndoAble<EffectType>(src.effect.value, mid);
+    // eventReceive = UndoAble<String>(src.eventReceive.value, mid);
+    // showWhenEventReceived = UndoAble<bool>(src.showWhenEventReceived.value, mid);
+    // durationType = UndoAble<DurationType>(src.durationType.value, mid);
+    // duration = UndoAble<int>(src.duration.value, mid);
+  }
+
   void fromMapMixin(Map<String, dynamic> map) {
     double w = map["width"] ?? 10;
     double h = map["height"] ?? 10;
