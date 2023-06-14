@@ -45,11 +45,10 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   String promptText = '';
   String searchValue = '';
 
-  late OverlayEntry _overlayEntry;
+  OverlayEntry? _overlayEntry;
 
   bool _isStyleOpened = true;
   final bool _isTrailShowed = false;
-  // bool _isTipOpened = false;
   bool _isTipOpened = false;
   List<String> imgUrl = [];
 
@@ -108,7 +107,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     Api.generateImageAI(text, numImg).then((values) {
       setState(() {
         imgUrl = [...values];
-        logger.info('------Generated image is $text ---------');
+        logger.info("------Generated image is '$text' ---------");
         _state = imgUrl.isNotEmpty ? AIState.succeed : AIState.fail;
       });
     });
@@ -149,25 +148,37 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     _selectedTab = CretaStudioLang.imageMenuTabBar.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     originalText = '';
-    _overlayEntry = OverlayEntry(builder: (BuildContext context) => searchTip());
     super.initState();
   }
 
   @override
   void dispose() {
-    _overlayEntry.remove();
+    _overlayEntry!.remove();
     super.dispose();
   }
 
-  void _toggleSearchTip() {
+  void showOverlay() {
     setState(() {
-      _isTipOpened = !_isTipOpened;
-      if (_isTipOpened) {
-        Overlay.of(context).insert(_overlayEntry);
-      } else {
-        _overlayEntry.remove();
-      }
+      _isTipOpened = true;
+      _overlayEntry ??= OverlayEntry(builder: (BuildContext context) => searchTip());
+      Overlay.of(context).insert(_overlayEntry!);
     });
+  }
+
+  void hideOverlay() {
+    setState(() {
+      _isTipOpened = false;
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    });
+  }
+
+  void _toggleSearchTip() {
+    if (_isTipOpened) {
+      hideOverlay();
+    } else {
+      showOverlay();
+    }
   }
 
   Widget _menuBar() {
@@ -336,7 +347,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                     child: BTN.floating_l(
                       icon: _activePage == 0 ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
                       onPressed: () {
-                        logger.info('----------swipe page------------');
+                        // logger.info('----------swipe page------------');
                         if (_activePage == 0) {
                           _changePage(_activePage + 1);
                         } else if (_activePage > 0) {
@@ -420,7 +431,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                           : null),
                   height: 68.0,
                   width: 68.0,
-                  child: Image.asset(imageSample[styleIndex]),
+                  child: Image.asset(imageSample[styleIndex], fit: BoxFit.fill),
                 ),
               ),
               Container(
@@ -444,36 +455,64 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              padding: const EdgeInsets.only(top: 12.0),
-              height: 350.0,
-              child: GridView.builder(
-                itemCount: imgUrl.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisSpacing: 12.0,
-                  crossAxisSpacing: 12.0,
-                  crossAxisCount: 2,
-                  childAspectRatio: 1 / 1,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () {
+                    _textController.text = promptText;
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(top: verticalPadding, bottom: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                    width: LayoutConst.rightMenuWidth - 2 * (horizontalPadding),
+                    height: 44.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.0),
+                      color: CretaColor.text[100],
+                    ),
+                    child: Center(
+                      child: Text(
+                        promptText,
+                        style: CretaFont.titleSmall,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
                 ),
-                scrollDirection: Axis.vertical,
-                itemBuilder: (BuildContext context, int imageIndex) {
-                  bool isImageSelected = selectedAIImage == imageIndex;
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (isImageSelected) {
-                          logger.info('----------Deselect generated image $imageIndex----------');
-                          selectedAIImage = -1;
-                        } else {
-                          logger.info('----------Select generated image $imageIndex----------');
-                          selectedAIImage = imageIndex;
-                        }
-                      });
+                Container(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  height: 350.0,
+                  child: GridView.builder(
+                    itemCount: imgUrl.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisSpacing: 12.0,
+                      crossAxisSpacing: 12.0,
+                      crossAxisCount: 2,
+                      childAspectRatio: 1 / 1,
+                    ),
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (BuildContext context, int imageIndex) {
+                      bool isImageSelected = selectedAIImage == imageIndex;
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            if (isImageSelected) {
+                              logger
+                                  .info('----------Deselect generated image $imageIndex----------');
+                              selectedAIImage = -1;
+                            } else {
+                              logger.info('----------Select generated image $imageIndex----------');
+                              selectedAIImage = imageIndex;
+                            }
+                          });
+                        },
+                        child: generatedImage(imageIndex, isImageSelected),
+                      );
                     },
-                    child: generatedImage(imageIndex, isImageSelected),
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
           ],
         );
@@ -490,9 +529,8 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
       case AIState.fail:
         return const SizedBox(
             height: 350.0,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(CretaStudioLang.genAIerrorMsg),
+            child: Center(
+              child: Text(CretaStudioLang.genAIerrorMsg, textAlign: TextAlign.center),
             ));
       default:
         return const SizedBox.shrink();
@@ -549,9 +587,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     translator.translate(textToGen, to: "en").then((value) {
       setState(() {
         _isStyleOpened = false;
-        if (_isTipOpened == true) {
-          _overlayEntry.remove();
-        }
+        hideOverlay();
         promptText = value.toString();
         generateImage(promptText);
       });
