@@ -211,6 +211,7 @@ class CretaStudioLang {
   static const String close = "닫기";
   static const String collapsed = "접기"; // added by Mai 230516
   static const String open = "열기"; // added by Mai 230516
+  static const String hidden = "압정"; // added by Mai 230516
 
   static const String copy = "복사하기";
   static var showUnshow = "보이기/안보이기";

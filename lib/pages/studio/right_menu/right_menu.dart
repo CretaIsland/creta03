@@ -26,6 +26,7 @@ import 'right_menu_frame_and_contents.dart';
 
 class RightMenu extends StatefulWidget {
   static bool isOpen = false;
+  static bool isHidden = false;
   //final ContaineeEnum selectedStick;
   final Function onClose;
   const RightMenu({super.key, required this.onClose});
@@ -54,6 +55,12 @@ class _RightMenuState
     super.dispose();
   }
 
+  void _onPressed() {
+    setState(() {
+      RightMenu.isHidden = !RightMenu.isHidden;
+    });
+  }
+
   bool _shouldRightMenuOpen() {
     if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.None) {
       return false;
@@ -71,6 +78,13 @@ class _RightMenuState
 
   @override
   Widget build(BuildContext context) {
+    if (RightMenu.isHidden) {
+      return SizedBox(
+        width: LayoutConst.rightHideMenuWidth,
+        height: StudioVariables.workHeight,
+        child: _hiddenMenu(),
+      );
+    }
     return
         // SizedBox(
         //   height: StudioVariables.workHeight,
@@ -109,23 +123,36 @@ class _RightMenuState
                 children: [
                   Positioned(
                     top: 8, left: 8,
-                    child: BTN.fill_gray_i_m(
-                      tooltip: CretaStudioLang.close,
-                      tooltipBg: CretaColor.text[700]!,
-                      icon: Icons.keyboard_double_arrow_right_outlined,
-                      onPressed: () async {
-                        //await _animationController.reverse();
-                        RightMenu.isOpen = false;
-                        widget.onClose.call();
-                      },
+                    child: Row(
+                      children: [
+                        BTN.fill_gray_i_m(
+                          tooltip: CretaStudioLang.close,
+                          tooltipBg: CretaColor.text[700]!,
+                          icon: Icons.close_sharp,
+                          onPressed: () async {
+                            //await _animationController.reverse();
+                            RightMenu.isOpen = false;
+                            widget.onClose.call();
+                          },
+                        ),
+                        BTN.fill_gray_i_m(
+                          tooltip: CretaStudioLang.collapsed,
+                          tooltipBg: CretaColor.text[700]!,
+                          icon: Icons.keyboard_double_arrow_right_outlined,
+                          onPressed: _onPressed,
+                        ),
+                      ],
                     ),
                     // super.closeButton(
                     //     icon: Icons.keyboard_double_arrow_right_outlined,
                     //     onClose: widget.onClose),
                   ),
-                  SizedBox(
-                    width: 300,
-                    child: title,
+                  Positioned(
+                    bottom: 12.0,
+                    child: SizedBox(
+                      width: 300,
+                      child: title,
+                    ),
                   ),
                 ],
               ),
@@ -203,6 +230,34 @@ class _RightMenuState
       default:
         return Container();
     }
+  }
+
+  Widget _hiddenMenu() {
+    return Row(
+      children: [
+        Align(
+          alignment: Alignment(0, -0.9),
+          child: ClipPath(
+            clipper: CustomMenuClipper(),
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(left: 8.0),
+              width: 30.0,
+              height: 80.0,
+              color: CretaColor.primary,
+              child: BTN.fill_gray_i_m(
+                  tooltip: CretaStudioLang.hidden,
+                  tooltipBg: CretaColor.text[700]!,
+                  icon: Icons.menu_outlined,
+                  onPressed: _onPressed),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(color: CretaColor.primary),
+        ),
+      ],
+    );
   }
 
   Widget _eachTitle(ContaineeEnum selected) {
@@ -289,5 +344,30 @@ class _RightMenuState
           style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
         );
     }
+  }
+}
+
+class CustomMenuClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Paint paint = Paint();
+    paint.color = Colors.white;
+
+    final width = size.width;
+    final height = size.height;
+
+    Path path = Path();
+    path.moveTo(width, 0);
+    path.quadraticBezierTo(width - 1, 8, 12, 16);
+    path.quadraticBezierTo(1, height / 2 - 18, 0, height / 2);
+    path.quadraticBezierTo(-1, height / 2 + 18, 10, height - 16);
+    path.quadraticBezierTo(width - 1, height - 8, width, height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
   }
 }

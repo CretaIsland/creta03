@@ -50,7 +50,6 @@ class LoginPage extends StatefulWidget {
     LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {
       LoginPage.teamManagerHolder!.initTeam();
       LoginPage.enterpriseHolder!.initEnterprise();
-      LoginPage.enterpriseHolder!.enterpriseModel!.openAiKey;
     });
   }
 

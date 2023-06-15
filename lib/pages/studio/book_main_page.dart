@@ -536,7 +536,8 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget _openRightMenu() {
     return Positioned(
         top: 0,
-        left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
+        // left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
+        right: 0,
         child: RightMenu(
             //key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
             onClose: () {
