@@ -48,13 +48,8 @@ class LoginPage extends StatefulWidget {
     LoginPage.enterpriseHolder?.configEvent();
     LoginPage.enterpriseHolder?.clearAll();
     LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {
-<<<<<<< HEAD
-      LoginPage.teamManagerHolder!.initTeam();
-      LoginPage.enterpriseHolder!.initEnterprise();
-=======
       LoginPage.teamManagerHolder?.initTeam();
       LoginPage.enterpriseHolder?.initEnterprise();
->>>>>>> 3349dfe67a126d51823b9da87b7bf1d1d9a9e03c
     });
   }
 
