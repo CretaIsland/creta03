@@ -15,7 +15,7 @@ import '../../../design_system/creta_color.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../studio_constant.dart';
-import 'image/api_services.dart';
+import 'imageAI/api_services.dart';
 
 class LeftMenuImage extends StatefulWidget {
   const LeftMenuImage({super.key});
@@ -153,7 +153,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   @override
   void dispose() {
-    _overlayEntry!.remove();
+    _overlayEntry?.remove();
     super.dispose();
   }
 
@@ -405,8 +405,8 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   Widget _styleOptions() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
-      height: 300.0,
+      padding: const EdgeInsets.only(top: 12.0),
+      height: 308.0,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4, // Vertical axis
@@ -482,7 +482,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 8.0),
-                  height: 350.0,
+                  height: 352.0,
                   child: GridView.builder(
                     itemCount: imgUrl.length,
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
