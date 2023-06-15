@@ -338,9 +338,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
                   LinkParams.orgPostion != null
               ? eachFrame
                   .animate()
-                  .scaleXY(duration: const Duration(milliseconds: 750), curve: Curves.easeInOut)
+                  .scaleXY(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut)
                   .move(
-                      duration: const Duration(milliseconds: 1500),
+                      duration: const Duration(milliseconds: 1000),
                       curve: Curves.easeInOut,
                       begin: LinkParams.linkPostion! +
                           LinkParams.orgPostion! -

@@ -39,17 +39,22 @@ class LoginPage extends StatefulWidget {
 
   static void initUserProperty() {
     LoginPage.userPropertyManagerHolder = UserPropertyManager();
-    LoginPage.userPropertyManagerHolder!.configEvent();
-    LoginPage.userPropertyManagerHolder!.clearAll();
+    LoginPage.userPropertyManagerHolder?.configEvent();
+    LoginPage.userPropertyManagerHolder?.clearAll();
     LoginPage.teamManagerHolder = TeamManager();
-    LoginPage.teamManagerHolder!.configEvent();
-    LoginPage.teamManagerHolder!.clearAll();
+    LoginPage.teamManagerHolder?.configEvent();
+    LoginPage.teamManagerHolder?.clearAll();
     LoginPage.enterpriseHolder = EnterpriseManager();
-    LoginPage.enterpriseHolder!.configEvent();
-    LoginPage.enterpriseHolder!.clearAll();
+    LoginPage.enterpriseHolder?.configEvent();
+    LoginPage.enterpriseHolder?.clearAll();
     LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {
+<<<<<<< HEAD
       LoginPage.teamManagerHolder!.initTeam();
       LoginPage.enterpriseHolder!.initEnterprise();
+=======
+      LoginPage.teamManagerHolder?.initTeam();
+      LoginPage.enterpriseHolder?.initEnterprise();
+>>>>>>> 3349dfe67a126d51823b9da87b7bf1d1d9a9e03c
     });
   }
 

@@ -9,7 +9,6 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../design_system/component/custom_image.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
@@ -103,14 +102,25 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
               } else {
                 String? thumbnailUrl = contentsManager.getThumbnail();
                 if (thumbnailUrl != null) {
-                  return CustomImage(
+                  return Container(
                     key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$thumbnailUrl'),
-                    hasMouseOverEffect: false,
-                    hasAni: false,
                     width: widget.width,
                     height: widget.height,
-                    image: thumbnailUrl,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: NetworkImage(thumbnailUrl),
+                    )),
                   );
+
+                  // return CustomImage(
+                  //   key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$thumbnailUrl'),
+                  //   hasMouseOverEffect: false,
+                  //   hasAni: false,
+                  //   width: widget.width,
+                  //   height: widget.height,
+                  //   image: thumbnailUrl,
+                  // );
 
                   // return Container(
                   //   width: widget.width,

@@ -120,6 +120,7 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 
+    mychangeStack.startTrans();
     FrameModel frameModel = await frameManager!.createNextFrame(
       doNotify: false,
       size: Size(width, height),

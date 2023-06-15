@@ -36,7 +36,10 @@ mixin FramePlayMixin {
   Future<void> createNewFrameAndContents(List<ContentsModel> modelList, PageModel pageModel,
       {FrameModel? frameModel}) async {
     // 프레임을 생성한다.
-    mychangeStack.startTrans();
+    //if (mychangeStack.transState != TransState.start) {
+    if (frameModel == null) {
+      mychangeStack.startTrans();
+    }
     frameModel ??= await frameManager!.createNextFrame(doNotify: false);
     // 코텐츠를 play 하고 DB 에 Crete 하고 업로드까지 한다.
     logger.info('frameCretated(${frameModel.mid}');

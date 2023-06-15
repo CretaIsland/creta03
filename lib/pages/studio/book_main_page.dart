@@ -185,6 +185,7 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder?.runSaveTimer();
 
     BookMainPage.clickReceiverHandler.init();
+    mychangeStack.clear();
     logger.info("end ---_BookMainPageState-----------------------------------------");
 
     afterBuild();
@@ -197,7 +198,7 @@ class _BookMainPageState extends State<BookMainPage> {
         await Future.delayed(Duration(seconds: 1));
       }
       if (StudioVariables.isPreview) {
-        _takeAScreenShot();
+        //_takeAScreenShot();
       } else {
         _startScreenshotTimer();
       }
@@ -1108,13 +1109,16 @@ class _BookMainPageState extends State<BookMainPage> {
     // });
   }
 
-  void _takeAScreenShot() {
-    RenderBox? box = widget.bookKey.currentContext?.findRenderObject() as RenderBox?;
+  void _takeAScreenShot(GlobalKey key) {
+    RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
     if (box == null) {
+      logger.warning('takeAScreenShot box not is founeded');
       return;
     }
     Offset position = box.localToGlobal(Offset.zero);
-    logger.info('start _takeAScreenShot()');
+
+    logger.info(
+        'start _takeAScreenShot(${position.dx},${position.dy},${box.size.width},${box.size.height} )');
     BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
     if (bookModel == null) {
       logger.warning('book model is null');
@@ -1136,6 +1140,7 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _startScreenshotTimer() {
+    logger.info('_startScreenshotTimer----------------------------------');
     _screenshotTimer ??= Timer.periodic(Duration(minutes: 3), (t) {
       if (BookMainPage.firstThumbnailKey == null) {
         return;
@@ -1147,7 +1152,7 @@ class _BookMainPageState extends State<BookMainPage> {
         return;
       }
       BookMainPage.thumbnailChanged = false;
-      _takeAScreenShot();
+      _takeAScreenShot(BookMainPage.firstThumbnailKey!);
     });
   }
 
