@@ -111,7 +111,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       // ),
       propertyDivider(height: 28),
       if (!widget.model.isText()) _linkControl(),
-      propertyDivider(height: 28),
+      if (!widget.model.isText()) propertyDivider(height: 28),
       if (!widget.model.isText()) _imageControl(),
       if (widget.model.isText()) _textFont(),
       propertyDivider(height: 28),

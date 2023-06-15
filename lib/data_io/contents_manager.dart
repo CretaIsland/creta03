@@ -209,6 +209,9 @@ class ContentsManager extends CretaManager {
           if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
             return model.remoteUrl!;
           }
+          if (model.url.isNotEmpty) {
+            return model.url;
+          }
         }
         return null;
       }
@@ -230,6 +233,7 @@ class ContentsManager extends CretaManager {
       }
       return model.thumbnail;
     }
+
     return null;
   }
 

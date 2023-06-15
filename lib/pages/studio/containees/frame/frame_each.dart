@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
+import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,6 @@ import 'package:hycop/common/util/logger.dart';
 
 import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/design_system/component/creta_texture_widget.dart';
-import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
@@ -342,13 +342,14 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _shapeBox(FrameModel model) {
+    //return _textureBox(model);
     return _textureBox(model).asShape(
       mid: model.mid,
       shapeType: model.shape.value,
       offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
       blurRadius: model.shadowBlur.value,
       blurSpread: model.shadowSpread.value * applyScale,
-      opacity: model.shadowOpacity.value,
+      opacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
       shadowColor: model.isNoShadow() ? Colors.transparent : model.shadowColor.value,
       // width: widget.width,
       // height: widget.height,
@@ -412,6 +413,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,
+      //color: Colors.transparent,
       width: double.infinity,
       height: double.infinity,
       child: ClipRect(
