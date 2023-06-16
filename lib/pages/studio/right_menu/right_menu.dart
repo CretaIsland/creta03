@@ -79,9 +79,11 @@ class _RightMenuState
   @override
   Widget build(BuildContext context) {
     if (RightMenu.isHidden) {
-      return Positioned(
-        top: 24,
-        right: 0,
+      // return Positioned(
+      //   top: 24,
+      //   right: 0,
+      return Padding(
+        padding: EdgeInsets.only(top: 24),
         child: Container(
           alignment: Alignment.center,
           width: 32,

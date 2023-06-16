@@ -55,9 +55,9 @@ class StaggeredAnimationState extends State<StaggeredAnimation>
               begin: BorderRadius.circular(250.0),
               end: BorderRadius.circular(0.0),
             ),
-            from: const Duration(milliseconds: 1250),
+            from: const Duration(milliseconds: 0),
             to: const Duration(milliseconds: 1500),
-            curve: Curves.ease,
+            curve: Curves.easeInExpo,
             tag: "borderRadius")
         // .addAnimatable(
         //     animatable: ColorTween(

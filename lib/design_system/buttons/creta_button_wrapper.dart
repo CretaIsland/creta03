@@ -1213,7 +1213,7 @@ class BTN {
     return CretaElevatedButton(
       width: width,
       height: height,
-      radius: 30,
+      radius: height / 2 - 1,
       onPressed: onPressed,
       caption: text,
       captionStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]!),

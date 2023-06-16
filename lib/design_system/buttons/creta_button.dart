@@ -435,6 +435,9 @@ class _CretaButtonState extends State<CretaButton> {
       if (widget.buttonColor == CretaButtonColor.white) {
         return Border.all(width: 1, color: CretaColor.text[700]!);
       }
+      if (widget.buttonColor == CretaButtonColor.whiteShadow) {
+        return null;
+      }
       if (widget.buttonColor == CretaButtonColor.purple) {
         return Border.all(width: 1, color: CretaColor.secondary);
       }

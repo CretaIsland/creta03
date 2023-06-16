@@ -145,7 +145,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           builder: (context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.hasData == false) {
               //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-              return Snippet.showWaitSign();
+              return SizedBox(width: width, height: height, child: Snippet.showWaitSign());
             }
             if (snapshot.hasError) {
               //error가 발생하게 될 경우 반환하게 되는 부분
@@ -330,7 +330,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-            return Snippet.showWaitSign();
+            return SizedBox(width: width, height: 365, child: Snippet.showWaitSign());
           }
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분

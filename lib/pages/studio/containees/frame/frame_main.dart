@@ -630,12 +630,21 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   }
 
   void _setMain(String mid) async {
+    bool isMain = false;
     for (var item in frameManager!.modelList) {
       FrameModel model = item as FrameModel;
       if (item.mid == mid) {
-        model.isMain.set(true);
-      } else {
-        model.isMain.set(false);
+        model.isMain.set(!model.isMain.value);
+        isMain = model.isMain.value;
+        break;
+      }
+    }
+    if (isMain == true) {
+      for (var item in frameManager!.modelList) {
+        FrameModel model = item as FrameModel;
+        if (item.mid != mid) {
+          model.isMain.set(false);
+        }
       }
     }
   }
