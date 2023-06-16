@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../data_io/creta_manager.dart';
 import '../design_system/component/snippet.dart';
@@ -87,4 +88,13 @@ class CretaModel extends AbsExModel {
   final GlobalKey key = GlobalKey();
   CretaModel({required String pmid, required super.type, required super.parent})
       : super(pmid: pmid);
+
+  DateTime convertValue(dynamic val) {
+    if (val is Timestamp) {
+      // Timestamp(in Firebase) => DateTimer(in FLutter)
+      Timestamp ts = val;
+      return ts.toDate();
+    }
+    return val;
+  }
 }

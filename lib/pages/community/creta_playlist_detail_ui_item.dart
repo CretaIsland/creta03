@@ -19,10 +19,12 @@ import '../../design_system/component/snippet.dart';
 //import '../../common/cross_common_job.dart';
 //import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
-import 'community_sample_data.dart';
+//import 'community_sample_data.dart';
 //import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../../design_system/creta_font.dart';
+import '../../model/book_model.dart';
+
 
 // const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -42,18 +44,17 @@ import '../../../design_system/creta_font.dart';
 bool isInUsingCanvaskit = false;
 
 class CretaPlaylistDetailItem extends StatefulWidget {
-  final CretaBookData cretaBookData;
-  final double width;
-  final int index;
-  //final double height;
-
   const CretaPlaylistDetailItem({
     required super.key,
-    required this.cretaBookData,
+    required this.bookModel,
     required this.width,
     required this.index,
     //required this.height,
   });
+  final BookModel bookModel;
+  final double width;
+  final int index;
+  //final double height;
 
   @override
   State<CretaPlaylistDetailItem> createState() => _CretaPlaylistDetailItemState();
@@ -122,10 +123,10 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                     child: Stack(
                       children: [
                         CustomImage(
-                          key: widget.cretaBookData.imgKey,
+                          key: GlobalKey(),//widget.cretaBookData.imgKey,
                           width: 120,
                           height: 67,
-                          image: widget.cretaBookData.thumbnailUrl,
+                          image: widget.bookModel.thumbnailUrl.value,
                         ),
                         !mouseOver
                             ? SizedBox.shrink()
@@ -154,7 +155,7 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.cretaBookData.name,
+                      widget.bookModel.name.value,
                       overflow: TextOverflow.ellipsis,
                       style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
                       maxLines: 1,
@@ -163,13 +164,13 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                     Row(
                       children: [
                         Text(
-                          widget.cretaBookData.creator,
+                          widget.bookModel.creator,
                           overflow: TextOverflow.ellipsis,
                           style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
                         ),
                         SizedBox(width: 16),
                         Text(
-                          widget.cretaBookData.creator,
+                          widget.bookModel.creator,
                           overflow: TextOverflow.ellipsis,
                           style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
                         ),

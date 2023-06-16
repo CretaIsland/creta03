@@ -10,6 +10,7 @@ import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import '../../routes.dart';
 //import '../../common/cross_common_job.dart';
+import '../../common/creta_utils.dart';
 import '../../design_system/creta_font.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -24,6 +25,7 @@ import '../../lang/creta_lang.dart';
 import '../../model/app_enums.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
+import '../../model/playlist_model.dart';
 
 import 'community_sample_data.dart';
 import 'sub_pages/community_right_home_pane.dart';
@@ -53,6 +55,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   late final Widget Function(Size)? _titlePane;
 
   final Map<String, CretaBookData> _subscriptionUserMap = {};
+
+  PlaylistModel? _playlistModel;
 
   BookType _filterBookType = BookType.none;
   BookSort _filterBookSort = BookSort.updateTime;
@@ -518,8 +522,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           ),
         ]);
       }
-      Widget hashtagWidget =
-          (size.width > 630) ? Row(children: _getHashtagListOnBanner()) : Container();
+      Widget hashtagWidget = (size.width > 630) ? Row(children: _getHashtagListOnBanner()) : Container();
       return SizedBox(
         width: size.width,
         height: size.height,
@@ -815,8 +818,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
               SizedBox(width: 12),
               Text(
                 '${AccountManager.currentLoginUser.name}님의 채널',
-                style: CretaFont.titleELarge
-                    .copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
               ),
               SizedBox(width: 20),
               Text(
@@ -1047,50 +1049,52 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    '재생목록 01',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 22,
-                      color: Colors.grey[800],
-                      fontFamily: 'Pretendard',
+            children: (_playlistModel == null)
+                ? []
+                : [
+                    Row(
+                      children: [
+                        Text(
+                          _playlistModel!.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 22,
+                            color: Colors.grey[800],
+                            fontFamily: 'Pretendard',
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(
+                          Icons.lock_outline,
+                          size: 16,
+                        ),
+                        SizedBox(width: 28),
+                        Text(
+                          AccountManager.currentLoginUser.name,
+                          style: CretaFont.buttonMedium,
+                        ),
+                        SizedBox(width: 28),
+                        Text(
+                          '영상 ${_playlistModel!.bookIdList.length}개',
+                          style: CretaFont.buttonMedium,
+                        ),
+                        SizedBox(width: 28),
+                        Text(
+                          '최근 업데이트 ${CretaUtils.dateToDurationString(_playlistModel!.lastUpdateTime)}',
+                          style: CretaFont.buttonMedium,
+                        ),
+                        Expanded(child: Container()),
+                        BTN.fill_blue_t_m(
+                          text: '재생하기',
+                          width: null,
+                          onPressed: () {},
+                          textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                        ),
+                        SizedBox(width: 6),
+                        BTN.fill_gray_i_m(icon: Icons.menu, onPressed: () {}),
+                      ],
                     ),
-                  ),
-                  SizedBox(width: 8),
-                  Icon(
-                    Icons.lock_outline,
-                    size: 16,
-                  ),
-                  SizedBox(width: 28),
-                  Text(
-                    AccountManager.currentLoginUser.name,
-                    style: CretaFont.buttonMedium,
-                  ),
-                  SizedBox(width: 28),
-                  Text(
-                    '영상 54개',
-                    style: CretaFont.buttonMedium,
-                  ),
-                  SizedBox(width: 28),
-                  Text(
-                    '최근 업데이트 1일전',
-                    style: CretaFont.buttonMedium,
-                  ),
-                  Expanded(child: Container()),
-                  BTN.fill_blue_t_m(
-                    text: '재생하기',
-                    width: null,
-                    onPressed: () {},
-                    textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
-                  ),
-                  SizedBox(width: 6),
-                  BTN.fill_gray_i_m(icon: Icons.menu, onPressed: () {}),
-                ],
-              ),
-            ],
+                  ],
           ),
         );
       case AppRoutes.communityBook:
@@ -1104,11 +1108,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   List<List<CretaMenuItem>> _getLeftDropdownMenuOnBanner() {
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
-        return [
-          _dropDownMenuItemListPurpose,
-          _dropDownMenuItemListPermission,
-          _dropDownMenuItemListSort
-        ];
+        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
       case AppRoutes.watchHistory:
         return [
           // _dropDownMenuItemListPurpose,
@@ -1128,11 +1128,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         break;
       case AppRoutes.communityHome:
       case AppRoutes.channel:
-        return [
-          _dropDownMenuItemListPurpose,
-          _dropDownMenuItemListPermission,
-          _dropDownMenuItemListSort
-        ];
+        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
     }
     return [];
   }
@@ -1192,6 +1188,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return GlobalObjectKey(key);
   }
 
+  void _updatePlaylistModel(PlaylistModel playlistModel) {
+    setState(() {
+      _playlistModel = playlistModel;
+    });
+  }
+
   Widget _getRightPane(BuildContext context) {
     //Size size = Size(rightPaneRect.childWidth, rightPaneRect.childHeight);
     switch (widget.subPageUrl) {
@@ -1233,12 +1235,17 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
+          filterBookType: _filterBookType,
+          filterBookSort: _filterBookSort,
+          filterPermissionType: _filterPermissionType,
+          filterSearchKeyword: _filterSearchKeyword,
         );
       case AppRoutes.playlistDetail:
         return CommunityRightPlaylistDetailPane(
           key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
+          updatePlaylistModel: _updatePlaylistModel,
         );
       case AppRoutes.communityBook:
         return CommunityRightBookPane(

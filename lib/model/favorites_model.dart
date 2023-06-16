@@ -18,21 +18,21 @@ import 'creta_model.dart';
 class FavoritesModel extends CretaModel {
   String userId = '';
   String bookId = '';
-  DateTime favoriteTime = DateTime.now();
+  DateTime lastUpdateTime = DateTime.now();
 
   @override
   List<Object?> get props => [
         ...super.props,
         userId,
         bookId,
-        favoriteTime,
+        lastUpdateTime,
       ];
   FavoritesModel(String pmid) : super(pmid: pmid, type: ExModelType.favorites, parent: '');
 
   FavoritesModel.withName({
     required this.userId,
     required this.bookId,
-    required this.favoriteTime,
+    required this.lastUpdateTime,
   }) : super(pmid: '', type: ExModelType.favorites, parent: '');
 
   @override
@@ -41,7 +41,7 @@ class FavoritesModel extends CretaModel {
     FavoritesModel srcFavorite = src as FavoritesModel;
     userId = srcFavorite.userId;
     bookId = srcFavorite.bookId;
-    favoriteTime = srcFavorite.favoriteTime;
+    lastUpdateTime = srcFavorite.lastUpdateTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
@@ -51,7 +51,7 @@ class FavoritesModel extends CretaModel {
     FavoritesModel srcFavorite = src as FavoritesModel;
     userId = srcFavorite.userId;
     bookId = srcFavorite.bookId;
-    favoriteTime = srcFavorite.favoriteTime;
+    lastUpdateTime = srcFavorite.lastUpdateTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
@@ -68,7 +68,7 @@ class FavoritesModel extends CretaModel {
     super.fromMap(map);
     userId = map["userId"] ?? '';
     bookId = map["bookId"] ?? '';
-    favoriteTime = _convert(map["favoriteTime"]);
+    lastUpdateTime = _convert(map["lastUpdateTime"]);
   }
 
   @override
@@ -77,7 +77,7 @@ class FavoritesModel extends CretaModel {
       ..addEntries({
         "userId": userId,
         "bookId": bookId,
-        "favoriteTime": favoriteTime,
+        "lastUpdateTime": lastUpdateTime,
       }.entries);
   }
 }

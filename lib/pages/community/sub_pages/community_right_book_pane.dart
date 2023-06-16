@@ -92,7 +92,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     WatchHistoryModel whModel = WatchHistoryModel.withName(
       userId: AccountManager.currentLoginUser.userId,
       bookId: CommunityRightBookPane.bookId,
-      watchTime: DateTime.now(),
+      lastUpdateTime: DateTime.now(),
     );
     watchHistoryManagerHolder = WatchHistoryManager();
     watchHistoryManagerHolder?.createToDB(whModel);

@@ -106,7 +106,6 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
       bookSort: widget.filterBookSort,
       //permissionType: widget.filterPermissionType,
       searchKeyword: widget.filterSearchKeyword,
-      sortTimeName: 'watchTime',
     );
     watchHistoryManagerHolder.addWhereClause(
       'userId',
@@ -228,8 +227,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
       for (var model in bookPublishedManagerHolder.modelList) {
         final bookModel = model as BookModel;
         if (bookModel.mid == whModel.bookId) {
-          final String watchTime = DateFormat('yyyy.MM.dd').format(whModel.watchTime);
-          _cretaBookDataMap.putIfAbsent(watchTime, () => []).add(bookModel);
+          final String lastUpdateTime = DateFormat('yyyy.MM.dd').format(whModel.lastUpdateTime);
+          _cretaBookDataMap.putIfAbsent(lastUpdateTime, () => []).add(bookModel);
         }
       }
     }

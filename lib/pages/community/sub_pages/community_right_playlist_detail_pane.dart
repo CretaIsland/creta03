@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
-//import 'package:hycop/hycop.dart';
+import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
@@ -25,9 +26,18 @@ import 'package:flutter/material.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
 //import '../creta_book_ui_item.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
-import '../community_sample_data.dart';
+//import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 import '../creta_playlist_detail_ui_item.dart';
+import '../../../data_io/creta_manager.dart';
+import '../../../data_io/book_published_manager.dart';
+import '../../../data_io/favorites_manager.dart';
+import '../../../data_io/playlist_manager.dart';
+//import '../../../model/app_enums.dart';
+import '../../../model/creta_model.dart';
+//import '../../../design_system/component/snippet.dart';
+import '../../../model/book_model.dart';
+import '../../../model/playlist_model.dart';
 
 //import '../../../design_system/component/custom_image.dart';
 //import 'package:creta03/design_system/component/custom_image.dart';
@@ -51,9 +61,11 @@ class CommunityRightPlaylistDetailPane extends StatefulWidget {
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
+    required this.updatePlaylistModel,
   });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
+  final Function(PlaylistModel) updatePlaylistModel;
 
   static String playlistId = '';
 
@@ -62,17 +74,85 @@ class CommunityRightPlaylistDetailPane extends StatefulWidget {
 }
 
 class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylistDetailPane> {
-  late CretaPlaylistData _cretaPlaylistData;
+  late PlaylistManager playlistManagerHolder;
+  late BookPublishedManager bookPublishedManagerHolder;
+  late FavoritesManager dummyManagerHolder;
+  bool _onceDBGetComplete = false;
+  final Map<String, BookModel> _cretaBookMap = {};
+  PlaylistModel? _currentPlaylistModel;
 
   @override
   void initState() {
     super.initState();
 
-    List<CretaPlaylistData> cretaPlaylistList = CommunitySampleData.getCretaPlaylistList();
-    _cretaPlaylistData = cretaPlaylistList[0];
+    if (CommunityRightPlaylistDetailPane.playlistId.isEmpty) {
+      //String url = Uri.base.origin;
+      String query = Uri.base.query;
+
+      int pos = query.indexOf('&');
+      CommunityRightPlaylistDetailPane.playlistId = (pos > 0) ? query.substring(0, pos) : query;
+    }
+    if (kDebugMode) print('---initState(${CommunityRightPlaylistDetailPane.playlistId})');
+
+    playlistManagerHolder = PlaylistManager();
+    bookPublishedManagerHolder = BookPublishedManager();
+    dummyManagerHolder = FavoritesManager();
+
+    CretaManager.startQueries([
+      QuerySet(playlistManagerHolder, _getPlaylistFromDB, null),
+      QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+      QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+    ]);
+  }
+
+  void _getPlaylistFromDB(List<AbsExModel> modelList) {
+    playlistManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightPlaylistDetailPane.playlistId));
+    playlistManagerHolder.queryByAddedContitions();
+  }
+
+  void _getBooksFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getBookDataFromDB');
+    if (modelList.isEmpty) {
+      if (kDebugMode) print('playlistManagerHolder.modelList is empty');
+      setState(() {
+        _dummyCompleteDB([]);
+        _onceDBGetComplete = true;
+      });
+      return;
+    }
+    _currentPlaylistModel = modelList[0] as PlaylistModel; // 무조건 1개만 있다고 가정
+    widget.updatePlaylistModel(_currentPlaylistModel!);
+    if (_currentPlaylistModel!.bookIdList.isEmpty) {
+      if (kDebugMode) print('_currentPlaylistModel.bookIdList is empty');
+      _dummyCompleteDB([]);
+      _onceDBGetComplete = true;
+      return;
+    }
+    List<String> bookIdList = [];
+    for (var bookId in _currentPlaylistModel!.bookIdList) {
+      bookIdList.add(bookId);
+    }
+    bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultBooksFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      BookModel bModel = model as BookModel;
+      _cretaBookMap[bModel.mid] = bModel;
+    }
+    _onceDBGetComplete = true;
+  }
+
+  void _dummyCompleteDB(List<AbsExModel> modelList) {
+    dummyManagerHolder.setState(DBState.idle);
   }
 
   Widget _getItemPane() {
+    if (_currentPlaylistModel == null) {
+      return SizedBox.shrink();
+    }
     return Scrollbar(
       thumbVisibility: true,
       controller: widget.scrollController,
@@ -85,8 +165,9 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
             if (newIndex > oldIndex) {
               newIndex = newIndex - 1;
             }
-            final item = _cretaPlaylistData.cretaBookDataList.removeAt(oldIndex);
-            _cretaPlaylistData.cretaBookDataList.insert(newIndex, item);
+            final item = _currentPlaylistModel!.bookIdList.removeAt(oldIndex);
+            _currentPlaylistModel!.bookIdList.insert(newIndex, item);
+            playlistManagerHolder.setToDB(_currentPlaylistModel!);
           });
         },
         padding: EdgeInsets.fromLTRB(
@@ -95,13 +176,13 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
           widget.cretaLayoutRect.childRightPadding,
           widget.cretaLayoutRect.childBottomPadding,
         ),
-        itemCount: _cretaPlaylistData.cretaBookDataList.length,
+        itemCount: _currentPlaylistModel!.bookIdList.length,
         //itemExtent: 204, // <== 아이템 드래그시 버그 있음
         itemBuilder: (context, index) {
-          CretaBookData data = _cretaPlaylistData.cretaBookDataList[index];
+          BookModel bModel = _cretaBookMap[_currentPlaylistModel!.bookIdList[index]] ?? BookModel('dummy');
           return CretaPlaylistDetailItem(
-            key: data.uiKey,
-            cretaBookData: data,
+            key: GlobalObjectKey('$index-${bModel.mid}'),
+            bookModel: bModel,
             width: widget.cretaLayoutRect.childWidth,
             index: index,
           );
@@ -112,6 +193,14 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
 
   @override
   Widget build(BuildContext context) {
-    return _getItemPane();
+    if (_onceDBGetComplete) {
+      return _getItemPane();
+    }
+    var retval = CretaModelSnippet.waitDatum(
+      managerList: [bookPublishedManagerHolder, playlistManagerHolder, dummyManagerHolder],
+      //userId: AccountManager.currentLoginUser.email,
+      consumerFunc: _getItemPane,
+    );
+    return retval;
   }
 }

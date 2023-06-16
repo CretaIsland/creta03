@@ -1163,7 +1163,7 @@ class BTN {
   }
 
   static CretaButton line_gray_ti_m({
-    required IconData icon,
+    required IconData? icon,
     required String text,
     required Function onPressed,
     double? width = 96,
@@ -1172,13 +1172,15 @@ class BTN {
     return CretaButton(
       width: width,
       height: 32,
-      buttonType: CretaButtonType.textIcon,
+      buttonType: (icon == null) ? CretaButtonType.textOnly : CretaButtonType.textIcon,
       buttonColor: CretaButtonColor.white,
       decoType: CretaButtonDeco.line,
       isSelectedWidget: true,
       textString: text,
       textStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!),
-      icon: Icon(
+      icon: (icon == null)
+          ? null
+          : Icon(
         icon,
         size: 16,
         color: CretaColor.text[700]!,

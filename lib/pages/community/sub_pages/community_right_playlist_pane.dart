@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/data_io/creta_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
@@ -25,9 +28,16 @@ import 'package:flutter/material.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
 //import '../creta_book_ui_item.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
-import '../community_sample_data.dart';
+//import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 import '../creta_playlist_ui_item.dart';
+import '../../../data_io/book_published_manager.dart';
+import '../../../data_io/favorites_manager.dart';
+import '../../../data_io/playlist_manager.dart';
+import '../../../model/app_enums.dart';
+import '../../../model/creta_model.dart';
+import '../../../model/book_model.dart';
+import '../../../model/playlist_model.dart';
 
 //const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -44,30 +54,96 @@ import '../creta_playlist_ui_item.dart';
 // const double _itemDefaultHeight = 230.0;
 
 class CommunityRightPlaylistPane extends StatefulWidget {
-  final CretaLayoutRect cretaLayoutRect;
-  final ScrollController scrollController;
   const CommunityRightPlaylistPane({
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
+    required this.filterBookType,
+    required this.filterBookSort,
+    required this.filterPermissionType,
+    required this.filterSearchKeyword,
   });
+  final CretaLayoutRect cretaLayoutRect;
+  final ScrollController scrollController;
+  final BookType filterBookType;
+  final BookSort filterBookSort;
+  final PermissionType filterPermissionType;
+  final String filterSearchKeyword;
 
   @override
   State<CommunityRightPlaylistPane> createState() => _CommunityRightPlaylistPaneState();
 }
 
 class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane> {
-  late List<CretaPlaylistData> _cretaPlaylistList;
+  late PlaylistManager playlistManagerHolder;
+  late BookPublishedManager bookPublishedManagerHolder;
+  late FavoritesManager dummyManagerHolder;
+  final GlobalKey _key = GlobalKey();
+  final Map<String, BookModel> _cretaBookMap = {};
+  bool _onceDBGetComplete = false;
 
   @override
   void initState() {
     super.initState();
 
-    _cretaPlaylistList = CommunitySampleData.getCretaPlaylistList();
+    playlistManagerHolder = PlaylistManager();
+    bookPublishedManagerHolder = BookPublishedManager();
+    dummyManagerHolder = FavoritesManager();
+
+    CretaManager.startQueries([
+      QuerySet(playlistManagerHolder, _getPlaylistFromDB, null),
+      QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+      QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+    ]);
+  }
+
+  void _getPlaylistFromDB(List<AbsExModel> modelList) {
+    playlistManagerHolder.addCretaFilters(
+      //bookType: widget.filterBookType,
+      bookSort: widget.filterBookSort,
+      //permissionType: widget.filterPermissionType,
+      searchKeyword: widget.filterSearchKeyword,
+    );
+    playlistManagerHolder.queryByAddedContitions();
+  }
+
+  void _getBooksFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getBooksFromDB');
+    if (modelList.isEmpty) {
+      if (kDebugMode) print('playlistManagerHolder.modelList is empty');
+      setState(() {
+        _dummyCompleteDB([]);
+        _onceDBGetComplete = true;
+      });
+      return;
+    }
+    List<String> bookAllList = [];
+    for (var plModel in modelList) {
+      PlaylistModel fModel = plModel as PlaylistModel;
+      for (var bookId in fModel.bookIdList) {
+        bookAllList.add(bookId);
+      }
+    }
+    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookAllList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultBooksFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      BookModel bModel = model as BookModel;
+      if (kDebugMode) print('---_getBookDataFromDB(bookId=${bModel.mid}) added');
+      _cretaBookMap[bModel.mid] = bModel;
+    }
+    _onceDBGetComplete = true;
+  }
+
+  void _dummyCompleteDB(List<AbsExModel> modelList) {
+    dummyManagerHolder.setState(DBState.idle);
   }
 
   Widget _getItemPane() {
     return Scrollbar(
+      key: _key,
       thumbVisibility: true,
       controller: widget.scrollController,
       child: ListView.builder(
@@ -78,13 +154,15 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
           widget.cretaLayoutRect.childRightPadding,
           widget.cretaLayoutRect.childBottomPadding,
         ),
-        itemCount: _cretaPlaylistList.length,
+        itemCount: playlistManagerHolder.modelList.length,
         itemExtent: 204,
         itemBuilder: (context, index) {
+          PlaylistModel plModel = playlistManagerHolder.modelList[index] as PlaylistModel;
           return CretaPlaylistItem(
-            key: _cretaPlaylistList[index].uiKey,
-            cretaPlayListData: _cretaPlaylistList[index],
+            key: GlobalObjectKey(plModel.mid),
+            playlistModel: plModel,
             width: widget.cretaLayoutRect.childWidth,
+            bookMap: _cretaBookMap,
           );
         },
       ),
@@ -93,6 +171,15 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
 
   @override
   Widget build(BuildContext context) {
-    return _getItemPane();
+    if (_onceDBGetComplete) {
+      return _getItemPane();
+    }
+    var retval = CretaModelSnippet.waitDatum(
+      managerList: [playlistManagerHolder, bookPublishedManagerHolder, dummyManagerHolder],
+      //userId: AccountManager.currentLoginUser.email,
+      consumerFunc: _getItemPane,
+    );
+    //_onceDBGetComplete = true;
+    return retval;
   }
 }

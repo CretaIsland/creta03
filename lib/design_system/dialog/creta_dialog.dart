@@ -1,6 +1,7 @@
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:flutter/material.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
+import '../creta_color.dart';
 
 class CretaDialog extends StatelessWidget {
   
@@ -35,7 +36,7 @@ class CretaDialog extends StatelessWidget {
           crossAxisAlignment: crossAxisAlign,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 16.0, top: 12.0, right: 12.0),
+              padding: const EdgeInsets.only(left: 16.0, top: 13.0, right: 12.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -51,11 +52,11 @@ class CretaDialog extends StatelessWidget {
               )
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 5.0),
               child: Container(
                 width: width,
-                height: 1.0,
-                color: Colors.grey.shade200,
+                height: 2.0,
+                color: CretaColor.text[100],//Colors.grey.shade200,
               ),
             ),
             content

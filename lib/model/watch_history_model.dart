@@ -18,21 +18,21 @@ import 'creta_model.dart';
 class WatchHistoryModel extends CretaModel {
   String userId = '';
   String bookId = '';
-  DateTime watchTime = DateTime.now(); // 추후에 createTime 으로 대체
+  DateTime lastUpdateTime = DateTime.now(); // 추후에 createTime 으로 대체
 
   @override
   List<Object?> get props => [
         ...super.props,
         userId,
         bookId,
-        watchTime,
+        lastUpdateTime,
       ];
   WatchHistoryModel(String pmid) : super(pmid: pmid, type: ExModelType.watchHistory, parent: '');
 
   WatchHistoryModel.withName({
     required this.userId,
     required this.bookId,
-    required this.watchTime,
+    required this.lastUpdateTime,
   }) : super(pmid: '', type: ExModelType.watchHistory, parent: '');
 
   @override
@@ -41,7 +41,7 @@ class WatchHistoryModel extends CretaModel {
     WatchHistoryModel srcWatchHistory = src as WatchHistoryModel;
     userId = srcWatchHistory.userId;
     bookId = srcWatchHistory.bookId;
-    watchTime = srcWatchHistory.watchTime;
+    lastUpdateTime = srcWatchHistory.lastUpdateTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
@@ -51,7 +51,7 @@ class WatchHistoryModel extends CretaModel {
     WatchHistoryModel srcWatchHistory = src as WatchHistoryModel;
     userId = srcWatchHistory.userId;
     bookId = srcWatchHistory.bookId;
-    watchTime = srcWatchHistory.watchTime;
+    lastUpdateTime = srcWatchHistory.lastUpdateTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
@@ -68,7 +68,7 @@ class WatchHistoryModel extends CretaModel {
     super.fromMap(map);
     userId = map["userId"] ?? '';
     bookId = map["bookId"] ?? '';
-    watchTime = _convert(map["watchTime"]);
+    lastUpdateTime = _convert(map["lastUpdateTime"]);
   }
 
   @override
@@ -77,7 +77,7 @@ class WatchHistoryModel extends CretaModel {
       ..addEntries({
         "userId": userId,
         "bookId": bookId,
-        "watchTime": watchTime,
+        "lastUpdateTime": lastUpdateTime,
       }.entries);
   }
 }
