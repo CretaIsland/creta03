@@ -37,7 +37,7 @@ class LayoutConst {
   static const double leftMenuWidth = 380;
   static const double leftMenuWidthCollapsed = 100; // added by Mai 230516
   static const double rightMenuWidth = 380;
-  static const double rightHideMenuWidth = 35;
+  static const double rightHideMenuWidth = 45;
   static const double rightMenuTitleHeight = 76;
   static const double innerMenuBarHeight = 36;
   static const double contentsListHeight = 24;

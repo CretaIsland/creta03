@@ -79,10 +79,29 @@ class _RightMenuState
   @override
   Widget build(BuildContext context) {
     if (RightMenu.isHidden) {
-      return SizedBox(
-        width: LayoutConst.rightHideMenuWidth,
-        height: StudioVariables.workHeight,
-        child: _hiddenMenu(),
+      return Positioned(
+        top: 24,
+        right: 0,
+        child: Container(
+          alignment: Alignment.center,
+          width: 32,
+          height: 80,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: CretaColor.text[100]!, width: 2.0),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              bottomLeft: Radius.circular(20.0),
+            ),
+            // boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.leftTop),
+          ),
+          child: BTN.fill_gray_i_m(
+              tooltip: CretaStudioLang.hidden,
+              tooltipBg: CretaColor.text[700]!,
+              icon: Icons.keyboard_double_arrow_left,
+              iconSize: 20.0,
+              onPressed: _onPressed),
+        ),
       );
     }
     return
@@ -232,34 +251,6 @@ class _RightMenuState
     }
   }
 
-  Widget _hiddenMenu() {
-    return Row(
-      children: [
-        Align(
-          alignment: Alignment(0, -0.9),
-          child: ClipPath(
-            clipper: CustomMenuClipper(),
-            child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.only(left: 8.0),
-              width: 30.0,
-              height: 80.0,
-              color: CretaColor.primary,
-              child: BTN.fill_gray_i_m(
-                  tooltip: CretaStudioLang.hidden,
-                  tooltipBg: CretaColor.text[700]!,
-                  icon: Icons.menu_outlined,
-                  onPressed: _onPressed),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(color: CretaColor.primary),
-        ),
-      ],
-    );
-  }
-
   Widget _eachTitle(ContaineeEnum selected) {
     logger.fine('_eachTitle $selected');
     switch (selected) {
@@ -344,30 +335,5 @@ class _RightMenuState
           style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
         );
     }
-  }
-}
-
-class CustomMenuClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Paint paint = Paint();
-    paint.color = Colors.white;
-
-    final width = size.width;
-    final height = size.height;
-
-    Path path = Path();
-    path.moveTo(width, 0);
-    path.quadraticBezierTo(width - 1, 8, 12, 16);
-    path.quadraticBezierTo(1, height / 2 - 18, 0, height / 2);
-    path.quadraticBezierTo(-1, height / 2 + 18, 10, height - 16);
-    path.quadraticBezierTo(width - 1, height - 8, width, height);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
   }
 }
