@@ -140,9 +140,11 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
                   logger.info(
                       '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
-                  widget.contentsManager.pushReverseOrder(movedOne.mid, pushedOne.mid, "playList");
+                  widget.contentsManager.pushReverseOrder(movedOne.mid, pushedOne.mid, "playList",
+                      onComplete: () {
+                    widget.contentsManager.reOrdering();
+                  });
 
-                  widget.contentsManager.reOrdering();
                   // widget.contentsManager.reOrdering().then((value) {
                   //   return null;
                   // });

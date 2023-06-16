@@ -1,12 +1,17 @@
+import 'dart:ui';
+
 import 'package:hycop/hycop.dart';
 
 import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta03/model/creta_model.dart';
 
+import '../model/contents_model.dart';
 import '../model/link_model.dart';
 
 class LinkManager extends CretaManager {
-  LinkManager() : super('creta_link');
+  LinkManager(String contentsMid) : super('creta_link') {
+    saveManagerHolder?.registerManager('link', this, postfix: contentsMid);
+  }
 
   @override
   CretaModel cloneModel(CretaModel src) {
@@ -35,17 +40,18 @@ class LinkManager extends CretaManager {
   }
 
   Future<LinkModel> createNext({
-    required String contentsId,
+    required ContentsModel contentsModel,
     required double posX,
     required double posY,
     String? name,
     String? connectedMid,
     String? connectedClass,
     bool doNotify = true,
+    required void Function(bool, ContentsModel, Offset) onComplete,
   }) async {
     logger.info('createNext()');
     LinkModel link = LinkModel('');
-    link.parentMid.set(contentsId, save: false, noUndo: true);
+    link.parentMid.set(contentsModel.mid, save: false, noUndo: true);
     link.posX = posX;
     link.posY = posY;
     link.name = name ?? '';
@@ -56,8 +62,26 @@ class LinkManager extends CretaManager {
     await createToDB(link);
     insert(link, postion: getLength(), doNotify: doNotify);
     selectedMid = link.mid;
-
     if (doNotify) notify();
+    onComplete.call(false, contentsModel, Offset(posX, posY));
+
+    MyChange<LinkModel> c = MyChange<LinkModel>(
+      link,
+      execute: () {},
+      redo: () async {
+        link.isRemoved.set(false, noUndo: true);
+        insert(link, postion: getLength(), doNotify: doNotify);
+        selectedMid = link.mid;
+        onComplete.call(false, contentsModel, Offset(posX, posY));
+      },
+      undo: (LinkModel old) async {
+        link.isRemoved.set(true, noUndo: true);
+        remove(link);
+        selectedMid = '';
+        onComplete.call(true, contentsModel, Offset(posX, posY));
+      },
+    );
+    mychangeStack.add(c);
 
     return link;
   }
@@ -88,5 +112,17 @@ class LinkManager extends CretaManager {
     if (doNotify) notify();
 
     return link;
+  }
+
+  void removeLink(String frameOrPageMid) {
+    for (var ele in modelList) {
+      LinkModel model = ele as LinkModel;
+      logger.info('${model.connectedMid} ?? $frameOrPageMid');
+
+      if (model.connectedMid == frameOrPageMid) {
+        logger.info('${model.mid} deleted--------------------$frameOrPageMid');
+        model.isRemoved.set(true);
+      }
+    }
   }
 }

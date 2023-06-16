@@ -179,7 +179,9 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           CretaModel? target = _pageManager!.getNthModel(oldIndex);
           if (target != null) {
             setState(() {
-              target.order.set(_pageManager!.getBetweenOrder(newIndex));
+              target.order.set(
+                _pageManager!.getBetweenOrder(newIndex),
+              );
             });
           }
         },
@@ -317,13 +319,19 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   iconImageFile: "assets/delete.svg",
                   onPressed: () {
                     // Delete Page
-                    mychangeStack.startTrans();
-                    model.isRemoved.set(true);
-                    _pageManager!.removeChild(model.mid).then((value) {
-                      mychangeStack.endTrans();
-                      _pageManager!.notify();
-                      return null;
-                    });
+                    logger.info('remove page');
+                    _removePage(model);
+                    //mychangeStack.startTrans();
+                    // model.isRemoved.set(true);
+                    // _pageManager!.removeChild(model.mid).then((value) {
+                    //   mychangeStack.endTrans();
+                    //   if (_pageManager!.isSelected(model.mid)) {
+                    //     _pageManager!.gotoFirst();
+                    //   } else {
+                    //     _pageManager!.notify();
+                    //   }
+                    //   return null;
+                    // });
                   },
                 ),
                 //  BTN.fill_gray_i_m(
@@ -340,6 +348,30 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
             ),
           ]),
     );
+  }
+
+  void _removePage(PageModel model) {
+    mychangeStack.startTrans();
+    model.isRemoved.set(
+      true,
+      doComplete: (val) {
+        if (_pageManager!.isSelected(model.mid)) {
+          if (!_pageManager!.gotoNext()) {
+            !_pageManager!.gotoPrev();
+          }
+        }
+      },
+    );
+    _pageManager!.removeChild(model.mid).then((value) {
+      //mychangeStack.endTrans();
+      if (_pageManager!.isSelected(model.mid)) {
+        if (!_pageManager!.gotoNext()) {
+          !_pageManager!.gotoPrev();
+        }
+      }
+      _pageManager!.notify();
+      return null;
+    });
   }
 
   Widget _body(int pageIndex, PageModel model) {

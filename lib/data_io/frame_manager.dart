@@ -308,6 +308,14 @@ class FrameManager extends CretaManager {
   Future<void> removeChild(String parentMid) async {
     ContentsManager? contentsManager = getContentsManager(parentMid);
     await contentsManager?.removeAll();
+    removeLink(parentMid); // 이 Frame 에 연결된 link 를 모두 지운다.
+  }
+
+  void removeLink(String mid) {
+    logger.info('removeLink---------------FrameManager');
+    for (var manager in contentsManagerMap.values) {
+      manager.removeLink(mid);
+    }
   }
 
   Future<void> findOrInitContentsManager() async {

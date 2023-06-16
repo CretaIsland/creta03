@@ -189,20 +189,24 @@ class PageManager extends CretaManager {
     return false;
   }
 
-  void gotoNext() {
+  bool gotoNext() {
     logger.info('gotoNext');
     String? mid = getNextMid();
     if (mid != null) {
       setSelectedMid(mid);
+      return true;
     }
+    return false;
   }
 
-  void gotoPrev() {
+  bool gotoPrev() {
     logger.info('gotoPrev');
     String? mid = getPrevMid();
     if (mid != null) {
       setSelectedMid(mid);
+      return true;
     }
+    return false;
   }
 
   String? getFirstMid() {
@@ -360,6 +364,7 @@ class PageManager extends CretaManager {
   Future<void> removeChild(String parentMid) async {
     FrameManager? frameManager = frameManagerList[parentMid];
     await frameManager?.removeAll();
+    removeLink(parentMid);
   }
 
   @override
@@ -390,5 +395,12 @@ class PageManager extends CretaManager {
       return null;
     }
     return frameManager.findFrameByPos(pos);
+  }
+
+  void removeLink(String mid) {
+    logger.info('removeLink---------------FrameManager');
+    for (var manager in frameManagerList.values) {
+      manager?.removeLink(mid);
+    }
   }
 }

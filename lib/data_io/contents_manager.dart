@@ -11,7 +11,6 @@ import '../lang/creta_lang.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
-import '../model/link_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
@@ -382,7 +381,24 @@ class ContentsManager extends CretaManager {
     } else {
       BookMainPage.containeeNotifier!.notify();
     }
+    removeChild(model.mid);
+
     return;
+  }
+
+  @override
+  Future<void> removeChild(String parentMid) async {
+    LinkManager? retval = linkManagerMap[parentMid];
+    if (retval != null) {
+      retval.removeAll();
+    }
+  }
+
+  void removeLink(String frameOrPageMid) {
+    logger.info('removeLink---------------ContentsManager   ${linkManagerMap.length}');
+    for (var linkManager in linkManagerMap.values) {
+      linkManager.removeLink(frameOrPageMid);
+    }
   }
 
   Future<void> setSoundOff({String mid = ''}) async {
@@ -666,7 +682,12 @@ class ContentsManager extends CretaManager {
     }
   }
 
-  void pushReverseOrder(String aMovedMid, String aPushedMid, String hint) {
+  void pushReverseOrder(
+    String aMovedMid,
+    String aPushedMid,
+    String hint, {
+    required Function? onComplete,
+  }) {
     CretaModel? aMoved = getModel(aMovedMid) as CretaModel?;
     CretaModel? aPushed = getModel(aPushedMid) as CretaModel?;
     if (aMoved == null) {
@@ -716,9 +737,26 @@ class ContentsManager extends CretaManager {
       }
     }
     mychangeStack.startTrans();
-    aMoved.order.set(aPushedOrder);
-    aPushed.order.set(aNewOrder);
+    aMoved.order.set(
+      aPushedOrder,
+      doComplete: (val) {
+        onComplete?.call();
+      },
+      undoComplete: (val) {
+        onComplete?.call();
+      },
+    );
+    aPushed.order.set(
+      aNewOrder,
+      doComplete: (val) {
+        onComplete?.call();
+      },
+      undoComplete: (val) {
+        onComplete?.call();
+      },
+    );
     mychangeStack.endTrans();
+    onComplete?.call();
   }
 
   static Future<void> createContents(FrameManager? frameManager,
@@ -867,7 +905,7 @@ class ContentsManager extends CretaManager {
 
     LinkManager? retval = linkManagerMap[contentsId];
     if (retval == null) {
-      retval = LinkManager();
+      retval = LinkManager(contentsId);
       linkManagerMap[contentsId] = retval;
     }
     return retval;
@@ -877,31 +915,9 @@ class ContentsManager extends CretaManager {
     LinkManager? retval = linkManagerMap[contentsId];
     logger.fine('findLinkManager()*******');
     if (retval == null) {
-      retval = LinkManager();
+      retval = LinkManager(contentsId);
       linkManagerMap[contentsId] = retval;
     }
     return linkManagerMap[contentsId];
-  }
-
-  Future<LinkModel?> createLink({
-    required String contentsId,
-    required double posX,
-    required double posY,
-    String? name,
-    String? connectedMid,
-    String? connectedClass,
-    bool doNotify = true,
-  }) async {
-    LinkManager linkManager = newLinkManager(contentsId);
-    await linkManager.createNext(
-      contentsId: contentsId,
-      posX: posX,
-      posY: posY,
-      name: name,
-      connectedClass: connectedClass,
-      connectedMid: connectedMid,
-      doNotify: doNotify,
-    );
-    return null;
   }
 }

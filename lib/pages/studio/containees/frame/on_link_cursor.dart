@@ -4,6 +4,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../data_io/link_manager.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
@@ -91,7 +92,7 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
       left: posX,
       top: posY,
       child: GestureDetector(
-        onLongPressDown: (details) {
+        onLongPressDown: (details) async {
           logger.info(
               'linkCursor clicked here ${details.globalPosition.dx}, ${details.globalPosition.dy}');
 
@@ -108,33 +109,45 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           logger.info(
               'OnLinkCursor linkNew=${LinkParams.isLinkNewMode}, linkEdit=${contentsModel.isLinkEditMode}');
           BookMainPage.bookManagerHolder!.notify();
-          widget.contentsManager
-              .createLink(
-            contentsId: contentsModel.mid,
+
+          // widget.contentsManager
+          //     .createLink(
+          //   contentsId: contentsModel.mid,
+          //   posX: dataX,
+          //   posY: dataY,
+          //   doNotify: false,
+          //   connectedMid: LinkParams.connectedMid,
+          //   connectedClass: LinkParams.connectedClass,
+          // )
+          //     .then((value) {
+          //   FrameModel? connectedFrame =
+          //       widget.frameManager.getModel(LinkParams.connectedMid) as FrameModel?;
+          //   if (connectedFrame != null) {
+          //     //mychangeStack.startTrans();
+          //     connectedFrame.isShow.set(false);
+          //     //mychangeStack.endTrans();
+          //     widget.frameManager.notify();
+          //   }
+          //   //contentsModel.isLinkEditMode = true;
+          //   //contentsModel.isLinkEditMode = false;
+          //   _linkSendEvent2!.sendEvent(contentsModel.isLinkEditMode);
+          //   _linkSendEvent!.sendEvent(Offset(posX, posY));
+          //   LinkParams.connectedClass = '';
+          //   LinkParams.connectedMid = '';
+
+          //   return value;
+          // });
+          LinkManager linkManager = widget.contentsManager.newLinkManager(contentsModel.mid);
+
+          await linkManager.createNext(
+            contentsModel: contentsModel,
             posX: dataX,
             posY: dataY,
             doNotify: false,
             connectedMid: LinkParams.connectedMid,
             connectedClass: LinkParams.connectedClass,
-          )
-              .then((value) {
-            FrameModel? connectedFrame =
-                widget.frameManager.getModel(LinkParams.connectedMid) as FrameModel?;
-            if (connectedFrame != null) {
-              //mychangeStack.startTrans();
-              connectedFrame.isShow.set(false);
-              //mychangeStack.endTrans();
-              widget.frameManager.notify();
-            }
-            //contentsModel.isLinkEditMode = true;
-            //contentsModel.isLinkEditMode = false;
-            _linkSendEvent2!.sendEvent(contentsModel.isLinkEditMode);
-            _linkSendEvent!.sendEvent(Offset(posX, posY));
-            LinkParams.connectedClass = '';
-            LinkParams.connectedMid = '';
-
-            return value;
-          });
+            onComplete: _showTargetFrame,
+          );
         },
         child: const Icon(
           Icons.radio_button_checked_outlined,
@@ -143,5 +156,22 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
         ),
       ),
     );
+  }
+
+  void _showTargetFrame(bool show, ContentsModel contentsModel, Offset offset) {
+    FrameModel? connectedFrame =
+        widget.frameManager.getModel(LinkParams.connectedMid) as FrameModel?;
+    if (connectedFrame != null) {
+      //mychangeStack.startTrans();
+      connectedFrame.isShow.set(false);
+      //mychangeStack.endTrans();
+      widget.frameManager.notify();
+    }
+    //contentsModel.isLinkEditMode = true;
+    //contentsModel.isLinkEditMode = false;
+    _linkSendEvent2!.sendEvent(contentsModel.isLinkEditMode);
+    _linkSendEvent!.sendEvent(offset);
+    LinkParams.connectedClass = '';
+    LinkParams.connectedMid = '';
   }
 }
