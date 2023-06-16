@@ -70,7 +70,7 @@ class FavoritesManager extends CretaManager {
     FavoritesModel favModel = FavoritesModel.withName(
       userId: userId,
       bookId: bookId,
-      favoriteTime: DateTime.now(),
+      lastUpdateTime: DateTime.now(),
     );
     createToDB(favModel);
     await isGetListFromDBComplete().catchError((error, stackTrace) =>
@@ -92,7 +92,7 @@ class FavoritesManager extends CretaManager {
       return true;
     }
     // not exist in DB => add to DB
-    FavoritesModel favModel = list[0] as FavoritesModel; // 1개만 있다고 가정
+    FavoritesModel favModel = list[0] as FavoritesModel; // 무조건 1개만 있다고 가정
     removeToDB(favModel.mid);
     await isGetListFromDBComplete().catchError((error, stackTrace) =>
         throw HycopUtils.getHycopException(error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));

@@ -436,6 +436,7 @@ class CretaBookUIItem extends StatefulWidget {
   final double width;
   final double height;
   final Function(String, bool)? addToFavorites;
+  final Function(String)? addToPlaylist;
   final bool isFavorites;
 
   const CretaBookUIItem({
@@ -445,6 +446,7 @@ class CretaBookUIItem extends StatefulWidget {
     required this.height,
     required this.isFavorites,
     this.addToFavorites,
+    this.addToPlaylist,
   });
 
   @override
@@ -482,6 +484,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _doPopupMenuAddToPlayList() {
     logger.finest('재생목록에 추가(${widget.bookModel.name})');
+    widget.addToPlaylist?.call(widget.bookModel.mid);
   }
 
   void _doPopupMenuShare() {

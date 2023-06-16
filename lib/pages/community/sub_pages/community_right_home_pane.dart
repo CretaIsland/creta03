@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 //import 'package:flutter/foundation.dart';
+//import 'package:creta03/design_system/component/custom_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
@@ -11,9 +12,11 @@ import 'package:hycop/hycop.dart';
 //import 'package:url_strategy/url_strategy.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
-//import '../../design_system/menu/creta_popup_menu.dart';
+//import '../../../design_system/component/creta_popup.dart';
+//import '../../../design_system/dialog/creta_dialog.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
-//import '../design_system/creta_color.dart';
+// import '../../../design_system/creta_color.dart';
+// import '../../../design_system/creta_font.dart';
 // import 'package:image_network/image_network.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 //import '../../common/cross_common_job.dart';
@@ -32,10 +35,12 @@ import '../creta_book_ui_item.dart';
 //import '../../../data_io/book_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/favorites_manager.dart';
+import '../../../data_io/playlist_manager.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/favorites_model.dart';
+import '../../../model/playlist_model.dart';
 
 //const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -80,7 +85,9 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   bool _onceDBGetComplete = false;
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager favoritesManagerHolder;
+  late PlaylistManager playlistManagerHolder;
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
+  final List<PlaylistModel> _playlistModelList = [];
   //BookManager? bookManagerHolder;
   //late final ValueKey _key = ValueKey('CRHP-${widget.filterBookType.name}-${widget.filterBookSort.name}-${widget.filterPermissionType.name}');
   final GlobalKey _key = GlobalKey();
@@ -93,7 +100,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     //_cretaBookList = CommunitySampleData.getCretaBookList();
     bookPublishedManagerHolder = BookPublishedManager();
     //bookManagerHolder!.configEvent(notifyModify: false);
-    bookPublishedManagerHolder.clearAll();
+    //bookPublishedManagerHolder.clearAll();
 
     // bookManagerHolder = BookManager();
     // //bookManagerHolder!.configEvent(notifyModify: false);
@@ -101,7 +108,9 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
 
     favoritesManagerHolder = FavoritesManager();
     //bookManagerHolder!.configEvent(notifyModify: false);
-    favoritesManagerHolder.clearAll();
+    //favoritesManagerHolder.clearAll();
+
+    playlistManagerHolder = PlaylistManager();
 
 /*
     Map<String, QueryValue> query = {};
@@ -160,10 +169,19 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       bookSort: widget.filterBookSort,
       permissionType: widget.filterPermissionType,
       searchKeyword: widget.filterSearchKeyword,
+      sortTimeName: 'updateTime',
     );
     bookPublishedManagerHolder.queryByAddedContitions();
     bookPublishedManagerHolder.isGetListFromDBComplete().then((value) {
       _getFavoritesFromDB();
+    });
+
+    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.userId));
+    playlistManagerHolder.queryByAddedContitions();
+    playlistManagerHolder.isGetListFromDBComplete().then((value) {
+      for(var plModel in playlistManagerHolder.modelList) {
+        _playlistModelList.add(plModel as PlaylistModel);
+      }
     });
   }
 
@@ -214,6 +232,54 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       });
     }
   }
+
+  void _newPlaylistDone(String name, bool isPublic, String bookId) async {
+    if(kDebugMode) print('_newPlaylistDone($name, $isPublic, $bookId)');
+    PlaylistModel newPlaylist = await playlistManagerHolder.createNewPlaylist(
+      name: name,
+      userId: AccountManager.currentLoginUser.userId,
+      channelId: 'test_channel_id',
+      isPublic: isPublic,
+      bookIdList: [bookId],
+    );
+    //
+    // success messagebox
+    //
+    _playlistModelList.add(newPlaylist);
+  }
+
+  void _newPlaylist(String bookId) {
+    showDialog(
+      context: context,
+      builder: (context) => PlaylistManager.newPlaylistPopUp(
+        context: context,
+        bookId: bookId,
+        onNewPlaylistDone: _newPlaylistDone,
+      ),
+    );
+  }
+
+  void _playlistSelectDone(String playlistMid, String bookId) async {
+    if(kDebugMode) print('_playlistSelectDone($playlistMid, $bookId)');
+    await playlistManagerHolder.addBookToPlaylist(playlistMid, bookId);
+    //
+    // success messagebox
+    //
+  }
+
+  void _addToPlaylist(String bookId) async {
+    showDialog(
+      context: context,
+      builder: (context) => PlaylistManager.playlistSelectPopUp(
+        context: context,
+        bookId: bookId,
+        playlistModelList: _playlistModelList,
+        onNewPlaylist: _newPlaylist,
+        onSelectDone: _playlistSelectDone,
+      ),
+    );
+  }
+
   //int saveIdx = 0;
 
   Widget _getItemPane() {
@@ -255,6 +321,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
                   height: itemHeight,
                   isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
                   addToFavorites: _addToFavorites,
+                  addToPlaylist: _addToPlaylist,
                 )
               : LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
@@ -267,6 +334,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
                       height: itemHeight,
                       isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
                       addToFavorites: _addToFavorites,
+                      addToPlaylist: _addToPlaylist,
                     );
                     // return SizedBox(
                     //   width: itemWidth,
@@ -292,7 +360,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       return _getItemPane();
     }
     var retval = CretaModelSnippet.waitDatum(
-      managerList: [bookPublishedManagerHolder, favoritesManagerHolder],
+      managerList: [bookPublishedManagerHolder, favoritesManagerHolder, playlistManagerHolder],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _getItemPane,
     );

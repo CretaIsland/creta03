@@ -80,7 +80,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
 
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager favoritesManagerHolder;
-  final Map<String, BookModel> _cretaBookMap = {};
+    final Map<String, BookModel> _cretaBookMap = {};
   final List<FavoritesModel> _favoritesBookList = []; // <Book.mid, isFavorites>
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   bool _onceDBGetComplete = false;
@@ -97,7 +97,6 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
       bookSort: widget.filterBookSort,
       //permissionType: widget.filterPermissionType,
       searchKeyword: widget.filterSearchKeyword,
-      sortTimeName: 'favoriteTime',
     );
     favoritesManagerHolder.addWhereClause(
       'userId',

@@ -70,6 +70,8 @@ abstract class CretaManager extends AbsExModelManager {
   DBState _dbState = DBState.none;
   TransState _transState = TransState.end;
 
+  void setState(DBState state) => (_dbState = state);
+
   void startTransaction() {
     lock();
     logger.finest('startTransaction');
@@ -174,8 +176,7 @@ abstract class CretaManager extends AbsExModelManager {
   void toSorted(String sortAttrName, {bool descending = false, Function? onModelSorted}) {
     logger.finest('toSorted');
     _currentSortAttr.clear();
-    _currentSortAttr[sortAttrName] =
-        descending ? OrderDirection.descending : OrderDirection.ascending;
+    _currentSortAttr[sortAttrName] = descending ? OrderDirection.descending : OrderDirection.ascending;
 
     queryFromDB({..._currentQuery}).then((value) {
       if (_currentLikeAttrList.isNotEmpty && _currentSearchStr.isNotEmpty) {
@@ -311,9 +312,7 @@ abstract class CretaManager extends AbsExModelManager {
   Future<List<AbsExModel>> isGetListFromDBComplete() async {
     return await _lock.protect(() async {
       logger.finest('transState=$_transState');
-      while (_dbState == DBState.querying ||
-          _dbState == DBState.none ||
-          _transState == TransState.start) {
+      while (_dbState == DBState.querying || _dbState == DBState.none || _transState == TransState.start) {
         await Future.delayed(const Duration(milliseconds: 500)).then((onValue) => true);
       }
       logger.finest('transState=$_transState');
@@ -388,9 +387,7 @@ abstract class CretaManager extends AbsExModelManager {
         orderBy: copyOrderBy,
         limit: limit,
         //offset: 1, // appwrite only
-        startAfter: isNew
-            ? null
-            : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
+        startAfter: isNew ? null : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
       );
       if (resultList.isEmpty) {
         logger.severe('no data founded...');
@@ -435,8 +432,7 @@ abstract class CretaManager extends AbsExModelManager {
         _pageCount = 1;
         _totaltFetchedCount = _lastFetchedCount;
       }
-      logger.finest(
-          'data fetched count= $_lastFetchedCount, page=$_pageCount, total=$_totaltFetchedCount');
+      logger.finest('data fetched count= $_lastFetchedCount, page=$_pageCount, total=$_totaltFetchedCount');
 
       _currentQuery.clear();
       _currentQuery.addAll(query);
@@ -1122,7 +1118,7 @@ abstract class CretaManager extends AbsExModelManager {
     final String searchKeyword = '',
     final bool isRemoved = false,
     String? userId, // default value is {AccountManager.currentLoginUser.userId}
-    String sortTimeName = 'updateTime',
+    String sortTimeName = 'lastUpdateTime',
   }) {
     // make query
     addWhereClause('isRemoved', QueryValue(value: isRemoved));
@@ -1188,4 +1184,37 @@ abstract class CretaManager extends AbsExModelManager {
     clearConditions();
     return retVal;
   }
+
+  // static Future<bool> join(List<CretaManager> managerList, List<Function> queryFuncList, List<Function(List<AbsExModel>)?> resultFuncList) async {
+  //   if (managerList.length != queryFuncList.length || queryFuncList.length != resultFuncList.length) {
+  //     return false;
+  //   }
+  //   for (int i = 0; i < queryFuncList.length; i++) {
+  //     queryFuncList[i].call();
+  //     List<AbsExModel> value = await managerList[i].isGetListFromDBComplete();
+  //     resultFuncList[i]?.call(value);
+  //   }
+  //   return true;
+  // }
+
+  static Future<bool> startQueries(List<QuerySet> joinList) async {
+    List<AbsExModel> value = [];
+    for (var joinValue in joinList) {
+      joinValue.queryFunc.call(value);
+      value = await joinValue.manager.isGetListFromDBComplete();
+      joinValue.resultFunc?.call(value);
+    }
+    return true;
+  }
+}
+
+class QuerySet {
+  const QuerySet(
+    this.manager,
+    this.queryFunc,
+    this.resultFunc,
+  );
+  final CretaManager manager;
+  final Function(List<AbsExModel> prevResult) queryFunc;
+  final Function(List<AbsExModel> result)? resultFunc;
 }
