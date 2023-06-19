@@ -75,11 +75,13 @@ class CommunityRightPlaylistPane extends StatefulWidget {
 }
 
 class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane> {
+  final GlobalKey _key = GlobalKey();
+
   late PlaylistManager playlistManagerHolder;
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager dummyManagerHolder;
-  final GlobalKey _key = GlobalKey();
   final Map<String, BookModel> _cretaBookMap = {};
+  final List<PlaylistModel> _playlistModelList = [];
   bool _onceDBGetComplete = false;
 
   @override
@@ -90,11 +92,16 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
     bookPublishedManagerHolder = BookPublishedManager();
     dummyManagerHolder = FavoritesManager();
 
-    CretaManager.startQueries([
-      QuerySet(playlistManagerHolder, _getPlaylistFromDB, null),
-      QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
-      QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
-    ]);
+    CretaManager.startQueries(
+      joinList: [
+        QuerySet(playlistManagerHolder, _getPlaylistFromDB, _resultPlaylistsFromDB),
+        QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+      ],
+      completeFunc: () {
+        _onceDBGetComplete = true;
+      },
+    );
   }
 
   void _getPlaylistFromDB(List<AbsExModel> modelList) {
@@ -107,14 +114,17 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
     playlistManagerHolder.queryByAddedContitions();
   }
 
+  void _resultPlaylistsFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      _playlistModelList.add(model as PlaylistModel);
+    }
+  }
+
   void _getBooksFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getBooksFromDB');
     if (modelList.isEmpty) {
       if (kDebugMode) print('playlistManagerHolder.modelList is empty');
-      setState(() {
-        _dummyCompleteDB([]);
-        _onceDBGetComplete = true;
-      });
+      bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
     List<String> bookAllList = [];
@@ -134,7 +144,6 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
       if (kDebugMode) print('---_getBookDataFromDB(bookId=${bModel.mid}) added');
       _cretaBookMap[bModel.mid] = bModel;
     }
-    _onceDBGetComplete = true;
   }
 
   void _dummyCompleteDB(List<AbsExModel> modelList) {
@@ -154,10 +163,10 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
           widget.cretaLayoutRect.childRightPadding,
           widget.cretaLayoutRect.childBottomPadding,
         ),
-        itemCount: playlistManagerHolder.modelList.length,
+        itemCount: _playlistModelList.length,
         itemExtent: 204,
         itemBuilder: (context, index) {
-          PlaylistModel plModel = playlistManagerHolder.modelList[index] as PlaylistModel;
+          PlaylistModel plModel = _playlistModelList[index];
           return CretaPlaylistItem(
             key: GlobalObjectKey(plModel.mid),
             playlistModel: plModel,
