@@ -409,7 +409,6 @@ class FrameManager extends CretaManager {
         continue;
       }
       //if (frame.frameType != FrameType.text) {
-      print('frame.order.value = ${frame.order.value}, ${frame.isShow.value}');
       return frame;
     } // 만약 여기서도, 해당 하는 것이 없으면 어쩔것인가 ?
     // 숨겨진거라도 리턴한다.
@@ -419,7 +418,6 @@ class FrameManager extends CretaManager {
         continue;
       }
       FrameModel frame = ele as FrameModel;
-      print('frame.order.value = ${frame.order.value}, ${frame.isShow.value}');
       return frame;
     } // 만약 여기서도, 해당 하는 것이 없으면 어쩔것인가 ?
 
@@ -437,7 +435,6 @@ class FrameManager extends CretaManager {
     if (main.mid != frameModel.mid) {
       return;
     }
-    print('nextPageListener(${frameModel.mid})');
     BookPreviewMenu.previewMenuPressed = true;
     BookMainPage.pageManagerHolder?.gotoNext();
   }

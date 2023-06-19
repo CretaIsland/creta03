@@ -297,7 +297,6 @@ class CretaPlayTimer extends ChangeNotifier {
     if (oldOrder == _currentOrder) {
       _forceToChange = true;
     }
-    print('currentOrder=$_currentOrder, oldOrder=$oldOrder');
     if (oldOrder <= _currentOrder) {
       // 이경우 한바퀴 돌았다는 뜻이다.
       frameManager.nextPageListener(contentsManager.frameModel);

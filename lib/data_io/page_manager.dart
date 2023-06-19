@@ -191,7 +191,6 @@ class PageManager extends CretaManager {
   }
 
   bool gotoNext() {
-    print('gotoNext');
     String? mid = getNextMid();
     if (mid != null) {
       setSelectedMid(mid);
