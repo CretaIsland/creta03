@@ -24,17 +24,17 @@ class SampleData {
   }
 
   static List<PageModel> samplePageList = [
-    PageModel.makeSample(0, sampleBook.mid),
-    PageModel.makeSample(1, sampleBook.mid),
-    PageModel.makeSample(2, sampleBook.mid),
-    PageModel.makeSample(3, sampleBook.mid),
-    PageModel.makeSample(4, sampleBook.mid),
-    PageModel.makeSample(5, sampleBook.mid),
-    PageModel.makeSample(6, sampleBook.mid),
-    PageModel.makeSample(7, sampleBook.mid),
-    PageModel.makeSample(8, sampleBook.mid),
-    PageModel.makeSample(9, sampleBook.mid),
-    PageModel.makeSample(10, sampleBook.mid),
+    PageModel.makeSample(0, sampleBook.mid, 1),
+    PageModel.makeSample(1, sampleBook.mid, 2),
+    PageModel.makeSample(2, sampleBook.mid, 3),
+    PageModel.makeSample(3, sampleBook.mid, 4),
+    PageModel.makeSample(4, sampleBook.mid, 5),
+    PageModel.makeSample(5, sampleBook.mid, 6),
+    PageModel.makeSample(6, sampleBook.mid, 7),
+    PageModel.makeSample(7, sampleBook.mid, 8),
+    PageModel.makeSample(8, sampleBook.mid, 9),
+    PageModel.makeSample(9, sampleBook.mid, 10),
+    PageModel.makeSample(10, sampleBook.mid, 11),
   ];
 
   static List<ConnectedUserModel> connectedUserList = [

@@ -46,14 +46,14 @@ class PageModel extends CretaModel with CretaStyleMixin {
     super.initMixin(mid);
   }
 
-  PageModel.makeSample(double porder, String pid)
+  PageModel.makeSample(double porder, String pid, int pageIndex)
       : super(pmid: '', type: ExModelType.page, parent: pid) {
     final Random random = Random();
     int randomNumber = random.nextInt(10);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
     logger.finest('url=$url');
     order = UndoAble<double>(porder, mid, 'order');
-    name = UndoAble<String>('${CretaStudioLang.noNamepage} ${order.value.toString()}', mid, 'name');
+    name = UndoAble<String>('${CretaStudioLang.noNamepage} $pageIndex', mid, 'name');
     description = UndoAble<String>('You could do it simple and plain', mid, 'description');
     thumbnailUrl = UndoAble<String>(url, mid, 'thumbnailUrl');
     isCircle = UndoAble<bool>(false, mid, 'isCircle');

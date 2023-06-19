@@ -557,4 +557,18 @@ class CretaUtils {
     RegExp regex = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+$');
     return regex.hasMatch(email);
   }
+
+  static Rect? getArea(GlobalKey key) {
+    RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) {
+      logger.warning('takeAScreenShot box not is founeded');
+      return null;
+    }
+    Offset position = box.localToGlobal(Offset.zero);
+    return position & box.size;
+  }
+
+  static bool isRectContained(Rect outerRect, Rect innerRect) {
+    return outerRect.contains(innerRect.topLeft) && outerRect.contains(innerRect.bottomRight);
+  }
 }

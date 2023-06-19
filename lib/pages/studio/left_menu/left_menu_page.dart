@@ -1,10 +1,16 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'dart:async';
+import 'dart:math';
+
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
+import '../../../common/creta_utils.dart';
+import '../../../common/window_screenshot.dart';
 import '../../../data_io/page_manager.dart';
 import '../../../design_system/buttons/creta_button.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
@@ -12,6 +18,7 @@ import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
+import '../../../model/book_model.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/page_model.dart';
 import '../containees/containee_nofifier.dart';
@@ -53,6 +60,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   double widthScale = 1;
 
   int _pageCount = 0;
+  bool _buildComplete = false;
+  late GlobalObjectKey _pageViewKey;
+
+  Timer? _screenshotTimer;
+
   //final int _firstPage = 100;
 
   //OffsetEventController? _linkSendEvent;
@@ -68,12 +80,33 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     super.initState();
     //_scrollController.addListener(_scrollListener);
     logger.finer('_LeftMenuPageState.initState');
-    _scrollController = ScrollController(initialScrollOffset: 0.0);
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     //bodyHeight = cardHeight - headerHeight;
     bodyHeight = bodyWidth * (1080 / 1920);
     cardHeight = bodyHeight + headerHeight;
     addCardSpace = headerHeight + verticalPadding;
+    _pageViewKey = GlobalObjectKey('pageViewKey');
+
+    _scrollController = ScrollController(initialScrollOffset: 0.0);
+    _scrollController.addListener(() {
+      // ScrollDirection scrollDirection = _scrollController.position.userScrollDirection;
+
+      // if (_pageManager != null) {
+      //   PageModel? page = _pageManager!.getSelected() as PageModel?;
+      //   if (page != null && page.pageIndex >= 0) {
+      //
+      //     if (scrollDirection != ScrollDirection.idle) {
+      //       double scrollEnd = _scrollController.offset +
+      //           (scrollDirection == ScrollDirection.reverse
+      //               ? (cardHeight - 80)
+      //               : -(cardHeight - 80));
+      //                 scrollEnd = min(_scrollController.position.maxScrollExtent,
+      //           max(_scrollController.position.minScrollExtent, scrollEnd));
+      //       _scrollController.jumpTo(scrollEnd);
+      //     }
+      //   }
+      // }
+    });
 
     //final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     //_linkSendEvent = linkSendEvent;
@@ -81,12 +114,19 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   Future<void> afterBuild() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {});
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _buildComplete = true;
+      if (!StudioVariables.isPreview && widget.isFolded == false) {
+        _startScreenshotTimer();
+      }
+    });
   }
 
   @override
   void dispose() {
     //_scrollController.stop();
+    logger.info('left_menu_page disposed..........................');
+    _stopScreenshotTimer();
     super.dispose();
   }
 
@@ -118,7 +158,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         pageManager.setSelected(0);
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       }
-      _resize(); // ----------------- Added by Mai 230516 -----------------
+      _resize();
       return Column(
         children: [
           _menuBar(),
@@ -142,7 +182,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                 tooltipBg: CretaColor.text[700]!,
                 icon: Icons.add_outlined,
                 onPressed: (() {
-                  _pageManager!.createNextPage();
+                  _pageManager!.createNextPage(_pageCount + 1);
                   _scrollController
                       .jumpTo(_scrollController.position.maxScrollExtent + cardHeight * 3);
                 })),
@@ -164,29 +204,30 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   Widget _pageView() {
     return Container(
-      padding: const EdgeInsets.only(top: 10),
-      height: StudioVariables.workHeight - 100,
-      child: ReorderableListView(
-        buildDefaultDragHandles: false,
-        scrollController: _scrollController,
-        children: [
-          ..._cardList(),
-          _addCard(),
-          _emptyCard(),
-        ],
-        onReorder: (oldIndex, newIndex) {
-          logger.finest('oldIndex=$oldIndex, newIndex=$newIndex');
-          CretaModel? target = _pageManager!.getNthModel(oldIndex);
-          if (target != null) {
-            setState(() {
-              target.order.set(
-                _pageManager!.getBetweenOrder(newIndex),
-              );
-            });
-          }
-        },
-      ),
-    );
+        padding: const EdgeInsets.only(top: 10),
+        height: StudioVariables.workHeight - 100,
+        color: Colors.amber,
+        child: ReorderableListView(
+          key: _pageViewKey,
+          buildDefaultDragHandles: false,
+          scrollController: _scrollController,
+          children: [
+            ..._cardList(),
+            _addCard(),
+            _emptyCard(),
+          ],
+          onReorder: (oldIndex, newIndex) {
+            logger.finest('oldIndex=$oldIndex, newIndex=$newIndex');
+            CretaModel? target = _pageManager!.getNthModel(oldIndex);
+            if (target != null) {
+              setState(() {
+                target.order.set(
+                  _pageManager!.getBetweenOrder(newIndex),
+                );
+              });
+            }
+          },
+        ));
   }
 
   List<Widget> _cardList() {
@@ -503,18 +544,20 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     // }
     //logger.info('pageThumnail not exist');
 
-    if (pageIndex == 0) {
-      BookMainPage.firstThumbnailKey = GlobalObjectKey('firstPageKey${pageModel.mid}');
+    GlobalObjectKey? thumbKey = _pageManager!.thumbKeyMap[pageModel.mid];
+    if (thumbKey == null) {
+      thumbKey = GlobalObjectKey('Thumb$pageIndex${pageModel.mid}');
+      _pageManager!.thumbKeyMap[pageModel.mid] = thumbKey;
     }
+
     return PageThumbnail(
-      key: pageIndex == 0
-          ? BookMainPage.firstThumbnailKey
-          : ValueKey('PageThumbnail$pageIndex${pageModel.mid}'),
+      key: thumbKey,
       pageIndex: pageIndex,
       bookModel: _pageManager!.bookModel!,
       pageModel: pageModel,
       pageWidth: width,
       pageHeight: height,
+      chageEventReceived: _changeEventReceived,
     );
   }
 
@@ -551,7 +594,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                       icon: Icons.add_outlined,
                       onPressed: () {
                         setState(() {
-                          _pageManager!.createNextPage();
+                          _pageManager!.createNextPage(_pageCount + 1);
                         });
                       }),
                   SizedBox(height: widget.isFolded ? 12 * widthScale : 12), // added by Mai 230516
@@ -575,61 +618,158 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     logger.info('emptyCard($bodyHeight,$bodyWidth)');
     return SizedBox(
       key: UniqueKey(),
-      height: _bodyHeight,
+      height: _bodyHeight + 20,
       width: _bodyWidth,
     );
   }
 
-  // Widget _addButton() {
-  //   return ElevatedButton(
-  //     style: ButtonStyle(
-  //       elevation: MaterialStateProperty.all<double>(0.0),
-  //       shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-  //       overlayColor: MaterialStateProperty.resolveWith<Color?>(
-  //         (Set<MaterialState> states) {
-  //           if (states.contains(MaterialState.hovered)) {
-  //             return CretaColor.text[200]!;
-  //           }
-  //           return CretaColor.text[100]!;
-  //         },
-  //       ),
-  //       backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-  //       // foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-  //       //   (Set<MaterialState> states) {
-  //       //     //if (states.contains(MaterialState.hovered)) return widget.fgColor;
-  //       //     return (selected ? widget.fgSelectedColor : widget.fgColor);
-  //       //   },
-  //       // ),
-  //       shape: MaterialStateProperty.all<CircleBorder>(CircleBorder()),
-  //       // shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-  //       //   RoundedRectangleBorder(
-  //       //     borderRadius: BorderRadius.circular(96),
-  //       //     //side: BorderSide(color: selected ? Colors.white : widget.borderColor),
-  //       //   ),
-  //       // ),
-  //     ),
-  //     onPressed: () {
-  //       setState(() {
-  //         _pageManager!.createNextPage();
-  //       });
-  //     },
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(20.0),
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Icon(
-  //             Icons.add_outlined,
-  //             size: 96,
-  //             color: CretaColor.primary,
-  //           ),
-  //           Text(
-  //             CretaStudioLang.newPage,
-  //             style: CretaFont.bodyMedium,
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  void _changeEventReceived(String pageMid) {
+    if (widget.isFolded) {
+      return;
+    }
+
+    if (_buildComplete == false) {
+      return;
+    }
+    if (_pageCount <= 1) {
+      return;
+    }
+    if (_pageManager == null) {
+      return;
+    }
+    PageModel? selected = _pageManager!.getSelected() as PageModel?;
+    if (selected == null) {
+      return;
+    }
+    if (pageMid != selected.mid) {
+      return;
+    }
+    GlobalObjectKey? thumbKey = BookMainPage.pageManagerHolder!.getSelectedThumbKey();
+    if (thumbKey == null) {
+      return;
+    }
+    Rect? pageViewArea = CretaUtils.getArea(_pageViewKey);
+    if (pageViewArea == null) {
+      return;
+    }
+    Rect? thumbArea = CretaUtils.getArea(thumbKey);
+
+    bool contained = false;
+    if (thumbArea != null) {
+      contained = CretaUtils.isRectContained(pageViewArea, thumbArea);
+    }
+    if (contained) {
+      return;
+    }
+
+    bool matched = false;
+    int pageIndex = -1;
+    List<CretaModel> orderList = _pageManager!.copyOrderMap();
+    for (var ele in orderList) {
+      PageModel page = ele as PageModel;
+      pageIndex++;
+      if (page.mid == pageMid) {
+        matched = true;
+        break;
+      }
+    }
+    if (matched == false) {
+      return;
+    }
+    ScrollDirection scrollDirection = _scrollController.position.userScrollDirection;
+    if (scrollDirection != ScrollDirection.idle) {
+      return;
+    }
+    double fullCardHeight = cardHeight + verticalPadding * widthScale * 2;
+
+    double scrollEnd = pageIndex * fullCardHeight;
+    scrollEnd = min(_scrollController.position.maxScrollExtent,
+        max(_scrollController.position.minScrollExtent, scrollEnd));
+
+    if (scrollEnd == _scrollController.offset) {
+      return;
+    }
+    // 만약 보이는 전체 면적이 카드 크기 2배보다 작으면,  최상단으로 올린다.
+    // 또는 제일 첫번째 카드 여도 마찬가지다.
+    if (pageViewArea.height <= fullCardHeight * 2 || pageIndex == 0) {
+      _scrollController.jumpTo(scrollEnd);
+      return;
+    }
+    // 그렇지 않다면, 두번째 위치로 놓는다.
+    scrollEnd = (pageIndex - 1) * fullCardHeight;
+    scrollEnd = min(_scrollController.position.maxScrollExtent,
+        max(_scrollController.position.minScrollExtent, scrollEnd));
+    _scrollController.jumpTo(scrollEnd);
+  }
+
+  void _startScreenshotTimer() {
+    logger.info('_startScreenshotTimer----------------------------------');
+    _screenshotTimer ??= Timer.periodic(Duration(seconds: 60), (t) {
+      if (widget.isFolded) {
+        return;
+      }
+      if (saveManagerHolder!.isSomethingSaved() == false) {
+        return;
+      }
+      if (BookMainPage.thumbnailChanged == false) {
+        return;
+      }
+      Rect? pageViewArea = CretaUtils.getArea(_pageViewKey);
+      if (pageViewArea == null) {
+        return;
+      }
+
+      // 제일 첫번째를 가져온다.
+      GlobalObjectKey? thumbKey = BookMainPage.pageManagerHolder!.thumbKeyMap.values.first;
+      Rect? thumbArea = CretaUtils.getArea(thumbKey);
+      if (thumbArea != null) {
+        if (CretaUtils.isRectContained(pageViewArea, thumbArea)) {
+          // 이미 화면에 완전히 보인다.
+          _takeAScreenShot(thumbArea);
+          return;
+        }
+      }
+
+      // 이때는 selecte 된 Page thumbnail 을 찍는 다.
+      thumbKey = BookMainPage.pageManagerHolder!.getSelectedThumbKey();
+      if (thumbKey == null) {
+        return;
+      }
+      thumbArea = CretaUtils.getArea(thumbKey);
+      if (thumbArea != null) {
+        if (CretaUtils.isRectContained(pageViewArea, thumbArea)) {
+          // 이미 화면에 완전히 보인다.
+          _takeAScreenShot(thumbArea);
+          return;
+        }
+      }
+    });
+  }
+
+  void _stopScreenshotTimer() {
+    _screenshotTimer?.cancel();
+  }
+
+  void _takeAScreenShot(Rect area) {
+    BookMainPage.thumbnailChanged = false;
+    logger.info('start _takeAScreenShot(${area.left},${area.top},${area.width},${area.height} )');
+    BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+    if (bookModel == null) {
+      logger.warning('book model is null');
+      return;
+    }
+    WindowScreenshot.uploadScreenshot(
+      bookId: bookModel.mid,
+      offset: area.topLeft,
+      size: area.size,
+    ).then((value) {
+      bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
+      bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
+      logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
+      // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
+      BookMainPage.bookManagerHolder?.setToDB(bookModel);
+
+      return null;
+    });
+  }
 }

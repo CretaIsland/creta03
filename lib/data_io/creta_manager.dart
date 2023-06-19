@@ -176,7 +176,8 @@ abstract class CretaManager extends AbsExModelManager {
   void toSorted(String sortAttrName, {bool descending = false, Function? onModelSorted}) {
     logger.finest('toSorted');
     _currentSortAttr.clear();
-    _currentSortAttr[sortAttrName] = descending ? OrderDirection.descending : OrderDirection.ascending;
+    _currentSortAttr[sortAttrName] =
+        descending ? OrderDirection.descending : OrderDirection.ascending;
 
     queryFromDB({..._currentQuery}).then((value) {
       if (_currentLikeAttrList.isNotEmpty && _currentSearchStr.isNotEmpty) {
@@ -312,7 +313,9 @@ abstract class CretaManager extends AbsExModelManager {
   Future<List<AbsExModel>> isGetListFromDBComplete() async {
     return await _lock.protect(() async {
       logger.finest('transState=$_transState');
-      while (_dbState == DBState.querying || _dbState == DBState.none || _transState == TransState.start) {
+      while (_dbState == DBState.querying ||
+          _dbState == DBState.none ||
+          _transState == TransState.start) {
         await Future.delayed(const Duration(milliseconds: 500)).then((onValue) => true);
       }
       logger.finest('transState=$_transState');
@@ -387,7 +390,9 @@ abstract class CretaManager extends AbsExModelManager {
         orderBy: copyOrderBy,
         limit: limit,
         //offset: 1, // appwrite only
-        startAfter: isNew ? null : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
+        startAfter: isNew
+            ? null
+            : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
       );
       if (resultList.isEmpty) {
         logger.severe('no data founded...');
@@ -432,7 +437,8 @@ abstract class CretaManager extends AbsExModelManager {
         _pageCount = 1;
         _totaltFetchedCount = _lastFetchedCount;
       }
-      logger.finest('data fetched count= $_lastFetchedCount, page=$_pageCount, total=$_totaltFetchedCount');
+      logger.finest(
+          'data fetched count= $_lastFetchedCount, page=$_pageCount, total=$_totaltFetchedCount');
 
       _currentQuery.clear();
       _currentQuery.addAll(query);
@@ -1206,6 +1212,9 @@ abstract class CretaManager extends AbsExModelManager {
     }
     return true;
   }
+
+  Iterable<CretaModel> getReversed() => _orderMap.deepSortByKey().values.toList().reversed;
+  Iterable<CretaModel> getOrdered() => _orderMap.deepSortByKey().values;
 }
 
 class QuerySet {
