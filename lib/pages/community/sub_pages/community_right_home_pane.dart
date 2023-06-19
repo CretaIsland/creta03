@@ -33,9 +33,11 @@ import '../creta_book_ui_item.dart';
 //import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 //import '../../../data_io/book_manager.dart';
+import '../../../data_io/creta_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
+import '../../../data_io/watch_history_manager.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/creta_model.dart';
@@ -81,89 +83,41 @@ class CommunityRightHomePane extends StatefulWidget {
 }
 
 class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
-  //late List<CretaBookData> _cretaBookList;
-  bool _onceDBGetComplete = false;
+  final _itemSizeRatio = _itemMinWidth / _itemMinHeight;
+  final GlobalKey _key = GlobalKey();
+
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager favoritesManagerHolder;
   late PlaylistManager playlistManagerHolder;
+  late WatchHistoryManager dummyManagerHolder;
+  final List<BookModel> _cretaBooksList = [];
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   final List<PlaylistModel> _playlistModelList = [];
-  //BookManager? bookManagerHolder;
-  //late final ValueKey _key = ValueKey('CRHP-${widget.filterBookType.name}-${widget.filterBookSort.name}-${widget.filterPermissionType.name}');
-  final GlobalKey _key = GlobalKey();
-  final _itemSizeRatio = _itemMinWidth / _itemMinHeight;
+  bool _onceDBGetComplete = false;
 
   @override
   void initState() {
     super.initState();
 
-    //_cretaBookList = CommunitySampleData.getCretaBookList();
     bookPublishedManagerHolder = BookPublishedManager();
-    //bookManagerHolder!.configEvent(notifyModify: false);
-    //bookPublishedManagerHolder.clearAll();
-
-    // bookManagerHolder = BookManager();
-    // //bookManagerHolder!.configEvent(notifyModify: false);
-    // bookManagerHolder!.clearAll();
-
     favoritesManagerHolder = FavoritesManager();
-    //bookManagerHolder!.configEvent(notifyModify: false);
-    //favoritesManagerHolder.clearAll();
-
     playlistManagerHolder = PlaylistManager();
+    dummyManagerHolder = WatchHistoryManager();
 
-/*
-    Map<String, QueryValue> query = {};
-    query['isRemoved'] = QueryValue(value: false);
-    //query['isPublic'] = QueryValue(value: false);
-    if (widget.filterBookType.index > 0) {
-      query['bookType'] = QueryValue(value: widget.filterBookType.index);
-    }
-    final List<String> sharesList = [];
-    if (widget.filterPermissionType == PermissionType.owner) {
-      sharesList.add('<${PermissionType.owner.name}>${AccountManager.currentLoginUser.userId}');
-      //sharesList.add('<${PermissionType.owner.name}>public'); // <owner>public 은 없음
-    } else if (widget.filterPermissionType == PermissionType.writer) {
-      sharesList.add('<${PermissionType.owner.name}>${AccountManager.currentLoginUser.userId}');
-      sharesList.add('<${PermissionType.writer.name}>${AccountManager.currentLoginUser.userId}');
-      sharesList.add('<${PermissionType.writer.name}>public');
-    } else /*if (widget.filterPermissionType == PermissionType.reader)*/ {
-      sharesList.add('<${PermissionType.owner.name}>${AccountManager.currentLoginUser.userId}');
-      sharesList.add('<${PermissionType.writer.name}>${AccountManager.currentLoginUser.userId}');
-      sharesList.add('<${PermissionType.writer.name}>public');
-      sharesList.add('<${PermissionType.reader.name}>${AccountManager.currentLoginUser.userId}');
-      sharesList.add('<${PermissionType.reader.name}>public');
-    }
-    query['shares'] = QueryValue(value: sharesList, operType: OperType.arrayContainsAny);
-
-    if (widget.filterSearchKeyword.isNotEmpty) {
-      // Elasticsearch 될때까지 막아둠
-      //query['name'] = QueryValue(value: widget.filterSearchKeyword, operType: OperType.like ??? );
-    }
-
-    Map<String, OrderDirection> orderBy = {};
-    switch (widget.filterBookSort) {
-      case BookSort.name:
-        orderBy['name'] = OrderDirection.ascending;
-        break;
-      case BookSort.likeCount:
-        orderBy['likeCount'] = OrderDirection.descending;
-        break;
-      case BookSort.viewCount:
-        orderBy['viewCount'] = OrderDirection.descending;
-        break;
-      case BookSort.updateTime:
-      default:
-        orderBy['updateTime'] = OrderDirection.descending;
-        break;
-    }
-
-    bookPublishedManagerHolder.queryFromDB(
-      query,
-      //limit: ,
-      orderBy: orderBy,
+    CretaManager.startQueries(
+      joinList: [
+        QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
+        QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
+        QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+      ],
+      completeFunc: () {
+        _onceDBGetComplete = true;
+      },
     );
- */
+  }
+
+  void _getBooksFromDB(List<AbsExModel> modelList) {
     bookPublishedManagerHolder.addCretaFilters(
       bookType: widget.filterBookType,
       bookSort: widget.filterBookSort,
@@ -172,49 +126,50 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       sortTimeName: 'updateTime',
     );
     bookPublishedManagerHolder.queryByAddedContitions();
-    bookPublishedManagerHolder.isGetListFromDBComplete().then((value) {
-      _getFavoritesFromDB();
-    });
-
-    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.userId));
-    playlistManagerHolder.queryByAddedContitions();
-    playlistManagerHolder.isGetListFromDBComplete().then((value) {
-      for(var plModel in playlistManagerHolder.modelList) {
-        _playlistModelList.add(plModel as PlaylistModel);
-      }
-    });
   }
 
-  void _getFavoritesFromDB() {
-    if (kDebugMode) print('_getFavoritesFromDB');
-    if (bookPublishedManagerHolder.modelList.isEmpty) {
-      if (kDebugMode) print('bookPublishedManagerHolder.modelList is empty');
-      setState(() {
-        _onceDBGetComplete = true;
-      });
-    } else {
-      // List<String> bookIdList = [];
-      // if (kDebugMode) print('bookPublishedManagerHolder.modelList count=${bookPublishedManagerHolder.modelList.length}');
-      // for (var exModel in bookPublishedManagerHolder.modelList) {
-      //   BookModel bookModel = exModel as BookModel;
-      //   bookIdList.add(bookModel.mid);
-      //   if (kDebugMode) print('_favoritesBookIdMap add ${bookModel.mid}');
-      //   _favoritesBookIdMap[bookModel.mid] = false;
-      // }
-      // if (kDebugMode) print('getFavoritesFromBookIdList');
-      // favoritesManagerHolder.getFavoritesFromBookIdList(bookIdList);
-      favoritesManagerHolder.queryFavoritesFromBookModelList(bookPublishedManagerHolder.modelList);
-      favoritesManagerHolder.isGetListFromDBComplete().then((value) {
-        if (kDebugMode) print('favoritesManagerHolder.modelList count=${favoritesManagerHolder.modelList.length}');
-        for (var model in favoritesManagerHolder.modelList) {
-          FavoritesModel fModel = model as FavoritesModel;
-          if (kDebugMode) print('_favoritesBookIdMap[${fModel.bookId}] = true');
-          _favoritesBookIdMap[fModel.bookId] = true;
-        }
-        _onceDBGetComplete = true;
-        // CretaModelSnippet.waitDatum 에서 화면 갱신됨
-      });
+  void _resultBooksFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      BookModel bModel = model as BookModel;
+      if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.mid})');
+      _cretaBooksList.add(bModel);
     }
+  }
+
+  void _getFavoritesFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getFavoritesFromDB');
+    // if (modelList.isEmpty) {
+    //   if (kDebugMode) print('bookPublishedManagerHolder.modelList is empty');
+    //   favoritesManagerHolder.setState(DBState.idle);
+    //   return;
+    // }
+    favoritesManagerHolder.queryFavoritesFromBookModelList(modelList);
+  }
+
+  void _resultFavoritesFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('favoritesManagerHolder.modelList.length=${modelList.length}');
+    for (var model in modelList) {
+      FavoritesModel fModel = model as FavoritesModel;
+      if (kDebugMode) print('_favoritesBookIdMap[${fModel.bookId}] = true');
+      _favoritesBookIdMap[fModel.bookId] = true;
+    }
+  }
+
+  void _getPlaylistsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getPlaylistsFromDB');
+    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.userId));
+    playlistManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultPlaylistsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_playlistModelList.modelList.length=${modelList.length}');
+    for (var plModel in modelList) {
+      _playlistModelList.add(plModel as PlaylistModel);
+    }
+  }
+
+  void _dummyCompleteDB(List<AbsExModel> modelList) {
+    dummyManagerHolder.setState(DBState.idle);
   }
 
   void _addToFavorites(String bookId, bool isFavorites) async {
@@ -234,7 +189,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   }
 
   void _newPlaylistDone(String name, bool isPublic, String bookId) async {
-    if(kDebugMode) print('_newPlaylistDone($name, $isPublic, $bookId)');
+    if (kDebugMode) print('_newPlaylistDone($name, $isPublic, $bookId)');
     PlaylistModel newPlaylist = await playlistManagerHolder.createNewPlaylist(
       name: name,
       userId: AccountManager.currentLoginUser.userId,
@@ -260,7 +215,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   }
 
   void _playlistSelectDone(String playlistMid, String bookId) async {
-    if(kDebugMode) print('_playlistSelectDone($playlistMid, $bookId)');
+    if (kDebugMode) print('_playlistSelectDone($playlistMid, $bookId)');
     await playlistManagerHolder.addBookToPlaylist(playlistMid, bookId);
     //
     // success messagebox
@@ -303,7 +258,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
           widget.cretaLayoutRect.childRightPadding,
           widget.cretaLayoutRect.childBottomPadding,
         ),
-        itemCount: bookPublishedManagerHolder.modelList.length, //item 개수
+        itemCount: _cretaBooksList.length, //item 개수
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount, //1 개의 행에 보여줄 item 개수
           childAspectRatio: _itemSizeRatio, // 가로÷세로 비율
@@ -311,7 +266,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
           crossAxisSpacing: _rightViewItemGapY, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
-          BookModel bookModel = bookPublishedManagerHolder.modelList[index] as BookModel;
+          BookModel bookModel = _cretaBooksList[index];
           if (kDebugMode) print('${bookModel.mid} is Favorites=${_favoritesBookIdMap[bookModel.mid]}');
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
@@ -360,7 +315,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       return _getItemPane();
     }
     var retval = CretaModelSnippet.waitDatum(
-      managerList: [bookPublishedManagerHolder, favoritesManagerHolder, playlistManagerHolder],
+      managerList: [bookPublishedManagerHolder, favoritesManagerHolder, playlistManagerHolder, dummyManagerHolder],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _getItemPane,
     );

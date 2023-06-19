@@ -1197,13 +1197,14 @@ abstract class CretaManager extends AbsExModelManager {
   //   return true;
   // }
 
-  static Future<bool> startQueries(List<QuerySet> joinList) async {
+  static Future<bool> startQueries({required List<QuerySet> joinList, Function? completeFunc}) async {
     List<AbsExModel> value = [];
     for (var joinValue in joinList) {
       joinValue.queryFunc.call(value);
       value = await joinValue.manager.isGetListFromDBComplete();
       joinValue.resultFunc?.call(value);
     }
+    completeFunc?.call();
     return true;
   }
 }

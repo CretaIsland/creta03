@@ -28,8 +28,10 @@ import 'package:hycop/hycop.dart';
 import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
+import '../../../data_io/creta_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/book_published_manager.dart';
+import '../../../data_io/watch_history_manager.dart';
 //import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
 import '../../../model/app_enums.dart';
@@ -80,7 +82,8 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
 
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager favoritesManagerHolder;
-    final Map<String, BookModel> _cretaBookMap = {};
+  late WatchHistoryManager dummyManagerHolder;
+  final Map<String, BookModel> _cretaBooksMap = {}; // <Book.Mid, Book>
   final List<FavoritesModel> _favoritesBookList = []; // <Book.mid, isFavorites>
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   bool _onceDBGetComplete = false;
@@ -91,7 +94,21 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
 
     bookPublishedManagerHolder = BookPublishedManager();
     favoritesManagerHolder = FavoritesManager();
+    dummyManagerHolder = WatchHistoryManager();
 
+    CretaManager.startQueries(
+      joinList: [
+        QuerySet(favoritesManagerHolder, _getFavoritesFromDB, null),
+        QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+      ],
+      completeFunc: () {
+        _onceDBGetComplete = true;
+      },
+    );
+  }
+
+  void _getFavoritesFromDB(List<AbsExModel> modelList) {
     favoritesManagerHolder.addCretaFilters(
       //bookType: widget.filterBookType,
       bookSort: widget.filterBookSort,
@@ -103,38 +120,35 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
       QueryValue(value: AccountManager.currentLoginUser.userId, operType: OperType.isEqualTo),
     );
     favoritesManagerHolder.queryByAddedContitions();
-    favoritesManagerHolder.isGetListFromDBComplete().then((value) {
-      if (kDebugMode) print('favoritesManagerHolder.model.length=${favoritesManagerHolder.modelList.length}');
-      _getBookDataFromDB();
-    });
   }
 
-  void _getBookDataFromDB() {
-    if (favoritesManagerHolder.modelList.isEmpty) {
-      setState(() {
-        _onceDBGetComplete = true;
-      });
-    } else {
-      List<String> bookIdList = [];
-      for (var exModel in favoritesManagerHolder.modelList) {
-        FavoritesModel fModel = exModel as FavoritesModel;
-        bookIdList.add(fModel.bookId);
-        _favoritesBookList.add(fModel);
-        _favoritesBookIdMap[fModel.bookId] = true;
-      }
-      bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-      bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
-      bookPublishedManagerHolder.queryByAddedContitions();
-      bookPublishedManagerHolder.isGetListFromDBComplete().then((value) {
-        if (kDebugMode) print('bookPublishedManagerHolder.model.length=${bookPublishedManagerHolder.modelList.length}');
-        for (var model in bookPublishedManagerHolder.modelList) {
-          BookModel bModel = model as BookModel;
-          _cretaBookMap[bModel.mid] = bModel;
-        }
-        _onceDBGetComplete = true;
-        // CretaModelSnippet.waitDatum 에서 화면 갱신됨
-      });
+  void _getBooksFromDB(List<AbsExModel> modelList) {
+    if (modelList.isEmpty) {
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
     }
+    List<String> bookIdList = [];
+    for (var exModel in modelList) {
+      FavoritesModel fModel = exModel as FavoritesModel;
+      bookIdList.add(fModel.bookId);
+      _favoritesBookList.add(fModel);
+      _favoritesBookIdMap[fModel.bookId] = true;
+    }
+    bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultBooksFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('bookPublishedManagerHolder.model.length=${modelList.length}');
+    for (var model in modelList) {
+      BookModel bModel = model as BookModel;
+      _cretaBooksMap[bModel.mid] = bModel;
+    }
+  }
+
+  void _dummyCompleteDB(List<AbsExModel> modelList) {
+    dummyManagerHolder.setState(DBState.idle);
   }
 
   void _addToFavorites(String bookId, bool isFavorites) async {
@@ -162,12 +176,12 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
 
     BookModel dummyBookModel = BookModel('');
 
+    // return ScrollConfiguration( // 스크롤바 감추기
+    //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기
     return Scrollbar(
       key: _key,
       thumbVisibility: true,
       controller: widget.scrollController,
-      // return ScrollConfiguration( // 스크롤바 감추기
-      //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기
       child: GridView.builder(
         controller: widget.scrollController,
         padding: EdgeInsets.fromLTRB(
@@ -185,7 +199,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
         ),
         itemBuilder: (BuildContext context, int index) {
           FavoritesModel fModel = _favoritesBookList[index];
-          BookModel bookModel = _cretaBookMap[fModel.bookId] ?? dummyBookModel;
+          BookModel bookModel = _cretaBooksMap[fModel.bookId] ?? dummyBookModel;
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
                   key: GlobalObjectKey(bookModel.mid),
@@ -207,17 +221,6 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
                       isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
                       addToFavorites: _addToFavorites,
                     );
-                    // return SizedBox(
-                    //   width: itemWidth,
-                    //   height: itemHeight,
-                    //   child: Center(child: BTN.fill_gray_t_es(text: 'create sample', onPressed: () {
-                    //     if (saveIdx < bookManagerHolder!.modelList.length) {
-                    //       BookModel bookData = bookManagerHolder!.modelList[saveIdx] as BookModel;
-                    //       bookPublishedManagerHolder!.saveSample(bookData);
-                    //       saveIdx++;
-                    //     }
-                    //   })),
-                    // );
                   },
                 );
         },
@@ -231,11 +234,10 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
       return _getItemPane();
     }
     var retval = CretaModelSnippet.waitDatum(
-      managerList: [bookPublishedManagerHolder, favoritesManagerHolder],
+      managerList: [bookPublishedManagerHolder, favoritesManagerHolder, dummyManagerHolder],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _getItemPane,
     );
-    //_onceDBGetComplete = true;
     return retval;
   }
 }
