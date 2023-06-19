@@ -1,20 +1,23 @@
 async function jsScreenshot(x, y, width, height) {
 
-    try {
-         // Get The canvas
-        var canvas = await html2canvas(document.body, {
-            x: x,
-            y: y,
-            width: width,
-            height: height,
-            allowTaint: true,
-            useCORS: true,
-            proxy: "https://devcreta.com:444/"
-        });      
+  try {
+      var fullCanvas = await htmlToImage.toCanvas(document.body);
+      var cropCanvas = document.createElement("canvas");
+      var context = cropCanvas.getContext("2d");
 
-        return canvas.toDataURL("image/png");
-    } catch (e) {
-        console.log(e.toString());
-    }
+      var cropX = x * window.devicePixelRatio;
+      var cropY =  y * window.devicePixelRatio;
+      var cropWidth =  width * window.devicePixelRatio;
+      var cropHeight =  height * window.devicePixelRatio;
+
+      cropCanvas.width = cropWidth;
+      cropCanvas.height = cropHeight;
+      context.drawImage(fullCanvas, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+      return cropCanvas.toDataURL();
+  } catch (error) {
+      console.log(error);
+      return '';
+  }
 
 }
