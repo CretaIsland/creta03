@@ -206,7 +206,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     return Container(
         padding: const EdgeInsets.only(top: 10),
         height: StudioVariables.workHeight - 100,
-        color: Colors.amber,
+        //color: Colors.amber,
         child: ReorderableListView(
           key: _pageViewKey,
           buildDefaultDragHandles: false,

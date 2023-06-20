@@ -853,10 +853,13 @@ class _BookMainPageState extends State<BookMainPage> {
               //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
               StudioVariables.globalToggleAutoPlay(forceValue: false, save: false);
               if (kReleaseMode) {
-                String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
-                AppRoutes.launchTab(url);
+                // String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
+                // AppRoutes.launchTab(url);
+                Routemaster.of(context)
+                    .push('${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}');
               } else {
-                Routemaster.of(context).push(AppRoutes.studioBookPreviewPage);
+                Routemaster.of(context)
+                    .push('${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}');
               }
             },
             hasShadow: false,
@@ -1084,8 +1087,8 @@ class _BookMainPageState extends State<BookMainPage> {
       child: Container(
         width: StudioVariables.virtualWidth,
         height: StudioVariables.virtualHeight,
-        //color: LayoutConst.studioBGColor,
-        color: Colors.amber,
+        color: LayoutConst.studioBGColor,
+        //color: Colors.amber,
         child: CustomImage(
           hasMouseOverEffect: false,
           hasAni: false,

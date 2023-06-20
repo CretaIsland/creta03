@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../../../common/creta_utils.dart';
+import '../../../../design_system/component/hash_tag_wrapper.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -21,6 +21,7 @@ class BookInfoProperty extends StatefulWidget {
 }
 
 class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin {
+  HashTagWrapper hashTagWrapper = HashTagWrapper();
   // ignore: unused_field
   //late ScrollController _scrollController;
 
@@ -30,8 +31,8 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
     logger.finer('_BookInfoPropertyState.initState');
     //_scrollController = ScrollController(initialScrollOffset: 0.0);
 
-    hashTagList = CretaUtils.jsonStringToList(widget.model.hashTag.value);
-    logger.finest('hashTagList=$hashTagList');
+    //hashTagWrapper.hashTagList = CretaUtils.jsonStringToList(widget.model.hashTag.value);
+    logger.finest('hashTagList=${hashTagWrapper.hashTagList}');
 
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
     dataStyle = CretaFont.bodySmall;
@@ -70,7 +71,7 @@ class _BookInfoPropertyState extends State<BookInfoProperty> with BookInfoMixin 
   }
 
   List<Widget> _tag() {
-    return hashTag(
+    return hashTagWrapper.hashTag(
       top: 24,
       model: widget.model,
       minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,

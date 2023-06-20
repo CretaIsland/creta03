@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/model/file_model.dart';

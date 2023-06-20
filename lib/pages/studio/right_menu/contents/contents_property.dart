@@ -118,6 +118,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       if (widget.model.isImage()) _imageFilter(),
       if (widget.model.isText()) _textBorder(),
       propertyDivider(height: 28),
+      _hashTag(),
     ]);
     //});
   }
@@ -597,6 +598,57 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           StudioVariables.isAutoPlay = true;
         }
         _linkSendEvent!.sendEvent(Offset(1, 1));
+        setState(() {});
+      },
+    );
+  }
+
+  Widget _hashTag() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: propertyCard(
+        isOpen: PropertyMixin.isHashTagOpen,
+        onPressed: () {
+          setState(() {
+            PropertyMixin.isHashTagOpen = !PropertyMixin.isHashTagOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: widget.model.hashTag.value.isEmpty
+            ? SizedBox.shrink()
+            : SizedBox(
+                width: 160,
+                child: Text(
+                  widget.model.hashTag.value,
+                  style: CretaFont.bodySmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+        hasRemoveButton: widget.model.hashTag.value.isNotEmpty,
+        onDelete: () {
+          setState(() {
+            widget.model.hashTag.set('');
+          });
+        },
+        bodyWidget: Column(children: _tagBody()),
+      ),
+    );
+  }
+
+  List<Widget> _tagBody() {
+    return hashTagWrapper.hashTag(
+      hasTitle: false,
+      top: 12,
+      model: widget.model,
+      minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
+      onTagChanged: (value) {
+        setState(() {});
+      },
+      onSubmitted: (value) {
+        setState(() {});
+      },
+      onDeleted: (value) {
         setState(() {});
       },
     );

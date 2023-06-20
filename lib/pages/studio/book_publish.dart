@@ -12,6 +12,7 @@ import '../../data_io/book_published_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
 import '../../design_system/component/custom_image.dart';
+import '../../design_system/component/hash_tag_wrapper.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
@@ -47,6 +48,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   final double width = 364;
   final double height = 583;
 
+  HashTagWrapper hashTagWrapper = HashTagWrapper();
   List<String> emailList = [];
   List<PermissionType> permitionList = [];
   List<UserPropertyModel> userModelList = [];
@@ -68,8 +70,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   void initState() {
     super.initState();
     horizontalPadding = 16;
-    hashTagList = CretaUtils.jsonStringToList(widget.model!.hashTag.value);
-    logger.info('hashTagList=$hashTagList');
+    hashTagWrapper.hashTagList = CretaUtils.jsonStringToList(widget.model!.hashTag.value);
+    logger.info('hashTagList=${hashTagWrapper.hashTagList}');
     stepsData = [
       StepperData(label: CretaStudioLang.publishSteps[0]),
       StepperData(label: CretaStudioLang.publishSteps[1]),
@@ -462,7 +464,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   List<Widget> _tag() {
-    return hashTag(
+    return hashTagWrapper.hashTag(
       top: 0,
       model: widget.model!,
       minTextFieldWidth: width - horizontalPadding * 2,

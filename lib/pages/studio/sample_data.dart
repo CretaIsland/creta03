@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/model/connected_user_model.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
@@ -17,9 +16,9 @@ class SampleData {
     sampleBook.width.set(1920, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.height.set(1080, save: false, noUndo: true, dontChangeBookTime: true);
 
-    AccountManager.currentLoginUser.setValue('email', 'skpark@sqisoft.com');
-    AccountManager.currentLoginUser.setValue('name', 'Turtle Rabbit');
-    AccountManager.currentLoginUser.setValue('userId', 'ThisIsTestUserId');
+    // AccountManager.currentLoginUser.setValue('email', 'skpark@sqisoft.com');
+    // AccountManager.currentLoginUser.setValue('name', 'Turtle Rabbit');
+    // AccountManager.currentLoginUser.setValue('userId', 'ThisIsTestUserId');
     LoginPage.initUserProperty(); //skpark 20230429
   }
 

@@ -200,9 +200,9 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _header(CretaStudioLang.lastestFrame),
-        Container(
+        SizedBox(
           height: 228,
-          color: Colors.amber,
+          //color: Colors.amber,
           child: modelList.isEmpty
               ? _emptyView(CretaStudioLang.lastestFrameError)
               : _itemListView(modelList),
@@ -276,10 +276,10 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
 
   Widget frameGridItem(FrameModel? model) {
     if (model == null) {
-      return Container(
+      return SizedBox(
         width: itemWidth,
         height: itemHeight,
-        color: Colors.amber,
+        //color: Colors.amber,
       );
     }
     return Container(

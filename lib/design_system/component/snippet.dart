@@ -12,7 +12,6 @@ import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
 import '../../lang/creta_studio_lang.dart';
-import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
 import '../creta_color.dart';
@@ -109,7 +108,7 @@ class Snippet {
                 //   }
                 // }
                 LastClicked.clickedOutSide(details.globalPosition);
-                logger.info('LastClicked pressed ${BookMainPage.containeeNotifier!.selectedClass}');
+                //logger.info('LastClicked pressed ${BookMainPage.containeeNotifier!.selectedClass}');
               }),
               child: child,
             )

@@ -15,6 +15,7 @@ import '../../../../model/book_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../containees/containee_nofifier.dart';
+import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../property_mixin.dart';
 import '../right_menu.dart';
@@ -113,6 +114,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         propertyDivider(),
         _event(),
         propertyDivider(),
+        _hashTag(),
       ]);
       //);
     });
@@ -318,6 +320,57 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       },
       //durationTypeWidget: _durationTypeWidget(),
       //durationWidget: _durationWidget(),
+    );
+  }
+
+  Widget _hashTag() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: propertyCard(
+        isOpen: PropertyMixin.isHashTagOpen,
+        onPressed: () {
+          setState(() {
+            PropertyMixin.isHashTagOpen = !PropertyMixin.isHashTagOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
+        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+        trailWidget: _model!.hashTag.value.isEmpty
+            ? SizedBox.shrink()
+            : SizedBox(
+                width: 160,
+                child: Text(
+                  _model!.hashTag.value,
+                  style: CretaFont.bodySmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+        hasRemoveButton: _model!.hashTag.value.isNotEmpty,
+        onDelete: () {
+          setState(() {
+            _model!.hashTag.set('');
+          });
+        },
+        bodyWidget: Column(children: _tagBody()),
+      ),
+    );
+  }
+
+  List<Widget> _tagBody() {
+    return hashTagWrapper.hashTag(
+      hasTitle: false,
+      top: 12,
+      model: _model!,
+      minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
+      onTagChanged: (value) {
+        setState(() {});
+      },
+      onSubmitted: (value) {
+        setState(() {});
+      },
+      onDeleted: (value) {
+        setState(() {});
+      },
     );
   }
 

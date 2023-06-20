@@ -23,16 +23,22 @@ import 'pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 abstract class AppRoutes {
   static Future<bool> launchTab(String url, {bool isHttps = false}) async {
     String base = '';
+    String path = '';
     try {
-      final String origin = Uri.base.origin;
-      base = origin;
+      base = Uri.base.origin;
+      path = _getMiddlePath(Uri.base.path);
+      // print('-----------------------${Uri.base.origin}');
+      // print('-----------------------${Uri.base.path}');
+      // print('-----------------------$path');
     } catch (e) {
       base = isHttps ? "https://" : "http://";
       final String host = Uri.base.host;
       final int port = Uri.base.port;
       base += "$host:$port";
+      path = "creta03_v1";
     }
-    final String finalUrl = '$base$url';
+    final String finalUrl = '$base$path$url';
+    //print('-----------------------$finalUrl');
     Uri uri = Uri.parse(finalUrl);
     logger.finest('$finalUrl clicked');
 
@@ -42,6 +48,28 @@ abstract class AppRoutes {
     }
     logger.severe('$finalUrl connect failed');
     return false;
+  }
+
+  static String _getMiddlePath(String inputString) {
+    if (!inputString.contains('creta')) {
+      return '';
+    }
+
+    // Find the index of the second occurrence of '/'
+    int firstSlashIndex = inputString.indexOf('/');
+    int secondSlashIndex = inputString.indexOf('/', firstSlashIndex + 1);
+
+    String result = '';
+
+    try {
+      if (firstSlashIndex < 0 || secondSlashIndex < 0) {
+        return '';
+      }
+      result = inputString.substring(0, secondSlashIndex);
+    } catch (e) {
+      return '';
+    }
+    return result;
   }
 
   static const String intro = '/intro';
@@ -83,14 +111,16 @@ final routesLoggedOut = RouteMap(
     AppRoutes.intro: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? const TransitionPage(child: IntroPage())
         : const Redirect(AppRoutes.login),
-    AppRoutes.login: (_) => (AccountManager.currentLoginUser.isLoginedUser)
-        ? const Redirect(AppRoutes.intro)
-        : const TransitionPage(child: LoginPage()),
+    AppRoutes.login: (routeData) {
+      return (AccountManager.currentLoginUser.isLoginedUser)
+          ? const Redirect(AppRoutes.intro)
+          : const TransitionPage(child: LoginPage());
+    },
     AppRoutes.menuDemoPage: (_) => TransitionPage(child: MenuDemoPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
-    AppRoutes.studioBookMainPage: (_) {
+    AppRoutes.studioBookMainPage: (routeData) {
       //skpark test code
       if (BookMainPage.selectedMid.isEmpty) {
         BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
@@ -99,21 +129,27 @@ final routesLoggedOut = RouteMap(
       return TransitionPage(
           child: BookMainPage(bookKey: GlobalObjectKey('Book${BookMainPage.selectedMid}')));
     },
-    AppRoutes.studioBookPreviewPage: (_) {
+    AppRoutes.studioBookPreviewPage: (routeData) {
       //skpark test code
       if (BookMainPage.selectedMid.isEmpty) {
         BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
       }
       logger.finest('selectedMid=${BookMainPage.selectedMid}');
+
       return TransitionPage(
           child: BookMainPage(
               //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
               bookKey: GlobalKey(),
               isPreviewX: true));
     },
-    AppRoutes.studioBookGridPage: (_) => TransitionPage(
-          child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
-        ),
+    AppRoutes.studioBookGridPage: (routeData) {
+      // print('---------------------------------------${routeData.fullPath}');
+      // print('---------------------------------------${routeData.path}');
+      // print('---------------------------------------${routeData.publicPath}');
+      return TransitionPage(
+        child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
+      );
+    },
     AppRoutes.studioBookSharedPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.sharedPage),
         ),

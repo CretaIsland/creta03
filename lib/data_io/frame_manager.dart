@@ -408,7 +408,9 @@ class FrameManager extends CretaManager {
       if (frame.isShow.value == false) {
         continue;
       }
-      //if (frame.frameType != FrameType.text) {
+      if (frame.frameType == FrameType.text) {
+        continue;
+      }
       return frame;
     } // 만약 여기서도, 해당 하는 것이 없으면 어쩔것인가 ?
     // 숨겨진거라도 리턴한다.

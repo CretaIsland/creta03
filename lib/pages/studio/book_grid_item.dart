@@ -214,10 +214,12 @@ class BookGridItemState extends State<BookGridItem> {
               onTap: () async {
                 //Get.offAllNamed("${AppRoutes.studioBookMainPage}?${CretaManager.bookPrefix}${widget.bookModel!.name.value}");
                 BookMainPage.selectedMid = widget.bookModel!.mid;
-                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+                Routemaster.of(context)
+                    .push('${AppRoutes.studioBookMainPage}?${BookMainPage.selectedMid}');
               },
               onDoubleTap: () {
                 logger.finest('${widget.bookModel!.name.value} double clicked');
+
                 AppRoutes.launchTab(url);
               },
               child: Container(

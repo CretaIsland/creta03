@@ -14,6 +14,7 @@ import '../../../design_system/component/colorPicker/my_image_filter_indicator.d
 import '../../../design_system/component/colorPicker/my_texture_indicator.dart';
 import '../../../design_system/component/creta_proprty_slider.dart';
 import '../../../design_system/component/example_box_mixin.dart';
+import '../../../design_system/component/hash_tag_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../lang/creta_studio_lang.dart';
@@ -41,6 +42,9 @@ mixin PropertyMixin {
     Icons.crop_landscape_outlined,
     Icons.crop_portrait_outlined,
   ];
+
+  HashTagWrapper hashTagWrapper = HashTagWrapper();
+  static bool isHashTagOpen = false;
 
   void initMixin() {
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
@@ -973,6 +977,7 @@ class _EffectExampleBoxState extends State<EffectExampleBox> with ExampleBoxStat
   Widget selectWidget() {
     return normalBox(widget.name);
   }
+
 //   Widget selectWidget() {
 //     switch (widget.effectType) {
 //       case EffectType.conffeti:
