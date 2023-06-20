@@ -1,3 +1,4 @@
+import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -11,7 +12,9 @@ import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
+import '../pages/studio/book_preview_menu.dart';
 import '../pages/studio/studio_constant.dart';
+import '../pages/studio/studio_variables.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
 
@@ -383,4 +386,58 @@ class FrameManager extends CretaManager {
     });
     return retval;
   }
+
+  FrameModel? getMainFrame() {
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      FrameModel model = ele as FrameModel;
+      if (model.isMain.value == true) {
+        return model;
+      }
+    }
+    // 여기까지 왔다면 없는 것임.
+    // 제일 앞에 있으면서,  숨겨져 있지 않는 frame 을 리턴한다.
+
+    for (var ele in getReversed()) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      FrameModel frame = ele as FrameModel;
+      if (frame.isShow.value == false) {
+        continue;
+      }
+      //if (frame.frameType != FrameType.text) {
+      return frame;
+    } // 만약 여기서도, 해당 하는 것이 없으면 어쩔것인가 ?
+    // 숨겨진거라도 리턴한다.
+
+    for (var ele in getReversed()) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      FrameModel frame = ele as FrameModel;
+      return frame;
+    } // 만약 여기서도, 해당 하는 것이 없으면 어쩔것인가 ?
+
+    return null;
+  }
+
+  void nextPageListener(FrameModel frameModel) {
+    if (!StudioVariables.isAutoPlay || !StudioVariables.isPreview) {
+      return;
+    }
+    FrameModel? main = getMainFrame();
+    if (main == null) {
+      return;
+    }
+    if (main.mid != frameModel.mid) {
+      return;
+    }
+    BookPreviewMenu.previewMenuPressed = true;
+    BookMainPage.pageManagerHolder?.gotoNext();
+  }
+
+  //bool isMain() {}
 }

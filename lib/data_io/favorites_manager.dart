@@ -26,6 +26,10 @@ class FavoritesManager extends CretaManager {
   }
 
   Future<List<AbsExModel>> queryFavoritesFromBookModelList(List<AbsExModel> bookModelList) {
+    if (bookModelList.isEmpty) {
+      setState(DBState.idle);
+      return Future.value([]);
+    }
     List<String> bookIdList = [];
     for (var exModel in bookModelList) {
       BookModel bookModel = exModel as BookModel;
@@ -42,6 +46,10 @@ class FavoritesManager extends CretaManager {
   }
 
   Future<List<AbsExModel>> queryFavoritesFromBookIdList(List<String> bookIdList) {
+    if (bookIdList.isEmpty) {
+      setState(DBState.idle);
+      return Future.value([]);
+    }
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
     query['bookId'] = QueryValue(value: bookIdList, operType: OperType.whereIn);

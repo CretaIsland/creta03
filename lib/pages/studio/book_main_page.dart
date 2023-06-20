@@ -9,7 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
-import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -20,7 +19,6 @@ import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../common/creta_constant.dart';
-import '../../common/window_screenshot.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -66,7 +64,6 @@ class BookMainPage extends StatefulWidget {
   static ClickReceiverHandler clickReceiverHandler = ClickReceiverHandler();
   static ClickEventHandler clickEventHandler = ClickEventHandler();
 
-  static GlobalObjectKey? firstThumbnailKey;
   static bool thumbnailChanged = false;
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
@@ -110,7 +107,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   bool dropDownButtonOpened = false;
 
-  Timer? _screenshotTimer;
+  //Timer? _playTimer;
 
   //OffsetEventController? _linkSendEvent;
   //AutoPlayChangeEventController? _autoPlaySendEvent;
@@ -199,9 +196,10 @@ class _BookMainPageState extends State<BookMainPage> {
       }
       if (StudioVariables.isPreview) {
         //_takeAScreenShot();
-      } else {
-        _startScreenshotTimer();
-      }
+        if (StudioVariables.isAutoPlay) {
+          //_startPlayTimer();
+        }
+      } else {}
     });
   }
 
@@ -288,7 +286,7 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.severe('BookMainPage.dispose');
 
     super.dispose();
-    _stopScreenshotTimer();
+    //_stopPlayTimer();
 
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
@@ -396,7 +394,6 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget consumerFunc() {
     logger.finest('consumerFunc');
-    _startScreenshotTimer();
     return Consumer<BookManager>(
         key: ValueKey('consumerFunc+${BookMainPage.selectedMid}'),
         builder: (context, bookManager, child) {
@@ -995,6 +992,9 @@ class _BookMainPageState extends State<BookMainPage> {
               playFunction: () {
                 //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
                 StudioVariables.globalToggleAutoPlay(save: false);
+                // if (StudioVariables.isAutoPlay && StudioVariables.isPreview) {
+                //   _startPlayTimer();
+                // }
               },
               gotoNext: () {
                 BookPreviewMenu.previewMenuPressed = true;
@@ -1109,54 +1109,22 @@ class _BookMainPageState extends State<BookMainPage> {
     // });
   }
 
-  void _takeAScreenShot(GlobalKey key) {
-    RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
-    if (box == null) {
-      logger.warning('takeAScreenShot box not is founeded');
-      return;
-    }
-    Offset position = box.localToGlobal(Offset.zero);
+  // void _startPlayTimer() {
+  //   logger.info('_startPlayTimer----------------------------------');
+  //   _playTimer ??= Timer.periodic(Duration(milliseconds: 500), (t) {
+  //     if (StudioVariables.isAutoPlay == false || StudioVariables.isPreview == false) {
+  //       _stopPlayTimer();
+  //       return;
+  //     }
+  //     FrameManager? main = BookMainPage.pageManagerHolder!.getMainFrame();
 
-    logger.info(
-        'start _takeAScreenShot(${position.dx},${position.dy},${box.size.width},${box.size.height} )');
-    BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
-    if (bookModel == null) {
-      logger.warning('book model is null');
-      return;
-    }
-    WindowScreenshot.uploadScreenshot(
-      bookId: bookModel.mid,
-      offset: position,
-      size: box.size,
-    ).then((value) {
-      bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
-      bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
-      logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
-      // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
-      BookMainPage.bookManagerHolder?.setToDB(bookModel);
+  //     // mainFrame 을 찾아서, 한 바퀴 다 돌았으면, 다음 페이지로 넘어간다.
+  //     // 만약 mainFrame 이 지정되어 있지 않다면,  가장 앞에 나와 있는 프레임이 main Frame 으로 삼는다.
+  //   });
+  // }
 
-      return null;
-    });
-  }
-
-  void _startScreenshotTimer() {
-    logger.info('_startScreenshotTimer----------------------------------');
-    _screenshotTimer ??= Timer.periodic(Duration(minutes: 3), (t) {
-      if (BookMainPage.firstThumbnailKey == null) {
-        return;
-      }
-      if (saveManagerHolder!.isSomethingSaved() == false) {
-        return;
-      }
-      if (BookMainPage.thumbnailChanged == false) {
-        return;
-      }
-      BookMainPage.thumbnailChanged = false;
-      _takeAScreenShot(BookMainPage.firstThumbnailKey!);
-    });
-  }
-
-  void _stopScreenshotTimer() {
-    _screenshotTimer?.cancel();
-  }
+  // void _stopPlayTimer() {
+  //   _playTimer?.cancel();
+  //   _playTimer = null;
+  // }
 }

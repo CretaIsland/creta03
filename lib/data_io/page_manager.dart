@@ -22,6 +22,7 @@ import 'frame_manager.dart';
 class PageManager extends CretaManager {
   BookModel? bookModel;
   Map<String, FrameManager?> frameManagerList = {};
+  Map<String, GlobalObjectKey> thumbKeyMap = {};
 
   PageManager({String tableName = 'creta_page'}) : super(tableName) {
     saveManagerHolder?.registerManager('page', this);
@@ -131,8 +132,8 @@ class PageManager extends CretaManager {
     return frameManager;
   }
 
-  Future<PageModel> createNextPage() async {
-    PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid);
+  Future<PageModel> createNextPage(int pageIndex) async {
+    PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid, pageIndex);
     await _createNextPage(defaultPage);
     MyChange<PageModel> c = MyChange<PageModel>(
       defaultPage,
@@ -190,7 +191,6 @@ class PageManager extends CretaManager {
   }
 
   bool gotoNext() {
-    logger.info('gotoNext');
     String? mid = getNextMid();
     if (mid != null) {
       setSelectedMid(mid);
@@ -311,12 +311,12 @@ class PageManager extends CretaManager {
     try {
       pageCount = await _getPages();
       if (pageCount == 0) {
-        await createNextPage();
+        await createNextPage(1);
         pageCount = 1;
       }
     } catch (e) {
       logger.finest('something wrong $e');
-      await createNextPage();
+      await createNextPage(1);
       pageCount = 1;
     }
     endTransaction();
@@ -402,5 +402,33 @@ class PageManager extends CretaManager {
     for (var manager in frameManagerList.values) {
       manager?.removeLink(mid);
     }
+  }
+
+  // FrameManager? getMainFrame() {
+  //   // mian frame 이 지정되어 있지 않다면, show 된 것 중 가장 앞에 있는 것을 리턴한다.
+  //   PageModel? pageModel = getSelected() as PageModel?;
+  //   if (pageModel == null) {
+  //     return null;
+  //   }
+  //   FrameManager? frameManager = findFrameManager(pageModel.mid);
+  //   if (frameManager == null) {
+  //     return null;
+  //   }
+  //   FrameModel? frame = frameManager.getMainFrame();
+  //   if (frame == null) {
+  //     return null;
+  //   }
+  //   ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
+
+  //   return null;
+  // }
+
+  GlobalObjectKey? getSelectedThumbKey() {
+    // mian frame 이 지정되어 있지 않다면, show 된 것 중 가장 앞에 있는 것을 리턴한다.
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return thumbKeyMap.values.first;
+    }
+    return thumbKeyMap[pageModel.mid];
   }
 }

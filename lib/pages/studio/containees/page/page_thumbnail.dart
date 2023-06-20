@@ -29,6 +29,7 @@ class PageThumbnail extends StatefulWidget {
   final double pageWidth;
   final double pageHeight;
   final int pageIndex;
+  final void Function(String pageMid) chageEventReceived;
 
   const PageThumbnail({
     super.key,
@@ -37,6 +38,7 @@ class PageThumbnail extends StatefulWidget {
     required this.pageModel,
     required this.pageWidth,
     required this.pageHeight,
+    required this.chageEventReceived,
   });
 
   @override
@@ -222,9 +224,10 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
           builder: (context, snapshot) {
             if (snapshot.data != null) {
               if (snapshot.data! is FrameModel) {
-                logger.info('_receiveEventFromMain-----FrameModel');
+                logger.info('_receiveEventFromMain-----------------------------------FrameModel');
                 FrameModel model = snapshot.data! as FrameModel;
                 frameManager.updateModel(model);
+                widget.chageEventReceived.call(model.parentMid.value);
               } else {
                 logger.info('_receiveEventFromMain-----Unknown Model');
               }
@@ -237,11 +240,13 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       logger.info('_receiveEventFromProperty-----FrameModel');
                       FrameModel model = snapshot.data! as FrameModel;
                       frameManager.updateModel(model);
+                      widget.chageEventReceived.call(model.parentMid.value);
                     } else {
                       logger.info('_receiveEventFromProperty-----Unknown Model');
                     }
                   }
                   BookMainPage.thumbnailChanged = true;
+
                   return Stack(
                     children: _frameManager!.orderMapIterator((model) {
                       FrameModel frameModel = model as FrameModel;

@@ -74,12 +74,13 @@ class CommunityRightPlaylistDetailPane extends StatefulWidget {
 }
 
 class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylistDetailPane> {
+  final Map<String, BookModel> _cretaBookMap = {};
+  PlaylistModel? _currentPlaylistModel;
+
   late PlaylistManager playlistManagerHolder;
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager dummyManagerHolder;
   bool _onceDBGetComplete = false;
-  final Map<String, BookModel> _cretaBookMap = {};
-  PlaylistModel? _currentPlaylistModel;
 
   @override
   void initState() {
@@ -98,11 +99,16 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
     bookPublishedManagerHolder = BookPublishedManager();
     dummyManagerHolder = FavoritesManager();
 
-    CretaManager.startQueries([
-      QuerySet(playlistManagerHolder, _getPlaylistFromDB, null),
-      QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
-      QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
-    ]);
+    CretaManager.startQueries(
+      joinList: [
+        QuerySet(playlistManagerHolder, _getPlaylistFromDB, null),
+        QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+      ],
+      completeFunc: () {
+        _onceDBGetComplete = true;
+      },
+    );
   }
 
   void _getPlaylistFromDB(List<AbsExModel> modelList) {
@@ -114,18 +120,14 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
     if (kDebugMode) print('_getBookDataFromDB');
     if (modelList.isEmpty) {
       if (kDebugMode) print('playlistManagerHolder.modelList is empty');
-      setState(() {
-        _dummyCompleteDB([]);
-        _onceDBGetComplete = true;
-      });
+      bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
     _currentPlaylistModel = modelList[0] as PlaylistModel; // 무조건 1개만 있다고 가정
     widget.updatePlaylistModel(_currentPlaylistModel!);
     if (_currentPlaylistModel!.bookIdList.isEmpty) {
       if (kDebugMode) print('_currentPlaylistModel.bookIdList is empty');
-      _dummyCompleteDB([]);
-      _onceDBGetComplete = true;
+      bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
     List<String> bookIdList = [];
@@ -142,7 +144,6 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
       BookModel bModel = model as BookModel;
       _cretaBookMap[bModel.mid] = bModel;
     }
-    _onceDBGetComplete = true;
   }
 
   void _dummyCompleteDB(List<AbsExModel> modelList) {
