@@ -4,6 +4,7 @@ import 'package:creta03/pages/studio/containees/contents/link_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -116,15 +117,16 @@ class ContentsMainState extends State<ContentsMain> {
                 return Stack(
                   children: [
                     _mainBuild(model, playTimer),
-                    LinkWidget(
-                        key: GlobalObjectKey('LinkWidget${model.mid}'),
-                        applyScale: widget.applyScale,
-                        frameManager: widget.frameManager,
-                        frameOffset: widget.frameOffset,
-                        contentsManager: contentsManager,
-                        playTimer: playTimer,
-                        contentsModel: model,
-                        frameModel: widget.frameModel)
+                    if (model.contentsType != ContentsType.document)
+                      LinkWidget(
+                          key: GlobalObjectKey('LinkWidget${model.mid}'),
+                          applyScale: widget.applyScale,
+                          frameManager: widget.frameManager,
+                          frameOffset: widget.frameOffset,
+                          contentsManager: contentsManager,
+                          playTimer: playTimer,
+                          contentsModel: model,
+                          frameModel: widget.frameModel)
                   ],
                 );
                 //}

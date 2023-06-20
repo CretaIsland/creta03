@@ -256,7 +256,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               //             _contentsManager!.length() > 0
               //         ? _onLinkNewCursor()
               //         : const SizedBox.shrink(),
-              LinkParams.isLinkNewMode == false && StudioVariables.isPreview == false
+              (LinkParams.isLinkNewMode == false && StudioVariables.isPreview == false) 
                   ? IgnorePointer(
                       child: OnFrameMenu(
                         key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),

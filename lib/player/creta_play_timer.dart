@@ -20,6 +20,8 @@ import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/studio_variables.dart';
 import 'creta_abs_player.dart';
 import 'creta_abs_media_widget.dart';
+import 'doc/creta_doc_player.dart';
+import 'doc/creta_doc_widget.dart';
 import 'image/creta_image_player.dart';
 import 'image/creta_image_widget.dart';
 import 'text/creta_text_player.dart';
@@ -357,6 +359,13 @@ class CretaPlayTimer extends ChangeNotifier {
           acc: contentsManager,
           onAfterEvent: (position, duration) {},
         );
+      case ContentsType.document:
+        return CretaDocPlayer(
+          keyString: key,
+          model: model,
+          acc: contentsManager,
+          onAfterEvent: (position, duration) {},
+        );
       default:
         return CretaEmptyPlayer(
           keyString: key,
@@ -382,6 +391,11 @@ class CretaPlayTimer extends ChangeNotifier {
         );
       case ContentsType.text:
         return CretaTextWidget(
+          key: GlobalObjectKey(player.keyString),
+          player: player,
+        );
+      case ContentsType.document:
+        return CretaDocWidget(
           key: GlobalObjectKey(player.keyString),
           player: player,
         );

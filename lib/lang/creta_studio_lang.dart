@@ -203,6 +203,10 @@ class CretaStudioLang {
   static const String noNameframe = '이름없는 프레임';
   static const String newText = '기본 텍스트';
 
+  static const String textEditorToolbar = '텍스트 편집기 열기'; // added by Mai 230619
+  static const String paragraphTemplate = '문단'; // added by Mai 230619
+  static const String tableTemplate = '표'; // added by Mai 230619
+
   static const String listText = '';
   static const String defaultText = '샘플 텍스트 입니다.';
 

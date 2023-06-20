@@ -22,6 +22,7 @@ class ContentsModel extends CretaModel {
   double prevOutLineWidth = 0;
   bool _isPauseTimer = false;
   bool get isPauseTimer => _isPauseTimer;
+
   void setIsPauseTimer(bool val) {
     _isPauseTimer = val;
   }

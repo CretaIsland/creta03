@@ -170,6 +170,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     if (!_isPlayAble()) return false;
     if (LinkParams.isLinkNewMode) return false;
     if (widget.contentsModel.isLinkEditMode) return false;
+    //if (widget.contentsModel.contentsType == ContentsType.document) return false;
     return true;
   }
 
