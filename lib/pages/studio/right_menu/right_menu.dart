@@ -79,11 +79,8 @@ class _RightMenuState
   @override
   Widget build(BuildContext context) {
     if (RightMenu.isHidden) {
-      // return Positioned(
-      //   top: 24,
-      //   right: 0,
-      return Padding(
-        padding: EdgeInsets.only(top: 24),
+      return InkWell(
+        onTap: _onPressed,
         child: Container(
           alignment: Alignment.center,
           width: 32,
@@ -95,7 +92,7 @@ class _RightMenuState
               topLeft: Radius.circular(20.0),
               bottomLeft: Radius.circular(20.0),
             ),
-            // boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.leftTop),
+            boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.leftTop),
           ),
           child: BTN.fill_gray_i_m(
               tooltip: CretaStudioLang.hidden,
@@ -146,16 +143,16 @@ class _RightMenuState
                     top: 8, left: 8,
                     child: Row(
                       children: [
-                        BTN.fill_gray_i_m(
-                          tooltip: CretaStudioLang.close,
-                          tooltipBg: CretaColor.text[700]!,
-                          icon: Icons.close_sharp,
-                          onPressed: () async {
-                            //await _animationController.reverse();
-                            RightMenu.isOpen = false;
-                            widget.onClose.call();
-                          },
-                        ),
+                        // BTN.fill_gray_i_m(
+                        //   tooltip: CretaStudioLang.close,
+                        //   tooltipBg: CretaColor.text[700]!,
+                        //   icon: Icons.close_sharp,
+                        //   onPressed: () async {
+                        //     //await _animationController.reverse();
+                        //     RightMenu.isOpen = false;
+                        //     widget.onClose.call();
+                        //   },
+                        // ),
                         BTN.fill_gray_i_m(
                           tooltip: CretaStudioLang.collapsed,
                           tooltipBg: CretaColor.text[700]!,
@@ -168,12 +165,9 @@ class _RightMenuState
                     //     icon: Icons.keyboard_double_arrow_right_outlined,
                     //     onClose: widget.onClose),
                   ),
-                  Positioned(
-                    bottom: 12.0,
-                    child: SizedBox(
-                      width: 300,
-                      child: title,
-                    ),
+                  SizedBox(
+                    width: 300,
+                    child: title,
                   ),
                 ],
               ),
