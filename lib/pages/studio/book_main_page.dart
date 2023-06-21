@@ -20,6 +20,7 @@ import 'package:routemaster/routemaster.dart';
 
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
+import '../../data_io/filter_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
@@ -52,6 +53,7 @@ class BookMainPage extends StatefulWidget {
   //static bool onceBookInfoOpened = false;
   static BookManager? bookManagerHolder;
   static PageManager? pageManagerHolder;
+  static FilterManager? filterManagerHolder;
   // static FrameTemplateManager? polygonFrameManagerHolder;
   // static FrameTemplateManager? animationFrameManagerHolder;
   //static UserPropertyManager? userPropertyManagerHolder;
@@ -120,6 +122,7 @@ class _BookMainPageState extends State<BookMainPage> {
     // _linkSendEvent = linkSendEvent;
     // final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
     // _autoPlaySendEvent = autoPlaySendEvent;
+    LoginPage.initUserProperty();
 
     BookPreviewMenu.previewMenuPressed = false;
 
@@ -142,6 +145,12 @@ class _BookMainPageState extends State<BookMainPage> {
     // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
     // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
     //BookMainPage.userPropertyManagerHolder = UserPropertyManager();
+
+    if (LoginPage.userPropertyManagerHolder != null) {
+      String userEmail = LoginPage.userPropertyManagerHolder!.userModel.email;
+      BookMainPage.filterManagerHolder = FilterManager(userEmail);
+      BookMainPage.filterManagerHolder!.getFilter();
+    }
 
     String url = Uri.base.origin;
     String query = Uri.base.query;

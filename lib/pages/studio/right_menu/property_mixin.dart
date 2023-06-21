@@ -688,8 +688,10 @@ mixin PropertyMixin {
     required void Function(String) onTagChanged,
     required void Function(String) onSubmitted,
     required void Function(int) onDeleted,
+    TextEditingController? controller,
   }) {
     return TagEditor(
+      controller: controller,
       reverseOrder: true,
       textFieldHeight: 36,
       minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
@@ -713,6 +715,7 @@ mixin PropertyMixin {
       inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[/\\]'))],
       onTagChanged: onTagChanged,
       onSubmitted: onSubmitted,
+      //autofocus: true,
       tagBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.only(

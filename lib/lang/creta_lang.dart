@@ -105,6 +105,8 @@ class CretaLang {
   ];
 
   static String close = "종료";
+  static String save = "저장";
+  static String remove = "삭제";
   static String next = "다음";
   static String prev = "이전";
   static String cretaBookName = "크레타북 이름";
@@ -113,6 +115,7 @@ class CretaLang {
   static String entire = "전체";
   static String team = "팀";
   static String creator = "생성자";
+  static String create = "생성";
 
   static String myChannel = "내 채널";
   static String gotoCommunity = "커뮤니티로 바로가기";

@@ -25,6 +25,7 @@ class BookModel extends CretaModel with BookMixin {
   late UndoAble<int> pageSizeType;
   late UndoAble<CopyRightType> copyRight;
   late UndoAble<String> description;
+  late UndoAble<String> filter;
   late UndoAble<bool> isReadOnly;
   late UndoAble<String> thumbnailUrl;
   late UndoAble<ContentsType> thumbnailType;
@@ -55,6 +56,7 @@ class BookModel extends CretaModel with BookMixin {
         pageSizeType,
         copyRight,
         description,
+        filter,
         isReadOnly,
         thumbnailUrl,
         thumbnailType,
@@ -93,6 +95,7 @@ class BookModel extends CretaModel with BookMixin {
     //sourceMid = '';
     //hashtags = [];
     description = UndoAble<String>("You could do it simple and plain", mid, 'description');
+    filter = UndoAble<String>('', mid, 'filter');
     super.initMixin(mid);
   }
 
@@ -129,6 +132,7 @@ class BookModel extends CretaModel with BookMixin {
     viewCount = likeNo;
     likeCount = viewNo;
     description = UndoAble<String>("You could do it simple and plain", mid, 'description');
+    filter = UndoAble<String>('', mid, 'filter');
     owners = [...ownerList];
     readers = [...readerList];
     writers = [...writerList];
@@ -164,6 +168,7 @@ class BookModel extends CretaModel with BookMixin {
     copyRight = UndoAble<CopyRightType>(srcBook.copyRight.value, mid, 'copyRight');
     isReadOnly = UndoAble<bool>(srcBook.isReadOnly.value, mid, 'isReadOnly');
     description = UndoAble<String>(srcBook.description.value, mid, 'description');
+    filter = UndoAble<String>(srcBook.filter.value, mid, 'filter');
     viewCount = srcBook.viewCount;
     likeCount = srcBook.likeCount;
     owners = [...srcBook.owners];
@@ -198,6 +203,7 @@ class BookModel extends CretaModel with BookMixin {
     copyRight.init(srcBook.copyRight.value);
     isReadOnly.init(srcBook.isReadOnly.value);
     description.init(srcBook.description.value);
+    filter.init(srcBook.filter.value);
     viewCount = srcBook.viewCount;
     likeCount = srcBook.likeCount;
     owners = [...srcBook.owners];
@@ -228,6 +234,7 @@ class BookModel extends CretaModel with BookMixin {
     pageSizeType.set(map["pageSizeType"] ?? 0, save: false, noUndo: true);
     copyRight.set(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
     description.set(map["description"] ?? '', save: false, noUndo: true);
+    filter.set(map["filter"] ?? '', save: false, noUndo: true);
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
     thumbnailType.set(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);
     thumbnailAspectRatio.set((map["thumbnailAspectRatio"] ?? 1), save: false, noUndo: true);
@@ -275,6 +282,7 @@ class BookModel extends CretaModel with BookMixin {
         "pageSizeType": pageSizeType.value,
         "copyRight": copyRight.value.index,
         "description": description.value,
+        "filter": filter.value,
         "thumbnailUrl": thumbnailUrl.value,
         "thumbnailType": thumbnailType.value.index,
         "thumbnailAspectRatio": thumbnailAspectRatio.value,

@@ -17,7 +17,7 @@ class FilterModel extends CretaModel {
         includes,
       ];
 
-  FilterModel(String pmid) : super(pmid: pmid, type: ExModelType.link, parent: '') {
+  FilterModel(String parent) : super(pmid: '', type: ExModelType.filter, parent: parent) {
     name = '';
     excludes = [];
     includes = [];
