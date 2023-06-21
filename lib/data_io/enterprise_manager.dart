@@ -45,6 +45,7 @@ class EnterpriseManager extends CretaManager {
     return enterpriseCount;
   }
 
+
   Future<int> _getEnterprise({int limit = 99}) async {
     Map<String, QueryValue> query = {};
     query['name'] = QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.enterprise);

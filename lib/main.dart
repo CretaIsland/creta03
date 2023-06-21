@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
 import 'package:creta03/design_system/creta_color.dart';
-import 'package:creta03/pages/studio/sample_data.dart';
+//import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +13,7 @@ import 'common/creta_constant.dart';
 import 'common/cross_common_job.dart';
 import 'pages/studio/studio_constant.dart';
 import 'pages/studio/studio_getx_controller.dart';
+import 'pages/login_page.dart';
 import 'routes.dart';
 
 void main() async {
@@ -22,13 +23,14 @@ void main() async {
   Logger.root.level = Level.WARNING;
   HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
+  LoginPage.initUserProperty();
 
-  SampleData.initSample();
+  //SampleData.initSample();
   StudioConst.initLangMap();
 
   // test code
-  myConfig!.serverConfig!.storageConnInfo.bucketId =
-      "${HycopUtils.genBucketId(AccountManager.currentLoginUser.email, AccountManager.currentLoginUser.userId)}/";
+  //myConfig!.serverConfig!.storageConnInfo.bucketId =
+  //    "${HycopUtils.genBucketId(AccountManager.currentLoginUser.email, AccountManager.currentLoginUser.userId)}/";
 
   runApp(const ProviderScope(child: MainRouteApp()));
   //runApp(const ProviderScope(child: MainRouteApp()));

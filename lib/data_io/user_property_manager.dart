@@ -17,12 +17,11 @@ import '../model/team_model.dart';
 import '../pages/login_page.dart';
 
 class UserPropertyManager extends CretaManager {
-  late UserModel userModel;
+  UserModel get userModel => AccountManager.currentLoginUser;
   final List<FrameModel> _frameModelList = [];
   UserPropertyModel? userPropertyModel;
 
   UserPropertyManager() : super('creta_user_property') {
-    userModel = AccountManager.currentLoginUser;
     saveManagerHolder?.registerManager('user', this);
   }
 
@@ -36,11 +35,16 @@ class UserPropertyManager extends CretaManager {
   @override
   AbsExModel newModel(String mid) => UserPropertyModel(mid);
 
+  void clearUserProperty() {
+    userPropertyModel = null;
+    _frameModelList.clear();
+  }
+
   Future<void> initUserProperty() async {
     clearAll();
-    print("============");
-    print(AccountManager.currentLoginUser.userId);
-    await getUserProperty();
+    if (AccountManager.currentLoginUser.isLoginedUser) {
+      await getUserProperty();
+    }
   }
 
   Future<int> getUserProperty() async {
@@ -72,7 +76,9 @@ class UserPropertyManager extends CretaManager {
     await queryFromDB(query, orderBy: orderBy, limit: limit);
 
     userPropertyModel = onlyOne() as UserPropertyModel?;
-    await getLinkedObject();
+    if (userPropertyModel != null) {
+      await getLinkedObject();
+    }
 
     return modelList.length;
   }

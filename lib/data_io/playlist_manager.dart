@@ -10,6 +10,7 @@ import 'package:hycop/hycop.dart';
 import '../design_system/text_field/creta_text_field.dart';
 import '../model/playlist_model.dart';
 import '../model/creta_model.dart';
+import '../model/book_model.dart';
 import 'creta_manager.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
 import '../../../design_system/creta_color.dart';
@@ -178,6 +179,7 @@ class PlaylistManager extends CretaManager {
     required BuildContext context,
     required String bookId,
     required List<PlaylistModel> playlistModelList,
+    required Map<String, BookModel> bookModelMap,
     required Function(String) onNewPlaylist,
     required Function(String, String) onSelectDone,
   }) {
@@ -205,71 +207,13 @@ class PlaylistManager extends CretaManager {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(width: 1, color: CretaColor.text[200]!),
-                  ),
-                  width: 333,
-                  height: 211,
-                  margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                  child: Wrap(
-                    direction: Axis.vertical,
-                    children: [
-                      const SizedBox(height: 10),
-                      ...playlistModelList.expand((element) {
-                        return [
-                          InkWell(
-                            onTap: () {
-                              _selectedPlaylistId = element.mid;
-                            },
-                            child: Container(
-                              width: 301,
-                              height: 60,
-                              margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                              color: (_selectedPlaylistId == element.mid) ? CretaColor.text[200] : null,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 3.44, 0, 2.3),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            element.name,
-                                            style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
-                                          ),
-                                          Text(
-                                            element.userId,
-                                            style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    //Expanded(child: Container()),
-                                    SizedBox(
-                                      width: 74,
-                                      height: 44,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(5.4),
-                                        child: CustomImage(
-                                            width: 74, height: 44, image: 'https://picsum.photos/200/?random=1'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ];
-                      }),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
+                PlaylistListControl(
+                  size: const Size(333, 211),
+                  playlist: playlistModelList,
+                  bookModelMap: bookModelMap,
+                  selectCallback: (id) {
+                    _selectedPlaylistId = id;
+                  },
                 ),
               ],
             ),
@@ -310,6 +254,179 @@ class PlaylistManager extends CretaManager {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+class PlaylistListControl extends StatefulWidget {
+  const PlaylistListControl({
+    super.key,
+    required this.size,
+    required this.playlist,
+    required this.bookModelMap,
+    required this.selectCallback,
+  });
+  final Size size;
+  final List<PlaylistModel> playlist;
+  final Function(String) selectCallback;
+  final Map<String, BookModel> bookModelMap;
+
+  @override
+  State<PlaylistListControl> createState() => _PlaylistListControlState();
+}
+
+class _PlaylistListControlState extends State<PlaylistListControl> {
+  String _selectedPlaylistId = '';
+  String _hoverPlaylistId = '';
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      clipBehavior: Clip.antiAlias,
+      child: MouseRegion(
+        onExit: (value) {
+          setState(() {
+            _hoverPlaylistId = '';
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(width: 1, color: CretaColor.text[200]!),
+          ),
+          width: widget.size.width,
+          height: widget.size.height,
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+          child: Scrollbar(
+            thumbVisibility: true,
+            controller: _scrollController,
+            // return ScrollConfiguration( // 스크롤바 감추기
+            //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기
+            child: ListView(
+              //direction: Axis.vertical,
+              scrollDirection: Axis.vertical,
+              controller: _scrollController,
+              children: [
+                const SizedBox(height: 10),
+                ...widget.playlist.expand((element) {
+                  String bookThumbnailUrl = '';
+                  if (element.bookIdList.isNotEmpty) {
+                    BookModel? model = widget.bookModelMap[element.bookIdList[0]];
+                    bookThumbnailUrl = model?.thumbnailUrl.value ?? '';
+                  }
+                  return [
+                    InkWell(
+                      hoverColor: Colors.transparent,
+                      onHover: (value) {
+                        if (value) {
+                          setState(() {
+                            _hoverPlaylistId = element.mid;
+                          });
+                        }
+                      },
+                      onTap: () {
+                        setState(() {
+                          _selectedPlaylistId = element.mid;
+                          widget.selectCallback.call(_selectedPlaylistId);
+                        });
+                      },
+                      child: Container(
+                        color: (_hoverPlaylistId == element.mid) ? CretaColor.text[100] : null,
+                        child: Container(
+                          width: widget.size.width - 32,
+                          height: 60,
+                          margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: (_selectedPlaylistId == element.mid) ? CretaColor.text[200] : null,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 3.44, 0, 2.3),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        element.name,
+                                        style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
+                                      ),
+                                      Text(
+                                        element.userId,
+                                        style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                //Expanded(child: Container()),
+                                SizedBox(
+                                  width: 74,
+                                  height: 44,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(5.4),
+                                    child: Stack(
+                                      children: [
+                                        (bookThumbnailUrl.isEmpty)
+                                            ? const SizedBox(width: 74, height: 44)
+                                            : CustomImage(
+                                                width: 74,
+                                                height: 44,
+                                                hasAni: false,
+                                                image: bookThumbnailUrl,
+                                              ),
+                                        (_hoverPlaylistId == element.mid)
+                                            ? Opacity(
+                                                opacity: 0.4,
+                                                child: Container(
+                                                  width: 74,
+                                                  height: 44,
+                                                  color: CretaColor.text[900],
+                                                ),
+                                              )
+                                            : const SizedBox.shrink(),
+                                        (_hoverPlaylistId == element.mid)
+                                            ? SizedBox(
+                                                width: 74,
+                                                height: 44,
+                                                child: Center(
+                                                  child: Text(
+                                                    '추가하기',
+                                                    style: CretaFont.buttonSmall.copyWith(color: Colors.white),
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox.shrink(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ];
+                }),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
