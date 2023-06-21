@@ -47,7 +47,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
     initMixin();
     _isNew = widget.isNew;
 
-    print('model.filter=${widget.model.filter.value}=====$_isNew=========================');
+    //('model.filter=${widget.model.filter.value}=====$_isNew=========================');
 
     _filter = BookMainPage.filterManagerHolder!.findFilter(widget.model.filter.value);
     _filter ??= FilterModel(LoginPage.userPropertyManagerHolder!.userModel.email);
@@ -119,7 +119,6 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                             setState(() {
                               _isNew = isChecked;
                               if (isChecked) {
-                                print('isNew is true');
                                 _newName = '';
                                 _filter = FilterModel(
                                     LoginPage.userPropertyManagerHolder!.userModel.email);
@@ -328,7 +327,6 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
   void _setName() {
     if (_isNew && _newName.isEmpty && _textController.text.isNotEmpty) {
       _newName = _textController.text;
-      print('$_newName----------xxx------------');
       _filter!.name = _newName;
     }
   }

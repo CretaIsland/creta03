@@ -517,7 +517,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     ));
     List<String> filterList = BookMainPage.filterManagerHolder!.getFilterList();
     for (String name in filterList) {
-      print('-----------------------$name');
+      //print('-----------------------$name');
       retval.add(CretaMenuItem(
         caption: name,
         onPressed: () {
