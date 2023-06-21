@@ -55,6 +55,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   late final Widget Function(Size)? _titlePane;
 
   final Map<String, CretaBookData> _subscriptionUserMap = {};
+  final ScrollController _rightOverlayPaneScrollController = ScrollController();
 
   PlaylistModel? _playlistModel;
 
@@ -1277,19 +1278,24 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           top: 140, //196 - 40 - 20 + 4,
           child: Container(
             width: 286,
-            height: rightPaneRect.childHeight + 40,
-            padding: EdgeInsets.fromLTRB(20, 20, 5, 20),
+            height: rightPaneRect.childHeight + 102,
+            padding: EdgeInsets.fromLTRB(20, 20, 5, 20) ,
             decoration: BoxDecoration(
               color: CretaColor.text[100],
               borderRadius: BorderRadius.circular(20),
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Wrap(
-                direction: Axis.horizontal,
-                spacing: 20,
-                runSpacing: 20,
-                children: _getSubscriptionUserList(),
+            child: Scrollbar(
+              //thumbVisibility: true,
+              controller: _rightOverlayPaneScrollController,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                controller: _rightOverlayPaneScrollController,
+                child: Wrap(
+                  direction: Axis.horizontal,
+                  spacing: 20,
+                  runSpacing: 20,
+                  children: _getSubscriptionUserList(),
+                ),
               ),
             ),
           ),

@@ -40,7 +40,6 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   @override
   void initState() {
     super.initState();
-    LoginPage.initUserProperty();
 
     _leftMenuItem = [
       CretaMenuItem(

@@ -93,6 +93,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   final List<BookModel> _cretaBooksList = [];
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   final List<PlaylistModel> _playlistModelList = [];
+  final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
   bool _onceDBGetComplete = false;
 
   @override
@@ -109,6 +110,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
         QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
         QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
+        QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
       ],
       completeFunc: () {
@@ -165,6 +167,27 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     if (kDebugMode) print('_playlistModelList.modelList.length=${modelList.length}');
     for (var plModel in modelList) {
       _playlistModelList.add(plModel as PlaylistModel);
+    }
+  }
+
+  void _getPlaylistsBooksFromDB(List<AbsExModel> modelList) {
+    final List<String> bookIdList = [];
+    for(var model in modelList) {
+      PlaylistModel plModel = model as PlaylistModel;
+      if (plModel.bookIdList.isNotEmpty) {
+        bookIdList.add(plModel.bookIdList[0]);
+      }
+    }
+    bookPublishedManagerHolder.clearConditions();
+    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultPlaylistsBooksFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      BookModel bModel = model as BookModel;
+      //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.mid})');
+      _playlistsBooksMap[bModel.mid] = bModel;
     }
   }
 
@@ -229,6 +252,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         context: context,
         bookId: bookId,
         playlistModelList: _playlistModelList,
+        bookModelMap: _playlistsBooksMap,
         onNewPlaylist: _newPlaylist,
         onSelectDone: _playlistSelectDone,
       ),

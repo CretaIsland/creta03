@@ -37,22 +37,44 @@ class LoginPage extends StatefulWidget {
   static TeamManager? teamManagerHolder;
   static EnterpriseManager? enterpriseHolder;
 
-  static void initUserProperty() {
+  static Future<bool> initUserProperty() async {
     if (LoginPage.userPropertyManagerHolder == null) {
       LoginPage.userPropertyManagerHolder = UserPropertyManager();
       LoginPage.userPropertyManagerHolder?.configEvent();
       LoginPage.userPropertyManagerHolder?.clearAll();
+    }
+    if (LoginPage.teamManagerHolder == null) {
       LoginPage.teamManagerHolder = TeamManager();
       LoginPage.teamManagerHolder?.configEvent();
       LoginPage.teamManagerHolder?.clearAll();
+    }
+    if (LoginPage.enterpriseHolder == null) {
       LoginPage.enterpriseHolder = EnterpriseManager();
       LoginPage.enterpriseHolder?.configEvent();
       LoginPage.enterpriseHolder?.clearAll();
-      LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {
-        LoginPage.teamManagerHolder?.initTeam();
-        LoginPage.enterpriseHolder?.initEnterprise();
-      });
     }
+    // 현재 로그인정보로 사용자정보 가져옴
+    await LoginPage.userPropertyManagerHolder!.initUserProperty();
+    if (LoginPage.userPropertyManagerHolder!.userPropertyModel == null) {
+      // 사용자정보 없음 => 모든정보초기화
+      AccountManager.logout();
+      LoginPage.teamManagerHolder?.clearAll();
+      LoginPage.enterpriseHolder?.clearAll();
+      return false;
+    }
+    // team 및 ent 정보 가져움
+    await LoginPage.teamManagerHolder?.initTeam();
+    await LoginPage.enterpriseHolder?.initEnterprise();
+    if (LoginPage.teamManagerHolder!.modelList.isEmpty || LoginPage.enterpriseHolder!.modelList.isEmpty) {
+      // team이 없거나, ent없으면 모든정보초기화
+      AccountManager.logout();
+      LoginPage.userPropertyManagerHolder?.clearAll();
+      LoginPage.userPropertyManagerHolder!.clearUserProperty();
+      LoginPage.teamManagerHolder?.clearAll();
+      LoginPage.enterpriseHolder?.clearAll();
+      return false;
+    }
+    return true;
   }
 
   // static void initTeam() {
