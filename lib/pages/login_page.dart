@@ -38,19 +38,21 @@ class LoginPage extends StatefulWidget {
   static EnterpriseManager? enterpriseHolder;
 
   static void initUserProperty() {
-    LoginPage.userPropertyManagerHolder = UserPropertyManager();
-    LoginPage.userPropertyManagerHolder?.configEvent();
-    LoginPage.userPropertyManagerHolder?.clearAll();
-    LoginPage.teamManagerHolder = TeamManager();
-    LoginPage.teamManagerHolder?.configEvent();
-    LoginPage.teamManagerHolder?.clearAll();
-    LoginPage.enterpriseHolder = EnterpriseManager();
-    LoginPage.enterpriseHolder?.configEvent();
-    LoginPage.enterpriseHolder?.clearAll();
-    LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {
-      LoginPage.teamManagerHolder?.initTeam();
-      LoginPage.enterpriseHolder?.initEnterprise();
-    });
+    if (LoginPage.userPropertyManagerHolder == null) {
+      LoginPage.userPropertyManagerHolder = UserPropertyManager();
+      LoginPage.userPropertyManagerHolder?.configEvent();
+      LoginPage.userPropertyManagerHolder?.clearAll();
+      LoginPage.teamManagerHolder = TeamManager();
+      LoginPage.teamManagerHolder?.configEvent();
+      LoginPage.teamManagerHolder?.clearAll();
+      LoginPage.enterpriseHolder = EnterpriseManager();
+      LoginPage.enterpriseHolder?.configEvent();
+      LoginPage.enterpriseHolder?.clearAll();
+      LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {
+        LoginPage.teamManagerHolder?.initTeam();
+        LoginPage.enterpriseHolder?.initEnterprise();
+      });
+    }
   }
 
   // static void initTeam() {
@@ -105,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
 
     AccountManager.login(email, password).then((value) {
       HycopFactory.setBucketId();
+      LoginPage.initUserProperty();
       Routemaster.of(context).push(AppRoutes.intro);
     }).onError((error, stackTrace) {
       if (error is HycopException) {

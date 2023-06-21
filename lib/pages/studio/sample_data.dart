@@ -5,7 +5,6 @@ import 'package:creta03/model/connected_user_model.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
 import '../../model/page_model.dart';
-import '../login_page.dart';
 
 class SampleData {
   static BookModel sampleBook = BookModel('');
@@ -19,7 +18,7 @@ class SampleData {
     // AccountManager.currentLoginUser.setValue('email', 'skpark@sqisoft.com');
     // AccountManager.currentLoginUser.setValue('name', 'Turtle Rabbit');
     // AccountManager.currentLoginUser.setValue('userId', 'ThisIsTestUserId');
-    LoginPage.initUserProperty(); //skpark 20230429
+    // LoginPage.initUserProperty(); //skpark 20230429
   }
 
   static List<PageModel> samplePageList = [

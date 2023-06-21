@@ -38,6 +38,8 @@ class UserPropertyManager extends CretaManager {
 
   Future<void> initUserProperty() async {
     clearAll();
+    print("============");
+    print(AccountManager.currentLoginUser.userId);
     await getUserProperty();
   }
 
