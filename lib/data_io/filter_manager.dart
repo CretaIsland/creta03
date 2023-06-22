@@ -3,10 +3,15 @@ import 'package:hycop/hycop.dart';
 import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta03/model/creta_model.dart';
 
+import '../model/book_model.dart';
 import '../model/filter_model.dart';
 
 class FilterManager extends CretaManager {
   final String userEmail;
+  BookModel? bookModel;
+  void setBook(BookModel b) {
+    bookModel = b;
+  }
 
   FilterManager(this.userEmail) : super('creta_filter') {
     // parentMid 는 userEmail 이다.
@@ -144,5 +149,30 @@ class FilterManager extends CretaManager {
       }
     }
     return false;
+  }
+
+  bool isVisible(AbsExModel model) {
+    if (bookModel == null) {
+      return true;
+    }
+    if (model.hashTag.value.isEmpty) {
+      return true;
+    }
+    if (bookModel!.filter.value.isEmpty) {
+      return true;
+    }
+    FilterModel? filter = findFilter(bookModel!.filter.value);
+    if (filter == null) {
+      return true;
+    }
+    if (filter.excludes.isEmpty) {
+      return true;
+    }
+    for (String ele in filter.excludes) {
+      if (model.hashTag.value.contains(ele) == true) {
+        return false;
+      }
+    }
+    return true;
   }
 }

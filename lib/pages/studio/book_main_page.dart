@@ -219,6 +219,8 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder!.addBookChildren('frame=');
     saveManagerHolder!.addBookChildren('contents=');
 
+    BookMainPage.filterManagerHolder?.setBook(model);
+
     logger.info("3) --_BookMainPageState-----------------------------------------");
 
     // Get Pages

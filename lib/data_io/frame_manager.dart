@@ -441,5 +441,11 @@ class FrameManager extends CretaManager {
     BookMainPage.pageManagerHolder?.gotoNext();
   }
 
+  bool isVisible(FrameModel model) {
+    if (model.isRemoved.value == true) return false;
+    if (model.isShow.value == false) return false;
+    if (BookMainPage.filterManagerHolder!.isVisible(model) == false) return false;
+    return true;
+  }
   //bool isMain() {}
 }

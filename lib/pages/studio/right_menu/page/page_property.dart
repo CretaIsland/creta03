@@ -335,7 +335,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: _model!.hashTag.value.isEmpty
+        trailWidget: _model!.hashTag.value.length < 3
             ? SizedBox.shrink()
             : SizedBox(
                 width: 160,
@@ -347,9 +347,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
               ),
         hasRemoveButton: _model!.hashTag.value.isNotEmpty,
         onDelete: () {
-          setState(() {
-            _model!.hashTag.set('');
-          });
+          _model!.hashTag.set('');
+          BookMainPage.bookManagerHolder!.notify();
         },
         bodyWidget: Column(children: _tagBody()),
       ),
@@ -362,14 +361,12 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       top: 12,
       model: _model!,
       minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
-      onTagChanged: (value) {
-        setState(() {});
-      },
+      onTagChanged: (value) {},
       onSubmitted: (value) {
-        setState(() {});
+        BookMainPage.bookManagerHolder!.notify();
       },
       onDeleted: (value) {
-        setState(() {});
+        BookMainPage.bookManagerHolder!.notify();
       },
     );
   }

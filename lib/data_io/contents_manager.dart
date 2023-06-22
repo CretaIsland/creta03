@@ -197,10 +197,7 @@ class ContentsManager extends CretaManager {
   String? getThumbnail() {
     List<String?> list = valueList().map((value) {
       ContentsModel model = value as ContentsModel;
-      if (model.isRemoved.value == true) {
-        return null;
-      }
-      if (model.isShow.value == false) {
+      if (isVisible(model) == false) {
         return null;
       }
       if (model.thumbnail == null || model.thumbnail!.isEmpty) {
@@ -239,15 +236,13 @@ class ContentsManager extends CretaManager {
   ContentsModel? getFirstModel() {
     for (var ele in modelList) {
       ContentsModel model = ele as ContentsModel;
-      if (model.isRemoved.value == true) {
-        continue;
-      }
-      if (model.isShow.value == false) {
+      if (isVisible(model) == false) {
         continue;
       }
       return model;
     }
     // 여기까지 오면 없다는 뜻이다.  isShow 라도 리턴해본다.
+    logger.severe('getFirstModel failed no model founded');
     for (var ele in modelList) {
       ContentsModel model = ele as ContentsModel;
       if (model.isRemoved.value == true) {
@@ -497,11 +492,18 @@ class ContentsManager extends CretaManager {
     return keyEntries().toList().reversed.toList();
   }
 
+  bool isVisible(ContentsModel model) {
+    if (model.isRemoved.value == true) return false;
+    if (model.isShow.value == false) return false;
+    if (BookMainPage.filterManagerHolder!.isVisible(model) == false) return false;
+    return true;
+  }
+
   int getShowLength() {
     int counter = 0;
     orderMapIterator((val) {
       ContentsModel model = val as ContentsModel;
-      if (model.isShow.value && model.isRemoved.value == false) {
+      if (isVisible(model) == true) {
         counter++;
       }
     });
@@ -513,7 +515,7 @@ class ContentsManager extends CretaManager {
     if (isNotEmpty()) {
       double lastOrder = keyEntries().last;
       ContentsModel? model = getNthOrder(lastOrder) as ContentsModel?;
-      if (model != null && model.isShow.value == true) {
+      if (isVisible(model!) == true) {
         return lastOrder;
       }
       return nextOrder(lastOrder);
@@ -540,11 +542,11 @@ class ContentsManager extends CretaManager {
     while (counter < len) {
       double order = _nextOrder(input);
       if (order < 0) {
-        //logger.warning('no avail order 1');
+        logger.warning('no avail order 1');
         return order;
       }
       ContentsModel? model = getNthOrder(order) as ContentsModel?;
-      if (model != null && model.isShow.value == true) {
+      if (isVisible(model!) == true) {
         //logger.info('return Order=$order');
         return order;
       }
@@ -609,7 +611,7 @@ class ContentsManager extends CretaManager {
         return order;
       }
       ContentsModel? model = getNthOrder(order) as ContentsModel?;
-      if (model != null && model.isShow.value == true) {
+      if (isVisible(model!) == true) {
         //logger.info('return Order=$order');
         return order;
       }

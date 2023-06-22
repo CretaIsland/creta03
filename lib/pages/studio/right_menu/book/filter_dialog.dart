@@ -37,7 +37,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
   String _newName = '';
   bool _isNew = false;
   late TextEditingController _textController;
-  late TextEditingController _includeController;
+  //late TextEditingController _includeController;
   late TextEditingController _excludeController;
   FilterModel? _filter;
 
@@ -53,14 +53,14 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
     _filter ??= FilterModel(LoginPage.userPropertyManagerHolder!.userModel.email);
 
     _textController = TextEditingController();
-    _includeController = TextEditingController();
+    //_includeController = TextEditingController();
     _excludeController = TextEditingController();
   }
 
   @override
   void dispose() {
     _textController.dispose();
-    _includeController.dispose();
+    // _includeController.dispose();
     _excludeController.dispose();
     super.dispose();
   }
@@ -189,42 +189,42 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                           ],
                         ),
                       ),
-                      Padding(
-                        // includes
-                        padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              CretaStudioLang.includeTag,
-                              style: titleStyle,
-                            ),
-                            SizedBox(
-                              width: 210,
-                              child: tagWidget(
-                                controller: _includeController,
-                                hashTagList: _filter!.includes,
-                                onTagChanged: (newValue) {
-                                  setState(() {
-                                    _filter!.includes.add(newValue);
-                                  });
-                                },
-                                onSubmitted: (outstandingValue) {
-                                  setState(() {
-                                    _filter!.includes.add(outstandingValue);
-                                  });
-                                },
-                                onDeleted: (idx) {
-                                  setState(() {
-                                    _filter!.includes.removeAt(idx);
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Padding(
+                      //   // includes
+                      //   padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     children: [
+                      //       Text(
+                      //         CretaStudioLang.includeTag,
+                      //         style: titleStyle,
+                      //       ),
+                      //       SizedBox(
+                      //         width: 210,
+                      //         child: tagWidget(
+                      //           controller: _includeController,
+                      //           hashTagList: _filter!.includes,
+                      //           onTagChanged: (newValue) {
+                      //             setState(() {
+                      //               _filter!.includes.add(newValue);
+                      //             });
+                      //           },
+                      //           onSubmitted: (outstandingValue) {
+                      //             setState(() {
+                      //               _filter!.includes.add(outstandingValue);
+                      //             });
+                      //           },
+                      //           onDeleted: (idx) {
+                      //             setState(() {
+                      //               _filter!.includes.removeAt(idx);
+                      //             });
+                      //           },
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -245,11 +245,11 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                             _filter!.excludes.add(_excludeController.text);
                           }
                         }
-                        if (_filter!.includes.isEmpty) {
-                          if (_includeController.text.isNotEmpty) {
-                            _filter!.includes.add(_includeController.text);
-                          }
-                        }
+                        // if (_filter!.includes.isEmpty) {
+                        //   if (_includeController.text.isNotEmpty) {
+                        //     _filter!.includes.add(_includeController.text);
+                        //   }
+                        // }
 
                         if (_isNew) {
                           if (_textController.text.isNotEmpty) {

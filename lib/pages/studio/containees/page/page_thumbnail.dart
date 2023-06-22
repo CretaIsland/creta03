@@ -255,6 +255,11 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                   return Stack(
                     children: _frameManager!.orderMapIterator((model) {
                       FrameModel frameModel = model as FrameModel;
+
+                      if (_frameManager!.isVisible(model) == false) {
+                        return SizedBox.shrink();
+                      }
+
                       //logger.info('frameManager.orderMapIterator-------${frameModel.name.value}');
                       double frameWidth =
                           (model.width.value + model.shadowSpread.value) * applyScale;
