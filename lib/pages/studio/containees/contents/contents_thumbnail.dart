@@ -1,8 +1,11 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'package:creta03/player/doc/creta_doc_mixin.dart';
 import 'package:flutter/material.dart';
+import 'package:adjusted_html_view_web/adjusted_html_view_web.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 //import 'package:glass/glass.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -39,7 +42,7 @@ class ContentsThumbnail extends StatefulWidget {
   State<ContentsThumbnail> createState() => ContentsThumbnailState();
 }
 
-class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixin {
+class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixin, CretaDocMixin {
   //ContentsManager? _contentsManager;
   //CretaPlayTimer? _playerHandler;
   ContentsEventController? _receiveEvent;
@@ -94,11 +97,21 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
 
             if (contentsCount > 0) {
               if (widget.frameModel.frameType == FrameType.text) {
-                ContentsModel? model = contentsManager.getFirstModel();
-                if (model != null) {
+                // ContentsModel? model = contentsManager.getFirstModel();
+                ContentsModel model = contentsManager.getFirstModel()!;
+                if (model.contentsType == ContentsType.document) {
+                  return AdjustedHtmlView(
+                    htmlText: model.remoteUrl!,
+                    htmlValidator: HtmlValidator.loose(),
+                  );
+                } else {
                   return playText(context, null, model, contentsManager.getRealSize(),
                       isPagePreview: true);
                 }
+                // if (model != null) {
+                //   return playText(context, null, model, contentsManager.getRealSize(),
+                //       isPagePreview: true);
+                // }
               } else {
                 String? thumbnailUrl = contentsManager.getThumbnail();
                 if (thumbnailUrl != null) {

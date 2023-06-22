@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/pages/mypage/mypage.dart';
-import 'package:creta03/pages/studio/left_menu/word_pad/quill_editor.dart';
+import 'package:creta03/pages/studio/left_menu/word_pad/quill_enhanced.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,7 +10,6 @@ import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
 import 'design_system/demo_page/menu_demo_page.dart';
 import 'design_system/demo_page/text_field_demo_page.dart';
-import 'model/contents_model.dart';
 import 'pages/login_page.dart';
 import 'pages/intro_page.dart';
 import 'pages/studio/book_grid_page.dart';
@@ -122,8 +121,9 @@ final routesLoggedOut = RouteMap(
     AppRoutes.menuDemoPage: (_) => TransitionPage(child: MenuDemoPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
-    AppRoutes.quillDemoPage: (_) =>
-        TransitionPage(child: QuillPlayerWidget(document: ContentsModel.withFrame(parent: ''))),
+    // AppRoutes.quillDemoPage: (_) =>
+    //     TransitionPage(child: QuillPlayerWidget(document: ContentsModel.withFrame(parent: ''))),
+    AppRoutes.quillDemoPage: (_) => TransitionPage(child: QuillEnhancedWidget()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (routeData) {
       //skpark test code

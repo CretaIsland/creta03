@@ -60,8 +60,6 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
         child: BTN.line_blue_t_m(
           text: CretaStudioLang.textEditorToolbar,
           onPressed: () {
-            // frameManager!.createNextFrame();
-            // frameManager!.notify();
             _createQuillEditor();
             // BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
           },
@@ -76,7 +74,6 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
 
     retval.contentsType = ContentsType.document;
 
-    // retval.widget = QuillPlayerWidget(document: retval);
     retval.name = 'Word Pad 1';
     retval.remoteUrl = CretaStudioLang.defaultText;
     retval.playTime.set(-1, noUndo: true, save: false);

@@ -1,5 +1,3 @@
-//import 'dart:convert';
-
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/model/contents_model.dart';
@@ -116,7 +114,6 @@ class _QuillPlayerWidgetState extends State<QuillPlayerWidget> {
                 //if (_isCreated == false && text == widget.document.remoteUrl) return;
                 if (_isCreated == false) return;
                 bool textChanged = (text != widget.document.remoteUrl);
-
                 debugPrint('onTextChanged has been invoked $text, ${widget.document.remoteUrl}');
                 widget.document.remoteUrl = text;
                 if (textChanged) {
