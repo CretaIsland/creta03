@@ -1,0 +1,148 @@
+import 'package:hycop/hycop.dart';
+
+import 'package:creta03/data_io/creta_manager.dart';
+import 'package:creta03/model/creta_model.dart';
+
+import '../model/filter_model.dart';
+
+class FilterManager extends CretaManager {
+  final String userEmail;
+
+  FilterManager(this.userEmail) : super('creta_filter') {
+    // parentMid 는 userEmail 이다.
+    saveManagerHolder?.registerManager('filter', this, postfix: userEmail);
+  }
+
+  @override
+  CretaModel cloneModel(CretaModel src) {
+    FilterModel retval = newModel(src.mid) as FilterModel;
+    src.copyTo(retval);
+    return retval;
+  }
+
+  @override
+  AbsExModel newModel(String mid) => FilterModel(mid);
+
+  Future<int> getFilter() async {
+    // parentMid 는 userEmail 이다.
+    startTransaction();
+    try {
+      Map<String, QueryValue> query = {};
+      query['parentMid'] = QueryValue(value: userEmail);
+      query['isRemoved'] = QueryValue(value: false);
+      await queryFromDB(query);
+      reOrdering();
+    } catch (error) {
+      logger.info('something wrong in FilterManager >> $error');
+      return 0;
+    }
+    endTransaction();
+    return modelList.length;
+  }
+
+  Future<FilterModel> createNext({
+    required FilterModel filter,
+    bool doNotify = true,
+    void Function(bool, String)? onComplete,
+  }) async {
+    logger.info('createNext()');
+    // FilterModel filter = FilterModel('');
+    // filter.parentMid.set(userEmail, save: false, noUndo: true);
+    // filter.name = name;
+    // filter.excludes = excludes != null ? [...excludes] : [];
+    // filter.includes = includes != null ? [...includes] : [];
+    // filter.order.set(getMaxOrder() + 1, save: false, noUndo: true);
+
+    await createToDB(filter);
+    insert(filter, postion: getLength(), doNotify: doNotify);
+    selectedMid = filter.mid;
+    if (doNotify) notify();
+    onComplete?.call(false, userEmail);
+
+    MyChange<FilterModel> c = MyChange<FilterModel>(
+      filter,
+      execute: () {},
+      redo: () async {
+        filter.isRemoved.set(false, noUndo: true);
+        insert(filter, postion: getLength(), doNotify: doNotify);
+        selectedMid = filter.mid;
+        onComplete?.call(false, userEmail);
+      },
+      undo: (FilterModel old) async {
+        filter.isRemoved.set(true, noUndo: true);
+        remove(filter);
+        selectedMid = '';
+        onComplete?.call(true, userEmail);
+      },
+    );
+    mychangeStack.add(c);
+
+    return filter;
+  }
+
+  Future<FilterModel> update({
+    required FilterModel filter,
+    bool doNotify = true,
+  }) async {
+    logger.info('update()');
+    await setToDB(filter);
+    updateModel(filter);
+    selectedMid = filter.mid;
+    if (doNotify) notify();
+
+    return filter;
+  }
+
+  Future<FilterModel> delete({
+    required FilterModel filter,
+    bool doNotify = true,
+  }) async {
+    logger.info('delete()');
+    filter.isRemoved.set(true, save: false);
+    await setToDB(filter);
+    updateModel(filter);
+    selectedMid = filter.mid;
+
+    if (doNotify) notify();
+
+    return filter;
+  }
+
+  List<String> getFilterList() {
+    List<String> retval = [];
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      FilterModel model = ele as FilterModel;
+      retval.add(model.name);
+    }
+    return retval;
+  }
+
+  FilterModel? findFilter(String name) {
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      FilterModel model = ele as FilterModel;
+      if (name == model.name) {
+        return model;
+      }
+    }
+    return null;
+  }
+
+  bool isDup(String name) {
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      FilterModel model = ele as FilterModel;
+      if (name == model.name) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
