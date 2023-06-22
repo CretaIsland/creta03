@@ -400,6 +400,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       }
       return false;
     }
+    if (BookMainPage.filterManagerHolder!.isVisible(model) == false) {
+      return false;
+    }
     //if (model.eventReceive.value.isNotEmpty && model.showWhenEventReceived.value == true) {
     //   logger.fine(
     //       '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');

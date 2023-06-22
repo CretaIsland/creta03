@@ -12,12 +12,14 @@ class CretaCheckbox extends StatefulWidget {
   final Map<String, bool> valueMap; // value and title map
   final void Function(String name, bool value, Map<String, bool> nvMap) onSelected;
   final double density;
+  final bool enable;
 
   const CretaCheckbox({
     super.key,
     required this.onSelected,
     required this.valueMap,
     this.density = 10,
+    this.enable = true,
   });
 
   @override
@@ -48,6 +50,9 @@ class _CretaCheckboxState extends State<CretaCheckbox> {
           color: hover[idx] ? CretaColor.text[200]! : null,
           child: GestureDetector(
             onLongPressDown: (details) {
+              if (widget.enable == false) {
+                return;
+              }
               setState(() {
                 if (widget.valueMap[title] != true) {
                   logger.finest('onLongPressDown = $title');

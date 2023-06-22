@@ -5,7 +5,7 @@ import '../../pages/studio/studio_variables.dart';
 class CretaPopup {
   static Future<void> popup({
     required BuildContext context,
-    required GlobalKey globalKey,
+    GlobalKey? globalKey,
     required Widget child,
     required double width,
     required double height,
@@ -19,25 +19,32 @@ class CretaPopup {
         if (initFunc != null) initFunc();
 
         //StudioVariables.displayHeight
-
-        final RenderBox renderBox = globalKey.currentContext!.findRenderObject() as RenderBox;
-        final position = renderBox.localToGlobal(Offset.zero);
-        final size = renderBox.size;
-
-        double x = position.dx;
-        double y = position.dy + size.height - 1;
-
+        double x = 0;
+        double y = 0;
         double margin = 40;
 
-        if (x + width + margin > StudioVariables.displayWidth) {
+        if (globalKey != null) {
+          final RenderBox renderBox = globalKey.currentContext!.findRenderObject() as RenderBox;
+          final position = renderBox.localToGlobal(Offset.zero);
+          final size = renderBox.size;
+
+          x = position.dx;
+          y = position.dy + size.height - 1;
+
+          if (x + width + margin > StudioVariables.displayWidth) {
+            x = StudioVariables.displayWidth - width - margin;
+          }
+          if (y + height + margin > StudioVariables.displayHeight) {
+            y = StudioVariables.displayHeight - height - margin;
+          }
+
+          if (x < 0) x = 0;
+          if (y < 0) y = 0;
+        } else {
+          // 화면 중앙에 나간다.
           x = StudioVariables.displayWidth - width - margin;
-        }
-        if (y + height + margin > StudioVariables.displayHeight) {
           y = StudioVariables.displayHeight - height - margin;
         }
-
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
 
         return SizedBox(
           width: width,

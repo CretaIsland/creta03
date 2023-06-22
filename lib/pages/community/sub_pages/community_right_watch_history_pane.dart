@@ -81,6 +81,8 @@ class CommunityRightWatchHistoryPane extends StatefulWidget {
 }
 
 class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHistoryPane> {
+  final GlobalKey _key = GlobalKey();
+
   final Map<String, List<BookModel>> _cretaBookDataMap = {};
   final _itemSizeRatio = _itemMinHeight / _itemMinWidth;
   double _itemWidth = 0;
@@ -141,6 +143,10 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     for (var model in modelList) {
       WatchHistoryModel whModel = model as WatchHistoryModel;
       bookIdList.add(whModel.bookId);
+    }
+    if (bookIdList.isEmpty) {
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
     }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
@@ -304,20 +310,25 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     final int columnCount = CretaUtils.getItemColumnCount(width, _itemMinWidth, _rightViewItemGapX);
     _itemWidth = ((width + _rightViewItemGapX) ~/ columnCount) - _rightViewItemGapX;
     _itemHeight = _itemWidth * _itemSizeRatio;
-    return SizedBox(
-      width: widget.cretaLayoutRect.width,
-      child: SingleChildScrollView(
-        controller: widget.scrollController,
-        child: Container(
-          padding: EdgeInsets.fromLTRB(
-            widget.cretaLayoutRect.childLeftPadding,
-            widget.cretaLayoutRect.childTopPadding,
-            widget.cretaLayoutRect.childRightPadding,
-            widget.cretaLayoutRect.childBottomPadding,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _getItemWidgetList(widget.cretaLayoutRect.childWidth),
+    return Scrollbar(
+      key: _key,
+      thumbVisibility: true,
+      controller: widget.scrollController,
+      child: SizedBox(
+        width: widget.cretaLayoutRect.width,
+        child: SingleChildScrollView(
+          controller: widget.scrollController,
+          child: Container(
+            padding: EdgeInsets.fromLTRB(
+              widget.cretaLayoutRect.childLeftPadding,
+              widget.cretaLayoutRect.childTopPadding,
+              widget.cretaLayoutRect.childRightPadding,
+              widget.cretaLayoutRect.childBottomPadding,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _getItemWidgetList(widget.cretaLayoutRect.childWidth),
+            ),
           ),
         ),
       ),

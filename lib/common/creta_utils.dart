@@ -108,6 +108,19 @@ class CretaUtils {
     return '[$retval]';
   }
 
+  static String listToDisplay(List<String> list) {
+    logger.finest('listToString=[${list.toString()}]');
+    String retval = '';
+    for (var e in list) {
+      if (retval.isNotEmpty) {
+        retval += ',';
+      }
+      retval += e;
+    }
+    logger.finest('listToString=[$retval]');
+    return retval;
+  }
+
   static String getNowString(
       {String deli1 = '/', String deli2 = ' ', String deli3 = ':', String deli4 = '.'}) {
     var now = DateTime.now();

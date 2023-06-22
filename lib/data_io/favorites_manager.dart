@@ -35,6 +35,10 @@ class FavoritesManager extends CretaManager {
       BookModel bookModel = exModel as BookModel;
       bookIdList.add(bookModel.mid);
     }
+    if (bookIdList.isEmpty) {
+      setState(DBState.idle);
+      return Future.value([]);
+    }
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
     query['bookId'] = QueryValue(value: bookIdList, operType: OperType.whereIn);

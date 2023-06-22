@@ -37,20 +37,49 @@ class LoginPage extends StatefulWidget {
   static TeamManager? teamManagerHolder;
   static EnterpriseManager? enterpriseHolder;
 
-  static void initUserProperty() {
-    LoginPage.userPropertyManagerHolder = UserPropertyManager();
-    LoginPage.userPropertyManagerHolder?.configEvent();
+  static Future<bool> initUserProperty() async {
+    if (LoginPage.userPropertyManagerHolder == null) {
+      LoginPage.userPropertyManagerHolder = UserPropertyManager();
+      LoginPage.userPropertyManagerHolder?.configEvent();
+      LoginPage.userPropertyManagerHolder?.clearAll();
+    }
+    if (LoginPage.teamManagerHolder == null) {
+      LoginPage.teamManagerHolder = TeamManager();
+      LoginPage.teamManagerHolder?.configEvent();
+      LoginPage.teamManagerHolder?.clearAll();
+    }
+    if (LoginPage.enterpriseHolder == null) {
+      LoginPage.enterpriseHolder = EnterpriseManager();
+      LoginPage.enterpriseHolder?.configEvent();
+      LoginPage.enterpriseHolder?.clearAll();
+    }
+    // 현재 로그인정보로 사용자정보 가져옴
+    await LoginPage.userPropertyManagerHolder!.initUserProperty();
+    if (LoginPage.userPropertyManagerHolder!.userPropertyModel == null) {
+      // 사용자정보 없음 => 모든정보초기화
+      AccountManager.logout();
+      LoginPage.teamManagerHolder?.clearAll();
+      LoginPage.enterpriseHolder?.clearAll();
+      return false;
+    }
+    // team 및 ent 정보 가져움
+    await LoginPage.teamManagerHolder?.initTeam();
+    await LoginPage.enterpriseHolder?.initEnterprise();
+    if (LoginPage.teamManagerHolder!.modelList.isEmpty || LoginPage.enterpriseHolder!.modelList.isEmpty) {
+      // team이 없거나, ent없으면 모든정보초기화
+      await logout();
+      return false;
+    }
+    return true;
+  }
+
+  static Future<bool> logout() async {
+    await AccountManager.logout();
     LoginPage.userPropertyManagerHolder?.clearAll();
-    LoginPage.teamManagerHolder = TeamManager();
-    LoginPage.teamManagerHolder?.configEvent();
+    LoginPage.userPropertyManagerHolder?.clearUserProperty();
     LoginPage.teamManagerHolder?.clearAll();
-    LoginPage.enterpriseHolder = EnterpriseManager();
-    LoginPage.enterpriseHolder?.configEvent();
     LoginPage.enterpriseHolder?.clearAll();
-    LoginPage.userPropertyManagerHolder!.initUserProperty().then((value) {
-      LoginPage.teamManagerHolder?.initTeam();
-      LoginPage.enterpriseHolder?.initEnterprise();
-    });
+    return true;
   }
 
   // static void initTeam() {
@@ -105,6 +134,7 @@ class _LoginPageState extends State<LoginPage> {
 
     AccountManager.login(email, password).then((value) {
       HycopFactory.setBucketId();
+      LoginPage.initUserProperty();
       Routemaster.of(context).push(AppRoutes.intro);
     }).onError((error, stackTrace) {
       if (error is HycopException) {
@@ -157,6 +187,7 @@ class _LoginPageState extends State<LoginPage> {
       logger.finest('register start');
       AccountManager.createAccount(userData).then((value) {
         logger.finest('register end');
+        LoginPage.userPropertyManagerHolder!.createUserProperty();
         Routemaster.of(context).push(AppRoutes.intro);
         logger.finest('goto user-info-page');
       }).onError((error, stackTrace) {
@@ -191,6 +222,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
+        LoginPage.userPropertyManagerHolder!.createUserProperty();
         Routemaster.of(context).push(AppRoutes.intro);
       }).onError((error, stackTrace) {
         if (error is HycopException) {
@@ -396,7 +428,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Text(
                         _errMsg,
-                        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w800),
+                        style: const TextStyle(fontSize: 10, color: Colors.red, fontWeight: FontWeight.w800),
                       )
                     ],
                   ))

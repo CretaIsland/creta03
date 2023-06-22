@@ -1,11 +1,15 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, must_be_immutable, unnecessary_brace_in_string_interps
 
+import 'package:creta03/pages/studio/right_menu/book/filter_dialog.dart';
 import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 
 //import '../../../../data_io/book_manager.dart';
+import '../../../../common/creta_utils.dart';
+import '../../../../data_io/filter_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/creta_color.dart';
@@ -16,6 +20,7 @@ import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
+import '../../../../model/filter_model.dart';
 import '../../book_main_page.dart';
 import '../property_mixin.dart';
 
@@ -37,6 +42,7 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
   //bool isColorOpen = false;
   static bool _isOptionOpen = true;
   static bool _isSizeOpen = true;
+  static bool _isFilterOpen = true;
 
   final GlobalKey<CretaTextFieldState> textFieldKey = GlobalKey<CretaTextFieldState>();
   GlobalKey popupKey = GlobalKey();
@@ -58,24 +64,36 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _pageSize(),
-        propertyDivider(),
-        //_pageColor(),
-        //propertyDivider(),
-        //_gradation(),
-        // propertyDivider(),
-        //_texture(),
-        //propertyDivider(),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: _bookOption(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<FilterManager>.value(
+          value: BookMainPage.filterManagerHolder!,
         ),
-        propertyDivider(),
       ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _pageSize(),
+          propertyDivider(),
+          //_pageColor(),
+          //propertyDivider(),
+          //_gradation(),
+          // propertyDivider(),
+          //_texture(),
+          //propertyDivider(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: _bookOption(),
+          ),
+          propertyDivider(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: _bookFilter(),
+          ),
+          propertyDivider(),
+        ],
+      ),
     );
   }
 
@@ -487,6 +505,32 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
     return retval;
   }
 
+  List<CretaMenuItem> getFilterListItem(Function? onChnaged) {
+    List<CretaMenuItem> retval = [];
+    retval.add(CretaMenuItem(
+      caption: CretaStudioLang.nofilter,
+      onPressed: () {
+        widget.model.filter.set('');
+        BookMainPage.bookManagerHolder!.notify();
+      },
+      selected: widget.model.filter.value.isEmpty,
+    ));
+    List<String> filterList = BookMainPage.filterManagerHolder!.getFilterList();
+    for (String name in filterList) {
+      //print('-----------------------$name');
+      retval.add(CretaMenuItem(
+        caption: name,
+        onPressed: () {
+          widget.model.filter.set(name);
+          BookMainPage.bookManagerHolder!.notify();
+        },
+        selected: name == widget.model.filter.value,
+      ));
+    }
+
+    return retval;
+  }
+
   String getResolutionString() {
     if (widget.model.pageSizeType.value == 0) {
       return '';
@@ -537,6 +581,129 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
             widget.model.isAutoPlay.set(value);
           },
         ));
+  }
+
+  Widget _bookFilter() {
+    return Consumer<FilterManager>(builder: (context, manager, child) {
+      return propertyCard(
+        isOpen: _isFilterOpen,
+        onPressed: () {
+          setState(() {
+            _isFilterOpen = !_isFilterOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.filter, style: CretaFont.titleSmall),
+        trailWidget: Text(widget.model.filter.value, style: dataStyle),
+        hasRemoveButton: true,
+        onDelete: () {
+          widget.model.filter.set('');
+          BookMainPage.bookManagerHolder!.notify();
+        },
+        bodyWidget: _filterBody(),
+      );
+    });
+  }
+
+  Widget _filterBody() {
+    FilterModel? filterModel = widget.model.filter.value.isNotEmpty
+        ? BookMainPage.filterManagerHolder!.findFilter(widget.model.filter.value)
+        : null;
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CretaDropDownButton(
+              padding: EdgeInsets.only(left: 8, right: 4),
+              height: 30,
+              itemHeight: 26,
+              textStyle: CretaFont.bodyESmall,
+              dropDownMenuItemList: getFilterListItem(null),
+              align: MainAxisAlignment.start,
+            ),
+            BTN.fill_gray_i_m(
+              tooltip: CretaStudioLang.editFilter,
+              tooltipBg: CretaColor.text[400]!,
+              icon: Icons.edit_note_outlined,
+              iconColor: CretaColor.primary,
+              buttonSize: 36,
+              iconSize: 18,
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return FilterDialog(
+                        width: 500,
+                        height: 500,
+                        model: widget.model,
+                        isNew: widget.model.filter.value.isEmpty,
+                        onComplete: (val) {
+                          BookMainPage.filterManagerHolder!.notify();
+                        },
+                      );
+                    });
+                // CretaPopup.popup(
+                //   context: context,
+                //   width: 300,
+                //   height: 400,
+                //   child: FilterDialog(
+                //     width: 300,
+                //     height: 400,
+                //     model: widget.model,
+                //   ),
+                // );
+              },
+            ),
+          ],
+        ),
+        if (filterModel != null)
+          Padding(
+            // excludes
+            padding: const EdgeInsets.only(top: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  CretaStudioLang.excludeTag,
+                  style: titleStyle,
+                ),
+                SizedBox(
+                  width: 210,
+                  child: Text(
+                    CretaUtils.listToDisplay(filterModel.excludes),
+                    style: dataStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        if (filterModel != null)
+          Padding(
+            // includes
+            padding: const EdgeInsets.only(top: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  CretaStudioLang.includeTag,
+                  style: titleStyle,
+                ),
+                SizedBox(
+                  width: 210,
+                  child: Text(
+                    CretaUtils.listToDisplay(filterModel.includes),
+                    style: dataStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
   }
 
   // Widget _texture() {

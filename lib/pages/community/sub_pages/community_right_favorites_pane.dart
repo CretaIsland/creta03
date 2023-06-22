@@ -134,6 +134,10 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
       _favoritesBookList.add(fModel);
       _favoritesBookIdMap[fModel.bookId] = true;
     }
+    if (bookIdList.isEmpty) {
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
+    }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();

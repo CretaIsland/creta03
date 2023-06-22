@@ -255,6 +255,14 @@ class CretaStudioLang {
   static const String glass = '유리질';
   static const String outlineWidth = '두께';
   static const String option = '옵션';
+  static const String filter = '필터';
+  static const String nofilter = '적용된 필터 없음             ';
+  static const String excludeTag = '제외할 키워드 태그';
+  static const String includeTag = '포함할 키워드 태그';
+  static const String newfilter = '새 필터 만들기';
+  static const String filterName = '필터 이름';
+  static const String filterDelete = '필터 삭제';
+  static const String filterHasNoName = '필터에 이름이 없습니다. 이름을 입력하십시오';
   static const String autoPlay = '자동 페이지 넘김';
   static const String allowReply = '좋아요/댓글 허용';
   static const String widthHeight = '(가로x세로)';
@@ -311,6 +319,7 @@ class CretaStudioLang {
       '서버가 혼잡하여 현재 이용할 수 없습니다. \n잠시 후에 다시 시도해주세요. \n불편을 드려 죄송합니다.'; // added by Mai 230613
 
   static const String fixedRatio = "가로세로비를 고정합니다";
+  static const String editFilter = "필터를 편집합니다";
 
   static const String secondColor = "혼합색";
 
@@ -471,4 +480,7 @@ class CretaStudioLang {
   static const String showGrid = '그리드 보기';
   static const String showRuler = '눈금자 보기';
   static const String linkIntro = '연결할 페이지나 프레임을 선택하세요.';
+
+  static String filterAlreadyExist = '같은 이름의 필터가 이미 존재합니다.';
+  static String editFilterDialog = '필터 편집';
 }

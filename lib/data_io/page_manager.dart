@@ -245,6 +245,10 @@ class PageManager extends CretaManager {
         if (pageModel == null) {
           continue;
         }
+        if (BookMainPage.filterManagerHolder!.isVisible(pageModel) == false) {
+          continue;
+        }
+
         if (pageModel.isShow.value == false) {
           if (pageModel.isTempVisible == false) {
             continue;
@@ -283,6 +287,10 @@ class PageManager extends CretaManager {
         if (pageModel == null) {
           continue;
         }
+        if (BookMainPage.filterManagerHolder!.isVisible(pageModel) == false) {
+          continue;
+        }
+
         if (pageModel.isShow.value == false) {
           continue;
         }

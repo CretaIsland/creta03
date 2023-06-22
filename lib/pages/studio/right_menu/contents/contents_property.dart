@@ -7,6 +7,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../../../common/creta_utils.dart';
+import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_ex_slider.dart';
 import '../../../../design_system/buttons/creta_tab_button.dart';
@@ -23,6 +24,7 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
+import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../property_mixin.dart';
@@ -39,7 +41,7 @@ class ContentsProperty extends StatefulWidget {
 }
 
 class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin {
-  //ContentsManager? _contentsManager;
+  ContentsManager? _contentsManager;
 
   // static bool _isInfoOpen = false;
   static bool _isLinkControlOpen = false;
@@ -77,7 +79,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     //final ContentsEventController receiveEvent = Get.find(tag: 'contents-main-to-property');
     //_receiveEvent = receiveEvent;
 
-    //_contentsManager = widget.frameManager.getContentsManager(widget.model.parentMid.value);
+    _contentsManager = widget.frameManager.getContentsManager(widget.model.parentMid.value);
   }
 
   @override
@@ -615,7 +617,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         },
         titleWidget: Text(CretaStudioLang.hashTab, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: widget.model.hashTag.value.isEmpty
+        trailWidget: widget.model.hashTag.value.length < 3
             ? SizedBox.shrink()
             : SizedBox(
                 width: 160,
@@ -627,9 +629,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               ),
         hasRemoveButton: widget.model.hashTag.value.isNotEmpty,
         onDelete: () {
-          setState(() {
-            widget.model.hashTag.set('');
-          });
+          widget.model.hashTag.set('');
+          BookMainPage.bookManagerHolder!.notify();
         },
         bodyWidget: Column(children: _tagBody()),
       ),
@@ -642,15 +643,25 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       top: 12,
       model: widget.model,
       minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
-      onTagChanged: (value) {
-        setState(() {});
-      },
+      onTagChanged: (value) {},
       onSubmitted: (value) {
-        setState(() {});
+        _hasTagChanged();
       },
       onDeleted: (value) {
-        setState(() {});
+        BookMainPage.bookManagerHolder!.notify();
       },
     );
+  }
+
+  void _hasTagChanged() {
+    if (_contentsManager != null) {
+      ContentsModel? contentsModel = _contentsManager!.getCurrentModel();
+      if (contentsModel != null && contentsModel.mid == widget.model.mid) {
+        _contentsManager!.reOrdering();
+        _contentsManager!.gotoNext();
+        return;
+      }
+    }
+    BookMainPage.bookManagerHolder!.notify();
   }
 }

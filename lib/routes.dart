@@ -126,34 +126,46 @@ final routesLoggedOut = RouteMap(
     AppRoutes.quillDemoPage: (_) => TransitionPage(child: QuillEnhancedWidget()),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (routeData) {
-      //skpark test code
-      if (BookMainPage.selectedMid.isEmpty) {
-        BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+      if (AccountManager.currentLoginUser.isLoginedUser) {
+        //skpark test code
+        if (BookMainPage.selectedMid.isEmpty) {
+          BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+        }
+        logger.finest('selectedMid=${BookMainPage.selectedMid}');
+        return TransitionPage(
+            child: BookMainPage(bookKey: GlobalObjectKey('Book${BookMainPage.selectedMid}')));
+      } else {
+        return const Redirect(AppRoutes.login);
       }
-      logger.finest('selectedMid=${BookMainPage.selectedMid}');
-      return TransitionPage(
-          child: BookMainPage(bookKey: GlobalObjectKey('Book${BookMainPage.selectedMid}')));
     },
     AppRoutes.studioBookPreviewPage: (routeData) {
-      //skpark test code
-      if (BookMainPage.selectedMid.isEmpty) {
-        BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
-      }
-      logger.finest('selectedMid=${BookMainPage.selectedMid}');
+      if (AccountManager.currentLoginUser.isLoginedUser) {
+        //skpark test code
+        if (BookMainPage.selectedMid.isEmpty) {
+          BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+        }
+        logger.finest('selectedMid=${BookMainPage.selectedMid}');
 
-      return TransitionPage(
-          child: BookMainPage(
+        return TransitionPage(
+            child: BookMainPage(
               //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
-              bookKey: GlobalKey(),
-              isPreviewX: true));
+                bookKey: GlobalKey(),
+                isPreviewX: true));
+      } else {
+        return const Redirect(AppRoutes.login);
+      }
     },
     AppRoutes.studioBookGridPage: (routeData) {
-      // print('---------------------------------------${routeData.fullPath}');
-      // print('---------------------------------------${routeData.path}');
-      // print('---------------------------------------${routeData.publicPath}');
-      return TransitionPage(
-        child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
-      );
+      if (AccountManager.currentLoginUser.isLoginedUser) {
+        // print('---------------------------------------${routeData.fullPath}');
+        // print('---------------------------------------${routeData.path}');
+        // print('---------------------------------------${routeData.publicPath}');
+        return TransitionPage(
+          child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
+        );
+      } else {
+        return const Redirect(AppRoutes.login);
+      }
     },
     AppRoutes.studioBookSharedPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.sharedPage),
@@ -161,90 +173,122 @@ final routesLoggedOut = RouteMap(
     AppRoutes.studioBookTeamPage: (_) => TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.teamPage),
         ),
-    AppRoutes.communityHome: (_) => TransitionPage(
+    AppRoutes.communityHome: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: CommunityPage(
             key: GlobalObjectKey('AppRoutes.communityHome'),
             subPageUrl: AppRoutes.communityHome,
           ),
-        ),
+        )
+        : const Redirect(AppRoutes.login),
     AppRoutes.channel: (routeData) {
-      String url = routeData.fullPath;
-      int pos = url.indexOf('channel=');
-      String channelMid = (pos > 0) ? url.substring(pos) : '';
-      CommunityRightChannelPane.channelId = channelMid;
-      return TransitionPage(
-        child: CommunityPage(
-          key: GlobalObjectKey(channelMid.isNotEmpty ? channelMid : 'NoChannelMid'),
-          subPageUrl: AppRoutes.channel,
-        ),
-      );
+      if (AccountManager.currentLoginUser.isLoginedUser) {
+        String url = routeData.fullPath;
+        int pos = url.indexOf('channel=');
+        String channelMid = (pos > 0) ? url.substring(pos) : '';
+        CommunityRightChannelPane.channelId = channelMid;
+        return TransitionPage(
+          child: CommunityPage(
+            key: GlobalObjectKey(channelMid.isNotEmpty ? channelMid : 'NoChannelMid'),
+            subPageUrl: AppRoutes.channel,
+          ),
+        );
+      } else {
+        return const Redirect(AppRoutes.login);
+      }
     },
-    AppRoutes.subscriptionList: (_) => TransitionPage(
+    AppRoutes.subscriptionList: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: CommunityPage(
             key: GlobalObjectKey('AppRoutes.subscriptionList'),
             subPageUrl: AppRoutes.subscriptionList,
           ),
-        ),
-    AppRoutes.playlist: (_) => TransitionPage(
+        )
+        : const Redirect(AppRoutes.login),
+    AppRoutes.playlist: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: CommunityPage(
             key: GlobalObjectKey('AppRoutes.playlist'),
             subPageUrl: AppRoutes.playlist,
           ),
-        ),
+        )
+        : const Redirect(AppRoutes.login),
     AppRoutes.playlistDetail: (routeData) {
-      String url = routeData.fullPath;
-      int pos = url.indexOf('playlist=');
-      String playlistMid = (pos > 0) ? url.substring(pos) : '';
-      CommunityRightPlaylistDetailPane.playlistId = playlistMid;
-      return TransitionPage(
-        child: CommunityPage(
-          key: GlobalObjectKey(playlistMid.isNotEmpty ? playlistMid : 'NoPlaylistMid'),
-          subPageUrl: AppRoutes.playlistDetail,
-        ),
-      );
+      if (AccountManager.currentLoginUser.isLoginedUser) {
+        String url = routeData.fullPath;
+        int pos = url.indexOf('playlist=');
+        String playlistMid = (pos > 0) ? url.substring(pos) : '';
+        CommunityRightPlaylistDetailPane.playlistId = playlistMid;
+        return TransitionPage(
+          child: CommunityPage(
+            key: GlobalObjectKey(playlistMid.isNotEmpty ? playlistMid : 'NoPlaylistMid'),
+            subPageUrl: AppRoutes.playlistDetail,
+          ),
+        );
+      } else {
+        return const Redirect(AppRoutes.login);
+      }
     },
     AppRoutes.communityBook: (routeData) {
-      String url = routeData.fullPath;
-      int pos = url.indexOf('book=');
-      String bookMid = (pos > 0) ? url.substring(pos) : '';
-      CommunityRightBookPane.bookId = bookMid;
-      return TransitionPage(
-        child: CommunityPage(
-          key: GlobalObjectKey(bookMid.isNotEmpty ? bookMid : 'NoBookMid'),
-          subPageUrl: AppRoutes.communityBook,
-        ),
-      );
+      if (AccountManager.currentLoginUser.isLoginedUser) {
+        String url = routeData.fullPath;
+        int pos = url.indexOf('book=');
+        String bookMid = (pos > 0) ? url.substring(pos) : '';
+        CommunityRightBookPane.bookId = bookMid;
+        return TransitionPage(
+          child: CommunityPage(
+            key: GlobalObjectKey(bookMid.isNotEmpty ? bookMid : 'NoBookMid'),
+            subPageUrl: AppRoutes.communityBook,
+          ),
+        );
+      } else {
+        return const Redirect(AppRoutes.login);
+      }
     },
-    AppRoutes.watchHistory: (_) => TransitionPage(
+    AppRoutes.watchHistory: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: CommunityPage(
             key: GlobalObjectKey('AppRoutes.watchHistory'),
             subPageUrl: AppRoutes.watchHistory,
           ),
-        ),
-    AppRoutes.favorites: (_) => TransitionPage(
+        )
+        : const Redirect(AppRoutes.login),
+    AppRoutes.favorites: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: CommunityPage(
             key: GlobalObjectKey('AppRoutes.favorites'),
             subPageUrl: AppRoutes.favorites,
           ),
-        ),
+        )
+        : const Redirect(AppRoutes.login),
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
         ),
-    AppRoutes.myPageDashBoard: (_) => TransitionPage(
+    AppRoutes.myPageDashBoard: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: MyPage(selectedPage: AppRoutes.myPageDashBoard),
-        ),
-    AppRoutes.myPageInfo: (_) => TransitionPage(
+        )
+        : const Redirect(AppRoutes.login),
+    AppRoutes.myPageInfo: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: MyPage(selectedPage: AppRoutes.myPageInfo),
-        ),
-    AppRoutes.myPageAccountManage: (_) => TransitionPage(
+        )
+        : const Redirect(AppRoutes.login),
+    AppRoutes.myPageAccountManage: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: MyPage(selectedPage: AppRoutes.myPageAccountManage),
-        ),
-    AppRoutes.myPageSettings: (_) => TransitionPage(
+        )
+        : const Redirect(AppRoutes.login),
+    AppRoutes.myPageSettings: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: MyPage(selectedPage: AppRoutes.myPageSettings),
-        ),
-    AppRoutes.myPageTeamManage: (_) => TransitionPage(
+        )
+        : const Redirect(AppRoutes.login),
+    AppRoutes.myPageTeamManage: (_) => (AccountManager.currentLoginUser.isLoginedUser)
+        ? TransitionPage(
           child: MyPage(selectedPage: AppRoutes.myPageTeamManage),
-        ),
+        )
+        : const Redirect(AppRoutes.login),
   },
 );
 

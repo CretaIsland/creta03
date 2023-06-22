@@ -134,6 +134,10 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
         bookAllList.add(bookId);
       }
     }
+    if (bookAllList.isEmpty) {
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
+    }
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookAllList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }

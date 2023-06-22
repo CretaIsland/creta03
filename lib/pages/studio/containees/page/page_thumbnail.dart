@@ -57,6 +57,8 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   GradationType gradationType = GradationType.none;
   TextureType textureType = TextureType.none;
 
+  bool _buildComplete = false;
+
   @override
   void initState() {
     super.initState();
@@ -66,14 +68,15 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
     _receiveEventFromMain = receiveEventFromMain;
     _receiveEventFromProperty = receiveEventFromProperty;
 
-    //afterBuild();
+    afterBuild();
   }
 
-  // Future<void> afterBuild() async {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //     //if (widget.pageIndex == 0) _takeAScreenShot();
-  //   });
-  // }
+  Future<void> afterBuild() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _buildComplete = true;
+      //if (widget.pageIndex == 0) _takeAScreenShot();
+    });
+  }
 
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
@@ -227,7 +230,9 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                 logger.info('_receiveEventFromMain-----------------------------------FrameModel');
                 FrameModel model = snapshot.data! as FrameModel;
                 frameManager.updateModel(model);
-                widget.chageEventReceived.call(model.parentMid.value);
+                if (_buildComplete) {
+                  widget.chageEventReceived.call(model.parentMid.value);
+                }
               } else {
                 logger.info('_receiveEventFromMain-----Unknown Model');
               }
@@ -250,6 +255,11 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                   return Stack(
                     children: _frameManager!.orderMapIterator((model) {
                       FrameModel frameModel = model as FrameModel;
+
+                      if (_frameManager!.isVisible(model) == false) {
+                        return SizedBox.shrink();
+                      }
+
                       //logger.info('frameManager.orderMapIterator-------${frameModel.name.value}');
                       double frameWidth =
                           (model.width.value + model.shadowSpread.value) * applyScale;

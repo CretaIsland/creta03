@@ -76,11 +76,11 @@ class CretaBookItemState extends State<CretaBookItem> {
 
   void _openPopupMenu() {
     CretaPopupMenu.showMenu(
-            context: context,
-            globalKey: widget.cretaBookData.uiKey,
-            popupMenu: _popupMenuList,
-            initFunc: setPopmenuOpen)
-        .then((value) {
+      context: context,
+      globalKey: widget.cretaBookData.uiKey,
+      popupMenu: _popupMenuList,
+      initFunc: setPopmenuOpen,
+    ).then((value) {
       logger.finest('팝업메뉴 닫기');
       setState(() {
         popmenuOpen = false;
@@ -428,7 +428,6 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
     );
   }
 }
-
 
 //////////////////////////////////////////////////////////////////////
 class CretaBookUIItem extends StatefulWidget {
