@@ -178,7 +178,7 @@ class UserPropertyModel extends CretaModel {
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
     teams = CretaUtils.dynamicListToStringList(map["teams"]);
-    enterprise = map['enterprise'] ?? '';
+    enterprise = map['enterprise'] ?? 'creta';
   }
 
   @override

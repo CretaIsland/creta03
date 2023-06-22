@@ -144,6 +144,10 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
       WatchHistoryModel whModel = model as WatchHistoryModel;
       bookIdList.add(whModel.bookId);
     }
+    if (bookIdList.isEmpty) {
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
+    }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();

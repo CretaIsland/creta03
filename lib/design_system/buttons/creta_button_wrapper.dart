@@ -646,6 +646,7 @@ class BTN {
   }
 
   static CretaButton fill_gray_iti_l({
+    Key? key,
     required String text,
     required IconData icon,
     required ImageProvider image,
@@ -656,6 +657,7 @@ class BTN {
     CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
+      key: key,
       width: width,
       height: 40,
       buttonType: CretaButtonType.child,
@@ -684,10 +686,14 @@ class BTN {
               ],
             ),
           ),
-          Icon(
-            icon,
-            size: 20,
-            color: fgColor,
+          Expanded(child: Container()),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Icon(
+              icon,
+              size: 20,
+              color: fgColor,
+            ),
           ),
         ],
       ),

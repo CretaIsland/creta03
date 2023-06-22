@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
+import 'package:creta03/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -280,6 +281,38 @@ class Snippet {
     ]);
   }
 
+  static void _popupAccountMenu(GlobalKey key, BuildContext context) {
+    CretaPopupMenu.showMenu(
+      context: context,
+      globalKey: key,
+      xOffset: -60,
+      popupMenu: [
+        CretaMenuItem(
+          caption: '마이페이지',
+          onPressed: () {},
+        ),
+        CretaMenuItem(
+          caption: '조직전환',
+          onPressed: () {},
+        ),
+        CretaMenuItem(
+          caption: '로그아웃',
+          onPressed: () {
+            LoginPage.logout();
+            Routemaster.of(context).push(AppRoutes.login);
+          },
+        ),
+        CretaMenuItem(
+          caption: '도움말',
+          onPressed: () {},
+        ),
+      ],
+      initFunc: () {},
+    ).then((value) {
+      logger.finest('팝업메뉴 닫기');
+    });
+  }
+
   static PreferredSizeWidget CretaAppBarOfStudio(
       BuildContext context, Widget title, Widget? additionals) {
     return AppBar(
@@ -290,40 +323,47 @@ class Snippet {
           child: additionals ?? Container(),
         ),
         SizedBox(width: 15),
-        Center(
-          child: SizedBox(
-            height: 36,
-            child: BTN.fill_blue_i_l(
-              tooltip: CretaStudioLang.tooltipNoti,
-              onPressed: () {},
-              icon: Icons.notifications_outlined,
+        (!AccountManager.currentLoginUser.isLoginedUser)
+          ? SizedBox.shrink()
+          : Center(
+            child: SizedBox(
+              height: 36,
+              child: BTN.fill_blue_i_l(
+                tooltip: CretaStudioLang.tooltipNoti,
+                onPressed: () {},
+                icon: Icons.notifications_outlined,
+              ),
             ),
           ),
-        ),
         SizedBox(
           width: 10,
         ),
-        Center(
-          child: SizedBox(
-            height: 40,
-            // child: BTN.fill_gray_wti_l(
-            //   buttonColor: CretaButtonColor.blue,
-            //   text: AccountManager.currentLoginUser.name,
-            //   icon: Icons.arrow_drop_down_outlined,
-            //   leftWidget: LoginPage.userPropertyManagerHolder!.profileImageBox(
-            //     radius: 28,
-            //   ),
-            //   onPressed: () {},
-            // ),
-            child: BTN.fill_gray_iti_l(
-              buttonColor: CretaButtonColor.blue,
-              text: AccountManager.currentLoginUser.name,
-              icon: Icons.arrow_drop_down_outlined,
-              image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-              onPressed: () {},
+        (!AccountManager.currentLoginUser.isLoginedUser)
+          ? SizedBox.shrink()
+          : Center(
+            child: SizedBox(
+              height: 40,
+              // child: BTN.fill_gray_wti_l(
+              //   buttonColor: CretaButtonColor.blue,
+              //   text: AccountManager.currentLoginUser.name,
+              //   icon: Icons.arrow_drop_down_outlined,
+              //   leftWidget: LoginPage.userPropertyManagerHolder!.profileImageBox(
+              //     radius: 28,
+              //   ),
+              //   onPressed: () {},
+              // ),
+              child: BTN.fill_gray_iti_l(
+                key: GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'),
+                buttonColor: CretaButtonColor.blue,
+                text: AccountManager.currentLoginUser.name,
+                icon: Icons.arrow_drop_down_outlined,
+                image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                onPressed: () {
+                  _popupAccountMenu(GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
+                },
+              ),
             ),
           ),
-        ),
         SizedBox(
           width: 20,
         ),
@@ -367,12 +407,15 @@ class Snippet {
               child: SizedBox(
                 height: 40,
                 child: BTN.fill_gray_iti_l(
+                  key: GlobalObjectKey('MyCretaAppBarOfStudio.BTN.fill_gray_iti_l'),
                   buttonColor: CretaButtonColor.blue,
                   text: AccountManager.currentLoginUser.name,
                   icon: Icons.arrow_drop_down_outlined,
                   image:
                       NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                  onPressed: () {},
+                  onPressed: () {
+                    _popupAccountMenu(GlobalObjectKey('MyCretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
+                  },
                 ),
               ),
             ),

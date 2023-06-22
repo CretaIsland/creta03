@@ -67,13 +67,18 @@ class LoginPage extends StatefulWidget {
     await LoginPage.enterpriseHolder?.initEnterprise();
     if (LoginPage.teamManagerHolder!.modelList.isEmpty || LoginPage.enterpriseHolder!.modelList.isEmpty) {
       // team이 없거나, ent없으면 모든정보초기화
-      AccountManager.logout();
-      LoginPage.userPropertyManagerHolder?.clearAll();
-      LoginPage.userPropertyManagerHolder!.clearUserProperty();
-      LoginPage.teamManagerHolder?.clearAll();
-      LoginPage.enterpriseHolder?.clearAll();
+      await logout();
       return false;
     }
+    return true;
+  }
+
+  static Future<bool> logout() async {
+    await AccountManager.logout();
+    LoginPage.userPropertyManagerHolder?.clearAll();
+    LoginPage.userPropertyManagerHolder?.clearUserProperty();
+    LoginPage.teamManagerHolder?.clearAll();
+    LoginPage.enterpriseHolder?.clearAll();
     return true;
   }
 
@@ -182,6 +187,7 @@ class _LoginPageState extends State<LoginPage> {
       logger.finest('register start');
       AccountManager.createAccount(userData).then((value) {
         logger.finest('register end');
+        LoginPage.userPropertyManagerHolder!.createUserProperty();
         Routemaster.of(context).push(AppRoutes.intro);
         logger.finest('goto user-info-page');
       }).onError((error, stackTrace) {
@@ -216,6 +222,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
+        LoginPage.userPropertyManagerHolder!.createUserProperty();
         Routemaster.of(context).push(AppRoutes.intro);
       }).onError((error, stackTrace) {
         if (error is HycopException) {
@@ -421,7 +428,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Text(
                         _errMsg,
-                        style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w800),
+                        style: const TextStyle(fontSize: 10, color: Colors.red, fontWeight: FontWeight.w800),
                       )
                     ],
                   ))

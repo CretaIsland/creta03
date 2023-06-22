@@ -134,6 +134,10 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
     for (var bookId in _currentPlaylistModel!.bookIdList) {
       bookIdList.add(bookId);
     }
+    if (bookIdList.isEmpty) {
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
+    }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();

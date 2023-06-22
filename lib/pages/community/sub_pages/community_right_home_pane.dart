@@ -178,7 +178,12 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         bookIdList.add(plModel.bookIdList[0]);
       }
     }
+    bookPublishedManagerHolder.clearAll();
     bookPublishedManagerHolder.clearConditions();
+    if (bookIdList.isEmpty) {
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
+    }
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
