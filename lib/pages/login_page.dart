@@ -65,8 +65,10 @@ class LoginPage extends StatefulWidget {
     // team 및 ent 정보 가져움
     await LoginPage.teamManagerHolder?.initTeam();
     await LoginPage.enterpriseHolder?.initEnterprise();
-    if (LoginPage.teamManagerHolder!.modelList.isEmpty || LoginPage.enterpriseHolder!.modelList.isEmpty) {
-      // team이 없거나, ent없으면 모든정보초기화
+    //if (LoginPage.teamManagerHolder!.modelList.isEmpty || LoginPage.enterpriseHolder!.modelList.isEmpty) {
+    // team이 없거나, ent없으면 모든정보초기화
+    if (LoginPage.enterpriseHolder!.modelList.isEmpty) {
+      // team이 없는건 가능, ent없으면 모든정보초기화
       await logout();
       return false;
     }
@@ -132,10 +134,15 @@ class _LoginPageState extends State<LoginPage> {
     String email = _loginEmailTextEditingController.text;
     String password = _loginPasswordTextEditingController.text;
 
-    AccountManager.login(email, password).then((value) {
+    AccountManager.login(email, password).then((value) async {
       HycopFactory.setBucketId();
-      LoginPage.initUserProperty();
-      Routemaster.of(context).push(AppRoutes.intro);
+      LoginPage.initUserProperty().then((value) {
+        if (value) {
+          Routemaster.of(context).push(AppRoutes.intro);
+        } else {
+          throw HycopUtils.getHycopException(defaultMessage: 'Login failed !!!');
+        }
+      });
     }).onError((error, stackTrace) {
       if (error is HycopException) {
         HycopException ex = error;
