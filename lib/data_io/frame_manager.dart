@@ -49,7 +49,7 @@ class FrameManager extends CretaManager {
   // }
 
   FrameManager({required this.pageModel, required this.bookModel, String tableName = 'creta_frame'})
-      : super(tableName) {
+      : super(tableName, pageModel.mid) {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
   }
 
@@ -345,7 +345,7 @@ class FrameManager extends CretaManager {
   Future<void> _initContentsManager(String frameMid, ContentsManager contentsManager) async {
     if (contentsManager.onceDBGetComplete == false) {
       await contentsManager.getContents();
-      contentsManager.addRealTimeListen();
+      contentsManager.addRealTimeListen(frameMid);
       contentsManager.reOrdering();
     }
     logger.info('$frameMid=initChildren(${contentsManager.getAvailLength()})');

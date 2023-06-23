@@ -9,8 +9,10 @@ import 'package:provider/provider.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
+import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/link_model.dart';
@@ -32,6 +34,7 @@ class LinkWidget extends StatefulWidget {
   final ContentsModel contentsModel;
   final FrameModel frameModel;
   final Offset frameOffset;
+  final void Function() onFrameShowUnshow;
   const LinkWidget({
     super.key,
     required this.applyScale,
@@ -41,6 +44,7 @@ class LinkWidget extends StatefulWidget {
     required this.contentsModel,
     required this.frameModel,
     required this.frameOffset,
+    required this.onFrameShowUnshow,
   });
 
   @override
@@ -51,11 +55,13 @@ class _LinkWidgetState extends State<LinkWidget> {
   LinkManager? _linkManager;
   OffsetEventController? _linkReceiveEvent;
   OffsetEventController? _linkSendEvent;
+  FrameEventController? _sendEvent;
   //BoolEventController? _lineDrawSendEvent;
   bool _isMove = false;
   Offset _position = Offset.zero;
   Offset _prev = Offset.zero;
   bool _isHover = false;
+  BookModel? _bookModel;
 
   @override
   void initState() {
@@ -65,8 +71,11 @@ class _LinkWidgetState extends State<LinkWidget> {
     _linkReceiveEvent = linkReceiveEvent;
     final OffsetEventController linkSendEvent = Get.find(tag: 'frame-each-to-on-link');
     _linkSendEvent = linkSendEvent;
+    final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
+    _sendEvent = sendEvent;
     // final BoolEventController lineDrawSendEvent = Get.find(tag: 'draw-link');
     // _lineDrawSendEvent = lineDrawSendEvent;
+    _bookModel = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
   }
 
   @override
@@ -142,6 +151,8 @@ class _LinkWidgetState extends State<LinkWidget> {
                           contentsManager: widget.contentsManager,
                           applyScale: widget.applyScale,
                         ),
+                      if (_showVisibleButton()) _drawVisibleButton(),
+                      if (_showVisibleButton()) _drawMaximizeButton(),
                     ],
                   ),
                 ),
@@ -164,10 +175,76 @@ class _LinkWidgetState extends State<LinkWidget> {
     return true;
   }
 
+  Widget _drawVisibleButton() {
+    double buttonSize = 20;
+    double margin = 20;
+    double posX = (widget.frameModel.width.value - buttonSize - margin) * widget.applyScale;
+    double posY = margin / 2 * widget.applyScale;
+
+    return Positioned(
+        left: posX,
+        top: posY,
+        child: SizedBox(
+          width: buttonSize,
+          height: buttonSize,
+          child: BTN.fill_i_s(
+              useTapUp: true,
+              icon: widget.frameModel.isShow.value
+                  ? Icons.visibility_outlined
+                  : Icons.visibility_off_outlined,
+              onPressed: () {
+                BookMainPage.containeeNotifier!.setFrameClick(true);
+
+                widget.frameModel.isShow.set(!widget.frameModel.isShow.value);
+                widget.frameModel.changeOrderByIsShow(widget.frameManager);
+                //widget.frameModel.isTempVisible = widget.frameModel.isShow.value;
+                widget.onFrameShowUnshow.call();
+              }),
+        ));
+  }
+
+  Widget _drawMaximizeButton() {
+    double buttonSize = 20;
+    double margin = 20;
+    double posX = (widget.frameModel.width.value - 2 * (buttonSize + margin)) * widget.applyScale;
+    double posY = margin / 2 * widget.applyScale;
+
+    bool isFullScreen = widget.frameModel.isFullScreenTest(_bookModel!);
+
+    return Positioned(
+        left: posX,
+        top: posY,
+        child: SizedBox(
+          width: buttonSize,
+          height: buttonSize,
+          child: BTN.fill_i_s(
+              useTapUp: true,
+              icon: isFullScreen ? Icons.fullscreen_exit_outlined : Icons.fullscreen_outlined,
+              onPressed: () {
+                if (_bookModel == null) return;
+                setState(() {
+                  widget.frameModel.toggleFullscreen(isFullScreen, _bookModel!);
+                  //logger.finest('sendEvent');
+                  _sendEvent!.sendEvent(widget.frameModel);
+                });
+              }),
+        ));
+  }
+
   bool _showPlayButton() {
     //logger.info('_showPlayButton(${LinkParams.isLinkNewMode})');
     if (!_isHover) return false;
     if (!_isPlayAble()) return false;
+    if (LinkParams.isLinkNewMode) return false;
+    if (widget.contentsModel.isLinkEditMode) return false;
+    //if (widget.contentsModel.contentsType == ContentsType.document) return false;
+    return true;
+  }
+
+  bool _showVisibleButton() {
+    //logger.info('_showPlayButton(${LinkParams.isLinkNewMode})');
+    if (!_isHover) return false;
+    //if (!_isPlayAble()) return false;
     if (LinkParams.isLinkNewMode) return false;
     if (widget.contentsModel.isLinkEditMode) return false;
     //if (widget.contentsModel.contentsType == ContentsType.document) return false;
@@ -293,7 +370,7 @@ class _LinkWidgetState extends State<LinkWidget> {
             if (frameModel.isShow.value == true) {
               double order = widget.frameManager.getMaxOrder();
               if (frameModel.order.value < order) {
-                frameModel.order.set(order + 1, save: false);
+                frameModel.changeOrderByIsShow(widget.frameManager);
               }
               // 여기서 연결선을 연결한다....
               LinkParams.linkPostion = Offset(posX, posY);
@@ -305,6 +382,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.orgPostion = null;
               LinkParams.connectedMid = '';
               LinkParams.connectedClass = '';
+              frameModel.changeOrderByIsShow(widget.frameManager);
             }
             model.showLinkLine = frameModel.isShow.value;
             //_lineDrawSendEvent?.sendEvent(isShow);

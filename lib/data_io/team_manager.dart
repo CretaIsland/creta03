@@ -11,7 +11,7 @@ class TeamManager extends CretaManager {
   List<TeamModel> teamModelList = [];
   Map<String, List<UserPropertyModel>> teamMemberMap = {};
 
-  TeamManager() : super('creta_team');
+  TeamManager() : super('creta_team', null);
 
   @override
   CretaModel cloneModel(CretaModel src) {
@@ -92,9 +92,11 @@ class TeamManager extends CretaManager {
   }
 
   void deleteTeamMember(String targetEmail, int permission) {
-    if(permission == 1) { //manager
+    if (permission == 1) {
+      //manager
       currentTeam!.managers.remove(targetEmail);
-    } else {  // general
+    } else {
+      // general
       currentTeam!.generalMembers.remove(targetEmail);
     }
 
@@ -108,12 +110,12 @@ class TeamManager extends CretaManager {
   void addTeamMember(String targetEmail) {
     currentTeam!.generalMembers.add(targetEmail);
     currentTeam!.teamMembers.add(targetEmail);
-    if(currentTeam!.removedMembers.contains(targetEmail)) {
+    if (currentTeam!.removedMembers.contains(targetEmail)) {
       currentTeam!.removedMembers.remove(targetEmail);
     }
     setToDB(currentTeam!);
     LoginPage.userPropertyManagerHolder!.emailToModel(targetEmail).then((value) {
-      if(value != null) {
+      if (value != null) {
         teamMemberMap[currentTeam!.mid]!.add(value);
         notify();
       }
@@ -121,15 +123,19 @@ class TeamManager extends CretaManager {
   }
 
   void changePermission(String targetEmail, int presentPermission, int newPermission) {
-    if(presentPermission == 1) { //manager
+    if (presentPermission == 1) {
+      //manager
       currentTeam!.managers.remove(targetEmail);
-    } else {  // general
+    } else {
+      // general
       currentTeam!.generalMembers.remove(targetEmail);
     }
 
-    if(newPermission == 1) { //manager
+    if (newPermission == 1) {
+      //manager
       currentTeam!.managers.add(targetEmail);
-    } else {  // general
+    } else {
+      // general
       currentTeam!.generalMembers.add(targetEmail);
     }
     setToDB(currentTeam!);

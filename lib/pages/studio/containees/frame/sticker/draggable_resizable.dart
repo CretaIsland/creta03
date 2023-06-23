@@ -2,6 +2,7 @@
 
 import 'dart:math' as math;
 
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hycop/common/util/logger.dart';
@@ -479,23 +480,24 @@ class _DraggableResizableState extends State<DraggableResizable> {
             alignment: Alignment.center,
             children: [
               decoratedChild,
-              SelectedBox(
-                mid: widget.mid,
-                normalizedHeight: normalizedHeight,
-                normalizedWidth: normalizedWidth,
-                resizePointerOffset: resizePointerOffset,
-                onDragTopLeft: onDragTopLeft,
-                onDragBottomRight: onDragBottomRight,
-                onDragTopRight: onDragTopRight,
-                onDragBottomLeft: onDragBottomLeft,
-                onDragUp: onDragUp,
-                onDragRight: onDragRight,
-                onDragDown: onDragDown,
-                onDragLeft: onDragLeft,
-                onResizeButtonTap: widget.onResizeButtonTap,
-                onComplete: widget.onComplete,
-                key: Key('SelectedBox-$widget.mid}'),
-              ),
+              if (!StudioVariables.isPreview)
+                SelectedBox(
+                  mid: widget.mid,
+                  normalizedHeight: normalizedHeight,
+                  normalizedWidth: normalizedWidth,
+                  resizePointerOffset: resizePointerOffset,
+                  onDragTopLeft: onDragTopLeft,
+                  onDragBottomRight: onDragBottomRight,
+                  onDragTopRight: onDragTopRight,
+                  onDragBottomLeft: onDragBottomLeft,
+                  onDragUp: onDragUp,
+                  onDragRight: onDragRight,
+                  onDragDown: onDragDown,
+                  onDragLeft: onDragLeft,
+                  onResizeButtonTap: widget.onResizeButtonTap,
+                  onComplete: widget.onComplete,
+                  key: Key('SelectedBox-$widget.mid}'),
+                ),
               if (widget.isMain) mainSymbol,
             ],
           ),

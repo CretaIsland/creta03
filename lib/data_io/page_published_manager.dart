@@ -9,7 +9,7 @@ import 'page_manager.dart';
 
 class PagePublishedManager extends CretaManager {
   final PageManager pageManager;
-  PagePublishedManager(this.pageManager) : super('creta_page_published');
+  PagePublishedManager(this.pageManager) : super('creta_page_published', null);
 
   @override
   CretaModel cloneModel(CretaModel src) {

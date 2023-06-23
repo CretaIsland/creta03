@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../data_io/contents_manager.dart';
+import '../../../../../data_io/frame_manager.dart';
 import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/creta_color.dart';
@@ -18,6 +19,7 @@ import '../../containee_nofifier.dart';
 
 class MiniMenu extends StatefulWidget {
   final ContentsManager contentsManager;
+  final FrameManager frameManager;
 
   static bool showFrame = false;
 
@@ -46,6 +48,7 @@ class MiniMenu extends StatefulWidget {
     super.key,
     required this.frameModel,
     required this.contentsManager,
+    required this.frameManager,
     required this.parentPosition,
     required this.parentSize,
     required this.parentBorderWidth,
@@ -182,7 +185,7 @@ class MiniMenuState extends State<MiniMenu> {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onShowUnshow");
             widget.frameModel.isShow.set(!widget.frameModel.isShow.value);
-            //widget.frameModel.isTempVisible = widget.frameModel.isShow.value;
+            widget.frameModel.changeOrderByIsShow(widget.frameManager);
             widget.onFrameShowUnshow.call();
           }),
       BTN.fill_blue_i_menu(

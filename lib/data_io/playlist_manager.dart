@@ -19,7 +19,7 @@ import '../../../design_system/component/custom_image.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 
 class PlaylistManager extends CretaManager {
-  PlaylistManager() : super('creta_playlist') {
+  PlaylistManager() : super('creta_playlist',null) {
     saveManagerHolder?.registerManager('playlist', this);
   }
 

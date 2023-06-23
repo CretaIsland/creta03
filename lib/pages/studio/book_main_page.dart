@@ -169,7 +169,7 @@ class _BookMainPageState extends State<BookMainPage> {
     if (mid.isNotEmpty) {
       logger.info("1) --_BookMainPageState-----------------------------------------");
       BookMainPage.bookManagerHolder!.getFromDB(mid).then((value) async {
-        BookMainPage.bookManagerHolder!.addRealTimeListen();
+        BookMainPage.bookManagerHolder!.addRealTimeListen(mid);
         if (BookMainPage.bookManagerHolder!.getLength() > 0) {
           initChildren(BookMainPage.bookManagerHolder!.onlyOne() as BookModel);
         }
@@ -180,7 +180,7 @@ class _BookMainPageState extends State<BookMainPage> {
       BookModel sampleBook = BookMainPage.bookManagerHolder!.createSample();
       mid = sampleBook.mid;
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
-        BookMainPage.bookManagerHolder!.addRealTimeListen();
+        BookMainPage.bookManagerHolder!.addRealTimeListen(mid);
         if (BookMainPage.bookManagerHolder!.getLength() > 0) {
           initChildren(sampleBook);
         }

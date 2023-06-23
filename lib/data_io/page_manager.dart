@@ -24,7 +24,7 @@ class PageManager extends CretaManager {
   Map<String, FrameManager?> frameManagerList = {};
   Map<String, GlobalObjectKey> thumbKeyMap = {};
 
-  PageManager({String tableName = 'creta_page'}) : super(tableName) {
+  PageManager({String tableName = 'creta_page'}) : super(tableName, null) {
     saveManagerHolder?.registerManager('page', this);
   }
   @override
@@ -39,12 +39,13 @@ class PageManager extends CretaManager {
 
   void setBook(BookModel book) {
     bookModel = book;
+    parentMid = book.mid;
   }
 
   Future<void> initPage(BookModel bookModel) async {
     setBook(bookModel);
     clearAll();
-    addRealTimeListen();
+    addRealTimeListen(bookModel.mid);
     await getPages();
     setSelected(0);
     subcribe();
@@ -87,7 +88,7 @@ class PageManager extends CretaManager {
         bookModel,
         pageModel,
       );
-      await initFrameManager(frameManager);
+      await initFrameManager(frameManager, ele.mid);
       await frameManager.findOrInitContentsManager();
     }
     // for (var frameManager in frameManagerList.values.toList()) {
@@ -97,9 +98,9 @@ class PageManager extends CretaManager {
     return;
   }
 
-  Future<void> initFrameManager(FrameManager frameManager) async {
+  Future<void> initFrameManager(FrameManager frameManager, String pageMid) async {
     frameManager.clearAll();
-    frameManager.addRealTimeListen();
+    frameManager.addRealTimeListen(pageMid);
     await frameManager.getFrames();
     frameManager.reOrdering();
     logger.info('frameManager init complete');

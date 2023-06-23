@@ -21,7 +21,7 @@ class UserPropertyManager extends CretaManager {
   final List<FrameModel> _frameModelList = [];
   UserPropertyModel? userPropertyModel;
 
-  UserPropertyManager() : super('creta_user_property') {
+  UserPropertyManager() : super('creta_user_property', null) {
     saveManagerHolder?.registerManager('user', this);
   }
 

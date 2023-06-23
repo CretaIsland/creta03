@@ -13,7 +13,7 @@ import 'creta_manager.dart';
 import 'page_published_manager.dart';
 
 class BookPublishedManager extends CretaManager {
-  BookPublishedManager() : super('creta_book_published') {
+  BookPublishedManager() : super('creta_book_published', null) {
     saveManagerHolder?.registerManager('book_published', this);
   }
 

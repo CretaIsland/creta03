@@ -33,7 +33,7 @@ class ContentsManager extends CretaManager {
 
   ContentsManager(
       {required this.pageModel, required this.frameModel, String tableName = 'creta_contents'})
-      : super(tableName) {
+      : super(tableName, frameModel.mid) {
     saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
     final ContentsEventController sendEventVar = Get.find(tag: 'contents-property-to-main');
     sendEvent = sendEventVar;
@@ -353,10 +353,10 @@ class ContentsManager extends CretaManager {
 
   Future<void> _removeContents(BuildContext context, ContentsModel model) async {
     //await pause();
-
+    //print('_removeContents(${model.name})');
     model.isRemoved.set(
       true,
-      //save: false,
+      save: false,
       doComplete: (val) {
         remove(model);
         playTimer?.reOrdering();
@@ -366,9 +366,9 @@ class ContentsManager extends CretaManager {
         playTimer?.reOrdering();
       },
     );
-    //await setToDB(model);
+    await setToDB(model);
     remove(model);
-    logger.info('remove contents ${model.name}, ${model.mid}');
+    //print('remove contents ${model.name}, ${model.mid}');
     await playTimer?.reOrdering();
 
     if (getAvailLength() == 0) {

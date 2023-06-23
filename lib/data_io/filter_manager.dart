@@ -11,9 +11,10 @@ class FilterManager extends CretaManager {
   BookModel? bookModel;
   void setBook(BookModel b) {
     bookModel = b;
+    parentMid = b.mid;
   }
 
-  FilterManager(this.userEmail) : super('creta_filter') {
+  FilterManager(this.userEmail) : super('creta_filter', null) {
     // parentMid 는 userEmail 이다.
     saveManagerHolder?.registerManager('filter', this, postfix: userEmail);
   }

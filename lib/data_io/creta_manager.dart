@@ -6,7 +6,6 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:deep_collection/deep_collection.dart';
 import 'package:hycop/hycop/utils/hycop_utils.dart';
 //import 'package:sortedmap/sortedmap.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/utils/hycop_exceptions.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
@@ -50,9 +49,11 @@ abstract class CretaManager extends AbsExModelManager {
     return '${type.name}=';
   }
 
-  late String instanceId;
-  CretaManager(String tableName) : super(tableName) {
-    instanceId = const Uuid().v4();
+  String? instanceId;
+  String? parentMid;
+
+  CretaManager(String tableName, this.parentMid) : super(tableName) {
+    //instanceId = const Uuid().v4();
     logger.finest('CretaManager instance created ()');
   }
 
@@ -511,26 +512,38 @@ abstract class CretaManager extends AbsExModelManager {
   }
 
   @override
-  void realTimeCallback(String directive, String userId, Map<String, dynamic> dataMap) {
-    logger.finest('realTimeCallback invoker($directive, $userId)');
+  void realTimeCallback(
+      String listenerId, String directive, String userId, Map<String, dynamic> dataMap) {
+    //print('--------------------realTimeCallback invoker($directive, $userId)');
+
+    // if (parentMid == null) {
+    //   return;
+    // }
+    // print('parentMid($parentMid), listnerId($listenerId)');
+    // if (parentMid != listenerId) {
+    //   print('parentMid($parentMid)!=listnerId($listenerId)');
+    //   return;
+    // }
 
     bool isFilteredOut = false;
     if (_currentQuery.isNotEmpty) {
-      _currentQuery.forEach((key, value) {
+      isFilteredOut = true;
+      for (var key in _currentQuery.keys) {
         dynamic data = dataMap[key];
-        if (data == null) {
-          isFilteredOut = true;
-          return;
+
+        if (data != null) {
+          //print('${_currentQuery[key]!.value}..............................');
+          if (data == _currentQuery[key]!.value) {
+            isFilteredOut = false;
+            break;
+          }
         }
-        if (data != value) {
-          isFilteredOut = true;
-          return;
-        }
-      });
+      }
     }
 
     if (isFilteredOut) {
       logger.finest('${dataMap["mid"] ?? ''} filter out');
+      //print('${dataMap["mid"] ?? ''} filter out');
       return;
     }
 
@@ -539,18 +552,25 @@ abstract class CretaManager extends AbsExModelManager {
       AbsExModel model = newModel(mid);
       model.fromMap(dataMap);
       insert(model as CretaModel, postion: 0);
-      logger.finest('${model.mid} realtime added');
-      if (isNotifyCreate) notifyListeners();
+      //print('#########${model.mid} realtime added');
+      if (isNotifyCreate) {
+        reOrdering();
+        notifyListeners();
+      }
     } else if (isApplyModify && directive == 'set') {
       String mid = dataMap["mid"] ?? '';
       if (mid.isEmpty) {
+        //print('---mid is empty');
         return;
       }
       for (AbsExModel model in modelList) {
         if (model.mid == mid) {
           model.fromMap(dataMap);
-          logger.finest('${model.mid} realtime changed');
-          if (isNotifyModify) notifyListeners();
+          //print('*******${model.mid} realtime changed');
+          if (isNotifyModify) {
+            reOrdering();
+            notifyListeners();
+          }
         }
       }
     } else if (isApplyDelete && directive == 'remove') {
@@ -562,20 +582,27 @@ abstract class CretaManager extends AbsExModelManager {
       for (AbsExModel model in modelList) {
         if (model.mid == mid) {
           remove(model as CretaModel);
-          logger.finest('${model.mid} realtime removed');
-          if (isNotifyDelete) notifyListeners();
+          //print('${model.mid} realtime removed');
+          if (isNotifyDelete) {
+            reOrdering();
+            notifyListeners();
+          }
         }
       }
     }
     return;
   }
 
-  void addRealTimeListen() {
-    HycopFactory.realtime!.addListener(instanceId, collectionId, realTimeCallback);
+  void addRealTimeListen(String instId) {
+    //print('addRealTimeListen($instanceId, $collectionId, )^^^^^^^^^^^^^^^^^^^^');
+    instanceId = instId;
+    HycopFactory.realtime!.addListener(instanceId!, collectionId, realTimeCallback);
   }
 
   void removeRealTimeListen() {
-    HycopFactory.realtime!.removeListener(instanceId, collectionId);
+    if (instanceId != null) {
+      HycopFactory.realtime!.removeListener(instanceId!, collectionId);
+    }
   }
 
   void insert(CretaModel model, {int postion = 0, bool doNotify = true}) {
@@ -1203,7 +1230,8 @@ abstract class CretaManager extends AbsExModelManager {
   //   return true;
   // }
 
-  static Future<bool> startQueries({required List<QuerySet> joinList, Function? completeFunc}) async {
+  static Future<bool> startQueries(
+      {required List<QuerySet> joinList, Function? completeFunc}) async {
     List<AbsExModel> value = [];
     for (var joinValue in joinList) {
       joinValue.queryFunc.call(value);

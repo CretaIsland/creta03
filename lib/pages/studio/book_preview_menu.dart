@@ -103,8 +103,8 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                     ),
                     CretaTrasparentButton(
                       onPressed: widget.goBackProcess,
-                      icon1: Icons.close_fullscreen_outlined,
-                      icon2: Icons.close_fullscreen_outlined,
+                      icon1: Icons.logout_outlined,
+                      icon2: Icons.logout_outlined,
                       toggleValue: StudioVariables.isPreview,
                       iconSize: 20,
                       doToggle: false,

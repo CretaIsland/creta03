@@ -9,8 +9,10 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../common/creta_utils.dart';
+import '../data_io/frame_manager.dart';
 import '../lang/creta_studio_lang.dart';
 import 'app_enums.dart';
+import 'book_model.dart';
 import 'creta_model.dart';
 import 'creta_style_mixin.dart';
 
@@ -42,7 +44,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<ShapeType> shape;
   //late UndoAble<bool> shadowIn;
   late UndoAble<String> eventSend;
-
+  double prevOrder = -1;
   FrameType frameType = FrameType.none;
 
   double prevWidth = -1;
@@ -100,6 +102,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         shadowOffset,
         shape,
         eventSend,
+        prevOrder,
         //shadowIn,
         ...super.propsMixin,
       ];
@@ -130,6 +133,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowOffset = UndoAble<double>(0, mid, 'shadowOffset');
     shape = UndoAble<ShapeType>(ShapeType.none, mid, 'shape');
     eventSend = UndoAble<String>('', mid, 'eventSend');
+    prevOrder = -1;
     //shadowIn = UndoAble<bool>(false, mid);
     super.initMixin(mid);
   }
@@ -165,6 +169,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowOffset = UndoAble<double>(0, mid, 'shadowOffset');
     shape = UndoAble<ShapeType>(ShapeType.none, mid, 'shape');
     eventSend = UndoAble<String>('', mid, 'eventSend');
+    prevOrder = -1;
 
     //shadowIn = UndoAble<bool>(false, mid);
 
@@ -203,6 +208,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
 
     frameType = srcFrame.frameType;
+    prevOrder = srcFrame.prevOrder;
+
     super.copyFromMixin(mid, srcFrame);
     logger.finest('FrameCopied($mid)');
   }
@@ -239,6 +246,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
 
     frameType = srcFrame.frameType;
+    prevOrder = srcFrame.prevOrder;
     super.updateFromMixin(srcFrame);
     logger.finest('FrameCopied($mid)');
   }
@@ -282,6 +290,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     //shadowIn.set((map["shadowIn"] ?? false), save: false, noUndo: true);
 
     frameType = FrameType.fromInt(map["frameType"] ?? 0);
+    prevOrder = map["prevOrder"] ?? -1;
     super.fromMapMixin(map);
     logger.finest('${posX.value}, ${posY.value}');
   }
@@ -317,6 +326,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "eventSend": eventSend.value,
         //"shadowIn": shadowIn.value,
         'frameType': frameType.index,
+        'prevOrder': prevOrder,
         ...super.toMapMixin(),
       }.entries);
   }
@@ -382,5 +392,39 @@ class FrameModel extends CretaModel with CretaStyleMixin {
 
   bool shouldInsideRotate() {
     return (angle.value > 0 && isInsideRotate.value == true);
+  }
+
+  void changeOrderByIsShow(FrameManager frameManager) {
+    if (isShow.value == false) {
+      order.set(prevOrder < 0 ? frameManager.getMinOrder() : prevOrder, save: false);
+      return;
+    }
+    prevOrder = order.value;
+    order.set(frameManager.getMaxOrder() + 1, save: false);
+  }
+
+  bool isFullScreenTest(BookModel book) {
+    if (width.value == book.width.value &&
+        height.value == book.height.value &&
+        posX.value == 0 &&
+        posY.value == 0) {
+      return true;
+    }
+    return false;
+  }
+
+  void toggleFullscreen(bool isFullScreen, BookModel book) {
+    if (isFullScreen) {
+      restorePrevValue();
+      return;
+    }
+    savePrevValue();
+    mychangeStack.startTrans();
+    height.set(book.height.value, save: false);
+    width.set(book.width.value, save: false);
+    posX.set(0, save: false);
+    posY.set(0, save: false);
+    save();
+    mychangeStack.endTrans();
   }
 }

@@ -89,7 +89,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
         widget.bookModel,
         widget.pageModel,
       );
-      await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!);
+      await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!, widget.pageModel.mid);
       logger.info('framManger newly creation end---------------------');
     }
     _onceDBGetComplete = true;

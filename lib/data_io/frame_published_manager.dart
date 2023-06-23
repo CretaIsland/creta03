@@ -9,7 +9,7 @@ import 'frame_manager.dart';
 
 class FramePublishedManager extends CretaManager {
   final FrameManager frameManager;
-  FramePublishedManager(this.frameManager) : super('creta_frame_published');
+  FramePublishedManager(this.frameManager) : super('creta_frame_published', null);
 
   @override
   CretaModel cloneModel(CretaModel src) {

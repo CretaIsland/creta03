@@ -169,6 +169,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
   Widget _itemWidget(int index, List<CretaModel> items) {
     ContentsModel model = items[index] as ContentsModel;
+
+    //('orderedList=${model.name}, ${model.isRemoved.value}');
+
     String? uri = model.thumbnail;
     if (widget.contentsManager.isSelected(model.mid)) {
       _selectedIndex = index;

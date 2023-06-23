@@ -11,7 +11,7 @@ import '../model/creta_model.dart';
 import 'creta_manager.dart';
 
 class FavoritesManager extends CretaManager {
-  FavoritesManager() : super('creta_favorites') {
+  FavoritesManager() : super('creta_favorites', null) {
     saveManagerHolder?.registerManager('favorites', this);
   }
 

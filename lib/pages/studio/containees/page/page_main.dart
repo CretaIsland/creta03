@@ -87,7 +87,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         widget.bookModel,
         widget.pageModel,
       );
-      await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!);
+      await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!, widget.pageModel.mid);
     }
     _onceDBGetComplete = true;
   }

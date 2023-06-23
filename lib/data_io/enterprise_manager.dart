@@ -8,7 +8,7 @@ class EnterpriseManager extends CretaManager {
 
   EnterpriseModel? enterpriseModel;
 
-  EnterpriseManager() : super('creta_enterprise');
+  EnterpriseManager() : super('creta_enterprise', null);
 
 
   @override

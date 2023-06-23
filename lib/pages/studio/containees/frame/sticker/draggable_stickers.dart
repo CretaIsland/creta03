@@ -232,7 +232,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //     child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
           //   ),
           // ),
-          StudioVariables.isHandToolMode == false //&& StudioVariables.isNotLinkState
+          StudioVariables.isHandToolMode == false &&
+                  StudioVariables.isPreview == false //&& StudioVariables.isNotLinkState
               ? InkWell(
                   splashColor: Colors.transparent,
                   onTap: () {
@@ -319,6 +320,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           : MiniMenu(
               key: const ValueKey('MiniMenu'),
               contentsManager: contentsManager,
+              frameManager: frameManager,
               parentPosition: selectedSticker.position,
               parentSize: selectedSticker.size,
               parentBorderWidth: selectedSticker.borderWidth,
@@ -366,7 +368,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               },
               onFrameShowUnshow: () {
                 logger.fine('onFrameShowUnshow');
-                selectedSticker.isMain = true;
+                //selectedSticker.isMain = true;
                 widget.onFrameShowUnshow.call(selectedSticker.id);
                 //setState(() {});
               },

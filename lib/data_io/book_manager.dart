@@ -12,12 +12,15 @@ import 'creta_manager.dart';
 import 'page_manager.dart';
 
 class BookManager extends CretaManager {
-  BookManager() : super('creta_book') {
+  BookManager() : super('creta_book', null) {
     saveManagerHolder?.registerManager('book', this);
   }
 
   @override
-  AbsExModel newModel(String mid) => BookModel(mid);
+  AbsExModel newModel(String mid) {
+    parentMid = mid;
+    return BookModel(mid);
+  }
 
   @override
   CretaModel cloneModel(CretaModel src) {

@@ -102,7 +102,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     }
     if (_contentsManager!.onceDBGetComplete == false) {
       await _contentsManager!.getContents();
-      _contentsManager!.addRealTimeListen();
+      _contentsManager!.addRealTimeListen(widget.model.mid);
       _contentsManager!.reOrdering();
     }
     logger.info('initChildren(${_contentsManager!.getAvailLength()})');
@@ -256,7 +256,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               //             _contentsManager!.length() > 0
               //         ? _onLinkNewCursor()
               //         : const SizedBox.shrink(),
-              (LinkParams.isLinkNewMode == false && StudioVariables.isPreview == false) 
+              (LinkParams.isLinkNewMode == false && StudioVariables.isPreview == false)
                   ? IgnorePointer(
                       child: OnFrameMenu(
                         key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),

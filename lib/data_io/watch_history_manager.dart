@@ -10,7 +10,7 @@ import '../model/creta_model.dart';
 import 'creta_manager.dart';
 
 class WatchHistoryManager extends CretaManager {
-  WatchHistoryManager() : super('creta_watch_history') {
+  WatchHistoryManager() : super('creta_watch_history', null) {
     saveManagerHolder?.registerManager('watchHistory', this);
   }
 

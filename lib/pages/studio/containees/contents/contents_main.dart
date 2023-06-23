@@ -119,14 +119,19 @@ class ContentsMainState extends State<ContentsMain> {
                     _mainBuild(model, playTimer),
                     if (model.contentsType != ContentsType.document)
                       LinkWidget(
-                          key: GlobalObjectKey('LinkWidget${model.mid}'),
-                          applyScale: widget.applyScale,
-                          frameManager: widget.frameManager,
-                          frameOffset: widget.frameOffset,
-                          contentsManager: contentsManager,
-                          playTimer: playTimer,
-                          contentsModel: model,
-                          frameModel: widget.frameModel)
+                        key: GlobalObjectKey('LinkWidget${model.mid}'),
+                        applyScale: widget.applyScale,
+                        frameManager: widget.frameManager,
+                        frameOffset: widget.frameOffset,
+                        contentsManager: contentsManager,
+                        playTimer: playTimer,
+                        contentsModel: model,
+                        frameModel: widget.frameModel,
+                        onFrameShowUnshow: () {
+                          logger.fine('onFrameShowUnshow');
+                          widget.frameManager.notify();
+                        },
+                      )
                   ],
                 );
                 //}

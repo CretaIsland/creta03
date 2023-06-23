@@ -9,7 +9,7 @@ import '../model/contents_model.dart';
 import '../model/link_model.dart';
 
 class LinkManager extends CretaManager {
-  LinkManager(String contentsMid) : super('creta_link') {
+  LinkManager(String contentsMid) : super('creta_link', contentsMid) {
     saveManagerHolder?.registerManager('link', this, postfix: contentsMid);
   }
 

@@ -85,19 +85,19 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           .myDataOnly(
             AccountManager.currentLoginUser.email,
           )
-          .then((value) => bookManagerHolder!.addRealTimeListen());
+          .then((value) => bookManagerHolder!.addRealTimeListen(value.first.mid));
     } else if (widget.selectedPage == SelectedPage.sharedPage) {
       bookManagerHolder!
           .sharedData(
             AccountManager.currentLoginUser.email,
           )
-          .then((value) => bookManagerHolder!.addRealTimeListen());
+          .then((value) => bookManagerHolder!.addRealTimeListen(value.first.mid));
     } else if (widget.selectedPage == SelectedPage.teamPage) {
       bookManagerHolder!
           .myDataOnly(
             'dummy',
           )
-          .then((value) => bookManagerHolder!.addRealTimeListen());
+          .then((value) => bookManagerHolder!.addRealTimeListen(value.first.mid));
     }
 
     _leftMenuItemList = [

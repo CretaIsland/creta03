@@ -109,6 +109,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     super.initMixin();
     super.initState();
 
+    _bookModel = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+
     _isRadiusOpen = !(widget.model.radiusLeftBottom.value == widget.model.radiusRightBottom.value &&
         widget.model.radiusRightBottom.value == widget.model.radiusLeftTop.value &&
         widget.model.radiusLeftTop.value == widget.model.radiusRightTop.value);
@@ -132,8 +134,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
   @override
   Widget build(BuildContext context) {
-    _bookModel = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
-    _isFullScreen = _isFullScreenTest(_bookModel!);
+    _isFullScreen = widget.model.isFullScreenTest(_bookModel!);
     // if (_model == null) {
     //   return SizedBox.shrink();
     // }
@@ -363,18 +364,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   onPressed: () {
                     if (_bookModel == null) return;
                     setState(() {
-                      if (_isFullScreen) {
-                        widget.model.restorePrevValue();
-                      } else {
-                        widget.model.savePrevValue();
-                        mychangeStack.startTrans();
-                        widget.model.height.set(_bookModel!.height.value, save: false);
-                        widget.model.width.set(_bookModel!.width.value, save: false);
-                        widget.model.posX.set(0, save: false);
-                        widget.model.posY.set(0, save: false);
-                        widget.model.save();
-                        mychangeStack.endTrans();
-                      }
+                      widget.model.toggleFullscreen(_isFullScreen, _bookModel!);
                       logger.finest('sendEvent');
                       _sendEvent!.sendEvent(widget.model);
                     });
@@ -885,16 +875,6 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //                 ),
   //               );
   // }
-
-  bool _isFullScreenTest(BookModel book) {
-    if (widget.model.width.value == book.width.value &&
-        widget.model.height.value == book.height.value &&
-        widget.model.posX.value == 0 &&
-        widget.model.posY.value == 0) {
-      return true;
-    }
-    return false;
-  }
 
   void _sizeChanged(
     String value,

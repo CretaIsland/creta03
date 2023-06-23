@@ -7,7 +7,7 @@ import 'creta_manager.dart';
 
 class ContentsPublishedManager extends CretaManager {
   final ContentsManager contentsManager;
-  ContentsPublishedManager(this.contentsManager) : super('creta_contents_published');
+  ContentsPublishedManager(this.contentsManager) : super('creta_contents_published', null);
 
   @override
   CretaModel cloneModel(CretaModel src) {
