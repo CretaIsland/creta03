@@ -96,7 +96,7 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
       doNotify: false,
       size: Size(width, height),
       pos: Offset(x, y),
-      bgColor1: Colors.grey.shade200,
+      bgColor1: Colors.white,
       type: FrameType.text,
     );
     ContentsModel model = await _quillContent(frameModel.mid);

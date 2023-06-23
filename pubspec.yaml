@@ -96,7 +96,7 @@ dependencies:
   # quill_html_editor: ^2.0.5
   quill_html_editor: ^2.1.9
   webview_flutter: ^4.0.7     # added by Mai 20230619
-  adjusted_html_view_web: ^0.0.2
+  adjusted_html_view_web: ^0.0.1
   flutter_rte: ^0.4.13
   html_editor_enhanced: ^2.5.1
 

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/pages/mypage/mypage.dart';
-import 'package:creta03/pages/studio/left_menu/word_pad/quill_enhanced.dart';
+import 'package:creta03/pages/studio/left_menu/word_pad/quill_rte.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +10,7 @@ import 'design_system/demo_page/font_demo_page.dart';
 import 'design_system/demo_page/button_demo_page.dart';
 import 'design_system/demo_page/menu_demo_page.dart';
 import 'design_system/demo_page/text_field_demo_page.dart';
+import 'model/contents_model.dart';
 import 'pages/login_page.dart';
 import 'pages/intro_page.dart';
 import 'pages/studio/book_grid_page.dart';
@@ -123,7 +124,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     // AppRoutes.quillDemoPage: (_) =>
     //     TransitionPage(child: QuillPlayerWidget(document: ContentsModel.withFrame(parent: ''))),
-    AppRoutes.quillDemoPage: (_) => TransitionPage(child: QuillEnhancedWidget()),
+    AppRoutes.quillDemoPage: (_) => TransitionPage(child: QuillFloatingToolBarWidget(document: ContentsModel.withFrame(parent: ''))),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -148,7 +149,7 @@ final routesLoggedOut = RouteMap(
 
         return TransitionPage(
             child: BookMainPage(
-              //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
+                //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
                 bookKey: GlobalKey(),
                 isPreviewX: true));
       } else {
@@ -175,11 +176,11 @@ final routesLoggedOut = RouteMap(
         ),
     AppRoutes.communityHome: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: CommunityPage(
-            key: GlobalObjectKey('AppRoutes.communityHome'),
-            subPageUrl: AppRoutes.communityHome,
-          ),
-        )
+            child: CommunityPage(
+              key: GlobalObjectKey('AppRoutes.communityHome'),
+              subPageUrl: AppRoutes.communityHome,
+            ),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.channel: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -199,19 +200,19 @@ final routesLoggedOut = RouteMap(
     },
     AppRoutes.subscriptionList: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: CommunityPage(
-            key: GlobalObjectKey('AppRoutes.subscriptionList'),
-            subPageUrl: AppRoutes.subscriptionList,
-          ),
-        )
+            child: CommunityPage(
+              key: GlobalObjectKey('AppRoutes.subscriptionList'),
+              subPageUrl: AppRoutes.subscriptionList,
+            ),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.playlist: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: CommunityPage(
-            key: GlobalObjectKey('AppRoutes.playlist'),
-            subPageUrl: AppRoutes.playlist,
-          ),
-        )
+            child: CommunityPage(
+              key: GlobalObjectKey('AppRoutes.playlist'),
+              subPageUrl: AppRoutes.playlist,
+            ),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.playlistDetail: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -247,47 +248,47 @@ final routesLoggedOut = RouteMap(
     },
     AppRoutes.watchHistory: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: CommunityPage(
-            key: GlobalObjectKey('AppRoutes.watchHistory'),
-            subPageUrl: AppRoutes.watchHistory,
-          ),
-        )
+            child: CommunityPage(
+              key: GlobalObjectKey('AppRoutes.watchHistory'),
+              subPageUrl: AppRoutes.watchHistory,
+            ),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.favorites: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: CommunityPage(
-            key: GlobalObjectKey('AppRoutes.favorites'),
-            subPageUrl: AppRoutes.favorites,
-          ),
-        )
+            child: CommunityPage(
+              key: GlobalObjectKey('AppRoutes.favorites'),
+              subPageUrl: AppRoutes.favorites,
+            ),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
         ),
     AppRoutes.myPageDashBoard: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: MyPage(selectedPage: AppRoutes.myPageDashBoard),
-        )
+            child: MyPage(selectedPage: AppRoutes.myPageDashBoard),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.myPageInfo: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: MyPage(selectedPage: AppRoutes.myPageInfo),
-        )
+            child: MyPage(selectedPage: AppRoutes.myPageInfo),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.myPageAccountManage: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: MyPage(selectedPage: AppRoutes.myPageAccountManage),
-        )
+            child: MyPage(selectedPage: AppRoutes.myPageAccountManage),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.myPageSettings: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: MyPage(selectedPage: AppRoutes.myPageSettings),
-        )
+            child: MyPage(selectedPage: AppRoutes.myPageSettings),
+          )
         : const Redirect(AppRoutes.login),
     AppRoutes.myPageTeamManage: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(
-          child: MyPage(selectedPage: AppRoutes.myPageTeamManage),
-        )
+            child: MyPage(selectedPage: AppRoutes.myPageTeamManage),
+          )
         : const Redirect(AppRoutes.login),
   },
 );

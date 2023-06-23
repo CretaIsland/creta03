@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../model/contents_model.dart';
-import '../../pages/studio/left_menu/word_pad/quill_enhanced.dart';
 import '../../pages/studio/left_menu/word_pad/quill_rte.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_doc_player.dart';
@@ -26,17 +25,17 @@ mixin CretaDocMixin {
     player?.buttonIdle();
 
     return Container(
-      color: Colors.transparent,
+      color: Colors.white,
       // padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
       //     realSize.width * 0.05, realSize.height * 0.05),
       padding: EdgeInsets.fromLTRB(realSize.width * 0.02, realSize.height * 0.02,
-          realSize.width * 0.02, realSize.height * 0.02),
+          realSize.width * 0.02, realSize.height * 0),
       alignment: AlignmentDirectional.center,
       width: realSize.width,
       height: realSize.height,
       // child: QuillPlayerWidget(document: model),
       // child: QuillEnhancedWidget(),
-      child: const HtmlEditorWidget(),
+      child: QuillFloatingToolBarWidget(document: model),
     );
   }
 }
