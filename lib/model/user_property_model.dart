@@ -6,6 +6,8 @@ import 'package:hycop/hycop.dart';
 
 // ignore: must_be_immutable
 class UserPropertyModel extends CretaModel {
+  static const String defaultEnterprise = 'creta';
+
   late String email;
   late String nickname;
   late String phoneNumber;
@@ -104,7 +106,7 @@ class UserPropertyModel extends CretaModel {
     latestUseFrames = [];
     latestUseColors = [];
     teams = [];
-    enterprise = '';
+    enterprise = defaultEnterprise;
   }
 
   UserPropertyModel.withName(
@@ -138,7 +140,7 @@ class UserPropertyModel extends CretaModel {
       this.latestUseFrames = const [],
       this.latestUseColors = const [],
       this.teams = const [],
-      this.enterprise = ''
+      this.enterprise = defaultEnterprise
       })
       : super(pmid: '', type: ExModelType.user, parent: pparentMid);
 
@@ -178,7 +180,7 @@ class UserPropertyModel extends CretaModel {
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
     teams = CretaUtils.dynamicListToStringList(map["teams"]);
-    enterprise = map['enterprise'] ?? 'creta';
+    enterprise = map['enterprise'] ?? defaultEnterprise;
   }
 
   @override

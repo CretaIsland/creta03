@@ -140,16 +140,17 @@ class CretaPopupMenu {
     );
   }
 
-  static Future<void> showMenu(
-      {required BuildContext context,
-      GlobalKey? globalKey,
-      required List<CretaMenuItem> popupMenu,
-      double width = 114,
-      double xOffset = 0,
-      double yOffset = 0,
-      Offset? position,
-      Alignment textAlign = Alignment.center,
-      Function? initFunc}) async {
+  static Future<void> showMenu({
+    required BuildContext context,
+    GlobalKey? globalKey,
+    required List<CretaMenuItem> popupMenu,
+    double width = 114,
+    double xOffset = 0,
+    double yOffset = 0,
+    Offset? position,
+    Alignment textAlign = Alignment.center,
+    Function? initFunc,
+  }) async {
     await showDialog(
       context: context,
       barrierDismissible: true, // Dialog를 제외한 다른 화면 터치 x
@@ -160,16 +161,21 @@ class CretaPopupMenu {
         double x = 0;
         double y = 0;
         if (position == null && globalKey != null) {
-          final RenderBox? renderBox = globalKey.currentContext!.findRenderObject() as RenderBox?;
-          if (renderBox == null) {
+          try {
+            final RenderBox? renderBox = globalKey.currentContext!.findRenderObject() as RenderBox?;
+            if (renderBox == null) {
+              return SizedBox.shrink();
+            }
+
+            final position = renderBox.localToGlobal(Offset.zero);
+            final size = renderBox.size;
+
+            x = position.dx + size.width - 70;
+            y = position.dy + 40;
+          } catch (e) {
             return SizedBox.shrink();
           }
 
-          final position = renderBox.localToGlobal(Offset.zero);
-          final size = renderBox.size;
-
-          x = position.dx + size.width - 70;
-          y = position.dy + 40;
         } else {
           x = position!.dx;
           y = position.dy;

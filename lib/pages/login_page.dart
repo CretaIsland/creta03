@@ -76,11 +76,11 @@ class LoginPage extends StatefulWidget {
   }
 
   static Future<bool> logout() async {
-    await AccountManager.logout();
     LoginPage.userPropertyManagerHolder?.clearAll();
     LoginPage.userPropertyManagerHolder?.clearUserProperty();
     LoginPage.teamManagerHolder?.clearAll();
     LoginPage.enterpriseHolder?.clearAll();
+    await AccountManager.logout();
     return true;
   }
 

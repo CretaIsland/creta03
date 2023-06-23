@@ -298,8 +298,7 @@ class Snippet {
         CretaMenuItem(
           caption: '로그아웃',
           onPressed: () {
-            LoginPage.logout();
-            Routemaster.of(context).push(AppRoutes.login);
+            LoginPage.logout().then((value) => Routemaster.of(context).push(AppRoutes.login));
           },
         ),
         CretaMenuItem(
