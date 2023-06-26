@@ -51,6 +51,9 @@ abstract class CretaManager extends AbsExModelManager {
 
   String? instanceId;
   String? parentMid;
+  void setParentMid(String p) {
+    parentMid = p;
+  }
 
   CretaManager(String tableName, this.parentMid) : super(tableName) {
     //instanceId = const Uuid().v4();
@@ -532,7 +535,7 @@ abstract class CretaManager extends AbsExModelManager {
         dynamic data = dataMap[key];
 
         if (data != null) {
-          //print('${_currentQuery[key]!.value}..............................');
+          // print('${_currentQuery[key]!.value}..............................');
           if (data == _currentQuery[key]!.value) {
             isFilteredOut = false;
             break;
@@ -560,7 +563,7 @@ abstract class CretaManager extends AbsExModelManager {
     } else if (isApplyModify && directive == 'set') {
       String mid = dataMap["mid"] ?? '';
       if (mid.isEmpty) {
-        //print('---mid is empty');
+        // print('---mid is empty');
         return;
       }
       for (AbsExModel model in modelList) {
@@ -569,6 +572,7 @@ abstract class CretaManager extends AbsExModelManager {
           //print('*******${model.mid} realtime changed');
           if (isNotifyModify) {
             reOrdering();
+            //print('notify');
             notifyListeners();
           }
         }

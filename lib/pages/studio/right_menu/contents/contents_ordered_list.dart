@@ -173,6 +173,11 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     //('orderedList=${model.name}, ${model.isRemoved.value}');
 
     String? uri = model.thumbnail;
+    if (uri == null || uri.isEmpty) {
+      if (model.isImage()) {
+        uri = model.getURI();
+      }
+    }
     if (widget.contentsManager.isSelected(model.mid)) {
       _selectedIndex = index;
     }
@@ -287,9 +292,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             maxLines: 1,
             style: model.isShow.value
                 ? CretaFont.bodySmall
-                : CretaFont.bodySmall.copyWith(color: CretaColor.text[200]!),
+                : CretaFont.bodySmall.copyWith(color: CretaColor.text[300]!),
             textAlign: TextAlign.left,
-            overflow: TextOverflow.clip,
+            overflow: TextOverflow.ellipsis,
           )),
     );
   }

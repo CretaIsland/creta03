@@ -97,6 +97,7 @@ class BookModel extends CretaModel with BookMixin {
     description = UndoAble<String>("You could do it simple and plain", mid, 'description');
     filter = UndoAble<String>('', mid, 'filter');
     super.initMixin(mid);
+    parentMid.set(mid, noUndo: true, save: false);
   }
 
   BookModel.withName(
@@ -146,6 +147,7 @@ class BookModel extends CretaModel with BookMixin {
       description = UndoAble<String>(desc, mid, 'description');
     }
     super.makeSampleMixin(mid);
+    parentMid.set(mid, noUndo: true, save: false);
 
     logger.finest('owners=${owners.toString()}');
   }

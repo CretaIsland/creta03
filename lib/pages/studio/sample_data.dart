@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/model/connected_user_model.dart';
-
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
 import '../../model/page_model.dart';
@@ -35,38 +33,38 @@ class SampleData {
     PageModel.makeSample(10, sampleBook.mid, 11),
   ];
 
-  static List<ConnectedUserModel> connectedUserList = [
-    ConnectedUserModel(
-        email: 'abc@sqisoft.com',
-        name: "홍길동",
-        imageUrl: "https://picsum.photos/200/?random=1",
-        state: ActiveState.active),
-    ConnectedUserModel(
-        email: 'creta@sqisoft.com', name: "장길산", imageUrl: "https://picsum.photos/200/?random=2"),
-    ConnectedUserModel(
-        email: 'hij@sqisoft.com',
-        name: "임꺽정",
-        imageUrl: "https://picsum.photos/200/?random=3",
-        state: ActiveState.active),
-    ConnectedUserModel(
-        email: 'skpark@sqisoft.com', name: "전우치", imageUrl: "https://picsum.photos/200/?random=4"),
-    ConnectedUserModel(
-        email: 'opq@sqisoft.com', name: "심청", imageUrl: "https://picsum.photos/200/?random=5"),
-    ConnectedUserModel(
-        email: 'rst@sqisoft.com',
-        name: "마루치",
-        imageUrl: "https://picsum.photos/200/?random=6",
-        state: ActiveState.active),
-    ConnectedUserModel(
-        email: 'skpark@sqisoft.com', name: "아라치", imageUrl: "https://picsum.photos/200/?random=7"),
-    ConnectedUserModel(
-        email: 'xyz@sqisoft.com', name: "김삿갓", imageUrl: "https://picsum.photos/200/?random=8"),
-    ConnectedUserModel(
-        email: 'skpark@sqisoft.com',
-        name: "황진이",
-        imageUrl: "https://picsum.photos/200/?random=9",
-        state: ActiveState.active),
-  ];
+  // static List<ConnectedUserModel> connectedUserList = [
+  //   ConnectedUserModel(
+  //       email: 'abc@sqisoft.com',
+  //       name: "홍길동",
+  //       imageUrl: "https://picsum.photos/200/?random=1",
+  //       state: ActiveState.active),
+  //   ConnectedUserModel(
+  //       email: 'creta@sqisoft.com', name: "장길산", imageUrl: "https://picsum.photos/200/?random=2"),
+  //   ConnectedUserModel(
+  //       email: 'hij@sqisoft.com',
+  //       name: "임꺽정",
+  //       imageUrl: "https://picsum.photos/200/?random=3",
+  //       state: ActiveState.active),
+  //   ConnectedUserModel(
+  //       email: 'skpark@sqisoft.com', name: "전우치", imageUrl: "https://picsum.photos/200/?random=4"),
+  //   ConnectedUserModel(
+  //       email: 'opq@sqisoft.com', name: "심청", imageUrl: "https://picsum.photos/200/?random=5"),
+  //   ConnectedUserModel(
+  //       email: 'rst@sqisoft.com',
+  //       name: "마루치",
+  //       imageUrl: "https://picsum.photos/200/?random=6",
+  //       state: ActiveState.active),
+  //   ConnectedUserModel(
+  //       email: 'skpark@sqisoft.com', name: "아라치", imageUrl: "https://picsum.photos/200/?random=7"),
+  //   ConnectedUserModel(
+  //       email: 'xyz@sqisoft.com', name: "김삿갓", imageUrl: "https://picsum.photos/200/?random=8"),
+  //   ConnectedUserModel(
+  //       email: 'skpark@sqisoft.com',
+  //       name: "황진이",
+  //       imageUrl: "https://picsum.photos/200/?random=9",
+  //       state: ActiveState.active),
+  // ];
 
   static List<String> sampleDesc = [
     "It does not do to dwell on dreams and forget to live, 꿈에 사로잡혀 살다가진짜 삶을 놓쳐선 안돼.",

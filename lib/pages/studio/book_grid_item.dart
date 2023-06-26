@@ -22,7 +22,6 @@ import '../../design_system/dialog/creta_alert_dialog.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
-import '../../model/connected_user_model.dart';
 import '../../routes.dart';
 import 'book_grid_page.dart';
 import 'book_main_page.dart';
@@ -457,32 +456,19 @@ class BookGridItemState extends State<BookGridItem> {
   }
 
   void insertItem() async {
-    int len = SampleData.connectedUserList.length;
     int randomNumber = random.nextInt(1000);
-    int modelIdx = randomNumber % len;
-    ConnectedUserModel model = SampleData.connectedUserList[modelIdx];
-
+    int modelIdx = randomNumber % 10;
     BookModel book = BookModel.withName(
-      '${model.name}_$randomNumber',
+      '${CretaLang.newBook}_$randomNumber',
       creator: AccountManager.currentLoginUser.email,
       creatorName: AccountManager.currentLoginUser.name,
-      imageUrl: model.imageUrl,
+      imageUrl: 'https://picsum.photos/200/?random=$modelIdx',
       viewNo: randomNumber,
       likeNo: 1000 - randomNumber,
       bookTypeVal: BookType.fromInt(randomNumber % 4 + 1),
-      ownerList: [
-        SampleData.connectedUserList[modelIdx].email,
-      ],
-      readerList: [
-        SampleData.connectedUserList[(modelIdx + 1) % len].email,
-        SampleData.connectedUserList[(modelIdx + 2) % len].email,
-        SampleData.connectedUserList[(modelIdx + 3) % len].email,
-      ],
-      writerList: [
-        SampleData.connectedUserList[(modelIdx + 4) % len].email,
-        SampleData.connectedUserList[(modelIdx + 5) % len].email,
-        SampleData.connectedUserList[(modelIdx + 6) % len].email,
-      ],
+      ownerList: const [],
+      readerList: const [],
+      writerList: const [],
       desc: SampleData.sampleDesc[randomNumber % SampleData.sampleDesc.length],
     );
 
