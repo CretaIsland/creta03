@@ -116,9 +116,9 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
                     logger.info('onPressedOK()');
 
                     await BookMainPage.bookManagerHolder!
-                        .removeBook(BookMainPage.pageManagerHolder!);
+                        .removeBook(thisOne, BookMainPage.pageManagerHolder!);
                     // ignore: use_build_context_synchronously
-                    showSnackBar(context, '${thisOne.name}${CretaLang.bookDeleted}');
+                    showSnackBar(context, '${thisOne.name.value}${CretaLang.bookDeleted}');
                     // ignore: use_build_context_synchronously
                     Routemaster.of(context).push(AppRoutes.studioBookGridPage);
                     // ignore: use_build_context_synchronously

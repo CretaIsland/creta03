@@ -299,6 +299,7 @@ class BookGridItemState extends State<BookGridItem> {
                                                 .reGet(AccountManager.currentLoginUser.email,
                                                     onModelFiltered: () {
                                               widget.bookManager.notify();
+                                              logger.info('removeItem complete');
                                               return value;
                                             });
                                           }
@@ -482,7 +483,8 @@ class BookGridItemState extends State<BookGridItem> {
     BookModel? removedItem = widget.bookManager.findByIndex(index) as BookModel?;
     if (removedItem != null) {
       await widget.bookManager.removeChild(removedItem.mid);
-      await widget.bookManager.removeToDB(removedItem.mid);
+      removedItem.isRemoved.set(true, save: false, noUndo: true);
+      await widget.bookManager.setToDB(removedItem);
       widget.bookManager.remove(removedItem);
     }
     return removedItem;

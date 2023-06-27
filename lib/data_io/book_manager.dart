@@ -160,10 +160,12 @@ class BookManager extends CretaManager {
     return newOne;
   }
 
-  Future<void> removeBook(PageManager pageManager) async {
+  Future<void> removeBook(BookModel thisOne, PageManager pageManager) async {
     logger.info('removeBook()');
-    await pageManager.removeAll();
-    await removeAll();
+    pageManager.removeAll();
+    thisOne.isRemoved.set(true, save: false, noUndo: true);
+    await setToDB(thisOne);
+    remove(thisOne);
   }
 
   @override

@@ -17,7 +17,7 @@ class ConnectedUserManager extends CretaManager {
   void setBook(String book) {
     // parentMid 는 bookMid 이다.
     bookMid = book;
-    saveManagerHolder?.registerManager('connected_user', this, postfix: bookMid!);
+    saveManagerHolder?.registerManager(ExModelType.connected_user.name, this, postfix: bookMid!);
   }
 
   @override
@@ -123,8 +123,8 @@ class ConnectedUserManager extends CretaManager {
     return connectedUser;
   }
 
-  List<ConnectedUserModel> getConnectedUserList(String me) {
-    List<ConnectedUserModel> retval = [];
+  Set<ConnectedUserModel> getConnectedUserSet(String me) {
+    Set<ConnectedUserModel> retval = {};
     for (var ele in modelList) {
       if (ele.isRemoved.value == true) {
         continue;
@@ -176,5 +176,30 @@ class ConnectedUserManager extends CretaManager {
       }
     }
     return false;
+  }
+
+  int removeOld(String myName) {
+    int counter = 0;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      ConnectedUserModel model = ele as ConnectedUserModel;
+      if (model.name == myName) {
+        continue;
+      }
+      //print('${model.name} lastUpdateTime = ${model.updateTime.toString()}');
+      if (model.updateTime.isBefore(CretaUtils.getTimeSecondsAgo(monitorPerid))) {
+        counter++;
+        model.isRemoved.set(true, noUndo: true);
+        //print('ele.mid is old, deleted!!!');
+        continue;
+      }
+    }
+    if (counter > 0) {
+      //print('ele.mid is old, deleted!!! notify');
+      notify();
+    }
+    return counter;
   }
 }

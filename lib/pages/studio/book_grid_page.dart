@@ -303,6 +303,18 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         return Container();
       }
 
+      BookModel? model = bookManager.findByIndex(index) as BookModel?;
+      if (model == null) {
+        logger.warning("$index th model not founded");
+        return Container();
+      }
+
+      if (model.isRemoved.value == true) {
+        logger.warning('removed BookModel.name = ${model.name.value}');
+        return Container();
+      }
+      logger.info('BookModel.name = ${model.name.value}');
+
       return BookGridItem(
         bookManager: bookManager,
         index: index - 1,
