@@ -15,11 +15,11 @@ import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/model/connected_user_model.dart';
-import 'package:creta03/pages/studio/sample_data.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
+import '../../data_io/connected_user_manager.dart';
 import '../../data_io/filter_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -54,6 +54,7 @@ class BookMainPage extends StatefulWidget {
   static BookManager? bookManagerHolder;
   static PageManager? pageManagerHolder;
   static FilterManager? filterManagerHolder;
+  static ConnectedUserManager? connectedUserHolder;
   // static FrameTemplateManager? polygonFrameManagerHolder;
   // static FrameTemplateManager? animationFrameManagerHolder;
   //static UserPropertyManager? userPropertyManagerHolder;
@@ -109,7 +110,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   bool dropDownButtonOpened = false;
 
-  //Timer? _playTimer;
+  Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
   //AutoPlayChangeEventController? _autoPlaySendEvent;
@@ -139,7 +140,7 @@ class _BookMainPageState extends State<BookMainPage> {
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: false);
 
     BookMainPage.bookManagerHolder = BookManager();
-    BookMainPage.bookManagerHolder!.configEvent(notifyModify: false);
+    //BookMainPage.bookManagerHolder!.configEvent(notifyModify: false);
     BookMainPage.bookManagerHolder!.clearAll();
     BookMainPage.pageManagerHolder = PageManager();
     // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
@@ -151,6 +152,7 @@ class _BookMainPageState extends State<BookMainPage> {
       BookMainPage.filterManagerHolder = FilterManager(userEmail);
       BookMainPage.filterManagerHolder!.getFilter();
     }
+    BookMainPage.connectedUserHolder = ConnectedUserManager();
 
     String url = Uri.base.origin;
     String query = Uri.base.query;
@@ -203,11 +205,11 @@ class _BookMainPageState extends State<BookMainPage> {
       while (_onceDBGetComplete == false) {
         await Future.delayed(Duration(seconds: 1));
       }
+      _startConnectedUserTimer();
+
       if (StudioVariables.isPreview) {
         //_takeAScreenShot();
-        if (StudioVariables.isAutoPlay) {
-          //_startPlayTimer();
-        }
+        if (StudioVariables.isAutoPlay) {}
       } else {}
     });
   }
@@ -218,8 +220,10 @@ class _BookMainPageState extends State<BookMainPage> {
     saveManagerHolder!.addBookChildren('page=');
     saveManagerHolder!.addBookChildren('frame=');
     saveManagerHolder!.addBookChildren('contents=');
+    saveManagerHolder!.addBookChildren('link=');
 
     BookMainPage.filterManagerHolder?.setBook(model);
+    BookMainPage.connectedUserHolder?.setBook(model.mid);
 
     logger.info("3) --_BookMainPageState-----------------------------------------");
 
@@ -297,10 +301,11 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.severe('BookMainPage.dispose');
 
     super.dispose();
-    //_stopPlayTimer();
+    _stopConnectedUserTimer();
 
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
+    BookMainPage.connectedUserHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.clearFrameManager();
 
     saveManagerHolder?.stopTimer();
@@ -331,6 +336,12 @@ class _BookMainPageState extends State<BookMainPage> {
         // ),
         ChangeNotifierProvider<BookManager>.value(
           value: BookMainPage.bookManagerHolder!,
+        ),
+        ChangeNotifierProvider<BookManager>.value(
+          value: BookMainPage.bookManagerHolder!,
+        ),
+        ChangeNotifierProvider<ConnectedUserManager>.value(
+          value: BookMainPage.connectedUserHolder!,
         ),
       ],
       child: StudioVariables.isPreview
@@ -410,6 +421,8 @@ class _BookMainPageState extends State<BookMainPage> {
         builder: (context, bookManager, child) {
           logger.info('Consumer  ${bookManager.getLength()}');
           _bookModel = bookManager.onlyOne()! as BookModel;
+          _bookModel.parentMid.set(_bookModel.mid, noUndo: true);
+          BookMainPage.bookManagerHolder!.setParentMid(_bookModel.mid);
           return _mainPage();
         });
   }
@@ -727,18 +740,23 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _avartars() {
-    return Visibility(
-        // 아바타
-        visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
-        child: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 1300
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: SampleData.connectedUserList.map((e) {
-                  return _eachAvartar(e);
-                }).toList(),
-              )
-            : _standForAvartar(SampleData.connectedUserList));
+    return Consumer<ConnectedUserManager>(builder: (context, connectedUserManager, child) {
+      List<ConnectedUserModel> connectedUserList = connectedUserManager
+          .getConnectedUserList(LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname);
+      //print('Consumer<ConnectedUserManager>(${connectedUserList.length} )');
+      return Visibility(
+          // 아바타
+          visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
+          child: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 1300
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: connectedUserList.map((e) {
+                    return _eachAvartar(e);
+                  }).toList(),
+                )
+              : _standForAvartar(connectedUserList));
+    });
   }
 
   Widget _eachAvartar(ConnectedUserModel? user) {
@@ -747,7 +765,7 @@ class _BookMainPageState extends State<BookMainPage> {
     }
     return Snippet.TooltipWrapper(
       tooltip: user.name,
-      bgColor: (user.state == ActiveState.active ? Colors.red : Colors.grey),
+      bgColor: (user.isConnected ? Colors.red : Colors.grey),
       fgColor: Colors.white,
       child: SizedBox(
         width: 34,
@@ -756,12 +774,12 @@ class _BookMainPageState extends State<BookMainPage> {
           padding: const EdgeInsets.all(1.0),
           child: CircleAvatar(
             //radius: 28,
-            backgroundColor: user.state == ActiveState.active ? Colors.red : Colors.grey,
+            backgroundColor: user.isConnected ? Colors.red : Colors.grey,
             child: Padding(
               padding: const EdgeInsets.all(3.0),
               child: CircleAvatar(
                 //radius: 25,
-                backgroundImage: user.image,
+                backgroundImage: NetworkImage(user.imageUrl),
               ),
             ),
           ),
@@ -789,7 +807,7 @@ class _BookMainPageState extends State<BookMainPage> {
     String count = userList.length.toString();
     Color bgColor = Colors.grey;
     for (var ele in userList) {
-      if (ele.state == ActiveState.active) {
+      if (ele.isConnected) {
         bgColor = Colors.red;
         break;
       }
@@ -1007,7 +1025,7 @@ class _BookMainPageState extends State<BookMainPage> {
                 //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
                 StudioVariables.globalToggleAutoPlay(save: false);
                 // if (StudioVariables.isAutoPlay && StudioVariables.isPreview) {
-                //   _startPlayTimer();
+                //   _startConnectedUserTimer();
                 // }
               },
               gotoNext: () {
@@ -1123,22 +1141,35 @@ class _BookMainPageState extends State<BookMainPage> {
     // });
   }
 
-  // void _startPlayTimer() {
-  //   logger.info('_startPlayTimer----------------------------------');
-  //   _playTimer ??= Timer.periodic(Duration(milliseconds: 500), (t) {
-  //     if (StudioVariables.isAutoPlay == false || StudioVariables.isPreview == false) {
-  //       _stopPlayTimer();
-  //       return;
-  //     }
-  //     FrameManager? main = BookMainPage.pageManagerHolder!.getMainFrame();
+  void _startConnectedUserTimer() {
+    // print('_startConnectedUserTimer----------------------------------');
+    if (BookMainPage.connectedUserHolder != null) {
+      BookMainPage.connectedUserHolder!.getConnectedUser();
+      BookMainPage.connectedUserHolder!.notify();
+    }
+    _connectedUserTimer ??=
+        Timer.periodic(Duration(seconds: ConnectedUserManager.monitorPerid), (t) {
+      if (BookMainPage.connectedUserHolder != null &&
+          LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
+        ConnectedUserModel? model = BookMainPage.connectedUserHolder!
+            .aleadyCreated(LoginPage.userPropertyManagerHolder!.userModel.name);
+        if (model != null) {
+          model.imageUrl = LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg;
+          model.setUpdateTime();
+          BookMainPage.connectedUserHolder?.update(connectedUser: model, doNotify: false);
+          //print('update user ${model.name}----------------------------------');
+        } else {
+          //print(
+          //   'create user ${LoginPage.userPropertyManagerHolder!.userModel.name}----------------------------------');
+          BookMainPage.connectedUserHolder?.createNext(
+              user: LoginPage.userPropertyManagerHolder!.userPropertyModel!, doNotify: false);
+        }
+      }
+    });
+  }
 
-  //     // mainFrame 을 찾아서, 한 바퀴 다 돌았으면, 다음 페이지로 넘어간다.
-  //     // 만약 mainFrame 이 지정되어 있지 않다면,  가장 앞에 나와 있는 프레임이 main Frame 으로 삼는다.
-  //   });
-  // }
-
-  // void _stopPlayTimer() {
-  //   _playTimer?.cancel();
-  //   _playTimer = null;
-  // }
+  void _stopConnectedUserTimer() {
+    _connectedUserTimer?.cancel();
+    _connectedUserTimer = null;
+  }
 }

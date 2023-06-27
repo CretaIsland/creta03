@@ -72,6 +72,13 @@ class CretaUtils {
     return '${duration.inMinutes} ${CretaLang.minBefore}';
   }
 
+  static DateTime getTimeSecondsAgo(int sec) {
+    final currentTime = DateTime.now();
+    DateTime retval = currentTime.subtract(Duration(seconds: sec));
+    //print('10 secs before = ${retval.toString()}');
+    return retval;
+  }
+
   static List<String> jsonStringToList(String value) {
     if (value.isEmpty) {
       return [];

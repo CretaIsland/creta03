@@ -298,14 +298,16 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   Widget step2() {
     return SizedBox(
       height: 365,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ..._scope(),
-          ..._defaultScope(),
-          ..._publishTo(),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ..._scope(),
+            ..._defaultScope(),
+            ..._publishTo(),
+          ],
+        ),
       ),
     );
   }
@@ -313,15 +315,17 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   Widget step3() {
     return SizedBox(
       height: 365,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ..._channelScope(),
-          ..._channelTo(),
-          copyRight(widget.model!),
-          _optionBody(),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ..._channelScope(),
+            ..._channelTo(),
+            copyRight(widget.model!),
+            _optionBody(),
+          ],
+        ),
       ),
     );
   }
@@ -565,7 +569,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 12),
         child: Wrap(
-          spacing: 8.0,
+          spacing: 6.0,
+          runSpacing: 6.0,
           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BTN.line_blue_wmi_m(
@@ -620,7 +625,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       ),
       Container(
         width: 333,
-        height: 207,
+        height: 175,
         //padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
@@ -785,7 +790,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 12),
         child: Wrap(
-          spacing: 8.0,
+          spacing: 6.0,
+          runSpacing: 6.0,
           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BTN.line_blue_wmi_m(

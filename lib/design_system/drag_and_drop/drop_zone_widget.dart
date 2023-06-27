@@ -85,11 +85,11 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
     final url = await controller.createFileUrl(event);
     //final blob = await controller.getFileData(event);
 
-    logger.fine('Name : $name');
-    logger.fine('Mime: $mime');
+    logger.info('Name : $name');
+    logger.info('Mime: $mime');
 
-    logger.fine('Size : ${byte / (1024 * 1024)}');
-    logger.fine('URL: $url');
+    logger.info('Size : ${byte / (1024 * 1024)}');
+    logger.info('URL: $url');
 
     // update the data model with recent file uploaded
     final droppedFile = ContentsModel.withFile(widget.parentId,

@@ -59,9 +59,12 @@ class TeamManager extends CretaManager {
       await queryFromDB(query, limit: limit);
 
       if (modelList.isNotEmpty) {
-        teamModelList.add(onlyOne() as TeamModel);
-        teamMemberMap[teamMid] =
-            await getTeamMembers(tmMid: teamMid, memberMids: teamModelList.last.teamMembers);
+        TeamModel team = onlyOne() as TeamModel;
+        if (teamModelList.contains(team) == false) {
+          teamModelList.add(team);
+          teamMemberMap[teamMid] =
+              await getTeamMembers(tmMid: teamMid, memberMids: teamModelList.last.teamMembers);
+        }
       }
     } catch (error) {
       logger.info('something wrong in teamManager >> $error');
