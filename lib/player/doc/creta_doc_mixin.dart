@@ -34,7 +34,6 @@ mixin CretaDocMixin {
       width: realSize.width,
       height: realSize.height,
       // child: QuillPlayerWidget(document: model),
-      // child: QuillEnhancedWidget(),
       child: QuillFloatingToolBarWidget(document: model),
     );
   }

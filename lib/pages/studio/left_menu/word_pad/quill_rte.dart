@@ -30,7 +30,7 @@ class _QuillFloatingToolBarWidgetState extends State<QuillFloatingToolBarWidget>
     super.initState();
     _currentController = HtmlEditorController(
       toolbarOptions: HtmlToolbarOptions(
-        toolbarType: ToolbarType.nativeScrollable,
+        toolbarType: ToolbarType.nativeExpandable,
         backgroundColor: Colors.transparent,
         toolbarPosition: ToolbarPosition.custom,
       ),
@@ -52,6 +52,7 @@ class _QuillFloatingToolBarWidgetState extends State<QuillFloatingToolBarWidget>
         },
         onBlur: () {
           debugPrint('----editor unfocused---');
+
           setTimeout();
         },
       ),
@@ -137,15 +138,20 @@ class _QuillFloatingToolBarWidgetState extends State<QuillFloatingToolBarWidget>
   void resetTimeout() {
     timer?.cancel();
     timer = null;
+    _currentController = HtmlEditorController(
+        toolbarOptions: HtmlToolbarOptions(
+      toolbarType: ToolbarType.nativeExpandable,
+      backgroundColor: Colors.transparent,
+      toolbarPosition: ToolbarPosition.custom,
+    ));
   }
 
   void setTimeout() {
-    timer = Timer(const Duration(milliseconds: 100), () {
-      if (_currentController != null) {
-        _controller.reverse(from: 1).then((_) {
-          if (mounted) {}
-        });
-      }
+    timer = Timer(const Duration(milliseconds: 5000), () {
+      _controller.reverse(from: 1).then((_) {
+        _currentController = null;
+        if (mounted) setState(() {});
+      });
     });
   }
 }
