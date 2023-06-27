@@ -300,7 +300,6 @@ class _BookMainPageState extends State<BookMainPage> {
   void dispose() {
     logger.severe('BookMainPage.dispose');
 
-    super.dispose();
     _stopConnectedUserTimer();
 
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
@@ -315,6 +314,7 @@ class _BookMainPageState extends State<BookMainPage> {
     // controller.dispose();
     //verticalScroll?.dispose();
     //horizontalScroll?.dispose();
+    super.dispose();
   }
 
   @override
@@ -741,9 +741,9 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget _avartars() {
     return Consumer<ConnectedUserManager>(builder: (context, connectedUserManager, child) {
-      List<ConnectedUserModel> connectedUserList = connectedUserManager
-          .getConnectedUserList(LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname);
-      //print('Consumer<ConnectedUserManager>(${connectedUserList.length} )');
+      Set<ConnectedUserModel> connectedUserSet = connectedUserManager
+          .getConnectedUserSet(LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname);
+      //print('Consumer<ConnectedUserManager>(${connectedUserSet.length} )');
       return Visibility(
           // 아바타
           visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
@@ -751,11 +751,11 @@ class _BookMainPageState extends State<BookMainPage> {
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: connectedUserList.map((e) {
+                  children: connectedUserSet.map((e) {
                     return _eachAvartar(e);
                   }).toList(),
                 )
-              : _standForAvartar(connectedUserList));
+              : _standForAvartar(connectedUserSet));
     });
   }
 
@@ -788,7 +788,7 @@ class _BookMainPageState extends State<BookMainPage> {
     );
   }
 
-  Widget _standForAvartar(List<ConnectedUserModel> userList) {
+  Widget _standForAvartar(Set<ConnectedUserModel> userList) {
     if (userList.isEmpty) {
       return Container();
     }
@@ -1149,21 +1149,24 @@ class _BookMainPageState extends State<BookMainPage> {
     }
     _connectedUserTimer ??=
         Timer.periodic(Duration(seconds: ConnectedUserManager.monitorPerid), (t) {
+      //print('_startConnectedUserTimer----------------------------------');
       if (BookMainPage.connectedUserHolder != null &&
           LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
-        ConnectedUserModel? model = BookMainPage.connectedUserHolder!
-            .aleadyCreated(LoginPage.userPropertyManagerHolder!.userModel.name);
+        String myName = LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname;
+        ConnectedUserModel? model = BookMainPage.connectedUserHolder!.aleadyCreated(myName);
         if (model != null) {
           model.imageUrl = LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg;
           model.setUpdateTime();
+          model.isRemoved.set(false, save: false, noUndo: true);
           BookMainPage.connectedUserHolder?.update(connectedUser: model, doNotify: false);
-          //print('update user ${model.name}----------------------------------');
+          // print('update user ${model.name}---${model.mid}-------------------------------');
         } else {
           //print(
-          //   'create user ${LoginPage.userPropertyManagerHolder!.userModel.name}----------------------------------');
+          //    'create user ${LoginPage.userPropertyManagerHolder!.userModel.name}----------------------------------');
           BookMainPage.connectedUserHolder?.createNext(
               user: LoginPage.userPropertyManagerHolder!.userPropertyModel!, doNotify: false);
         }
+        BookMainPage.connectedUserHolder!.removeOld(myName);
       }
     });
   }
