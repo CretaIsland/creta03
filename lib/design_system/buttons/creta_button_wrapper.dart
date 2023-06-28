@@ -987,6 +987,33 @@ class BTN {
     );
   }
 
+  static CretaButton fill_purple_t_m({
+    required String text,
+    required Function onPressed,
+    double? width = 72,
+    double? height = 34,
+    CretaButtonSidePadding? sidePadding,
+    TextStyle? textStyle,
+  }) {
+    return CretaButton(
+      width: width,
+      height: height,
+      buttonType: CretaButtonType.textOnly,
+      buttonColor: CretaButtonColor.purple,
+      text: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(text, style: textStyle ?? CretaFont.buttonMedium.copyWith(color: Colors.white)),
+          ],
+        ),
+      ),
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+    );
+  }
+
   static CretaButton fill_purple_it_m_animation({
     required String text,
     required ImageProvider image,
