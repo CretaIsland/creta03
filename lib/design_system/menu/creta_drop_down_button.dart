@@ -20,6 +20,9 @@ class CretaDropDownButton extends StatefulWidget {
   double? iconSize;
   EdgeInsetsGeometry? padding; //EdgeInsets.only(left: 8, right: 4)
   final Color selectedColor;
+  final double? borderRadius;
+  final bool alwaysShowBorder;
+  final Color? allTextColor;
 
   CretaDropDownButton({
     super.key,
@@ -33,6 +36,9 @@ class CretaDropDownButton extends StatefulWidget {
     this.itemHeight = 39,
     this.hintList,
     this.selectedColor = CretaColor.primary,
+    this.borderRadius,
+    this.alwaysShowBorder = false,
+    this.allTextColor,
   });
 
   @override
@@ -63,7 +69,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
     String displayString = getSelectedString();
     return ElevatedButton(
       key: dropDownButtonKey,
-      style: _buttonStyle(allText != displayString),
+      style: _buttonStyle(allText != displayString, false),
       onPressed: () {
         logger.finest('Main button pressed');
         setState(() {
@@ -92,14 +98,14 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
             Text(
               displayString,
               style: widget.textStyle?.copyWith(
-                color: allText == displayString ? CretaColor.text[700] : widget.selectedColor,
+                color: widget.allTextColor ?? (allText == displayString ? CretaColor.text[700] : widget.selectedColor),
               ),
               overflow: TextOverflow.fade,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Icon(
-                color: allText == displayString ? CretaColor.text[700] : widget.selectedColor,
+                color: widget.allTextColor ?? (allText == displayString ? CretaColor.text[700] : widget.selectedColor),
                 Icons.keyboard_arrow_down,
                 size: iconSize,
               ),
@@ -119,7 +125,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
     return allText;
   }
 
-  ButtonStyle _buttonStyle(bool isSelected) {
+  ButtonStyle _buttonStyle(bool isSelected, bool isPopup) {
     return ButtonStyle(
       padding: widget.padding != null
           ? MaterialStateProperty.all<EdgeInsetsGeometry>(widget.padding!)
@@ -138,6 +144,9 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
       shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
       foregroundColor: MaterialStateProperty.resolveWith<Color?>(
         (Set<MaterialState> states) {
+          if (widget.allTextColor != null) {
+            return widget.allTextColor;
+          }
           if (isSelected) {
             return CretaColor.primary;
           }
@@ -150,7 +159,12 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
       backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
       shape: MaterialStateProperty.resolveWith<OutlinedBorder?>(
         (Set<MaterialState> states) {
-          return RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.height / 2));
+          return RoundedRectangleBorder(
+            side: (!isPopup && widget.alwaysShowBorder)
+                ? BorderSide(width: 0.5, color: Colors.grey)
+                : BorderSide.none,
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? widget.height / 2),
+          );
         },
       ),
     );
@@ -175,7 +189,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         final size = renderBox.size;
 
         double x = position.dx;
-        double y = position.dy + size.height - 1;
+        double y = position.dy + size.height;// - 1;
 
         double itemSpacing = 5;
         double dialogHeight =
@@ -256,7 +270,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: ElevatedButton(
-                        style: _buttonStyle(item.selected),
+                        style: _buttonStyle(item.selected, true),
                         onPressed: () {
                           setState(() {
                             for (var ele in menuItem) {
@@ -298,6 +312,7 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
                                 ? Icon(
                                     Icons.check,
                                     size: iconSize,
+                                    color: widget.allTextColor,
                                   )
                                 : SizedBox.shrink(),
                           ],
