@@ -39,6 +39,9 @@ class _MyPageInfoState extends State<MyPageInfo> {
 
   // local load image for profile
   XFile? _pickedFile;
+  String _nowPassword = '';
+  String _newPassword = '';
+  String _checkNewPassword = '';
 
 
   @override
@@ -141,7 +144,8 @@ class _MyPageInfoState extends State<MyPageInfo> {
               hintText: '현재 비밀번호', 
               width: 294.0,
               height: 30.0,
-              onEditComplete: (value) { }
+              onChanged: (value) => _nowPassword = value,
+              onEditComplete: (String value) => _nowPassword = value,
             ),
             const SizedBox(height: 20.0),
             CretaTextField(
@@ -150,7 +154,8 @@ class _MyPageInfoState extends State<MyPageInfo> {
               hintText: '새 비밀번호', 
               width: 294.0,
               height: 30.0,
-              onEditComplete: (value) { }
+              onChanged: (value) => _newPassword = value,
+              onEditComplete: (String value) => _newPassword = value,
             ),
             const SizedBox(height: 20.0),
             CretaTextField(
@@ -159,7 +164,8 @@ class _MyPageInfoState extends State<MyPageInfo> {
               hintText: '새 비밀번호 확인', 
               width: 294.0,
               height: 30.0,
-              onEditComplete: (value) { }
+              onChanged: (value) => _checkNewPassword = value,
+              onEditComplete: (String value) => _checkNewPassword = value,
             ),
             const SizedBox(height: 24.0),
             BTN.fill_blue_t_m(
@@ -167,13 +173,28 @@ class _MyPageInfoState extends State<MyPageInfo> {
               width: 294.0,
               height: 32.0,
               onPressed: () {
-
+                if(_nowPassword.isEmpty || _newPassword.isEmpty || _checkNewPassword.isEmpty) {
+                  logger.info('empty textfield');
+                  return;
+                }
+                if(_newPassword != _checkNewPassword) {
+                  logger.info('not match new password');
+                  return;
+                }
+                if(_newPassword == _checkNewPassword) {
+                  HycopFactory.account!.updateAccountPassword(_newPassword, _nowPassword).onError((error, stackTrace) {
+                    if(error.toString().contains('no exist')) {
+                     logger.info('wrong password');
+                    }
+                  }).then((value) => Navigator.of(context).pop());
+                }
               }
             )
         ],
       ),
     );
   }
+ 
  
 
   @override

@@ -10,6 +10,7 @@ class CretaAlertDialog extends StatelessWidget {
   final Widget content;
   final String cancelButtonText;
   final String okButtonText;
+  final double okButtonWidth;
   final Function onPressedOK;
 
   const CretaAlertDialog(
@@ -21,6 +22,7 @@ class CretaAlertDialog extends StatelessWidget {
       required this.content,
       this.cancelButtonText = CretaLang.cancel,
       this.okButtonText = CretaLang.confirm,
+      this.okButtonWidth = 55,
       required this.onPressedOK});
 
   @override
@@ -56,7 +58,7 @@ class CretaAlertDialog extends StatelessWidget {
             ),
             Padding(
                 padding: width > 150
-                    ? EdgeInsets.only(left: width * .97 - 120)
+                    ? EdgeInsets.only(left: width * .97 - (63+okButtonWidth))
                     : EdgeInsets.only(left: width - 120),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -64,7 +66,7 @@ class CretaAlertDialog extends StatelessWidget {
                     BTN.line_red_t_m(
                         text: cancelButtonText, onPressed: () => Navigator.of(context).pop()),
                     const SizedBox(width: 8.0),
-                    BTN.fill_red_t_m(text: okButtonText, width: 55, onPressed: onPressedOK)
+                    BTN.fill_red_t_m(text: okButtonText, width: okButtonWidth, onPressed: onPressedOK)
                   ],
                 )),
           ],

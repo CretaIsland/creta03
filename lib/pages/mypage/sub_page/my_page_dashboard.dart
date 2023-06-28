@@ -1,3 +1,4 @@
+import 'package:creta03/pages/mypage/popup/popup_rateplan.dart';
 import 'package:flutter/material.dart';
 
 // ignore: depend_on_referenced_packages
@@ -106,7 +107,12 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                       const SizedBox(width: 24.0),
                       BTN.line_blue_t_m(
                         text: CretaMyPageLang.ratePlanChangeBTN, 
-                        onPressed: () { }
+                        onPressed: () {
+                          showDialog(
+                            context: context, 
+                            builder: (context) => PopUpRatePlan.ratePlanPopUp(context),
+                          );
+                        }
                       )
                     ],
                   ),
