@@ -40,7 +40,7 @@ class ContentsManager extends CretaManager {
   }
 
   @override
-  AbsExModel newModel(String mid) => ContentsModel(mid);
+  AbsExModel newModel(String mid) => ContentsModel(mid, frameModel.realTimeKey);
 
   @override
   CretaModel cloneModel(CretaModel src) {
@@ -907,7 +907,10 @@ class ContentsManager extends CretaManager {
 
     LinkManager? retval = linkManagerMap[contentsId];
     if (retval == null) {
-      retval = LinkManager(contentsId);
+      retval = LinkManager(
+        contentsId,
+        frameModel.realTimeKey,
+      );
       linkManagerMap[contentsId] = retval;
     }
     return retval;
@@ -917,7 +920,7 @@ class ContentsManager extends CretaManager {
     LinkManager? retval = linkManagerMap[contentsId];
     logger.fine('findLinkManager()*******');
     if (retval == null) {
-      retval = LinkManager(contentsId);
+      retval = LinkManager(contentsId, frameModel.realTimeKey);
       linkManagerMap[contentsId] = retval;
     }
     return linkManagerMap[contentsId];

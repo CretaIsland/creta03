@@ -124,7 +124,9 @@ final routesLoggedOut = RouteMap(
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     // AppRoutes.quillDemoPage: (_) =>
     //     TransitionPage(child: QuillPlayerWidget(document: ContentsModel.withFrame(parent: ''))),
-    AppRoutes.quillDemoPage: (_) => TransitionPage(child: QuillFloatingToolBarWidget(document: ContentsModel.withFrame(parent: ''))),
+    AppRoutes.quillDemoPage: (_) => TransitionPage(
+        child:
+            QuillFloatingToolBarWidget(document: ContentsModel.withFrame(parent: '', bookMid: ''))),
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {

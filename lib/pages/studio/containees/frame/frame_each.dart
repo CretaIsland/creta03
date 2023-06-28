@@ -181,6 +181,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     return Center(
       child: _isDropAble(widget.model)
           ? DropZoneWidget(
+              bookMid: widget.model.realTimeKey,
               parentId: '',
               onDroppedFile: (modelList) {
                 _onDropFrame(widget.model.mid, modelList);

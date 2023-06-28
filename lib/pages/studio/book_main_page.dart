@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
+import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -119,6 +120,7 @@ class _BookMainPageState extends State<BookMainPage> {
   void initState() {
     super.initState();
     logger.info("---_BookMainPageState-----------------------------------------");
+
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
     // final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
@@ -248,6 +250,9 @@ class _BookMainPageState extends State<BookMainPage> {
       StudioVariables.isMute = LoginPage.userPropertyManagerHolder!.getMute();
       StudioVariables.isAutoPlay = LoginPage.userPropertyManagerHolder!.getAutoPlay();
     }
+
+    HycopFactory.realtime!.startTemp(model.mid);
+    HycopFactory.realtime!.setPrefix('creta');
   }
 
   //   Future<int> _getPolygonFrameTemplates() async {
@@ -314,6 +319,9 @@ class _BookMainPageState extends State<BookMainPage> {
     // controller.dispose();
     //verticalScroll?.dispose();
     //horizontalScroll?.dispose();
+
+    HycopFactory.realtime!.stop();
+
     super.dispose();
   }
 

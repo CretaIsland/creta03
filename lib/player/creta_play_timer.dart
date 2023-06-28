@@ -223,7 +223,7 @@ class CretaPlayTimer extends ChangeNotifier {
       }
       _currentModel = contentsManager.getNthOrder(_currentOrder) as ContentsModel?;
     }
-    _prevModel ??= ContentsModel('');
+    _prevModel ??= ContentsModel('', '');
 
     if (_currentModel != null &&
         (_currentModel!.mid != _prevModel!.mid || _forceToChange == true)) {

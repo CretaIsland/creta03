@@ -8,6 +8,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../lang/creta_studio_lang.dart';
+import 'book_model.dart';
 import 'creta_model.dart';
 import 'creta_style_mixin.dart';
 import 'frame_model.dart';
@@ -24,6 +25,7 @@ class PageModel extends CretaModel with CretaStyleMixin {
 
   List<FrameModel> frameList = []; // db get 전용
   bool isTempVisible = false;
+  final BookModel bookModel;
 
   @override
   List<Object?> get props => [
@@ -36,7 +38,8 @@ class PageModel extends CretaModel with CretaStyleMixin {
         ...super.propsMixin,
       ];
 
-  PageModel(String pmid) : super(pmid: pmid, type: ExModelType.page, parent: '') {
+  PageModel(String pmid, this.bookModel)
+      : super(pmid: pmid, type: ExModelType.page, parent: '', realTimeKey: bookModel.mid) {
     name = UndoAble<String>('', mid, 'name');
     shortCut = UndoAble<String>('', mid, 'shortCut');
     isCircle = UndoAble<bool>(false, mid, 'isCircle');
@@ -46,8 +49,8 @@ class PageModel extends CretaModel with CretaStyleMixin {
     super.initMixin(mid);
   }
 
-  PageModel.makeSample(double porder, String pid, int pageIndex)
-      : super(pmid: '', type: ExModelType.page, parent: pid) {
+  PageModel.makeSample(this.bookModel, double porder, String pid, int pageIndex)
+      : super(pmid: '', type: ExModelType.page, parent: pid, realTimeKey: bookModel.mid) {
     final Random random = Random();
     int randomNumber = random.nextInt(10);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
@@ -59,7 +62,11 @@ class PageModel extends CretaModel with CretaStyleMixin {
     isCircle = UndoAble<bool>(false, mid, 'isCircle');
 
     shortCut = UndoAble<String>('', mid, 'shortCut');
-    super.makeSampleMixin(mid);
+    super.makeSampleMixin(
+      mid,
+      defaultHeight: bookModel.height.value,
+      defaultWidth: bookModel.width.value,
+    );
 
     logger.finest('mid=$mid');
     isRemoved.printMid();

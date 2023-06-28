@@ -23,7 +23,7 @@ void main() async {
   Logger.root.level = Level.INFO;
   HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
-  LoginPage.initUserProperty();
+  await LoginPage.initUserProperty();
 
   //SampleData.initSample();
   StudioConst.initLangMap();
@@ -50,9 +50,6 @@ class _MainRouteAppState extends ConsumerState<MainRouteApp> {
     super.initState();
     CrossCommonJob ccj = CrossCommonJob();
     CretaVariables.isCanvaskit = ccj.isInUsingCanvaskit();
-
-    HycopFactory.realtime!.start();
-    HycopFactory.realtime!.setPrefix('creta');
 
     saveManagerHolder = SaveManager();
   }

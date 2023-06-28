@@ -54,8 +54,8 @@ mixin BookMixin {
   }
 
   void makeSampleMixin(String mid) {
-    width = UndoAble<double>(600, mid, 'width');
-    height = UndoAble<double>(400, mid, 'height');
+    width = UndoAble<double>(1920, mid, 'width');
+    height = UndoAble<double>(1080, mid, 'height');
 
     // bgColor1 = UndoAble<Color>(Colors.transparent, mid);
     // bgColor2 = UndoAble<Color>(Colors.transparent, mid);

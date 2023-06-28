@@ -183,6 +183,8 @@ class Snippet {
               text: AccountManager.currentLoginUser.name,
               icon: Icons.arrow_drop_down_outlined,
               image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+              //image:
+              //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
               onPressed: () {},
             ),
           ),
@@ -323,46 +325,50 @@ class Snippet {
         ),
         SizedBox(width: 15),
         (!AccountManager.currentLoginUser.isLoginedUser)
-          ? SizedBox.shrink()
-          : Center(
-            child: SizedBox(
-              height: 36,
-              child: BTN.fill_blue_i_l(
-                tooltip: CretaStudioLang.tooltipNoti,
-                onPressed: () {},
-                icon: Icons.notifications_outlined,
+            ? SizedBox.shrink()
+            : Center(
+                child: SizedBox(
+                  height: 36,
+                  child: BTN.fill_blue_i_l(
+                    tooltip: CretaStudioLang.tooltipNoti,
+                    onPressed: () {},
+                    icon: Icons.notifications_outlined,
+                  ),
+                ),
               ),
-            ),
-          ),
         SizedBox(
           width: 10,
         ),
         (!AccountManager.currentLoginUser.isLoginedUser)
-          ? SizedBox.shrink()
-          : Center(
-            child: SizedBox(
-              height: 40,
-              // child: BTN.fill_gray_wti_l(
-              //   buttonColor: CretaButtonColor.blue,
-              //   text: AccountManager.currentLoginUser.name,
-              //   icon: Icons.arrow_drop_down_outlined,
-              //   leftWidget: LoginPage.userPropertyManagerHolder!.profileImageBox(
-              //     radius: 28,
-              //   ),
-              //   onPressed: () {},
-              // ),
-              child: BTN.fill_gray_iti_l(
-                key: GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'),
-                buttonColor: CretaButtonColor.blue,
-                text: AccountManager.currentLoginUser.name,
-                icon: Icons.arrow_drop_down_outlined,
-                image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                onPressed: () {
-                  _popupAccountMenu(GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
-                },
+            ? SizedBox.shrink()
+            : Center(
+                child: SizedBox(
+                  height: 40,
+                  // child: BTN.fill_gray_wti_l(
+                  //   buttonColor: CretaButtonColor.blue,
+                  //   text: AccountManager.currentLoginUser.name,
+                  //   icon: Icons.arrow_drop_down_outlined,
+                  //   leftWidget: LoginPage.userPropertyManagerHolder!.profileImageBox(
+                  //     radius: 28,
+                  //   ),
+                  //   onPressed: () {},
+                  // ),
+                  child: BTN.fill_gray_iti_l(
+                    key: GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'),
+                    buttonColor: CretaButtonColor.blue,
+                    text: AccountManager.currentLoginUser.name,
+                    icon: Icons.arrow_drop_down_outlined,
+                    // image: NetworkImage(
+                    //     'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                    image: NetworkImage(
+                        LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+                    onPressed: () {
+                      _popupAccountMenu(
+                          GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
+                    },
+                  ),
+                ),
               ),
-            ),
-          ),
         SizedBox(
           width: 20,
         ),
@@ -413,7 +419,8 @@ class Snippet {
                   image:
                       NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                   onPressed: () {
-                    _popupAccountMenu(GlobalObjectKey('MyCretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
+                    _popupAccountMenu(
+                        GlobalObjectKey('MyCretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
                   },
                 ),
               ),

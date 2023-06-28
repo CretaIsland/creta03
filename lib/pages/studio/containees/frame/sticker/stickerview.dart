@@ -38,9 +38,11 @@ class StickerView extends StatefulWidget {
   final double width; // width of the editor view
   final FrameManager? frameManager;
   final String pageMid;
+  final String bookMid;
 
   const StickerView({
     super.key,
+    required this.bookMid,
     required this.pageMid,
     required this.stickerList,
     required this.onUpdate,
@@ -137,6 +139,7 @@ class StickerViewState extends State<StickerView> {
                   child:
                       //DraggableStickers class in which stickerList is passed
                       DraggableStickers(
+                    bookMid: widget.bookMid,
                     pageWidth: widget.width,
                     pageHeight: widget.height,
                     frameManager: widget.frameManager,

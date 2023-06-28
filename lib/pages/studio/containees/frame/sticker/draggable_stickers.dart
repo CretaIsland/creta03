@@ -36,6 +36,7 @@ class DraggableStickers extends StatefulWidget {
   static FrameSelectNotifier? frameSelectNotifier;
 
   //List of stickers (elements)
+  final String bookMid;
   final double pageWidth;
   final double pageHeight;
   final FrameManager? frameManager;
@@ -59,6 +60,7 @@ class DraggableStickers extends StatefulWidget {
 
   const DraggableStickers({
     super.key,
+    required this.bookMid,
     required this.pageWidth,
     required this.pageHeight,
     required this.frameManager,
@@ -115,7 +117,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _pageDropZone(),
+          _pageDropZone(widget.bookMid),
           for (final sticker in stickers) _drawEachStiker(sticker),
           _drawMiniMenu(),
         ],
@@ -471,8 +473,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //   });
   // }
 
-  Widget _pageDropZone() {
+  Widget _pageDropZone(String bookMid) {
     return DropZoneWidget(
+      bookMid: bookMid,
       parentId: '',
       onDroppedFile: (modelList) {
         //logger.info('page dropZone contents added ${model.mid}');

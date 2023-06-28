@@ -20,7 +20,7 @@ class ConnectedUserModel extends CretaModel {
     required this.email,
     required this.imageUrl,
     this.isConnected = false,
-  }) : super(pmid: '', type: ExModelType.connected_user, parent: bookMid) {
+  }) : super(pmid: '', type: ExModelType.connected_user, parent: bookMid, realTimeKey: bookMid) {
     //_image =
   }
 
@@ -34,7 +34,7 @@ class ConnectedUserModel extends CretaModel {
       ];
 
   ConnectedUserModel.withBook(String bookMid)
-      : super(pmid: '', type: ExModelType.connected_user, parent: bookMid) {
+      : super(pmid: '', type: ExModelType.connected_user, parent: bookMid, realTimeKey: bookMid) {
     name = '';
     email = '';
     imageUrl = '';

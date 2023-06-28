@@ -24,7 +24,8 @@ class LinkModel extends CretaModel {
         connectedClass,
       ];
 
-  LinkModel(String pmid) : super(pmid: pmid, type: ExModelType.link, parent: '') {
+  LinkModel(String pmid, String bookMid)
+      : super(pmid: pmid, type: ExModelType.link, parent: '', realTimeKey: bookMid) {
     name = '';
     posX = 0;
     posY = 0;

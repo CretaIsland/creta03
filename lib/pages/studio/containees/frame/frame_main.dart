@@ -116,6 +116,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     return StickerView(
       //key: ValueKey('StickerView-${widget.pageModel.mid}'),
+      bookMid: widget.bookModel.mid,
       pageMid: widget.pageModel.mid,
       width: widget.pageWidth,
       height: widget.pageHeight,

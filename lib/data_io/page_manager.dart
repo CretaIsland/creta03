@@ -35,7 +35,7 @@ class PageManager extends CretaManager {
   }
 
   @override
-  AbsExModel newModel(String mid) => PageModel(mid);
+  AbsExModel newModel(String mid) => PageModel(mid, bookModel!);
 
   void setBook(BookModel book) {
     bookModel = book;
@@ -134,7 +134,8 @@ class PageManager extends CretaManager {
   }
 
   Future<PageModel> createNextPage(int pageIndex) async {
-    PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid, pageIndex);
+    PageModel defaultPage =
+        PageModel.makeSample(bookModel!, safeLastOrder() + 1, bookModel!.mid, pageIndex);
     await _createNextPage(defaultPage);
     MyChange<PageModel> c = MyChange<PageModel>(
       defaultPage,

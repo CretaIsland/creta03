@@ -19,7 +19,7 @@ class FramePublishedManager extends CretaManager {
   }
 
   @override
-  AbsExModel newModel(String mid) => FrameModel(mid);
+  AbsExModel newModel(String mid) => FrameModel(mid, '');
 
   @override
   Future<int> makeCopyAll(String? newParentMid) async {

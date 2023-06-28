@@ -98,6 +98,7 @@ class BookModel extends CretaModel with BookMixin {
     filter = UndoAble<String>('', mid, 'filter');
     super.initMixin(mid);
     parentMid.set(mid, noUndo: true, save: false);
+    setRealTimeKey(mid);
   }
 
   BookModel.withName(
@@ -148,7 +149,7 @@ class BookModel extends CretaModel with BookMixin {
     }
     super.makeSampleMixin(mid);
     parentMid.set(mid, noUndo: true, save: false);
-
+    setRealTimeKey(mid);
     logger.finest('owners=${owners.toString()}');
   }
   @override

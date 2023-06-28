@@ -106,7 +106,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         //shadowIn,
         ...super.propsMixin,
       ];
-  FrameModel(String pmid) : super(pmid: pmid, type: ExModelType.frame, parent: '') {
+  FrameModel(String pmid, String bookMid)
+      : super(pmid: pmid, type: ExModelType.frame, parent: '', realTimeKey: bookMid) {
     name = UndoAble<String>('', mid, 'name');
     bgUrl = UndoAble<String>('', mid, 'bgUrl');
     posX = UndoAble<double>(0, mid, 'posX');
@@ -138,9 +139,11 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     super.initMixin(mid);
   }
 
-  FrameModel.makeSample(double porder, String pid, {FrameType pType = FrameType.none})
-      : super(pmid: '', type: ExModelType.frame, parent: pid) {
-    super.makeSampleMixin(mid);
+  FrameModel.makeSample(double porder, String pid, BookModel bookModel,
+      {FrameType pType = FrameType.none})
+      : super(pmid: '', type: ExModelType.frame, parent: pid, realTimeKey: bookModel.mid) {
+    super.makeSampleMixin(mid,
+        defaultWidth: bookModel.width.value / 4, defaultHeight: bookModel.height.value / 4);
     order = UndoAble<double>(porder, mid, 'order');
     name =
         UndoAble<String>('${CretaStudioLang.noNameframe} ${order.value.toString()}', mid, 'name');

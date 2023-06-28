@@ -140,7 +140,7 @@ class UserPropertyManager extends CretaManager {
 
   Future<FrameModel> _getFrameFromDB(String mid) async {
     try {
-      FrameModel model = FrameModel(mid);
+      FrameModel model = FrameModel(mid, '');
       model.fromMap(await HycopFactory.dataBase!.getData('creta_frame', mid));
       return model;
     } catch (e) {
@@ -188,7 +188,7 @@ class UserPropertyManager extends CretaManager {
     }
 
     for (var ele in resultList) {
-      FrameModel model = FrameModel(ele['mid'] ?? '');
+      FrameModel model = FrameModel(ele['mid'] ?? '', ele['realTimeKey'] ?? '');
       model.fromMap(ele);
 
       logger.finest('ele = ${model.mid}');

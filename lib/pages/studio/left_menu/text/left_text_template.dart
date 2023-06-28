@@ -97,8 +97,8 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
   }
 
   Future<ContentsModel> _defaultTextModel(
-      FontSizeType fontSizeType, double fontSize, String frameMid) async {
-    ContentsModel retval = ContentsModel.withFrame(parent: frameMid);
+      FontSizeType fontSizeType, double fontSize, String frameMid, String bookMid) async {
+    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
 
     retval.contentsType = ContentsType.text;
 
@@ -128,7 +128,8 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
       bgColor1: Colors.transparent,
       type: FrameType.text,
     );
-    ContentsModel model = await _defaultTextModel(fontSizeType, fontSize, frameModel.mid);
+    ContentsModel model =
+        await _defaultTextModel(fontSizeType, fontSize, frameModel.mid, frameModel.realTimeKey);
 
     await createNewFrameAndContents(
       [model],

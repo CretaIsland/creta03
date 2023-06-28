@@ -1,5 +1,6 @@
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
+import '../model/book_model.dart';
 import '../model/creta_model.dart';
 import '../model/page_model.dart';
 import 'creta_manager.dart';
@@ -9,7 +10,8 @@ import 'page_manager.dart';
 
 class PagePublishedManager extends CretaManager {
   final PageManager pageManager;
-  PagePublishedManager(this.pageManager) : super('creta_page_published', null);
+  final BookModel bookModel;
+  PagePublishedManager(this.pageManager, this.bookModel) : super('creta_page_published', null);
 
   @override
   CretaModel cloneModel(CretaModel src) {
@@ -19,7 +21,7 @@ class PagePublishedManager extends CretaManager {
   }
 
   @override
-  AbsExModel newModel(String mid) => PageModel(mid);
+  AbsExModel newModel(String mid) => PageModel(mid, bookModel);
 
   @override
   Future<int> makeCopyAll(String? newParentMid) async {
