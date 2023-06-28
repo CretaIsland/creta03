@@ -29,6 +29,7 @@ class PageThumbnail extends StatefulWidget {
   final double pageWidth;
   final double pageHeight;
   final int pageIndex;
+  //final double shrinkRatio;
   final void Function(String pageMid) chageEventReceived;
 
   const PageThumbnail({
@@ -39,6 +40,7 @@ class PageThumbnail extends StatefulWidget {
     required this.pageWidth,
     required this.pageHeight,
     required this.chageEventReceived,
+    //required this.shrinkRatio,
   });
 
   @override

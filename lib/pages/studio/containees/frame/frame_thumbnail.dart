@@ -218,6 +218,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
           contentsManager: _contentsManager!,
           width: widget.width,
           height: widget.height,
+          applyScale: applyScale,
         ),
         // child: Image.asset(
         //   'assets/creta_default.png',

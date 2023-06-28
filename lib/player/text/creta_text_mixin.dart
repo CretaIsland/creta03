@@ -20,7 +20,7 @@ import 'creta_text_player.dart';
 
 mixin CretaTextMixin {
   Widget playText(BuildContext context, CretaTextPlayer? player, ContentsModel model, Size realSize,
-      {bool isPagePreview = false}) {
+      {bool isPagePreview = false, double shrinkRatio = 1}) {
     if (StudioVariables.isAutoPlay) {
       //model!.setPlayState(PlayState.start);
       player?.play();
@@ -43,7 +43,7 @@ mixin CretaTextMixin {
     logger.fine("uri=<$uri>");
     player?.buttonIdle();
 
-    double fontSize = model.fontSize.value * StudioVariables.applyScale;
+    double fontSize = model.fontSize.value * StudioVariables.applyScale * shrinkRatio;
 
     if (model.isAutoSize.value == true &&
         (model.aniType.value != TextAniType.rotate ||
@@ -53,7 +53,7 @@ mixin CretaTextMixin {
             model.aniType.value != TextAniType.typewriter ||
             model.aniType.value != TextAniType.wavy ||
             model.aniType.value != TextAniType.fidget)) {
-      fontSize = StudioConst.maxFontSize * StudioVariables.applyScale;
+      fontSize = StudioConst.maxFontSize * StudioVariables.applyScale * shrinkRatio;
     }
 
     FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
@@ -83,10 +83,15 @@ mixin CretaTextMixin {
       );
     }
 
+    //print('isPagePreview=$isPagePreview, fontSize=$fontSize, shrinkRatio=$shrinkRatio');
+
     return Container(
       color: Colors.transparent,
-      padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
-          realSize.width * 0.05, realSize.height * 0.05),
+      padding: EdgeInsets.fromLTRB(
+          realSize.width * 0.01 * shrinkRatio,
+          realSize.height * 0.05 * shrinkRatio,
+          realSize.width * 0.01 * shrinkRatio,
+          realSize.height * 0.05 * shrinkRatio),
       alignment: AlignmentDirectional.center,
       width: realSize.width,
       height: realSize.height,
@@ -136,8 +141,16 @@ mixin CretaTextMixin {
         alignment: AlignmentDirectional.center,
         children: [
           model.isAutoSize.value
-              ? AutoSizeText(text, textAlign: model.align.value, style: outlineStyle)
-              : Text(text, textAlign: model.align.value, style: outlineStyle),
+              ? AutoSizeText(
+                  text,
+                  textAlign: model.align.value,
+                  style: outlineStyle,
+                )
+              : Text(
+                  text,
+                  textAlign: model.align.value,
+                  style: outlineStyle,
+                ),
           model.isAutoSize.value
               ? AutoSizeText(text, textAlign: model.align.value, style: style)
               : Text(text, textAlign: model.align.value, style: style),

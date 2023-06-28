@@ -12,6 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
+import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
@@ -290,21 +291,23 @@ class Snippet {
       xOffset: -60,
       popupMenu: [
         CretaMenuItem(
-          caption: '마이페이지',
+          caption: CretaLang.accountMenu[0], // 마이페이지
+          onPressed: () {
+            Routemaster.of(context).push(AppRoutes.myPageDashBoard);
+          },
+        ),
+        CretaMenuItem(
+          caption: CretaLang.accountMenu[1], // 팀전환
           onPressed: () {},
         ),
         CretaMenuItem(
-          caption: '조직전환',
-          onPressed: () {},
-        ),
-        CretaMenuItem(
-          caption: '로그아웃',
+          caption: CretaLang.accountMenu[2], // 로그아웃
           onPressed: () {
             LoginPage.logout().then((value) => Routemaster.of(context).push(AppRoutes.login));
           },
         ),
         CretaMenuItem(
-          caption: '도움말',
+          caption: CretaLang.accountMenu[3], //도움말
           onPressed: () {},
         ),
       ],

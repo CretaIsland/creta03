@@ -99,7 +99,7 @@ class ConnectedUserManager extends CretaManager {
   }) async {
     if (bookMid == null) return null;
 
-    logger.info('update()');
+    //logger.info('update()');
     await setToDB(connectedUser);
     updateModel(connectedUser);
     selectedMid = connectedUser.mid;

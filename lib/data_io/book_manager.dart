@@ -168,11 +168,11 @@ class BookManager extends CretaManager {
     remove(thisOne);
   }
 
-  @override
-  Future<void> removeChild(String parentMid) async {
+  Future<void> removeChildren(BookModel book) async {
     PageManager pageManager = PageManager();
+    pageManager.setBook(book);
     Map<String, QueryValue> query = {};
-    query['parentMid'] = QueryValue(value: parentMid);
+    query['parentMid'] = QueryValue(value: book.mid);
     query['isRemoved'] = QueryValue(value: false);
     await pageManager.queryFromDB(query);
     await pageManager.removeAll();

@@ -315,18 +315,21 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       }
       logger.info('BookModel.name = ${model.name.value}');
 
-      return BookGridItem(
-        bookManager: bookManager,
-        index: index - 1,
-        itemKey: GlobalKey<BookGridItemState>(),
-        // key: isValidIndex(index)
-        //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
-        //     : GlobalKey(),
-        bookModel: isValidIndex(index) ? bookManager.findByIndex(index - 1) as BookModel : null,
-        width: itemWidth,
-        height: itemHeight,
-        selectedPage: widget.selectedPage,
-      );
+      if (isValidIndex(index)) {
+        return BookGridItem(
+          bookManager: bookManager,
+          index: index - 1,
+          itemKey: GlobalKey<BookGridItemState>(),
+          // key: isValidIndex(index)
+          //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+          //     : GlobalKey(),
+          bookModel: bookManager.findByIndex(index - 1) as BookModel,
+          width: itemWidth,
+          height: itemHeight,
+          selectedPage: widget.selectedPage,
+        );
+      }
+      return SizedBox.shrink();
     }
 
     return Scrollbar(
@@ -344,16 +347,19 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
-          return (itemWidth >= 0 && itemHeight >= 0)
-              ? bookGridItem(index)
-              : LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    itemWidth = constraints.maxWidth;
-                    itemHeight = constraints.maxHeight;
-                    //logger.finest('first data, $itemWidth, $itemHeight');
-                    return bookGridItem(index);
-                  },
-                );
+          if (isValidIndex(index + 1)) {
+            return (itemWidth >= 0 && itemHeight >= 0)
+                ? bookGridItem(index)
+                : LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints) {
+                      itemWidth = constraints.maxWidth;
+                      itemHeight = constraints.maxHeight;
+                      //logger.finest('first data, $itemWidth, $itemHeight');
+                      return bookGridItem(index);
+                    },
+                  );
+          }
+          return SizedBox.shrink();
         },
       ),
     );

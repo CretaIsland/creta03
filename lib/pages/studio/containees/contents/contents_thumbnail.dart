@@ -27,6 +27,7 @@ class ContentsThumbnail extends StatefulWidget {
   final ContentsManager contentsManager;
   final double width;
   final double height;
+  final double applyScale;
 
   const ContentsThumbnail({
     super.key,
@@ -36,6 +37,7 @@ class ContentsThumbnail extends StatefulWidget {
     required this.contentsManager,
     required this.width,
     required this.height,
+    required this.applyScale,
   });
 
   @override
@@ -105,8 +107,9 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
                     htmlValidator: HtmlValidator.loose(),
                   );
                 } else {
+                  //print('widget.applyScale: ${widget.applyScale}');
                   return playText(context, null, model, contentsManager.getRealSize(),
-                      isPagePreview: true);
+                      isPagePreview: true, shrinkRatio: widget.applyScale);
                 }
                 // if (model != null) {
                 //   return playText(context, null, model, contentsManager.getRealSize(),

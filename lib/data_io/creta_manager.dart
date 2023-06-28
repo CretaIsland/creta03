@@ -1016,7 +1016,7 @@ abstract class CretaManager extends AbsExModelManager {
       CretaModel model = ele as CretaModel;
       if (model.mid == newModel.mid) {
         newModel.updateFrom(model);
-        logger.info('updateModel ${newModel.mid}');
+        //logger.info('updateModel ${newModel.mid}');
         //print('updateModel ${newModel.mid}');
         retval = true;
         break;

@@ -69,6 +69,8 @@ class BookMainPage extends StatefulWidget {
   static ClickEventHandler clickEventHandler = ClickEventHandler();
 
   static bool thumbnailChanged = false;
+  static double pageWidth = 0;
+  static double pageHeight = 0;
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
@@ -96,8 +98,8 @@ class _BookMainPageState extends State<BookMainPage> {
   //ScrollController? horizontalScroll;
   //ScrollController? verticalScroll;
 
-  double pageWidth = 0;
-  double pageHeight = 0;
+  // double pageWidth = 0;
+  // double pageHeight = 0;
   double heightWidthRatio = 0;
   double widthRatio = 0;
   double heightRatio = 0;
@@ -520,15 +522,15 @@ class _BookMainPageState extends State<BookMainPage> {
     heightWidthRatio = _bookModel.height.value / _bookModel.width.value;
 
     if (widthRatio < heightRatio) {
-      pageWidth = StudioVariables.availWidth;
-      pageHeight = pageWidth * heightWidthRatio;
+      BookMainPage.pageWidth = StudioVariables.availWidth;
+      BookMainPage.pageHeight = BookMainPage.pageWidth * heightWidthRatio;
       if (StudioVariables.autoScale == true) {
         StudioVariables.fitScale = widthRatio; // 화면에 꽉찾을때의 최적의 값
         StudioVariables.scale = widthRatio;
       }
     } else {
-      pageHeight = StudioVariables.availHeight;
-      pageWidth = pageHeight / heightWidthRatio;
+      BookMainPage.pageHeight = StudioVariables.availHeight;
+      BookMainPage.pageWidth = BookMainPage.pageHeight / heightWidthRatio;
       if (StudioVariables.autoScale == true) {
         StudioVariables.fitScale = heightRatio; // 화면에 꽉찾을때의 최적의 값
         StudioVariables.scale = heightRatio;
@@ -1107,8 +1109,8 @@ class _BookMainPageState extends State<BookMainPage> {
       pageKey: GlobalObjectKey('PageKey${pageModel.mid}'),
       bookModel: _bookModel,
       pageModel: pageModel,
-      pageWidth: pageWidth,
-      pageHeight: pageHeight,
+      pageWidth: BookMainPage.pageWidth,
+      pageHeight: BookMainPage.pageHeight,
     );
   }
 
