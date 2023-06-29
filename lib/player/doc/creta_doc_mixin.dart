@@ -29,7 +29,7 @@ mixin CretaDocMixin {
       // padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
       //     realSize.width * 0.05, realSize.height * 0.05),
       padding: EdgeInsets.fromLTRB(realSize.width * 0.02, realSize.height * 0.02,
-          realSize.width * 0.02, realSize.height * 0),
+          realSize.width * 0.02, realSize.height * 0.02),
       alignment: AlignmentDirectional.center,
       width: realSize.width,
       height: realSize.height,
