@@ -51,7 +51,7 @@ class TeamManager extends CretaManager {
 
   Future<int> _getTeam({required String teamMid, int limit = 99}) async {
     startTransaction();
-
+    teamModelList.clear();
     try {
       Map<String, QueryValue> query = {};
       query['mid'] = QueryValue(value: teamMid);
@@ -73,6 +73,11 @@ class TeamManager extends CretaManager {
 
     endTransaction();
     return modelList.length;
+  }
+
+  List<UserPropertyModel>? getMyTeamMembers() {
+    if (currentTeam == null) return null;
+    return teamMemberMap[currentTeam!.mid];
   }
 
   Future<List<UserPropertyModel>> getTeamMembers(
@@ -173,6 +178,7 @@ class TeamManager extends CretaManager {
       TeamModel team = ele as TeamModel;
       return team;
     }
+    //print('no team named $name ------------------------------');
     return null;
   }
 }

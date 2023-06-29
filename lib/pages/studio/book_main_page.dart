@@ -1151,10 +1151,10 @@ class _BookMainPageState extends State<BookMainPage> {
     // });
   }
 
-  void _startConnectedUserTimer() {
+  void _startConnectedUserTimer() async {
     // print('_startConnectedUserTimer----------------------------------');
     if (BookMainPage.connectedUserHolder != null) {
-      BookMainPage.connectedUserHolder!.getConnectedUser();
+      await BookMainPage.connectedUserHolder!.getConnectedUser();
       BookMainPage.connectedUserHolder!.notify();
     }
     _connectedUserTimer ??=

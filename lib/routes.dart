@@ -165,6 +165,7 @@ final routesLoggedOut = RouteMap(
         // print('---------------------------------------${routeData.publicPath}');
         return TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
+          //child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.sharedPage),
         );
       } else {
         return const Redirect(AppRoutes.login);

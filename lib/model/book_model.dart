@@ -247,7 +247,7 @@ class BookModel extends CretaModel with BookMixin {
     }
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
-    //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
+    shares = _getShares(owners, writers, readers);
     publishMid = map["publishMid"] ?? '';
     sourceMid = map["sourceMid"] ?? '';
     //hashtags = map["hashtags"] ?? [];
@@ -330,13 +330,19 @@ class BookModel extends CretaModel with BookMixin {
       List<String> ownerList, List<String> writerList, List<String> readerList) {
     List<String> valueList = [];
     for (var val in ownerList) {
-      valueList.add('<${PermissionType.owner.name}>$val');
+      String name = '<${PermissionType.owner.name}>$val';
+      if (valueList.contains(name) == true) continue;
+      valueList.add(name);
     }
     for (var val in writerList) {
-      valueList.add('<${PermissionType.writer.name}>$val');
+      String name = '<${PermissionType.writer.name}>$val';
+      if (valueList.contains(name) == true) continue;
+      valueList.add(name);
     }
     for (var val in readerList) {
-      valueList.add('<${PermissionType.reader.name}>$val');
+      String name = '<${PermissionType.reader.name}>$val';
+      if (valueList.contains(name) == true) continue;
+      valueList.add(name);
     }
     return valueList;
   }

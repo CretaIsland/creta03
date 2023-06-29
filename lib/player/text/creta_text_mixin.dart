@@ -90,9 +90,9 @@ mixin CretaTextMixin {
     return Container(
       color: Colors.transparent,
       padding: EdgeInsets.fromLTRB(
-          realSize.width * 0.01 * shrinkRatio,
+          realSize.width * 0.025 * shrinkRatio,
           realSize.height * 0.05 * shrinkRatio,
-          realSize.width * 0.01 * shrinkRatio,
+          realSize.width * 0.025 * shrinkRatio,
           realSize.height * 0.05 * shrinkRatio),
       alignment: AlignmentDirectional.center,
       width: realSize.width,

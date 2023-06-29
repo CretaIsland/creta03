@@ -359,7 +359,8 @@ class Snippet {
                   child: BTN.fill_gray_iti_l(
                     key: GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'),
                     buttonColor: CretaButtonColor.blue,
-                    text: AccountManager.currentLoginUser.name,
+                    //text: AccountManager.currentLoginUser.name,
+                    text: LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname,
                     icon: Icons.arrow_drop_down_outlined,
                     // image: NetworkImage(
                     //     'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),

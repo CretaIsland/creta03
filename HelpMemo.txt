@@ -25,7 +25,7 @@ flutter run -d chrome --web-renderer canvaskit
 
 ## login_page.dart 에서 version 번호를 바꾸는 것을 잊지말자.  ver 0.01
 
-# flutter build web --web-renderer html --release --base-href="/creta03_v2/"
+# flutter build web --web-renderer html --release --base-href="/creta03_v2/" --no-tree-shake-icons
 # or
 flutter build web --web-renderer canvaskit --release --base-href="/creta03_v2/"
 
