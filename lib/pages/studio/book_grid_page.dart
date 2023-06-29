@@ -278,7 +278,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     if (columnCount == 0) columnCount = 1;
 
     bool isValidIndex(int index) {
-      return index > 0 && index - 1 < bookManager.getLength();
+      return index > 0 && index < bookManager.getLength();
     }
 
     Widget bookGridItem(int index) {
@@ -315,21 +315,21 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       }
       logger.info('BookModel.name = ${model.name.value}');
 
-      if (isValidIndex(index)) {
-        return BookGridItem(
-          bookManager: bookManager,
-          index: index - 1,
-          itemKey: GlobalKey<BookGridItemState>(),
-          // key: isValidIndex(index)
-          //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
-          //     : GlobalKey(),
-          bookModel: bookManager.findByIndex(index - 1) as BookModel,
-          width: itemWidth,
-          height: itemHeight,
-          selectedPage: widget.selectedPage,
-        );
-      }
-      return SizedBox.shrink();
+      //if (isValidIndex(index)) {
+      return BookGridItem(
+        bookManager: bookManager,
+        index: index - 1,
+        itemKey: GlobalKey<BookGridItemState>(),
+        // key: isValidIndex(index)
+        //     ? (bookManager.findByIndex(index - 1) as CretaModel).key
+        //     : GlobalKey(),
+        bookModel: isValidIndex(index) ? bookManager.findByIndex(index - 1) as BookModel : null,
+        width: itemWidth,
+        height: itemHeight,
+        selectedPage: widget.selectedPage,
+      );
+      //}
+      //return SizedBox.shrink();
     }
 
     return Scrollbar(
@@ -347,7 +347,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
-          if (isValidIndex(index + 1)) {
+          if (isValidIndex(index)) {
             return (itemWidth >= 0 && itemHeight >= 0)
                 ? bookGridItem(index)
                 : LayoutBuilder(
