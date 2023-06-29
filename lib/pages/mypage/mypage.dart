@@ -184,7 +184,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             width: rightPaneRect.childWidth,
             height: rightPaneRect.childHeight + LayoutConst.cretaBannerMinHeight,
             child: CretaModelSnippet.waitData(
-                consumerFunc: rightArea, manager: LoginPage.teamManagerHolder!))
+                consumerFunc: rightArea, manager: LoginPage.enterpriseHolder!))
       ],
     );
     _alreadyDataGet = true;
