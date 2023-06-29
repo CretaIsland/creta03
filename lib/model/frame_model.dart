@@ -52,6 +52,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   double prevPosX = -1;
   double prevPosY = -1;
 
+  String? bookMid;
+
   void savePrevValue() {
     prevWidth = width.value;
     prevHeight = height.value;

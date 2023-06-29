@@ -55,6 +55,8 @@ mixin CretaTextMixin {
             model.aniType.value != TextAniType.fidget)) {
       fontSize = StudioConst.maxFontSize * StudioVariables.applyScale * shrinkRatio;
     }
+    fontSize = fontSize.roundToDouble();
+    if (fontSize == 0) fontSize = 1;
 
     FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
 

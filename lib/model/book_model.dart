@@ -260,6 +260,7 @@ class BookModel extends CretaModel with BookMixin {
     likeCount = (map["likeCount"] ?? 0);
 
     super.fromMapMixin(map);
+    setRealTimeKey(mid);
   }
 
   @override

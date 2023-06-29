@@ -108,6 +108,8 @@ class PageModel extends CretaModel with CretaStyleMixin {
     description.set(map["description"] ?? '', save: false, noUndo: true);
     thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
     super.fromMapMixin(map);
+
+    setRealTimeKey(parentMid.value);
   }
 
   @override

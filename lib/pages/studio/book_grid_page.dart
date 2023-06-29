@@ -278,11 +278,11 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     if (columnCount == 0) columnCount = 1;
 
     bool isValidIndex(int index) {
-      return index > 0 && index < bookManager.getLength();
+      return index > 0 && index - 1 < bookManager.getLength();
     }
 
     Widget bookGridItem(int index) {
-      if (index > bookManager.getLength()) {
+      if (index >= bookManager.getLength()) {
         if (bookManager.isShort()) {
           return SizedBox(
             width: itemWidth,
@@ -347,19 +347,19 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
-          if (isValidIndex(index)) {
-            return (itemWidth >= 0 && itemHeight >= 0)
-                ? bookGridItem(index)
-                : LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      itemWidth = constraints.maxWidth;
-                      itemHeight = constraints.maxHeight;
-                      //logger.finest('first data, $itemWidth, $itemHeight');
-                      return bookGridItem(index);
-                    },
-                  );
-          }
-          return SizedBox.shrink();
+          //if (isValidIndex(index)) {
+          return (itemWidth >= 0 && itemHeight >= 0)
+              ? bookGridItem(index)
+              : LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    itemWidth = constraints.maxWidth;
+                    itemHeight = constraints.maxHeight;
+                    //logger.finest('first data, $itemWidth, $itemHeight');
+                    return bookGridItem(index);
+                  },
+                );
+          //}
+          //return SizedBox.shrink();
         },
       ),
     );
