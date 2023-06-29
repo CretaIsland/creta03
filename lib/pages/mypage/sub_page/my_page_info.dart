@@ -288,8 +288,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                           ),
                           const SizedBox(height: 28.0),
                           Text(
-                            '01012345678',
-                            //userPropertyManager.userPropertyModel!.phoneNumber,
+                            userPropertyManager.userPropertyModel!.phoneNumber,
                             style: CretaFont.bodyMedium,
                           ),
                           const SizedBox(height: 28.0),
