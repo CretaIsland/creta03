@@ -377,7 +377,7 @@ class BookGridItemState extends State<BookGridItem> {
     int randomNumber = random.nextInt(1000);
     int duration = widget.index == 0 ? 500 : 500 + randomNumber;
     String url = widget.bookModel!.thumbnailUrl.value;
-    print('${widget.bookModel!.name.value} = <$url>');
+    logger.info('${widget.bookModel!.name.value} = <$url>');
     if (url.isEmpty) {
       url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
     }
