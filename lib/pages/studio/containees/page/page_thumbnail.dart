@@ -21,7 +21,6 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
-import '../../studio_variables.dart';
 import '../containee_mixin.dart';
 
 class PageThumbnail extends StatefulWidget {
@@ -225,10 +224,10 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
       double applyScale = widget.pageWidth / widget.pageModel.width.value;
-      print('widget.pageWidth = ${widget.pageWidth}');
-      print('widget.pageModel.width=${widget.pageModel.width.value}');
-      print('StudioVariables.applyScale=${StudioVariables.applyScale}');
-      print('applyScale=$applyScale');
+      // print('widget.pageWidth = ${widget.pageWidth}');
+      // print('widget.pageModel.width=${widget.pageModel.width.value}');
+      // print('StudioVariables.applyScale=${StudioVariables.applyScale}');
+      // print('applyScale=$applyScale');
 
       return StreamBuilder<AbsExModel>(
           stream: _receiveEventFromMain!.eventStream.stream,
