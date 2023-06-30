@@ -19,8 +19,10 @@ import '../../pages/studio/studio_variables.dart';
 import 'creta_text_player.dart';
 
 mixin CretaTextMixin {
+  double applyScale = 1;
+
   Widget playText(BuildContext context, CretaTextPlayer? player, ContentsModel model, Size realSize,
-      {bool isPagePreview = false, double shrinkRatio = 1}) {
+      {bool isPagePreview = false}) {
     if (StudioVariables.isAutoPlay) {
       //model!.setPlayState(PlayState.start);
       player?.play();
@@ -43,7 +45,7 @@ mixin CretaTextMixin {
     logger.fine("uri=<$uri>");
     player?.buttonIdle();
 
-    double fontSize = model.fontSize.value * StudioVariables.applyScale * shrinkRatio;
+    double fontSize = model.fontSize.value * applyScale;
 
     if (model.isAutoSize.value == true &&
         (model.aniType.value != TextAniType.rotate ||
@@ -53,9 +55,9 @@ mixin CretaTextMixin {
             model.aniType.value != TextAniType.typewriter ||
             model.aniType.value != TextAniType.wavy ||
             model.aniType.value != TextAniType.fidget)) {
-      fontSize = StudioConst.maxFontSize * StudioVariables.applyScale * shrinkRatio;
+      fontSize = StudioConst.maxFontSize * applyScale;
     }
-    fontSize = fontSize.roundToDouble();
+    //fontSize = fontSize.roundToDouble();
     if (fontSize == 0) fontSize = 1;
 
     FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
@@ -89,11 +91,8 @@ mixin CretaTextMixin {
 
     return Container(
       color: Colors.transparent,
-      padding: EdgeInsets.fromLTRB(
-          realSize.width * 0.025 * shrinkRatio,
-          realSize.height * 0.05 * shrinkRatio,
-          realSize.width * 0.025 * shrinkRatio,
-          realSize.height * 0.05 * shrinkRatio),
+      padding: EdgeInsets.fromLTRB(realSize.width * 0.025, realSize.height * 0.05,
+          realSize.width * 0.025, realSize.height * 0.05),
       alignment: AlignmentDirectional.center,
       width: realSize.width,
       height: realSize.height,
@@ -107,12 +106,13 @@ mixin CretaTextMixin {
 
     TextStyle? shadowStyle;
     if (model!.shadowBlur.value > 0) {
+      double blur = model.shadowBlur.value * applyScale;
       //logHolder.log('model!.shadowBlur.value=${model!.shadowBlur.value}', level: 6);
       shadowStyle = style.copyWith(shadows: [
         Shadow(
             color: model.shadowColor.value.withOpacity(model.shadowIntensity.value),
-            offset: Offset(model.shadowBlur.value * 0.75, model.shadowBlur.value * 0.75),
-            blurRadius: model.shadowBlur.value),
+            offset: Offset(blur * 0.75, blur * 0.75),
+            blurRadius: blur),
       ]);
     }
 
@@ -127,7 +127,7 @@ mixin CretaTextMixin {
     return style.copyWith(
       foreground: Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = model!.outLineWidth.value
+        ..strokeWidth = model!.outLineWidth.value * applyScale
         ..color = model.outLineColor.value,
     );
   }
@@ -179,7 +179,7 @@ mixin CretaTextMixin {
         style = style.copyWith(
           foreground: Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = model.outLineWidth.value
+            ..strokeWidth = model.outLineWidth.value * applyScale
             ..color = model.outLineColor.value,
         );
       }

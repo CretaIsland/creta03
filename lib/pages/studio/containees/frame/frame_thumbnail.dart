@@ -2,6 +2,7 @@
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:provider/provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
@@ -28,6 +29,7 @@ class FrameThumbnail extends StatefulWidget {
   final double width;
   final double height;
   final bool isThumbnail;
+  final void Function(String pageMid) chageEventReceived;
   const FrameThumbnail({
     super.key,
     required this.frameManager,
@@ -36,6 +38,7 @@ class FrameThumbnail extends StatefulWidget {
     required this.applyScale,
     required this.width,
     required this.height,
+    required this.chageEventReceived,
     this.isThumbnail = false,
   });
 

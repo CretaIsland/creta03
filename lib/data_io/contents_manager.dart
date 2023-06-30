@@ -316,9 +316,10 @@ class ContentsManager extends CretaManager {
     frameManager = null;
   }
 
-  Size getRealSize() {
-    double width = StudioVariables.applyScale * frameModel.width.value;
-    double height = StudioVariables.applyScale * frameModel.height.value;
+  Size getRealSize({double? applyScale}) {
+    applyScale ??= StudioVariables.applyScale;
+    double width = applyScale * frameModel.width.value;
+    double height = applyScale * frameModel.height.value;
     return Size(width, height);
   }
 
