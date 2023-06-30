@@ -87,7 +87,7 @@ class TeamManager extends CretaManager {
     try {
       for (var memberMid in memberMids) {
         UserPropertyModel? memberProperty =
-            await LoginPage.userPropertyManagerHolder!.getMemberProperty(memberMid: memberMid);
+            await LoginPage.userPropertyManagerHolder!.getMemberProperty(email: memberMid);
         if (memberProperty != null) {
           teamMemberList.add(memberProperty);
         }

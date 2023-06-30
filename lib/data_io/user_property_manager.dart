@@ -250,11 +250,11 @@ class UserPropertyManager extends CretaManager {
     return userPropertyModel!.autoPlay;
   }
 
-  Future<UserPropertyModel?> getMemberProperty({required String memberMid, int limit = 99}) async {
+  Future<UserPropertyModel?> getMemberProperty({required String email, int limit = 99}) async {
     startTransaction();
     try {
       Map<String, QueryValue> query = {};
-      query['email'] = QueryValue(value: memberMid);
+      query['email'] = QueryValue(value: email);
       query['isRemoved'] = QueryValue(value: false);
       Map<String, OrderDirection> orderBy = {};
       orderBy['order'] = OrderDirection.ascending;
