@@ -98,16 +98,16 @@ class MiniMenuState extends State<MiniMenu> {
         LayoutConst.miniMenuGap +
         LayoutConst.dragHandle;
 
-    if (top + LayoutConst.miniMenuHeight > widget.pageHeight) {
-      // 화면의 영역을 벗어나면 어쩔 것인가...
-      // 겨...올라간다...
+    // if (top + LayoutConst.miniMenuHeight > widget.pageHeight) {
+    //   // 화면의 영역을 벗어나면 어쩔 것인가...
+    //   // 겨...올라간다...
 
-      top = widget.parentPosition.dy +
-          widget.parentSize.height -
-          LayoutConst.miniMenuGap -
-          LayoutConst.miniMenuHeight +
-          LayoutConst.dragHandle;
-    }
+    //   top = widget.parentPosition.dy +
+    //       widget.parentSize.height -
+    //       LayoutConst.miniMenuGap -
+    //       LayoutConst.miniMenuHeight +
+    //       LayoutConst.dragHandle;
+    // }
 
     bool hasContents = widget.contentsManager.hasContents();
 

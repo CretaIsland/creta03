@@ -122,51 +122,42 @@ class StickerViewState extends State<StickerView> {
     logger.info('StickerViewState build');
 
     stickerList = widget.stickerList;
-    return stickerList != null
-        ? Column(
-            children: [
-              //For capturing screenshot of the widget
-              RepaintBoundary(
-                key: GlobalKey(),
-                child: SizedBox(
-                  // decoration: BoxDecoration(
-                  //   color: Colors.grey[200],
-                  // ),
-                  //color: Colors.red.withOpacity(0.3),
-                  //color: LayoutConst.studioPageColor, // pageBackground
-                  height: widget.height,
-                  width: widget.width,
-                  child:
-                      //DraggableStickers class in which stickerList is passed
-                      DraggableStickers(
-                    bookMid: widget.bookMid,
-                    pageWidth: widget.width,
-                    pageHeight: widget.height,
-                    frameManager: widget.frameManager,
-                    stickerList: stickerList!,
-                    onUpdate: widget.onUpdate,
-                    onFrameDelete: widget.onFrameDelete,
-                    onFrameBack: widget.onFrameBack,
-                    onFrameFront: widget.onFrameFront,
-                    onFrameCopy: widget.onFrameCopy,
-                    onFrameMain: widget.onFrameMain,
-                    onFrameShowUnshow: widget.onFrameShowUnshow,
-                    //onFrameRotate: widget.onFrameRotate,
-                    //onFrameLink: widget.onFrameLink,
-                    onTap: widget.onTap,
-                    onResizeButtonTap: widget.onResizeButtonTap,
-                    onComplete: widget.onComplete,
-                    onScaleStart: widget.onScaleStart,
-                    onDropPage: widget.onDropPage,
-                    onFrontBackHover: widget.onFrontBackHover,
+    if (stickerList != null) {
+      return RepaintBoundary(
+        key: GlobalKey(),
+        child: SizedBox(
+          height: widget.height,
+          width: widget.width,
+          child: DraggableStickers(
+            //DraggableStickers class in which stickerList is passed
+            bookMid: widget.bookMid,
+            pageWidth: widget.width,
+            pageHeight: widget.height,
+            frameManager: widget.frameManager,
+            stickerList: stickerList!,
+            onUpdate: widget.onUpdate,
+            onFrameDelete: widget.onFrameDelete,
+            onFrameBack: widget.onFrameBack,
+            onFrameFront: widget.onFrameFront,
+            onFrameCopy: widget.onFrameCopy,
+            onFrameMain: widget.onFrameMain,
+            onFrameShowUnshow: widget.onFrameShowUnshow,
+            //onFrameRotate: widget.onFrameRotate,
+            //onFrameLink: widget.onFrameLink,
+            onTap: widget.onTap,
+            onResizeButtonTap: widget.onResizeButtonTap,
+            onComplete: widget.onComplete,
+            onScaleStart: widget.onScaleStart,
+            onDropPage: widget.onDropPage,
+            onFrontBackHover: widget.onFrontBackHover,
 
-                    //onDropFrame: widget.onDropFrame,
-                  ),
-                ),
-              ),
-            ],
-          )
-        : const CircularProgressIndicator();
+            //onDropFrame: widget.onDropFrame,
+          ),
+        ),
+      );
+    } else {
+      return const CircularProgressIndicator();
+    }
   }
 }
 

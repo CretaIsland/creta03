@@ -185,7 +185,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   Widget _textureBox() {
     if (textureType == TextureType.glass) {
       logger.finest('GrassType!!!');
-      return _drawPage(true).asCretaGlass(
+      return _clickPage(true).asCretaGlass(
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
         opacity: opacity,
@@ -193,10 +193,10 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         bgColor2: bgColor2,
       );
     }
-    return _drawPage(true);
+    return _clickPage(true);
   }
 
-  Widget _drawPage(bool useColor) {
+  Widget _clickPage(bool useColor) {
     //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
     return StudioVariables.isHandToolMode == false
         ? GestureDetector(
@@ -206,19 +206,27 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
               //logger
               //    .info('onTapUp======================================${details.localPosition.dx}');
             },
-            child: Container(
-              decoration: useColor ? _pageDeco() : null,
-              width: widget.pageWidth,
-              height: widget.pageHeight,
-              child: _waitFrame(),
-            ),
+            child: _drawPage(useColor),
           )
-        : Container(
-            decoration: useColor ? _pageDeco() : null,
-            width: widget.pageWidth,
-            height: widget.pageHeight,
-            child: _waitFrame(),
-          );
+        : _drawPage(useColor);
+  }
+
+  Widget _drawPage(bool useColor) {
+    //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
+    return Stack(
+      children: [
+        Container(
+          decoration: useColor ? _pageDeco() : null,
+          width: widget.pageWidth,
+          height: widget.pageHeight - LayoutConst.miniMenuArea,
+        ),
+        SizedBox(
+          width: widget.pageWidth,
+          height: widget.pageHeight,
+          child: _waitFrame(),
+        ),
+      ],
+    );
   }
 
   void pageClicked(LongPressDownDetails details) {

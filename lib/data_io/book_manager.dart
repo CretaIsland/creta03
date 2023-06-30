@@ -154,6 +154,7 @@ class BookManager extends CretaManager {
     }
 
     query['shares'] = QueryValue(value: queryVal, operType: OperType.arrayContainsAny);
+    //query['creator'] = QueryValue(value: userId, operType: OperType.isNotEqualTo);
     query['isRemoved'] = QueryValue(value: false);
     final retval = await queryFromDB(query, limit: limit);
     // 자기것은 빼고 나온다
@@ -203,7 +204,7 @@ class BookManager extends CretaManager {
       book.shares.remove('<${PermissionType.writer.name}>${book.creator}');
       for (String authStr in queryVal) {
         if (book.shares.contains(authStr) == true) {
-          print('$authStr=${book.shares.toString()}');
+          //print('$authStr=${book.shares.toString()}');
           retval.add(book);
           break;
         }
@@ -211,7 +212,7 @@ class BookManager extends CretaManager {
     }
     modelList.clear();
     modelList = [...retval];
-    print('total=${modelList.length}------------------------------');
+    //print('total=${modelList.length}------------------------------');
     return modelList;
   }
 

@@ -43,7 +43,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
   }
 
   Widget _buttonArea() {
-    final int contentsCount = widget.playTimer!.contentsManager.getShowLength();
+    //final int contentsCount = widget.playTimer!.contentsManager.getShowLength();
     return Container(
         width: double.infinity,
         height: double.infinity,
@@ -94,11 +94,11 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
             //           }
             //         }),
             //   ),
-            if (contentsCount == 0)
-              Text(
-                '${widget.model.order.value}',
-                style: CretaFont.titleELarge.copyWith(color: Colors.black),
-              ),
+            // if (contentsCount == 0)
+            //   Text(
+            //     '${widget.model.order.value}',
+            //     style: CretaFont.titleELarge.copyWith(color: Colors.black),
+            //   ),
             if (DraggableStickers.isFrontBackHover)
               Text(
                 '${widget.model.order.value}',

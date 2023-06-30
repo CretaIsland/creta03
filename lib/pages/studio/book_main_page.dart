@@ -113,7 +113,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   bool dropDownButtonOpened = false;
 
-  Timer? _connectedUserTimer;
+  //Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
   //AutoPlayChangeEventController? _autoPlaySendEvent;
@@ -209,7 +209,7 @@ class _BookMainPageState extends State<BookMainPage> {
       while (_onceDBGetComplete == false) {
         await Future.delayed(Duration(seconds: 1));
       }
-      _startConnectedUserTimer();
+      //_startConnectedUserTimer();
 
       if (StudioVariables.isPreview) {
         //_takeAScreenShot();
@@ -307,7 +307,7 @@ class _BookMainPageState extends State<BookMainPage> {
   void dispose() {
     logger.severe('BookMainPage.dispose');
 
-    _stopConnectedUserTimer();
+    //_stopConnectedUserTimer();
 
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
@@ -1110,7 +1110,7 @@ class _BookMainPageState extends State<BookMainPage> {
       bookModel: _bookModel,
       pageModel: pageModel,
       pageWidth: BookMainPage.pageWidth,
-      pageHeight: BookMainPage.pageHeight,
+      pageHeight: BookMainPage.pageHeight + LayoutConst.miniMenuArea,
     );
   }
 
@@ -1151,38 +1151,38 @@ class _BookMainPageState extends State<BookMainPage> {
     // });
   }
 
-  void _startConnectedUserTimer() async {
-    // print('_startConnectedUserTimer----------------------------------');
-    if (BookMainPage.connectedUserHolder != null) {
-      await BookMainPage.connectedUserHolder!.getConnectedUser();
-      BookMainPage.connectedUserHolder!.notify();
-    }
-    _connectedUserTimer ??=
-        Timer.periodic(Duration(seconds: ConnectedUserManager.monitorPerid), (t) {
-      //print('_startConnectedUserTimer----------------------------------');
-      if (BookMainPage.connectedUserHolder != null &&
-          LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
-        String myName = LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname;
-        ConnectedUserModel? model = BookMainPage.connectedUserHolder!.aleadyCreated(myName);
-        if (model != null) {
-          model.imageUrl = LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg;
-          model.setUpdateTime();
-          model.isRemoved.set(false, save: false, noUndo: true);
-          BookMainPage.connectedUserHolder?.update(connectedUser: model, doNotify: false);
-          // print('update user ${model.name}---${model.mid}-------------------------------');
-        } else {
-          //print(
-          //    'create user ${LoginPage.userPropertyManagerHolder!.userModel.name}----------------------------------');
-          BookMainPage.connectedUserHolder?.createNext(
-              user: LoginPage.userPropertyManagerHolder!.userPropertyModel!, doNotify: false);
-        }
-        BookMainPage.connectedUserHolder!.removeOld(myName);
-      }
-    });
-  }
+  // void _startConnectedUserTimer() async {
+  //   // print('_startConnectedUserTimer----------------------------------');
+  //   if (BookMainPage.connectedUserHolder != null) {
+  //     await BookMainPage.connectedUserHolder!.getConnectedUser();
+  //     BookMainPage.connectedUserHolder!.notify();
+  //   }
+  //   _connectedUserTimer ??=
+  //       Timer.periodic(Duration(seconds: ConnectedUserManager.monitorPerid), (t) {
+  //     //print('_startConnectedUserTimer----------------------------------');
+  //     if (BookMainPage.connectedUserHolder != null &&
+  //         LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
+  //       String myName = LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname;
+  //       ConnectedUserModel? model = BookMainPage.connectedUserHolder!.aleadyCreated(myName);
+  //       if (model != null) {
+  //         model.imageUrl = LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg;
+  //         model.setUpdateTime();
+  //         model.isRemoved.set(false, save: false, noUndo: true);
+  //         BookMainPage.connectedUserHolder?.update(connectedUser: model, doNotify: false);
+  //         // print('update user ${model.name}---${model.mid}-------------------------------');
+  //       } else {
+  //         //print(
+  //         //    'create user ${LoginPage.userPropertyManagerHolder!.userModel.name}----------------------------------');
+  //         BookMainPage.connectedUserHolder?.createNext(
+  //             user: LoginPage.userPropertyManagerHolder!.userPropertyModel!, doNotify: false);
+  //       }
+  //       BookMainPage.connectedUserHolder!.removeOld(myName);
+  //     }
+  //   });
+  // }
 
-  void _stopConnectedUserTimer() {
-    _connectedUserTimer?.cancel();
-    _connectedUserTimer = null;
-  }
+  // void _stopConnectedUserTimer() {
+  //   _connectedUserTimer?.cancel();
+  //   _connectedUserTimer = null;
+  // }
 }
