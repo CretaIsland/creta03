@@ -61,6 +61,7 @@ enum CretaTextFieldType {
   longText,
   number,
   color,
+  password,
 }
 
 class CretaTextField extends LastClickable {
@@ -425,6 +426,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         });
       },
       child: CupertinoTextField(
+        obscureText: (widget.textType == CretaTextFieldType.password),
         cursorColor: CretaColor.primary,
         textInputAction: widget.textInputAction,
         enabled: widget.enabled,

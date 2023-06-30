@@ -479,3 +479,14 @@ TextAlign intToTextAlign(int t) {
   }
   return TextAlign.center;
 }
+
+enum GenderType {
+  none,
+  male,
+  female,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static GenderType fromInt(int? val) =>
+      GenderType.values[validCheck(val ?? none.index)];
+}
