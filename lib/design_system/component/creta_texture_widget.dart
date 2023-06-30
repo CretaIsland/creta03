@@ -78,6 +78,8 @@ extension GlassWidget<T extends Widget> on T {
     int? borderStyle,
     double? borderWidth,
     BoxShadow? boxShadow,
+    required double width,
+    required double height,
   }) {
     return _asCretaGlass(
       blurX: blurX,
@@ -94,6 +96,8 @@ extension GlassWidget<T extends Widget> on T {
       opacity: opacity,
       gradient: gradient,
       boxShadow: boxShadow,
+      width: width,
+      height: height,
     );
   }
 
@@ -113,8 +117,12 @@ extension GlassWidget<T extends Widget> on T {
     required double opacity,
     Gradient? gradient,
     BoxShadow? boxShadow,
+    required double width,
+    required double height,
   }) {
     return Container(
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         border: border,
         borderRadius: radius,

@@ -186,6 +186,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     if (textureType == TextureType.glass) {
       logger.finest('GrassType!!!');
       return _clickPage(true).asCretaGlass(
+        width: widget.pageWidth,
+        height: widget.pageHeight,
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
         opacity: opacity,

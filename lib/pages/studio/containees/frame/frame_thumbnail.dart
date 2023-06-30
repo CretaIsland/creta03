@@ -194,6 +194,8 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       Color bgColor2 = model.bgColor2.value;
       GradationType gradationType = model.gradationType.value;
       return _frameBox(model, false).asCretaGlass(
+        width: widget.width,
+        height: widget.height,
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
         opacity: opacity,
