@@ -246,11 +246,12 @@ class ConnectedUserManager extends CretaManager {
   bool disconnectNoti(String bookId, String nickname, String email) {
     ConnectedUserModel? model = aleadyCreatedByEmail(email);
     if (model != null) {
-      logger.warning('$email user connected(alreadyExist)');
       model.isConnected = false;
+      modelList.remove(model);
       notify();
       return true;
     }
+    logger.warning('$email user does not exist');
     return false;
   }
 }

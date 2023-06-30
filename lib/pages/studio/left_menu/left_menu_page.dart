@@ -557,7 +557,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       pageModel: pageModel,
       pageWidth: width,
       pageHeight: height,
-      chageEventReceived: _changeEventReceived,
+      changeEventReceived: _changeEventReceived,
     );
   }
 

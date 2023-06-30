@@ -21,6 +21,7 @@ import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
+import '../../studio_variables.dart';
 import '../containee_mixin.dart';
 
 class PageThumbnail extends StatefulWidget {
@@ -30,7 +31,7 @@ class PageThumbnail extends StatefulWidget {
   final double pageHeight;
   final int pageIndex;
   //final double shrinkRatio;
-  final void Function(String pageMid) chageEventReceived;
+  final void Function(String pageMid) changeEventReceived;
 
   const PageThumbnail({
     super.key,
@@ -39,7 +40,7 @@ class PageThumbnail extends StatefulWidget {
     required this.pageModel,
     required this.pageWidth,
     required this.pageHeight,
-    required this.chageEventReceived,
+    required this.changeEventReceived,
     //required this.shrinkRatio,
   });
 
@@ -67,6 +68,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
     initChildren();
     final FrameEventController receiveEventFromMain = Get.find(tag: 'frame-main-to-property');
     final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main');
+
     _receiveEventFromMain = receiveEventFromMain;
     _receiveEventFromProperty = receiveEventFromProperty;
 
@@ -223,6 +225,10 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
       double applyScale = widget.pageWidth / widget.pageModel.width.value;
+      print('widget.pageWidth = ${widget.pageWidth}');
+      print('widget.pageModel.width=${widget.pageModel.width.value}');
+      print('StudioVariables.applyScale=${StudioVariables.applyScale}');
+      print('applyScale=$applyScale');
 
       return StreamBuilder<AbsExModel>(
           stream: _receiveEventFromMain!.eventStream.stream,
@@ -233,7 +239,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                 FrameModel model = snapshot.data! as FrameModel;
                 frameManager.updateModel(model);
                 if (_buildComplete) {
-                  widget.chageEventReceived.call(model.parentMid.value);
+                  widget.changeEventReceived.call(model.parentMid.value);
                 }
               } else {
                 logger.info('_receiveEventFromMain-----Unknown Model');
@@ -247,7 +253,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       logger.info('_receiveEventFromProperty-----FrameModel');
                       FrameModel model = snapshot.data! as FrameModel;
                       frameManager.updateModel(model);
-                      widget.chageEventReceived.call(model.parentMid.value);
+                      widget.changeEventReceived.call(model.parentMid.value);
                     } else {
                       logger.info('_receiveEventFromProperty-----Unknown Model');
                     }
@@ -279,6 +285,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                           applyScale: applyScale,
                           width: frameWidth,
                           height: frameHeight,
+                          chageEventReceived: widget.changeEventReceived,
                         ),
                       );
 
