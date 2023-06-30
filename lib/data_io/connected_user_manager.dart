@@ -202,4 +202,12 @@ class ConnectedUserManager extends CretaManager {
     }
     return counter;
   }
+
+  void connectNoti(String bookId, String nickname, String email) {
+    notify();
+  }
+
+  void disconnectNoti(String bookId, String nickname, String email) {
+    notify();
+  }
 }

@@ -229,6 +229,9 @@ class BookManager extends CretaManager {
     newOne.name.set('${srcModel.name.value}${CretaLang.copyOf}');
     newOne.sourceMid = "";
     newOne.publishMid = "";
+    if (LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
+      newOne.creator = LoginPage.userPropertyManagerHolder!.userPropertyModel!.email;
+    }
     await createToDB(newOne);
     logger.info('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
     return newOne;
