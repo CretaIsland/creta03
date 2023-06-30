@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
+import 'package:hycop/hycop/socket/mouse_tracer.dart';
+import 'package:hycop/hycop/socket/socket_client.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -113,6 +115,13 @@ class _BookMainPageState extends State<BookMainPage> {
 
   bool dropDownButtonOpened = false;
 
+  // for socket
+  SocketClient client = SocketClient();
+  List<Color> userColorList = [Colors.red, Colors.blue, Colors.green, Colors.yellow, Colors.purple];
+  late double screenWidthPercentage;
+  late double screenHeightPrecentage;
+  late double screenWidth;
+
   //Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
@@ -198,6 +207,32 @@ class _BookMainPageState extends State<BookMainPage> {
 
     BookMainPage.clickReceiverHandler.init();
     mychangeStack.clear();
+
+    mouseTracerHolder = MouseTracer();
+    client.initialize(LoginPage.enterpriseHolder!.enterpriseModel!.socketUrl);
+    client.connectServer(BookMainPage.selectedMid);
+
+    mouseTracerHolder!.addListener(() {
+      switch(mouseTracerHolder!.methodFlag) {
+        case 'joinUser' : 
+          BookMainPage.connectedUserHolder!.connectNoti(
+            BookMainPage.selectedMid, 
+            mouseTracerHolder!.targetUserName, 
+            mouseTracerHolder!.targetUserEmail
+          );
+          break;
+        case 'leaveUser' :
+          BookMainPage.connectedUserHolder!.disconnectNoti(
+            BookMainPage.selectedMid, 
+            mouseTracerHolder!.targetUserName, 
+            mouseTracerHolder!.targetUserEmail
+          );
+          break;
+        default:
+          break;
+      }
+    });
+
     logger.info("end ---_BookMainPageState-----------------------------------------");
 
     afterBuild();
@@ -323,12 +358,20 @@ class _BookMainPageState extends State<BookMainPage> {
     //horizontalScroll?.dispose();
 
     HycopFactory.realtime!.stop();
-
+    client.disconnect();
+    mouseTracerHolder!.dispose();
+    
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    screenWidthPercentage = MediaQuery.of(context).size.width * 0.01;
+    screenHeightPrecentage = MediaQuery.of(context).size.height * 0.01;
+    screenWidth = MediaQuery.of(context).size.width;
+    DateTime lastEventTime = DateTime.now();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ContaineeNotifier>.value(
@@ -353,14 +396,70 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<ConnectedUserManager>.value(
           value: BookMainPage.connectedUserHolder!,
         ),
+        ChangeNotifierProvider<MouseTracer>.value(
+          value: mouseTracerHolder!
+        )
       ],
       child: StudioVariables.isPreview
           ? Scaffold(body: _waitBook())
           : Snippet.CretaScaffold(
               title: Snippet.logo('studio'),
               context: context,
-              child: _waitBook(),
+              child: Stack(
+                  children: [
+                    MouseRegion(
+                      onHover: (pointerEvent) {
+                        if(lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
+                          client.moveCursor(pointerEvent.position.dx / screenWidthPercentage, (pointerEvent.position.dy-50) / screenHeightPrecentage);  
+                          lastEventTime = DateTime.now();
+                        }
+                      },
+                      child: _waitBook(),
+                  ),
+                  mouseArea()
+                ],
+              ),
             ),
+    );
+  }
+
+  Widget mouseArea() {
+    return IgnorePointer(
+      child: Consumer<MouseTracer>(builder: (context, mouseTracerManager, child) {
+        return Stack(
+          children: [
+            for(int i=1; i<mouseTracerHolder!.mouseModelList.length; i++)
+              cursorWidget(i, mouseTracerHolder!)
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget cursorWidget(int index, MouseTracer mouseTracer) {
+    return Positioned(
+      left: mouseTracer.mouseModelList[index].cursorX * screenWidthPercentage,
+      top: mouseTracer.mouseModelList[index].cursorY * screenHeightPrecentage,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children : [
+          Icon(
+            Icons.pan_tool_alt,
+            size: 30,
+            color: userColorList[index < 5 ? index : (index % 5) + 1],
+          ),
+          index == 0 ? Container() :
+          Container(
+            width: mouseTracer.mouseModelList[index].userName.length * 10,
+            height: 20,
+            decoration: BoxDecoration(
+              color: userColorList[index < 5 ? index : (index % 5) + 1],
+              borderRadius: BorderRadius.circular(20)
+            ),
+            child: Text(mouseTracer.mouseModelList[index].userName, style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
+          )
+        ]
+      )
     );
   }
 
