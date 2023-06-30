@@ -7,12 +7,14 @@ class EnterpriseModel extends CretaModel {
   late String name;
   late String description;
   late String openAiKey;
+  late String socketUrl;
 
 
   EnterpriseModel(String pmid) : super(pmid: pmid, type: ExModelType.enterprise, parent: '') {
     name = '';
     description = '';
     openAiKey = '';
+    socketUrl = '';
   }
 
   @override
@@ -20,14 +22,16 @@ class EnterpriseModel extends CretaModel {
     ...super.props,
     name,
     description,
-    openAiKey
+    openAiKey,
+    socketUrl
   ];
 
   EnterpriseModel.withName({
     required this.name,
     required String pparentMid,
     this.description = '',
-    this.openAiKey = ''
+    this.openAiKey = '',
+    this.socketUrl = ''
   }) : super(pmid: '', type: ExModelType.enterprise, parent: pparentMid);
 
   @override
@@ -37,6 +41,7 @@ class EnterpriseModel extends CretaModel {
     name = map['name'] ?? '';
     description = map['description'] ?? '';
     openAiKey = map['openAiKey'] ?? '';
+    socketUrl = map['socketUrl'] ?? '';
   }
 
   @override
@@ -45,7 +50,8 @@ class EnterpriseModel extends CretaModel {
       ..addEntries({
         'name': name,
         'description': description,
-        'openAiKey': openAiKey
+        'openAiKey': openAiKey,
+        'socketUrl' : socketUrl
       }.entries);
   }
 
