@@ -16,6 +16,7 @@ enum DocShown { sample, tutorial, hello, password }
 
 class _PinchPageState extends State<PinchPage> {
   static const int _initialPage = 1;
+  int _zoomCount = 0;
   //final DocShown _showing = DocShown.sample;
   late PdfControllerPinch _pdfControllerPinch;
 
@@ -76,9 +77,27 @@ class _PinchPageState extends State<PinchPage> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.zoom_out_outlined),
             onPressed: () {
-              _pdfControllerPinch.scaleXY(1.5);
+              setState(() {
+                if (_zoomCount > 0) {
+                  _pdfControllerPinch.scaleXY(0.89);
+                  _zoomCount--;
+                }
+              });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.zoom_in_outlined),
+            onPressed: () {
+              setState(() {
+                if (_zoomCount < 10) {
+                  // 여기 참조해서 다시 고쳐보자..
+                  //https://stackoverflow.com/questions/74478910/zooming-in-at-the-center-of-interactiveviewer-using-matrix4-transformation
+                  _pdfControllerPinch.scaleXY(1.1);
+                  _zoomCount++;
+                }
+              });
               // switch (_showing) {
               //   case DocShown.sample:
               //   case DocShown.tutorial:
@@ -106,9 +125,9 @@ class _PinchPageState extends State<PinchPage> {
       body: PdfViewPinch(
         builders: PdfViewPinchBuilders<DefaultBuilderOptions>(
           options: const DefaultBuilderOptions(),
-          documentLoaderBuilder: (_) => const Center(child: CircularProgressIndicator()),
+          documentLoaderBuilder: (_) => Center(child: Snippet.showWaitSign()),
           //pageLoaderBuilder: (_) => const Center(child: CircularProgressIndicator()),
-          pageLoaderBuilder: (_) => Snippet.showWaitSign(),
+          pageLoaderBuilder: (_) => Center(child: Snippet.showWaitSign()),
           errorBuilder: (_, error) => Center(child: Text(error.toString())),
         ),
         controller: _pdfControllerPinch,
