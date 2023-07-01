@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
 import '../lang/creta_lang.dart';
+import '../model/app_enums.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
@@ -785,6 +786,12 @@ class ContentsManager extends CretaManager {
           contentsManager.frameManager = frameManager;
         }
         await _videoProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
+      } else if (contentsModel.contentsType == ContentsType.pdf) {
+        if (isResizeFrame) {
+          contentsManager.frameManager = frameManager;
+        }
+        frameModel.frameType = FrameType.text;
+        await _pdfProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
       }
       // 콘텐츠 객체를 DB에 Crete 한다.
       await contentsManager.createNextContents(contentsModel, doNotify: false);
@@ -853,6 +860,41 @@ class ContentsManager extends CretaManager {
   }
 
   static Future<void> _videoProcess(ContentsManager contentsManager, ContentsModel contentsModel,
+      {required bool isResizeFrame}) async {
+    //dropdown 하는 순간에 이미 플레이되고 있는 video 가 있다면, 정지시켜야 한다.
+    //contentsManager.pause();
+
+    if (contentsModel.file == null) {
+      return;
+    }
+
+    //bool uploadComplete = false;
+    html.FileReader fileReader = html.FileReader();
+    fileReader.onLoadEnd.listen((event) async {
+      logger.info('upload waiting ...............${contentsModel.name}');
+      StudioSnippet.uploadFile(
+        contentsModel,
+        contentsManager,
+        fileReader.result as Uint8List,
+      );
+      fileReader = html.FileReader(); // file reader 초기화
+      //uploadComplete = true;
+      logger.info('upload complete');
+    });
+
+    // while (uploadComplete) {
+    //   await Future.delayed(const Duration(milliseconds: 100));
+    // }
+
+    fileReader.onError.listen((err) {
+      logger.severe('message: ${err.toString()}');
+    });
+
+    fileReader.readAsArrayBuffer(contentsModel.file!);
+    return;
+  }
+
+  static Future<void> _pdfProcess(ContentsManager contentsManager, ContentsModel contentsModel,
       {required bool isResizeFrame}) async {
     //dropdown 하는 순간에 이미 플레이되고 있는 video 가 있다면, 정지시켜야 한다.
     //contentsManager.pause();

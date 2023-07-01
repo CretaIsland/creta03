@@ -517,14 +517,14 @@ class ContentsModel extends CretaModel {
     } else if (mime.startsWith('effect')) {
       logger.finest('effect type');
       contentsType = ContentsType.effect;
-    } else if (mime.startsWith('youtube')) {
+    } else if (mime.endsWith('youtube')) {
       logger.finest('youtube type');
       contentsType = ContentsType.youtube;
       // } else if (mime.startsWith('instagram')) {
       //   logger.finest('instagram type');
       //   contentsType = ContentsType.instagram;
-    } else if (mime.startsWith('pdf')) {
-      logger.finest('pdf type');
+    } else if (mime.endsWith('pdf')) {
+      logger.info('pdf type');
       contentsType = ContentsType.pdf;
     } else {
       logger.finest('ERROR: unknown type');

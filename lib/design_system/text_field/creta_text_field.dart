@@ -41,7 +41,7 @@ class LastClicked {
     if (_textField == null) {
       return;
     }
-    logger.finest('clickedOutSide');
+    logger.info('clickedOutSide');
     Rect? boxRect = _textField!.getBoxRect();
     if (boxRect == null) {
       return;

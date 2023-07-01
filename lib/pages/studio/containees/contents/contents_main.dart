@@ -117,7 +117,8 @@ class ContentsMainState extends State<ContentsMain> {
                 return Stack(
                   children: [
                     _mainBuild(model, playTimer),
-                    if (model.contentsType != ContentsType.document)
+                    if (model.contentsType != ContentsType.document &&
+                        model.contentsType != ContentsType.pdf)
                       LinkWidget(
                         key: GlobalObjectKey('LinkWidget${model.mid}'),
                         applyScale: widget.applyScale,

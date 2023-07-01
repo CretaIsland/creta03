@@ -300,6 +300,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.text) {
       return false;
     }
+
     return true;
   }
 

@@ -458,6 +458,9 @@ class _LinkWidgetState extends State<LinkWidget> {
     if (widget.contentsModel.contentsType == ContentsType.text) {
       return false;
     }
+    if (widget.contentsModel.contentsType == ContentsType.pdf) {
+      return false;
+    }
     return true;
   }
 

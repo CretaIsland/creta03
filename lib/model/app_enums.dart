@@ -487,6 +487,5 @@ enum GenderType {
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static GenderType fromInt(int? val) =>
-      GenderType.values[validCheck(val ?? none.index)];
+  static GenderType fromInt(int? val) => GenderType.values[validCheck(val ?? none.index)];
 }
