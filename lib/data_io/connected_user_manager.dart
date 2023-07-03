@@ -223,7 +223,7 @@ class ConnectedUserManager extends CretaManager {
 
     ConnectedUserModel? model = aleadyCreatedByEmail(email);
     if (model != null) {
-      logger.warning('$email user connected(alreadyExist)');
+      //logger.warning('$email user connected(alreadyExist)');
       model.isConnected = true;
       notify();
       return true;

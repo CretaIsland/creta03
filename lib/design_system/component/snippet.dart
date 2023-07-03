@@ -26,14 +26,13 @@ import '../menu/creta_popup_menu.dart';
 // get widgets Global Size and Position
 extension GlobalKeyExtension on GlobalKey {
   Rect? get globalPaintBounds {
+    if (currentContext == null) return null;
     final renderObject = currentContext?.findRenderObject();
-    final translation = renderObject?.getTransformTo(null).getTranslation();
-    if (translation != null && renderObject?.paintBounds != null) {
-      final offset = Offset(translation.x, translation.y);
-      return renderObject!.paintBounds.shift(offset);
-    } else {
-      return null;
-    }
+    if (renderObject == null) return null;
+    final translation = renderObject.getTransformTo(null).getTranslation();
+
+    final offset = Offset(translation.x, translation.y);
+    return renderObject.paintBounds.shift(offset);
   }
 }
 

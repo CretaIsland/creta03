@@ -1215,10 +1215,10 @@ class BTN {
       icon: (icon == null)
           ? null
           : Icon(
-        icon,
-        size: 16,
-        color: CretaColor.text[700]!,
-      ),
+              icon,
+              size: 16,
+              color: CretaColor.text[700]!,
+            ),
       onPressed: onPressed,
       sidePadding: sidePadding,
     );
@@ -1374,13 +1374,13 @@ class BTN {
           //padding: const EdgeInsets.only(left: 8.0),
           //child:
           (icon1 != null || svgImg1 != null)
-            ? Padding(
-              padding: const EdgeInsets.only(left: 12.0, bottom: 2),
-              child: (icon1 != null)
-                ? Icon(icon1, size: icon1Size ?? 16, color: textColor)
-                : Snippet.SvgIcon(iconImageFile: svgImg1!, iconSize: 16, iconColor: null),
-            )
-            : const SizedBox.shrink(),
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0, bottom: 2),
+                  child: (icon1 != null)
+                      ? Icon(icon1, size: icon1Size ?? 16, color: textColor)
+                      : Snippet.SvgIcon(iconImageFile: svgImg1!, iconSize: 16, iconColor: null),
+                )
+              : const SizedBox.shrink(),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             child: Column(
@@ -1391,13 +1391,13 @@ class BTN {
             ),
           ),
           (icon2 != null || svgImg2 != null)
-            ? Padding(
-              padding: const EdgeInsets.only(right: 8.0, bottom: 2),
-              child: (icon2 != null)
-                ? Icon(icon2, size: icon2Size ?? 16, color: textColor)
-                : Snippet.SvgIcon(iconImageFile: svgImg2!, iconSize: 16, iconColor: null),
-            )
-            : const SizedBox.shrink(),
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 8.0, bottom: 2),
+                  child: (icon2 != null)
+                      ? Icon(icon2, size: icon2Size ?? 16, color: textColor)
+                      : Snippet.SvgIcon(iconImageFile: svgImg2!, iconSize: 16, iconColor: null),
+                )
+              : const SizedBox.shrink(),
         ],
       ),
     );
@@ -1487,6 +1487,7 @@ class BTN {
     required Function onPressed,
     String? tooltip,
     Color? iconColor,
+    double iconSize = 12,
   }) {
     return CretaButton(
       tooltip: tooltip,
@@ -1498,7 +1499,7 @@ class BTN {
       onPressed: onPressed,
       child: Icon(
         icon,
-        size: 12,
+        size: iconSize,
         color: iconColor ?? Colors.white,
       ),
     );

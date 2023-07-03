@@ -98,10 +98,11 @@ dependencies:
   webview_flutter: ^4.0.7     # added by Mai 20230619
   adjusted_html_view_web: ^0.0.1
   flutter_rte: ^0.4.13
-  pdfx: ^2.3.0
-  internet_file: ^1.2.0
-  universal_platform: ^1.0.0+1
-  performance: ^0.1.0+1
+  syncfusion_flutter_pdfviewer: ^21.2.10
+  # pdfx: ^2.3.0
+  # internet_file: ^1.2.0
+  # universal_platform: ^1.0.0+1
+  # performance: ^0.1.0+1
 
 dev_dependencies:
   flutter_test:
