@@ -145,14 +145,14 @@ class _QuillHtmlEnhancedState extends State<QuillHtmlEnhanced> with TickerProvid
                     ? ToolbarWidget(
                         controller: _currentController!,
                         callbacks: Callbacks(
-                          onHiddenToolbar: () {
-                            debugPrint('-------- Close btn pressed-------------');
-                            setState(() {
-                              setTimeout();
-                              _isEditorFocused = false;
-                            });
-                          },
-                        ),
+                            // onHiddenToolbar: () {
+                            //   debugPrint('-------- Close btn pressed-------------');
+                            //   setState(() {
+                            //     setTimeout();
+                            //     _isEditorFocused = false;
+                            //   });
+                            // },
+                            ),
                         htmlToolbarOptions: HtmlToolbarOptions(
                           toolbarPosition: ToolbarPosition.custom,
                           toolbarType: ToolbarType.nativeGrid,

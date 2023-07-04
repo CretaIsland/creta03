@@ -360,7 +360,6 @@ class _BookMainPageState extends State<BookMainPage> {
 
   @override
   Widget build(BuildContext context) {
-
     screenWidthPercentage = MediaQuery.of(context).size.width * 0.01;
     screenHeightPrecentage = MediaQuery.of(context).size.height * 0.01;
     screenWidth = MediaQuery.of(context).size.width;
@@ -387,9 +386,7 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<ConnectedUserManager>.value(
           value: BookMainPage.connectedUserHolder!,
         ),
-        ChangeNotifierProvider<MouseTracer>.value(
-          value: mouseTracerHolder!
-        )
+        ChangeNotifierProvider<MouseTracer>.value(value: mouseTracerHolder!)
       ],
       child: StudioVariables.isPreview
           ? Scaffold(body: _waitBook())
@@ -397,22 +394,21 @@ class _BookMainPageState extends State<BookMainPage> {
               title: Snippet.logo('studio'),
               context: context,
               child: Stack(
-                  children: [
-                    MouseRegion(
-                      onHover: (pointerEvent) {
-                      if (StudioVariables.allowMutilUser == true) {
-                        if (lastEventTime
-                            .add(Duration(milliseconds: 100))
-                            .isBefore(DateTime.now())) {
-                          client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
-                              (pointerEvent.position.dy - 50) / screenHeightPrecentage);
-                          lastEventTime = DateTime.now();
-                        }
+                children: [
+                  MouseRegion(
+                    onHover: (pointerEvent) {
+                      //if (StudioVariables.allowMutilUser == true) {
+                      if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
+                        client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
+                            (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+                        lastEventTime = DateTime.now();
                       }
+                      //}
                     },
-                      child: _waitBook(),
+                    child: _waitBook(),
                   ),
-                  if (StudioVariables.allowMutilUser == true) mouseArea(),
+                  //if (StudioVariables.allowMutilUser == true) mouseArea(),
+                  mouseArea(),
                 ],
               ),
             ),
@@ -424,7 +420,7 @@ class _BookMainPageState extends State<BookMainPage> {
       child: Consumer<MouseTracer>(builder: (context, mouseTracerManager, child) {
         return Stack(
           children: [
-            for(int i=0; i<mouseTracerHolder!.userMouseList.length; i++)
+            for (int i = 0; i < mouseTracerHolder!.userMouseList.length; i++)
               cursorWidget(i, mouseTracerHolder!)
           ],
         );
@@ -433,14 +429,14 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget cursorWidget(int index, MouseTracer mouseTracer) {
-	int userColorLen = userColorList.length;
-    Color mouseColor = userColorLen == 0 ? CretaColor.primary : userColorList[index < userColorLen ? index : (index % userColorLen)];
+    int userColorLen = userColorList.length;
+    Color mouseColor = userColorLen == 0
+        ? CretaColor.primary
+        : userColorList[index < userColorLen ? index : (index % userColorLen)];
     return Positioned(
-      left: mouseTracer.userMouseList[index].cursorX * screenWidthPercentage,
-      top: mouseTracer.userMouseList[index].cursorY * screenHeightPrecentage,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children : [
+        left: mouseTracer.userMouseList[index].cursorX * screenWidthPercentage,
+        top: mouseTracer.userMouseList[index].cursorY * screenHeightPrecentage,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Icon(
             Icons.pan_tool_alt,
             size: 30,
@@ -449,15 +445,11 @@ class _BookMainPageState extends State<BookMainPage> {
           Container(
             width: mouseTracer.userMouseList[index].userName.length * 10,
             height: 20,
-            decoration: BoxDecoration(
-              color: mouseColor,
-              borderRadius: BorderRadius.circular(20)
-            ),
-            child: Text(mouseTracer.userMouseList[index].userName, style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
+            decoration: BoxDecoration(color: mouseColor, borderRadius: BorderRadius.circular(20)),
+            child: Text(mouseTracer.userMouseList[index].userName,
+                style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
           )
-        ]
-      )
-    );
+        ]));
   }
 
   // Widget _waitBook() {
@@ -960,9 +952,9 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.person_add_outlined,
             onPressed: () {
-              setState(() {
-                StudioVariables.allowMutilUser = !StudioVariables.allowMutilUser;
-              });
+              //setState(() {
+              //StudioVariables.allowMutilUser = !StudioVariables.allowMutilUser;
+              //});
             },
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipInvite,
