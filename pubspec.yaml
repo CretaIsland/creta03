@@ -37,7 +37,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.2.9
+  hycop: ^0.2.10
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: ^2.2.0
   # elegant_radio_button_group: ^0.0.1
@@ -93,7 +93,6 @@ dependencies:
   flutter_sequence_animation: ^4.0.0
   cloud_firestore: ^4.3.1
   flutter_keyboard_visibility: ^5.4.1
-  # quill_html_editor: ^2.0.5
   quill_html_editor: ^2.1.9
   webview_flutter: ^4.0.7     # added by Mai 20230619
   adjusted_html_view_web: ^0.0.1
@@ -107,6 +106,9 @@ dependencies:
   # internet_file: ^1.2.0
   # universal_platform: ^1.0.0+1
   # performance: ^0.1.0+1
+  html_editor_enhanced: ^2.5.1
+  numberpicker: ^2.1.2
+  file_picker: ^5.3.1
 
 dev_dependencies:
   flutter_test:
@@ -166,6 +168,7 @@ flutter:
     - assets/tipImage-2-4.png
     - assets/bgd.png
     - assets/google__g__logo.svg
+    - assets/landing_page_banner.mp4
 
 
 

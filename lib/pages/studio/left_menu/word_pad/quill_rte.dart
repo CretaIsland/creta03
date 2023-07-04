@@ -30,7 +30,7 @@ class _QuillFloatingToolBarWidgetState extends State<QuillFloatingToolBarWidget>
     super.initState();
     _currentController = HtmlEditorController(
       toolbarOptions: HtmlToolbarOptions(
-        toolbarType: ToolbarType.nativeScrollable,
+        toolbarType: ToolbarType.nativeExpandable,
         backgroundColor: Colors.transparent,
         toolbarPosition: ToolbarPosition.custom,
       ),
@@ -84,6 +84,7 @@ class _QuillFloatingToolBarWidgetState extends State<QuillFloatingToolBarWidget>
                         top: BorderSide(color: CretaColor.text[700]!, width: 0.2),
                         left: BorderSide(color: CretaColor.text[700]!, width: 0.2),
                         right: BorderSide(color: CretaColor.text[700]!, width: 0.2),
+                        bottom: BorderSide(color: CretaColor.text[700]!, width: 0.2),
                       ),
                     ),
                     constraints: const BoxConstraints(
@@ -140,7 +141,7 @@ class _QuillFloatingToolBarWidgetState extends State<QuillFloatingToolBarWidget>
   }
 
   void setTimeout() {
-    timer = Timer(const Duration(milliseconds: 100), () {
+    timer = Timer(const Duration(milliseconds: 5000), () {
       if (_currentController != null) {
         _controller.reverse(from: 1).then((_) {
           if (mounted) {}

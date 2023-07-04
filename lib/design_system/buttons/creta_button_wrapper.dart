@@ -226,7 +226,8 @@ class BTN {
       Color? tooltipFg,
       Color? tooltipBg,
       double iconSize = 16,
-      Color? iconColor}) {
+      Color? iconColor,
+      CretaButtonColor buttonColor = CretaButtonColor.white}) {
     return CretaButton(
       tooltip: tooltip,
       tooltipFg: tooltipFg,
@@ -234,7 +235,7 @@ class BTN {
       width: buttonSize,
       height: buttonSize,
       buttonType: CretaButtonType.child,
-      buttonColor: CretaButtonColor.white,
+      buttonColor: buttonColor,
       onPressed: onPressed,
       child: Icon(
         icon,
@@ -813,6 +814,34 @@ class BTN {
     );
   }
 
+  static CretaButton fill_blue_t_l({
+    required String text,
+    required Function onPressed,
+    CretaButtonColor buttonColor = CretaButtonColor.blue,
+    double? width = 72,
+    double? height = 34,
+    CretaButtonSidePadding? sidePadding,
+    TextStyle? textStyle,
+  }) {
+    return CretaButton(
+      width: width,
+      height: height,
+      buttonType: CretaButtonType.textOnly,
+      buttonColor: buttonColor,
+      text: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(text, style: textStyle ?? CretaFont.buttonLarge.copyWith(color: Colors.white)),
+          ],
+        ),
+      ),
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+    );
+  }
+
   static CretaButton fill_blue_t_el({
     required String text,
     required Function onPressed,
@@ -913,11 +942,12 @@ class BTN {
     required String text,
     required Function onPressed,
     double? width = 125,
+    double? height = 36,
     CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(
       width: width,
-      height: 36,
+      height: height,
       buttonType: CretaButtonType.iconText,
       buttonColor: CretaButtonColor.blue,
       icon: Icon(
@@ -933,6 +963,39 @@ class BTN {
             Text(text, style: CretaFont.buttonLarge.copyWith(color: Colors.white)),
           ],
         ),
+      ),
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+    );
+  }
+
+
+  static CretaButton fill_blue_ti_l({
+    required String text,
+    required IconData icon,
+    required Function onPressed,
+    double? width = 112,
+    double? height = 36,
+    CretaButtonSidePadding? sidePadding,
+  }) {
+    return CretaButton(
+      width: width,
+      height: height,
+      buttonType: CretaButtonType.textIcon,
+      buttonColor: CretaButtonColor.blue,
+      text: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(text, style: CretaFont.buttonLarge.copyWith(color: Colors.white)),
+          ],
+        ),
+      ),
+      icon: Icon(
+        icon,
+        size: 20,
+        color: Colors.white,
       ),
       onPressed: onPressed,
       sidePadding: sidePadding,

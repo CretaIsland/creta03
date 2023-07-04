@@ -209,7 +209,9 @@ class _BookMainPageState extends State<BookMainPage> {
     mychangeStack.clear();
 
     mouseTracerHolder = MouseTracer();
+    mouseTracerHolder!.initialize();
     client.initialize(LoginPage.enterpriseHolder!.enterpriseModel!.socketUrl);
+    //client.initialize("ws://localhost:4432");
     client.connectServer(BookMainPage.selectedMid);
 
     mouseTracerHolder!.addListener(() {
@@ -353,13 +355,12 @@ class _BookMainPageState extends State<BookMainPage> {
 
     HycopFactory.realtime!.stop();
     client.disconnect();
-    mouseTracerHolder!.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
     screenWidthPercentage = MediaQuery.of(context).size.width * 0.01;
     screenHeightPrecentage = MediaQuery.of(context).size.height * 0.01;
     screenWidth = MediaQuery.of(context).size.width;
@@ -386,7 +387,9 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<ConnectedUserManager>.value(
           value: BookMainPage.connectedUserHolder!,
         ),
-        ChangeNotifierProvider<MouseTracer>.value(value: mouseTracerHolder!)
+        ChangeNotifierProvider<MouseTracer>.value(
+          value: mouseTracerHolder!
+        )
       ],
       child: StudioVariables.isPreview
           ? Scaffold(body: _waitBook())
@@ -394,9 +397,9 @@ class _BookMainPageState extends State<BookMainPage> {
               title: Snippet.logo('studio'),
               context: context,
               child: Stack(
-                children: [
-                  MouseRegion(
-                    onHover: (pointerEvent) {
+                  children: [
+                    MouseRegion(
+                      onHover: (pointerEvent) {
                       if (StudioVariables.allowMutilUser == true) {
                         if (lastEventTime
                             .add(Duration(milliseconds: 100))
@@ -407,7 +410,7 @@ class _BookMainPageState extends State<BookMainPage> {
                         }
                       }
                     },
-                    child: _waitBook(),
+                      child: _waitBook(),
                   ),
                   if (StudioVariables.allowMutilUser == true) mouseArea(),
                 ],
@@ -421,7 +424,7 @@ class _BookMainPageState extends State<BookMainPage> {
       child: Consumer<MouseTracer>(builder: (context, mouseTracerManager, child) {
         return Stack(
           children: [
-            for (int i = 1; i < mouseTracerHolder!.mouseModelList.length; i++)
+            for(int i=0; i<mouseTracerHolder!.userMouseList.length; i++)
               cursorWidget(i, mouseTracerHolder!)
           ],
         );
@@ -430,30 +433,31 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget cursorWidget(int index, MouseTracer mouseTracer) {
-    int userColorLen = userColorList.length;
-    Color mouseColor = userColorLen == 0
-        ? CretaColor.primary
-        : userColorList[index < userColorLen ? index : (index % userColorLen)];
+	int userColorLen = userColorList.length;
+    Color mouseColor = userColorLen == 0 ? CretaColor.primary : userColorList[index < userColorLen ? index : (index % userColorLen)];
     return Positioned(
-        left: mouseTracer.mouseModelList[index].cursorX * screenWidthPercentage,
-        top: mouseTracer.mouseModelList[index].cursorY * screenHeightPrecentage,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      left: mouseTracer.userMouseList[index].cursorX * screenWidthPercentage,
+      top: mouseTracer.userMouseList[index].cursorY * screenHeightPrecentage,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children : [
           Icon(
             Icons.pan_tool_alt,
             size: 30,
             color: mouseColor,
           ),
-          index == 0
-              ? Container()
-              : Container(
-                  width: mouseTracer.mouseModelList[index].userName.length * 10,
-                  height: 20,
-                  decoration:
-                      BoxDecoration(color: mouseColor, borderRadius: BorderRadius.circular(20)),
-                  child: Text(mouseTracer.mouseModelList[index].userName,
-                      style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
-                )
-        ]));
+          Container(
+            width: mouseTracer.userMouseList[index].userName.length * 10,
+            height: 20,
+            decoration: BoxDecoration(
+              color: mouseColor,
+              borderRadius: BorderRadius.circular(20)
+            ),
+            child: Text(mouseTracer.userMouseList[index].userName, style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
+          )
+        ]
+      )
+    );
   }
 
   // Widget _waitBook() {
