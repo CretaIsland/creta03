@@ -115,6 +115,9 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         _event(),
         propertyDivider(),
         _hashTag(),
+        SizedBox(
+          height: 100,
+        )
       ]);
       //);
     });

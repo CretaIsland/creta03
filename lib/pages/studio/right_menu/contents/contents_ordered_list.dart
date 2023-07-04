@@ -114,6 +114,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           width: LayoutConst.rightMenuWidth,
           height: boxHeight,
           child: DropZoneWidget(
+            bookMid: widget.contentsManager.frameModel.realTimeKey,
             parentId: '',
             onDroppedFile: (modelList) {
               String frameId = widget.contentsManager.frameModel.mid;

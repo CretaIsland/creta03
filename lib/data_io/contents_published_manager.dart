@@ -17,7 +17,7 @@ class ContentsPublishedManager extends CretaManager {
   }
 
   @override
-  AbsExModel newModel(String mid) => ContentsModel(mid);
+  AbsExModel newModel(String mid) => ContentsModel(mid, '');
 
   @override
   Future<int> makeCopyAll(String? newParentMid) async {

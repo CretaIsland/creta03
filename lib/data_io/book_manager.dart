@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:creta03/model/user_property_model.dart';
 import 'package:hycop/hycop.dart';
 import '../common/creta_utils.dart';
 import '../design_system/menu/creta_popup_menu.dart';
@@ -8,6 +9,8 @@ import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/creta_model.dart';
+import '../model/team_model.dart';
+import '../pages/login_page.dart';
 import 'creta_manager.dart';
 import 'page_manager.dart';
 
@@ -136,10 +139,81 @@ class BookManager extends CretaManager {
   Future<List<AbsExModel>> sharedData(String userId, {int? limit}) async {
     logger.finest('sharedData');
     Map<String, QueryValue> query = {};
-    query['shares'] = QueryValue(value: userId, operType: OperType.arrayContains);
+    List<String> queryVal = [
+      '<${PermissionType.reader.name}>$userId',
+      '<${PermissionType.writer.name}>$userId',
+      '<${PermissionType.owner.name}>$userId',
+      '<${PermissionType.owner.name}>public',
+    ];
+    TeamModel? myTeam = LoginPage.teamManagerHolder!.currentTeam;
+    if (myTeam != null) {
+      String myTeamId = myTeam.name;
+      queryVal.add('<${PermissionType.reader.name}>$myTeamId');
+      queryVal.add('<${PermissionType.writer.name}>$myTeamId');
+      queryVal.add('<${PermissionType.owner.name}>$myTeamId');
+    }
+
+    query['shares'] = QueryValue(value: queryVal, operType: OperType.arrayContainsAny);
+    //query['creator'] = QueryValue(value: userId, operType: OperType.isNotEqualTo);
     query['isRemoved'] = QueryValue(value: false);
     final retval = await queryFromDB(query, limit: limit);
-    return retval;
+    // 자기것은 빼고 나온다
+    for (var ele in retval) {
+      BookModel book = ele as BookModel;
+      if (book.creator == userId) {
+        remove(book);
+      }
+    }
+    return modelList;
+  }
+
+  Future<List<AbsExModel>> teamData({int? limit}) async {
+    logger.finest('teamData');
+    Map<String, QueryValue> query = {};
+    List<String> creators = [];
+    List<String> queryVal = [];
+    TeamModel? myTeam = LoginPage.teamManagerHolder!.currentTeam;
+    if (myTeam != null) {
+      String myTeamId = myTeam.name;
+      queryVal.add('<${PermissionType.reader.name}>$myTeamId');
+      queryVal.add('<${PermissionType.writer.name}>$myTeamId');
+      queryVal.add('<${PermissionType.owner.name}>$myTeamId');
+    }
+
+    List<UserPropertyModel>? myMembers = LoginPage.teamManagerHolder!.getMyTeamMembers();
+    if (myMembers == null) {
+      return [];
+    }
+    for (UserPropertyModel ele in myMembers) {
+      creators.add(ele.email);
+      queryVal.add('<${PermissionType.reader.name}>${ele.email}');
+      queryVal.add('<${PermissionType.writer.name}>${ele.email}');
+      queryVal.add('<${PermissionType.owner.name}>${ele.email}');
+    }
+    query['creator'] = QueryValue(value: creators, operType: OperType.whereIn);
+    //query['shares'] = QueryValue(value: queryVal, operType: OperType.arrayContainsAny);
+    query['isRemoved'] = QueryValue(value: false);
+    final bookList = await queryFromDB(query, limit: limit);
+    List<BookModel> retval = [];
+    for (var ele in bookList) {
+      BookModel book = ele as BookModel;
+      // books 의 shared 에서 creator 와 같은놈은 제거해야 한다.
+      // 그렇지 않으면 자신은 자기 팀원이기 때문에, 무조건 권한을 갖게된다.
+      book.shares.remove('<${PermissionType.owner.name}>${book.creator}');
+      book.shares.remove('<${PermissionType.reader.name}>${book.creator}');
+      book.shares.remove('<${PermissionType.writer.name}>${book.creator}');
+      for (String authStr in queryVal) {
+        if (book.shares.contains(authStr) == true) {
+          //print('$authStr=${book.shares.toString()}');
+          retval.add(book);
+          break;
+        }
+      }
+    }
+    modelList.clear();
+    modelList = [...retval];
+    //print('total=${modelList.length}------------------------------');
+    return modelList;
   }
 
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
@@ -155,6 +229,9 @@ class BookManager extends CretaManager {
     newOne.name.set('${srcModel.name.value}${CretaLang.copyOf}');
     newOne.sourceMid = "";
     newOne.publishMid = "";
+    if (LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
+      newOne.creator = LoginPage.userPropertyManagerHolder!.userPropertyModel!.email;
+    }
     await createToDB(newOne);
     logger.info('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
     return newOne;
@@ -168,11 +245,11 @@ class BookManager extends CretaManager {
     remove(thisOne);
   }
 
-  @override
-  Future<void> removeChild(String parentMid) async {
+  Future<void> removeChildren(BookModel book) async {
     PageManager pageManager = PageManager();
+    pageManager.setBook(book);
     Map<String, QueryValue> query = {};
-    query['parentMid'] = QueryValue(value: parentMid);
+    query['parentMid'] = QueryValue(value: book.mid);
     query['isRemoved'] = QueryValue(value: false);
     await pageManager.queryFromDB(query);
     await pageManager.removeAll();

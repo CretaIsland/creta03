@@ -12,6 +12,7 @@ import '../../model/contents_model.dart';
 
 class DropZoneWidget extends StatefulWidget {
   final ValueChanged<List<ContentsModel>> onDroppedFile;
+  final String bookMid;
   final String parentId;
   final Widget? child;
   final Color bgColor;
@@ -19,6 +20,7 @@ class DropZoneWidget extends StatefulWidget {
   const DropZoneWidget(
       {Key? key,
       required this.onDroppedFile,
+      required this.bookMid,
       required this.parentId,
       this.child,
       this.bgColor = Colors.black})
@@ -57,7 +59,7 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
                   List<ContentsModel> contentsList = [];
                   for (var event in list) {
                     logger.info('onDropMultiple -------------- ${event.name}');
-                    contentsList.add(await uploadedFile(event));
+                    contentsList.add(await uploadedFile(event, widget.bookMid));
                   }
                   widget.onDroppedFile(contentsList);
                   setState(() {
@@ -76,7 +78,7 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
     );
   }
 
-  Future<ContentsModel> uploadedFile(dynamic event) async {
+  Future<ContentsModel> uploadedFile(dynamic event, String bookMid) async {
     // this method is called when user drop the file in drop area in flutter
     html.File file = event as html.File;
     final name = event.name;
@@ -92,7 +94,7 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
     logger.info('URL: $url');
 
     // update the data model with recent file uploaded
-    final droppedFile = ContentsModel.withFile(widget.parentId,
+    final droppedFile = ContentsModel.withFile(widget.parentId, bookMid,
         name: name, mime: mime, bytes: byte, url: url, file: file);
 
     //Update the UI

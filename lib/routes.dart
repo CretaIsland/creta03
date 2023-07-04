@@ -122,7 +122,13 @@ final routesLoggedOut = RouteMap(
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
     // AppRoutes.quillDemoPage: (_) =>
     //     TransitionPage(child: QuillPlayerWidget(document: ContentsModel.withFrame(parent: ''))),
+<<<<<<< HEAD
     // AppRoutes.quillDemoPage: (_) => TransitionPage(child: QuillFloatingToolBarWidget(document: ContentsModel.withFrame(parent: ''))),
+=======
+    AppRoutes.quillDemoPage: (_) => TransitionPage(
+        child:
+            QuillFloatingToolBarWidget(document: ContentsModel.withFrame(parent: '', bookMid: ''))),
+>>>>>>> f60cbecc52efbf3569a170c98efd0dd279834c6e
     AppRoutes.textFieldDemoPage: (_) => TransitionPage(child: TextFieldDemoPage()),
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
@@ -161,6 +167,7 @@ final routesLoggedOut = RouteMap(
         // print('---------------------------------------${routeData.publicPath}');
         return TransitionPage(
           child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.myPage),
+          //child: BookGridPage(key: UniqueKey(), selectedPage: SelectedPage.sharedPage),
         );
       } else {
         return const Redirect(AppRoutes.login);

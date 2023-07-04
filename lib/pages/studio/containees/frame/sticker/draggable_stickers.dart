@@ -10,6 +10,7 @@ import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
+import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
 import 'draggable_resizable.dart';
@@ -36,6 +37,7 @@ class DraggableStickers extends StatefulWidget {
   static FrameSelectNotifier? frameSelectNotifier;
 
   //List of stickers (elements)
+  final String bookMid;
   final double pageWidth;
   final double pageHeight;
   final FrameManager? frameManager;
@@ -59,6 +61,7 @@ class DraggableStickers extends StatefulWidget {
 
   const DraggableStickers({
     super.key,
+    required this.bookMid,
     required this.pageWidth,
     required this.pageHeight,
     required this.frameManager,
@@ -115,8 +118,17 @@ class _DraggableStickersState extends State<DraggableStickers> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _pageDropZone(),
-          for (final sticker in stickers) _drawEachStiker(sticker),
+          SizedBox(
+            width: widget.pageWidth,
+            height: widget.pageHeight - LayoutConst.miniMenuArea,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                _pageDropZone(widget.bookMid),
+                for (final sticker in stickers) _drawEachStiker(sticker),
+              ],
+            ),
+          ),
           _drawMiniMenu(),
         ],
       ),
@@ -137,7 +149,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       isMain: sticker.isMain,
       frameModel: frameModel,
       pageWidth: widget.pageWidth,
-      pageHeight: widget.pageHeight,
+      pageHeight: widget.pageHeight - LayoutConst.miniMenuArea,
       // Size of the sticker
       size: sticker.isText == true
           ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
@@ -279,6 +291,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     return null;
   }
 
+  // ignore: unused_element
   Widget _drawMiniMenu() {
     return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
       logger.info('_drawMiniMenu()');
@@ -471,8 +484,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //   });
   // }
 
-  Widget _pageDropZone() {
+  Widget _pageDropZone(String bookMid) {
     return DropZoneWidget(
+      bookMid: bookMid,
       parentId: '',
       onDroppedFile: (modelList) {
         //logger.info('page dropZone contents added ${model.mid}');

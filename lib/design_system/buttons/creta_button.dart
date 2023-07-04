@@ -311,7 +311,7 @@ class _CretaButtonState extends State<CretaButton> {
       },
       onTapUp: (details) {
         if (widget.useTapUp == false) {
-          logger.info("onTapUp");
+          logger.info("onTapUp...");
           setState(() {
             clicked = false;
           });

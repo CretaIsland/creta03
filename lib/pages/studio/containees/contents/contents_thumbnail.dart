@@ -27,6 +27,7 @@ class ContentsThumbnail extends StatefulWidget {
   final ContentsManager contentsManager;
   final double width;
   final double height;
+  final double applyScale;
 
   const ContentsThumbnail({
     super.key,
@@ -36,6 +37,7 @@ class ContentsThumbnail extends StatefulWidget {
     required this.contentsManager,
     required this.width,
     required this.height,
+    required this.applyScale,
   });
 
   @override
@@ -46,6 +48,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
   //ContentsManager? _contentsManager;
   //CretaPlayTimer? _playerHandler;
   ContentsEventController? _receiveEvent;
+  ContentsEventController? _receiveTextEvent;
   //ContentsEventController? _sendEvent;
 
   @override
@@ -55,6 +58,9 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
 
     final ContentsEventController receiveEvent = Get.find(tag: 'contents-property-to-main');
     _receiveEvent = receiveEvent;
+    final ContentsEventController receiveTextEvent = Get.find(tag: 'text-property-to-textplayer');
+    _receiveTextEvent = receiveTextEvent;
+    applyScale = widget.applyScale;
   }
 
   @override
@@ -85,6 +91,44 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       int contentsCount = contentsManager.getAvailLength();
 
+      if (widget.frameModel.frameType == FrameType.text) {
+        // 텍스트의 경우
+        return StreamBuilder<AbsExModel>(
+            stream: _receiveTextEvent!.eventStream.stream,
+            builder: (context, snapshot) {
+              if (snapshot.data != null && snapshot.data is ContentsModel) {
+                ContentsModel model = snapshot.data! as ContentsModel;
+                contentsManager.updateModel(model);
+                logger.fine('model updated ${model.name}, ${model.url}');
+              }
+              //logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
+
+              if (contentsCount > 0) {
+                if (widget.frameModel.frameType == FrameType.text) {
+                  // ContentsModel? model = contentsManager.getFirstModel();
+                  ContentsModel model = contentsManager.getFirstModel()!;
+                  if (model.contentsType == ContentsType.document) {
+                    return AdjustedHtmlView(
+                      htmlText: model.remoteUrl!,
+                      htmlValidator: HtmlValidator.loose(),
+                    );
+                  } else {
+                    //print('widget.applyScale: ${widget.applyScale}');
+                    return playText(
+                      context,
+                      null,
+                      model,
+                      contentsManager.getRealSize(applyScale: applyScale),
+                      isPagePreview: true,
+                    );
+                  }
+                }
+              }
+              logger.info('there is no contents');
+              return SizedBox.shrink();
+            });
+      }
+      // 텍스트가 아닌 경우.
       return StreamBuilder<AbsExModel>(
           stream: _receiveEvent!.eventStream.stream,
           builder: (context, snapshot) {
@@ -93,61 +137,26 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
               contentsManager.updateModel(model);
               logger.fine('model updated ${model.name}, ${model.url}');
             }
-            //logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
-
             if (contentsCount > 0) {
-              if (widget.frameModel.frameType == FrameType.text) {
-                // ContentsModel? model = contentsManager.getFirstModel();
-                ContentsModel model = contentsManager.getFirstModel()!;
-                if (model.contentsType == ContentsType.document) {
-                  return AdjustedHtmlView(
-                    htmlText: model.remoteUrl!,
-                    htmlValidator: HtmlValidator.loose(),
-                  );
-                } else {
-                  return playText(context, null, model, contentsManager.getRealSize(),
-                      isPagePreview: true);
-                }
-                // if (model != null) {
-                //   return playText(context, null, model, contentsManager.getRealSize(),
-                //       isPagePreview: true);
-                // }
-              } else {
-                String? thumbnailUrl = contentsManager.getThumbnail();
-                if (thumbnailUrl != null) {
-                  return Container(
-                    key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$thumbnailUrl'),
-                    width: widget.width,
-                    height: widget.height,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(thumbnailUrl),
-                    )),
-                  );
-
-                  // return CustomImage(
-                  //   key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$thumbnailUrl'),
-                  //   hasMouseOverEffect: false,
-                  //   hasAni: false,
-                  //   width: widget.width,
-                  //   height: widget.height,
-                  //   image: thumbnailUrl,
-                  // );
-
-                  // return Container(
-                  //   width: widget.width,
-                  //   height: widget.height,
-                  //   decoration: BoxDecoration(
-                  //       image:
-                  //           DecorationImage(fit: BoxFit.fill, image: NetworkImage(thumbnailUrl))),
-                  // );
-                }
+              String? thumbnailUrl = contentsManager.getThumbnail();
+              if (thumbnailUrl != null) {
+                return Container(
+                  key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$thumbnailUrl'),
+                  width: widget.width,
+                  height: widget.height,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(thumbnailUrl),
+                  )),
+                );
               }
             }
             logger.info('there is no contents');
             return SizedBox.shrink();
           });
+
+      // 텍스트가 아닌 경우
     });
   }
 }

@@ -57,13 +57,15 @@ class BookGridItemState extends State<BookGridItem> {
   int counter = 0;
   final Random random = Random();
   bool dropDownButtonOpened = false;
-
+  int defaultThumbnailNumber = 100;
   double aWidth = 0;
   double aHeight = 0;
 
   @override
   void initState() {
     super.initState();
+
+    defaultThumbnailNumber = random.nextInt(1000);
 
     _popupMenuList = [
       CretaMenuItem(
@@ -271,15 +273,6 @@ class BookGridItemState extends State<BookGridItem> {
                             icon: Icons.delete_outline,
                             onPressed: () {
                               logger.finest('delete pressed');
-                              // removeItem(widget.index).then((value) {
-                              //   if (widget.bookManager.isShort(offset: 1)) {
-                              //     widget.bookManager.reGet(AccountManager.currentLoginUser.email,
-                              //         onModelFiltered: () {
-                              //       widget.bookManager.notify();
-                              //     });
-                              //   }
-                              //   return null;
-                              // });
 
                               showDialog(
                                   context: context,
@@ -291,9 +284,10 @@ class BookGridItemState extends State<BookGridItem> {
                                         style: CretaFont.titleMedium,
                                       ),
                                       onPressedOK: () async {
-                                        logger.info('onPressedOK()');
+                                        logger.info('onPressedOK(${widget.bookModel!.name.value})');
 
-                                        removeItem(widget.index).then((value) {
+                                        _removeItem(widget.bookModel).then((value) {
+                                          if (value == null) return null;
                                           if (widget.bookManager.isShort(offset: 1)) {
                                             widget.bookManager
                                                 .reGet(AccountManager.currentLoginUser.email,
@@ -382,18 +376,21 @@ class BookGridItemState extends State<BookGridItem> {
   Widget _thumnailArea() {
     int randomNumber = random.nextInt(1000);
     int duration = widget.index == 0 ? 500 : 500 + randomNumber;
-
+    String url = widget.bookModel!.thumbnailUrl.value;
+    //logger.info('${widget.bookModel!.name.value} = <$url>');
+    if (url.isEmpty) {
+      url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
+    }
     return SizedBox(
-      width: aWidth,
-      height: aHeight - LayoutConst.bookDescriptionHeight,
-      child: CustomImage(
-          key: UniqueKey(),
-          hasMouseOverEffect: true,
-          duration: duration,
-          width: aWidth,
-          height: aHeight,
-          image: widget.bookModel!.thumbnailUrl.value),
-    );
+        width: aWidth,
+        height: aHeight - LayoutConst.bookDescriptionHeight,
+        child: CustomImage(
+            key: UniqueKey(),
+            hasMouseOverEffect: true,
+            duration: duration,
+            width: aWidth,
+            height: aHeight,
+            image: url));
   }
 
   Widget _bottomArea() {
@@ -479,10 +476,9 @@ class BookGridItemState extends State<BookGridItem> {
     widget.bookManager.insert(book);
   }
 
-  Future<BookModel?> removeItem(int index) async {
-    BookModel? removedItem = widget.bookManager.findByIndex(index) as BookModel?;
+  Future<BookModel?> _removeItem(BookModel? removedItem) async {
     if (removedItem != null) {
-      await widget.bookManager.removeChild(removedItem.mid);
+      await widget.bookManager.removeChildren(removedItem);
       removedItem.isRemoved.set(true, save: false, noUndo: true);
       await widget.bookManager.setToDB(removedItem);
       widget.bookManager.remove(removedItem);

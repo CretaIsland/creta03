@@ -1,5 +1,4 @@
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
@@ -45,7 +44,7 @@ mixin CretaBasicLayoutMixin {
     // 스크롤 위치 저장
     _scrollOffset = _bannerScrollController.offset;
     // 스크롤에 따른 배너 높이 재설정
-    if (kDebugMode) print('_scrollOffset=$_scrollOffset');
+    //if (kDebugMode) print('_scrollOffset=$_scrollOffset');
     double bannerHeight = _bannerPaneMaxHeight - _bannerScrollController.offset;
     if (bannerHeight < _bannerPaneMinHeight) bannerHeight = _bannerPaneMinHeight;
     // 스크롤 변경 콜백
@@ -246,7 +245,8 @@ mixin CretaBasicLayoutMixin {
               : Column(
                   children: [
                     // banner pane
-                    StudioVariables.displayHeight > bannerPaneRect.height + CretaComponentLocation.BarTop.height
+                    StudioVariables.displayHeight >
+                            bannerPaneRect.height + CretaComponentLocation.BarTop.height
                         ? getBannerPane(
                             width: bannerPaneRect.width,
                             height: bannerPaneRect.height,
@@ -260,7 +260,8 @@ mixin CretaBasicLayoutMixin {
                           )
                         : const SizedBox.shrink(),
                     // child pane
-                    rightPaneRect.childHeight > gridMinArea.height && rightPaneRect.childWidth > gridMinArea.width
+                    rightPaneRect.childHeight > gridMinArea.height &&
+                            rightPaneRect.childWidth > gridMinArea.width
                         ? rightPaneRect.childContainer(
                             color: Colors.white,
                             child: mainWidget(context),

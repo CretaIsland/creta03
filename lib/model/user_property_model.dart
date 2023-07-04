@@ -46,6 +46,11 @@ class UserPropertyModel extends CretaModel {
   late List<String> teams;
   late String enterprise;
 
+  late GenderType genderType;
+  late bool agreeUsingMarketing;
+  late BookType usingPurpose;
+  late int birthYear;
+
   @override
   List<Object?> get props => [
         ...super.props,
@@ -73,7 +78,11 @@ class UserPropertyModel extends CretaModel {
         latestUseFrames,
         latestUseColors,
         teams,
-        enterprise
+        enterprise,
+        genderType,
+        agreeUsingMarketing,
+        usingPurpose,
+        birthYear,
       ];
 
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
@@ -107,42 +116,50 @@ class UserPropertyModel extends CretaModel {
     latestUseColors = [];
     teams = [];
     enterprise = defaultEnterprise;
+    genderType = GenderType.none;
+    agreeUsingMarketing = false;
+    usingPurpose = BookType.none;
+    birthYear = 1950;
   }
 
-  UserPropertyModel.withName(
-      {required this.email,
-      required String pparentMid,
-      this.nickname = '',
-      this.phoneNumber = '',
-      this.cretaGrade = CretaGradeType.none,
-      this.ratePlan = RatePlanType.none,
-      this.profileImg = '',
-      this.channelBannerImg = '',
-      this.country = CountryType.none,
-      this.language = LanguageType.none,
-      this.job = JobType.none,
-      this.freeSpace = 0,
-      this.bookCount = 0,
-      this.bookViewCount = 0,
-      this.bookViewTime = 0,
-      this.likeCount = 0,
-      this.commentCount = 0,
-      this.useDigitalSignage = false,
-      this.usePushNotice = false,
-      this.useEmailNotice = false,
-      this.isPublicProfile = true,
-      this.theme = ThemeType.none,
-      this.initPage = InitPageType.none,
-      this.cookie = CookieType.none,
-      this.autoPlay = true,
-      this.mute = false,
-      this.latestBook = '',
-      this.latestUseFrames = const [],
-      this.latestUseColors = const [],
-      this.teams = const [],
-      this.enterprise = defaultEnterprise
-      })
-      : super(pmid: '', type: ExModelType.user, parent: pparentMid);
+  UserPropertyModel.withName({
+    required this.email,
+    required String parentMid,
+    this.nickname = '',
+    this.phoneNumber = '',
+    this.cretaGrade = CretaGradeType.none,
+    this.ratePlan = RatePlanType.none,
+    this.profileImg = '',
+    this.channelBannerImg = '',
+    this.country = CountryType.none,
+    this.language = LanguageType.none,
+    this.job = JobType.none,
+    this.freeSpace = 0,
+    this.bookCount = 0,
+    this.bookViewCount = 0,
+    this.bookViewTime = 0,
+    this.likeCount = 0,
+    this.commentCount = 0,
+    this.useDigitalSignage = false,
+    this.usePushNotice = false,
+    this.useEmailNotice = false,
+    this.isPublicProfile = true,
+    this.theme = ThemeType.none,
+    this.initPage = InitPageType.none,
+    this.cookie = CookieType.none,
+    this.autoPlay = true,
+    this.mute = false,
+    this.latestBook = '',
+    this.latestUseFrames = const [],
+    this.latestUseColors = const [],
+    this.teams = const [],
+    this.enterprise = defaultEnterprise,
+    this.genderType = GenderType.none,
+    this.agreeUsingMarketing = false,
+    this.usingPurpose = BookType.none,
+    this.birthYear = 1950,
+  })
+  : super(pmid: '', type: ExModelType.user, parent: parentMid);
 
   @override
   void fromMap(Map<String, dynamic> map) {
@@ -181,6 +198,10 @@ class UserPropertyModel extends CretaModel {
     //teams = List<String>.from(map['teams'] ?? "[]" as List);
     teams = CretaUtils.dynamicListToStringList(map["teams"]);
     enterprise = map['enterprise'] ?? defaultEnterprise;
+    genderType = GenderType.fromInt(map['genderType'] ?? 0);
+    agreeUsingMarketing = map['agreeUsingMarketing'] ?? false;
+    usingPurpose = BookType.fromInt(map['usingPurpose'] ?? 0);
+    birthYear = map['birthYear'] ?? 1950;
   }
 
   @override
@@ -217,7 +238,11 @@ class UserPropertyModel extends CretaModel {
         'latestUseColors': CretaUtils.colorList2String(latestUseColors),
         // 'teams' : CretaUtils.mapListToString(teams)
         'teams': teams,
-        'enterprise' : enterprise
+        'enterprise' : enterprise,
+        'genderType' : genderType.index,
+        'agreeUsingMarketing' : agreeUsingMarketing,
+        'usingPurpose' : usingPurpose,
+        'birthYear': birthYear,
       }.entries);
   }
 }

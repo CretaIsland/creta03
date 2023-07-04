@@ -181,6 +181,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     return Center(
       child: _isDropAble(widget.model)
           ? DropZoneWidget(
+              bookMid: widget.model.realTimeKey,
               parentId: '',
               onDroppedFile: (modelList) {
                 _onDropFrame(widget.model.mid, modelList);
@@ -299,6 +300,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.text) {
       return false;
     }
+
     return true;
   }
 
@@ -372,6 +374,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       Color bgColor2 = model.bgColor2.value;
       GradationType gradationType = model.gradationType.value;
       return _frameBox(model, false).asCretaGlass(
+        height: widget.height,
+        width: widget.width,
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
         opacity: opacity,

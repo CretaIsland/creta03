@@ -557,7 +557,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       pageModel: pageModel,
       pageWidth: width,
       pageHeight: height,
-      chageEventReceived: _changeEventReceived,
+      changeEventReceived: _changeEventReceived,
     );
   }
 
@@ -763,12 +763,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       offset: area.topLeft,
       size: area.size,
     ).then((value) {
-      bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
-      bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
-      logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
-      // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
-      BookMainPage.bookManagerHolder?.setToDB(bookModel);
-
+      if (value.isNotEmpty) {
+        bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
+        bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
+        logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
+        // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
+        BookMainPage.bookManagerHolder?.setToDB(bookModel);
+      }
       return null;
     });
   }

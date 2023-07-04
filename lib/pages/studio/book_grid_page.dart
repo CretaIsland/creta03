@@ -20,6 +20,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
 import '../../routes.dart';
+import '../login_page.dart';
 import 'book_grid_item.dart';
 import 'studio_constant.dart';
 
@@ -83,21 +84,34 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     if (widget.selectedPage == SelectedPage.myPage) {
       bookManagerHolder!
           .myDataOnly(
-            AccountManager.currentLoginUser.email,
-          )
-          .then((value) => bookManagerHolder!.addRealTimeListen(value.first.mid));
+        AccountManager.currentLoginUser.email,
+      )
+          .then((value) {
+        if (value.isNotEmpty) {
+          bookManagerHolder!.addRealTimeListen(value.first.mid);
+        }
+      });
     } else if (widget.selectedPage == SelectedPage.sharedPage) {
       bookManagerHolder!
           .sharedData(
-            AccountManager.currentLoginUser.email,
-          )
-          .then((value) => bookManagerHolder!.addRealTimeListen(value.first.mid));
+        AccountManager.currentLoginUser.email,
+      )
+          .then((value) {
+        if (value.isNotEmpty) {
+          bookManagerHolder!.addRealTimeListen(value.first.mid);
+        }
+      });
     } else if (widget.selectedPage == SelectedPage.teamPage) {
-      bookManagerHolder!
-          .myDataOnly(
-            'dummy',
-          )
-          .then((value) => bookManagerHolder!.addRealTimeListen(value.first.mid));
+      if (LoginPage.teamManagerHolder!.currentTeam == null) {
+        logger.warning('CurrentTeam is null}');
+      } else {
+        logger.info('CurrentTeam=${LoginPage.teamManagerHolder!.currentTeam!.name}');
+        bookManagerHolder!.teamData().then((value) {
+          if (value.isNotEmpty) {
+            bookManagerHolder!.addRealTimeListen(value.first.mid);
+          }
+        });
+      }
     }
 
     _leftMenuItemList = [
@@ -264,7 +278,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       ) {
     logger.finest('consumerFunc');
     return Consumer<BookManager>(builder: (context, bookManager, child) {
-      logger.finest('Consumer  ${bookManager.getLength() + 1}');
+      logger.info('Consumer  ${bookManager.getLength() + 1}');
       return _gridViewer(bookManager);
     });
   }
@@ -303,18 +317,21 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         return Container();
       }
 
-      BookModel? model = bookManager.findByIndex(index) as BookModel?;
-      if (model == null) {
-        logger.warning("$index th model not founded");
-        return Container();
+      if (isValidIndex(index)) {
+        BookModel? model = bookManager.findByIndex(index - 1) as BookModel?;
+        if (model == null) {
+          logger.warning("$index th model not founded");
+          return Container();
+        }
+
+        if (model.isRemoved.value == true) {
+          logger.warning('removed BookModel.name = ${model.name.value}');
+          return Container();
+        }
+        //logger.info('BookModel.name = ${model.name.value}');
       }
 
-      if (model.isRemoved.value == true) {
-        logger.warning('removed BookModel.name = ${model.name.value}');
-        return Container();
-      }
-      logger.info('BookModel.name = ${model.name.value}');
-
+      //if (isValidIndex(index)) {
       return BookGridItem(
         bookManager: bookManager,
         index: index - 1,
@@ -327,6 +344,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         height: itemHeight,
         selectedPage: widget.selectedPage,
       );
+      //}
+      //return SizedBox.shrink();
     }
 
     return Scrollbar(
@@ -344,6 +363,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           crossAxisSpacing: LayoutConst.bookThumbSpacing, //item간 수직 Padding
         ),
         itemBuilder: (BuildContext context, int index) {
+          //if (isValidIndex(index)) {
           return (itemWidth >= 0 && itemHeight >= 0)
               ? bookGridItem(index)
               : LayoutBuilder(
@@ -354,6 +374,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
                     return bookGridItem(index);
                   },
                 );
+          //}
+          //return SizedBox.shrink();
         },
       ),
     );

@@ -2,6 +2,7 @@
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:provider/provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
@@ -28,6 +29,7 @@ class FrameThumbnail extends StatefulWidget {
   final double width;
   final double height;
   final bool isThumbnail;
+  final void Function(String pageMid) chageEventReceived;
   const FrameThumbnail({
     super.key,
     required this.frameManager,
@@ -36,6 +38,7 @@ class FrameThumbnail extends StatefulWidget {
     required this.applyScale,
     required this.width,
     required this.height,
+    required this.chageEventReceived,
     this.isThumbnail = false,
   });
 
@@ -191,6 +194,8 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       Color bgColor2 = model.bgColor2.value;
       GradationType gradationType = model.gradationType.value;
       return _frameBox(model, false).asCretaGlass(
+        width: widget.width,
+        height: widget.height,
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
         opacity: opacity,
@@ -218,6 +223,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
           contentsManager: _contentsManager!,
           width: widget.width,
           height: widget.height,
+          applyScale: applyScale,
         ),
         // child: Image.asset(
         //   'assets/creta_default.png',

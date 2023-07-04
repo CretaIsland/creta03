@@ -9,7 +9,8 @@ import '../model/contents_model.dart';
 import '../model/link_model.dart';
 
 class LinkManager extends CretaManager {
-  LinkManager(String contentsMid) : super('creta_link', contentsMid) {
+  final String bookMid;
+  LinkManager(String contentsMid, this.bookMid) : super('creta_link', contentsMid) {
     saveManagerHolder?.registerManager('link', this, postfix: contentsMid);
   }
 
@@ -21,7 +22,7 @@ class LinkManager extends CretaManager {
   }
 
   @override
-  AbsExModel newModel(String mid) => LinkModel(mid);
+  AbsExModel newModel(String mid) => LinkModel(mid, bookMid);
 
   Future<int> getLink({required String contentsId}) async {
     startTransaction();
@@ -50,7 +51,7 @@ class LinkManager extends CretaManager {
     required void Function(bool, ContentsModel, Offset) onComplete,
   }) async {
     logger.info('createNext()');
-    LinkModel link = LinkModel('');
+    LinkModel link = LinkModel('', contentsModel.realTimeKey);
     link.parentMid.set(contentsModel.mid, save: false, noUndo: true);
     link.posX = posX;
     link.posY = posY;

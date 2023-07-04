@@ -69,8 +69,8 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
     ];
   }
 
-  Future<ContentsModel> _quillContent(String frameMid) async {
-    ContentsModel retval = ContentsModel.withFrame(parent: frameMid);
+  Future<ContentsModel> _quillContent(String frameMid, String bookMid) async {
+    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
 
     retval.contentsType = ContentsType.document;
 
@@ -99,7 +99,7 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
       bgColor1: Colors.white,
       type: FrameType.text,
     );
-    ContentsModel model = await _quillContent(frameModel.mid);
+    ContentsModel model = await _quillContent(frameModel.mid, frameModel.realTimeKey);
 
     await createNewFrameAndContents(
       [model],

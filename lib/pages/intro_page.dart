@@ -20,7 +20,7 @@ class _IntroPageState extends State<IntroPage> {
       context: context,
       child: Center(
         child: Text(
-          "Version 0.0.5",
+          "Version 0.1.2 (hycop 0.2.9)",
           style: CretaFont.headlineLarge,
         ),
       ),

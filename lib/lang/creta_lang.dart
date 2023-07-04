@@ -28,6 +28,13 @@ class CretaLang {
     "뷰  어",
   ];
 
+  static const List<String> accountMenu = [
+    "마이페이지",
+    "팀전환",
+    "로그아웃",
+    "도움말",
+  ];
+
   static const String makeCopy = '사본 만들기';
   static const String newBook = '새 크레타북';
   static const String open = '목록으로 돌아가기';

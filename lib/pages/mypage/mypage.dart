@@ -184,7 +184,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             width: rightPaneRect.childWidth,
             height: rightPaneRect.childHeight + LayoutConst.cretaBannerMinHeight,
             child: CretaModelSnippet.waitData(
-                consumerFunc: rightArea, manager: LoginPage.teamManagerHolder!))
+                consumerFunc: rightArea, manager: LoginPage.enterpriseHolder!))
       ],
     );
     _alreadyDataGet = true;
@@ -204,9 +204,12 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
       child: Snippet.CretaScaffoldOfMyPage(
           title: Container(
             padding: const EdgeInsets.only(left: 24),
-            child: const Image(
-              image: AssetImage("assets/creta_logo_blue.png"),
-              height: 20,
+            child: InkWell(
+              onTap: () => Routemaster.of(context).push(AppRoutes.communityHome),
+              child: const Image(
+                image: AssetImage("assets/creta_logo_blue.png"),
+                height: 20,
+              ),
             ),
           ),
           context: context,

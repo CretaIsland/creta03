@@ -98,6 +98,7 @@ class BookModel extends CretaModel with BookMixin {
     filter = UndoAble<String>('', mid, 'filter');
     super.initMixin(mid);
     parentMid.set(mid, noUndo: true, save: false);
+    setRealTimeKey(mid);
   }
 
   BookModel.withName(
@@ -148,7 +149,7 @@ class BookModel extends CretaModel with BookMixin {
     }
     super.makeSampleMixin(mid);
     parentMid.set(mid, noUndo: true, save: false);
-
+    setRealTimeKey(mid);
     logger.finest('owners=${owners.toString()}');
   }
   @override
@@ -246,7 +247,7 @@ class BookModel extends CretaModel with BookMixin {
     }
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
-    //shares = CretaUtils.jsonStringToList((map["shares"] ?? ''));  //DB 에서 읽어오지 않는다.
+    shares = _getShares(owners, writers, readers);
     publishMid = map["publishMid"] ?? '';
     sourceMid = map["sourceMid"] ?? '';
     //hashtags = map["hashtags"] ?? [];
@@ -259,6 +260,7 @@ class BookModel extends CretaModel with BookMixin {
     likeCount = (map["likeCount"] ?? 0);
 
     super.fromMapMixin(map);
+    setRealTimeKey(mid);
   }
 
   @override
@@ -328,13 +330,19 @@ class BookModel extends CretaModel with BookMixin {
       List<String> ownerList, List<String> writerList, List<String> readerList) {
     List<String> valueList = [];
     for (var val in ownerList) {
-      valueList.add('<${PermissionType.owner.name}>$val');
+      String name = '<${PermissionType.owner.name}>$val';
+      if (valueList.contains(name) == true) continue;
+      valueList.add(name);
     }
     for (var val in writerList) {
-      valueList.add('<${PermissionType.writer.name}>$val');
+      String name = '<${PermissionType.writer.name}>$val';
+      if (valueList.contains(name) == true) continue;
+      valueList.add(name);
     }
     for (var val in readerList) {
-      valueList.add('<${PermissionType.reader.name}>$val');
+      String name = '<${PermissionType.reader.name}>$val';
+      if (valueList.contains(name) == true) continue;
+      valueList.add(name);
     }
     return valueList;
   }

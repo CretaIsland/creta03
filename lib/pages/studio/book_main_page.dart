@@ -9,6 +9,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
+import 'package:hycop/hycop/hycop_factory.dart';
+import 'package:hycop/hycop/socket/mouse_tracer.dart';
+import 'package:hycop/hycop/socket/socket_client.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -68,6 +71,8 @@ class BookMainPage extends StatefulWidget {
   static ClickEventHandler clickEventHandler = ClickEventHandler();
 
   static bool thumbnailChanged = false;
+  static double pageWidth = 0;
+  static double pageHeight = 0;
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
@@ -95,8 +100,8 @@ class _BookMainPageState extends State<BookMainPage> {
   //ScrollController? horizontalScroll;
   //ScrollController? verticalScroll;
 
-  double pageWidth = 0;
-  double pageHeight = 0;
+  // double pageWidth = 0;
+  // double pageHeight = 0;
   double heightWidthRatio = 0;
   double widthRatio = 0;
   double heightRatio = 0;
@@ -110,7 +115,14 @@ class _BookMainPageState extends State<BookMainPage> {
 
   bool dropDownButtonOpened = false;
 
-  Timer? _connectedUserTimer;
+  // for socket
+  SocketClient client = SocketClient();
+  List<Color> userColorList = [Colors.red, Colors.blue, Colors.green, Colors.yellow, Colors.purple];
+  late double screenWidthPercentage;
+  late double screenHeightPrecentage;
+  late double screenWidth;
+
+  //Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
   //AutoPlayChangeEventController? _autoPlaySendEvent;
@@ -119,6 +131,7 @@ class _BookMainPageState extends State<BookMainPage> {
   void initState() {
     super.initState();
     logger.info("---_BookMainPageState-----------------------------------------");
+
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
     // final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
@@ -194,6 +207,26 @@ class _BookMainPageState extends State<BookMainPage> {
 
     BookMainPage.clickReceiverHandler.init();
     mychangeStack.clear();
+
+    mouseTracerHolder = MouseTracer();
+    client.initialize(LoginPage.enterpriseHolder!.enterpriseModel!.socketUrl);
+    client.connectServer(BookMainPage.selectedMid);
+
+    mouseTracerHolder!.addListener(() {
+      switch (mouseTracerHolder!.methodFlag) {
+        case 'joinUser':
+          BookMainPage.connectedUserHolder!.connectNoti(BookMainPage.selectedMid,
+              mouseTracerHolder!.targetUserName, mouseTracerHolder!.targetUserEmail);
+          break;
+        case 'leaveUser':
+          BookMainPage.connectedUserHolder!.disconnectNoti(BookMainPage.selectedMid,
+              mouseTracerHolder!.targetUserName, mouseTracerHolder!.targetUserEmail);
+          break;
+        default:
+          break;
+      }
+    });
+
     logger.info("end ---_BookMainPageState-----------------------------------------");
 
     afterBuild();
@@ -205,7 +238,7 @@ class _BookMainPageState extends State<BookMainPage> {
       while (_onceDBGetComplete == false) {
         await Future.delayed(Duration(seconds: 1));
       }
-      _startConnectedUserTimer();
+      //_startConnectedUserTimer();
 
       if (StudioVariables.isPreview) {
         //_takeAScreenShot();
@@ -248,6 +281,9 @@ class _BookMainPageState extends State<BookMainPage> {
       StudioVariables.isMute = LoginPage.userPropertyManagerHolder!.getMute();
       StudioVariables.isAutoPlay = LoginPage.userPropertyManagerHolder!.getAutoPlay();
     }
+
+    HycopFactory.realtime!.startTemp(model.mid);
+    HycopFactory.realtime!.setPrefix('creta');
   }
 
   //   Future<int> _getPolygonFrameTemplates() async {
@@ -300,7 +336,7 @@ class _BookMainPageState extends State<BookMainPage> {
   void dispose() {
     logger.severe('BookMainPage.dispose');
 
-    _stopConnectedUserTimer();
+    //_stopConnectedUserTimer();
 
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
@@ -314,11 +350,21 @@ class _BookMainPageState extends State<BookMainPage> {
     // controller.dispose();
     //verticalScroll?.dispose();
     //horizontalScroll?.dispose();
+
+    HycopFactory.realtime!.stop();
+    client.disconnect();
+    mouseTracerHolder!.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    screenWidthPercentage = MediaQuery.of(context).size.width * 0.01;
+    screenHeightPrecentage = MediaQuery.of(context).size.height * 0.01;
+    screenWidth = MediaQuery.of(context).size.width;
+    DateTime lastEventTime = DateTime.now();
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ContaineeNotifier>.value(
@@ -343,15 +389,74 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<ConnectedUserManager>.value(
           value: BookMainPage.connectedUserHolder!,
         ),
+        ChangeNotifierProvider<MouseTracer>.value(value: mouseTracerHolder!)
       ],
       child: StudioVariables.isPreview
           ? Scaffold(body: _waitBook())
           : Snippet.CretaScaffold(
               title: Snippet.logo('studio'),
               context: context,
-              child: _waitBook(),
+              child: Stack(
+                children: [
+                  MouseRegion(
+                    onHover: (pointerEvent) {
+                      if (StudioVariables.allowMutilUser == true) {
+                        if (lastEventTime
+                            .add(Duration(milliseconds: 100))
+                            .isBefore(DateTime.now())) {
+                          client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
+                              (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+                          lastEventTime = DateTime.now();
+                        }
+                      }
+                    },
+                    child: _waitBook(),
+                  ),
+                  if (StudioVariables.allowMutilUser == true) mouseArea()
+                ],
+              ),
             ),
     );
+  }
+
+  Widget mouseArea() {
+    return IgnorePointer(
+      child: Consumer<MouseTracer>(builder: (context, mouseTracerManager, child) {
+        return Stack(
+          children: [
+            for (int i = 1; i < mouseTracerHolder!.mouseModelList.length; i++)
+              cursorWidget(i, mouseTracerHolder!)
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget cursorWidget(int index, MouseTracer mouseTracer) {
+    int userColorLen = userColorList.length;
+    Color mouseColor = userColorLen == 0
+        ? CretaColor.primary
+        : userColorList[index < userColorLen ? index : (index % userColorLen)];
+    return Positioned(
+        left: mouseTracer.mouseModelList[index].cursorX * screenWidthPercentage,
+        top: mouseTracer.mouseModelList[index].cursorY * screenHeightPrecentage,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(
+            Icons.pan_tool_alt,
+            size: 30,
+            color: mouseColor,
+          ),
+          index == 0
+              ? Container()
+              : Container(
+                  width: mouseTracer.mouseModelList[index].userName.length * 10,
+                  height: 20,
+                  decoration:
+                      BoxDecoration(color: mouseColor, borderRadius: BorderRadius.circular(20)),
+                  child: Text(mouseTracer.mouseModelList[index].userName,
+                      style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
+                )
+        ]));
   }
 
   // Widget _waitBook() {
@@ -512,15 +617,15 @@ class _BookMainPageState extends State<BookMainPage> {
     heightWidthRatio = _bookModel.height.value / _bookModel.width.value;
 
     if (widthRatio < heightRatio) {
-      pageWidth = StudioVariables.availWidth;
-      pageHeight = pageWidth * heightWidthRatio;
+      BookMainPage.pageWidth = StudioVariables.availWidth;
+      BookMainPage.pageHeight = BookMainPage.pageWidth * heightWidthRatio;
       if (StudioVariables.autoScale == true) {
         StudioVariables.fitScale = widthRatio; // 화면에 꽉찾을때의 최적의 값
         StudioVariables.scale = widthRatio;
       }
     } else {
-      pageHeight = StudioVariables.availHeight;
-      pageWidth = pageHeight / heightWidthRatio;
+      BookMainPage.pageHeight = StudioVariables.availHeight;
+      BookMainPage.pageWidth = BookMainPage.pageHeight / heightWidthRatio;
       if (StudioVariables.autoScale == true) {
         StudioVariables.fitScale = heightRatio; // 화면에 꽉찾을때의 최적의 값
         StudioVariables.scale = heightRatio;
@@ -853,7 +958,11 @@ class _BookMainPageState extends State<BookMainPage> {
           //VerticalDivider(),
           BTN.floating_l(
             icon: Icons.person_add_outlined,
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                StudioVariables.allowMutilUser = !StudioVariables.allowMutilUser;
+              });
+            },
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipInvite,
           ),
@@ -1099,8 +1208,8 @@ class _BookMainPageState extends State<BookMainPage> {
       pageKey: GlobalObjectKey('PageKey${pageModel.mid}'),
       bookModel: _bookModel,
       pageModel: pageModel,
-      pageWidth: pageWidth,
-      pageHeight: pageHeight,
+      pageWidth: BookMainPage.pageWidth,
+      pageHeight: BookMainPage.pageHeight + LayoutConst.miniMenuArea,
     );
   }
 
@@ -1141,38 +1250,38 @@ class _BookMainPageState extends State<BookMainPage> {
     // });
   }
 
-  void _startConnectedUserTimer() {
-    // print('_startConnectedUserTimer----------------------------------');
-    if (BookMainPage.connectedUserHolder != null) {
-      BookMainPage.connectedUserHolder!.getConnectedUser();
-      BookMainPage.connectedUserHolder!.notify();
-    }
-    _connectedUserTimer ??=
-        Timer.periodic(Duration(seconds: ConnectedUserManager.monitorPerid), (t) {
-      //print('_startConnectedUserTimer----------------------------------');
-      if (BookMainPage.connectedUserHolder != null &&
-          LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
-        String myName = LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname;
-        ConnectedUserModel? model = BookMainPage.connectedUserHolder!.aleadyCreated(myName);
-        if (model != null) {
-          model.imageUrl = LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg;
-          model.setUpdateTime();
-          model.isRemoved.set(false, save: false, noUndo: true);
-          BookMainPage.connectedUserHolder?.update(connectedUser: model, doNotify: false);
-          // print('update user ${model.name}---${model.mid}-------------------------------');
-        } else {
-          //print(
-          //    'create user ${LoginPage.userPropertyManagerHolder!.userModel.name}----------------------------------');
-          BookMainPage.connectedUserHolder?.createNext(
-              user: LoginPage.userPropertyManagerHolder!.userPropertyModel!, doNotify: false);
-        }
-        BookMainPage.connectedUserHolder!.removeOld(myName);
-      }
-    });
-  }
+  // void _startConnectedUserTimer() async {
+  //   // print('_startConnectedUserTimer----------------------------------');
+  //   if (BookMainPage.connectedUserHolder != null) {
+  //     await BookMainPage.connectedUserHolder!.getConnectedUser();
+  //     BookMainPage.connectedUserHolder!.notify();
+  //   }
+  //   _connectedUserTimer ??=
+  //       Timer.periodic(Duration(seconds: ConnectedUserManager.monitorPerid), (t) {
+  //     //print('_startConnectedUserTimer----------------------------------');
+  //     if (BookMainPage.connectedUserHolder != null &&
+  //         LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
+  //       String myName = LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname;
+  //       ConnectedUserModel? model = BookMainPage.connectedUserHolder!.aleadyCreated(myName);
+  //       if (model != null) {
+  //         model.imageUrl = LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg;
+  //         model.setUpdateTime();
+  //         model.isRemoved.set(false, save: false, noUndo: true);
+  //         BookMainPage.connectedUserHolder?.update(connectedUser: model, doNotify: false);
+  //         // print('update user ${model.name}---${model.mid}-------------------------------');
+  //       } else {
+  //         //print(
+  //         //    'create user ${LoginPage.userPropertyManagerHolder!.userModel.name}----------------------------------');
+  //         BookMainPage.connectedUserHolder?.createNext(
+  //             user: LoginPage.userPropertyManagerHolder!.userPropertyModel!, doNotify: false);
+  //       }
+  //       BookMainPage.connectedUserHolder!.removeOld(myName);
+  //     }
+  //   });
+  // }
 
-  void _stopConnectedUserTimer() {
-    _connectedUserTimer?.cancel();
-    _connectedUserTimer = null;
-  }
+  // void _stopConnectedUserTimer() {
+  //   _connectedUserTimer?.cancel();
+  //   _connectedUserTimer = null;
+  // }
 }

@@ -9,17 +9,22 @@ import 'dart:js_interop';
 external dynamic jsScreenshot(double x, double y, double width, double height);
 
 class WindowScreenshot {
-
   // return screenshot image url
-  static Future<String> uploadScreenshot({required String bookId, Offset offset = Offset.zero, Size size = const Size(210, 150)}) async {
+  static Future<String> uploadScreenshot(
+      {required String bookId,
+      Offset offset = Offset.zero,
+      Size size = const Size(210, 150)}) async {
     try {
-      dynamic screenshot = await promiseToFuture(jsScreenshot(offset.dx, offset.dy, size.width, size.height));
+      dynamic screenshot =
+          await promiseToFuture(jsScreenshot(offset.dx, offset.dy, size.width, size.height));
       if (screenshot != null) {
         UriData screenshotBytes = Uri.parse(screenshot).data!;
-        FileModel? result = await HycopFactory.storage!.uploadFile('${bookId}_thumbnail.png', screenshotBytes.mimeType, screenshotBytes.contentAsBytes(), makeThumbnail: false);
+        FileModel? result = await HycopFactory.storage!.uploadFile(
+            '${bookId}_thumbnail.png', screenshotBytes.mimeType, screenshotBytes.contentAsBytes(),
+            makeThumbnail: false);
         if (result != null) {
           return result.fileView;
-        } 
+        }
       }
     } catch (error) {
       return '';
@@ -28,9 +33,13 @@ class WindowScreenshot {
   }
 
   // return screenshot image bytes
-  static Future<Uint8List?> getScreenshotBytes({required String bookId, Offset offset = Offset.zero, Size size = const Size(210, 150)}) async {
+  static Future<Uint8List?> getScreenshotBytes(
+      {required String bookId,
+      Offset offset = Offset.zero,
+      Size size = const Size(210, 150)}) async {
     try {
-      dynamic screenshot = await promiseToFuture(jsScreenshot(offset.dx, offset.dy, size.width, size.height));
+      dynamic screenshot =
+          await promiseToFuture(jsScreenshot(offset.dx, offset.dy, size.width, size.height));
       if (screenshot != null) {
         return Uri.parse(screenshot).data!.contentAsBytes();
       }
@@ -39,6 +48,4 @@ class WindowScreenshot {
     }
     return null;
   }
-
-
 }

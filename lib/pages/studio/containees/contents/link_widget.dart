@@ -23,7 +23,6 @@ import '../../book_preview_menu.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../frame/on_link_cursor.dart';
-import '../frame/sticker/draggable_stickers.dart';
 import 'play_buttons.dart';
 
 class LinkWidget extends StatefulWidget {
@@ -137,10 +136,10 @@ class _LinkWidgetState extends State<LinkWidget> {
                           frameModel: widget.frameModel,
                           playTimer: widget.playTimer,
                         ),
-                      if (_isHover &&
-                          LinkParams.isLinkNewMode == false &&
-                          widget.contentsModel.isLinkEditMode == false)
-                        _drawOrder(hasContents),
+                      // if (DraggableStickers.isFrontBackHover &&
+                      //     LinkParams.isLinkNewMode == false &&
+                      //     widget.contentsModel.isLinkEditMode == false)
+                      //   _drawOrder(hasContents),
                       if (_showLinkCursor(hasContents))
                         OnLinkCursor(
                           key: GlobalObjectKey('OnLinkCursor${widget.frameModel.mid}'),
@@ -459,28 +458,31 @@ class _LinkWidgetState extends State<LinkWidget> {
     if (widget.contentsModel.contentsType == ContentsType.text) {
       return false;
     }
+    if (widget.contentsModel.contentsType == ContentsType.pdf) {
+      return false;
+    }
     return true;
   }
 
-  Widget _drawOrder(bool hasContents) {
-    if (_isHover && !hasContents) {
-      return Text(
-        '${widget.contentsModel.order.value}',
-        style: CretaFont.titleELarge.copyWith(color: Colors.black),
-      );
-    }
-    if (DraggableStickers.isFrontBackHover) {
-      return Text(
-        '${widget.contentsModel.order.value} : $hasContents',
-        style: CretaFont.titleELarge.copyWith(color: Colors.white),
-      );
-    }
-    if (DraggableStickers.isFrontBackHover) {
-      return Text(
-        '${widget.contentsModel.order.value} : $hasContents',
-        style: CretaFont.titleLarge,
-      );
-    }
-    return const SizedBox.shrink();
-  }
+  // Widget _drawOrder(bool hasContents) {
+  //   if (_isHover && !hasContents) {
+  //     return Text(
+  //       '${widget.contentsModel.order.value}',
+  //       style: CretaFont.titleELarge.copyWith(color: Colors.black),
+  //     );
+  //   }
+  //   if (DraggableStickers.isFrontBackHover) {
+  //     return Text(
+  //       '${widget.contentsModel.order.value} : $hasContents',
+  //       style: CretaFont.titleELarge.copyWith(color: Colors.white),
+  //     );
+  //   }
+  //   if (DraggableStickers.isFrontBackHover) {
+  //     return Text(
+  //       '${widget.contentsModel.order.value} : $hasContents',
+  //       style: CretaFont.titleLarge,
+  //     );
+  //   }
+  //   return const SizedBox.shrink();
+  // }
 }

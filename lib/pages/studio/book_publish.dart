@@ -535,8 +535,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       UserPropertyModel? user = await LoginPage.userPropertyManagerHolder!.emailToModel(email);
       if (user != null) {
         setState(() {
-          widget.model!.readers.add(email);
-          widget.model!.save();
+          _addReaders(email);
           userModelList.add(user);
           _resetList();
         });
@@ -551,8 +550,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     TeamModel? team = await LoginPage.teamManagerHolder!.findTeamModelByName(email, 'creta');
     if (team != null) {
       setState(() {
-        widget.model!.readers.add(team.mid);
-        widget.model!.save();
+        _addReaders(team.mid);
         userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(team));
         _resetList();
       });
@@ -583,8 +581,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                   if (user == null) {
                     //아직 전체가 없을 때만 넣는다.
                     setState(() {
-                      widget.model!.readers.add('public');
-                      widget.model!.save();
+                      _addReaders('public');
                       userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
                       _resetList();
                     });
@@ -608,13 +605,42 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           textWidth: 90,
           onPressed: () {
             setState(() {
-              widget.model!.readers.add(e.mid);
-              widget.model!.save();
+              _addReaders(e.mid);
               userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
               _resetList();
             });
           });
     }).toList();
+  }
+
+  bool _addReaders(String id) {
+    if (widget.model!.owners.contains(id) == false) {
+      widget.model!.readers.add(id);
+    }
+    widget.model!.owners.remove(id);
+    widget.model!.writers.remove(id);
+    widget.model!.save();
+    return true;
+  }
+
+  bool _addWriters(String id) {
+    if (widget.model!.writers.contains(id) == false) {
+      widget.model!.writers.add(id);
+    }
+    widget.model!.owners.remove(id);
+    widget.model!.readers.remove(id);
+    widget.model!.save();
+    return true;
+  }
+
+  bool _addOwners(String id) {
+    if (widget.model!.owners.contains(id) == false) {
+      widget.model!.owners.add(id);
+    }
+    widget.model!.writers.remove(id);
+    widget.model!.readers.remove(id);
+    widget.model!.save();
+    return true;
   }
 
   List<Widget> _publishTo() {
@@ -689,20 +715,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                                   defaultValue: permitionList[index],
                                   onChanged: (val) {
                                     if (val == PermissionType.owner) {
-                                      widget.model!.owners.add(email);
-                                      widget.model!.writers.remove(email);
-                                      widget.model!.readers.remove(email);
+                                      _addOwners(email);
                                     } else if (val == PermissionType.writer) {
-                                      widget.model!.owners.remove(email);
-                                      widget.model!.writers.add(email);
-                                      widget.model!.readers.remove(email);
+                                      _addWriters(email);
                                     } else if (val == PermissionType.reader) {
-                                      widget.model!.owners.remove(email);
-                                      widget.model!.writers.remove(email);
-                                      widget.model!.readers.add(email);
+                                      _addReaders(email);
                                     }
                                     setState(() {
-                                      widget.model!.save();
+                                      //widget.model!.save();
                                       _resetList();
                                     });
                                   })),

@@ -12,6 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
+import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
@@ -25,14 +26,13 @@ import '../menu/creta_popup_menu.dart';
 // get widgets Global Size and Position
 extension GlobalKeyExtension on GlobalKey {
   Rect? get globalPaintBounds {
+    if (currentContext == null) return null;
     final renderObject = currentContext?.findRenderObject();
-    final translation = renderObject?.getTransformTo(null).getTranslation();
-    if (translation != null && renderObject?.paintBounds != null) {
-      final offset = Offset(translation.x, translation.y);
-      return renderObject!.paintBounds.shift(offset);
-    } else {
-      return null;
-    }
+    if (renderObject == null) return null;
+    final translation = renderObject.getTransformTo(null).getTranslation();
+
+    final offset = Offset(translation.x, translation.y);
+    return renderObject.paintBounds.shift(offset);
   }
 }
 
@@ -183,6 +183,8 @@ class Snippet {
               text: AccountManager.currentLoginUser.name,
               icon: Icons.arrow_drop_down_outlined,
               image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+              //image:
+              //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
               onPressed: () {},
             ),
           ),
@@ -288,21 +290,23 @@ class Snippet {
       xOffset: -60,
       popupMenu: [
         CretaMenuItem(
-          caption: '마이페이지',
+          caption: CretaLang.accountMenu[0], // 마이페이지
+          onPressed: () {
+            Routemaster.of(context).push(AppRoutes.myPageDashBoard);
+          },
+        ),
+        CretaMenuItem(
+          caption: CretaLang.accountMenu[1], // 팀전환
           onPressed: () {},
         ),
         CretaMenuItem(
-          caption: '조직전환',
-          onPressed: () {},
-        ),
-        CretaMenuItem(
-          caption: '로그아웃',
+          caption: CretaLang.accountMenu[2], // 로그아웃
           onPressed: () {
             LoginPage.logout().then((value) => Routemaster.of(context).push(AppRoutes.login));
           },
         ),
         CretaMenuItem(
-          caption: '도움말',
+          caption: CretaLang.accountMenu[3], //도움말
           onPressed: () {},
         ),
       ],
@@ -323,46 +327,51 @@ class Snippet {
         ),
         SizedBox(width: 15),
         (!AccountManager.currentLoginUser.isLoginedUser)
-          ? SizedBox.shrink()
-          : Center(
-            child: SizedBox(
-              height: 36,
-              child: BTN.fill_blue_i_l(
-                tooltip: CretaStudioLang.tooltipNoti,
-                onPressed: () {},
-                icon: Icons.notifications_outlined,
+            ? SizedBox.shrink()
+            : Center(
+                child: SizedBox(
+                  height: 36,
+                  child: BTN.fill_blue_i_l(
+                    tooltip: CretaStudioLang.tooltipNoti,
+                    onPressed: () {},
+                    icon: Icons.notifications_outlined,
+                  ),
+                ),
               ),
-            ),
-          ),
         SizedBox(
           width: 10,
         ),
         (!AccountManager.currentLoginUser.isLoginedUser)
-          ? SizedBox.shrink()
-          : Center(
-            child: SizedBox(
-              height: 40,
-              // child: BTN.fill_gray_wti_l(
-              //   buttonColor: CretaButtonColor.blue,
-              //   text: AccountManager.currentLoginUser.name,
-              //   icon: Icons.arrow_drop_down_outlined,
-              //   leftWidget: LoginPage.userPropertyManagerHolder!.profileImageBox(
-              //     radius: 28,
-              //   ),
-              //   onPressed: () {},
-              // ),
-              child: BTN.fill_gray_iti_l(
-                key: GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'),
-                buttonColor: CretaButtonColor.blue,
-                text: AccountManager.currentLoginUser.name,
-                icon: Icons.arrow_drop_down_outlined,
-                image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                onPressed: () {
-                  _popupAccountMenu(GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
-                },
+            ? SizedBox.shrink()
+            : Center(
+                child: SizedBox(
+                  height: 40,
+                  // child: BTN.fill_gray_wti_l(
+                  //   buttonColor: CretaButtonColor.blue,
+                  //   text: AccountManager.currentLoginUser.name,
+                  //   icon: Icons.arrow_drop_down_outlined,
+                  //   leftWidget: LoginPage.userPropertyManagerHolder!.profileImageBox(
+                  //     radius: 28,
+                  //   ),
+                  //   onPressed: () {},
+                  // ),
+                  child: BTN.fill_gray_iti_l(
+                    key: GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'),
+                    buttonColor: CretaButtonColor.blue,
+                    //text: AccountManager.currentLoginUser.name,
+                    text: LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname,
+                    icon: Icons.arrow_drop_down_outlined,
+                    // image: NetworkImage(
+                    //     'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                    image: NetworkImage(
+                        LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+                    onPressed: () {
+                      _popupAccountMenu(
+                          GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
+                    },
+                  ),
+                ),
               ),
-            ),
-          ),
         SizedBox(
           width: 20,
         ),
@@ -413,7 +422,8 @@ class Snippet {
                   image:
                       NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                   onPressed: () {
-                    _popupAccountMenu(GlobalObjectKey('MyCretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
+                    _popupAccountMenu(
+                        GlobalObjectKey('MyCretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
                   },
                 ),
               ),

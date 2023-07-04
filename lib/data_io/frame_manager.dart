@@ -54,7 +54,7 @@ class FrameManager extends CretaManager {
   }
 
   @override
-  AbsExModel newModel(String mid) => FrameModel(mid);
+  AbsExModel newModel(String mid) => FrameModel(mid, bookModel.mid);
 
   @override
   CretaModel cloneModel(CretaModel src) {
@@ -71,7 +71,7 @@ class FrameManager extends CretaManager {
       Color? bgColor1,
       FrameType? type}) async {
     logger.info('createNextFrame()');
-    FrameModel defaultFrame = FrameModel.makeSample(safeLastOrder() + 1, pageModel.mid);
+    FrameModel defaultFrame = FrameModel.makeSample(safeLastOrder() + 1, pageModel.mid, bookModel);
     defaultFrame.width.set(size.width, save: false, noUndo: true);
     defaultFrame.height.set(size.height, save: false, noUndo: true);
     if (pos != null) {
@@ -133,7 +133,7 @@ class FrameManager extends CretaManager {
   Future<FrameModel> copyFrame(FrameModel src) async {
     //print('copyFrame**************--------------------------');
 
-    FrameModel newModel = FrameModel('');
+    FrameModel newModel = FrameModel('', bookModel.mid);
     newModel.copyFrom(src, newMid: newModel.mid);
 
     newModel.posX.set(src.posX.value + 20, save: false, noUndo: true);

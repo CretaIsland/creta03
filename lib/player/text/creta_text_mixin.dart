@@ -19,6 +19,8 @@ import '../../pages/studio/studio_variables.dart';
 import 'creta_text_player.dart';
 
 mixin CretaTextMixin {
+  double applyScale = 1;
+
   Widget playText(BuildContext context, CretaTextPlayer? player, ContentsModel model, Size realSize,
       {bool isPagePreview = false}) {
     if (StudioVariables.isAutoPlay) {
@@ -43,7 +45,7 @@ mixin CretaTextMixin {
     logger.fine("uri=<$uri>");
     player?.buttonIdle();
 
-    double fontSize = model.fontSize.value * StudioVariables.applyScale;
+    double fontSize = model.fontSize.value * applyScale;
 
     if (model.isAutoSize.value == true &&
         (model.aniType.value != TextAniType.rotate ||
@@ -53,8 +55,10 @@ mixin CretaTextMixin {
             model.aniType.value != TextAniType.typewriter ||
             model.aniType.value != TextAniType.wavy ||
             model.aniType.value != TextAniType.fidget)) {
-      fontSize = StudioConst.maxFontSize * StudioVariables.applyScale;
+      fontSize = StudioConst.maxFontSize * applyScale;
     }
+    //fontSize = fontSize.roundToDouble();
+    if (fontSize == 0) fontSize = 1;
 
     FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
 
@@ -83,10 +87,12 @@ mixin CretaTextMixin {
       );
     }
 
+    //print('isPagePreview=$isPagePreview, fontSize=$fontSize, shrinkRatio=$shrinkRatio');
+
     return Container(
       color: Colors.transparent,
-      padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
-          realSize.width * 0.05, realSize.height * 0.05),
+      padding: EdgeInsets.fromLTRB(realSize.width * 0.025, realSize.height * 0.05,
+          realSize.width * 0.025, realSize.height * 0.05),
       alignment: AlignmentDirectional.center,
       width: realSize.width,
       height: realSize.height,
@@ -100,12 +106,13 @@ mixin CretaTextMixin {
 
     TextStyle? shadowStyle;
     if (model!.shadowBlur.value > 0) {
+      double blur = model.shadowBlur.value * applyScale;
       //logHolder.log('model!.shadowBlur.value=${model!.shadowBlur.value}', level: 6);
       shadowStyle = style.copyWith(shadows: [
         Shadow(
             color: model.shadowColor.value.withOpacity(model.shadowIntensity.value),
-            offset: Offset(model.shadowBlur.value * 0.75, model.shadowBlur.value * 0.75),
-            blurRadius: model.shadowBlur.value),
+            offset: Offset(blur * 0.75, blur * 0.75),
+            blurRadius: blur),
       ]);
     }
 
@@ -120,7 +127,7 @@ mixin CretaTextMixin {
     return style.copyWith(
       foreground: Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = model!.outLineWidth.value
+        ..strokeWidth = model!.outLineWidth.value * applyScale
         ..color = model.outLineColor.value,
     );
   }
@@ -136,8 +143,16 @@ mixin CretaTextMixin {
         alignment: AlignmentDirectional.center,
         children: [
           model.isAutoSize.value
-              ? AutoSizeText(text, textAlign: model.align.value, style: outlineStyle)
-              : Text(text, textAlign: model.align.value, style: outlineStyle),
+              ? AutoSizeText(
+                  text,
+                  textAlign: model.align.value,
+                  style: outlineStyle,
+                )
+              : Text(
+                  text,
+                  textAlign: model.align.value,
+                  style: outlineStyle,
+                ),
           model.isAutoSize.value
               ? AutoSizeText(text, textAlign: model.align.value, style: style)
               : Text(text, textAlign: model.align.value, style: style),
@@ -164,7 +179,7 @@ mixin CretaTextMixin {
         style = style.copyWith(
           foreground: Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = model.outLineWidth.value
+            ..strokeWidth = model.outLineWidth.value * applyScale
             ..color = model.outLineColor.value,
         );
       }

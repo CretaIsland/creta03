@@ -483,4 +483,7 @@ class CretaStudioLang {
 
   static String filterAlreadyExist = '같은 이름의 필터가 이미 존재합니다.';
   static String editFilterDialog = '필터 편집';
+
+  static String invitedPeople = '초대된 사람들';
+  static String invitedTeam = '초대된 팀들';
 }

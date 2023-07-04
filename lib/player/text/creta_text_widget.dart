@@ -1,6 +1,7 @@
 // ignore: implementation_imports
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages, must_be_immutable
 
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -33,6 +34,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> with CretaTextMi
     //widget.player.afterBuild();
     final ContentsEventController receiveEvent = Get.find(tag: 'text-property-to-textplayer');
     _receiveEvent = receiveEvent;
+    applyScale = StudioVariables.applyScale;
   }
 
   @override

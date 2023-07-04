@@ -59,9 +59,9 @@ mixin CretaStyleMixin {
     isShow = UndoAble<bool>(true, mid, 'isShow');
   }
 
-  void makeSampleMixin(String mid) {
-    width = UndoAble<double>(600, mid, 'width');
-    height = UndoAble<double>(400, mid, 'height');
+  void makeSampleMixin(String mid, {double defaultWidth = 400, double defaultHeight = 600}) {
+    width = UndoAble<double>(defaultWidth, mid, 'width');
+    height = UndoAble<double>(defaultHeight, mid, 'height');
 
     bgColor1 = UndoAble<Color>(Colors.white, mid, 'bgColor1');
     bgColor2 = UndoAble<Color>(Colors.blue, mid, 'bgColor2');

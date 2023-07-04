@@ -1,6 +1,8 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:async';
+import 'package:creta03/player/pdf/creta_pdf_player.dart';
+import 'package:creta03/player/pdf/creta_pdf_widget.dart';
 import 'package:flutter/material.dart';
 //import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -223,7 +225,7 @@ class CretaPlayTimer extends ChangeNotifier {
       }
       _currentModel = contentsManager.getNthOrder(_currentOrder) as ContentsModel?;
     }
-    _prevModel ??= ContentsModel('');
+    _prevModel ??= ContentsModel('', '');
 
     if (_currentModel != null &&
         (_currentModel!.mid != _prevModel!.mid || _forceToChange == true)) {
@@ -370,6 +372,13 @@ class CretaPlayTimer extends ChangeNotifier {
           acc: contentsManager,
           onAfterEvent: (position, duration) {},
         );
+      case ContentsType.pdf:
+        return CretaPdfPlayer(
+          keyString: key,
+          model: model,
+          acc: contentsManager,
+          onAfterEvent: (position, duration) {},
+        );
       default:
         return CretaEmptyPlayer(
           keyString: key,
@@ -403,7 +412,11 @@ class CretaPlayTimer extends ChangeNotifier {
           key: GlobalObjectKey(player.keyString),
           player: player,
         );
-
+      case ContentsType.pdf:
+        return CretaPdfWidget(
+          key: GlobalObjectKey(player.keyString),
+          player: player,
+        );
       default:
         return CretaEmptyPlayerWidget(
           key: GlobalObjectKey(player.keyString),

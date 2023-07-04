@@ -15,6 +15,7 @@ import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/model/team_model.dart';
 import 'package:creta03/model/user_property_model.dart';
 import 'package:creta03/pages/login_page.dart';
+import 'package:creta03/pages/mypage/popup/popup_rateplan.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:image_picker/image_picker.dart';
@@ -499,7 +500,12 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                   text: CretaMyPageLang.ratePlanChangeBTN, 
                                   width: 92.0,
                                   height: 32.0,
-                                  onPressed: () {}
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context, 
+                                      builder: (context) => PopUpRatePlan.ratePlanPopUp(context),
+                                    );
+                                  }
                                 )
                               ],
                             )

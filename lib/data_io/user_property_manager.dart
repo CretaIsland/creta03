@@ -83,47 +83,53 @@ class UserPropertyManager extends CretaManager {
     return modelList.length;
   }
 
-  Future<UserPropertyModel> createUserProperty() async {
+  Future<UserPropertyModel> createUserProperty({
+    bool? agreeUsingMarketing,
+  }) async {
     userPropertyModel = UserPropertyModel.withName(
-        pparentMid: userModel.userId,
-        email: userModel.email,
-        nickname: userModel.name,
-        phoneNumber: userModel.phone,
-        cretaGrade: CretaGradeType.none,
-        ratePlan: RatePlanType.none,
-        profileImg: '',
-        channelBannerImg: '',
-        country: CountryType.none,
-        language: LanguageType.none,
-        job: JobType.none,
-        freeSpace: 1042,
-        bookCount: 0,
-        bookViewCount: 0,
-        bookViewTime: 0,
-        likeCount: 0,
-        commentCount: 0,
-        useDigitalSignage: false,
-        usePushNotice: false,
-        useEmailNotice: false,
-        isPublicProfile: true,
-        theme: ThemeType.none,
-        initPage: InitPageType.none,
-        cookie: CookieType.none,
-        autoPlay: true,
-        mute: false,
-        latestBook: '',
-        latestUseFrames: const [],
-        latestUseColors: const [
-          Colors.white,
-          Colors.black,
-          Colors.red,
-          Colors.blue,
-          Colors.yellow,
-          Colors.green,
-          Colors.purple
-        ],
-        teams: const []);
+      parentMid: userModel.userId,
+      email: userModel.email,
+      nickname: userModel.name,
+      phoneNumber: userModel.phone,
+      cretaGrade: CretaGradeType.none,
+      ratePlan: RatePlanType.none,
+      profileImg: userModel.imagefile,
+      channelBannerImg: '',
+      country: CountryType.none,
+      language: LanguageType.none,
+      job: JobType.none,
+      freeSpace: 1042,
+      bookCount: 0,
+      bookViewCount: 0,
+      bookViewTime: 0,
+      likeCount: 0,
+      commentCount: 0,
+      useDigitalSignage: false,
+      usePushNotice: false,
+      useEmailNotice: false,
+      isPublicProfile: true,
+      theme: ThemeType.none,
+      initPage: InitPageType.none,
+      cookie: CookieType.none,
+      autoPlay: true,
+      mute: false,
+      latestBook: '',
+      latestUseFrames: const [],
+      latestUseColors: const [
+        Colors.white,
+        Colors.black,
+        Colors.red,
+        Colors.blue,
+        Colors.yellow,
+        Colors.green,
+        Colors.purple
+      ],
+      teams: const [],
+    );
 
+    if (agreeUsingMarketing != null) {
+      userPropertyModel?.agreeUsingMarketing = agreeUsingMarketing;
+    }
     await createToDB(userPropertyModel!);
     insert(userPropertyModel!, postion: getAvailLength());
     selectedMid = userPropertyModel!.mid;
@@ -140,7 +146,7 @@ class UserPropertyManager extends CretaManager {
 
   Future<FrameModel> _getFrameFromDB(String mid) async {
     try {
-      FrameModel model = FrameModel(mid);
+      FrameModel model = FrameModel(mid, '');
       model.fromMap(await HycopFactory.dataBase!.getData('creta_frame', mid));
       return model;
     } catch (e) {
@@ -188,7 +194,7 @@ class UserPropertyManager extends CretaManager {
     }
 
     for (var ele in resultList) {
-      FrameModel model = FrameModel(ele['mid'] ?? '');
+      FrameModel model = FrameModel(ele['mid'] ?? '', ele['realTimeKey'] ?? '');
       model.fromMap(ele);
 
       logger.finest('ele = ${model.mid}');
@@ -250,11 +256,11 @@ class UserPropertyManager extends CretaManager {
     return userPropertyModel!.autoPlay;
   }
 
-  Future<UserPropertyModel?> getMemberProperty({required String memberMid, int limit = 99}) async {
+  Future<UserPropertyModel?> getMemberProperty({required String email, int limit = 99}) async {
     startTransaction();
     try {
       Map<String, QueryValue> query = {};
-      query['email'] = QueryValue(value: memberMid);
+      query['email'] = QueryValue(value: email);
       query['isRemoved'] = QueryValue(value: false);
       Map<String, OrderDirection> orderBy = {};
       orderBy['order'] = OrderDirection.ascending;
