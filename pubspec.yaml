@@ -93,12 +93,10 @@ dependencies:
   flutter_sequence_animation: ^4.0.0
   cloud_firestore: ^4.3.1
   flutter_keyboard_visibility: ^5.4.1
-  # quill_html_editor: ^2.0.5
-  quill_html_editor: ^2.1.9
+  # quill_html_editor: ^2.1.9
   webview_flutter: ^4.0.7     # added by Mai 20230619
-  # webview_flutter: ^4.2.2     # added by Mai 20230619
   adjusted_html_view_web: ^0.0.1
-  flutter_rte: ^0.4.13
+  # flutter_rte: ^0.4.13
   html_editor_enhanced: ^2.5.1
   numberpicker: ^2.1.2
   file_picker: ^5.3.1
