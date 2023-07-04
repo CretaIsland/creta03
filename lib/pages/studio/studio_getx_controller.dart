@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:get/get.dart';
 
+import '../../model/contents_model.dart';
 import '../../model/creta_model.dart';
 
 class StudioEventController extends GetxController {
@@ -61,14 +62,13 @@ class PageEventController extends StudioEventController {
   // }
 }
 
-class ContentsEventController extends StudioEventController {
-  // Define an event stream
-  // final eventStream = StreamController<FrameModel>.broadcast();
+class ContentsEventController extends GetxController {
+  final eventStream = StreamController<ContentsModel>.broadcast();
 
-  // // Method to send an event
-  // void sendEvent(FrameModel model) {
-  //   eventStream.add(model);
-  // }
+  // Method to send an event
+  void sendEvent(ContentsModel model) {
+    eventStream.add(model);
+  }
 }
 
 // class PageEventController extends GetxController {

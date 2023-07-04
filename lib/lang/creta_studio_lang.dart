@@ -345,6 +345,8 @@ class CretaStudioLang {
 
   static const String autoFitContents = '콘텐츠 크기에 자동 맞춤';
 
+  static const String ani = '애니메이션';
+  static const String speed = '속도';
   static const String border = '테두리';
   static const String shadow = '그림자';
   static const String borderWidth = '두께';
@@ -486,4 +488,16 @@ class CretaStudioLang {
 
   static String invitedPeople = '초대된 사람들';
   static String invitedTeam = '초대된 팀들';
+
+  static String tickerSide = '옆으로 흐르는 문자열';
+  static String tickerUpDown = '상하로 흐르는 문자열';
+  static String rotateText = 'Rotate Text';
+  static String waveText = 'Wave Text';
+  static String fidget = 'Fidget Text';
+  static String shimmer = 'Shimmer Text';
+  static String typewriter = 'Typewriter Text';
+  static String wavy = 'Wavy Text';
+  static String neon = 'Neon Text';
+  static String fade = 'Fade Text';
+  static String bounce = 'Bounce Text';
 }

@@ -7,6 +7,7 @@ import 'package:hycop/hycop/model/file_model.dart';
 import '../../common/creta_utils.dart';
 import '../../data_io/contents_manager.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
+import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
@@ -214,6 +215,7 @@ class StudioSnippet {
       logger.severe('upload failed ${model.file!.name}');
     }
     logger.info('send event to property');
+    logger.info('uploaded thumbnail = ${model.thumbnail}');
     contentsManager.sendEvent?.sendEvent(model);
   }
 
@@ -333,6 +335,17 @@ class StudioSnippet {
       align: TextAlign.center,
       onEditComplete: onEditComplete,
       onLabelHovered: () {},
+    );
+  }
+
+  static Divider smallDivider(
+      {double height = 4, thickness = 1, double indent = 24, double endIndent = 24}) {
+    return Divider(
+      height: height,
+      thickness: thickness,
+      color: CretaColor.text[200]!,
+      indent: indent,
+      endIndent: endIndent,
     );
   }
 }

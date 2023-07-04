@@ -99,6 +99,10 @@ dependencies:
   adjusted_html_view_web: ^0.0.1
   flutter_rte: ^0.4.13
   syncfusion_flutter_pdfviewer: ^21.2.10
+  shimmer: ^2.0.0
+  circular_reveal_animation: ^2.0.1
+  neonpen: ^2.0.5
+  simple_tooltip: ^1.2.0
   # pdfx: ^2.3.0
   # internet_file: ^1.2.0
   # universal_platform: ^1.0.0+1

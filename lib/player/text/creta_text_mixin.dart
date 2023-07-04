@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:neonpen/neonpen.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
 import 'package:uuid/uuid.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
@@ -116,7 +117,7 @@ mixin CretaTextMixin {
       ]);
     }
 
-    if (model.aniType.value != TextAniType.none && isPagePreview) {
+    if (model.aniType.value != TextAniType.none) {
       return _animationText(model, text, shadowStyle ?? style,
           _outLineAndShadowText(model, text, shadowStyle ?? style), realSize, fontSize);
     }
@@ -183,7 +184,7 @@ mixin CretaTextMixin {
             ..color = model.outLineColor.value,
         );
       }
-      if (model.aniType.value != TextAniType.shimmer) {
+      if (model.aniType.value != TextAniType.shimmer && model.aniType.value != TextAniType.neon) {
         style = style.copyWith(fontSize: _getAutoFontSize(model, textSize, realSize, fontSize));
       }
     }
@@ -326,6 +327,25 @@ mixin CretaTextMixin {
                   textStyle: style,
                   speed: Duration(milliseconds: duration)),
             ],
+          );
+        }
+      case TextAniType.neon:
+        {
+          return Neonpen(
+            text: model.isAutoSize.value
+                ? AutoSizeText(text, textAlign: model.align.value, style: style)
+                : Text(text, textAlign: model.align.value, style: style),
+            color: model.outLineColor.value == Colors.transparent
+                ? Colors.red
+                : model.outLineColor.value,
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+            opacity: 0.8,
+            emphasisWidth: 20,
+            emphasisOpacity: 0.5,
+            emphasisAngleDegree: 3,
+            enableLineZiggle: true,
+            lineZiggleLevel: 3,
+            isDoubleLayer: false,
           );
         }
       default:

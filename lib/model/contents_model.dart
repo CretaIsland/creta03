@@ -232,8 +232,8 @@ class ContentsModel extends CretaModel {
     url = srcContents.url;
     mime = srcContents.mime;
     file = srcContents.file;
-    remoteUrl = srcContents.remoteUrl;
-    thumbnail = srcContents.thumbnail;
+    // remoteUrl = srcContents.remoteUrl;
+    // thumbnail = srcContents.thumbnail;
     contentsType = srcContents.contentsType;
 
     subList = UndoAble<String>(srcContents.subList.value, mid, 'subList');
@@ -295,8 +295,8 @@ class ContentsModel extends CretaModel {
     url = srcContents.url;
     mime = srcContents.mime;
     file = srcContents.file;
-    remoteUrl = srcContents.remoteUrl;
-    thumbnail = srcContents.thumbnail;
+    // remoteUrl = srcContents.remoteUrl;
+    // thumbnail = srcContents.thumbnail;
     contentsType = srcContents.contentsType;
 
     subList.init(srcContents.subList.value);
@@ -312,8 +312,13 @@ class ContentsModel extends CretaModel {
     filter.init(srcContents.filter.value);
     fit.init(srcContents.fit.value);
 
-    if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
-    if (srcContents.thumbnail != null) thumbnail = srcContents.thumbnail;
+    if (srcContents.remoteUrl != null && srcContents.remoteUrl!.isNotEmpty) {
+      remoteUrl = srcContents.remoteUrl;
+    }
+    if (srcContents.thumbnail != null && srcContents.thumbnail!.isNotEmpty) {
+      thumbnail = srcContents.thumbnail;
+    }
+
     contentsType = srcContents.contentsType;
     lastModifiedTime = DateTime.now().toString();
 

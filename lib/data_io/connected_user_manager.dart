@@ -217,7 +217,7 @@ class ConnectedUserManager extends CretaManager {
 
   Future<bool> connectNoti(String bookId, String nickname, String email) async {
     if (bookId != bookMid) {
-      logger.warning('bookId mismatch($bookId=!$bookMid)');
+      //ogger.warning('bookId mismatch($bookId=!$bookMid)');
       return false;
     }
 
@@ -231,7 +231,7 @@ class ConnectedUserManager extends CretaManager {
     UserPropertyModel? user =
         await LoginPage.userPropertyManagerHolder!.getMemberProperty(email: email);
     if (user == null) {
-      logger.warning('user not founded($email)');
+      //logger.warning('user not founded($email)');
       return false;
     }
 
@@ -251,7 +251,7 @@ class ConnectedUserManager extends CretaManager {
       notify();
       return true;
     }
-    logger.warning('$email user does not exist');
+    //logger.warning('$email user does not exist');
     return false;
   }
 }

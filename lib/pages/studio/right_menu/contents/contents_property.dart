@@ -5,6 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:widget_and_text_animator/widget_and_text_animator.dart';
+import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
+import 'package:uuid/uuid.dart';
+import 'package:neonpen/neonpen.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
@@ -27,6 +33,7 @@ import '../../../../model/contents_model.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
+import '../../studio_snippet.dart';
 import '../property_mixin.dart';
 
 class ContentsProperty extends StatefulWidget {
@@ -48,6 +55,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   static bool _isPlayControlOpen = false;
   static bool _isTextFontOpen = false;
   static bool _isTextBorderOpen = false;
+  static bool _isTextAni = false;
   // static bool _isImageFilterOpen = false;
 
   ContentsEventController? _sendEvent;
@@ -119,6 +127,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       propertyDivider(height: 28),
       if (widget.model.isImage()) _imageFilter(),
       if (widget.model.isText()) _textBorder(),
+      if (widget.model.isText()) propertyDivider(height: 28),
+      if (widget.model.isText()) _textAni(),
       propertyDivider(height: 28),
       _hashTag(),
     ]);
@@ -663,5 +673,353 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       }
     }
     BookMainPage.bookManagerHolder!.notify();
+  }
+
+  Widget _textAni() {
+    return Padding(
+      padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
+      child: propertyCard(
+        isOpen: _isTextAni,
+        onPressed: () {
+          setState(() {
+            _isTextAni = !_isTextAni;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.ani, style: CretaFont.titleSmall),
+        trailWidget: Text(
+          widget.model.aniType.value.name,
+          textAlign: TextAlign.right,
+          style: CretaFont.titleSmall,
+        ),
+        hasRemoveButton: widget.model.aniType.value != TextAniType.none,
+        onDelete: () {
+          setState(() {
+            widget.model.aniType.set(TextAniType.none);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
+        bodyWidget: _textAniBody(context, widget.model),
+      ),
+    );
+  }
+
+  Widget _textAniBody(BuildContext context, ContentsModel model) {
+    return Padding(
+        padding: const EdgeInsets.only(
+          left: 0,
+          right: 22,
+          top: 12,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // 옆으로 흐르는 문자열
+            SizedBox(width: 250, height: 36, child: tickerSide(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: tickerUpDown(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: rotateText(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: bounceText(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: fidgetText(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: fadeText(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: shimmerText(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: typewriterText(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: wavyText(model)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(width: 250, height: 36, child: neonText(model)),
+            StudioSnippet.smallDivider(height: 10),
+            // 속도 슬라이더 바
+            propertyLine(
+              name: CretaStudioLang.speed,
+              widget: CretaExSlider(
+                valueType: SliderValueType.normal,
+                value: model.anyDuration.value,
+                onChanngeComplete: (val) {
+                  setState(() {
+                    model.anyDuration.set(val);
+                  });
+                  _sendEvent!.sendEvent(widget.model);
+                },
+                onChannged: (val) {},
+                min: 0,
+                max: 100,
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget tickerSide(ContentsModel model) {
+    String text = "${CretaStudioLang.tickerSide} ";
+    int textSize = CretaUtils.getStringSize(text);
+    // duration 이 50 이면 실제로는 5-7초 정도에  문자열을 다 흘려보내다.
+    // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
+    int duration = (textSize * 0.75).ceil() * ((101 - model.anyDuration.value) / 10).ceil();
+    return TextButton(
+        onPressed: () {
+          setState(() {
+            model.aniType.set(TextAniType.tickerSide);
+            if (model.anyDuration.value == 0) {
+              model.anyDuration.set(50);
+            }
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
+        child: ScrollLoopAutoScroll(
+            key: ValueKey(Uuid().v4()),
+            // ignore: sort_child_properties_last
+            child: Text(
+              text,
+              textAlign: TextAlign.left,
+              style: dataStyle,
+            ), //required
+            scrollDirection: Axis.horizontal, //required
+            delay: Duration(seconds: 1),
+            duration: Duration(seconds: duration),
+            gap: 25,
+            reverseScroll: false,
+            duplicateChild: 25,
+            enableScrollInput: true,
+            delayAfterScrollInput: Duration(seconds: 1)));
+  }
+
+  Widget tickerUpDown(ContentsModel model) {
+    String text = "${CretaStudioLang.tickerSide} ";
+    int textSize = CretaUtils.getStringSize(text);
+    // duration 이 50 이면 실제로는 5-7초 정도에  문자열을 다 흘려보내다.
+    // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
+    int duration = (textSize * 0.75).ceil() * ((101 - model.anyDuration.value) / 10).ceil();
+    return TextButton(
+        onPressed: () {
+          setState(() {
+            model.aniType.set(TextAniType.tickerUpDown);
+            if (model.anyDuration.value == 0) {
+              model.anyDuration.set(50);
+            }
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
+        child: ScrollLoopAutoScroll(
+            key: ValueKey(Uuid().v4()),
+            // ignore: sort_child_properties_last
+            child: Text(
+              CretaStudioLang.tickerUpDown,
+              textAlign: TextAlign.left,
+              style: dataStyle,
+            ), //required
+            scrollDirection: Axis.vertical, //required
+            delay: Duration(seconds: 1),
+            duration: Duration(seconds: duration),
+            gap: 25,
+            reverseScroll: false,
+            duplicateChild: 25,
+            enableScrollInput: true,
+            delayAfterScrollInput: Duration(seconds: 1)));
+  }
+
+  Widget rotateText(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.rotate);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: TextAnimator(
+        CretaStudioLang.rotateText,
+        style: dataStyle,
+        atRestEffect: WidgetRestingEffects.rotate(),
+        incomingEffect: WidgetTransitionEffects(
+            blur: const Offset(2, 2), duration: const Duration(milliseconds: 600)),
+        outgoingEffect: WidgetTransitionEffects(
+            blur: const Offset(2, 2), duration: const Duration(milliseconds: 600)),
+      ),
+    );
+  }
+
+  Widget bounceText(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.bounce);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: TextAnimator(
+        CretaStudioLang.bounce,
+        style: dataStyle,
+        incomingEffect: WidgetTransitionEffects.incomingScaleDown(),
+        atRestEffect: WidgetRestingEffects.bounce(),
+        outgoingEffect: WidgetTransitionEffects.outgoingScaleUp(),
+      ),
+    );
+  }
+
+  Widget fidgetText(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.fidget);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: TextAnimator(
+        CretaStudioLang.fidget,
+        style: dataStyle,
+        incomingEffect: WidgetTransitionEffects.incomingSlideInFromLeft(),
+        atRestEffect: WidgetRestingEffects.fidget(),
+        outgoingEffect: WidgetTransitionEffects.outgoingSlideOutToBottom(),
+      ),
+    );
+  }
+
+  Widget fadeText(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.fade);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: TextAnimator(
+        CretaStudioLang.fade,
+        style: dataStyle,
+        incomingEffect: WidgetTransitionEffects.incomingSlideInFromLeft(),
+        atRestEffect: WidgetRestingEffects.pulse(), // fade
+        outgoingEffect: WidgetTransitionEffects.outgoingSlideOutToBottom(),
+      ),
+    );
+  }
+
+  Widget shimmerText(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.shimmer);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: Shimmer.fromColors(
+          baseColor: model.fontColor.value,
+          highlightColor: model.outLineColor.value == Colors.transparent
+              ? Colors.red
+              : model.outLineColor.value,
+          child: Text(CretaStudioLang.shimmer)),
+    );
+  }
+
+  Widget typewriterText(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.typewriter);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: AnimatedTextKit(
+        onTap: () {
+          setState(() {
+            model.aniType.set(TextAniType.typewriter);
+            if (model.anyDuration.value == 0) {
+              model.anyDuration.set(50);
+            }
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
+        repeatForever: true,
+        animatedTexts: [
+          TypewriterAnimatedText(CretaStudioLang.typewriter,
+              textAlign: TextAlign.center,
+              textStyle: dataStyle,
+              speed: Duration(milliseconds: 505 - model.anyDuration.value.round() * 5)),
+        ],
+      ),
+    );
+  }
+
+  Widget wavyText(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.wavy);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: AnimatedTextKit(
+        onTap: () {
+          setState(() {
+            model.aniType.set(TextAniType.wavy);
+            if (model.anyDuration.value == 0) {
+              model.anyDuration.set(50);
+            }
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
+        repeatForever: true,
+        animatedTexts: [
+          WavyAnimatedText(CretaStudioLang.wavy,
+              textAlign: TextAlign.center,
+              textStyle: dataStyle,
+              speed: Duration(milliseconds: 505 - model.anyDuration.value.round() * 5)),
+        ],
+      ),
+    );
+  }
+
+  Widget neonText(ContentsModel model) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(TextAniType.neon);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: Neonpen(
+        text: Text(
+          CretaStudioLang.neon,
+          style: dataStyle,
+        ),
+        color:
+            model.outLineColor.value == Colors.transparent ? Colors.red : model.outLineColor.value,
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+        opacity: 0.8,
+        emphasisWidth: 5,
+        emphasisOpacity: 0.5,
+        emphasisAngleDegree: 0.5,
+        enableLineZiggle: true,
+        lineZiggleLevel: 1,
+        isDoubleLayer: false,
+      ),
+    );
   }
 }

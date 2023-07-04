@@ -71,7 +71,7 @@ class ContentsMainState extends State<ContentsMain> {
   @override
   Widget build(BuildContext context) {
     if (_onceDBGetComplete) {
-      logger.finest('already _onceDBGetComplete');
+      logger.finest('already _onceDBGetComplete contentsMain');
       return _consumerFunc();
     }
 

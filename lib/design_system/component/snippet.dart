@@ -27,12 +27,16 @@ import '../menu/creta_popup_menu.dart';
 extension GlobalKeyExtension on GlobalKey {
   Rect? get globalPaintBounds {
     if (currentContext == null) return null;
-    final renderObject = currentContext?.findRenderObject();
-    if (renderObject == null) return null;
-    final translation = renderObject.getTransformTo(null).getTranslation();
-
-    final offset = Offset(translation.x, translation.y);
-    return renderObject.paintBounds.shift(offset);
+    try {
+      final renderObject = currentContext?.findRenderObject();
+      if (renderObject == null) return null;
+      final translation = renderObject.getTransformTo(null).getTranslation();
+      final offset = Offset(translation.x, translation.y);
+      return renderObject.paintBounds.shift(offset);
+    } catch (e) {
+      logger.warning('*****************${e.toString()}');
+    }
+    return null;
   }
 }
 

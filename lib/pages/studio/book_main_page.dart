@@ -383,9 +383,6 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<BookManager>.value(
           value: BookMainPage.bookManagerHolder!,
         ),
-        ChangeNotifierProvider<BookManager>.value(
-          value: BookMainPage.bookManagerHolder!,
-        ),
         ChangeNotifierProvider<ConnectedUserManager>.value(
           value: BookMainPage.connectedUserHolder!,
         ),
@@ -412,7 +409,7 @@ class _BookMainPageState extends State<BookMainPage> {
                     },
                     child: _waitBook(),
                   ),
-                  if (StudioVariables.allowMutilUser == true) mouseArea()
+                  if (StudioVariables.allowMutilUser == true) mouseArea(),
                 ],
               ),
             ),

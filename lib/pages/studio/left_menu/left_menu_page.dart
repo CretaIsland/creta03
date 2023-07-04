@@ -64,6 +64,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   late GlobalObjectKey _pageViewKey;
 
   Timer? _screenshotTimer;
+  Rect? _thumbArea;
 
   //final int _firstPage = 100;
 
@@ -159,10 +160,14 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       }
       _resize();
-      return Column(
+      return Stack(
         children: [
-          _menuBar(),
-          _pageView(),
+          Column(
+            children: [
+              _menuBar(),
+              _pageView(),
+            ],
+          ),
         ],
       );
     });
@@ -652,11 +657,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     if (pageViewArea == null) {
       return;
     }
-    Rect? thumbArea = CretaUtils.getArea(thumbKey);
+    _thumbArea = CretaUtils.getArea(thumbKey);
 
     bool contained = false;
-    if (thumbArea != null) {
-      contained = CretaUtils.isRectContained(pageViewArea, thumbArea);
+    if (_thumbArea != null) {
+      contained = CretaUtils.isRectContained(pageViewArea, _thumbArea!);
     }
     if (contained) {
       return;
@@ -721,11 +726,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
       // 제일 첫번째를 가져온다.
       GlobalObjectKey? thumbKey = BookMainPage.pageManagerHolder!.thumbKeyMap.values.first;
-      Rect? thumbArea = CretaUtils.getArea(thumbKey);
-      if (thumbArea != null) {
-        if (CretaUtils.isRectContained(pageViewArea, thumbArea)) {
+      _thumbArea = CretaUtils.getArea(thumbKey);
+      if (_thumbArea != null) {
+        if (CretaUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
-          _takeAScreenShot(thumbArea);
+          logger.info('start first _takeAScreenShot()');
+          _takeAScreenShot(_thumbArea!);
+          BookMainPage.bookManagerHolder!.notify();
           return;
         }
       }
@@ -735,11 +742,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       if (thumbKey == null) {
         return;
       }
-      thumbArea = CretaUtils.getArea(thumbKey);
-      if (thumbArea != null) {
-        if (CretaUtils.isRectContained(pageViewArea, thumbArea)) {
+      _thumbArea = CretaUtils.getArea(thumbKey);
+      if (_thumbArea != null) {
+        if (CretaUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
-          _takeAScreenShot(thumbArea);
+          logger.info('start selected _takeAScreenShot()');
+          _takeAScreenShot(_thumbArea!);
+          BookMainPage.bookManagerHolder!.notify();
           return;
         }
       }
