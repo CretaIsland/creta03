@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:hycop/hycop.dart';
 
 import '../../routes.dart';
 import '../design_system/component/snippet.dart';
-//import '../design_system/creta_font.dart';
+import '../design_system/creta_font.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -25,7 +26,8 @@ class _IntroPageState extends State<IntroPage> {
     controller = VideoPlayerController.asset('assets/landing_page_banner.mp4');
     controller.initialize().then((value) {
       setState(() {
-        controller.setVolume(0); // 안하면 에러발생 : NotAllowedError: play() failed because the user didn't interact with the document first.
+        controller.setVolume(
+            0); // 안하면 에러발생 : NotAllowedError: play() failed because the user didn't interact with the document first.
         controller.play();
         controller.setLooping(true);
       });
@@ -36,10 +38,22 @@ class _IntroPageState extends State<IntroPage> {
     Routemaster.of(context).push(AppRoutes.intro);
   }
 
+  void onErrorReport(String errMsg) {
+    showSnackBar(context, errMsg);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
+    double videoWidth = width;
+    double videoHeight = width * 0.5625;
+    if (videoHeight > height) {
+      videoHeight = height;
+      videoWidth = height * 1.77;
+    }
+
     return Snippet.CretaScaffoldOfCommunity(
       //title: Snippet.logo('Intro page'),
       title: Row(
@@ -62,20 +76,28 @@ class _IntroPageState extends State<IntroPage> {
       //   ),
       // ),
       doAfterLogin: doAfterLogin,
+      onErrorReport: onErrorReport,
 
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: width,
-              height: width * 0.5625,
-              child: VideoPlayer(controller),
+      child: Stack(
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: videoWidth,
+            height: videoHeight,
+            child: VideoPlayer(controller),
+          ),
+          SizedBox(
+            width: videoWidth,
+            height: videoHeight,
+            child: Center(
+              child: Text(
+                "Version 0.1.2 (hycop 0.2.9)",
+                style: CretaFont.headlineLarge,
+              ),
             ),
-          ],
-        ),
+          ),
+
+        ],
       ),
       // child: SizedBox(
       //   width: width,

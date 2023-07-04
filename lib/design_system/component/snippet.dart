@@ -123,9 +123,15 @@ class Snippet {
     required BuildContext context,
     required Widget child,
     Function? doAfterLogin,
+    Function(String)? onErrorReport,
   }) {
     return Scaffold(
-      appBar: Snippet.CretaAppBarOfCommunity(context, title, doAfterLogin),
+      appBar: Snippet.CretaAppBarOfCommunity(
+        context: context,
+        title: title,
+        doAfterLogin: doAfterLogin,
+        onErrorReport: onErrorReport,
+      ),
       floatingActionButton: Snippet.CretaDial(context),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -140,7 +146,12 @@ class Snippet {
     );
   }
 
-  static PreferredSizeWidget CretaAppBarOfCommunity(BuildContext context, Widget title, Function? doAfterLogin) {
+  static PreferredSizeWidget CretaAppBarOfCommunity({
+    required BuildContext context,
+    required Widget title,
+    Function? doAfterLogin,
+    Function(String)? onErrorReport,
+  }) {
     return AppBar(
       title: title,
       toolbarHeight: CretaConstant.appbarHeight,
@@ -167,7 +178,11 @@ class Snippet {
                 onPressed: () {
                   // _popupAccountMenu(
                   //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
-                  LoginDialog.popupDialog(context, doAfterLogin);
+                  LoginDialog.popupDialog(
+                    context: context,
+                    doAfterLogin: doAfterLogin,
+                    onErrorReport: onErrorReport,
+                  );
                 },
               ),
             ),
