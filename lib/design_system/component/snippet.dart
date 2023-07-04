@@ -22,6 +22,7 @@ import '../text_field/creta_text_field.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../menu/creta_drop_down.dart';
 import '../menu/creta_popup_menu.dart';
+import '../../pages/login/login_dialog.dart';
 
 // get widgets Global Size and Position
 extension GlobalKeyExtension on GlobalKey {
@@ -117,10 +118,14 @@ class Snippet {
     );
   }
 
-  static Widget CretaScaffoldOfCommunity(
-      {required Widget title, required BuildContext context, required Widget child}) {
+  static Widget CretaScaffoldOfCommunity({
+    required Widget title,
+    required BuildContext context,
+    required Widget child,
+    Function? doAfterLogin,
+  }) {
     return Scaffold(
-      appBar: Snippet.CretaAppBarOfCommunity(context, title),
+      appBar: Snippet.CretaAppBarOfCommunity(context, title, doAfterLogin),
       floatingActionButton: Snippet.CretaDial(context),
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -135,13 +140,65 @@ class Snippet {
     );
   }
 
-  static PreferredSizeWidget CretaAppBarOfCommunity(BuildContext context, Widget title) {
+  static PreferredSizeWidget CretaAppBarOfCommunity(BuildContext context, Widget title, Function? doAfterLogin) {
     return AppBar(
       title: title,
       toolbarHeight: CretaConstant.appbarHeight,
       backgroundColor: Colors.white,
       shadowColor: Colors.grey[500],
-      actions: [
+      actions:
+      (!AccountManager.currentLoginUser.isLoginedUser)
+      ? [
+        Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: Center(
+            child: SizedBox(
+              height: 36,
+              child: BTN.fill_blue_t_l(
+                //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
+                buttonColor: CretaButtonColor.white,
+                //fgColor: CretaColor.text[700]!,
+                height: 36,
+                text: '로그인',
+                //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                //image:
+                //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+                textStyle: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]),
+                onPressed: () {
+                  // _popupAccountMenu(
+                  //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
+                  LoginDialog.popupDialog(context, doAfterLogin);
+                },
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 40),
+          child: Center(
+            child: SizedBox(
+              width: 112,
+              height: 36,
+              child: BTN.fill_blue_ti_l(
+                //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
+                //buttonColor: CretaButtonColor.white,
+                //fgColor: CretaColor.text[700]!,
+                width: 112,
+                text: '회원가입',
+                icon: Icons.arrow_forward,
+                //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                //image:
+                //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+                onPressed: () {
+                  // _popupAccountMenu(
+                  //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
+                },
+              ),
+            ),
+          ),
+        ),
+      ]
+      : [
         // new book
         Center(
           child: SizedBox(
@@ -178,6 +235,7 @@ class Snippet {
           child: SizedBox(
             height: 40,
             child: BTN.fill_gray_iti_l(
+              key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
               buttonColor: CretaButtonColor.white,
               fgColor: CretaColor.text[700]!,
               text: AccountManager.currentLoginUser.name,
@@ -185,7 +243,10 @@ class Snippet {
               image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
               //image:
               //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
-              onPressed: () {},
+              onPressed: () {
+                _popupAccountMenu(
+                    GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
+              },
             ),
           ),
         ),
@@ -511,12 +572,12 @@ class Snippet {
             Routemaster.of(context).push(AppRoutes.buttonDemoPage);
           },
         ),
-        SpeedDialChild(
-          child: Icon(Icons.abc_outlined),
-          onTap: () {
-            Routemaster.of(context).push(AppRoutes.quillDemoPage);
-          },
-        ),
+        // SpeedDialChild(
+        //   child: Icon(Icons.abc_outlined),
+        //   onTap: () {
+        //     Routemaster.of(context).push(AppRoutes.quillDemoPage);
+        //   },
+        // ),
         SpeedDialChild(
           child: Icon(Icons.smart_button),
           onTap: () {
