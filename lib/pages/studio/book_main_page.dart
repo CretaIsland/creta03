@@ -211,16 +211,17 @@ class _BookMainPageState extends State<BookMainPage> {
     mouseTracerHolder = MouseTracer();
     mouseTracerHolder!.initialize();
     client.initialize(LoginPage.enterpriseHolder!.enterpriseModel!.socketUrl);
-    //client.initialize("ws://localhost:4432");
     client.connectServer(BookMainPage.selectedMid);
 
     mouseTracerHolder!.addListener(() {
       switch (mouseTracerHolder!.methodFlag) {
         case 'joinUser':
+          mouseTracerHolder!.methodFlag = '';
           BookMainPage.connectedUserHolder!.connectNoti(BookMainPage.selectedMid,
               mouseTracerHolder!.targetUserName, mouseTracerHolder!.targetUserEmail);
           break;
         case 'leaveUser':
+          mouseTracerHolder!.methodFlag = '';
           BookMainPage.connectedUserHolder!.disconnectNoti(BookMainPage.selectedMid,
               mouseTracerHolder!.targetUserName, mouseTracerHolder!.targetUserEmail);
           break;
