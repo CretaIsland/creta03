@@ -1,11 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
-//import 'package:routemaster/routemaster.dart';
+import 'package:routemaster/routemaster.dart';
 
 import '../login_page.dart';
-//import '../../routes.dart';
+import '../../routes.dart';
 //import '../../design_system/component/snippet.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
@@ -20,28 +21,46 @@ import '../../design_system/text_field/creta_text_field.dart';
 import '../../model/app_enums.dart';
 import '../../model/user_property_model.dart';
 
+enum LoginPageState {
+  login, // 로그인
+  singup, // 회원가입
+  resetPassword, // 비번 찾기
+}
+
 class LoginDialog extends StatefulWidget {
   const LoginDialog({
     super.key,
     required this.context,
     required this.size,
-    this.doAfterLogin,
-    this.onErrorReport,
+    // this.doAfterLogin,
+    // this.doAfterSignup,
+    // this.onErrorReport,
+    required this.getBuildContext,
+    this.loginPageState,
   });
   final BuildContext context;
   final Size size;
-  final Function? doAfterLogin;
-  final Function(String)? onErrorReport;
+  // final Function? doAfterLogin;
+  // final Function? doAfterSignup;
+  // final Function(String)? onErrorReport;
+  final Function getBuildContext;
+  final LoginPageState? loginPageState;
 
   @override
   State<LoginDialog> createState() => _LoginDialogState();
 
   static bool _showExtraInfoDialog = false;
-  static void setShowExtraInfoDialog(bool show) => (_showExtraInfoDialog = show);
+  static void setShowExtraInfoDialog(bool show) {
+    if (kDebugMode) print('setShowExtraInfoDialog($show)');
+    _showExtraInfoDialog = show;
+  }
   static void popupDialog({
     required BuildContext context,
-    Function? doAfterLogin,
-    Function(String)? onErrorReport
+    // Function? doAfterLogin,
+    // Function? doAfterSignup,
+    // Function(String)? onErrorReport,
+    required Function getBuildContext,
+    LoginPageState loginPageState = LoginPageState.login,
   }) {
     _showExtraInfoDialog = false;
     showDialog(
@@ -56,30 +75,32 @@ class LoginDialog extends StatefulWidget {
         content: LoginDialog(
           context: context,
           size: Size(406, 490 - 46),
-          doAfterLogin: doAfterLogin,
-          onErrorReport: onErrorReport,
+          // doAfterLogin: doAfterLogin,
+          // doAfterSignup: doAfterSignup,
+          // onErrorReport: onErrorReport,
+          getBuildContext: getBuildContext,
+          loginPageState: loginPageState,
         ),
       ),
     ).then((value) {
+      if (kDebugMode) print('ExtraInfoDialog.popupDialog($_showExtraInfoDialog)');
       if (_showExtraInfoDialog) {
+        if (kDebugMode) print('if(_showExtraInfoDialog)');
         ExtraInfoDialog.popupDialog(
-          context: context,
-          doAfterLogin: doAfterLogin,
-          onErrorReport: onErrorReport,
+          context: getBuildContext.call(),
+          // doAfterLogin: doAfterLogin,
+          // onErrorReport: onErrorReport,
+          getBuildContext: getBuildContext,
         );
+      } else {
+        Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
       }
     });
   }
 }
 
-enum LoginPageState {
-  login, // 로그인
-  singup, // 회원가입
-  resetPassword, // 비번 찾기
-}
-
 class _LoginDialogState extends State<LoginDialog> {
-  LoginPageState _loginPageState = LoginPageState.login;
+  late LoginPageState _loginPageState;
   final Map<String, bool> _checkboxLoginValueMap = {
     '로그인 상태 유지 ': true,
   };
@@ -105,17 +126,19 @@ class _LoginDialogState extends State<LoginDialog> {
   @override
   void initState() {
     super.initState();
+
+    _loginPageState = widget.loginPageState ?? LoginPageState.login;
   }
 
   Future<void> _login(String email, String password) async {
     logger.finest('_login pressed');
     AccountManager.login(email, password).then((value) async {
-      Navigator.of(widget.context).pop();
       HycopFactory.setBucketId();
       LoginPage.initUserProperty().then((value) {
         if (value) {
-          //Routemaster.of(widget.context).push(AppRoutes.intro);
-          widget.doAfterLogin?.call();
+          Navigator.of(widget.context).pop();
+          //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
+          //widget.doAfterLogin?.call();
         } else {
           throw HycopUtils.getHycopException(defaultMessage: 'Login failed !!!');
         }
@@ -129,8 +152,8 @@ class _LoginDialogState extends State<LoginDialog> {
         errMsg = 'Unknown DB Error !!!';
       }
       logger.severe(errMsg);
-      //showSnackBar(widget.context, errMsg);
-      widget.onErrorReport?.call(errMsg);
+      showSnackBar(widget.context, errMsg);
+      //widget.onErrorReport?.call(errMsg);
     });
   }
 
@@ -138,12 +161,12 @@ class _LoginDialogState extends State<LoginDialog> {
     logger.finest('_loginByGoogle pressed');
 
     AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
-      Navigator.of(widget.context).pop();
       HycopFactory.setBucketId();
       LoginPage.userPropertyManagerHolder!
           .addWhereClause('email', QueryValue(value: AccountManager.currentLoginUser.email));
       LoginPage.userPropertyManagerHolder!.queryByAddedContitions().then((value) async {
-        if (value.isEmpty) {
+        bool isNewUser = value.isEmpty;
+        if (isNewUser) {
           UserPropertyModel model =
           LoginPage.userPropertyManagerHolder!.getNewUserProperty(agreeUsingMarketing: true);
           await LoginPage.teamManagerHolder!.createTeam(
@@ -156,8 +179,15 @@ class _LoginDialogState extends State<LoginDialog> {
         }
         LoginPage.initUserProperty().then((value) {
           if (value) {
-            //Routemaster.of(widget.context).push(AppRoutes.intro);
-            widget.doAfterLogin?.call();
+            Navigator.of(widget.context).pop();
+            //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
+            // if (isNewUser) {
+            //   print('_loginByGoogle.widget.doAfterSignup?.call()');
+            //   //widget.doAfterSignup?.call();
+            // } else {
+            //   print('_loginByGoogle.widget.doAfterLogin?.call()');
+            //   //widget.doAfterLogin?.call();
+            // }
           } else {
             throw HycopUtils.getHycopException(defaultMessage: 'Login failed !!!');
           }
@@ -171,8 +201,8 @@ class _LoginDialogState extends State<LoginDialog> {
       } else {
         errMsg = 'Unknown DB Error !!!';
       }
-      //showSnackBar(widget.context, errMsg);
-      widget.onErrorReport?.call(errMsg);
+      showSnackBar(widget.context, errMsg);
+      //widget.onErrorReport?.call(errMsg);
     });
   }
 
@@ -181,10 +211,9 @@ class _LoginDialogState extends State<LoginDialog> {
 
     logger.finest('isExistAccount');
     AccountManager.isExistAccount(email).then((value) {
-      Navigator.of(widget.context).pop();
       if (value) {
-        //showSnackBar(widget.context, '이미 가입된 이메일입니다');
-        widget.onErrorReport?.call('이미 가입된 이메일입니다');
+        showSnackBar(widget.context, '이미 가입된 이메일입니다');
+        //widget.onErrorReport?.call('이미 가입된 이메일입니다');
         return;
       }
       Map<String, dynamic> userData = {};
@@ -203,6 +232,9 @@ class _LoginDialogState extends State<LoginDialog> {
         );
         await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: model);
         LoginDialog.setShowExtraInfoDialog(true);
+        if (kDebugMode) print('_signup.widget.doAfterSignup?.call()');
+        //widget.doAfterSignup?.call();
+        Navigator.of(widget.getBuildContext()).pop();
         //Routemaster.of(widget.context).push(AppRoutes.intro);
         logger.finest('goto user-info-page');
       }).onError((error, stackTrace) {
@@ -213,8 +245,8 @@ class _LoginDialogState extends State<LoginDialog> {
         } else {
           errMsg = 'Unknown DB Error !!!';
         }
-        //showSnackBar(widget.context, errMsg);
-        widget.onErrorReport?.call(errMsg);
+        showSnackBar(widget.getBuildContext.call(), errMsg);
+        //widget.onErrorReport?.call(errMsg);
       });
     }).onError((error, stackTrace) {
       String errMsg;
@@ -224,8 +256,8 @@ class _LoginDialogState extends State<LoginDialog> {
       } else {
         errMsg = 'Unknown DB Error !!!';
       }
-      //showSnackBar(widget.context, errMsg);
-      widget.onErrorReport?.call(errMsg);
+      showSnackBar(widget.getBuildContext.call(), errMsg);
+      //widget.onErrorReport?.call(errMsg);
     });
   }
 
@@ -234,8 +266,8 @@ class _LoginDialogState extends State<LoginDialog> {
 
     if (email.isEmpty) {
       String errMsg = 'email is empty !!!';
-      //showSnackBar(widget.context, errMsg);
-      widget.onErrorReport?.call(errMsg);
+      showSnackBar(widget.getBuildContext.call(), errMsg);
+      //widget.onErrorReport?.call(errMsg);
       return;
     }
 
@@ -251,8 +283,8 @@ class _LoginDialogState extends State<LoginDialog> {
       } else {
         errMsg = 'Unknown DB Error !!!';
       }
-      //showSnackBar(widget.context, errMsg);
-      widget.onErrorReport?.call(errMsg);
+      showSnackBar(widget.getBuildContext.call(), errMsg);
+      //widget.onErrorReport?.call(errMsg);
     });
   }
 
@@ -325,30 +357,30 @@ class _LoginDialogState extends State<LoginDialog> {
               password = password.trim();
               confirm = confirm.trim();
               if (nickname.isEmpty) {
-                //showSnackBar(widget.context, '닉네임을 입력해주세요');
-                widget.onErrorReport?.call('닉네임을 입력해주세요');
+                showSnackBar(widget.getBuildContext.call(), '닉네임을 입력해주세요');
+                //widget.onErrorReport?.call('닉네임을 입력해주세요');
                 return;
               }
               if (email.isEmpty) {
-                //showSnackBar(widget.context, '이메일을 입력해주세요');
-                widget.onErrorReport?.call('이메일을 입력해주세요');
+                showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
+                //widget.onErrorReport?.call('이메일을 입력해주세요');
                 return;
               }
               if (password.isEmpty) {
-                //showSnackBar(widget.context, '비밀번호를 입력해주세요');
-                widget.onErrorReport?.call('비밀번호를 입력해주세요');
+                showSnackBar(widget.getBuildContext.call(), '비밀번호를 입력해주세요');
+                //widget.onErrorReport?.call('비밀번호를 입력해주세요');
                 return;
               }
               if (password.compareTo(confirm) != 0) {
-                //showSnackBar(widget.context, '비밀번호를 확인해주세요');
-                widget.onErrorReport?.call('비밀번호를 확인해주세요');
+                showSnackBar(widget.getBuildContext.call(), '비밀번호를 확인해주세요');
+                //widget.onErrorReport?.call('비밀번호를 확인해주세요');
                 return;
               }
               bool agreeTerms = _checkboxSignupValueMap[stringAgreeTerms] ?? false;
               bool agreeUsingMarketing = _checkboxSignupValueMap[stringAgreeUsingMarketing] ?? false;
               if (agreeTerms == false) {
-                //showSnackBar(widget.context, '필수 항목을 동의해주세요');
-                widget.onErrorReport?.call('필수 항목을 동의해주세요');
+                showSnackBar(widget.getBuildContext.call(), '필수 항목을 동의해주세요');
+                //widget.onErrorReport?.call('필수 항목을 동의해주세요');
                 return;
               }
               _signup(nickname, email, password, agreeUsingMarketing);
@@ -411,8 +443,8 @@ class _LoginDialogState extends State<LoginDialog> {
               String email = _resetEmailTextEditingController.text;
               email = email.trim();
               if (email.isEmpty) {
-                //showSnackBar(widget.context, '이메일을 입력해주세요');
-                widget.onErrorReport?.call('이메일을 입력해주세요');
+                showSnackBar(widget.getBuildContext.call(), '이메일을 입력해주세요');
+                //widget.onErrorReport?.call('이메일을 입력해주세요');
                 return;
               }
               _resetPassword(email);
@@ -579,20 +611,27 @@ class ExtraInfoDialog extends StatefulWidget {
     super.key,
     required this.context,
     required this.size,
-    this.onErrorReport,
+    //this.onErrorReport,
+    required this.getBuildContext,
   });
   final BuildContext context;
   final Size size; // 406 x 394
-  final Function(String)? onErrorReport;
+  //final Function(String)? onErrorReport;
+  final Function getBuildContext;
 
   @override
   State<ExtraInfoDialog> createState() => _ExtraInfoDialogState();
 
+  static bool _popAfterClose  = true;
+  static void setPopAfterClose(bool popAfterClose) => (_popAfterClose = popAfterClose);
   static void popupDialog({
     required BuildContext context,
-    Function? doAfterLogin,
-    Function(String)? onErrorReport,
+    // Function? doAfterLogin,
+    // Function(String)? onErrorReport,
+    required Function getBuildContext,
   }) {
+    if (kDebugMode) print('ExtraInfoDialog.popupDialog');
+    _popAfterClose = true;
     showDialog(
       context: context,
       builder: (context) => CretaDialog(
@@ -605,11 +644,18 @@ class ExtraInfoDialog extends StatefulWidget {
         content: ExtraInfoDialog(
           context: context,
           size: Size(406, 350 - 46),
-          onErrorReport: onErrorReport,
+          //onErrorReport: onErrorReport,
+          getBuildContext: getBuildContext,
         ),
       ),
     ).then((value) {
-      doAfterLogin?.call();
+      if (kDebugMode) print('ExtraInfoDialog.showDialog.then($_popAfterClose)');
+      if (_popAfterClose) {
+        //Navigator.of(getBuildContext.call()).pop();
+      }
+      if (kDebugMode) print('ExtraInfoDialog.Routemaster');
+      Routemaster.of(getBuildContext.call()).push(AppRoutes.intro);
+      //doAfterLogin?.call();
     });
   }
 }
@@ -681,12 +727,13 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
   }
 
   void _changeExtraInfo(int usingPurpose, int genderType, int birthYear) {
-    LoginPage.userPropertyManagerHolder!.userPropertyModel!.usingPurpose = BookType.fromInt(usingPurpose);
-    LoginPage.userPropertyManagerHolder!.userPropertyModel!.genderType = GenderType.fromInt(genderType);
-    LoginPage.userPropertyManagerHolder!.userPropertyModel!.birthYear = birthYear;
-    //LoginPage.userPropertyManagerHolder!.updateModel(LoginPage.userPropertyManagerHolder!.userPropertyModel!);
-    LoginPage.userPropertyManagerHolder!.setToDB(LoginPage.userPropertyManagerHolder!.userPropertyModel!);
-    //Navigator.of(context).pop();
+    // LoginPage.userPropertyManagerHolder!.userPropertyModel!.usingPurpose = BookType.fromInt(usingPurpose);
+    // LoginPage.userPropertyManagerHolder!.userPropertyModel!.genderType = GenderType.fromInt(genderType);
+    // LoginPage.userPropertyManagerHolder!.userPropertyModel!.birthYear = birthYear;
+    // //LoginPage.userPropertyManagerHolder!.updateModel(LoginPage.userPropertyManagerHolder!.userPropertyModel!);
+    // LoginPage.userPropertyManagerHolder!.setToDB(LoginPage.userPropertyManagerHolder!.userPropertyModel!);
+    ExtraInfoDialog.setPopAfterClose(false);
+    Navigator.of(widget.context).pop();
   }
 
   List<Widget> _getBody() {
@@ -894,8 +941,8 @@ class _ExtraInfoDialogState extends State<ExtraInfoDialog> {
                   textColor: Colors.white,
                   onPressed: () {
                     if (_genderType == GenderType.none) {
-                      //showSnackBar(context, '성별을 선택해주세요');
-                      widget.onErrorReport?.call('성별을 선택해주세요');
+                      showSnackBar(widget.context, '성별을 선택해주세요');
+                      //widget.onErrorReport?.call('성별을 선택해주세요');
                       return;
                     }
                     _changeExtraInfo(_usingPurpose.index, _genderType.index, _birthYear);

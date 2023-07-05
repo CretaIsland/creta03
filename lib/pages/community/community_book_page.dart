@@ -690,6 +690,10 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
     );
   }
 
+  BuildContext getBuildContext() {
+    return context;
+  }
+
   @override
   Widget build(BuildContext context) {
     _resize(context);
@@ -708,6 +712,7 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
         ],
       ),
       context: context,
+      getBuildContext: getBuildContext,
       child: SingleChildScrollView(
         child: Column(
           children: [

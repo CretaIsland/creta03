@@ -126,15 +126,19 @@ class Snippet {
     required Widget title,
     required BuildContext context,
     required Widget child,
-    Function? doAfterLogin,
-    Function(String)? onErrorReport,
+    // Function? doAfterLogin,
+    // Function? doAfterSignup,
+    // Function(String)? onErrorReport,
+    required Function getBuildContext,
   }) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfCommunity(
         context: context,
         title: title,
-        doAfterLogin: doAfterLogin,
-        onErrorReport: onErrorReport,
+        // doAfterLogin: doAfterLogin,
+        // doAfterSignup: doAfterSignup,
+        // onErrorReport: onErrorReport,
+        getBuildContext: getBuildContext,
       ),
       floatingActionButton: Snippet.CretaDial(context),
       body: GestureDetector(
@@ -153,8 +157,10 @@ class Snippet {
   static PreferredSizeWidget CretaAppBarOfCommunity({
     required BuildContext context,
     required Widget title,
-    Function? doAfterLogin,
-    Function(String)? onErrorReport,
+    // Function? doAfterLogin,
+    // Function? doAfterSignup,
+    // Function(String)? onErrorReport,
+    required Function getBuildContext,
   }) {
     return AppBar(
       title: title,
@@ -184,8 +190,10 @@ class Snippet {
                   //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
                   LoginDialog.popupDialog(
                     context: context,
-                    doAfterLogin: doAfterLogin,
-                    onErrorReport: onErrorReport,
+                    // doAfterLogin: doAfterLogin,
+                    // doAfterSignup: doAfterSignup,
+                    // onErrorReport: onErrorReport,
+                    getBuildContext: getBuildContext,
                   );
                 },
               ),
@@ -209,8 +217,13 @@ class Snippet {
                 //image:
                 //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
                 onPressed: () {
-                  // _popupAccountMenu(
-                  //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
+                  LoginDialog.popupDialog(
+                    context: context,
+                    // doAfterLogin: doAfterLogin,
+                    // onErrorReport: onErrorReport,
+                    getBuildContext: getBuildContext,
+                    loginPageState: LoginPageState.singup,
+                  );
                 },
               ),
             ),

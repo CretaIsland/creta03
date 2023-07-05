@@ -1333,6 +1333,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return widgetList;
   }
 
+  BuildContext getBuildContext() {
+    return context;
+  }
+
   @override
   Widget build(BuildContext context) {
     //resize(context);
@@ -1351,6 +1355,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         ],
       ),
       context: context,
+      getBuildContext: getBuildContext,
       child: Stack(
         children: [
           mainPage(
