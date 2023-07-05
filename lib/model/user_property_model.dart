@@ -241,7 +241,7 @@ class UserPropertyModel extends CretaModel {
         'enterprise' : enterprise,
         'genderType' : genderType.index,
         'agreeUsingMarketing' : agreeUsingMarketing,
-        'usingPurpose' : usingPurpose,
+        'usingPurpose' : usingPurpose.index,
         'birthYear': birthYear,
       }.entries);
   }

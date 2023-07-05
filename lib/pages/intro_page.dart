@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:routemaster/routemaster.dart';
-import 'package:hycop/hycop.dart';
+//import 'package:routemaster/routemaster.dart';
+//import 'package:hycop/hycop.dart';
 
-import '../../routes.dart';
+//import '../../routes.dart';
 import '../design_system/component/snippet.dart';
 import '../design_system/creta_font.dart';
 
@@ -33,13 +33,25 @@ class _IntroPageState extends State<IntroPage> {
       });
     });
   }
+  //
+  // void doAfterLogin() {
+  //   print('doAfterLogin');
+  //   Navigator.of(context).pop();
+  //   Routemaster.of(context).push(AppRoutes.intro);
+  // }
+  //
+  // void doAfterSignup() {
+  //   print('doAfterSignup');
+  //   Navigator.of(context).pop();
+  // }
+  //
+  // void onErrorReport(String errMsg) {
+  //   print('onErrorReport($errMsg)');
+  //   showSnackBar(context, errMsg);
+  // }
 
-  void doAfterLogin() {
-    Routemaster.of(context).push(AppRoutes.intro);
-  }
-
-  void onErrorReport(String errMsg) {
-    showSnackBar(context, errMsg);
+  BuildContext getBuildContext() {
+    return context;
   }
 
   @override
@@ -48,14 +60,13 @@ class _IntroPageState extends State<IntroPage> {
     double height = MediaQuery.of(context).size.height;
 
     double videoWidth = width;
-    double videoHeight = width * 0.5625;
+    double videoHeight = width * 0.5625; // 0.5625 = 1080 / 1920
     if (videoHeight > height) {
       videoHeight = height;
-      videoWidth = height * 1.77;
+      videoWidth = height * 1.77; // 1.77 = 1920 / 1080
     }
 
     return Snippet.CretaScaffoldOfCommunity(
-      //title: Snippet.logo('Intro page'),
       title: Row(
         children: const [
           SizedBox(
@@ -69,53 +80,35 @@ class _IntroPageState extends State<IntroPage> {
         ],
       ),
       context: context,
-      // child: Center(
-      //   child: Text(
-      //     "Version 0.1.2 (hycop 0.2.9)",
-      //     style: CretaFont.headlineLarge,
-      //   ),
-      // ),
-      doAfterLogin: doAfterLogin,
-      onErrorReport: onErrorReport,
-
-      child: Stack(
-        //crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: videoWidth,
-            height: videoHeight,
-            child: VideoPlayer(controller),
-          ),
-          SizedBox(
-            width: videoWidth,
-            height: videoHeight,
-            child: Center(
-              child: Text(
-                "Version 0.1.3 (hycop 0.2.10)",
-                style: CretaFont.headlineLarge,
+      // doAfterLogin: doAfterLogin,
+      // doAfterSignup: doAfterSignup,
+      // onErrorReport: onErrorReport,
+      getBuildContext: getBuildContext,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Center(
+          child: Stack(
+            children: [
+              SizedBox(
+                width: videoWidth,
+                height: videoHeight,
+                child: VideoPlayer(controller),
               ),
-            ),
+              SizedBox(
+                width: videoWidth,
+                height: videoHeight,
+                child: Center(
+                  child: Text(
+                    "Version 0.1.2 (hycop 0.2.9)",
+                    style: CretaFont.headlineLarge,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
-      // child: SizedBox(
-      //   width: width,
-      //   height: height,
-      //   child: Column(
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       Container(
-      //         width: width,
-      //         constraints: BoxConstraints(
-      //           maxWidth: width,
-      //           maxHeight: height,
-      //         ),
-      //         //height: 480,
-      //         child: VideoPlayer(controller),
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }
