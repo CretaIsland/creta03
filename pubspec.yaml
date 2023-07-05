@@ -37,7 +37,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.2.11
+  hycop: ^0.2.10
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: ^2.2.0
   # elegant_radio_button_group: ^0.0.1
@@ -109,6 +109,7 @@ dependencies:
   html_editor_enhanced: ^2.5.1
   numberpicker: ^2.1.2
   file_picker: ^5.3.1
+  # flutter_custom_clippers: ^2.1.0
 
 dev_dependencies:
   flutter_test:
