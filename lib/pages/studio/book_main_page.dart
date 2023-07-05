@@ -398,7 +398,8 @@ class _BookMainPageState extends State<BookMainPage> {
                 children: [
                   MouseRegion(
                     onHover: (pointerEvent) {
-                      //if (StudioVariables.allowMutilUser == true) {
+					  //if (StudioVariables.allowMutilUser == true) {
+                      if(mouseTracerHolder!.userMouseList.isEmpty) return;
                       if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
                         client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
                             (pointerEvent.position.dy - 50) / screenHeightPrecentage);
