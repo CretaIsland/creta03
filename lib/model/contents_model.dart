@@ -41,6 +41,7 @@ class ContentsModel extends CretaModel {
   String? remoteUrl;
   String? thumbnail;
   ContentsType contentsType = ContentsType.none;
+  TextType textType = TextType.normal;
   String lastModifiedTime = "";
 
   late UndoAble<String> subList;
@@ -96,6 +97,7 @@ class ContentsModel extends CretaModel {
         remoteUrl,
         thumbnail,
         contentsType,
+        textType,
         lastModifiedTime,
         subList,
         playTime,
@@ -156,6 +158,7 @@ class ContentsModel extends CretaModel {
     remoteUrl = '';
     thumbnail = '';
     contentsType = ContentsType.none;
+    textType = TextType.normal;
 
     _initValues();
   }
@@ -175,6 +178,7 @@ class ContentsModel extends CretaModel {
     remoteUrl = '';
     thumbnail = '';
     contentsType = ContentsType.none;
+    textType = TextType.normal;
 
     _initValues();
   }
@@ -235,6 +239,7 @@ class ContentsModel extends CretaModel {
     // remoteUrl = srcContents.remoteUrl;
     // thumbnail = srcContents.thumbnail;
     contentsType = srcContents.contentsType;
+    textType = srcContents.textType;
 
     subList = UndoAble<String>(srcContents.subList.value, mid, 'subList');
     playTime = UndoAble<double>(srcContents.playTime.value, mid, 'playTime');
@@ -251,7 +256,6 @@ class ContentsModel extends CretaModel {
 
     if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
     if (srcContents.thumbnail != null) thumbnail = srcContents.thumbnail;
-    contentsType = srcContents.contentsType;
     lastModifiedTime = DateTime.now().toString();
 
     font = UndoAble<String>(srcContents.font.value, mid, 'font');
@@ -298,6 +302,7 @@ class ContentsModel extends CretaModel {
     // remoteUrl = srcContents.remoteUrl;
     // thumbnail = srcContents.thumbnail;
     contentsType = srcContents.contentsType;
+    textType = srcContents.textType;
 
     subList.init(srcContents.subList.value);
     playTime.init(srcContents.playTime.value);
@@ -320,6 +325,7 @@ class ContentsModel extends CretaModel {
     }
 
     contentsType = srcContents.contentsType;
+    textType = srcContents.textType;
     lastModifiedTime = DateTime.now().toString();
 
     font.init(srcContents.font.value);
@@ -399,6 +405,7 @@ class ContentsModel extends CretaModel {
     //file = null; // file 의 desialize 하지 않는다.  즉 DB 로 부터 가져오지 않는다.
     mime = map["mime"];
     contentsType = ContentsType.fromInt(map["contentsType"] ?? 0);
+    textType = TextType.fromInt(map["textType"] ?? 0);
     remoteUrl = map["remoteUrl"] ?? '';
     thumbnail = map["thumbnail"] ?? '';
 
@@ -460,6 +467,7 @@ class ContentsModel extends CretaModel {
         "isShow": isShow.value,
         "volume": volume.value,
         "contentsType": contentsType.index,
+        "textType": textType.index,
         "aspectRatio": aspectRatio.value,
         "width": width.value,
         "height": height.value,

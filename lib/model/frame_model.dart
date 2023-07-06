@@ -49,6 +49,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   int subType = -1;
 
   bool isWeatherTYpe() {
+    if (frameType == FrameType.weatherInfo) return true;
     if (frameType == FrameType.weather1) return true;
     if (frameType == FrameType.weather2) return true;
     return false;

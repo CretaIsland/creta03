@@ -35,6 +35,7 @@ enum FrameType {
   animation,
   text,
   youtube,
+  weatherInfo,
   weather1,
   weather2,
   end;
@@ -520,4 +521,14 @@ enum GenderType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static GenderType fromInt(int? val) => GenderType.values[validCheck(val ?? none.index)];
+}
+
+enum TextType {
+  none,
+  normal,
+  weather,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static TextType fromInt(int? val) => TextType.values[validCheck(val ?? none.index)];
 }

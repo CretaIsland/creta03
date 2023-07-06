@@ -151,7 +151,6 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     }
     ContentsModel? contents = contentsManager.getCurrentModel();
     if (contents == null) {
-      print('---------no contents');
       if (frame.isWeatherTYpe()) {
         return WeatherProperty(frameModel: frame, frameManager: frameManager);
       }

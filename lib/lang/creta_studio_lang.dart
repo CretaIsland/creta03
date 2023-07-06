@@ -505,4 +505,13 @@ class CretaStudioLang {
 
   static var onlineWeather = '날씨 온라인 연결';
   static String offLineWeather = "날씨 수동으로 선택";
+
+  static String temperature = "온도";
+  static String humidity = "습도";
+  static String wind = "풍향/풍속";
+  static String pressure = "기압";
+  static String uv = "자외선지수";
+  static String visibility = "가시거리";
+  static String microDust = "미세먼지";
+  static String superMicroDust = "초미세먼지";
 }

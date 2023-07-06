@@ -27,6 +27,7 @@ class WeatherBase extends StatefulWidget {
 
 class _WeatherBaseState extends State<WeatherBase> {
   bool _isHover = false;
+  bool _isClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,7 @@ class _WeatherBaseState extends State<WeatherBase> {
         onExit: (value) {
           setState(() {
             _isHover = false;
+            _isClicked = false;
           });
         },
         onEnter: (value) {
@@ -60,22 +62,15 @@ class _WeatherBaseState extends State<WeatherBase> {
           });
         },
         child: GestureDetector(
-          onTapDown: (d) {
-            print('onTapDown======================');
-          },
-          onTapUp: (d) {
-            print('onTapUp======================');
-          },
-          onTap: () {
-            print('onTap======================');
-          },
           onLongPressDown: (d) {
-            print('##################################');
+            setState(() {
+              _isClicked = true;
+            });
             widget.onPressed?.call();
           },
           child: Container(
-            width: widget.width,
-            height: widget.height,
+            width: _isClicked ? widget.width + 3 : widget.width,
+            height: _isClicked ? widget.height + 3 : widget.height,
             decoration: BoxDecoration(
               border: Border.all(
                 color: _isHover ? CretaColor.primary : CretaColor.text[200]!,
