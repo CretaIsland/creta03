@@ -500,4 +500,9 @@ class CretaStudioLang {
   static String neon = 'Neon Text';
   static String fade = 'Fade Text';
   static String bounce = 'Bounce Text';
+
+  static String weather = '날씨 위젯';
+
+  static var onlineWeather = '날씨 온라인 연결';
+  static String offLineWeather = "날씨 수동으로 선택";
 }

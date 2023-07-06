@@ -109,6 +109,8 @@ dependencies:
   html_editor_enhanced: ^2.5.1
   numberpicker: ^2.1.2
   file_picker: ^5.3.1
+  flutter_weather_bg_null_safety: ^1.0.0
+  weather_animation: ^0.0.2
   # flutter_custom_clippers: ^2.1.0
 
 dev_dependencies:

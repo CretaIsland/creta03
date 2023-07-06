@@ -35,6 +35,8 @@ enum FrameType {
   animation,
   text,
   youtube,
+  weather1,
+  weather2,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;

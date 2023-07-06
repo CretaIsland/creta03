@@ -19,6 +19,7 @@ import '../studio_constant.dart';
 import 'contents/contents_ordered_list.dart';
 import 'contents/contents_property.dart';
 import 'frame/frame_property.dart';
+import 'frame/weather_property.dart';
 
 class RightMenuFrameAndContents extends StatefulWidget {
   final String selectedTap;
@@ -150,6 +151,10 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     }
     ContentsModel? contents = contentsManager.getCurrentModel();
     if (contents == null) {
+      print('---------no contents');
+      if (frame.isWeatherTYpe()) {
+        return WeatherProperty(frameModel: frame, frameManager: frameManager);
+      }
       return SizedBox.shrink();
     }
     //logger.info('ContentsProperty ${contents.mid}-----------------');

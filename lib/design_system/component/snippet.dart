@@ -14,7 +14,6 @@ import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
-import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -93,32 +92,16 @@ class Snippet {
       appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
       floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: StudioVariables.isHandToolMode == false
-          ? GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onLongPressDown: ((details) {
-                // if (LinkParams.isLinkNewMode == true) {
-                //   if (LinkParams.connectedClass == 'page' &&
-                //       !BookMainPage.containeeNotifier!.isPage()) {
-                //     logger.info('LinkParams.isLinkNewMode cancel');
-                //     LinkParams.isLinkNewMode = false;
-                //     LinkParams.connectedClass = '';
-                //     LinkParams.connectedMid = '';
-                //   }
-                //   if (LinkParams.connectedClass == 'frame' &&
-                //       !BookMainPage.containeeNotifier!.isFrame()) {
-                //     logger.info('LinkParams.isLinkNewMode cancel');
-                //     LinkParams.isLinkNewMode = false;
-                //     LinkParams.connectedClass = '';
-                //     LinkParams.connectedMid = '';
-                //   }
-                // }
-                LastClicked.clickedOutSide(details.globalPosition);
-                //logger.info('LastClicked pressed ${BookMainPage.containeeNotifier!.selectedClass}');
-              }),
-              child: child,
-            )
-          : child,
+      body: child,
+      // body: StudioVariables.isHandToolMode == false
+      //     ? GestureDetector(
+      //         behavior: HitTestBehavior.opaque,
+      //         onLongPressDown: ((details) {
+      //           LastClicked.clickedOutSide(details.globalPosition);
+      //         }),
+      //         child: child,
+      //       )
+      //     : child,
     );
   }
 
@@ -167,123 +150,123 @@ class Snippet {
       toolbarHeight: CretaConstant.appbarHeight,
       backgroundColor: Colors.white,
       shadowColor: Colors.grey[500],
-      actions:
-      (!AccountManager.currentLoginUser.isLoginedUser)
-      ? [
-        Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Center(
-            child: SizedBox(
-              height: 36,
-              child: BTN.fill_blue_t_l(
-                //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
-                buttonColor: CretaButtonColor.white,
-                //fgColor: CretaColor.text[700]!,
-                height: 36,
-                text: '로그인',
-                //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                //image:
-                //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
-                textStyle: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]),
-                onPressed: () {
-                  // _popupAccountMenu(
-                  //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
-                  LoginDialog.popupDialog(
-                    context: context,
-                    // doAfterLogin: doAfterLogin,
-                    // doAfterSignup: doAfterSignup,
-                    // onErrorReport: onErrorReport,
-                    getBuildContext: getBuildContext,
-                  );
-                },
+      actions: (!AccountManager.currentLoginUser.isLoginedUser)
+          ? [
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Center(
+                  child: SizedBox(
+                    height: 36,
+                    child: BTN.fill_blue_t_l(
+                      //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
+                      buttonColor: CretaButtonColor.white,
+                      //fgColor: CretaColor.text[700]!,
+                      height: 36,
+                      text: '로그인',
+                      //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                      //image:
+                      //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+                      textStyle: CretaFont.buttonLarge.copyWith(color: CretaColor.text[700]),
+                      onPressed: () {
+                        // _popupAccountMenu(
+                        //     GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
+                        LoginDialog.popupDialog(
+                          context: context,
+                          // doAfterLogin: doAfterLogin,
+                          // doAfterSignup: doAfterSignup,
+                          // onErrorReport: onErrorReport,
+                          getBuildContext: getBuildContext,
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 40),
-          child: Center(
-            child: SizedBox(
-              width: 112,
-              height: 36,
-              child: BTN.fill_blue_ti_l(
-                //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
-                //buttonColor: CretaButtonColor.white,
-                //fgColor: CretaColor.text[700]!,
-                width: 112,
-                text: '회원가입',
-                icon: Icons.arrow_forward,
-                //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                //image:
-                //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
-                onPressed: () {
-                  LoginDialog.popupDialog(
-                    context: context,
-                    // doAfterLogin: doAfterLogin,
-                    // onErrorReport: onErrorReport,
-                    getBuildContext: getBuildContext,
-                    loginPageState: LoginPageState.singup,
-                  );
-                },
+              Padding(
+                padding: const EdgeInsets.only(right: 40),
+                child: Center(
+                  child: SizedBox(
+                    width: 112,
+                    height: 36,
+                    child: BTN.fill_blue_ti_l(
+                      //key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
+                      //buttonColor: CretaButtonColor.white,
+                      //fgColor: CretaColor.text[700]!,
+                      width: 112,
+                      text: '회원가입',
+                      icon: Icons.arrow_forward,
+                      //image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                      //image:
+                      //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+                      onPressed: () {
+                        LoginDialog.popupDialog(
+                          context: context,
+                          // doAfterLogin: doAfterLogin,
+                          // onErrorReport: onErrorReport,
+                          getBuildContext: getBuildContext,
+                          loginPageState: LoginPageState.singup,
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-      ]
-      : [
-        // new book
-        Center(
-          child: SizedBox(
-            height: 36,
-            width: 130,
-            child: BTN.fill_gray_it_l(
-              text: CretaStudioLang.newBook,
-              buttonColor: CretaButtonColor.blueAndWhiteTitle,
-              textColor: Colors.white,
-              onPressed: () {
-                Routemaster.of(context).push(AppRoutes.studioBookMainPage);
-              },
-              icon: Icons.add_outlined,
-            ),
-          ),
-        ),
-        SizedBox(width: 8),
-        // noti
-        Center(
-          child: SizedBox(
-            height: 36,
-            child: BTN.fill_blue_i_l(
-              //tooltip: CretaStudioLang.tooltipNoti,
-              icon: Icons.notifications_outlined,
-              buttonColor: CretaButtonColor.white,
-              iconColor: CretaColor.text[700],
-              onPressed: () {},
-            ),
-          ),
-        ),
-        SizedBox(width: 5),
-        // user info
-        Center(
-          child: SizedBox(
-            height: 40,
-            child: BTN.fill_gray_iti_l(
-              key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
-              buttonColor: CretaButtonColor.white,
-              fgColor: CretaColor.text[700]!,
-              text: AccountManager.currentLoginUser.name,
-              icon: Icons.arrow_drop_down_outlined,
-              image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-              //image:
-              //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
-              onPressed: () {
-                _popupAccountMenu(
-                    GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
-              },
-            ),
-          ),
-        ),
-        SizedBox(width: 20),
-      ],
+            ]
+          : [
+              // new book
+              Center(
+                child: SizedBox(
+                  height: 36,
+                  width: 130,
+                  child: BTN.fill_gray_it_l(
+                    text: CretaStudioLang.newBook,
+                    buttonColor: CretaButtonColor.blueAndWhiteTitle,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+                    },
+                    icon: Icons.add_outlined,
+                  ),
+                ),
+              ),
+              SizedBox(width: 8),
+              // noti
+              Center(
+                child: SizedBox(
+                  height: 36,
+                  child: BTN.fill_blue_i_l(
+                    //tooltip: CretaStudioLang.tooltipNoti,
+                    icon: Icons.notifications_outlined,
+                    buttonColor: CretaButtonColor.white,
+                    iconColor: CretaColor.text[700],
+                    onPressed: () {},
+                  ),
+                ),
+              ),
+              SizedBox(width: 5),
+              // user info
+              Center(
+                child: SizedBox(
+                  height: 40,
+                  child: BTN.fill_gray_iti_l(
+                    key: GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'),
+                    buttonColor: CretaButtonColor.white,
+                    fgColor: CretaColor.text[700]!,
+                    text: AccountManager.currentLoginUser.name,
+                    icon: Icons.arrow_drop_down_outlined,
+                    image: NetworkImage(
+                        'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
+                    //image:
+                    //    NetworkImage(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+                    onPressed: () {
+                      _popupAccountMenu(
+                          GlobalObjectKey('CretaAppBarOfCommunity.BTN.fill_gray_iti_l'), context);
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(width: 20),
+            ],
     );
   }
 

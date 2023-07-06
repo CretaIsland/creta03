@@ -27,3 +27,12 @@ copy src_modify\auto_size_text.daxt    C:\Users\seon\AppData\Local\Pub\Cache\hos
 
 #skpark modify 7/03
 copy src_modify\neonpen.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\neonpen-2.0.5\lib\neonpen.dart
+
+#skpark modify 7/06
+
+copy src_modify\weather_thunder_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\bg\weather_thunder_bg.dart  
+copy src_modify\weather_rain_snow_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\bg\weather_rain_snow_bg.dart  
+copy src_modify\weather_night_star_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\bg\weather_night_star_bg.dart  
+copy src_modify\weather_cloud_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\bg\weather_cloud_bg.dart  
+copy src_modify\weather_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\bg\weather_bg.dart 
+copy src_modify\print_utils.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\utils\print_utils.dart 
