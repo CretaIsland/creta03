@@ -1,9 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+//import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 
 import '../../../model/app_enums.dart';
 import '../../creta_color.dart';
+import 'creta_arrow_clipper.dart';
+import 'creta_digonal_clipper.dart';
+import 'creta_oval_clipper.dart';
+import 'creta_poligon_clipper.dart';
+import 'creta_slider_cut_clipper.dart';
+import 'creta_star_clipper.dart';
+import 'creta_wave_clippper_1.dart';
 import 'diamond_container.dart';
 import 'star_container.dart';
 import 'triangle_container.dart';
@@ -143,6 +151,315 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
           ),
         );
 
+      case ShapeType.sideCut:
+        return Center(
+          child: ClipPath(
+            clipper: CretaSideCutClipper(delta: 0.15),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.waveTopLeft:
+        return Center(
+          child: ClipPath(
+            clipper: CretaWaveClipper1(flip: true, reverse: true, delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.waveTopRight:
+        return Center(
+          child: ClipPath(
+            clipper: CretaWaveClipper1(flip: false, reverse: true, delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.waveBottomLeft:
+        return Center(
+          child: ClipPath(
+            clipper: CretaWaveClipper1(flip: true, reverse: false, delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.waveBottomRight:
+        return Center(
+          child: ClipPath(
+            clipper: CretaWaveClipper1(flip: false, reverse: false, delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.ovalTop:
+        return Center(
+          child: ClipPath(
+            clipper: CreaOvalTopClipper(delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.ovalBottom:
+        return Center(
+          child: ClipPath(
+            clipper: CretaOvalBottomClipper(delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.ovalLeft:
+        return Center(
+          child: ClipPath(
+            clipper: CretaOvalLeftClipper(delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.ovalRight:
+        return Center(
+          child: ClipPath(
+            clipper: CretaOvalRightClipper(delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.star4:
+        return Center(
+          child: ClipPath(
+            clipper: CretaStarClipper(4),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.star8:
+        return Center(
+          child: ClipPath(
+            clipper: CretaStarClipper(8),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.star16:
+        return Center(
+          child: ClipPath(
+            clipper: CretaStarClipper(16),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.arrowUp:
+        return Center(
+          child: ClipPath(
+            clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.TOP),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.arrowBottom:
+        return Center(
+          child: ClipPath(
+            clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.BOTTOM),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.arrowLeft:
+        return Center(
+          child: ClipPath(
+            clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.LEFT),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.arrowRight:
+        return Center(
+          child: ClipPath(
+            clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.RIGHT),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.dirUp:
+        return Center(
+          child: ClipPath(
+            clipper: CretaArrowClipper(height * 0.33, width, CretaEdge.TOP),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.dirBottom:
+        return Center(
+          child: ClipPath(
+            clipper: CretaArrowClipper(height * 0.33, width, CretaEdge.BOTTOM),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.dirLeft:
+        return Center(
+          child: ClipPath(
+            clipper: CretaArrowClipper(width * 0.33, height, CretaEdge.LEFT),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.dirRight:
+        return Center(
+          child: ClipPath(
+            clipper: CretaArrowClipper(width * 0.33, height, CretaEdge.RIGHT),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.octagon:
+        return Center(
+          child: ClipPath(
+            clipper: CretaOctagonalClipper(),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.hexagon:
+        return Center(
+          child: ClipPath(
+            clipper: CretaHexagonalClipper(),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.digonalBottomLeft:
+        return Center(
+          child: ClipPath(
+            clipper: CretaDiagonalBottomLeft(delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.digonalBottomRight:
+        return Center(
+          child: ClipPath(
+            clipper: CretaDiagonalBottomRight(delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.pepple1:
+        return Center(
+          child: ClipPath(
+            clipper: CretaPeppleClipper1(delta: height / 10),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.heart:
+        return Center(
+          child: ClipPath(
+            clipper: CretaHeartClipper(),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+      case ShapeType.leaf:
+        return Center(
+          child: ClipPath(
+            clipper: CretaLeafClipper(),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
+
+      case ShapeType.snowman:
+        return Center(
+          child: ClipPath(
+            clipper: CretaSnowManClipper(),
+            child: Container(
+              height: width,
+              width: height,
+              color: CretaColor.text[300]!,
+            ),
+          ),
+        );
       default:
         return Container(
           width: width,

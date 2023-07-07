@@ -129,13 +129,13 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
             });
       }
       // 텍스트가 아닌 경우.
-      return StreamBuilder<AbsExModel>(
+      return StreamBuilder<ContentsModel>(
           stream: _receiveEvent!.eventStream.stream,
           builder: (context, snapshot) {
             if (snapshot.data != null && snapshot.data is ContentsModel) {
-              ContentsModel model = snapshot.data! as ContentsModel;
+              ContentsModel model = snapshot.data!;
               contentsManager.updateModel(model);
-              logger.fine('model updated ${model.name}, ${model.url}');
+              logger.info('model updated ${model.name}, ${model.thumbnail}');
             }
             if (contentsCount > 0) {
               String? thumbnailUrl = contentsManager.getThumbnail();

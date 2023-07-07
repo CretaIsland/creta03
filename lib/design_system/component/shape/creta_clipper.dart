@@ -3,8 +3,15 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../model/app_enums.dart';
+import 'creta_arrow_clipper.dart';
+import 'creta_digonal_clipper.dart';
 import 'creta_outline_painter.dart';
+import 'creta_oval_clipper.dart';
+import 'creta_poligon_clipper.dart';
 import 'creta_shadow_painter.dart';
+import 'creta_slider_cut_clipper.dart';
+import 'creta_star_clipper.dart';
+import 'creta_wave_clippper_1.dart';
 import 'shape_path.dart';
 
 extension ShapeWidget<T extends Widget> on T {
@@ -143,6 +150,311 @@ extension ShapeWidget<T extends Widget> on T {
       );
     }
 
+    if (shapeType == ShapeType.sideCut) {
+      return ClipPath(
+        clipper: CretaSideCutClipper(),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.waveTopLeft) {
+      return ClipPath(
+        clipper: CretaWaveClipper1(flip: true, reverse: true, delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.waveTopRight) {
+      return ClipPath(
+        clipper: CretaWaveClipper1(flip: false, reverse: true, delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.waveBottomLeft) {
+      return ClipPath(
+        clipper: CretaWaveClipper1(flip: true, reverse: false, delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.waveBottomRight) {
+      return ClipPath(
+        clipper: CretaWaveClipper1(flip: false, reverse: false, delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.ovalTop) {
+      return ClipPath(
+        clipper: CreaOvalTopClipper(delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.ovalBottom) {
+      return ClipPath(
+        clipper: CretaOvalBottomClipper(delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.ovalLeft) {
+      return ClipPath(
+        clipper: CretaOvalLeftClipper(delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.ovalRight) {
+      return ClipPath(
+        clipper: CretaOvalRightClipper(delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+    if (shapeType == ShapeType.star4) {
+      return ClipPath(
+        clipper: CretaStarClipper(4),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+    if (shapeType == ShapeType.star8) {
+      return ClipPath(
+        clipper: CretaStarClipper(8),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.star16) {
+      return ClipPath(
+        clipper: CretaStarClipper(16),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.arrowUp) {
+      return ClipPath(
+        clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.TOP),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.arrowBottom) {
+      return ClipPath(
+        clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.BOTTOM),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.arrowLeft) {
+      return ClipPath(
+        clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.LEFT),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.arrowRight) {
+      return ClipPath(
+        clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.RIGHT),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.dirUp) {
+      return ClipPath(
+        clipper: CretaArrowClipper(height * 0.33, width, CretaEdge.TOP),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.dirBottom) {
+      return ClipPath(
+        clipper: CretaArrowClipper(height * 0.33, width, CretaEdge.BOTTOM),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.dirLeft) {
+      return ClipPath(
+        clipper: CretaArrowClipper(width * 0.33, height, CretaEdge.LEFT),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.dirRight) {
+      return ClipPath(
+        clipper: CretaArrowClipper(width * 0.33, height, CretaEdge.RIGHT),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.octagon) {
+      return ClipPath(
+        clipper: CretaOctagonalClipper(),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.hexagon) {
+      return ClipPath(
+        clipper: CretaHexagonalClipper(),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.digonalBottomLeft) {
+      return ClipPath(
+        clipper: CretaDiagonalBottomLeft(delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.digonalBottomRight) {
+      return ClipPath(
+        clipper: CretaDiagonalBottomRight(delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.pepple1) {
+      return ClipPath(
+        clipper: CretaPeppleClipper1(delta: height / 10),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.heart) {
+      return ClipPath(
+        clipper: CretaHeartClipper(),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.leaf) {
+      return ClipPath(
+        clipper: CretaLeafClipper(),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
+
+    if (shapeType == ShapeType.snowman) {
+      return ClipPath(
+        clipper: CretaSnowManClipper(),
+        child: SizedBox(
+          height: height,
+          width: width,
+          child: this,
+        ),
+      );
+    }
     return ClipPath(
       key: ValueKey('base-$mid'),
       clipper: CretaClipper(

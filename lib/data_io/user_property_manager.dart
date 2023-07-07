@@ -83,10 +83,10 @@ class UserPropertyManager extends CretaManager {
     return modelList.length;
   }
 
-  Future<UserPropertyModel> createUserProperty({
+  UserPropertyModel getNewUserProperty({
     bool? agreeUsingMarketing,
-  }) async {
-    userPropertyModel = UserPropertyModel.withName(
+  }) {
+    UserPropertyModel model =  UserPropertyModel.withName(
       parentMid: userModel.userId,
       email: userModel.email,
       nickname: userModel.name,
@@ -128,8 +128,18 @@ class UserPropertyManager extends CretaManager {
     );
 
     if (agreeUsingMarketing != null) {
-      userPropertyModel?.agreeUsingMarketing = agreeUsingMarketing;
+      model.agreeUsingMarketing = agreeUsingMarketing;
     }
+
+    return model;
+  }
+
+  Future<UserPropertyModel> createUserProperty({
+    UserPropertyModel? createModel,
+    bool? agreeUsingMarketing,
+  }) async {
+    userPropertyModel = createModel ?? getNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
+
     await createToDB(userPropertyModel!);
     insert(userPropertyModel!, postion: getAvailLength());
     selectedMid = userPropertyModel!.mid;

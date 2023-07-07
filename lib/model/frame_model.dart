@@ -46,6 +46,14 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<String> eventSend;
   double prevOrder = -1;
   FrameType frameType = FrameType.none;
+  int subType = -1;
+
+  bool isWeatherTYpe() {
+    if (frameType == FrameType.weatherInfo) return true;
+    if (frameType == FrameType.weather1) return true;
+    if (frameType == FrameType.weather2) return true;
+    return false;
+  }
 
   double prevWidth = -1;
   double prevHeight = -1;
@@ -85,6 +93,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         angle,
         isInsideRotate,
         frameType,
+        subType,
         radius,
         radiusLeftTop,
         radiusRightTop,
@@ -124,6 +133,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isAutoFit = UndoAble<bool>(false, mid, 'isAutoFit');
     isMain = UndoAble<bool>(false, mid, 'isMain');
     frameType = FrameType.none;
+    subType = -1;
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');
@@ -179,6 +189,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     //shadowIn = UndoAble<bool>(false, mid);
 
     frameType = pType;
+    subType = -1;
   }
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
@@ -213,6 +224,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
 
     frameType = srcFrame.frameType;
+    subType = srcFrame.subType;
     prevOrder = srcFrame.prevOrder;
 
     super.copyFromMixin(mid, srcFrame);
@@ -251,6 +263,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
 
     frameType = srcFrame.frameType;
+    subType = srcFrame.subType;
     prevOrder = srcFrame.prevOrder;
     super.updateFromMixin(srcFrame);
     logger.finest('FrameCopied($mid)');
@@ -295,6 +308,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     //shadowIn.set((map["shadowIn"] ?? false), save: false, noUndo: true);
 
     frameType = FrameType.fromInt(map["frameType"] ?? 0);
+    subType = map["subType"] ?? -1;
     prevOrder = map["prevOrder"] ?? -1;
     super.fromMapMixin(map);
     logger.finest('${posX.value}, ${posY.value}');
@@ -331,6 +345,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "eventSend": eventSend.value,
         //"shadowIn": shadowIn.value,
         'frameType': frameType.index,
+        'subType': subType,
         'prevOrder': prevOrder,
         ...super.toMapMixin(),
       }.entries);

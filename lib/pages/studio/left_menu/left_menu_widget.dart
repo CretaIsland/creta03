@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // ignore: avoid_web_libraries_in_flutter
 
 import 'package:creta03/design_system/text_field/creta_search_bar.dart';
@@ -14,7 +15,11 @@ import '../book_main_page.dart';
 import '../containees/frame/frame_play_mixin.dart';
 import '../studio_constant.dart';
 import 'left_template_mixin.dart';
+import 'package:creta03/lang/creta_studio_lang.dart';
+import 'package:flutter/material.dart';
 
+import 'left_template_mixin.dart';
+import 'weather/left_menu_weather.dart';
 class LeftMenuWidget extends StatefulWidget {
   const LeftMenuWidget({super.key});
 
@@ -96,6 +101,33 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin,
             width: 28.0,
             text: CretaStudioLang.effects,
             onPressed: () {},
+class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin {
+  late double _itemWidth;
+  late double _itemHeight;
+
+  @override
+  void initState() {
+    super.initState();
+    initMixin();
+
+    _itemWidth = 160;
+    _itemHeight = _itemWidth * (1080 / 1920);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LeftMenuWeather(
+            title: CretaStudioLang.weather,
+            width: _itemWidth,
+            height: _itemHeight,
+            titleStyle: titleStyle,
+            dataStyle: dataStyle,
           ),
         ],
       ),

@@ -273,6 +273,7 @@ class CretaTextField extends LastClickable {
 
   @override
   Rect? getBoxRect() {
+    //print('getBoxRect.....');
     return textFieldKey.globalPaintBounds!;
   }
 

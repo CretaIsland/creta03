@@ -35,6 +35,9 @@ enum FrameType {
   animation,
   text,
   youtube,
+  weatherInfo,
+  weather1,
+  weather2,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
@@ -212,6 +215,35 @@ enum ShapeType {
   triangle,
   star,
   diamond,
+  sideCut,
+  waveTopLeft,
+  waveTopRight,
+  waveBottomLeft,
+  waveBottomRight,
+  ovalTop,
+  ovalBottom,
+  ovalLeft,
+  ovalRight,
+  star4,
+  star8,
+  star16,
+  arrowUp,
+  arrowBottom,
+  arrowLeft,
+  arrowRight,
+  dirUp,
+  dirBottom,
+  dirLeft,
+  dirRight,
+  octagon,
+  hexagon,
+  digonalBottomLeft,
+  digonalBottomRight,
+  pepple1,
+  heart,
+  leaf,
+  snowman,
+
   //rhombus, // 마름모
   //parallelogram, // 평행사변형
   end;
@@ -275,6 +307,7 @@ enum TextAniType {
   textLiquidFill,
   bounce,
   shimmer,
+  neon,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
@@ -488,4 +521,14 @@ enum GenderType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static GenderType fromInt(int? val) => GenderType.values[validCheck(val ?? none.index)];
+}
+
+enum TextType {
+  none,
+  normal,
+  weather,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static TextType fromInt(int? val) => TextType.values[validCheck(val ?? none.index)];
 }

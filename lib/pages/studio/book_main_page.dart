@@ -209,16 +209,19 @@ class _BookMainPageState extends State<BookMainPage> {
     mychangeStack.clear();
 
     mouseTracerHolder = MouseTracer();
+    mouseTracerHolder!.initialize();
     client.initialize(LoginPage.enterpriseHolder!.enterpriseModel!.socketUrl);
     client.connectServer(BookMainPage.selectedMid);
 
     mouseTracerHolder!.addListener(() {
       switch (mouseTracerHolder!.methodFlag) {
         case 'joinUser':
+          mouseTracerHolder!.methodFlag = '';
           BookMainPage.connectedUserHolder!.connectNoti(BookMainPage.selectedMid,
               mouseTracerHolder!.targetUserName, mouseTracerHolder!.targetUserEmail);
           break;
         case 'leaveUser':
+          mouseTracerHolder!.methodFlag = '';
           BookMainPage.connectedUserHolder!.disconnectNoti(BookMainPage.selectedMid,
               mouseTracerHolder!.targetUserName, mouseTracerHolder!.targetUserEmail);
           break;
@@ -353,8 +356,6 @@ class _BookMainPageState extends State<BookMainPage> {
 
     HycopFactory.realtime!.stop();
     client.disconnect();
-    mouseTracerHolder!.dispose();
-
     super.dispose();
   }
 
@@ -383,9 +384,6 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<BookManager>.value(
           value: BookMainPage.bookManagerHolder!,
         ),
-        ChangeNotifierProvider<BookManager>.value(
-          value: BookMainPage.bookManagerHolder!,
-        ),
         ChangeNotifierProvider<ConnectedUserManager>.value(
           value: BookMainPage.connectedUserHolder!,
         ),
@@ -400,19 +398,19 @@ class _BookMainPageState extends State<BookMainPage> {
                 children: [
                   MouseRegion(
                     onHover: (pointerEvent) {
-                      if (StudioVariables.allowMutilUser == true) {
-                        if (lastEventTime
-                            .add(Duration(milliseconds: 100))
-                            .isBefore(DateTime.now())) {
-                          client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
-                              (pointerEvent.position.dy - 50) / screenHeightPrecentage);
-                          lastEventTime = DateTime.now();
-                        }
+					  //if (StudioVariables.allowMutilUser == true) {
+                      if(mouseTracerHolder!.userMouseList.isEmpty) return;
+                      if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
+                        client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
+                            (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+                        lastEventTime = DateTime.now();
                       }
+                      //}
                     },
                     child: _waitBook(),
                   ),
-                  if (StudioVariables.allowMutilUser == true) mouseArea()
+                  //if (StudioVariables.allowMutilUser == true) mouseArea(),
+                  mouseArea(),
                 ],
               ),
             ),
@@ -424,7 +422,7 @@ class _BookMainPageState extends State<BookMainPage> {
       child: Consumer<MouseTracer>(builder: (context, mouseTracerManager, child) {
         return Stack(
           children: [
-            for (int i = 1; i < mouseTracerHolder!.mouseModelList.length; i++)
+            for (int i = 0; i < mouseTracerHolder!.userMouseList.length; i++)
               cursorWidget(i, mouseTracerHolder!)
           ],
         );
@@ -438,24 +436,21 @@ class _BookMainPageState extends State<BookMainPage> {
         ? CretaColor.primary
         : userColorList[index < userColorLen ? index : (index % userColorLen)];
     return Positioned(
-        left: mouseTracer.mouseModelList[index].cursorX * screenWidthPercentage,
-        top: mouseTracer.mouseModelList[index].cursorY * screenHeightPrecentage,
+        left: mouseTracer.userMouseList[index].cursorX * screenWidthPercentage,
+        top: mouseTracer.userMouseList[index].cursorY * screenHeightPrecentage,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Icon(
             Icons.pan_tool_alt,
             size: 30,
             color: mouseColor,
           ),
-          index == 0
-              ? Container()
-              : Container(
-                  width: mouseTracer.mouseModelList[index].userName.length * 10,
-                  height: 20,
-                  decoration:
-                      BoxDecoration(color: mouseColor, borderRadius: BorderRadius.circular(20)),
-                  child: Text(mouseTracer.mouseModelList[index].userName,
-                      style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
-                )
+          Container(
+            width: mouseTracer.userMouseList[index].userName.length * 10,
+            height: 20,
+            decoration: BoxDecoration(color: mouseColor, borderRadius: BorderRadius.circular(20)),
+            child: Text(mouseTracer.userMouseList[index].userName,
+                style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
+          )
         ]));
   }
 
@@ -959,9 +954,9 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.person_add_outlined,
             onPressed: () {
-              setState(() {
-                StudioVariables.allowMutilUser = !StudioVariables.allowMutilUser;
-              });
+              //setState(() {
+              //StudioVariables.allowMutilUser = !StudioVariables.allowMutilUser;
+              //});
             },
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipInvite,

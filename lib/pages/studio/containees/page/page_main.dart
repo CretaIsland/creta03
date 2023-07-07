@@ -268,7 +268,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   Widget _waitFrame() {
     if (_onceDBGetComplete && _frameManager!.initFrameComplete) {
-      logger.info('already _onceDBGetComplete');
+      logger.info('already _onceDBGetComplete page main');
       return _consumerFunc();
     }
     //var retval = CretaModelSnippet.waitData(

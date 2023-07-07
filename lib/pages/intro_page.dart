@@ -1,7 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+//import 'package:routemaster/routemaster.dart';
+//import 'package:hycop/hycop.dart';
 
+//import '../../routes.dart';
 import '../design_system/component/snippet.dart';
 import '../design_system/creta_font.dart';
 
@@ -13,15 +17,96 @@ class IntroPage extends StatefulWidget {
 }
 
 class _IntroPageState extends State<IntroPage> {
+  late VideoPlayerController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = VideoPlayerController.asset('assets/landing_page_banner.mp4');
+    controller.initialize().then((value) {
+      setState(() {
+        controller.setVolume(
+            0); // 안하면 에러발생 : NotAllowedError: play() failed because the user didn't interact with the document first.
+        controller.play();
+        controller.setLooping(true);
+      });
+    });
+  }
+  //
+  // void doAfterLogin() {
+  //   print('doAfterLogin');
+  //   Navigator.of(context).pop();
+  //   Routemaster.of(context).push(AppRoutes.intro);
+  // }
+  //
+  // void doAfterSignup() {
+  //   print('doAfterSignup');
+  //   Navigator.of(context).pop();
+  // }
+  //
+  // void onErrorReport(String errMsg) {
+  //   print('onErrorReport($errMsg)');
+  //   showSnackBar(context, errMsg);
+  // }
+
+  BuildContext getBuildContext() {
+    return context;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Snippet.CretaScaffold(
-      title: Snippet.logo('Intro page'),
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    double videoWidth = width;
+    double videoHeight = width * 0.5625; // 0.5625 = 1080 / 1920
+    if (videoHeight > height) {
+      videoHeight = height;
+      videoWidth = height * 1.77; // 1.77 = 1920 / 1080
+    }
+
+    return Snippet.CretaScaffoldOfCommunity(
+      title: Row(
+        children: const [
+          SizedBox(
+            width: 24,
+          ),
+          Image(
+            image: AssetImage('assets/creta_logo_blue.png'),
+            //width: 120,
+            height: 20,
+          ),
+        ],
+      ),
       context: context,
-      child: Center(
-        child: Text(
-          "Version 0.1.2 (hycop 0.2.9)",
-          style: CretaFont.headlineLarge,
+      // doAfterLogin: doAfterLogin,
+      // doAfterSignup: doAfterSignup,
+      // onErrorReport: onErrorReport,
+      getBuildContext: getBuildContext,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Center(
+          child: Stack(
+            children: [
+              SizedBox(
+                width: videoWidth,
+                height: videoHeight,
+                child: VideoPlayer(controller),
+              ),
+              SizedBox(
+                width: videoWidth,
+                height: videoHeight,
+                child: Center(
+                  child: Text(
+                    "Version 0.1.5 (hycop 0.2.11)",
+                    style: CretaFont.headlineLarge,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

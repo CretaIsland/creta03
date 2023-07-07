@@ -1,14 +1,13 @@
 import 'dart:math';
 
-import 'package:creta03/design_system/animation/staggerd_animation.dart';
 import 'package:creta03/model/user_property_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:progress_bar_steppers/steppers.dart';
 
 import '../../common/creta_utils.dart';
 import '../../data_io/book_published_manager.dart';
+import '../../design_system/animation/staggerd_animation.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
 import '../../design_system/component/custom_image.dart';
@@ -39,6 +38,7 @@ class BookPublishDialog extends StatefulWidget {
 }
 
 class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixin {
+  //, SingleTickerProviderStateMixin {
   final TextEditingController scopeController = TextEditingController();
   var currentStep = 1;
   var totalSteps = 0;
@@ -65,6 +65,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   String _modifier = '';
   String _publishResultStr = CretaStudioLang.publishFailed;
+
+  // late AnimationController animationController;
+  // late Animation<double> animation;
 
   @override
   void initState() {
@@ -103,6 +106,15 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       _onceDBGetComplete2 = true;
       return value;
     });
+
+    // animationController = AnimationController(
+    //   vsync: this,
+    //   duration: const Duration(milliseconds: 1000),
+    // );
+    // animation = CurvedAnimation(
+    //   parent: animationController,
+    //   curve: Curves.easeIn,
+    // );
   }
 
   void _resetList() {
@@ -350,6 +362,18 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // CircularRevealAnimation(
+                //   // @required
+                //   animation: animation,
+                //   // child's center if not specified
+                //   centerAlignment: Alignment.center,
+                //   // 0 if not specified
+                //   minRadius: 12,
+                //   // distance from center to further child's corner if not specified
+                //   maxRadius: 200,
+                //   // @required
+                //   child: _drawThumbnail(),
+                // ),
                 StaggeredAnimation(
                   child: _drawThumbnail(),
                 ),
@@ -357,15 +381,15 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                     child: Text(
                   '$_modifier $_publishResultStr',
                   style: CretaFont.titleELarge,
-                )
-                        .animate(delay: const Duration(microseconds: 1500))
-                        .then()
-                        .fade()
-                        .slide()
-                        .then()
-                        .tint()
-                        .then()
-                        .shake()),
+                )),
+                // .animate(delay: const Duration(microseconds: 1500))
+                // .then()
+                // .fade()
+                // .slide()
+                // .then()
+                // .tint()
+                // .then()
+                // .shake()),
               ],
             ),
           );
@@ -378,9 +402,10 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     String image = widget.model!.thumbnailUrl.value.isEmpty
         ? 'https://picsum.photos/200/?random=$randomNumber'
         : widget.model!.thumbnailUrl.value;
+    // String image = 'https://picsum.photos/200/?random=$randomNumber';
     // String image =
     //     'https://oaidalleapiprodscus.blob.core.windows.net/private/org-wu0lAWU8sN5CR4ZUjC13D0XH/user-U7GAXXruTXKgCHDICrqUDVT0/img-NiOCRrCd1oEPpOjIdOfa2v8r.png?st=2023-05-24T07%3A53%3A57Z&se=2023-05-24T09%3A53%3A57Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-05-24T00%3A07%3A46Z&ske=2023-05-25T00%3A07%3A46Z&sks=b&skv=2021-08-06&sig=ISd6MJBNwyCJoSuo25O1rKD1%2BCbdJafY5UISDnotaZg%3D';
-
+    //return Image.network(image);
     return CustomImage(
         key: GlobalKey(),
         hasMouseOverEffect: false,

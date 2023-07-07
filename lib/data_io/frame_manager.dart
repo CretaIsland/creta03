@@ -69,7 +69,8 @@ class FrameManager extends CretaManager {
       Size size = const Size(600, 400),
       Offset? pos,
       Color? bgColor1,
-      FrameType? type}) async {
+      FrameType? type,
+      int? subType}) async {
     logger.info('createNextFrame()');
     FrameModel defaultFrame = FrameModel.makeSample(safeLastOrder() + 1, pageModel.mid, bookModel);
     defaultFrame.width.set(size.width, save: false, noUndo: true);
@@ -83,6 +84,9 @@ class FrameManager extends CretaManager {
     }
     if (type != null) {
       defaultFrame.frameType = type;
+    }
+    if (subType != null) {
+      defaultFrame.subType = subType;
     }
     await _createNextFrame(defaultFrame, doNotify);
     MyChange<FrameModel> c = MyChange<FrameModel>(

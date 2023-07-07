@@ -31,6 +31,26 @@ class TeamManager extends CretaManager {
     }
   }
 
+  Future<bool> createTeam({
+    required bool createAndSetToCurrent,
+    required String username,
+    required String userId,
+  }) async {
+    TeamModel teamModel = TeamModel.withName(
+      name: '$username Team',
+      owner: userId,
+      isPublicProfile: false,
+      managers: [userId],
+    );
+    try {
+      await createToDB(teamModel);
+    } catch (error) {
+      logger.info('createTeam error >> $error');
+      return false;
+    }
+    return true;
+  }
+
   Future<int> getTeam() async {
     int teamCount = 0;
     try {

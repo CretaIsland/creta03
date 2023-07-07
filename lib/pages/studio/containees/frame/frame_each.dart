@@ -2,6 +2,8 @@
 
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
+import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/design_system/component/creta_texture_widget.dart';
+import 'package:weather_animation/weather_animation.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
@@ -19,6 +22,7 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
+import '../../left_menu/weather/weather_base.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
@@ -58,7 +62,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
   bool _isInitialized = false;
   //final bool _isHover = false;
-  bool _showBorder = false;
+  bool _isShowBorder = false;
 
   //OffsetEventController? _linkSendEvent;
   AutoPlayChangeEventController? _linkReceiveEvent;
@@ -157,15 +161,24 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         });
   }
 
-  Widget _frameDropZone() {
-    //logger.info('_frameDropZone...');
-
-    _showBorder = _contentsManager!.length() == 0 &&
-        (widget.model.bgColor1.value == widget.pageModel.bgColor1.value ||
+  bool _showBorder() {
+    if (widget.model.isWeatherTYpe()) {
+      return false;
+    }
+    if (_contentsManager!.length() > 0) {
+      return false;
+    }
+    return (widget.model.bgColor1.value == widget.pageModel.bgColor1.value ||
             widget.model.bgColor1.value == Colors.transparent) &&
         (widget.model.borderWidth.value == 0 ||
             widget.model.borderColor.value == widget.pageModel.bgColor1.value) &&
         (widget.model.isNoShadow());
+  }
+
+  Widget _frameDropZone() {
+    //logger.info('_frameDropZone...');
+
+    _isShowBorder = _showBorder();
     // Widget frameBody = Stack(
     //   alignment: Alignment.center,
     //   children: [
@@ -300,6 +313,12 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.text) {
       return false;
     }
+    if (model.frameType == FrameType.weather1) {
+      return false;
+    }
+    if (model.frameType == FrameType.weather2) {
+      return false;
+    }
 
     return true;
   }
@@ -324,10 +343,10 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
     logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
     if (animations.isEmpty) {
-      return _showBorder ? _dottedShapeBox(model) : _shapeBox(model);
+      return _isShowBorder ? _dottedShapeBox(model) : _shapeBox(model);
     }
     return getAnimation(
-      _showBorder ? _dottedShapeBox(model) : _shapeBox(model),
+      _isShowBorder ? _dottedShapeBox(model) : _shapeBox(model),
       animations,
       model.mid,
     );
@@ -420,23 +439,67 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       //color: Colors.transparent,
       width: double.infinity,
       height: double.infinity,
-      child: ClipRect(
-        clipBehavior: Clip.hardEdge,
-        child: ContentsMain(
-          key: GlobalObjectKey<ContentsMainState>('ContentsMain${model.mid}'),
-          frameModel: model,
-          frameOffset: widget.frameOffset,
-          pageModel: widget.pageModel,
-          frameManager: frameManager!,
-          contentsManager: _contentsManager!,
-          applyScale: applyScale,
-        ),
-        // child: Image.asset(
-        //   'assets/creta_default.png',
-        //   fit: BoxFit.cover,
-        // ),
-      ),
+      child: _contentsMain(model),
     );
+  }
+
+  Widget _contentsMain(FrameModel model) {
+    if (model.isWeatherTYpe()) {
+      return _weather(model);
+    }
+    return ClipRect(
+      clipBehavior: Clip.hardEdge,
+      child: ContentsMain(
+        key: GlobalObjectKey<ContentsMainState>('ContentsMain${model.mid}'),
+        frameModel: model,
+        frameOffset: widget.frameOffset,
+        pageModel: widget.pageModel,
+        frameManager: frameManager!,
+        contentsManager: _contentsManager!,
+        applyScale: applyScale,
+      ),
+      // child: Image.asset(
+      //   'assets/creta_default.png',
+      //   fit: BoxFit.cover,
+      // ),
+    );
+  }
+
+  Widget _weather(FrameModel model) {
+    if (model.frameType == FrameType.weather1) {
+      WeatherType value = WeatherType.sunny;
+      if (model.subType >= 0 && model.subType <= WeatherType.dusty.index) {
+        value = WeatherType.values[model.subType];
+      }
+      return WeatherBase(
+        weatherWidget: WeatherBg(
+          weatherType: value,
+          width: widget.width,
+          height: widget.height,
+        ),
+        width: widget.width,
+        height: widget.height,
+      );
+    }
+    if (model.frameType == FrameType.weather2) {
+      return WeatherBase(
+        weatherWidget: _getWeatherType2(model.subType),
+        width: widget.width,
+        height: widget.height,
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _getWeatherType2(int subType) {
+    if (subType == WeatherScene.scorchingSun.index) return WeatherScene.scorchingSun.getWeather();
+    if (subType == WeatherScene.sunset.index) return WeatherScene.sunset.getWeather();
+    if (subType == WeatherScene.frosty.index) return WeatherScene.frosty.getWeather();
+    if (subType == WeatherScene.snowfall.index) return WeatherScene.snowfall.getWeather();
+    if (subType == WeatherScene.showerSleet.index) return WeatherScene.showerSleet.getWeather();
+    if (subType == WeatherScene.stormy.index) return WeatherScene.stormy.getWeather();
+    if (subType == WeatherScene.rainyOvercast.index) return WeatherScene.rainyOvercast.getWeather();
+    return const SizedBox.shrink();
   }
 
   BoxDecoration _frameDeco(FrameModel model) {

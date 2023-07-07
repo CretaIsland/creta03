@@ -175,7 +175,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
 
   Widget _waitFrame() {
     if (_onceDBGetComplete && _frameManager!.initFrameComplete) {
-      logger.info('already _onceDBGetComplete');
+      logger.info('already _onceDBGetComplete page thumbnailr');
       return _consumerFunc();
     }
     //var retval = CretaModelSnippet.waitData(

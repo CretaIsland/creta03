@@ -136,36 +136,40 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           setState(() {});
         },
         onOpacityDragComplete: (value) {
-          setState(() {
-            _model!.opacity.set(value);
-            logger.finest('opacity1=${_model!.opacity.value}');
-          });
+          //setState(() {
+          _model!.opacity.set(value);
+          logger.finest('opacity1=${_model!.opacity.value}');
+          //});
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
         onOpacityDrag: (value) {
           _model!.opacity.set(value);
           logger.finest('opacity1=${_model!.opacity.value}');
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
         onColor1Changed: (val) {
-          setState(() {
-            _model!.bgColor1.set(val);
-          });
+          //setState(() {
+          _model!.bgColor1.set(val);
+          //});
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
         onColorIndicatorClicked: () {
           PropertyMixin.isColorOpen = true;
           setState(() {});
         },
         onDelete: () {
-          setState(() {
-            _model!.bgColor1.set(Colors.white);
-          });
+          //setState(() {
+          _model!.bgColor1.set(Colors.white);
+          //});
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
       ),
     );
@@ -184,15 +188,16 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         gradationType: _model!.gradationType.value,
         onGradationTapPressed: (GradationType type, Color color1, Color color2) {
           logger.finest('GradationIndicator clicked');
-          setState(() {
-            if (_model!.gradationType.value == type) {
-              _model!.gradationType.set(GradationType.none);
-            } else {
-              _model!.gradationType.set(type);
-            }
-          });
+          //setState(() {
+          if (_model!.gradationType.value == type) {
+            _model!.gradationType.set(GradationType.none);
+          } else {
+            _model!.gradationType.set(type);
+          }
+          //});
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
         onColor2Changed: (Color val) {
           //setState(() {
@@ -200,6 +205,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           //});
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
         onColorIndicatorClicked: () {
           setState(() {
@@ -207,11 +213,12 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           });
         },
         onDelete: () {
-          setState(() {
-            _model!.gradationType.set(GradationType.none);
-          });
+          //setState(() {
+          _model!.gradationType.set(GradationType.none);
+          //});
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
       ),
     );
@@ -226,18 +233,20 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           setState(() {});
         },
         onTextureTapPressed: (val) {
-          setState(() {
-            _model!.textureType.set(val);
-          });
+          //setState(() {
+          _model!.textureType.set(val);
+          //});
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
         onDelete: () {
-          setState(() {
-            _model!.textureType.set(TextureType.none);
-          });
+          //setState(() {
+          _model!.textureType.set(TextureType.none);
+          //});
           //BookMainPage.bookManagerHolder?.notify();
           _sendEvent?.sendEvent(_model!);
+          _pageManager?.notify();
         },
       ),
     );

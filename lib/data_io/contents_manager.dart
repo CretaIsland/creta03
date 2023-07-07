@@ -201,6 +201,7 @@ class ContentsManager extends CretaManager {
       if (isVisible(model) == false) {
         return null;
       }
+      //print('${model.name}, ${model.thumbnail}');
       if (model.thumbnail == null || model.thumbnail!.isEmpty) {
         if (model.isImage()) {
           if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
