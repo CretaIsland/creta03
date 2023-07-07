@@ -390,7 +390,7 @@ class CretaPlayTimer extends ChangeNotifier {
 
   CretaAbsPlayerWidget createWidget(ContentsModel model) {
     CretaAbsPlayer player = createPlayer(model);
-
+    //print('createWidget${model.name}, ${model.contentsType})------------');
     switch (model.contentsType) {
       case ContentsType.video:
         return CretaVideoWidget(
@@ -408,9 +408,11 @@ class CretaPlayTimer extends ChangeNotifier {
           player: player,
         );
       case ContentsType.document:
+        //print('-------------createWidget${model.name}, ${model.contentsType})------------');
         return CretaDocWidget(
           key: GlobalObjectKey(player.keyString),
           player: player,
+          frameManager: frameManager,
         );
       case ContentsType.pdf:
         return CretaPdfWidget(

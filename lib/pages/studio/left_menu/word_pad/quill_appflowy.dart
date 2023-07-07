@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/pages/studio/left_menu/word_pad/simple_editor.dart';
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:universal_html/html.dart' as html;
 
 import '../../../../model/contents_model.dart';
+import '../../../../model/frame_model.dart';
 
 enum ExportFileType {
   documentJson,
@@ -35,9 +37,19 @@ extension on ExportFileType {
 }
 
 class AppFlowyEditorWidget extends StatefulWidget {
-  final ContentsModel document;
+  final ContentsModel model;
+  final FrameModel frameModel;
   final Size size;
-  const AppFlowyEditorWidget({super.key, required this.document, required this.size});
+  final void Function() onComplete;
+  final GlobalKey? frameKey;
+  const AppFlowyEditorWidget({
+    super.key,
+    required this.model,
+    required this.frameModel,
+    required this.size,
+    required this.onComplete,
+    required this.frameKey,
+  });
 
   @override
   State<AppFlowyEditorWidget> createState() => _AppFlowyEditorWidgetState();
@@ -45,53 +57,148 @@ class AppFlowyEditorWidget extends StatefulWidget {
 
 class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  //final bool _isHover = false;
+
+  // ignore: unused_field
   late WidgetBuilder _widgetBuilder;
   late EditorState _editorState;
   late Future<String> _jsonString;
 
+  // = (widget.focusNode ?? FocusNode())..addListener(_onFocusChanged);
+  // skpark
+  void _onComplete(EditorState editorState) {
+    //print('_onComplete-------------------');
+    _editorState = editorState;
+    widget.model.remoteUrl = jsonEncode(editorState.document.toJson());
+    //print('*******${widget.model.remoteUrl}******');
+    _jsonString = Future.value(widget.model.remoteUrl);
+    widget.onComplete.call();
+  }
+
   @override
   void initState() {
+    //print('------------------------------initState-------------------------');
     super.initState();
-
-    _jsonString = rootBundle.loadString('assets/example.json');
-    _widgetBuilder = (context) => SimpleEditor(
-          jsonString: _jsonString,
-          onEditorStateChange: (editorState) {
-            _editorState = editorState;
-          },
-        );
+    // _jsonString =
+    //     Future.value(widget.model.getURI()); //rootBundle.loadString('assets/example.json');
+    // _widgetBuilder = (context) => SimpleEditor(
+    //       jsonString: _jsonString,
+    //       onEditorStateChange: (editorState) {
+    //         print('1-----------editorState changed ');
+    //         _onComplete(editorState);
+    //       },
+    //       onEditComplete: (editorState) {
+    //         print('onEditComplete1()');
+    //         _onComplete(editorState);
+    //       },
+    //       onChanged: (editorState) {
+    //         //print('onChanged1(${editorState.document.toJson()})');
+    //       },
+    //     );
   }
 
-  @override
-  void reassemble() {
-    super.reassemble();
+  // @override
+  // void reassemble() {
+  //   super.reassemble();
 
-    _widgetBuilder = (context) => SimpleEditor(
-          jsonString: _jsonString,
-          onEditorStateChange: (editorState) {
-            _editorState = editorState;
-            _jsonString = Future.value(
-              jsonEncode(_editorState.document.toJson()),
-            );
-          },
-        );
-  }
+  //   _widgetBuilder = (context) => SimpleEditor(
+  //         jsonString: _jsonString,
+  //         onEditorStateChange: (editorState) {
+  //           logger.info('2-----------editorState changed,');
+  //           _onComplete(editorState);
+  //         },
+  //         onEditComplete: (editorState) {
+  //           print('onEditComplete2()');
+  //           _onComplete(editorState);
+  //         },
+  //         onChanged: (editorState) {
+  //           print('onChanged2(${editorState.document.toJson()})');
+  //         },
+  //       );
+  // }
 
   @override
   Widget build(BuildContext context) {
+    return StudioVariables.isPreview ? _viewMode() : _editMode();
+  }
+
+  Widget _editMode() {
     return Scaffold(
       key: _scaffoldKey,
       extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
-      drawer: _buildDrawer(context),
+      //drawer: _buildDrawer(context),
       appBar: AppBar(
+        toolbarHeight: 36,
         backgroundColor: CretaColor.primary,
         surfaceTintColor: Colors.transparent,
-        title: const Text('Creta Quill'),
+        title: const Text('Creta Text Editor'),
       ),
       body: SafeArea(child: _buildBody(context)),
     );
   }
 
+  Widget _viewMode() {
+    return SafeArea(child: _buildBody(context));
+  }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     body: Stack(
+  //       key: _scaffoldKey,
+  //       children: [
+  //         SafeArea(child: _buildBody(context)),
+  //         MouseRegion(
+  //           onEnter: (e) {
+  //             setState(() {
+  //               _isHover = true;
+  //             });
+  //           },
+  //           onExit: (e) {
+  //             setState(() {
+  //               _isHover = false;
+  //             });
+  //           },
+  //           child: _isHover
+  //               ? Container(
+  //                   height: 36,
+  //                   width: double.infinity,
+  //                   color: CretaColor.primary.withOpacity(0.75),
+  //                   child: Center(child: Text('Creta Text Editor', style: CretaFont.titleMedium)),
+  //                 )
+  //               : const SizedBox.shrink(),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget _buildBody(BuildContext context) {
+    //_widgetBuilder(context);
+    _jsonString =
+        Future.value(widget.model.getURI()); //rootBundle.loadString('assets/example.json');
+    return SimpleEditor(
+      frameKey: widget.frameKey,
+      jsonString: _jsonString,
+      bgColor: widget.frameModel.bgColor1.value,
+      onEditorStateChange: (editorState) {
+        //print('1-----------editorState changed ');
+        _onComplete(editorState);
+      },
+      onEditComplete: (editorState) {
+        //print('onEditComplete1()');
+        _onComplete(editorState);
+      },
+      onAttached: () {
+        //print('attached --------------------------');
+      },
+      onChanged: (editorState) {
+        //print('onChanged1(${editorState.document.toJson()})');
+      },
+    );
+  }
+
+  // ignore: unused_element
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -176,10 +283,6 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    return _widgetBuilder(context);
-  }
-
   Widget _buildListTile(
     BuildContext context,
     String text,
@@ -224,7 +327,9 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
     _jsonString = jsonString;
     setState(
       () {
+        //print('-----------------------------_loadEditor-------------------');
         _widgetBuilder = (context) => SimpleEditor(
+              bgColor: widget.frameModel.bgColor1.value,
               jsonString: _jsonString,
               onEditorStateChange: (editorState) {
                 _editorState = editorState;

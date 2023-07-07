@@ -3,6 +3,7 @@ import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:creta03/model/frame_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import '../../data_io/frame_manager.dart';
 import '../../model/contents_model.dart';
 // import '../../pages/studio/left_menu/word_pad/quill_html_enhanced.daxt';
 import '../../pages/studio/left_menu/word_pad/quill_appflowy.dart';
@@ -10,9 +11,15 @@ import '../../pages/studio/studio_variables.dart';
 import 'creta_doc_player.dart';
 
 mixin CretaDocMixin {
-  Widget playDoc(BuildContext context, CretaDocPlayer? player, ContentsModel model, Size realSize,
-      FrameModel frameModel,
-      {bool isPagePreview = false}) {
+  Widget playDoc(
+    BuildContext context,
+    CretaDocPlayer? player,
+    ContentsModel model,
+    Size realSize,
+    FrameModel frameModel,
+    FrameManager frameManager, {
+    bool isPagePreview = false,
+  }) {
     if (StudioVariables.isAutoPlay) {
       player?.play();
     } else {
@@ -26,6 +33,10 @@ mixin CretaDocMixin {
     }
     logger.fine("uri=<$uri>");
     player?.buttonIdle();
+
+    GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
+
+    //print('++++++++++++++++++++++playDoc+++++++++++');
 
     return SizedBox(
       // color: Colors.white,
@@ -46,8 +57,15 @@ mixin CretaDocMixin {
         ],
         debugShowCheckedModeBanner: false,
         home: AppFlowyEditorWidget(
-          document: model,
+          key: GlobalObjectKey('AppFlowyEditorWidget${model.mid}'),
+          model: model,
+          frameModel: frameModel,
+          frameKey: frameKey,
           size: Size(realSize.width, realSize.height),
+          onComplete: () {
+            player!.acc.setToDB(model);
+            //print('saved : ${model.remoteUrl}');
+          },
         ),
       ),
     );

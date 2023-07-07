@@ -90,7 +90,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   @override
   Widget build(BuildContext context) {
     //applyScale = StudioVariables.scale / StudioVariables.fitScale;
-
+    // print('FrameMain build');
     //applyScale = widget.bookModel.width.value / StudioVariables.availWidth;
     applyScale = widget.pageWidth / widget.bookModel.width.value;
     StudioVariables.applyScale = applyScale;
@@ -113,7 +113,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   Widget showFrame() {
     //FrameModel? model = frameManager!.getSelected() as FrameModel?;
     //logger.info('showFrame $applyScale  ${StudioVariables.applyScale}');
-
+    //('showFrame');
     return StickerView(
       //key: ValueKey('StickerView-${widget.pageModel.mid}'),
       bookMid: widget.bookModel.mid,

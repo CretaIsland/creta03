@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
+import '../../data_io/frame_manager.dart';
 import '../../model/contents_model.dart';
 import '../../pages/studio/studio_getx_controller.dart';
 import '../creta_abs_media_widget.dart';
@@ -13,7 +14,8 @@ import 'creta_doc_mixin.dart';
 import 'creta_doc_player.dart';
 
 class CretaDocWidget extends CretaAbsPlayerWidget {
-  const CretaDocWidget({super.key, required super.player});
+  final FrameManager frameManager;
+  const CretaDocWidget({super.key, required super.player, required this.frameManager});
 
   @override
   CretaDocPlayerWidgetState createState() => CretaDocPlayerWidgetState();
@@ -29,6 +31,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
 
   @override
   void initState() {
+    //print('++++++++++++++++++++++++++++++++++++++++++creta_doc_widget');
     super.initState();
     //widget.player.afterBuild();
     final ContentsEventController receiveEvent = Get.find(tag: 'text-property-to-textplayer');
@@ -54,7 +57,8 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
           }
           logger.fine('Text StreamBuilder<AbsExModel>');
 
-          return playDoc(context, player, player.model!, player.acc.getRealSize(), widget.player.acc.frameModel);
+          return playDoc(context, player, player.model!, player.acc.getRealSize(),
+              widget.player.acc.frameModel, widget.frameManager);
         });
   }
 }

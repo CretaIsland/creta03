@@ -116,6 +116,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   @override
   Widget build(BuildContext context) {
+    //print('pageMain build');
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
@@ -129,6 +130,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _build(BuildContext context) {
+    //print('pageMain _build');
     // if (widget.pageModel.bgColor1.value != Colors.transparent) {
     opacity = widget.pageModel.opacity.value;
     bgColor1 = widget.pageModel.bgColor1.value;
@@ -247,8 +249,10 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
       LinkParams.isLinkNewMode = false;
       LinkParams.connectedClass = '';
       LinkParams.connectedMid = '';
+      logger.info('BookMainPage.bookManagerHolder!.notify()');
       BookMainPage.bookManagerHolder!.notify();
     } else {
+      logger.info('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
     }
   }
@@ -320,7 +324,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   Widget _drawFrames() {
     return Consumer<FrameManager>(builder: (context, frameManager, child) {
-      // if (StudioVariables.isPreview) {
+      //print('_drawFrames'); // if (StudioVariables.isPreview) {
       //   return Stack(
       //     children: [
       //       FrameMain(

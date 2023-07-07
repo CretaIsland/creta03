@@ -115,27 +115,27 @@ class ContentsMainState extends State<ContentsMain> {
                 logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
                 LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
                 if (linkManager != null && linkManager.getAvailLength() > 0) {
-                return Stack(
-                  children: [
-                    _mainBuild(model, playTimer),
-                    if (model.contentsType != ContentsType.document &&
-                        model.contentsType != ContentsType.pdf)
-                      LinkWidget(
-                        key: GlobalObjectKey('LinkWidget${model.mid}'),
-                        applyScale: widget.applyScale,
-                        frameManager: widget.frameManager,
-                        frameOffset: widget.frameOffset,
-                        contentsManager: contentsManager,
-                        playTimer: playTimer,
-                        contentsModel: model,
-                        frameModel: widget.frameModel,
-                        onFrameShowUnshow: () {
-                          logger.fine('onFrameShowUnshow');
-                          widget.frameManager.notify();
-                        },
-                      )
-                  ],
-                );
+                  return Stack(
+                    children: [
+                      _mainBuild(model, playTimer),
+                      if (model.contentsType != ContentsType.document &&
+                          model.contentsType != ContentsType.pdf)
+                        LinkWidget(
+                          key: GlobalObjectKey('LinkWidget${model.mid}'),
+                          applyScale: widget.applyScale,
+                          frameManager: widget.frameManager,
+                          frameOffset: widget.frameOffset,
+                          contentsManager: contentsManager,
+                          playTimer: playTimer,
+                          contentsModel: model,
+                          frameModel: widget.frameModel,
+                          onFrameShowUnshow: () {
+                            logger.fine('onFrameShowUnshow');
+                            widget.frameManager.notify();
+                          },
+                        )
+                    ],
+                  );
                 }
                 return _mainBuild(model, playTimer);
               }
@@ -158,6 +158,7 @@ class ContentsMainState extends State<ContentsMain> {
   }
 
   Widget _mainBuild(ContentsModel model, CretaPlayTimer playTimer) {
+    //print('_mainBuild(${model.name}, ${model.contentsType})-------------------------');
     if (model.opacity.value > 0.01) {
       return Opacity(
         opacity: model.opacity.value,

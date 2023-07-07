@@ -17,7 +17,6 @@ import '../../lang/creta_studio_lang.dart';
 import '../../routes.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
-import '../text_field/creta_text_field.dart';
 import '../buttons/creta_button_wrapper.dart';
 import '../menu/creta_drop_down.dart';
 import '../menu/creta_popup_menu.dart';
@@ -124,16 +123,18 @@ class Snippet {
         getBuildContext: getBuildContext,
       ),
       floatingActionButton: Snippet.CretaDial(context),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onLongPressDown: ((details) {
-          logger.finest('onLongPressDown');
-          LastClicked.clickedOutSide(details.globalPosition);
-        }),
-        child: Container(
-          child: child,
-        ),
+      body:
+          // GestureDetector(
+          //   behavior: HitTestBehavior.opaque,
+          //   onLongPressDown: ((details) {
+          //     logger.finest('onLongPressDown');
+          //     LastClicked.clickedOutSide(details.globalPosition);
+          //   }),
+          //   child:
+          Container(
+        child: child,
       ),
+      //),
     );
   }
 
@@ -276,16 +277,18 @@ class Snippet {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfMyPage(context, title),
       floatingActionButton: Snippet.CretaDial(context),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onLongPressDown: ((details) {
-          logger.finest('onLongPressDown');
-          LastClicked.clickedOutSide(details.globalPosition);
-        }),
-        child: Container(
-          child: child,
-        ),
+      body:
+          // GestureDetector(
+          //   behavior: HitTestBehavior.opaque,
+          //   onLongPressDown: ((details) {
+          //     logger.finest('onLongPressDown');
+          //     LastClicked.clickedOutSide(details.globalPosition);
+          //   }),
+          //   child:
+          Container(
+        child: child,
       ),
+      //),
     );
   }
 
@@ -605,13 +608,13 @@ class Snippet {
             Routemaster.of(context).push(AppRoutes.menuDemoPage);
           },
         ),
-        SpeedDialChild(
-          label: 'Studio Book',
-          child: Icon(Icons.stadium),
-          onTap: () {
-            Routemaster.of(context).push(AppRoutes.studioBookMainPage);
-          },
-        ),
+        // SpeedDialChild(
+        //   label: 'Studio Book',
+        //   child: Icon(Icons.stadium),
+        //   onTap: () {
+        //     Routemaster.of(context).push(AppRoutes.studioBookMainPage);
+        //   },
+        // ),
         SpeedDialChild(
           label: 'Studio Book List',
           child: Icon(Icons.list_alt_outlined),

@@ -41,3 +41,8 @@ copy src_modify\weather_night_star_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache
 copy src_modify\weather_cloud_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\bg\weather_cloud_bg.dart  
 copy src_modify\weather_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\bg\weather_bg.dart 
 copy src_modify\print_utils.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\utils\print_utils.dart 
+
+#skpark modify 7/7
+copy src_modify\floating_toolbar.daxt           C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\floating_toolbar.dart 
+copy src_modify\editor.daxt                     C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\editor_component\service\editor.dart 
+copy src_modify\keyboard_service_widget.daxt    C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\editor_component\service\keyboard_service_widget.dart 
