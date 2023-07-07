@@ -124,7 +124,6 @@ final routesLoggedOut = RouteMap(
     AppRoutes.menuDemoPage: (_) => TransitionPage(child: MenuDemoPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
-<<<<<<< HEAD
     AppRoutes.quillDemoPage: (_) => TransitionPage(
             child: MaterialApp(
           localizationsDelegates: const [
