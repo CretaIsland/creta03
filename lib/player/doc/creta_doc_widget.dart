@@ -54,7 +54,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
           }
           logger.fine('Text StreamBuilder<AbsExModel>');
 
-          return playDoc(context, player, player.model!, player.acc.getRealSize());
+          return playDoc(context, player, player.model!, player.acc.getRealSize(), widget.player.acc.frameModel);
         });
   }
 }

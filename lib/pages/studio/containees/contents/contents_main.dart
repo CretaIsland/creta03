@@ -11,6 +11,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../data_io/link_manager.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
@@ -112,8 +113,8 @@ class ContentsMainState extends State<ContentsMain> {
               //logger.info('URI is null ----');
               if (model != null && isURINotNull(model)) {
                 logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
-                // LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
-                // if (linkManager != null && linkManager.getAvailLength() > 0) {
+                LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
+                if (linkManager != null && linkManager.getAvailLength() > 0) {
                 return Stack(
                   children: [
                     _mainBuild(model, playTimer),
@@ -135,8 +136,8 @@ class ContentsMainState extends State<ContentsMain> {
                       )
                   ],
                 );
-                //}
-                //return _mainBuild(model, playTimer);
+                }
+                return _mainBuild(model, playTimer);
               }
               // ignore: sized_box_for_whitespace
               return SizedBox.shrink();
