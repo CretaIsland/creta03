@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:creta03/model/contents_model.dart';
 import 'package:creta03/pages/mypage/mypage.dart';
+import 'package:creta03/pages/studio/left_menu/word_pad/quill_appflowy.dart';
+// import 'package:creta03/pages/studio/left_menu/word_pad/quill_html_enhanced.daxt';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -120,6 +124,17 @@ final routesLoggedOut = RouteMap(
     AppRoutes.menuDemoPage: (_) => TransitionPage(child: MenuDemoPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
+    AppRoutes.quillDemoPage: (_) => TransitionPage(
+            child: MaterialApp(
+          localizationsDelegates: const [
+            AppFlowyEditorLocalizations.delegate,
+          ],
+          debugShowCheckedModeBanner: false,
+          home: AppFlowyEditorWidget(
+            document: ContentsModel.withFrame(parent: '', bookMid: ''),
+            size: Size.zero,
+          ),
+        )),
     // AppRoutes.quillDemoPage: (_) =>
     //     TransitionPage(child: QuillPlayerWidget(document: ContentsModel.withFrame(parent: ''))),
     // AppRoutes.quillDemoPage: (_) => TransitionPage(

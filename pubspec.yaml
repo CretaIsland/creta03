@@ -93,11 +93,12 @@ dependencies:
   flutter_sequence_animation: ^4.0.0
   cloud_firestore: ^4.3.1
   flutter_keyboard_visibility: ^5.4.1
-  quill_html_editor: ^2.1.9
   webview_flutter: ^4.0.7     # added by Mai 20230619
   adjusted_html_view_web: ^0.0.1
   flutter_rte: ^0.4.13
   syncfusion_flutter_pdfviewer: ^21.2.10
+  appflowy_editor: ^1.1.0
+  quill_html_editor: ^2.1.9
   shimmer: ^2.0.0
   circular_reveal_animation: ^2.0.1
   neonpen: ^2.0.5
@@ -106,7 +107,7 @@ dependencies:
   # internet_file: ^1.2.0
   # universal_platform: ^1.0.0+1
   # performance: ^0.1.0+1
-  html_editor_enhanced: ^2.5.1
+  # html_editor_enhanced: ^2.5.1
   numberpicker: ^2.1.2
   file_picker: ^5.3.1
   flutter_weather_bg_null_safety: ^1.0.0
@@ -172,6 +173,9 @@ flutter:
     - assets/tipImage-2-4.png
     - assets/bgd.png
     - assets/google__g__logo.svg
+    - assets/example.json
+    - assets/example.html
+    - assets/icon.png
     - assets/landing_page_banner.mp4
 
 

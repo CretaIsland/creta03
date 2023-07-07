@@ -315,6 +315,12 @@ class CretaStudioLang {
   static const String genAIimageTooltip = '팁'; // added by Mai 230608
   static const String tipSearchExample = '크레타선+드로잉+모내스타일'; // added by Mai 230608
 
+  static const String music = '뮤직'; // added by Mai 230602
+  // static const String weather = '날씨'; // added by Mai 230602
+  static const String timer = '시계'; // added by Mai 230602
+  static const String sticker = '스티커'; // added by Mai 230602
+  static const String effects = '효과'; // added by Mai 230602
+
   static const String genAIerrorMsg =
       '서버가 혼잡하여 현재 이용할 수 없습니다. \n잠시 후에 다시 시도해주세요. \n불편을 드려 죄송합니다.'; // added by Mai 230613
 

@@ -25,6 +25,11 @@ copy src_modify\CustomRadioButton.daxt C:\Users\seon\AppData\Local\Pub\Cache\hos
 #skpark modify 6/29
 copy src_modify\auto_size_text.daxt    C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\auto_size_text-3.0.0\lib\src\auto_size_text.dart
 
+
+#mai modify 7/5
+copy src_modify\callbacks.daxt    C:\Users\Mai Dang\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\utils\callbacks.dart
+copy src_modify\toolbar_widget.daxt    C:\Users\Mai Dang\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\toolbar_widget.dart
+
 #skpark modify 7/03
 copy src_modify\neonpen.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\neonpen-2.0.5\lib\neonpen.dart
 
