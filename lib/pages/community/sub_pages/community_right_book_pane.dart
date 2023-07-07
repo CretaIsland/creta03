@@ -16,7 +16,7 @@ import 'package:hycop/hycop.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 //import '../../../design_system/buttons/creta_elibated_button.dart';
 //import '../../design_system/buttons/creta_button.dart';
-import '../../../design_system/component/snippet.dart';
+//import '../../../design_system/component/snippet.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
@@ -35,12 +35,12 @@ import '../../../design_system/creta_font.dart';
 //import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/pages/community/community_sample_data.dart';
 import '../creta_book_ui_item.dart';
-import '../../../design_system/buttons/creta_progress_slider.dart';
+//import '../../../design_system/buttons/creta_progress_slider.dart';
 //import '../../design_system/text_field/creta_comment_bar.dart';
 import 'community_comment_pane.dart';
 import '../../../data_io/watch_history_manager.dart';
+import '../../studio/book_main_page.dart';
 
-//bool _isInUsingCanvaskit = false;
 
 class CommunityRightBookPane extends StatefulWidget {
   const CommunityRightBookPane({
@@ -76,6 +76,11 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
       int pos = query.indexOf('&');
       CommunityRightBookPane.bookId = (pos > 0) ? query.substring(0, pos) : query;
+    }
+
+    BookMainPage.selectedMid = CommunityRightBookPane.bookId;
+    if (BookMainPage.selectedMid.isEmpty) {
+      BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
     }
 
     _cretaRelatedBookList = CommunitySampleData.getCretaBookList();
@@ -178,36 +183,48 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   Widget _getBookPreview(Size size) {
     if (_cretaRelatedBookList.isNotEmpty) {
-      return Container(
-        decoration: BoxDecoration(
-          // crop
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Stack(
-          children: [
-            ClipRect(
-              child: CustomImage(
-                  key: bookKey,
-                  duration: 500,
-                  hasMouseOverEffect: false,
-                  width: size.width,
-                  height: size.height,
-                  image: _cretaRelatedBookList[0].thumbnailUrl),
-            ),
-            Container(
-              width: size.width,
-              height: size.height,
-              decoration: bookMouseOver ? Snippet.shadowDeco() : null,
-            ),
-          ],
+
+      // return Container(
+      //   decoration: BoxDecoration(
+      //     // crop
+      //     borderRadius: BorderRadius.circular(20.0),
+      //   ),
+      //   clipBehavior: Clip.antiAlias,
+      //   child: Stack(
+      //     children: [
+      //       ClipRect(
+      //         child: CustomImage(
+      //             key: bookKey,
+      //             duration: 500,
+      //             hasMouseOverEffect: false,
+      //             width: size.width,
+      //             height: size.height,
+      //             image: _cretaRelatedBookList[0].thumbnailUrl),
+      //       ),
+      //       Container(
+      //         width: size.width,
+      //         height: size.height,
+      //         decoration: bookMouseOver ? Snippet.shadowDeco() : null,
+      //       ),
+      //     ],
+      //   ),
+      // );
+      return SizedBox(
+        width: size.width,
+        height: size.height,
+        child: BookMainPage(
+          //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
+          bookKey: bookKey,
+          isPreviewX: true,
+          size: size,
+          isPublishedMode: true,
         ),
       );
     }
     return Container();
   }
 
-  double _value = 0;
+  //double _value = 0;
   bool bookMouseOver = false;
   //bool sliderMouseOver = false;
 
@@ -230,6 +247,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         child: Stack(
           children: [
             _getBookPreview(size),
+/*
             // top-buttons (share, download, add-to-playlist)
             !bookMouseOver
                 ? Container()
@@ -309,6 +327,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                       ),
                     ),
                   ),
+*/
             //
             //
             //

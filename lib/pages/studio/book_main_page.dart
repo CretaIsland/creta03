@@ -78,11 +78,15 @@ class BookMainPage extends StatefulWidget {
   final bool isPreviewX;
   final bool isThumbnailX;
   final GlobalKey bookKey;
+  final Size? size;
+  final bool? isPublishedMode;
 
   BookMainPage({
     required this.bookKey,
     this.isPreviewX = false,
     this.isThumbnailX = false,
+    this.size,
+    this.isPublishedMode,
   }) : super(key: bookKey) {
     StudioVariables.isPreview = isPreviewX;
   }
@@ -152,10 +156,14 @@ class _BookMainPageState extends State<BookMainPage> {
 
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: false);
 
-    BookMainPage.bookManagerHolder = BookManager();
+    BookMainPage.bookManagerHolder = (widget.isPublishedMode ?? false)
+        ? BookManager(tableName: 'creta_book_published')
+        : BookManager();
     //BookMainPage.bookManagerHolder!.configEvent(notifyModify: false);
     BookMainPage.bookManagerHolder!.clearAll();
-    BookMainPage.pageManagerHolder = PageManager();
+    BookMainPage.pageManagerHolder = (widget.isPublishedMode ?? false)
+        ? PageManager(tableName: 'creta_page_published', isPublishedMode: widget.isPublishedMode ?? false)
+        : PageManager();
     // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
     // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
     //BookMainPage.userPropertyManagerHolder = UserPropertyManager();
@@ -588,8 +596,8 @@ class _BookMainPageState extends State<BookMainPage> {
       StudioVariables.appbarHeight = CretaConstant.appbarHeight;
     }
 
-    StudioVariables.displayWidth = MediaQuery.of(context).size.width;
-    StudioVariables.displayHeight = MediaQuery.of(context).size.height;
+    StudioVariables.displayWidth = widget.size?.width ?? MediaQuery.of(context).size.width;
+    StudioVariables.displayHeight = widget.size?.height ?? MediaQuery.of(context).size.height;
 
     StudioVariables.workWidth = StudioVariables.displayWidth - StudioVariables.menuStickWidth;
     StudioVariables.workHeight = StudioVariables.displayHeight -
@@ -1142,6 +1150,7 @@ class _BookMainPageState extends State<BookMainPage> {
               },
               pageNo: pageNo,
               totalPage: totalPage,
+              isPublishedMode: widget.isPublishedMode,
             ),
           ],
         );
