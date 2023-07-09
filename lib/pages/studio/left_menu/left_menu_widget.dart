@@ -1,4 +1,5 @@
 import 'package:creta03/lang/creta_studio_lang.dart';
+import 'package:creta03/pages/studio/left_menu/music/music_framework.dart';
 import 'package:flutter/material.dart';
 
 import 'left_template_mixin.dart';
@@ -36,6 +37,11 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
             title: CretaStudioLang.weather,
             width: _itemWidth,
             height: _itemHeight,
+            titleStyle: titleStyle,
+            dataStyle: dataStyle,
+          ),
+          MusicFramework(
+            title: CretaStudioLang.music,
             titleStyle: titleStyle,
             dataStyle: dataStyle,
           ),

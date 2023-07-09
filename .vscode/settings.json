@@ -1,5 +1,5 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "cmake.configureOnOpen": true,
-    "files.autoSave": "onFocusChange"
+    "files.autoSave": "afterDelay"
 }

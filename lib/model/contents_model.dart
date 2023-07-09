@@ -539,6 +539,9 @@ class ContentsModel extends CretaModel {
     } else if (mime.endsWith('pdf')) {
       logger.info('pdf type');
       contentsType = ContentsType.pdf;
+    } else if (mime.endsWith('music')) {
+      logger.info('music type');
+      contentsType = ContentsType.music;
     } else {
       logger.finest('ERROR: unknown type');
       contentsType = ContentsType.none;
@@ -579,6 +582,10 @@ class ContentsModel extends CretaModel {
 
   bool isPdf() {
     return (contentsType == ContentsType.pdf);
+  }
+
+  bool isMusic() {
+    return (contentsType == ContentsType.music);
   }
 
   void printIt() {

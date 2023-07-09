@@ -315,7 +315,7 @@ class CretaStudioLang {
   static const String genAIimageTooltip = '팁'; // added by Mai 230608
   static const String tipSearchExample = '크레타선+드로잉+모내스타일'; // added by Mai 230608
 
-  static const String music = '뮤직'; // added by Mai 230602
+  static const String music = '뮤직 플레이리스트'; // added by Mai 230602
   // static const String weather = '날씨'; // added by Mai 230602
   static const String timer = '시계'; // added by Mai 230602
   static const String sticker = '스티커'; // added by Mai 230602
