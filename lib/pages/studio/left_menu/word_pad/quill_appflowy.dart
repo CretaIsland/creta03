@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:universal_html/html.dart' as html;
 
+import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 
@@ -63,6 +64,8 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
   late WidgetBuilder _widgetBuilder;
   late EditorState _editorState;
   late Future<String> _jsonString;
+
+  bool _showAppBar = true;
 
   // = (widget.focusNode ?? FocusNode())..addListener(_onFocusChanged);
   // skpark
@@ -124,17 +127,50 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
 
   Widget _editMode() {
     return Scaffold(
-      key: _scaffoldKey,
-      extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
-      //drawer: _buildDrawer(context),
-      appBar: AppBar(
-        toolbarHeight: 36,
-        backgroundColor: CretaColor.primary,
-        surfaceTintColor: Colors.transparent,
-        title: const Text('Creta Text Editor'),
-      ),
-      body: SafeArea(child: _buildBody(context)),
-    );
+        key: _scaffoldKey,
+        extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
+        backgroundColor: Colors.transparent, //skpark
+        //drawer: _buildDrawer(context),  //skpark
+        appBar: _showAppBar
+            ? AppBar(
+                toolbarHeight: 36,
+                backgroundColor: CretaColor.primary,
+                surfaceTintColor: Colors.transparent,
+                title: const Text('Creta Word Pad(줄바꿈:Shift+Enter, 저장: Enter)'),
+                actions: [
+                  BTN.fill_blue_i_m(
+                    icon: Icons.arrow_upward_outlined,
+                    onPressed: () {
+                      setState(
+                        () {
+                          _showAppBar = false;
+                        },
+                      );
+                    },
+                  )
+                ],
+              )
+            : null,
+        body: _showAppBar
+            ? SafeArea(child: _buildBody(context))
+            : Stack(
+                children: [
+                  SafeArea(child: _buildBody(context)),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: BTN.fill_gray_i_m(
+                      icon: Icons.arrow_downward_outlined,
+                      onPressed: () {
+                        setState(
+                          () {
+                            _showAppBar = true;
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ));
   }
 
   Widget _viewMode() {
@@ -180,7 +216,8 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
     return SimpleEditor(
       frameKey: widget.frameKey,
       jsonString: _jsonString,
-      bgColor: widget.frameModel.bgColor1.value,
+      //bgColor: widget.frameModel.bgColor1.value,
+      bgColor: Colors.transparent,
       onEditorStateChange: (editorState) {
         //print('1-----------editorState changed ');
         _onComplete(editorState);
@@ -190,6 +227,9 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
         _onComplete(editorState);
       },
       onAttached: () {
+        // setState(() {
+        //   _showAppBar = true;
+        // });
         //print('attached --------------------------');
       },
       onChanged: (editorState) {
@@ -329,7 +369,8 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
       () {
         //print('-----------------------------_loadEditor-------------------');
         _widgetBuilder = (context) => SimpleEditor(
-              bgColor: widget.frameModel.bgColor1.value,
+              //bgColor: widget.frameModel.bgColor1.value,
+              bgColor: Colors.transparent,
               jsonString: _jsonString,
               onEditorStateChange: (editorState) {
                 _editorState = editorState;

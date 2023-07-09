@@ -221,7 +221,8 @@ class _AppFlowyEditorState extends State<AppFlowyEditor> {
   Widget _buildServices(BuildContext context) {
     Widget child = Container(
       padding: widget.editorStyle.padding,
-      color: widget.editorStyle.backgroundColor,
+      //color: widget.editorStyle.backgroundColor,  //skpark
+      color: Colors.transparent, //skpark
       child: editorState.renderer.build(
         context,
         editorState.document.root,

@@ -56,6 +56,7 @@ mixin CretaDocMixin {
           AppFlowyEditorLocalizations.delegate,
         ],
         debugShowCheckedModeBanner: false,
+        color: Colors.transparent,
         home: AppFlowyEditorWidget(
           key: GlobalObjectKey('AppFlowyEditorWidget${model.mid}'),
           model: model,

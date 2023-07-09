@@ -1,6 +1,17 @@
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 
+//skpark
+Offset findFrameOffset(GlobalKey? frameKey) {
+  if (frameKey == null) {
+    return Offset.zero;
+  }
+  final RenderBox? box = frameKey!.currentContext?.findRenderObject() as RenderBox?;
+  if (box == null) return Offset.zero;
+
+  return box.localToGlobal(Offset.zero);
+}
+
 void showColorMenu(
   BuildContext context,
   EditorState editorState,
@@ -8,12 +19,16 @@ void showColorMenu(
   String? currentColorHex,
   List<ColorOption>? textColorOptions,
   List<ColorOption>? highlightColorOptions,
+  GlobalKey? frameKey, //skpark
+  void Function(EditorState)? onEditComplete, //skpark
   required bool isTextColor,
 }) {
   // Since link format is only available for single line selection,
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
   final rect = editorState.selectionRects().first;
   OverlayEntry? overlay;
+
+  Offset frameOffset = findFrameOffset(frameKey); //skpark
 
   // should abstract this logic to a method
   // ----
@@ -37,11 +52,9 @@ void showColorMenu(
   }
 
   overlay = FullScreenOverlayEntry(
-    // top: top,
-    // bottom: bottom,
-    // left: left,
-    top: 45.0,
-    left: 175.0,
+    top: top! - frameOffset.dy, //skpark
+    //bottom: bottom,  //skpark
+    left: left! - frameOffset.dx, //skpark
     builder: (context) {
       return ColorPicker(
         isTextColor: isTextColor,
@@ -60,6 +73,7 @@ void showColorMenu(
                   editorState,
                   color,
                 );
+          onEditComplete?.call(editorState); //skpark
           dismissOverlay();
         },
         onDismiss: dismissOverlay,

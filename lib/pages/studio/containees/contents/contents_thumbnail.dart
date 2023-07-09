@@ -1,8 +1,8 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
 import 'package:creta03/player/doc/creta_doc_mixin.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:adjusted_html_view_web/adjusted_html_view_web.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
@@ -12,6 +12,8 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/creta_color.dart';
+import '../../../../design_system/creta_font.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
@@ -107,11 +109,32 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
                 if (widget.frameModel.frameType == FrameType.text) {
                   // ContentsModel? model = contentsManager.getFirstModel();
                   ContentsModel model = contentsManager.getFirstModel()!;
+                  //print(model.remoteUrl!);
                   if (model.contentsType == ContentsType.document) {
-                    return AdjustedHtmlView(
-                      htmlText: model.remoteUrl!,
-                      htmlValidator: HtmlValidator.loose(),
+                    // String elips = '';
+                    // for (int i = 0; i < model.remoteUrl!.length; i++) {
+                    //   elips += '.';
+                    // }
+                    if (_showBorder()) {
+                      return DottedBorder(
+                        dashPattern: const [6, 6],
+                        strokeWidth: 2,
+                        strokeCap: StrokeCap.round,
+                        color: CretaColor.text[700]!,
+                        child: Center(
+                          //htmlText: model.remoteUrl!,
+                          child: Text('Word Pad', style: CretaFont.bodyMedium),
+                        ),
+                      );
+                    }
+                    return Center(
+                      //htmlText: model.remoteUrl!,
+                      child: Text('Word Pad', style: CretaFont.bodyMedium),
                     );
+                    // return AdjustedHtmlView(
+                    //   htmlText: model.remoteUrl!,
+                    //   htmlValidator: HtmlValidator.loose(),
+                    // );
                   } else {
                     //print('widget.applyScale: ${widget.applyScale}');
                     return playText(
@@ -158,5 +181,17 @@ class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixi
 
       // 텍스트가 아닌 경우
     });
+  }
+
+  bool _showBorder() {
+    if (widget.frameModel.isWeatherTYpe()) {
+      return false;
+    }
+
+    return (widget.frameModel.bgColor1.value == widget.pageModel.bgColor1.value ||
+            widget.frameModel.bgColor1.value == Colors.transparent) &&
+        (widget.frameModel.borderWidth.value == 0 ||
+            widget.frameModel.borderColor.value == widget.pageModel.bgColor1.value) &&
+        (widget.frameModel.isNoShadow());
   }
 }

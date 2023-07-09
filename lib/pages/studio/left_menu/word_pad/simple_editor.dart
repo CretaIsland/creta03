@@ -71,8 +71,14 @@ class _SimpleEditorState extends State<SimpleEditor> {
               bulletedListItem,
               numberedListItem,
               linkItem,
-              buildTextColorItem(colorOptions: _generateTextColorOptions()),
-              buildHighlightColorItem(colorOptions: _generateTextColorOptions())
+              buildTextColorItem(
+                //colorOptions: _generateTextColorOptions(), //skpark
+                frameKey: widget.frameKey, //skpark
+              ),
+              buildHighlightColorItem(
+                //colorOptions: _generateTextColorOptions(), //skpark
+                frameKey: widget.frameKey, //skpark
+              )
             ],
             editorState: editorState,
             scrollController: scrollController,
@@ -123,42 +129,42 @@ class _SimpleEditorState extends State<SimpleEditor> {
     );
   }
 
-  List<ColorOption> _generateTextColorOptions() {
-    return [
-      ColorOption(
-        colorHex: Colors.grey.toHex(),
-        name: AppFlowyEditorLocalizations.current.fontColorGray,
-      ),
-      ColorOption(
-        colorHex: Colors.brown.toHex(),
-        name: AppFlowyEditorLocalizations.current.fontColorBrown,
-      ),
-      ColorOption(
-        colorHex: Colors.yellow.toHex(),
-        name: AppFlowyEditorLocalizations.current.fontColorYellow,
-      ),
-      ColorOption(
-        colorHex: Colors.green.toHex(),
-        name: AppFlowyEditorLocalizations.current.fontColorGreen,
-      ),
-      ColorOption(
-        colorHex: Colors.blue.toHex(),
-        name: AppFlowyEditorLocalizations.current.fontColorBlue,
-      ),
-      ColorOption(
-        colorHex: Colors.purple.toHex(),
-        name: AppFlowyEditorLocalizations.current.fontColorPurple,
-      ),
-      ColorOption(
-        colorHex: Colors.pink.toHex(),
-        name: AppFlowyEditorLocalizations.current.fontColorPink,
-      ),
-      ColorOption(
-        colorHex: Colors.red.toHex(),
-        name: AppFlowyEditorLocalizations.current.fontColorRed,
-      ),
-    ];
-  }
+  // List<ColorOption> _generateTextColorOptions() {
+  //   return [
+  //     ColorOption(
+  //       colorHex: Colors.grey.toHex(),
+  //       name: AppFlowyEditorLocalizations.current.fontColorGray,
+  //     ),
+  //     ColorOption(
+  //       colorHex: Colors.brown.toHex(),
+  //       name: AppFlowyEditorLocalizations.current.fontColorBrown,
+  //     ),
+  //     ColorOption(
+  //       colorHex: Colors.yellow.toHex(),
+  //       name: AppFlowyEditorLocalizations.current.fontColorYellow,
+  //     ),
+  //     ColorOption(
+  //       colorHex: Colors.green.toHex(),
+  //       name: AppFlowyEditorLocalizations.current.fontColorGreen,
+  //     ),
+  //     ColorOption(
+  //       colorHex: Colors.blue.toHex(),
+  //       name: AppFlowyEditorLocalizations.current.fontColorBlue,
+  //     ),
+  //     ColorOption(
+  //       colorHex: Colors.purple.toHex(),
+  //       name: AppFlowyEditorLocalizations.current.fontColorPurple,
+  //     ),
+  //     ColorOption(
+  //       colorHex: Colors.pink.toHex(),
+  //       name: AppFlowyEditorLocalizations.current.fontColorPink,
+  //     ),
+  //     ColorOption(
+  //       colorHex: Colors.red.toHex(),
+  //       name: AppFlowyEditorLocalizations.current.fontColorRed,
+  //     ),
+  //   ];
+  // }
 
   Widget _buildDesktopEditor(
     BuildContext context,
@@ -187,10 +193,11 @@ class _SimpleEditorState extends State<SimpleEditor> {
       onEditComplete: widget.onEditComplete, //skpark
       onChanged: widget.onChanged, //skpark
       onAttached: widget.onAttached, //skpark
-      editorStyle: EditorStyle.desktop(
+      editorStyle: const EditorStyle.desktop(
         //skpark
-        padding: const EdgeInsets.all(10),
-        backgroundColor: widget.bgColor,
+        padding: EdgeInsets.all(10),
+        //backgroundColor: widget.bgColor,
+        backgroundColor: Colors.transparent,
       ),
     );
   }
