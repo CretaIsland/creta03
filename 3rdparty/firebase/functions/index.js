@@ -34,10 +34,13 @@ exports.removeDelta = functions.https.onCall((data) => {
 function _removeDelta()
 {
     let now = new Date();
-    now.setDate(now.getDate() - 1);
-    let yesterday = now.toISOString().replace(/T/, ' ').replace(/\..+/, '.000Z');
+    //now = now - 60000;
+    now.setDate(now.getMinutes() - 2);
+    //now.setDate(now.getDate() - 1);
+    //let yesterday = now.toISOString().replace(/T/, ' ').replace(/\..+/, '.000Z');
+    let oneMinuteAgo = now.toISOString().replace(/T/, ' ').replace(/\..+/, '.000Z');
     var counter = 0;
-    return database.ref('/hycop_delta').orderByChild('updateTime').endBefore(yesterday).once('value').then((snapshot) => {
+    return database.ref('/hycop_delta').orderByChild('updateTime').endBefore(oneMinuteAgo).once('value').then((snapshot) => {
         snapshot.forEach((childSnapshot) => {
             const childKey = childSnapshot.key;
             const childData = childSnapshot.val();
@@ -53,7 +56,7 @@ function _removeDelta()
                 }
             });  
         });
-        functions.logger.log('skpark listed(' + yesterday + ') = ' + counter);
+        functions.logger.log('skpark listed(' + oneMinuteAgo + ') = ' + counter);
         return '{result: removeDelta_called(' + counter + ' deleted)';
     });
     

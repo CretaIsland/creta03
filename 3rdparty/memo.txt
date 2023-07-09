@@ -526,6 +526,7 @@ firebase emulators:start
 
 firebase deploy --only functions
 firebase deploy --only functions:removeDelta
+firebase deploy --only functions:removeDelta_schedule
 
 Error: Failed to fetch Run service undefined
 위와 같은 에러가 난다면
