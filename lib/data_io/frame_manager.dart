@@ -13,6 +13,7 @@ import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_preview_menu.dart';
+import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 import 'contents_manager.dart';
@@ -31,7 +32,7 @@ class FrameManager extends CretaManager {
   }
 
   //Map<String, ValueKey> frameKeyMap = {};
-  Map<String, GlobalKey> frameKeyMap = {};
+  Map<String, GlobalKey<StickerState>> frameKeyMap = {};
   Map<String, ContentsManager> contentsManagerMap = {};
 
   bool _initFrameComplete = false;
@@ -50,7 +51,11 @@ class FrameManager extends CretaManager {
 
   final bool isPublishedMode;
 
-  FrameManager({required this.pageModel, required this.bookModel, String tableName = 'creta_frame', this.isPublishedMode = false})
+  FrameManager(
+      {required this.pageModel,
+      required this.bookModel,
+      String tableName = 'creta_frame',
+      this.isPublishedMode = false})
       : super(tableName, pageModel.mid) {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
   }
@@ -453,6 +458,12 @@ class FrameManager extends CretaManager {
     if (model.isShow.value == false) return false;
     if (BookMainPage.filterManagerHolder!.isVisible(model) == false) return false;
     return true;
+  }
+
+  void refreshFrame(String mid) {
+    GlobalKey<StickerState>? frameKey = frameKeyMap[mid];
+    if (frameKey == null) return;
+    frameKey.currentState!.refresh();
   }
   //bool isMain() {}
 }

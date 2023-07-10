@@ -112,11 +112,15 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                   // ContentsModel? model = contentsManager.getFirstModel();
                   ContentsModel model = contentsManager.getFirstModel()!;
                   //print(model.remoteUrl!);
-                  if (model.contentsType == ContentsType.document) {
+                  if (model.contentsType == ContentsType.document ||
+                      model.contentsType == ContentsType.pdf) {
                     // String elips = '';
                     // for (int i = 0; i < model.remoteUrl!.length; i++) {
                     //   elips += '.';
                     // }
+                    String displayString =
+                        model.contentsType == ContentsType.document ? 'Word Pad' : 'PDF';
+
                     if (_showBorder()) {
                       return DottedBorder(
                         dashPattern: const [6, 6],
@@ -125,13 +129,13 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                         color: CretaColor.text[700]!,
                         child: Center(
                           //htmlText: model.remoteUrl!,
-                          child: Text('Word Pad', style: CretaFont.bodyMedium),
+                          child: Text(displayString, style: CretaFont.bodyMedium),
                         ),
                       );
                     }
                     return Center(
                       //htmlText: model.remoteUrl!,
-                      child: Text('Word Pad', style: CretaFont.bodyMedium),
+                      child: Text(displayString, style: CretaFont.bodyMedium),
                     );
                     // return AdjustedHtmlView(
                     //   htmlText: model.remoteUrl!,

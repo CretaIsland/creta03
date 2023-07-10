@@ -416,11 +416,15 @@ class FrameModel extends CretaModel with CretaStyleMixin {
 
   void changeOrderByIsShow(FrameManager frameManager) {
     if (isShow.value == false) {
-      order.set(prevOrder < 0 ? frameManager.getMinOrder() : prevOrder, save: false);
+      double minOrder = frameManager.getMinOrder();
+      //print('$minOrder #########################################');
+      prevOrder = order.value;
+      //order.set(prevOrder < 0 ? frameManager.getMinOrder() : prevOrder, save: false, noUndo: true);
+      order.set(minOrder, save: false, noUndo: true);
       return;
     }
     prevOrder = order.value;
-    order.set(frameManager.getMaxOrder() + 1, save: false);
+    order.set(frameManager.getMaxOrder() + 1, save: false, noUndo: true);
   }
 
   bool isFullScreenTest(BookModel book) {

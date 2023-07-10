@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:intl/intl.dart';
 
 class SimpleEditor extends StatefulWidget {
   const SimpleEditor({
@@ -72,12 +73,14 @@ class _SimpleEditorState extends State<SimpleEditor> {
               numberedListItem,
               linkItem,
               buildTextColorItem(
-                //colorOptions: _generateTextColorOptions(), //skpark
+                colorOptions: _generateTextColorOptions(), //skpark
                 frameKey: widget.frameKey, //skpark
+                onEditComplete: widget.onEditComplete, //skpark
               ),
               buildHighlightColorItem(
-                //colorOptions: _generateTextColorOptions(), //skpark
+                colorOptions: _generateTextColorOptions(), //skpark
                 frameKey: widget.frameKey, //skpark
+                onEditComplete: widget.onEditComplete, //skpark
               )
             ],
             editorState: editorState,
@@ -129,42 +132,55 @@ class _SimpleEditorState extends State<SimpleEditor> {
     );
   }
 
-  // List<ColorOption> _generateTextColorOptions() {
-  //   return [
-  //     ColorOption(
-  //       colorHex: Colors.grey.toHex(),
-  //       name: AppFlowyEditorLocalizations.current.fontColorGray,
-  //     ),
-  //     ColorOption(
-  //       colorHex: Colors.brown.toHex(),
-  //       name: AppFlowyEditorLocalizations.current.fontColorBrown,
-  //     ),
-  //     ColorOption(
-  //       colorHex: Colors.yellow.toHex(),
-  //       name: AppFlowyEditorLocalizations.current.fontColorYellow,
-  //     ),
-  //     ColorOption(
-  //       colorHex: Colors.green.toHex(),
-  //       name: AppFlowyEditorLocalizations.current.fontColorGreen,
-  //     ),
-  //     ColorOption(
-  //       colorHex: Colors.blue.toHex(),
-  //       name: AppFlowyEditorLocalizations.current.fontColorBlue,
-  //     ),
-  //     ColorOption(
-  //       colorHex: Colors.purple.toHex(),
-  //       name: AppFlowyEditorLocalizations.current.fontColorPurple,
-  //     ),
-  //     ColorOption(
-  //       colorHex: Colors.pink.toHex(),
-  //       name: AppFlowyEditorLocalizations.current.fontColorPink,
-  //     ),
-  //     ColorOption(
-  //       colorHex: Colors.red.toHex(),
-  //       name: AppFlowyEditorLocalizations.current.fontColorRed,
-  //     ),
-  //   ];
-  // }
+  String get fontColorWhite {
+    return Intl.message(
+      'White',
+      name: 'fontColorWhite',
+      desc: '',
+      args: [],
+    );
+  }
+
+  List<ColorOption> _generateTextColorOptions() {
+    return [
+      ColorOption(
+        colorHex: Colors.white.toHex(),
+        name: fontColorWhite,
+      ),
+      ColorOption(
+        colorHex: Colors.grey.toHex(),
+        name: AppFlowyEditorLocalizations.current.fontColorGray,
+      ),
+      ColorOption(
+        colorHex: Colors.brown.toHex(),
+        name: AppFlowyEditorLocalizations.current.fontColorBrown,
+      ),
+      ColorOption(
+        colorHex: Colors.yellow.toHex(),
+        name: AppFlowyEditorLocalizations.current.fontColorYellow,
+      ),
+      ColorOption(
+        colorHex: Colors.green.toHex(),
+        name: AppFlowyEditorLocalizations.current.fontColorGreen,
+      ),
+      ColorOption(
+        colorHex: Colors.blue.toHex(),
+        name: AppFlowyEditorLocalizations.current.fontColorBlue,
+      ),
+      ColorOption(
+        colorHex: Colors.purple.toHex(),
+        name: AppFlowyEditorLocalizations.current.fontColorPurple,
+      ),
+      ColorOption(
+        colorHex: Colors.pink.toHex(),
+        name: AppFlowyEditorLocalizations.current.fontColorPink,
+      ),
+      ColorOption(
+        colorHex: Colors.red.toHex(),
+        name: AppFlowyEditorLocalizations.current.fontColorRed,
+      ),
+    ];
+  }
 
   Widget _buildDesktopEditor(
     BuildContext context,

@@ -9,7 +9,6 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
-import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
@@ -123,7 +122,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       frameManager: frameManager,
       // List of Stickers
       onUpdate: (update, mid) {
-        logger.fine('onUpdate ${update.hint}');
+        //print('onUpdate ${update.hint}--------------------');
         _setItem(update, mid);
         FrameModel? model = frameManager!.getModel(mid) as FrameModel?;
         if (model != null && model.mid == mid) {
@@ -173,8 +172,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       //   //setState(() {});
       // },
       onFrameShowUnshow: (mid) {
-        logger.fine('Frame onFrameShowUnshow');
-        setState(() {});
+        frameManager!.refreshFrame(mid);
+        //setState(() {});
       },
       onFrameMain: (mid) {
         logger.fine('Frame onFrameMain');
@@ -302,15 +301,15 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
       double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 
-      GlobalKey? stickerKey;
+      GlobalKey<StickerState>? stickerKey;
       if (widget.isPrevious == false) {
         stickerKey = frameManager!.frameKeyMap[model.mid];
         if (stickerKey == null) {
-          stickerKey = GlobalKey();
+          stickerKey = GlobalKey<StickerState>();
           frameManager!.frameKeyMap[model.mid] = stickerKey;
         }
       } else {
-        stickerKey = GlobalKey();
+        stickerKey = GlobalKey<StickerState>();
       }
 
       Widget eachFrame = FrameEach(
@@ -325,30 +324,31 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
       return Sticker(
         key: stickerKey,
-        id: model.mid,
+        model: model,
+        //id: model.mid,
         position: Offset(posX, posY),
         angle: model.angle.value * (pi / 180),
         size: Size(frameWidth, frameHeight),
         borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
         isMain: model.isMain.value,
-        child: Visibility(
-          //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
-          visible: _isVisible(model),
-          child: LinkParams.connectedMid == model.mid &&
-                  LinkParams.linkPostion != null &&
-                  LinkParams.orgPostion != null
-              ? eachFrame
-                  .animate()
-                  .scaleXY(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut)
-                  .move(
-                      duration: const Duration(milliseconds: 1000),
-                      curve: Curves.easeInOut,
-                      begin: LinkParams.linkPostion! +
-                          LinkParams.orgPostion! -
-                          Offset(frameWidth / 2, frameHeight / 2) -
-                          Offset(posX, posY))
-              : eachFrame,
-        ),
+        //child: Visibility(
+        //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
+        //visible: _isVisible(model),
+        child: LinkParams.connectedMid == model.mid &&
+                LinkParams.linkPostion != null &&
+                LinkParams.orgPostion != null
+            ? eachFrame
+                .animate()
+                .scaleXY(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut)
+                .move(
+                    duration: const Duration(milliseconds: 1000),
+                    curve: Curves.easeInOut,
+                    begin: LinkParams.linkPostion! +
+                        LinkParams.orgPostion! -
+                        Offset(frameWidth / 2, frameHeight / 2) -
+                        Offset(posX, posY))
+            : eachFrame,
+        //),
       );
     });
     // return frameManager!.modelList.map((e) {
@@ -389,38 +389,38 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     // }).toList();
   }
 
-  bool _isVisible(FrameModel model) {
-    if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
-      logger.fine(
-          '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
-      List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
-      for (String eventName in eventNameList) {
-        if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
-          return true;
-        }
-      }
-      return false;
-    }
-    if (BookMainPage.filterManagerHolder!.isVisible(model) == false) {
-      return false;
-    }
-    //if (model.eventReceive.value.isNotEmpty && model.showWhenEventReceived.value == true) {
-    //   logger.fine(
-    //       '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
-    //   if (ClickReceiverHandler.isEventOn(model.eventReceive.value) == true) {
-    //     return true;
-    //   }
-    //   return false;
-    // }
-    // if (model.isShow.value == false) {
-    //   if (model.isTempVisible) return true;
-    //   return false;
-    // } else {
-    //   if (!model.isTempVisible) return false;
-    //   return true;
-    // }
-    return model.isShow.value;
-  }
+  // bool _isVisible(FrameModel model) {
+  //   if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
+  //     logger.fine(
+  //         '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
+  //     List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
+  //     for (String eventName in eventNameList) {
+  //       if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
+  //         return true;
+  //       }
+  //     }
+  //     return false;
+  //   }
+  //   if (BookMainPage.filterManagerHolder!.isVisible(model) == false) {
+  //     return false;
+  //   }
+  //   //if (model.eventReceive.value.isNotEmpty && model.showWhenEventReceived.value == true) {
+  //   //   logger.fine(
+  //   //       '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
+  //   //   if (ClickReceiverHandler.isEventOn(model.eventReceive.value) == true) {
+  //   //     return true;
+  //   //   }
+  //   //   return false;
+  //   // }
+  //   // if (model.isShow.value == false) {
+  //   //   if (model.isTempVisible) return true;
+  //   //   return false;
+  //   // } else {
+  //   //   if (!model.isTempVisible) return false;
+  //   //   return true;
+  //   // }
+  //   return model.isShow.value;
+  // }
 
   // Widget _applyAnimate(FrameModel model) {
   //   List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);

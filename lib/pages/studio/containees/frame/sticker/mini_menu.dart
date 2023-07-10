@@ -187,6 +187,7 @@ class MiniMenuState extends State<MiniMenu> {
             widget.frameModel.isShow.set(!widget.frameModel.isShow.value);
             widget.frameModel.changeOrderByIsShow(widget.frameManager);
             widget.onFrameShowUnshow.call();
+            setState(() {});
           }),
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.mainFrameTooltip,

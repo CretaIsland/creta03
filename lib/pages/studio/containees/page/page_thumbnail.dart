@@ -279,7 +279,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                         width: frameWidth,
                         height: frameHeight,
                         child: FrameThumbnail(
-                          key: GlobalKey(),
+                          key: GlobalObjectKey('FrameThumbnail${frameModel.mid}'),
                           model: model,
                           pageModel: widget.pageModel,
                           frameManager: _frameManager!,

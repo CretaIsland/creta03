@@ -732,7 +732,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           // 이미 화면에 완전히 보인다.
           logger.info('start first _takeAScreenShot()');
           _takeAScreenShot(_thumbArea!);
-          BookMainPage.bookManagerHolder!.notify();
+          //BookMainPage.bookManagerHolder!.notify();
           return;
         }
       }
@@ -748,7 +748,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           // 이미 화면에 완전히 보인다.
           logger.info('start selected _takeAScreenShot()');
           _takeAScreenShot(_thumbArea!);
-          BookMainPage.bookManagerHolder!.notify();
+          //BookMainPage.bookManagerHolder!.notify();
           return;
         }
       }

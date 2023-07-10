@@ -339,7 +339,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
       //   );
       // }
       return FrameMain(
-        frameMainKey: GlobalKey(),
+        frameMainKey: GlobalObjectKey('FrameMain${widget.pageModel.mid}'),
         pageWidth: widget.pageWidth,
         pageHeight: widget.pageHeight,
         pageModel: widget.pageModel,

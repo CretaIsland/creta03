@@ -2,8 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../model/contents_model.dart';
+import '../../../../../model/frame_model.dart';
+import '../../../book_main_page.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
@@ -170,21 +173,25 @@ class Sticker extends StatefulWidget {
   // set isText to true if passed Text widget as child
   bool? isText = false;
   // every sticker must be assigned with unique id
-  final String id;
+  //final String id;
+  String get id => model.mid;
+
   late Offset position;
   late double angle;
   late Size size;
   late double borderWidth;
   late bool isMain;
+  final FrameModel model;
 
   Sticker({
     Key? key,
-    required this.id,
+    //required this.id,
     required this.position,
     required this.angle,
     required this.size,
     required this.borderWidth,
     required this.isMain,
+    required this.model,
     this.isText,
     this.child,
   }) : super(key: key);
@@ -193,8 +200,32 @@ class Sticker extends StatefulWidget {
 }
 
 class StickerState extends State<Sticker> {
+  void refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return widget.child != null ? widget.child! : Container();
+    return Visibility(
+        visible: _isVisible(widget.model),
+        child: widget.child != null ? widget.child! : Container());
+  }
+
+  bool _isVisible(FrameModel model) {
+    if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
+      logger.fine(
+          '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
+      List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
+      for (String eventName in eventNameList) {
+        if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
+          return true;
+        }
+      }
+      return false;
+    }
+    if (BookMainPage.filterManagerHolder!.isVisible(model) == false) {
+      return false;
+    }
+    return model.isShow.value;
   }
 }
