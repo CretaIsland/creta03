@@ -373,7 +373,7 @@ class _LinkWidgetState extends State<LinkWidget> {
           // show frame
           FrameModel? frameModel = widget.frameManager.getModel(model.connectedMid) as FrameModel?;
           if (frameModel != null) {
-            frameModel.isShow.set(!frameModel.isShow.value);
+            frameModel.isShow.set(!frameModel.isShow.value, save: false, noUndo: true);
             if (frameModel.isShow.value == true) {
               double order = widget.frameManager.getMaxOrder();
               if (frameModel.order.value < order) {
@@ -385,6 +385,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.connectedMid = model.connectedMid;
               LinkParams.connectedClass = 'frame';
             } else {
+              //print('##################################################');
               LinkParams.linkPostion = null;
               LinkParams.orgPostion = null;
               LinkParams.connectedMid = '';
@@ -392,6 +393,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               frameModel.changeOrderByIsShow(widget.frameManager);
             }
             model.showLinkLine = frameModel.isShow.value;
+            model.save();
             //_lineDrawSendEvent?.sendEvent(isShow);
             widget.frameManager.notify();
             //_linkManager?.notify();
