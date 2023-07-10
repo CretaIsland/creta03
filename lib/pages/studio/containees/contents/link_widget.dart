@@ -393,7 +393,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               frameModel.changeOrderByIsShow(widget.frameManager);
             }
             model.showLinkLine = frameModel.isShow.value;
-            model.save();
+            frameModel.save();
             //_lineDrawSendEvent?.sendEvent(isShow);
             widget.frameManager.notify();
             //_linkManager?.notify();
