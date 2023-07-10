@@ -374,10 +374,10 @@ class _LinkWidgetState extends State<LinkWidget> {
           // show frame
           FrameModel? childModel = widget.frameManager.getModel(model.connectedMid) as FrameModel?;
           if (childModel != null) {
-            print('linkMid=${model.mid}');
-            print('connected=${model.connectedMid}');
-            print('childMid=${childModel.mid}');
-            print('ParentMid=${widget.frameModel.mid}');
+            // print('linkMid=${model.mid}');
+            // print('connected=${model.connectedMid}');
+            // print('childMid=${childModel.mid}');
+            // print('ParentMid=${widget.frameModel.mid}');
 
             childModel.isShow.set(!childModel.isShow.value, save: false, noUndo: true);
             if (childModel.isShow.value == true) {
