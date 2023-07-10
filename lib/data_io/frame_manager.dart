@@ -48,7 +48,9 @@ class FrameManager extends CretaManager {
   //   _playerHandler = p;
   // }
 
-  FrameManager({required this.pageModel, required this.bookModel, String tableName = 'creta_frame'})
+  final bool isPublishedMode;
+
+  FrameManager({required this.pageModel, required this.bookModel, String tableName = 'creta_frame', this.isPublishedMode = false})
       : super(tableName, pageModel.mid) {
     saveManagerHolder?.registerManager('frame', this, postfix: pageModel.mid);
   }
@@ -191,6 +193,7 @@ class FrameManager extends CretaManager {
     ContentsManager retval = ContentsManager(
       pageModel: pageModel,
       frameModel: frameModel,
+      tableName: isPublishedMode ? 'creta_contents_published' : 'creta_contents',
     );
     contentsManagerMap[frameModel.mid] = retval;
     //}

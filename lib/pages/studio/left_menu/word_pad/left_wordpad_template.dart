@@ -75,7 +75,8 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
     retval.contentsType = ContentsType.document;
 
     retval.name = 'Word Pad 1';
-    retval.remoteUrl = CretaStudioLang.defaultText;
+    retval.remoteUrl =
+        '{"document":{"type":"page","children":[{"type":"heading","data":{"level":2,"delta":[{"insert":"Welcome to Creta!!!"}]}},{"type":"paragraph","data":{"delta":[]}}]}}';
     retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }
@@ -100,6 +101,8 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
       type: FrameType.text,
     );
     ContentsModel model = await _quillContent(frameModel.mid, frameModel.realTimeKey);
+
+    //print('_quillContent(${model.contentsType})-----------------------------');
 
     await createNewFrameAndContents(
       [model],

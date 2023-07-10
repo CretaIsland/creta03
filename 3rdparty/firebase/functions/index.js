@@ -33,11 +33,12 @@ exports.removeDelta = functions.https.onCall((data) => {
 
 function _removeDelta()
 {
-    let now = new Date();
-    now.setDate(now.getDate() - 1);
-    let yesterday = now.toISOString().replace(/T/, ' ').replace(/\..+/, '.000Z');
+    //let now = new Date();
+    //now.setDate(now.getDate() - 1);
+    //let yesterday = now.toISOString().replace(/T/, ' ').replace(/\..+/, '.000Z');
+    let oneMinuteAgoStr = _formatDate();
     var counter = 0;
-    return database.ref('/hycop_delta').orderByChild('updateTime').endBefore(yesterday).once('value').then((snapshot) => {
+    return database.ref('/hycop_delta').orderByChild('updateTime').endBefore(oneMinuteAgoStr).once('value').then((snapshot) => {
         snapshot.forEach((childSnapshot) => {
             const childKey = childSnapshot.key;
             const childData = childSnapshot.val();
@@ -53,10 +54,33 @@ function _removeDelta()
                 }
             });  
         });
-        functions.logger.log('skpark listed(' + yesterday + ') = ' + counter);
+        functions.logger.log('skpark listed(' + oneMinuteAgoStr + ') = ' + counter);
         return '{result: removeDelta_called(' + counter + ' deleted)';
     });
     
+}
+
+function _formatDate() {
+    let now = new Date();
+    const ago = new Date(now.getTime() + (60000 * 60 * 9) - 60000);   // local time 으로 맞춰주기 위해. localTime 함수가 안먹는다. 이방법 뿐이다.
+    const year = ago.getFullYear();
+    const month = String(ago.getMonth() + 1).padStart(2, '0');
+    const day = String(ago.getDate()).padStart(2, '0');
+    const hours = String(ago.getHours()).padStart(2, '0');
+    const minutes = String(ago.getMinutes()).padStart(2, '0');
+    const seconds = String(ago.getSeconds()).padStart(2, '0');
+    const milliseconds = String(ago.getMilliseconds()).padStart(3, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`; 
+    
+    // const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    // const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', fractionalSecondDigits: 3, hour12: false};
+    
+    // const formattedDate = currentDateTime.toLocaleDateString('ko-KR', dateOptions).replace('.', '-').replace(' ', '').replace('.', '-').replace(' ', '').replace(/.$/, '');  //제일끝에 한글자 제거
+    // const formattedTime = currentDateTime.toLocaleTimeString('ko-KR', timeOptions);
+    
+    // //console.log(formattedCurrentDateTime); // 예: "2023-07-09 14:30:45.123"
+    // return `${formattedDate} ${formattedTime}`;
 }
 
 exports.cleanBin_schedule = functions.pubsub.schedule('every 24 hours').onRun((context) => {

@@ -113,6 +113,8 @@ dependencies:
   flutter_weather_bg_null_safety: ^1.0.0
   weather_animation: ^0.0.2
   just_audio_background: ^0.0.1-beta.10
+  flutter_excel: ^1.0.1
+  collection: ^1.17.1
   # flutter_custom_clippers: ^2.1.0
 
 dev_dependencies:

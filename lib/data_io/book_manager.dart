@@ -15,7 +15,7 @@ import 'creta_manager.dart';
 import 'page_manager.dart';
 
 class BookManager extends CretaManager {
-  BookManager() : super('creta_book', null) {
+  BookManager({String tableName = 'creta_book'}) : super(tableName, null) {
     saveManagerHolder?.registerManager('book', this);
   }
 

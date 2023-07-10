@@ -15,6 +15,7 @@ class BookPreviewMenu extends StatefulWidget {
   final void Function() playFunction;
   final void Function() gotoNext;
   final void Function() gotoPrev;
+  final bool? isPublishedMode;
   const BookPreviewMenu({
     super.key,
     required this.pageNo,
@@ -24,6 +25,7 @@ class BookPreviewMenu extends StatefulWidget {
     required this.playFunction,
     required this.gotoNext,
     required this.gotoPrev,
+    this.isPublishedMode,
   });
 
   @override
@@ -101,7 +103,9 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                         ),
                       ],
                     ),
-                    CretaTrasparentButton(
+                    (widget.isPublishedMode ?? false)
+                    ? const SizedBox(width: 20)
+                    : CretaTrasparentButton(
                       onPressed: widget.goBackProcess,
                       icon1: Icons.logout_outlined,
                       icon2: Icons.logout_outlined,

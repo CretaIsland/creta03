@@ -1160,7 +1160,7 @@ abstract class CretaManager extends AbsExModelManager {
     // make query
     addWhereClause('isRemoved', QueryValue(value: isRemoved));
     // default user is {AccountManager.currentLoginUser}
-    userId ??= AccountManager.currentLoginUser.userId;
+    userId ??= AccountManager.currentLoginUser.email;
     // bookType
     if ((bookType?.index ?? 0) > 0) {
       addWhereClause('bookType', QueryValue(value: bookType!.index));

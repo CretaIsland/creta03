@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:creta03/model/contents_model.dart';
+//import 'package:appflowy_editor/appflowy_editor.dart';
+//import 'package:creta03/model/contents_model.dart';
 import 'package:creta03/pages/mypage/mypage.dart';
-import 'package:creta03/pages/studio/left_menu/word_pad/quill_appflowy.dart';
+//import 'package:creta03/pages/studio/left_menu/word_pad/quill_appflowy.dart';
 // import 'package:creta03/pages/studio/left_menu/word_pad/quill_html_enhanced.daxt';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
@@ -124,17 +124,18 @@ final routesLoggedOut = RouteMap(
     AppRoutes.menuDemoPage: (_) => TransitionPage(child: MenuDemoPage()),
     AppRoutes.fontDemoPage: (_) => TransitionPage(child: FontDemoPage()),
     AppRoutes.buttonDemoPage: (_) => TransitionPage(child: ButtonDemoPage()),
-    AppRoutes.quillDemoPage: (_) => TransitionPage(
-            child: MaterialApp(
-          localizationsDelegates: const [
-            AppFlowyEditorLocalizations.delegate,
-          ],
-          debugShowCheckedModeBanner: false,
-          home: AppFlowyEditorWidget(
-            document: ContentsModel.withFrame(parent: '', bookMid: ''),
-            size: Size.zero,
-          ),
-        )),
+    // AppRoutes.quillDemoPage: (_) => TransitionPage(
+    //         child: MaterialApp(
+    //       localizationsDelegates: const [
+    //         AppFlowyEditorLocalizations.delegate,
+    //       ],
+    //       debugShowCheckedModeBanner: false,
+    //       home: AppFlowyEditorWidget(
+    //         model: ContentsModel.withFrame(parent: '', bookMid: ''),
+    //         size: Size.zero,
+    //         onComplete: () {},
+    //       ),
+    //     )),
     // AppRoutes.quillDemoPage: (_) =>
     //     TransitionPage(child: QuillPlayerWidget(document: ContentsModel.withFrame(parent: ''))),
     // AppRoutes.quillDemoPage: (_) => TransitionPage(
@@ -144,9 +145,9 @@ final routesLoggedOut = RouteMap(
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //skpark test code
-        if (BookMainPage.selectedMid.isEmpty) {
-          BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
-        }
+        // if (BookMainPage.selectedMid.isEmpty) {
+        //   BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+        // }
         logger.finest('selectedMid=${BookMainPage.selectedMid}');
         return TransitionPage(
             child: BookMainPage(bookKey: GlobalObjectKey('Book${BookMainPage.selectedMid}')));
@@ -157,9 +158,9 @@ final routesLoggedOut = RouteMap(
     AppRoutes.studioBookPreviewPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //skpark test code
-        if (BookMainPage.selectedMid.isEmpty) {
-          BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
-        }
+        // if (BookMainPage.selectedMid.isEmpty) {
+        //   BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+        // }
         logger.finest('selectedMid=${BookMainPage.selectedMid}');
 
         return TransitionPage(

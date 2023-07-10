@@ -22,6 +22,7 @@ class FloatingToolbar extends StatefulWidget {
     required this.scrollController,
     required this.child,
     this.style = const FloatingToolbarStyle(),
+    required this.frameKey, //skpark
   });
 
   final List<ToolbarItem> items;
@@ -29,6 +30,7 @@ class FloatingToolbar extends StatefulWidget {
   final ScrollController scrollController;
   final Widget child;
   final FloatingToolbarStyle style;
+  final GlobalKey? frameKey; //skpark
 
   @override
   State<FloatingToolbar> createState() => _FloatingToolbarState();
@@ -145,26 +147,16 @@ class _FloatingToolbarState extends State<FloatingToolbar> with WidgetsBindingOb
       return;
     }
 
+    Offset offset = _findFrameOffset(); //skpark
+
     final rect = _findSuitableRect(rects);
     final (top, left, right) = calculateToolbarOffset(rect);
-    // _toolbarContainer = OverlayEntry(
-    //   builder: (context) {
-    //     print('----left: $left, right: $right, top: $top');
-    //     return Positioned(
-    //       top: max(0, top) - floatingToolbarHeight,
-    //       left: left,
-    //       right: right,
-    //       child: _buildToolbar(context),
-    //     );
-    //   },
-    // );
     _toolbarContainer = OverlayEntry(
       builder: (context) {
-        // print('----left: $left, right: $right, top: $top');
         return Positioned(
-          top: 10.0,
-          left: 10.0,
-          right: 10.0,
+          top: max(0, top) - floatingToolbarHeight - offset.dy, //skpark
+          left: left! - offset.dx, //skprak
+          //right: right,  //skpark
           child: _buildToolbar(context),
         );
       },
@@ -218,12 +210,6 @@ class _FloatingToolbarState extends State<FloatingToolbar> with WidgetsBindingOb
     final width = editorSize.width;
     final threshold = width / 3.0;
     final top = rect.top < floatingToolbarHeight ? rect.bottom + floatingToolbarHeight : rect.top;
-    // print('----editorOffset: $editorOffset');
-    // print('----editorSize: $editorSize');
-    // print('----editorRect: $editorRect');
-    // print('----editorCenter: $editorCenter');
-    // print('----left_rect: $left, right_rect: $right, top_rect: $top');
-    // print('----width: $width, threshold: $threshold');
     if (rect.left >= threshold && rect.right <= threshold * 2.0) {
       // show in center
       return (top, threshold, null);
@@ -234,5 +220,16 @@ class _FloatingToolbarState extends State<FloatingToolbar> with WidgetsBindingOb
       // show in right
       return (top, null, editorRect.right - rect.right);
     }
+  }
+
+  Offset _findFrameOffset() {
+    //skpark
+    if (widget.frameKey == null) {
+      return Offset.zero;
+    }
+    final RenderBox? box = widget.frameKey!.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) return Offset.zero;
+
+    return box.localToGlobal(Offset.zero);
   }
 }

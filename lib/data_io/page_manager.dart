@@ -23,8 +23,9 @@ class PageManager extends CretaManager {
   BookModel? bookModel;
   Map<String, FrameManager?> frameManagerList = {};
   Map<String, GlobalObjectKey> thumbKeyMap = {};
+  final bool isPublishedMode;
 
-  PageManager({String tableName = 'creta_page'}) : super(tableName, null) {
+  PageManager({String tableName = 'creta_page', this.isPublishedMode = false,}) : super(tableName, null) {
     saveManagerHolder?.registerManager('page', this);
   }
   @override
@@ -69,6 +70,8 @@ class PageManager extends CretaManager {
     FrameManager retval = FrameManager(
       bookModel: bookModel,
       pageModel: pageModel,
+      tableName: isPublishedMode ? 'creta_frame_published' : 'creta_frame',
+      isPublishedMode: isPublishedMode,
     );
     frameManagerList[pageModel.mid] = retval;
     return retval;
