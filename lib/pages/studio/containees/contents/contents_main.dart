@@ -114,7 +114,8 @@ class ContentsMainState extends State<ContentsMain> {
               if (model != null && isURINotNull(model)) {
                 logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
                 LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
-                if (linkManager != null && linkManager.getAvailLength() > 0) {
+                if (linkManager != null) {
+                  //if (linkManager != null && linkManager.getAvailLength() > 0) {
                   return Stack(
                     children: [
                       _mainBuild(model, playTimer),

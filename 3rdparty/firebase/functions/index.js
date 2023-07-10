@@ -23,7 +23,7 @@ exports.deltaChanged = functions.database.ref('/hycop_delta/{id}/delta')
         return null;
 });
 
-exports.removeDelta_schedule = functions.pubsub.schedule('every 24 hours').onRun((context) => {
+exports.removeDelta_schedule = functions.pubsub.schedule('* * * * *').onRun((context) => {
     return _removeDelta();
 });
 

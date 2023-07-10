@@ -162,10 +162,18 @@ class _LinkWidgetState extends State<LinkWidget> {
   }
 
   bool _showLinkCursor(bool hasContents) {
-    if (!_isHover) return false;
-    if (!LinkParams.isLinkNewMode) return false;
-    if (!hasContents) return false;
-    if (StudioVariables.isPreview) return false;
+    if (!_isHover) {
+      return false;
+    }
+    if (!LinkParams.isLinkNewMode) {
+      return false;
+    }
+    if (!hasContents) {
+      return false;
+    }
+    if (StudioVariables.isPreview) {
+      return false;
+    }
     if (LinkParams.connectedClass == 'frame') {
       if (LinkParams.connectedMid == widget.frameModel.mid) {
         return false;

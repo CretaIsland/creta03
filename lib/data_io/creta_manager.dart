@@ -958,7 +958,7 @@ abstract class CretaManager extends AbsExModelManager {
 
     String className = HycopUtils.getClassName(selectedMid);
     if (className != 'frame' && className != 'contents') {
-      DraggableStickers.frameSelectNotifier?.set("", doNotify: doNotify);
+      DraggableStickers.frameSelectNotifier?.set("", doNotify: doNotify); // clear 한다는뜻.
     }
     if (doNotify) {
       notify();
@@ -969,9 +969,8 @@ abstract class CretaManager extends AbsExModelManager {
     prevSelectedMid = selectedMid;
     selectedMid = "";
     logger.finest('unselected, prev=$prevSelectedMid');
-    DraggableStickers.frameSelectNotifier?.set("", doNotify: false);
-
-    notify();
+    DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
+    //notify();
   }
 
   AbsExModel? getSelected() {
