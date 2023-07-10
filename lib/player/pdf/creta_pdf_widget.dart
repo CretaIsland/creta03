@@ -69,7 +69,7 @@ class CretaPdfPlayerWidgetState extends State<CretaPdfWidget> {
           bottomRight: Radius.circular(bottomRight),
         ),
       ),
-      child: PinchPage(url: uri),
+      child: PinchPage(key: GlobalObjectKey('pdf-$uri'), url: uri),
     );
   }
 }
