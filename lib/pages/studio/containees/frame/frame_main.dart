@@ -173,8 +173,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       //   //setState(() {});
       // },
       onFrameShowUnshow: (mid) {
-        //logger.fine('Frame onFrameShowUnshow');
-        //setState(() {});
+        logger.fine('Frame onFrameShowUnshow');
+        setState(() {});
       },
       onFrameMain: (mid) {
         logger.fine('Frame onFrameMain');

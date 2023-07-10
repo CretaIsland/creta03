@@ -141,10 +141,7 @@ class StickerViewState extends State<StickerView> {
             onFrameFront: widget.onFrameFront,
             onFrameCopy: widget.onFrameCopy,
             onFrameMain: widget.onFrameMain,
-            onFrameShowUnshow: (id) {
-              setState(() {});
-              //widget.onFrameShowUnshow.call(id);
-            },
+            onFrameShowUnshow: widget.onFrameShowUnshow,
             //onFrameRotate: widget.onFrameRotate,
             //onFrameLink: widget.onFrameLink,
             onTap: widget.onTap,
