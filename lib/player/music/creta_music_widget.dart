@@ -29,6 +29,7 @@ class CretaMusicPlayerWidgetState extends State<CretaMusicWidget> with CretaMusi
 
   @override
   void initState() {
+    // print('++++++++++++++++++++++++++++++++++++++++++ creta_music_widget');
     super.initState();
     //widget.player.afterBuild();
     final ContentsEventController receiveEvent = Get.find(tag: 'text-property-to-textplayer');
@@ -54,7 +55,7 @@ class CretaMusicPlayerWidgetState extends State<CretaMusicWidget> with CretaMusi
           }
           logger.fine('Text StreamBuilder<AbsExModel>');
 
-          return playMusic(context, player, player.model!, player.acc.getRealSize(), widget.player.acc.frameModel);
+          return playMusic(context, player, player.model!, player.acc.getRealSize());
         });
   }
 }

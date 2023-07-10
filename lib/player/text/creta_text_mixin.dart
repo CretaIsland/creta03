@@ -22,8 +22,13 @@ import 'creta_text_player.dart';
 mixin CretaTextMixin {
   double applyScale = 1;
 
-  Widget playText(BuildContext context, CretaTextPlayer? player, ContentsModel model, Size realSize,
-      {bool isPagePreview = false}) {
+  Widget playText(
+    BuildContext context,
+    CretaTextPlayer? player,
+    ContentsModel model,
+    Size realSize, {
+    bool isPagePreview = false,
+  }) {
     if (StudioVariables.isAutoPlay) {
       //model!.setPlayState(PlayState.start);
       player?.play();

@@ -45,6 +45,10 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
             titleStyle: titleStyle,
             dataStyle: dataStyle,
           ),
+          // LeftMenuMusic(
+          //   music: ContentsModel.withFrame(parent: '', bookMid: ''),
+          //   size: Size.zero,
+          // ),
         ],
       ),
     );

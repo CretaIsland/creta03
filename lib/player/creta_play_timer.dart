@@ -26,6 +26,8 @@ import 'doc/creta_doc_player.dart';
 import 'doc/creta_doc_widget.dart';
 import 'image/creta_image_player.dart';
 import 'image/creta_image_widget.dart';
+import 'music/creta_music_player.dart';
+import 'music/creta_music_widget.dart';
 import 'text/creta_text_player.dart';
 import 'text/creta_text_widget.dart';
 import 'video/creta_video_player.dart';
@@ -372,6 +374,13 @@ class CretaPlayTimer extends ChangeNotifier {
           acc: contentsManager,
           onAfterEvent: (position, duration) {},
         );
+      case ContentsType.music:
+        return CretaMusicPlayer(
+          keyString: key,
+          model: model,
+          acc: contentsManager,
+          onAfterEvent: (position, duration) {},
+        );
       case ContentsType.pdf:
         return CretaPdfPlayer(
           keyString: key,
@@ -413,6 +422,12 @@ class CretaPlayTimer extends ChangeNotifier {
           key: GlobalObjectKey(player.keyString),
           player: player,
           frameManager: frameManager,
+        );
+      case ContentsType.music:
+        // print('-------------createMusicWidget${model.name}, ${model.contentsType})------------');
+        return CretaMusicWidget(
+          key: GlobalObjectKey(player.keyString),
+          player: player,
         );
       case ContentsType.pdf:
         return CretaPdfWidget(

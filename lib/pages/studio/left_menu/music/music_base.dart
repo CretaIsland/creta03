@@ -63,8 +63,8 @@ class _MusicBaseState extends State<MusicBase> {
           _isHover = true;
         });
       },
-      child: InkWell(
-        onLongPress: () {
+      child: GestureDetector(
+        onLongPressDown: (_) {
           setState(() {
             _isClicked = true;
           });

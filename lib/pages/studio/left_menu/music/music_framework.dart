@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
-import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
+import '../../containees/frame/frame_play_mixin.dart';
+import '../left_template_mixin.dart';
 
 class MusicFramework extends StatefulWidget {
   final String title;
@@ -22,9 +24,21 @@ class MusicFramework extends StatefulWidget {
   State<MusicFramework> createState() => _MusicFrameworkState();
 }
 
-class _MusicFrameworkState extends State<MusicFramework> {
+class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin, FramePlayMixin {
+  @override
+  void initState() {
+    super.initState();
+    initMixin();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    initFrameManager();
     return Padding(
       padding: const EdgeInsets.only(top: 12.0),
       child: Column(
@@ -34,8 +48,9 @@ class _MusicFrameworkState extends State<MusicFramework> {
           Padding(
             padding: const EdgeInsets.only(top: 12.0),
             child: MusicBase(
-              onPressed: () async {
-                await _createMusicApp(FrameType.music);
+              onPressed: () {
+                _createMusicFrame();
+                BookMainPage.pageManagerHolder!.notify();
               },
             ),
           ),
@@ -44,13 +59,13 @@ class _MusicFrameworkState extends State<MusicFramework> {
     );
   }
 
-  Future<void> _createMusicApp(FrameType frameType) async {
+  Future<void> _createMusicFrame() async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
-    double width = pageModel.width.value * 0.5;
-    double height = pageModel.height.value * 0.5;
+    double width = pageModel.width.value * 0.25;
+    double height = pageModel.height.value * 0.55;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 
@@ -65,11 +80,18 @@ class _MusicFrameworkState extends State<MusicFramework> {
       size: Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
-      type: frameType,
+      type: FrameType.text,
     );
     ContentsModel model = await _musicPlaylist(frameModel.mid, frameModel.realTimeKey);
-    await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
-    mychangeStack.endTrans();
+
+    // debugPrint('_MusicContent(${model.contentsType})-----------------------------');
+    debugPrint('--------width: $width, heigh: $height');
+    await createNewFrameAndContents(
+      [model],
+      pageModel,
+      frameModel: frameModel,
+    );
+    // mychangeStack.endTrans();
   }
 
   Future<ContentsModel> _musicPlaylist(String frameMid, String bookMid) async {
@@ -78,10 +100,9 @@ class _MusicFrameworkState extends State<MusicFramework> {
     retval.contentsType = ContentsType.music;
 
     //retval.remoteUrl = '$name $text';
-
-    retval.fontSize.set(48, noUndo: true, save: false);
-    retval.fontSizeType.set(FontSizeType.small, noUndo: true, save: false);
-    //retval.playTime.set(-1, noUndo: true, save: false);
+    retval.name = '뮤식 플레이리스트';
+    retval.remoteUrl = CretaStudioLang.defaultText;
+    retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }
 }

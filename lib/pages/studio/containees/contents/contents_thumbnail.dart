@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
 import 'package:creta03/player/doc/creta_doc_mixin.dart';
+import 'package:creta03/player/music/creta_music_mixin.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,7 +47,8 @@ class ContentsThumbnail extends StatefulWidget {
   State<ContentsThumbnail> createState() => ContentsThumbnailState();
 }
 
-class ContentsThumbnailState extends State<ContentsThumbnail> with CretaTextMixin, CretaDocMixin {
+class ContentsThumbnailState extends State<ContentsThumbnail>
+    with CretaTextMixin, CretaDocMixin, CretaMusicMixin {
   //ContentsManager? _contentsManager;
   //CretaPlayTimer? _playerHandler;
   ContentsEventController? _receiveEvent;

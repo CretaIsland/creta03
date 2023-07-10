@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/model/contents_model.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ import '../studio_constant.dart';
 import 'left_menu_page.dart';
 import 'left_menu_text.dart';
 import 'left_menu_widget.dart';
+import 'music/left_menu_music.dart';
 
 class LeftMenuNotifier extends ChangeNotifier {
   LeftMenuEnum _selectedStick = LeftMenuEnum.None;
@@ -177,7 +179,8 @@ class _LeftMenuState
       case LeftMenuEnum.Frame:
         return LeftMenuFrame();
       case LeftMenuEnum.Storage:
-        return Container();
+        return LeftMenuMusic(
+            music: ContentsModel.withFrame(parent: '', bookMid: ''), size: Size.zero);
       case LeftMenuEnum.Image:
         return LeftMenuImage(key: GlobalObjectKey('AIImage'));
       case LeftMenuEnum.Video:

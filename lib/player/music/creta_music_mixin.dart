@@ -1,5 +1,4 @@
 // ignore_for_file: depend_on_referenced_packages
-import 'package:creta03/model/frame_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../model/contents_model.dart';
@@ -8,9 +7,13 @@ import '../../pages/studio/studio_variables.dart';
 import 'creta_music_player.dart';
 
 mixin CretaMusicMixin {
-  Widget playMusic(BuildContext context, CretaMusicPlayer? player, ContentsModel model,
-      Size realSize, FrameModel frameModel,
-      {bool isPagePreview = false}) {
+  Widget playMusic(
+    BuildContext context,
+    CretaMusicPlayer? player,
+    ContentsModel model,
+    Size realSize, {
+    bool isPagePreview = false,
+  }) {
     if (StudioVariables.isAutoPlay) {
       player?.play();
     } else {
@@ -25,10 +28,12 @@ mixin CretaMusicMixin {
     logger.fine("uri=<$uri>");
     player?.buttonIdle();
 
+    //print('++++++++++++++++++++++playMusic+++++++++++');
+
     return SizedBox(
       width: realSize.width,
       height: realSize.height,
-      child: LeftMenuMusic(music: model),
+      child: LeftMenuMusic(music: model, size: Size(realSize.width, realSize.height)),
     );
   }
 }

@@ -115,11 +115,18 @@ dependencies:
   just_audio_background: ^0.0.1-beta.10
   flutter_excel: ^1.0.1
   collection: ^1.17.1
+  just_audio: ^0.9.34
+  audio_session: ^0.1.16
+  audio_video_progress_bar: ^1.0.1
   # flutter_custom_clippers: ^2.1.0
+  rxdart: ^0.27.7
+  fwfh_cached_network_image: ^0.7.0+5
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -180,6 +187,7 @@ flutter:
     - assets/icon.png
     - assets/landing_page_banner.mp4
     - assets/michael_buble.jpg
+    - assets/audio/canone.mp3
 
 
 
