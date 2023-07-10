@@ -25,11 +25,27 @@ class FrameManager extends CretaManager {
   final PageModel pageModel;
   final BookModel bookModel;
 
-  Offset _pageOffset = Offset.zero;
-  Offset get pageOffset => _pageOffset;
-  void setPageOffset(Offset offset) {
-    _pageOffset = offset;
-  }
+  // GlobalKey? _frameMainKey;
+  // void setFrameMainKey(GlobalKey key) {
+  //   _frameMainKey = key;
+  // }
+
+  // Offset _pageOffset = Offset.zero;
+  // Offset get pageOffset {
+  //   if (_frameMainKey == null) return Offset.zero;
+  //   if (_pageOffset != Offset.zero) return _pageOffset;
+  //   final RenderBox? box = _frameMainKey!.currentContext?.findRenderObject() as RenderBox?;
+  //   if (box != null) {
+  //     logger.info('box.size=${box.size}');
+  //     _pageOffset = box.localToGlobal(Offset.zero);
+  //     logger.info('box.position=$_pageOffset');
+  //     return _pageOffset;
+  //   }
+  //   return Offset.zero;
+  // }
+  // void setPageOffset(Offset offset) {
+  //   _pageOffset = offset;
+  // }
 
   //Map<String, ValueKey> frameKeyMap = {};
   Map<String, GlobalKey<StickerState>> frameKeyMap = {};

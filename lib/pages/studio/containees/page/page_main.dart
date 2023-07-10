@@ -408,10 +408,10 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
       return null;
     });
-    return linkList.map((model) => _drawEachLine(model, frameManager.pageOffset)).toList();
+    return linkList.map((model) => _drawEachLine(model)).toList();
   }
 
-  Widget _drawEachLine(LinkModel model, Offset pageOffset) {
+  Widget _drawEachLine(LinkModel model) {
     if (model.connectedClass == 'page') {
       return const SizedBox.shrink();
     }
@@ -433,7 +433,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     }
 
     Offset frameOffset = frame.localToGlobal(Offset.zero);
-    frameOffset = frameOffset - pageOffset;
+    frameOffset = frameOffset;
     final Size frameSize = frame.size;
 
     final Offset frameTop = Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy);
@@ -444,7 +444,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         Offset(frameOffset.dx + frameSize.width, frameSize.height / 2 + frameOffset.dy);
 
     Offset iconOffset = icon.localToGlobal(Offset.zero);
-    iconOffset = iconOffset - pageOffset;
+    iconOffset = iconOffset;
     final Size iconSize = icon.size;
     // icon center;
     final double iconX = iconOffset.dx + iconSize.width / 2; // center

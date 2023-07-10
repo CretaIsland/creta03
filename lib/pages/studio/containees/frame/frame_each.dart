@@ -253,6 +253,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       return const SizedBox.shrink();
     }
     logger.info('_frameBody2 ${LinkParams.isLinkNewMode}');
+    logger.info('_frameBody2 ${widget.model.mid}');
     return StreamBuilder<bool>(
         stream: _linkReceiveEvent!.eventStream.stream,
         builder: (context, snapshot) {

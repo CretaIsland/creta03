@@ -14,7 +14,7 @@ import '../../studio_getx_controller.dart';
 import '../../studio_variables.dart';
 
 class OnLinkCursor extends StatefulWidget {
-  final Offset pageOffset;
+  //final Offset pageOffset;
   final Offset frameOffset;
   final FrameManager frameManager;
   final FrameModel frameModel;
@@ -22,7 +22,7 @@ class OnLinkCursor extends StatefulWidget {
   final double applyScale;
   const OnLinkCursor({
     super.key,
-    required this.pageOffset,
+    //required this.pageOffset,
     required this.frameOffset,
     required this.frameManager,
     required this.frameModel,
@@ -61,7 +61,7 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           if (snapshot.data != null && snapshot.data is Offset) {
             offset = snapshot.data!;
           }
-          //logger.info('_drawLinkCursor2 ($offset)');
+          //logger.info('cursor postion ($offset)');
           if (offset == Offset.zero) {
             return const SizedBox.shrink();
           }
@@ -73,14 +73,27 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
     const double iconSize = 24;
 
     //logger.info('_drawLinkCursor (${widget.pageOffset})');
-    if (widget.pageOffset == Offset.zero || position == Offset.zero) {
-      return const SizedBox.shrink();
-    }
+    // if (widget.pageOffset == Offset.zero || position == Offset.zero) {
+    //   return const SizedBox.shrink();
+    // }
 
     // double posX = offset.dx - iconSize / 2;
     // double posY = offset.dy - iconSize / 2;
-    double posX = position.dx - iconSize / 2 - widget.pageOffset.dx - widget.frameOffset.dx;
-    double posY = position.dy - iconSize / 2 - widget.pageOffset.dy - widget.frameOffset.dy;
+    //logger.info("pageOffset.dx=${widget.pageOffset.dx}, frameOffset.dx=${widget.frameOffset.dx}");
+
+    // double posX = position.dx -
+    //     iconSize / 2 -
+    //     widget.pageOffset.dx -
+    //     widget.frameOffset.dx +
+    //     BookMainPage.horizontalScrollOffset;
+    // double posY = position.dy -
+    //     iconSize / 2 -
+    //     widget.pageOffset.dy -
+    //     widget.frameOffset.dy +
+    //     BookMainPage.verticalScrollOffset;
+
+    double posX = position.dx - iconSize / 2;
+    double posY = position.dy - iconSize / 2;
 
     logger.info('_drawLinkCursor ($posX, $posY)');
 

@@ -103,7 +103,6 @@ class _LinkWidgetState extends State<LinkWidget> {
               return SizedBox(
                 width: double.infinity,
                 height: double.infinity,
-                //color: Colors.amber,
                 child: MouseRegion(
                   cursor: LinkParams.isLinkNewMode ? SystemMouseCursors.none : MouseCursor.defer,
                   onEnter: ((event) {
@@ -120,8 +119,8 @@ class _LinkWidgetState extends State<LinkWidget> {
                     if (LinkParams.isLinkNewMode &&
                         StudioVariables.isPreview == false &&
                         hasContents) {
-                      //logger.info('sendEvent ${event.position}');
-                      _linkSendEvent?.sendEvent(event.position);
+                      //logger.info('sendEvent ${event.localPosition}');
+                      _linkSendEvent?.sendEvent(event.localPosition);
                     }
                   },
                   child: Stack(
@@ -143,7 +142,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                       if (_showLinkCursor(hasContents))
                         OnLinkCursor(
                           key: GlobalObjectKey('OnLinkCursor${widget.frameModel.mid}'),
-                          pageOffset: widget.frameManager.pageOffset,
+                          //pageOffset: widget.frameManager.pageOffset,
                           frameOffset: widget.frameOffset,
                           frameManager: widget.frameManager,
                           frameModel: widget.frameModel,
@@ -335,6 +334,8 @@ class _LinkWidgetState extends State<LinkWidget> {
     return GestureDetector(
       onTapUp: (d) {
         logger.info('link button pressed ${model.connectedMid},${model.connectedClass}');
+        logger
+            .info('link button pressed ${widget.frameModel.mid},${widget.frameModel.isShow.value}');
         BookMainPage.containeeNotifier!.setFrameClick(true);
 
         if (widget.contentsModel.isLinkEditMode == true) return;
@@ -371,13 +372,18 @@ class _LinkWidgetState extends State<LinkWidget> {
           }
         } else if (model.connectedClass == 'frame') {
           // show frame
-          FrameModel? frameModel = widget.frameManager.getModel(model.connectedMid) as FrameModel?;
-          if (frameModel != null) {
-            frameModel.isShow.set(!frameModel.isShow.value, save: false, noUndo: true);
-            if (frameModel.isShow.value == true) {
+          FrameModel? childModel = widget.frameManager.getModel(model.connectedMid) as FrameModel?;
+          if (childModel != null) {
+            print('linkMid=${model.mid}');
+            print('connected=${model.connectedMid}');
+            print('childMid=${childModel.mid}');
+            print('ParentMid=${widget.frameModel.mid}');
+
+            childModel.isShow.set(!childModel.isShow.value, save: false, noUndo: true);
+            if (childModel.isShow.value == true) {
               double order = widget.frameManager.getMaxOrder();
-              if (frameModel.order.value < order) {
-                frameModel.changeOrderByIsShow(widget.frameManager);
+              if (childModel.order.value < order) {
+                childModel.changeOrderByIsShow(widget.frameManager);
               }
               // 여기서 연결선을 연결한다....
               LinkParams.linkPostion = Offset(posX, posY);
@@ -390,11 +396,13 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.orgPostion = null;
               LinkParams.connectedMid = '';
               LinkParams.connectedClass = '';
-              frameModel.changeOrderByIsShow(widget.frameManager);
+              childModel.changeOrderByIsShow(widget.frameManager);
             }
-            model.showLinkLine = frameModel.isShow.value;
-            frameModel.save();
+            model.showLinkLine = childModel.isShow.value;
+            childModel.save();
             //_lineDrawSendEvent?.sendEvent(isShow);
+            logger.info(
+                'link button pressed ${widget.frameModel.mid},${widget.frameModel.isShow.value}');
             widget.frameManager.notify();
             //_linkManager?.notify();
           }

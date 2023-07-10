@@ -74,6 +74,9 @@ class BookMainPage extends StatefulWidget {
   static double pageWidth = 0;
   static double pageHeight = 0;
 
+  static double verticalScrollOffset = 0;
+  static double horizontalScrollOffset = 0;
+
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
   final bool isThumbnailX;
@@ -113,9 +116,6 @@ class _BookMainPageState extends State<BookMainPage> {
   bool scaleChanged = false;
 
   double padding = 16;
-
-  double? vericalScrollOffset;
-  double? horizontalScrollOffset;
 
   bool dropDownButtonOpened = false;
 
@@ -162,7 +162,8 @@ class _BookMainPageState extends State<BookMainPage> {
     //BookMainPage.bookManagerHolder!.configEvent(notifyModify: false);
     BookMainPage.bookManagerHolder!.clearAll();
     BookMainPage.pageManagerHolder = (widget.isPublishedMode ?? false)
-        ? PageManager(tableName: 'creta_page_published', isPublishedMode: widget.isPublishedMode ?? false)
+        ? PageManager(
+            tableName: 'creta_page_published', isPublishedMode: widget.isPublishedMode ?? false)
         : PageManager();
     // BookMainPage.polygonFrameManagerHolder = FrameTemplateManager(frameType: FrameType.polygon);
     // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
@@ -406,8 +407,8 @@ class _BookMainPageState extends State<BookMainPage> {
                 children: [
                   MouseRegion(
                     onHover: (pointerEvent) {
-					  //if (StudioVariables.allowMutilUser == true) {
-                      if(mouseTracerHolder!.userMouseList.isEmpty) return;
+                      //if (StudioVariables.allowMutilUser == true) {
+                      if (mouseTracerHolder!.userMouseList.isEmpty) return;
                       if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
                         client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
                             (pointerEvent.position.dy - 50) / screenHeightPrecentage);
@@ -1078,10 +1079,10 @@ class _BookMainPageState extends State<BookMainPage> {
           //     horizontalScrollOffset ?? (totalWidth - StudioVariables.workWidth) * 0.5,
           // initialScrollOffsetY: vericalScrollOffset ?? StudioVariables.workHeight * 0.1,
           currentHorizontalScrollBarOffset: (value) {
-            horizontalScrollOffset = value;
+            BookMainPage.horizontalScrollOffset = value;
           },
           currentVerticalScrollBarOffset: (value) {
-            vericalScrollOffset = value;
+            BookMainPage.verticalScrollOffset = value;
           },
 
           child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {

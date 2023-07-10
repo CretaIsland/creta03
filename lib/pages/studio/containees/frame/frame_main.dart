@@ -29,6 +29,7 @@ import 'sticker/stickerview.dart';
 
 class FrameMain extends StatefulWidget {
   final GlobalKey frameMainKey;
+
   final BookModel bookModel;
   final PageModel pageModel;
   final double pageWidth;
@@ -76,13 +77,14 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final RenderBox? box = widget.frameMainKey.currentContext?.findRenderObject() as RenderBox?;
-      if (box != null) {
-        logger.info('box.size=${box.size}');
-        Offset pageOffset = box.localToGlobal(Offset.zero);
-        frameManager?.setPageOffset(pageOffset);
-        logger.info('box.position=$pageOffset');
-      }
+      // final RenderBox? box = widget.frameMainKey.currentContext?.findRenderObject() as RenderBox?;
+      // if (box != null) {
+      //   logger.info('box.size=${box.size}');
+      //   Offset pageOffset = box.localToGlobal(Offset.zero);
+      //   frameManager?.setPageOffset(pageOffset);
+      //   logger.info('box.position=$pageOffset');
+      // }
+      //frameManager?.setFrameMainKey(widget.frameMainKey);
     });
   }
 
@@ -105,7 +107,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             frameManager!.updateModel(model);
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
-          return showFrame();
+          return Container(color: Colors.amber, child: showFrame());
         });
   }
 
