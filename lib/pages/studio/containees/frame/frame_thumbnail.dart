@@ -87,7 +87,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       _contentsManager!.addRealTimeListen(widget.model.mid);
       _contentsManager!.reOrdering();
     }
-    logger.info('initChildren(${_contentsManager!.getAvailLength()})');
+    logger.info('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
     _isInitialized = true;
   }
 

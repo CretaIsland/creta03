@@ -75,10 +75,12 @@ class _SimpleEditorState extends State<SimpleEditor> {
               buildTextColorItem(
                 colorOptions: _generateTextColorOptions(), //skpark
                 frameKey: widget.frameKey, //skpark
+                onEditComplete: widget.onEditComplete, //skpark
               ),
               buildHighlightColorItem(
                 colorOptions: _generateTextColorOptions(), //skpark
                 frameKey: widget.frameKey, //skpark
+                onEditComplete: widget.onEditComplete, //skpark
               )
             ],
             editorState: editorState,

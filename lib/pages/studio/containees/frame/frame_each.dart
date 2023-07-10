@@ -109,7 +109,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       _contentsManager!.addRealTimeListen(widget.model.mid);
       _contentsManager!.reOrdering();
     }
-    logger.info('initChildren(${_contentsManager!.getAvailLength()})');
+    logger.info('frame initChildren(${_contentsManager!.getAvailLength()})');
     _isInitialized = true;
   }
 
@@ -260,6 +260,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
             logger.info('_frameBody3 _linkReceiveEvent (AutoPlay=$snapshot.data)');
           }
           //return _applyAnimate(widget.model);
+
           return Stack(
             alignment: Alignment.center,
             children: [
