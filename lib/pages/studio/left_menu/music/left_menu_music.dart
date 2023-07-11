@@ -1,4 +1,6 @@
 // import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'dart:math';
+
 import 'package:audio_session/audio_session.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:creta03/design_system/creta_color.dart';
@@ -10,12 +12,15 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../../../data_io/contents_manager.dart';
+import '../../../../player/music/creta_music_mixin.dart';
 import 'music_common.dart';
 
 class LeftMenuMusic extends StatefulWidget {
-  final ContentsModel music;
+  final ContentsManager contentsManager;
   final Size size;
-  const LeftMenuMusic({super.key, required this.music, required this.size});
+
+  const LeftMenuMusic({super.key, required this.contentsManager, required this.size});
 
   @override
   State<LeftMenuMusic> createState() => LeftMenuMusicState();
@@ -25,50 +30,73 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
   static int _nextmediaId = 0;
   late AudioPlayer _audioPlayer; // play local audio file
 
+  static Random random = Random();
+  static int randomNumber = random.nextInt(100);
+  static String url = 'https://picsum.photos/200/?random=$randomNumber';
+
   void addMusic(ContentsModel model) {
-    _playlist.add(AudioSource.uri(Uri.parse('model.remoteUrl'),
+    _playlist.add(AudioSource.uri(Uri.parse(model.remoteUrl!),
         tag: MediaItem(
           id: model.mid,
           title: model.name,
-          artist: 'Kimiko Ishizaka',
-          artUri: Uri.parse(
-              'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
+          artist: 'Unknown artist',
+          artUri: Uri.parse(url),
         )));
   }
 
   final _playlist = ConcatenatingAudioSource(
-    children: [
-      AudioSource.uri(
-        Uri.parse("asset:///assets/audio/canone.mp3"),
-        tag: MediaItem(
-          id: '${_nextmediaId++}',
-          title: "Variatio 3 a 1 Clav.Canone all'Unisuono'",
-          artist: 'Kimiko Ishizaka',
-          artUri: Uri.parse(
-              'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
-        ),
-      ),
-      AudioSource.uri(
-        Uri.parse("https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
-        tag: MediaItem(
-          id: '${_nextmediaId++}',
-          artist: "Science Friday",
-          title: "From Cat Rheology To Operatic Incompetence",
-          artUri: Uri.parse("asset:///assets/creta-watercolor.png"),
-        ),
-      ),
-      AudioSource.uri(
-        Uri.parse("https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
-        tag: MediaItem(
-          id: '${_nextmediaId++}',
-          artist: "Science Friday",
-          title: "A Salute To Head-Scratching Science (30 seconds)",
-          artUri: Uri.parse(
-              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-        ),
-      ),
-    ],
+    children: [],
+    // AudioSource.uri(
+    //   Uri.parse("asset:///assets/audio/canone.mp3"),
+    //   tag: MediaItem(
+    //     id: '${_nextmediaId++}',
+    //     title: "Variatio 3 a 1 Clav.Canone all'Unisuono'",
+    //     artist: 'Kimiko Ishizaka',
+    //     artUri: Uri.parse(
+    //         'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
+    //   ),
+    // ),
+    // AudioSource.uri(
+    //   Uri.parse("https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
+    //   tag: MediaItem(
+    //     id: '${_nextmediaId++}',
+    //     artist: "Science Friday",
+    //     title: "From Cat Rheology To Operatic Incompetence",
+    //     artUri: Uri.parse("asset:///assets/creta-watercolor.png"),
+    //   ),
+    // ),
+    // AudioSource.uri(
+    //   Uri.parse("https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
+    //   tag: MediaItem(
+    //     id: '${_nextmediaId++}',
+    //     artist: "Science Friday",
+    //     title: "A Salute To Head-Scratching Science (30 seconds)",
+    //     artUri: Uri.parse(
+    //         "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+    //   ),
+    // ),
   );
+
+  Future<void> afterBuild() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      //
+      widget.contentsManager.orderMapIterator((ele) {
+        if (ele.isRemoved.value == true) return null;
+
+        ContentsModel model = ele as ContentsModel;
+        if (model.isShow.value == false) return null;
+
+        if (model.isMusic()) {
+          String key = widget.contentsManager.frameModel.mid;
+          GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[key];
+          if (musicKey != null) {
+            musicKey.currentState!.addMusic(model);
+          }
+        }
+        return null;
+      });
+    });
+  }
 
   @override
   void initState() {
@@ -82,6 +110,7 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
     // _audioPlayer.positionStream;
     // _audioPlayer.bufferedPositionStream;
     // _audioPlayer.durationStream;
+    afterBuild();
   }
 
   Future<void> _init() async {
@@ -131,9 +160,9 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             StreamBuilder<SequenceState?>(
@@ -144,21 +173,23 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
                   return const SizedBox();
                 }
                 final metadata = state!.currentSource!.tag as MediaItem;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Center(
                           child: SizedBox(
                         width: 250.0,
                         height: 250.0,
                         child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
                       )),
-                    ),
-                    Text(metadata.artist!, style: Theme.of(context).textTheme.titleLarge),
-                    Text(metadata.title),
-                  ],
+                      const SizedBox(height: 16.0),
+                      Text(metadata.title, style: Theme.of(context).textTheme.titleLarge),
+                      Text(metadata.artist!),
+                    ],
+                  ),
                 );
               },
             ),
@@ -174,25 +205,22 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
                     //   bufferedPosition: positionData?.bufferedPosition ?? Duration.zero,
                     //   onChangeEnd: _audioPlayer.seek,
                     // );
-                    Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: ProgressBar(
-                    barHeight: 4.0,
-                    baseBarColor: Colors.black,
-                    bufferedBarColor: CretaColor.text[100],
-                    progressBarColor: CretaColor.primary,
-                    thumbColor: CretaColor.primary,
-                    timeLabelTextStyle:
-                        const TextStyle(color: CretaColor.primary, fontWeight: FontWeight.w600),
-                    progress: positionData?.position ?? Duration.zero,
-                    buffered: positionData?.bufferedPosition ?? Duration.zero,
-                    total: positionData?.duration ?? Duration.zero,
-                    onSeek: _audioPlayer.seek,
-                  ),
+                    ProgressBar(
+                  barHeight: 4.0,
+                  baseBarColor: CretaColor.bufferedColor.withOpacity(0.24),
+                  bufferedBarColor: CretaColor.bufferedColor,
+                  progressBarColor: Colors.black87,
+                  thumbColor: Colors.black87,
+                  timeLabelTextStyle:
+                      const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                  progress: positionData?.position ?? Duration.zero,
+                  buffered: positionData?.bufferedPosition ?? Duration.zero,
+                  total: positionData?.duration ?? Duration.zero,
+                  onSeek: _audioPlayer.seek,
                 );
               },
             ),
-            const SizedBox(height: 8.0),
+            // const SizedBox(height: 6.0),
             ControlButtons(audioPlayer: _audioPlayer),
           ],
         ),
@@ -246,15 +274,9 @@ class ControlButtons extends StatelessWidget {
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_previous),
-            onPressed: audioPlayer.hasNext ? audioPlayer.seekToPrevious : null,
+            onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
           ),
         ),
-        // IconButton(
-        //   onPressed: audioPlayer.seekToPrevious,
-        //   iconSize: 48.0,
-        //   color: Colors.black87,
-        //   icon: const Icon(Icons.skip_previous_rounded),
-        // ),
         StreamBuilder<PlayerState>(
           stream: audioPlayer.playerStateStream,
           builder: (context, snapshot) {
@@ -291,12 +313,6 @@ class ControlButtons extends StatelessWidget {
             );
           },
         ),
-        // IconButton(
-        //   onPressed: audioPlayer.seekToNext,
-        //   iconSize: 48.0,
-        //   color: Colors.black87,
-        //   icon: const Icon(Icons.skip_next_rounded),
-        // ),
         StreamBuilder<SequenceState?>(
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(

@@ -42,7 +42,6 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('-------------------------------test 1111111111111-----------');
     final colorBackground = highlight ? widget.bgColor : Colors.transparent;
     return ClipRRect(
       child: Stack(

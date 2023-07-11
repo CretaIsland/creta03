@@ -178,8 +178,6 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameDropZone() {
-    print('_frameDropZone.............................................................');
-
     _isShowBorder = _showBorder();
     // Widget frameBody = Stack(
     //   alignment: Alignment.center,
@@ -200,13 +198,6 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               parentId: '',
               onDroppedFile: (modelList) {
                 _onDropFrame(widget.model.mid, modelList);
-                
-                for (var eachModel in modelList) {
-                  if(eachModel.isMusic()) {
-                  GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[widget.model.mid];
-                  musicKey!.currentState!.addMusic(eachModel);
-                  }
-                }
               },
               child: _frameBody1(),
             )
@@ -343,12 +334,13 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     }
 
     await ContentsManager.createContents(
-      frameManager,
-      contentsModelList,
-      frameModel,
-      widget.pageModel,
-      isResizeFrame: false,
-    );
+        frameManager, contentsModelList, frameModel, widget.pageModel, isResizeFrame: false,
+        onUploadComplete: (model) {
+      if (model.isMusic()) {
+        GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[widget.model.mid];
+        musicKey!.currentState!.addMusic(model);
+      }
+    });
   }
 
   Widget _applyAnimate(FrameModel model) {
