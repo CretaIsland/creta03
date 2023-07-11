@@ -42,6 +42,7 @@ class FavoritesManager extends CretaManager {
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
     query['bookId'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
+    query['userId'] = QueryValue(value: AccountManager.currentLoginUser.email);
     return queryFromDB(
       query,
       //limit: ,
