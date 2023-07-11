@@ -55,6 +55,12 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return false;
   }
 
+  bool isWatchTYpe() {
+    if (frameType == FrameType.analogWatch) return true;
+    if (frameType == FrameType.digitalWatch) return true;
+    return false;
+  }
+
   double prevWidth = -1;
   double prevHeight = -1;
   double prevPosX = -1;

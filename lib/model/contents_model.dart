@@ -56,6 +56,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<CopyRightType> copyRight;
   late UndoAble<ImageFilterType> filter;
   late UndoAble<ContentsFitType> fit;
+  late UndoAble<ImageAniType> imageAniType;
 
   //late UndoAble<bool> isDynamicSize; // 동영상의 크기에 맞게 frame 사이즈를 변경해야 하는 경우
 
@@ -133,6 +134,7 @@ class ContentsModel extends CretaModel {
         letterSpacing,
         wordSpacing,
         aniType,
+        imageAniType,
         align,
         anyDuration,
         isTTS,
@@ -216,6 +218,7 @@ class ContentsModel extends CretaModel {
     letterSpacing = UndoAble<double>(0, mid, 'letterSpacing');
     wordSpacing = UndoAble<double>(0, mid, 'wordSpacing');
     aniType = UndoAble<TextAniType>(TextAniType.none, mid, 'aniType');
+    imageAniType = UndoAble<ImageAniType>(ImageAniType.none, mid, 'imageAniType');
     align = UndoAble<TextAlign>(TextAlign.center, mid, 'align');
     anyDuration = UndoAble<double>(0, mid, 'anyDuration');
     isTTS = UndoAble<bool>(false, mid, 'isTTS');
@@ -279,6 +282,7 @@ class ContentsModel extends CretaModel {
     wordSpacing = UndoAble<double>(srcContents.wordSpacing.value, mid, 'wordSpacing');
     align = UndoAble<TextAlign>(srcContents.align.value, mid, 'align');
     aniType = UndoAble<TextAniType>(srcContents.aniType.value, mid, 'aniType');
+    imageAniType = UndoAble<ImageAniType>(srcContents.imageAniType.value, mid, 'imageAniType');
     anyDuration = UndoAble<double>(srcContents.anyDuration.value, mid, 'anyDuration');
     isTTS = UndoAble<bool>(srcContents.isTTS.value, mid, 'isTTS');
     lang = UndoAble<String>(srcContents.lang.value, mid, 'lang');
@@ -349,6 +353,7 @@ class ContentsModel extends CretaModel {
     wordSpacing.init(srcContents.wordSpacing.value);
     align.init(srcContents.align.value);
     aniType.init(srcContents.aniType.value);
+    imageAniType.init(srcContents.imageAniType.value);
     anyDuration.init(srcContents.anyDuration.value);
     isTTS.init(srcContents.isTTS.value);
     lang.init(srcContents.lang.value);
@@ -447,6 +452,7 @@ class ContentsModel extends CretaModel {
     wordSpacing.set(map["wordSpacing"] ?? 0, save: false, noUndo: true);
     align.set(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
     aniType.set(TextAniType.fromInt(map["aniType"] ?? 0), save: false, noUndo: true);
+    imageAniType.set(ImageAniType.fromInt(map["imageAniType"] ?? 0), save: false, noUndo: true);
     anyDuration.set(map["anyDuration"] ?? 0, save: false, noUndo: true);
     isTTS.set(map["isTTS"] ?? false, save: false, noUndo: true);
     lang.set(map["lang"] ?? 'ko', save: false, noUndo: true);
@@ -501,6 +507,7 @@ class ContentsModel extends CretaModel {
         "wordSpacing": wordSpacing.value,
         "align": align.value.index,
         "aniType": aniType.value.index,
+        "imageAniType": imageAniType.value.index,
         "anyDuration": anyDuration.value,
         "isTTS": isTTS.value,
         "lang": lang.value,

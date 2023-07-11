@@ -37,7 +37,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.2.12
+  hycop: ^0.2.13
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: ^2.2.0
   # elegant_radio_button_group: ^0.0.1
@@ -121,6 +121,7 @@ dependencies:
   # flutter_custom_clippers: ^2.1.0
   rxdart: ^0.27.7
   fwfh_cached_network_image: ^0.7.0+5
+  one_clock: ^1.0.1
 
 
 dev_dependencies:

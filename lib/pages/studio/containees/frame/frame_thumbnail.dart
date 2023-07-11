@@ -48,7 +48,7 @@ class FrameThumbnail extends StatefulWidget {
 
 class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
   double applyScale = 1;
-  bool _showBorder = false;
+  bool _isShowBorder = false;
 
   ContentsManager? _contentsManager;
 
@@ -134,13 +134,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
-    _showBorder = _contentsManager!.length() == 0 &&
-        (widget.model.bgColor1.value == widget.pageModel.bgColor1.value ||
-            widget.model.bgColor1.value == Colors.transparent) &&
-        (widget.model.borderWidth.value == 0 ||
-            widget.model.borderColor.value == widget.pageModel.bgColor1.value) &&
-        (widget.model.isNoShadow());
-
+    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!);
     if (widget.model.shouldInsideRotate()) {
       return Transform(
         key: GlobalObjectKey('Transform${widget.model.mid}'),
@@ -148,10 +142,10 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
         transform: Matrix4.identity()
           ..scale(1.0)
           ..rotateZ(CretaUtils.degreeToRadian(widget.model.angle.value)),
-        child: _showBorder ? _dottedShapeBox(widget.model) : _shapeBox(widget.model),
+        child: _isShowBorder ? _dottedShapeBox(widget.model) : _shapeBox(widget.model),
       );
     }
-    return _showBorder ? _dottedShapeBox(widget.model) : _shapeBox(widget.model);
+    return _isShowBorder ? _dottedShapeBox(widget.model) : _shapeBox(widget.model);
   }
 
   Widget _dottedShapeBox(FrameModel model) {
@@ -208,6 +202,13 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
 
   Widget _frameBox(FrameModel model, bool useColor) {
     //logger.info('_frameBox');
+    if (model.isWeatherTYpe()) {
+      return weatherFrame(model, widget.width, widget.height);
+    }
+    if (model.isWatchTYpe()) {
+      return watchFrame(model, null);
+    }
+
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,

@@ -189,7 +189,8 @@ mixin CretaTextMixin {
             ..color = model.outLineColor.value,
         );
       }
-      if (model.aniType.value != TextAniType.shimmer && model.aniType.value != TextAniType.neon) {
+      if (model.aniType.value != TextAniType.shimmer &&
+          model.aniType.value != TextAniType.neon) {
         style = style.copyWith(fontSize: _getAutoFontSize(model, textSize, realSize, fontSize));
       }
     }

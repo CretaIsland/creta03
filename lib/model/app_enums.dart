@@ -38,6 +38,9 @@ enum FrameType {
   weatherInfo,
   weather1,
   weather2,
+  music,
+  analogWatch,
+  digitalWatch,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
@@ -531,4 +534,13 @@ enum TextType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static TextType fromInt(int? val) => TextType.values[validCheck(val ?? none.index)];
+}
+
+enum ImageAniType {
+  none,
+  move,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static ImageAniType fromInt(int? val) => ImageAniType.values[validCheck(val ?? none.index)];
 }

@@ -431,6 +431,20 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               ],
             ),
           ),
+          propertyLine(
+            // 이미지 AniType
+            name: CretaStudioLang.ani,
+            widget: CretaToggleButton(
+              width: 54 * 0.75,
+              height: 28 * 0.75,
+              defaultValue: widget.model.imageAniType.value == ImageAniType.move ? true : false,
+              onSelected: (value) {
+                widget.model.imageAniType.set(value ? ImageAniType.move : ImageAniType.none);
+                _sendEvent!.sendEvent(widget.model);
+                setState(() {});
+              },
+            ),
+          ),
         ],
       ),
     );

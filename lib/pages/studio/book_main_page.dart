@@ -398,7 +398,7 @@ class _BookMainPageState extends State<BookMainPage> {
       child: StudioVariables.isPreview
           ? Scaffold(body: _waitBook())
           : Snippet.CretaScaffold(
-              title: Snippet.logo('studio'),
+              title: Snippet.logo('studio', route: (){ Routemaster.of(context).push(AppRoutes.studioBookGridPage);}),
               context: context,
               child: Stack(
                 children: [

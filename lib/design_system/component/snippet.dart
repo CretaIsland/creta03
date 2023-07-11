@@ -343,14 +343,19 @@ class Snippet {
     );
   }
 
-  static Widget logo(String title) {
+  static Widget logo(String title, {void Function()? route}) {
     return Row(children: [
       // SizedBox(
       //   width: 24,
       // ),
-      Image(
-        image: AssetImage('assets/logo_en.png'),
-        height: 20,
+      GestureDetector(
+        onLongPressDown: (d) {
+          route?.call();
+        },
+        child: Image(
+          image: AssetImage('assets/logo_en.png'),
+          height: 20,
+        ),
       ),
       Padding(
         padding: const EdgeInsets.only(left: 6.0, top: 6.0),

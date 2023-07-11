@@ -1,6 +1,8 @@
 // ignore: implementation_imports
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages, must_be_immutable
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
@@ -16,7 +18,11 @@ class CretaImagerWidget extends CretaAbsPlayerWidget {
   CretaImagePlayerWidgetState createState() => CretaImagePlayerWidgetState();
 }
 
-class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
+class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
+    with SingleTickerProviderStateMixin {
+  Timer? _aniTimer;
+  bool _animateFlag = false;
+
   @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
@@ -25,13 +31,20 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
   @override
   void initState() {
     super.initState();
-    //widget.player.afterBuild();
+    if (widget.player.model!.imageAniType.value == ImageAniType.move) {
+      _aniTimer ??= Timer.periodic(const Duration(seconds: 6), (t) {
+        setState(() {
+          _animateFlag = !_animateFlag;
+        });
+      });
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
     widget.player.stop();
+    _aniTimer?.cancel();
   }
 
   @override
@@ -88,7 +101,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
     //   ),
     // );
 
-    return Container(
+    Widget drawImage = Container(
       decoration: BoxDecoration(
           //shape: BoxShape.circle,
           borderRadius: BorderRadius.only(
@@ -100,5 +113,50 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget> {
           //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(widget.model!.url))),
           image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(uri))),
     );
+
+    if (player.model!.imageAniType.value == ImageAniType.move) {
+      Size size = player.acc.getRealSize();
+      return OverflowBox(
+        maxHeight: size.height * 1.5,
+        maxWidth: size.width * 1.5,
+        child: AnimatedContainer(
+          duration: const Duration(seconds: 3),
+          curve: Curves.easeInOutCubic,
+          width: _animateFlag ? size.width : size.width * 1.5,
+          height: _animateFlag ? size.height : size.height * 1.5,
+          child: drawImage,
+
+          // child: Stack(
+          //   children: [
+          //     Transform.translate(
+          //       offset: const Offset(5, 5),
+          //       child: ClipRRect(
+          //         borderRadius: BorderRadius.circular(3),
+          //         child: Opacity(
+          //           opacity: 0.5,
+          //           child: drawImage,
+          //         ),
+          //       ),
+          //     ),
+          //     Positioned.fill(
+          //       child: BackdropFilter(
+          //         filter: ImageFilter.blur(
+          //           sigmaX: 3,
+          //           sigmaY: 3,
+          //         ),
+          //         child: Container(color: Colors.transparent),
+          //       ),
+          //     ),
+          //     ClipRRect(
+          //       borderRadius: BorderRadius.circular(3),
+          //       child: drawImage,
+          //     ),
+          //   ],
+          // ),
+        ),
+      );
+    }
+
+    return drawImage;
   }
 }

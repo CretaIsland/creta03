@@ -654,7 +654,7 @@ class BTN {
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color fgColor = Colors.white,
     required Function onPressed,
-    double? width = 166,
+    double? width = 170,
     CretaButtonSidePadding? sidePadding,
   }) {
     return CretaButton(

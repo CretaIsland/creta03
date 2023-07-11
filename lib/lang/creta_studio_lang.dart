@@ -508,6 +508,7 @@ class CretaStudioLang {
   static String bounce = 'Bounce Text';
 
   static String weather = '날씨 위젯';
+  static String clockandWatch = '시계와 스톱워치';
 
   static var onlineWeather = '날씨 온라인 연결';
   static String offLineWeather = "날씨 수동으로 선택";
