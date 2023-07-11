@@ -25,8 +25,18 @@ class _MusicBaseState extends State<MusicBase> {
   bool _isHover = false;
   bool _isClicked = false;
 
+  int index = 0;
+
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _buildStack(index),
+      ],
+    );
+  }
+
+  Widget _buildStack(int index) {
     return Stack(clipBehavior: Clip.none, alignment: Alignment.center, children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -38,19 +48,21 @@ class _MusicBaseState extends State<MusicBase> {
               child: SizedBox(
                 width: musicBgWidth,
                 height: musicBgHeight,
-                child: Image.asset('michael_buble.jpg'),
+                child: Image.asset('assets/creta-watercolor.png'),
               ),
             ),
           ),
           const SizedBox(width: 16.0),
-          const Text('Michael Buble'),
+          Text(
+            'Player ${(index + 1).toString().padLeft(2, '0')}',
+          ),
         ],
       ),
-      _playListSelected(),
+      _playListSelected(index),
     ]);
   }
 
-  Widget _playListSelected() {
+  Widget _playListSelected(int playerIdx) {
     return MouseRegion(
       onExit: (event) {
         setState(() {

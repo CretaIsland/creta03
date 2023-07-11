@@ -764,9 +764,14 @@ class ContentsManager extends CretaManager {
     onComplete?.call();
   }
 
-  static Future<void> createContents(FrameManager? frameManager,
-      List<ContentsModel> contentsModelList, FrameModel frameModel, PageModel pageModel,
-      {bool isResizeFrame = true}) async {
+  static Future<void> createContents(
+    FrameManager? frameManager,
+    List<ContentsModel> contentsModelList,
+    FrameModel frameModel,
+    PageModel pageModel, {
+    bool isResizeFrame = true,
+    void Function(ContentsModel)? onUploadComplete,
+  }) async {
     // 콘텐츠 매니저를 생성한다.
     ContentsManager? contentsManager = frameManager!.findContentsManager(frameModel.mid);
     contentsManager ??= frameManager.newContentsManager(frameModel);
@@ -792,7 +797,19 @@ class ContentsManager extends CretaManager {
           contentsManager.frameManager = frameManager;
         }
         frameModel.frameType = FrameType.text;
-        await _pdfProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
+        await _uploadProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
+      } else if (contentsModel.contentsType == ContentsType.music) {
+        if (isResizeFrame) {
+          contentsManager.frameManager = frameManager;
+        }
+
+        await _uploadProcess(
+          contentsManager,
+          contentsModel,
+          isResizeFrame: isResizeFrame,
+          onUploadComplete: onUploadComplete,
+        );
+        // print('--------------2---------------------------${contentsModel.remoteUrl!}-');
       }
       // 콘텐츠 객체를 DB에 Crete 한다.
       await contentsManager.createNextContents(contentsModel, doNotify: false);
@@ -895,8 +912,8 @@ class ContentsManager extends CretaManager {
     return;
   }
 
-  static Future<void> _pdfProcess(ContentsManager contentsManager, ContentsModel contentsModel,
-      {required bool isResizeFrame}) async {
+  static Future<void> _uploadProcess(ContentsManager contentsManager, ContentsModel contentsModel,
+      {required bool isResizeFrame, void Function(ContentsModel)? onUploadComplete}) async {
     //dropdown 하는 순간에 이미 플레이되고 있는 video 가 있다면, 정지시켜야 한다.
     //contentsManager.pause();
 
@@ -912,10 +929,14 @@ class ContentsManager extends CretaManager {
         contentsModel,
         contentsManager,
         fileReader.result as Uint8List,
-      );
+      ).then((value) {
+        onUploadComplete?.call(contentsModel);
+        return null;
+      });
+      //
       fileReader = html.FileReader(); // file reader 초기화
       //uploadComplete = true;
-      logger.info('upload complete');
+      logger.info('upload complete   ${contentsModel.remoteUrl!}');
     });
 
     // while (uploadComplete) {

@@ -6,6 +6,8 @@ import '../../pages/studio/left_menu/music/left_menu_music.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_music_player.dart';
 
+Map<String, GlobalObjectKey<LeftMenuMusicState>> musicKeyMap = {};
+
 mixin CretaMusicMixin {
   Widget playMusic(
     BuildContext context,
@@ -29,11 +31,14 @@ mixin CretaMusicMixin {
     player?.buttonIdle();
 
     //print('++++++++++++++++++++++playMusic+++++++++++');
-
+    GlobalObjectKey<LeftMenuMusicState> musicKey =
+        GlobalObjectKey<LeftMenuMusicState>('Music${model.parentMid.value}');
+    musicKeyMap[model.parentMid.value] = musicKey;
     return SizedBox(
       width: realSize.width,
       height: realSize.height,
-      child: LeftMenuMusic(music: model, size: Size(realSize.width, realSize.height)),
+      child: LeftMenuMusic(
+          key: musicKey, contentsManager: player!.acc, size: Size(realSize.width, realSize.height)),
     );
   }
 }

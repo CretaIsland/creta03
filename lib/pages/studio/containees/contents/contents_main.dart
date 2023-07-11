@@ -120,7 +120,8 @@ class ContentsMainState extends State<ContentsMain> {
                     children: [
                       _mainBuild(model, playTimer),
                       if (model.contentsType != ContentsType.document &&
-                          model.contentsType != ContentsType.pdf)
+                          model.contentsType != ContentsType.pdf &&
+                          model.contentsType != ContentsType.music)
                         LinkWidget(
                           key: GlobalObjectKey('LinkWidget${model.mid}'),
                           applyScale: widget.applyScale,

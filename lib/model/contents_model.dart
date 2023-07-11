@@ -148,6 +148,7 @@ class ContentsModel extends CretaModel {
     remoteUrl = '';
     thumbnail = '';
     _initValues();
+    printIt();
   }
 
   ContentsModel.withFrame({required String parent, required String bookMid})
@@ -546,7 +547,7 @@ class ContentsModel extends CretaModel {
     } else if (mime.endsWith('pdf')) {
       logger.info('pdf type');
       contentsType = ContentsType.pdf;
-    } else if (mime.endsWith('music')) {
+    } else if (mime.startsWith('audio')) {
       logger.info('music type');
       contentsType = ContentsType.music;
     } else {
@@ -596,7 +597,7 @@ class ContentsModel extends CretaModel {
   }
 
   void printIt() {
-    logger.finest('name=[$name],mime=[$mime],bytes=[$bytes],url=[$url]');
+    logger.info('------------1-------name=[$name],mime=[$mime],bytes=[$bytes],url=[$url]');
   }
 
   String getURI() {

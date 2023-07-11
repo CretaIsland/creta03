@@ -1,11 +1,10 @@
+import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/pages/studio/left_menu/music/music_base.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../../../../data_io/frame_manager.dart';
-import '../../../../lang/creta_studio_lang.dart';
-import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
@@ -49,7 +48,7 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
             padding: const EdgeInsets.only(top: 12.0),
             child: MusicBase(
               onPressed: () {
-                _createMusicFrame();
+                _creteMusicFrame();
                 BookMainPage.pageManagerHolder!.notify();
               },
             ),
@@ -59,13 +58,13 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
     );
   }
 
-  Future<void> _createMusicFrame() async {
+  Future<void> _creteMusicFrame() async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
     double width = pageModel.width.value * 0.25;
-    double height = pageModel.height.value * 0.55;
+    double height = pageModel.height.value * 0.65;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 
@@ -79,10 +78,10 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
       doNotify: false,
       size: Size(width, height),
       pos: Offset(x, y),
-      bgColor1: Colors.transparent,
-      type: FrameType.text,
+      bgColor1: Colors.green[100],
+      type: FrameType.music,
     );
-    ContentsModel model = await _musicPlaylist(frameModel.mid, frameModel.realTimeKey);
+    ContentsModel model = await _musicPlayer(frameModel.mid, frameModel.realTimeKey);
 
     // debugPrint('_MusicContent(${model.contentsType})-----------------------------');
     debugPrint('--------width: $width, heigh: $height');
@@ -94,14 +93,15 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
     // mychangeStack.endTrans();
   }
 
-  Future<ContentsModel> _musicPlaylist(String frameMid, String bookMid) async {
+  Future<ContentsModel> _musicPlayer(String frameMid, String bookMid) async {
     ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
 
     retval.contentsType = ContentsType.music;
 
     //retval.remoteUrl = '$name $text';
-    retval.name = '뮤식 플레이리스트';
-    retval.remoteUrl = CretaStudioLang.defaultText;
+    retval.name = '크레타 샘플 뮤직';
+    retval.remoteUrl =
+        'https://firebasestorage.googleapis.com/v0/b/hycop-example.appspot.com/o/creta_default%2F16.Michael%20Nyman%20-%20The%20heart%20asks%20pleasure%20first.mp3?alt=media&token=4dd20e63-c831-4d87-a320-ecf22c5ab5db';
     retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }

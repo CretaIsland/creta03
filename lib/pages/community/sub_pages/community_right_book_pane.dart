@@ -2,7 +2,7 @@
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:creta03/model/watch_history_model.dart';
-//import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -40,18 +40,28 @@ import '../creta_book_ui_item.dart';
 import 'community_comment_pane.dart';
 import '../../../data_io/watch_history_manager.dart';
 import '../../studio/book_main_page.dart';
-
+import '../../studio/studio_variables.dart';
+import '../../../model/book_model.dart';
+import '../../../model/user_property_model.dart';
+import '../../../data_io/creta_manager.dart';
+import '../../../data_io/book_published_manager.dart';
+import '../../../data_io/favorites_manager.dart';
+import '../../../data_io/playlist_manager.dart';
+import '../../../data_io/user_property_manager.dart';
 
 class CommunityRightBookPane extends StatefulWidget {
   const CommunityRightBookPane({
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
+    required this.updateBookModel,
   });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
+  final Function(BookModel, UserPropertyModel, bool)? updateBookModel;
 
   static String bookId = '';
+  static FavoritesManager? favoritesManagerHolder;
 
   @override
   State<CommunityRightBookPane> createState() => _CommunityRightBookPaneState();
@@ -63,12 +73,22 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   bool _hashtagEditMode = false;
   final TextEditingController _hashtagController = TextEditingController();
   bool _usingContentsFullView = false;
-
-  WatchHistoryManager? watchHistoryManagerHolder;
+  late BookPublishedManager bookPublishedManagerHolder;
+  late UserPropertyManager userPropertyManagerHolder;
+  late WatchHistoryManager watchHistoryManagerHolder;
+  //late FavoritesManager favoritesManagerHolder;
+  late PlaylistManager dummyManagerHolder;
+  //bool _onceDBGetComplete = false;
+  BookModel? _currentBookModel;
+  UserPropertyModel? _userPropertyModel;
+  bool _bookIsInFavorites = false;
+  late GlobalKey bookKey;
 
   @override
   void initState() {
     super.initState();
+
+    StudioVariables.isAutoPlay = false;
 
     if (CommunityRightBookPane.bookId.isEmpty) {
       //String url = Uri.base.origin;
@@ -83,6 +103,25 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
     }
 
+    bookKey = GlobalObjectKey('_CommunityRightBookPaneState.${CommunityRightBookPane.bookId}');
+
+    bookPublishedManagerHolder = BookPublishedManager();
+    CommunityRightBookPane.favoritesManagerHolder = FavoritesManager();
+    userPropertyManagerHolder = UserPropertyManager();
+    dummyManagerHolder = PlaylistManager();
+
+    CretaManager.startQueries(
+      joinList: [
+        QuerySet(bookPublishedManagerHolder, _getBooksFromDB, null),
+        QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, null),
+        QuerySet(CommunityRightBookPane.favoritesManagerHolder!, _getFavoritesFromDB, _resultFavoritesFromDB),
+        QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+      ],
+      completeFunc: () {
+        //_onceDBGetComplete = true;
+      },
+    );
+
     _cretaRelatedBookList = CommunitySampleData.getCretaBookList();
 
     _hashtagValueList = ['#크레타북', '#추천', '#인기', '#해시태그', '#목록입니다', '#스페이싱', '#스페이싱', '#스페이싱', '#스페이싱'];
@@ -95,14 +134,69 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     _controller.text = _description;
 
     WatchHistoryModel whModel = WatchHistoryModel.withName(
-      userId: AccountManager.currentLoginUser.userId,
+      userId: AccountManager.currentLoginUser.email,
       bookId: CommunityRightBookPane.bookId,
       lastUpdateTime: DateTime.now(),
     );
     watchHistoryManagerHolder = WatchHistoryManager();
-    watchHistoryManagerHolder?.createToDB(whModel);
+    watchHistoryManagerHolder.createToDB(whModel);
     //bookManagerHolder!.configEvent(notifyModify: false);
     //watchHistoryManagerHolder!.clearAll();
+  }
+
+  void _getBooksFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getBooksFromDB()');
+    bookPublishedManagerHolder.addWhereClause(
+        'mid', QueryValue(value: CommunityRightBookPane.bookId, operType: OperType.isEqualTo));
+    bookPublishedManagerHolder.queryByAddedContitions();
+  }
+
+  void _getUserPropertyFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getUserPropertyFromDB(${modelList.length})');
+    if (modelList.isEmpty) {
+      if (kDebugMode) print('_getUserPropertyFromDB(no book)');
+      // no book => bypass
+      userPropertyManagerHolder.setState(DBState.idle);
+      return;
+    }
+    _currentBookModel = modelList[0] as BookModel; // 1개만 있다고 가정
+    //_userPropertyModel = modelList[0] as UserPropertyModel;
+    userPropertyManagerHolder.addWhereClause(
+        'email', QueryValue(value: _currentBookModel!.creator));
+    userPropertyManagerHolder.queryByAddedContitions();
+  }
+
+  void _getFavoritesFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getFavoritesFromDB(${modelList.length})');
+    if (modelList.isEmpty) {
+      if (kDebugMode) print('_getUserPropertyFromDB(no user)');
+      // no user => bypass
+      CommunityRightBookPane.favoritesManagerHolder!.setState(DBState.idle);
+      return;
+    }
+    _userPropertyModel = modelList[0] as UserPropertyModel; // 1개만 있다고 가정
+    List<AbsExModel> bookList = [_currentBookModel!];
+    CommunityRightBookPane.favoritesManagerHolder!.queryFavoritesFromBookModelList(bookList);
+  }
+
+  void _resultFavoritesFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _resultFavoritesFromDB(${modelList.length})');
+    if (modelList.isEmpty) {
+      // this book is not in favorites
+      _bookIsInFavorites = false;
+    } else {
+      // something is exist in DB ==> Favorites
+      _bookIsInFavorites = true;
+    }
+  }
+
+  void _dummyCompleteDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _dummyCompleteDB(${modelList.length})');
+    if (_currentBookModel != null && _userPropertyModel != null) {
+      if (kDebugMode) print('_resultFavoritesFromDB(updateBookModel)');
+      widget.updateBookModel?.call(_currentBookModel!, _userPropertyModel!, _bookIsInFavorites);
+    }
+    dummyManagerHolder.setState(DBState.idle);
   }
 
   Widget _getHashtagWidget(String hashtag) {
@@ -179,11 +273,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     // ];
   }
 
-  final GlobalKey bookKey = GlobalKey();
-
   Widget _getBookPreview(Size size) {
     if (_cretaRelatedBookList.isNotEmpty) {
-
       // return Container(
       //   decoration: BoxDecoration(
       //     // crop

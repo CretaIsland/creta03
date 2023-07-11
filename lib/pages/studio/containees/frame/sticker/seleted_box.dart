@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../design_system/creta_color.dart';
+import '../../../../../model/contents_model.dart';
 import '../../../studio_constant.dart';
 import 'draggable_stickers.dart';
 import 'resize_point.dart';
@@ -24,6 +25,8 @@ class SelectedBox extends StatelessWidget {
   final void Function() onResizeButtonTap;
   final void Function() onComplete;
 
+  final ContentsModel? currentmodel;
+
   const SelectedBox({
     super.key,
     required this.mid,
@@ -40,6 +43,7 @@ class SelectedBox extends StatelessWidget {
     required this.onDragLeft,
     required this.onResizeButtonTap,
     required this.onComplete,
+    this.currentmodel,
   });
 
   @override
@@ -79,7 +83,8 @@ class SelectedBox extends StatelessWidget {
         return Stack(
           children: [
             selectedBox,
-            ..._dragBoxes(heightCenter, widthCenter),
+            // ignore: unrelated_type_equality_checks
+            if (currentmodel != currentmodel?.isMusic) ..._dragBoxes(heightCenter, widthCenter),
           ],
         );
       }

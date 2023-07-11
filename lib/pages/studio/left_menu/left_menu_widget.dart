@@ -29,9 +29,9 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: horizontalPadding),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           LeftMenuWeather(
@@ -41,6 +41,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
             titleStyle: titleStyle,
             dataStyle: dataStyle,
           ),
+          const SizedBox(height: 24.0),
           MusicFramework(
             title: CretaStudioLang.music,
             titleStyle: titleStyle,

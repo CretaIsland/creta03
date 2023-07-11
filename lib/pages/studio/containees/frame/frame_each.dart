@@ -19,6 +19,8 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
+import '../../../../player/music/creta_music_mixin.dart';
+import '../../left_menu/music/left_menu_music.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
@@ -322,12 +324,13 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     }
 
     await ContentsManager.createContents(
-      frameManager,
-      contentsModelList,
-      frameModel,
-      widget.pageModel,
-      isResizeFrame: false,
-    );
+        frameManager, contentsModelList, frameModel, widget.pageModel, isResizeFrame: false,
+        onUploadComplete: (model) {
+      if (model.isMusic()) {
+        GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[widget.model.mid];
+        musicKey!.currentState!.addMusic(model);
+      }
+    });
   }
 
   Widget _applyAnimate(FrameModel model) {

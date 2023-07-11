@@ -23,6 +23,8 @@ import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/app_enums.dart';
+import '../../model/book_model.dart';
+import '../../model/user_property_model.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
 import '../../model/playlist_model.dart';
@@ -57,7 +59,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   final Map<String, CretaBookData> _subscriptionUserMap = {};
   final ScrollController _rightOverlayPaneScrollController = ScrollController();
 
-  PlaylistModel? _playlistModel;
+  PlaylistModel? _currentPlaylistModel;
+  BookModel? _currentBookModel;
+  UserPropertyModel? _userPropertyModelOfBookModel;
+  bool _bookIsFavorites = false;
 
   BookType _filterBookType = BookType.none;
   BookSort _filterBookSort = BookSort.updateTime;
@@ -856,6 +861,26 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     );
   }
 
+  void _toggleBookToFavorites() async {
+    if (_bookIsFavorites) {
+      await CommunityRightBookPane.favoritesManagerHolder?.removeFavoritesFromDB(
+        _currentBookModel!.mid,
+        AccountManager.currentLoginUser.email,
+      );
+      setState(() {
+        _bookIsFavorites = false;
+      });
+    } else {
+      await CommunityRightBookPane.favoritesManagerHolder?.addFavoritesToDB(
+        _currentBookModel!.mid,
+        AccountManager.currentLoginUser.email,
+      );
+      setState(() {
+        _bookIsFavorites = false;
+      });
+    }
+  }
+
   Widget _getCommunityBookTitlePane(Size size) {
     return Container(
       width: size.width - LayoutConst.cretaScrollbarWidth,
@@ -870,7 +895,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         ),
         clipBehavior: Clip.antiAlias,
         padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-        child: Row(
+        child: (_currentBookModel == null)
+          ? SizedBox.shrink()
+          : Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
@@ -879,14 +906,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 children: [
                   Expanded(
                     child: Text(
-                      '[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
+                      _currentBookModel!.name.value,//'[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
                       overflow: TextOverflow.ellipsis,
                       style: CretaFont.titleELarge.copyWith(color: Colors.white),
                     ),
                   ),
                   SizedBox(width: 20),
                   BTN.fill_gray_it_m(
-                    text: '이지금 [IU Official]',
+                    text: _userPropertyModelOfBookModel?.nickname ?? '',
                     icon: Icons.account_circle,
                     onPressed: () {},
                     width: null,
@@ -897,12 +924,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   ),
                   SizedBox(width: 20),
                   Text(
-                    '2023.03.01',
+                    CretaUtils.dateToDurationString(_currentBookModel!.updateTime),
                     style: CretaFont.bodyMedium.copyWith(color: Colors.white),
                   ),
                   SizedBox(width: 20),
                   Text(
-                    '조회수 123,456회',
+                    '조회수 ${_currentBookModel!.viewCount}회',
                     style: CretaFont.bodyMedium.copyWith(color: Colors.white),
                   ),
                 ],
@@ -921,7 +948,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 BTN.fill_gray_it_l(
                   icon: Icons.favorite_border_outlined,
                   text: '123',
-                  onPressed: () {},
+                  onPressed: _toggleBookToFavorites,
                   buttonColor: CretaButtonColor.transparent,
                   textColor: Colors.white,
                   width: null,
@@ -1050,13 +1077,13 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: (_playlistModel == null)
+            children: (_currentPlaylistModel == null)
                 ? []
                 : [
                     Row(
                       children: [
                         Text(
-                          _playlistModel!.name,
+                          _currentPlaylistModel!.name,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 22,
@@ -1076,12 +1103,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         ),
                         SizedBox(width: 28),
                         Text(
-                          '영상 ${_playlistModel!.bookIdList.length}개',
+                          '영상 ${_currentPlaylistModel!.bookIdList.length}개',
                           style: CretaFont.buttonMedium,
                         ),
                         SizedBox(width: 28),
                         Text(
-                          '최근 업데이트 ${CretaUtils.dateToDurationString(_playlistModel!.lastUpdateTime)}',
+                          '최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.lastUpdateTime)}',
                           style: CretaFont.buttonMedium,
                         ),
                         Expanded(child: Container()),
@@ -1184,14 +1211,23 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   GlobalObjectKey _getRightPaneKey() {
     String key =
-        '${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
+        //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
+        '${Uri.base.query}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
     if (kDebugMode) print('_getRightPaneKey=$key');
     return GlobalObjectKey(key);
   }
 
   void _updatePlaylistModel(PlaylistModel playlistModel) {
     setState(() {
-      _playlistModel = playlistModel;
+      _currentPlaylistModel = playlistModel;
+    });
+  }
+
+  void _updateBookModel(BookModel bookModel, UserPropertyModel userPropertyModel, bool isFavorites) {
+    setState(() {
+      _currentBookModel = bookModel;
+      _userPropertyModelOfBookModel = userPropertyModel;
+      _bookIsFavorites = isFavorites;
     });
   }
 
@@ -1253,6 +1289,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
+          updateBookModel: _updateBookModel,
         );
       case AppRoutes.communityHome:
       default:

@@ -1216,8 +1216,7 @@ abstract class CretaManager extends AbsExModelManager {
       _whereCaluse,
       //limit: ,
       orderBy: _orderBy,
-    );
-    clearConditions();
+    ).whenComplete(() => clearConditions());
     return retVal;
   }
 

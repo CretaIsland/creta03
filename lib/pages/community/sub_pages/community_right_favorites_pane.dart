@@ -117,7 +117,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
     );
     favoritesManagerHolder.addWhereClause(
       'userId',
-      QueryValue(value: AccountManager.currentLoginUser.userId, operType: OperType.isEqualTo),
+      QueryValue(value: AccountManager.currentLoginUser.email, operType: OperType.isEqualTo),
     );
     favoritesManagerHolder.queryByAddedContitions();
   }
@@ -158,13 +158,13 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   void _addToFavorites(String bookId, bool isFavorites) async {
     if (isFavorites) {
       // already in favorites => remove favorites from DB
-      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.userId);
+      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.email);
       setState(() {
         _favoritesBookIdMap[bookId] = false;
       });
     } else {
       // not exist in favorites => add favorites to DB
-      await favoritesManagerHolder.addFavoritesToDB(bookId, AccountManager.currentLoginUser.userId);
+      await favoritesManagerHolder.addFavoritesToDB(bookId, AccountManager.currentLoginUser.email);
       setState(() {
         _favoritesBookIdMap[bookId] = true;
       });

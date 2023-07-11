@@ -288,7 +288,9 @@ class _BookMainPageState extends State<BookMainPage> {
 
     if (LoginPage.userPropertyManagerHolder != null) {
       StudioVariables.isMute = LoginPage.userPropertyManagerHolder!.getMute();
-      StudioVariables.isAutoPlay = LoginPage.userPropertyManagerHolder!.getAutoPlay();
+      if ((widget.isPublishedMode ?? false) == false) {
+        StudioVariables.isAutoPlay = LoginPage.userPropertyManagerHolder!.getAutoPlay();
+      }
     }
 
     HycopFactory.realtime!.startTemp(model.mid);
