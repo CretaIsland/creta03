@@ -27,7 +27,6 @@ class LeftMenuMusic extends StatefulWidget {
 }
 
 class LeftMenuMusicState extends State<LeftMenuMusic> {
-  static int _nextmediaId = 0;
   late AudioPlayer _audioPlayer; // play local audio file
 
   static Random random = Random();
