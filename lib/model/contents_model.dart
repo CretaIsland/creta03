@@ -539,7 +539,7 @@ class ContentsModel extends CretaModel {
     } else if (mime.endsWith('pdf')) {
       logger.info('pdf type');
       contentsType = ContentsType.pdf;
-    } else if (mime.endsWith('music')) {
+    } else if (mime.startsWith('music')) {
       logger.info('music type');
       contentsType = ContentsType.music;
     } else {

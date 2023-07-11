@@ -18,12 +18,23 @@ class LeftMenuMusic extends StatefulWidget {
   const LeftMenuMusic({super.key, required this.music, required this.size});
 
   @override
-  State<LeftMenuMusic> createState() => _LeftMenuMusicState();
+  State<LeftMenuMusic> createState() => LeftMenuMusicState();
 }
 
-class _LeftMenuMusicState extends State<LeftMenuMusic> {
+class LeftMenuMusicState extends State<LeftMenuMusic> {
   static int _nextmediaId = 0;
   late AudioPlayer _audioPlayer; // play local audio file
+
+  void addMusic(ContentsModel model) {
+    _playlist.add(AudioSource.uri(Uri.parse('model.remoteUrl'),
+        tag: MediaItem(
+          id: model.mid,
+          title: model.name,
+          artist: 'Kimiko Ishizaka',
+          artUri: Uri.parse(
+              'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
+        )));
+  }
 
   final _playlist = ConcatenatingAudioSource(
     children: [
@@ -118,71 +129,73 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          StreamBuilder<SequenceState?>(
-            stream: _audioPlayer.sequenceStateStream,
-            builder: (context, snapshot) {
-              final state = snapshot.data;
-              if (state?.sequence.isEmpty ?? true) {
-                return const SizedBox();
-              }
-              final metadata = state!.currentSource!.tag as MediaItem;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                        child: SizedBox(
-                      width: 250.0,
-                      height: 250.0,
-                      child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
-                    )),
+    return SingleChildScrollView(
+      child: Container(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            StreamBuilder<SequenceState?>(
+              stream: _audioPlayer.sequenceStateStream,
+              builder: (context, snapshot) {
+                final state = snapshot.data;
+                if (state?.sequence.isEmpty ?? true) {
+                  return const SizedBox();
+                }
+                final metadata = state!.currentSource!.tag as MediaItem;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                          child: SizedBox(
+                        width: 250.0,
+                        height: 250.0,
+                        child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
+                      )),
+                    ),
+                    Text(metadata.artist!, style: Theme.of(context).textTheme.titleLarge),
+                    Text(metadata.title),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 8.0),
+            StreamBuilder<PositionData>(
+              stream: _positionDataStream,
+              builder: (context, snapshot) {
+                final positionData = snapshot.data;
+                return
+                    // SeekBar(
+                    //   duration: positionData?.duration ?? Duration.zero,
+                    //   position: positionData?.position ?? Duration.zero,
+                    //   bufferedPosition: positionData?.bufferedPosition ?? Duration.zero,
+                    //   onChangeEnd: _audioPlayer.seek,
+                    // );
+                    Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: ProgressBar(
+                    barHeight: 4.0,
+                    baseBarColor: Colors.black,
+                    bufferedBarColor: CretaColor.text[100],
+                    progressBarColor: CretaColor.primary,
+                    thumbColor: CretaColor.primary,
+                    timeLabelTextStyle:
+                        const TextStyle(color: CretaColor.primary, fontWeight: FontWeight.w600),
+                    progress: positionData?.position ?? Duration.zero,
+                    buffered: positionData?.bufferedPosition ?? Duration.zero,
+                    total: positionData?.duration ?? Duration.zero,
+                    onSeek: _audioPlayer.seek,
                   ),
-                  Text(metadata.artist!, style: Theme.of(context).textTheme.titleLarge),
-                  Text(metadata.title),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 8.0),
-          StreamBuilder<PositionData>(
-            stream: _positionDataStream,
-            builder: (context, snapshot) {
-              final positionData = snapshot.data;
-              return
-                  // SeekBar(
-                  //   duration: positionData?.duration ?? Duration.zero,
-                  //   position: positionData?.position ?? Duration.zero,
-                  //   bufferedPosition: positionData?.bufferedPosition ?? Duration.zero,
-                  //   onChangeEnd: _audioPlayer.seek,
-                  // );
-                  Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: ProgressBar(
-                  barHeight: 4.0,
-                  baseBarColor: Colors.black,
-                  bufferedBarColor: CretaColor.text[100],
-                  progressBarColor: CretaColor.primary,
-                  thumbColor: CretaColor.primary,
-                  timeLabelTextStyle:
-                      const TextStyle(color: CretaColor.primary, fontWeight: FontWeight.w600),
-                  progress: positionData?.position ?? Duration.zero,
-                  buffered: positionData?.bufferedPosition ?? Duration.zero,
-                  total: positionData?.duration ?? Duration.zero,
-                  onSeek: _audioPlayer.seek,
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 8.0),
-          ControlButtons(audioPlayer: _audioPlayer),
-        ],
+                );
+              },
+            ),
+            const SizedBox(height: 8.0),
+            ControlButtons(audioPlayer: _audioPlayer),
+          ],
+        ),
       ),
     );
   }

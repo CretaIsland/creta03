@@ -65,7 +65,7 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
     double width = pageModel.width.value * 0.25;
-    double height = pageModel.height.value * 0.55;
+    double height = pageModel.height.value * 0.60;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 
@@ -80,7 +80,7 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
       size: Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
-      type: FrameType.text,
+      // type: FrameType.text,
     );
     ContentsModel model = await _musicPlaylist(frameModel.mid, frameModel.realTimeKey);
 
@@ -100,8 +100,8 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
     retval.contentsType = ContentsType.music;
 
     //retval.remoteUrl = '$name $text';
-    retval.name = '뮤식 플레이리스트';
-    retval.remoteUrl = CretaStudioLang.defaultText;
+    retval.name = '크레타 샘플 뮤직';
+    retval.remoteUrl = '......'; //CretaStudioLang.defaultText;
     retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }

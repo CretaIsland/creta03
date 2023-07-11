@@ -22,6 +22,8 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
+import '../../../../player/music/creta_music_mixin.dart';
+import '../../left_menu/music/left_menu_music.dart';
 import '../../left_menu/weather/weather_base.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
@@ -176,7 +178,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameDropZone() {
-    //logger.info('_frameDropZone...');
+    print('_frameDropZone.............................................................');
 
     _isShowBorder = _showBorder();
     // Widget frameBody = Stack(
@@ -198,6 +200,13 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               parentId: '',
               onDroppedFile: (modelList) {
                 _onDropFrame(widget.model.mid, modelList);
+                
+                for (var eachModel in modelList) {
+                  if(eachModel.isMusic()) {
+                  GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[widget.model.mid];
+                  musicKey!.currentState!.addMusic(eachModel);
+                  }
+                }
               },
               child: _frameBody1(),
             )
