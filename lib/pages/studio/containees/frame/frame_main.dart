@@ -107,7 +107,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             frameManager!.updateModel(model);
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
-          return Container(color: Colors.amber, child: showFrame());
+          return showFrame();
         });
   }
 

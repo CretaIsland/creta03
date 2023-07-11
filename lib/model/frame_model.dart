@@ -417,6 +417,14 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   void changeOrderByIsShow(FrameManager frameManager) {
     if (isShow.value == false) {
       double minOrder = frameManager.getMinOrder();
+      if (minOrder == order.value) {
+        return;
+      }
+      if (minOrder > 2) {
+        minOrder = minOrder - 1;
+      } else {
+        minOrder = minOrder / 2;
+      }
       //print('$minOrder #########################################');
       prevOrder = order.value;
       //order.set(prevOrder < 0 ? frameManager.getMinOrder() : prevOrder, save: false, noUndo: true);

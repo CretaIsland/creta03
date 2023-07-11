@@ -14,6 +14,9 @@ class StudioVariables {
   static double menuStickWidth = LayoutConst.menuStickWidth;
   static double appbarHeight = CretaConstant.appbarHeight;
 
+  static double verticalScrollOffset = 0;
+  static double horizontalScrollOffset = 0;
+
   static double fitScale = 1.0;
   static double scale = 1.0;
   static bool autoScale = true;

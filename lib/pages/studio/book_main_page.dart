@@ -74,9 +74,6 @@ class BookMainPage extends StatefulWidget {
   static double pageWidth = 0;
   static double pageHeight = 0;
 
-  static double verticalScrollOffset = 0;
-  static double horizontalScrollOffset = 0;
-
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
   final bool isThumbnailX;
@@ -1079,10 +1076,10 @@ class _BookMainPageState extends State<BookMainPage> {
           //     horizontalScrollOffset ?? (totalWidth - StudioVariables.workWidth) * 0.5,
           // initialScrollOffsetY: vericalScrollOffset ?? StudioVariables.workHeight * 0.1,
           currentHorizontalScrollBarOffset: (value) {
-            BookMainPage.horizontalScrollOffset = value;
+            StudioVariables.horizontalScrollOffset = value;
           },
           currentVerticalScrollBarOffset: (value) {
-            BookMainPage.verticalScrollOffset = value;
+            StudioVariables.verticalScrollOffset = value;
           },
 
           child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
