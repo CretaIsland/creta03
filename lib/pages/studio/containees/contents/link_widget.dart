@@ -120,7 +120,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                         StudioVariables.isPreview == false &&
                         hasContents) {
                       //logger.info('sendEvent ${event.localPosition}');
-                      _linkSendEvent?.sendEvent(event.localPosition);
+                      _linkSendEvent?.sendEvent(event.position);
                     }
                   },
                   child: Stack(
@@ -377,13 +377,15 @@ class _LinkWidgetState extends State<LinkWidget> {
             // print('linkMid=${model.mid}');
             // print('connected=${model.connectedMid}');
             // print('childMid=${childModel.mid}');
-            // print('ParentMid=${widget.frameModel.mid}');
+            // print('frameMid=${widget.frameModel.mid}');
+            // print('PageMid=${widget.frameModel.parentMid.value}');
 
             childModel.isShow.set(!childModel.isShow.value, save: false, noUndo: true);
             if (childModel.isShow.value == true) {
               double order = widget.frameManager.getMaxOrder();
               if (childModel.order.value < order) {
                 childModel.changeOrderByIsShow(widget.frameManager);
+                widget.frameManager.reOrdering();
               }
               // 여기서 연결선을 연결한다....
               LinkParams.linkPostion = Offset(posX, posY);
@@ -397,6 +399,7 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.connectedMid = '';
               LinkParams.connectedClass = '';
               childModel.changeOrderByIsShow(widget.frameManager);
+              widget.frameManager.reOrdering();
             }
             model.showLinkLine = childModel.isShow.value;
             childModel.save();
