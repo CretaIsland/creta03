@@ -159,7 +159,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
 
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB');
-    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.userId));
+    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -203,13 +203,13 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   void _addToFavorites(String bookId, bool isFavorites) async {
     if (isFavorites) {
       // already in favorites => remove favorites from DB
-      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.userId);
+      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.email);
       setState(() {
         _favoritesBookIdMap[bookId] = false;
       });
     } else {
       // not exist in favorites => add favorites to DB
-      await favoritesManagerHolder.addFavoritesToDB(bookId, AccountManager.currentLoginUser.userId);
+      await favoritesManagerHolder.addFavoritesToDB(bookId, AccountManager.currentLoginUser.email);
       setState(() {
         _favoritesBookIdMap[bookId] = true;
       });
@@ -220,7 +220,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     if (kDebugMode) print('_newPlaylistDone($name, $isPublic, $bookId)');
     PlaylistModel newPlaylist = await playlistManagerHolder.createNewPlaylist(
       name: name,
-      userId: AccountManager.currentLoginUser.userId,
+      userId: AccountManager.currentLoginUser.email,
       channelId: 'test_channel_id',
       isPublic: isPublic,
       bookIdList: [bookId],

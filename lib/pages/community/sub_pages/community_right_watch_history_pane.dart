@@ -127,7 +127,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     );
     watchHistoryManagerHolder.addWhereClause(
       'userId',
-      QueryValue(value: AccountManager.currentLoginUser.userId, operType: OperType.isEqualTo),
+      QueryValue(value: AccountManager.currentLoginUser.email),
     );
     watchHistoryManagerHolder.queryByAddedContitions();
   }

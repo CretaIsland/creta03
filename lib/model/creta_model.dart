@@ -13,6 +13,7 @@ class CretaModelSnippet {
     required CretaManager manager,
     //required String userId,
     required Widget Function()? consumerFunc,
+    Function()? waitFunc,
     Function()? completeFunc,
   }) {
     return FutureBuilder<List<AbsExModel>>(
@@ -26,7 +27,7 @@ class CretaModelSnippet {
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitDatat)");
             return Center(
-              child: Snippet.showWaitSign(),
+              child: waitFunc?.call() ?? Snippet.showWaitSign(),
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
@@ -35,10 +36,11 @@ class CretaModelSnippet {
             //   return const Center(child: Text('no book founded'));
             // }
             completeFunc?.call();
-            if (consumerFunc != null) {
-              return consumerFunc();
-            }
-            return const SizedBox.shrink();
+            // if (consumerFunc != null) {
+            //   return consumerFunc();
+            // }
+            // return const SizedBox.shrink();
+            return consumerFunc?.call() ?? const SizedBox.shrink();
           }
           return Container();
         });
@@ -47,6 +49,7 @@ class CretaModelSnippet {
   static FutureBuilder<bool> waitDatum({
     required List<CretaManager> managerList,
     required Widget Function()? consumerFunc,
+    Widget Function()? waitFunc,
   }) {
     return FutureBuilder<bool>(
         future: CretaModelSnippet._waitUntilAllManager(managerList),
@@ -59,7 +62,7 @@ class CretaModelSnippet {
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitData)");
             return Center(
-              child: Snippet.showWaitSign(),
+              child: waitFunc?.call() ?? Snippet.showWaitSign(),
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
@@ -67,10 +70,7 @@ class CretaModelSnippet {
             // if (snapshot.data!.isEmpty) {
             //   return const Center(child: Text('no book founded'));
             // }
-            if (consumerFunc != null) {
-              return consumerFunc();
-            }
-            return const SizedBox.shrink();
+            return consumerFunc?.call() ?? const SizedBox.shrink();
           }
           return Container();
         });
