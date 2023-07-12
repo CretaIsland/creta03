@@ -545,6 +545,8 @@ class _CommunityBookPageState extends State<CommunityBookPage> {
             paneWidth: size.width,
             paneHeight: null,
             showAddCommentBar: true,
+            bookId: '',
+            isAdminMode: true,
           ),
         ],
       ),

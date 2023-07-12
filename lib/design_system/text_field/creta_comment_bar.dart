@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/pages/community/community_sample_data.dart';
+//import 'package:creta03/pages/community/community_sample_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,18 +15,20 @@ import '../creta_font.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../common/creta_utils.dart';
+import '../../model/app_enums.dart';
+import '../../model/comment_model.dart';
 
 class CretaCommentBar extends StatefulWidget {
   final double? width;
   //final double height;
   final Widget? thumb;
-  final CretaCommentData data;
+  final CommentModel data;
   final String hintText;
-  final void Function(CretaCommentData)? onClickedAdd; // 댓글등록
-  final void Function(CretaCommentData)? onClickedRemove; // 삭제하기 (or 답글취소)
-  final void Function(CretaCommentData)? onClickedModify; // 댓글수정 (or 답글등록)
-  final void Function(CretaCommentData)? onClickedReply; // 답글달기
-  final void Function(CretaCommentData)? onClickedShowReply; // 답글보기
+  final void Function(CommentModel)? onClickedAdd; // 댓글등록
+  final void Function(CommentModel)? onClickedRemove; // 삭제하기 (or 답글취소)
+  final void Function(CommentModel)? onClickedModify; // 댓글수정 (or 답글등록)
+  final void Function(CommentModel)? onClickedReply; // 답글달기
+  final void Function(CommentModel)? onClickedShowReply; // 답글보기
 
   const CretaCommentBar({
     super.key,
@@ -66,8 +68,8 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
     });
     _editingValue = widget.data.comment;
     _controller.text = widget.data.comment;
-    _isEditMode = (widget.data.barType == CretaCommentBarType.addCommentMode ||
-        widget.data.barType == CretaCommentBarType.addReplyMode);
+    _isEditMode = (widget.data.barType == CommentBarType.addCommentMode ||
+        widget.data.barType == CommentBarType.addReplyMode);
   }
 
   Widget _getProfileImage() {
@@ -177,18 +179,18 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                widget.data.nickname,
+                widget.data.name,
                 style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
                 overflow: TextOverflow.ellipsis,
               ),
               SizedBox(width: 11),
               Text(
-                '하루 전',
+                CretaUtils.dateToDurationString(widget.data.createTime),
                 style: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]),
                 overflow: TextOverflow.ellipsis,
               ),
               Expanded(child: Container()),
-              (!_hover)
+              (!_hover || widget.onClickedModify == null)
                   ? SizedBox(height: 20)
                   : BTN.fill_gray_t_es(
                       text: '수정하기',
@@ -202,7 +204,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
                       buttonColor: CretaButtonColor.gray100light,
                     ),
               SizedBox(width: 8),
-              (!_hover)
+              (!_hover || widget.onClickedRemove == null)
                   ? SizedBox(height: 20)
                   : BTN.fill_gray_t_es(
                       text: '삭제하기',
@@ -298,8 +300,8 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
   }
 
   Widget _getReplyButtonWidget() {
-    if (widget.data.barType == CretaCommentBarType.addCommentMode ||
-        (widget.data.parentMid.isNotEmpty && widget.data.hasNoReply)) {
+    if (widget.data.barType == CommentBarType.addCommentMode ||
+        (widget.data.parentId.isNotEmpty && widget.data.hasNoReply)) {
       return SizedBox(height: 10);
     }
 
@@ -307,7 +309,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
       padding: EdgeInsets.fromLTRB(64, 8, 0, 8),
       child: Row(
         children: [
-          (widget.data.parentMid.isNotEmpty)
+          (widget.data.parentId.isNotEmpty)
               ? Container()
               : Container(
                   padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
@@ -316,7 +318,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
                     width: 61,
                     buttonColor: CretaButtonColor.gray100light,
                     onPressed: () {
-                      if (kDebugMode) print('답글달기(${widget.data.nickname})');
+                      if (kDebugMode) print('답글달기(${widget.data.name})');
                       widget.onClickedReply?.call(widget.data);
                     },
                   ),
@@ -414,7 +416,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
                       widget.data.comment = _controller.text;
                       _isEditMode = false;
                     });
-                    widget.onClickedAdd?.call(widget.data);
+                    widget.onClickedModify?.call(widget.data);
                   },
                 ),
               ),
@@ -470,7 +472,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
                   width: 81,
                   onPressed: () {
                     setState(() {
-                      widget.data.barType = CretaCommentBarType.modifyCommentMode;
+                      widget.data.barType = CommentBarType.modifyCommentMode;
                       widget.data.comment = _controller.text;
                       _isEditMode = false;
                       widget.onClickedModify?.call(widget.data);
@@ -497,11 +499,11 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
   }
 
   Widget _getChildWidget() {
-    if (widget.data.barType == CretaCommentBarType.addCommentMode) {
+    if (widget.data.barType == CommentBarType.addCommentMode) {
       return _getAddCommentWidget();
-    } else if (widget.data.barType == CretaCommentBarType.modifyCommentMode) {
+    } else if (widget.data.barType == CommentBarType.modifyCommentMode) {
       if (_isEditMode) return _getModifyCommentWidget();
-    } else if (widget.data.barType == CretaCommentBarType.addReplyMode) {
+    } else if (widget.data.barType == CommentBarType.addReplyMode) {
       return _getAddReplyWidget();
     }
     return _getCommentWidget();
