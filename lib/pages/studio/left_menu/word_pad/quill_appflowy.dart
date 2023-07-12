@@ -67,7 +67,7 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
   late EditorState _editorState;
   late Future<String> _jsonString;
 
-  bool _isMoveMode = false;
+  bool _isMoveMode = true;
   Size _dialogSize = Size(800, 600);
   Offset _dialogOffset = Offset.zero;
 
