@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/pages/studio/left_menu/left_menu_image.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -177,6 +178,8 @@ class _LeftMenuState
         return LeftMenuFrame();
       case LeftMenuEnum.Storage:
         return Container();
+      case LeftMenuEnum.Image:
+        return LeftMenuImage();
       case LeftMenuEnum.Video:
         return Container();
       case LeftMenuEnum.Text:

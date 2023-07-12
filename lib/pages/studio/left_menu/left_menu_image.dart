@@ -1,5 +1,6 @@
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
+// import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
@@ -114,8 +115,8 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   }
 
   void downloadImage(String urlImages) {
-    AnchorElement anchorElement = AnchorElement(href: urlImages);
-    anchorElement.download = "OpenAI_Image";
+    html.AnchorElement anchorElement = html.AnchorElement(href: urlImages);
+    anchorElement.download = "$urlImages.png";
     anchorElement.click();
   }
 

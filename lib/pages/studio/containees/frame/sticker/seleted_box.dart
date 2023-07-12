@@ -83,8 +83,8 @@ class SelectedBox extends StatelessWidget {
         return Stack(
           children: [
             selectedBox,
-            // ignore: unrelated_type_equality_checks
-            if (currentmodel != currentmodel?.isMusic) ..._dragBoxes(heightCenter, widthCenter),
+            if (currentmodel != null && currentmodel!.isMusic() == false)
+              ..._dragBoxes(heightCenter, widthCenter),
           ],
         );
       }
