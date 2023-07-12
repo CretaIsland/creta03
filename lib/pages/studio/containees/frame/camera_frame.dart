@@ -17,6 +17,7 @@ class _CameraFrameState extends State<CameraFrame> {
   RTCVideoRenderer? renderer;
   MediaStream? videoStream;
   MediaStream? audioStream;
+  bool initComplete = false;
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _CameraFrameState extends State<CameraFrame> {
       'video': {
         'optional': [
           {
-            'sourceId': mediaDeviceDataHolder!.selectedVideoInput,
+            'sourceId': '',
           },
         ],
       },
@@ -50,7 +51,7 @@ class _CameraFrameState extends State<CameraFrame> {
       'audio': {
         'optional': [
           {
-            'sourceId': mediaDeviceDataHolder!.selectedAudioInput,
+            'sourceId': '',
           },
         ],
       },
@@ -63,15 +64,31 @@ class _CameraFrameState extends State<CameraFrame> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: setStream(),
-      builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done) {
-          return RTCVideoView(renderer!);
-        } else {
-           return Snippet.showWaitSign();
-        }
-      },
+    return Stack(
+      children: [
+        initComplete ? const SizedBox.shrink() : Center(
+          child: IconButton(
+            onPressed: () async {
+              await setStream();
+              setState(() {
+                initComplete = true;
+              });
+            },
+            icon: const Icon(Icons.play_arrow),
+          ),
+        ),
+        initComplete ? RTCVideoView(renderer!) : const SizedBox.shrink()
+      ],
     );
+    // return FutureBuilder(
+    //   future: setStream(),
+    //   builder: (context, snapshot) {
+    //     if(snapshot.connectionState == ConnectionState.done) {
+    //       return RTCVideoView(renderer!);
+    //     } else {
+    //        return Snippet.showWaitSign();
+    //     }
+    //   },
+    // );
   }
 }
