@@ -25,6 +25,7 @@ import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/weather/weather_base.dart';
+import '../../studio_variables.dart';
 // import '../../../../model/contents_model.dart';
 // import '../../../../model/frame_model.dart';
 // import '../../../../model/page_model.dart';
@@ -124,6 +125,8 @@ mixin FramePlayMixin {
           showSeconds: true,
           isLive: true,
           digitalClockColor: Colors.black,
+          textScaleFactor: ((model.width.value / (50 * 2)) + 1) *
+              StudioVariables.applyScale, // 50 is minimum contstraint
           //digitalClockColor: Colors.transparent,
           // decoration: const BoxDecoration(
           //     color: Colors.yellow,
