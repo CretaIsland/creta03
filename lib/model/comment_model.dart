@@ -10,7 +10,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 //import '../common/creta_utils.dart';
 //import '../pages/studio/studio_constant.dart';
-//import 'app_enums.dart';
+import 'app_enums.dart';
 import 'creta_model.dart';
 //import 'creta_style_mixin.dart';
 
@@ -20,6 +20,14 @@ class CommentModel extends CretaModel {
   String bookId = '';
   String parentId = '';
   String comment = '';
+
+  // do not save to DB
+  String name = '';
+  String profileImg = '';
+  CommentBarType barType = CommentBarType.modifyCommentMode;
+  List<CommentModel> replyList = [];
+  bool showReplyList = false;
+  bool hasNoReply = true;
 
   @override
   List<Object?> get props => [
@@ -36,7 +44,7 @@ class CommentModel extends CretaModel {
     required this.bookId,
     required this.parentId,
     required this.comment,
-  }) : super(pmid: '', type: ExModelType.watchHistory, parent: '');
+  }) : super(pmid: '', type: ExModelType.comment, parent: '');
 
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {

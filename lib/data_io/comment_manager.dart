@@ -26,14 +26,16 @@ class CommentManager extends CretaManager {
   }
 
   String prefix() => CretaManager.modelPrefix(ExModelType.comment);
-  
+
+  List<CommentModel> commentList = [];
+
   Future<List<CommentModel>> getCommentList(String bookId) async { // 추후 페이징 기능 추가 필요!!!
     addWhereClause('isRemoved', QueryValue(value: false));
     addWhereClause('bookId', QueryValue(value: bookId));
     addWhereClause('parentId', QueryValue(value: ''));
     addOrderBy('createTime', OrderDirection.descending);
     List<AbsExModel> modelList = await queryByAddedContitions();
-    List<CommentModel> commentList = [];
+    commentList = [];
     List<List<String>> commentIdListList = [];
     List<String> commentIdList = [];
     for(var model in modelList) {
@@ -58,9 +60,15 @@ class CommentManager extends CretaManager {
         commentList.add(model as CommentModel);
       }
     }
-
-
-
     return commentList;
+  }
+
+  Future<void> removeCommentFromDB(CommentModel model) async {
+    // remove child-comments
+    for(var replayComment in model.replyList) {
+      await removeToDB(replayComment.mid);
+    }
+    // remove comment
+    await removeToDB(model.mid);
   }
 }
