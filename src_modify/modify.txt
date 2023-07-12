@@ -49,8 +49,11 @@ copy src_modify\keyboard_service_widget.daxt    C:\Users\seon\AppData\Local\Pub\
 
 
 #skpark modify 7/9
-copy src_modify\color_menu.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\color_menu.dart   
 copy src_modify\color_picker.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\color_picker.dart  
 copy src_modify\text_color_toolbar_item.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\text_color_toolbar_item.dart  
 copy src_modify\highlight_color_toolbar_item.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\highlight_color_toolbar_item.dart   
+
+#skpark modify 7/12
+copy src_modify\color_menu.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\color_menu.dart   
+
 

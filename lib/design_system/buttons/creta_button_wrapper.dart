@@ -969,7 +969,6 @@ class BTN {
     );
   }
 
-
   static CretaButton fill_blue_ti_l({
     required String text,
     required IconData icon,
@@ -1804,9 +1803,10 @@ class BTN {
   static CretaTextButton fill_color_t_m({
     required String text,
     required Function onPressed,
+    double width = 58,
   }) {
     return CretaTextButton(
-        width: 58,
+        width: width,
         height: 21,
         onPressed: onPressed,
         fgColor: CretaColor.text[700]!,

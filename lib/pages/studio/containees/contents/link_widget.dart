@@ -120,7 +120,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                         StudioVariables.isPreview == false &&
                         hasContents) {
                       //logger.info('sendEvent ${event.localPosition}');
-                      _linkSendEvent?.sendEvent(event.position);
+                      _linkSendEvent?.sendEvent(event.localPosition);
                     }
                   },
                   child: Stack(

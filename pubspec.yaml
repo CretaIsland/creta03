@@ -97,7 +97,7 @@ dependencies:
   adjusted_html_view_web: ^0.0.1
   flutter_rte: ^0.4.13
   syncfusion_flutter_pdfviewer: ^21.2.10
-  appflowy_editor: ^1.1.0
+  appflowy_editor: 1.1.0
   quill_html_editor: ^2.1.9
   shimmer: ^2.0.0
   circular_reveal_animation: ^2.0.1
