@@ -497,6 +497,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   onResizeButtonTap: widget.onResizeButtonTap,
                   onComplete: widget.onComplete,
                   key: Key('SelectedBox-$widget.mid}'),
+                  frameModel:  widget.frameModel,
                 ),
               if (widget.isMain) mainSymbol,
             ],
