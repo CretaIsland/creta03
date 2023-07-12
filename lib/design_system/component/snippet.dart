@@ -101,7 +101,7 @@ class Snippet {
                 onLongPressDown: ((details) {
                   //LastClicked.clickedOutSide(details.globalPosition);
 
-                  print('space clicked ${details.globalPosition}');
+                  //print('space clicked ${details.globalPosition}');
                   DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
                   BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
                 }),

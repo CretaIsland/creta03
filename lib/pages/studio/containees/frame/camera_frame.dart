@@ -1,8 +1,6 @@
-import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/model/frame_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:hycop/hycop/webrtc/media_devices/media_devices_data.dart';
 
 class CameraFrame extends StatefulWidget {
   final FrameModel model;
@@ -13,7 +11,6 @@ class CameraFrame extends StatefulWidget {
 }
 
 class _CameraFrameState extends State<CameraFrame> {
-
   RTCVideoRenderer? renderer;
   MediaStream? videoStream;
   MediaStream? audioStream;
@@ -33,7 +30,6 @@ class _CameraFrameState extends State<CameraFrame> {
     audioStream?.dispose();
     renderer?.dispose();
   }
-
 
   Future<void> setStream() async {
     Map<String, dynamic> videoConstraints = <String, dynamic>{
@@ -66,17 +62,19 @@ class _CameraFrameState extends State<CameraFrame> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        initComplete ? const SizedBox.shrink() : Center(
-          child: IconButton(
-            onPressed: () async {
-              await setStream();
-              setState(() {
-                initComplete = true;
-              });
-            },
-            icon: const Icon(Icons.play_arrow),
-          ),
-        ),
+        initComplete
+            ? const SizedBox.shrink()
+            : Center(
+                child: IconButton(
+                  onPressed: () async {
+                    await setStream();
+                    setState(() {
+                      initComplete = true;
+                    });
+                  },
+                  icon: const Icon(Icons.play_arrow),
+                ),
+              ),
         initComplete ? RTCVideoView(renderer!) : const SizedBox.shrink()
       ],
     );
