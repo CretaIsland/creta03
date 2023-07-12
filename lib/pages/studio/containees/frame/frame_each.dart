@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
+import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -312,6 +313,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.weather2) {
       return false;
     }
+    if (model.frameType == FrameType.camera) {
+      return false;
+    }
 
     return true;
   }
@@ -446,6 +450,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         model,
         const Text('GMT-9'),
       );
+    }
+    if (model.isCameraType()) {
+      return CameraFrame(model: model);
     }
     return ClipRect(
       clipBehavior: Clip.hardEdge,

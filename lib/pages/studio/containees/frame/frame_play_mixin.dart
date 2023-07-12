@@ -136,4 +136,48 @@ mixin FramePlayMixin {
     }
     return const SizedBox.shrink();
   }
+
+  // Future<Widget> cameraFrame(FrameModel model) async {
+  //   RTCVideoRenderer renderer = RTCVideoRenderer();
+  //   await renderer.initialize();
+
+  //   Map<String, dynamic> videoConstraints = <String, dynamic>{
+  //     'audio': false,
+  //     'video': {
+  //       'optional': [
+  //         {
+  //           'sourceId': mediaDeviceDataHolder!.selectedVideoInput,
+  //         },
+  //       ],
+  //     },
+  //   };
+  //   MediaStream videoStream = await navigator.mediaDevices.getUserMedia(videoConstraints);
+  //   Map<String, dynamic> audioConstraints = {
+  //     'audio': {
+  //       'optional': [
+  //         {
+  //           'sourceId': mediaDeviceDataHolder!.selectedAudioInput,
+  //         },
+  //       ],
+  //     },
+  //   };
+  //   MediaStream audioStream = await navigator.mediaDevices.getUserMedia(audioConstraints);
+
+  //   renderer.srcObject = videoStream;
+  //   renderer.srcObject = audioStream;
+
+  //   return Container(
+  //     width: 100,
+  //     height: 100,
+  //     color: Colors.pink,
+  //     child: RTCVideoView(renderer)
+  //   );
+    
+  // }
+
+  
+
+
+
+
 }

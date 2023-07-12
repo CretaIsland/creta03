@@ -41,6 +41,7 @@ enum FrameType {
   music,
   analogWatch,
   digitalWatch,
+  camera,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
