@@ -419,7 +419,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<UserPropertyManager, TeamManager>(
+    return LoginPage.teamManagerHolder!.teamModelList.isEmpty ? const SizedBox.shrink() : 
+    Consumer2<UserPropertyManager, TeamManager>(
       builder: (context, userPropertyManager, teamManager, child) {
         return Container(
           width: widget.width,
@@ -445,9 +446,9 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                       ),
                       const SizedBox(width: 32.0),
                       CretaWidgetDropDown(
-                        items: [Text('테스트팀1', style: CretaFont.bodyMedium), Text('테스트팀1', style: CretaFont.bodyMedium)], 
+                        items: [for(var team in teamManager.teamModelList) Text(team.name, style: CretaFont.bodyMedium)], 
                         defaultValue: 0, 
-                        width: 117.0,
+                        width: 140.0,
                         onSelected: (value) {}
                       )
                     ],
