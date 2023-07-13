@@ -1,6 +1,5 @@
 // ignore: avoid_web_libraries_in_flutter
-// import 'dart:html' as html;
-import 'package:universal_html/html.dart' as html;
+// import 'dart:html';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
@@ -8,6 +7,7 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:translator/translator.dart';
+import 'package:universal_html/html.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/component/creta_property_card.dart';
 import '../../../design_system/component/custom_image.dart';
@@ -52,6 +52,8 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   final bool _isTrailShowed = false;
   bool _isTipOpened = false;
   List<String> imgUrl = [];
+
+  bool downloading = false;
 
   GoogleTranslator translator = GoogleTranslator();
 
@@ -114,11 +116,61 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     });
   }
 
+  // Future<void> downloadImage(String imageUrl) async {
+  //   try {
+  //     final http.Response res = await http.get(
+  //       Uri.http(imageUrl, ''),
+  //     );
+
+  //     // get the bytes from the body
+  //     final data = res.bodyBytes;
+  //     // encode to base64
+  //     final base64data = base64Encode(data);
+
+  //     // create and AnchorElement with the html package
+  //     final a = html.AnchorElement(href: 'data:image/jpeg;base64,$base64data');
+
+  //     // set the name of the file we want the image to get
+  //     // downloaded to
+  //     a.download = 'download.jpg';
+
+  //     // and we click the AnchorElement which downloads the image
+  //     a.click();
+  //     // finally we remove the AnchorElement
+  //     a.remove();
+  //   } catch (e) {
+  //     // ignore: avoid_print
+  //     print(e);
+  //   }
+  // }
+
+  // void downloadImage(String urlImages) {
+  //   http.get(Uri.https(urlImages)).then((value) {
+  //     final data = value.bodyBytes;
+  //     final base64data = base64Encode(data);
+  //     final anchorElement = html.AnchorElement(href: 'data:image/jpeg;base64,$base64data');
+  //     anchorElement.download = 'download.jpg';
+  //     anchorElement.click();
+  //     anchorElement.remove();
+  //   });
+  // }
+
   void downloadImage(String urlImages) {
-    html.AnchorElement anchorElement = html.AnchorElement(href: urlImages);
-    anchorElement.download = "$urlImages.png";
+    final anchorElement = AnchorElement(href: urlImages);
+    anchorElement.download = 'download.jpg';
     anchorElement.click();
   }
+
+  // Future<void> downloadImage(String urlImage) async {
+  //   const fileName = "download.png";
+
+  //   final res = await http.get(Uri.parse(urlImage));
+
+  //   final fileBlob = Blob([res.bodyBytes]);
+  //   AnchorElement(href: Url.createObjectUrlFromBlob(fileBlob))
+  //     ..download = fileName
+  //     ..click();
+  // }
 
   void _changePage(int page) {
     if (page >= 0 && page < CretaStudioLang.tipMessage.length) {
@@ -565,6 +617,12 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                 icon: Icons.file_download_outlined,
                 onPressed: () {
                   downloadImage(imgUrl[imageIndex]);
+                  debugPrint('Download button pressed');
+                  // FileSaver.instance.saveFile(
+                  //   name: 'donwload.png',
+                  //   mimeType: MimeType.png,
+                  //   link: imgUrl[imageIndex],
+                  // );
                 },
               ),
               const SizedBox(width: 4.0),

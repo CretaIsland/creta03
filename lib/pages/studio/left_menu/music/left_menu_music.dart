@@ -55,25 +55,6 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
     //         'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
     //   ),
     // ),
-    // AudioSource.uri(
-    //   Uri.parse("https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
-    //   tag: MediaItem(
-    //     id: '${_nextmediaId++}',
-    //     artist: "Science Friday",
-    //     title: "From Cat Rheology To Operatic Incompetence",
-    //     artUri: Uri.parse("asset:///assets/creta-watercolor.png"),
-    //   ),
-    // ),
-    // AudioSource.uri(
-    //   Uri.parse("https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
-    //   tag: MediaItem(
-    //     id: '${_nextmediaId++}',
-    //     artist: "Science Friday",
-    //     title: "A Salute To Head-Scratching Science (30 seconds)",
-    //     artUri: Uri.parse(
-    //         "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-    //   ),
-    // ),
   );
 
   Future<void> afterBuild() async {
@@ -100,15 +81,11 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
   @override
   void initState() {
     super.initState;
-    // _audioPlayer = AudioPlayer()..setAsset('assets/audio/canone.mp3'); // set the assets audio
     _audioPlayer = AudioPlayer();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
     _init();
-    // _audioPlayer.positionStream;
-    // _audioPlayer.bufferedPositionStream;
-    // _audioPlayer.durationStream;
     afterBuild();
   }
 
@@ -172,23 +149,29 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
                   return const SizedBox();
                 }
                 final metadata = state!.currentSource!.tag as MediaItem;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Center(
-                          child: SizedBox(
-                        width: 250.0,
-                        height: 250.0,
-                        child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
-                      )),
-                      const SizedBox(height: 16.0),
-                      Text(metadata.title, style: Theme.of(context).textTheme.titleLarge),
-                      Text(metadata.artist!),
-                    ],
-                  ),
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Center(
+                              child: SizedBox(
+                            width: 250.0,
+                            height: 250.0,
+                            child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
+                          )),
+                          const SizedBox(height: 16.0),
+                          Text(metadata.title, style: Theme.of(context).textTheme.titleLarge),
+                          Text(metadata.artist!),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.remove_circle_outline_sharp, size: 24.0)
+                  ],
                 );
               },
             ),
@@ -260,7 +243,7 @@ class ControlButtons extends StatelessWidget {
           onPressed: () {
             showSliderDialog(
               context: context,
-              title: "Adjust volume",
+              title: "볼륨 조절",
               divisions: 10,
               min: 0.0,
               max: 1.0,
@@ -321,21 +304,25 @@ class ControlButtons extends StatelessWidget {
         ),
         StreamBuilder<double>(
           stream: audioPlayer.speedStream,
-          builder: (context, snapshot) => IconButton(
-            icon: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            onPressed: () {
-              showSliderDialog(
-                context: context,
-                title: "Adjust speed",
-                divisions: 10,
-                min: 0.5,
-                max: 1.5,
-                stream: audioPlayer.speedStream,
-                onChanged: audioPlayer.setSpeed,
-              );
-            },
-          ),
+          builder: (context, snapshot) {
+            // double speedValue = snapshot.data ?? 1.000;
+            return IconButton(
+              icon: const Icon(Icons.speed),
+              // style: const TextStyle(fontWeight: FontWeight.bold)),
+              onPressed: () {
+                showSliderDialog(
+                  context: context,
+                  title: "재생 속도",
+                  divisions: 4,
+                  min: 0.5,
+                  max: 1.5,
+                  valueSuffix: 'x',
+                  stream: audioPlayer.speedStream,
+                  onChanged: audioPlayer.setSpeed,
+                );
+              },
+            );
+          },
         ),
       ],
     );
