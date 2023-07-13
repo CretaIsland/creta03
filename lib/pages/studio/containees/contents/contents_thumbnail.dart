@@ -21,6 +21,7 @@ import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/text/creta_text_mixin.dart';
+import '../../left_menu/music/left_menu_music.dart';
 import '../../studio_getx_controller.dart';
 
 class ContentsThumbnail extends StatefulWidget {
@@ -151,6 +152,37 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                       isPagePreview: true,
                     );
                   }
+                }
+              }
+              logger.info('there is no contents');
+              return SizedBox.shrink();
+            });
+      } else if (widget.frameModel.frameType == FrameType.music) {
+        // 텍스트의 경우
+        return StreamBuilder<AbsExModel>(
+            stream: _receiveTextEvent!.eventStream.stream,
+            builder: (context, snapshot) {
+              if (snapshot.data != null && snapshot.data is ContentsModel) {
+                ContentsModel model = snapshot.data! as ContentsModel;
+                contentsManager.updateModel(model);
+                logger.fine('model updated ${model.name}, ${model.url}');
+              }
+              //logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
+
+              if (contentsCount > 0) {
+                if (widget.frameModel.frameType == FrameType.music) {
+                  ContentsModel model = contentsManager.getFirstModel()!;
+                  GlobalObjectKey<LeftMenuMusicState> musicKey =
+                      GlobalObjectKey<LeftMenuMusicState>('Music${model.parentMid.value}');
+                  musicKeyMap[model.parentMid.value] = musicKey;
+                  //print(model.remoteUrl!);
+                  //print('widget.applyScale: ${widget.applyScale}');
+
+                  return Container(
+                    alignment: Alignment.center,
+                    // htmlText: model.remoteUrl!,
+                    child: Text(model.name, style: CretaFont.bodyMedium, textAlign: TextAlign.center),
+                  );
                 }
               }
               logger.info('there is no contents');

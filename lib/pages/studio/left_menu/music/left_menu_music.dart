@@ -29,11 +29,11 @@ class LeftMenuMusic extends StatefulWidget {
 class LeftMenuMusicState extends State<LeftMenuMusic> {
   late AudioPlayer _audioPlayer; // play local audio file
 
-  static Random random = Random();
-  static int randomNumber = random.nextInt(100);
-  static String url = 'https://picsum.photos/200/?random=$randomNumber';
-
   void addMusic(ContentsModel model) {
+    Random random = Random();
+    int randomNumber = random.nextInt(100);
+    String url = 'https://picsum.photos/200/?random=$randomNumber';
+
     _playlist.add(AudioSource.uri(Uri.parse(model.remoteUrl!),
         tag: MediaItem(
           id: model.mid,
@@ -45,13 +45,6 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
 
   void removeMusic(int index) {
     _playlist.removeAt(index);
-    // Adjust the currentIndex if necessary
-    // if (_audioPlayer.currentIndex == index) {
-    //   _audioPlayer.stop();
-    //   _audioPlayer.seek(Duration.zero);
-    // } else if (_audioPlayer.currentIndex > index) {
-    //   _audioPlayer.currentIndex -= 1;
-    // }
   }
 
   final _playlist = ConcatenatingAudioSource(
@@ -101,9 +94,6 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
   }
 
   Future<void> _init() async {
-    // await _audioPlayer
-    //     .setLoopMode(LoopMode.all); // set the playlist to going to the previous or next track
-    // await _audioPlayer.setAudioSource(_playlist);
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
     // Listen to errors during playback.
