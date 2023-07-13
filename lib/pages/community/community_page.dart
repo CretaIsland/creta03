@@ -863,7 +863,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   void _toggleBookToFavorites() async {
     if (_bookIsFavorites) {
-      await CommunityRightBookPane.favoritesManagerHolder?.removeFavoritesFromDB(
+      CommunityRightBookPane.favoritesManagerHolder?.removeFavoritesFromDB(
         _currentBookModel!.mid,
         AccountManager.currentLoginUser.email,
       );
@@ -871,12 +871,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         _bookIsFavorites = false;
       });
     } else {
-      await CommunityRightBookPane.favoritesManagerHolder?.addFavoritesToDB(
+      CommunityRightBookPane.favoritesManagerHolder?.addFavoritesToDB(
         _currentBookModel!.mid,
         AccountManager.currentLoginUser.email,
       );
       setState(() {
-        _bookIsFavorites = false;
+        _bookIsFavorites = true;
       });
     }
   }
@@ -946,7 +946,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 ),
                 SizedBox(width: 12),
                 BTN.fill_gray_it_l(
-                  icon: Icons.favorite_border_outlined,
+                  icon: _bookIsFavorites ? Icons.favorite_outlined : Icons.favorite_border_outlined,
                   text: '123',
                   onPressed: _toggleBookToFavorites,
                   buttonColor: CretaButtonColor.transparent,

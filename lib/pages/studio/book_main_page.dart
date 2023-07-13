@@ -81,6 +81,8 @@ class BookMainPage extends StatefulWidget {
   final Size? size;
   final bool? isPublishedMode;
 
+  static bool outSideClick = false;
+
   BookMainPage({
     required this.bookKey,
     this.isPreviewX = false,
@@ -400,7 +402,9 @@ class _BookMainPageState extends State<BookMainPage> {
       child: StudioVariables.isPreview
           ? Scaffold(body: _waitBook())
           : Snippet.CretaScaffold(
-              title: Snippet.logo('studio', route: (){ Routemaster.of(context).push(AppRoutes.studioBookGridPage);}),
+              title: Snippet.logo('studio', route: () {
+                Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+              }),
               context: context,
               child: Stack(
                 children: [
@@ -833,6 +837,7 @@ class _BookMainPageState extends State<BookMainPage> {
             text: _bookModel.name.value,
             textStyle: CretaFont.titleMedium.copyWith(),
             align: TextAlign.center,
+            maxLine: 1,
             onEditComplete: (value) {
               setState(() {
                 _bookModel.name.set(value);

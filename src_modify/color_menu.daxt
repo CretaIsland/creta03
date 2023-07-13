@@ -23,6 +23,7 @@ void showColorMenu(
   void Function(EditorState)? onEditComplete, //skpark
   required bool isTextColor,
 }) {
+  /*
   // Since link format is only available for single line selection,
   // the first rect(also the only rect) is used as the starting reference point for the [overlay] position
   final rect = editorState.selectionRects().first;
@@ -52,9 +53,9 @@ void showColorMenu(
   }
 
   overlay = FullScreenOverlayEntry(
-    top: top! - frameOffset.dy, //skpark
+    top: 0,//top! - frameOffset.dy, //skpark
     //bottom: bottom,  //skpark
-    left: left! - frameOffset.dx, //skpark
+    left: 0, left! - frameOffset.dx, //skpark
     builder: (context) {
       return ColorPicker(
         isTextColor: isTextColor,
@@ -81,4 +82,5 @@ void showColorMenu(
     },
   ).build();
   Overlay.of(context).insert(overlay!);
+  */
 }

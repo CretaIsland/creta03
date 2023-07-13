@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'package:collection/collection.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:intl/intl.dart';
+
+import 'my_toolbar_container.dart';
 
 class SimpleEditor extends StatefulWidget {
   const SimpleEditor({
@@ -15,9 +16,15 @@ class SimpleEditor extends StatefulWidget {
     this.onAttached, //skpark
     this.frameKey, //skpark
     required this.bgColor, //skpark
+    required this.isViewer, //skpark
+    this.dialogOffset, //skpark
+    this.dialogSize, //skpark
     this.editorStyle,
   });
 
+  final bool isViewer; //skpark
+  final Offset? dialogOffset; //skpark
+  final Size? dialogSize; //skpark
   final Future<String> jsonString;
   //final ContentsModel model;
   final EditorStyle? editorStyle;
@@ -63,72 +70,62 @@ class _SimpleEditorState extends State<SimpleEditor> {
           //..level = LogLevel.off; //skpark
           //widget.onEditorStateChange(editorState);  //skpark
           final scrollController = ScrollController();
-          return FloatingToolbar(
-            items: [
-              paragraphItem,
-              ...headingItems,
-              ...markdownFormatItems,
-              quoteItem,
-              bulletedListItem,
-              numberedListItem,
-              linkItem,
-              buildTextColorItem(
-                colorOptions: _generateTextColorOptions(), //skpark
-                frameKey: widget.frameKey, //skpark
-                onEditComplete: widget.onEditComplete, //skpark
-              ),
-              buildHighlightColorItem(
-                colorOptions: _generateTextColorOptions(), //skpark
-                frameKey: widget.frameKey, //skpark
-                onEditComplete: widget.onEditComplete, //skpark
-              )
-            ],
-            editorState: editorState,
-            scrollController: scrollController,
-            frameKey: widget.frameKey, //skpark
-            child: _buildDesktopEditor(
-              context,
-              editorState,
-              scrollController,
-            ),
-          );
-          // return Column(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Container(
-          //       color: Colors.amber,
-          //       height: 32,
-          //     ),
-          //     ToolbarWidget(
-          //       items: [
-          //         paragraphItem,
-          //         ...headingItems,
-          //         ...markdownFormatItems,
-          //         quoteItem,
-          //         bulletedListItem,
-          //         numberedListItem,
-          //         linkItem,
-          //         buildTextColorItem(),
-          //         buildHighlightColorItem()
-          //       ],
-          //       editorState: editorState,
-          //       backgroundColor: Colors.black,
-          //     ),
-          //     SizedBox(
-          //       height: 240,
-          //       child: _buildDesktopEditor(
-          //         context,
-          //         editorState,
-          //         scrollController,
-          //       ),
-          //     ),
-          //   ],
-          // );
+          return widget.isViewer
+              ? _mainWidget(editorState, scrollController)
+              : _withToolbar(editorState, scrollController);
         }
         return const Center(
           child: CircularProgressIndicator(),
         );
       },
+    );
+  }
+
+  Widget _mainWidget(
+    EditorState editorState,
+    ScrollController scrollController,
+  ) {
+    return _buildDesktopEditor(
+      context,
+      editorState,
+      scrollController,
+    );
+  }
+
+  Widget _withToolbar(
+    EditorState editorState,
+    ScrollController scrollController,
+  ) {
+    //return MyToolbarContainer(
+    return MyToolbarContainer(
+      items: [
+        paragraphItem,
+        ...headingItems,
+        ...markdownFormatItems,
+        quoteItem,
+        bulletedListItem,
+        numberedListItem,
+        linkItem,
+        _mybuildTextColorItem(
+          colorOptions: _generateTextColorOptions(), //skpark
+          frameKey: widget.frameKey, //skpark
+          onChanged: widget.onChanged, //skpark
+        ),
+        _mybuildHighlightColorItem(
+          colorOptions: _generateTextColorOptions(), //skpark
+          frameKey: widget.frameKey, //skpark
+          onChanged: widget.onChanged, //skpark
+        )
+      ],
+      editorState: editorState,
+      scrollController: scrollController,
+      frameKey: widget.frameKey, //skpark
+      dialogOffset: widget.dialogOffset, //skpark
+      child: SizedBox(
+        width: widget.dialogSize != null ? widget.dialogSize!.width : 800,
+        height: widget.dialogSize != null ? widget.dialogSize!.height - 200 : 400,
+        child: _mainWidget(editorState, scrollController),
+      ),
     );
   }
 
@@ -217,8 +214,143 @@ class _SimpleEditorState extends State<SimpleEditor> {
       ),
     );
   }
+
+  ToolbarItem _mybuildTextColorItem({
+    List<ColorOption>? colorOptions,
+    GlobalKey? frameKey, //skpark
+    void Function(EditorState)? onChanged, //skpark
+  }) {
+    return ToolbarItem(
+      id: 'editor.textColor',
+      group: 4,
+      isActive: onlyShowInTextType,
+      builder: (context, editorState) {
+        String? textColorHex;
+        final selection = editorState.selection!;
+        final nodes = editorState.getNodesInSelection(selection);
+        final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
+          return delta.everyAttributes((attributes) {
+            textColorHex = attributes[FlowyRichTextKeys.textColor];
+            return (textColorHex != null);
+          });
+        });
+        return IconItemWidget(
+          iconName: 'toolbar/text_color',
+          isHighlight: isHighlight,
+          iconSize: const Size.square(14),
+          tooltip: AppFlowyEditorLocalizations.current.textColor,
+          onPressed: () {
+            _myshowColorMenu(
+              context,
+              editorState,
+              selection,
+              currentColorHex: textColorHex,
+              isTextColor: true,
+              textColorOptions: colorOptions,
+              frameKey: frameKey, //skpark
+              onChanged: onChanged, //skpark
+            );
+          },
+        );
+      },
+    );
+  }
+
+  ToolbarItem _mybuildHighlightColorItem({
+    List<ColorOption>? colorOptions,
+    GlobalKey? frameKey, //skpark
+    void Function(EditorState)? onChanged, //skpark
+  }) {
+    return ToolbarItem(
+      id: 'editor.highlightColor',
+      group: 4,
+      isActive: onlyShowInTextType,
+      builder: (context, editorState) {
+        String? highlightColorHex;
+
+        final selection = editorState.selection!;
+        final nodes = editorState.getNodesInSelection(selection);
+        final isHighlight = nodes.allSatisfyInSelection(selection, (delta) {
+          return delta.everyAttributes((attributes) {
+            highlightColorHex = attributes[FlowyRichTextKeys.highlightColor];
+            return highlightColorHex != null;
+          });
+        });
+        return IconItemWidget(
+          iconName: 'toolbar/highlight_color',
+          iconSize: const Size.square(14),
+          isHighlight: isHighlight,
+          tooltip: AppFlowyEditorLocalizations.current.highlightColor,
+          onPressed: () {
+            _myshowColorMenu(
+              context,
+              editorState,
+              selection,
+              currentColorHex: highlightColorHex,
+              isTextColor: false,
+              highlightColorOptions: colorOptions,
+              frameKey: frameKey, //skpark
+              onChanged: onChanged, //skpark
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _myshowColorMenu(
+    BuildContext context,
+    EditorState editorState,
+    Selection selection, {
+    String? currentColorHex,
+    List<ColorOption>? textColorOptions,
+    List<ColorOption>? highlightColorOptions,
+    GlobalKey? frameKey, //skpark
+    void Function(EditorState)? onChanged, //skpark
+    required bool isTextColor,
+  }) {
+    OverlayEntry? overlay;
+
+    void dismissOverlay() {
+      overlay?.remove();
+      overlay = null;
+    }
+
+    Offset menuOffset = widget.dialogOffset != null ? widget.dialogOffset! : Offset.zero;
+
+    overlay = FullScreenOverlayEntry(
+      top: menuOffset.dy + 48,
+      left: menuOffset.dx + 256,
+      builder: (context) {
+        return ColorPicker(
+          isTextColor: isTextColor,
+          editorState: editorState,
+          selectedColorHex: currentColorHex,
+          colorOptions: isTextColor
+              ? textColorOptions ?? generateTextColorOptions()
+              : highlightColorOptions ?? generateHighlightColorOptions(),
+          onSubmittedColorHex: (color) {
+            isTextColor
+                ? formatFontColor(
+                    editorState,
+                    color,
+                  )
+                : formatHighlightColor(
+                    editorState,
+                    color,
+                  );
+            onChanged?.call(editorState); //skpark
+            dismissOverlay();
+          },
+          onDismiss: dismissOverlay,
+        );
+      },
+    ).build();
+    Overlay.of(context).insert(overlay!);
+  }
 }
 
+/*
 const floatingToolbarHeight = 32.0;
 
 class ToolbarWidget extends StatefulWidget {
@@ -304,3 +436,4 @@ class _ToolbarWidgetState extends State<ToolbarWidget> {
       ..removeLast();
   }
 }
+*/

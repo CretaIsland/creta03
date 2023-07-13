@@ -1,9 +1,10 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
-import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/pages/studio/left_menu/word_pad/simple_editor.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:file_picker/file_picker.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:universal_html/html.dart' as html;
 
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/dialog/creta_alert_dialog.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 
@@ -65,16 +67,43 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
   late EditorState _editorState;
   late Future<String> _jsonString;
 
-  bool _showAppBar = true;
+  bool _isMoveMode = true;
+  Size _dialogSize = Size(800, 600);
+  Offset _dialogOffset = Offset.zero;
+
+  //ContentsEventController? _sendEvent;
+  //String _oldJsonString = '';
+  String _newJsonString = '';
 
   // = (widget.focusNode ?? FocusNode())..addListener(_onFocusChanged);
   // skpark
-  void _onComplete(EditorState editorState) {
+  // void _onComplete(EditorState editorState) {
+  //   //print('_onComplete-------------------');
+  //   _editorState = editorState;
+  //   _newJsonString = jsonEncode(editorState.document.toJson());
+  //   if (_newJsonString.isEmpty) {
+  //     _newJsonString =
+  //         '{"document":{"type":"page","children":[{"type":"paragraph","data":{"delta":[]}}]}}';
+  //     //'{"document":{"type":"page","children":[{"type":"heading","data":{"level":2,"delta":[]}},{"type":"paragraph","data":{"delta":[]}}]}}';
+  //   }
+  //   widget.model.remoteUrl = _newJsonString;
+  //   print('*******${widget.model.remoteUrl}******');
+  //   _jsonString = Future.value(_newJsonString);
+  //   widget.onComplete.call();
+  // }
+
+  void _onCompleteOK() {
     //print('_onComplete-------------------');
-    _editorState = editorState;
-    widget.model.remoteUrl = jsonEncode(editorState.document.toJson());
+    //_editorState = editorState;
+    _newJsonString = jsonEncode(_editorState.document.toJson());
+    if (_newJsonString.isEmpty) {
+      _newJsonString =
+          '{"document":{"type":"page","children":[{"type":"paragraph","data":{"delta":[]}}]}}';
+      //'{"document":{"type":"page","children":[{"type":"heading","data":{"level":2,"delta":[]}},{"type":"paragraph","data":{"delta":[]}}]}}';
+    }
+    widget.model.remoteUrl = _newJsonString;
     //print('*******${widget.model.remoteUrl}******');
-    _jsonString = Future.value(widget.model.remoteUrl);
+    _jsonString = Future.value(_newJsonString);
     widget.onComplete.call();
   }
 
@@ -82,6 +111,8 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
   void initState() {
     //print('------------------------------initState-------------------------');
     super.initState();
+    // final ContentsEventController sendEvent = Get.find(tag: 'text-property-to-textplayer');
+    // _sendEvent = sendEvent;
     // _jsonString =
     //     Future.value(widget.model.getURI()); //rootBundle.loadString('assets/example.json');
     // _widgetBuilder = (context) => SimpleEditor(
@@ -127,50 +158,91 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
 
   Widget _editMode() {
     return Scaffold(
-        key: _scaffoldKey,
-        extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
-        backgroundColor: Colors.transparent, //skpark
-        //drawer: _buildDrawer(context),  //skpark
-        appBar: _showAppBar
-            ? AppBar(
-                toolbarHeight: 36,
-                backgroundColor: CretaColor.primary,
-                surfaceTintColor: Colors.transparent,
-                title: const Text('Creta Word Pad(줄바꿈:Shift+Enter, 저장: Enter)'),
-                actions: [
-                  BTN.fill_blue_i_m(
-                    icon: Icons.arrow_upward_outlined,
-                    onPressed: () {
-                      setState(
-                        () {
-                          _showAppBar = false;
-                        },
-                      );
-                    },
-                  )
-                ],
-              )
-            : null,
-        body: _showAppBar
-            ? SafeArea(child: _buildBody(context))
-            : Stack(
-                children: [
-                  SafeArea(child: _buildBody(context)),
-                  Align(
+      key: _scaffoldKey,
+      extendBodyBehindAppBar: PlatformExtension.isDesktopOrWeb,
+      backgroundColor: Colors.transparent, //skpark
+      //drawer: _buildDrawer(context),  //skpark
+      // appBar: _isMoveMode
+      //     ? AppBar(
+      //         toolbarHeight: 36,
+      //         backgroundColor: CretaColor.primary,
+      //         surfaceTintColor: Colors.transparent,
+      //         title: const Text('Creta Word Pad'),
+      //         actions: [
+      //           BTN.fill_blue_i_m(
+      //             icon: Icons.arrow_upward_outlined,
+      //             onPressed: () {
+      //               setState(
+      //                 () {
+      //                   _isMoveMode = false;
+      //                 },
+      //               );
+      //             },
+      //           )
+      //         ],
+      //       )
+      //     : null,
+      body: Stack(
+        children: [
+          SafeArea(child: _buildBody(context)),
+          _isMoveMode
+              ? Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.transparent,
+                  child: Align(
                     alignment: Alignment.topRight,
-                    child: BTN.fill_gray_i_m(
-                      icon: Icons.arrow_downward_outlined,
+                    child: BTN.fill_color_t_m(
                       onPressed: () {
                         setState(
                           () {
-                            _showAppBar = true;
+                            _isMoveMode = false;
                           },
                         );
                       },
+                      text: 'move mode',
+                      width: 80,
                     ),
+                    // child: BTN.fill_gray_i_m(
+                    //   icon: Icons.arrow_upward_outlined,
+                    //   onPressed: () {
+                    //     setState(
+                    //       () {
+                    //         _isMoveMode = false;
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                   ),
-                ],
-              ));
+                )
+              : Align(
+                  alignment: Alignment.topRight,
+                  child: BTN.fill_color_t_m(
+                    onPressed: () {
+                      setState(
+                        () {
+                          _isMoveMode = true;
+                        },
+                      );
+                    },
+                    text: 'edit mode',
+                    width: 80,
+                  ),
+                  // child: BTN.fill_gray_i_m(
+                  //   icon: Icons.arrow_downward_outlined,
+                  //   onPressed: () {
+                  //     setState(
+                  //       () {
+                  //         _isMoveMode = true;
+                  //       },
+                  //     );
+                  //   },
+                  // ),
+                ),
+        ],
+      ),
+      //: SafeArea(child: _buildBody(context)),
+    );
   }
 
   Widget _viewMode() {
@@ -211,29 +283,68 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
 
   Widget _buildBody(BuildContext context) {
     //_widgetBuilder(context);
-    _jsonString =
-        Future.value(widget.model.getURI()); //rootBundle.loadString('assets/example.json');
+    _jsonString = Future.value(widget.model.getURI());
+
+    Size screenSize = MediaQuery.of(context).size;
+    _dialogSize = screenSize / 2;
+    _dialogOffset = Offset(
+      (screenSize.width - _dialogSize.width) / 2,
+      (screenSize.height - _dialogSize.height) / 2,
+    ); //rootBundle.loadString('assets/example.json');
+    return _simpleEditor(
+      true,
+    );
+  }
+
+  Widget _simpleEditor(bool isViewer, {Offset? dialogOffset, Size? dialogSize}) {
     return SimpleEditor(
+      isViewer: isViewer, //skpark
+      dialogOffset: dialogOffset, //skpark
+      dialogSize: dialogSize, //skpark
       frameKey: widget.frameKey,
       jsonString: _jsonString,
       //bgColor: widget.frameModel.bgColor1.value,
       bgColor: Colors.transparent,
+
       onEditorStateChange: (editorState) {
         //print('1-----------editorState changed ');
-        _onComplete(editorState);
+        //_onComplete(editorState);
       },
       onEditComplete: (editorState) {
         //print('onEditComplete1()');
-        _onComplete(editorState);
-      },
-      onAttached: () {
-        // setState(() {
-        //   _showAppBar = true;
-        // });
-        //print('attached --------------------------');
+        //_onComplete(editorState);
       },
       onChanged: (editorState) {
-        //print('onChanged1(${editorState.document.toJson()})');
+        _editorState = editorState;
+        _newJsonString = jsonEncode(_editorState.document.toJson());
+        //print('onChanged $_newJsonString');
+      },
+      onAttached: () {
+        if (isViewer == false) return;
+        //_oldJsonString = widget.model.remoteUrl!;
+        showDialog(
+            context: context,
+            builder: (context) {
+              return CretaAlertDialog(
+                backgroundColor: Colors.white.withOpacity(0.5),
+                //key: GlobalObjectKey('SimpleEditor-CretaAlertDialog'),
+                width: _dialogSize.width,
+                height: _dialogSize.height,
+                content: _simpleEditor(
+                  false,
+                  dialogOffset: _dialogOffset,
+                  dialogSize: _dialogSize,
+                ),
+                onPressedOK: () {
+                  _onCompleteOK();
+                  Navigator.of(context).pop();
+                },
+                onPressedCancel: () {
+                  //widget.model.remoteUrl = _oldJsonString;
+                  Navigator.of(context).pop();
+                },
+              );
+            });
       },
     );
   }
@@ -369,6 +480,7 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
       () {
         //print('-----------------------------_loadEditor-------------------');
         _widgetBuilder = (context) => SimpleEditor(
+              isViewer: true,
               //bgColor: widget.frameModel.bgColor1.value,
               bgColor: Colors.transparent,
               jsonString: _jsonString,

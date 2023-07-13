@@ -20,6 +20,7 @@ import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_popup_menu.dart';
 import '../model/app_enums.dart';
 import '../model/creta_model.dart';
+import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
@@ -970,6 +971,7 @@ abstract class CretaManager extends AbsExModelManager {
     selectedMid = "";
     logger.finest('unselected, prev=$prevSelectedMid');
     DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
+    BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
     //notify();
   }
 

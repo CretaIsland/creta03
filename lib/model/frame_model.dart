@@ -65,6 +65,10 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return (frameType == FrameType.music);
   }
 
+  bool isCameraType() {
+    return (frameType == FrameType.camera);
+  }
+
   double prevWidth = -1;
   double prevHeight = -1;
   double prevPosX = -1;

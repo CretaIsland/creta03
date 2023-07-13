@@ -131,7 +131,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
       }
     });
-    _controller.text = _description;
+    _controller.text = '';
 
     WatchHistoryModel whModel = WatchHistoryModel.withName(
       userId: AccountManager.currentLoginUser.email,
@@ -195,6 +195,9 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     if (_currentBookModel != null && _userPropertyModel != null) {
       if (kDebugMode) print('_resultFavoritesFromDB(updateBookModel)');
       widget.updateBookModel?.call(_currentBookModel!, _userPropertyModel!, _bookIsInFavorites);
+      setState(() {
+        _controller.text = _currentBookModel?.description.value ?? '';
+      });
     }
     dummyManagerHolder.setState(DBState.idle);
   }
@@ -460,14 +463,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   }
 
   bool _clickedDescriptionEditButton = false;
-  String _description =
-      '한강의 사계절을 한강 철교를 중심으로 표현해 보았습니다. 즐겁게 감상하세요.\n보다 자세한 사항은 아래 블로그를 방문해 주세요.\n\n이 콘텐츠의 사용 조건(저작권) : MIT\n이 콘텐츠가 포함하고 있는 원본 저작권 표시 : YG Entertainment, SME, Hive...';
-  String _descriptionOld = '';
+  //String _description = ''
+  //    '한강의 사계절을 한강 철교를 중심으로 표현해 보았습니다. 즐겁게 감상하세요.\n보다 자세한 사항은 아래 블로그를 방문해 주세요.\n\n이 콘텐츠의 사용 조건(저작권) : MIT\n이 콘텐츠가 포함하고 있는 원본 저작권 표시 : YG Entertainment, SME, Hive...';
+  String _descriptionChanging = '';
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
 
   Widget _getBookDescriptionPane() {
-    _descriptionOld = _description;
+    _descriptionChanging = _currentBookModel?.description.value ?? '';
     return SizedBox(
       width: _usingContentsRect.width,
       //height: size.height,
@@ -511,7 +514,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                 // Do something when ESC key is pressed
                 setState(() {
                   //print('_description(1)=$_description');
-                  _controller.text = _description;
+                  _controller.text = _descriptionChanging;
                   _clickedDescriptionEditButton = false;
                 });
               }
@@ -552,19 +555,28 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                 // suffixIcon: Icon(CupertinoIcons.search),
                 suffixMode: OverlayVisibilityMode.always,
                 onChanged: (value) {
-                  _descriptionOld = value;
+                  _descriptionChanging = value;
                 },
                 onSubmitted: ((value) {
-                  _descriptionOld = value;
+                  _descriptionChanging = value;
                 }),
                 onTapOutside: (event) {
                   //logger.fine('onTapOutside($_searchValue)');
                   if (_clickedDescriptionEditButton) {
-                    setState(() {
-                      _description = _descriptionOld;
-                      //print('_description(2)=$_description');
-                      _clickedDescriptionEditButton = false;
-                    });
+                    if (_currentBookModel != null) {
+                      _currentBookModel?.description.set(
+                        _descriptionChanging,
+                        save: false,
+                        noUndo: false,
+                        dontChangeBookTime: true,
+                      );
+                      bookPublishedManagerHolder.setToDB(_currentBookModel!);
+                      setState(() {
+                        // _description = _descriptionOld;
+                        //print('_description(2)=$_description');
+                        _clickedDescriptionEditButton = false;
+                      });
+                    }
                   }
                 },
                 // onSuffixTap: () {
@@ -737,6 +749,16 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     );
   }
 
+  bool _getAdminModeOfCurrentBook() {
+    if (_currentBookModel == null) return false;
+    for(var owner in _currentBookModel!.owners) {
+      if (owner == AccountManager.currentLoginUser.email) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Widget _getCommentsPane() {
     return Container(
       //color: Colors.red,
@@ -763,6 +785,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             paneWidth: _usingContentsRect.childWidth,
             paneHeight: null,
             showAddCommentBar: true,
+            bookId: CommunityRightBookPane.bookId,
+            isAdminMode: _getAdminModeOfCurrentBook(),
           ),
         ],
       ),

@@ -14,6 +14,9 @@ import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
+import '../../pages/studio/book_main_page.dart';
+import '../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -88,20 +91,26 @@ class Snippet {
     Widget? additionals,
   }) {
     return Scaffold(
-      appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
-      floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: child,
-      // body: StudioVariables.isHandToolMode == false
-      //     ? GestureDetector(
-      //         behavior: HitTestBehavior.opaque,
-      //         onLongPressDown: ((details) {
-      //           LastClicked.clickedOutSide(details.globalPosition);
-      //         }),
-      //         child: child,
-      //       )
-      //     : child,
-    );
+        appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
+        //floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
+        //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        //body: child,
+        body: StudioVariables.isHandToolMode == false
+            ? GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onLongPressDown: ((details) {
+                  //LastClicked.clickedOutSide(details.globalPosition);
+                  if (BookMainPage.outSideClick == false) {
+                    BookMainPage.outSideClick = true;
+                    return;
+                  }
+                  //print('space clicked ${details.globalPosition}');
+                  DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
+                  BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
+                }),
+                child: child,
+              )
+            : child);
   }
 
   static Widget CretaScaffoldOfCommunity({
@@ -122,7 +131,7 @@ class Snippet {
         // onErrorReport: onErrorReport,
         getBuildContext: getBuildContext,
       ),
-      floatingActionButton: Snippet.CretaDial(context),
+      //floatingActionButton: Snippet.CretaDial(context),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
@@ -276,7 +285,7 @@ class Snippet {
       {required Widget title, required BuildContext context, required Widget child}) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfMyPage(context, title),
-      floatingActionButton: Snippet.CretaDial(context),
+      //floatingActionButton: Snippet.CretaDial(context),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,

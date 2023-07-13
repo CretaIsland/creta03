@@ -55,16 +55,25 @@ mixin FramePlayMixin {
     mychangeStack.endTrans();
   }
 
-  bool showBorder(FrameModel model, PageModel pageModel, ContentsManager contentsManager) {
+  bool showBorder(
+      FrameModel model, PageModel pageModel, ContentsManager contentsManager, bool isThumbnail) {
     if (model.isWeatherTYpe()) {
       return false;
     }
+
     if (model.isWatchTYpe()) {
+      return false;
+    }
+    if (model.isCameraType()) {
       return false;
     }
     if (contentsManager.length() > 0) {
       return false;
     }
+    if (model.textureType.value != TextureType.none) {
+      return false;
+    }
+
     return (model.bgColor1.value == pageModel.bgColor1.value ||
             model.bgColor1.value == Colors.transparent) &&
         (model.borderWidth.value == 0 || model.borderColor.value == pageModel.bgColor1.value) &&
@@ -136,4 +145,42 @@ mixin FramePlayMixin {
     }
     return const SizedBox.shrink();
   }
+
+  // Future<Widget> cameraFrame(FrameModel model) async {
+  //   RTCVideoRenderer renderer = RTCVideoRenderer();
+  //   await renderer.initialize();
+
+  //   Map<String, dynamic> videoConstraints = <String, dynamic>{
+  //     'audio': false,
+  //     'video': {
+  //       'optional': [
+  //         {
+  //           'sourceId': mediaDeviceDataHolder!.selectedVideoInput,
+  //         },
+  //       ],
+  //     },
+  //   };
+  //   MediaStream videoStream = await navigator.mediaDevices.getUserMedia(videoConstraints);
+  //   Map<String, dynamic> audioConstraints = {
+  //     'audio': {
+  //       'optional': [
+  //         {
+  //           'sourceId': mediaDeviceDataHolder!.selectedAudioInput,
+  //         },
+  //       ],
+  //     },
+  //   };
+  //   MediaStream audioStream = await navigator.mediaDevices.getUserMedia(audioConstraints);
+
+  //   renderer.srcObject = videoStream;
+  //   renderer.srcObject = audioStream;
+
+  //   return Container(
+  //     width: 100,
+  //     height: 100,
+  //     color: Colors.pink,
+  //     child: RTCVideoView(renderer)
+  //   );
+
+  // }
 }

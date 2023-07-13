@@ -12,6 +12,8 @@ class CretaAlertDialog extends StatelessWidget {
   final String okButtonText;
   final double okButtonWidth;
   final Function onPressedOK;
+  final Function? onPressedCancel;
+  final Color? backgroundColor;
 
   const CretaAlertDialog(
       {super.key,
@@ -23,11 +25,14 @@ class CretaAlertDialog extends StatelessWidget {
       this.cancelButtonText = CretaLang.cancel,
       this.okButtonText = CretaLang.confirm,
       this.okButtonWidth = 55,
-      required this.onPressedOK});
+      this.backgroundColor,
+      required this.onPressedOK,
+      this.onPressedCancel});
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: backgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       child: SizedBox(
         width: width,
@@ -40,7 +45,14 @@ class CretaAlertDialog extends StatelessWidget {
                     ? EdgeInsets.only(left: width * .97 - 28, top: height * .057)
                     : EdgeInsets.only(left: width - 40, top: height * .057),
                 child: BTN.fill_gray_i_s(
-                    icon: Icons.close, onPressed: () => Navigator.of(context).pop())),
+                    icon: Icons.close,
+                    onPressed: () {
+                      if (onPressedCancel != null) {
+                        onPressedCancel!.call();
+                      } else {
+                        Navigator.of(context).pop();
+                      }
+                    })),
             Padding(
                 padding: padding,
                 child: icon != null
@@ -58,15 +70,23 @@ class CretaAlertDialog extends StatelessWidget {
             ),
             Padding(
                 padding: width > 150
-                    ? EdgeInsets.only(left: width * .97 - (63+okButtonWidth))
+                    ? EdgeInsets.only(left: width * .97 - (63 + okButtonWidth))
                     : EdgeInsets.only(left: width - 120),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     BTN.line_red_t_m(
-                        text: cancelButtonText, onPressed: () => Navigator.of(context).pop()),
+                        text: cancelButtonText,
+                        onPressed: () {
+                          if (onPressedCancel != null) {
+                            onPressedCancel!.call();
+                          } else {
+                            Navigator.of(context).pop();
+                          }
+                        }),
                     const SizedBox(width: 8.0),
-                    BTN.fill_red_t_m(text: okButtonText, width: okButtonWidth, onPressed: onPressedOK)
+                    BTN.fill_red_t_m(
+                        text: okButtonText, width: okButtonWidth, onPressed: onPressedOK)
                   ],
                 )),
           ],

@@ -41,6 +41,7 @@ enum FrameType {
   music,
   analogWatch,
   digitalWatch,
+  camera,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
@@ -543,4 +544,15 @@ enum ImageAniType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static ImageAniType fromInt(int? val) => ImageAniType.values[validCheck(val ?? none.index)];
+}
+
+enum CommentBarType {
+  none,
+  addCommentMode,
+  modifyCommentMode,
+  addReplyMode,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static CommentBarType fromInt(int? val) => CommentBarType.values[validCheck(val ?? none.index)];
 }

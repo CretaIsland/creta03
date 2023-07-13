@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
+import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:provider/provider.dart';
 
@@ -134,7 +135,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
-    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!);
+    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!,false);
     if (widget.model.shouldInsideRotate()) {
       return Transform(
         key: GlobalObjectKey('Transform${widget.model.mid}'),
@@ -207,6 +208,9 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     }
     if (model.isWatchTYpe()) {
       return watchFrame(model, null);
+    }
+    if (model.isCameraType()) {
+      return CameraFrame(model: model);
     }
 
     return Container(

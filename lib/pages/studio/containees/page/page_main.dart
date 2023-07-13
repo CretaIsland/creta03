@@ -239,8 +239,10 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     if (BookMainPage.containeeNotifier!.isFrameClick == true) {
       BookMainPage.containeeNotifier!.setFrameClick(false);
       logger.info('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
+      BookMainPage.outSideClick = false;
       return;
     }
+     BookMainPage.outSideClick = false;
     logger.info('page clicked');
     //setState(() {
     _frameManager?.clearSelectedMid();
