@@ -135,7 +135,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
-    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!);
+    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!,false);
     if (widget.model.shouldInsideRotate()) {
       return Transform(
         key: GlobalObjectKey('Transform${widget.model.mid}'),

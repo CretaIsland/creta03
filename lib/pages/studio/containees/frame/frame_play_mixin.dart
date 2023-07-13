@@ -55,16 +55,25 @@ mixin FramePlayMixin {
     mychangeStack.endTrans();
   }
 
-  bool showBorder(FrameModel model, PageModel pageModel, ContentsManager contentsManager) {
+  bool showBorder(
+      FrameModel model, PageModel pageModel, ContentsManager contentsManager, bool isThumbnail) {
     if (model.isWeatherTYpe()) {
       return false;
     }
+
     if (model.isWatchTYpe()) {
+      return false;
+    }
+    if (model.isCameraType()) {
       return false;
     }
     if (contentsManager.length() > 0) {
       return false;
     }
+    if (model.textureType.value != TextureType.none) {
+      return false;
+    }
+
     return (model.bgColor1.value == pageModel.bgColor1.value ||
             model.bgColor1.value == Colors.transparent) &&
         (model.borderWidth.value == 0 || model.borderColor.value == pageModel.bgColor1.value) &&
@@ -172,12 +181,6 @@ mixin FramePlayMixin {
   //     color: Colors.pink,
   //     child: RTCVideoView(renderer)
   //   );
-    
+
   // }
-
-  
-
-
-
-
 }

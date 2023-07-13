@@ -13,6 +13,7 @@ class CretaAlertDialog extends StatelessWidget {
   final double okButtonWidth;
   final Function onPressedOK;
   final Function? onPressedCancel;
+  final Color? backgroundColor;
 
   const CretaAlertDialog(
       {super.key,
@@ -24,12 +25,14 @@ class CretaAlertDialog extends StatelessWidget {
       this.cancelButtonText = CretaLang.cancel,
       this.okButtonText = CretaLang.confirm,
       this.okButtonWidth = 55,
+      this.backgroundColor,
       required this.onPressedOK,
       this.onPressedCancel});
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: backgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       child: SizedBox(
         width: width,

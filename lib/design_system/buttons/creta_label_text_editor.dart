@@ -92,6 +92,7 @@ class CretaLabelTextEditorState extends State<CretaLabelTextEditor> {
               value: widget.text,
               hintText: widget.text,
               controller: controller,
+              maxLines: widget.maxLine ?? 1,
               onEditComplete: (val) {
                 setState(() {
                   _isClicked = false;

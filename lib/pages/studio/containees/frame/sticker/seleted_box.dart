@@ -79,6 +79,7 @@ class SelectedBox extends StatelessWidget {
 
     return Consumer<FrameSelectNotifier>(builder: (context, frameSelectNotifier, childW) {
       //if (StudioVariables.isLinkSelectMode == false) {
+      print('${frameSelectNotifier.selectedAssetId} , $mid -------------------');
       if (frameSelectNotifier.selectedAssetId == mid) {
         return Stack(
           children: [

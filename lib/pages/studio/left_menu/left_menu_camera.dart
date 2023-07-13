@@ -12,7 +12,6 @@ import 'package:hycop/hycop/webrtc/media_devices/media_devices_data.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
-
 class LeftMenuCamera extends StatefulWidget {
   const LeftMenuCamera({super.key});
 
@@ -21,13 +20,11 @@ class LeftMenuCamera extends StatefulWidget {
 }
 
 class _LeftMenuCameraState extends State<LeftMenuCamera> {
-
   FrameManager? _frameManager;
   PageModel? _pageModel;
 
   List<String> videoDeviceList = [''];
   List<String> audioDeviceList = [''];
-
 
   @override
   void initState() {
@@ -35,50 +32,47 @@ class _LeftMenuCameraState extends State<LeftMenuCamera> {
     mediaDeviceDataHolder = MediaDeviceData();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: mediaDeviceDataHolder!.loadMediaDevice(),
       builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done) {
-          return Consumer<PageManager>(
-            builder: (context, pageManager, child) {
-              _pageModel = pageManager.getSelected() as PageModel?;
-              if(_pageModel == null) {
-                return const Center(child: Text('No Page Selected'));
-              }
-              _frameManager = pageManager.findFrameManager(_pageModel!.mid);
-              if(_frameManager == null) {
-          return const Center(child: Text('No Frame fetched'));
-              }
-
-              return Padding(
-                padding: const EdgeInsets.only(left: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 24),
-                    GestureDetector(
-                      onTap: () {
-                        _createCamera(frameType: FrameType.camera).then((value) {
-                          BookMainPage.pageManagerHolder!.notify();
-                        });
-                      },
-                      child: Container(
-                        width: 332,
-                        height: 210,
-                        color: Colors.grey.shade200,
-                        child: const Center(
-                          child: Icon(Icons.add, color: Colors.white, size: 40),
-                        ),
-                      ),
-                    )
-                  ],
-                ),  
-              );
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Consumer<PageManager>(builder: (context, pageManager, child) {
+            _pageModel = pageManager.getSelected() as PageModel?;
+            if (_pageModel == null) {
+              return const Center(child: Text('No Page Selected'));
             }
-          );
+            _frameManager = pageManager.findFrameManager(_pageModel!.mid);
+            if (_frameManager == null) {
+              return const Center(child: Text('No Frame fetched'));
+            }
+
+            return Padding(
+              padding: const EdgeInsets.only(left: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  GestureDetector(
+                    onTap: () {
+                      _createCamera(frameType: FrameType.camera).then((value) {
+                        BookMainPage.pageManagerHolder!.notify();
+                      });
+                    },
+                    child: Container(
+                      width: 332,
+                      height: 210,
+                      color: Colors.grey.shade200,
+                      child: const Center(
+                        child: Icon(Icons.add, color: Colors.white, size: 40),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            );
+          });
         } else {
           return Snippet.showWaitSign();
         }
@@ -86,15 +80,13 @@ class _LeftMenuCameraState extends State<LeftMenuCamera> {
     );
   }
 
-
-
   Future<void> _createCamera({required FrameType frameType}) async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
-    double width = 160;
-    double height = 160;
-    double x = 10;
+    double width = 320;
+    double height = 320;
+    double x = 15;
     double y = (pageModel.height.value - height);
 
     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
@@ -113,6 +105,4 @@ class _LeftMenuCameraState extends State<LeftMenuCamera> {
     );
     mychangeStack.endTrans();
   }
-
-
 }

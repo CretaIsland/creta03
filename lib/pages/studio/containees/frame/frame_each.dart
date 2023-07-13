@@ -163,7 +163,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   Widget _frameDropZone() {
     //logger.info('_frameDropZone...');
 
-    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!);
+    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!, true);
     // Widget frameBody = Stack(
     //   alignment: Alignment.center,
     //   children: [

@@ -92,16 +92,19 @@ class Snippet {
   }) {
     return Scaffold(
         appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
-        floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        //floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
+        //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         //body: child,
         body: StudioVariables.isHandToolMode == false
             ? GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onLongPressDown: ((details) {
                   //LastClicked.clickedOutSide(details.globalPosition);
-
-                  //print('space clicked ${details.globalPosition}');
+                  if (BookMainPage.outSideClick == false) {
+                    BookMainPage.outSideClick = true;
+                    return;
+                  }
+                  print('space clicked ${details.globalPosition}');
                   DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
                   BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
                 }),
@@ -128,7 +131,7 @@ class Snippet {
         // onErrorReport: onErrorReport,
         getBuildContext: getBuildContext,
       ),
-      floatingActionButton: Snippet.CretaDial(context),
+      //floatingActionButton: Snippet.CretaDial(context),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
@@ -282,7 +285,7 @@ class Snippet {
       {required Widget title, required BuildContext context, required Widget child}) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfMyPage(context, title),
-      floatingActionButton: Snippet.CretaDial(context),
+      //floatingActionButton: Snippet.CretaDial(context),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
