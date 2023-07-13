@@ -196,6 +196,8 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                       width: 207,
                       height: 118,
                       image: bModel.thumbnailUrl.value,
+                      hasAni: false,
+                      hasMouseOverEffect: false,
                     ),
                   ),
                 );
