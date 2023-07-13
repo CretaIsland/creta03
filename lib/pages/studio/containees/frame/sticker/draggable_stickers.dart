@@ -183,7 +183,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         //});
       },
       onScaleStart: () {
-                      print('DraggableResizable onScaleStart --------------------------');
+                      //print('DraggableResizable onScaleStart --------------------------');
 
         widget.onScaleStart.call(sticker.id);
       },

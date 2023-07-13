@@ -288,7 +288,7 @@ class _LinkWidgetState extends State<LinkWidget> {
           ? _mainButton(model)
           : GestureDetector(
               onScaleStart: (details) {
-                print('linkWidget onScaleStart ----------------------------------------');
+                //print('linkWidget onScaleStart ----------------------------------------');
                 _prev = details.localFocalPoint;
                 setState(() {
                   _isMove = true;

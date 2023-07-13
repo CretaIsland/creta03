@@ -125,7 +125,7 @@ class _ResizePointState extends State<ResizePoint> {
       child: ResizePointDraggable(
         mode: PositionMode.local,
         onDrag: (value) {
-          print('ResizePointDraggable ----------onDrag-------------------');
+          //('ResizePointDraggable ----------onDrag-------------------');
           setState(() {
             _isHover = true;
           });
@@ -133,13 +133,13 @@ class _ResizePointState extends State<ResizePoint> {
         },
         onScaleUpdate: (val) {
           // 얘는 멀티 터치의 경우만 호출된다.
-          print('ResizePointDraggable ----------onScaleUpdate-------------------');
+          //print('ResizePointDraggable ----------onScaleUpdate-------------------');
           widget.onScaleUpdate?.call(val);
         },
         onScaleStart: widget.onScaleStart,
         onTap: widget.onTap,
         onComplete: () {
-          print('ResizePointDraggable ----------onComplete-------------------');
+          //print('ResizePointDraggable ----------onComplete-------------------');
           setState(() {
             _isHover = false;
           });

@@ -224,12 +224,12 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       },
       onComplete: (mid) {
-        print('1FrameMain onComplete----------------------------------------------');
+        //print('1FrameMain onComplete----------------------------------------------');
 
         FrameModel? model = frameManager!.getModel(mid) as FrameModel?;
         //FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
-          print('2FrameMain onComplete----------------------------------------------');
+          //print('2FrameMain onComplete----------------------------------------------');
           //model.save();
           logger.info('onComplete');
           _sendEvent?.sendEvent(model);

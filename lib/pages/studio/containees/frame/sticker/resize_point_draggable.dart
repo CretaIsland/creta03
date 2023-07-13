@@ -80,7 +80,7 @@ class ResizePointDraggableState extends State<ResizePointDraggable> {
             //   widget.onComplete();
             // },
             onScaleStart: (details) {
-              print('ResizePointDraggableState onScaleStart --------------------------');
+              //print('ResizePointDraggableState onScaleStart --------------------------');
 
               mychangeStack.startTrans();
               switch (widget.mode) {

@@ -155,7 +155,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         final normalizedTop = _position.dy;
 
         void onUpdate(String hint, {bool save = true}) {
-          print('onUpdate $hint--------------------------------------------------------');
+          //print('onUpdate $hint--------------------------------------------------------');
           if (hint == 'onTap') {
             logger.finest('onUpdate : onUpdate($hint),$save in DraggableResizable');
             widget.onTap?.call();
