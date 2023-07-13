@@ -64,7 +64,7 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
     double width = pageModel.width.value * 0.25;
-    double height = pageModel.height.value * 0.65;
+    double height = pageModel.height.value * 0.8;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 

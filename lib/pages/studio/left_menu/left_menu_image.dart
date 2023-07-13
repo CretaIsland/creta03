@@ -1,5 +1,6 @@
 // ignore: avoid_web_libraries_in_flutter
 // import 'dart:html';
+import 'package:http/http.dart' as http;
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
@@ -97,22 +98,22 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     });
   }
 
-  void downloadImage(String urlImages) {
-    final anchorElement = AnchorElement(href: urlImages);
-    anchorElement.download = 'download.jpg';
-    anchorElement.click();
-  }
-
-  // Future<void> downloadImage(String urlImage) async {
-  //   const fileName = "download.png";
-
-  //   final res = await http.get(Uri.parse(urlImage));
-
-  //   final fileBlob = Blob([res.bodyBytes]);
-  //   AnchorElement(href: Url.createObjectUrlFromBlob(fileBlob))
-  //     ..download = fileName
-  //     ..click();
+  // void downloadImage(String urlImages) {
+  //   final anchorElement = AnchorElement(href: urlImages);
+  //   anchorElement.download = 'download.jpg';
+  //   anchorElement.click();
   // }
+
+  Future<void> downloadImage(String urlImage) async {
+    const fileName = "download.png";
+
+    final res = await http.get(Uri.parse(urlImage));
+
+    final fileBlob = Blob([res.bodyBytes]);
+    AnchorElement(href: Url.createObjectUrlFromBlob(fileBlob))
+      ..download = fileName
+      ..click();
+  }
 
   @override
   Widget build(BuildContext context) {
