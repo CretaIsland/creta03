@@ -210,7 +210,7 @@ class _SimpleEditorState extends State<SimpleEditor> {
         //skpark
         padding: EdgeInsets.all(10),
         //backgroundColor: widget.bgColor,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.amber,
       ),
     );
   }

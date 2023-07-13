@@ -32,7 +32,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
   void initState() {
     super.initState();
     if (widget.player.model!.imageAniType.value == ImageAniType.move) {
-      _aniTimer ??= Timer.periodic(const Duration(seconds: 6), (t) {
+      _aniTimer ??= Timer.periodic(const Duration(seconds: 4), (t) {
         setState(() {
           _animateFlag = !_animateFlag;
         });
@@ -120,7 +120,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
         maxHeight: size.height * 1.5,
         maxWidth: size.width * 1.5,
         child: AnimatedContainer(
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 2),
           curve: Curves.easeInOutCubic,
           width: _animateFlag ? size.width : size.width * 1.5,
           height: _animateFlag ? size.height : size.height * 1.5,

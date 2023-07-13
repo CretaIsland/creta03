@@ -15,7 +15,6 @@ import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
-import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
@@ -703,7 +702,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         width: 200,
         height: 36,
         itemHeight: 24,
-        dropDownMenuItemList: _getLangItem(
+        dropDownMenuItemList: CretaUtils.getLangItem(
             defaultValue: model.lang.value,
             onChanged: (val) async {
               model.lang.set(val);
@@ -721,20 +720,20 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     );
   }
 
-  List<CretaMenuItem> _getLangItem(
-      {required String defaultValue, required void Function(String) onChanged}) {
-    return StudioConst.code2LangMap.keys.map(
-      (code) {
-        String langStr = StudioConst.code2LangMap[code]!;
+  // List<CretaMenuItem> _getLangItem(
+  //     {required String defaultValue, required void Function(String) onChanged}) {
+  //   return StudioConst.code2LangMap.keys.map(
+  //     (code) {
+  //       String langStr = StudioConst.code2LangMap[code]!;
 
-        return CretaMenuItem(
-          caption: langStr,
-          onPressed: () {
-            onChanged(StudioConst.lang2CodeMap[langStr]!);
-          },
-          selected: code == defaultValue,
-        );
-      },
-    ).toList();
-  }
+  //       return CretaMenuItem(
+  //         caption: langStr,
+  //         onPressed: () {
+  //           onChanged(StudioConst.lang2CodeMap[langStr]!);
+  //         },
+  //         selected: code == defaultValue,
+  //       );
+  //     },
+  //   ).toList();
+  // }
 }

@@ -11,10 +11,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:translator/translator.dart';
 import 'package:universal_html/html.dart' as html;
 
+import '../../../../common/creta_utils.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/creta_color.dart';
+import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/dialog/creta_alert_dialog.dart';
+import '../../../../design_system/menu/creta_drop_down_button.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 
@@ -74,6 +79,8 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
   //ContentsEventController? _sendEvent;
   //String _oldJsonString = '';
   String _newJsonString = '';
+
+  //Map<String, dynamic> _translateMap = {};
 
   // = (widget.focusNode ?? FocusNode())..addListener(_onFocusChanged);
   // skpark
@@ -239,6 +246,40 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
                   //   },
                   // ),
                 ),
+          if (_isMoveMode == false)
+            Align(
+              alignment: Alignment.bottomRight,
+              child: SizedBox(
+                width: 220,
+                child: CretaDropDownButton(
+                  align: MainAxisAlignment.start,
+                  selectedColor: CretaColor.text[700]!,
+                  textStyle: CretaFont.bodySmall,
+                  width: 200,
+                  height: 32,
+                  itemHeight: 24,
+                  dropDownMenuItemList: CretaUtils.getLangItem(
+                      defaultValue: widget.model.lang.value,
+                      onChanged: (val) async {
+                        widget.model.lang.set(val);
+                        if (widget.model.remoteUrl != null) {
+                          await _translate(widget.model.lang.value);
+                          setState(() {});
+                        }
+                      }),
+                ),
+              ),
+              // child: BTN.fill_color_t_m(
+              //   onPressed: () {
+              //     _translate();
+              //     setState(
+              //       () {},
+              //     );
+              //   },
+              //   text: 'translate',
+              //   width: 80,
+              // ),
+            ),
         ],
       ),
       //: SafeArea(child: _buildBody(context)),
@@ -579,5 +620,61 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
     if (mounted) {
       _loadEditor(context, Future<String>.value(jsonString));
     }
+  }
+
+  Future<void> _translate(String lang) async {
+    String? org = widget.model.remoteUrl;
+    if (org == null || org.isEmpty) {
+      return;
+    }
+    Map<String, dynamic> json = jsonDecode(org);
+    // Find the items with "name" equal to "insert"
+    await findItemsByName(
+      json,
+      'insert',
+      transform: (input) async {
+        Translation result = await input.translate(to: lang);
+        return result.text;
+      },
+    );
+
+    String decoded = jsonEncode(json);
+    //print(decoded);
+
+    widget.model.remoteUrl = decoded;
+    widget.onComplete.call();
+
+    // Print the values of the "insert" items
+    // for (var item in insertItems) {
+    //   print(item.toString());
+    // }
+  }
+
+  Future<void> findItemsByName(Map<String, dynamic> json, String name,
+      {Future<String> Function(String input)? transform}) async {
+    //_translateMap = {...json};
+    //List<dynamic> result = [];
+    Future<void> search(Map<String, dynamic> map) async {
+      for (String key in map.keys) {
+        var value = map[key];
+        if (key == name) {
+          //result.add(map[name]);
+          if (transform != null) {
+            map[name] = await transform(map[name]);
+            //print(map[name]);
+          }
+        } else if (value is Map<String, dynamic>) {
+          await search(value);
+        } else if (value is List<dynamic>) {
+          for (var item in value) {
+            if (item is Map<String, dynamic>) {
+              await search(item);
+            }
+          }
+        }
+      }
+    }
+
+    await search(json);
   }
 }

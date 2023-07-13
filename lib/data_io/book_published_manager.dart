@@ -161,26 +161,34 @@ class BookPublishedManager extends CretaManager {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     bool isNew = false;
 
-    BookModel? published = await findPublished(src.mid);
-    if (published == null) {
+    BookModel? oldOne = await findPublished(src.mid);
+    if (oldOne == null) {
       isNew = true;
-      published = BookModel('');
-      src.publishMid = published.mid;
-      src.save();
-    }
+    } else {}
+    BookModel published = BookModel('');
+    src.publishMid = published.mid;
+    src.save();
+
     // creat_book_published data 를 만든다.
     published.copyFrom(src, newMid: published.mid, pMid: published.parentMid.value);
     published.sourceMid = src.mid;
     PagePublishedManager publishedManager = PagePublishedManager(pageManager, src);
-    if (isNew) {
-      await createToDB(published);
-      logger.info('published created ${published.mid}, source=${published.sourceMid}');
-    } else {
-      await setToDB(published);
-      logger.info('published updated ${published.mid}, , source=${published.sourceMid}');
-    }
+    //if (isNew) {
+    await createToDB(published);
+    logger.info('published created ${published.mid}, source=${published.sourceMid}');
+    //} else {
+    //  await setToDB(published);
+    //  logger.info('published updated ${published.mid}, , source=${published.sourceMid}');
+    //}
     await publishedManager.makeCopyAll(published.mid);
     onComplete?.call(isNew);
+
+    if (isNew == false) {
+      // 예전것을 지운다.
+      oldOne!.isRemoved.set(true, save: false, noUndo: true);
+      await setToDB(oldOne);
+      publishedManager.removeChild(oldOne.mid);
+    }
     return true;
   }
 }

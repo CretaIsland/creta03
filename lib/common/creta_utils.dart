@@ -5,8 +5,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
 import '../model/app_enums.dart';
+import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 
 class ShadowData {
@@ -590,5 +592,47 @@ class CretaUtils {
 
   static bool isRectContained(Rect outerRect, Rect innerRect) {
     return outerRect.contains(innerRect.topLeft) && outerRect.contains(innerRect.bottomRight);
+  }
+
+  // json 에서 문자열을 name 항목의 추출하는 함수
+  static List<dynamic> findItemsByName(Map<String, dynamic> json, String name,
+      {String Function(String input)? transform}) {
+    List<dynamic> result = [];
+    void search(Map<String, dynamic> map) {
+      map.forEach((key, value) {
+        //if (key == 'name' && value == name) {
+        if (key == name) {
+          result.add(map[name]);
+        } else if (value is Map<String, dynamic>) {
+          search(value);
+        } else if (value is List<dynamic>) {
+          for (var item in value) {
+            if (item is Map<String, dynamic>) {
+              search(item);
+            }
+          }
+        }
+      });
+    }
+
+    search(json);
+    return result;
+  }
+
+  static List<CretaMenuItem> getLangItem(
+      {required String defaultValue, required void Function(String) onChanged}) {
+    return StudioConst.code2LangMap.keys.map(
+      (code) {
+        String langStr = StudioConst.code2LangMap[code]!;
+
+        return CretaMenuItem(
+          caption: langStr,
+          onPressed: () {
+            onChanged(StudioConst.lang2CodeMap[langStr]!);
+          },
+          selected: code == defaultValue,
+        );
+      },
+    ).toList();
   }
 }
