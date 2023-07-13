@@ -195,7 +195,7 @@ class CretaStudioLang {
 
   static const String gotoCommunity = '커뮤니티로 이동';
 
-  static const String newBook = '새 크라타북';
+  static const String newBook = '새 크레타북';
   static const String newPage = '새 페이지 추가';
   static const String newFrame = '새 프레임 추가';
   static const String treePage = '자세히 보기';
@@ -221,7 +221,7 @@ class CretaStudioLang {
   static var showUnshow = "보이기/안보이기";
 
   static const String description = "설명";
-  static const String hashTab = "해쉬태그";
+  static const String hashTab = "해시태그";
   static const String infomation = "정보";
   static const String pageSize = "페이지 크기";
   static const String frameSize = "프레임 크기";
@@ -416,7 +416,7 @@ class CretaStudioLang {
 
   static String imageInfo = '이미지 정보';
   static String fileName = '파일명';
-  static String contentyType = '콘테츠타입';
+  static String contentyType = '콘텐츠타입';
   static String fileSize = '파일 크기';
   static String imageFilter = '이미지 필터';
   static String imageControl = '이미지 조정';
