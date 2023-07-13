@@ -54,7 +54,7 @@ dependencies:
   cached_network_image: ^3.2.3
   image_network: ^2.4.1   
   http: ^0.13.5
-  universal_html: ^2.2.3
+  universal_html: ^2.0.8
   firebase_core_platform_interface: 4.5.2
   adaptive_scrollbar: ^2.1.2
   mutex: ^3.0.1
@@ -108,7 +108,7 @@ dependencies:
   # universal_platform: ^1.0.0+1
   # performance: ^0.1.0+1
   # html_editor_enhanced: ^2.5.1
-  numberpicker: ^2.1.2
+  # numberpicker: ^2.1.2
   file_picker: ^5.3.1
   flutter_weather_bg_null_safety: ^1.0.0
   weather_animation: ^0.0.2
@@ -120,7 +120,7 @@ dependencies:
   audio_video_progress_bar: ^1.0.1
   # flutter_custom_clippers: ^2.1.0
   rxdart: ^0.27.7
-  fwfh_cached_network_image: ^0.7.0+5
+  # fwfh_cached_network_image: ^0.7.0+5
   one_clock: ^1.0.1
   mediasoup_client_flutter: ^0.8.5
   protoo_client: ^0.3.3
@@ -187,8 +187,8 @@ flutter:
     - assets/tipImage-2-4.png
     - assets/bgd.png
     - assets/google__g__logo.svg
-    - assets/example.json
-    - assets/example.html
+    # - assets/example.json
+    # - assets/example.html
     - assets/icon.png
     - assets/landing_page_banner.mp4
     - assets/audio/canone.mp3

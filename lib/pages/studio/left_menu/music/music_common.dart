@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:creta03/design_system/creta_color.dart';
 import 'package:flutter/material.dart';
 
 class SeekBar extends StatefulWidget {
@@ -149,28 +150,34 @@ void showSliderDialog({
 }) {
   showDialog<void>(
     context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title, textAlign: TextAlign.center),
-      content: StreamBuilder<double>(
-        stream: stream,
-        builder: (context, snapshot) => SizedBox(
-          height: 100.0,
-          child: Column(
-            children: [
-              Text('${snapshot.data?.toStringAsFixed(1)}$valueSuffix',
-                  style: const TextStyle(
-                      fontFamily: 'Fixed', fontWeight: FontWeight.bold, fontSize: 24.0)),
-              Slider(
-                divisions: divisions,
-                min: min,
-                max: max,
-                value: snapshot.data ?? 1.0,
-                onChanged: onChanged,
-              ),
-            ],
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: CretaColor.pgBackgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        title: Text(title,
+            style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center),
+        content: StreamBuilder<double>(
+          stream: stream,
+          builder: (context, snapshot) => SizedBox(
+            height: 80.0,
+            child: Column(
+              children: [
+                Slider(
+                  divisions: divisions,
+                  min: min,
+                  max: max,
+                  value: snapshot.data ?? 1.00,
+                  activeColor: CretaColor.bufferedColor,
+                  onChanged: onChanged,
+                ),
+                Text('${snapshot.data}$valueSuffix',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+              ],
+            ),
           ),
         ),
-      ),
-    ),
+      );
+    },
   );
 }
