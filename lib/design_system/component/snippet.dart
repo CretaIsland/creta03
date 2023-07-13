@@ -104,7 +104,8 @@ class Snippet {
                     BookMainPage.outSideClick = true;
                     return;
                   }
-                  //print('space clicked ${details.globalPosition}');
+                  print(
+                      'space clicked ${details.globalPosition}-------------------------------------------');
                   DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
                   BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
                 }),

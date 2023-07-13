@@ -13,6 +13,7 @@ class SelectedBox extends StatelessWidget {
   final double normalizedHeight;
   final double normalizedWidth;
   final double resizePointerOffset;
+  final VoidCallback onScaleStart;
   final void Function(Offset) onDragTopLeft;
   final void Function(Offset) onDragBottomRight;
   final void Function(Offset) onDragTopRight;
@@ -33,6 +34,7 @@ class SelectedBox extends StatelessWidget {
     required this.normalizedHeight,
     required this.normalizedWidth,
     required this.resizePointerOffset,
+    required this.onScaleStart,
     required this.onDragTopLeft,
     required this.onDragBottomRight,
     required this.onDragTopRight,
@@ -108,6 +110,7 @@ class SelectedBox extends StatelessWidget {
       type: ResizePointType.topLeft,
       onDrag: onDragTopLeft,
       onTap: onResizeButtonTap,
+      onScaleStart: onScaleStart,
       //iconData: Icons.zoom_out_map,
       onComplete: onComplete,
     );
@@ -117,6 +120,7 @@ class SelectedBox extends StatelessWidget {
       type: ResizePointType.bottomRight,
       onDrag: onDragBottomRight,
       onTap: onResizeButtonTap,
+      onScaleStart: onScaleStart,
       //iconData: Icons.zoom_out_map,
       onComplete: onComplete,
     );
@@ -126,6 +130,7 @@ class SelectedBox extends StatelessWidget {
       type: ResizePointType.topRight,
       onDrag: onDragTopRight,
       onTap: onResizeButtonTap,
+      onScaleStart: onScaleStart,
       //iconData: Icons.zoom_out_map,
       onComplete: onComplete,
     );
@@ -135,6 +140,7 @@ class SelectedBox extends StatelessWidget {
       type: ResizePointType.bottomLeft,
       onDrag: onDragBottomLeft,
       onTap: onResizeButtonTap,
+      onScaleStart: onScaleStart,
       //iconData: Icons.zoom_out_map,
       onComplete: onComplete,
     );
@@ -144,6 +150,7 @@ class SelectedBox extends StatelessWidget {
       type: ResizePointType.up,
       onDrag: onDragUp,
       onTap: onResizeButtonTap,
+      onScaleStart: onScaleStart,
       //iconData: Icons.zoom_out_map,
       onComplete: onComplete,
     );
@@ -153,6 +160,7 @@ class SelectedBox extends StatelessWidget {
       type: ResizePointType.right,
       onDrag: onDragRight,
       onTap: onResizeButtonTap,
+      onScaleStart: onScaleStart,
       //iconData: Icons.zoom_out_map,
       onComplete: onComplete,
     );
@@ -162,6 +170,7 @@ class SelectedBox extends StatelessWidget {
       type: ResizePointType.down,
       onDrag: onDragDown,
       onTap: onResizeButtonTap,
+      onScaleStart: onScaleStart,
       //iconData: Icons.zoom_out_map,
       onComplete: onComplete,
     );
@@ -170,6 +179,7 @@ class SelectedBox extends StatelessWidget {
       key: Key('draggableResizable_leftPlane_resizePoint-$mid'),
       type: ResizePointType.left,
       onDrag: onDragLeft,
+      onScaleStart: onScaleStart,
       onTap: onResizeButtonTap,
       //iconData: Icons.zoom_out_map,
       onComplete: onComplete,

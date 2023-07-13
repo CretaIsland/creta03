@@ -39,12 +39,14 @@ class ResizePoint extends StatefulWidget {
       required this.onComplete,
       this.enable = true,
       // ignore: unused_element
-      this.onScale,
+      this.onScaleUpdate,
+      required this.onScaleStart,
       this.iconData})
       : super(key: key);
 
+  final VoidCallback onScaleStart;
   final ValueSetter<Offset> onDrag;
-  final ValueSetter<double>? onScale;
+  final ValueSetter<double>? onScaleUpdate;
   final ResizePointType type;
   final IconData? iconData;
   final void Function() onTap;
@@ -123,16 +125,21 @@ class _ResizePointState extends State<ResizePoint> {
       child: ResizePointDraggable(
         mode: PositionMode.local,
         onDrag: (value) {
+          print('ResizePointDraggable ----------onDrag-------------------');
           setState(() {
             _isHover = true;
           });
           widget.onDrag.call(value);
         },
-        onScale: (val) {
-          widget.onScale?.call(val);
+        onScaleUpdate: (val) {
+          // 얘는 멀티 터치의 경우만 호출된다.
+          print('ResizePointDraggable ----------onScaleUpdate-------------------');
+          widget.onScaleUpdate?.call(val);
         },
+        onScaleStart: widget.onScaleStart,
         onTap: widget.onTap,
         onComplete: () {
+          print('ResizePointDraggable ----------onComplete-------------------');
           setState(() {
             _isHover = false;
           });

@@ -13,7 +13,8 @@ class ResizePointDraggable extends StatefulWidget {
     required this.child,
     required this.onComplete,
     this.onDrag,
-    this.onScale,
+    this.onScaleUpdate,
+    required this.onScaleStart,
     this.onRotate,
     required this.onTap,
     this.mode = PositionMode.global,
@@ -22,7 +23,8 @@ class ResizePointDraggable extends StatefulWidget {
   final Widget child;
   final PositionMode mode;
   final ValueSetter<Offset>? onDrag;
-  final ValueSetter<double>? onScale;
+  final VoidCallback onScaleStart;
+  final ValueSetter<double>? onScaleUpdate;
   final ValueSetter<double>? onRotate;
   final VoidCallback? onTap;
   final VoidCallback onComplete;
@@ -78,6 +80,8 @@ class ResizePointDraggableState extends State<ResizePointDraggable> {
             //   widget.onComplete();
             // },
             onScaleStart: (details) {
+              print('ResizePointDraggableState onScaleStart --------------------------');
+
               mychangeStack.startTrans();
               switch (widget.mode) {
                 case PositionMode.global:
@@ -94,8 +98,9 @@ class ResizePointDraggableState extends State<ResizePointDraggable> {
                 logger.finest('baseAngle=$baseAngle}');
                 baseScaleFactor = scaleFactor;
                 widget.onRotate?.call(baseAngle);
-                widget.onScale?.call(baseScaleFactor);
+                widget.onScaleUpdate?.call(baseScaleFactor);
               }
+              widget.onScaleStart.call();
             },
             onScaleUpdate: (details) {
               switch (widget.mode) {
@@ -115,7 +120,7 @@ class ResizePointDraggableState extends State<ResizePointDraggable> {
               }
               if (details.pointerCount > 1) {
                 scaleFactor = baseScaleFactor * details.scale;
-                widget.onScale?.call(scaleFactor);
+                widget.onScaleUpdate?.call(scaleFactor);
                 angle = baseAngle + details.rotation;
 
                 logger.fine('baseAngle=$baseAngle, rotation=${details.rotation}');

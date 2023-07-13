@@ -50,6 +50,7 @@ class DraggablePointState extends State<DraggablePoint> {
               logger.info('DraggablePoint.GestureDetector');
               //
               widget.onTap!();
+              print('DraggablePointState onLongPressDown --------------------------');
             },
             onScaleStart: (details) {
               mychangeStack.startTrans();
@@ -70,6 +71,7 @@ class DraggablePointState extends State<DraggablePoint> {
                 widget.onRotate?.call(baseAngle);
                 widget.onScale?.call(baseScaleFactor);
               }
+              print('DraggablePointState onScaleStart --------------------------');
               widget.onScaleStart();
             },
             onScaleUpdate: (details) {
@@ -88,6 +90,8 @@ class DraggablePointState extends State<DraggablePoint> {
                   widget.onDrag?.call(Offset(dx, dy));
                   break;
               }
+              print('DraggablePointState onScaleUpdate --------------------------');
+
               if (details.pointerCount > 1) {
                 scaleFactor = baseScaleFactor * details.scale;
                 widget.onScale?.call(scaleFactor);
@@ -99,6 +103,8 @@ class DraggablePointState extends State<DraggablePoint> {
               }
             },
             onScaleEnd: (details) {
+              print('DraggablePointState onScaleEnd --------------------------');
+
               logger.fine('onScaleEnd ${details.toString()}');
               widget.onComplete();
               mychangeStack.endTrans();
