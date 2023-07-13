@@ -98,7 +98,7 @@ class UserPropertyManager extends CretaManager {
       country: CountryType.none,
       language: LanguageType.none,
       job: JobType.none,
-      freeSpace: 1042,
+      freeSpace: 1024,
       bookCount: 0,
       bookViewCount: 0,
       bookViewTime: 0,
