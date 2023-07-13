@@ -155,6 +155,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
         final normalizedTop = _position.dy;
 
         void onUpdate(String hint, {bool save = true}) {
+          //print('onUpdate $hint--------------------------------------------------------');
           if (hint == 'onTap') {
             logger.finest('onUpdate : onUpdate($hint),$save in DraggableResizable');
             widget.onTap?.call();
@@ -494,10 +495,11 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   onDragRight: onDragRight,
                   onDragDown: onDragDown,
                   onDragLeft: onDragLeft,
+                  onScaleStart: widget.onScaleStart,
                   onResizeButtonTap: widget.onResizeButtonTap,
                   onComplete: widget.onComplete,
                   key: Key('SelectedBox-$widget.mid}'),
-                  frameModel:  widget.frameModel,
+                  frameModel: widget.frameModel,
                 ),
               if (widget.isMain) mainSymbol,
             ],

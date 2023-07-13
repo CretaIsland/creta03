@@ -1,0 +1,10 @@
+꼭지점 Drag 시
+
+ResizePointDraggable
+ResizePoint
+SelectedBox
+DraggableResizable  여기서 주의할 점은 DraggablePoint 는 Rotate 용으로 쓰이기 때문에, onTap 말고는 쓰는 함수가 없다는 점이다.
+                    꼭지점 Drag 는 SelectedBox 에 의한다는 점에 주의하자.
+DraggableStickers
+StickerView
+FrameMain

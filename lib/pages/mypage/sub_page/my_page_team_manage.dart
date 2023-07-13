@@ -116,6 +116,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                       HycopFactory.storage!.uploadFile('profile/${_pickedFile!.name}', _pickedFile!.mimeType!, fileBytes).then((fileModel) {
                         if(fileModel != null) {
                           teamManager.currentTeam!.profileImg = fileModel.fileView;
+                          teamManager.setToDB(teamManager.currentTeam!);
                           teamManager.notify();
                         }
                       });
@@ -271,6 +272,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                 HycopFactory.storage!.uploadFile('banner/${_pickedFile!.name}', _pickedFile!.mimeType!, bannerImgBytes).then((fileModel) {
                   if(fileModel != null) {
                     teamManager.currentTeam!.channelBannerImg = fileModel.fileView;
+                    teamManager.setToDB(teamManager.currentTeam!);
                     teamManager.notify();
                     Navigator.of(context).pop();
                   }

@@ -183,6 +183,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
         //});
       },
       onScaleStart: () {
+                      //print('DraggableResizable onScaleStart --------------------------');
+
         widget.onScaleStart.call(sticker.id);
       },
 
@@ -294,7 +296,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
   // ignore: unused_element
   Widget _drawMiniMenu() {
     return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
-      logger.info('_drawMiniMenu()');
+      logger.info(
+          '_drawMiniMenu(${BookMainPage.miniMenuNotifier!.isShow})------------------------------------------');
 
       Sticker? selectedSticker = _getSelectedSticker();
       if (selectedSticker == null) {

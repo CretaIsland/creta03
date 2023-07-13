@@ -224,9 +224,12 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       },
       onComplete: (mid) {
+        //print('1FrameMain onComplete----------------------------------------------');
+
         FrameModel? model = frameManager!.getModel(mid) as FrameModel?;
         //FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
+          //print('2FrameMain onComplete----------------------------------------------');
           //model.save();
           logger.info('onComplete');
           _sendEvent?.sendEvent(model);
@@ -238,7 +241,6 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       onScaleStart: (mid) {
         FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
-          logger.info('onScaleStart');
           BookMainPage.miniMenuNotifier!.set(false);
           //BookMainPage.miniMenuContentsNotifier!.isShow = false;
           //BookMainPage.miniMenuContentsNotifier?.notify();
