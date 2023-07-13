@@ -29,11 +29,11 @@ class LeftMenuMusic extends StatefulWidget {
 class LeftMenuMusicState extends State<LeftMenuMusic> {
   late AudioPlayer _audioPlayer; // play local audio file
 
-  static Random random = Random();
-  static int randomNumber = random.nextInt(100);
-  static String url = 'https://picsum.photos/200/?random=$randomNumber';
-
   void addMusic(ContentsModel model) {
+    Random random = Random();
+    int randomNumber = random.nextInt(100);
+    String url = 'https://picsum.photos/200/?random=$randomNumber';
+
     _playlist.add(AudioSource.uri(Uri.parse(model.remoteUrl!),
         tag: MediaItem(
           id: model.mid,
@@ -41,6 +41,10 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
           artist: 'Unknown artist',
           artUri: Uri.parse(url),
         )));
+  }
+
+  void removeMusic(int index) {
+    _playlist.removeAt(index);
   }
 
   final _playlist = ConcatenatingAudioSource(
@@ -90,9 +94,6 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
   }
 
   Future<void> _init() async {
-    // await _audioPlayer
-    //     .setLoopMode(LoopMode.all); // set the playlist to going to the previous or next track
-    // await _audioPlayer.setAudioSource(_playlist);
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
     // Listen to errors during playback.
@@ -146,36 +147,58 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
               builder: (context, snapshot) {
                 final state = snapshot.data;
                 if (state?.sequence.isEmpty ?? true) {
-                  return const SizedBox();
+                  return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Center(
+                            child: SizedBox(
+                          width: 280.0,
+                          height: 280.0,
+                          child: Image.asset('no_image.png', fit: BoxFit.cover),
+                        )),
+                        const SizedBox(height: 8.0),
+                        Text('플레이 리스트에 노래를 추가하세요!', style: Theme.of(context).textTheme.titleLarge),
+                      ]);
                 }
                 final metadata = state!.currentSource!.tag as MediaItem;
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Center(
+                          child: SizedBox(
+                        width: 280.0,
+                        height: 280.0,
+                        child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
+                      )),
+                      const SizedBox(height: 8.0),
+                      Text(metadata.title, style: Theme.of(context).textTheme.titleLarge),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Center(
-                              child: SizedBox(
-                            width: 250.0,
-                            height: 250.0,
-                            child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
-                          )),
-                          const SizedBox(height: 16.0),
-                          Text(metadata.title, style: Theme.of(context).textTheme.titleLarge),
                           Text(metadata.artist!),
+                          IconButton(
+                            icon: const Icon(Icons.remove_circle_outline_sharp),
+                            iconSize: 24.0,
+                            onPressed: () {
+                              final playerState = snapshot.data;
+                              if (playerState != null) {
+                                final playerIndex = playerState.currentIndex;
+                                removeMusic(playerIndex);
+                              }
+                            },
+                          ),
                         ],
                       ),
-                    ),
-                    const Icon(Icons.remove_circle_outline_sharp, size: 24.0)
-                  ],
+                    ],
+                  ),
                 );
               },
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 4.0),
             StreamBuilder<PositionData>(
               stream: _positionDataStream,
               builder: (context, snapshot) {
@@ -202,8 +225,8 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
                 );
               },
             ),
-            // const SizedBox(height: 6.0),
             ControlButtons(audioPlayer: _audioPlayer),
+            const SizedBox.shrink(),
           ],
         ),
       ),
@@ -235,23 +258,47 @@ class ControlButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       children: [
-        // Opens volumn slider dialog
-        IconButton(
-          icon: const Icon(Icons.volume_up),
-          onPressed: () {
-            showSliderDialog(
-              context: context,
-              title: "볼륨 조절",
-              divisions: 10,
-              min: 0.0,
-              max: 1.0,
-              stream: audioPlayer.volumeStream,
-              onChanged: audioPlayer.setVolume,
+        StreamBuilder<LoopMode>(
+          stream: audioPlayer.loopModeStream,
+          builder: (context, snapshot) {
+            final loopMode = snapshot.data ?? LoopMode.off;
+            var icons = [
+              Icon(Icons.repeat, color: Colors.black87.withOpacity(0.5)),
+              const Icon(Icons.repeat, color: Colors.black87),
+              const Icon(Icons.repeat_one, color: Colors.black87),
+            ];
+            const cycleModes = [
+              LoopMode.off,
+              LoopMode.all,
+              LoopMode.one,
+            ];
+            final index = cycleModes.indexOf(loopMode);
+            return IconButton(
+              icon: icons[index],
+              onPressed: () {
+                audioPlayer.setLoopMode(
+                    cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+              },
             );
           },
         ),
+        // Opens volumn slider dialog
+        // IconButton(
+        //   icon: const Icon(Icons.volume_up),
+        //   onPressed: () {
+        //     showSliderDialog(
+        //       context: context,
+        //       title: "볼륨 조절",
+        //       divisions: 10,
+        //       min: 0.0,
+        //       max: 1.0,
+        //       stream: audioPlayer.volumeStream,
+        //       onChanged: audioPlayer.setVolume,
+        //     );
+        //   },
+        // ),
         StreamBuilder<SequenceState?>(
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(

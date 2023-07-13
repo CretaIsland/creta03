@@ -111,6 +111,7 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
       //permissionType: widget.filterPermissionType,
       searchKeyword: widget.filterSearchKeyword,
     );
+    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
     playlistManagerHolder.queryByAddedContitions();
   }
 

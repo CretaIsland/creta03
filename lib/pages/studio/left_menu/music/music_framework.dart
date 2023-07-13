@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/pages/studio/left_menu/music/music_base.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,9 @@ class MusicFramework extends StatefulWidget {
 }
 
 class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin, FramePlayMixin {
+  final double musicBgWidth = 56.0;
+  final double musicBgHeight = 56.0;
+
   @override
   void initState() {
     super.initState();
@@ -42,19 +47,46 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
       padding: const EdgeInsets.only(top: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(widget.title, style: widget.dataStyle),
           Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: MusicBase(
-              onPressed: () {
-                _creteMusicFrame();
-                BookMainPage.pageManagerHolder!.notify();
-              },
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
+            child: Wrap(
+              spacing: 12.0,
+              runSpacing: 6.0,
+              children: List.generate(
+                5,
+                (index) {
+                  final playerName = 'Player ${index + 1}';
+                  return MusicPlayerBase(
+                    nameText: Text(playerName, style: widget.dataStyle),
+                    playerWidget: playerWidget(index),
+                    width: musicBgWidth,
+                    height: musicBgHeight,
+                    onPressed: () {
+                      _creteMusicFrame();
+                      BookMainPage.pageManagerHolder!.notify();
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget playerWidget(int index) {
+    Random random = Random();
+    int randomNumber = random.nextInt(100);
+    String url = 'https://picsum.photos/200/?random=$randomNumber';
+
+    return SizedBox(
+      width: musicBgWidth,
+      height: musicBgHeight,
+      child: Image.network(url, fit: BoxFit.cover),
     );
   }
 
@@ -64,7 +96,7 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
     double width = pageModel.width.value * 0.25;
-    double height = pageModel.height.value * 0.65;
+    double height = pageModel.height.value * 0.8;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 

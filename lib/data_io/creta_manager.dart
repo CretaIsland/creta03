@@ -358,9 +358,12 @@ abstract class CretaManager extends AbsExModelManager {
     int? limit,
     Map<String, OrderDirection>? orderBy,
     bool isNew = true,
+    bool useLocking = true,
   }) async {
-    lock();
-    _dbState = DBState.querying;
+    if (useLocking) {
+      lock();
+      _dbState = DBState.querying;
+    }
 
     if (limit == null || limit == 0) {
       limit = _lastLimit;
@@ -407,8 +410,10 @@ abstract class CretaManager extends AbsExModelManager {
         } else {
           _lastSortedObjectList = [];
         }
-        _dbState = DBState.idle;
-        unlock();
+        if (useLocking) {
+          _dbState = DBState.idle;
+          unlock();
+        }
         //reOrdering();
         return [];
       }
@@ -448,14 +453,18 @@ abstract class CretaManager extends AbsExModelManager {
       _currentQuery.clear();
       _currentQuery.addAll(query);
       logger.finest('query=${query.toString()},_currentQuery=${_currentQuery.toString()}');
-      _dbState = DBState.idle;
-      unlock();
+      if (useLocking) {
+        _dbState = DBState.idle;
+        unlock();
+      }
       //reOrdering();
       return retval;
     } catch (e) {
       logger.severe('databaseError $collectionId $e ');
-      _dbState = DBState.idle;
-      unlock();
+      if (useLocking) {
+        _dbState = DBState.idle;
+        unlock();
+      }
       throw HycopException(message: 'databaseError $collectionId', exception: e as Exception);
     }
   }
@@ -1134,13 +1143,25 @@ abstract class CretaManager extends AbsExModelManager {
 
   Map<String, QueryValue> _whereCaluse = {};
   Map<String, OrderDirection> _orderBy = {};
+  String _keyOnWheneIn = '';
+  List<String>? _listValueOnWheneIn;
 
   void clearConditions() {
     _whereCaluse = {};
     _orderBy = {};
+    _keyOnWheneIn = '';
+    _listValueOnWheneIn = null;
   }
 
   void addWhereClause(String key, QueryValue queryValue) {
+    if (queryValue.operType == OperType.whereIn && queryValue.value is List<String>) {
+      List<String> stringList = queryValue.value as List<String>;
+      if (stringList.length > 10) {
+        _keyOnWheneIn = key;
+        _listValueOnWheneIn = stringList;
+        return;
+      }
+    }
     _whereCaluse[key] = queryValue;
   }
 
@@ -1212,8 +1233,31 @@ abstract class CretaManager extends AbsExModelManager {
     }
   }
 
-  Future<List<AbsExModel>> queryByAddedContitions() {
-    // query
+  Future<List<AbsExModel>> queryByAddedContitions() async {
+    if (_listValueOnWheneIn != null) {
+      // whereIn query
+      int totalCount = _listValueOnWheneIn!.length;
+      int count = 0;
+      List<String> valueList = [];
+      modelList.clear();
+      for(var value in _listValueOnWheneIn!) {
+        count++;
+        valueList.add(value);
+        if (count == 10 || count == totalCount) {
+          Map<String, QueryValue> newCond = {..._whereCaluse};
+          newCond[_keyOnWheneIn] = QueryValue(value: valueList, operType: OperType.whereIn);
+          await queryFromDB(
+            newCond,
+            orderBy: _orderBy,
+            isNew: false,
+          );
+          count = 0;
+          valueList.clear();
+        }
+      }
+      return modelList;
+    }
+    // normal query
     Future<List<AbsExModel>> retVal = queryFromDB(
       _whereCaluse,
       //limit: ,

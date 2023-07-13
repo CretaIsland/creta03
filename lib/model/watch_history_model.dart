@@ -12,6 +12,7 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 //import '../pages/studio/studio_constant.dart';
 //import 'app_enums.dart';
 import 'creta_model.dart';
+import 'book_model.dart';
 //import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types
@@ -19,6 +20,9 @@ class WatchHistoryModel extends CretaModel {
   String userId = '';
   String bookId = '';
   DateTime lastUpdateTime = DateTime.now(); // 추후에 createTime 으로 대체
+
+  // do not save to DB !!!
+  BookModel? bookModel;
 
   @override
   List<Object?> get props => [
