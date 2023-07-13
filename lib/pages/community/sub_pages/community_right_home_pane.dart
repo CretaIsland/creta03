@@ -264,6 +264,20 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     );
   }
 
+  void _onRemoveBook(String bookId) async {
+    for(int i=0; i<_cretaBooksList.length; i++) {
+      BookModel bookModel = _cretaBooksList[i];
+      if (bookModel.mid != bookId) continue;
+      bookModel.isRemoved.set(true);
+      bookPublishedManagerHolder.setToDB(bookModel).then((value) {
+        setState(() {
+          _cretaBooksList.removeAt(i);
+        });
+      });
+      break;
+    }
+  }
+
   //int saveIdx = 0;
 
   Widget _getItemPane() {
@@ -306,6 +320,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
                   isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
                   addToFavorites: _addToFavorites,
                   addToPlaylist: _addToPlaylist,
+                  onRemoveBook: _onRemoveBook,
                 )
               : LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
@@ -319,6 +334,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
                       isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
                       addToFavorites: _addToFavorites,
                       addToPlaylist: _addToPlaylist,
+                      onRemoveBook: _onRemoveBook,
                     );
                     // return SizedBox(
                     //   width: itemWidth,
