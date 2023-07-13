@@ -357,6 +357,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
     ];
+    if (widget.subPageUrl == AppRoutes.playlist) {
+      _dropDownMenuItemListSort.removeLast(); // 삭제(조회수)
+      _dropDownMenuItemListSort.removeLast(); // 삭제(좋아요)
+    }
   }
 
   List<Widget> _getHashtagListOnBanner() {

@@ -36,6 +36,7 @@ import 'package:url_launcher/link.dart';
 //import '../../../design_system/buttons/creta_button.dart';
 //import '../../../design_system/component/snippet.dart';
 import '../../../model/book_model.dart';
+import '../../../model/watch_history_model.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;
@@ -437,6 +438,8 @@ class CretaBookUIItem extends StatefulWidget {
   final Function(String, bool)? addToFavorites;
   final Function(String)? addToPlaylist;
   final bool isFavorites;
+  final WatchHistoryModel? watchHistoryModel;
+  final Function(String)? onRemoveBook;
 
   const CretaBookUIItem({
     required super.key,
@@ -446,6 +449,8 @@ class CretaBookUIItem extends StatefulWidget {
     required this.isFavorites,
     this.addToFavorites,
     this.addToPlaylist,
+    this.watchHistoryModel,
+    this.onRemoveBook,
   });
 
   @override
@@ -494,6 +499,11 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
     logger.finest('다운로드(${widget.bookModel.name})');
   }
 
+  void _doPopupMenuRemove() {
+    logger.finest('삭제하기(${widget.bookModel.name})');
+    widget.onRemoveBook?.call(widget.bookModel.mid);
+  }
+
   void _doPopupMenuCopy() {
     logger.finest('복사하기(${widget.bookModel.name})');
   }
@@ -522,6 +532,10 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       CretaMenuItem(
         caption: '다운로드',
         onPressed: _doPopupMenuDownload,
+      ),
+      CretaMenuItem(
+        caption: '삭제하기',
+        onPressed: _doPopupMenuRemove,
       ),
       CretaMenuItem(
         caption: '복사하기',
@@ -699,7 +713,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                             SizedBox(width: 8),
                             // time
                             Text(
-                              CretaUtils.dateToDurationString(widget.bookModel.updateTime),
+                              CretaUtils.dateToDurationString(widget.watchHistoryModel?.updateTime ?? widget.bookModel.updateTime),
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.left,
                               style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[300]),

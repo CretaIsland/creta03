@@ -83,7 +83,7 @@ class CommunityRightWatchHistoryPane extends StatefulWidget {
 class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHistoryPane> {
   final GlobalKey _key = GlobalKey();
 
-  final Map<String, List<BookModel>> _cretaBookDataMap = {};
+  final Map<String, List<WatchHistoryModel>> _cretaBookDataMap = {};
   final _itemSizeRatio = _itemMinHeight / _itemMinWidth;
   double _itemWidth = 0;
   double _itemHeight = 0;
@@ -261,7 +261,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     final List<Widget> itemWidgetList = [];
     final List<String> keyList = _cretaBookDataMap.keys.toList()..sort();
     for (final key in keyList.reversed) {
-      final List<BookModel> dataList = _cretaBookDataMap[key] ?? [];
+      final List<WatchHistoryModel> dataList = _cretaBookDataMap[key] ?? [];
       itemWidgetList
         ..add(Container(
           padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -274,15 +274,17 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
           direction: Axis.horizontal,
           spacing: _rightViewItemGapX, // 좌우 간격
           runSpacing: _rightViewItemGapY, // 상하 간격
-          children: dataList
-              .map((data) => CretaBookUIItem(
-                    key: GlobalKey(), //GlobalObjectKey('${index++}+${data.mid}'),
-                    bookModel: data,
-                    width: _itemWidth,
-                    height: _itemHeight,
-                    isFavorites: _favoritesBookIdMap[data.mid] ?? false,
-                  ))
-              .toList(),
+          children: dataList.map((data) {
+            if(kDebugMode) print('---watchhistorykey=${data.mid}');
+            return CretaBookUIItem(
+              key: GlobalObjectKey(data.mid), //GlobalObjectKey('${index++}+${data.mid}'),
+              bookModel: data.bookModel!,
+              watchHistoryModel: data,
+              width: _itemWidth,
+              height: _itemHeight,
+              isFavorites: _favoritesBookIdMap[data.bookModel?.mid ?? ''] ?? false,
+            );
+          }).toList(),
         ));
     }
     return itemWidgetList;
@@ -293,11 +295,14 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     if (kDebugMode) print('---_rearrangeCretaBookData');
     for (var exModel in watchHistoryManagerHolder.modelList) {
       final whModel = exModel as WatchHistoryModel;
+      if(kDebugMode) print('---add(${whModel.mid})');
       for (var model in bookPublishedManagerHolder.modelList) {
         final bookModel = model as BookModel;
         if (bookModel.mid == whModel.bookId) {
+          whModel.bookModel = bookModel;
           final String lastUpdateTime = DateFormat('yyyy.MM.dd').format(whModel.lastUpdateTime);
-          _cretaBookDataMap.putIfAbsent(lastUpdateTime, () => []).add(bookModel);
+          _cretaBookDataMap.putIfAbsent(lastUpdateTime, () => []).add(whModel);
+          break;
         }
       }
     }

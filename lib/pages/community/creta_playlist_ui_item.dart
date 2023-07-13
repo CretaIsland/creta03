@@ -23,10 +23,12 @@ import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 //import 'community_sample_data.dart';
 //import '../../design_system/component/custom_image.dart';
+import '../../pages/login_page.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../model/book_model.dart';
 import '../../model/playlist_model.dart';
 import 'sub_pages/community_right_playlist_detail_pane.dart';
+import '../../../common/creta_utils.dart';
 
 // const double _rightViewTopPane = 40;
 const double _rightViewLeftPane = 40;
@@ -110,19 +112,19 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
               ),
               SizedBox(height: 48),
               Text(
-                widget.playlistModel.userId,
+                LoginPage.userPropertyManagerHolder!.userPropertyModel?.nickname ?? '',//widget.playlistModel.userId,
                 style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]),
               ),
               SizedBox(height: 10),
               Row(
                 children: [
                   Text(
-                    '영상 154개',
+                    '영상 ${widget.playlistModel.bookIdList.length}개',
                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
                   ),
                   SizedBox(width: 8),
                   Text(
-                    '최근 업데이트 1일전',
+                    '최근 업데이트 ${CretaUtils.dateToDurationString(widget.playlistModel.updateTime)}',
                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
                   ),
                 ],
