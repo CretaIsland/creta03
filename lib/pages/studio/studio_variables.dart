@@ -46,6 +46,8 @@ class StudioVariables {
 
   static bool isPreview = false;
 
+  static bool isFullscreen = false;
+
   static void globalToggleMute({bool save = true}) {
     StudioVariables.isMute = !StudioVariables.isMute;
     if (save) {

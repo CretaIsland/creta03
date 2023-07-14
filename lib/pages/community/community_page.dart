@@ -16,7 +16,7 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
-import '../../design_system/component/custom_image.dart';
+//import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
@@ -27,6 +27,7 @@ import '../../model/book_model.dart';
 import '../../model/user_property_model.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
+import '../../pages/studio/studio_variables.dart';
 import '../../model/playlist_model.dart';
 
 import 'community_sample_data.dart';
@@ -76,8 +77,16 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    StudioVariables.isFullscreen = false;
+  }
+
+  @override
   void initState() {
     super.initState();
+
+    StudioVariables.isFullscreen = false;
 
     List<CretaBookData> cretaBookList = CommunitySampleData.getCretaBookList();
     for (final cretaBookData in cretaBookList) {
@@ -410,7 +419,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       if (size.width > 175) {
         titleList.add(
           Text(
-            '커뮤니티 홈1',
+            '커뮤니티 홈',
             style: CretaFont.displaySmall.copyWith(
               color: Colors.white,
               fontWeight: CretaFont.semiBold,
@@ -457,14 +466,20 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         height: size.height,
         child: Stack(
           children: [
-            CustomImage(
-              key: CommunitySampleData.bannerKey,
-              duration: 500,
-              hasMouseOverEffect: false,
+            // CustomImage(
+            //   key: CommunitySampleData.bannerKey,
+            //   duration: 500,
+            //   hasMouseOverEffect: false,
+            //   width: size.width,
+            //   height: size.height,
+            //   image: CommunitySampleData.bannerUrl,
+            //   hasAni: false,
+            // ),
+            Image(
+              image: AssetImage('assets/Artboard12.png'),
               width: size.width,
               height: size.height,
-              image: CommunitySampleData.bannerUrl,
-              hasAni: false,
+              fit: BoxFit.cover,
             ),
             Container(
               width: size.width,
@@ -499,7 +514,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       if (size.width > 175) {
         titleList.add(
           Text(
-            '커뮤니티 홈2',
+            '커뮤니티 홈',
             overflow: TextOverflow.ellipsis,
             style: CretaFont.displaySmall.copyWith(
               color: Colors.white,
@@ -538,14 +553,20 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         height: size.height,
         child: Stack(
           children: [
-            CustomImage(
-              key: CommunitySampleData.bannerKey,
-              duration: 500,
-              hasMouseOverEffect: false,
+            // CustomImage(
+            //   key: CommunitySampleData.bannerKey,
+            //   duration: 500,
+            //   hasMouseOverEffect: false,
+            //   width: size.width,
+            //   height: size.height,
+            //   image: CommunitySampleData.bannerUrl,
+            //   hasAni: false,
+            // ),
+            Image(
+              image: AssetImage('assets/Artboard12.png'),
               width: size.width,
               height: size.height,
-              image: CommunitySampleData.bannerUrl,
-              hasAni: false,
+              fit: BoxFit.cover,
             ),
             Container(
               width: size.width,
@@ -643,14 +664,20 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       borderRadius: BorderRadius.circular(50.0),
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: CustomImage(
-                      key: CommunitySampleData.bannerKey,
-                      duration: 500,
-                      hasMouseOverEffect: false,
-                      width: 100,
-                      height: 100,
-                      image: CommunitySampleData.bannerUrl,
-                      hasAni: false,
+                    // child: CustomImage(
+                    //   key: CommunitySampleData.bannerKey,
+                    //   duration: 500,
+                    //   hasMouseOverEffect: false,
+                    //   width: 100,
+                    //   height: 100,
+                    //   image: CommunitySampleData.bannerUrl,
+                    //   hasAni: false,
+                    // ),
+                    child: Image(
+                      image: AssetImage('assets/Artboard12.png'),
+                      width: size.width,
+                      height: size.height,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   SizedBox(height: 24),
@@ -815,14 +842,20 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   borderRadius: BorderRadius.circular(16.0),
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: CustomImage(
-                  key: CommunitySampleData.bannerKey,
-                  duration: 500,
-                  hasMouseOverEffect: false,
-                  width: 32,
-                  height: 32,
-                  image: CommunitySampleData.bannerUrl,
-                  hasAni: false,
+                // child: CustomImage(
+                //   key: CommunitySampleData.bannerKey,
+                //   duration: 500,
+                //   hasMouseOverEffect: false,
+                //   width: 32,
+                //   height: 32,
+                //   image: CommunitySampleData.bannerUrl,
+                //   hasAni: false,
+                // ),
+                child: Image(
+                  image: AssetImage('assets/Artboard12.png'),
+                  width: size.width,
+                  height: size.height,
+                  fit: BoxFit.cover,
                 ),
               ),
               SizedBox(width: 12),
@@ -1380,6 +1413,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   @override
   Widget build(BuildContext context) {
+    if (StudioVariables.isFullscreen) {
+      return _getRightPane(context);
+    }
     //resize(context);
     return Snippet.CretaScaffoldOfCommunity(
       //title: Text('Community page'),
