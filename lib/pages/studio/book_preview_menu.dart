@@ -16,6 +16,7 @@ class BookPreviewMenu extends StatefulWidget {
   final void Function() gotoNext;
   final void Function() gotoPrev;
   final bool? isPublishedMode;
+  final Function? toggleFullscreen;
   const BookPreviewMenu({
     super.key,
     required this.pageNo,
@@ -26,6 +27,7 @@ class BookPreviewMenu extends StatefulWidget {
     required this.gotoNext,
     required this.gotoPrev,
     this.isPublishedMode,
+    this.toggleFullscreen,
   });
 
   @override
@@ -34,6 +36,10 @@ class BookPreviewMenu extends StatefulWidget {
 
 class _BookPreviewMenuState extends State<BookPreviewMenu> {
   bool _isHover = false;
+
+  void _toggleFullscreen() {
+    widget.toggleFullscreen?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +110,14 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                       ],
                     ),
                     (widget.isPublishedMode ?? false)
-                    ? const SizedBox(width: 20)
+                    ? CretaTrasparentButton(
+                      onPressed: _toggleFullscreen,
+                      icon1: StudioVariables.isFullscreen ? Icons.fullscreen_exit_outlined : Icons.fullscreen_outlined,
+                      icon2: StudioVariables.isFullscreen ? Icons.fullscreen_exit_outlined : Icons.fullscreen_outlined,
+                      toggleValue: StudioVariables.isPreview,
+                      iconSize: 20,
+                      doToggle: false,
+                    )
                     : CretaTrasparentButton(
                       onPressed: widget.goBackProcess,
                       icon1: Icons.logout_outlined,

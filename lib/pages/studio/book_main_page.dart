@@ -80,6 +80,7 @@ class BookMainPage extends StatefulWidget {
   final GlobalKey bookKey;
   final Size? size;
   final bool? isPublishedMode;
+  final Function? toggleFullscreen;
 
   static bool outSideClick = false;
 
@@ -89,6 +90,7 @@ class BookMainPage extends StatefulWidget {
     this.isThumbnailX = false,
     this.size,
     this.isPublishedMode,
+    this.toggleFullscreen,
   }) : super(key: bookKey) {
     StudioVariables.isPreview = isPreviewX;
   }
@@ -1156,6 +1158,7 @@ class _BookMainPageState extends State<BookMainPage> {
               pageNo: pageNo,
               totalPage: totalPage,
               isPublishedMode: widget.isPublishedMode,
+              toggleFullscreen: widget.toggleFullscreen,
             ),
           ],
         );

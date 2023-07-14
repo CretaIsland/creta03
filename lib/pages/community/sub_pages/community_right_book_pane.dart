@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:universal_html/html.dart';
 import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:creta03/model/watch_history_model.dart';
 import 'package:flutter/foundation.dart';
@@ -276,6 +277,17 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     // ];
   }
 
+  void _toggleFullscreen() {
+    setState(() {
+      StudioVariables.isFullscreen = !StudioVariables.isFullscreen;
+      if (StudioVariables.isFullscreen) {
+        document.documentElement?.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  }
+
   Widget _getBookPreview(Size size) {
     if (_cretaRelatedBookList.isNotEmpty) {
       // return Container(
@@ -312,6 +324,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           isPreviewX: true,
           size: size,
           isPublishedMode: true,
+          toggleFullscreen: _toggleFullscreen,
         ),
       );
     }
@@ -981,6 +994,11 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   @override
   Widget build(BuildContext context) {
+    if (StudioVariables.isFullscreen) {
+      double width = MediaQuery.of(context).size.width;
+      double height = MediaQuery.of(context).size.height;
+      return _getBookPreview(Size(width, height));
+    }
     _resize(context);
     return Scrollbar(
       key: _key,

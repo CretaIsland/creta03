@@ -127,6 +127,8 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                           width: 120,
                           height: 67,
                           image: widget.bookModel.thumbnailUrl.value,
+                          hasAni: false,
+                          hasMouseOverEffect: false,
                         ),
                         !mouseOver
                             ? SizedBox.shrink()
