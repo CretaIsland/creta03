@@ -126,6 +126,7 @@ dependencies:
   protoo_client: ^0.3.3
   flutter_webrtc: ^0.9.35
   random_string: ^2.3.1
+  audio_service: ^0.18.10
 
 
 dev_dependencies:
