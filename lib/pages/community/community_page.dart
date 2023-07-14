@@ -419,7 +419,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       if (size.width > 175) {
         titleList.add(
           Text(
-            '커뮤니티 홈1',
+            '커뮤니티 홈',
             style: CretaFont.displaySmall.copyWith(
               color: Colors.white,
               fontWeight: CretaFont.semiBold,
