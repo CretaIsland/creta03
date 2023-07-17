@@ -1,14 +1,17 @@
 // ignore: avoid_web_libraries_in_flutter
 // import 'dart:html';
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/config.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:translator/translator.dart';
-import 'package:universal_html/html.dart';
+// import 'package:universal_html/html.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/component/creta_property_card.dart';
 import '../../../design_system/component/custom_image.dart';
@@ -105,14 +108,26 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
   // }
 
   Future<void> downloadImage(String urlImage) async {
-    const fileName = "download.png";
+    // const fileName = "download.png";
 
-    final res = await http.get(Uri.parse(urlImage));
+    // final res = await http.get(Uri.parse(urlImage));
 
-    final fileBlob = Blob([res.bodyBytes]);
-    AnchorElement(href: Url.createObjectUrlFromBlob(fileBlob))
-      ..download = fileName
-      ..click();
+    // final fileBlob = Blob([res.bodyBytes]);
+    // AnchorElement(href: Url.createObjectUrlFromBlob(fileBlob))
+    //   ..download = fileName
+    //   ..click();
+
+    final res = await http.post(
+      Uri.parse("https://devcreta.com/downloadAiImg"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode({
+        "userId" : myConfig!.serverConfig!.storageConnInfo.bucketId,
+        "imgUrl" : urlImage
+      })
+    );
+
+    print(res.body);
+    
   }
 
   @override
