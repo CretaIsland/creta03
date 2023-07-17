@@ -57,33 +57,34 @@ class CretaLabelTextEditorState extends State<CretaLabelTextEditor> {
   GlobalKey<CretaTextFieldState> textKey = GlobalKey<CretaTextFieldState>();
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (event) {
-        logger.finest("textfield open");
+    // return MouseRegion(
+    //   onEnter: (event) {
+    //     logger.finest("textfield open");
+    //     setState(() {
+    //       // logger.finest('setLastClicked');
+    //       // LastClicked.set(widget);
+    //       _isClicked = true;
+    //     });
+    //     widget.onLabelHovered.call();
+    //   },
+    //   onExit: (val) {
+    //     if (_isClicked && LastClicked.isClear()) {
+    //       setState(() {
+    //         _isClicked = false;
+    //         //widget.onEditComplete(controller.text);
+    //       });
+    //     }
+    //   },
+    return GestureDetector(
+      onLongPressDown: (d) {
+        logger.finest("book name clicked");
         setState(() {
           // logger.finest('setLastClicked');
           // LastClicked.set(widget);
           _isClicked = true;
+          widget.onLabelHovered.call();
         });
-        widget.onLabelHovered.call();
       },
-      onExit: (val) {
-        if (_isClicked && LastClicked.isClear()) {
-          setState(() {
-            _isClicked = false;
-            //widget.onEditComplete(controller.text);
-          });
-        }
-      },
-      // child: GestureDetector(
-      //   onTap: () {
-      //     logger.finest("book name clicked");
-      //     setState(() {
-      //       // logger.finest('setLastClicked');
-      //       // LastClicked.set(widget);
-      //       _isClicked = true;
-      //     });
-      //   },
       child: _isClicked == true || widget.alwaysEditable
           ? CretaTextField(
               height: widget.height,
@@ -99,7 +100,15 @@ class CretaLabelTextEditorState extends State<CretaLabelTextEditor> {
                   //widget.text = val;
                   widget.onEditComplete(val);
                 });
-              })
+              },
+              onTapOutside: (event) {
+                if (_isClicked == true) {
+                  setState(() {
+                    _isClicked = false;
+                  });
+                }
+              },
+            )
           : SizedBox(
               width: widget.width * 0.95,
               child: Text(
