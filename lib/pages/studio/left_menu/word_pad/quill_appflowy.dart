@@ -367,7 +367,7 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
             context: context,
             builder: (context) {
               return CretaAlertDialog(
-                backgroundColor: Colors.white.withOpacity(0.5),
+                backgroundColor: Colors.white.withOpacity(0.25),
                 //key: GlobalObjectKey('SimpleEditor-CretaAlertDialog'),
                 width: _dialogSize.width,
                 height: _dialogSize.height,
