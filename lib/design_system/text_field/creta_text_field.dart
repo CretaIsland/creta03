@@ -22,39 +22,39 @@ abstract class LastClickable extends StatefulWidget {
   Rect? getBoxRect();
 }
 
-class LastClicked {
-  static LastClickable? _textField;
+// class LastClicked {
+//   static LastClickable? _textField;
 
-  static void set(LastClickable t) {
-    _textField = t;
-  }
+//   static void set(LastClickable t) {
+//     _textField = t;
+//   }
 
-  static bool isClear() {
-    return _textField == null;
-  }
+//   static bool isClear() {
+//     return _textField == null;
+//   }
 
-  static void clear() {
-    _textField = null;
-  }
+//   static void clear() {
+//     _textField = null;
+//   }
 
-  static void clickedOutSide(Offset current) {
-    if (_textField == null) {
-      return;
-    }
-    logger.info('clickedOutSide');
-    Rect? boxRect = _textField!.getBoxRect();
-    if (boxRect == null) {
-      return;
-    }
-    if (!boxRect.contains(current)) {
-      String value = _textField!.getValue();
-      logger.finest('lastClicked was textField=$value');
-      _textField!.preprocess(value);
-      _textField!.onEditComplete(value);
-      clear();
-    }
-  }
-}
+//   static void clickedOutSide(Offset current) {
+//     if (_textField == null) {
+//       return;
+//     }
+//     logger.info('clickedOutSide');
+//     Rect? boxRect = _textField!.getBoxRect();
+//     if (boxRect == null) {
+//       return;
+//     }
+//     if (!boxRect.contains(current)) {
+//       String value = _textField!.getValue();
+//       logger.finest('lastClicked was textField=$value');
+//       _textField!.preprocess(value);
+//       _textField!.onEditComplete(value);
+//       clear();
+//     }
+//   }
+// }
 
 enum CretaTextFieldType {
   text,
@@ -88,12 +88,14 @@ class CretaTextField extends LastClickable {
   final TextAlignVertical alignVertical;
   final bool autoComplete;
   final bool autoHeight;
+  final void Function(PointerDownEvent)? onTapOutside;
 
   CretaTextField({
     required this.textFieldKey,
     required this.value,
     required this.hintText,
     required super.onEditComplete,
+    this.onTapOutside,
     this.controller,
     this.width = -1,
     this.height = -1,
@@ -120,6 +122,7 @@ class CretaTextField extends LastClickable {
     required this.value,
     required this.hintText,
     required super.onEditComplete,
+    this.onTapOutside,
     this.controller,
     this.width = 40,
     this.height = 22,
@@ -146,6 +149,7 @@ class CretaTextField extends LastClickable {
     required this.value,
     required this.hintText,
     required super.onEditComplete,
+    this.onTapOutside,
     this.controller,
     this.width = 56,
     this.height = 22,
@@ -172,6 +176,7 @@ class CretaTextField extends LastClickable {
     required this.value,
     required this.hintText,
     required super.onEditComplete,
+    this.onTapOutside,
     this.controller,
     this.width = 82,
     this.height = 30,
@@ -198,6 +203,7 @@ class CretaTextField extends LastClickable {
     required this.value,
     required this.hintText,
     required super.onEditComplete,
+    this.onTapOutside,
     this.controller,
     this.width = 332,
     this.height = 30,
@@ -224,10 +230,11 @@ class CretaTextField extends LastClickable {
     required this.value,
     required this.hintText,
     required super.onEditComplete,
+    this.onTapOutside,
     this.controller,
     this.width = 332,
     this.height = 158,
-    this.maxLines,
+    this.maxLines = 1,
     this.radius = 5,
     this.textType = CretaTextFieldType.longText,
     this.limit = 1023,
@@ -250,6 +257,7 @@ class CretaTextField extends LastClickable {
     required this.value,
     required this.hintText,
     required super.onEditComplete,
+    this.onTapOutside,
     this.controller,
     this.width = 160,
     this.height = 30,
@@ -302,10 +310,10 @@ class CretaTextFieldState extends State<CretaTextField> {
   Timer? _timer;
   int _lineCount = 1;
 
-  void setLastClicked() {
-    logger.finest('setLastClicked');
-    LastClicked.set(widget);
-  }
+  // void setLastClicked() {
+  //   logger.finest('setLastClicked');
+  //   LastClicked.set(widget);
+  // }
 
   @override
   void initState() {
@@ -427,6 +435,17 @@ class CretaTextFieldState extends State<CretaTextField> {
         });
       },
       child: CupertinoTextField(
+        onTapOutside: (event) {
+          if (_clicked) {
+            //print('----------onTapOutSide');
+            _onSubmitted(_controller.text);
+            //setState(() {});
+            _clicked = false;
+          } else {
+            widget.onTapOutside?.call(event);
+          }
+          //print('----------onTapOutSide _clicked is false');
+        },
         obscureText: (widget.textType == CretaTextFieldType.password),
         cursorColor: CretaColor.primary,
         textInputAction: widget.textInputAction,
@@ -438,11 +457,12 @@ class CretaTextFieldState extends State<CretaTextField> {
                 : TextInputType.none),
         focusNode: _focusNode,
         textAlignVertical: widget.alignVertical,
-        clearButtonMode: _clicked
-            ? widget.selectAtInit == false
-                ? OverlayVisibilityMode.editing
-                : OverlayVisibilityMode.never
-            : OverlayVisibilityMode.never,
+        // 클리어 버튼을 사용하면, 한글이 깨지므로 사용할 수 없다.
+        // clearButtonMode: _clicked
+        //     ? widget.selectAtInit == false
+        //         ? OverlayVisibilityMode.editing
+        //         : OverlayVisibilityMode.never
+        //     : OverlayVisibilityMode.never,
         inputFormatters: widget.textType == CretaTextFieldType.number
             ? [
                 FilteringTextInputFormatter.digitsOnly,
@@ -475,23 +495,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         //   _focusNode?.requestFocus();
         // },
         onSubmitted: ((value) {
-          if (isNumeric()) {
-            int num = int.parse(value);
-            if (widget.maxNumber != null && num > widget.maxNumber!) {
-              setState(() {
-                _controller.text = '${widget.maxNumber!}';
-              });
-            }
-            if (widget.minNumber != null && num < widget.minNumber!) {
-              setState(() {
-                _controller.text = '${widget.minNumber!}';
-              });
-            }
-          }
-          preprocess(value);
-          logger.finest('onSubmitted $_searchValue');
-          widget.onEditComplete(_searchValue);
-          LastClicked.clear();
+          _onSubmitted(value);
         }),
         // onEditingComplete: () {
         //   _searchValue = _controller.text;
@@ -524,10 +528,10 @@ class CretaTextFieldState extends State<CretaTextField> {
               preprocess(value);
               logger.finest('onSubmitted $_searchValue');
               widget.onEditComplete(_searchValue);
-              LastClicked.clear();
+              //LastClicked.clear();
             });
           }
-          setLastClicked();
+          //setLastClicked();
           if (_clicked == false) {
             //setState(() {
             _clicked = true;
@@ -536,8 +540,8 @@ class CretaTextFieldState extends State<CretaTextField> {
           widget.onChanged?.call(value);
         },
         onTap: () {
-          logger.finest('onTapped');
-          setLastClicked();
+          logger.info('onTapped');
+          //setLastClicked();
           //setState(() {
           _clicked = true;
           //});
@@ -548,6 +552,25 @@ class CretaTextFieldState extends State<CretaTextField> {
         // },
       ),
     );
+  }
+
+  void _onSubmitted(String value) {
+    if (isNumeric()) {
+      int num = int.parse(value);
+      if (widget.maxNumber != null && num > widget.maxNumber!) {
+        setState(() {
+          _controller.text = '${widget.maxNumber!}';
+        });
+      }
+      if (widget.minNumber != null && num < widget.minNumber!) {
+        setState(() {
+          _controller.text = '${widget.minNumber!}';
+        });
+      }
+    }
+    preprocess(value);
+    logger.finest('onSubmitted $_searchValue');
+    widget.onEditComplete(_searchValue);
   }
 
   BoxDecoration _basicDecoBox() {
