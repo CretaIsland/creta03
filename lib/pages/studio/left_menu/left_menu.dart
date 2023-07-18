@@ -15,6 +15,7 @@ import '../../../lang/creta_studio_lang.dart';
 import '../../../design_system/creta_font.dart';
 import '../studio_constant.dart';
 import 'left_menu_page.dart';
+import 'left_menu_storage.dart';
 import 'left_menu_text.dart';
 import 'left_menu_widget.dart';
 
@@ -178,7 +179,7 @@ class _LeftMenuState
       case LeftMenuEnum.Frame:
         return LeftMenuFrame();
       case LeftMenuEnum.Storage:
-        return Container();
+        return LeftMenuStorage();
       case LeftMenuEnum.Image:
         return LeftMenuImage();
       case LeftMenuEnum.Video:

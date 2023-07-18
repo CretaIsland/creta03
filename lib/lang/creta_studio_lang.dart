@@ -82,6 +82,19 @@ class CretaStudioLang {
     'AI 생성': 'AI_generated_image',
   };
 
+  // ---- Added by Mai 230718 ---- //
+  static Map<String, String> storageMenuTabBar = {
+    '내 보관함': 'myStorage',
+    '팀 이름 1': 'team_1',
+    '팀 이름 2': 'team_2',
+  };
+
+  static List<String> storageTypes = [
+    "전체",
+    "이미지",
+    "영상",
+  ];
+
   static List<String> menuStick = [
     "템플릿",
     "페이지",

@@ -117,17 +117,12 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     //   ..download = fileName
     //   ..click();
 
-    final res = await http.post(
-      Uri.parse("https://devcreta.com/downloadAiImg"),
-      headers: {"Content-type": "application/json"},
-      body: jsonEncode({
-        "userId" : myConfig!.serverConfig!.storageConnInfo.bucketId,
-        "imgUrl" : urlImage
-      })
-    );
+    final res = await http.post(Uri.parse("https://devcreta.com/downloadAiImg"),
+        headers: {"Content-type": "application/json"},
+        body: jsonEncode(
+            {"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage}));
 
-    print(res.body);
-    
+    debugPrint(res.body);
   }
 
   @override
