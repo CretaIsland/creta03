@@ -14,6 +14,7 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../player/music/creta_music_mixin.dart';
+import '../../book_main_page.dart';
 import 'music_common.dart';
 
 class LeftMenuMusic extends StatefulWidget {
@@ -302,9 +303,17 @@ class ControlButtons extends StatelessWidget {
         StreamBuilder<SequenceState?>(
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(
-            icon: const Icon(Icons.skip_previous),
-            onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
-          ),
+              icon: const Icon(Icons.skip_previous),
+              // onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
+              onPressed: () {
+                BookMainPage.containeeNotifier!.setFrameClick(true);
+                if (audioPlayer.hasPrevious) {
+                  logger.info('invoked previous song');
+                  audioPlayer.seekToPrevious;
+                } else {
+                  null;
+                }
+              }),
         ),
         StreamBuilder<PlayerState>(
           stream: audioPlayer.playerStateStream,

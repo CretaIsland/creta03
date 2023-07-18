@@ -811,7 +811,7 @@ class ContentsManager extends CretaManager {
         );
         // print('--------------2---------------------------${contentsModel.remoteUrl!}-');
       }
-      // 콘텐츠 객체를 DB에 Crete 한다.
+      // 콘텐츠 객체를 DB에 Creta 한다.
       await contentsManager.createNextContents(contentsModel, doNotify: false);
     }
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);

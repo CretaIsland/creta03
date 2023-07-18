@@ -2,11 +2,14 @@ import 'dart:math';
 
 import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/pages/studio/left_menu/music/music_base.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/creta_color.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
@@ -29,10 +32,21 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
   final double musicBgWidth = 56.0;
   final double musicBgHeight = 56.0;
 
+  final double borderThick = 4;
+
+  final _playerList = [];
+
+  void _addPlaylist() {
+    setState(() {
+      _playerList.add('Player ${_playerList.length + 1}');
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     initMixin();
+    _playerList.add('Player 1');
   }
 
   @override
@@ -55,25 +69,46 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
             child: Wrap(
               spacing: 12.0,
               runSpacing: 6.0,
-              children: List.generate(
-                5,
-                (index) {
-                  final playerName = 'Player ${index + 1}';
-                  return MusicPlayerBase(
-                    nameText: Text(playerName, style: widget.dataStyle),
-                    playerWidget: playerWidget(index),
+              children: [
+                for (int i = 0; i < _playerList.length; i++)
+                  MusicPlayerBase(
+                    nameText: Text('Player ${i + 1}', style: widget.dataStyle),
+                    playerWidget: playerWidget(i),
                     width: musicBgWidth,
                     height: musicBgHeight,
                     onPressed: () {
-                      _creteMusicFrame();
+                      _createMusicFrame();
                       BookMainPage.pageManagerHolder!.notify();
                     },
-                  );
-                },
-              ),
+                  ),
+                _addPlayer()
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _addPlayer() {
+    return Container(
+      key: UniqueKey(),
+      child: DottedBorder(
+        dashPattern: const [6, 6],
+        strokeWidth: borderThick / 2,
+        strokeCap: StrokeCap.round,
+        color: CretaColor.primary[300]!,
+        child: SizedBox(
+          height: musicBgHeight,
+          width: musicBgWidth,
+          child: Center(
+            child: BTN.fill_blue_i_l(
+              size: const Size(24.0, 24.0),
+              icon: Icons.add_outlined,
+              onPressed: _addPlaylist,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -90,7 +125,7 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
     );
   }
 
-  Future<void> _creteMusicFrame() async {
+  Future<void> _createMusicFrame() async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
