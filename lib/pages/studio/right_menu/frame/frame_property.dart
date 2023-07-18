@@ -914,10 +914,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {});
         },
         onOpacityDragComplete: (value) {
-          setState(() {
-            widget.model.opacity.set(value);
-            logger.finest('opacity1=${widget.model.opacity.value}');
-          });
+          //setState(() {
+          widget.model.opacity.set(value);
+          logger.finest('opacity1=${widget.model.opacity.value}');
+          //});
           _sendEvent!.sendEvent(widget.model);
         },
         onOpacityDrag: (value) {
@@ -1196,6 +1196,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           valueType: SliderValueType.normal,
           onChannged: onBorderWidthChanged,
           //onChanngeComplete: onBorderWidthChangeComplete,
+          onChanngeComplete: onBorderWidthChanged,
         ),
 
         // 보더 마감
@@ -1473,6 +1474,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           valueType: SliderValueType.normal,
           onChannged: onDirectionChanged,
           //onChanngeComplete: onDirectionChangeComplete,
+          onChanngeComplete: onDirectionChanged,
         ),
         CretaPropertySlider(
           // 그림자 투명도
@@ -1483,6 +1485,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           value: CretaUtils.validCheckDouble(shadowOpacity, 0, 1),
           valueType: SliderValueType.reverse,
           onChannged: onOpacityChanged,
+          onChanngeComplete: onOpacityChanged,
           //onChanngeComplete: onOpacityChangeComplete,
           postfix: '%',
         ),
@@ -1495,6 +1498,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           value: shadowSpread,
           valueType: SliderValueType.normal,
           onChannged: onSpreadChanged,
+          onChanngeComplete: onSpreadChanged,
           //onChanngeComplete: onSpreadChangeComplete,
         ),
         CretaPropertySlider(
@@ -1506,6 +1510,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           value: shadowBlur,
           valueType: SliderValueType.normal,
           onChannged: onBlurChanged,
+          onChanngeComplete: onBlurChanged,
           //onChanngeComplete: onBlurChangeComplete,
         ),
         CretaPropertySlider(
@@ -1518,6 +1523,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           valueType: SliderValueType.normal,
           onChannged: onOffsetChanged,
           //onChanngeComplete: onOffsetChangeComplete,
+          onChanngeComplete: onOffsetChanged,
         ),
       ],
     );

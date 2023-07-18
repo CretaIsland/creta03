@@ -120,10 +120,12 @@ class BookManager extends CretaManager {
     String name = '${CretaStudioLang.sampleBookName} ';
     name += CretaUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
+    print('old mid = ${onlyOne()!.mid}');
     BookModel sampleBook = BookModel.withName(name,
         creator: AccountManager.currentLoginUser.email,
         creatorName: AccountManager.currentLoginUser.name,
         imageUrl: url);
+    sampleBook.order.set(getMaxOrder() + 1, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.width.set(width, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.height.set(height, save: false, noUndo: true, dontChangeBookTime: true);
     sampleBook.thumbnailUrl.set(url, save: false, noUndo: true, dontChangeBookTime: true);
@@ -132,7 +134,7 @@ class BookManager extends CretaManager {
 
   Future<BookModel> saveSample(BookModel sampleBook) async {
     await createToDB(sampleBook);
-    insert(sampleBook);
+    //insert(sampleBook);
     return sampleBook;
   }
 

@@ -393,6 +393,12 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             value: CretaUtils.validCheckDouble(widget.model.opacity.value, 0, 1),
             valueType: SliderValueType.reverse,
             onChannged: (value) {
+              // widget.model.opacity.set(value);
+              // //widget.model.save();
+              // logger.info('opacity=${widget.model.opacity.value}');
+              // _sendEvent!.sendEvent(widget.model);
+            },
+            onChanngeComplete: (value) {
               widget.model.opacity.set(value);
               //widget.model.save();
               logger.info('opacity=${widget.model.opacity.value}');

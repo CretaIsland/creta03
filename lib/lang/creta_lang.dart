@@ -36,7 +36,7 @@ class CretaLang {
   ];
 
   static const String makeCopy = '사본 만들기';
-  static const String newBook = '새 크레타북';
+  //static const String newBook = '새 크레타북';
   static const String open = '목록으로 돌아가기';
   static const String print = '인쇄';
   static const String details = '상세정보';

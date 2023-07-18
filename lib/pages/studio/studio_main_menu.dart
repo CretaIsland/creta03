@@ -35,7 +35,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
     _popupMenuList = [
       CretaMenuItem(
           // 새로운 북을 만든다.
-          caption: CretaLang.newBook,
+          caption: CretaStudioLang.newBook,
           onPressed: () {
             BookModel newBook = BookMainPage.bookManagerHolder!.createSample();
             BookMainPage.bookManagerHolder!.saveSample(newBook).then((value) {

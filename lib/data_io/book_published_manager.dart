@@ -126,7 +126,7 @@ class BookPublishedManager extends CretaManager {
 
   Future<BookModel> saveSample(BookModel sampleBook) async {
     await createToDB(sampleBook);
-    insert(sampleBook);
+    //insert(sampleBook);
     return sampleBook;
   }
 

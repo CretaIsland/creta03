@@ -100,7 +100,7 @@ class BookMainPage extends StatefulWidget {
 }
 
 class _BookMainPageState extends State<BookMainPage> {
-  late BookModel _bookModel;
+  BookModel? _bookModel;
   bool _onceDBGetComplete = false;
   final GlobalKey<CretaLabelTextEditorState> textFieldKey = GlobalKey<CretaLabelTextEditorState>();
 
@@ -205,6 +205,7 @@ class _BookMainPageState extends State<BookMainPage> {
       BookModel sampleBook = BookMainPage.bookManagerHolder!.createSample();
       mid = sampleBook.mid;
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
+        BookMainPage.bookManagerHolder!.insert(sampleBook);
         BookMainPage.bookManagerHolder!.addRealTimeListen(mid);
         if (BookMainPage.bookManagerHolder!.getLength() > 0) {
           initChildren(sampleBook);
@@ -533,10 +534,16 @@ class _BookMainPageState extends State<BookMainPage> {
     return Consumer<BookManager>(
         key: ValueKey('consumerFunc+${BookMainPage.selectedMid}'),
         builder: (context, bookManager, child) {
-          logger.info('Consumer  ${bookManager.getLength()}');
-          _bookModel = bookManager.onlyOne()! as BookModel;
-          _bookModel.parentMid.set(_bookModel.mid, noUndo: true);
-          BookMainPage.bookManagerHolder!.setParentMid(_bookModel.mid);
+          print('Consumer  ${bookManager.onlyOne()!.mid}');
+          String receivedMid = bookManager.onlyOne()!.mid;
+          _bookModel ??= bookManager.onlyOne()! as BookModel;
+          print('Consumer  ${_bookModel!.mid}');
+          if (receivedMid != _bookModel!.mid) {
+            logger.severe("Received mid is not current mid");
+            logger.severe("current=${_bookModel!.mid} != received $receivedMid");
+          }
+          _bookModel!.parentMid.set(_bookModel!.mid, noUndo: true);
+          BookMainPage.bookManagerHolder!.setParentMid(_bookModel!.mid);
           return _mainPage();
         });
   }
@@ -621,9 +628,9 @@ class _BookMainPageState extends State<BookMainPage> {
     StudioVariables.availWidth = StudioVariables.virtualWidth * pageDisplayRate;
     StudioVariables.availHeight = StudioVariables.virtualHeight * pageDisplayRate;
 
-    widthRatio = StudioVariables.availWidth / _bookModel.width.value;
-    heightRatio = StudioVariables.availHeight / _bookModel.height.value;
-    heightWidthRatio = _bookModel.height.value / _bookModel.width.value;
+    widthRatio = StudioVariables.availWidth / _bookModel!.width.value;
+    heightRatio = StudioVariables.availHeight / _bookModel!.height.value;
+    heightWidthRatio = _bookModel!.height.value / _bookModel!.width.value;
 
     if (widthRatio < heightRatio) {
       BookMainPage.pageWidth = StudioVariables.availWidth;
@@ -836,13 +843,13 @@ class _BookMainPageState extends State<BookMainPage> {
             textFieldKey: textFieldKey,
             height: 32,
             width: StudioVariables.displayWidth * 0.25,
-            text: _bookModel.name.value,
+            text: _bookModel!.name.value,
             textStyle: CretaFont.titleMedium.copyWith(),
             align: TextAlign.center,
             maxLine: 1,
             onEditComplete: (value) {
               setState(() {
-                _bookModel.name.set(value);
+                _bookModel!.name.set(value);
               });
             },
             onLabelHovered: () {
@@ -1018,14 +1025,14 @@ class _BookMainPageState extends State<BookMainPage> {
               text: CretaStudioLang.publish,
               image: NetworkImage('https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
               onPressed: () {
-                BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+                //BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
 
                 showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return BookPublishDialog(
                         key: GlobalKey(),
-                        model: model,
+                        model: _bookModel,
                       );
                     });
               }),
@@ -1075,7 +1082,7 @@ class _BookMainPageState extends State<BookMainPage> {
       //color: Colors.green,
       child: Center(
         child: CrossScrollBar(
-          key: ValueKey('CrossScrollBar_${_bookModel.mid}'),
+          key: ValueKey('CrossScrollBar_${_bookModel!.mid}'),
           //key: GlobalKey(),
           width: totalWidth,
           //width: StudioVariables.workWidth,
@@ -1212,13 +1219,13 @@ class _BookMainPageState extends State<BookMainPage> {
     if (pageModel == null) {
       return const SizedBox.shrink();
     }
-    pageModel.width.set(_bookModel.width.value, save: false, noUndo: true);
-    pageModel.height.set(_bookModel.height.value, save: false, noUndo: true);
+    pageModel.width.set(_bookModel!.width.value, save: false, noUndo: true);
+    pageModel.height.set(_bookModel!.height.value, save: false, noUndo: true);
     logger.info('PageMain Invoked ***** ${pageModel.width.value}');
 
     return PageMain(
       pageKey: GlobalObjectKey('PageKey${pageModel.mid}'),
-      bookModel: _bookModel,
+      bookModel: _bookModel!,
       pageModel: pageModel,
       pageWidth: BookMainPage.pageWidth,
       pageHeight: BookMainPage.pageHeight + LayoutConst.miniMenuArea,
@@ -1244,7 +1251,7 @@ class _BookMainPageState extends State<BookMainPage> {
           hasAni: false,
           width: StudioVariables.virtualWidth,
           height: StudioVariables.virtualHeight,
-          image: _bookModel.thumbnailUrl.value,
+          image: _bookModel!.thumbnailUrl.value,
         ),
       ),
       //),

@@ -457,7 +457,7 @@ class BookGridItemState extends State<BookGridItem> {
     int randomNumber = random.nextInt(1000);
     int modelIdx = randomNumber % 10;
     BookModel book = BookModel.withName(
-      '${CretaLang.newBook}_$randomNumber',
+      '${CretaStudioLang.newBook}_$randomNumber',
       creator: AccountManager.currentLoginUser.email,
       creatorName: AccountManager.currentLoginUser.name,
       imageUrl: 'https://picsum.photos/200/?random=$modelIdx',

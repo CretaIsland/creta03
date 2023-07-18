@@ -41,7 +41,6 @@ class CretaPropertySlider extends StatefulWidget {
 class _CretaPropertySliderState extends State<CretaPropertySlider> {
   TextStyle titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
   double _value = 0;
-
   @override
   void initState() {
     super.initState();
@@ -61,15 +60,23 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
           max: widget.max,
           value: _makeValue(_value, widget.valueType),
           onDragComplete: (val) {
-            setState(() {
-              logger.finest('CretaSlider value=$val');
-              _value = _reverseValue(val, widget.valueType);
-            });
+            //setState(() {
+            logger.finest('CretaSlider value=$val');
+            _value = _reverseValue(val, widget.valueType);
+            //});
             widget.onChanngeComplete?.call(_value);
           },
           onDragging: (val) {
-            _value = _reverseValue(val, widget.valueType);
-            widget.onChannged.call(_value);
+            // DateTime now = DateTime.now();
+            // if (_lastUpdateTime.difference(now).inMilliseconds.abs() >= 100) {
+            //   print('2222222222222222222222222222222222222222222222222');
+            //   _value = _reverseValue(val, widget.valueType);
+            //   widget.onChannged.call(_value);
+            //   _onChangedInvoked = true;
+            //   _lastUpdateTime = now;
+            // } else {
+            //   _onChangedInvoked = false;
+            // }
           },
         ),
       ),

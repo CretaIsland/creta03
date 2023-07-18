@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/material.dart';
 import 'package:another_xlider/another_xlider.dart';
+import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../creta_color.dart';
@@ -91,7 +91,7 @@ class _CretaSliderState extends State<CretaSlider> {
         handlerAnimation: FlutterSliderHandlerAnimation(
             curve: Curves.elasticOut,
             reverseCurve: Curves.bounceIn,
-            duration: Duration(milliseconds: 500),
+            duration: Duration(milliseconds: 50),
             scale: 1.2),
         handler: FlutterSliderHandler(
           decoration: BoxDecoration(
