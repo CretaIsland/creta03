@@ -89,11 +89,11 @@ class CretaStudioLang {
     '팀 이름 2': 'team_2',
   };
 
-  static List<String> storageTypes = [
-    "전체",
-    "이미지",
-    "영상",
-  ];
+  static Map<String, String> storageTypes = {
+    '전체': 'all',
+    '이미지': 'image',
+    '영상': 'video',
+  };
 
   static List<String> menuStick = [
     "템플릿",
