@@ -120,7 +120,7 @@ class BookManager extends CretaManager {
     String name = '${CretaStudioLang.sampleBookName} ';
     name += CretaUtils.getNowString(deli1: '', deli2: ' ', deli3: '', deli4: ' ');
 
-    print('old mid = ${onlyOne()!.mid}');
+    //print('old mid = ${onlyOne()!.mid}');
     BookModel sampleBook = BookModel.withName(name,
         creator: AccountManager.currentLoginUser.email,
         creatorName: AccountManager.currentLoginUser.name,

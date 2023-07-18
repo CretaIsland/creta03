@@ -120,7 +120,7 @@ class BookModel extends CretaModel with BookMixin {
     List<String>? hashtags,
     List<String>? channels,
   }) : super(pmid: '', type: ExModelType.book, parent: '') {
-    print('new mid = $mid');
+    //print('new mid = $mid');
     name = UndoAble<String>(nameStr, mid, 'name');
     thumbnailUrl = UndoAble<String>(imageUrl, mid, 'thumbnailType');
     thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid, 'thumbnailType');

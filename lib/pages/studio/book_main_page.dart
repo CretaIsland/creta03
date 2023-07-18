@@ -534,10 +534,10 @@ class _BookMainPageState extends State<BookMainPage> {
     return Consumer<BookManager>(
         key: ValueKey('consumerFunc+${BookMainPage.selectedMid}'),
         builder: (context, bookManager, child) {
-          print('Consumer  ${bookManager.onlyOne()!.mid}');
+          //print('Consumer  ${bookManager.onlyOne()!.mid}');
           String receivedMid = bookManager.onlyOne()!.mid;
           _bookModel ??= bookManager.onlyOne()! as BookModel;
-          print('Consumer  ${_bookModel!.mid}');
+          //print('Consumer  ${_bookModel!.mid}');
           if (receivedMid != _bookModel!.mid) {
             logger.severe("Received mid is not current mid");
             logger.severe("current=${_bookModel!.mid} != received $receivedMid");
