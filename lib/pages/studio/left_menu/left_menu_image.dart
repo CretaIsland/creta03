@@ -2,6 +2,7 @@
 // import 'dart:html';
 import 'dart:convert';
 
+import 'package:creta03/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
@@ -117,8 +118,9 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     //   ..download = fileName
     //   ..click();
 
+
     final res = await http.post(
-      Uri.parse("https://devcreta.com/downloadAiImg"),
+      Uri.parse("${LoginPage.enterpriseHolder!.enterpriseModel!.mediaApiUrl}/downloadAiImg"),
       headers: {"Content-type": "application/json"},
       body: jsonEncode({
         "userId" : myConfig!.serverConfig!.storageConnInfo.bucketId,

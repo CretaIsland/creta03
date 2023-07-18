@@ -58,13 +58,14 @@ class EnterpriseManager extends CretaManager {
     return modelList.length;
   }
 
-  Future<EnterpriseModel> createEnterprise({required String name, required String description, String openAiKey = '', String socketUrl = ''}) async {
+  Future<EnterpriseModel> createEnterprise({required String name, required String description, String openAiKey = '', String socketUrl = '', String mediaApiUrl = ''}) async {
     enterpriseModel = EnterpriseModel.withName(
       pparentMid: '',
       name: name,
       description: description,
       openAiKey: openAiKey,
-      socketUrl: socketUrl
+      socketUrl: socketUrl,
+      mediaApiUrl: mediaApiUrl
     );
 
     await createToDB(enterpriseModel!);
