@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:ui';
+import 'package:flutter/rendering.dart';
 import 'package:universal_html/html.dart';
 import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:creta03/model/watch_history_model.dart';
@@ -14,6 +16,7 @@ import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
+import '../../../common/cross_common_job.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 //import '../../../design_system/buttons/creta_elibated_button.dart';
 //import '../../design_system/buttons/creta_button.dart';
@@ -84,6 +87,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   UserPropertyModel? _userPropertyModel;
   bool _bookIsInFavorites = false;
   late GlobalKey bookKey;
+  late GlobalKey bookKeyParent;
+  final CrossCommonJob _crossCommonJob = CrossCommonJob();
 
   @override
   void initState() {
@@ -104,6 +109,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
     }
 
+    bookKeyParent = GlobalObjectKey('_CommunityRightBookPaneState.${CommunityRightBookPane.bookId}.parent');
     bookKey = GlobalObjectKey('_CommunityRightBookPaneState.${CommunityRightBookPane.bookId}');
 
     bookPublishedManagerHolder = BookPublishedManager();
@@ -162,8 +168,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     }
     _currentBookModel = modelList[0] as BookModel; // 1개만 있다고 가정
     //_userPropertyModel = modelList[0] as UserPropertyModel;
-    userPropertyManagerHolder.addWhereClause(
-        'email', QueryValue(value: _currentBookModel!.creator));
+    userPropertyManagerHolder.addWhereClause('email', QueryValue(value: _currentBookModel!.creator));
     userPropertyManagerHolder.queryByAddedContitions();
   }
 
@@ -315,16 +320,19 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       //     ],
       //   ),
       // );
-      return SizedBox(
-        width: size.width,
-        height: size.height,
-        child: BookMainPage(
-          //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
-          bookKey: bookKey,
-          isPreviewX: true,
-          size: size,
-          isPublishedMode: true,
-          toggleFullscreen: _toggleFullscreen,
+      return RepaintBoundary(
+        key: bookKeyParent,
+        child: SizedBox(
+          width: size.width,
+          height: size.height,
+          child: BookMainPage(
+            //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
+            bookKey: bookKey,
+            isPreviewX: true,
+            size: size,
+            isPublishedMode: true,
+            toggleFullscreen: _toggleFullscreen,
+          ),
         ),
       );
     }
@@ -482,6 +490,16 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
 
+  void takeSnapshot() {
+    RenderRepaintBoundary boundary = bookKeyParent.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    boundary.toImage().then((value) {
+      value.toByteData(format: ImageByteFormat.png).then((value) {
+        Uint8List memImageData = value!.buffer.asUint8List();
+        if (kDebugMode) print('memImageData=$memImageData');
+      });
+    });
+  }
+
   Widget _getBookDescriptionPane() {
     _descriptionChanging = _currentBookModel?.description.value ?? '';
     return SizedBox(
@@ -506,6 +524,15 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   ),
                 ),
                 Expanded(child: Container()),
+                (!kDebugMode || !_crossCommonJob.isInUsingCanvaskit())
+                    ? SizedBox.shrink()
+                    : BTN.fill_gray_200_i_s(
+                        icon: Icons.camera_outlined,
+                        onPressed: () {
+                          takeSnapshot();
+                        },
+                      ),
+                if (kDebugMode) SizedBox(width: 8),
                 _clickedDescriptionEditButton
                     ? Container()
                     : BTN.fill_gray_200_i_s(
@@ -764,7 +791,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   bool _getAdminModeOfCurrentBook() {
     if (_currentBookModel == null) return false;
-    for(var owner in _currentBookModel!.owners) {
+    for (var owner in _currentBookModel!.owners) {
       if (owner == AccountManager.currentLoginUser.email) {
         return true;
       }
