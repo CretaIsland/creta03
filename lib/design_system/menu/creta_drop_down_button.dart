@@ -23,6 +23,7 @@ class CretaDropDownButton extends StatefulWidget {
   final double? borderRadius;
   final bool alwaysShowBorder;
   final Color? allTextColor;
+  final int maxVisibleRowCount;
 
   CretaDropDownButton({
     super.key,
@@ -39,6 +40,7 @@ class CretaDropDownButton extends StatefulWidget {
     this.borderRadius,
     this.alwaysShowBorder = false,
     this.allTextColor,
+    this.maxVisibleRowCount = 8,
   });
 
   @override
@@ -47,6 +49,7 @@ class CretaDropDownButton extends StatefulWidget {
 
 class _CretaDropDownButtonState extends State<CretaDropDownButton> {
   final GlobalKey dropDownButtonKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
   bool dropDownButtonOpened = false;
   double? fontSize;
   double iconSize = 22;
@@ -191,9 +194,10 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         double x = position.dx;
         double y = position.dy + size.height;// - 1;
 
+        int maxRow = (popupMenu.length > widget.maxVisibleRowCount ? widget.maxVisibleRowCount : popupMenu.length);
         double itemSpacing = 5;
         double dialogHeight =
-            (widget.itemHeight + itemSpacing) * popupMenu.length + itemSpacing * 2;
+            (widget.itemHeight + itemSpacing) * maxRow + itemSpacing * 2;
         if (y + dialogHeight > StudioVariables.displayHeight) {
           //dialogHeight = StudioVariables.workHeight - y;
           y = y - dialogHeight - widget.height;
@@ -258,69 +262,74 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
             ),
             padding: EdgeInsets.fromLTRB(0, itemSpacing, 0, itemSpacing),
-            child: SingleChildScrollView(
-              child: Wrap(
-                direction: Axis.vertical,
-                spacing: itemSpacing, // <-- Spacing between children
-                children: menuItem.map((item) {
-                  _itemIndex++;
-                  return SizedBox(
-                    width: width + 8,
-                    height: itemHeight,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: ElevatedButton(
-                        style: _buttonStyle(item.selected, true),
-                        onPressed: () {
-                          setState(() {
-                            for (var ele in menuItem) {
-                              if (ele.selected == true) {
-                                ele.selected = false;
+            child: Scrollbar(
+              controller: _scrollController,
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Wrap(
+                  direction: Axis.vertical,
+                  spacing: itemSpacing, // <-- Spacing between children
+                  children: menuItem.map((item) {
+                    _itemIndex++;
+                    return SizedBox(
+                      width: width + 8,
+                      height: itemHeight,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: ElevatedButton(
+                          style: _buttonStyle(item.selected, true),
+                          onPressed: () {
+                            setState(() {
+                              for (var ele in menuItem) {
+                                if (ele.selected == true) {
+                                  ele.selected = false;
+                                }
                               }
-                            }
-                            item.selected = true;
-                            item.onPressed?.call();
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: [
-                            hintList == null || hintList.length < _itemIndex
-                                ? Text(
-                                    item.caption,
-                                    style: widget.textStyle?.copyWith(
-                                      fontFamily: item.fontFamily,
-                                      fontWeight: item.fontWeight,
+                              item.selected = true;
+                              item.onPressed?.call();
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Row(
+                            children: [
+                              hintList == null || hintList.length < _itemIndex
+                                  ? Text(
+                                      item.caption,
+                                      style: widget.textStyle?.copyWith(
+                                        fontFamily: item.fontFamily,
+                                        fontWeight: item.fontWeight,
+                                      ),
+                                      overflow: TextOverflow.fade,
+                                    )
+                                  : Text.rich(
+                                      TextSpan(
+                                          text: item.caption,
+                                          style: widget.textStyle,
+                                          children: [
+                                            TextSpan(
+                                              text: ' (${hintList[_itemIndex - 1]})',
+                                              style: widget.textStyle?.copyWith(
+                                                  color: CretaColor.secondary,
+                                                  overflow: TextOverflow.fade),
+                                            ),
+                                          ]),
                                     ),
-                                    overflow: TextOverflow.fade,
-                                  )
-                                : Text.rich(
-                                    TextSpan(
-                                        text: item.caption,
-                                        style: widget.textStyle,
-                                        children: [
-                                          TextSpan(
-                                            text: ' (${hintList[_itemIndex - 1]})',
-                                            style: widget.textStyle?.copyWith(
-                                                color: CretaColor.secondary,
-                                                overflow: TextOverflow.fade),
-                                          ),
-                                        ]),
-                                  ),
-                            Expanded(child: Container()),
-                            item.selected
-                                ? Icon(
-                                    Icons.check,
-                                    size: iconSize,
-                                    color: widget.allTextColor,
-                                  )
-                                : SizedBox.shrink(),
-                          ],
+                              Expanded(child: Container()),
+                              item.selected
+                                  ? Icon(
+                                      Icons.check,
+                                      size: iconSize,
+                                      color: widget.allTextColor,
+                                    )
+                                  : SizedBox.shrink(),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ),
