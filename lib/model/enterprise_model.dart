@@ -8,6 +8,7 @@ class EnterpriseModel extends CretaModel {
   late String description;
   late String openAiKey;
   late String socketUrl;
+  late String mediaApiUrl;
 
 
   EnterpriseModel(String pmid) : super(pmid: pmid, type: ExModelType.enterprise, parent: '') {
@@ -15,6 +16,7 @@ class EnterpriseModel extends CretaModel {
     description = '';
     openAiKey = '';
     socketUrl = '';
+    mediaApiUrl = '';
   }
 
   @override
@@ -23,7 +25,8 @@ class EnterpriseModel extends CretaModel {
     name,
     description,
     openAiKey,
-    socketUrl
+    socketUrl,
+    mediaApiUrl
   ];
 
   EnterpriseModel.withName({
@@ -31,7 +34,8 @@ class EnterpriseModel extends CretaModel {
     required String pparentMid,
     this.description = '',
     this.openAiKey = '',
-    this.socketUrl = ''
+    this.socketUrl = '',
+    this.mediaApiUrl = ''
   }) : super(pmid: '', type: ExModelType.enterprise, parent: pparentMid);
 
   @override
@@ -42,6 +46,7 @@ class EnterpriseModel extends CretaModel {
     description = map['description'] ?? '';
     openAiKey = map['openAiKey'] ?? '';
     socketUrl = map['socketUrl'] ?? '';
+    mediaApiUrl = map['mediaApiUrl'] ?? '';
   }
 
   @override
@@ -51,7 +56,8 @@ class EnterpriseModel extends CretaModel {
         'name': name,
         'description': description,
         'openAiKey': openAiKey,
-        'socketUrl' : socketUrl
+        'socketUrl' : socketUrl,
+        'mediaApiUrl' : mediaApiUrl
       }.entries);
   }
 
