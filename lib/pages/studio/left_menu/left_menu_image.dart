@@ -1,7 +1,6 @@
 // ignore: avoid_web_libraries_in_flutter
-// import 'dart:html';
+import 'dart:html';
 import 'dart:convert';
-
 import 'package:creta03/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:creta03/design_system/creta_font.dart';
@@ -102,12 +101,6 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     });
   }
 
-  // void downloadImage(String urlImages) {
-  //   final anchorElement = AnchorElement(href: urlImages);
-  //   anchorElement.download = 'download.jpg';
-  //   anchorElement.click();
-  // }
-
   Future<void> downloadImage(String urlImage) async {
     // const fileName = "download.png";
 
@@ -118,13 +111,32 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     //   ..download = fileName
     //   ..click();
 
-    final res = await http.post(
-        Uri.parse("${LoginPage.enterpriseHolder!.enterpriseModel!.mediaApiUrl}/downloadAiImg"),
-        headers: {"Content-type": "application/json"},
-        body: jsonEncode(
-            {"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage}));
+    http
+        .post(
+            Uri.parse("${LoginPage.enterpriseHolder!.enterpriseModel!.mediaApiUrl}/downloadAiImg"),
+            headers: {"Content-type": "application/json"},
+            body: jsonEncode(
+                {"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage}))
+        .then((value) async {
+      final res = jsonDecode(value.body);
+      final imgRes = await http.get(Uri.parse(res["fileView"]));
 
-    debugPrint(res.body);
+      final fileBlob = Blob([imgRes.bodyBytes]);
+      AnchorElement(href: Url.createObjectUrlFromBlob(fileBlob))
+        ..download = "${res["fileName"].toString().split('/').last}.png"
+        ..click();
+
+      debugPrint(res.body);
+    });
+  }
+
+  Future<void> storageImage(String urlImage) async {
+    await http.post(
+      Uri.parse("${LoginPage.enterpriseHolder!.enterpriseModel!.mediaApiUrl}/downloadAiImg"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode(
+          {"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage}),
+    );
   }
 
   @override
@@ -441,19 +453,16 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                 onPressed: () {
                   downloadImage(imgUrl[imageIndex]);
                   debugPrint('Download button pressed');
-                  // FileSaver.instance.saveFile(
-                  //   name: 'donwload.png',
-                  //   mimeType: MimeType.png,
-                  //   link: imgUrl[imageIndex],
-                  // );
                 },
               ),
               const SizedBox(width: 4.0),
               // add to my storage
               BTN.opacity_gray_i_s(
-                icon: Icons.inventory_2_outlined,
-                onPressed: () {},
-              ),
+                  icon: Icons.inventory_2_outlined,
+                  onPressed: () {
+                    storageImage(imgUrl[imageIndex]);
+                    debugPrint('Storage button pressed');
+                  }),
             ],
           ),
         ),

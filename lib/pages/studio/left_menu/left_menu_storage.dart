@@ -221,15 +221,16 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
           if (snapshot.connectionState == ConnectionState.done) {
             debugPrint("State Done");
             return SingleChildScrollView(
-              child: SizedBox(
+              child: Container(
+                padding: const EdgeInsets.only(top: 10),
                 height: StudioVariables.workHeight,
                 child: GridView.builder(
                   itemCount: fileManagerHolder!.imgFileList.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisSpacing: 12.0,
-                    crossAxisSpacing: 12.0,
+                    mainAxisSpacing: 8.0,
+                    crossAxisSpacing: 8.0,
                     crossAxisCount: 2,
-                    childAspectRatio: 3 / 5,
+                    childAspectRatio: 160.0 / 95.0,
                   ),
                   scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {

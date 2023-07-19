@@ -49,17 +49,18 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
   }
 
   final _playlist = ConcatenatingAudioSource(
-    children: [],
-    // AudioSource.uri(
-    //   Uri.parse("asset:///assets/audio/canone.mp3"),
-    //   tag: MediaItem(
-    //     id: '${_nextmediaId++}',
-    //     title: "Variatio 3 a 1 Clav.Canone all'Unisuono'",
-    //     artist: 'Kimiko Ishizaka',
-    //     artUri: Uri.parse(
-    //         'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
-    //   ),
-    // ),
+    children: [
+      AudioSource.uri(
+        Uri.parse("asset:///assets/audio/canone.mp3"),
+        tag: MediaItem(
+          id: '01',
+          title: "Variatio 3 a 1 Clav.Canone all'Unisuono'",
+          artist: 'Kimiko Ishizaka',
+          artUri: Uri.parse(
+              'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
+        ),
+      ),
+    ],
   );
 
   Future<void> afterBuild() async {
