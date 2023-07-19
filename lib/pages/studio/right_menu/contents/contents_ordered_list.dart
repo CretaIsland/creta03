@@ -20,6 +20,8 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
+import '../../../../player/music/creta_music_mixin.dart';
+import '../../left_menu/music/left_menu_music.dart';
 import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
 import '../property_mixin.dart';
@@ -117,14 +119,15 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             parentId: '',
             onDroppedFile: (modelList) {
               String frameId = widget.contentsManager.frameModel.mid;
-              logger.info('ContentsOrderedList dropzone contents added to $frameId');
-              ContentsManager.createContents(
-                widget.frameManager,
-                modelList,
-                widget.contentsManager.frameModel,
-                widget.contentsManager.pageModel,
-                isResizeFrame: false,
-              );
+              logger.info(' dropzone contents added to $frameId');
+              ContentsManager.createContents(widget.frameManager, modelList,
+                  widget.contentsManager.frameModel, widget.contentsManager.pageModel,
+                  isResizeFrame: false, onUploadComplete: (model) {
+                if (model.isMusic()) {
+                  GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[model.mid];
+                  musicKey!.currentState!.addMusic(model);
+                }
+              });
             },
             child: ReorderableListView.builder(
               //scrollController: scrollController,

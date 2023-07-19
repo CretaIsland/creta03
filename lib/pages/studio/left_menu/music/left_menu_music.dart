@@ -14,7 +14,6 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../player/music/creta_music_mixin.dart';
-import '../../book_main_page.dart';
 import 'music_common.dart';
 
 class LeftMenuMusic extends StatefulWidget {
@@ -49,18 +48,17 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
   }
 
   final _playlist = ConcatenatingAudioSource(
-    children: [
-      AudioSource.uri(
-        Uri.parse("asset:///assets/audio/canone.mp3"),
-        tag: MediaItem(
-          id: '01',
-          title: "Variatio 3 a 1 Clav.Canone all'Unisuono'",
-          artist: 'Kimiko Ishizaka',
-          artUri: Uri.parse(
-              'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
-        ),
-      ),
-    ],
+    children: [],
+    // AudioSource.uri(
+    //   Uri.parse("asset:///assets/audio/canone.mp3"),
+    //   tag: MediaItem(
+    //     id: '01',
+    //     title: "Variatio 3 a 1 Clav.Canone all'Unisuono'",
+    //     artist: 'Kimiko Ishizaka',
+    //     artUri: Uri.parse(
+    //         'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
+    //   ),
+    // ),
   );
 
   Future<void> afterBuild() async {
@@ -304,17 +302,18 @@ class ControlButtons extends StatelessWidget {
         StreamBuilder<SequenceState?>(
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(
-              icon: const Icon(Icons.skip_previous),
-              // onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
-              onPressed: () {
-                BookMainPage.containeeNotifier!.setFrameClick(true);
-                if (audioPlayer.hasPrevious) {
-                  logger.info('invoked previous song');
-                  audioPlayer.seekToPrevious;
-                } else {
-                  null;
-                }
-              }),
+            icon: const Icon(Icons.skip_previous),
+            onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
+            // onPressed: () {
+            //   BookMainPage.containeeNotifier!.setFrameClick(true);
+            //   if (audioPlayer.hasPrevious) {
+            //     logger.info('invoked previous song');
+            //     audioPlayer.seekToPrevious;
+            //   } else {
+            //     null;
+            //   }
+            // },
+          ),
         ),
         StreamBuilder<PlayerState>(
           stream: audioPlayer.playerStateStream,
@@ -357,6 +356,12 @@ class ControlButtons extends StatelessWidget {
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_next),
             onPressed: audioPlayer.hasNext ? audioPlayer.seekToNext : null,
+            // onPressed: () {
+            //   if (audioPlayer.hasNext) {
+            //     audioPlayer.seekToNext;
+            //     // BookMainPage.containeeNotifier!.setFrameClick(true)}
+            //   }
+            // },
           ),
         ),
         StreamBuilder<double>(
