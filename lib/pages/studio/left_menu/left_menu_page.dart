@@ -767,6 +767,9 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       logger.warning('book model is null');
       return;
     }
+    if (bookModel.isAutoThumbnail.value == false) {
+      return;
+    }
     WindowScreenshot.uploadScreenshot(
       bookId: bookModel.mid,
       offset: area.topLeft,

@@ -536,4 +536,6 @@ class CretaStudioLang {
   static String superMicroDust = "초미세먼지";
   static String realSize = "실제 사이즈로";
   static String maxSize = "최대 사이즈로";
+
+  static String useThisThumbnail = "이 콘텐츠를 썸네일로 사용";
 }

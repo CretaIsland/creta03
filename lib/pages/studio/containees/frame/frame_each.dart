@@ -366,8 +366,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       mid: model.mid,
       shapeType: model.shape.value,
       offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
-      blurRadius: model.shadowBlur.value,
-      blurSpread: model.shadowSpread.value * applyScale,
+      shadowBlur: model.shadowBlur.value,
+      shadowSpread: model.shadowSpread.value * applyScale,
       opacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
       shadowColor: model.isNoShadow() ? Colors.transparent : model.shadowColor.value,
       // width: widget.width,
@@ -414,7 +414,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   //     return InnerShadow(
   //       shadows: [
   //         Shadow(
-  //           blurRadius:
+  //           shadowBlur:
   //               model.shadowBlur.value > 0 ? model.shadowBlur.value : model.shadowSpread.value,
   //           color: model.shadowOpacity.value == 1
   //               ? model.shadowColor.value
@@ -493,7 +493,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   //     color: model.shadowColor.value
   //         .withOpacity(CretaUtils.validCheckDouble(model.shadowOpacity.value, 0, 1)),
   //     offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
-  //     blurRadius: model.shadowBlur.value,
+  //     shadowBlur: model.shadowBlur.value,
   //     spreadRadius: model.shadowSpread.value,
   //     //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
   //   );

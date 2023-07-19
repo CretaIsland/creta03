@@ -224,7 +224,7 @@ class _EditorDialogState extends State<EditorDialog> {
   }
 
   Widget _simpleEditor() {
-    print('widget.frameSize=(${widget.frameSize})');
+    //print('widget.frameSize=(${widget.frameSize})');
     Size realSize = widget.frameSize;
     if (_isFullScreen == false) {
       if (realSize.width > widget.width) {

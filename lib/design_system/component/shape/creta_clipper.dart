@@ -19,8 +19,8 @@ extension ShapeWidget<T extends Widget> on T {
     required String mid,
     required ShapeType shapeType,
     required Offset offset,
-    required double blurRadius,
-    required double blurSpread,
+    required double shadowBlur,
+    required double shadowSpread,
     required double opacity,
     required Color shadowColor,
     // required double width,
@@ -43,8 +43,8 @@ extension ShapeWidget<T extends Widget> on T {
             mid: mid,
             shapeType: shapeType,
             offset: offset,
-            blurRadius: blurRadius,
-            blurSpread: blurSpread,
+            shadowBlur: shadowBlur,
+            shadowSpread: shadowSpread,
             opacity: opacity,
             shadowColor: shadowColor,
             // width: width,
@@ -57,8 +57,8 @@ extension ShapeWidget<T extends Widget> on T {
           _getBaseWidget(
             mid: mid,
             shapeType: shapeType,
-            width: width - blurSpread,
-            height: height - blurSpread,
+            width: width - shadowSpread,
+            height: height - shadowSpread,
             radiusLeftBottom: radiusLeftBottom,
             radiusLeftTop: radiusLeftTop,
             radiusRightBottom: radiusRightBottom,
@@ -67,8 +67,8 @@ extension ShapeWidget<T extends Widget> on T {
           strokeWidth > 0
               ? Container(
                   alignment: Alignment.center,
-                  width: width - blurSpread,
-                  height: height - blurSpread,
+                  width: width - shadowSpread,
+                  height: height - shadowSpread,
                   child: IgnorePointer(
                     child: _getOutlineWidget(
                       mid: mid,
@@ -76,8 +76,8 @@ extension ShapeWidget<T extends Widget> on T {
                       strokeWidth: strokeWidth,
                       strokeColor: strokeColor,
                       borderCap: borderCap,
-                      width: width - blurSpread,
-                      height: height - blurSpread,
+                      width: width - shadowSpread,
+                      height: height - shadowSpread,
                       radiusLeftBottom: radiusLeftBottom,
                       radiusLeftTop: radiusLeftTop,
                       radiusRightBottom: radiusRightBottom,
@@ -110,6 +110,7 @@ extension ShapeWidget<T extends Widget> on T {
     required double height,
   }) {
     if (shapeType == ShapeType.none || shapeType == ShapeType.rectangle) {
+      //print('width=$width, height=$height');
       return ClipRRect(
         //clipBehavior: Clip.hardEdge,
         borderRadius: _getBorderRadius(
@@ -610,8 +611,8 @@ CustomPaint _getShadowWidget({
   required String mid,
   required ShapeType shapeType,
   required Offset offset,
-  required double blurRadius,
-  required double blurSpread,
+  required double shadowBlur,
+  required double shadowSpread,
   required double opacity,
   required Color shadowColor,
   // required double width,
@@ -630,8 +631,8 @@ CustomPaint _getShadowWidget({
       painter: CretaShadowRRectPainter(
         pshapeType: shapeType,
         poffset: offset,
-        pblurRadius: blurRadius,
-        pblurSpread: blurSpread,
+        pblurRadius: shadowBlur,
+        pblurSpread: shadowSpread,
         popacity: opacity,
         pshadowColor: shadowColor,
         radiusLeftBottom: radiusLeftBottom,
@@ -644,8 +645,8 @@ CustomPaint _getShadowWidget({
 
   if (shapeType == ShapeType.circle) {
     logger.fine('offset=$offset');
-    logger.fine('blurRadius = $blurRadius');
-    logger.fine('blurSpread = $blurSpread');
+    logger.fine('shadowBlur = $shadowBlur');
+    logger.fine('shadowSpread = $shadowSpread');
     logger.fine('opacity = $opacity');
 
     return CustomPaint(
@@ -656,8 +657,8 @@ CustomPaint _getShadowWidget({
       painter: CretaShadowCirclePainter(
         pshapeType: shapeType,
         poffset: offset,
-        pblurRadius: blurRadius,
-        pblurSpread: blurSpread,
+        pblurRadius: shadowBlur,
+        pblurSpread: shadowSpread,
         popacity: opacity,
         pshadowColor: shadowColor,
       ),
@@ -673,8 +674,8 @@ CustomPaint _getShadowWidget({
       painter: CretaShadowOvalPainter(
         pshapeType: shapeType,
         poffset: offset,
-        pblurRadius: blurRadius,
-        pblurSpread: blurSpread,
+        pblurRadius: shadowBlur,
+        pblurSpread: shadowSpread,
         popacity: opacity,
         pshadowColor: shadowColor,
       ),
@@ -688,8 +689,8 @@ CustomPaint _getShadowWidget({
     painter: CretaShadowPathPainter(
       pshapeType: shapeType,
       poffset: offset,
-      pblurRadius: blurRadius,
-      pblurSpread: blurSpread,
+      pblurRadius: shadowBlur,
+      pblurSpread: shadowSpread,
       popacity: opacity,
       pshadowColor: shadowColor,
     ),
@@ -704,8 +705,8 @@ CustomPaint _getShadowWidget({
 //   final ShapeType shapeType;
 //   final double xOffset;
 //   final double yOffset;
-//   final double blurRadius;
-//   final double blurSpread;
+//   final double shadowBlur;
+//   final double shadowSpread;
 //   final double opacity;
 //   final Color shadowColor;
 
@@ -713,8 +714,8 @@ CustomPaint _getShadowWidget({
 //     required this.shapeType,
 //     required this.xOffset,
 //     required this.yOffset,
-//     required this.blurRadius,
-//     required this.blurSpread,
+//     required this.shadowBlur,
+//     required this.shadowSpread,
 //     required this.opacity,
 //     required this.shadowColor,
 //   });
@@ -723,7 +724,7 @@ CustomPaint _getShadowWidget({
 //   void paint(Canvas canvas, Size size) {
 //     Paint shadowPaint = Paint()
 //       ..color = opacity != 1 ? shadowColor.withOpacity(opacity) : shadowColor
-//       ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius);
+//       ..maskFilter = MaskFilter.blur(BlurStyle.normal, shadowBlur);
 
 //     final Offset offset = Offset(xOffset, yOffset);
 //     final Rect rect = offset & size;
@@ -731,7 +732,7 @@ CustomPaint _getShadowWidget({
 //     canvas.drawShadow(
 //       ShapePath.getClip(shapeType, size),
 //       shadowColor,
-//       blurSpread,
+//       shadowSpread,
 //       true,
 //     );
 

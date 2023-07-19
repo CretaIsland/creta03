@@ -233,7 +233,9 @@ class CretaPlayTimer extends ChangeNotifier {
         (_currentModel!.mid != _prevModel!.mid || _forceToChange == true)) {
       logger.fine('CurrentModel changed from ${_prevModel!.name}');
       _forceToChange = false;
-      notify();
+      if (contentsManager.getAvailLength() > 1 || _currentModel!.mid != _prevModel!.mid) {
+        notify();
+      }
       if (_currentModel!.mid != _prevModel!.mid) {
         notifyToProperty();
 

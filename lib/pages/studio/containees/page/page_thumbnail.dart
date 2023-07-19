@@ -77,7 +77,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _buildComplete = true;
-      //if (widget.pageIndex == 0) _takeAScreenShot();
+      
     });
   }
 

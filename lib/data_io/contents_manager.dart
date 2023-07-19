@@ -320,8 +320,8 @@ class ContentsManager extends CretaManager {
 
   Size getRealSize({double? applyScale}) {
     applyScale ??= StudioVariables.applyScale;
-    double width = applyScale * frameModel.width.value;
-    double height = applyScale * frameModel.height.value;
+    double width = applyScale * (frameModel.width.value) - frameModel.shadowSpread.value;
+    double height = applyScale * (frameModel.height.value) - frameModel.shadowSpread.value;
     return Size(width, height);
   }
 
