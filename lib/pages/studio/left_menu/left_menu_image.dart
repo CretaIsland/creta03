@@ -1,6 +1,7 @@
 // ignore: avoid_web_libraries_in_flutter
 // import 'dart:html';
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:creta03/pages/login_page.dart';
 import 'package:http/http.dart' as http;
@@ -118,13 +119,22 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     //   ..download = fileName
     //   ..click();
 
-    final res = await http.post(
-        Uri.parse("${LoginPage.enterpriseHolder!.enterpriseModel!.mediaApiUrl}/downloadAiImg"),
-        headers: {"Content-type": "application/json"},
-        body: jsonEncode(
-            {"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage}));
+    http.post(
+      Uri.parse("${LoginPage.enterpriseHolder!.enterpriseModel!.mediaApiUrl}/downloadAiImg"),
+      headers: {"Content-type": "application/json"},
+      body: jsonEncode({"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage})
+    ).then((value) async {
+      final res = jsonDecode(value.body);
+      final imgRes = await http.get(Uri.parse(res["fileView"]));
+      
+      final fileBlob = Blob([imgRes.bodyBytes]);
+      AnchorElement(href: Url.createObjectUrlFromBlob(fileBlob))
+        ..download = "${res["fileName"].toString().split('/').last}.png"
+        ..click();
 
-    debugPrint(res.body);
+        debugPrint(res.body);
+    });
+  
   }
 
   @override
