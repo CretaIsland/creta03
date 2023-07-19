@@ -57,7 +57,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
             ContentsModel model = snapshot.data! as ContentsModel;
             player.acc.updateModel(model);
             logger.info('model updated ${model.name}, ${model.font.value}');
-            //print('++++++++++++++++++++++++++++++++++++++++++${model.remoteUrl!}');
+            print('++++++++++++++++++++++++++++++++++++++++++${model.height.value}');
           }
           logger.fine('Text StreamBuilder<AbsExModel>');
 
@@ -91,7 +91,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
 
     GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
 
-    // print('++++++++++++++++++++++playDoc+++++++++++');
+    print('++++++++++++++++++++++playDoc+++++++++++$realSize');
 
     return SizedBox(
       // color: Colors.white,
@@ -117,7 +117,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
           model: model,
           frameModel: frameModel,
           frameKey: frameKey,
-          size: Size(realSize.width, realSize.height),
+          size: realSize,
           onComplete: () {
             player!.acc.setToDB(model);
             setState(() {});

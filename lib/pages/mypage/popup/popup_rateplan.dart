@@ -1012,7 +1012,7 @@ class PopUpRatePlan {
   static Widget ratePlanDowngradePopUp(BuildContext context) {
     return CretaAlertDialog(
       width: 432,
-      height: 208,
+      height: 308,
       content: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

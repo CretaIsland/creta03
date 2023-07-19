@@ -33,6 +33,8 @@ class CretaLang {
     "팀전환",
     "로그아웃",
     "도움말",
+    "개발자모드",
+    "개발자모드 해제",
   ];
 
   static const String makeCopy = '사본 만들기';

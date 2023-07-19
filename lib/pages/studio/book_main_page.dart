@@ -408,6 +408,9 @@ class _BookMainPageState extends State<BookMainPage> {
               title: Snippet.logo('studio', route: () {
                 Routemaster.of(context).push(AppRoutes.studioBookGridPage);
               }),
+              invalidate: () {
+                setState(() {});
+              },
               context: context,
               child: Stack(
                 children: [

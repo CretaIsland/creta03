@@ -534,4 +534,6 @@ class CretaStudioLang {
   static String visibility = "가시거리";
   static String microDust = "미세먼지";
   static String superMicroDust = "초미세먼지";
+  static String realSize = "실제 사이즈로";
+  static String maxSize = "최대 사이즈로";
 }
