@@ -20,6 +20,7 @@ class BookModel extends CretaModel with BookMixin {
   late UndoAble<String> name;
   late UndoAble<bool> isSilent;
   late UndoAble<bool> isAutoPlay;
+  late UndoAble<bool> isAutoThumbnail;
   late UndoAble<bool> isAllowReply;
   late UndoAble<BookType> bookType;
   late UndoAble<int> pageSizeType;
@@ -51,6 +52,7 @@ class BookModel extends CretaModel with BookMixin {
         name,
         isSilent,
         isAutoPlay,
+        isAutoThumbnail,
         isAllowReply,
         bookType,
         pageSizeType,
@@ -80,6 +82,7 @@ class BookModel extends CretaModel with BookMixin {
     thumbnailAspectRatio = UndoAble<double>(1, mid, 'thumbnailAspectRatio');
     isSilent = UndoAble<bool>(false, mid, 'isSilent');
     isAutoPlay = UndoAble<bool>(true, mid, 'isAutoPlay');
+    isAutoThumbnail = UndoAble<bool>(true, mid, 'isAutoThumbnail');
     isAllowReply = UndoAble<bool>(true, mid, 'isAllowReply');
     bookType = UndoAble<BookType>(BookType.presentaion, mid, 'bookType');
     pageSizeType = UndoAble<int>(0, mid, 'pageSizeType');
@@ -127,6 +130,7 @@ class BookModel extends CretaModel with BookMixin {
     thumbnailAspectRatio = UndoAble<double>(imageRatio, mid, 'thumbnailAspectRatio');
     isSilent = UndoAble<bool>(false, mid, 'isSilent');
     isAutoPlay = UndoAble<bool>(true, mid, 'isAutoPlay');
+    isAutoThumbnail = UndoAble<bool>(true, mid, 'isAutoThumbnail');
     isAllowReply = UndoAble<bool>(true, mid, 'isAllowReply');
     bookType = UndoAble<BookType>(bookTypeVal, mid, 'bookType');
     pageSizeType = UndoAble<int>(0, mid, 'pageSizeType');
@@ -166,6 +170,7 @@ class BookModel extends CretaModel with BookMixin {
         UndoAble<double>(srcBook.thumbnailAspectRatio.value, mid, 'thumbnailAspectRatio');
     isSilent = UndoAble<bool>(srcBook.isSilent.value, mid, 'isSilent');
     isAutoPlay = UndoAble<bool>(srcBook.isAutoPlay.value, mid, 'isAutoPlay');
+    isAutoThumbnail = UndoAble<bool>(srcBook.isAutoThumbnail.value, mid, 'isAutoThumbnail');
     isAllowReply = UndoAble<bool>(srcBook.isAllowReply.value, mid, 'isAllowReply');
     bookType = UndoAble<BookType>(srcBook.bookType.value, mid, 'bookType');
     pageSizeType = UndoAble<int>(srcBook.pageSizeType.value, mid, 'pageSizeType');
@@ -201,6 +206,7 @@ class BookModel extends CretaModel with BookMixin {
     thumbnailAspectRatio.init(srcBook.thumbnailAspectRatio.value);
     isSilent.init(srcBook.isSilent.value);
     isAutoPlay.init(srcBook.isAutoPlay.value);
+    isAutoThumbnail.init(srcBook.isAutoThumbnail.value);
     isAllowReply.init(srcBook.isAllowReply.value);
     bookType.init(srcBook.bookType.value);
     pageSizeType.init(srcBook.pageSizeType.value);
@@ -232,6 +238,7 @@ class BookModel extends CretaModel with BookMixin {
     creatorName = map["creatorName"] ?? '';
     isSilent.set(map["isSilent"] ?? false, save: false, noUndo: true);
     isAutoPlay.set(map["isAutoPlay"] ?? true, save: false, noUndo: true);
+    isAutoThumbnail.set(map["isAutoThumbnail"] ?? true, save: false, noUndo: true);
     isAllowReply.set(map["isAllowReply"] ?? true, save: false, noUndo: true);
     isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
     bookType.set(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
@@ -281,6 +288,7 @@ class BookModel extends CretaModel with BookMixin {
         "creatorName": creatorName,
         "isSilent": isSilent.value,
         "isAutoPlay": isAutoPlay.value,
+        "isAutoThumbnail": isAutoThumbnail.value,
         "isAllowReply": isAllowReply.value,
         "isReadOnly": isReadOnly.value,
         "bookType": bookType.value.index,

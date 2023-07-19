@@ -31,6 +31,7 @@ enum CretaButtonColor {
   sky,
   skyTitle,
   gray,
+  gray2,
   gray100,
   gray100light,
   gray100blue,
@@ -172,6 +173,11 @@ class CretaButton extends StatefulWidget {
         bgColor = CretaColor.text[900]!.withOpacity(0.25);
         hoverColor = CretaColor.text[900]!.withOpacity(0.40);
         clickColor = CretaColor.text[900]!.withOpacity(0.60);
+        break;
+      case CretaButtonColor.gray2:
+        bgColor = CretaColor.text[200]!.withOpacity(0.25);
+        hoverColor = CretaColor.text[500]!.withOpacity(0.25);
+        clickColor = CretaColor.text[900]!.withOpacity(0.25);
         break;
       case CretaButtonColor.sky:
         bgColor = Colors.white;

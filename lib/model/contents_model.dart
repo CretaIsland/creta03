@@ -188,8 +188,8 @@ class ContentsModel extends CretaModel {
 
   void _initValues() {
     subList = UndoAble<String>('', mid, 'subList');
-    playTime = UndoAble<double>(5000, mid, 'playTime'); // 1000 분의 1초 milliseconds
-    videoPlayTime = UndoAble<double>(5000, mid, 'videoPlayTime'); // 1000 분의 1초 milliseconds
+    playTime = UndoAble<double>(15000, mid, 'playTime'); // 1000 분의 1초 milliseconds
+    videoPlayTime = UndoAble<double>(15000, mid, 'videoPlayTime'); // 1000 분의 1초 milliseconds
     mute = UndoAble<bool>(false, mid, 'mute');
     isShow = UndoAble<bool>(true, mid, 'isShow');
     volume = UndoAble<double>(50, mid, 'volume');
@@ -393,7 +393,7 @@ class ContentsModel extends CretaModel {
   double progress = 0.0;
 
   //  playTime 이전 값, 영구히 에서 되돌릴때를 대비해서 가지고 있다.
-  double prevPlayTime = 5000;
+  double prevPlayTime = 15000;
   void reservPlayTime() {
     prevPlayTime = playTime.value;
   }
@@ -416,8 +416,8 @@ class ContentsModel extends CretaModel {
     thumbnail = map["thumbnail"] ?? '';
 
     subList.set(map["subList"] ?? '', save: false, noUndo: true);
-    playTime.set(map["playTime"] ?? 5000, save: false, noUndo: true);
-    videoPlayTime.set(map["videoPlayTime"] ?? 5000, save: false, noUndo: true);
+    playTime.set(map["playTime"] ?? 15000, save: false, noUndo: true);
+    videoPlayTime.set(map["videoPlayTime"] ?? 15000, save: false, noUndo: true);
     mute.set(map["mute"] ?? false, save: false, noUndo: true);
     isShow.set(map["isShow"] ?? true, save: false, noUndo: true);
     volume.set(map["volume"] ?? 50, save: false, noUndo: true);

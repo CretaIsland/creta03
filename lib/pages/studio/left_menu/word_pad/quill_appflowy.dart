@@ -5,23 +5,20 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:appflowy_editor/appflowy_editor.dart';
+import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:creta03/pages/studio/left_menu/word_pad/simple_editor.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:translator/translator.dart';
 import 'package:universal_html/html.dart' as html;
 
-import '../../../../common/creta_utils.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
-import '../../../../design_system/dialog/creta_alert_dialog.dart';
-import '../../../../design_system/menu/creta_drop_down_button.dart';
+import '../../../../lang/creta_lang.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
+import 'editor_dialog.dart';
 
 enum ExportFileType {
   documentJson,
@@ -69,7 +66,7 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
 
   // ignore: unused_field
   late WidgetBuilder _widgetBuilder;
-  late EditorState _editorState;
+  EditorState? _editorState;
   late Future<String> _jsonString;
 
   bool _isMoveMode = true;
@@ -102,7 +99,8 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
   void _onCompleteOK() {
     //print('_onComplete-------------------');
     //_editorState = editorState;
-    _newJsonString = jsonEncode(_editorState.document.toJson());
+    if (_editorState == null) return;
+    _newJsonString = jsonEncode(_editorState!.document.toJson());
     if (_newJsonString.isEmpty) {
       _newJsonString =
           '{"document":{"type":"page","children":[{"type":"paragraph","data":{"delta":[]}}]}}';
@@ -192,94 +190,7 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
       body: Stack(
         children: [
           SafeArea(child: _buildBody(context)),
-          _isMoveMode
-              ? Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.transparent,
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: BTN.fill_color_t_m(
-                      onPressed: () {
-                        setState(
-                          () {
-                            _isMoveMode = false;
-                          },
-                        );
-                      },
-                      text: 'move mode',
-                      width: 80,
-                    ),
-                    // child: BTN.fill_gray_i_m(
-                    //   icon: Icons.arrow_upward_outlined,
-                    //   onPressed: () {
-                    //     setState(
-                    //       () {
-                    //         _isMoveMode = false;
-                    //       },
-                    //     );
-                    //   },
-                    // ),
-                  ),
-                )
-              : Align(
-                  alignment: Alignment.topRight,
-                  child: BTN.fill_color_t_m(
-                    onPressed: () {
-                      setState(
-                        () {
-                          _isMoveMode = true;
-                        },
-                      );
-                    },
-                    text: 'edit mode',
-                    width: 80,
-                  ),
-                  // child: BTN.fill_gray_i_m(
-                  //   icon: Icons.arrow_downward_outlined,
-                  //   onPressed: () {
-                  //     setState(
-                  //       () {
-                  //         _isMoveMode = true;
-                  //       },
-                  //     );
-                  //   },
-                  // ),
-                ),
-          if (_isMoveMode == false)
-            Align(
-              alignment: Alignment.bottomRight,
-              child: SizedBox(
-                width: 220,
-                child: CretaDropDownButton(
-                  align: MainAxisAlignment.start,
-                  selectedColor: CretaColor.text[700]!,
-                  textStyle: CretaFont.bodySmall,
-                  width: 200,
-                  height: 32,
-                  itemHeight: 24,
-                  dropDownMenuItemList: CretaUtils.getLangItem(
-                      defaultValue: widget.model.lang.value,
-                      onChanged: (val) async {
-                        widget.model.lang.set(val);
-                        if (widget.model.remoteUrl != null) {
-                          await _translate(widget.model.lang.value);
-                          setState(() {});
-                        }
-                      }),
-                ),
-              ),
-              // child: BTN.fill_color_t_m(
-              //   onPressed: () {
-              //     _translate();
-              //     setState(
-              //       () {},
-              //     );
-              //   },
-              //   text: 'translate',
-              //   width: 80,
-              // ),
-            ),
+          _isMoveMode ? _editButton() : SizedBox.shrink(),
         ],
       ),
       //: SafeArea(child: _buildBody(context)),
@@ -289,38 +200,6 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
   Widget _viewMode() {
     return SafeArea(child: _buildBody(context));
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: Stack(
-  //       key: _scaffoldKey,
-  //       children: [
-  //         SafeArea(child: _buildBody(context)),
-  //         MouseRegion(
-  //           onEnter: (e) {
-  //             setState(() {
-  //               _isHover = true;
-  //             });
-  //           },
-  //           onExit: (e) {
-  //             setState(() {
-  //               _isHover = false;
-  //             });
-  //           },
-  //           child: _isHover
-  //               ? Container(
-  //                   height: 36,
-  //                   width: double.infinity,
-  //                   color: CretaColor.primary.withOpacity(0.75),
-  //                   child: Center(child: Text('Creta Text Editor', style: CretaFont.titleMedium)),
-  //                 )
-  //               : const SizedBox.shrink(),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildBody(BuildContext context) {
     //_widgetBuilder(context);
@@ -337,7 +216,8 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
     );
   }
 
-  Widget _simpleEditor(bool isViewer, {Offset? dialogOffset, Size? dialogSize}) {
+  Widget _simpleEditor(bool isViewer,
+      {Offset? dialogOffset, Size? dialogSize, Color bgColor = Colors.transparent}) {
     return SimpleEditor(
       isViewer: isViewer, //skpark
       dialogOffset: dialogOffset, //skpark
@@ -345,7 +225,7 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
       frameKey: widget.frameKey,
       jsonString: _jsonString,
       //bgColor: widget.frameModel.bgColor1.value,
-      bgColor: Colors.transparent,
+      bgColor: bgColor,
 
       onEditorStateChange: (editorState) {
         //print('1-----------editorState changed ');
@@ -357,38 +237,103 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
       },
       onChanged: (editorState) {
         _editorState = editorState;
-        _newJsonString = jsonEncode(_editorState.document.toJson());
+        _newJsonString = jsonEncode(_editorState!.document.toJson());
         //print('onChanged $_newJsonString');
       },
       onAttached: () {
         if (isViewer == false) return;
         //_oldJsonString = widget.model.remoteUrl!;
-        showDialog(
-            context: context,
-            builder: (context) {
-              return CretaAlertDialog(
-                backgroundColor: Colors.white.withOpacity(0.25),
-                //key: GlobalObjectKey('SimpleEditor-CretaAlertDialog'),
-                width: _dialogSize.width,
-                height: _dialogSize.height,
-                content: _simpleEditor(
-                  false,
-                  dialogOffset: _dialogOffset,
-                  dialogSize: _dialogSize,
-                ),
-                onPressedOK: () {
-                  _onCompleteOK();
-                  Navigator.of(context).pop();
-                },
-                onPressedCancel: () {
-                  //widget.model.remoteUrl = _oldJsonString;
-                  Navigator.of(context).pop();
-                },
-              );
-            });
+        //_showDialog();
       },
     );
   }
+
+  void _showDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.white.withOpacity(0.75),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            child: EditorDialog(
+              model: widget.model,
+              dialogOffset: _dialogOffset,
+              //key: GlobalObjectKey('SimpleEditor-CretaAlertDialog'),
+              width: _dialogSize.width,
+              height: _dialogSize.height,
+              frameSize: widget.size,
+              frameKey: widget.frameKey,
+              backgroundColor: widget.frameModel.bgColor1.value,
+              onChanged: (editorState) {
+                _editorState = editorState;
+                _newJsonString = jsonEncode(_editorState!.document.toJson());
+                //print('onChanged $_newJsonString');
+              },
+              onPressedOK: () {
+                _onCompleteOK();
+                setState(() {
+                  _isMoveMode = true;
+                });
+                Navigator.of(context).pop();
+              },
+              onPressedCancel: () {
+                //widget.model.remoteUrl = _oldJsonString;
+                setState(() {
+                  _isMoveMode = true;
+                });
+                Navigator.of(context).pop();
+              },
+              onComplete: widget.onComplete,
+            ),
+          );
+        });
+  }
+
+  Widget _editButton() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Colors.transparent,
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 4,
+            right: 4,
+          ),
+          child: BTN.fill_blue_i_menu(
+            tooltip: CretaLang.edit,
+            width: 20,
+            height: 20,
+            buttonColor: CretaButtonColor.gray2,
+            icon: Icons.edit_outlined,
+            onPressed: () {
+              setState(
+                () {
+                  _isMoveMode = false;
+                },
+              );
+              _showDialog();
+            },
+            //text: 'move mode',
+            //width: 80,
+          ),
+        ),
+        // child: BTN.fill_gray_i_m(
+        //   icon: Icons.arrow_upward_outlined,
+        //   onPressed: () {
+        //     setState(
+        //       () {
+        //         _isMoveMode = false;
+        //       },
+        //     );
+        //   },
+        // ),
+      ),
+    );
+  }
+
+// 여기서부터는 사용하지 않음.
 
   // ignore: unused_element
   Widget _buildDrawer(BuildContext context) {
@@ -436,10 +381,10 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
           // Encoder Demo
           _buildSeparator(context, 'Export To X Demo'),
           _buildListTile(context, 'Export To JSON', () {
-            _exportFile(_editorState, ExportFileType.documentJson);
+            _exportFile(_editorState!, ExportFileType.documentJson);
           }),
           _buildListTile(context, 'Export to Markdown', () {
-            _exportFile(_editorState, ExportFileType.markdown);
+            _exportFile(_editorState!, ExportFileType.markdown);
           }),
 
           // Decoder Demo
@@ -458,13 +403,13 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
           _buildSeparator(context, 'Theme Demo'),
           _buildListTile(context, 'Built In Dark Mode', () {
             _jsonString = Future<String>.value(
-              jsonEncode(_editorState.document.toJson()).toString(),
+              jsonEncode(_editorState!.document.toJson()).toString(),
             );
             setState(() {});
           }),
           _buildListTile(context, 'Custom Theme', () {
             _jsonString = Future<String>.value(
-              jsonEncode(_editorState.document.toJson()).toString(),
+              jsonEncode(_editorState!.document.toJson()).toString(),
             );
             setState(() {
               // todo: implement it
@@ -620,61 +565,5 @@ class _AppFlowyEditorWidgetState extends State<AppFlowyEditorWidget> {
     if (mounted) {
       _loadEditor(context, Future<String>.value(jsonString));
     }
-  }
-
-  Future<void> _translate(String lang) async {
-    String? org = widget.model.remoteUrl;
-    if (org == null || org.isEmpty) {
-      return;
-    }
-    Map<String, dynamic> json = jsonDecode(org);
-    // Find the items with "name" equal to "insert"
-    await findItemsByName(
-      json,
-      'insert',
-      transform: (input) async {
-        Translation result = await input.translate(to: lang);
-        return result.text;
-      },
-    );
-
-    String decoded = jsonEncode(json);
-    //print(decoded);
-
-    widget.model.remoteUrl = decoded;
-    widget.onComplete.call();
-
-    // Print the values of the "insert" items
-    // for (var item in insertItems) {
-    //   print(item.toString());
-    // }
-  }
-
-  Future<void> findItemsByName(Map<String, dynamic> json, String name,
-      {Future<String> Function(String input)? transform}) async {
-    //_translateMap = {...json};
-    //List<dynamic> result = [];
-    Future<void> search(Map<String, dynamic> map) async {
-      for (String key in map.keys) {
-        var value = map[key];
-        if (key == name) {
-          //result.add(map[name]);
-          if (transform != null) {
-            map[name] = await transform(map[name]);
-            //print(map[name]);
-          }
-        } else if (value is Map<String, dynamic>) {
-          await search(value);
-        } else if (value is List<dynamic>) {
-          for (var item in value) {
-            if (item is Map<String, dynamic>) {
-              await search(item);
-            }
-          }
-        }
-      }
-    }
-
-    await search(json);
   }
 }

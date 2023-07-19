@@ -2,6 +2,7 @@
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:creta03/pages/login_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -89,11 +90,13 @@ class Snippet {
     required Widget child,
     Widget? floatingActionButton,
     Widget? additionals,
+    void Function()? invalidate,
   }) {
     return Scaffold(
-        appBar: Snippet.CretaAppBarOfStudio(context, title, additionals),
-        //floatingActionButton: floatingActionButton ?? Snippet.CretaDial(context),
-        //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
+        floatingActionButton:
+            StudioVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         //body: child,
         body: StudioVariables.isHandToolMode == false
             ? GestureDetector(
@@ -132,7 +135,8 @@ class Snippet {
         // onErrorReport: onErrorReport,
         getBuildContext: getBuildContext,
       ),
-      //floatingActionButton: Snippet.CretaDial(context),
+      floatingActionButton:
+          StudioVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
@@ -286,7 +290,8 @@ class Snippet {
       {required Widget title, required BuildContext context, required Widget child}) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfMyPage(context, title),
-      //floatingActionButton: Snippet.CretaDial(context),
+      floatingActionButton:
+          StudioVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
@@ -377,7 +382,8 @@ class Snippet {
     ]);
   }
 
-  static void _popupAccountMenu(GlobalKey key, BuildContext context) {
+  static void _popupAccountMenu(GlobalKey key, BuildContext context,
+      {void Function()? invalidate}) {
     CretaPopupMenu.showMenu(
       context: context,
       globalKey: key,
@@ -403,6 +409,16 @@ class Snippet {
           caption: CretaLang.accountMenu[3], //도움말
           onPressed: () {},
         ),
+        if (!kReleaseMode)
+          CretaMenuItem(
+            caption: StudioVariables.isDeveloper
+                ? CretaLang.accountMenu[5]
+                : CretaLang.accountMenu[4], //개발자모드
+            onPressed: () {
+              StudioVariables.isDeveloper = !StudioVariables.isDeveloper;
+              invalidate?.call();
+            },
+          ),
       ],
       initFunc: () {},
     ).then((value) {
@@ -411,7 +427,8 @@ class Snippet {
   }
 
   static PreferredSizeWidget CretaAppBarOfStudio(
-      BuildContext context, Widget title, Widget? additionals) {
+      BuildContext context, Widget title, Widget? additionals,
+      {void Function()? invalidate}) {
     return AppBar(
       toolbarHeight: CretaConstant.appbarHeight,
       title: title,
@@ -461,7 +478,8 @@ class Snippet {
                         LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
                     onPressed: () {
                       _popupAccountMenu(
-                          GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context);
+                          GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context,
+                          invalidate: invalidate);
                     },
                   ),
                 ),

@@ -123,7 +123,7 @@ class _SimpleEditorState extends State<SimpleEditor> {
       dialogOffset: widget.dialogOffset, //skpark
       child: SizedBox(
         width: widget.dialogSize != null ? widget.dialogSize!.width : 800,
-        height: widget.dialogSize != null ? widget.dialogSize!.height - 200 : 400,
+        height: widget.dialogSize != null ? widget.dialogSize!.height : 400,
         child: _mainWidget(editorState, scrollController),
       ),
     );

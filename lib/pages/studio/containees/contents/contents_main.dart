@@ -93,9 +93,9 @@ class ContentsMainState extends State<ContentsMain> {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       //int contentsCount = contentsManager.getShowLength();
       int contentsCount = contentsManager.getAvailLength();
-      //logger.info('ContentsMain = Consumer<ContentsManager>');
+      logger.info('ContentsMain = Consumer<ContentsManager>');
       return Consumer<CretaPlayTimer>(builder: (context, playTimer, child) {
-        //logger.info('Consumer<CretaPlayTimer>');
+        logger.info('Consumer<CretaPlayTimer>');
         return StreamBuilder<AbsExModel>(
             stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {
@@ -110,10 +110,8 @@ class ContentsMainState extends State<ContentsMain> {
                 return SizedBox.shrink();
               }
               ContentsModel? model = playTimer.getCurrentModel();
-              logger.info(
-                  'event received =============================================================');
               if (model != null && isURINotNull(model)) {
-                logger.fine('Consumer<ContentsManager> ${model.url}, ${model.name}');
+                logger.info('event received =======================${model.name}=');
                 LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
                 if (linkManager != null) {
                   //if (linkManager != null && linkManager.getAvailLength() > 0) {

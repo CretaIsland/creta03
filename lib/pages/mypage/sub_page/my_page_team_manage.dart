@@ -617,7 +617,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                 return CretaAlertDialog
                                 (
                                   width: 387,
-                                  height: 208,
+                                  height: 308,
                                   content: Container(
                                     width: 30,
                                     height: 30,

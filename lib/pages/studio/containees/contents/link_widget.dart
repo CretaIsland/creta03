@@ -61,6 +61,7 @@ class _LinkWidgetState extends State<LinkWidget> {
   Offset _prev = Offset.zero;
   bool _isHover = false;
   BookModel? _bookModel;
+  int _linkCount = 0;
 
   @override
   void initState() {
@@ -100,6 +101,8 @@ class _LinkWidgetState extends State<LinkWidget> {
               //   return const SizedBox.shrink();
               // }
 
+              bool showLinkCursor = _showLinkCursor(hasContents);
+
               return SizedBox(
                 width: double.infinity,
                 height: double.infinity,
@@ -134,12 +137,13 @@ class _LinkWidgetState extends State<LinkWidget> {
                           applyScale: widget.applyScale,
                           frameModel: widget.frameModel,
                           playTimer: widget.playTimer,
+                          canMove: (_linkCount > 0),
                         ),
                       // if (DraggableStickers.isFrontBackHover &&
                       //     LinkParams.isLinkNewMode == false &&
                       //     widget.contentsModel.isLinkEditMode == false)
                       //   _drawOrder(hasContents),
-                      if (_showLinkCursor(hasContents))
+                      if (showLinkCursor) // 생성시 그려지는 것을 말한다.
                         OnLinkCursor(
                           key: GlobalObjectKey('OnLinkCursor${widget.frameModel.mid}'),
                           //pageOffset: widget.frameManager.pageOffset,
@@ -279,7 +283,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     }
     _position = Offset(posX, posY);
     //logger.info('^^^^^^^^^^^^^^^^^^_position----$posX, $posY,,,');
-
+    _linkCount++;
     return Positioned(
       left: _position.dx,
       top: _position.dy,

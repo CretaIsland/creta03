@@ -522,6 +522,30 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           ],
         ),
       ),
+      if (model.isImage() || model.isVideo())
+        propertyLine(
+          // useThisThumbnail
+          topPadding: 10,
+          name: CretaStudioLang.useThisThumbnail,
+          widget: CretaToggleButton(
+            width: 54 * 0.75,
+            height: 28 * 0.75,
+            defaultValue:
+                model.thumbnail != null && widget.book!.thumbnailUrl.value == model.thumbnail!,
+            onSelected: (value) {
+              if (value == true) {
+                widget.book!.thumbnailUrl.set(model!.thumbnail!, noUndo: true);
+                widget.book!.isAutoThumbnail.set(false, noUndo: true);
+              } else {
+                if (widget.book!.thumbnailUrl.value == model!.thumbnail!) {
+                  widget.book!.thumbnailUrl.set('', noUndo: true);
+                  widget.book!.isAutoThumbnail.set(true, noUndo: true);
+                }
+              }
+              //setState(() {});
+            },
+          ),
+        ),
     ];
   }
 
