@@ -431,14 +431,16 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             });
             widget.contentsManager.removeContents(context, model).then((value) {
               if (value == true) {
-                String frameId = widget.contentsManager.frameModel.mid;
-                GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
-                if (musicKey != null) {
-                  musicKey.currentState?.removeMusic(model);
-                } else {
-                  logger.severe('musicKey is null');
+                if (model.isMusic()) {
+                  String frameId = widget.contentsManager.frameModel.mid;
+                  GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                  if (musicKey != null) {
+                    musicKey.currentState?.removeMusic(model);
+                  } else {
+                    logger.severe('musicKey is null');
+                  }
+                  showSnackBar(context, model.name + CretaLang.contentsDeleted);
                 }
-                showSnackBar(context, model.name + CretaLang.contentsDeleted);
               }
             });
             // if (widget.contentsManager.getShowLength() == 1) {
