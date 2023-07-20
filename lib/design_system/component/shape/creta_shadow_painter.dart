@@ -24,6 +24,14 @@ class CretaShadowPainter extends CustomPainter {
   });
 
   Paint getPaint(Size size) {
+    
+    print('-------------------------------------');
+    print('offset = $offset');
+    print('blurRadius = $blurRadius');
+    print('blurSpread = $blurSpread');
+    print('opacity = $opacity');
+    print('-------------------------------------');
+
     return Paint()
       ..color = opacity >= 0 && opacity < 1 ? shadowColor.withOpacity(opacity) : shadowColor
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius)

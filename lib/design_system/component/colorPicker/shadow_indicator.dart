@@ -26,6 +26,7 @@ class ShadowIndicator extends StatefulWidget {
   final bool isSelected;
   final String? hintText;
   final bool isSample;
+  final bool showShadow;
 
   const ShadowIndicator({
     super.key,
@@ -41,6 +42,7 @@ class ShadowIndicator extends StatefulWidget {
     this.height = 46,
     this.hintText,
     this.isSample = false,
+    this.showShadow = true,
   });
 
   @override
@@ -71,7 +73,7 @@ class _ShadowIndicatorState extends State<ShadowIndicator> {
                     color: widget.isSelected ? CretaColor.primary : Colors.white,
                     width: 2,
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(widget.distance)),
+                  //borderRadius: BorderRadius.all(Radius.circular(widget.distance)),
                 ),
                 child: Center(
                   child: Container(
@@ -93,19 +95,20 @@ class _ShadowIndicatorState extends State<ShadowIndicator> {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(
-            color: widget.opacity == 1 ? widget.color : widget.color.withOpacity(widget.opacity),
-            offset: CretaUtils.getShadowOffset(widget.direction, widget.distance),
-            blurRadius: widget.blur,
-            spreadRadius: widget.spread,
-            //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
-          ),
+          if (widget.showShadow)
+            BoxShadow(
+              color: widget.opacity == 1 ? widget.color : widget.color.withOpacity(widget.opacity),
+              offset: CretaUtils.getShadowOffset(widget.direction, widget.distance / 3),
+              blurRadius: widget.blur,
+              spreadRadius: widget.spread / 10,
+              //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
+            ),
         ],
       ),
       child: widget.hintText != null
           ? Center(
               child:
-                  Text(widget.hintText!, textAlign: TextAlign.center, style: CretaFont.titleSmall))
+                  Text(widget.hintText!, textAlign: TextAlign.center, style: CretaFont.titleTiny))
           : SizedBox.shrink(),
     );
   }

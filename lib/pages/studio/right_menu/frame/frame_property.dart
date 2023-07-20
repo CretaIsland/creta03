@@ -66,6 +66,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   static bool _isRadiusOpen = false;
 
   static bool _isShapeOpen = false;
+  bool _matched = false;
+  bool _isCustom = false;
   // LeftTopSelected _isLeftTopSelected = LeftTopSelected();
   // RightTopSelected _isRightTopSelected = RightTopSelected();
   // LeftBottomSelected _isLeftBottomSelected = LeftBottomSelected();
@@ -1312,11 +1314,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         hasRemoveButton: widget.model.isNoShadow() == false,
         onDelete: () {
           setState(() {
+            mychangeStack.startTrans();
             widget.model.shadowSpread.set(0);
             widget.model.shadowBlur.set(0);
             widget.model.shadowDirection.set(0);
             widget.model.shadowOffset.set(0);
             widget.model.shadowColor.set(Colors.transparent);
+            mychangeStack.endTrans();
           });
           _sendEvent!.sendEvent(widget.model);
         },
@@ -1464,67 +1468,74 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           widget.model,
           onShadowSampleSelected,
         ),
-        CretaPropertySlider(
-          // 그림자 방향
-          key: GlobalKey(),
-          name: CretaStudioLang.direction,
-          min: 0,
-          max: 360,
-          value: shadowDirection,
-          valueType: SliderValueType.normal,
-          onChannged: onDirectionChanged,
-          //onChanngeComplete: onDirectionChangeComplete,
-          onChanngeComplete: onDirectionChanged,
-        ),
-        CretaPropertySlider(
-          // 그림자 투명도
-          key: GlobalKey(),
-          name: CretaStudioLang.opacity,
-          min: 0,
-          max: 100,
-          value: CretaUtils.validCheckDouble(shadowOpacity, 0, 1),
-          valueType: SliderValueType.reverse,
-          onChannged: onOpacityChanged,
-          onChanngeComplete: onOpacityChanged,
-          //onChanngeComplete: onOpacityChangeComplete,
-          postfix: '%',
-        ),
-        CretaPropertySlider(
-          // 그림자 크기
-          key: GlobalKey(),
-          name: CretaStudioLang.spread,
-          min: 0,
-          max: 24,
-          value: shadowSpread,
-          valueType: SliderValueType.normal,
-          onChannged: onSpreadChanged,
-          onChanngeComplete: onSpreadChanged,
-          //onChanngeComplete: onSpreadChangeComplete,
-        ),
-        CretaPropertySlider(
-          // 그림자 블러
-          key: GlobalKey(),
-          name: CretaStudioLang.blur,
-          min: 0,
-          max: 24,
-          value: shadowBlur,
-          valueType: SliderValueType.normal,
-          onChannged: onBlurChanged,
-          onChanngeComplete: onBlurChanged,
-          //onChanngeComplete: onBlurChangeComplete,
-        ),
-        CretaPropertySlider(
-          // 그림자 거리
-          key: GlobalKey(),
-          name: CretaStudioLang.offset,
-          min: 0,
-          max: 24,
-          value: shadowOffset,
-          valueType: SliderValueType.normal,
-          onChannged: onOffsetChanged,
-          //onChanngeComplete: onOffsetChangeComplete,
-          onChanngeComplete: onOffsetChanged,
-        ),
+
+        if (_isCustom)
+          CretaPropertySlider(
+            // 그림자 투명도
+            key: GlobalKey(),
+            name: CretaStudioLang.opacity,
+            min: 0,
+            max: 100,
+            value: CretaUtils.validCheckDouble(shadowOpacity, 0, 1),
+            valueType: SliderValueType.reverse,
+            onChannged: onOpacityChanged,
+            onChanngeComplete: onOpacityChanged,
+            //onChanngeComplete: onOpacityChangeComplete,
+            postfix: '%',
+          ),
+        if (_isCustom)
+          CretaPropertySlider(
+            // 그림자 크기
+            key: GlobalKey(),
+            name: CretaStudioLang.spread,
+            min: 0,
+            max: 100,
+            value: shadowSpread,
+            valueType: SliderValueType.normal,
+            onChannged: onSpreadChanged,
+            onChanngeComplete: onSpreadChanged,
+            //onChanngeComplete: onSpreadChangeComplete,
+          ),
+        if (_isCustom)
+          CretaPropertySlider(
+            // 그림자 블러
+            key: GlobalKey(),
+            name: CretaStudioLang.blur,
+            min: 0,
+            max: 24,
+            value: shadowBlur,
+            valueType: SliderValueType.normal,
+            onChannged: onBlurChanged,
+            onChanngeComplete: onBlurChanged,
+            //onChanngeComplete: onBlurChangeComplete,
+          ),
+        if (_isCustom)
+          CretaPropertySlider(
+            // 그림자 방향거리
+            key: GlobalKey(),
+            name: CretaStudioLang.offset,
+            min: 0,
+            max: 36,
+            value: shadowOffset,
+            valueType: SliderValueType.normal,
+            onChannged: onOffsetChanged,
+            //onChanngeComplete: onOffsetChangeComplete,
+            onChanngeComplete: onOffsetChanged,
+          ),
+        if (_isCustom)
+          CretaPropertySlider(
+            // 그림자 방향각도
+            key: GlobalKey(),
+            name: CretaStudioLang.direction,
+            min: 0,
+            max: 360,
+            value: shadowDirection,
+            valueType: SliderValueType.normal,
+            onChannged: onDirectionChanged,
+            //onChanngeComplete: onDirectionChangeComplete,
+            onChanngeComplete: onDirectionChanged,
+            postfix: '˚',
+          ),
       ],
     );
   }
@@ -1554,9 +1565,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     // ));
 
     int len = CretaUtils.shadowDataList.length;
-    for (int i = 0; i < len; i++) {
+
+    for (int i = 0; i < len - 1; i++) {
       //logger.finest('gradient: ${GradationType.values[i].toString()}');
       ShadowData data = CretaUtils.shadowDataList[i];
+      bool selected = _isSameShadow(data, model);
+      if (selected) {
+        _matched = true;
+      }
       shadowList.add(ShadowIndicator(
         color: model.shadowColor.value,
         spread: data.spread,
@@ -1564,10 +1580,37 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         direction: data.direction,
         distance: data.distance,
         opacity: data.opacity,
-        isSelected: _isSameShadow(data, model),
-        onTapPressed: onTapPressed,
+        isSelected: selected && !_isCustom,
+        onTapPressed: ((spread, blur, direction, distance, opacity) {
+          setState(() {
+            _isCustom = false;
+          });
+          onTapPressed.call(spread, blur, direction, distance, opacity);
+        }),
+        hintText: data.title,
       ));
     }
+    if (!_matched) {
+      _isCustom = true;
+    }
+    // 제일 마지막 커스텀 버튼
+    shadowList.add(ShadowIndicator(
+      color: model.shadowColor.value,
+      spread: model.shadowSpread.value,
+      blur: model.shadowBlur.value,
+      direction: model.shadowDirection.value,
+      distance: model.shadowOffset.value,
+      opacity: model.opacity.value,
+      isSelected: _isCustom,
+      onTapPressed: ((spread, blur, direction, distance, opacity) {
+        setState(() {
+          _isCustom = true;
+        });
+        onTapPressed.call(spread, blur, direction, distance, opacity);
+      }),
+      hintText: CretaStudioLang.custom,
+      showShadow: false,
+    ));
 
     return Padding(
       padding: const EdgeInsets.only(top: 12.0),

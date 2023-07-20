@@ -167,7 +167,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
         offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
         shadowBlur: model.shadowBlur.value,
         shadowSpread: model.shadowSpread.value * applyScale,
-        opacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
+        shadowOpacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
         shadowColor: model.isNoShadow() ? Colors.transparent : model.shadowColor.value,
         strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
         strokeColor: model.borderColor.value,

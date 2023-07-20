@@ -43,38 +43,39 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
   @override
   Widget build(BuildContext context) {
     final colorBackground = highlight ? widget.bgColor : Colors.transparent;
-    return ClipRRect(
-      child: Stack(
-        children: [
-          if (widget.child != null) widget.child!,
-          if (kIsWeb)
-            IgnorePointer(
-              //child: SizedBox.shrink(),
-              child: DropzoneView(
-                onCreated: (controller) => this.controller = controller,
-                //onDrop: uploadedFile,
-                onDropMultiple: (list) async {
-                  if (list == null) return;
-                  logger.info('onDropMultiple -------------- ${list.length}');
-                  List<ContentsModel> contentsList = [];
-                  for (var event in list) {
-                    logger.info('onDropMultiple -------------- ${event.name}');
-                    contentsList.add(await uploadedFile(event, widget.bookMid));
-                  }
-                  widget.onDroppedFile(contentsList);
-                  setState(() {
-                    highlight = false;
-                  });
-                },
-                onHover: () => setState(() => highlight = true),
-                onLeave: () => setState(() => highlight = false),
-                onLoaded: () => logger.fine('Zone Loaded'),
-                onError: (err) => logger.fine('run when error found : $err'),
-              ),
+    //return ClipRRect(
+    //child:
+    return Stack(
+      children: [
+        if (widget.child != null) widget.child!,
+        if (kIsWeb)
+          IgnorePointer(
+            //child: SizedBox.shrink(),
+            child: DropzoneView(
+              onCreated: (controller) => this.controller = controller,
+              //onDrop: uploadedFile,
+              onDropMultiple: (list) async {
+                if (list == null) return;
+                logger.info('onDropMultiple -------------- ${list.length}');
+                List<ContentsModel> contentsList = [];
+                for (var event in list) {
+                  logger.info('onDropMultiple -------------- ${event.name}');
+                  contentsList.add(await uploadedFile(event, widget.bookMid));
+                }
+                widget.onDroppedFile(contentsList);
+                setState(() {
+                  highlight = false;
+                });
+              },
+              onHover: () => setState(() => highlight = true),
+              onLeave: () => setState(() => highlight = false),
+              onLoaded: () => logger.fine('Zone Loaded'),
+              onError: (err) => logger.fine('run when error found : $err'),
             ),
-          if (highlight) IgnorePointer(child: Container(color: colorBackground.withOpacity(0.25))),
-        ],
-      ),
+          ),
+        if (highlight) IgnorePointer(child: Container(color: colorBackground.withOpacity(0.25))),
+      ],
+      //),
     );
   }
 
