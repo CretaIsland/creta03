@@ -439,8 +439,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                   } else {
                     logger.severe('musicKey is null');
                   }
-                  showSnackBar(context, model.name + CretaLang.contentsDeleted);
                 }
+                showSnackBar(context, model.name + CretaLang.contentsDeleted);
               }
             });
             // if (widget.contentsManager.getShowLength() == 1) {
