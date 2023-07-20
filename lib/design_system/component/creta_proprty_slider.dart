@@ -60,10 +60,10 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
           max: widget.max,
           value: _makeValue(_value, widget.valueType),
           onDragComplete: (val) {
-            //setState(() {
-            logger.finest('CretaSlider value=$val');
-            _value = _reverseValue(val, widget.valueType);
-            //});
+            setState(() {
+              logger.finest('CretaSlider value=$val');
+              _value = _reverseValue(val, widget.valueType);
+            });
             widget.onChanngeComplete?.call(_value);
           },
           onDragging: (val) {
@@ -81,7 +81,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
         ),
       ),
       widget2: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           CretaTextField.xshortNumber(
             defaultBorder: Border.all(color: CretaColor.text[100]!),
@@ -91,13 +91,14 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
             value: _makeValueString(_value, widget.valueType),
             hintText: '',
             onEditComplete: ((value) {
-              double val = _reverseValue(int.parse(value).toDouble(), widget.valueType);
-              widget.onChannged(val);
+              setState(() {
+                _value = _reverseValue(int.parse(value).toDouble(), widget.valueType);
+                widget.onChannged(_value);
+              });
             }),
           ),
-          widget.postfix != null
-              ? Text(widget.postfix!, style: CretaFont.bodySmall)
-              : const Padding(padding: EdgeInsets.only(right: 12))
+          if (widget.postfix != null) Text(widget.postfix!, style: CretaFont.bodySmall),
+          // const Padding(padding: EdgeInsets.only(right: 12))
         ],
       ),
     );
@@ -145,15 +146,18 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
     required Widget widget2,
     double topPadding = 20.0,
     double nameWidth = 84,
+    double widget1Width = 168,
+    double widget2Width = 53,
   }) {
     return Padding(
       padding: EdgeInsets.only(top: topPadding),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SizedBox(width: nameWidth, child: Text(name, style: titleStyle)),
-          widget1,
-          widget2,
+          //const SizedBox(width: 20),
+          SizedBox(width: widget1Width, child: widget1),
+          SizedBox(width: widget2Width, child: widget2),
         ],
       ),
     );

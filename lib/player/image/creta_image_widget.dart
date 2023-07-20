@@ -101,21 +101,26 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
     //   ),
     // );
 
-    Widget drawImage = Container(
-      decoration: BoxDecoration(
-          //shape: BoxShape.circle,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(topLeft),
-            topRight: Radius.circular(topRight),
-            bottomLeft: Radius.circular(bottomLeft),
-            bottomRight: Radius.circular(bottomRight),
-          ),
-          //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(widget.model!.url))),
-          image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(uri))),
+    Size size = player.acc.getRealSize();
+
+    Widget drawImage = Center(
+      child: Container(
+        // width: size.width,
+        // height: size.height,
+        decoration: BoxDecoration(
+            //shape: BoxShape.circle,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(topLeft),
+              topRight: Radius.circular(topRight),
+              bottomLeft: Radius.circular(bottomLeft),
+              bottomRight: Radius.circular(bottomRight),
+            ),
+            //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(widget.model!.url))),
+            image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(uri))),
+      ),
     );
 
     if (player.model!.imageAniType.value == ImageAniType.move) {
-      Size size = player.acc.getRealSize();
       return OverflowBox(
         maxHeight: size.height * 1.5,
         maxWidth: size.width * 1.5,

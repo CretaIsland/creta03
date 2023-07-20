@@ -368,7 +368,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
       shadowBlur: model.shadowBlur.value,
       shadowSpread: model.shadowSpread.value * applyScale,
-      opacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
+      shadowOpacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
       shadowColor: model.isNoShadow() ? Colors.transparent : model.shadowColor.value,
       // width: widget.width,
       // height: widget.height,

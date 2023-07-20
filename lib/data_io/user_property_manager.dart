@@ -21,7 +21,7 @@ class UserPropertyManager extends CretaManager {
   final List<FrameModel> _frameModelList = [];
   UserPropertyModel? userPropertyModel;
 
-  UserPropertyManager() : super('creta_user_property', null) {
+  UserPropertyManager({String tableName = 'creta_user_property'}) : super(tableName, null) {
     saveManagerHolder?.registerManager('user', this);
   }
 
@@ -142,7 +142,7 @@ class UserPropertyManager extends CretaManager {
 
     await createToDB(userPropertyModel!);
     insert(userPropertyModel!, postion: getAvailLength());
-    selectedMid = userPropertyModel!.mid;
+    selectedMid = userPropertyModel!.email;
     await getLinkedObject();
 
     return userPropertyModel!;

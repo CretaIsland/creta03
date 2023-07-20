@@ -108,7 +108,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                   if(_pickedFile != null) {
                     Uint8List fileBytes = await _pickedFile!.readAsBytes();
                     if(fileBytes.isNotEmpty) {
-                      HycopFactory.storage!.uploadFile('profile/${_pickedFile!.name}', _pickedFile!.mimeType!, fileBytes).then((fileModel) {
+                      HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, fileBytes, folderName: "profile/").then((fileModel) {
                         if(fileModel != null) {
                           userPropertyManager.userPropertyModel!.profileImg = fileModel.fileView;
                           userPropertyManager.notify();

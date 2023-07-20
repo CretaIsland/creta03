@@ -21,7 +21,7 @@ extension ShapeWidget<T extends Widget> on T {
     required Offset offset,
     required double shadowBlur,
     required double shadowSpread,
-    required double opacity,
+    required double shadowOpacity,
     required Color shadowColor,
     // required double width,
     // required double height,
@@ -45,7 +45,7 @@ extension ShapeWidget<T extends Widget> on T {
             offset: offset,
             shadowBlur: shadowBlur,
             shadowSpread: shadowSpread,
-            opacity: opacity,
+            shadowOpacity: shadowOpacity,
             shadowColor: shadowColor,
             // width: width,
             // height: height,
@@ -613,7 +613,7 @@ CustomPaint _getShadowWidget({
   required Offset offset,
   required double shadowBlur,
   required double shadowSpread,
-  required double opacity,
+  required double shadowOpacity,
   required Color shadowColor,
   // required double width,
   // required double height,
@@ -633,7 +633,7 @@ CustomPaint _getShadowWidget({
         poffset: offset,
         pblurRadius: shadowBlur,
         pblurSpread: shadowSpread,
-        popacity: opacity,
+        popacity: shadowOpacity,
         pshadowColor: shadowColor,
         radiusLeftBottom: radiusLeftBottom,
         radiusLeftTop: radiusLeftTop,
@@ -647,7 +647,7 @@ CustomPaint _getShadowWidget({
     logger.fine('offset=$offset');
     logger.fine('shadowBlur = $shadowBlur');
     logger.fine('shadowSpread = $shadowSpread');
-    logger.fine('opacity = $opacity');
+    logger.fine('opacity = $shadowOpacity');
 
     return CustomPaint(
       key: ValueKey('shadow-$mid'),
@@ -659,7 +659,7 @@ CustomPaint _getShadowWidget({
         poffset: offset,
         pblurRadius: shadowBlur,
         pblurSpread: shadowSpread,
-        popacity: opacity,
+        popacity: shadowOpacity,
         pshadowColor: shadowColor,
       ),
     );
@@ -676,7 +676,7 @@ CustomPaint _getShadowWidget({
         poffset: offset,
         pblurRadius: shadowBlur,
         pblurSpread: shadowSpread,
-        popacity: opacity,
+        popacity: shadowOpacity,
         pshadowColor: shadowColor,
       ),
     );
@@ -691,7 +691,7 @@ CustomPaint _getShadowWidget({
       poffset: offset,
       pblurRadius: shadowBlur,
       pblurSpread: shadowSpread,
-      popacity: opacity,
+      popacity: shadowOpacity,
       pshadowColor: shadowColor,
     ),
   );

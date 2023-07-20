@@ -369,10 +369,10 @@ class CretaStudioLang {
   static const String border = '테두리';
   static const String shadow = '그림자';
   static const String borderWidth = '두께';
-  static const String offset = '거리';
+  static const String offset = '방향거리';
+  static const String direction = '방향각도';
   static const String spread = '크기';
   static const String blur = '흐림';
-  static const String direction = '방향';
   static const String style = '스타일';
   static const String borderPosition = '외곽선 위치';
   static const String borderCap = '선 마감';
@@ -380,6 +380,7 @@ class CretaStudioLang {
   static const String nothing = '없음';
   static const String noBorder = '테두리 없음';
   static const String fitting = '피팅';
+  static const String custom = '사용자 정의';
 
   // static Map<String, String> borderPositionList = {
   //   '경계 외부': 'outSide',

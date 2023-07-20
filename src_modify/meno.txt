@@ -8,3 +8,10 @@ DraggableResizable  여기서 주의할 점은 DraggablePoint 는 Rotate 용으�
 DraggableStickers
 StickerView
 FrameMain
+
+ResizePointDraggable.onScaleStart --> FrameMain.onScaleStart
+ResizePointDraggable.onScaleEnd --> FrameMain.onComplete
+ResizePointDraggable.onScaleUpdate 
+  -->DraggableResizable.onDragTopLeft --> onUpdate
+  -->DraggableStickers.onUpdate --> FrameMain.onUpdate 여기의 -setItem 함수에서 비로서 save 하게 된다.
+

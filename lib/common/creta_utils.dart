@@ -17,6 +17,7 @@ class ShadowData {
   final double direction;
   final double distance;
   final double opacity;
+  final String? title;
 
   ShadowData({
     required this.spread,
@@ -24,6 +25,7 @@ class ShadowData {
     required this.direction,
     required this.distance,
     required this.opacity,
+    this.title,
   });
 }
 
@@ -473,12 +475,13 @@ class CretaUtils {
   ];
 
   static List<ShadowData> shadowDataList = [
-    ShadowData(spread: 3, blur: 4, direction: 0, distance: 0, opacity: 0.5),
-    ShadowData(spread: 3, blur: 0, direction: 0, distance: 0, opacity: 0.5),
-    ShadowData(spread: 3, blur: 4, direction: 135, distance: 3, opacity: 0.5),
-    ShadowData(spread: 0, blur: 0, direction: 135, distance: 3, opacity: 0.5),
-    ShadowData(spread: 0, blur: 0, direction: 90, distance: 3, opacity: 0.5),
-    ShadowData(spread: 0, blur: 0, direction: 45, distance: 3, opacity: 0.5),
+    ShadowData(spread: 30, blur: 4, direction: 0, distance: 0, opacity: 0.5),
+    ShadowData(spread: 30, blur: 0, direction: 0, distance: 0, opacity: 0.5),
+    ShadowData(spread: 30, blur: 4, direction: 135, distance: 10, opacity: 0.5),
+    ShadowData(spread: 0, blur: 0, direction: 135, distance: 10, opacity: 0.5),
+    ShadowData(spread: 0, blur: 0, direction: 90, distance: 10, opacity: 0.5),
+    //ShadowData(spread: 0, blur: 0, direction: 45, distance: 3, opacity: 0.5),
+    ShadowData(spread: 0, blur: 0, direction: 90, distance: 0, opacity: 1.0, title: 'custom'),
 
     //   ShadowData(spread: 3, blur: 4, direction: 0, distance: 0),
     //   ShadowData(spread: 3, blur: 0, direction: 0, distance: 0),
