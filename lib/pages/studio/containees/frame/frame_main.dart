@@ -230,7 +230,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         //FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
           //print('2FrameMain onComplete----------------------------------------------');
-          //model.save();
+          model.save();
           logger.info('onComplete');
           _sendEvent?.sendEvent(model);
           BookMainPage.miniMenuNotifier!.set(true);
@@ -613,7 +613,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       model.posY.set((update.position.dy + LayoutConst.stikerOffset / 2) / applyScale, save: false);
       model.width.set(update.size.width / applyScale, save: false);
       model.height.set(update.size.height / applyScale, save: false);
-      model.save();
+      //model.save();
 
       //logger.finest('after save widthxheight = ${model.width.value}x${model.height.value}');
     }
