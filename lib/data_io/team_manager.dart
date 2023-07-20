@@ -8,6 +8,7 @@ import 'package:creta03/pages/login_page.dart';
 
 class TeamManager extends CretaManager {
   TeamModel? currentTeam;
+
   List<TeamModel> teamModelList = [];
   Map<String, List<UserPropertyModel>> teamMemberMap = {};
 
@@ -34,13 +35,12 @@ class TeamManager extends CretaManager {
   Future<bool> createTeam({
     required bool createAndSetToCurrent,
     required String username,
-    required String userId,
+    required String userEmail,
   }) async {
     TeamModel teamModel = TeamModel.withName(
       name: '$username Team',
-      owner: userId,
+      owner: userEmail,
       isPublicProfile: false,
-      managers: [userId],
     );
     try {
       await createToDB(teamModel);
@@ -83,7 +83,7 @@ class TeamManager extends CretaManager {
         if (teamModelList.contains(team) == false) {
           teamModelList.add(team);
           teamMemberMap[teamMid] =
-              await getTeamMembers(tmMid: teamMid, memberMids: teamModelList.last.teamMembers);
+              await getTeamMembers(tmMid: teamMid, memberEmailList: teamModelList.last.teamMembers);
         }
       }
     } catch (error) {
@@ -101,13 +101,13 @@ class TeamManager extends CretaManager {
   }
 
   Future<List<UserPropertyModel>> getTeamMembers(
-      {required String tmMid, required List<String> memberMids, int limit = 99}) async {
+      {required String tmMid, required List<String> memberEmailList, int limit = 99}) async {
     List<UserPropertyModel> teamMemberList = [];
 
     try {
-      for (var memberMid in memberMids) {
+      for (var memberEmail in memberEmailList) {
         UserPropertyModel? memberProperty =
-            await LoginPage.userPropertyManagerHolder!.getMemberProperty(email: memberMid);
+            await LoginPage.userPropertyManagerHolder!.getMemberProperty(email: memberEmail);
         if (memberProperty != null) {
           teamMemberList.add(memberProperty);
         }

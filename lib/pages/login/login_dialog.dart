@@ -172,7 +172,7 @@ class _LoginDialogState extends State<LoginDialog> {
           await LoginPage.teamManagerHolder!.createTeam(
             createAndSetToCurrent: true,
             username: AccountManager.currentLoginUser.name,
-            userId: model.mid,
+            userEmail: model.email,
           );
           await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: model);
           LoginDialog.setShowExtraInfoDialog(true);
@@ -228,7 +228,7 @@ class _LoginDialogState extends State<LoginDialog> {
         await LoginPage.teamManagerHolder!.createTeam(
           createAndSetToCurrent: true,
           username: nickname,
-          userId: model.mid,
+          userEmail: model.email,
         );
         await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: model);
         LoginDialog.setShowExtraInfoDialog(true);
