@@ -230,7 +230,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
                     mainAxisSpacing: 8.0,
                     crossAxisSpacing: 8.0,
                     crossAxisCount: 2,
-                    childAspectRatio: 160.0 / 95.0,
+                    childAspectRatio: 160 / 95,
                   ),
                   scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {

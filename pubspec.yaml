@@ -115,7 +115,6 @@ dependencies:
   just_audio_background: ^0.0.1-beta.10
   flutter_excel: ^1.0.1
   collection: ^1.17.1
-  just_audio: ^0.9.34
   audio_session: ^0.1.16
   audio_video_progress_bar: ^1.0.1
 
@@ -127,6 +126,7 @@ dependencies:
   flutter_webrtc: ^0.9.35
   random_string: ^2.3.1
   audio_service: ^0.18.10
+  just_audio: ^0.9.34
 
 
 dev_dependencies:

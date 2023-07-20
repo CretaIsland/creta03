@@ -14,14 +14,14 @@ import 'package:rxdart/rxdart.dart';
 
 import '../../../../data_io/contents_manager.dart';
 import '../../../../player/music/creta_music_mixin.dart';
-import '../../book_main_page.dart';
 import 'music_common.dart';
 
 class LeftMenuMusic extends StatefulWidget {
   final ContentsManager contentsManager;
+  final ContentsModel? model;
   final Size size;
 
-  const LeftMenuMusic({super.key, required this.contentsManager, required this.size});
+  const LeftMenuMusic({super.key, required this.contentsManager, this.model, required this.size});
 
   @override
   State<LeftMenuMusic> createState() => LeftMenuMusicState();
@@ -35,32 +35,54 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
-    _playlist.add(AudioSource.uri(Uri.parse(model.remoteUrl!),
+    _playlist.insert(
+      0,
+      AudioSource.uri(
+        Uri.parse(model.remoteUrl!),
         tag: MediaItem(
           id: model.mid,
           title: model.name,
           artist: 'Unknown artist',
           artUri: Uri.parse(url),
-        )));
+        ),
+      ),
+    );
   }
 
-  void removeMusic(int index) {
-    _playlist.removeAt(index);
+  int findIndex(ContentsModel model) {
+    int index = 0;
+    for (var e in _playlist.children) {
+      if (e is ProgressiveAudioSource) {
+        ProgressiveAudioSource source = e;
+        if (model.remoteUrl == source.uri.toString()) {
+          return index;
+        }
+        index++;
+      }
+    }
+    return -1;
+  }
+
+  void removeMusic(ContentsModel model) {
+    debugPrint('removeMusic(${model.remoteUrl!})');
+    int index = findIndex(model);
+    if (index >= 0) {
+      _playlist.removeAt(index);
+    }
   }
 
   final _playlist = ConcatenatingAudioSource(
-    children: [
-      AudioSource.uri(
-        Uri.parse("asset:///assets/audio/canone.mp3"),
-        tag: MediaItem(
-          id: '01',
-          title: "Variatio 3 a 1 Clav.Canone all'Unisuono'",
-          artist: 'Kimiko Ishizaka',
-          artUri: Uri.parse(
-              'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
-        ),
-      ),
-    ],
+    children: [],
+    // AudioSource.uri(
+    //   Uri.parse("asset:///assets/audio/canone.mp3"),
+    //   tag: MediaItem(
+    //     id: '01',
+    //     title: "Variatio 3 a 1 Clav.Canone all'Unisuono'",
+    //     artist: 'Kimiko Ishizaka',
+    //     artUri: Uri.parse(
+    //         'https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg'),
+    //   ),
+    // ),
   );
 
   Future<void> afterBuild() async {
@@ -182,15 +204,39 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(metadata.artist!),
-                          IconButton(
-                            icon: const Icon(Icons.remove_circle_outline_sharp),
-                            iconSize: 24.0,
-                            onPressed: () {
-                              final playerState = snapshot.data;
-                              if (playerState != null) {
-                                final playerIndex = playerState.currentIndex;
-                                removeMusic(playerIndex);
-                              }
+                          // IconButton(
+                          //   icon: const Icon(Icons.remove_circle_outline_sharp),
+                          //   iconSize: 24.0,
+                          //   onPressed: () {
+                          //     final playerState = snapshot.data;
+                          //     if (playerState != null) {
+                          //       final playerIndex = playerState.currentIndex;
+                          //       removeMusic(playerIndex);
+                          //     }
+                          //   },
+                          // ),
+                          StreamBuilder<LoopMode>(
+                            stream: _audioPlayer.loopModeStream,
+                            builder: (context, snapshot) {
+                              final loopMode = snapshot.data ?? LoopMode.off;
+                              var icons = [
+                                Icon(Icons.repeat, color: Colors.black87.withOpacity(0.5)),
+                                const Icon(Icons.repeat, color: Colors.black87),
+                                const Icon(Icons.repeat_one, color: Colors.black87),
+                              ];
+                              const cycleModes = [
+                                LoopMode.off,
+                                LoopMode.all,
+                                LoopMode.one,
+                              ];
+                              final index = cycleModes.indexOf(loopMode);
+                              return IconButton(
+                                icon: icons[index],
+                                onPressed: () {
+                                  _audioPlayer.setLoopMode(cycleModes[
+                                      (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+                                },
+                              );
                             },
                           ),
                         ],
@@ -262,59 +308,53 @@ class ControlButtons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        StreamBuilder<LoopMode>(
-          stream: audioPlayer.loopModeStream,
-          builder: (context, snapshot) {
-            final loopMode = snapshot.data ?? LoopMode.off;
+        // Opens volumn slider dialog
+        StreamBuilder<double>(
+          stream: audioPlayer.volumeStream,
+          builder: ((context, snapshot) {
+            double volumeValue = snapshot.data ?? 0.0;
             var icons = [
-              Icon(Icons.repeat, color: Colors.black87.withOpacity(0.5)),
-              const Icon(Icons.repeat, color: Colors.black87),
-              const Icon(Icons.repeat_one, color: Colors.black87),
+              const Icon(Icons.volume_off),
+              const Icon(Icons.volume_down),
+              const Icon(Icons.volume_up),
             ];
-            const cycleModes = [
-              LoopMode.off,
-              LoopMode.all,
-              LoopMode.one,
-            ];
-            final index = cycleModes.indexOf(loopMode);
+            int index = 0;
+            if (volumeValue > 0.0 && volumeValue <= 0.5) {
+              index = 1;
+            } else if (volumeValue > 0.5) {
+              index = 2;
+            }
             return IconButton(
               icon: icons[index],
               onPressed: () {
-                audioPlayer.setLoopMode(
-                    cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+                showSliderDialog(
+                  context: context,
+                  title: "볼륨 조절",
+                  divisions: 10,
+                  min: 0.0,
+                  max: 1.0,
+                  stream: audioPlayer.volumeStream,
+                  onChanged: audioPlayer.setVolume,
+                );
               },
             );
-          },
+          }),
         ),
-        // Opens volumn slider dialog
-        // IconButton(
-        //   icon: const Icon(Icons.volume_up),
-        //   onPressed: () {
-        //     showSliderDialog(
-        //       context: context,
-        //       title: "볼륨 조절",
-        //       divisions: 10,
-        //       min: 0.0,
-        //       max: 1.0,
-        //       stream: audioPlayer.volumeStream,
-        //       onChanged: audioPlayer.setVolume,
-        //     );
-        //   },
-        // ),
         StreamBuilder<SequenceState?>(
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(
-              icon: const Icon(Icons.skip_previous),
-              // onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
-              onPressed: () {
-                BookMainPage.containeeNotifier!.setFrameClick(true);
-                if (audioPlayer.hasPrevious) {
-                  logger.info('invoked previous song');
-                  audioPlayer.seekToPrevious;
-                } else {
-                  null;
-                }
-              }),
+            icon: const Icon(Icons.skip_previous),
+            onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
+            // onPressed: () {
+            //   BookMainPage.containeeNotifier!.setFrameClick(true);
+            //   if (audioPlayer.hasPrevious) {
+            //     logger.info('invoked previous song');
+            //     audioPlayer.seekToPrevious;
+            //   } else {
+            //     null;
+            //   }
+            // },
+          ),
         ),
         StreamBuilder<PlayerState>(
           stream: audioPlayer.playerStateStream,
@@ -357,6 +397,12 @@ class ControlButtons extends StatelessWidget {
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_next),
             onPressed: audioPlayer.hasNext ? audioPlayer.seekToNext : null,
+            // onPressed: () {
+            //   if (audioPlayer.hasNext) {
+            //     audioPlayer.seekToNext;
+            //     BookMainPage.containeeNotifier!.setFrameClick(true)}
+            //   }
+            // },
           ),
         ),
         StreamBuilder<double>(
