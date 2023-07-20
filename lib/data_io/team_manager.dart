@@ -32,7 +32,7 @@ class TeamManager extends CretaManager {
     }
   }
 
-  Future<bool> createTeam({
+  Future<TeamModel?> createTeam({
     required bool createAndSetToCurrent,
     required String username,
     required String userEmail,
@@ -41,14 +41,15 @@ class TeamManager extends CretaManager {
       name: '$username Team',
       owner: userEmail,
       isPublicProfile: false,
+      managers: [userEmail],
     );
     try {
       await createToDB(teamModel);
     } catch (error) {
       logger.info('createTeam error >> $error');
-      return false;
+      return null;
     }
-    return true;
+    return teamModel;
   }
 
   Future<int> getTeam() async {

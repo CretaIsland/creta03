@@ -51,6 +51,8 @@ class UserPropertyModel extends CretaModel {
   late BookType usingPurpose;
   late int birthYear;
 
+  late String channelId;
+
   @override
   List<Object?> get props => [
         ...super.props,
@@ -83,6 +85,7 @@ class UserPropertyModel extends CretaModel {
         agreeUsingMarketing,
         usingPurpose,
         birthYear,
+        channelId,
       ];
 
   UserPropertyModel(String pmid) : super(pmid: pmid, type: ExModelType.user, parent: '') {
@@ -120,6 +123,7 @@ class UserPropertyModel extends CretaModel {
     agreeUsingMarketing = false;
     usingPurpose = BookType.none;
     birthYear = 1950;
+    channelId = '';
   }
 
   UserPropertyModel.withName({
@@ -158,6 +162,7 @@ class UserPropertyModel extends CretaModel {
     this.agreeUsingMarketing = false,
     this.usingPurpose = BookType.none,
     this.birthYear = 1950,
+    this.channelId = '',
   })
   : super(pmid: '', type: ExModelType.user, parent: parentMid);
 
@@ -202,6 +207,7 @@ class UserPropertyModel extends CretaModel {
     agreeUsingMarketing = map['agreeUsingMarketing'] ?? false;
     usingPurpose = BookType.fromInt(map['usingPurpose'] ?? 0);
     birthYear = map['birthYear'] ?? 1950;
+    channelId = map['channelId'] ?? '';
   }
 
   @override
@@ -243,6 +249,7 @@ class UserPropertyModel extends CretaModel {
         'agreeUsingMarketing' : agreeUsingMarketing,
         'usingPurpose' : usingPurpose.index,
         'birthYear': birthYear,
+        'channelId': channelId,
       }.entries);
   }
 }

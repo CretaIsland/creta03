@@ -15,6 +15,8 @@ class TeamModel extends CretaModel {
   late List<String> removedMembers;
   late List<String> teamMembers;
 
+  late String channelId;
+
   @override
   List<Object?> get props => [
         ...super.props,
@@ -26,7 +28,8 @@ class TeamModel extends CretaModel {
         managers,
         generalMembers,
         removedMembers,
-        teamMembers
+        teamMembers,
+        channelId,
       ];
 
   TeamModel(String pmid) : super(pmid: pmid, type: ExModelType.team, parent: '') {
@@ -39,19 +42,25 @@ class TeamModel extends CretaModel {
     generalMembers = [];
     removedMembers = [];
     teamMembers = [];
+    channelId = '';
   }
 
-  TeamModel.withName(
-      {required this.name,
-      required this.owner,
-      this.profileImg = '',
-      this.channelBannerImg = '',
-      this.isPublicProfile = true,
-      this.managers = const [],
-      this.generalMembers = const [],
-      this.removedMembers = const []})
-      : super(pmid: '', type: ExModelType.team, parent: '') {
-    teamMembers = [owner, ...managers, ...generalMembers];
+  TeamModel.withName({
+    required this.name,
+    required this.owner,
+    this.profileImg = '',
+    this.channelBannerImg = '',
+    this.isPublicProfile = true,
+    this.managers = const [],
+    this.generalMembers = const [],
+    this.removedMembers = const [],
+    this.channelId = '',
+  }) : super(pmid: '', type: ExModelType.team, parent: '') {
+    if (managers.contains(owner)) {
+      teamMembers = [...managers, ...generalMembers];
+    } else {
+      teamMembers = [owner, ...managers, ...generalMembers];
+    }
   }
 
   @override
@@ -66,6 +75,7 @@ class TeamModel extends CretaModel {
     generalMembers = CretaUtils.jsonStringToList(map['generalMembers'] ?? '[]');
     removedMembers = CretaUtils.jsonStringToList(map['removedMembers'] ?? '[]');
     teamMembers = List<String>.from(map['teamMembers'] ?? "[]" as List);
+    channelId = map['channelId'] ?? '';
   }
 
   @override
@@ -81,6 +91,7 @@ class TeamModel extends CretaModel {
         'generalMembers': CretaUtils.listToString(generalMembers),
         'removedMembers': CretaUtils.listToString(removedMembers),
         'teamMembers': teamMembers,
+        'channelId': channelId,
       }.entries);
   }
 }

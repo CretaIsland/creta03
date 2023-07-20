@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -20,6 +21,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 import '../../design_system/text_field/creta_text_field.dart';
 import '../../model/app_enums.dart';
 import '../../model/user_property_model.dart';
+import '../../model/team_model.dart';
 
 enum LoginPageState {
   login, // 로그인
@@ -225,11 +227,12 @@ class _LoginDialogState extends State<LoginDialog> {
         logger.finest('register end');
         UserPropertyModel model =
             LoginPage.userPropertyManagerHolder!.getNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
-        await LoginPage.teamManagerHolder!.createTeam(
+        TeamModel? teamModel = await LoginPage.teamManagerHolder!.createTeam(
           createAndSetToCurrent: true,
           username: nickname,
           userEmail: model.email,
         );
+		    model.teams = (teamModel == null) ? [] : [teamModel.mid];
         await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: model);
         LoginDialog.setShowExtraInfoDialog(true);
         if (kDebugMode) print('_signup.widget.doAfterSignup?.call()');
@@ -552,7 +555,7 @@ class _LoginDialogState extends State<LoginDialog> {
           ),
           const SizedBox(height: 64),
           Padding(
-            padding: const EdgeInsets.fromLTRB(111, 0, 110, 0),
+            padding: (!kDebugMode) ? const EdgeInsets.fromLTRB(111, 0, 110, 0) : const EdgeInsets.fromLTRB(111 - 20, 0, 110 - 20, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -560,7 +563,7 @@ class _LoginDialogState extends State<LoginDialog> {
                   '아직 회원이 아니신가요?',
                   style: CretaFont.bodyESmall.copyWith(color: CretaColor.text[700]),
                 ),
-                Expanded(child: Container()),
+                //Expanded(child: Container()),
                 InkWell(
                   onTap: () {
                     setState(() {
@@ -572,6 +575,30 @@ class _LoginDialogState extends State<LoginDialog> {
                     style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
                   ),
                 ),
+                if (kDebugMode)
+                  InkWell(
+                    onTap: () {
+                      String email = _loginEmailTextEditingController.text;
+                      List<String> emailList = [email];
+                      LoginPage.userPropertyManagerHolder!.getUserPropertyFromEmail(emailList).then((value) {
+                        if (value.isEmpty) {
+                          showSnackBar(widget.context, '가입된 회원이 아닙니다');
+                          return;
+                        }
+                        UserPropertyModel userModel = value[0];
+                        // creta_user_property
+                        LoginPage.userPropertyManagerHolder!.removeToDB(userModel.mid);
+                        // hycop_users
+                        String hycopUserId = 'user=${userModel.parentMid.value}';
+                        UserPropertyManager manager = UserPropertyManager(tableName: 'hycop_users');
+                        manager.removeToDB(hycopUserId);
+                      });
+                    },
+                    child: Text(
+                      '회원탈퇴',
+                      style: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]),
+                    ),
+                  ),
               ],
             ),
           ),
