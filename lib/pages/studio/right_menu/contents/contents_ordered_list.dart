@@ -120,14 +120,24 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             onDroppedFile: (modelList) {
               String frameId = widget.contentsManager.frameModel.mid;
               logger.info(' dropzone contents added to $frameId');
-              ContentsManager.createContents(widget.frameManager, modelList,
-                  widget.contentsManager.frameModel, widget.contentsManager.pageModel,
-                  isResizeFrame: false, onUploadComplete: (model) {
-                if (model.isMusic()) {
-                  GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[model.mid];
-                  musicKey!.currentState!.addMusic(model);
-                }
-              });
+              ContentsManager.createContents(
+                widget.frameManager,
+                modelList,
+                widget.contentsManager.frameModel,
+                widget.contentsManager.pageModel,
+                isResizeFrame: false,
+                onUploadComplete: (currentModel) {
+                  if (currentModel.isMusic()) {
+                    debugPrint('--------------add song to playlist');
+                    GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                    if (musicKey != null) {
+                      musicKey.currentState?.addMusic(currentModel);
+                    } else {
+                      logger.severe('musicKey  is null');
+                    }
+                  }
+                },
+              );
             },
             child: ReorderableListView.builder(
               //scrollController: scrollController,
@@ -138,6 +148,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                   if (newIndex > oldIndex) {
                     newIndex -= 1;
                   }
+
                   final ContentsModel pushedOne = items[newIndex] as ContentsModel;
                   ContentsModel movedOne = items[oldIndex] as ContentsModel;
 
@@ -420,6 +431,13 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             });
             widget.contentsManager.removeContents(context, model).then((value) {
               if (value == true) {
+                String frameId = widget.contentsManager.frameModel.mid;
+                GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                if (musicKey != null) {
+                  musicKey.currentState?.removeMusic(model);
+                } else {
+                  logger.severe('musicKey is null');
+                }
                 showSnackBar(context, model.name + CretaLang.contentsDeleted);
               }
             });
