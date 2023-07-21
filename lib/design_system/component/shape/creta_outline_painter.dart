@@ -10,6 +10,7 @@ class CretaOutLinePainter extends CustomPainter {
   final Color strokeColor;
   final ShapeType shapeType;
   final BorderCapType borderCap;
+  final double applyScale;
 
   late Paint shadowPaint;
 
@@ -18,6 +19,7 @@ class CretaOutLinePainter extends CustomPainter {
     this.strokeWidth = 0,
     this.strokeColor = Colors.transparent,
     this.borderCap = BorderCapType.round,
+    this.applyScale = 1.0,
   });
 
   Paint getPaint(Size size) {
@@ -44,15 +46,17 @@ class CretaOutLinePathPainter extends CretaOutLinePainter {
     double strokeWidth = 0,
     Color strokeColor = Colors.transparent,
     BorderCapType borderCap = BorderCapType.round,
+    double applyScale = 1.0,
   }) : super(
             shapeType: shapeType,
             strokeWidth: strokeWidth,
             strokeColor: strokeColor,
-            borderCap: borderCap);
+            borderCap: borderCap,
+            applyScale: applyScale);
 
   @override
   void paint(Canvas canvas, Size size) {
-    Path path = ShapePath.getClip(shapeType, Size(size.width, size.height));
+    Path path = ShapePath.getClip(shapeType, Size(size.width, size.height), applyScale: applyScale);
 
     canvas.drawPath(path, getPaint(size));
   }

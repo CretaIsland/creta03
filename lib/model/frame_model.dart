@@ -153,7 +153,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderType = UndoAble<int>(0, mid, 'borderType');
     borderCap = UndoAble<BorderCapType>(BorderCapType.round, mid, 'borderCap');
     shadowColor = UndoAble<Color>(Colors.black, mid, 'shadowColor');
-    shadowOpacity = UndoAble<double>(0.5, mid, 'shadowOpacity');
+    shadowOpacity = UndoAble<double>(0.0, mid, 'shadowOpacity');
     shadowSpread = UndoAble<double>(0, mid, 'shadowSpread');
     shadowBlur = UndoAble<double>(0, mid, 'shadowBlur');
     shadowDirection = UndoAble<double>(90, mid, 'shadowDirection');
@@ -191,7 +191,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderType = UndoAble<int>(0, mid, 'borderType');
     borderCap = UndoAble<BorderCapType>(BorderCapType.none, mid, 'borderCap');
     shadowColor = UndoAble<Color>(Colors.black, mid, 'shadowColor');
-    shadowOpacity = UndoAble<double>(0.5, mid, 'shadowOpacity');
+    shadowOpacity = UndoAble<double>(0.0, mid, 'shadowOpacity');
     shadowSpread = UndoAble<double>(0, mid, 'shadowSpread');
     shadowBlur = UndoAble<double>(0, mid, 'shadowBlur');
     shadowDirection = UndoAble<double>(90, mid, 'shadowDirection');
@@ -310,8 +310,9 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderWidth.set((map["borderWidth"] ?? 0), save: false, noUndo: true);
     borderType.set((map["borderType"] ?? 0), save: false, noUndo: true);
     borderCap.set(BorderCapType.fromInt(map["borderCap"] ?? 0), save: false, noUndo: true);
-    shadowColor.set(CretaUtils.string2Color(map["shadowColor"]) ?? Colors.black, save: false, noUndo: true);
-    shadowOpacity.set((map["shadowOpacity"] ?? 0), save: false, noUndo: true);
+    shadowColor.set(CretaUtils.string2Color(map["shadowColor"]) ?? Colors.black,
+        save: false, noUndo: true);
+    shadowOpacity.set((map["shadowOpacity"] ?? 0.0), save: false, noUndo: true);
     shadowSpread.set((map["shadowSpread"] ?? 0), save: false, noUndo: true);
     shadowBlur.set((map["shadowBlur"] ?? 0), save: false, noUndo: true);
     shadowDirection.set((map["shadowDirection"] ?? 90), save: false, noUndo: true);

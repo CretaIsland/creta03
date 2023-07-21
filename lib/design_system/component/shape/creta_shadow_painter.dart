@@ -11,6 +11,7 @@ class CretaShadowPainter extends CustomPainter {
   final double blurSpread;
   final double opacity;
   final Color shadowColor;
+  final double applyScale;
 
   late Paint shadowPaint;
 
@@ -21,6 +22,7 @@ class CretaShadowPainter extends CustomPainter {
     required this.blurSpread,
     required this.opacity,
     required this.shadowColor,
+    this.applyScale = 1.0,
   });
 
   Paint getPaint(Size size) {
@@ -54,6 +56,7 @@ class CretaShadowPathPainter extends CretaShadowPainter {
     required double pblurSpread,
     required double popacity,
     required Color pshadowColor,
+    required double applyScale,
   }) : super(
           shapeType: pshapeType,
           offset: poffset,
@@ -61,6 +64,7 @@ class CretaShadowPathPainter extends CretaShadowPainter {
           blurSpread: pblurSpread,
           opacity: popacity,
           shadowColor: pshadowColor,
+          applyScale: applyScale,
         );
 
   @override
@@ -75,8 +79,9 @@ class CretaShadowPathPainter extends CretaShadowPainter {
   }
 
   Path getPath(Size size) {
-    return ShapePath.getClip(shapeType, Size(size.width + blurSpread, size.height + blurSpread),
-        offset: offset);
+    return ShapePath.getClip(
+        shapeType, Size(size.width, /* + blurSpread,*/ size.height /* + blurSpread */),
+        offset: offset, applyScale: applyScale);
   }
 }
 
@@ -161,8 +166,8 @@ class CretaShadowRRectPainter extends CretaShadowPainter {
           Rect.fromLTWH(
             offset.dx,
             offset.dy,
-            size.width + blurSpread,
-            size.height + blurSpread,
+            size.width, // + blurSpread,
+            size.height, // + blurSpread,
           ),
           Radius.zero,
         );
@@ -171,8 +176,8 @@ class CretaShadowRRectPainter extends CretaShadowPainter {
         Rect.fromLTWH(
           offset.dx,
           offset.dy,
-          size.width + blurSpread,
-          size.height + blurSpread,
+          size.width, // + blurSpread,
+          size.height, // + blurSpread,
         ),
         Radius.circular(radiusLeftTop),
       );
@@ -181,8 +186,8 @@ class CretaShadowRRectPainter extends CretaShadowPainter {
       Rect.fromLTWH(
         offset.dx,
         offset.dy,
-        size.width + blurSpread,
-        size.height + blurSpread,
+        size.width, //+ blurSpread,
+        size.height, // + blurSpread,
       ),
       bottomLeft: Radius.circular(lb),
       bottomRight: Radius.circular(rb),

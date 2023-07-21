@@ -1,3 +1,4 @@
+import 'package:creta03/design_system/component/shape/shape_path.dart';
 import 'package:flutter/material.dart';
 
 /// [CretaDiagonalBottomLeft], can be used with [ClipPath] widget, and clips the widget diagonally
@@ -7,12 +8,13 @@ class CretaDiagonalBottomLeft extends CustomClipper<Path> {
   CretaDiagonalBottomLeft({this.delta = 1.0});
   @override
   Path getClip(Size size) {
-    final path = Path()
-      ..lineTo(0.0, size.height - 2.5 * delta)
-      ..lineTo(size.width, size.height)
-      ..lineTo(size.width, 0.0)
-      ..close();
-    return path;
+    return ShapePath.digonalBottomLeft(size, delta);
+    // final path = Path()
+    //   ..lineTo(0.0, size.height - 2.5 * delta)
+    //   ..lineTo(size.width, size.height)
+    //   ..lineTo(size.width, 0.0)
+    //   ..close();
+    // return path;
   }
 
   @override
@@ -27,12 +29,13 @@ class CretaDiagonalBottomRight extends CustomClipper<Path> {
   CretaDiagonalBottomRight({this.delta = 1.0});
   @override
   Path getClip(Size size) {
-    final path = Path()
-      ..lineTo(0.0, size.height)
-      ..lineTo(size.width, size.height - 2.5 * delta)
-      ..lineTo(size.width, 0.0)
-      ..close();
-    return path;
+    return ShapePath.digonalBottomRight(size, delta);
+    // final path = Path()
+    //   ..lineTo(0.0, size.height)
+    //   ..lineTo(size.width, size.height - 2.5 * delta)
+    //   ..lineTo(size.width, 0.0)
+    //   ..close();
+    // return path;
   }
 
   @override

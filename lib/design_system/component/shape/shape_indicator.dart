@@ -7,6 +7,7 @@ import '../../../model/app_enums.dart';
 import '../../creta_color.dart';
 import 'creta_arrow_clipper.dart';
 import 'creta_digonal_clipper.dart';
+import 'creta_dir_clipper.dart';
 import 'creta_oval_clipper.dart';
 import 'creta_poligon_clipper.dart';
 import 'creta_slider_cut_clipper.dart';
@@ -165,7 +166,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.waveTopLeft:
         return Center(
           child: ClipPath(
-            clipper: CretaWaveClipper1(flip: true, reverse: true, delta: height / 10),
+            clipper: CretaWaveClipper1(flip: true, reverse: true, delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -176,7 +177,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.waveTopRight:
         return Center(
           child: ClipPath(
-            clipper: CretaWaveClipper1(flip: false, reverse: true, delta: height / 10),
+            clipper: CretaWaveClipper1(flip: false, reverse: true, delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -187,7 +188,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.waveBottomLeft:
         return Center(
           child: ClipPath(
-            clipper: CretaWaveClipper1(flip: true, reverse: false, delta: height / 10),
+            clipper: CretaWaveClipper1(flip: true, reverse: false, delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -198,7 +199,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.waveBottomRight:
         return Center(
           child: ClipPath(
-            clipper: CretaWaveClipper1(flip: false, reverse: false, delta: height / 10),
+            clipper: CretaWaveClipper1(flip: false, reverse: false, delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -209,7 +210,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.ovalTop:
         return Center(
           child: ClipPath(
-            clipper: CreaOvalTopClipper(delta: height / 10),
+            clipper: CreaOvalTopClipper(delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -220,7 +221,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.ovalBottom:
         return Center(
           child: ClipPath(
-            clipper: CretaOvalBottomClipper(delta: height / 10),
+            clipper: CretaOvalBottomClipper(delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -231,7 +232,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.ovalLeft:
         return Center(
           child: ClipPath(
-            clipper: CretaOvalLeftClipper(delta: height / 10),
+            clipper: CretaOvalLeftClipper(delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -242,7 +243,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.ovalRight:
         return Center(
           child: ClipPath(
-            clipper: CretaOvalRightClipper(delta: height / 10),
+            clipper: CretaOvalRightClipper(delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -294,7 +295,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
             ),
           ),
         );
-      case ShapeType.arrowBottom:
+      case ShapeType.arrowDown:
         return Center(
           child: ClipPath(
             clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.BOTTOM),
@@ -330,7 +331,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.dirUp:
         return Center(
           child: ClipPath(
-            clipper: CretaArrowClipper(height * 0.33, width, CretaEdge.TOP),
+            clipper: CretaDirClipper(height * 0.33, CretaEdge.TOP),
             child: Container(
               height: width,
               width: height,
@@ -338,10 +339,10 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
             ),
           ),
         );
-      case ShapeType.dirBottom:
+      case ShapeType.dirDown:
         return Center(
           child: ClipPath(
-            clipper: CretaArrowClipper(height * 0.33, width, CretaEdge.BOTTOM),
+            clipper: CretaDirClipper(height * 0.33, CretaEdge.BOTTOM),
             child: Container(
               height: width,
               width: height,
@@ -352,7 +353,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.dirLeft:
         return Center(
           child: ClipPath(
-            clipper: CretaArrowClipper(width * 0.33, height, CretaEdge.LEFT),
+            clipper: CretaDirClipper(width * 0.33, CretaEdge.LEFT),
             child: Container(
               height: width,
               width: height,
@@ -363,7 +364,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.dirRight:
         return Center(
           child: ClipPath(
-            clipper: CretaArrowClipper(width * 0.33, height, CretaEdge.RIGHT),
+            clipper: CretaDirClipper(width * 0.33, CretaEdge.RIGHT),
             child: Container(
               height: width,
               width: height,
@@ -396,7 +397,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.digonalBottomLeft:
         return Center(
           child: ClipPath(
-            clipper: CretaDiagonalBottomLeft(delta: height / 10),
+            clipper: CretaDiagonalBottomLeft(delta: height / 100),
             child: Container(
               height: width,
               width: height,
@@ -407,7 +408,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.digonalBottomRight:
         return Center(
           child: ClipPath(
-            clipper: CretaDiagonalBottomRight(delta: height / 10),
+            clipper: CretaDiagonalBottomRight(delta: height / 100),
             child: Container(
               height: width,
               width: height,

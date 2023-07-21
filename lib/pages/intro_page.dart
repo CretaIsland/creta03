@@ -100,7 +100,7 @@ class _IntroPageState extends State<IntroPage> {
                 height: videoHeight,
                 child: Center(
                   child: Text(
-                    "Version 0.2.14 (hycop 0.2.14) - build 20230720-18",
+                    "Version 0.2.15 (hycop 0.2.14) - build 20230721-21",
                     style: CretaFont.headlineLarge,
                   ),
                 ),

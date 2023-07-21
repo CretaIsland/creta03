@@ -135,7 +135,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
-    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!,false);
+    _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!, false);
     if (widget.model.shouldInsideRotate()) {
       return Transform(
         key: GlobalObjectKey('Transform${widget.model.mid}'),
@@ -164,7 +164,8 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       child: _textureBox(model).asShape(
         mid: model.mid,
         shapeType: model.shape.value,
-        offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
+        offset: CretaUtils.getShadowOffset(
+            model.shadowDirection.value, model.shadowOffset.value * applyScale),
         shadowBlur: model.shadowBlur.value,
         shadowSpread: model.shadowSpread.value * applyScale,
         shadowOpacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
@@ -176,6 +177,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
         radiusRightBottom: model.getRealradiusRightBottom(applyScale),
         radiusRightTop: model.getRealradiusRightTop(applyScale),
         borderCap: model.borderCap.value,
+        applyScale: applyScale,
       ),
     );
   }

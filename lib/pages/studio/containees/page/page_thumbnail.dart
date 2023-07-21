@@ -271,9 +271,9 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
 
                       //logger.info('frameManager.orderMapIterator-------${frameModel.name.value}');
                       double frameWidth =
-                          (model.width.value + model.shadowSpread.value) * applyScale;
+                          (model.width.value /* + model.shadowSpread.value */) * applyScale;
                       double frameHeight =
-                          (model.height.value + model.shadowSpread.value) * applyScale;
+                          (model.height.value /* + model.shadowSpread.value */) * applyScale;
 
                       Widget frameBox = SizedBox(
                         width: frameWidth,
