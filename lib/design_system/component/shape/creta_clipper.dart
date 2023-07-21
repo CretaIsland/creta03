@@ -635,7 +635,6 @@ CustomPaint _getShadowWidget({
   required double radiusRightTop,
   required double applyScale,
 }) {
-  print('==============$shapeType');
   if (shapeType == ShapeType.rectangle || shapeType == ShapeType.none) {
     return CustomPaint(
       key: ValueKey('shadow-$mid'),
