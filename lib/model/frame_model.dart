@@ -367,13 +367,9 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   }
 
   bool isNoShadow() {
-    if (0 == shadowBlur.value &&
-        0 == shadowDirection.value &&
-        0 == shadowOffset.value &&
-        0 == shadowSpread.value) {
+    if (0 == shadowOffset.value && 0 == shadowSpread.value) {
       return true;
     }
-
     return false;
   }
 

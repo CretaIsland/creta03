@@ -57,7 +57,6 @@ class CretaOutLinePathPainter extends CretaOutLinePainter {
   @override
   void paint(Canvas canvas, Size size) {
     Path path = ShapePath.getClip(shapeType, Size(size.width, size.height), applyScale: applyScale);
-
     canvas.drawPath(path, getPaint(size));
   }
 

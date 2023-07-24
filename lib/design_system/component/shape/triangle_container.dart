@@ -9,19 +9,22 @@ class TriangleContainer extends StatelessWidget {
   final double height;
   final Color color;
   final Widget? child;
+  final double applyScale;
 
   TriangleContainer({
     super.key,
     required this.width,
     required this.height,
     required this.color,
+    required this.applyScale,
     this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: CretaClipper(mid: ShapeType.triangle.name, shapeType: ShapeType.triangle),
+      clipper: CretaClipper(
+          mid: ShapeType.triangle.name, shapeType: ShapeType.triangle, applyScale: applyScale),
       child: Container(
         width: width,
         height: height,

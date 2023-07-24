@@ -119,6 +119,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
             width: width,
             height: height,
             color: CretaColor.text[300]!,
+            applyScale: 1.0,
             // child: Image.asset(
             //   'assets/creta_default.png',
             //   fit: BoxFit.cover,
@@ -136,6 +137,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
             //   'assets/creta_default.png',
             //   fit: BoxFit.cover,
             // ),
+            applyScale: 1.0,
           ),
         );
 
@@ -149,6 +151,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
             //   'assets/noise.png',
             //   fit: BoxFit.cover,
             // ),
+            applyScale: 1.0,
           ),
         );
 
@@ -287,7 +290,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.arrowUp:
         return Center(
           child: ClipPath(
-            clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.TOP),
+            clipper: CretaArrowClipper(height * 0.33, width * 0.6, CretaEdge.TOP),
             child: Container(
               height: width,
               width: height,
@@ -298,7 +301,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.arrowDown:
         return Center(
           child: ClipPath(
-            clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.BOTTOM),
+            clipper: CretaArrowClipper(height * 0.33, width * 0.6, CretaEdge.BOTTOM),
             child: Container(
               height: width,
               width: height,
@@ -309,7 +312,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.arrowLeft:
         return Center(
           child: ClipPath(
-            clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.LEFT),
+            clipper: CretaArrowClipper(width * 0.33, height * 0.6, CretaEdge.LEFT),
             child: Container(
               height: width,
               width: height,
@@ -320,7 +323,7 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
       case ShapeType.arrowRight:
         return Center(
           child: ClipPath(
-            clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.RIGHT),
+            clipper: CretaArrowClipper(width * 0.33, height * 0.6, CretaEdge.RIGHT),
             child: Container(
               height: width,
               width: height,

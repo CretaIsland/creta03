@@ -293,7 +293,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.arrowUp) {
       return ClipPath(
-        clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.TOP),
+        clipper: CretaArrowClipper(height * 0.33, width * 0.6, CretaEdge.TOP),
         child: SizedBox(
           height: height,
           width: width,
@@ -304,7 +304,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.arrowDown) {
       return ClipPath(
-        clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.BOTTOM),
+        clipper: CretaArrowClipper(height * 0.33, width * 0.6, CretaEdge.BOTTOM),
         child: SizedBox(
           height: height,
           width: width,
@@ -315,7 +315,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.arrowLeft) {
       return ClipPath(
-        clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.LEFT),
+        clipper: CretaArrowClipper(width * 0.33, height * 0.6, CretaEdge.LEFT),
         child: SizedBox(
           height: height,
           width: width,
@@ -326,7 +326,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.arrowRight) {
       return ClipPath(
-        clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.RIGHT),
+        clipper: CretaArrowClipper(width * 0.33, height * 0.6, CretaEdge.RIGHT),
         child: SizedBox(
           height: height,
           width: width,
@@ -471,6 +471,7 @@ extension ShapeWidget<T extends Widget> on T {
       clipper: CretaClipper(
         mid: mid,
         shapeType: shapeType,
+        applyScale: applyScale,
       ),
       //child: this,
       child: SizedBox(
@@ -509,11 +510,12 @@ extension ShapeWidget<T extends Widget> on T {
 class CretaClipper extends CustomClipper<Path> {
   final String mid;
   final ShapeType shapeType;
-  CretaClipper({required this.mid, required this.shapeType});
+  final double applyScale;
+  CretaClipper({required this.mid, required this.shapeType, required this.applyScale});
 
   @override
   Path getClip(Size size) {
-    return ShapePath.getClip(shapeType, size);
+    return ShapePath.getClip(shapeType, size, applyScale: applyScale);
   }
 
   @override

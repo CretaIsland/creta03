@@ -9,19 +9,21 @@ class DiamondContainer extends StatelessWidget {
   final double height;
   final Color color;
   final Widget? child;
+  final double applyScale;
 
   const DiamondContainer({
     Key? key,
     required this.width,
     required this.height,
     required this.color,
+    required this.applyScale,
     this.child,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: CretaClipper(mid: ShapeType.diamond.name, shapeType: ShapeType.diamond),
+      clipper: CretaClipper(mid: ShapeType.diamond.name, shapeType: ShapeType.diamond, applyScale: applyScale),
       child: Container(
         width: width,
         height: height,

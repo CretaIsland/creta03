@@ -374,13 +374,13 @@ class ShapePath {
   static Path arrowUp(Size size,
       {Offset offset = Offset.zero, double? triangleHeight, double? rectangleClipHeight}) {
     triangleHeight ??= size.height * 0.33;
-    rectangleClipHeight ??= size.width * 0.75;
+    rectangleClipHeight ??= size.width * 0.6;
     var path = Path();
     path.moveTo(0.0 + offset.dx, triangleHeight + offset.dy);
-    path.lineTo(size.width - rectangleClipHeight + offset.dx, triangleHeight + offset.dy);
-    path.lineTo(size.width - rectangleClipHeight + offset.dx, size.height + offset.dy);
-    path.lineTo(rectangleClipHeight + offset.dx, size.height + offset.dy);
-    path.lineTo(rectangleClipHeight + offset.dx, triangleHeight + offset.dy);
+    path.lineTo((size.width - rectangleClipHeight) / 2 + offset.dx, triangleHeight + offset.dy);
+    path.lineTo((size.width - rectangleClipHeight) / 2 + offset.dx, size.height + offset.dy);
+    path.lineTo((size.width + rectangleClipHeight) / 2 + offset.dx, size.height + offset.dy);
+    path.lineTo((size.width + rectangleClipHeight) / 2 + offset.dx, triangleHeight + offset.dy);
     path.lineTo(size.width + offset.dx, triangleHeight + offset.dy);
     path.lineTo(size.width / 2 + offset.dx, 0 + offset.dy);
     path.close();
@@ -397,15 +397,18 @@ class ShapePath {
 
   static Path arrowRight(Size size,
       {Offset offset = Offset.zero, double? triangleHeight, double? rectangleClipHeight}) {
-    triangleHeight ??= size.height * 0.33;
-    rectangleClipHeight ??= size.width * 0.75;
+
+    triangleHeight ??= size.width * 0.33;
+    rectangleClipHeight ??= size.height * 0.6;
     var path = Path();
-    path.moveTo(rectangleClipHeight + offset.dx, 0 + offset.dy);
-    path.lineTo(rectangleClipHeight + offset.dx, size.height - rectangleClipHeight + offset.dy);
-    path.lineTo(0 + offset.dx, size.height - rectangleClipHeight + offset.dy);
-    path.lineTo(0 + offset.dx, rectangleClipHeight + offset.dy);
-    path.lineTo(rectangleClipHeight + offset.dx, rectangleClipHeight + offset.dy);
-    path.lineTo(rectangleClipHeight + offset.dx, size.height + offset.dy);
+    path.moveTo(size.width - triangleHeight + offset.dx, 0 + offset.dy);
+    path.lineTo(size.width - triangleHeight + offset.dx,
+        (size.height - rectangleClipHeight) / 2 + offset.dy);
+    path.lineTo(0 + offset.dx, (size.height - rectangleClipHeight) / 2 + offset.dy);
+    path.lineTo(0 + offset.dx, (size.height + rectangleClipHeight) / 2 + offset.dy);
+    path.lineTo(size.width - triangleHeight + offset.dx,
+        (size.height + rectangleClipHeight) / 2 + offset.dy);
+    path.lineTo(size.width - triangleHeight + offset.dx, size.height + offset.dy);
     path.lineTo(size.width + offset.dx, size.height / 2 + offset.dy);
     // path.moveTo(0.0, rectangleClipHeight);
     // path.lineTo(size.width - triangleHeight, rectangleClipHeight);
@@ -421,14 +424,16 @@ class ShapePath {
   static Path arrowDown(Size size,
       {Offset offset = Offset.zero, double? triangleHeight, double? rectangleClipHeight}) {
     triangleHeight ??= size.height * 0.33;
-    rectangleClipHeight ??= size.width * 0.75;
+    rectangleClipHeight ??= size.width * 0.6;
     var path = Path();
-    path.moveTo(0.0 + offset.dx, rectangleClipHeight + offset.dy);
-    path.lineTo(size.width - rectangleClipHeight + offset.dx, rectangleClipHeight + offset.dy);
-    path.lineTo(size.width - rectangleClipHeight + offset.dx, 0 + offset.dy);
-    path.lineTo(rectangleClipHeight + offset.dx, 0 + offset.dy);
-    path.lineTo(rectangleClipHeight + offset.dx, rectangleClipHeight + offset.dy);
-    path.lineTo(size.width + offset.dx, rectangleClipHeight + offset.dy);
+    path.moveTo(0.0 + offset.dx, size.height - triangleHeight + offset.dy);
+    path.lineTo((size.width - rectangleClipHeight) / 2 + offset.dx,
+        size.height - triangleHeight + offset.dy);
+    path.lineTo((size.width - rectangleClipHeight) / 2 + offset.dx, 0 + offset.dy);
+    path.lineTo((size.width + rectangleClipHeight) / 2 + offset.dx, 0 + offset.dy);
+    path.lineTo((size.width + rectangleClipHeight) / 2 + offset.dx,
+        size.height - triangleHeight + offset.dy);
+    path.lineTo(size.width + offset.dx, size.height - triangleHeight + offset.dy);
     path.lineTo(size.width / 2 + offset.dx, size.height + offset.dy);
     path.close();
     return path;
@@ -436,16 +441,15 @@ class ShapePath {
 
   static Path arrowLeft(Size size,
       {Offset offset = Offset.zero, double? triangleHeight, double? rectangleClipHeight}) {
-    triangleHeight ??= size.height * 0.33;
-    rectangleClipHeight ??= size.width * 0.75;
+    triangleHeight ??= size.width * 0.33;
+    rectangleClipHeight ??= size.height * 0.6;
     var path = Path();
-    path.moveTo(size.width - rectangleClipHeight + offset.dx, 0 + offset.dy);
-    path.lineTo(size.width - rectangleClipHeight + offset.dx,
-        size.height - rectangleClipHeight + offset.dy);
-    path.lineTo(size.width + offset.dx, size.height - rectangleClipHeight + offset.dy);
-    path.lineTo(size.width + offset.dx, rectangleClipHeight + offset.dy);
-    path.lineTo(size.width - rectangleClipHeight + offset.dx, rectangleClipHeight + offset.dy);
-    path.lineTo(size.width - rectangleClipHeight + offset.dx, size.height + offset.dy);
+    path.moveTo(triangleHeight + offset.dx, 0 + offset.dy);
+    path.lineTo(triangleHeight + offset.dx, (size.height - rectangleClipHeight) / 2 + offset.dy);
+    path.lineTo(size.width + offset.dx, (size.height - rectangleClipHeight) / 2 + offset.dy);
+    path.lineTo(size.width + offset.dx, (size.height + rectangleClipHeight) / 2 + offset.dy);
+    path.lineTo(triangleHeight + offset.dx, (size.height + rectangleClipHeight) / 2 + offset.dy);
+    path.lineTo(triangleHeight + offset.dx, size.height + offset.dy);
     path.lineTo(0 + offset.dx, size.height / 2 + offset.dy);
     // path.moveTo(0.0, size.height / 2);
     // path.lineTo(triangleHeight, size.height);
@@ -473,7 +477,7 @@ class ShapePath {
   }
 
   static Path dirRight(Size size, {Offset offset = Offset.zero, double? triangleHeight}) {
-    triangleHeight ??= size.height * 0.33;
+    triangleHeight ??= size.width * 0.33;
     var path = Path();
     path.moveTo(size.width - triangleHeight + offset.dx, 0 + offset.dy);
     path.lineTo(0 + offset.dx, 0 + offset.dy);
@@ -498,7 +502,7 @@ class ShapePath {
   }
 
   static Path dirLeft(Size size, {Offset offset = Offset.zero, double? triangleHeight}) {
-    triangleHeight ??= size.height * 0.33;
+    triangleHeight ??= size.width * 0.33;
     var path = Path();
     path.moveTo(triangleHeight + offset.dx, 0 + offset.dy);
     path.lineTo(size.width + offset.dx, 0 + offset.dy);

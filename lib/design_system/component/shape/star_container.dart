@@ -11,19 +11,22 @@ class StarContainer extends StatelessWidget {
   final double height;
   final Color color;
   final Widget? child;
+  final double applyScale;
 
   StarContainer({
     super.key,
     required this.width,
     required this.height,
     required this.color,
+    required this.applyScale,
     this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: CretaClipper(mid: ShapeType.star.name, shapeType: ShapeType.star),
+      clipper:
+          CretaClipper(mid: ShapeType.star.name, shapeType: ShapeType.star, applyScale: applyScale),
       child: Container(
         width: width,
         height: height,
