@@ -17,6 +17,7 @@ import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../routes.dart';
 import '../creta_color.dart';
@@ -92,6 +93,8 @@ class Snippet {
     Widget? additionals,
     void Function()? invalidate,
   }) {
+    double maxWidth = MediaQuery.of(context).size.width;
+    //double maxHeight = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
         floatingActionButton:
@@ -102,7 +105,14 @@ class Snippet {
             ? GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onLongPressDown: ((details) {
+                  if (details.localPosition.dx <
+                      LayoutConst.leftMenuWidth + LayoutConst.menuStickWidth) return;
+                  if (details.localPosition.dx > maxWidth - LayoutConst.rightMenuWidth) return;
+                  if (details.localPosition.dy < LayoutConst.topMenuBarHeight) return;
+
                   //LastClicked.clickedOutSide(details.globalPosition);
+                  // 양쪽 메뉴 Area 의 click 을 무시해주어야 한다.
+
                   if (BookMainPage.outSideClick == false) {
                     BookMainPage.outSideClick = true;
                     return;

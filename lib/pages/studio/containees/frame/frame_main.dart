@@ -300,8 +300,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         null,
       );
 
-      double frameWidth = (model.width.value + model.shadowSpread.value) * applyScale;
-      double frameHeight = (model.height.value + model.shadowSpread.value) * applyScale;
+      double frameWidth = (model.width.value /* + model.shadowSpread.value */) * applyScale;
+      double frameHeight = (model.height.value /* + model.shadowSpread.value */) * applyScale;
       double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
       double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 

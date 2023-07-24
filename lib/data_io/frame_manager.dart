@@ -440,7 +440,7 @@ class FrameManager extends CretaManager {
       if (frame.isShow.value == false) {
         continue;
       }
-      if (frame.frameType == FrameType.text) {
+      if (frame.frameType != FrameType.none) {
         continue;
       }
       return frame;

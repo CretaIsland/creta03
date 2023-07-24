@@ -5,6 +5,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../model/app_enums.dart';
 import 'creta_arrow_clipper.dart';
 import 'creta_digonal_clipper.dart';
+import 'creta_dir_clipper.dart';
 import 'creta_outline_painter.dart';
 import 'creta_oval_clipper.dart';
 import 'creta_poligon_clipper.dart';
@@ -32,69 +33,77 @@ extension ShapeWidget<T extends Widget> on T {
     required BorderCapType borderCap,
     double strokeWidth = 0,
     Color strokeColor = Colors.transparent,
+    required double applyScale,
   }) {
     return LayoutBuilder(builder: (context, constraints) {
       double width = constraints.maxWidth;
       double height = constraints.maxHeight;
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          _getShadowWidget(
-            mid: mid,
-            shapeType: shapeType,
-            offset: offset,
-            shadowBlur: shadowBlur,
-            shadowSpread: shadowSpread,
-            shadowOpacity: shadowOpacity,
-            shadowColor: shadowColor,
-            // width: width,
-            // height: height,
-            radiusLeftBottom: radiusLeftBottom,
-            radiusLeftTop: radiusLeftTop,
-            radiusRightBottom: radiusRightBottom,
-            radiusRightTop: radiusRightTop,
-          ),
-          _getBaseWidget(
-            mid: mid,
-            shapeType: shapeType,
-            width: width - shadowSpread,
-            height: height - shadowSpread,
-            radiusLeftBottom: radiusLeftBottom,
-            radiusLeftTop: radiusLeftTop,
-            radiusRightBottom: radiusRightBottom,
-            radiusRightTop: radiusRightTop,
-          ),
-          strokeWidth > 0
-              ? Container(
-                  alignment: Alignment.center,
-                  width: width - shadowSpread,
-                  height: height - shadowSpread,
-                  child: IgnorePointer(
-                    child: _getOutlineWidget(
-                      mid: mid,
-                      shapeType: shapeType,
-                      strokeWidth: strokeWidth,
-                      strokeColor: strokeColor,
-                      borderCap: borderCap,
-                      width: width - shadowSpread,
-                      height: height - shadowSpread,
-                      radiusLeftBottom: radiusLeftBottom,
-                      radiusLeftTop: radiusLeftTop,
-                      radiusRightBottom: radiusRightBottom,
-                      radiusRightTop: radiusRightTop,
+      return OverflowBox(
+        maxHeight: height + shadowSpread,
+        maxWidth: width + shadowSpread,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            _getShadowWidget(
+              mid: mid,
+              shapeType: shapeType,
+              offset: offset,
+              shadowBlur: shadowBlur,
+              shadowSpread: shadowSpread,
+              shadowOpacity: shadowOpacity,
+              shadowColor: shadowColor,
+              // width: width,
+              // height: height,
+              radiusLeftBottom: radiusLeftBottom,
+              radiusLeftTop: radiusLeftTop,
+              radiusRightBottom: radiusRightBottom,
+              radiusRightTop: radiusRightTop,
+              applyScale: applyScale,
+            ),
+            _getBaseWidget(
+              mid: mid,
+              shapeType: shapeType,
+              width: width, // - shadowSpread,
+              height: height, // - shadowSpread,
+              radiusLeftBottom: radiusLeftBottom,
+              radiusLeftTop: radiusLeftTop,
+              radiusRightBottom: radiusRightBottom,
+              radiusRightTop: radiusRightTop,
+              applyScale: applyScale,
+            ),
+            strokeWidth > 0
+                ? Container(
+                    alignment: Alignment.center,
+                    width: width, // - shadowSpread,
+                    height: height, // - shadowSpread,
+                    child: IgnorePointer(
+                      child: _getOutlineWidget(
+                        mid: mid,
+                        shapeType: shapeType,
+                        strokeWidth: strokeWidth,
+                        strokeColor: strokeColor,
+                        borderCap: borderCap,
+                        width: width, // - shadowSpread,
+                        height: height, // - shadowSpread,
+                        radiusLeftBottom: radiusLeftBottom,
+                        radiusLeftTop: radiusLeftTop,
+                        radiusRightBottom: radiusRightBottom,
+                        radiusRightTop: radiusRightTop,
+                        applyScale: applyScale,
+                      ),
                     ),
-                  ),
-                )
-              // ? CustomPaint(
-              //     size: Size(width, height),
-              //     painter: CretaOutLinePathPainter(
-              //       shapeType: shapeType,
-              //       strokeWidth: strokeWidth,
-              //       strokeColor: strokeColor,
-              //     ),
-              //   )
-              : const SizedBox.shrink(),
-        ],
+                  )
+                // ? CustomPaint(
+                //     size: Size(width, height),
+                //     painter: CretaOutLinePathPainter(
+                //       shapeType: shapeType,
+                //       strokeWidth: strokeWidth,
+                //       strokeColor: strokeColor,
+                //     ),
+                //   )
+                : const SizedBox.shrink(),
+          ],
+        ),
       );
     });
   }
@@ -108,6 +117,7 @@ extension ShapeWidget<T extends Widget> on T {
     required double radiusRightTop,
     required double width,
     required double height,
+    required double applyScale,
   }) {
     if (shapeType == ShapeType.none || shapeType == ShapeType.rectangle) {
       //print('width=$width, height=$height');
@@ -153,7 +163,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.sideCut) {
       return ClipPath(
-        clipper: CretaSideCutClipper(),
+        clipper: CretaSideCutClipper(applyScale: applyScale),
         child: SizedBox(
           height: height,
           width: width,
@@ -164,7 +174,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.waveTopLeft) {
       return ClipPath(
-        clipper: CretaWaveClipper1(flip: true, reverse: true, delta: height / 10),
+        clipper: CretaWaveClipper1(flip: true, reverse: true, delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -175,7 +185,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.waveTopRight) {
       return ClipPath(
-        clipper: CretaWaveClipper1(flip: false, reverse: true, delta: height / 10),
+        clipper: CretaWaveClipper1(flip: false, reverse: true, delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -186,7 +196,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.waveBottomLeft) {
       return ClipPath(
-        clipper: CretaWaveClipper1(flip: true, reverse: false, delta: height / 10),
+        clipper: CretaWaveClipper1(flip: true, reverse: false, delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -197,7 +207,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.waveBottomRight) {
       return ClipPath(
-        clipper: CretaWaveClipper1(flip: false, reverse: false, delta: height / 10),
+        clipper: CretaWaveClipper1(flip: false, reverse: false, delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -208,7 +218,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.ovalTop) {
       return ClipPath(
-        clipper: CreaOvalTopClipper(delta: height / 10),
+        clipper: CreaOvalTopClipper(delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -219,7 +229,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.ovalBottom) {
       return ClipPath(
-        clipper: CretaOvalBottomClipper(delta: height / 10),
+        clipper: CretaOvalBottomClipper(delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -230,7 +240,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.ovalLeft) {
       return ClipPath(
-        clipper: CretaOvalLeftClipper(delta: height / 10),
+        clipper: CretaOvalLeftClipper(delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -241,7 +251,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.ovalRight) {
       return ClipPath(
-        clipper: CretaOvalRightClipper(delta: height / 10),
+        clipper: CretaOvalRightClipper(delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -283,7 +293,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.arrowUp) {
       return ClipPath(
-        clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.TOP),
+        clipper: CretaArrowClipper(height * 0.33, width * 0.6, CretaEdge.TOP),
         child: SizedBox(
           height: height,
           width: width,
@@ -292,9 +302,9 @@ extension ShapeWidget<T extends Widget> on T {
       );
     }
 
-    if (shapeType == ShapeType.arrowBottom) {
+    if (shapeType == ShapeType.arrowDown) {
       return ClipPath(
-        clipper: CretaArrowClipper(height * 0.33, width * 0.75, CretaEdge.BOTTOM),
+        clipper: CretaArrowClipper(height * 0.33, width * 0.6, CretaEdge.BOTTOM),
         child: SizedBox(
           height: height,
           width: width,
@@ -305,7 +315,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.arrowLeft) {
       return ClipPath(
-        clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.LEFT),
+        clipper: CretaArrowClipper(width * 0.33, height * 0.6, CretaEdge.LEFT),
         child: SizedBox(
           height: height,
           width: width,
@@ -316,7 +326,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.arrowRight) {
       return ClipPath(
-        clipper: CretaArrowClipper(width * 0.33, height * 0.75, CretaEdge.RIGHT),
+        clipper: CretaArrowClipper(width * 0.33, height * 0.6, CretaEdge.RIGHT),
         child: SizedBox(
           height: height,
           width: width,
@@ -327,7 +337,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.dirUp) {
       return ClipPath(
-        clipper: CretaArrowClipper(height * 0.33, width, CretaEdge.TOP),
+        clipper: CretaDirClipper(height * 0.33, CretaEdge.TOP),
         child: SizedBox(
           height: height,
           width: width,
@@ -336,9 +346,9 @@ extension ShapeWidget<T extends Widget> on T {
       );
     }
 
-    if (shapeType == ShapeType.dirBottom) {
+    if (shapeType == ShapeType.dirDown) {
       return ClipPath(
-        clipper: CretaArrowClipper(height * 0.33, width, CretaEdge.BOTTOM),
+        clipper: CretaDirClipper(height * 0.33, CretaEdge.BOTTOM),
         child: SizedBox(
           height: height,
           width: width,
@@ -349,7 +359,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.dirLeft) {
       return ClipPath(
-        clipper: CretaArrowClipper(width * 0.33, height, CretaEdge.LEFT),
+        clipper: CretaDirClipper(width * 0.33, CretaEdge.LEFT),
         child: SizedBox(
           height: height,
           width: width,
@@ -360,7 +370,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.dirRight) {
       return ClipPath(
-        clipper: CretaArrowClipper(width * 0.33, height, CretaEdge.RIGHT),
+        clipper: CretaDirClipper(width * 0.33, CretaEdge.RIGHT),
         child: SizedBox(
           height: height,
           width: width,
@@ -393,7 +403,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.digonalBottomLeft) {
       return ClipPath(
-        clipper: CretaDiagonalBottomLeft(delta: height / 10),
+        clipper: CretaDiagonalBottomLeft(delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -404,7 +414,7 @@ extension ShapeWidget<T extends Widget> on T {
 
     if (shapeType == ShapeType.digonalBottomRight) {
       return ClipPath(
-        clipper: CretaDiagonalBottomRight(delta: height / 10),
+        clipper: CretaDiagonalBottomRight(delta: height / 100),
         child: SizedBox(
           height: height,
           width: width,
@@ -461,6 +471,7 @@ extension ShapeWidget<T extends Widget> on T {
       clipper: CretaClipper(
         mid: mid,
         shapeType: shapeType,
+        applyScale: applyScale,
       ),
       //child: this,
       child: SizedBox(
@@ -499,11 +510,12 @@ extension ShapeWidget<T extends Widget> on T {
 class CretaClipper extends CustomClipper<Path> {
   final String mid;
   final ShapeType shapeType;
-  CretaClipper({required this.mid, required this.shapeType});
+  final double applyScale;
+  CretaClipper({required this.mid, required this.shapeType, required this.applyScale});
 
   @override
   Path getClip(Size size) {
-    return ShapePath.getClip(shapeType, size);
+    return ShapePath.getClip(shapeType, size, applyScale: applyScale);
   }
 
   @override
@@ -525,6 +537,7 @@ Widget _getOutlineWidget({
   required double radiusLeftTop,
   required double radiusRightBottom,
   required double radiusRightTop,
+  required double applyScale,
 }) {
   if (shapeType == ShapeType.rectangle || shapeType == ShapeType.none) {
     //return LayoutBuilder(builder: (context, constraints) {
@@ -603,6 +616,7 @@ Widget _getOutlineWidget({
       strokeWidth: strokeWidth,
       strokeColor: strokeColor,
       borderCap: borderCap,
+      applyScale: applyScale,
     ),
   );
 }
@@ -621,6 +635,7 @@ CustomPaint _getShadowWidget({
   required double radiusLeftTop,
   required double radiusRightBottom,
   required double radiusRightTop,
+  required double applyScale,
 }) {
   if (shapeType == ShapeType.rectangle || shapeType == ShapeType.none) {
     return CustomPaint(
@@ -693,6 +708,7 @@ CustomPaint _getShadowWidget({
       pblurSpread: shadowSpread,
       popacity: shadowOpacity,
       pshadowColor: shadowColor,
+      applyScale: applyScale,
     ),
   );
 }

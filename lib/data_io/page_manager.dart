@@ -25,7 +25,10 @@ class PageManager extends CretaManager {
   Map<String, GlobalObjectKey> thumbKeyMap = {};
   final bool isPublishedMode;
 
-  PageManager({String tableName = 'creta_page', this.isPublishedMode = false,}) : super(tableName, null) {
+  PageManager({
+    String tableName = 'creta_page',
+    this.isPublishedMode = false,
+  }) : super(tableName, null) {
     saveManagerHolder?.registerManager('page', this);
   }
   @override
@@ -237,12 +240,21 @@ class PageManager extends CretaManager {
   }
 
   String? getNextMid() {
-    bool matched = false;
     double selectedOrder = getSelectedOrder();
-    logger.info('selectedOrder=$selectedOrder');
-    if (selectedOrder < 0) {
-      return null;
+    String? retval = _getNextMid(selectedOrder, false);
+    if (retval != null) {
+      return retval;
     }
+    // 처음부터 다시 시작한다.
+    return _getNextMid(-1, true);
+  }
+
+  String? _getNextMid(double selectedOrder, bool startToFirst) {
+    bool matched = startToFirst;
+    logger.info('selectedOrder=$selectedOrder');
+    // if (selectedOrder < 0) {
+    //   return null;
+    // }
     Iterable<double> keys = keyEntries().toList();
     for (double ele in keys) {
       if (matched == true) {
@@ -265,7 +277,7 @@ class PageManager extends CretaManager {
 
         return getNthMid(ele);
       }
-      if (ele == selectedOrder) {
+      if (selectedOrder > 0 && ele == selectedOrder) {
         matched = true;
         continue;
       }
@@ -279,11 +291,21 @@ class PageManager extends CretaManager {
   }
 
   String? getPrevMid() {
-    bool matched = false;
     double selectedOrder = getSelectedOrder();
-    if (selectedOrder < 0) {
-      return null;
+    String? retval = _getPrevMid(selectedOrder, false);
+    if (retval != null) {
+      return retval;
     }
+    // 처음부터 다시 시작한다.
+    return _getPrevMid(-1, true);
+  }
+
+  String? _getPrevMid(double selectedOrder, bool startToFirst) {
+    bool matched = startToFirst;
+    double selectedOrder = getSelectedOrder();
+    // if (selectedOrder < 0) {
+    //   return null;
+    // }
     logger.info('selectedOrder=$selectedOrder');
     Iterable<double> keys = keyEntries().toList().reversed;
     for (double ele in keys) {
@@ -301,7 +323,7 @@ class PageManager extends CretaManager {
         }
         return getNthMid(ele);
       }
-      if (ele == selectedOrder) {
+      if (selectedOrder > 0 && ele == selectedOrder) {
         matched = true;
         continue;
       }

@@ -1,44 +1,20 @@
-import 'dart:math' as math;
+import 'package:creta03/design_system/component/shape/shape_path.dart';
 import 'package:flutter/widgets.dart';
 
 /// Clip widget in star shape
 class CretaStarClipper extends CustomClipper<Path> {
-  CretaStarClipper(this.numberOfPoints);
+  CretaStarClipper(this.numberOfPoints, {this.offset = Offset.zero});
 
   /// The number of points of the star
   final int numberOfPoints;
+  final Offset offset;
 
   @override
   Path getClip(Size size) {
-    double width = size.width;
-
-    double halfWidth = width / 2;
-
-    double bigRadius = halfWidth;
-
-    double radius = halfWidth / 2;
-
-    double degreesPerStep = _degToRad(360 / numberOfPoints) as double;
-
-    double halfDegreesPerStep = degreesPerStep / 2;
-
-    var path = Path();
-
-    double max = 2 * math.pi;
-
-    path.moveTo(width, halfWidth);
-
-    for (double step = 0; step < max; step += degreesPerStep) {
-      path.lineTo(halfWidth + bigRadius * math.cos(step), halfWidth + bigRadius * math.sin(step));
-      path.lineTo(halfWidth + radius * math.cos(step + halfDegreesPerStep),
-          halfWidth + radius * math.sin(step + halfDegreesPerStep));
-    }
-
-    path.close();
-    return path;
+    return ShapePath.polyStar(size, numberOfPoints);
   }
 
-  num _degToRad(num deg) => deg * (math.pi / 180.0);
+  //num _degToRad(num deg) => deg * (math.pi / 180.0);
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {

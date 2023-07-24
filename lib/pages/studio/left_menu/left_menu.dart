@@ -52,6 +52,9 @@ class _LeftMenuState
   double _leftMenuWidth = LayoutConst.leftMenuWidth;
   bool _isButtonSelected(LeftMenuEnum val) => BookMainPage.leftMenuNotifier!.selectedStick == val;
 
+  //double _maxWidth = LayoutConst.leftMenuWidth;
+  double _maxHeight = 600;
+
   @override
   void initState() {
     //super.initAnimation(this);
@@ -94,79 +97,83 @@ class _LeftMenuState
         return SizedBox.shrink();
       }
       _resize();
-      return Container(
-        width: _leftMenuWidth,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.rightBottum),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-                right: 8,
-                top: 8,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if ((_isButtonSelected(LeftMenuEnum.Page) && !isCollapsed) |
-                        (!_isButtonSelected(LeftMenuEnum.Page) && isCollapsed) |
-                        !isCollapsed)
+      return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+        //_maxWidth = constraints.maxWidth;
+        _maxHeight = constraints.maxHeight;
+        return Container(
+          width: _leftMenuWidth,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: StudioSnippet.basicShadow(direction: ShadowDirection.rightBottum),
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if ((_isButtonSelected(LeftMenuEnum.Page) && !isCollapsed) |
+                          (!_isButtonSelected(LeftMenuEnum.Page) && isCollapsed) |
+                          !isCollapsed)
+                        BTN.fill_gray_i_m(
+                          tooltip: CretaStudioLang.wide,
+                          tooltipBg: CretaColor.text[700]!,
+                          icon: Icons.open_in_full_outlined,
+                          iconSize: 14,
+                          onPressed: () async {},
+                        ),
+                      if (_isButtonSelected(LeftMenuEnum.Page))
+                        BTN.fill_gray_i_m(
+                          tooltip: isCollapsed ? CretaStudioLang.open : CretaStudioLang.collapsed,
+                          tooltipBg: CretaColor.text[700]!,
+                          icon: isCollapsed
+                              ? Icons.keyboard_double_arrow_right_outlined
+                              : Icons.keyboard_double_arrow_left_outlined,
+                          onPressed: changeState,
+                        ),
                       BTN.fill_gray_i_m(
-                        tooltip: CretaStudioLang.wide,
+                        tooltip: CretaStudioLang.close,
                         tooltipBg: CretaColor.text[700]!,
-                        icon: Icons.open_in_full_outlined,
-                        iconSize: 14,
-                        onPressed: () async {},
+                        icon: Icons.close_sharp,
+                        onPressed: () async {
+                          //await _animationController.reverse();
+                          widget.onClose.call();
+                        },
                       ),
-                    if (_isButtonSelected(LeftMenuEnum.Page))
-                      BTN.fill_gray_i_m(
-                        tooltip: isCollapsed ? CretaStudioLang.open : CretaStudioLang.collapsed,
-                        tooltipBg: CretaColor.text[700]!,
-                        icon: isCollapsed
-                            ? Icons.keyboard_double_arrow_right_outlined
-                            : Icons.keyboard_double_arrow_left_outlined,
-                        onPressed: changeState,
-                      ),
-                    BTN.fill_gray_i_m(
-                      tooltip: CretaStudioLang.close,
-                      tooltipBg: CretaColor.text[700]!,
-                      icon: Icons.close_sharp,
-                      onPressed: () async {
-                        //await _animationController.reverse();
-                        widget.onClose.call();
-                      },
-                    ),
-                    // super.closeButton(
-                    //     icon: Icons.keyboard_double_arrow_left_outlined,
-                    //     onClose: () {
-                    //       widget.onClose.call();
-                    //     }),
-                  ],
-                )),
-            Positioned(
-                left: isCollapsed ? 24 : 28, // ----- added by Mai 230517 ------
-                top: isCollapsed ? 44 : 24, // ----- added by Mai 230517 ------
-                child: _isButtonSelected(LeftMenuEnum.None)
-                    ? SizedBox.shrink()
-                    : Text(
-                        CretaStudioLang
-                            .menuStick[BookMainPage.leftMenuNotifier!.selectedStick.index],
-                        style: CretaFont.titleLarge)),
-            Positioned(
-              top: 76,
-              left: 0,
-              width: _leftMenuWidth, // ----- added on 230518 ------
-              child: eachWidget(BookMainPage.leftMenuNotifier!.selectedStick),
-            )
-          ],
-          //),
-        ),
-        //).animate().scaleX(alignment: Alignment.centerLeft);
-        // ).animate().scaleX(
-        //     alignment: Alignment.centerLeft,
-        //     delay: Duration.zero,
-        //     duration: Duration(milliseconds: 50));
-      );
+                      // super.closeButton(
+                      //     icon: Icons.keyboard_double_arrow_left_outlined,
+                      //     onClose: () {
+                      //       widget.onClose.call();
+                      //     }),
+                    ],
+                  )),
+              Positioned(
+                  left: isCollapsed ? 24 : 28, // ----- added by Mai 230517 ------
+                  top: isCollapsed ? 44 : 24, // ----- added by Mai 230517 ------
+                  child: _isButtonSelected(LeftMenuEnum.None)
+                      ? SizedBox.shrink()
+                      : Text(
+                          CretaStudioLang
+                              .menuStick[BookMainPage.leftMenuNotifier!.selectedStick.index],
+                          style: CretaFont.titleLarge)),
+              Positioned(
+                top: 76,
+                left: 0,
+                width: _leftMenuWidth, // ----- added on 230518 ------
+                child: eachWidget(BookMainPage.leftMenuNotifier!.selectedStick),
+              )
+            ],
+            //),
+          ),
+          //).animate().scaleX(alignment: Alignment.centerLeft);
+          // ).animate().scaleX(
+          //     alignment: Alignment.centerLeft,
+          //     delay: Duration.zero,
+          //     duration: Duration(milliseconds: 50));
+        );
+      });
     });
   }
 
@@ -189,7 +196,7 @@ class _LeftMenuState
       case LeftMenuEnum.Figure:
         return Container();
       case LeftMenuEnum.Widget:
-        return LeftMenuWidget();
+        return LeftMenuWidget(maxHeight: _maxHeight);
       case LeftMenuEnum.Camera:
         return LeftMenuCamera();
       case LeftMenuEnum.Comment:
