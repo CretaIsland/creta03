@@ -157,6 +157,15 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                   widget.contentsManager.pushReverseOrder(movedOne.mid, pushedOne.mid, "playList",
                       onComplete: () {
                     widget.contentsManager.reOrdering();
+                    if (model != null && model.isMusic()) {
+                      String frameId = widget.contentsManager.frameModel.mid;
+                      GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                      if (musicKey != null) {
+                        musicKey.currentState?.reorderPlaylist(model, oldIndex, newIndex);
+                      } else {
+                        logger.severe('musicKey is null');
+                      }
+                    }
                   });
 
                   // widget.contentsManager.reOrdering().then((value) {
@@ -195,6 +204,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     if (widget.contentsManager.isSelected(model.mid)) {
       _selectedIndex = index;
     }
+
     return Stack(
       key: Key('$index${model.order.value}${model.mid}'),
       children: [
@@ -215,6 +225,15 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     setState(() {
                       _selectedIndex = index;
                       logger.info('ContentsOrderedList $_selectedIndex $index');
+                      if (model.isMusic()) {
+                        String frameId = widget.contentsManager.frameModel.mid;
+                        GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                        if (musicKey != null) {
+                          musicKey.currentState?.selectedSong(model, index);
+                        } else {
+                          logger.severe('musicKey is null');
+                        }
+                      }
                     });
                   }
                 },
@@ -317,25 +336,26 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CretaIconToggleButton(
-          buttonSize: lineHeight,
-          toggleValue: model.mute.value == true,
-          icon1: Icons.volume_off,
-          icon2: Icons.volume_up,
-          buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-          iconColor: model.isShow.value == true ? CretaColor.text[700]! : CretaColor.text[300]!,
-          //tooltip: CretaLang.mute,
-          onPressed: () {
-            if (model.isShow.value == false) return;
+        if (!model.isMusic())
+          CretaIconToggleButton(
+            buttonSize: lineHeight,
+            toggleValue: model.mute.value == true,
+            icon1: Icons.volume_off,
+            icon2: Icons.volume_up,
+            buttonStyle: ToggleButtonStyle.fill_gray_i_m,
+            iconColor: model.isShow.value == true ? CretaColor.text[700]! : CretaColor.text[300]!,
+            //tooltip: CretaLang.mute,
+            onPressed: () {
+              if (model.isShow.value == false) return;
 
-            model.mute.set(!model.mute.value);
-            if (model.mute.value == true) {
-              widget.contentsManager.setSoundOff(mid: model.mid);
-            } else {
-              widget.contentsManager.resumeSound(mid: model.mid);
-            }
-          },
-        ),
+              model.mute.set(!model.mute.value);
+              if (model.mute.value == true) {
+                widget.contentsManager.setSoundOff(mid: model.mid);
+              } else {
+                widget.contentsManager.resumeSound(mid: model.mid);
+              }
+            },
+          ),
         CretaIconToggleButton(
           doToggle: false,
           buttonSize: lineHeight,
@@ -382,6 +402,16 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
             ContentsModel? current = widget.contentsManager.getCurrentModel();
             if (model.isShow.value == false) {
+              if (current != null && model.isMusic()) {
+                debugPrint('=====Hide this song ${model.name} at $index =====');
+                String frameId = widget.contentsManager.frameModel.mid;
+                GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                if (musicKey != null) {
+                  musicKey.currentState?.removeMusic(model);
+                } else {
+                  logger.severe('musicKey is null');
+                }
+              }
               if (current != null && current.mid == model.mid) {
                 // 현재 방송중인 것을 unshow 하려고 한다.
                 if (len > 0) {
@@ -391,6 +421,16 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 }
               }
             } else {
+              if (current != null && model.isMusic()) {
+                debugPrint('=====Unhidden this song ${model.name} at $index =====');
+                String frameId = widget.contentsManager.frameModel.mid;
+                GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                if (musicKey != null) {
+                  musicKey.currentState?.unhiddenMusic(model, index);
+                } else {
+                  logger.severe('musicKey is null');
+                }
+              }
               // show 했는데, current 가 null 이다.
               if (current == null && widget.contentsManager.isEmptySelected()) {
                 if (len > 0) {
@@ -401,6 +441,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 }
               }
             }
+
             //if(current != null && current.mid == model.mid || len <= 2) {
             setState(() {});
             widget.contentsManager.notify();
@@ -536,7 +577,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                         defaultValue: model.copyRight.value,
                         onChanged: (val) {
                           model!.copyRight.set(val);
-                        }))
+                        }),
+                  )
                 : Text(CretaStudioLang.copyWrightList[model.copyRight.value.index],
                     style: dataStyle),
           ],

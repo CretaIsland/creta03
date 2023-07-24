@@ -10,9 +10,11 @@ import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:mini_music_visualizer/mini_music_visualizer.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../../../../data_io/contents_manager.dart';
+import '../../../../design_system/creta_font.dart';
 import '../../../../player/music/creta_music_mixin.dart';
 import 'music_common.dart';
 
@@ -23,6 +25,8 @@ class LeftMenuMusic extends StatefulWidget {
 
   const LeftMenuMusic({super.key, required this.contentsManager, this.model, required this.size});
 
+  void selectedSong(ContentsModel model, int i) {}
+
   @override
   State<LeftMenuMusic> createState() => LeftMenuMusicState();
 }
@@ -30,13 +34,39 @@ class LeftMenuMusic extends StatefulWidget {
 class LeftMenuMusicState extends State<LeftMenuMusic> {
   late AudioPlayer _audioPlayer; // play local audio file
 
-  void addMusic(ContentsModel model) {
+  void addMusic(ContentsModel model) async {
+    Random random = Random();
+    int randomNumber = random.nextInt(100);
+    String url = 'https://picsum.photos/200/?random=$randomNumber';
+
+    if (_audioPlayer.playing) {
+      _audioPlayer.stop();
+    }
+
+    await _playlist.insert(
+      0,
+      AudioSource.uri(
+        Uri.parse(model.remoteUrl!),
+        tag: MediaItem(
+          id: model.mid,
+          title: model.name,
+          artist: 'Unknown artist',
+          artUri: Uri.parse(url),
+        ),
+      ),
+    );
+
+    _audioPlayer.seek(Duration.zero);
+    _audioPlayer.play();
+  }
+
+  void unhiddenMusic(ContentsModel model, int idx) {
     Random random = Random();
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
 
     _playlist.insert(
-      0,
+      idx,
       AudioSource.uri(
         Uri.parse(model.remoteUrl!),
         tag: MediaItem(
@@ -51,9 +81,9 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
 
   int findIndex(ContentsModel model) {
     int index = 0;
-    for (var e in _playlist.children) {
-      if (e is ProgressiveAudioSource) {
-        ProgressiveAudioSource source = e;
+    for (var ele in _playlist.children) {
+      if (ele is ProgressiveAudioSource) {
+        ProgressiveAudioSource source = ele;
         if (model.remoteUrl == source.uri.toString()) {
           return index;
         }
@@ -64,11 +94,23 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
   }
 
   void removeMusic(ContentsModel model) {
-    debugPrint('removeMusic(${model.remoteUrl!})');
+    debugPrint('====RemoveMusic(${model.name})====');
     int index = findIndex(model);
     if (index >= 0) {
       _playlist.removeAt(index);
     }
+  }
+
+  void reorderPlaylist(ContentsModel model, int oldIndex, int newIndex) async {
+    debugPrint('====Reorder song at #$oldIndex to #$newIndex====');
+    await _playlist.move(oldIndex, newIndex);
+
+    if (newIndex == 0) _audioPlayer.seek(Duration.zero, index: newIndex);
+    _audioPlayer.play();
+  }
+
+  void selectedSong(ContentsModel model, int i) {
+    _audioPlayer.seek(Duration.zero, index: i);
   }
 
   final _playlist = ConcatenatingAudioSource(
@@ -159,45 +201,43 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            StreamBuilder<SequenceState?>(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: StreamBuilder<SequenceState?>(
               stream: _audioPlayer.sequenceStateStream,
               builder: (context, snapshot) {
                 final state = snapshot.data;
                 if (state?.sequence.isEmpty ?? true) {
-                  return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Center(
-                            child: SizedBox(
-                          width: 280.0,
-                          height: 280.0,
-                          child: Image.asset('no_image.png', fit: BoxFit.cover),
-                        )),
-                        const SizedBox(height: 8.0),
-                        Text('플레이 리스트에 노래를 추가하세요!', style: Theme.of(context).textTheme.titleLarge),
-                      ]);
+                  return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    SizedBox(
+                      width: 280.0,
+                      height: 280.0,
+                      child: Image.asset('no_image.png', fit: BoxFit.cover),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text('플레이 리스트에 노래를 추가하세요!', style: Theme.of(context).textTheme.titleLarge),
+                  ]);
                 }
                 final metadata = state!.currentSource!.tag as MediaItem;
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Center(
+                      Expanded(
+                        child: Center(
                           child: SizedBox(
-                        width: 280.0,
-                        height: 280.0,
-                        child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
-                      )),
+                            width: 280.0,
+                            height: 280.0,
+                            child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 8.0),
                       Text(metadata.title, style: Theme.of(context).textTheme.titleLarge),
                       Row(
@@ -246,40 +286,184 @@ class LeftMenuMusicState extends State<LeftMenuMusic> {
                 );
               },
             ),
-            const SizedBox(height: 4.0),
-            StreamBuilder<PositionData>(
-              stream: _positionDataStream,
-              builder: (context, snapshot) {
-                final positionData = snapshot.data;
-                return
-                    // SeekBar(
-                    //   duration: positionData?.duration ?? Duration.zero,
-                    //   position: positionData?.position ?? Duration.zero,
-                    //   bufferedPosition: positionData?.bufferedPosition ?? Duration.zero,
-                    //   onChangeEnd: _audioPlayer.seek,
-                    // );
-                    ProgressBar(
-                  barHeight: 4.0,
-                  baseBarColor: CretaColor.bufferedColor.withOpacity(0.24),
-                  bufferedBarColor: CretaColor.bufferedColor,
-                  progressBarColor: Colors.black87,
-                  thumbColor: Colors.black87,
-                  timeLabelTextStyle:
-                      const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
-                  progress: positionData?.position ?? Duration.zero,
-                  buffered: positionData?.bufferedPosition ?? Duration.zero,
-                  total: positionData?.duration ?? Duration.zero,
-                  onSeek: _audioPlayer.seek,
+          ),
+          const SizedBox(height: 4.0),
+          StreamBuilder<PositionData>(
+            stream: _positionDataStream,
+            builder: (context, snapshot) {
+              final positionData = snapshot.data;
+              return ProgressBar(
+                barHeight: 4.0,
+                baseBarColor: CretaColor.bufferedColor.withOpacity(0.24),
+                bufferedBarColor: CretaColor.bufferedColor,
+                progressBarColor: Colors.black87,
+                thumbColor: Colors.black87,
+                timeLabelTextStyle:
+                    const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                progress: positionData?.position ?? Duration.zero,
+                buffered: positionData?.bufferedPosition ?? Duration.zero,
+                total: positionData?.duration ?? Duration.zero,
+                onSeek: _audioPlayer.seek,
+              );
+            },
+          ),
+          ControlButtons(audioPlayer: _audioPlayer),
+          const SizedBox(height: 4.0),
+          // _reorderPlaylist(),
+          _orderPlaylist(),
+        ],
+      ),
+    );
+  }
+
+  Widget _orderPlaylist() {
+    return SingleChildScrollView(
+      child: SizedBox(
+        height: 240.0,
+        child: StreamBuilder<SequenceState?>(
+          stream: _audioPlayer.sequenceStateStream,
+          builder: (context, snapshot) {
+            final state = snapshot.data;
+            final sequence = state?.sequence ?? [];
+            return ListView.builder(
+              itemCount: sequence.length,
+              itemBuilder: (BuildContext context, i) {
+                return Material(
+                  key: ValueKey(sequence[i]),
+                  color: i == state!.currentIndex ? CretaColor.bufferedColor : Colors.transparent,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 24.0),
+                    height: 32.0,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(
+                          width: 32.0,
+                          child: Text(
+                            i < 9 ? '0${i + 1}' : '${i + 1}',
+                            style: CretaFont.bodySmall,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 130.0,
+                          child: Text(
+                            sequence[i].tag.title as String,
+                            maxLines: 1,
+                            style: CretaFont.bodySmall,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 48.0),
+                        // if (i == state.currentIndex)
+                        MiniMusicVisualizer(
+                          color: CretaColor.playedColor,
+                          width: 4,
+                          height: 15,
+                          isPlaying: i == state.currentIndex && _audioPlayer.playing ? true : false,
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
-            ),
-            ControlButtons(audioPlayer: _audioPlayer),
-            const SizedBox.shrink(),
-          ],
+            );
+          },
         ),
       ),
     );
   }
+
+  // Widget _reorderPlaylist() {
+  //   return SingleChildScrollView(
+  //     child: SizedBox(
+  //       height: 240.0,
+  //       child: StreamBuilder<SequenceState?>(
+  //         stream: _audioPlayer.sequenceStateStream,
+  //         builder: (context, snapshot) {
+  //           final state = snapshot.data;
+  //           final sequence = state?.sequence ?? [];
+  //           return ReorderableListView.builder(
+  //             itemCount: sequence.length,
+  //             buildDefaultDragHandles: false,
+  //             onReorder: reorderList,
+  //             itemBuilder: (BuildContext context, i) {
+  //               return Material(
+  //                 key: ValueKey(sequence[i]),
+  //                 color: i == state!.currentIndex ? CretaColor.bufferedColor : Colors.transparent,
+  //                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+  //                 child: Stack(
+  //                   children: [
+  //                     Row(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                       mainAxisSize: MainAxisSize.max,
+  //                       children: [
+  //                         Padding(
+  //                           padding: const EdgeInsets.all(8.0),
+  //                           child: Row(
+  //                             children: [
+  //                               _dragHandler(i),
+  //                               const SizedBox(width: 24.0),
+  //                               GestureDetector(
+  //                                 onTap: () {
+  //                                   _audioPlayer.seek(Duration.zero, index: i);
+  //                                 },
+  //                                 child: Row(
+  //                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                                   children: [
+  //                                     SizedBox(
+  //                                       width: 32.0,
+  //                                       child: Text(
+  //                                         i < 9 ? '0${i + 1}' : '${i + 1}',
+  //                                         style: CretaFont.bodySmall,
+  //                                         textAlign: TextAlign.left,
+  //                                       ),
+  //                                     ),
+  //                                     SizedBox(
+  //                                       width: 130.0,
+  //                                       child: Text(
+  //                                         sequence[i].tag.title as String,
+  //                                         maxLines: 1,
+  //                                         style: CretaFont.bodySmall,
+  //                                         textAlign: TextAlign.left,
+  //                                         overflow: TextOverflow.ellipsis,
+  //                                       ),
+  //                                     ),
+  //                                   ],
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ],
+  //                 ),
+  //               );
+  //             },
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // ReorderableDragStartListener _dragHandler(int index) {
+  //   return ReorderableDragStartListener(
+  //     index: index,
+  //     child: const MouseRegion(
+  //       cursor: SystemMouseCursors.click,
+  //       child: SizedBox(
+  //         width: LayoutConst.contentsListHeight,
+  //         height: LayoutConst.contentsListHeight,
+  //         child: Icon(Icons.menu_outlined, size: 16),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 class PositionData {
@@ -345,15 +529,6 @@ class ControlButtons extends StatelessWidget {
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_previous),
             onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
-            // onPressed: () {
-            //   BookMainPage.containeeNotifier!.setFrameClick(true);
-            //   if (audioPlayer.hasPrevious) {
-            //     logger.info('invoked previous song');
-            //     audioPlayer.seekToPrevious;
-            //   } else {
-            //     null;
-            //   }
-            // },
           ),
         ),
         StreamBuilder<PlayerState>(
@@ -397,12 +572,6 @@ class ControlButtons extends StatelessWidget {
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_next),
             onPressed: audioPlayer.hasNext ? audioPlayer.seekToNext : null,
-            // onPressed: () {
-            //   if (audioPlayer.hasNext) {
-            //     audioPlayer.seekToNext;
-            //     BookMainPage.containeeNotifier!.setFrameClick(true)}
-            //   }
-            // },
           ),
         ),
         StreamBuilder<double>(
