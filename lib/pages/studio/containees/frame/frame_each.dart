@@ -21,7 +21,7 @@ import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
 import '../../../../player/music/creta_music_mixin.dart';
-import '../../left_menu/music/left_menu_music.dart';
+import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
@@ -331,7 +331,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         frameManager, contentsModelList, frameModel, widget.pageModel, isResizeFrame: false,
         onUploadComplete: (model) {
       if (model.isMusic()) {
-        GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[widget.model.mid];
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[widget.model.mid];
         musicKey!.currentState!.addMusic(model);
       }
     });

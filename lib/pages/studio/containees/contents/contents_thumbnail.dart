@@ -21,7 +21,7 @@ import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/text/creta_text_mixin.dart';
-import '../../left_menu/music/left_menu_music.dart';
+import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_getx_controller.dart';
 
 class ContentsThumbnail extends StatefulWidget {
@@ -172,8 +172,8 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               if (contentsCount > 0) {
                 if (widget.frameModel.frameType == FrameType.music) {
                   ContentsModel model = contentsManager.getFirstModel()!;
-                  GlobalObjectKey<LeftMenuMusicState> musicKey =
-                      GlobalObjectKey<LeftMenuMusicState>('Music${model.parentMid.value}');
+                  GlobalObjectKey<MusicPlayerFrameState> musicKey =
+                      GlobalObjectKey<MusicPlayerFrameState>('Music${model.parentMid.value}');
                   musicKeyMap[model.parentMid.value] = musicKey;
                   //print(model.remoteUrl!);
                   //print('widget.applyScale: ${widget.applyScale}');

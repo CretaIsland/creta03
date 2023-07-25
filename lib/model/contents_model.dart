@@ -57,6 +57,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<ImageFilterType> filter;
   late UndoAble<ContentsFitType> fit;
   late UndoAble<ImageAniType> imageAniType;
+  late UndoAble<ContentsPlayerSizeType> big;
 
   //late UndoAble<bool> isDynamicSize; // 동영상의 크기에 맞게 frame 사이즈를 변경해야 하는 경우
 
@@ -199,6 +200,7 @@ class ContentsModel extends CretaModel {
     copyRight = UndoAble<CopyRightType>(CopyRightType.free, mid, 'copyRight');
     filter = UndoAble<ImageFilterType>(ImageFilterType.none, mid, 'filter');
     fit = UndoAble<ContentsFitType>(ContentsFitType.cover, mid, 'fit');
+    big = UndoAble<ContentsPlayerSizeType>(ContentsPlayerSizeType.big, mid, 'big');
     font = UndoAble<String>(CretaFont.fontFamily, mid, 'font');
     fontWeight = UndoAble<int>(400, mid, 'fontWeight');
     isBold = UndoAble<bool>(false, mid, 'isBold');
@@ -257,6 +259,7 @@ class ContentsModel extends CretaModel {
     copyRight = UndoAble<CopyRightType>(srcContents.copyRight.value, mid, 'copyRight');
     filter = UndoAble<ImageFilterType>(srcContents.filter.value, mid, 'filter');
     fit = UndoAble<ContentsFitType>(srcContents.fit.value, mid, 'fit');
+    big = UndoAble<ContentsPlayerSizeType>(srcContents.big.value, mid, 'big');
 
     if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
     if (srcContents.thumbnail != null) thumbnail = srcContents.thumbnail;
@@ -427,6 +430,7 @@ class ContentsModel extends CretaModel {
     copyRight.set(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
     filter.set(ImageFilterType.fromInt(map["filter"] ?? 1), save: false, noUndo: true);
     fit.set(ContentsFitType.fromInt(map["fit"] ?? 1), save: false, noUndo: true);
+    big.set(ContentsPlayerSizeType.fromInt(map["big"] ?? 1), save: false, noUndo: true);
     //isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
     lastModifiedTime = map["lastModifiedTime"] ?? '';
     prevPlayTime = map["prevPlayTime"] ?? '';

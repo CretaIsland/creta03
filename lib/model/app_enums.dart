@@ -188,6 +188,19 @@ enum ContentsFitType {
   static ContentsFitType fromInt(int? val) => ContentsFitType.values[validCheck(val ?? none.index)];
 }
 
+enum ContentsPlayerSizeType {
+  none,
+  big,
+  medium,
+  small,
+  tiny,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static ContentsPlayerSizeType fromInt(int? val) =>
+      ContentsPlayerSizeType.values[validCheck(val ?? none.index)];
+}
+
 // enum BorderPositionType {
 //   none,
 //   outSide,

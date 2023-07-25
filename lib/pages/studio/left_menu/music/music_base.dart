@@ -51,16 +51,4 @@ class _MusicPlayerBaseState extends State<MusicPlayerBase> {
       child: Container(),
     );
   }
-
-  // Widget _removeBtn() {
-  //   return BTN.fill_blue_i_menu(
-  //     tooltip: CretaStudioLang.linkFrameTooltip,
-  //     tooltipFg: CretaColor.text,
-  //     icon: Icons.close,
-  //     decoType: CretaButtonDeco.opacity,
-  //     iconColor: Colors.transparent,
-  //     buttonColor: CretaButtonColor.primary,
-  //     onPressed: () {},
-  //   );
-  // }
 }

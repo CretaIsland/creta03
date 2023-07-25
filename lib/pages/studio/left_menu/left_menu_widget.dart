@@ -1,5 +1,5 @@
 import 'package:creta03/lang/creta_studio_lang.dart';
-import 'package:creta03/pages/studio/left_menu/music/music_framework.dart';
+import 'package:creta03/pages/studio/left_menu/music/left_menu_music.dart';
 import 'package:flutter/material.dart';
 
 import 'clock/left_menu_clock.dart';
@@ -48,7 +48,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
                   dataStyle: dataStyle,
                 ),
                 const SizedBox(height: 24.0),
-                MusicFramework(
+                LeftMenuMusic(
                   title: CretaStudioLang.music,
                   titleStyle: titleStyle,
                   dataStyle: dataStyle,

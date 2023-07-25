@@ -53,7 +53,7 @@ class CretaMusicPlayerWidgetState extends State<CretaMusicWidget> with CretaMusi
             player.acc.updateModel(model);
             logger.info('model updated ${model.name}, ${model.font.value}');
           }
-          logger.fine('Text StreamBuilder<AbsExModel>');
+          logger.fine('Music StreamBuilder<AbsExModel>');
 
           return playMusic(context, player, player.model!, player.acc.getRealSize());
         });

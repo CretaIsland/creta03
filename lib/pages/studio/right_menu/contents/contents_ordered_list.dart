@@ -21,7 +21,7 @@ import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../player/music/creta_music_mixin.dart';
-import '../../left_menu/music/left_menu_music.dart';
+import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
 import '../property_mixin.dart';
@@ -128,8 +128,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 isResizeFrame: false,
                 onUploadComplete: (currentModel) {
                   if (currentModel.isMusic()) {
-                    debugPrint('--------------add song to playlist');
-                    GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                    debugPrint('--------------add song named ${currentModel.name} to playlist');
+                    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
                     if (musicKey != null) {
                       musicKey.currentState?.addMusic(currentModel);
                     } else {
@@ -159,7 +159,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.reOrdering();
                     if (model != null && model.isMusic()) {
                       String frameId = widget.contentsManager.frameModel.mid;
-                      GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                      GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
                       if (musicKey != null) {
                         musicKey.currentState?.reorderPlaylist(model, oldIndex, newIndex);
                       } else {
@@ -227,7 +227,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       logger.info('ContentsOrderedList $_selectedIndex $index');
                       if (model.isMusic()) {
                         String frameId = widget.contentsManager.frameModel.mid;
-                        GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                        GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
                         if (musicKey != null) {
                           musicKey.currentState?.selectedSong(model, index);
                         } else {
@@ -405,7 +405,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               if (current != null && model.isMusic()) {
                 debugPrint('=====Hide this song ${model.name} at $index =====');
                 String frameId = widget.contentsManager.frameModel.mid;
-                GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
                 if (musicKey != null) {
                   musicKey.currentState?.removeMusic(model);
                 } else {
@@ -424,7 +424,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               if (current != null && model.isMusic()) {
                 debugPrint('=====Unhidden this song ${model.name} at $index =====');
                 String frameId = widget.contentsManager.frameModel.mid;
-                GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
                 if (musicKey != null) {
                   musicKey.currentState?.unhiddenMusic(model, index);
                 } else {
@@ -474,7 +474,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               if (value == true) {
                 if (model.isMusic()) {
                   String frameId = widget.contentsManager.frameModel.mid;
-                  GlobalObjectKey<LeftMenuMusicState>? musicKey = musicKeyMap[frameId];
+                  GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
                   if (musicKey != null) {
                     musicKey.currentState?.removeMusic(model);
                   } else {

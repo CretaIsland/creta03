@@ -381,6 +381,7 @@ class CretaStudioLang {
   static const String noBorder = '테두리 없음';
   static const String fitting = '피팅';
   static const String custom = '사용자 정의';
+  static const String playersize = '사이즈';
 
   // static Map<String, String> borderPositionList = {
   //   '경계 외부': 'outSide',
@@ -397,6 +398,13 @@ class CretaStudioLang {
     '맞추기': 'cover',
     '채우기': 'fill',
     '자유롭게': 'free',
+  };
+
+  static Map<String, String> playerSize = {
+    '큰': 'big',
+    '중간': 'medium',
+    '작근': 'small',
+    '미니': 'tiny',
   };
 
   static String shape = "모양";
@@ -435,6 +443,7 @@ class CretaStudioLang {
   static String imageFilter = '이미지 필터';
   static String imageControl = '이미지 조정';
   static String linkControl = '링크 편집';
+  static String musicPlayerSize = '뮤직 사미즈 기능';
 
   static const List<String> imageFilterTypeList = [
     "화사한",
