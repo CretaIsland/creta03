@@ -126,4 +126,17 @@ class LinkManager extends CretaManager {
       }
     }
   }
+
+  Future<void> copyLinks(String contentsMid, String bookMid) async {
+    double order = 1;
+    for (var ele in modelList) {
+      LinkModel org = ele as LinkModel;
+      if (org.isRemoved.value == true) continue;
+      LinkModel newModel = LinkModel('', bookMid);
+      newModel.copyFrom(org, newMid: newModel.mid, pMid: contentsMid);
+      newModel.order.set(order++, save: false, noUndo: true);
+      logger.info('create new Link ${newModel.mid}');
+      await createToDB(newModel);
+    }
+  }
 }

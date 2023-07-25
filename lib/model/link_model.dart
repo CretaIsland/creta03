@@ -54,4 +54,30 @@ class LinkModel extends CretaModel {
         'posY': posY,
       }.entries);
   }
+
+  @override
+  void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
+    super.copyFrom(src, newMid: newMid, pMid: pMid);
+
+    LinkModel srcLink = src as LinkModel;
+
+    name = srcLink.name; // aaa.jpg
+    posX = srcLink.posX;
+    posY = srcLink.posY;
+    connectedMid = srcLink.connectedMid;
+    connectedClass = srcLink.connectedClass;
+  }
+
+  @override
+  void updateFrom(AbsExModel src) {
+    super.updateFrom(src);
+
+    LinkModel srcLink = src as LinkModel;
+
+    name = srcLink.name; // aaa.jpg
+    posX = srcLink.posX;
+    posY = srcLink.posY;
+    connectedMid = srcLink.connectedMid;
+    connectedClass = srcLink.connectedClass;
+  }
 }

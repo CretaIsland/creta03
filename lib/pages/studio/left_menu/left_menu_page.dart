@@ -341,13 +341,16 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                         }
                       }),
                 BTN.fill_gray_i_m(
-                  tooltip: CretaStudioLang.copy,
-                  tooltipBg: CretaColor.text[700]!,
-                  icon: Icons.content_copy_outlined,
-                  onPressed: () {
-                    // Copy Page
-                  },
-                ),
+                    tooltip: CretaStudioLang.copy,
+                    tooltipBg: CretaColor.text[700]!,
+                    icon: Icons.content_copy_outlined,
+                    onPressed: () {
+                      PageModel? page = _pageManager!.getSelected() as PageModel?;
+                      if (page != null) {
+                        _pageManager?.copyPage(page);
+                      }
+                      setState(() {});
+                    }),
                 BTN.fill_gray_i_m(
                   tooltip: CretaStudioLang.showUnshow,
                   tooltipBg: CretaColor.text[700]!,
@@ -356,7 +359,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                       : Icons.visibility_off_outlined,
                   onPressed: () {
                     model.isShow.set(!(model.isShow.value));
-                    _pageManager!.notify();
+                    _pageManager?.notify();
                   },
                 ),
                 BTN.fill_gray_image_m(

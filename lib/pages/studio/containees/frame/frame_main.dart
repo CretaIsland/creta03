@@ -152,9 +152,11 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       },
       onFrameCopy: (mid) async {
         logger.fine('Frame onFrameCopy');
-        FrameModel? frame = frameManager?.getSelected() as FrameModel?;
-        await frameManager?.copyFrame(frame!);
-        setState(() {});
+        FrameModel? frame = frameManager!.getSelected() as FrameModel?;
+        if (frame != null) {
+          await frameManager?.copyFrame(frame);
+          setState(() {});
+        }
       },
       // onFrameRotate: (mid, angle) {
       //   logger.info('FrameMain.onFrameRotate 1');

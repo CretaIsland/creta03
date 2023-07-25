@@ -173,10 +173,31 @@ class FrameManager extends CretaManager {
 
     logger.fine('create new frame ${newModel.mid}');
 
+    ContentsManager? contentsManager = findContentsManager(src.mid);
+    await contentsManager?.copyContents(newModel.mid, bookModel.mid);
+
     await createToDB(newModel);
     insert(newModel, postion: getLength());
     selectedMid = newModel.mid;
+
     return newModel;
+  }
+
+  Future<void> copyFrames(String pageMid, String bookMid) async {
+    double order = 1;
+    for (var ele in modelList) {
+      FrameModel org = ele as FrameModel;
+      if (org.isRemoved.value == true) continue;
+      FrameModel newModel = FrameModel('', bookMid);
+      newModel.copyFrom(org, newMid: newModel.mid, pMid: pageMid);
+      newModel.order.set(order++, save: false, noUndo: true);
+      logger.info('create new FrameModel ${newModel.name},${newModel.mid}');
+
+      ContentsManager? contentsManager = findContentsManager(org.mid);
+      await contentsManager?.copyContents(newModel.mid, bookMid);
+
+      await createToDB(newModel);
+    }
   }
 
   Future<int> getFrames() async {
