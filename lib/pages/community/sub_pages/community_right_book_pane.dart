@@ -46,11 +46,15 @@ import '../../../data_io/watch_history_manager.dart';
 import '../../studio/book_main_page.dart';
 import '../../studio/studio_variables.dart';
 import '../../../model/book_model.dart';
+import '../../../model/channel_model.dart';
+import '../../../model/team_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../data_io/creta_manager.dart';
 import '../../../data_io/book_published_manager.dart';
+import '../../../data_io/channel_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
+import '../../../data_io/team_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 
 class CommunityRightBookPane extends StatefulWidget {
@@ -78,13 +82,20 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   final TextEditingController _hashtagController = TextEditingController();
   bool _usingContentsFullView = false;
   late BookPublishedManager bookPublishedManagerHolder;
+  late ChannelManager channelManagerHolder;
+  late TeamManager teamManagerHolder;
   late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager watchHistoryManagerHolder;
   //late FavoritesManager favoritesManagerHolder;
   late PlaylistManager dummyManagerHolder;
   //bool _onceDBGetComplete = false;
   BookModel? _currentBookModel;
-  UserPropertyModel? _userPropertyModel;
+  final List<ChannelModel> _channelList = [];
+  //UserPropertyModel? _userPropertyModel;
+  final Map<String, String> _userIdMap = {};
+  final Map<String, UserPropertyModel> _userPropertyMap = {};
+  final Map<String, String> _teamIdMap = {};
+  final Map<String, TeamModel> _teamMap = {};
   bool _bookIsInFavorites = false;
   late GlobalKey bookKey;
   late GlobalKey bookKeyParent;
@@ -113,14 +124,18 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     bookKey = GlobalObjectKey('_CommunityRightBookPaneState.${CommunityRightBookPane.bookId}');
 
     bookPublishedManagerHolder = BookPublishedManager();
+    channelManagerHolder = ChannelManager();
     CommunityRightBookPane.favoritesManagerHolder = FavoritesManager();
+    teamManagerHolder = TeamManager();
     userPropertyManagerHolder = UserPropertyManager();
     dummyManagerHolder = PlaylistManager();
 
     CretaManager.startQueries(
       joinList: [
-        QuerySet(bookPublishedManagerHolder, _getBooksFromDB, null),
-        QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, null),
+        QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(channelManagerHolder, _getChannelsFromDB, _resultChannelsFromDB),
+        QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
+        QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
         QuerySet(CommunityRightBookPane.favoritesManagerHolder!, _getFavoritesFromDB, _resultFavoritesFromDB),
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
       ],
@@ -153,34 +168,74 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _getBooksFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getBooksFromDB()');
-    bookPublishedManagerHolder.addWhereClause(
-        'mid', QueryValue(value: CommunityRightBookPane.bookId, operType: OperType.isEqualTo));
+    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightBookPane.bookId));
     bookPublishedManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultBooksFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _resultBooksFromDB(${modelList.length})');
+    if (modelList.isEmpty) {
+      // no book-data in DB
+      return;
+    }
+    _currentBookModel = modelList[0] as BookModel; // 오직 1개만 있다고 가정
+    _userIdMap[_currentBookModel!.creator] = _currentBookModel!.creator;
+  }
+
+  void _getChannelsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getBooksFromDB()');
+    if (_currentBookModel == null) {
+      // no book-data ==> skip
+      channelManagerHolder.setState(DBState.idle);
+      return;
+    }
+    channelManagerHolder.addWhereClause(
+        'mid', QueryValue(value: _currentBookModel!.channels, operType: OperType.arrayContainsAny));
+    channelManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultChannelsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _resultChannelFromDB(${modelList.length})');
+    for (var model in modelList) {
+      ChannelModel chModel = model as ChannelModel;
+      _channelList.add(chModel);
+      if (chModel.userId.isNotEmpty) {
+        _userIdMap[chModel.userId] = chModel.userId;
+      }
+      if (chModel.teamId.isNotEmpty) {
+        _teamIdMap[chModel.teamId] = chModel.teamId;
+      }
+    }
   }
 
   void _getUserPropertyFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getUserPropertyFromDB(${modelList.length})');
-    if (modelList.isEmpty) {
-      if (kDebugMode) print('_getUserPropertyFromDB(no book)');
-      // no book => bypass
-      userPropertyManagerHolder.setState(DBState.idle);
-      return;
+    userPropertyManagerHolder.queryFromMap(_userIdMap);
+  }
+
+  void _resultUserPropertyFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      UserPropertyModel userModel = model as UserPropertyModel;
+      //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.getKeyId})');
+      _userPropertyMap[userModel.getMid] = userModel;
     }
-    _currentBookModel = modelList[0] as BookModel; // 1개만 있다고 가정
-    //_userPropertyModel = modelList[0] as UserPropertyModel;
-    userPropertyManagerHolder.addWhereClause('email', QueryValue(value: _currentBookModel!.creator));
-    userPropertyManagerHolder.queryByAddedContitions();
+  }
+
+  void _getTeamsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getUserPropertyFromDB(${modelList.length})');
+    teamManagerHolder.queryFromMap(_teamIdMap);
+  }
+
+  void _resultTeamsFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      TeamModel teamModel = model as TeamModel;
+      //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.getKeyId})');
+      _teamMap[teamModel.getMid] = teamModel;
+    }
   }
 
   void _getFavoritesFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getFavoritesFromDB(${modelList.length})');
-    if (modelList.isEmpty) {
-      if (kDebugMode) print('_getUserPropertyFromDB(no user)');
-      // no user => bypass
-      CommunityRightBookPane.favoritesManagerHolder!.setState(DBState.idle);
-      return;
-    }
-    _userPropertyModel = modelList[0] as UserPropertyModel; // 1개만 있다고 가정
     List<AbsExModel> bookList = [_currentBookModel!];
     CommunityRightBookPane.favoritesManagerHolder!.queryFavoritesFromBookModelList(bookList);
   }
@@ -198,12 +253,20 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _dummyCompleteDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _dummyCompleteDB(${modelList.length})');
-    if (_currentBookModel != null && _userPropertyModel != null) {
+    if (_currentBookModel != null) {
       if (kDebugMode) print('_resultFavoritesFromDB(updateBookModel)');
-      widget.updateBookModel?.call(_currentBookModel!, _userPropertyModel!, _bookIsInFavorites);
-      setState(() {
-        _controller.text = _currentBookModel?.description.value ?? '';
-      });
+      // channel mapping to user,teams
+      for(var chModel in _channelList) {
+        chModel.getModelFromMaps(_userPropertyMap, _teamMap);
+      }
+      // creator
+      UserPropertyModel? creatorUserModel = _userPropertyMap[_currentBookModel!.creator];
+      if (creatorUserModel != null) {
+        widget.updateBookModel?.call(_currentBookModel!, creatorUserModel, _bookIsInFavorites);
+        setState(() {
+          _controller.text = _currentBookModel?.description.value ?? '';
+        });
+      }
     }
     dummyManagerHolder.setState(DBState.idle);
   }
@@ -483,6 +546,47 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     );
   }
 
+  Widget _getChannelInfoPane() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+      margin: EdgeInsets.only(top: 24),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 52,
+            height: 52,
+          ),
+          SizedBox(
+            width: 12,
+          ),
+          Text(
+            _channelList[0].name,
+            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+          ),
+          SizedBox(
+            width: 42,
+          ),
+          Text(
+            '구독자 ${_channelList[0].followerCount}명',
+            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+          ),
+          SizedBox(
+            width: 16,
+          ),
+          BTN.fill_blue_t_m(
+            text: '구독하기',
+            width: 84,
+            onPressed: () {
+              //
+              // 구독 기능 추가 필요 !!!
+              //
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   bool _clickedDescriptionEditButton = false;
   //String _description = ''
   //    '한강의 사계절을 한강 철교를 중심으로 표현해 보았습니다. 즐겁게 감상하세요.\n보다 자세한 사항은 아래 블로그를 방문해 주세요.\n\n이 콘텐츠의 사용 조건(저작권) : MIT\n이 콘텐츠가 포함하고 있는 원본 저작권 표시 : YG Entertainment, SME, Hive...';
@@ -511,7 +615,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(12, 37, 22, 0),
+            padding: EdgeInsets.fromLTRB(12, 24, 22, 0),
             child: Row(
               children: [
                 Container(
@@ -886,11 +990,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         children: [
           // book
           _getBookMainPane(_bookAreaSize),
-          // description
-          // SizedBox(
-          //   //child: Center(
-          //     child: Column(
-          //       children: [
+          // channel info
+          _getChannelInfoPane(),
           // description
           _getBookDescriptionPane(),
           // using contents list

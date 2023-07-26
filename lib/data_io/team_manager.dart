@@ -32,24 +32,28 @@ class TeamManager extends CretaManager {
     }
   }
 
-  Future<TeamModel?> createTeam({
+  TeamModel getNewTeam({
     required bool createAndSetToCurrent,
     required String username,
     required String userEmail,
-  }) async {
+  }) {
     TeamModel teamModel = TeamModel.withName(
       name: '$username Team',
       owner: userEmail,
       isPublicProfile: false,
       managers: [userEmail],
     );
+    return teamModel;
+  }
+
+  Future<bool> createTeam(TeamModel teamModel) async {
     try {
       await createToDB(teamModel);
     } catch (error) {
       logger.info('createTeam error >> $error');
-      return null;
+      return false;
     }
-    return teamModel;
+    return true;
   }
 
   Future<int> getTeam() async {
@@ -202,4 +206,17 @@ class TeamManager extends CretaManager {
     //print('no team named $name ------------------------------');
     return null;
   }
+
+  // void queryTeamsFromMap(Map<String, String> teamIdMap) {
+  //   clearAll();
+  //   clearConditions();
+  //   if (teamIdMap.isEmpty) {
+  //     setState(DBState.idle);
+  //     return;
+  //   }
+  //   final List<String> teamIdList = [];
+  //   teamIdMap.forEach((key, value) => teamIdList.add(value));
+  //   addWhereClause('mid', QueryValue(value: teamIdList, operType: OperType.whereIn));
+  //   queryByAddedContitions();
+  // }
 }

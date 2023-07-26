@@ -2,6 +2,7 @@
 
 //import 'package:flutter/foundation.dart';
 //import 'package:creta03/design_system/component/custom_image.dart';
+//import 'package:deep_collection/deep_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
@@ -35,14 +36,20 @@ import '../creta_book_ui_item.dart';
 //import '../../../data_io/book_manager.dart';
 import '../../../data_io/creta_manager.dart';
 import '../../../data_io/book_published_manager.dart';
+import '../../../data_io/channel_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
+import '../../../data_io/team_manager.dart';
+import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/book_model.dart';
+import '../../../model/channel_model.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/favorites_model.dart';
 import '../../../model/playlist_model.dart';
+import '../../../model/team_model.dart';
+import '../../../model/user_property_model.dart';
 
 //const double _rightViewTopPane = 40;
 //const double _rightViewLeftPane = 40;
@@ -87,13 +94,22 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   final GlobalKey _key = GlobalKey();
 
   late BookPublishedManager bookPublishedManagerHolder;
+  late ChannelManager channelManagerHolder;
   late FavoritesManager favoritesManagerHolder;
   late PlaylistManager playlistManagerHolder;
+  late TeamManager teamManagerHolder;
+  late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager dummyManagerHolder;
   final List<BookModel> _cretaBooksList = [];
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   final List<PlaylistModel> _playlistModelList = [];
   final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
+  final Map<String, String> _channelIdMap = {};
+  final Map<String, ChannelModel> _channelMap = {}; // <Channel.mid, ChannelModel>
+  final Map<String, String> _teamIdMap = {};
+  final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
+  final Map<String, String> _userIdMap = {};
+  final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
   bool _onceDBGetComplete = false;
 
   @override
@@ -101,6 +117,9 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     super.initState();
 
     bookPublishedManagerHolder = BookPublishedManager();
+    teamManagerHolder = TeamManager();
+    userPropertyManagerHolder = UserPropertyManager();
+    channelManagerHolder = ChannelManager();
     favoritesManagerHolder = FavoritesManager();
     playlistManagerHolder = PlaylistManager();
     dummyManagerHolder = WatchHistoryManager();
@@ -108,6 +127,9 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     CretaManager.startQueries(
       joinList: [
         QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(channelManagerHolder, _getChannelsFromDB, _resultChannelsFromDB),
+        QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
+        QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
         QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
         QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
         QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
@@ -132,9 +154,54 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
 
   void _resultBooksFromDB(List<AbsExModel> modelList) {
     for (var model in modelList) {
-      BookModel bModel = model as BookModel;
-      if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.mid})');
-      _cretaBooksList.add(bModel);
+      BookModel bookModel = model as BookModel;
+      if (kDebugMode) print('_resultBooksFromDB(${bookModel.getMid})');
+      _cretaBooksList.add(bookModel);
+      _userIdMap[bookModel.creator] = bookModel.creator;
+      for(var channelId in bookModel.channels) {
+        _channelIdMap[channelId] = channelId;
+      }
+    }
+  }
+
+  void _getChannelsFromDB(List<AbsExModel> modelList) {
+    channelManagerHolder.queryFromMap(_channelIdMap);
+  }
+
+  void _resultChannelsFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      ChannelModel chModel = model as ChannelModel;
+      _channelMap[chModel.getMid] = chModel;
+      if (chModel.userId.isNotEmpty) {
+        _userIdMap[chModel.userId] = chModel.userId;
+      }
+      if (chModel.teamId.isNotEmpty) {
+        _teamIdMap[chModel.teamId] = chModel.teamId;
+      }
+    }
+  }
+
+  void _getUserPropertyFromDB(List<AbsExModel> modelList) {
+    userPropertyManagerHolder.queryFromMap(_userIdMap);
+  }
+
+  void _resultUserPropertyFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      UserPropertyModel userModel = model as UserPropertyModel;
+      //if (kDebugMode) print('_resultBooksFromDB(${bModel.getKeyId})');
+      _userPropertyMap[userModel.getMid] = userModel;
+    }
+  }
+
+  void _getTeamsFromDB(List<AbsExModel> modelList) {
+    teamManagerHolder.queryFromMap(_teamIdMap);
+  }
+
+  void _resultTeamsFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      TeamModel teamModel = model as TeamModel;
+      //if (kDebugMode) print('_resultBooksFromDB(${teamModel.getKeyId})');
+      _teamMap[teamModel.getMid] = teamModel;
     }
   }
 
@@ -145,7 +212,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     //   favoritesManagerHolder.setState(DBState.idle);
     //   return;
     // }
-    favoritesManagerHolder.queryFavoritesFromBookModelList(modelList);
+    favoritesManagerHolder.queryFavoritesFromBookModelList(_cretaBooksList);
   }
 
   void _resultFavoritesFromDB(List<AbsExModel> modelList) {
@@ -172,31 +239,25 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
 
   void _getPlaylistsBooksFromDB(List<AbsExModel> modelList) {
     final List<String> bookIdList = [];
-    for(var model in modelList) {
+    for (var model in modelList) {
       PlaylistModel plModel = model as PlaylistModel;
       if (plModel.bookIdList.isNotEmpty) {
         bookIdList.add(plModel.bookIdList[0]);
       }
     }
-    bookPublishedManagerHolder.clearAll();
-    bookPublishedManagerHolder.clearConditions();
-    if (bookIdList.isEmpty) {
-      bookPublishedManagerHolder.setState(DBState.idle);
-      return;
-    }
-    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
-    bookPublishedManagerHolder.queryByAddedContitions();
+    bookPublishedManagerHolder.queryFromList(bookIdList);
   }
 
   void _resultPlaylistsBooksFromDB(List<AbsExModel> modelList) {
     for (var model in modelList) {
       BookModel bModel = model as BookModel;
-      //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.mid})');
-      _playlistsBooksMap[bModel.mid] = bModel;
+      //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.getKeyId})');
+      _playlistsBooksMap[bModel.getMid] = bModel;
     }
   }
 
   void _dummyCompleteDB(List<AbsExModel> modelList) {
+    _channelMap.forEach((key, chModel) => chModel.getModelFromMaps(_userPropertyMap, _teamMap));
     dummyManagerHolder.setState(DBState.idle);
   }
 
@@ -265,9 +326,9 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   }
 
   void _onRemoveBook(String bookId) async {
-    for(int i=0; i<_cretaBooksList.length; i++) {
+    for (int i = 0; i < _cretaBooksList.length; i++) {
       BookModel bookModel = _cretaBooksList[i];
-      if (bookModel.mid != bookId) continue;
+      if (bookModel.getMid != bookId) continue;
       bookModel.isRemoved.set(true);
       bookPublishedManagerHolder.setToDB(bookModel).then((value) {
         setState(() {
@@ -310,14 +371,17 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         ),
         itemBuilder: (BuildContext context, int index) {
           BookModel bookModel = _cretaBooksList[index];
-          if (kDebugMode) print('${bookModel.mid} is Favorites=${_favoritesBookIdMap[bookModel.mid]}');
+          ChannelModel? chModel = bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
+          if (kDebugMode) print('${bookModel.getMid} is Favorites=${_favoritesBookIdMap[bookModel.getMid]}');
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
-                  key: GlobalObjectKey(bookModel.mid),
+                  key: GlobalObjectKey(bookModel.getMid),
                   bookModel: bookModel,
+                  userPropertyModel: _userPropertyMap[bookModel.creator],
+                  channelModel: chModel,
                   width: itemWidth,
                   height: itemHeight,
-                  isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
+                  isFavorites: _favoritesBookIdMap[bookModel.getMid] ?? false,
                   addToFavorites: _addToFavorites,
                   addToPlaylist: _addToPlaylist,
                   onRemoveBook: _onRemoveBook,
@@ -327,11 +391,13 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
                     itemWidth = constraints.maxWidth;
                     itemHeight = constraints.maxHeight;
                     return CretaBookUIItem(
-                      key: GlobalObjectKey(bookModel.mid),
+                      key: GlobalObjectKey(bookModel.getMid),
                       bookModel: bookModel,
+                      userPropertyModel: _userPropertyMap[bookModel.creator],
+                      channelModel: chModel,
                       width: itemWidth,
                       height: itemHeight,
-                      isFavorites: _favoritesBookIdMap[bookModel.mid] ?? false,
+                      isFavorites: _favoritesBookIdMap[bookModel.getMid] ?? false,
                       addToFavorites: _addToFavorites,
                       addToPlaylist: _addToPlaylist,
                       onRemoveBook: _onRemoveBook,
@@ -360,7 +426,16 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       return _getItemPane();
     }
     var retval = CretaModelSnippet.waitDatum(
-      managerList: [bookPublishedManagerHolder, favoritesManagerHolder, playlistManagerHolder, dummyManagerHolder],
+      managerList: [
+        bookPublishedManagerHolder,
+        channelManagerHolder,
+        userPropertyManagerHolder,
+        teamManagerHolder,
+        favoritesManagerHolder,
+        playlistManagerHolder,
+        bookPublishedManagerHolder,
+        dummyManagerHolder,
+      ],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _getItemPane,
     );

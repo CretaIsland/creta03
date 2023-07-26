@@ -146,7 +146,7 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
   void _resultBooksFromDB(List<AbsExModel> modelList) {
     for (var model in modelList) {
       BookModel bModel = model as BookModel;
-      _cretaBookMap[bModel.mid] = bModel;
+      _cretaBookMap[bModel.getMid] = bModel;
     }
   }
 
@@ -186,7 +186,7 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
         itemBuilder: (context, index) {
           BookModel bModel = _cretaBookMap[_currentPlaylistModel!.bookIdList[index]] ?? BookModel('dummy');
           return CretaPlaylistDetailItem(
-            key: GlobalObjectKey('$index-${bModel.mid}'),
+            key: GlobalObjectKey('$index-${bModel.getMid}'),
             bookModel: bModel,
             width: widget.cretaLayoutRect.childWidth,
             index: index,

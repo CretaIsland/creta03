@@ -141,6 +141,30 @@ class BookPublishedManager extends CretaManager {
 
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
 
+  // void queryBookFromList(List<String> bookIdList) {
+  //   clearAll();
+  //   clearConditions();
+  //   if (bookIdList.isEmpty) {
+  //     setState(DBState.idle);
+  //     return;
+  //   }
+  //   addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+  //   queryByAddedContitions();
+  // }
+  //
+  // void queryBooksFromMap(Map<String, String> bookIdMap) {
+  //   clearAll();
+  //   clearConditions();
+  //   if (bookIdMap.isEmpty) {
+  //     setState(DBState.idle);
+  //     return;
+  //   }
+  //   final List<String> bookIdList = [];
+  //   bookIdMap.forEach((key, value) => bookIdList.add(value));
+  //   addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
+  //   queryByAddedContitions();
+  // }
+
   Future<BookModel?> findPublished(String sourceMid) async {
     logger.info('findPublished');
     Map<String, QueryValue> query = {};
