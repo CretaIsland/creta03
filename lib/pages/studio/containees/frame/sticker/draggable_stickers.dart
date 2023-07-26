@@ -183,7 +183,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         //});
       },
       onScaleStart: () {
-                      //print('DraggableResizable onScaleStart --------------------------');
+        //print('DraggableResizable onScaleStart --------------------------');
 
         widget.onScaleStart.call(sticker.id);
       },
@@ -250,6 +250,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   StudioVariables.isPreview == false //&& StudioVariables.isNotLinkState
               ? InkWell(
                   splashColor: Colors.transparent,
+                  onSecondaryTap: () {
+                    logger.info('right mouse button clicked');
+                  },
                   onTap: () {
                     // To update the selected widget
                     DraggableStickers.frameSelectNotifier?.set(sticker.id);
@@ -334,7 +337,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       return BookMainPage.miniMenuNotifier!.isShow == false
           ? const SizedBox.shrink()
           : MiniMenu(
-              key: const ValueKey('MiniMenu'),
+              key: const GlobalObjectKey('MiniMenu'),
               contentsManager: contentsManager,
               frameManager: frameManager,
               parentPosition: selectedSticker.position,

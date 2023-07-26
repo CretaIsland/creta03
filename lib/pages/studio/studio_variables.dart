@@ -10,7 +10,7 @@ import 'book_main_page.dart';
 import 'studio_constant.dart';
 
 class StudioVariables {
-  static bool isDeveloper = false;
+  
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
   static double menuStickWidth = LayoutConst.menuStickWidth;
   static double appbarHeight = CretaConstant.appbarHeight;

@@ -25,6 +25,7 @@ import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/connected_user_manager.dart';
 import '../../data_io/filter_manager.dart';
+import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
@@ -1329,7 +1330,6 @@ class _BookMainPageState extends State<BookMainPage> {
       // }
       if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
         logger.info('tab pressed');
-       
       }
       if (event.isKeyPressed(LogicalKeyboardKey.pageDown)) {
         logger.info("pageDown pressed");
@@ -1344,17 +1344,42 @@ class _BookMainPageState extends State<BookMainPage> {
         if (keys.contains(LogicalKeyboardKey.keyZ)) {
           logger.info('Ctrl+Z pressed');
           // undo
-         } else if (keys.contains(LogicalKeyboardKey.keyY)) {
+        } else if (keys.contains(LogicalKeyboardKey.keyY)) {
           logger.info('Ctrl+Y pressed');
           // redo
         } else if (keys.contains(LogicalKeyboardKey.keyC)) {
           logger.info('Ctrl+C pressed');
+          CretaVariables.clipBoard = BookMainPage.selectedMid;
+          CretaVariables.clipBoardAction = 'Copy';
+          if (CretaVariables.clipBoard.isEmpty) {
+            return;
+          }
+
+          // page 복사의 경우
+          if (BookMainPage.selectedMid.contains(CretaConstant.pagePrefix)) {
+            BookMainPage.pageManagerHolder?.notify();
+          }
+          // frame 복사의 경우
+          if (BookMainPage.selectedMid.contains(CretaConstant.framePrefix)) {
+            if (BookMainPage.pageManagerHolder != null) {
+              FrameManager? frameManager = BookMainPage.pageManagerHolder!
+                  .findFrameManager(BookMainPage.pageManagerHolder!.getSelectedMid());
+              frameManager?.notify();
+            }
+          }
+
           // Copy
         } else if (keys.contains(LogicalKeyboardKey.keyV)) {
           logger.info('Ctrl+V pressed');
           // Paste
         } else if (keys.contains(LogicalKeyboardKey.keyX)) {
-          logger.info('Ctrl+V pressed');
+          logger.info('Ctrl+X pressed');
+          CretaVariables.clipBoard = BookMainPage.selectedMid;
+          CretaVariables.clipBoardAction = 'Crop';
+          if (CretaVariables.clipBoard.isEmpty) {
+            return;
+          }
+
           // Paste
         }
       }

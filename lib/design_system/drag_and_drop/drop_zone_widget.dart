@@ -58,7 +58,7 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
                 if (list == null) return;
                 logger.info('onDropMultiple -------------- ${list.length}');
                 List<ContentsModel> contentsList = [];
-                for (var event in list) {
+                for (var event in list.reversed) {
                   logger.info('onDropMultiple -------------- ${event.name}');
                   contentsList.add(await uploadedFile(event, widget.bookMid));
                 }

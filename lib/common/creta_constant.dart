@@ -9,4 +9,7 @@ class CretaConstant {
 
 class CretaVariables {
   static bool isCanvaskit = true;
+  static bool isDeveloper = false;
+  static String clipBoard = '';
+  static String clipBoardAction = '';
 }

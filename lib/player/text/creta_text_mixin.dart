@@ -27,7 +27,7 @@ mixin CretaTextMixin {
     CretaTextPlayer? player,
     ContentsModel model,
     Size realSize, {
-    bool isPagePreview = false,
+    bool isThumbnail = false,
   }) {
     if (StudioVariables.isAutoPlay) {
       //model!.setPlayState(PlayState.start);
@@ -93,7 +93,7 @@ mixin CretaTextMixin {
       );
     }
 
-    //print('isPagePreview=$isPagePreview, fontSize=$fontSize, shrinkRatio=$shrinkRatio');
+    //print('isThumbnail=$isThumbnail, fontSize=$fontSize, shrinkRatio=$shrinkRatio');
 
     return Container(
       color: Colors.transparent,
@@ -102,12 +102,12 @@ mixin CretaTextMixin {
       alignment: AlignmentDirectional.center,
       width: realSize.width,
       height: realSize.height,
-      child: _playText(model, uri, style, fontSize, realSize, isPagePreview),
+      child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
   }
 
   Widget _playText(ContentsModel? model, String text, TextStyle style, double fontSize,
-      Size realSize, bool isPagePreview) {
+      Size realSize, bool isThumbnail) {
     //logHolder.log('playText ${model!.outLineWidth.value} ${model!.aniType.value}',level: 6);
 
     TextStyle? shadowStyle;
@@ -122,7 +122,7 @@ mixin CretaTextMixin {
       ]);
     }
 
-    if (model.aniType.value != TextAniType.none) {
+    if (model.aniType.value != TextAniType.none && isThumbnail == false) {
       return _animationText(model, text, shadowStyle ?? style,
           _outLineAndShadowText(model, text, shadowStyle ?? style), realSize, fontSize);
     }
@@ -189,8 +189,7 @@ mixin CretaTextMixin {
             ..color = model.outLineColor.value,
         );
       }
-      if (model.aniType.value != TextAniType.shimmer &&
-          model.aniType.value != TextAniType.neon) {
+      if (model.aniType.value != TextAniType.shimmer && model.aniType.value != TextAniType.neon) {
         style = style.copyWith(fontSize: _getAutoFontSize(model, textSize, realSize, fontSize));
       }
     }
