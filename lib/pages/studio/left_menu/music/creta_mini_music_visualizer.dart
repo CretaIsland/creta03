@@ -26,24 +26,32 @@ class CretaMiniMusicVisualizer extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<int> duration = [900, 800, 700, 600, 500];
 
-    return isPlaying != null && isPlaying == true
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List<Widget>.generate(
-              3,
-              (index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 1),
-                child: CretaVisualComponent(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List<Widget>.generate(
+        3,
+        (index) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 1),
+          child: isPlaying == true
+              ? CretaVisualComponent(
                   curve: Curves.bounceOut,
                   duration: duration[index % 5],
                   color: color ?? Theme.of(context).colorScheme.secondary,
                   width: width,
                   height: height,
+                  isPlaying: true,
+                )
+              : CretaVisualComponent(
+                  curve: Curves.bounceOut,
+                  duration: duration[index % 5],
+                  color: color ?? Theme.of(context).colorScheme.secondary,
+                  width: width,
+                  height: height,
+                  isPlaying: false,
                 ),
-              ),
-            ),
-          )
-        : Container();
+        ),
+      ),
+    );
   }
 }
 
@@ -55,6 +63,7 @@ class CretaVisualComponent extends StatefulWidget {
     required this.curve,
     this.width,
     this.height,
+    required this.isPlaying,
   }) : super(key: key);
 
   final int duration;
@@ -62,12 +71,14 @@ class CretaVisualComponent extends StatefulWidget {
   final Curve curve;
   final double? width;
   final double? height;
+  final bool isPlaying;
 
   @override
   CretaVisualComponentState createState() => CretaVisualComponentState();
 }
 
-class CretaVisualComponentState extends State<CretaVisualComponent> with SingleTickerProviderStateMixin {
+class CretaVisualComponentState extends State<CretaVisualComponent>
+    with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController animationController;
   late double width;
@@ -92,7 +103,13 @@ class CretaVisualComponentState extends State<CretaVisualComponent> with SingleT
       ..addListener(() {
         update();
       });
-    animationController.repeat(reverse: true);
+
+    if (widget.isPlaying == false) {
+      animationController.stop();
+    } else {
+      animationController.repeat(reverse: true);
+    }
+    // animationController.repeat(reverse: true);
   }
 
   void update() {
