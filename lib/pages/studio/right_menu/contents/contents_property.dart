@@ -3,8 +3,7 @@
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
+import 'package:hycop/hycop.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
@@ -56,7 +55,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   static bool _isTextFontOpen = false;
   static bool _isTextBorderOpen = false;
   static bool _isTextAni = false;
-  static bool _isPlayerSizeOpen = false;
+
   // static bool _isImageFilterOpen = false;
 
   ContentsEventController? _sendEvent;
@@ -130,91 +129,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       if (widget.model.isText()) _textBorder(),
       if (widget.model.isText()) propertyDivider(height: 28),
       if (widget.model.isText()) _textAni(),
-      if (widget.model.isMusic()) _playerSize(),
       propertyDivider(height: 28),
       _hashTag(),
     ]);
     //});
-  }
-
-  Widget _playerSize() {
-    return Padding(
-      padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
-      child: propertyCard(
-        isOpen: _isPlayerSizeOpen,
-        onPressed: () {
-          setState(() {
-            _isPlayerSizeOpen = !_isPlayerSizeOpen;
-          });
-        },
-        titleWidget: Text(CretaStudioLang.musicPlayerSize, style: CretaFont.titleSmall),
-        trailWidget: Text(
-          _playerTrailString(),
-          textAlign: TextAlign.right,
-          style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
-        ),
-        hasRemoveButton: false,
-        onDelete: () {},
-        bodyWidget: _playerControlBody(),
-      ),
-    );
-  }
-
-  String _playerTrailString() {
-    int idx = widget.model.big.value.index;
-    if (idx > ContentsPlayerSizeType.none.index && idx < ContentsPlayerSizeType.end.index) {
-      return CretaStudioLang.playerSize.keys.toList()[idx - 1];
-    }
-    return '';
-  }
-
-  Widget _playerControlBody() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(CretaStudioLang.playersize, style: titleStyle),
-          CretaTabButton(
-            onEditComplete: (value) {
-              int idx = 1;
-              for (String val in CretaStudioLang.playerSize.values) {
-                if (value == val) {
-                  widget.model.big.set(ContentsPlayerSizeType.values[idx]);
-                }
-                idx++;
-              }
-              _sendEvent!.sendEvent(widget.model);
-            },
-            width: 65,
-            height: 24,
-            selectedTextColor: CretaColor.primary,
-            unSelectedTextColor: CretaColor.text[700]!,
-            selectedColor: Colors.white,
-            unSelectedColor: CretaColor.text[100]!,
-            selectedBorderColor: CretaColor.primary,
-            defaultString: _getSize(),
-            buttonLables: CretaStudioLang.playerSize.keys.toList(),
-            buttonValues: CretaStudioLang.playerSize.values.toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  String _getSize() {
-    switch (widget.model.big.value) {
-      case ContentsPlayerSizeType.big:
-        return 'big';
-      case ContentsPlayerSizeType.medium:
-        return 'medium';
-      case ContentsPlayerSizeType.small:
-        return 'small';
-      case ContentsPlayerSizeType.tiny:
-        return 'tiny';
-      default:
-        return 'big';
-    }
   }
 
   Widget _textFont() {

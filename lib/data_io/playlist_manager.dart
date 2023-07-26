@@ -35,6 +35,17 @@ class PlaylistManager extends CretaManager {
 
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
 
+  // void queryPlaylistsFromList(List<String> playlistIdList) {
+  //   clearAll();
+  //   clearConditions();
+  //   if (playlistIdList.isEmpty) {
+  //     setState(DBState.idle);
+  //     return;
+  //   }
+  //   addWhereClause('mid', QueryValue(value: playlistIdList, operType: OperType.whereIn));
+  //   queryByAddedContitions();
+  // }
+
   Future<PlaylistModel> createNewPlaylist({
     required String name,
     required String userId,

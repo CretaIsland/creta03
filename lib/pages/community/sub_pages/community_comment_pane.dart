@@ -141,7 +141,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       data.name = userProperty?.nickname ?? '';
       data.profileImg = userProperty?.profileImg ?? '';
       returnCommentList.add(data);
-      rootMap[data.mid] = data;
+      rootMap[data.getMid] = data;
       data.replyList.clear();
     }
     // get sub-items of root-items
@@ -165,7 +165,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
     double indentSize = data.parentId.isEmpty ? 0 : (40 + 18 - 8);
     return Container(
       //height: 61,
-      key: ValueKey(data.mid),
+      key: ValueKey(data.getMid),
       padding: EdgeInsets.fromLTRB(indentSize, 0, 0, 0),
       child: CretaCommentBar(
         width: width - indentSize,
@@ -228,7 +228,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       setState(() {
         for (int i = 0; i < _commentList.length; i++) {
           CommentModel data = _commentList[i];
-          if (data.mid == removingData.mid) {
+          if (data.getMid == removingData.getMid) {
             // root-comment
             _commentList.removeAt(i);
             return;
@@ -236,7 +236,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
             // reply-comment
             for (int sub = 0; sub < data.replyList.length; sub++) {
               CommentModel replyData = data.replyList[sub];
-              if (replyData.mid == removingData.mid) {
+              if (replyData.getMid == removingData.getMid) {
                 data.replyList.removeAt(sub);
                 if (data.replyList.isEmpty) {
                   data.hasNoReply = true;
@@ -258,7 +258,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       setState(() {
         if (data.parentId.isNotEmpty) {
           for (var comment in _commentList) {
-            if (comment.mid != data.parentId) continue;
+            if (comment.getMid != data.parentId) continue;
             comment.hasNoReply = false;
             break;
           }
@@ -274,7 +274,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
     //if (kDebugMode) print('_onClickedReply(${data.name}, ${data.key})');
     setState(() {
       CommentModel replyData = _getNewCommentData(
-        parentId: data.mid,
+        parentId: data.getMid,
         barType: CommentBarType.addReplyMode,
       );
       data.showReplyList = true;

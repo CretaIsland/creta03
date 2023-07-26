@@ -22,6 +22,7 @@ import '../../design_system/text_field/creta_text_field.dart';
 import '../../model/app_enums.dart';
 import '../../model/user_property_model.dart';
 import '../../model/team_model.dart';
+import '../../model/channel_model.dart';
 
 enum LoginPageState {
   login, // 로그인
@@ -169,14 +170,25 @@ class _LoginDialogState extends State<LoginDialog> {
       LoginPage.userPropertyManagerHolder!.queryByAddedContitions().then((value) async {
         bool isNewUser = value.isEmpty;
         if (isNewUser) {
-          UserPropertyModel model =
+          // create model objects
+          UserPropertyModel userModel =
           LoginPage.userPropertyManagerHolder!.getNewUserProperty(agreeUsingMarketing: true);
-          await LoginPage.teamManagerHolder!.createTeam(
+          TeamModel teamModel = LoginPage.teamManagerHolder!.getNewTeam(
             createAndSetToCurrent: true,
             username: AccountManager.currentLoginUser.name,
-            userEmail: model.email,
+            userEmail: userModel.email,
           );
-          await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: model);
+          ChannelModel teamChannelModel = LoginPage.channelManagerHolder!.getNewChannel(teamId: teamModel.mid);
+          ChannelModel myChannelModel = LoginPage.channelManagerHolder!.getNewChannel(userId: userModel.email);
+          userModel.channelId = myChannelModel.mid;
+          teamModel.channelId = teamChannelModel.mid;
+          userModel.channelId = myChannelModel.mid;
+          userModel.teams = [teamModel.mid];
+          // create to DB
+          await LoginPage.channelManagerHolder!.createChannel(teamChannelModel);
+          await LoginPage.channelManagerHolder!.createChannel(myChannelModel);
+          await LoginPage.teamManagerHolder!.createTeam(teamModel);
+          await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: userModel);
           LoginDialog.setShowExtraInfoDialog(true);
         }
         LoginPage.initUserProperty().then((value) {
@@ -225,15 +237,25 @@ class _LoginDialogState extends State<LoginDialog> {
       logger.finest('register start');
       AccountManager.createAccount(userData).then((value) async {
         logger.finest('register end');
-        UserPropertyModel model =
+        // create model objects
+        UserPropertyModel userModel =
             LoginPage.userPropertyManagerHolder!.getNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
-        TeamModel? teamModel = await LoginPage.teamManagerHolder!.createTeam(
+        TeamModel teamModel = LoginPage.teamManagerHolder!.getNewTeam(
           createAndSetToCurrent: true,
           username: nickname,
-          userEmail: model.email,
+          userEmail: userModel.email,
         );
-		    model.teams = (teamModel == null) ? [] : [teamModel.mid];
-        await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: model);
+        ChannelModel teamChannelModel = LoginPage.channelManagerHolder!.getNewChannel(teamId: teamModel.mid);
+        ChannelModel myChannelModel = LoginPage.channelManagerHolder!.getNewChannel(userId: userModel.email);
+        userModel.channelId = myChannelModel.mid;
+        teamModel.channelId = teamChannelModel.mid;
+        userModel.channelId = myChannelModel.mid;
+        userModel.teams = [teamModel.mid];
+        // create to DB
+        await LoginPage.channelManagerHolder!.createChannel(teamChannelModel);
+        await LoginPage.channelManagerHolder!.createChannel(myChannelModel);
+        await LoginPage.teamManagerHolder!.createTeam(teamModel);
+        await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: userModel);
         LoginDialog.setShowExtraInfoDialog(true);
         if (kDebugMode) print('_signup.widget.doAfterSignup?.call()');
         //widget.doAfterSignup?.call();

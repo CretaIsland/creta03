@@ -195,22 +195,66 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _isSizeOpen = true;
           }
 
-          return propertyCard(
-            padding: horizontalPadding,
-            isOpen: _isSizeOpen,
-            onPressed: () {
-              setState(() {
-                _isSizeOpen = !_isSizeOpen;
-                BookMainPage.containeeNotifier!.setOpenSize(_isSizeOpen);
-              });
-            },
-            titleWidget: Text(CretaStudioLang.frameSize, style: CretaFont.titleSmall),
-            trailWidget: Text('${width.round()} x ${height.round()}', style: dataStyle),
-            onDelete: () {},
-            hasRemoveButton: false,
-            bodyWidget: _pageSizeBody(width, height),
+          return Column(
+            children: [
+              propertyCard(
+                padding: horizontalPadding,
+                isOpen: _isSizeOpen,
+                onPressed: () {
+                  setState(() {
+                    _isSizeOpen = !_isSizeOpen;
+                    BookMainPage.containeeNotifier!.setOpenSize(_isSizeOpen);
+                  });
+                },
+                titleWidget: Text(CretaStudioLang.frameSize, style: CretaFont.titleSmall),
+                trailWidget: Text('${width.round()} x ${height.round()}', style: dataStyle),
+                onDelete: () {},
+                hasRemoveButton: false,
+                bodyWidget: _pageSizeBody(width, height),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding + 4.0),
+                child: _musicPlayerSize(),
+              ),
+            ],
           );
         });
+  }
+
+  Widget _musicPlayerSize() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(CretaStudioLang.playersize, style: titleStyle),
+          CretaTabButton(
+            onEditComplete: (value) {
+              int idx = 1;
+              for (String val in CretaStudioLang.playerSize.values) {
+                if (value == val) {
+                  mychangeStack.startTrans();
+                  widget.model.width.set(StudioConst.musicPlayerSize[idx-1].width);
+                  widget.model.height.set(StudioConst.musicPlayerSize[idx-1].height);
+                  mychangeStack.endTrans();
+                }
+                idx++;
+              }
+              _sendEvent!.sendEvent(widget.model);
+            },
+            width: 55,
+            height: 24,
+            selectedTextColor: CretaColor.primary,
+            unSelectedTextColor: CretaColor.text[700]!,
+            selectedColor: Colors.white,
+            unSelectedColor: CretaColor.text[100]!,
+            selectedBorderColor: CretaColor.primary,
+            buttonLables: CretaStudioLang.playerSize.keys.toList(),
+            buttonValues: CretaStudioLang.playerSize.values.toList(),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _pageSizeBody(double width, double height) {

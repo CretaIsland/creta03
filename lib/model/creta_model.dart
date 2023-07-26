@@ -89,6 +89,8 @@ class CretaModel extends AbsExModel {
   CretaModel({required String pmid, required super.type, required super.parent, super.realTimeKey})
       : super(pmid: pmid);
 
+  String get getMid => mid;
+
   DateTime convertValue(dynamic val) {
     if (val is Timestamp) {
       // Timestamp(in Firebase) => DateTimer(in FLutter)

@@ -261,9 +261,9 @@ class BookModel extends CretaModel with BookMixin {
     //hashtags = map["hashtags"] ?? [];
     hashtags = CretaUtils.dynamicListToStringList(map["hashtags"]);
     channels = CretaUtils.dynamicListToStringList(map["channels"]);
-    if (channels.isEmpty) {
-      channels.add(creator);
-    }
+    // if (channels.isEmpty) {
+    //   channels.add(creator);
+    // }
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);
 
@@ -278,9 +278,9 @@ class BookModel extends CretaModel with BookMixin {
     if (owners.isEmpty) {
       owners.add(creator);
     }
-    if (channels.isEmpty) {
-      channels.add(creator);
-    }
+    // if (channels.isEmpty) {
+    //   channels.add(creator);
+    // }
     return super.toMap()
       ..addEntries({
         "name": name.value,

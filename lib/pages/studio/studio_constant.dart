@@ -163,6 +163,13 @@ class StudioConst {
     [Size(1346, 1913)],
   ];
 
+  static List<Size> musicPlayerSize = [
+    Size(480, 1080),
+    Size(480, 240),
+    Size(420, 160),
+    Size(320, 120),
+  ];
+
   static int maxMyFavFrame = 12;
 
   static List<String> languages = [

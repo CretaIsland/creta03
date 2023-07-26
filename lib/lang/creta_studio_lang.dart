@@ -403,7 +403,7 @@ class CretaStudioLang {
   static Map<String, String> playerSize = {
     '큰': 'big',
     '중간': 'medium',
-    '작근': 'small',
+    '작은': 'small',
     '미니': 'tiny',
   };
 

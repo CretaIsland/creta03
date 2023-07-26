@@ -15,6 +15,7 @@ import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../containees/frame/frame_play_mixin.dart';
+import '../../studio_constant.dart';
 import '../left_template_mixin.dart';
 
 class LeftMenuMusic extends StatefulWidget {
@@ -130,10 +131,11 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
     if (pageModel == null) return;
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
-    double widthBig = pageModel.width.value * 0.25;
-    double heightBig = pageModel.height.value;
-    double x = (pageModel.width.value - widthBig) / 2;
-    double y = (pageModel.height.value - heightBig) / 2;
+    // double widthBig = pageModel.width.value * 0.25;
+    Size frameSize = StudioConst.musicPlayerSize[0];
+    // double heightBig = pageModel.height.value;
+    double x = (pageModel.width.value - frameSize.width) / 2;
+    double y = (pageModel.height.value - frameSize.height) / 2;
 
     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     if (frameManager == null) {
@@ -143,7 +145,7 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
     mychangeStack.startTrans();
     FrameModel frameModel = await frameManager.createNextFrame(
       doNotify: false,
-      size: Size(widthBig, heightBig),
+      size: frameSize, //Size(widthBig, heightBig),
       pos: Offset(x, y),
       bgColor1: Colors.white,
       type: FrameType.music,
@@ -151,7 +153,7 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
     ContentsModel model = await _musicPlayer(frameModel.mid, frameModel.realTimeKey);
 
     // debugPrint('_MusicContent(${model.contentsType})-----------------------------');
-    debugPrint('--------width: $widthBig, heigh: $heightBig');
+    // debugPrint('--------width: $widthBig, heigh: $heightBig');
     await createNewFrameAndContents(
       [model],
       pageModel,

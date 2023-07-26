@@ -1,17 +1,16 @@
 // ignore_for_file: prefer_const_constructors, avoid_web_libraries_in_flutter
 
 import 'dart:async';
-import 'package:creta03/data_io/enterprise_manager.dart';
-import 'package:creta03/data_io/team_manager.dart';
-//import 'package:creta03/design_system/buttons/creta_radio_button.dart';
-//import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 //import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:flutter/gestures.dart';
 
+import '../data_io/enterprise_manager.dart';
 import '../data_io/user_property_manager.dart';
+import '../data_io/team_manager.dart';
+import '../data_io/channel_manager.dart';
 import '../design_system/buttons/creta_button_wrapper.dart';
 //import '../design_system/buttons/creta_checkbox.dart';
 //import '../model/app_enums.dart';
@@ -48,6 +47,7 @@ class LoginPage extends StatefulWidget {
   static UserPropertyManager? userPropertyManagerHolder;
   static TeamManager? teamManagerHolder;
   static EnterpriseManager? enterpriseHolder;
+  static ChannelManager? channelManagerHolder;
 
   static Future<bool> initUserProperty() async {
     if (LoginPage.userPropertyManagerHolder == null) {
@@ -65,6 +65,11 @@ class LoginPage extends StatefulWidget {
       LoginPage.enterpriseHolder?.configEvent();
       LoginPage.enterpriseHolder?.clearAll();
     }
+    if (LoginPage.channelManagerHolder == null) {
+      LoginPage.channelManagerHolder = ChannelManager();
+      LoginPage.channelManagerHolder?.configEvent();
+      LoginPage.channelManagerHolder?.clearAll();
+    }
     // 현재 로그인정보로 사용자정보 가져옴
     await LoginPage.userPropertyManagerHolder!.initUserProperty();
     if (LoginPage.userPropertyManagerHolder!.userPropertyModel == null) {
@@ -77,6 +82,7 @@ class LoginPage extends StatefulWidget {
     // team 및 ent 정보 가져움
     await LoginPage.teamManagerHolder?.initTeam();
     await LoginPage.enterpriseHolder?.initEnterprise();
+    await LoginPage.channelManagerHolder?.initChannel();
     //if (LoginPage.teamManagerHolder!.modelList.isEmpty || LoginPage.enterpriseHolder!.modelList.isEmpty) {
     // team이 없거나, ent없으면 모든정보초기화
     if (LoginPage.enterpriseHolder!.modelList.isEmpty) {
