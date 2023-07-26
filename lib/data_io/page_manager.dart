@@ -466,4 +466,30 @@ class PageManager extends CretaManager {
     }
     return thumbKeyMap[pageModel.mid];
   }
+
+  Future<PageModel> copyPage(PageModel src) async {
+    //print('copyFrame**************--------------------------');
+
+    PageModel newModel = PageModel('', bookModel!);
+    newModel.copyFrom(src, newMid: newModel.mid);
+
+    double nextOrderVal = nextOrder(src.order.value);
+    if (nextOrderVal <= src.order.value) {
+      nextOrderVal = src.order.value + 1;
+    }else{
+      
+    }
+    newModel.order.set(nextOrderVal, save: false, noUndo: true);
+
+    logger.fine('create new page ${newModel.mid}');
+
+    FrameManager? frameManager = findFrameManager(src.mid);
+    await frameManager?.copyFrames(newModel.mid, bookModel!.mid);
+
+    await createToDB(newModel);
+    insert(newModel, postion: getLength());
+    selectedMid = newModel.mid;
+
+    return newModel;
+  }
 }

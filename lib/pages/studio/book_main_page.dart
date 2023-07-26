@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:creta03/pages/studio/studio_main_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
@@ -126,6 +127,8 @@ class _BookMainPageState extends State<BookMainPage> {
   late double screenWidthPercentage;
   late double screenHeightPrecentage;
   late double screenWidth;
+
+  List<LogicalKeyboardKey> keys = [];
 
   //Timer? _connectedUserTimer;
 
@@ -402,36 +405,43 @@ class _BookMainPageState extends State<BookMainPage> {
         ),
         ChangeNotifierProvider<MouseTracer>.value(value: mouseTracerHolder!)
       ],
-      child: StudioVariables.isPreview
-          ? Scaffold(body: _waitBook())
-          : Snippet.CretaScaffold(
-              title: Snippet.logo('studio', route: () {
-                Routemaster.of(context).push(AppRoutes.studioBookGridPage);
-              }),
-              invalidate: () {
-                setState(() {});
-              },
-              context: context,
-              child: Stack(
-                children: [
-                  MouseRegion(
-                    onHover: (pointerEvent) {
-                      //if (StudioVariables.allowMutilUser == true) {
-                      if (mouseTracerHolder!.userMouseList.isEmpty) return;
-                      if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
-                        client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
-                            (pointerEvent.position.dy - 50) / screenHeightPrecentage);
-                        lastEventTime = DateTime.now();
-                      }
-                      //}
-                    },
-                    child: _waitBook(),
-                  ),
-                  //if (StudioVariables.allowMutilUser == true) mouseArea(),
-                  mouseArea(),
-                ],
+      child: RawKeyboardListener(
+        autofocus: true,
+        focusNode: FocusNode(),
+        onKey: _keyEventHandler,
+        child: StudioVariables.isPreview
+            ? Scaffold(body: _waitBook())
+            : Snippet.CretaScaffold(
+                title: Snippet.logo('studio', route: () {
+                  Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+                }),
+                invalidate: () {
+                  setState(() {});
+                },
+                context: context,
+                child: Stack(
+                  children: [
+                    MouseRegion(
+                      onHover: (pointerEvent) {
+                        //if (StudioVariables.allowMutilUser == true) {
+                        if (mouseTracerHolder!.userMouseList.isEmpty) return;
+                        if (lastEventTime
+                            .add(Duration(milliseconds: 100))
+                            .isBefore(DateTime.now())) {
+                          client.moveCursor(pointerEvent.position.dx / screenWidthPercentage,
+                              (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+                          lastEventTime = DateTime.now();
+                        }
+                        //}
+                      },
+                      child: _waitBook(),
+                    ),
+                    //if (StudioVariables.allowMutilUser == true) mouseArea(),
+                    mouseArea(),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 
@@ -1306,4 +1316,50 @@ class _BookMainPageState extends State<BookMainPage> {
   //   _connectedUserTimer?.cancel();
   //   _connectedUserTimer = null;
   // }
+
+  void _keyEventHandler(RawKeyEvent event) {
+    final key = event.logicalKey;
+    logger.info('key pressed $key');
+    if (event is RawKeyDownEvent) {
+      if (keys.contains(key)) return;
+      // textField 의 focus bug 때문에, delete  key 를 사용할 수 없다.
+      // if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
+      //   logger.info('delete pressed');
+      //   accManagerHolder!.removeACC(context);
+      // }
+      if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
+        logger.info('tab pressed');
+       
+      }
+      if (event.isKeyPressed(LogicalKeyboardKey.pageDown)) {
+        logger.info("pageDown pressed");
+      }
+      if (event.isKeyPressed(LogicalKeyboardKey.pageUp)) {
+        logger.info("pageUp pressed");
+      }
+      keys.add(key);
+      // Ctrl Key Area
+      if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
+          keys.contains(LogicalKeyboardKey.controlRight))) {
+        if (keys.contains(LogicalKeyboardKey.keyZ)) {
+          logger.info('Ctrl+Z pressed');
+          // undo
+         } else if (keys.contains(LogicalKeyboardKey.keyY)) {
+          logger.info('Ctrl+Y pressed');
+          // redo
+        } else if (keys.contains(LogicalKeyboardKey.keyC)) {
+          logger.info('Ctrl+C pressed');
+          // Copy
+        } else if (keys.contains(LogicalKeyboardKey.keyV)) {
+          logger.info('Ctrl+V pressed');
+          // Paste
+        } else if (keys.contains(LogicalKeyboardKey.keyX)) {
+          logger.info('Ctrl+V pressed');
+          // Paste
+        }
+      }
+    } else {
+      keys.remove(key);
+    }
+  }
 }
