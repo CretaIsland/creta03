@@ -991,7 +991,7 @@ class ContentsManager extends CretaManager {
     return linkManagerMap[contentsId];
   }
 
-  Future<void> copyContents(String frameMid, String bookMid) async {
+  Future<void> copyContents(String frameMid, String bookMid, {bool samePage = true}) async {
     double order = 1;
     for (var ele in modelList) {
       ContentsModel org = ele as ContentsModel;
@@ -1001,9 +1001,11 @@ class ContentsManager extends CretaManager {
       newModel.order.set(order++, save: false, noUndo: true);
       logger.info('create new Contents ${newModel.name},${newModel.mid}');
 
-      LinkManager? linkManager = linkManagerMap[org.mid];
-      await linkManager?.copyLinks(newModel.mid, bookMid);
-
+      if (samePage) {
+        // 링크는 same page 에서만 copy 된다.
+        LinkManager? linkManager = linkManagerMap[org.mid];
+        await linkManager?.copyLinks(newModel.mid, bookMid);
+      }
       await createToDB(newModel);
     }
   }

@@ -939,6 +939,7 @@ class Snippet {
       ]),
     );
   }
+  
 }
 
 class CretaComponentLocation {
