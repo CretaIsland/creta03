@@ -10,8 +10,11 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 //import '../common/creta_utils.dart';
 //import '../pages/studio/studio_constant.dart';
+//import '../pages/login_page.dart';
 //import 'app_enums.dart';
 import 'creta_model.dart';
+import 'team_model.dart';
+import 'user_property_model.dart';
 //import 'creta_style_mixin.dart';
 
 // ignore: camel_case_types
@@ -19,8 +22,11 @@ class ChannelModel extends CretaModel {
   String userId = '';
   String teamId = '';
   int followerCount = 0;
-  //String profileImg; // => UserPropertyModel로부터 가져옴
-  //String channelBannerImg;
+  String get name => userPropertyModel?.nickname ?? teamModel?.name ?? '';
+  String get profileImg => userPropertyModel?.profileImg ?? teamModel?.profileImg ?? '';
+  String get channelBannerImg => userPropertyModel?.channelBannerImg ?? teamModel?.channelBannerImg ?? '';
+  UserPropertyModel? userPropertyModel;
+  TeamModel? teamModel;
 
   @override
   List<Object?> get props => [
@@ -73,5 +79,14 @@ class ChannelModel extends CretaModel {
         "teamId": teamId,
         "followerCount": followerCount,
       }.entries);
+  }
+
+  void getModelFromMaps(Map<String, UserPropertyModel> userMap, Map<String, TeamModel> teamMap) {
+    if (userId.isNotEmpty) {
+      userPropertyModel = userMap[userId];
+    }
+    if (teamId.isNotEmpty) {
+      teamModel = teamMap[teamId];
+    }
   }
 }

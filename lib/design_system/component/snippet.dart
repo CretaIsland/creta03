@@ -98,7 +98,7 @@ class Snippet {
     return Scaffold(
         appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
         floatingActionButton:
-            StudioVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+            CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         //body: child,
         body: StudioVariables.isHandToolMode == false
@@ -146,7 +146,7 @@ class Snippet {
         getBuildContext: getBuildContext,
       ),
       floatingActionButton:
-          StudioVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+          CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
@@ -301,7 +301,7 @@ class Snippet {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfMyPage(context, title),
       floatingActionButton:
-          StudioVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+          CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body:
           // GestureDetector(
           //   behavior: HitTestBehavior.opaque,
@@ -421,11 +421,11 @@ class Snippet {
         ),
         if (!kReleaseMode)
           CretaMenuItem(
-            caption: StudioVariables.isDeveloper
+            caption: CretaVariables.isDeveloper
                 ? CretaLang.accountMenu[5]
                 : CretaLang.accountMenu[4], //개발자모드
             onPressed: () {
-              StudioVariables.isDeveloper = !StudioVariables.isDeveloper;
+              CretaVariables.isDeveloper = !CretaVariables.isDeveloper;
               invalidate?.call();
             },
           ),

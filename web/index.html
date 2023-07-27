@@ -273,6 +273,11 @@
       }, 10000);
     }
   </script>
+  <script>
+    document.body.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
+  </script>
   <div class="loading" id="loading_indicator">
     <div class="logo chrome">
       <div class="part-1"></div>

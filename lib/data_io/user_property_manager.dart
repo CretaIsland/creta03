@@ -17,6 +17,10 @@ import '../model/team_model.dart';
 import '../pages/login_page.dart';
 
 class UserPropertyManager extends CretaManager {
+
+  @override
+  String get getMidFieldName => 'email';
+
   UserModel get userModel => AccountManager.currentLoginUser;
   final List<FrameModel> _frameModelList = [];
   UserPropertyModel? userPropertyModel;
@@ -350,4 +354,17 @@ class UserPropertyManager extends CretaManager {
                         color: Colors.white)))
             : Container());
   }
+
+  // void queryUserPropertyFromMap(Map<String, String> userIdMap) {
+  //   clearAll();
+  //   clearConditions();
+  //   if (userIdMap.isEmpty) {
+  //     setState(DBState.idle);
+  //     return;
+  //   }
+  //   final List<String> userIdList = [];
+  //   userIdMap.forEach((key, value) => userIdList.add(value));
+  //   addWhereClause('email', QueryValue(value: userIdList, operType: OperType.whereIn));
+  //   queryByAddedContitions();
+  // }
 }

@@ -43,6 +43,8 @@ abstract class CretaManager extends AbsExModelManager {
 
   CretaModel cloneModel(CretaModel src);
 
+  String get getMidFieldName => 'mid';
+
   //SortedMap<double, CretaModel> _orderMap = SortedMap<double, CretaModel>();
   Map<double, CretaModel> _orderMap = {};
 
@@ -1240,30 +1242,65 @@ abstract class CretaManager extends AbsExModelManager {
       int count = 0;
       List<String> valueList = [];
       modelList.clear();
+      lock();
+      _dbState = DBState.querying;
       for (var value in _listValueOnWheneIn!) {
         count++;
         valueList.add(value);
-        if (count == 10 || count == totalCount) {
+        if ((count % 10) == 0 || count == totalCount) {
           Map<String, QueryValue> newCond = {..._whereCaluse};
           newCond[_keyOnWheneIn] = QueryValue(value: valueList, operType: OperType.whereIn);
           await queryFromDB(
             newCond,
             orderBy: _orderBy,
             isNew: false,
+            useLocking: false,
           );
-          count = 0;
           valueList.clear();
         }
       }
+      _dbState = DBState.idle;
+      unlock();
+      clearConditions();
       return modelList;
     }
     // normal query
-    Future<List<AbsExModel>> retVal = queryFromDB(
+    List<AbsExModel> retVal = await queryFromDB(
       _whereCaluse,
       //limit: ,
       orderBy: _orderBy,
     ).whenComplete(() => clearConditions());
     return retVal;
+  }
+
+  void queryFromList(List<String> idList, {bool clear = true}) {
+    if (clear) {
+      clearAll();
+      clearConditions();
+    }
+    if (idList.isEmpty) {
+      setState(DBState.idle);
+      return;
+    }
+    addWhereClause('isRemoved', QueryValue(value: false));
+    addWhereClause(getMidFieldName, QueryValue(value: idList, operType: OperType.whereIn));
+    queryByAddedContitions();
+  }
+
+  void queryFromMap(Map<String, String> idMap, {bool clear = true}) {
+    if (clear) {
+      clearAll();
+      clearConditions();
+    }
+    if (idMap.isEmpty) {
+      setState(DBState.idle);
+      return;
+    }
+    final List<String> idList = [];
+    idMap.forEach((key, value) => idList.add(value));
+    addWhereClause('isRemoved', QueryValue(value: false));
+    addWhereClause(getMidFieldName, QueryValue(value: idList, operType: OperType.whereIn));
+    queryByAddedContitions();
   }
 
   // static Future<bool> join(List<CretaManager> managerList, List<Function> queryFuncList, List<Function(List<AbsExModel>)?> resultFuncList) async {

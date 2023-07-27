@@ -54,6 +54,9 @@ class UserPropertyModel extends CretaModel {
   late String channelId;
 
   @override
+  String get getMid => email;
+
+  @override
   List<Object?> get props => [
         ...super.props,
         email,

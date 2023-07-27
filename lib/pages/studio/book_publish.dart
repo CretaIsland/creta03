@@ -96,15 +96,27 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       _onceDBGetComplete1 = true;
       return value;
     });
-    LoginPage.userPropertyManagerHolder!
-        .getUserPropertyFromEmail(widget.model!.channels)
+
+    LoginPage.channelManagerHolder!
+        .getChannelFromList(widget.model!.channels)
         .then((value) {
-      channelUserModelList = [...value];
-      for (var ele in channelUserModelList) {
-        logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
-      }
-      _onceDBGetComplete2 = true;
-      return value;
+          List<String> emailList = [];
+          for(var model in value) {
+            if (model.userId.isNotEmpty) {
+              emailList.add(model.userId);
+            }
+          }
+          //
+          LoginPage.userPropertyManagerHolder!
+              .getUserPropertyFromEmail(emailList)
+              .then((value) {
+            channelUserModelList = [...value];
+            for (var ele in channelUserModelList) {
+              logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
+            }
+            _onceDBGetComplete2 = true;
+            return value;
+          });
     });
 
     // animationController = AnimationController(
@@ -874,7 +886,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           textWidth: 90,
           onPressed: () {
             setState(() {
-              widget.model!.channels.add(e.mid);
+              widget.model!.channels.add(e.channelId);
               widget.model!.save();
               channelUserModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
             });
@@ -945,7 +957,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                           ? BTN.fill_gray_i_s(
                               icon: Icons.close,
                               onPressed: () {
-                                widget.model!.channels.remove(userModel.email);
+                                widget.model!.channels.remove(userModel.channelId);
                                 for (var ele in channelUserModelList) {
                                   if (ele.email == userModel.email) {
                                     channelUserModelList.remove(ele);

@@ -129,6 +129,7 @@ dependencies:
   just_audio: ^0.9.34
   mini_music_visualizer: ^1.0.2
   marquee: ^2.2.3
+  context_menus: ^1.0.2
 
 
 dev_dependencies:

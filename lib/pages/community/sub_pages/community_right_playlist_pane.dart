@@ -146,8 +146,8 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
   void _resultBooksFromDB(List<AbsExModel> modelList) {
     for (var model in modelList) {
       BookModel bModel = model as BookModel;
-      if (kDebugMode) print('---_getBookDataFromDB(bookId=${bModel.mid}) added');
-      _cretaBookMap[bModel.mid] = bModel;
+      if (kDebugMode) print('---_getBookDataFromDB(bookId=${bModel.getMid}) added');
+      _cretaBookMap[bModel.getMid] = bModel;
     }
   }
 
@@ -173,7 +173,7 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
         itemBuilder: (context, index) {
           PlaylistModel plModel = _playlistModelList[index];
           return CretaPlaylistItem(
-            key: GlobalObjectKey(plModel.mid),
+            key: GlobalObjectKey(plModel.getMid),
             playlistModel: plModel,
             width: widget.cretaLayoutRect.childWidth,
             bookMap: _cretaBookMap,

@@ -5,11 +5,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
+import 'package:context_menus/context_menus.dart';
+
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 import '../../../../data_io/contents_manager.dart';
+import '../../../../design_system/creta_color.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
@@ -318,14 +321,44 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         stickerKey = GlobalKey<StickerState>();
       }
 
-      Widget eachFrame = FrameEach(
-        model: model,
-        pageModel: widget.pageModel,
-        frameManager: frameManager!,
-        applyScale: applyScale,
-        width: frameWidth,
-        height: frameHeight,
-        frameOffset: Offset(posX, posY),
+      Widget eachFrame = ContextMenuOverlay(
+        cardBuilder: (_, children) {
+          return SizedBox(
+            width: 180,
+            child: Column(children: children),
+          );
+        },
+        buttonStyle: ContextMenuButtonStyle(
+          fgColor: CretaColor.text[500],
+          bgColor: CretaColor.text[100],
+          hoverFgColor: CretaColor.text[700],
+          hoverBgColor: CretaColor.text[300],
+        ),
+        child: ContextMenuRegion(
+          contextMenu: GenericContextMenu(buttonConfigs: [
+            ContextMenuButtonConfig(
+              "View image in browser",
+              onPressed: () {
+                logger.info('View image in browser');
+              },
+            ),
+            ContextMenuButtonConfig(
+              "Copy image path",
+              onPressed: () {
+                logger.info('Copy image path');
+              },
+            )
+          ]),
+          child: FrameEach(
+            model: model,
+            pageModel: widget.pageModel,
+            frameManager: frameManager!,
+            applyScale: applyScale,
+            width: frameWidth,
+            height: frameHeight,
+            frameOffset: Offset(posX, posY),
+          ),
+        ),
       );
 
       return Sticker(

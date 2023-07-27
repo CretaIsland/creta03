@@ -24,6 +24,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
+//import '../../model/team_model.dart';
 import '../../model/user_property_model.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
@@ -63,6 +64,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   PlaylistModel? _currentPlaylistModel;
   BookModel? _currentBookModel;
   UserPropertyModel? _userPropertyModelOfBookModel;
+  //TeamModel? _teamModel;
   bool _bookIsFavorites = false;
 
   BookType _filterBookType = BookType.none;
@@ -952,7 +954,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   BTN.fill_gray_it_m(
                     text: _userPropertyModelOfBookModel?.nickname ?? '',
                     icon: Icons.account_circle,
-                    onPressed: () {},
+                    onPressed: () {
+                      if (_userPropertyModelOfBookModel != null) {
+                        String channelLinkUrl = '${AppRoutes.channel}?${_userPropertyModelOfBookModel!.channelId}';
+                        Routemaster.of(context).push(channelLinkUrl);
+                      }
+                    },
                     width: null,
                     buttonColor: CretaButtonColor.transparent,
                     textColor: Colors.white,
@@ -1276,6 +1283,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
+          filterBookType: _filterBookType,
+          filterBookSort: _filterBookSort,
+          filterPermissionType: _filterPermissionType,
+          filterSearchKeyword: _filterSearchKeyword,
         );
       case AppRoutes.subscriptionList:
         return CommunityRightSubscriptionPane(

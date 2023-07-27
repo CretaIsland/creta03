@@ -476,8 +476,8 @@ class PageManager extends CretaManager {
     double nextOrderVal = nextOrder(src.order.value);
     if (nextOrderVal <= src.order.value) {
       nextOrderVal = src.order.value + 1;
-    }else{
-      
+    } else {
+      nextOrderVal = (nextOrderVal + src.order.value) / 2;
     }
     newModel.order.set(nextOrderVal, save: false, noUndo: true);
 
