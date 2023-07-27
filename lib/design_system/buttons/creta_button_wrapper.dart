@@ -281,6 +281,7 @@ class BTN {
     required Function onPressed,
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color? iconColor,
+    String? tooltip,
   }) {
     return CretaButton(
       width: 36,
@@ -288,6 +289,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: buttonColor,
       onPressed: onPressed,
+      tooltip: tooltip,
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         child: Icon(

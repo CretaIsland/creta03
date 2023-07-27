@@ -72,6 +72,7 @@ class CommunityRightChannelPane extends StatefulWidget {
     required this.filterBookSort,
     required this.filterPermissionType,
     required this.filterSearchKeyword,
+    required this.onUpdateChannelModel,
   });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
@@ -79,6 +80,7 @@ class CommunityRightChannelPane extends StatefulWidget {
   final BookSort filterBookSort;
   final PermissionType filterPermissionType;
   final String filterSearchKeyword;
+  final Function(ChannelModel?)? onUpdateChannelModel;
 
   static String channelId = '';
 
@@ -98,7 +100,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   late TeamManager teamManagerHolder;
   late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager dummyManagerHolder;
-  ChannelModel? _channelModel;
+  ChannelModel? _currentChannelModel;
   final List<BookModel> _cretaBooksList = [];
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   final List<PlaylistModel> _playlistModelList = [];
@@ -148,13 +150,13 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
 
   void _resultChannelFromDB(List<AbsExModel> modelList) {
     if (modelList.isEmpty) return;
-    _channelModel = modelList[0] as ChannelModel; // 오직 1개만 있다고 가정
-    _userIdMap[_channelModel!.userId] = _channelModel!.userId; // <= email
-    _teamIdMap[_channelModel!.teamId] = _channelModel!.teamId; // <= email
+    _currentChannelModel = modelList[0] as ChannelModel; // 오직 1개만 있다고 가정
+    _userIdMap[_currentChannelModel!.userId] = _currentChannelModel!.userId; // <= email
+    _teamIdMap[_currentChannelModel!.teamId] = _currentChannelModel!.teamId; // <= email
   }
 
   void _getBooksFromDB(List<AbsExModel> modelList) {
-    if (_channelModel == null) {
+    if (_currentChannelModel == null) {
       bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
@@ -216,8 +218,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.getKeyId})');
       _userPropertyMap[userModel.getMid] = userModel;
     }
-    if (_channelModel != null) {
-      _channelModel!.userPropertyModel = _userPropertyMap[_channelModel!.userId];
+    if (_currentChannelModel != null) {
+      _currentChannelModel!.userPropertyModel = _userPropertyMap[_currentChannelModel!.userId];
     }
   }
 
@@ -235,7 +237,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
 
   void _getFavoritesFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getFavoritesFromDB');
-    if (_channelModel == null) {
+    if (_currentChannelModel == null) {
       favoritesManagerHolder.setState(DBState.idle);
       return;
     }
@@ -258,7 +260,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
 
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB');
-    if (_channelModel == null) {
+    if (_currentChannelModel == null) {
       playlistManagerHolder.setState(DBState.idle);
       return;
     }
@@ -274,7 +276,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _getPlaylistsBooksFromDB(List<AbsExModel> modelList) {
-    if (_channelModel == null) {
+    if (_currentChannelModel == null) {
       bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
@@ -304,9 +306,10 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _dummyCompleteDB(List<AbsExModel> modelList) {
-    _channelModel?.getModelFromMaps(_userPropertyMap, _teamMap);
+    _currentChannelModel?.getModelFromMaps(_userPropertyMap, _teamMap);
     _channelMap.forEach((key, chModel) => chModel.getModelFromMaps(_userPropertyMap, _teamMap));
     dummyManagerHolder.setState(DBState.idle);
+    widget.onUpdateChannelModel?.call(_currentChannelModel);
   }
 
   void _addToFavorites(String bookId, bool isFavorites) async {

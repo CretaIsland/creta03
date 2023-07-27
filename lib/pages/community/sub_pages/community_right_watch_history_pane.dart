@@ -119,7 +119,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     bookPublishedManagerHolder = BookPublishedManager();
     favoritesManagerHolder = FavoritesManager();
     dummyManagerHolder = BookManager();
-    //userPropertyManagerHolder = UserPropertyManager();
+    teamManagerHolder = TeamManager();
+    userPropertyManagerHolder = UserPropertyManager();
     channelManagerHolder = ChannelManager();
 
     CretaManager.startQueries(
@@ -230,11 +231,15 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
       return;
     }
     List<String> bookIdList = [];
-    for (var exModel in modelList) {
-      BookModel bookModel = exModel as BookModel;
+    _cretaBooksMap.forEach((key, bookModel) {
       bookIdList.add(bookModel.getMid);
       _favoritesBookIdMap[bookModel.getMid] = false;
-    }
+    });
+    // for (var exModel in modelList) {
+    //   BookModel bookModel = exModel as BookModel;
+    //   bookIdList.add(bookModel.getMid);
+    //   _favoritesBookIdMap[bookModel.getMid] = false;
+    // }
     favoritesManagerHolder.queryFavoritesFromBookIdList(bookIdList);
   }
 
@@ -473,7 +478,15 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     if (_onceDBGetComplete == false) {
       if (kDebugMode) print('---build-3');
       return CretaModelSnippet.waitDatum(
-        managerList: [watchHistoryManagerHolder, bookPublishedManagerHolder, favoritesManagerHolder],
+        managerList: [
+          watchHistoryManagerHolder,
+          bookPublishedManagerHolder,
+          channelManagerHolder,
+          userPropertyManagerHolder,
+          teamManagerHolder,
+          favoritesManagerHolder,
+          dummyManagerHolder
+        ],
         consumerFunc: _getItemPane,
       );
     }
