@@ -147,7 +147,8 @@ class BTN {
     String? tooltip,
     Color? tooltipFg,
     Color? tooltipBg,
-    CretaButtonColor buttonColor = CretaButtonColor.sky,
+    // CretaButtonColor buttonColor = CretaButtonColor.sky,
+    CretaButtonColor buttonColor = CretaButtonColor.transparent,
     Color iconColor = CretaColor.primary,
     CretaButtonDeco decoType = CretaButtonDeco.opacity,
     void Function(bool)? onHover,
@@ -280,6 +281,7 @@ class BTN {
     required Function onPressed,
     CretaButtonColor buttonColor = CretaButtonColor.white,
     Color? iconColor,
+    String? tooltip,
   }) {
     return CretaButton(
       width: 36,
@@ -287,6 +289,7 @@ class BTN {
       buttonType: CretaButtonType.child,
       buttonColor: buttonColor,
       onPressed: onPressed,
+      tooltip: tooltip,
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         child: Icon(

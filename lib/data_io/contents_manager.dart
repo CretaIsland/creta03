@@ -16,11 +16,13 @@ import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import '../pages/studio/left_menu/music/music_player_frame.dart';
 import '../pages/studio/studio_getx_controller.dart';
 import '../pages/studio/studio_snippet.dart';
 import '../pages/studio/studio_variables.dart';
 import '../player/creta_abs_player.dart';
 import '../player/creta_play_timer.dart';
+import '../player/music/creta_music_mixin.dart';
 import '../player/video/creta_video_player.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
@@ -400,6 +402,7 @@ class ContentsManager extends CretaManager {
   }
 
   Future<void> setSoundOff({String mid = ''}) async {
+    String frameId = frameModel.mid;
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
@@ -415,10 +418,20 @@ class ContentsManager extends CretaManager {
           }
         }
       }
+      if (player.model != null && player.model!.isMusic()) {
+        debugPrint('--------------setMusicSoundOff ${player.model!.name}');
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+        if (musicKey != null) {
+          musicKey.currentState?.mutedMusic(player.model!);
+        } else {
+          logger.severe('musicKey is null');
+        }
+      }
     }
   }
 
   Future<void> resumeSound({String mid = ''}) async {
+    String frameId = frameModel.mid;
     for (var player in _playerMap.values) {
       if (player.model != null && player.model!.isVideo()) {
         CretaVideoPlayer video = player as CretaVideoPlayer;
@@ -432,6 +445,15 @@ class ContentsManager extends CretaManager {
               await video.wcontroller!.setVolume(video.model!.volume.value);
             }
           }
+        }
+      }
+      if (player.model != null && player.model!.isMusic()) {
+        debugPrint('--------------resumeMusicSound ${player.model!.name}');
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+        if (musicKey != null) {
+          musicKey.currentState?.resumedMusic(player.model!);
+        } else {
+          logger.severe('musicKey is null');
         }
       }
     }
