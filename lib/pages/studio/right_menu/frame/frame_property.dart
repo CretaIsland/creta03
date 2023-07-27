@@ -26,7 +26,9 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
+import '../../../../player/music/creta_music_mixin.dart';
 import '../../book_main_page.dart';
+import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../property_mixin.dart';
@@ -212,10 +214,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 hasRemoveButton: false,
                 bodyWidget: _pageSizeBody(width, height),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding + 4.0),
-                child: _musicPlayerSize(),
-              ),
+              if (widget.model.isMusicType()) _musicPlayerSize(),
             ],
           );
         });
@@ -223,19 +222,21 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
   Widget _musicPlayerSize() {
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
+      padding: const EdgeInsets.only(top: 12, left: 30, right: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(CretaStudioLang.playersize, style: titleStyle),
           CretaTabButton(
             onEditComplete: (value) {
-              int idx = 1;
+              int idx = 0;
               for (String val in CretaStudioLang.playerSize.values) {
                 if (value == val) {
+                  GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[widget.model.mid];
+                  musicKey!.currentState!.setSelectedSize(value);
                   mychangeStack.startTrans();
-                  widget.model.width.set(StudioConst.musicPlayerSize[idx-1].width);
-                  widget.model.height.set(StudioConst.musicPlayerSize[idx-1].height);
+                  widget.model.width.set(StudioConst.musicPlayerSize[idx].width);
+                  widget.model.height.set(StudioConst.musicPlayerSize[idx].height);
                   mychangeStack.endTrans();
                 }
                 idx++;
@@ -323,263 +324,266 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             ],
           ),
         ),
-        // 두번째 줄  width, height
-        Padding(
-          padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 258,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 97,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            CretaStudioLang.width,
-                            style: titleStyle,
-                          ),
-                          CretaTextField.xshortNumber(
-                            defaultBorder: Border.all(color: CretaColor.text[100]!),
-                            width: 45,
-                            limit: 5,
-                            textFieldKey: GlobalKey(),
-                            value: widget.model.width.value.round().toString(),
-                            hintText: '',
-                            onEditComplete: ((value) {
-                              _sizeChanged(value, widget.model.width, widget.model.height);
-                            }),
-                            minNumber: LayoutConst.minFrameSize,
-                            maxNumber: _bookModel!.width.value.round(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    BTN.fill_gray_i_m(
-                        tooltip: CretaStudioLang.fixedRatio,
-                        tooltipBg: CretaColor.text[400]!,
-                        icon: widget.model.isFixedRatio.value
-                            ? Icons.lock_outlined
-                            : Icons.lock_open_outlined,
-                        iconColor: widget.model.isFixedRatio.value
-                            ? CretaColor.primary
-                            : CretaColor.text[700]!,
-                        onPressed: () {
-                          setState(() {
-                            widget.model.isFixedRatio.set(!widget.model.isFixedRatio.value);
-                          });
-                        }),
-                    SizedBox(
-                      width: 97,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            CretaStudioLang.height,
-                            style: titleStyle,
-                          ),
-                          SizedBox(width: 15),
-                          CretaTextField.xshortNumber(
-                            defaultBorder: Border.all(color: CretaColor.text[100]!),
-                            width: 45,
-                            limit: 5,
-                            textFieldKey: GlobalKey(),
-                            value: widget.model.height.value.round().toString(),
-                            hintText: '',
-                            minNumber: LayoutConst.minFrameSize,
-                            maxNumber: _bookModel!.height.value.round(),
-                            onEditComplete: ((value) {
-                              _sizeChanged(value, widget.model.height, widget.model.width);
-                            }),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              BTN.fill_gray_i_m(
-                  tooltip: CretaStudioLang.fullscreenTooltip,
-                  tooltipBg: CretaColor.text[400]!,
-                  iconSize: 18,
-                  icon: _isFullScreen ? Icons.fullscreen_exit_outlined : Icons.fullscreen_outlined,
-                  onPressed: () {
-                    if (_bookModel == null) return;
-                    setState(() {
-                      widget.model.toggleFullscreen(_isFullScreen, _bookModel!);
-                      logger.finest('sendEvent');
-                      _sendEvent!.sendEvent(widget.model);
-                    });
-                  }),
-            ],
-          ),
-        ),
-        // 세번째 줄  autofit
-        Padding(
+        if (!widget.model.isMusicType())
+          // 두번째 줄  width, height
+          Padding(
             padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
-            //child: BTN.line_blue_t_m(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                BTN.fill_gray_ti_m(
-                  width: 180,
-                  icon: Icons.crop_original_outlined,
-                  text: CretaStudioLang.autoFitContents,
-                  onPressed: () {
-                    if (_frameManager == null) {
-                      logger.info('frameManager is null');
-                      return;
-                    }
-                    mychangeStack.startTrans();
-                    setState(() {
-                      widget.model.isAutoFit.set(true, save: false);
-                      widget.model.isFixedRatio.set(true);
-                    });
-                    _frameManager?.resizeFrame2(widget.model);
-                    mychangeStack.endTrans();
-                    _sendEvent?.sendEvent(widget.model);
-                  },
+                SizedBox(
+                  width: 258,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 97,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              CretaStudioLang.width,
+                              style: titleStyle,
+                            ),
+                            CretaTextField.xshortNumber(
+                              defaultBorder: Border.all(color: CretaColor.text[100]!),
+                              width: 45,
+                              limit: 5,
+                              textFieldKey: GlobalKey(),
+                              value: widget.model.width.value.round().toString(),
+                              hintText: '',
+                              onEditComplete: ((value) {
+                                _sizeChanged(value, widget.model.width, widget.model.height);
+                              }),
+                              minNumber: LayoutConst.minFrameSize,
+                              maxNumber: _bookModel!.width.value.round(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      BTN.fill_gray_i_m(
+                          tooltip: CretaStudioLang.fixedRatio,
+                          tooltipBg: CretaColor.text[400]!,
+                          icon: widget.model.isFixedRatio.value
+                              ? Icons.lock_outlined
+                              : Icons.lock_open_outlined,
+                          iconColor: widget.model.isFixedRatio.value
+                              ? CretaColor.primary
+                              : CretaColor.text[700]!,
+                          onPressed: () {
+                            setState(() {
+                              widget.model.isFixedRatio.set(!widget.model.isFixedRatio.value);
+                            });
+                          }),
+                      SizedBox(
+                        width: 97,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              CretaStudioLang.height,
+                              style: titleStyle,
+                            ),
+                            SizedBox(width: 15),
+                            CretaTextField.xshortNumber(
+                              defaultBorder: Border.all(color: CretaColor.text[100]!),
+                              width: 45,
+                              limit: 5,
+                              textFieldKey: GlobalKey(),
+                              value: widget.model.height.value.round().toString(),
+                              hintText: '',
+                              minNumber: LayoutConst.minFrameSize,
+                              maxNumber: _bookModel!.height.value.round(),
+                              onEditComplete: ((value) {
+                                _sizeChanged(value, widget.model.height, widget.model.width);
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                BTN.fill_gray_i_m(
+                    tooltip: CretaStudioLang.fullscreenTooltip,
+                    tooltipBg: CretaColor.text[400]!,
+                    iconSize: 18,
+                    icon:
+                        _isFullScreen ? Icons.fullscreen_exit_outlined : Icons.fullscreen_outlined,
+                    onPressed: () {
+                      if (_bookModel == null) return;
+                      setState(() {
+                        widget.model.toggleFullscreen(_isFullScreen, _bookModel!);
+                        logger.finest('sendEvent');
+                        _sendEvent!.sendEvent(widget.model);
+                      });
+                    }),
               ],
-            )
-            // child: Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Text(
-            //       CretaStudioLang.autoFitContents,
-            //       style: titleStyle,
-            //     ),
-            //     CretaToggleButton(
-            //       defaultValue: widget.model.isAutoFit.value,
-            //       onSelected: (value) {
-            //         widget.model.isAutoFit.set(value);
-            //         if (value == true) {
-            //           setState(() {
-            //             widget.model.isFixedRatio.set(value);
-            //           });
-            //           if (_frameManager == null) {
-            //             logger.info('frameManager is null');
-            //           }
-            //           _frameManager?.resizeFrame2(widget.model);
-            //         } else {
-            //           _frameManager?.notify();
-            //         }
-            //         _sendEvent?.sendEvent(widget.model);
-            //       },
-            //     ),
-            //   ],
-            // ),
             ),
-
-        // 네번째 줄  rotate
-        Padding(
-          padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 97,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      CretaStudioLang.angle,
-                      style: titleStyle,
-                    ),
-                    CretaTextField.xshortNumber(
-                      maxNumber: 360,
-                      defaultBorder: Border.all(color: CretaColor.text[100]!),
-                      width: 45,
-                      limit: 5,
-                      textFieldKey: GlobalKey(),
-                      value: widget.model.angle.value.round().toString(),
-                      hintText: '',
-                      onEditComplete: ((value) {
-                        logger.finest('onEditComplete $value');
-                        double newValue = int.parse(value).toDouble();
-                        if (widget.model.angle.value == newValue) {
-                          return;
-                        }
-                        widget.model.angle.set(newValue);
-                        //BookMainPage.bookManagerHolder!.notify();
-                        _sendEvent!.sendEvent(widget.model);
-                        logger.finest('onEditComplete ${widget.model.angle.value}');
-                      }),
-                      minNumber: 0,
-                    ),
-                    // Text(
-                    //   "90",
-                    //   style: titleStyle,
-                    // ),
-                    // BTN.fill_gray_i_m(
-                    //     iconSize: 18,
-                    //     icon: Icons.rotate_90_degrees_ccw_outlined,
-                    //     onPressed: () {
-                    //       widget.model.angle.set((widget.model.angle.value + 270) % 360);
-                    //       logger.finest('sendEvent');
-                    //       _sendEvent!.sendEvent(widget.model);
-                    //     }),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        if (!widget.model.isMusicType())
+          // 세번째 줄  autofit
+          Padding(
+              padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+              //child: BTN.line_blue_t_m(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  BTN.fill_gray_i_m(
-                      tooltip: CretaStudioLang.angleTooltip,
-                      tooltipBg: CretaColor.text[400]!,
-                      iconSize: 18,
-                      icon: Icons.rotate_90_degrees_ccw_outlined,
-                      onPressed: () {
-                        setState(() {
-                          int turns = (widget.model.angle.value / 15).round() - 1;
-                          double angle = (turns * 15.0) % 360;
-                          if (angle < 0) {
-                            angle = 360 - angle;
-                          }
-                          widget.model.angle.set(angle);
-                        });
-                        logger.finest('sendEvent');
-                        _sendEvent!.sendEvent(widget.model);
-                      }),
-                  BTN.fill_gray_i_m(
-                      tooltip: CretaStudioLang.angleTooltip,
-                      tooltipBg: CretaColor.text[400]!,
-                      iconSize: 18,
-                      icon: Icons.rotate_90_degrees_cw_outlined,
-                      onPressed: () {
-                        setState(() {
-                          int turns = (widget.model.angle.value / 15).round() + 1;
-                          widget.model.angle.set((turns * 15.0) % 360);
-                        });
-
-                        logger.finest('sendEvent');
-                        _sendEvent!.sendEvent(widget.model);
-                      }),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('${CretaStudioLang.inSideRotate} ', style: titleStyle),
-                  CretaToggleButton(
-                    width: 54 * 0.75,
-                    height: 28 * 0.75,
-                    defaultValue: widget.model.isInsideRotate.value,
-                    onSelected: (value) {
-                      widget.model.isInsideRotate.set(value);
-                      _sendEvent!.sendEvent(widget.model);
+                  BTN.fill_gray_ti_m(
+                    width: 180,
+                    icon: Icons.crop_original_outlined,
+                    text: CretaStudioLang.autoFitContents,
+                    onPressed: () {
+                      if (_frameManager == null) {
+                        logger.info('frameManager is null');
+                        return;
+                      }
+                      mychangeStack.startTrans();
+                      setState(() {
+                        widget.model.isAutoFit.set(true, save: false);
+                        widget.model.isFixedRatio.set(true);
+                      });
+                      _frameManager?.resizeFrame2(widget.model);
+                      mychangeStack.endTrans();
+                      _sendEvent?.sendEvent(widget.model);
                     },
                   ),
                 ],
+              )
+              // child: Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text(
+              //       CretaStudioLang.autoFitContents,
+              //       style: titleStyle,
+              //     ),
+              //     CretaToggleButton(
+              //       defaultValue: widget.model.isAutoFit.value,
+              //       onSelected: (value) {
+              //         widget.model.isAutoFit.set(value);
+              //         if (value == true) {
+              //           setState(() {
+              //             widget.model.isFixedRatio.set(value);
+              //           });
+              //           if (_frameManager == null) {
+              //             logger.info('frameManager is null');
+              //           }
+              //           _frameManager?.resizeFrame2(widget.model);
+              //         } else {
+              //           _frameManager?.notify();
+              //         }
+              //         _sendEvent?.sendEvent(widget.model);
+              //       },
+              //     ),
+              //   ],
+              // ),
               ),
-            ],
+        if (!widget.model.isMusicType())
+          // 네번째 줄  rotate
+          Padding(
+            padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 97,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        CretaStudioLang.angle,
+                        style: titleStyle,
+                      ),
+                      CretaTextField.xshortNumber(
+                        maxNumber: 360,
+                        defaultBorder: Border.all(color: CretaColor.text[100]!),
+                        width: 45,
+                        limit: 5,
+                        textFieldKey: GlobalKey(),
+                        value: widget.model.angle.value.round().toString(),
+                        hintText: '',
+                        onEditComplete: ((value) {
+                          logger.finest('onEditComplete $value');
+                          double newValue = int.parse(value).toDouble();
+                          if (widget.model.angle.value == newValue) {
+                            return;
+                          }
+                          widget.model.angle.set(newValue);
+                          //BookMainPage.bookManagerHolder!.notify();
+                          _sendEvent!.sendEvent(widget.model);
+                          logger.finest('onEditComplete ${widget.model.angle.value}');
+                        }),
+                        minNumber: 0,
+                      ),
+                      // Text(
+                      //   "90",
+                      //   style: titleStyle,
+                      // ),
+                      // BTN.fill_gray_i_m(
+                      //     iconSize: 18,
+                      //     icon: Icons.rotate_90_degrees_ccw_outlined,
+                      //     onPressed: () {
+                      //       widget.model.angle.set((widget.model.angle.value + 270) % 360);
+                      //       logger.finest('sendEvent');
+                      //       _sendEvent!.sendEvent(widget.model);
+                      //     }),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    BTN.fill_gray_i_m(
+                        tooltip: CretaStudioLang.angleTooltip,
+                        tooltipBg: CretaColor.text[400]!,
+                        iconSize: 18,
+                        icon: Icons.rotate_90_degrees_ccw_outlined,
+                        onPressed: () {
+                          setState(() {
+                            int turns = (widget.model.angle.value / 15).round() - 1;
+                            double angle = (turns * 15.0) % 360;
+                            if (angle < 0) {
+                              angle = 360 - angle;
+                            }
+                            widget.model.angle.set(angle);
+                          });
+                          logger.finest('sendEvent');
+                          _sendEvent!.sendEvent(widget.model);
+                        }),
+                    BTN.fill_gray_i_m(
+                        tooltip: CretaStudioLang.angleTooltip,
+                        tooltipBg: CretaColor.text[400]!,
+                        iconSize: 18,
+                        icon: Icons.rotate_90_degrees_cw_outlined,
+                        onPressed: () {
+                          setState(() {
+                            int turns = (widget.model.angle.value / 15).round() + 1;
+                            widget.model.angle.set((turns * 15.0) % 360);
+                          });
+
+                          logger.finest('sendEvent');
+                          _sendEvent!.sendEvent(widget.model);
+                        }),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${CretaStudioLang.inSideRotate} ', style: titleStyle),
+                    CretaToggleButton(
+                      width: 54 * 0.75,
+                      height: 28 * 0.75,
+                      defaultValue: widget.model.isInsideRotate.value,
+                      onSelected: (value) {
+                        widget.model.isInsideRotate.set(value);
+                        _sendEvent!.sendEvent(widget.model);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
         // 다선번째 줄  radius
         Padding(
           padding: const EdgeInsets.only(top: 12, left: 30, right: 24),

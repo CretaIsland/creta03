@@ -1329,7 +1329,6 @@ class _BookMainPageState extends State<BookMainPage> {
       // }
       if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
         logger.info('tab pressed');
-       
       }
       if (event.isKeyPressed(LogicalKeyboardKey.pageDown)) {
         logger.info("pageDown pressed");
@@ -1344,7 +1343,7 @@ class _BookMainPageState extends State<BookMainPage> {
         if (keys.contains(LogicalKeyboardKey.keyZ)) {
           logger.info('Ctrl+Z pressed');
           // undo
-         } else if (keys.contains(LogicalKeyboardKey.keyY)) {
+        } else if (keys.contains(LogicalKeyboardKey.keyY)) {
           logger.info('Ctrl+Y pressed');
           // redo
         } else if (keys.contains(LogicalKeyboardKey.keyC)) {
