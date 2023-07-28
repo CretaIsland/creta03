@@ -286,7 +286,6 @@ class _DraggableStickersState extends State<DraggableStickers> {
                                 ? CretaStudioLang.unshow
                                 : CretaStudioLang.show,
                             onPressed: () {
-                              logger.info('test menu1 clicked');
                               BookMainPage.containeeNotifier!.setFrameClick(true);
                               frameModel.isShow.set(!frameModel.isShow.value);
                               frameModel.changeOrderByIsShow(widget.frameManager!);

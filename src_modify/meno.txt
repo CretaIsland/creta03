@@ -15,3 +15,8 @@ ResizePointDraggable.onScaleUpdate
   -->DraggableResizable.onDragTopLeft --> onUpdate
   -->DraggableStickers.onUpdate --> FrameMain.onUpdate 여기의 -setItem 함수에서 비로서 save 하게 된다.
 
+- Frame click 시
+
+DraggablePoint.GestureDetector.onLongPressDown
+DraggableResizable.onTap() --> onUpdate('onTap')
+Drag

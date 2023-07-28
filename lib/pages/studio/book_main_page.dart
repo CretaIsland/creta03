@@ -37,6 +37,7 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
+import '../../model/frame_model.dart';
 import '../../model/page_model.dart';
 import '../../routes.dart';
 import '../login_page.dart';
@@ -1348,28 +1349,64 @@ class _BookMainPageState extends State<BookMainPage> {
           logger.info('Ctrl+Y pressed');
           // redo
         } else if (keys.contains(LogicalKeyboardKey.keyC)) {
+          // copy
           logger.info('Ctrl+C pressed');
-
-          // page 복사의 경우
-          if (BookMainPage.selectedMid.contains(CretaConstant.pagePrefix)) {
-            BookMainPage.pageManagerHolder?.notify();
-          }
-          // frame 복사의 경우
-          if (BookMainPage.selectedMid.contains(CretaConstant.framePrefix)) {
-            if (BookMainPage.pageManagerHolder != null) {
-              FrameManager? frameManager = BookMainPage.pageManagerHolder!
-                  .findFrameManager(BookMainPage.pageManagerHolder!.getSelectedMid());
-              frameManager?.notify();
+          if (BookMainPage.pageManagerHolder == null) return;
+          FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
+          if (frameModel != null) {
+            FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+            StudioVariables.copyFrame(frameModel, frameManager!);
+          } else {
+            PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+            if (pageModel != null) {
+              StudioVariables.copyPage(pageModel, BookMainPage.pageManagerHolder!);
             }
           }
-
-          // Copy
-        } else if (keys.contains(LogicalKeyboardKey.keyV)) {
-          logger.info('Ctrl+V pressed');
-          // Paste
         } else if (keys.contains(LogicalKeyboardKey.keyX)) {
           logger.info('Ctrl+X pressed');
+          // Crop
+          if (BookMainPage.pageManagerHolder == null) return;
+          FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
+          if (frameModel != null) {
+            FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+            frameModel.isRemoved.set(true);
+            StudioVariables.copyFrame(frameModel, frameManager!);
+          } else {
+            PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+            if (pageModel != null) {
+              pageModel.isRemoved.set(true);
+              StudioVariables.copyPage(pageModel, BookMainPage.pageManagerHolder!);
+            }
+          }
+          BookMainPage.pageManagerHolder!.notify();
+        } else if (keys.contains(LogicalKeyboardKey.keyV)) {
+          logger.info('Ctrl+V pressed');
+          if (BookMainPage.pageManagerHolder == null) return;
           // Paste
+          if (StudioVariables.clipBoard is PageModel?) {
+            PageModel? page = StudioVariables.clipBoard as PageModel?;
+            PageManager? srcManager = StudioVariables.clipBoardManager as PageManager?;
+            if (page != null && srcManager != null) {
+              BookMainPage.pageManagerHolder?.copyPage(page, srcPageManager: srcManager);
+            }
+          } else if (StudioVariables.clipBoard is FrameModel?) {
+            FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+            if (frameManager == null) {
+              return;
+            }
+            PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+            if (pageModel == null) {
+              return;
+            }
+            FrameModel? frame = StudioVariables.clipBoard as FrameModel?;
+            FrameManager? srcManager = StudioVariables.clipBoardManager as FrameManager?;
+            if (frame != null && srcManager != null) {
+              frameManager.copyFrame(frame,
+                  parentMid: pageModel.mid,
+                  srcFrameManager: srcManager,
+                  samePage: pageModel.mid == frame.parentMid.value);
+            }
+          }
         }
       }
     } else {
