@@ -111,6 +111,7 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
       //permissionType: widget.filterPermissionType,
       searchKeyword: widget.filterSearchKeyword,
     );
+    playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
     playlistManagerHolder.queryByAddedContitions();
   }
@@ -139,6 +140,7 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
       bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
+    bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookAllList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }

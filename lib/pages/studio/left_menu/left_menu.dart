@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'package:creta03/pages/studio/left_menu/left_menu_camera.dart';
 import 'package:creta03/pages/studio/left_menu/left_menu_image.dart';
+import 'package:creta03/pages/studio/left_menu/left_menu_web_conference.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -198,7 +197,7 @@ class _LeftMenuState
       case LeftMenuEnum.Widget:
         return LeftMenuWidget(maxHeight: _maxHeight);
       case LeftMenuEnum.Camera:
-        return LeftMenuCamera();
+        return LeftMenuWebConference(maxHeight: _maxHeight);
       case LeftMenuEnum.Comment:
         return Container();
       default:

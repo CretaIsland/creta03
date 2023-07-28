@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
+import 'package:routemaster/routemaster.dart';
 import 'package:url_launcher/link.dart';
 import '../../lang/creta_lang.dart';
 import '../buttons/creta_button_wrapper.dart';
@@ -10,6 +11,8 @@ import '../buttons/creta_tapbar_button.dart';
 import '../creta_color.dart';
 import '../menu/creta_popup_menu.dart';
 import 'snippet.dart';
+import '../../pages/login_page.dart';
+import '../../routes.dart';
 
 class CretaLeftBar extends StatefulWidget {
   final List<CretaMenuItem> menuItem;
@@ -61,6 +64,8 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
     if (userMenuHeight > CretaComponentLocation.UserMenuInTabBar.height) {
       userMenuHeight = CretaComponentLocation.UserMenuInTabBar.height;
     }
+    String channelId = LoginPage.userPropertyManagerHolder?.userPropertyModel?.channelId ?? '';
+    String channelLinkUrl = '${AppRoutes.channel}?$channelId';
     return Container(
       width: CretaComponentLocation.TabBar.width,
       height: widget.height,
@@ -112,11 +117,20 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      BTN.fill_gray_l_profile(
-                        text: AccountManager.currentLoginUser.name,
-                        subText: CretaLang.billInfo,
-                        image: const AssetImage('assets/creta_default.png'),
-                        onPressed: () {},
+                      Link(
+                        uri: Uri.parse(channelLinkUrl),
+                        builder: (context, function) {
+                          return BTN.fill_gray_l_profile(
+                            text: AccountManager.currentLoginUser.name,
+                            subText: CretaLang.billInfo,
+                            image: const AssetImage('assets/creta_default.png'),
+                            onPressed: () {
+                              if (channelId.isNotEmpty) {
+                                Routemaster.of(context).push(channelLinkUrl);
+                              }
+                            },
+                          );
+                        }
                       ),
                       const SizedBox(
                         height: 20,

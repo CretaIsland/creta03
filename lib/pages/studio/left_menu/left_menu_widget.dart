@@ -1,4 +1,5 @@
 import 'package:creta03/lang/creta_studio_lang.dart';
+import 'package:creta03/pages/studio/left_menu/camera/left_menu_camera.dart';
 import 'package:creta03/pages/studio/left_menu/music/left_menu_music.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: horizontalPadding),
           child: SizedBox(
-            height: 800, // 아래 항목이 늘어나면, 그 크기에 맞게 키워줘야 한다.
+            height: 900, // 아래 항목이 늘어나면, 그 크기에 맞게 키워줘야 한다.
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,6 +61,13 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
                   titleStyle: titleStyle,
                   dataStyle: dataStyle,
                 ),
+                LeftMenuCamera(
+                  title: CretaStudioLang.camera,
+                  width: _itemWidth,
+                  height: _itemHeight,
+                  titleStyle: titleStyle,
+                  dataStyle: dataStyle,
+                )
               ],
             ),
           ),

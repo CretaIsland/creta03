@@ -31,21 +31,23 @@ class ImageValueNotifier extends ValueNotifier<ImageDetail> {
 }
 
 class CustomImage extends StatefulWidget {
+  CustomImage({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.image,
+    this.hasMouseOverEffect = false,
+    this.duration = 700,
+    this.hasAni = true,
+    this.boxFit = BoxFit.fill,
+  });
   final double width;
   final double height;
   final String image;
   final int duration;
   final bool hasMouseOverEffect;
   final bool hasAni;
-
-  CustomImage(
-      {super.key,
-      required this.width,
-      required this.height,
-      required this.image,
-      this.hasMouseOverEffect = false,
-      this.duration = 700,
-      this.hasAni = true});
+  final BoxFit boxFit;
 
   @override
   State<CustomImage> createState() => _CustomImageState();
@@ -69,10 +71,9 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
         duration: Duration(milliseconds: widget.duration),
       );
 
-      _animation = SizeTween(
-              begin: Size(widget.width * 2.5, widget.height * 2.5),
-              end: Size(widget.width, widget.height))
-          .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+      _animation =
+          SizeTween(begin: Size(widget.width * 2.5, widget.height * 2.5), end: Size(widget.width, widget.height))
+              .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     }
     _imageDetail = ImageDetail();
     _imageValueNotifier = ImageValueNotifier(_imageDetail);
@@ -149,7 +150,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
       height: widget.height,
       width: widget.width,
       child: RawImage(
-        fit: BoxFit.fill,
+        fit: widget.boxFit,
         image: _imageInfo.image,
       ),
     );

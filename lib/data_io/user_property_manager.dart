@@ -343,9 +343,9 @@ class UserPropertyManager extends CretaManager {
         radius: radius,
         backgroundColor: color ?? Colors.primaries[Random().nextInt(Colors.primaries.length)],
         backgroundImage: img == '' ? null : Image.network(img).image,
-        child: img == ''
+        child: img.isEmpty
             ? Center(
-                child: Text(name.substring(0, 1),
+                child: Text(name.isEmpty ? ' ' : name.substring(0, 1),
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         fontFamily: 'Pretendard',
