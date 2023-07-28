@@ -190,7 +190,6 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[key];
           if (musicKey != null) {
             musicKey.currentState!.addMusic(model);
-            _selectedSize;
           }
         }
         return null;
