@@ -10,10 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/socket/mouse_tracer.dart';
 import 'package:hycop/hycop/socket/socket_client.dart';
 import 'package:hycop/hycop/webrtc/media_devices/media_devices_data.dart';
+import 'package:hycop/hycop/webrtc/peers/peers_data.dart';
+import 'package:hycop/hycop/webrtc/producers/producers_data.dart';
+import 'package:hycop/hycop/webrtc/webrtc_client.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -247,7 +251,20 @@ class _BookMainPageState extends State<BookMainPage> {
       }
     });
 
+    //for webRTC
     mediaDeviceDataHolder = MediaDeviceData();
+    peersDataHolder = PeersData();
+    producerDataHolder = ProducerData();
+    mediaDeviceDataHolder!.loadMediaDevice().then((value) {      
+      webRTCClient = WebRTCClient(
+        roomId: BookMainPage.selectedMid,
+        peerId: AccountManager.currentLoginUser.email,
+        //serverUrl: "wss://devcreta.com:447",
+        serverUrl: LoginPage.enterpriseHolder!.enterpriseModel!.webrtcUrl,
+        peerName: LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname
+      );
+      webRTCClient!.connectSocket();
+    });
 
     logger.info("end ---_BookMainPageState-----------------------------------------");
 
@@ -377,6 +394,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     HycopFactory.realtime!.stop();
     client.disconnect();
+    webRTCClient!.close();
     super.dispose();
   }
 
