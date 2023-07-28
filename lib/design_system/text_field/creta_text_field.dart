@@ -89,6 +89,7 @@ class CretaTextField extends LastClickable {
   final bool autoComplete;
   final bool autoHeight;
   final void Function(PointerDownEvent)? onTapOutside;
+  final Iterable<String>? autofillHints;
 
   CretaTextField({
     required this.textFieldKey,
@@ -115,6 +116,7 @@ class CretaTextField extends LastClickable {
     this.alignVertical = TextAlignVertical.center,
     this.autoComplete = false,
     this.autoHeight = false,
+    this.autofillHints = const <String>[],
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -142,6 +144,7 @@ class CretaTextField extends LastClickable {
     this.alignVertical = TextAlignVertical.center,
     this.autoComplete = false,
     this.autoHeight = false,
+    this.autofillHints = const <String>[],
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -169,6 +172,7 @@ class CretaTextField extends LastClickable {
     this.alignVertical = TextAlignVertical.center,
     this.autoComplete = false,
     this.autoHeight = false,
+    this.autofillHints = const <String>[],
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -196,6 +200,7 @@ class CretaTextField extends LastClickable {
     this.alignVertical = TextAlignVertical.center,
     this.autoComplete = false,
     this.autoHeight = false,
+    this.autofillHints = const <String>[],
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -223,6 +228,7 @@ class CretaTextField extends LastClickable {
     this.alignVertical = TextAlignVertical.center,
     this.autoComplete = false,
     this.autoHeight = false,
+    this.autofillHints = const <String>[],
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -250,6 +256,7 @@ class CretaTextField extends LastClickable {
     this.alignVertical = TextAlignVertical.center,
     this.autoComplete = false,
     this.autoHeight = false,
+    this.autofillHints = const <String>[],
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -277,6 +284,7 @@ class CretaTextField extends LastClickable {
     this.alignVertical = TextAlignVertical.center,
     this.autoComplete = false,
     this.autoHeight = false,
+    this.autofillHints = const <String>[],
   }) : super(key: textFieldKey);
 
   @override
@@ -480,6 +488,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         //maxLines: 1,
         autofocus: false,
         //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
+        autofillHints: widget.autofillHints,
         decoration: _basicDecoBox(),
         padding: isNumeric()
             ? EdgeInsetsDirectional.only(start: 8, end: 0)

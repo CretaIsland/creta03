@@ -146,6 +146,7 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
       //permissionType: widget.filterPermissionType,
       searchKeyword: widget.filterSearchKeyword,
     );
+    watchHistoryManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     watchHistoryManagerHolder.addWhereClause(
       'userId',
       QueryValue(value: AccountManager.currentLoginUser.email),

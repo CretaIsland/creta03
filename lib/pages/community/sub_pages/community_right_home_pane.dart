@@ -226,6 +226,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
 
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB');
+    playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
     playlistManagerHolder.queryByAddedContitions();
   }

@@ -144,6 +144,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _getChannelFromDB(List<AbsExModel> modelList) {
+    channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     channelManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightChannelPane.channelId));
     channelManagerHolder.queryByAddedContitions();
   }
@@ -171,6 +172,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
     //   sortTimeName: 'updateTime',
     // );
     List<String> channelIdList = [CommunityRightChannelPane.channelId];
+    bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('channels', QueryValue(value: channelIdList, operType: OperType.arrayContainsAny));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
@@ -264,6 +266,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       playlistManagerHolder.setState(DBState.idle);
       return;
     }
+    playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
     playlistManagerHolder.queryByAddedContitions();
   }
@@ -293,6 +296,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
+    bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }

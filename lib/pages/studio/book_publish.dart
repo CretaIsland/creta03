@@ -846,7 +846,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     return [
       Padding(
         padding: const EdgeInsets.only(top: 12),
-        child: Text(CretaStudioLang.publish, style: CretaFont.titleSmall),
+        child: Text(CretaStudioLang.channelList, style: CretaFont.titleSmall),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 12),
@@ -918,7 +918,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     return [
       Padding(
         padding: const EdgeInsets.only(top: 12, bottom: 12),
-        child: Text(CretaStudioLang.publishTo, style: CretaFont.titleSmall),
+        child: Text(CretaStudioLang.publishingChannelList, style: CretaFont.titleSmall),
       ),
       Container(
         width: 333,
@@ -968,11 +968,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                         child: Tooltip(
                           message: (teamModel == null)
                               ? userModel.email
-                              : '${teamModel.name} 팀의 채널',
+                              : '${teamModel.name} ${CretaLang.team}',
                           child: Text(
                             (teamModel == null)
                                 ? CretaLang.myChannel
-                                : '${teamModel.name} 팀의 채널',
+                                : '${teamModel.name} 채널',
                             style: isNotCreator
                                 ? CretaFont.bodySmall
                                 : CretaFont.bodySmall.copyWith(

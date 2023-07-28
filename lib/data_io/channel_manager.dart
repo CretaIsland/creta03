@@ -39,6 +39,7 @@ class ChannelManager extends CretaManager {
     String channelId = LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId;
     if (channelId.isNotEmpty) {
       // exist channelId ==> get from DB
+      addWhereClause('isRemoved', QueryValue(value: false));
       addWhereClause('mid', QueryValue(value: channelId));
       List<AbsExModel> retList = await queryByAddedContitions();
       if (retList.isNotEmpty) {
@@ -96,6 +97,7 @@ class ChannelManager extends CretaManager {
   }
 
   Future<ChannelModel?> getChannelById(String channelId) async {
+    addWhereClause('isRemoved', QueryValue(value: false));
     addWhereClause('mid', QueryValue(value: channelId));
     queryByAddedContitions().then((value) {
       if (value.isEmpty) {

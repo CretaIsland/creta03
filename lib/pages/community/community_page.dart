@@ -10,6 +10,7 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import '../../routes.dart';
+import '../../pages/login_page.dart';
 //import '../../common/cross_common_job.dart';
 import '../../common/creta_utils.dart';
 import '../../design_system/creta_font.dart';
@@ -644,6 +645,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   Widget _getChannelTitlePane(Size size) {
+    if (_currentChannelModel == null) {
+      return SizedBox(
+        width: size.width,
+        height: size.height,
+      );
+    }
     String profileImg = _currentChannelModel?.profileImg ?? '';
     String channelBannerImg = _currentChannelModel?.channelBannerImg ?? '';
     // max size
@@ -653,21 +660,24 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           SizedBox(
             width: size.width,
             height: size.height,
-            child: channelBannerImg.isEmpty
-                ? Image(
-                    image: AssetImage('assets/Artboard12.png'),
-                    width: size.width,
-                    height: size.height,
-                    fit: BoxFit.cover,
-                  )
-                : CustomImage(
-                    key: GlobalObjectKey(channelBannerImg),
-                    image: channelBannerImg,
-                    width: size.width,
-                    height: size.height,
-                    hasMouseOverEffect: false,
-                    hasAni: false,
-                  ),
+            child: (_currentChannelModel == null)
+                ? SizedBox.shrink()
+                : channelBannerImg.isEmpty
+                    ? Image(
+                        image: AssetImage('assets/Artboard12.png'),
+                        width: size.width,
+                        height: size.height,
+                        fit: BoxFit.cover,
+                      )
+                    : CustomImage(
+                        key: GlobalObjectKey(channelBannerImg),
+                        image: channelBannerImg,
+                        width: size.width,
+                        height: size.height,
+                        hasMouseOverEffect: false,
+                        hasAni: false,
+                        boxFit: BoxFit.cover,
+                      ),
           ),
           Container(
             width: size.width,
@@ -692,21 +702,22 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         clipBehavior: Clip.antiAlias,
-                        child: profileImg.isEmpty
-                            ? Image(
-                                image: AssetImage('assets/Artboard12.png'),
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              )
-                            : CustomImage(
-                                key: GlobalObjectKey(profileImg),
-                                image: profileImg,
-                                width: 100,
-                                height: 100,
-                                hasMouseOverEffect: false,
-                                hasAni: false,
-                              ),
+                        child: (_currentChannelModel == null)
+                            ? SizedBox.shrink()
+                            : profileImg.isEmpty
+                                ? LoginPage.userPropertyManagerHolder!.imageCircle(
+                                    profileImg,
+                                    LoginPage.userPropertyManagerHolder?.userPropertyModel?.nickname ?? '',
+                                    radius: 100,
+                                  )
+                                : CustomImage(
+                                    key: GlobalObjectKey(profileImg),
+                                    image: profileImg,
+                                    width: 100,
+                                    height: 100,
+                                    hasMouseOverEffect: false,
+                                    hasAni: false,
+                                  ),
                       ),
                       SizedBox(height: 24),
                       Row(
@@ -720,33 +731,35 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             ),
                           ),
                           SizedBox(width: 8),
-                          BTN.fill_gray_i_l(
-                            icon: Icons.link_outlined,
-                            buttonColor: CretaButtonColor.gray100light,
-                            iconColor: CretaColor.text[700],
-                            tooltip: '채널 주소 복사',
-                            onPressed: () {
-                              String url = Uri.base.origin;
-                              url += '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
-                              Clipboard.setData(ClipboardData(text: url));
-                            },
+                          Opacity(
+                            opacity: 0.25,
+                            child: BTN.fill_gray_i_l(
+                              icon: Icons.link_outlined,
+                              buttonColor: CretaButtonColor.gray100light,
+                              iconColor: CretaColor.text[700],
+                              tooltip: '채널 주소 복사',
+                              onPressed: () {
+                                String url = Uri.base.origin;
+                                url += '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
+                                Clipboard.setData(ClipboardData(text: url));
+                              },
+                            ),
                           ),
                         ],
                       ),
                       SizedBox(height: 18),
                       Row(
                         children: [
-                          Text(
-                            (_currentChannelModel == null)
-                                ? ''
-                                : '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
-                            overflow: TextOverflow.ellipsis,
-                            style: CretaFont.buttonLarge.copyWith(
-                              color: CretaColor.text[400],
-                              //fontSize: 16,
-                              fontWeight: CretaFont.medium,
+                          if (_currentChannelModel != null && _currentChannelModel!.teamId.isNotEmpty)
+                            Text(
+                              '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
+                              overflow: TextOverflow.ellipsis,
+                              style: CretaFont.buttonLarge.copyWith(
+                                color: CretaColor.text[400],
+                                //fontSize: 16,
+                                fontWeight: CretaFont.medium,
+                              ),
                             ),
-                          ),
                           // SizedBox(width: 20), // 구독중 => 기획 회의중 제거 결론 (23-07-27)
                           // Text(
                           //   '구독중 453명',
@@ -757,7 +770,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           //     fontWeight: CretaFont.medium,
                           //   ),
                           // ),
-                          SizedBox(width: 20),
+                          if (_currentChannelModel != null && _currentChannelModel!.teamId.isNotEmpty)
+                            SizedBox(width: 20),
                           Text(
                             (_currentChannelModel == null) ? '' : '구독자 ${_currentChannelModel!.followerCount}명',
                             overflow: TextOverflow.ellipsis,
