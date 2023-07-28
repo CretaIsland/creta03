@@ -137,6 +137,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
       //permissionType: widget.filterPermissionType,
       searchKeyword: widget.filterSearchKeyword,
     );
+    favoritesManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     favoritesManagerHolder.addWhereClause(
       'userId',
       QueryValue(value: AccountManager.currentLoginUser.email),

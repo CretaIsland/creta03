@@ -13,6 +13,7 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/socket/mouse_tracer.dart';
 import 'package:hycop/hycop/socket/socket_client.dart';
+import 'package:hycop/hycop/webrtc/media_devices/media_devices_data.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -245,6 +246,8 @@ class _BookMainPageState extends State<BookMainPage> {
           break;
       }
     });
+
+    mediaDeviceDataHolder = MediaDeviceData();
 
     logger.info("end ---_BookMainPageState-----------------------------------------");
 

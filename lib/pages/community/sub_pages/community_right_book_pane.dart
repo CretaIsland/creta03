@@ -168,6 +168,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _getBooksFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getBooksFromDB()');
+    bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightBookPane.bookId));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
@@ -189,6 +190,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       channelManagerHolder.setState(DBState.idle);
       return;
     }
+    channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     channelManagerHolder.addWhereClause(
         'mid', QueryValue(value: _currentBookModel!.channels, operType: OperType.whereIn));
     channelManagerHolder.queryByAddedContitions();

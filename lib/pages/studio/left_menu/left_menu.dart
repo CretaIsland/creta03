@@ -1,6 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'package:creta03/pages/studio/left_menu/left_menu_camera.dart';
 import 'package:creta03/pages/studio/left_menu/left_menu_image.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -198,7 +196,7 @@ class _LeftMenuState
       case LeftMenuEnum.Widget:
         return LeftMenuWidget(maxHeight: _maxHeight);
       case LeftMenuEnum.Camera:
-        return LeftMenuCamera();
+        return Container();
       case LeftMenuEnum.Comment:
         return Container();
       default:

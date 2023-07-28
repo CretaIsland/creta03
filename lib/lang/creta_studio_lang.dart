@@ -105,7 +105,7 @@ class CretaStudioLang {
     "텍스트",
     "도형",
     "위젯",
-    "카메라",
+    "화상회의",
     "코멘트",
   ];
   static List<IconData> menuIconList = [
@@ -189,7 +189,7 @@ class CretaStudioLang {
   static const String sampleBookName = "이름없는 크레타북";
 
   static const String publish = "발행하기";
-
+  static const String channelList = "채널 목록";
   static const String tooltipNoti = '알림이 있습니다';
   static const String tooltipNoNoti = '알림이 없습니다';
   static const String tooltipVolume = '작업하는 동안 소리를 끄거나 켭니다';
@@ -503,6 +503,7 @@ class CretaStudioLang {
   ];
 
   static const String publishTo = '공개할 사람';
+  static const String publishingChannelList = '발행할 채널 목록';
 
   static const String wrongEmail = '올바른 이메일 포맷이 아니며, 해당하는 팀명이 없습니다.  이메일 주소 또는 팀명을 입력하세요';
   static const String noExitEmail = '등록된 사용자가 아닙니다. 자동 초대 기능은 아직 구현되지 않았습니다';
@@ -536,6 +537,7 @@ class CretaStudioLang {
 
   static String weather = '날씨 위젯';
   static String clockandWatch = '시계와 스톱워치';
+  static String camera = '카메라';
 
   static var onlineWeather = '날씨 온라인 연결';
   static String offLineWeather = "날씨 수동으로 선택";

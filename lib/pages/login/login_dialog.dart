@@ -3,6 +3,7 @@
 import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 
@@ -165,6 +166,7 @@ class _LoginDialogState extends State<LoginDialog> {
 
     AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
       HycopFactory.setBucketId();
+      LoginPage.userPropertyManagerHolder!.addWhereClause('isRemoved', QueryValue(value: false));
       LoginPage.userPropertyManagerHolder!
           .addWhereClause('email', QueryValue(value: AccountManager.currentLoginUser.email));
       LoginPage.userPropertyManagerHolder!.queryByAddedContitions().then((value) async {
@@ -522,6 +524,7 @@ class _LoginDialogState extends State<LoginDialog> {
               height: 30,
               value: '',
               hintText: '이메일',
+              autofillHints: const [AutofillHints.username],
               onEditComplete: (value) {}),
           const SizedBox(height: 20),
           CretaTextField(
@@ -531,6 +534,7 @@ class _LoginDialogState extends State<LoginDialog> {
               height: 30,
               value: '',
               hintText: '비밀번호',
+              autofillHints: const [AutofillHints.password],
               textType: CretaTextFieldType.password,
               onEditComplete: (value) {}),
           const SizedBox(height: 24),
@@ -541,6 +545,7 @@ class _LoginDialogState extends State<LoginDialog> {
             decoType: CretaButtonDeco.fill,
             textColor: Colors.white,
             onPressed: () {
+              TextInput.finishAutofillContext();
               String id = _loginEmailTextEditingController.text;
               String pwd = _loginPasswordTextEditingController.text;
               _login(id, pwd);
@@ -631,23 +636,25 @@ class _LoginDialogState extends State<LoginDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.size.width,
-      height: widget.size.height,
-      child: Column(
-        children: [
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-            child: Image(
-              image: AssetImage("assets/creta_logo_blue.png"),
-              width: 100,
-              height: 26,
+    return AutofillGroup(
+      child: SizedBox(
+        width: widget.size.width,
+        height: widget.size.height,
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+              child: Image(
+                image: AssetImage("assets/creta_logo_blue.png"),
+                width: 100,
+                height: 26,
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
-          ..._getBody(context),
-        ],
+            const SizedBox(height: 32),
+            ..._getBody(context),
+          ],
+        ),
       ),
     );
   }
