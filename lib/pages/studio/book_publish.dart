@@ -54,10 +54,13 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   List<UserPropertyModel> userModelList = [];
 
   List<String> channelEmailList = [];
-  List<UserPropertyModel> channelUserModelList = [];
+  // List<UserPropertyModel> channelUserModelList = [];
+
+  List<TeamModel> teamModelList = [];
+  List<String> publishingChannelIdList = [];
 
   bool _onceDBGetComplete1 = false;
-  bool _onceDBGetComplete2 = false;
+  //bool _onceDBGetComplete2 = false;
   bool _onceDBPublishComplete = false;
 
   final ScrollController _scrollController1 = ScrollController();
@@ -97,27 +100,27 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       return value;
     });
 
-    LoginPage.channelManagerHolder!
-        .getChannelFromList(widget.model!.channels)
-        .then((value) {
-          List<String> emailList = [];
-          for(var model in value) {
-            if (model.userId.isNotEmpty) {
-              emailList.add(model.userId);
-            }
-          }
-          //
-          LoginPage.userPropertyManagerHolder!
-              .getUserPropertyFromEmail(emailList)
-              .then((value) {
-            channelUserModelList = [...value];
-            for (var ele in channelUserModelList) {
-              logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
-            }
-            _onceDBGetComplete2 = true;
-            return value;
-          });
-    });
+    // LoginPage.channelManagerHolder!
+    //     .getChannelFromList(widget.model!.channels)
+    //     .then((value) {
+    //       List<String> emailList = [];
+    //       for(var model in value) {
+    //         if (model.userId.isNotEmpty) {
+    //           emailList.add(model.userId);
+    //         }
+    //       }
+    //       //
+    //       LoginPage.userPropertyManagerHolder!
+    //           .getUserPropertyFromEmail(emailList)
+    //           .then((value) {
+    //         channelUserModelList = [...value];
+    //         for (var ele in channelUserModelList) {
+    //           logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
+    //         }
+    //         _onceDBGetComplete2 = true;
+    //         return value;
+    //       });
+    // });
 
     // animationController = AnimationController(
     //   vsync: this,
@@ -136,7 +139,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   Future<bool> _waitDBJob() async {
-    while (_onceDBGetComplete1 == false || _onceDBGetComplete2 == false) {
+    while (_onceDBGetComplete1 == false /*|| _onceDBGetComplete2 == false*/) {
       await Future.delayed(const Duration(microseconds: 500));
     }
     logger.info('_onceDBGetComplete=$_onceDBGetComplete1 wait end');
@@ -463,6 +466,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   Future<bool> _publish() async {
     BookPublishedManager bookPublishedManagerHolder = BookPublishedManager();
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    widget.model!.channels = publishingChannelIdList;
     return bookPublishedManagerHolder.publish(
       src: widget.model!,
       pageManager: BookMainPage.pageManagerHolder!,
@@ -825,14 +829,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     return null;
   }
 
-  UserPropertyModel? _findChannelModel(String email) {
-    for (var model in channelUserModelList) {
-      if (model.email == email) {
-        return model;
-      }
-    }
-    return null;
-  }
+  // UserPropertyModel? _findChannelModel(String email) {
+  //   for (var model in channelUserModelList) {
+  //     if (model.email == email) {
+  //       return model;
+  //     }
+  //   }
+  //   return null;
+  // }
 
   //
   // step3
@@ -855,18 +859,24 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                 leftWidget: LoginPage.userPropertyManagerHolder!
                     .imageCircle('', CretaLang.entire, radius: 24, color: CretaColor.primary),
                 icon: Icons.add_outlined,
-                text: CretaLang.entire,
+                text: CretaLang.myChannel,
                 onPressed: () {
-                  UserPropertyModel? user = _findChannelModel('public');
-                  if (user == null) {
-                    //아직 전체가 없을 때만 넣는다.
-                    setState(() {
-                      widget.model!.channels.add('public');
-                      widget.model!.save();
-                      channelUserModelList
-                          .add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
-                    });
-                  }
+                  // UserPropertyModel? user = _findChannelModel('public');
+                  // if (user == null) {
+                  //   //아직 전체가 없을 때만 넣는다.
+                  //   setState(() {
+                  //     widget.model!.channels.add('public');
+                  //     widget.model!.save();
+                  //     channelUserModelList
+                  //         .add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
+                  //   });
+                  // }
+                  setState(() {
+                    publishingChannelIdList.add(LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId);
+                    //widget.model!.save();
+                    // channelUserModelList
+                    //     .add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
+                  });
                 }),
             ..._myChannelTeams(),
           ],
@@ -886,12 +896,22 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           textWidth: 90,
           onPressed: () {
             setState(() {
-              widget.model!.channels.add(e.channelId);
-              widget.model!.save();
-              channelUserModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
+              //widget.model!.channels.add(e.channelId);
+              //widget.model!.save();
+              //channelUserModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
+              publishingChannelIdList.add(e.channelId);
             });
           });
     }).toList();
+  }
+
+  TeamModel? _findTeamModel(String channelId) {
+    for (var teamModel in LoginPage.teamManagerHolder!.teamModelList) {
+      if (teamModel.channelId == channelId) {
+        return teamModel;
+      }
+    }
+    return null;
   }
 
   List<Widget> _channelTo() {
@@ -919,28 +939,40 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
             child: ListView.builder(
               controller: _scrollController2,
               scrollDirection: Axis.vertical,
-              itemCount: channelUserModelList.length,
+              itemCount: publishingChannelIdList.length,
               itemBuilder: (BuildContext context, int index) {
-                UserPropertyModel userModel = channelUserModelList[index];
-                bool isNotCreator = (userModel.email != widget.model!.creator);
+                String channelId = publishingChannelIdList[index];
+                TeamModel? teamModel = _findTeamModel(channelId);
+                //bool isNotCreator = (userModel.email != widget.model!.creator);
+                UserPropertyModel userModel = LoginPage.userPropertyManagerHolder!.userPropertyModel!;
+                bool isNotCreator = (teamModel != null);
                 return Container(
                   padding: const EdgeInsets.only(left: 0, bottom: 6, right: 12.0),
                   height: 30,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      LoginPage.userPropertyManagerHolder!.profileImageBox(
-                          model: userModel,
-                          radius: 28,
-                          color: userModel.email == 'public' ? CretaColor.primary : null),
+                      // LoginPage.userPropertyManagerHolder!.profileImageBox(
+                      //     model: userModel,
+                      //     radius: 28,
+                      //     color: userModel.email == 'public' ? CretaColor.primary : null),
+                      LoginPage.userPropertyManagerHolder!.imageCircle(
+                        teamModel?.profileImg ?? LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg,
+                        teamModel?.name ?? LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname,
+                        radius: 28,
+                      ),
                       //const Icon(Icons.account_circle_outlined),
                       SizedBox(
                         //color: Colors.amber,
-                        width: isNotCreator ? 120 + 96 : 120 + 96 + 24,
+                        width: 120 + 96,//isNotCreator ? 120 + 96 : 120 + 96 + 24,
                         child: Tooltip(
-                          message: userModel.email,
+                          message: (teamModel == null)
+                              ? userModel.email
+                              : '${teamModel.name} 팀의 채널',
                           child: Text(
-                            _nameWrap(userModel, userModel.email, isNotCreator, true),
+                            (teamModel == null)
+                                ? CretaLang.myChannel
+                                : '${teamModel.name} 팀의 채널',
                             style: isNotCreator
                                 ? CretaFont.bodySmall
                                 : CretaFont.bodySmall.copyWith(
@@ -953,24 +985,25 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                         ),
                       ),
 
-                      isNotCreator
-                          ? BTN.fill_gray_i_s(
+                      /*isNotCreator
+                          ?*/ BTN.fill_gray_i_s(
                               icon: Icons.close,
                               onPressed: () {
-                                widget.model!.channels.remove(userModel.channelId);
-                                for (var ele in channelUserModelList) {
-                                  if (ele.email == userModel.email) {
-                                    channelUserModelList.remove(ele);
-                                    break;
-                                  }
-                                }
+                                // widget.model!.channels.remove(userModel.channelId);
+                                // for (var ele in channelUserModelList) {
+                                //   if (ele.email == userModel.email) {
+                                //     channelUserModelList.remove(ele);
+                                //     break;
+                                //   }
+                                // }
                                 setState(() {
-                                  widget.model!.save();
+                                  //widget.model!.save();
+                                  publishingChannelIdList.remove(channelId);
                                 });
                               },
                               buttonSize: 24,
                             )
-                          : const SizedBox.shrink(),
+                          /*: const SizedBox.shrink()*/,
                     ],
                   ),
                 );

@@ -1,16 +1,22 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
+import '../../../../../design_system/menu/creta_popup_menu.dart';
+import '../../../../../lang/creta_studio_lang.dart';
+import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
+import '../../../studio_getx_controller.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
 import 'draggable_resizable.dart';
@@ -37,7 +43,7 @@ class DraggableStickers extends StatefulWidget {
   static FrameSelectNotifier? frameSelectNotifier;
 
   //List of stickers (elements)
-  final String bookMid;
+  final BookModel book;
   final double pageWidth;
   final double pageHeight;
   final FrameManager? frameManager;
@@ -61,7 +67,7 @@ class DraggableStickers extends StatefulWidget {
 
   const DraggableStickers({
     super.key,
-    required this.bookMid,
+    required this.book,
     required this.pageWidth,
     required this.pageHeight,
     required this.frameManager,
@@ -90,7 +96,7 @@ class DraggableStickers extends StatefulWidget {
 class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
   final _initialStickerScale = 5.0;
-
+  FrameEventController? _sendEvent;
   //final bool _isContents = false;
 
   List<Sticker> stickers = [];
@@ -100,6 +106,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
     //   stickers = widget.stickerList ?? [];
     // });
     DraggableStickers.frameSelectNotifier ??= FrameSelectNotifier();
+    final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
+    _sendEvent = sendEvent;
+
     super.initState();
   }
 
@@ -124,7 +133,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                _pageDropZone(widget.bookMid),
+                _pageDropZone(widget.book.mid),
                 for (final sticker in stickers) _drawEachStiker(sticker),
               ],
             ),
@@ -250,8 +259,70 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   StudioVariables.isPreview == false //&& StudioVariables.isNotLinkState
               ? InkWell(
                   splashColor: Colors.transparent,
-                  onSecondaryTap: () {
-                    logger.info('right mouse button clicked');
+                  onSecondaryTapDown: (details) {
+                    if (StudioVariables.isPreview) {
+                      return;
+                    }
+                    logger.info('right mouse button clicked ${details.globalPosition}');
+                    logger.info('right mouse button clicked ${details.localPosition}');
+                    bool isFullScreen = frameModel!.isFullScreenTest(widget.book);
+
+                    CretaRightMouseMenu.showMenu(
+                      title: 'frameRightMouseMenu',
+                      context: context,
+                      popupMenu: [
+                        CretaMenuItem(
+                            caption:
+                                isFullScreen ? CretaStudioLang.realSize : CretaStudioLang.maxSize,
+                            onPressed: () {
+                              logger.info('${CretaStudioLang.maxSize} menu clicked');
+                              setState(() {
+                                frameModel.toggleFullscreen(isFullScreen, widget.book);
+                                _sendEvent!.sendEvent(frameModel);
+                              });
+                            }),
+                        CretaMenuItem(
+                            caption: frameModel.isShow.value
+                                ? CretaStudioLang.unshow
+                                : CretaStudioLang.show,
+                            onPressed: () {
+                              logger.info('test menu1 clicked');
+                              BookMainPage.containeeNotifier!.setFrameClick(true);
+                              frameModel.isShow.set(!frameModel.isShow.value);
+                              frameModel.changeOrderByIsShow(widget.frameManager!);
+                              widget.onFrameShowUnshow.call(frameModel.mid);
+                            }),
+                        CretaMenuItem(caption: '', onPressed: () {}), //divider
+                        CretaMenuItem(
+                            caption: CretaStudioLang.copy,
+                            onPressed: () {
+                              StudioVariables.copyFrame(frameModel, widget.frameManager!);
+                              //widget.onFrameShowUnshow.call(frameModel.mid);
+                            }),
+                        CretaMenuItem(
+                            caption: CretaStudioLang.crop,
+                            onPressed: () {
+                              frameModel.isRemoved.set(true);
+                              StudioVariables.cropFrame(frameModel, widget.frameManager!);
+                              widget.onFrameShowUnshow.call(frameModel.mid);
+                            }),
+                        // CretaMenuItem(
+                        //     disabled: StudioVariables.clipBoard == null ? true : false,
+                        //     caption: CretaStudioLang.paste,
+                        //     onPressed: () {
+                        //
+                        //     }),
+                      ],
+                      itemHeight: 24,
+                      x: details.globalPosition.dx,
+                      y: details.globalPosition.dy,
+                      width: 150,
+                      height: 170,
+                      //textStyle: CretaFont.bodySmall,
+                      iconSize: 12,
+                      alwaysShowBorder: true,
+                      borderRadius: 8,
+                    );
                   },
                   onTap: () {
                     // To update the selected widget

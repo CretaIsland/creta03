@@ -3,6 +3,7 @@
 //import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 //import 'package:flutter/gestures.dart';
 import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
@@ -16,7 +17,7 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/component/creta_basic_layout_mixin.dart';
-//import '../../design_system/component/custom_image.dart';
+import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
@@ -26,6 +27,7 @@ import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
 //import '../../model/team_model.dart';
 import '../../model/user_property_model.dart';
+import '../../model/channel_model.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
 import '../../pages/studio/studio_variables.dart';
@@ -63,6 +65,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   PlaylistModel? _currentPlaylistModel;
   BookModel? _currentBookModel;
+  ChannelModel? _currentChannelModel;
   UserPropertyModel? _userPropertyModelOfBookModel;
   //TeamModel? _teamModel;
   bool _bookIsFavorites = false;
@@ -641,113 +644,145 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   Widget _getChannelTitlePane(Size size) {
+    String profileImg = _currentChannelModel?.profileImg ?? '';
+    String channelBannerImg = _currentChannelModel?.channelBannerImg ?? '';
     // max size
     if (size.height > 100 + 100 + 24 + 8) {
-      return Container(
-        width: size.width,
-        height: size.height,
-        padding: EdgeInsets.fromLTRB(60, 0, 40, 0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          //crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: size.width,
-              height: 224,
-              //color: Colors.red,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50.0),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    // child: CustomImage(
-                    //   key: CommunitySampleData.bannerKey,
-                    //   duration: 500,
-                    //   hasMouseOverEffect: false,
-                    //   width: 100,
-                    //   height: 100,
-                    //   image: CommunitySampleData.bannerUrl,
-                    //   hasAni: false,
-                    // ),
-                    child: Image(
-                      image: AssetImage('assets/Artboard12.png'),
-                      width: size.width,
-                      height: size.height,
-                      fit: BoxFit.cover,
-                    ),
+      return Stack(
+        children: [
+          SizedBox(
+            width: size.width,
+            height: size.height,
+            child: channelBannerImg.isEmpty
+                ? Image(
+                    image: AssetImage('assets/Artboard12.png'),
+                    width: size.width,
+                    height: size.height,
+                    fit: BoxFit.cover,
+                  )
+                : CustomImage(
+                    key: GlobalObjectKey(channelBannerImg),
+                    image: channelBannerImg,
+                    width: size.width,
+                    height: size.height,
+                    hasMouseOverEffect: false,
+                    hasAni: false,
                   ),
-                  SizedBox(height: 24),
-                  Row(
+          ),
+          Container(
+            width: size.width,
+            height: size.height,
+            padding: EdgeInsets.fromLTRB(60, 0, 40, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              //crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: size.width,
+                  height: 224,
+                  //color: Colors.red,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${AccountManager.currentLoginUser.name}님의 채널',
-                        overflow: TextOverflow.ellipsis,
-                        style: CretaFont.displaySmall.copyWith(
-                          color: CretaColor.text[700],
-                          fontWeight: CretaFont.semiBold,
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
                         ),
+                        clipBehavior: Clip.antiAlias,
+                        child: profileImg.isEmpty
+                            ? Image(
+                                image: AssetImage('assets/Artboard12.png'),
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              )
+                            : CustomImage(
+                                key: GlobalObjectKey(profileImg),
+                                image: profileImg,
+                                width: 100,
+                                height: 100,
+                                hasMouseOverEffect: false,
+                                hasAni: false,
+                              ),
                       ),
-                      SizedBox(width: 8),
-                      BTN.fill_gray_i_l(
-                        icon: Icons.link_outlined,
-                        buttonColor: CretaButtonColor.gray100light,
-                        iconColor: CretaColor.text[700],
-                        onPressed: () {},
+                      SizedBox(height: 24),
+                      Row(
+                        children: [
+                          Text(
+                            (_currentChannelModel == null) ? '' : '${_currentChannelModel!.name}님의 채널',
+                            overflow: TextOverflow.ellipsis,
+                            style: CretaFont.displaySmall.copyWith(
+                              color: CretaColor.text[700],
+                              fontWeight: CretaFont.semiBold,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          BTN.fill_gray_i_l(
+                            icon: Icons.link_outlined,
+                            buttonColor: CretaButtonColor.gray100light,
+                            iconColor: CretaColor.text[700],
+                            tooltip: '채널 주소 복사',
+                            onPressed: () {
+                              String url = Uri.base.origin;
+                              url += '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
+                              Clipboard.setData(ClipboardData(text: url));
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 18),
+                      Row(
+                        children: [
+                          Text(
+                            (_currentChannelModel == null)
+                                ? ''
+                                : '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
+                            overflow: TextOverflow.ellipsis,
+                            style: CretaFont.buttonLarge.copyWith(
+                              color: CretaColor.text[400],
+                              //fontSize: 16,
+                              fontWeight: CretaFont.medium,
+                            ),
+                          ),
+                          // SizedBox(width: 20), // 구독중 => 기획 회의중 제거 결론 (23-07-27)
+                          // Text(
+                          //   '구독중 453명',
+                          //   overflow: TextOverflow.ellipsis,
+                          //   style: CretaFont.buttonLarge.copyWith(
+                          //     color: CretaColor.text[400],
+                          //     //fontSize: 16,
+                          //     fontWeight: CretaFont.medium,
+                          //   ),
+                          // ),
+                          SizedBox(width: 20),
+                          Text(
+                            (_currentChannelModel == null) ? '' : '구독자 ${_currentChannelModel!.followerCount}명',
+                            overflow: TextOverflow.ellipsis,
+                            style: CretaFont.buttonLarge.copyWith(
+                              color: CretaColor.text[400],
+                              //fontSize: 16,
+                              fontWeight: CretaFont.medium,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          BTN.fill_blue_t_m(
+                            width: 84,
+                            text: '구독하기',
+                            onPressed: () {},
+                            textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 18),
-                  Row(
-                    children: [
-                      Text(
-                        '${AccountManager.currentLoginUser.name} 외 10명',
-                        overflow: TextOverflow.ellipsis,
-                        style: CretaFont.buttonLarge.copyWith(
-                          color: CretaColor.text[400],
-                          //fontSize: 16,
-                          fontWeight: CretaFont.medium,
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      Text(
-                        '구독중 453명',
-                        overflow: TextOverflow.ellipsis,
-                        style: CretaFont.buttonLarge.copyWith(
-                          color: CretaColor.text[400],
-                          //fontSize: 16,
-                          fontWeight: CretaFont.medium,
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      Text(
-                        '구독자 453명',
-                        overflow: TextOverflow.ellipsis,
-                        style: CretaFont.buttonLarge.copyWith(
-                          color: CretaColor.text[400],
-                          //fontSize: 16,
-                          fontWeight: CretaFont.medium,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      BTN.fill_blue_t_m(
-                        width: 84,
-                        text: '구독하기',
-                        onPressed: () {},
-                        textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       );
     } else if (size.height > 122 + 40) {
       // mid size
@@ -853,21 +888,32 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 //   image: CommunitySampleData.bannerUrl,
                 //   hasAni: false,
                 // ),
-                child: Image(
-                  image: AssetImage('assets/Artboard12.png'),
-                  width: size.width,
-                  height: size.height,
-                  fit: BoxFit.cover,
-                ),
+                child: profileImg.isEmpty
+                    ? Image(
+                        image: AssetImage('assets/Artboard12.png'),
+                        width: 32,
+                        height: 32,
+                        fit: BoxFit.cover,
+                      )
+                    : CustomImage(
+                        key: GlobalObjectKey(profileImg),
+                        image: profileImg,
+                        width: 32,
+                        height: 32,
+                        hasMouseOverEffect: false,
+                        hasAni: false,
+                      ),
               ),
               SizedBox(width: 12),
               Text(
-                '${AccountManager.currentLoginUser.name}님의 채널',
+                (_currentChannelModel == null) ? '' : '${_currentChannelModel!.name}님의 채널',
                 style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
               ),
               SizedBox(width: 20),
               Text(
-                '${AccountManager.currentLoginUser.name} 외 10명',
+                (_currentChannelModel == null)
+                    ? ''
+                    : '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
                 style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
               ),
               SizedBox(width: 20),
@@ -875,7 +921,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 icon: Icons.link_outlined,
                 buttonColor: CretaButtonColor.gray100light,
                 iconColor: CretaColor.text[700],
-                onPressed: () {},
+                tooltip: '채널 주소 복사',
+                onPressed: () {
+                  String url = Uri.base.origin;
+                  url += '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
+                  Clipboard.setData(ClipboardData(text: url));
+                },
               ),
             ],
           ),
@@ -883,7 +934,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           Row(
             children: [
               Text(
-                '구독자 453명',
+                (_currentChannelModel == null) ? '' : '구독자 ${_currentChannelModel!.followerCount}명',
                 style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
               ),
               SizedBox(width: 12),
@@ -935,92 +986,93 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         clipBehavior: Clip.antiAlias,
         padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
         child: (_currentBookModel == null)
-          ? SizedBox.shrink()
-          : Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+            ? SizedBox.shrink()
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(
-                      _currentBookModel!.name.value,//'[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
-                      overflow: TextOverflow.ellipsis,
-                      style: CretaFont.titleELarge.copyWith(color: Colors.white),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _currentBookModel!.name.value, //'[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
+                            overflow: TextOverflow.ellipsis,
+                            style: CretaFont.titleELarge.copyWith(color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        BTN.fill_gray_it_m(
+                          text: _userPropertyModelOfBookModel?.nickname ?? '',
+                          icon: Icons.account_circle,
+                          onPressed: () {
+                            if (_userPropertyModelOfBookModel != null) {
+                              String channelLinkUrl =
+                                  '${AppRoutes.channel}?${_userPropertyModelOfBookModel!.channelId}';
+                              Routemaster.of(context).push(channelLinkUrl);
+                            }
+                          },
+                          width: null,
+                          buttonColor: CretaButtonColor.transparent,
+                          textColor: Colors.white,
+                          textStyle: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                          alwaysShowIcon: true,
+                        ),
+                        SizedBox(width: 20),
+                        Text(
+                          CretaUtils.dateToDurationString(_currentBookModel!.updateTime),
+                          style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                        ),
+                        SizedBox(width: 20),
+                        Text(
+                          '조회수 ${_currentBookModel!.viewCount}회',
+                          style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(width: 20),
-                  BTN.fill_gray_it_m(
-                    text: _userPropertyModelOfBookModel?.nickname ?? '',
-                    icon: Icons.account_circle,
-                    onPressed: () {
-                      if (_userPropertyModelOfBookModel != null) {
-                        String channelLinkUrl = '${AppRoutes.channel}?${_userPropertyModelOfBookModel!.channelId}';
-                        Routemaster.of(context).push(channelLinkUrl);
-                      }
-                    },
-                    width: null,
-                    buttonColor: CretaButtonColor.transparent,
-                    textColor: Colors.white,
-                    textStyle: CretaFont.bodyMedium.copyWith(color: Colors.white),
-                    alwaysShowIcon: true,
-                  ),
-                  SizedBox(width: 20),
-                  Text(
-                    CretaUtils.dateToDurationString(_currentBookModel!.updateTime),
-                    style: CretaFont.bodyMedium.copyWith(color: Colors.white),
-                  ),
-                  SizedBox(width: 20),
-                  Text(
-                    '조회수 ${_currentBookModel!.viewCount}회',
-                    style: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                  SizedBox(width: 12),
+                  Row(
+                    children: [
+                      BTN.fill_gray_i_l(
+                        icon: Icons.edit_outlined,
+                        onPressed: () {},
+                        buttonColor: CretaButtonColor.blueAndWhiteTitle,
+                        iconColor: Colors.white,
+                      ),
+                      SizedBox(width: 12),
+                      BTN.fill_gray_it_l(
+                        icon: _bookIsFavorites ? Icons.favorite_outlined : Icons.favorite_border_outlined,
+                        text: '123',
+                        onPressed: _toggleBookToFavorites,
+                        buttonColor: CretaButtonColor.transparent,
+                        textColor: Colors.white,
+                        width: null,
+                        sidePadding: CretaButtonSidePadding.fromLR(8, 8),
+                      ),
+                      SizedBox(width: 13),
+                      BTN.fill_gray_itt_l(
+                        icon: Icons.copy_rounded,
+                        text: '복제하기',
+                        subText: '123',
+                        onPressed: () {},
+                        buttonColor: CretaButtonColor.skyTitle,
+                        textColor: Colors.white,
+                        subTextColor: CretaColor.primary[200],
+                        width: null,
+                        sidePadding: CretaButtonSidePadding.fromLR(8, 0),
+                      ),
+                      SizedBox(width: 12),
+                      BTN.fill_gray_i_l(
+                        icon: Icons.menu_outlined,
+                        onPressed: () {},
+                        buttonColor: CretaButtonColor.transparent,
+                        iconColor: Colors.white,
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ),
-            SizedBox(width: 12),
-            Row(
-              children: [
-                BTN.fill_gray_i_l(
-                  icon: Icons.edit_outlined,
-                  onPressed: () {},
-                  buttonColor: CretaButtonColor.blueAndWhiteTitle,
-                  iconColor: Colors.white,
-                ),
-                SizedBox(width: 12),
-                BTN.fill_gray_it_l(
-                  icon: _bookIsFavorites ? Icons.favorite_outlined : Icons.favorite_border_outlined,
-                  text: '123',
-                  onPressed: _toggleBookToFavorites,
-                  buttonColor: CretaButtonColor.transparent,
-                  textColor: Colors.white,
-                  width: null,
-                  sidePadding: CretaButtonSidePadding.fromLR(8, 8),
-                ),
-                SizedBox(width: 13),
-                BTN.fill_gray_itt_l(
-                  icon: Icons.copy_rounded,
-                  text: '복제하기',
-                  subText: '123',
-                  onPressed: () {},
-                  buttonColor: CretaButtonColor.skyTitle,
-                  textColor: Colors.white,
-                  subTextColor: CretaColor.primary[200],
-                  width: null,
-                  sidePadding: CretaButtonSidePadding.fromLR(8, 0),
-                ),
-                SizedBox(width: 12),
-                BTN.fill_gray_i_l(
-                  icon: Icons.menu_outlined,
-                  onPressed: () {},
-                  buttonColor: CretaButtonColor.transparent,
-                  iconColor: Colors.white,
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -1267,11 +1319,17 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     });
   }
 
-  void _updateBookModel(BookModel bookModel, UserPropertyModel userPropertyModel, bool isFavorites) {
+  void _onUpdateBookModel(BookModel bookModel, UserPropertyModel userPropertyModel, bool isFavorites) {
     setState(() {
       _currentBookModel = bookModel;
       _userPropertyModelOfBookModel = userPropertyModel;
       _bookIsFavorites = isFavorites;
+    });
+  }
+
+  void _onUpdateChannelModel(ChannelModel? chModel) {
+    setState(() {
+      _currentChannelModel = chModel;
     });
   }
 
@@ -1287,6 +1345,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           filterBookSort: _filterBookSort,
           filterPermissionType: _filterPermissionType,
           filterSearchKeyword: _filterSearchKeyword,
+          onUpdateChannelModel: _onUpdateChannelModel,
         );
       case AppRoutes.subscriptionList:
         return CommunityRightSubscriptionPane(
@@ -1337,7 +1396,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
-          updateBookModel: _updateBookModel,
+          onUpdateBookModel: _onUpdateBookModel,
         );
       case AppRoutes.communityHome:
       default:
@@ -1364,7 +1423,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           child: Container(
             width: 286,
             height: rightPaneRect.childHeight + 102,
-            padding: EdgeInsets.fromLTRB(20, 20, 5, 20) ,
+            padding: EdgeInsets.fromLTRB(20, 20, 5, 20),
             decoration: BoxDecoration(
               color: CretaColor.text[100],
               borderRadius: BorderRadius.circular(20),

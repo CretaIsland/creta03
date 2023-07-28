@@ -14,11 +14,15 @@ import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
+import '../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../design_system/component/polygon_connection_painter.dart';
+import '../../../../design_system/menu/creta_popup_menu.dart';
+import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
+import '../../../../model/frame_model.dart';
 import '../../../../model/link_model.dart';
 import '../../../../model/page_model.dart';
 //import '../../../../player/abs_player.dart';
@@ -210,6 +214,47 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
               //logger
               //    .info('onTapUp======================================${details.localPosition.dx}');
             },
+            onSecondaryTapDown: (details) {
+              if (StudioVariables.isPreview) {
+                return;
+              }
+              logger.info('right mouse button clicked ${details.globalPosition}');
+              logger.info('right mouse button clicked ${details.localPosition}');
+              CretaRightMouseMenu.showMenu(
+                title: 'frameRightMouseMenu',
+                context: context,
+                popupMenu: [
+                  CretaMenuItem(
+                      disabled: StudioVariables.clipBoard != null &&
+                              StudioVariables.clipBoardDataType == 'frame'
+                          ? false
+                          : true,
+                      caption: CretaStudioLang.paste,
+                      onPressed: () {
+                        if (StudioVariables.clipBoard is FrameModel?) {
+                          FrameModel? frame = StudioVariables.clipBoard as FrameModel?;
+                          FrameManager? srcManager =
+                              StudioVariables.clipBoardManager as FrameManager?;
+                          if (frame != null && srcManager != null) {
+                            _frameManager?.copyFrame(frame,
+                                parentMid: widget.pageModel.mid,
+                                srcFrameManager: srcManager,
+                                samePage: widget.pageModel.mid == frame.parentMid.value);
+                          }
+                        }
+                      }),
+                ],
+                itemHeight: 24,
+                x: details.globalPosition.dx,
+                y: details.globalPosition.dy,
+                width: 150,
+                height: 36,
+                //textStyle: CretaFont.bodySmall,
+                iconSize: 12,
+                alwaysShowBorder: true,
+                borderRadius: 8,
+              );
+            },
             child: _drawPage(useColor),
           )
         : _drawPage(useColor);
@@ -242,7 +287,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
       BookMainPage.outSideClick = false;
       return;
     }
-     BookMainPage.outSideClick = false;
+    BookMainPage.outSideClick = false;
     logger.info('page clicked');
     //setState(() {
     _frameManager?.clearSelectedMid();

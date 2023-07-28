@@ -15,8 +15,10 @@ import '../../../data_io/page_manager.dart';
 import '../../../design_system/buttons/creta_button.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
+import '../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
+import '../../../design_system/menu/creta_popup_menu.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/book_model.dart';
 import '../../../model/creta_model.dart';
@@ -345,10 +347,10 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                     tooltipBg: CretaColor.text[700]!,
                     icon: Icons.content_copy_outlined,
                     onPressed: () {
-                      PageModel? page = _pageManager!.getSelected() as PageModel?;
-                      if (page != null) {
-                        _pageManager?.copyPage(page);
-                      }
+                      //PageModel? page = _pageManager!.getSelected() as PageModel?;
+                      //if (page != null) {
+                      _pageManager?.copyPage(model);
+                      //}
                       setState(() {});
                     }),
                 BTN.fill_gray_i_m(
@@ -444,6 +446,58 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       onDoubleTapDown: (details) {
         logger.finest('double clicked = $model.id');
         logger.finest('dx=${details.localPosition.dx}, dy=${details.localPosition.dx}');
+      },
+      onSecondaryTapDown: (details) {
+        if (StudioVariables.isPreview) {
+          return;
+        }
+        logger.info('right mouse button clicked ${details.globalPosition}');
+        logger.info('right mouse button clicked ${details.localPosition}');
+        CretaRightMouseMenu.showMenu(
+          title: 'frameRightMouseMenu',
+          context: context,
+          popupMenu: [
+            CretaMenuItem(
+                caption: CretaStudioLang.copy,
+                onPressed: () {
+                  StudioVariables.copyPage(model, _pageManager!);
+                  //widget.onFrameShowUnshow.call(frameModel.mid);
+                }),
+            CretaMenuItem(
+                caption: CretaStudioLang.crop,
+                onPressed: () {
+                  model.isRemoved.set(true);
+                  StudioVariables.cropPage(model, _pageManager!);
+                  _pageManager?.notify();
+                  //widget.onFrameShowUnshow.call(frameModel.mid);
+                }),
+            CretaMenuItem(
+                disabled:
+                    StudioVariables.clipBoard != null && StudioVariables.clipBoardDataType == 'page'
+                        ? false
+                        : true,
+                caption: CretaStudioLang.paste,
+                onPressed: () {
+                  if (StudioVariables.clipBoard is PageModel?) {
+                    PageModel? page = StudioVariables.clipBoard as PageModel?;
+                    PageManager? srcManager = StudioVariables.clipBoardManager as PageManager?;
+                    if (page != null && srcManager != null) {
+                      _pageManager?.copyPage(page,
+                          srcPageManager: srcManager, targetOrder: model.order.value);
+                    }
+                  }
+                }),
+          ],
+          itemHeight: 24,
+          x: details.globalPosition.dx,
+          y: details.globalPosition.dy,
+          width: 150,
+          height: 120,
+          //textStyle: CretaFont.bodySmall,
+          iconSize: 12,
+          alwaysShowBorder: true,
+          borderRadius: 8,
+        );
       },
       child: SizedBox(
         // 실제 페이지를 그리는 부분
@@ -573,50 +627,91 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     // double bodyHeight = cardHeight - headerHeight;
     // double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     //logger.finest('addCard($bodyHeight,$bodyWidth)');
-    return Column(
+    return GestureDetector(
       key: UniqueKey(),
-      children: [
-        SizedBox(
-          height: _addCardSpace,
-        ),
-        DottedBorder(
-          dashPattern: const [6, 6],
-          strokeWidth: borderThick / 2,
-          strokeCap: StrokeCap.round,
-          color: CretaColor.primary[300]!,
-          // padding: EdgeInsets.symmetric(horizontal: horizontalPadding * widthScale),
-          child: SizedBox(
-            // 실제 페이지를 그리는 부분
-            height: _bodyHeight,
-            width: _bodyWidth,
-            // decoration: BoxDecoration(
-            //   border: Border.all(width: 2, color: CretaColor.text[300]!),
-            // ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //_addButton(),
-                  BTN.fill_blue_i_l(
-                      size: widget.isFolded ? Size(25, 25) : Size(48, 48),
-                      icon: Icons.add_outlined,
-                      onPressed: () {
-                        setState(() {
-                          _pageManager!.createNextPage(_pageCount + 1);
-                        });
-                      }),
-                  SizedBox(height: widget.isFolded ? 12 * widthScale : 12), // added by Mai 230516
-                  if (!widget.isFolded)
-                    Text(
-                      CretaStudioLang.newPage,
-                      style: CretaFont.buttonLarge,
-                    )
-                ],
+      onSecondaryTapDown: (details) {
+        if (StudioVariables.isPreview) {
+          return;
+        }
+        logger.info('right mouse button clicked ${details.globalPosition}');
+        logger.info('right mouse button clicked ${details.localPosition}');
+        CretaRightMouseMenu.showMenu(
+          title: 'frameRightMouseMenu',
+          context: context,
+          popupMenu: [
+            CretaMenuItem(
+                disabled:
+                    StudioVariables.clipBoard != null && StudioVariables.clipBoardDataType == 'page'
+                        ? false
+                        : true,
+                caption: CretaStudioLang.paste,
+                onPressed: () {
+                  if (StudioVariables.clipBoard is PageModel?) {
+                    PageModel? page = StudioVariables.clipBoard as PageModel?;
+                    PageManager? srcManager = StudioVariables.clipBoardManager as PageManager?;
+                    if (page != null && srcManager != null) {
+                      _pageManager?.copyPage(page,
+                          srcPageManager: srcManager, targetOrder: _pageManager!.lastOrder());
+                    }
+                  }
+                }),
+          ],
+          itemHeight: 24,
+          x: details.globalPosition.dx,
+          y: details.globalPosition.dy,
+          width: 150,
+          height: 36,
+          //textStyle: CretaFont.bodySmall,
+          iconSize: 12,
+          alwaysShowBorder: true,
+          borderRadius: 8,
+        );
+      },
+      child: Column(
+        children: [
+          SizedBox(
+            height: _addCardSpace,
+          ),
+          DottedBorder(
+            dashPattern: const [6, 6],
+            strokeWidth: borderThick / 2,
+            strokeCap: StrokeCap.round,
+            color: CretaColor.primary[300]!,
+            // padding: EdgeInsets.symmetric(horizontal: horizontalPadding * widthScale),
+            child: SizedBox(
+              // 실제 페이지를 그리는 부분
+              height: _bodyHeight,
+              width: _bodyWidth,
+              // decoration: BoxDecoration(
+              //   border: Border.all(width: 2, color: CretaColor.text[300]!),
+              // ),
+
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //_addButton(),
+                    BTN.fill_blue_i_l(
+                        size: widget.isFolded ? Size(25, 25) : Size(48, 48),
+                        icon: Icons.add_outlined,
+                        onPressed: () {
+                          setState(() {
+                            _pageManager!.createNextPage(_pageCount + 1);
+                          });
+                        }),
+                    SizedBox(height: widget.isFolded ? 12 * widthScale : 12), // added by Mai 230516
+                    if (!widget.isFolded)
+                      Text(
+                        CretaStudioLang.newPage,
+                        style: CretaFont.buttonLarge,
+                      )
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

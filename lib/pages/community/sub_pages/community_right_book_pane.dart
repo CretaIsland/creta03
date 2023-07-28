@@ -62,11 +62,11 @@ class CommunityRightBookPane extends StatefulWidget {
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
-    required this.updateBookModel,
+    required this.onUpdateBookModel,
   });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
-  final Function(BookModel, UserPropertyModel, bool)? updateBookModel;
+  final Function(BookModel, UserPropertyModel, bool)? onUpdateBookModel;
 
   static String bookId = '';
   static FavoritesManager? favoritesManagerHolder;
@@ -190,7 +190,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       return;
     }
     channelManagerHolder.addWhereClause(
-        'mid', QueryValue(value: _currentBookModel!.channels, operType: OperType.arrayContainsAny));
+        'mid', QueryValue(value: _currentBookModel!.channels, operType: OperType.whereIn));
     channelManagerHolder.queryByAddedContitions();
   }
 
@@ -256,13 +256,13 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     if (_currentBookModel != null) {
       if (kDebugMode) print('_resultFavoritesFromDB(updateBookModel)');
       // channel mapping to user,teams
-      for(var chModel in _channelList) {
+      for (var chModel in _channelList) {
         chModel.getModelFromMaps(_userPropertyMap, _teamMap);
       }
       // creator
       UserPropertyModel? creatorUserModel = _userPropertyMap[_currentBookModel!.creator];
       if (creatorUserModel != null) {
-        widget.updateBookModel?.call(_currentBookModel!, creatorUserModel, _bookIsInFavorites);
+        widget.onUpdateBookModel?.call(_currentBookModel!, creatorUserModel, _bookIsInFavorites);
         setState(() {
           _controller.text = _currentBookModel?.description.value ?? '';
         });
@@ -555,33 +555,50 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           SizedBox(
             width: 52,
             height: 52,
+            child: _channelList.isEmpty
+                ? SizedBox.shrink()
+                // : CustomImage(
+                //     //key: ValueKey('related-${item.thumbnailUrl}'),
+                //     image: _channelList[0].profileImg,
+                //     width: 210,
+                //     height: 160,
+                //     hasMouseOverEffect: false,
+                //     hasAni: false,
+                //   ),
+                : userPropertyManagerHolder.imageCircle(
+                    _channelList[0].profileImg,
+                    _channelList[0].name,
+                    radius: 52,
+                  ),
           ),
           SizedBox(
             width: 12,
           ),
           Text(
-            _channelList[0].name,
+            _channelList.isNotEmpty ? _channelList[0].name : '',
             style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
           ),
           SizedBox(
             width: 42,
           ),
           Text(
-            '구독자 ${_channelList[0].followerCount}명',
-            style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
+            _channelList.isNotEmpty ? '구독자 ${_channelList[0].followerCount}명' : '',
+            style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
           ),
           SizedBox(
             width: 16,
           ),
-          BTN.fill_blue_t_m(
-            text: '구독하기',
-            width: 84,
-            onPressed: () {
-              //
-              // 구독 기능 추가 필요 !!!
-              //
-            },
-          ),
+          _channelList.isEmpty
+              ? SizedBox.shrink()
+              : BTN.fill_blue_t_m(
+                  text: '구독하기',
+                  width: 84,
+                  onPressed: () {
+                    //
+                    // 구독 기능 추가 필요 !!!
+                    //
+                  },
+                ),
         ],
       ),
     );

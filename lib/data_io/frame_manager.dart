@@ -161,21 +161,26 @@ class FrameManager extends CretaManager {
     return old;
   }
 
-  Future<FrameModel> copyFrame(FrameModel src) async {
+  Future<FrameModel> copyFrame(FrameModel src,
+      {String? parentMid, FrameManager? srcFrameManager, bool samePage = true}) async {
     //print('copyFrame**************--------------------------');
 
     FrameModel newModel = FrameModel('', bookModel.mid);
-    newModel.copyFrom(src, newMid: newModel.mid);
+    newModel.copyFrom(src, newMid: newModel.mid, pMid: parentMid);
 
     newModel.posX.set(src.posX.value + 20, save: false, noUndo: true);
     newModel.posY.set(src.posY.value + 20, save: false, noUndo: true);
     newModel.order.set(safeLastOrder() + 1, save: false, noUndo: true);
+    newModel.isRemoved.set(false, save: false, noUndo: true);
 
     logger.fine('create new frame ${newModel.mid}');
-
-    ContentsManager? contentsManager = findContentsManager(src.mid);
-    await contentsManager?.copyContents(newModel.mid, bookModel.mid);
-
+    if (srcFrameManager != null && samePage == false) {
+      ContentsManager? contentsManager = srcFrameManager.findContentsManager(src.mid);
+      await contentsManager?.copyContents(newModel.mid, bookModel.mid, samePage: samePage);
+    } else {
+      ContentsManager? contentsManager = findContentsManager(src.mid);
+      await contentsManager?.copyContents(newModel.mid, bookModel.mid);
+    }
     await createToDB(newModel);
     insert(newModel, postion: getLength());
     selectedMid = newModel.mid;
@@ -183,7 +188,7 @@ class FrameManager extends CretaManager {
     return newModel;
   }
 
-  Future<void> copyFrames(String pageMid, String bookMid) async {
+  Future<void> copyFrames(String pageMid, String bookMid, {bool samePage = true}) async {
     double order = 1;
     for (var ele in modelList) {
       FrameModel org = ele as FrameModel;
@@ -194,7 +199,7 @@ class FrameManager extends CretaManager {
       logger.info('create new FrameModel ${newModel.name},${newModel.mid}');
 
       ContentsManager? contentsManager = findContentsManager(org.mid);
-      await contentsManager?.copyContents(newModel.mid, bookMid);
+      await contentsManager?.copyContents(newModel.mid, bookMid, samePage: samePage);
 
       await createToDB(newModel);
     }
