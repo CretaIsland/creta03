@@ -46,12 +46,14 @@ class DraggablePointState extends State<DraggablePoint> {
             StudioVariables.isPreview == false
         ? GestureDetector(
             behavior: HitTestBehavior.deferToChild,
-            onLongPressDown: (detail) {
-              logger.info('DraggablePoint.GestureDetector');
-              //
-              widget.onTap!();
-              //print('DraggablePointState onLongPressDown --------------------------');
-            },
+            // InkWell 에서 click 을 처리하고 있기 때문에, 여기서 또 하면 중복이 된다.
+            // 그래서 여기서는 onLongPressDown 을 하지 않는다.
+            // onLongPressDown: (detail) {
+            //   logger.info('DraggablePoint.GestureDetector');
+            //   //
+            //   //widget.onTap!();
+            //   //print('DraggablePointState onLongPressDown --------------------------');
+            // },
             onScaleStart: (details) {
               mychangeStack.startTrans();
               switch (widget.mode) {

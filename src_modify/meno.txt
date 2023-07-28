@@ -15,8 +15,22 @@ ResizePointDraggable.onScaleUpdate
   -->DraggableResizable.onDragTopLeft --> onUpdate
   -->DraggableStickers.onUpdate --> FrameMain.onUpdate 여기의 -setItem 함수에서 비로서 save 하게 된다.
 
-- Frame click 시
+- Frame click 시  GestureDetector 와 InkWell 두개 루트에서 동작한다.
 
-DraggablePoint.GestureDetector.onLongPressDown
-DraggableResizable.onTap() --> onUpdate('onTap')
-Drag
+1. GestureDetector Routes 는 다음과 같다. 이는 마우스로 끌어서 위치를 바꾸기위해 정의된 루트 이지만,
+그냥 click 으로 선택했을 때도 동작한다는 것이 문제이다.
+
+//DraggablePoint.GestureDetector.onLongPressDown
+//DraggableResizable.onTap() --> onUpdate('onTap')
+//DraggableStickers.onTap
+//StickerView.onTap
+//FrameMain.onTap  <-- 함수에서 모든일이 일언다.
+
+2. InkWell 루트는 다음과 같다.
+DraggableStickers.onTap
+StickerView.onTap
+FrameMain.onTap   <-- 함수에서 모든일이 일언다.
+
+따라서, InkWell 루트는 GuesterDetector 루트와 쫑이 나고 있다.
+
+

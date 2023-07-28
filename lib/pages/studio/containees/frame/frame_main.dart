@@ -186,7 +186,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         setState(() {});
       },
       onTap: (mid) {
-        logger.info('onTap : from InkWell , frame_name.dart, no setState $mid');
+        logger.info('onTap : from InkWell , frame_main.dart, no setState $mid');
 
         if (MiniMenu.showFrame == false) {
           ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
@@ -213,7 +213,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           BookMainPage.miniMenuNotifier!.set(true);
           //});
         }
-        frame = frameManager?.getSelected() as FrameModel?;
+        //frame = frameManager?.getSelected() as FrameModel?;
 
         //frame = frameManager?.getSelected() as FrameModel?;
         //if (frame != null) {
