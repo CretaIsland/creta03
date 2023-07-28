@@ -68,7 +68,6 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
       return const SizedBox.shrink();
     }
     ContentsModel? model = widget.contentsManager.getSelected() as ContentsModel?;
-
     return Padding(
       padding: EdgeInsets.only(
         left: horizontalPadding,

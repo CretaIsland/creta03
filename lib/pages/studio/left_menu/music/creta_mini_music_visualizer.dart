@@ -2,54 +2,33 @@ library mini_music_visualizer;
 
 import "package:flutter/material.dart";
 
-class CretaMiniMusicVisualizer extends StatelessWidget {
-  const CretaMiniMusicVisualizer({
-    Key? key,
-    this.color,
-    this.width,
-    this.height,
-    this.isPlaying,
-  }) : super(key: key);
-
-  /// Color of bars
-  final Color? color;
-
-  /// width of visualizer widget
-  final double? width;
-
-  /// height of visualizer widget
-  final double? height;
-
-  final bool? isPlaying;
-
-  @override
-  Widget build(BuildContext context) {
+class MyVisualizer {
+  static Widget playVisualizer({
+    required BuildContext context,
+    Color? color,
+    double? width,
+    double? height,
+    required bool isPlaying,
+    required String contentsId,
+    required String size,
+    required bool isTrailer,
+  }) {
     final List<int> duration = [900, 800, 700, 600, 500];
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List<Widget>.generate(
-        3,
+        5,
         (index) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 1),
-          child: isPlaying == true
-              ? CretaVisualComponent(
-                  curve: Curves.bounceOut,
-                  duration: duration[index % 5],
-                  color: color ?? Theme.of(context).colorScheme.secondary,
-                  width: width,
-                  height: height,
-                  isPlaying: true,
-                )
-              : CretaVisualComponent(
-                  curve: Curves.bounceOut,
-                  duration: duration[index % 5],
-                  color: color ?? Theme.of(context).colorScheme.secondary,
-                  width: width,
-                  height: height,
-                  isPlaying: false,
-                ),
-        ),
+            padding: const EdgeInsets.symmetric(horizontal: 1),
+            child: CretaVisualComponent(
+              key: GlobalObjectKey('$contentsId-$isPlaying-$isTrailer-$size-$index'),
+              curve: Curves.bounceOut,
+              duration: duration[index % 5],
+              color: color ?? Theme.of(context).colorScheme.secondary,
+              width: width,
+              height: height,
+              isPlaying: isPlaying,
+            )),
       ),
     );
   }

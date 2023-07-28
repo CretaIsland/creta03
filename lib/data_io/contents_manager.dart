@@ -460,6 +460,7 @@ class ContentsManager extends CretaManager {
   }
 
   Future<void> pause() async {
+    String frameId = frameModel.mid;
     for (var player in _playerMap.values) {
       if (player.model != null) {
         if (player.model!.isVideo()) {
@@ -476,11 +477,21 @@ class ContentsManager extends CretaManager {
         if (player.model!.isImage()) {
           notify();
         }
+        if (player.model != null && player.model!.isMusic()) {
+          debugPrint('--------------pauseMusicApp ${player.model!.name}');
+          GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+          if (musicKey != null) {
+            musicKey.currentState?.pausedMusic(player.model!);
+          } else {
+            logger.severe('musicKey is null');
+          }
+        }
       }
     }
   }
 
   Future<void> resume() async {
+    String frameId = frameModel.mid;
     for (var player in _playerMap.values) {
       if (player.model != null) {
         if (player.model!.isVideo()) {
@@ -495,6 +506,15 @@ class ContentsManager extends CretaManager {
         }
         if (player.model!.isImage()) {
           notify();
+        }
+        if (player.model != null && player.model!.isMusic()) {
+          debugPrint('--------------playMusicApp ${player.model!.name}');
+          GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+          if (musicKey != null) {
+            musicKey.currentState?.playedMusic(player.model!);
+          } else {
+            logger.severe('musicKey is null');
+          }
         }
       }
     }

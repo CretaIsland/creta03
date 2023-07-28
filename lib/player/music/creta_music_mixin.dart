@@ -38,7 +38,10 @@ mixin CretaMusicMixin {
       width: realSize.width,
       height: realSize.height,
       child: MusicPlayerFrame(
-          key: musicKey, contentsManager: player!.acc, size: Size(realSize.width, realSize.height)),
+        key: musicKey,
+        contentsManager: player!.acc,
+        size: Size(realSize.width, realSize.height),
+      ),
     );
   }
 }

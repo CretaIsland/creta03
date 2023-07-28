@@ -220,6 +220,20 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         });
   }
 
+  String _getCurrentSizeString() {
+    int index = 0;
+    Size frameSize = Size(widget.model.width.value, widget.model.height.value);
+    for (Size ele in StudioConst.musicPlayerSize) {
+
+      if (frameSize == ele) {
+        return CretaStudioLang.playerSize.values.toList()[index];
+      }
+      index++;
+    }
+    logger.severe('wrong size $frameSize');
+    return CretaStudioLang.playerSize.values.toList()[0];
+  }
+
   Widget _musicPlayerSize() {
     return Padding(
       padding: const EdgeInsets.only(top: 12, left: 30, right: 12.0),
@@ -228,6 +242,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         children: [
           Text(CretaStudioLang.playersize, style: titleStyle),
           CretaTabButton(
+            defaultString: _getCurrentSizeString(),
             onEditComplete: (value) {
               int idx = 0;
               for (String val in CretaStudioLang.playerSize.values) {
