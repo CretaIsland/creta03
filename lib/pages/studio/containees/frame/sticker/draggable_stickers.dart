@@ -179,12 +179,11 @@ class _DraggableStickersState extends State<DraggableStickers> {
         widget.onUpdate.call(update, mid);
         logger.finest("saved");
       },
-      onTap: () {
-        logger.fine('onTap : from Gest2');
-        BookMainPage.containeeNotifier!.setFrameClick(true);
-        // logger.finest('setState');
-        // setState(() {});
-      },
+      // draggable_point 로 이사갔음.
+      // onTap: () {
+      //   logger.fine('onTap : from Gest2');
+      //   BookMainPage.containeeNotifier!.setFrameClick(true);
+      // },
       onComplete: () {
         logger.info('onComplete : from DraggableResizable...');
         //setState(() {
@@ -368,6 +367,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   // ignore: unused_element
   Widget _drawMiniMenu() {
+    //return Consumer<ContaineeNotifier>(builder: (context, notifier, child) {
     return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
       logger.info(
           '_drawMiniMenu(${BookMainPage.miniMenuNotifier!.isShow})------------------------------------------');

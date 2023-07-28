@@ -22,8 +22,11 @@ import 'frame/frame_property.dart';
 import 'frame/weather_property.dart';
 
 class RightMenuFrameAndContents extends StatefulWidget {
-  final String selectedTap;
-  const RightMenuFrameAndContents({super.key, required this.selectedTap});
+  //final String selectedTap;
+  const RightMenuFrameAndContents({
+    super.key,
+    /* required this.selectedTap */
+  });
 
   @override
   State<RightMenuFrameAndContents> createState() => _RightMenuFrameAndContentsState();
@@ -34,14 +37,14 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   //late ScrollController _scrollController;
   double horizontalPadding = 24;
 
-  late String _selectedTab;
+  String _selectedTab = '';
 
   @override
   void initState() {
     //_scrollController.addListener(_scrollListener);
     logger.info('_RightMenuFrameAndContentsState.initState');
     //_scrollController = ScrollController(initialScrollOffset: 0.0);
-    _selectedTab = widget.selectedTap;
+    //_selectedTab = widget.selectedTap;
     super.initState();
   }
 
@@ -53,6 +56,14 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
 
   @override
   Widget build(BuildContext context) {
+    if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Frame) {
+      _selectedTab = CretaStudioLang.frameTabBar.values.first;
+    } else if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Contents) {
+      _selectedTab = CretaStudioLang.frameTabBar.values.last;
+    } else {
+      return SizedBox.shrink();
+    }
+
     return Column(
       children: [
         _tabBar(),

@@ -63,7 +63,7 @@ class DraggableResizable extends StatefulWidget {
     //BoxConstraints? constraints,
     required this.onResizeButtonTap,
     this.onUpdate,
-    this.onTap,
+    //this.onTap,
     this.onLayerTapped,
     this.onEdit,
     this.onFrameDelete,
@@ -83,7 +83,7 @@ class DraggableResizable extends StatefulWidget {
   /// Delete callback
   final VoidCallback onComplete;
   final VoidCallback onScaleStart;
-  final VoidCallback? onTap;
+  //final VoidCallback? onTap;
   final VoidCallback? onFrameDelete;
   final VoidCallback? onEdit;
   final VoidCallback? onLayerTapped;
@@ -156,10 +156,10 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
         void onUpdate(String hint, {bool save = true}) {
           //print('onUpdate $hint--------------------------------------------------------');
-          if (hint == 'onTap') {
-            logger.finest('onUpdate : onUpdate($hint),$save in DraggableResizable');
-            widget.onTap?.call();
-          }
+          // if (hint == 'onTap') {
+          //   logger.finest('onUpdate : onUpdate($hint),$save in DraggableResizable');
+          //   widget.onTap?.call();
+          // }
 
           if (save) {
             widget.onUpdate?.call(
@@ -436,9 +436,9 @@ class _DraggableResizableState extends State<DraggableResizable> {
           onScaleStart: () {
             widget.onScaleStart();
           },
-          onTap: () {
-            onUpdate('onTap', save: false);
-          },
+          // onTap: () {
+          //   onUpdate('onTap', save: false);
+          // },
           onDrag: (details) {
             Offset newPosition = Offset(_position.dx + details.dx, _position.dy + details.dy);
             if (_moveValidCheck(_size, newPosition, details) == false) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../book_main_page.dart';
 import '../../../studio_variables.dart';
 
 enum PositionMode { local, global }
@@ -15,7 +16,7 @@ class DraggablePoint extends StatefulWidget {
     this.onDrag,
     this.onScale,
     this.onRotate,
-    required this.onTap,
+    //required this.onTap,
     this.mode = PositionMode.global,
   }) : super(key: key);
 
@@ -25,7 +26,7 @@ class DraggablePoint extends StatefulWidget {
   final ValueSetter<double>? onScale;
   final VoidCallback onScaleStart;
   final ValueSetter<double>? onRotate;
-  final VoidCallback? onTap;
+  //final VoidCallback? onTap;
   final VoidCallback onComplete;
 
   @override
@@ -46,14 +47,12 @@ class DraggablePointState extends State<DraggablePoint> {
             StudioVariables.isPreview == false
         ? GestureDetector(
             behavior: HitTestBehavior.deferToChild,
-            // InkWell 에서 click 을 처리하고 있기 때문에, 여기서 또 하면 중복이 된다.
-            // 그래서 여기서는 onLongPressDown 을 하지 않는다.
-            // onLongPressDown: (detail) {
-            //   logger.info('DraggablePoint.GestureDetector');
-            //   //
-            //   //widget.onTap!();
-            //   //print('DraggablePointState onLongPressDown --------------------------');
-            // },
+            // InkWell 보다 먼저 호출되기 때문에, 이 부분을 활용하여, frame 이 눌러졌다는 사실을 알 수 있다.
+            onLongPressDown: (detail) {
+              logger.info('DraggablePoint.GestureDetector');
+              BookMainPage.containeeNotifier!.setFrameClick(true);
+              //widget.onTap!();
+            },
             onScaleStart: (details) {
               mychangeStack.startTrans();
               switch (widget.mode) {

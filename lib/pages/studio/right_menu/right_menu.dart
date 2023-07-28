@@ -204,8 +204,11 @@ class _RightMenuState
       case ContaineeEnum.Page:
         return PageProperty();
       case ContaineeEnum.Frame:
-        return RightMenuFrameAndContents(
-            key: GlobalKey(), selectedTap: CretaStudioLang.frameTabBar.values.first);
+        return RightMenuFrameAndContents(key: GlobalObjectKey('RightMenuFrameAndContents'));
+      // return RightMenuFrameAndContents(
+      //     key: GlobalObjectKey(
+      //         'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.first}'),
+      //     selectedTap: CretaStudioLang.frameTabBar.values.first);
       // {
       //   FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
       //   if (frame == null) {
@@ -214,8 +217,11 @@ class _RightMenuState
       //   return FrameProperty(key: ValueKey(frame.mid), model: frame);
       // }
       case ContaineeEnum.Contents:
-        return RightMenuFrameAndContents(
-            key: GlobalKey(), selectedTap: CretaStudioLang.frameTabBar.values.last);
+        return RightMenuFrameAndContents(key: GlobalObjectKey('RightMenuFrameAndContents'));
+      // return RightMenuFrameAndContents(
+      //     key: GlobalObjectKey(
+      //         'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.last}'),
+      //     selectedTap: CretaStudioLang.frameTabBar.values.last);
       // BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
       // FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
       // FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
