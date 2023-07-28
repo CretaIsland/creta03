@@ -467,24 +467,36 @@ class PageManager extends CretaManager {
     return thumbKeyMap[pageModel.mid];
   }
 
-  Future<PageModel> copyPage(PageModel src) async {
+  Future<PageModel> copyPage(PageModel src,
+      {PageManager? srcPageManager, double? targetOrder}) async {
     //print('copyFrame**************--------------------------');
 
     PageModel newModel = PageModel('', bookModel!);
     newModel.copyFrom(src, newMid: newModel.mid);
 
-    double nextOrderVal = nextOrder(src.order.value);
-    if (nextOrderVal <= src.order.value) {
-      nextOrderVal = src.order.value + 1;
+    double srcOrder = src.order.value;
+    if (targetOrder != null) {
+      srcOrder = targetOrder;
+    }
+
+    double nextOrderVal = nextOrder(srcOrder);
+    if (nextOrderVal <= srcOrder) {
+      nextOrderVal = srcOrder + 1;
     } else {
-      nextOrderVal = (nextOrderVal + src.order.value) / 2;
+      nextOrderVal = (nextOrderVal + srcOrder) / 2;
     }
     newModel.order.set(nextOrderVal, save: false, noUndo: true);
+    newModel.isRemoved.set(false, save: false, noUndo: true);
 
     logger.fine('create new page ${newModel.mid}');
 
-    FrameManager? frameManager = findFrameManager(src.mid);
-    await frameManager?.copyFrames(newModel.mid, bookModel!.mid);
+    if (srcPageManager != null) {
+      FrameManager? frameManager = srcPageManager.findFrameManager(src.mid);
+      await frameManager?.copyFrames(newModel.mid, bookModel!.mid, samePage: false);
+    } else {
+      FrameManager? frameManager = findFrameManager(src.mid);
+      await frameManager?.copyFrames(newModel.mid, bookModel!.mid);
+    }
 
     await createToDB(newModel);
     insert(newModel, postion: getLength());

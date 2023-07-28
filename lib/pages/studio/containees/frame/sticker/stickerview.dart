@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
@@ -41,11 +42,11 @@ class StickerView extends StatefulWidget {
   final double width; // width of the editor view
   final FrameManager? frameManager;
   final String pageMid;
-  final String bookMid;
+  final BookModel book;
 
   const StickerView({
     super.key,
-    required this.bookMid,
+    required this.book,
     required this.pageMid,
     required this.stickerList,
     required this.onUpdate,
@@ -133,7 +134,7 @@ class StickerViewState extends State<StickerView> {
           width: widget.width,
           child: DraggableStickers(
             //DraggableStickers class in which stickerList is passed
-            bookMid: widget.bookMid,
+            book: widget.book,
             pageWidth: widget.width,
             pageHeight: widget.height,
             frameManager: widget.frameManager,
@@ -212,6 +213,8 @@ class StickerState extends State<Sticker> {
   }
 
   bool _isVisible(FrameModel model) {
+    if (model.isRemoved.value == true) return false;
+
     if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
       logger.fine(
           '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');

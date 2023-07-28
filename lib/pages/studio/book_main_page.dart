@@ -1352,11 +1352,6 @@ class _BookMainPageState extends State<BookMainPage> {
           // redo
         } else if (keys.contains(LogicalKeyboardKey.keyC)) {
           logger.info('Ctrl+C pressed');
-          CretaVariables.clipBoard = BookMainPage.selectedMid;
-          CretaVariables.clipBoardAction = 'Copy';
-          if (CretaVariables.clipBoard.isEmpty) {
-            return;
-          }
 
           // page 복사의 경우
           if (BookMainPage.selectedMid.contains(CretaConstant.pagePrefix)) {
@@ -1377,12 +1372,6 @@ class _BookMainPageState extends State<BookMainPage> {
           // Paste
         } else if (keys.contains(LogicalKeyboardKey.keyX)) {
           logger.info('Ctrl+X pressed');
-          CretaVariables.clipBoard = BookMainPage.selectedMid;
-          CretaVariables.clipBoardAction = 'Crop';
-          if (CretaVariables.clipBoard.isEmpty) {
-            return;
-          }
-
           // Paste
         }
       }

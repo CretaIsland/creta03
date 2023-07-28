@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../common/creta_constant.dart';
+import '../../data_io/creta_manager.dart';
 import '../../data_io/frame_manager.dart';
 import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
@@ -10,7 +11,6 @@ import 'book_main_page.dart';
 import 'studio_constant.dart';
 
 class StudioVariables {
-  
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
   static double menuStickWidth = LayoutConst.menuStickWidth;
   static double appbarHeight = CretaConstant.appbarHeight;
@@ -48,6 +48,45 @@ class StudioVariables {
   static bool isPreview = false;
 
   static bool isFullscreen = false;
+
+  static CretaModel? clipBoard;
+  static String? clipBoardDataType;
+  static String? clipBoardAction;
+  static CretaManager? clipBoardManager;
+
+  static void clearClipBoard() {
+    clipBoard = null;
+    clipBoardDataType = null;
+    clipBoardAction = null;
+  }
+
+  static void copyFrame(CretaModel model, CretaManager manager) {
+    clipBoard = model;
+    clipBoardDataType = 'frame';
+    clipBoardAction = 'copy';
+    clipBoardManager = manager;
+  }
+
+  static void copyPage(CretaModel model, CretaManager manager) {
+    clipBoard = model;
+    clipBoardDataType = 'page';
+    clipBoardAction = 'copy';
+    clipBoardManager = manager;
+  }
+
+  static void cropFrame(CretaModel model, CretaManager manager) {
+    clipBoard = model;
+    clipBoardDataType = 'frame';
+    clipBoardAction = 'crop';
+    clipBoardManager = manager;
+  }
+
+  static void cropPage(CretaModel model, CretaManager manager) {
+    clipBoard = model;
+    clipBoardDataType = 'page';
+    clipBoardAction = 'crop';
+    clipBoardManager = manager;
+  }
 
   static void globalToggleMute({bool save = true}) {
     StudioVariables.isMute = !StudioVariables.isMute;

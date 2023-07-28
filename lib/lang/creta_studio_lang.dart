@@ -231,7 +231,11 @@ class CretaStudioLang {
   static const String hidden = "압정"; // added by Mai 230516
 
   static const String copy = "복사하기";
+  static const String paste = "붙여넣기";
+  static const String crop = "잘라내기";
   static var showUnshow = "보이기/안보이기";
+  static var show = "보이기";
+  static var unshow = "안보이기";
 
   static const String description = "설명";
   static const String hashTab = "해시태그";
@@ -545,7 +549,7 @@ class CretaStudioLang {
   static String visibility = "가시거리";
   static String microDust = "미세먼지";
   static String superMicroDust = "초미세먼지";
-  static String realSize = "실제 사이즈로";
+  static String realSize = "원래 사이즈로";
   static String maxSize = "최대 사이즈로";
 
   static String useThisThumbnail = "이 콘텐츠를 썸네일로 사용";
