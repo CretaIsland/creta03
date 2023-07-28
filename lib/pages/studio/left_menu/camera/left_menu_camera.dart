@@ -29,9 +29,6 @@ class LeftMenuCamera extends StatefulWidget {
 
 class _LeftMenuCameraState extends State<LeftMenuCamera> {
 
-  bool _alreadyDeviceLoad = false;
-
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -47,7 +44,6 @@ class _LeftMenuCameraState extends State<LeftMenuCamera> {
             future: mediaDeviceDataHolder!.loadMediaDevice(),
             builder: (context, snapshot) {
               if(snapshot.connectionState == ConnectionState.done) {
-                _alreadyDeviceLoad = true;
                 return GestureDetector(
                   child: Container(
                     width: 80,
