@@ -72,7 +72,6 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
               children: [
                 for (int i = 0; i < _playerList.length; i++)
                   MusicPlayerBase(
-                    nameText: Text('Player ${i + 1}', style: widget.dataStyle),
                     playerWidget: playerWidget(i),
                     width: musicBgWidth,
                     height: musicBgHeight,

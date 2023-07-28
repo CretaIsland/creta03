@@ -55,7 +55,12 @@ class CretaMusicPlayerWidgetState extends State<CretaMusicWidget> with CretaMusi
           }
           logger.fine('Music StreamBuilder<AbsExModel>');
 
-          return playMusic(context, player, player.model!, player.acc.getRealSize());
+          return playMusic(
+            context,
+            player,
+            player.model!,
+            player.acc.getRealSize(),
+          );
         });
   }
 }

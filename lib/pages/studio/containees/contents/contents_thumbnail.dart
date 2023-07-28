@@ -181,8 +181,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                   return Container(
                     alignment: Alignment.center,
                     // htmlText: model.remoteUrl!,
-                    child:
-                        Text(model.name, style: CretaFont.bodyMedium, textAlign: TextAlign.center),
+                    child: Icon(Icons.queue_music_outlined, size: 20.0),
                   );
                 }
               }
