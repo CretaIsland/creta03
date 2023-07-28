@@ -105,7 +105,7 @@ class CretaStudioLang {
     "텍스트",
     "도형",
     "위젯",
-    "카메라",
+    "화상회의",
     "코멘트",
   ];
   static List<IconData> menuIconList = [
