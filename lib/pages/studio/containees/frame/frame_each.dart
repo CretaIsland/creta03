@@ -108,7 +108,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       _contentsManager!.addRealTimeListen(widget.model.mid);
       _contentsManager!.reOrdering();
     }
-    print('frame initChildren(${_contentsManager!.getAvailLength()})');
+    //print('frame initChildren(${_contentsManager!.getAvailLength()})');
     _isInitialized = true;
   }
 

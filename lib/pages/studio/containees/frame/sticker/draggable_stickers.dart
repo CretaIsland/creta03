@@ -326,8 +326,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     // To update the selected widget
                     DraggableStickers.frameSelectNotifier?.set(sticker.id);
                     logger.info('InkWell onTap from draggable_stickers...');
-                    print(
-                        'InkWell onTap from draggable_stickers...${BookMainPage.containeeNotifier!.selectedClass}');
+                    //print(
+                    //    'InkWell onTap from draggable_stickers...${BookMainPage.containeeNotifier!.selectedClass}');
                     //setState(() {});
                     widget.onTap?.call(sticker.id);
                   },

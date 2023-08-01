@@ -357,7 +357,7 @@ class ContentsManager extends CretaManager {
 
   Future<void> _removeContents(BuildContext context, ContentsModel model) async {
     //await pause();
-    print('_removeContents(${model.name})');
+    //print('_removeContents(${model.name})');
     model.isRemoved.set(
       true,
       save: false,
@@ -372,18 +372,18 @@ class ContentsManager extends CretaManager {
     );
     await setToDB(model);
     remove(model);
-    print('remove contents ${model.name}, ${model.mid}');
+    //print('remove contents ${model.name}, ${model.mid}');
     await playTimer?.reOrdering();
 
     if (getAvailLength() == 0) {
-      print('getVisibleLength is 0');
+      //print('getVisibleLength is 0');
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       BookMainPage.containeeNotifier!.notify();
       frameManager?.notify();
     } else {
       BookMainPage.containeeNotifier!.notify();
       frameManager?.notify();
-      print('getVisibleLength is not 0');
+      //print('getVisibleLength is not 0');
     }
     removeChild(model.mid);
 

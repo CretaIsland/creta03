@@ -93,7 +93,7 @@ class ContentsMainState extends State<ContentsMain> {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       //int contentsCount = contentsManager.getShowLength();
       int contentsCount = contentsManager.getShowLength();
-      print('ContentsMain = $contentsCount');
+      //print('ContentsMain = $contentsCount');
       return Consumer<CretaPlayTimer>(builder: (context, playTimer, child) {
         logger.info('Consumer<CretaPlayTimer>');
         return StreamBuilder<AbsExModel>(
@@ -140,7 +140,7 @@ class ContentsMainState extends State<ContentsMain> {
                 }
                 return _mainBuild(model, playTimer);
               }
-              print('current model is null');
+              //print('current model is null');
               // ignore: sized_box_for_whitespace
               return SizedBox.shrink();
               // return Container(

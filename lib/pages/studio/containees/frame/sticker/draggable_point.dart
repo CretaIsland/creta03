@@ -50,8 +50,8 @@ class DraggablePointState extends State<DraggablePoint> {
             // InkWell 보다 먼저 호출되기 때문에, 이 부분을 활용하여, frame 이 눌러졌다는 사실을 알 수 있다.
             onLongPressDown: (detail) {
               logger.info('DraggablePoint.GestureDetector');
-              print(
-                  'DraggablePoint.GestureDetector ${BookMainPage.containeeNotifier!.selectedClass}');
+              //print(
+              //    'DraggablePoint.GestureDetector ${BookMainPage.containeeNotifier!.selectedClass}');
               BookMainPage.miniMenuNotifier!.show();
               BookMainPage.containeeNotifier!.setFrameClick(true);
               //widget.onTap!();

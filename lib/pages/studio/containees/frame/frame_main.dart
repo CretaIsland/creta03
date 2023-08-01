@@ -232,7 +232,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         FrameModel? model = frameManager!.getModel(mid) as FrameModel?;
         //FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
-          print('2FrameMain onComplete----------------------------------------------');
+          //print('2FrameMain onComplete----------------------------------------------');
           model.save();
           logger.info('onComplete');
           _sendEvent?.sendEvent(model);
@@ -244,7 +244,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       onScaleStart: (mid) {
         FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
-          print('--------------------------------------11111');
+          //print('--------------------------------------11111');
           BookMainPage.miniMenuNotifier!.set(false);
           //BookMainPage.miniMenuContentsNotifier!.isShow = false;
           //BookMainPage.miniMenuContentsNotifier?.notify();
@@ -288,7 +288,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   }
 
   List<Sticker> getStickerList() {
-    print('getStickerList()');
+    //print('getStickerList()');
     //frameManager!.frameKeyMap.clear();
     frameManager!.reOrdering();
     return frameManager!.orderMapIterator((e) {
