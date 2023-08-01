@@ -105,7 +105,7 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
       pageModel,
       frameModel: frameModel,
     );
-    // mychangeStack.endTrans();
+    mychangeStack.endTrans();
   }
 
   Future<ContentsModel> _musicPlayer(String frameMid, String bookMid) async {

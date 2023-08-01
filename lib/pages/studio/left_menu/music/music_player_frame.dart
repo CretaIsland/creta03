@@ -8,6 +8,7 @@ import 'package:creta03/model/contents_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:id3_codec/id3_codec.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:marquee/marquee.dart';
@@ -24,6 +25,8 @@ import '../../right_menu/property_mixin.dart';
 import '../../studio_constant.dart';
 import 'creta_mini_music_visualizer.dart';
 import 'music_common.dart';
+
+import 'package:http/http.dart' as http;
 
 class MusicPlayerFrame extends StatefulWidget {
   final ContentsManager contentsManager;
@@ -78,6 +81,25 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
     _audioPlayer.seek(Duration.zero, index: 0);
     _audioPlayer.play();
+
+    final res = await http.get(Uri.parse(model.remoteUrl!));
+    final fileAudio = res.bodyBytes;
+
+    try {
+      // final metaData = await MetadataRetriever.fromBytes(fileAudio);
+      // debugPrint('=========== Titles: ${metaData.trackName}');
+      // debugPrint('=========== Artist: ${metaData.trackArtistNames}');
+      // debugPrint('=========== Song Info ===========');
+
+      final decoder = ID3Decoder(fileAudio);
+      decoder.decodeAsync().then((value) {
+        value.forEach((element) {
+          print(element.toTagMap().toString());
+        });
+      });
+    } catch (e) {
+      logger.info('!!! ERROR while fetching metadata: $e');
+    }
   }
 
   void unhiddenMusic(ContentsModel model, int idx) {
@@ -114,7 +136,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   }
 
   void removeMusic(ContentsModel model) {
-    debugPrint('====RemoveMusic(${model.name})====');
+    logger.info('====RemoveMusic(${model.name})====');
     int index = findIndex(model);
     if (index >= 0) {
       _playlist.removeAt(index);
@@ -122,7 +144,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   }
 
   void reorderPlaylist(ContentsModel model, int oldIndex, int newIndex) async {
-    debugPrint('====Reorder song at #$oldIndex to #$newIndex====');
+    logger.info('====Reorder song at #$oldIndex to #$newIndex====');
     await _playlist.move(oldIndex, newIndex);
 
     if (newIndex == 0) _audioPlayer.seek(Duration.zero, index: newIndex);
@@ -185,6 +207,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       logger.severe('Selected size is not specified ${widget.size} ');
       _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
     }
+    _audioPlayer.setVolume(0.0);
     _init();
     afterBuild();
     initMixin();
@@ -258,7 +281,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     _audioPlayer.seek(index: ind, Duration.zero);
     String currentTargetMid = _findCurrentTag(ind);
     if (currentTargetMid.isNotEmpty) {
-      debugPrint('currentTargetMid=$currentTargetMid---------------------------------------');
+      // debugPrint('currentTargetMid=$currentTargetMid---------------------------------------');
       widget.contentsManager.setSelectedMid(currentTargetMid);
       BookMainPage.containeeNotifier!.notify();
     }
@@ -314,7 +337,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                 }
                 final metadata = state!.currentSource!.tag as MediaItem;
                 return Container(
-                  height: 364.0,
+                  height: 372.0,
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,12 +448,9 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                 contentsManager: widget.contentsManager,
                 playlist: _playlist,
                 passOnPressed: () {
-                  debugPrint('Play button is pressed================');
-                  debugPrint('Before setState: _isMusicPlaying = $_isMusicPlaying');
                   setState(() {
                     _isMusicPlaying = !_isMusicPlaying;
                   });
-                  debugPrint('After setState: _isMusicPlaying = $_isMusicPlaying');
                 }),
             // model: widget.model!),
             const SizedBox(height: 4.0),
@@ -523,7 +543,6 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   Widget _musicVisualization(
       {required String contentsId, bool isTrailer = false, required String size}) {
-    debugPrint('_isMusicPlaying in _musicVisualization $_isMusicPlaying=========');
     return MyVisualizer.playVisualizer(
         context: context,
         color: CretaColor.playedColor,
@@ -752,9 +771,6 @@ class ControlButtons extends StatelessWidget {
     for (var ele in playlist.children) {
       if (ele is ProgressiveAudioSource) {
         ProgressiveAudioSource source = ele;
-        debugPrint(
-            'currentMid=$currentMid, source.tag=${source.tag.id.toString()}---------------------------------------');
-
         if (source.tag.id.toString() == currentMid) {
           if (index == 0) {
             AudioSource src = playlist.children[playlist.length - 1];
@@ -777,7 +793,6 @@ class ControlButtons extends StatelessWidget {
     audioPlayer.seekToPrevious();
     String prevTargetMid = findPrevousTag();
     if (prevTargetMid.isNotEmpty) {
-      debugPrint('prevTargetMid=$prevTargetMid---------------------------------------');
       contentsManager.setSelectedMid(prevTargetMid);
       BookMainPage.containeeNotifier!.notify();
     }
@@ -789,9 +804,6 @@ class ControlButtons extends StatelessWidget {
     for (var ele in playlist.children) {
       if (ele is ProgressiveAudioSource) {
         ProgressiveAudioSource source = ele;
-        debugPrint(
-            'currentMid=$currentMid, source.tag=${source.tag.id.toString()}---------------------------------------');
-
         if (source.tag.id.toString() == currentMid) {
           if (index == playlist.length) {
             AudioSource src = playlist.children[0];
@@ -814,10 +826,13 @@ class ControlButtons extends StatelessWidget {
     audioPlayer.seekToNext();
     String nextTargetMid = findNextTag();
     if (nextTargetMid.isNotEmpty) {
-      debugPrint('nextTargetMid=$nextTargetMid---------------------------------------');
       contentsManager.setSelectedMid(nextTargetMid);
       BookMainPage.containeeNotifier!.notify();
     }
+  }
+
+  void fromBeginning() {
+    audioPlayer.seek(Duration.zero);
   }
 
   @override
@@ -862,7 +877,7 @@ class ControlButtons extends StatelessWidget {
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_previous),
-            onPressed: audioPlayer.hasPrevious ? prevMusic : null,
+            onPressed: audioPlayer.hasPrevious ? prevMusic : fromBeginning,
           ),
         ),
         StreamBuilder<PlayerState>(
@@ -962,9 +977,6 @@ class ControlButtonsSmallSize extends StatelessWidget {
     for (var ele in playlist.children) {
       if (ele is ProgressiveAudioSource) {
         ProgressiveAudioSource source = ele;
-        debugPrint(
-            'currentMid=$currentMid, source.tag=${source.tag.id.toString()}---------------------------------------');
-
         if (source.tag.id.toString() == currentMid) {
           if (index == 0) {
             AudioSource src = playlist.children[playlist.length - 1];
@@ -987,7 +999,6 @@ class ControlButtonsSmallSize extends StatelessWidget {
     audioPlayer.seekToPrevious();
     String prevTargetMid = findPrevousTag();
     if (prevTargetMid.isNotEmpty) {
-      debugPrint('prevTargetMid=$prevTargetMid---------------------------------------');
       contentsManager.setSelectedMid(prevTargetMid);
       BookMainPage.containeeNotifier!.notify();
     }
@@ -999,9 +1010,6 @@ class ControlButtonsSmallSize extends StatelessWidget {
     for (var ele in playlist.children) {
       if (ele is ProgressiveAudioSource) {
         ProgressiveAudioSource source = ele;
-        debugPrint(
-            'currentMid=$currentMid, source.tag=${source.tag.id.toString()}---------------------------------------');
-
         if (source.tag.id.toString() == currentMid) {
           if (index == playlist.length) {
             AudioSource src = playlist.children[0];
@@ -1024,10 +1032,13 @@ class ControlButtonsSmallSize extends StatelessWidget {
     audioPlayer.seekToNext();
     String nextTargetMid = findNextTag();
     if (nextTargetMid.isNotEmpty) {
-      debugPrint('nextTargetMid=$nextTargetMid---------------------------------------');
       contentsManager.setSelectedMid(nextTargetMid);
       BookMainPage.containeeNotifier!.notify();
     }
+  }
+
+  void fromBeginning() {
+    audioPlayer.seek(Duration.zero);
   }
 
   @override
@@ -1040,7 +1051,7 @@ class ControlButtonsSmallSize extends StatelessWidget {
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_previous),
-            onPressed: audioPlayer.hasPrevious ? prevMusic : null,
+            onPressed: audioPlayer.hasPrevious ? prevMusic : fromBeginning,
           ),
         ),
         StreamBuilder<PlayerState>(
@@ -1116,9 +1127,6 @@ class ControlButtonsTinySize extends StatelessWidget {
     for (var ele in playlist.children) {
       if (ele is ProgressiveAudioSource) {
         ProgressiveAudioSource source = ele;
-        debugPrint(
-            'currentMid=$currentMid, source.tag=${source.tag.id.toString()}---------------------------------------');
-
         if (source.tag.id.toString() == currentMid) {
           if (index == 0) {
             AudioSource src = playlist.children[playlist.length - 1];
@@ -1141,7 +1149,6 @@ class ControlButtonsTinySize extends StatelessWidget {
     audioPlayer.seekToPrevious();
     String prevTargetMid = findPrevousTag();
     if (prevTargetMid.isNotEmpty) {
-      debugPrint('prevTargetMid=$prevTargetMid---------------------------------------');
       contentsManager.setSelectedMid(prevTargetMid);
       BookMainPage.containeeNotifier!.notify();
     }
@@ -1153,9 +1160,6 @@ class ControlButtonsTinySize extends StatelessWidget {
     for (var ele in playlist.children) {
       if (ele is ProgressiveAudioSource) {
         ProgressiveAudioSource source = ele;
-        debugPrint(
-            'currentMid=$currentMid, source.tag=${source.tag.id.toString()}---------------------------------------');
-
         if (source.tag.id.toString() == currentMid) {
           if (index == playlist.length) {
             AudioSource src = playlist.children[0];
@@ -1178,10 +1182,13 @@ class ControlButtonsTinySize extends StatelessWidget {
     audioPlayer.seekToNext();
     String nextTargetMid = findNextTag();
     if (nextTargetMid.isNotEmpty) {
-      debugPrint('nextTargetMid=$nextTargetMid---------------------------------------');
       contentsManager.setSelectedMid(nextTargetMid);
       BookMainPage.containeeNotifier!.notify();
     }
+  }
+
+  void fromBeginning() {
+    audioPlayer.seek(Duration.zero);
   }
 
   @override
@@ -1194,7 +1201,7 @@ class ControlButtonsTinySize extends StatelessWidget {
           stream: audioPlayer.sequenceStateStream,
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_previous),
-            onPressed: audioPlayer.hasPrevious ? prevMusic : null,
+            onPressed: audioPlayer.hasPrevious ? prevMusic : fromBeginning,
           ),
         ),
         StreamBuilder<PlayerState>(

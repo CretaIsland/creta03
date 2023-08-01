@@ -1,5 +1,4 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
-
 import 'package:creta03/player/doc/creta_doc_mixin.dart';
 import 'package:creta03/player/music/creta_music_mixin.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -171,10 +170,9 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
 
               if (contentsCount > 0) {
                 if (widget.frameModel.frameType == FrameType.music) {
-                  ContentsModel model = contentsManager.getFirstModel()!;
                   GlobalObjectKey<MusicPlayerFrameState> musicKey =
-                      GlobalObjectKey<MusicPlayerFrameState>('Music${model.parentMid.value}');
-                  musicKeyMap[model.parentMid.value] = musicKey;
+                      GlobalObjectKey<MusicPlayerFrameState>('Music${widget.frameModel.mid}');
+                  musicKeyMap[widget.frameModel.mid] = musicKey;
                   //print(model.remoteUrl!);
                   //print('widget.applyScale: ${widget.applyScale}');
 
@@ -185,7 +183,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                   );
                 }
               }
-              logger.info('there is no contents');
+              logger.info('Music thumbnail has NO content');
               return SizedBox.shrink();
             });
       }

@@ -49,9 +49,13 @@ mixin FramePlayMixin {
       mychangeStack.startTrans();
     }
     frameModel ??= await frameManager!.createNextFrame(doNotify: false);
-    // 코텐츠를 play 하고 DB 에 Crete 하고 업로드까지 한다.
-    logger.info('frameCretated(${frameModel.mid}');
+    // 코텐츠를 play 하고 DB 에 Create 하고 업로드까지 한다.
+    logger.info('frameCreated(${frameModel.mid}');
     await ContentsManager.createContents(frameManager, modelList, frameModel, pageModel);
+
+    
+
+    
     mychangeStack.endTrans();
   }
 
@@ -60,7 +64,6 @@ mixin FramePlayMixin {
     if (model.isWeatherTYpe()) {
       return false;
     }
-
     if (model.isWatchTYpe()) {
       return false;
     }

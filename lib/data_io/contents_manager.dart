@@ -844,12 +844,22 @@ class ContentsManager extends CretaManager {
         if (isResizeFrame) {
           contentsManager.frameManager = frameManager;
         }
-
+        frameModel.frameType = FrameType.music;
         await _uploadProcess(
           contentsManager,
           contentsModel,
-          isResizeFrame: isResizeFrame,
-          onUploadComplete: onUploadComplete,
+          isResizeFrame: false,
+          // onUploadComplete: onUploadComplete,
+          onUploadComplete: (model) {
+            if (model.isMusic()) {
+              GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameModel.mid];
+              if (musicKey != null) {
+                musicKey.currentState!.addMusic(model);
+              } else {
+                logger.severe('Music key is invalid');
+              }
+            }
+          },
         );
         // print('--------------2---------------------------${contentsModel.remoteUrl!}-');
       }
