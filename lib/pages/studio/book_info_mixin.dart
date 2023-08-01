@@ -55,6 +55,7 @@ mixin BookInfoMixin {
         radius: 12,
         hintText: '',
         textFieldKey: GlobalKey(),
+        keyboardType: TextInputType.multiline,
         onEditComplete: (String value) {
           model.description.set(value);
           onEditComplete.call(value);

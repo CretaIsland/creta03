@@ -107,8 +107,10 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           },
           onDelete: () {
             setState(() {
-              _model!.eventReceive.set('');
+              _model!.effect.set(EffectType.none);
             });
+            _sendEvent?.sendEvent(_model!);
+            _pageManager?.notify();
           },
         ),
         propertyDivider(),

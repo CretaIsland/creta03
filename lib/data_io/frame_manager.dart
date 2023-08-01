@@ -180,7 +180,6 @@ class FrameManager extends CretaManager {
     newModel.order.set(safeLastOrder() + 1, save: false, noUndo: true);
     newModel.isRemoved.set(false, save: false, noUndo: true);
 
-    logger.fine('create new frame ${newModel.mid}');
     if (srcFrameManager != null && samePage == false) {
       ContentsManager? contentsManager = srcFrameManager.findContentsManager(src.mid);
       await contentsManager?.copyContents(newModel.mid, bookModel.mid, samePage: samePage);
@@ -243,7 +242,7 @@ class FrameManager extends CretaManager {
     return modelList.length;
   }
 
-  ContentsManager newContentsManager(FrameModel frameModel) {
+  ContentsManager newContentsManager(FrameModel frameModel, FrameManager? frameManager) {
     logger.fine('newContentsManager(${pageModel.width.value}, ${pageModel.height.value})*******');
 
     // ContentsManager? retval = contentsManagerMap[frameModel.mid];
@@ -253,7 +252,9 @@ class FrameManager extends CretaManager {
       frameModel: frameModel,
       tableName: isPublishedMode ? 'creta_contents_published' : 'creta_contents',
     );
+
     contentsManagerMap[frameModel.mid] = retval;
+    retval.frameManager = frameManager;
     //}
     return retval;
   }
@@ -395,7 +396,7 @@ class FrameManager extends CretaManager {
       ContentsManager? contentsManager = findContentsManager(frameModel.mid);
       if (contentsManager == null) {
         //logger.info('new ContentsManager created (${frameModel.mid})');
-        contentsManager = newContentsManager(frameModel);
+        contentsManager = newContentsManager(frameModel, this);
         contentsManager.clearAll();
       } else {
         //logger.info('old ContentsManager used (${frameModel.mid})');

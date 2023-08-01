@@ -17,7 +17,6 @@ import '../model/team_model.dart';
 import '../pages/login_page.dart';
 
 class UserPropertyManager extends CretaManager {
-
   @override
   String get getMidFieldName => 'email';
 
@@ -90,7 +89,7 @@ class UserPropertyManager extends CretaManager {
   UserPropertyModel getNewUserProperty({
     bool? agreeUsingMarketing,
   }) {
-    UserPropertyModel model =  UserPropertyModel.withName(
+    UserPropertyModel model = UserPropertyModel.withName(
       parentMid: userModel.userId,
       email: userModel.email,
       nickname: userModel.name,

@@ -460,7 +460,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
             CretaMenuItem(
                 caption: CretaStudioLang.copy,
                 onPressed: () {
-                  StudioVariables.copyPage(model, _pageManager!);
+                  StudioVariables.clipPage(model, _pageManager!);
                   //widget.onFrameShowUnshow.call(frameModel.mid);
                 }),
             CretaMenuItem(

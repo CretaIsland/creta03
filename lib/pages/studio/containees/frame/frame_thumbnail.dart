@@ -77,16 +77,18 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     _contentsManager = frameManager!.findContentsManager(widget.model.mid);
     if (_contentsManager == null) {
       //logger.info('new ContentsManager created (${widget.model.mid})');
-      _contentsManager = frameManager!.newContentsManager(widget.model);
+      _contentsManager = frameManager!.newContentsManager(widget.model, frameManager);
       _contentsManager!.clearAll();
     } else {
       //logger.info('old ContentsManager used (${widget.model.mid})');
     }
 
     if (_contentsManager!.onceDBGetComplete == false) {
-      await _contentsManager!.getContents();
-      _contentsManager!.addRealTimeListen(widget.model.mid);
-      _contentsManager!.reOrdering();
+      // 썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
+      // print('frame_thumbnail : getContents');
+      // await _contentsManager!.getContents();
+      // _contentsManager!.addRealTimeListen(widget.model.mid);
+      // _contentsManager!.reOrdering();
     }
     logger.info('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
     _isInitialized = true;

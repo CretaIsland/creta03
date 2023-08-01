@@ -5,11 +5,9 @@ import 'package:creta03/pages/login_page.dart';
 import 'package:hycop/hycop.dart';
 
 class EnterpriseManager extends CretaManager {
-
   EnterpriseModel? enterpriseModel;
 
   EnterpriseManager() : super('creta_enterprise', null);
-
 
   @override
   CretaModel cloneModel(CretaModel src) {
@@ -20,7 +18,6 @@ class EnterpriseManager extends CretaManager {
 
   @override
   AbsExModel newModel(String mid) => EnterpriseModel(mid);
-
 
   Future<void> initEnterprise() async {
     clearAll();
@@ -45,10 +42,10 @@ class EnterpriseManager extends CretaManager {
     return enterpriseCount;
   }
 
-
   Future<int> _getEnterprise({int limit = 99}) async {
     Map<String, QueryValue> query = {};
-    query['name'] = QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.enterprise);
+    query['name'] =
+        QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.enterprise);
     query['isRemoved'] = QueryValue(value: false);
     Map<String, OrderDirection> orderBy = {};
     orderBy['order'] = OrderDirection.ascending;
@@ -58,16 +55,21 @@ class EnterpriseManager extends CretaManager {
     return modelList.length;
   }
 
-  Future<EnterpriseModel> createEnterprise({required String name, required String description, String openAiKey = '', String socketUrl = '', String mediaApiUrl = '', String webrtcUrl = ''}) async {
+  Future<EnterpriseModel> createEnterprise(
+      {required String name,
+      required String description,
+      String openAiKey = '',
+      String socketUrl = '',
+      String mediaApiUrl = '',
+      String webrtcUrl = ''}) async {
     enterpriseModel = EnterpriseModel.withName(
-      pparentMid: '',
-      name: name,
-      description: description,
-      openAiKey: openAiKey,
-      socketUrl: socketUrl,
-      mediaApiUrl: mediaApiUrl,
-      webrtcUrl: webrtcUrl
-    );
+        pparentMid: '',
+        name: name,
+        description: description,
+        openAiKey: openAiKey,
+        socketUrl: socketUrl,
+        mediaApiUrl: mediaApiUrl,
+        webrtcUrl: webrtcUrl);
 
     await createToDB(enterpriseModel!);
     insert(enterpriseModel!, postion: getAvailLength());
@@ -75,7 +77,4 @@ class EnterpriseManager extends CretaManager {
 
     return enterpriseModel!;
   }
-
-
-
 }

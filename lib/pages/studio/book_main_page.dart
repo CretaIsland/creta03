@@ -10,13 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:hycop/hycop/socket/mouse_tracer.dart';
 import 'package:hycop/hycop/socket/socket_client.dart';
-import 'package:hycop/hycop/webrtc/media_devices/media_devices_data.dart';
-import 'package:hycop/hycop/webrtc/peers/peers_data.dart';
-import 'package:hycop/hycop/webrtc/producers/producers_data.dart';
 import 'package:hycop/hycop/webrtc/webrtc_client.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -91,6 +87,8 @@ class BookMainPage extends StatefulWidget {
   final Function? toggleFullscreen;
 
   static bool outSideClick = false;
+  static GlobalKey leftMenuKey = GlobalObjectKey('LeftMenu');
+  static GlobalKey rightMenuKey = GlobalObjectKey('RightMenu');
 
   BookMainPage({
     required this.bookKey,
@@ -251,23 +249,20 @@ class _BookMainPageState extends State<BookMainPage> {
       }
     });
 
-    //for webRTC
-    mediaDeviceDataHolder = MediaDeviceData();
-    peersDataHolder = PeersData();
-    producerDataHolder = ProducerData();
-    mediaDeviceDataHolder!.loadMediaDevice().then((value) {      
-      webRTCClient = WebRTCClient(
-        roomId: BookMainPage.selectedMid,
-        peerId: AccountManager.currentLoginUser.email,
-        //serverUrl: "wss://devcreta.com:447",
-        serverUrl: LoginPage.enterpriseHolder!.enterpriseModel!.webrtcUrl,
-        peerName: LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname
-      );
-      webRTCClient!.connectSocket();
-    });
-
     logger.info("end ---_BookMainPageState-----------------------------------------");
-
+// //for webRTC
+//     mediaDeviceDataHolder = MediaDeviceData();
+//     peersDataHolder = PeersData();
+//     producerDataHolder = ProducerData();
+//     mediaDeviceDataHolder!.loadMediaDevice().then((value) {
+//       webRTCClient = WebRTCClient(
+//           roomId: BookMainPage.selectedMid,
+//           peerId: AccountManager.currentLoginUser.email,
+//           //serverUrl: "wss://devcreta.com:447",
+//           serverUrl: LoginPage.enterpriseHolder!.enterpriseModel!.webrtcUrl,
+//           peerName: LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname);
+//       webRTCClient!.connectSocket();
+//     });
     afterBuild();
   }
 
@@ -394,7 +389,9 @@ class _BookMainPageState extends State<BookMainPage> {
 
     HycopFactory.realtime!.stop();
     client.disconnect();
-    webRTCClient!.close();
+    if (webRTCClient != null) {
+      webRTCClient!.close();
+    }
     super.dispose();
   }
 
@@ -705,7 +702,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget _openLeftMenu() {
     return LeftMenu(
-      key: GlobalObjectKey('LeftMenu'),
+      key: BookMainPage.leftMenuKey,
       onClose: () {
         BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
       },
@@ -718,10 +715,10 @@ class _BookMainPageState extends State<BookMainPage> {
         // left: StudioVariables.workWidth - LayoutConst.rightMenuWidth,
         right: 0,
         child: RightMenu(
-            //key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
+            key: BookMainPage.rightMenuKey,
             onClose: () {
-          BookMainPage.containeeNotifier!.set(ContaineeEnum.None);
-        }));
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.None);
+            }));
   }
 
   Widget _topMenu() {
@@ -1376,11 +1373,11 @@ class _BookMainPageState extends State<BookMainPage> {
           FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
           if (frameModel != null) {
             FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-            StudioVariables.copyFrame(frameModel, frameManager!);
+            StudioVariables.clipFrame(frameModel, frameManager!);
           } else {
             PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
             if (pageModel != null) {
-              StudioVariables.copyPage(pageModel, BookMainPage.pageManagerHolder!);
+              StudioVariables.clipPage(pageModel, BookMainPage.pageManagerHolder!);
             }
           }
         } else if (keys.contains(LogicalKeyboardKey.keyX)) {
@@ -1391,12 +1388,12 @@ class _BookMainPageState extends State<BookMainPage> {
           if (frameModel != null) {
             FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
             frameModel.isRemoved.set(true);
-            StudioVariables.copyFrame(frameModel, frameManager!);
+            StudioVariables.clipFrame(frameModel, frameManager!);
           } else {
             PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
             if (pageModel != null) {
               pageModel.isRemoved.set(true);
-              StudioVariables.copyPage(pageModel, BookMainPage.pageManagerHolder!);
+              StudioVariables.clipPage(pageModel, BookMainPage.pageManagerHolder!);
             }
           }
           BookMainPage.pageManagerHolder!.notify();

@@ -61,7 +61,7 @@ class ContentsManager extends CretaManager {
 
   final Duration _snackBarDuration = const Duration(seconds: 3);
   bool iamBusy = false;
-  FrameManager? frameManager; //onDropPage 에서 video Contents 가 Drop 된 경우만 값을 가지고 있게 된다.
+  FrameManager? frameManager;
 
   CretaPlayTimer? playTimer;
   void setPlayerHandler(CretaPlayTimer p) {
@@ -171,7 +171,6 @@ class ContentsManager extends CretaManager {
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> getContents() async {
-    //logger.info('getContents---------------${frameModel.mid}----------------------------');
     int contentsCount = 0;
     startTransaction();
     try {
@@ -377,9 +376,14 @@ class ContentsManager extends CretaManager {
     await playTimer?.reOrdering();
 
     if (getAvailLength() == 0) {
+      //print('getVisibleLength is 0');
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
+      BookMainPage.containeeNotifier!.notify();
+      frameManager?.notify();
     } else {
       BookMainPage.containeeNotifier!.notify();
+      frameManager?.notify();
+      //print('getVisibleLength is not 0');
     }
     removeChild(model.mid);
 
@@ -816,7 +820,7 @@ class ContentsManager extends CretaManager {
   }) async {
     // 콘텐츠 매니저를 생성한다.
     ContentsManager? contentsManager = frameManager!.findContentsManager(frameModel.mid);
-    contentsManager ??= frameManager.newContentsManager(frameModel);
+    contentsManager ??= frameManager.newContentsManager(frameModel, frameManager);
 
     //int counter = contentsModelList.length;
 
@@ -1051,8 +1055,7 @@ class ContentsManager extends CretaManager {
       ContentsModel newModel = ContentsModel('', bookMid);
       newModel.copyFrom(org, newMid: newModel.mid, pMid: frameMid);
       newModel.order.set(order++, save: false, noUndo: true);
-      logger.info('create new Contents ${newModel.name},${newModel.mid}');
-
+      logger.info('create new Contents ${newModel.name},${newModel.mid} ');
       if (samePage) {
         // 링크는 same page 에서만 copy 된다.
         LinkManager? linkManager = linkManagerMap[org.mid];

@@ -178,7 +178,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       // },
       onFrameShowUnshow: (mid) {
         frameManager!.refreshFrame(mid);
-        //setState(() {});
+        setState(() {});
       },
       onFrameMain: (mid) {
         logger.fine('Frame onFrameMain');
@@ -192,7 +192,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
           if (contentsManager != null) {
             ContentsModel? content = contentsManager.getCurrentModel();
-            if (content != null) {
+            if (content != null && contentsManager.getAvailLength() > 0) {
               frameManager?.setSelectedMid(mid, doNotify: false);
               contentsManager.setSelectedMid(content.mid, doNotify: false);
               BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
@@ -244,6 +244,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       onScaleStart: (mid) {
         FrameModel? model = frameManager!.getSelected() as FrameModel?;
         if (model != null && model.mid == mid) {
+          //print('--------------------------------------11111');
           BookMainPage.miniMenuNotifier!.set(false);
           //BookMainPage.miniMenuContentsNotifier!.isShow = false;
           //BookMainPage.miniMenuContentsNotifier?.notify();
@@ -287,7 +288,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   }
 
   List<Sticker> getStickerList() {
-    logger.fine('getStickerList()');
+    //print('getStickerList()');
     //frameManager!.frameKeyMap.clear();
     frameManager!.reOrdering();
     return frameManager!.orderMapIterator((e) {

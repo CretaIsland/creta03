@@ -70,7 +70,7 @@ mixin FramePlayMixin {
     if (model.isCameraType()) {
       return false;
     }
-    if (contentsManager.length() > 0) {
+    if (contentsManager.getShowLength() > 0) {
       return false;
     }
     if (model.textureType.value != TextureType.none) {

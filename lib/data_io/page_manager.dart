@@ -469,7 +469,7 @@ class PageManager extends CretaManager {
 
   Future<PageModel> copyPage(PageModel src,
       {PageManager? srcPageManager, double? targetOrder}) async {
-    //print('copyFrame**************--------------------------');
+    //print('copyPage**************--------------------------');
 
     PageModel newModel = PageModel('', bookModel!);
     newModel.copyFrom(src, newMid: newModel.mid);

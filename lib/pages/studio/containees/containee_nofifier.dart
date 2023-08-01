@@ -44,6 +44,12 @@ class ContaineeNotifier extends ChangeNotifier {
 
   void set(ContaineeEnum val, {bool doNoti = true}) {
     _selectedClass = val;
+    //print('set($val)------------------------');
+    // if (_selectedClass == ContaineeEnum.Frame) {
+    //   MiniMenu.showFrame = true;
+    // } else if (_selectedClass == ContaineeEnum.Contents) {
+    //   MiniMenu.showFrame = false;
+    // }
     if (doNoti) {
       notify();
     }
@@ -71,6 +77,14 @@ class MiniMenuNotifier extends ChangeNotifier {
     if (doNoti) {
       notify();
     }
+  }
+
+  void show() {
+    _isShow = true;
+  }
+
+  void unshow() {
+    _isShow = false;
   }
 
   void notify() => notifyListeners();

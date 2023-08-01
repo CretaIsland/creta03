@@ -93,7 +93,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
 
   Widget _consumerFunc() {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
-      int contentsCount = contentsManager.getAvailLength();
+      int contentsCount = contentsManager.getShowLength();
 
       if (widget.frameModel.frameType == FrameType.text) {
         // 텍스트의 경우

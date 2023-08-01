@@ -204,7 +204,9 @@ class _RightMenuState
       case ContaineeEnum.Page:
         return PageProperty();
       case ContaineeEnum.Frame:
-        return RightMenuFrameAndContents(key: GlobalObjectKey('RightMenuFrameAndContents'));
+        return RightMenuFrameAndContents(key: GlobalKey());
+      // key: GlobalObjectKey(
+      //     'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.first}'));
       // return RightMenuFrameAndContents(
       //     key: GlobalObjectKey(
       //         'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.first}'),
@@ -217,7 +219,9 @@ class _RightMenuState
       //   return FrameProperty(key: ValueKey(frame.mid), model: frame);
       // }
       case ContaineeEnum.Contents:
-        return RightMenuFrameAndContents(key: GlobalObjectKey('RightMenuFrameAndContents'));
+        return RightMenuFrameAndContents(key: GlobalKey());
+      // key: GlobalObjectKey(
+      //     'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.last}'));
       // return RightMenuFrameAndContents(
       //     key: GlobalObjectKey(
       //         'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.last}'),
