@@ -57,9 +57,11 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   @override
   Widget build(BuildContext context) {
     if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Frame) {
+      print('frame=======================================================');
       _selectedTab = CretaStudioLang.frameTabBar.values.first;
     } else if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Contents) {
       _selectedTab = CretaStudioLang.frameTabBar.values.last;
+      print('contents=======================================================');
     } else {
       return SizedBox.shrink();
     }
@@ -150,23 +152,31 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   }
 
   Widget _contentsProperty() {
+    print('1111111111111111111111111111111111');
     BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
     FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     if (frame == null || frameManager == null) {
       return SizedBox.shrink();
     }
+    print('222222222222222222222222222222');
     ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
-    if (contentsManager == null) {
+    if (contentsManager == null || contentsManager.getAvailLength() == 0) {
       return SizedBox.shrink();
     }
+    print('333333333333333333333333');
     ContentsModel? contents = contentsManager.getCurrentModel();
     if (contents == null) {
       if (frame.isWeatherTYpe()) {
         return WeatherProperty(frameModel: frame, frameManager: frameManager);
       }
+      //return SizedBox.shrink();
+    }
+    contents = contentsManager.getFirstModel();
+    if (contents == null) {
       return SizedBox.shrink();
     }
+    print('44444444444444444444444444444444');
     //logger.info('ContentsProperty ${contents.mid}-----------------');
     //logger.info('ContentsProperty ${contents.font.value}----------');
     return Column(

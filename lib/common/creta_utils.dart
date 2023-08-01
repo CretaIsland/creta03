@@ -255,6 +255,13 @@ class CretaUtils {
     return Colors.white;
   }
 
+  static Size getSizeByKey(GlobalKey widgetKey) {
+    final RenderBox? box = widgetKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) return Size.zero;
+    //final Offset offset = box.localToGlobal(Offset.zero);
+    return box.size;
+  }
+
   static bool isMousePointerOnWidget(GlobalKey widgetKey, Offset pointerPosition) {
     final RenderBox? box = widgetKey.currentContext?.findRenderObject() as RenderBox?;
     if (box == null) return false;

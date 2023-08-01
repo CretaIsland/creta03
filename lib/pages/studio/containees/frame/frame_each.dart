@@ -94,7 +94,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     _contentsManager = frameManager!.findContentsManager(widget.model.mid);
     if (_contentsManager == null) {
       //logger.info('new ContentsManager created (${widget.model.mid})');
-      _contentsManager = frameManager!.newContentsManager(widget.model);
+      _contentsManager = frameManager!.newContentsManager(widget.model, frameManager);
       _contentsManager!.clearAll();
     } else {
       //logger.info('old ContentsManager used (${widget.model.mid})');
@@ -108,7 +108,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       _contentsManager!.addRealTimeListen(widget.model.mid);
       _contentsManager!.reOrdering();
     }
-    logger.info('frame initChildren(${_contentsManager!.getAvailLength()})');
+    print('frame initChildren(${_contentsManager!.getAvailLength()})');
     _isInitialized = true;
   }
 

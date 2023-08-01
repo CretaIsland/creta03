@@ -294,7 +294,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                         CretaMenuItem(
                             caption: CretaStudioLang.copy,
                             onPressed: () {
-                              StudioVariables.copyFrame(frameModel, widget.frameManager!);
+                              StudioVariables.clipFrame(frameModel, widget.frameManager!);
                               //widget.onFrameShowUnshow.call(frameModel.mid);
                             }),
                         CretaMenuItem(
@@ -326,6 +326,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     // To update the selected widget
                     DraggableStickers.frameSelectNotifier?.set(sticker.id);
                     logger.info('InkWell onTap from draggable_stickers...');
+                    print(
+                        'InkWell onTap from draggable_stickers...${BookMainPage.containeeNotifier!.selectedClass}');
                     //setState(() {});
                     widget.onTap?.call(sticker.id);
                   },

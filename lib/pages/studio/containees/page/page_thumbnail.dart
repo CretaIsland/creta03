@@ -77,7 +77,6 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _buildComplete = true;
-      
     });
   }
 
@@ -206,10 +205,11 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
         //   },
         // ),
       ],
-      child: _pageEffect(),
+      child: _drawFrames(), //_pageEffect(),
     );
   }
 
+  // ignore: unused_element
   Widget _pageEffect() {
     if (widget.pageModel.effect.value != EffectType.none) {
       return Stack(

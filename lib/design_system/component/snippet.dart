@@ -13,6 +13,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
+import '../../common/creta_utils.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/book_main_page.dart';
@@ -95,6 +96,7 @@ class Snippet {
   }) {
     double maxWidth = MediaQuery.of(context).size.width;
     //double maxHeight = MediaQuery.of(context).size.width;
+
     return Scaffold(
         appBar: Snippet.CretaAppBarOfStudio(context, title, additionals, invalidate: invalidate),
         floatingActionButton:
@@ -105,10 +107,15 @@ class Snippet {
             ? GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onLongPressDown: ((details) {
-                  if (details.localPosition.dx <
-                      LayoutConst.leftMenuWidth + LayoutConst.menuStickWidth) return;
-                  if (details.localPosition.dx > maxWidth - LayoutConst.rightMenuWidth) return;
                   if (details.localPosition.dy < LayoutConst.topMenuBarHeight) return;
+
+                  Size leftMenuSize = CretaUtils.getSizeByKey(BookMainPage.leftMenuKey);
+
+                  if (details.localPosition.dx < leftMenuSize.width + LayoutConst.menuStickWidth) {
+                    return;
+                  }
+                  Size rightMenuSize = CretaUtils.getSizeByKey(BookMainPage.rightMenuKey);
+                  if (details.localPosition.dx > maxWidth - rightMenuSize.width) return;
 
                   //LastClicked.clickedOutSide(details.globalPosition);
                   // 양쪽 메뉴 Area 의 click 을 무시해주어야 한다.
@@ -939,7 +946,6 @@ class Snippet {
       ]),
     );
   }
-  
 }
 
 class CretaComponentLocation {

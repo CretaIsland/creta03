@@ -21,7 +21,8 @@ import 'package:hycop/common/util/logger.dart';
 // }
 
 class ConfettiEffect extends StatefulWidget {
-  const ConfettiEffect({super.key});
+  final bool isAutoPlay;
+  const ConfettiEffect({super.key, this.isAutoPlay = true});
 
   @override
   ConfettiEffectState createState() => ConfettiEffectState();
@@ -45,7 +46,7 @@ class ConfettiEffectState extends State<ConfettiEffect> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       logger.fine('afterBu!ild ConfettiEffectState');
-      _controllerCenter.play(); // 자동번역을 위한 Language map 을 등록해 둔다.
+      if (widget.isAutoPlay) _controllerCenter.play(); // 자동번역을 위한 Language map 을 등록해 둔다.
     });
   }
 

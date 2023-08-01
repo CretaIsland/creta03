@@ -61,6 +61,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     //   lineLimit = 10;
     // }
     final int itemCount = widget.contentsManager.getAvailLength();
+
+    print('itemCount======================$itemCount==');
+
     final double boxHeight =
         (lineHeight + spacing * 2) * (itemCount > lineLimit ? lineLimit : itemCount);
 

@@ -60,14 +60,14 @@ class StudioVariables {
     clipBoardAction = null;
   }
 
-  static void copyFrame(CretaModel model, CretaManager manager) {
+  static void clipFrame(CretaModel model, CretaManager manager) {
     clipBoard = model;
     clipBoardDataType = 'frame';
     clipBoardAction = 'copy';
     clipBoardManager = manager;
   }
 
-  static void copyPage(CretaModel model, CretaManager manager) {
+  static void clipPage(CretaModel model, CretaManager manager) {
     clipBoard = model;
     clipBoardDataType = 'page';
     clipBoardAction = 'copy';
