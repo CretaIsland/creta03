@@ -8,7 +8,6 @@ import 'package:creta03/model/contents_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:id3_codec/id3_codec.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:marquee/marquee.dart';
@@ -26,7 +25,7 @@ import '../../studio_constant.dart';
 import 'creta_mini_music_visualizer.dart';
 import 'music_common.dart';
 
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
 class MusicPlayerFrame extends StatefulWidget {
   final ContentsManager contentsManager;
@@ -82,24 +81,25 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     _audioPlayer.seek(Duration.zero, index: 0);
     _audioPlayer.play();
 
-    final res = await http.get(Uri.parse(model.remoteUrl!));
-    final fileAudio = res.bodyBytes;
+    // final res = await http.get(Uri.parse(model.remoteUrl!));
+    // final fileAudio = res.bodyBytes;
 
-    try {
-      // final metaData = await MetadataRetriever.fromBytes(fileAudio);
-      // debugPrint('=========== Titles: ${metaData.trackName}');
-      // debugPrint('=========== Artist: ${metaData.trackArtistNames}');
-      // debugPrint('=========== Song Info ===========');
+    // try {
+    // final metaData = await MetadataRetriever.fromBytes(fileAudio);
+    // debugPrint('=========== Titles: ${metaData.trackName}');
+    // debugPrint('=========== Artist: ${metaData.trackArtistNames}');
+    // debugPrint('=========== Song Info ===========');
 
-      final decoder = ID3Decoder(fileAudio);
-      decoder.decodeAsync().then((value) {
-        value.forEach((element) {
-          print(element.toTagMap().toString());
-        });
-      });
-    } catch (e) {
-      logger.info('!!! ERROR while fetching metadata: $e');
-    }
+    //   final decoder = ID3Decoder(fileAudio);
+    //   decoder.decodeAsync().then((value) {
+    //     for (var element in value) {
+    //       // ignore: avoid_print
+    //       print(element.toTagMap().toString());
+    //     }
+    //   });
+    // } catch (e) {
+    //   logger.info('!!! ERROR while fetching metadata: $e');
+    // }
   }
 
   void unhiddenMusic(ContentsModel model, int idx) {
@@ -299,7 +299,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   @override
   Widget build(BuildContext context) {
     List<String> size = CretaStudioLang.playerSize.values.toList();
-    logger.info('Size of Music app: $_selectedSize------------------');
+    // logger.info('Size of Music app: $_selectedSize------------------');
     if (_selectedSize == size[0]) {
       return _musicFullSize();
     } else if (_selectedSize == size[1]) {

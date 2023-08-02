@@ -198,6 +198,10 @@ flutter:
     - assets/landing_page_banner.mp4
     - assets/audio/canone.mp3
     - assets/Artboard12.png
+    - assets/bigSize_music_app.png
+    - assets/medSize_music_app.png
+    - assets/smallSize_music_app.png
+    - assets/miniSize_music_app.png
 
 
 

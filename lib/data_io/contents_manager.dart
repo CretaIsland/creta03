@@ -17,6 +17,7 @@ import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/left_menu/music/music_player_frame.dart';
+import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_getx_controller.dart';
 import '../pages/studio/studio_snippet.dart';
 import '../pages/studio/studio_variables.dart';
@@ -845,14 +846,27 @@ class ContentsManager extends CretaManager {
         frameModel.frameType = FrameType.text;
         await _uploadProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
       } else if (contentsModel.contentsType == ContentsType.music) {
+        Size musicFrameSize = StudioConst.musicPlayerSize[0];
+
+        contentsModel.width.set(musicFrameSize.width, save: false, noUndo: true);
+        contentsModel.height.set(musicFrameSize.height, save: false, noUndo: true);
+        contentsModel.aspectRatio
+            .set(musicFrameSize.height / musicFrameSize.width, save: false, noUndo: true);
+
         if (isResizeFrame) {
-          contentsManager.frameManager = frameManager;
+          frameManager.resizeFrame(
+            frameModel,
+            contentsModel.aspectRatio.value,
+            contentsModel.width.value,
+            contentsModel.height.value,
+            invalidate: true,
+          );
         }
         frameModel.frameType = FrameType.music;
         await _uploadProcess(
           contentsManager,
           contentsModel,
-          isResizeFrame: false,
+          isResizeFrame: true,
           // onUploadComplete: onUploadComplete,
           onUploadComplete: (model) {
             if (model.isMusic()) {

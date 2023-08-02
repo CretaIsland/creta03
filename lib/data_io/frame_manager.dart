@@ -96,15 +96,9 @@ class FrameManager extends CretaManager {
       int? subType,
       ShapeType? shape}) async {
     logger.info('createNextFrame()');
-    Size musicFrameSize = StudioConst.musicPlayerSize[0];
     FrameModel defaultFrame = FrameModel.makeSample(safeLastOrder() + 1, pageModel.mid, bookModel);
     defaultFrame.width.set(size.width, save: false, noUndo: true);
     defaultFrame.height.set(size.height, save: false, noUndo: true);
-    if (type != null && type == FrameType.music) {
-      defaultFrame.frameType = type;
-      defaultFrame.width.set(musicFrameSize.width, save: false, noUndo: true);
-      defaultFrame.height.set(musicFrameSize.height, save: false, noUndo: true);
-    }
     if (pos != null) {
       defaultFrame.posX.set(pos.dx, save: false, noUndo: true);
       defaultFrame.posY.set(pos.dy, save: false, noUndo: true);
