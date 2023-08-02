@@ -115,6 +115,7 @@ class FrameManager extends CretaManager {
     if (shape != null) {
       defaultFrame.shape.set(shape, save: false, noUndo: true);
     }
+
     await _createNextFrame(defaultFrame, doNotify);
     MyChange<FrameModel> c = MyChange<FrameModel>(
       defaultFrame,

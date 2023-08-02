@@ -522,7 +522,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
       return [];
     }
     _selectedIndex = index;
-    print('===$_selectedIndex=======model=${model.name}, ${model.mid}');
+    //print('===$_selectedIndex=======model=${model.name}, ${model.mid}');
 
     return [
       propertyDivider(height: 28),

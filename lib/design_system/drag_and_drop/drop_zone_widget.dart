@@ -97,7 +97,6 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
     // update the data model with recent file uploaded
     final droppedFile = ContentsModel.withFile(widget.parentId, bookMid,
         name: name, mime: mime, bytes: byte, url: url, file: file);
-
     //Update the UI
     return droppedFile;
   }

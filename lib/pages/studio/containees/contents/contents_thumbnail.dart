@@ -1,5 +1,4 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
-
 import 'package:creta03/player/doc/creta_doc_mixin.dart';
 import 'package:creta03/player/music/creta_music_mixin.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -15,6 +14,7 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
@@ -22,6 +22,7 @@ import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/text/creta_text_mixin.dart';
 import '../../left_menu/music/music_player_frame.dart';
+import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 
 class ContentsThumbnail extends StatefulWidget {
@@ -171,21 +172,48 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
 
               if (contentsCount > 0) {
                 if (widget.frameModel.frameType == FrameType.music) {
-                  ContentsModel model = contentsManager.getFirstModel()!;
                   GlobalObjectKey<MusicPlayerFrameState> musicKey =
-                      GlobalObjectKey<MusicPlayerFrameState>('Music${model.parentMid.value}');
-                  musicKeyMap[model.parentMid.value] = musicKey;
+                      GlobalObjectKey<MusicPlayerFrameState>('Music${widget.frameModel.mid}');
+                  musicKeyMap[widget.frameModel.mid] = musicKey;
                   //print(model.remoteUrl!);
                   //print('widget.applyScale: ${widget.applyScale}');
-
-                  return Container(
-                    alignment: Alignment.center,
-                    // htmlText: model.remoteUrl!,
-                    child: Icon(Icons.queue_music_outlined, size: 20.0),
-                  );
+                  String selectedSize = '';
+                  int index = 0;
+                  FrameModel frameModel = widget.contentsManager.frameModel;
+                  Size frameSize = Size(frameModel.width.value, frameModel.height.value);
+                  for (Size ele in StudioConst.musicPlayerSize) {
+                    if (frameSize == ele) {
+                      selectedSize = CretaStudioLang.playerSize.values.toList()[index];
+                      break;
+                    }
+                    index++;
+                  }
+                  List<String> size = CretaStudioLang.playerSize.values.toList();
+                  if (selectedSize == size[0]) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Image.asset('bigSize_music_app.png'),
+                    );
+                  } else if (selectedSize == size[1]) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Image.asset('medSize_music_app.png'),
+                    );
+                  } else if (selectedSize == size[2]) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Image.asset('smallSize_music_app.png'),
+                    );
+                  } else if (selectedSize == size[3]) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Image.asset('miniSize_music_app.png'),
+                    );
+                  }
+                  return const SizedBox.shrink();
                 }
               }
-              logger.info('there is no contents');
+              logger.info('Music thumbnail has NO content');
               return SizedBox.shrink();
             });
       }

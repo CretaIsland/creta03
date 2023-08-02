@@ -35,7 +35,7 @@ class Api {
             // print(imageData);
           }
         }
-        logger.info('------ URLs are ready!!! ------');
+        logger.info('------ AI image URLs are ready!!! ------');
       } else {
         logger.info('------ Cannot find Image URL ------');
       }

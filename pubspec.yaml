@@ -119,6 +119,7 @@ dependencies:
   audio_video_progress_bar: ^1.0.1
 
   rxdart: ^0.27.7
+  id3_codec: ^1.0.3
 
   one_clock: ^1.0.1
   mediasoup_client_flutter: ^0.8.5
@@ -129,6 +130,8 @@ dependencies:
   just_audio: ^0.9.34
   mini_music_visualizer: ^1.0.2
   marquee: ^2.2.3
+  flutter_media_metadata: ^1.0.0+1
+  
 
 dev_dependencies:
   flutter_test:
@@ -195,6 +198,10 @@ flutter:
     - assets/landing_page_banner.mp4
     - assets/audio/canone.mp3
     - assets/Artboard12.png
+    - assets/bigSize_music_app.png
+    - assets/medSize_music_app.png
+    - assets/smallSize_music_app.png
+    - assets/miniSize_music_app.png
 
 
 
