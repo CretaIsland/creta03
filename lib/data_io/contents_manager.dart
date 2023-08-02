@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
+import '../design_system/component/tree/flutter_treeview.dart' as tree;
 import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
 import '../lang/creta_lang.dart';
@@ -1074,5 +1075,21 @@ class ContentsManager extends CretaManager {
       }
       await createToDB(newModel);
     }
+  }
+
+  List<tree.Node> toNodes(FrameModel frame) {
+    List<tree.Node> conNodes = [];
+    for (var ele in valueList()) {
+      ContentsModel model = ele as ContentsModel;
+      if (model.isRemoved.value == true) {
+        continue;
+      }
+      conNodes.add(tree.Node<CretaModel>(
+          key: '${pageModel.mid}/${frame.mid}/${model.mid}',
+          label: model.name,
+          expanded: model.expanded || isSelected(model.mid),
+          data: model));
+    }
+    return conNodes;
   }
 }

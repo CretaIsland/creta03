@@ -3,6 +3,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+//import 'package:flutter_treeview/flutter_treeview.dart';
+import '../design_system/component/tree/flutter_treeview.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -503,5 +505,39 @@ class PageManager extends CretaManager {
     selectedMid = newModel.mid;
 
     return newModel;
+  }
+
+  List<Node> toNodes(PageModel? selectedModel) {
+    List<Node> nodes = [];
+    //  Node(
+    //       label: 'documents',
+    //       key: 'docs',
+    //       expanded: docsOpen,
+    //       // ignore: dead_code
+    //       icon: docsOpen ? Icons.folder_open : Icons.folder,
+    //       children: [ ]
+    //  );
+    int pageNo = 1;
+    for (var ele in valueEntries()) {
+      PageModel model = ele as PageModel;
+      if (model.isRemoved.value == true) {
+        continue;
+      }
+      //String pageNo = (model.order.value + 1).toString().padLeft(2, '0');
+      String desc = model.name.value;
+      List<Node> accNodes = [];
+      FrameManager? frameManager = findFrameManager(model.mid);
+      if (frameManager != null) {
+        accNodes = frameManager.toNodes(model);
+      }
+      nodes.add(Node<CretaModel>(
+          key: model.mid,
+          label: 'Page ${pageNo.toString().padLeft(2, '0')}. $desc',
+          data: model,
+          expanded: (selectedModel != null && model.mid == selectedModel.mid) || model.expanded,
+          children: accNodes));
+      pageNo++;
+    }
+    return nodes;
   }
 }

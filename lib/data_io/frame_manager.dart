@@ -1,5 +1,7 @@
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
+//import 'package:flutter_treeview/flutter_treeview.dart';
+import '../design_system/component/tree/flutter_treeview.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -514,4 +516,27 @@ class FrameManager extends CretaManager {
     frameKey.currentState!.refresh();
   }
   //bool isMain() {}
+
+  List<Node> toNodes(PageModel page) {
+    List<Node> accNodes = [];
+    for (var ele in valueEntries()) {
+      FrameModel model = ele as FrameModel;
+      if (model.isRemoved.value == true) {
+        continue;
+      }
+      List<Node> conNodes = [];
+      ContentsManager? contentsManager = findContentsManager(model.mid);
+      if (contentsManager != null) {
+        conNodes = contentsManager.toNodes(model);
+      }
+      accNodes.add(Node<CretaModel>(
+        key: '${page.mid}/${model.mid}',
+        label: model.name.value,
+        data: model,
+        expanded: model.expanded || isSelected(model.mid),
+        children: conNodes,
+      ));
+    }
+    return accNodes;
+  }
 }

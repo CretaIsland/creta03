@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import '../../../design_system/component/tree/flutter_treeview.dart';
 import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -16,6 +17,7 @@ import '../../../design_system/buttons/creta_button.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/component/creta_right_mouse_menu.dart';
+import '../../../design_system/component/tree/my_tree_view.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../design_system/menu/creta_popup_menu.dart';
@@ -67,6 +69,9 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   Timer? _screenshotTimer;
   Rect? _thumbArea;
+
+  bool _flipToTree = true;
+  List<Node> _nodes = [];
 
   //final int _firstPage = 100;
 
@@ -149,6 +154,24 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     _addCardSpace = addCardSpace * widthScale;
   }
 
+  void _initNodes(PageModel? selectedModel) {
+    if (_pageManager == null || selectedModel == null) {
+      logger.warning('pageManagerHolder is not inited');
+      // _nodes = [
+      //   Node(
+      //       label: 'samples',
+      //       key: 'key',
+      //       expanded: true,
+      //       icon: Icons.folder_open, //Icons.folder,
+      //       children: []),
+      // ];
+      return;
+    }
+    logger.info('pageManagerHolder is inited');
+    _nodes.clear();
+    _nodes = _pageManager!.toNodes(selectedModel);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<PageManager>(builder: (context, pageManager, child) {
@@ -167,7 +190,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           Column(
             children: [
               _menuBar(),
-              _pageView(),
+              _flipToTree ? _pageView() : _treeView(),
             ],
           ),
         ],
@@ -202,7 +225,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   tooltip: CretaStudioLang.treePage,
                   tooltipBg: CretaColor.text[700]!,
                   icon: Icons.account_tree_outlined,
-                  onPressed: (() {})),
+                  onPressed: (() {
+                    setState(
+                      () {
+                        _flipToTree = !_flipToTree;
+                      },
+                    );
+                  })),
             ),
         ],
       ),
@@ -235,6 +264,25 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
             }
           },
         ));
+  }
+
+  Widget _treeView() {
+    _initNodes(_pageManager!.getSelected() as PageModel?);
+    return Container(
+      padding: const EdgeInsets.only(top: 10, bottom: 20),
+      height: StudioVariables.workHeight - 100,
+      child: MyTreeView(
+        nodes: _nodes,
+        pageManager: _pageManager!,
+        removePage: _removePage,
+        removeFrame: (frame) {
+          logger.warning('not yet impl');
+        },
+        removeContents: (contents) {
+          logger.warning('not yet impl');
+        },
+      ),
+    );
   }
 
   List<Widget> _cardList() {
