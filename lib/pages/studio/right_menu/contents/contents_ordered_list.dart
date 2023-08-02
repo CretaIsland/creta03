@@ -522,7 +522,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
       return [];
     }
     _selectedIndex = index;
-    logger.info('===$_selectedIndex=======model=${model.name}');
+    //print('===$_selectedIndex=======model=${model.name}, ${model.mid}');
 
     return [
       propertyDivider(height: 28),
@@ -586,7 +586,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           ],
         ),
       ),
-      if (model.isImage() || model.isVideo())
+      if ((model.isImage() || model.isVideo()) &&
+          model.thumbnail != null &&
+          model.thumbnail!.isNotEmpty)
         propertyLine(
           // useThisThumbnail
           topPadding: 10,
@@ -594,18 +596,18 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           widget: CretaToggleButton(
             width: 54 * 0.75,
             height: 28 * 0.75,
-            defaultValue:
-                model.thumbnail != null && widget.book!.thumbnailUrl.value == model.thumbnail!,
+            defaultValue: model.thumbnail != null &&
+                widget.book!.thumbnailUrl.value.isNotEmpty &&
+                widget.book!.thumbnailUrl.value == model.thumbnail!,
             onSelected: (value) {
               if (value == true) {
                 widget.book!.thumbnailUrl.set(model!.thumbnail!, noUndo: true);
-                widget.book!.isAutoThumbnail.set(false, noUndo: true);
               } else {
                 if (widget.book!.thumbnailUrl.value == model!.thumbnail!) {
                   widget.book!.thumbnailUrl.set('', noUndo: true);
-                  widget.book!.isAutoThumbnail.set(true, noUndo: true);
                 }
               }
+              widget.book!.isAutoThumbnail.set(value, noUndo: true);
               //setState(() {});
             },
           ),

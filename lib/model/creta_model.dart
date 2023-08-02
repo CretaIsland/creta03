@@ -90,6 +90,7 @@ class CretaModel extends AbsExModel {
       : super(pmid: pmid);
 
   String get getMid => mid;
+  bool expanded = true;
 
   DateTime convertValue(dynamic val) {
     if (val is Timestamp) {
