@@ -868,7 +868,7 @@ class ContentsManager extends CretaManager {
           contentsModel,
           isResizeFrame: true,
           // onUploadComplete: onUploadComplete,
-          onUploadComplete: (model) {
+          onUploadComplete: (model) async {
             if (model.isMusic()) {
               GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameModel.mid];
               if (musicKey != null) {
