@@ -61,7 +61,10 @@ class ContentsManager extends CretaManager {
 
   final Duration _snackBarDuration = const Duration(seconds: 3);
   bool iamBusy = false;
-  FrameManager? frameManager;
+  FrameManager? _frameManager;
+  void setFrameManager(FrameManager? manager) => _frameManager = manager;
+  bool _isVideoResize = false;
+  void setIsVideoResize(bool value) => _isVideoResize = value;
 
   CretaPlayTimer? playTimer;
   void setPlayerHandler(CretaPlayTimer p) {
@@ -307,16 +310,18 @@ class ContentsManager extends CretaManager {
   // }
 
   Future<void> resizeFrame(double aspectRatio, Size size, bool invalidate) async {
-    await frameManager?.resizeFrame(
-      frameModel,
-      aspectRatio,
-      size.width,
-      size.height,
-      invalidate: invalidate,
-    );
+    if (_isVideoResize) {
+      await _frameManager?.resizeFrame(
+        frameModel,
+        aspectRatio,
+        size.width,
+        size.height,
+        invalidate: invalidate,
+      );
+    }
     // onDropPage 에서 동영상을 넣었을때, 딱 한번만 resizeFrame 하게 하기 위해,
-    // frameManager 를 null 로 만들어준다.
-    frameManager = null;
+    // _isVideoResize 를 false 로 만들어준다.
+    _isVideoResize = false;
   }
 
   Size getRealSize({double? applyScale}) {
@@ -379,10 +384,10 @@ class ContentsManager extends CretaManager {
       //print('getVisibleLength is 0');
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       BookMainPage.containeeNotifier!.notify();
-      frameManager?.notify();
+      _frameManager?.notify();
     } else {
       BookMainPage.containeeNotifier!.notify();
-      frameManager?.notify();
+      _frameManager?.notify();
       //print('getVisibleLength is not 0');
     }
     removeChild(model.mid);
@@ -820,7 +825,7 @@ class ContentsManager extends CretaManager {
   }) async {
     // 콘텐츠 매니저를 생성한다.
     ContentsManager? contentsManager = frameManager!.findContentsManager(frameModel.mid);
-    contentsManager ??= frameManager.newContentsManager(frameModel, frameManager);
+    contentsManager ??= frameManager.newContentsManager(frameModel);
 
     //int counter = contentsModelList.length;
 
@@ -831,24 +836,12 @@ class ContentsManager extends CretaManager {
         await _imageProcess(frameManager, contentsManager, contentsModel, frameModel, pageModel,
             isResizeFrame: isResizeFrame);
       } else if (contentsModel.contentsType == ContentsType.video) {
-        // if (contentsManager.getAvailLength() == 1) {
-        //   contentsManager.setLoop(false);
-        // }
-        if (isResizeFrame) {
-          contentsManager.frameManager = frameManager;
-        }
+        contentsManager.setIsVideoResize(isResizeFrame);
         await _videoProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
       } else if (contentsModel.contentsType == ContentsType.pdf) {
-        if (isResizeFrame) {
-          contentsManager.frameManager = frameManager;
-        }
         frameModel.frameType = FrameType.text;
         await _uploadProcess(contentsManager, contentsModel, isResizeFrame: isResizeFrame);
       } else if (contentsModel.contentsType == ContentsType.music) {
-        if (isResizeFrame) {
-          contentsManager.frameManager = frameManager;
-        }
-
         await _uploadProcess(
           contentsManager,
           contentsModel,

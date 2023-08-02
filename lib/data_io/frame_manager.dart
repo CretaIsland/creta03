@@ -235,7 +235,7 @@ class FrameManager extends CretaManager {
     return modelList.length;
   }
 
-  ContentsManager newContentsManager(FrameModel frameModel, FrameManager? frameManager) {
+  ContentsManager newContentsManager(FrameModel frameModel) {
     logger.fine('newContentsManager(${pageModel.width.value}, ${pageModel.height.value})*******');
 
     // ContentsManager? retval = contentsManagerMap[frameModel.mid];
@@ -247,7 +247,7 @@ class FrameManager extends CretaManager {
     );
 
     contentsManagerMap[frameModel.mid] = retval;
-    retval.frameManager = frameManager;
+    retval.setFrameManager(this);
     //}
     return retval;
   }
@@ -389,7 +389,7 @@ class FrameManager extends CretaManager {
       ContentsManager? contentsManager = findContentsManager(frameModel.mid);
       if (contentsManager == null) {
         //logger.info('new ContentsManager created (${frameModel.mid})');
-        contentsManager = newContentsManager(frameModel, this);
+        contentsManager = newContentsManager(frameModel);
         contentsManager.clearAll();
       } else {
         //logger.info('old ContentsManager used (${frameModel.mid})');

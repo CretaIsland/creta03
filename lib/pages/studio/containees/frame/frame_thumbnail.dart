@@ -77,7 +77,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     _contentsManager = frameManager!.findContentsManager(widget.model.mid);
     if (_contentsManager == null) {
       //logger.info('new ContentsManager created (${widget.model.mid})');
-      _contentsManager = frameManager!.newContentsManager(widget.model, frameManager);
+      _contentsManager = frameManager!.newContentsManager(widget.model);
       _contentsManager!.clearAll();
     } else {
       //logger.info('old ContentsManager used (${widget.model.mid})');
