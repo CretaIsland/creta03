@@ -2,16 +2,21 @@ library mini_music_visualizer;
 
 import "package:flutter/material.dart";
 
+import "../../../../model/contents_model.dart";
+
 class MyVisualizer {
   static Widget playVisualizer({
     required BuildContext context,
     Color? color,
-    double? width,
-    double? height,
+    ContentsModel? model,
+    
+    required double width,
+    required double height,
     required bool isPlaying,
     required String contentsId,
     required String size,
     required bool isTrailer,
+    required double scaleVal,
   }) {
     final List<int> duration = [900, 800, 700, 600, 500];
     return Row(
@@ -25,8 +30,8 @@ class MyVisualizer {
               curve: Curves.bounceOut,
               duration: duration[index % 5],
               color: color ?? Theme.of(context).colorScheme.secondary,
-              width: width,
-              height: height,
+              width: width * scaleVal,
+              height: height * scaleVal,
               isPlaying: isPlaying,
             )),
       ),

@@ -489,7 +489,7 @@ class ContentsManager extends CretaManager {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {
-          debugPrint('--------------pauseMusicApp ${player.model!.name}');
+          debugPrint('--------------pauseMusic ${player.model!.name}');
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.pausedMusic(player.model!);
@@ -519,7 +519,7 @@ class ContentsManager extends CretaManager {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {
-          debugPrint('--------------playMusicApp ${player.model!.name}');
+          debugPrint('--------------playMusic ${player.model!.name}');
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.playedMusic(player.model!);
@@ -866,9 +866,11 @@ class ContentsManager extends CretaManager {
           contentsModel,
           isResizeFrame: true,
           // onUploadComplete: onUploadComplete,
-          onUploadComplete: (model) async {
+          onUploadComplete: (model) {
             if (model.isMusic()) {
+              debugPrint('--------------Dropping ${model.name} to the working page-------');
               GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameModel.mid];
+              debugPrint('--------------MusicKey $musicKey-------');
               if (musicKey != null) {
                 musicKey.currentState!.addMusic(model);
               } else {
