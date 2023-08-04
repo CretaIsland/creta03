@@ -205,9 +205,7 @@ class StudioSnippet {
 
       model.remoteUrl = fileModel.fileView;
       model.thumbnail = fileModel.thumbnailUrl;
-      if (model.isMusic()) {
 
-      }
       logger.info('uploaded url = ${model.url}');
       logger.info('uploaded fileName = ${model.name}');
       logger.info('uploaded remoteUrl = ${model.remoteUrl!}');

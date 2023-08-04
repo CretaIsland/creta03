@@ -166,7 +166,7 @@ class StudioConst {
   static List<Size> musicPlayerSize = [
     Size(480, 800),
     Size(480, 320),
-    Size(460, 140),
+    Size(460, 142),
     Size(260, 100),
   ];
 

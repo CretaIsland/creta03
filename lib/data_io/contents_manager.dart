@@ -489,7 +489,7 @@ class ContentsManager extends CretaManager {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {
-          debugPrint('--------------pauseMusicApp ${player.model!.name}');
+          debugPrint('--------------pauseMusic ${player.model!.name}');
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.pausedMusic(player.model!);
@@ -519,7 +519,7 @@ class ContentsManager extends CretaManager {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {
-          debugPrint('--------------playMusicApp ${player.model!.name}');
+          debugPrint('--------------playMusic ${player.model!.name}');
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.playedMusic(player.model!);
@@ -861,23 +861,31 @@ class ContentsManager extends CretaManager {
           );
         }
         frameModel.frameType = FrameType.music;
+
         await _uploadProcess(
           contentsManager,
           contentsModel,
           isResizeFrame: true,
           // onUploadComplete: onUploadComplete,
-          onUploadComplete: (model) {
-            if (model.isMusic()) {
-              GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameModel.mid];
+          onUploadComplete: (currentModel) {
+            if (currentModel.isMusic()) {
+              debugPrint(
+                  '-----------Dropping song named ${currentModel.name} with remoteUrl ${currentModel.remoteUrl}');
+
+              String mid = contentsManager!.frameModel.mid;
+              debugPrint('--1-- frameModel.mid ${frameModel.mid}-----');
+              GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[mid];
+              debugPrint('--2-- musicKey $musicKey-----');
               if (musicKey != null) {
-                musicKey.currentState!.addMusic(model);
+                musicKey.currentState?.addMusic(currentModel);
               } else {
-                logger.severe('Music key is invalid');
+                debugPrint('musicKey is INVALID');
               }
             }
           },
         );
-        // print('--------------2---------------------------${contentsModel.remoteUrl!}-');
+        debugPrint(
+            '---------uploaded successfully-------${contentsModel.name} with remoteUrl ${contentsModel.remoteUrl}-');
       }
       // 콘텐츠 객체를 DB에 Creta 한다.
       await contentsManager.createNextContents(contentsModel, doNotify: false);
@@ -1004,7 +1012,7 @@ class ContentsManager extends CretaManager {
       //
       fileReader = html.FileReader(); // file reader 초기화
       //uploadComplete = true;
-      logger.info('upload complete   ${contentsModel.remoteUrl!}');
+      logger.info('upload complete ${contentsModel.remoteUrl!}');
     });
 
     // while (uploadComplete) {

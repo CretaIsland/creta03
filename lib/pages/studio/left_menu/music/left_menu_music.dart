@@ -79,9 +79,9 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
     if (pageModel == null) return;
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
-    // double widthBig = pageModel.width.value * 0.25;
     Size frameSize = StudioConst.musicPlayerSize[0];
-    // double heightBig = pageModel.height.value;
+    //double width = pageModel.width.value * 0.25;
+    //double height = pageModel.height.value;
     double x = (pageModel.width.value - frameSize.width) / 2;
     double y = (pageModel.height.value - frameSize.height) / 2;
 

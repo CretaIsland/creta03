@@ -34,6 +34,7 @@ mixin CretaMusicMixin {
     GlobalObjectKey<MusicPlayerFrameState> musicKey =
         GlobalObjectKey<MusicPlayerFrameState>('Music${model.parentMid.value}');
     musicKeyMap[model.parentMid.value] = musicKey;
+    debugPrint('musicKeyMap $musicKeyMap-----------------');
     return SizedBox(
       width: realSize.width,
       height: realSize.height,

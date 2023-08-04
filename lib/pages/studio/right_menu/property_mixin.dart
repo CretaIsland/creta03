@@ -62,6 +62,7 @@ mixin PropertyMixin {
     required bool hasRemoveButton,
     required Function onDelete,
     bool animate = false,
+    double? iconSize = 20,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +80,7 @@ mixin PropertyMixin {
                         icon: Icons.expand_circle_down_outlined,
                         width: 24,
                         height: 24,
-                        iconSize: 20,
+                        iconSize: iconSize!,
                         onPressed: onPressed),
                   ),
                   InkWell(
