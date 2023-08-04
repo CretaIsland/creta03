@@ -26,7 +26,7 @@ class MyVisualizer {
         (index) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1),
             child: CretaVisualComponent(
-              key: GlobalObjectKey('$contentsId-$isPlaying-$isTrailer-$size-$index'),
+              key: GlobalObjectKey('$contentsId-$isPlaying-$isTrailer-$size-$index-$scaleVal'),
               curve: Curves.bounceOut,
               duration: duration[index % 5],
               color: color ?? Theme.of(context).colorScheme.secondary,

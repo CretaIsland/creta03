@@ -22,15 +22,14 @@ import 'music_common.dart';
 
 class MusicPlayerFrame extends StatefulWidget {
   final ContentsManager contentsManager;
-  //final ContentsModel model1;
   final Size size;
 
   const MusicPlayerFrame({
-    super.key,
+    // super.key,
+    Key? key,
     required this.contentsManager,
-    //required this.model1,
     required this.size,
-  });
+  }) : super(key: key);
 
   @override
   State<MusicPlayerFrame> createState() => MusicPlayerFrameState();
@@ -49,7 +48,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     _selectedSize = selectedValue;
   }
 
-  void addMusic(ContentsModel model) {
+  void addMusic(ContentsModel model) async {
     Random random = Random();
     int randomNumber = random.nextInt(100);
     String url = 'https://picsum.photos/200/?random=$randomNumber';
@@ -57,8 +56,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     if (_audioPlayer.playing) {
       _audioPlayer.stop();
     }
-
-    _playlist
+    await _playlist
         .insert(
       0,
       AudioSource.uri(
@@ -71,10 +69,13 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
         ),
       ),
     )
-        .then((value) {
-      _audioPlayer.seek(Duration.zero, index: 0);
-      _audioPlayer.play();
+        .then((val1) {
+      return _audioPlayer.seek(Duration.zero, index: 0).then((val2) {
+        _audioPlayer.play();
+      });
     });
+    // _audioPlayer.seek(Duration.zero, index: 0);
+    // _audioPlayer.play();
   }
 
   void unhiddenMusic(ContentsModel model, int idx) {
@@ -139,10 +140,16 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   }
 
   void playedMusic(ContentsModel model) {
+    setState(() {
+      _isMusicPlaying = true;
+    });
     _audioPlayer.play();
   }
 
   void pausedMusic(ContentsModel model) {
+    setState(() {
+      _isMusicPlaying = false;
+    });
     _audioPlayer.pause();
   }
 
@@ -278,6 +285,9 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     List<String> size = CretaStudioLang.playerSize.values.toList();
     double frameScale = StudioVariables.applyScale / 0.7025000000000001;
     // logger.info('Size of Music app: $_selectedSize------------------');
+    if (StudioVariables.applyScale <= 0.40) {
+      return const Icon(Icons.queue_music_outlined);
+    }
     if (_selectedSize == size[0]) {
       return _musicFullSize(frameScale);
     } else if (_selectedSize == size[1]) {

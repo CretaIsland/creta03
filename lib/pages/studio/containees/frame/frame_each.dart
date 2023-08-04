@@ -332,7 +332,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         onUploadComplete: (model) {
       if (model.isMusic()) {
         GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[widget.model.mid];
-        musicKey!.currentState!.addMusic(model);
+        if (musicKey != null) {
+          musicKey.currentState!.addMusic(model);
+        } else {
+          debugPrint('musicKey is INVALID');
+        }
       }
     });
   }
