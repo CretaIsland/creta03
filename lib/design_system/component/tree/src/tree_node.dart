@@ -4,6 +4,7 @@ import 'dart:math' show pi;
 
 import 'package:flutter/material.dart';
 
+import '../../../creta_color.dart';
 import 'tree_view.dart';
 import 'tree_view_theme.dart';
 import 'expander_theme_data.dart';
@@ -22,6 +23,8 @@ const double _kBorderWidth = 0.75;
 /// The [TreeView] and [TreeViewController] handlers the data and rendering
 /// of the nodes.
 class TreeNode extends StatefulWidget {
+  static String? selectedRoot;
+
   /// The node object used to display the widget state
   final Node node;
 
@@ -102,9 +105,16 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   void _handleTap() {
     TreeView? treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
-    if (treeView!.onNodeTap != null) {
-      treeView.onNodeTap!(widget.node.key);
-    }
+
+    // bool isSelected = treeView!.controller.selectedKey != null &&
+    //     treeView.controller.selectedKey == widget.node.key;
+    // _TreeNodeState._selectedRoot = null; //skpark
+    // if (isSelected) {
+    //setState(() {
+    TreeNode.selectedRoot = widget.node.root;
+    //});
+    //}
+    treeView?.onNodeTap!(widget.node.key);
   }
 
   void _handleDoubleTap() {
@@ -154,6 +164,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   }
 
   Widget _buildNodeLabel() {
+    // skpark : TreeView 의 nodeBuilder 가 사용되므로 사용되지 않는 코드이다.
     TreeView? treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
     TreeViewTheme theme = treeView!.theme;
@@ -163,7 +174,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: theme.verticalSpacing ?? (theme.dense ? 10 : 15),
-        horizontal: 0, //skpark 0 -->20
+        horizontal: 0,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -198,8 +209,15 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     TreeView? treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
     TreeViewTheme theme = treeView!.theme;
+
     bool isSelected = treeView.controller.selectedKey != null &&
         treeView.controller.selectedKey == widget.node.key;
+
+    // if (isSelected) {
+    //   print('_buildNodeWidget(treeView.controller.selectedKey=${treeView.controller.selectedKey})');
+    //   print('_buildNodeWidget(widget.node.key=${widget.node.key})');
+    // }
+
     bool canSelectParent = treeView.allowParentSelect;
     final arrowContainer = _buildNodeExpander();
     final labelContainer = treeView.nodeBuilder != null
@@ -239,26 +257,27 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       }
     }
     return Container(
-      color: isSelected ? theme.colorScheme.primary : null,
+      //color: isSelected ? theme.colorScheme.primary : null,
+      color: isSelected ? CretaColor.primary[200]! : null, //skpark
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: theme.expanderTheme.position == ExpanderPosition.end
             ? <Widget>[
-                Container(color: Colors.amber, width: 20), //skpark
+                const SizedBox(width: 20), //skpark
                 Expanded(
                   child: tappable,
                 ),
                 arrowContainer,
-                Container(color: Colors.amber, width: 20), //skpark
+                const SizedBox(width: 20), //skpark
               ]
             : <Widget>[
-                Container(color: Colors.amber, width: 20), //skpark
+                const SizedBox(width: 20), //skpark
                 arrowContainer,
                 Expanded(
                   child: tappable,
                 ),
-                Container(color: Colors.amber, width: 20), //skpark
+                const SizedBox(width: 20), //skpark
               ],
       ),
     );
@@ -270,38 +289,53 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     assert(treeView != null, 'TreeView must exist in context');
     final bool closed = (!_isExpanded || !widget.node.expanded) && _controller.isDismissed;
     final nodeWidget = _buildNodeWidget();
-    return widget.node.isParent
-        ? AnimatedBuilder(
-            animation: _controller.view,
-            builder: (BuildContext context, Widget? child) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  nodeWidget,
-                  ClipRect(
-                    child: Align(
-                      heightFactor: _heightFactor.value,
-                      child: child,
+    // bool isSelected = treeView!.controller.selectedKey != null &&
+    //     treeView.controller.selectedKey == widget.node.key;
+
+    // if (isSelected) {
+    //   _TreeNodeState._selectedRoot = widget.node.root;
+    // }
+    bool isSelectedRoot = (widget.node.root == TreeNode.selectedRoot);
+
+    //print('TreeNode.build $isSelectedRoot');
+
+    return Container(
+      // 모든 노드를 포함하는 전체 영역 박스임.
+      color: isSelectedRoot ? CretaColor.primary[100] : Colors.white,
+      child: widget.node.isParent
+          ? AnimatedBuilder(
+              animation: _controller.view,
+              builder: (BuildContext context, Widget? child) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    nodeWidget,
+                    ClipRect(
+                      child: Align(
+                        heightFactor: _heightFactor.value,
+                        child: child,
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
-            child: closed
-                ? null
-                : Container(
-                    margin: EdgeInsets.only(
-                        left: treeView!.theme.horizontalSpacing ?? treeView.theme.iconTheme.size!),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: widget.node.children.map((Node node) {
-                          return TreeNode(node: node);
-                        }).toList()),
-                  ),
-          )
-        : Container(
-            child: nodeWidget,
-          );
+                  ],
+                );
+              },
+              child: closed
+                  ? null
+                  : Container(
+                      margin: EdgeInsets.only(
+                          left:
+                              treeView!.theme.horizontalSpacing ?? treeView.theme.iconTheme.size!),
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: widget.node.children.map((Node node) {
+                            return TreeNode(node: node);
+                          }).toList()),
+                    ),
+            )
+          : Container(
+              child: nodeWidget,
+            ),
+    );
   }
 }
 

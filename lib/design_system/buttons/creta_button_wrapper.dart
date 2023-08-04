@@ -753,15 +753,25 @@ class BTN {
   static CretaButton fill_blue_i_m({
     required IconData icon,
     required Function onPressed,
+    String? tooltip,
+    Color? tooltipFg,
+    Color? tooltipBg,
+    CretaButtonColor buttonColor = CretaButtonColor.blue,
+    Color? fgColor,
   }) {
+    fgColor ??= CretaColor.text[100]!;
     return CretaButton(
+      tooltip: tooltip,
+      tooltipFg: tooltipFg,
+      tooltipBg: tooltipBg,
       width: 32,
       height: 32,
       buttonType: CretaButtonType.iconOnly,
+      buttonColor: buttonColor,
       icon: Icon(
         icon,
         size: 16,
-        color: CretaColor.text[100]!,
+        color: fgColor,
       ),
       onPressed: onPressed,
     );

@@ -367,7 +367,7 @@ class ContentsManager extends CretaManager {
     //print('_removeContents(${model.name})');
     model.isRemoved.set(
       true,
-      save: false,
+      save: true,
       doComplete: (val) {
         remove(model);
         playTimer?.reOrdering();
@@ -377,7 +377,7 @@ class ContentsManager extends CretaManager {
         playTimer?.reOrdering();
       },
     );
-    await setToDB(model);
+    //await setToDB(model);
     remove(model);
     //print('remove contents ${model.name}, ${model.mid}');
     await playTimer?.reOrdering();
@@ -1078,6 +1078,7 @@ class ContentsManager extends CretaManager {
   }
 
   List<tree.Node> toNodes(FrameModel frame) {
+    //print('invoke contentsManager.toNodes()');
     List<tree.Node> conNodes = [];
     for (var ele in valueList()) {
       ContentsModel model = ele as ContentsModel;
@@ -1088,7 +1089,8 @@ class ContentsManager extends CretaManager {
           key: '${pageModel.mid}/${frame.mid}/${model.mid}',
           label: model.name,
           expanded: model.expanded || isSelected(model.mid),
-          data: model));
+          data: model,
+          root: pageModel.mid));
     }
     return conNodes;
   }
