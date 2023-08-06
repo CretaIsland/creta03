@@ -56,8 +56,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     if (_audioPlayer.playing) {
       _audioPlayer.stop();
     }
-    await _playlist
-        .insert(
+    await _playlist.insert(
       0,
       AudioSource.uri(
         Uri.parse(model.remoteUrl!),
@@ -68,11 +67,10 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
           artUri: Uri.parse(url),
         ),
       ),
-    )
-        .then((val1) {
-      return _audioPlayer.seek(Duration.zero, index: 0).then((val2) {
-        _audioPlayer.play();
-      });
+    );
+
+    _audioPlayer.seek(Duration.zero, index: 0).then((val) {
+      _audioPlayer.play();
     });
     // _audioPlayer.seek(Duration.zero, index: 0);
     // _audioPlayer.play();
