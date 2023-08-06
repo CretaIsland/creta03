@@ -52,7 +52,7 @@ class DraggablePointState extends State<DraggablePoint> {
               logger.info('DraggablePoint.GestureDetector');
               //print(
               //    'DraggablePoint.GestureDetector ${BookMainPage.containeeNotifier!.selectedClass}');
-              BookMainPage.miniMenuNotifier!.show();
+              //BookMainPage.miniMenuNotifier?.set(true, doNoti: true);
               BookMainPage.containeeNotifier!.setFrameClick(true);
               //widget.onTap!();
             },

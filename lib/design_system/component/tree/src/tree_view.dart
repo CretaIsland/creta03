@@ -116,7 +116,7 @@ class TreeView extends InheritedWidget {
   }
 }
 
-class _TreeViewData extends StatelessWidget {
+class _TreeViewData extends StatefulWidget {
   final TreeViewController _controller;
   final bool? shrinkWrap;
   final bool? primary;
@@ -125,16 +125,22 @@ class _TreeViewData extends StatelessWidget {
   const _TreeViewData(this._controller, {this.shrinkWrap, this.primary, this.physics});
 
   @override
+  State<_TreeViewData> createState() => _TreeViewDataState();
+}
+
+class _TreeViewDataState extends State<_TreeViewData> {
+  @override
   Widget build(BuildContext context) {
     ThemeData _parentTheme = Theme.of(context);
     return Theme(
       data: _parentTheme,
       child: ListView(
-        shrinkWrap: shrinkWrap!,
-        primary: primary,
-        physics: physics,
+        shrinkWrap: widget.shrinkWrap!,
+        primary: widget.primary,
+        physics: widget.physics,
         padding: EdgeInsets.zero,
-        children: _controller.children.map((Node node) {
+        children: widget._controller.children.map((Node node) {
+          //print('--- build _TreeViewData ${node.key} selectedRoot=${TreeNode.selectedRoot}');
           return TreeNode(node: node);
         }).toList(),
       ),

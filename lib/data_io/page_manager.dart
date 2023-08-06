@@ -508,6 +508,7 @@ class PageManager extends CretaManager {
   }
 
   List<Node> toNodes(PageModel? selectedModel) {
+    //print('invoke pageMangaer.toNodes()');
     List<Node> nodes = [];
     //  Node(
     //       label: 'documents',
@@ -531,11 +532,13 @@ class PageManager extends CretaManager {
         accNodes = frameManager.toNodes(model);
       }
       nodes.add(Node<CretaModel>(
-          key: model.mid,
-          label: 'Page ${pageNo.toString().padLeft(2, '0')}. $desc',
-          data: model,
-          expanded: (selectedModel != null && model.mid == selectedModel.mid) || model.expanded,
-          children: accNodes));
+        key: model.mid,
+        label: 'Page ${pageNo.toString().padLeft(2, '0')}. $desc',
+        data: model,
+        expanded: (selectedModel != null && model.mid == selectedModel.mid) || model.expanded,
+        children: accNodes,
+        root: model.mid,
+      ));
       pageNo++;
     }
     return nodes;

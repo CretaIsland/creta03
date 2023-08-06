@@ -6,6 +6,8 @@ import 'dart:math';
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import '../../../data_io/contents_manager.dart';
+import '../../../data_io/frame_manager.dart';
 import '../../../design_system/component/tree/flutter_treeview.dart';
 import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +25,9 @@ import '../../../design_system/creta_font.dart';
 import '../../../design_system/menu/creta_popup_menu.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/book_model.dart';
+import '../../../model/contents_model.dart';
 import '../../../model/creta_model.dart';
+import '../../../model/frame_model.dart';
 import '../../../model/page_model.dart';
 import '../containees/containee_nofifier.dart';
 import '../containees/page/page_thumbnail.dart';
@@ -66,6 +70,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   int _pageCount = 0;
   bool _buildComplete = false;
   late GlobalObjectKey _pageViewKey;
+  late GlobalObjectKey<MyTreeViewState> _treeViewKey;
 
   Timer? _screenshotTimer;
   Rect? _thumbArea;
@@ -94,6 +99,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     cardHeight = bodyHeight + headerHeight;
     addCardSpace = headerHeight + verticalPadding;
     _pageViewKey = GlobalObjectKey('pageViewKey');
+    _treeViewKey = GlobalObjectKey<MyTreeViewState>('treeViewKey');
 
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(() {
@@ -224,7 +230,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
               child: BTN.fill_gray_100_i_m(
                   tooltip: CretaStudioLang.treePage,
                   tooltipBg: CretaColor.text[700]!,
-                  icon: Icons.account_tree_outlined,
+                  icon: _flipToTree ? Icons.account_tree_outlined : Icons.splitscreen_outlined,
                   onPressed: (() {
                     setState(
                       () {
@@ -272,14 +278,14 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       padding: const EdgeInsets.only(top: 10, bottom: 20),
       height: StudioVariables.workHeight - 100,
       child: MyTreeView(
+        key: _treeViewKey,
         nodes: _nodes,
         pageManager: _pageManager!,
         removePage: _removePage,
-        removeFrame: (frame) {
-          logger.warning('not yet impl');
-        },
-        removeContents: (contents) {
-          logger.warning('not yet impl');
+        removeFrame: _removeFrame,
+        removeContents: _removeContents,
+        showUnshow: (model) {
+          _pageManager!.notify();
         },
       ),
     );
@@ -408,8 +414,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
                   onPressed: () {
-                    model.isShow.set(!(model.isShow.value));
-                    _pageManager?.notify();
+                    _showUnshowPage(model);
                   },
                 ),
                 BTN.fill_gray_image_m(
@@ -449,6 +454,14 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     );
   }
 
+  void _showUnshowPage(PageModel model) {
+    model.isShow.set(!(model.isShow.value));
+    _pageManager?.notify();
+    // if (_treeViewKey.currentState != null && _flipToTree == false) {
+    //   _treeViewKey.currentState?.invalidate();
+    // }
+  }
+
   void _removePage(PageModel model) {
     mychangeStack.startTrans();
     model.isRemoved.set(
@@ -469,6 +482,43 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         }
       }
       _pageManager!.notify();
+      if (_treeViewKey.currentState != null && _flipToTree == false) {
+        _treeViewKey.currentState?.setSelectedNode();
+      }
+      return;
+    });
+  }
+
+  void _removeFrame(FrameModel frame) {
+    mychangeStack.startTrans();
+    FrameManager? frameManager = _pageManager!.findFrameManager(frame.parentMid.value);
+    frame.isRemoved.set(true);
+    frameManager!.removeChild(frame.mid);
+    mychangeStack.endTrans();
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
+    _pageManager!.notify();
+    if (_treeViewKey.currentState != null && _flipToTree == false) {
+      _treeViewKey.currentState?.setSelectedNode();
+    }
+  }
+
+  void _removeContents(ContentsModel contents) {
+    String pageMid = _pageManager!.getSelectedMid();
+    FrameManager? frameManager = _pageManager!.findFrameManager(pageMid);
+    if (frameManager == null) {
+      logger.severe('Invalid pageMid $pageMid');
+      return;
+    }
+    ContentsManager? contentsManager = frameManager.getContentsManager(contents.parentMid.value);
+    if (contentsManager == null) {
+      return;
+    }
+    BookMainPage.containeeNotifier!.setFrameClick(true);
+    contentsManager.removeSelected(context).then((value) {
+      _pageManager!.notify();
+      if (_treeViewKey.currentState != null && _flipToTree == false) {
+        _treeViewKey.currentState?.setSelectedNode();
+      }
       return null;
     });
   }

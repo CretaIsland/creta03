@@ -20,8 +20,6 @@ ResizePointDraggable.onScaleUpdate
 1. GestureDetector Routes 는 다음과 같다. 
 
 DraggablePoint.GestureDetector.onLongPressDown   <-- 여기서 끝난다. 여기서, frame 을 눌렀다는 사실을 알아낼수 있다.
-//DraggableResizable.onTap() --> onUpdate('onTap')  <-- 없앰.
-//DraggableStickers.onTap 
 
 
 2. InkWell 루트는 다음과 같다.

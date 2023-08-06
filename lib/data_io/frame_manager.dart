@@ -518,6 +518,7 @@ class FrameManager extends CretaManager {
   //bool isMain() {}
 
   List<Node> toNodes(PageModel page) {
+    //print('invoke frameMangaer.toNodes()');
     List<Node> accNodes = [];
     for (var ele in valueEntries()) {
       FrameModel model = ele as FrameModel;
@@ -535,6 +536,7 @@ class FrameManager extends CretaManager {
         data: model,
         expanded: model.expanded || isSelected(model.mid),
         children: conNodes,
+        root: page.mid,
       ));
     }
     return accNodes;

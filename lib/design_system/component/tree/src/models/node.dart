@@ -47,10 +47,12 @@ class Node<T> {
   /// Force the node to be a parent so that node can show expander without
   /// having children node.
   final bool parent;
+  final String root;
 
   const Node({
     required this.key,
     required this.label,
+    required this.root,
     this.children = const [],
     this.expanded = false,
     this.parent = false,
@@ -61,11 +63,12 @@ class Node<T> {
   });
 
   /// Creates a [Node] from a string value. It generates a unique key.
-  static Node<T> fromLabel<T>(String label) {
+  static Node<T> fromLabel<T>(String label, String root) {
     String key = Utilities.generateRandom();
     return Node<T>(
       key: '${key}_$label',
       label: label,
+      root: root,
     );
   }
 
@@ -78,6 +81,7 @@ class Node<T> {
   static Node<T> fromMap<T>(Map<String, dynamic> map) {
     String? key = map['key'];
     String label = map['label'];
+    String root = map['root'];
     var data = map['data'];
     List<Node> children = [];
     key ??= Utilities.generateRandom();
@@ -103,6 +107,7 @@ class Node<T> {
       expanded: Utilities.truthful(map['expanded']),
       parent: Utilities.truthful(map['parent']),
       children: children,
+      root: root,
     );
   }
 
@@ -118,6 +123,7 @@ class Node<T> {
     Color? iconColor,
     Color? selectedIconColor,
     T? data,
+    String? root,
   }) =>
       Node<T>(
         key: key ?? this.key,
@@ -129,6 +135,7 @@ class Node<T> {
         parent: parent ?? this.parent,
         children: children ?? this.children,
         data: data ?? this.data,
+        root: root ?? this.root,
       );
 
   /// Whether this object has children [Node].
@@ -145,6 +152,7 @@ class Node<T> {
     Map<String, dynamic> map = {
       "key": key,
       "label": label,
+      "root": root,
       "icon": icon == null ? null : icon!.codePoint,
       "iconColor": iconColor == null ? null : iconColor!.toString(),
       "selectedIconColor": selectedIconColor == null ? null : selectedIconColor!.toString(),
@@ -169,6 +177,7 @@ class Node<T> {
     return hashValues(
       key,
       label,
+      root,
       icon,
       iconColor,
       selectedIconColor,
@@ -185,6 +194,7 @@ class Node<T> {
     return other is Node &&
         other.key == key &&
         other.label == label &&
+        other.root == root &&
         other.icon == icon &&
         other.iconColor == iconColor &&
         other.selectedIconColor == selectedIconColor &&
