@@ -27,6 +27,7 @@ import '../../../../model/link_model.dart';
 import '../../../../model/page_model.dart';
 //import '../../../../player/abs_player.dart';
 import '../../book_main_page.dart';
+import '../../left_menu/left_menu_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
@@ -301,6 +302,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     } else {
       logger.info('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
+      LeftMenuPage.treeInvalidate();
     }
   }
 

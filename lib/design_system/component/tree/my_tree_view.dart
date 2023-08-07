@@ -1,12 +1,15 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables, no_leading_underscores_for_local_identifiers
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
+
 //import 'package:flutter_treeview/flutter_treeview.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../pages/studio/book_main_page.dart';
 import '../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../../../pages/studio/containees/frame/sticker/mini_menu.dart';
+import '../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../pages/studio/studio_getx_controller.dart';
 import '../../buttons/creta_button.dart';
 import '../../buttons/creta_button_wrapper.dart';
@@ -25,7 +28,7 @@ import '../../../model/page_model.dart';
 import '../../creta_color.dart';
 
 class MyTreeView extends StatefulWidget {
-  final List<tree.Node> nodes;
+  //final List<tree.Node> nodes;
   final PageManager pageManager;
   final void Function(PageModel model) removePage;
   final void Function(FrameModel model) removeFrame;
@@ -34,7 +37,7 @@ class MyTreeView extends StatefulWidget {
 
   MyTreeView({
     Key? key,
-    required this.nodes,
+    //required this.nodes,
     required this.pageManager,
     required this.removePage,
     required this.removeFrame,
@@ -47,6 +50,7 @@ class MyTreeView extends StatefulWidget {
 }
 
 class MyTreeViewState extends State<MyTreeView> {
+  //List<tree.Node> _nodes = [];
   FrameEventController? _sendEvent;
   String _selectedNode = '';
   late tree.TreeViewController _treeViewController;
@@ -89,6 +93,9 @@ class MyTreeViewState extends State<MyTreeView> {
   }
 
   String _getSelectedNode() {
+    if (BookMainPage.containeeNotifier!.isBook() || BookMainPage.containeeNotifier!.isNone()) {
+      return '';
+    }
     PageModel? pageModel = widget.pageManager.getSelected() as PageModel?;
     if (pageModel == null) {
       return '';
@@ -96,7 +103,7 @@ class MyTreeViewState extends State<MyTreeView> {
     String pageKey = pageModel.mid;
 
     FrameManager? frameManager = widget.pageManager.getSelectedFrameManager();
-    if (frameManager == null) {
+    if (frameManager == null || BookMainPage.containeeNotifier!.isPage()) {
       return pageKey;
     }
     FrameModel? frameModel = frameManager.getSelected() as FrameModel?;
@@ -106,7 +113,7 @@ class MyTreeViewState extends State<MyTreeView> {
     String frameKey = '$pageKey/${frameModel.mid}';
 
     ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
-    if (contentsManager == null) {
+    if (contentsManager == null || BookMainPage.containeeNotifier!.isFrame()) {
       return frameKey;
     }
     ContentsModel? contentsModel = contentsManager.getCurrentModel();
@@ -116,23 +123,52 @@ class MyTreeViewState extends State<MyTreeView> {
     return '$frameKey/${contentsModel.mid}';
   }
 
+  // void initNodes() {
+  //   PageModel? selectedModel = widget.pageManager.getSelected() as PageModel?;
+  //   if (selectedModel == null) {
+  //     logger.warning('pageManagerHolder is not inited');
+  //     // _nodes = [
+  //     //   Node(
+  //     //       label: 'samples',
+  //     //       key: 'key',
+  //     //       expanded: true,
+  //     //       icon: Icons.folder_open, //Icons.folder,
+  //     //       children: []),
+  //     // ];
+  //     return;
+  //   }
+  //   logger.info('pageManagerHolder is inited');
+  //   _nodes.clear();
+  //   _nodes = widget.pageManager.toNodes(selectedModel);
+  // }
+
   void invalidate() {
     setState(() {});
   }
 
   @override
+  void dispose() {
+    //_nodes.clear();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     //_selectedNode = widget.pageManager.getSelected()!.id.toString();
+    //initNodes();
+
     final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
     _sendEvent = sendEvent;
     _selectedNode = _getSelectedNode();
 
     logger.info('myTreeView inited : _selectedNode=$_selectedNode');
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    //_initNodes(widget.pageManager.getSelected() as PageModel?);
     tree.TreeViewTheme treeViewTheme = tree.TreeViewTheme(
       expanderTheme: tree.ExpanderThemeData(
         // 꼭지점 테마임.
@@ -173,11 +209,12 @@ class MyTreeViewState extends State<MyTreeView> {
     //       }
     //       _selectedNode = snapshot.data!;
 
-    //print('_selectedNode = $_selectedNode');
+    //print('nodes length = ${LeftMenuPage.nodes.length}');
 
     //logger.info('_getSelectedNode=$_selectedNode', level: 5);
     _treeViewController = tree.TreeViewController(
-      children: widget.nodes,
+      //children: widget.nodes,
+      children: LeftMenuPage.nodes,
       selectedKey: _selectedNode,
     );
 

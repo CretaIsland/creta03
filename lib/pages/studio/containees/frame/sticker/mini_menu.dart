@@ -13,6 +13,7 @@ import '../../../../../design_system/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
+import '../../../left_menu/left_menu_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
@@ -187,6 +188,7 @@ class MiniMenuState extends State<MiniMenu> {
             widget.frameModel.isShow.set(!widget.frameModel.isShow.value);
             widget.frameModel.changeOrderByIsShow(widget.frameManager);
             widget.onFrameShowUnshow.call();
+            LeftMenuPage.treeInvalidate();
             setState(() {});
           }),
       BTN.fill_blue_i_menu(
@@ -315,6 +317,7 @@ class MiniMenuState extends State<MiniMenu> {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
                 MiniMenu.showFrame = true;
+                LeftMenuPage.treeInvalidate();
               });
             })
     ];
@@ -448,6 +451,7 @@ class MiniMenuState extends State<MiniMenu> {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
                 MiniMenu.showFrame = false;
+                LeftMenuPage.treeInvalidate();
               });
             }),
     ];

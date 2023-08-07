@@ -15,6 +15,7 @@ import '../../../../model/book_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../containees/containee_nofifier.dart';
+import '../../left_menu/left_menu_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../property_mixin.dart';
@@ -69,10 +70,12 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       _model = pageManager.getSelected() as PageModel?;
       if (_model == null) {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Book);
+        LeftMenuPage.treeInvalidate();
         return RightMenu(
           key: ValueKey(BookMainPage.containeeNotifier!.selectedClass.toString()),
           onClose: () {
             BookMainPage.containeeNotifier!.set(ContaineeEnum.None);
+            LeftMenuPage.treeInvalidate();
           },
         );
       }

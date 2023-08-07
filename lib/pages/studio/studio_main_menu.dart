@@ -11,6 +11,7 @@ import '../../model/book_model.dart';
 import '../../routes.dart';
 import 'book_main_page.dart';
 import 'containees/containee_nofifier.dart';
+import 'left_menu/left_menu_page.dart';
 
 class StudioMainMenu extends StatefulWidget {
   const StudioMainMenu({super.key});
@@ -95,6 +96,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         caption: CretaLang.details,
         onPressed: () {
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Book);
+          LeftMenuPage.treeInvalidate();
         },
       ),
       CretaMenuItem(

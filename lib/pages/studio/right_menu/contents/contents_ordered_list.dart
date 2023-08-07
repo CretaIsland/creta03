@@ -21,6 +21,7 @@ import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../player/music/creta_music_mixin.dart';
+import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
 import '../../studio_snippet.dart';
@@ -393,15 +394,14 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             model.isShow.set(!model.isShow.value);
             widget.contentsManager.reOrdering();
             int len = widget.contentsManager.getShowLength();
-
+            LeftMenuPage.treeInvalidate();
             // 돌릴게 없을때,
             if (len == 0) {
-              widget.contentsManager.clearCurrentModel();
+              //widget.contentsManager.clearCurrentModel();
               setState(() {});
               widget.contentsManager.notify();
               return;
             }
-
             ContentsModel? current = widget.contentsManager.getCurrentModel();
             if (model.isShow.value == false) {
               if (current != null && model.isMusic()) {

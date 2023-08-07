@@ -15,6 +15,7 @@ import '../../../model/frame_model.dart';
 import '../book_main_page.dart';
 import '../containees/containee_nofifier.dart';
 import '../containees/frame/sticker/mini_menu.dart';
+import '../left_menu/left_menu_page.dart';
 import '../studio_constant.dart';
 import 'contents/contents_ordered_list.dart';
 import 'contents/contents_property.dart';
@@ -97,6 +98,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
             setState(() {
               _selectedTab = value;
             });
+            LeftMenuPage.treeInvalidate();
           },
           width: 84,
           autoWidth: true,
