@@ -50,6 +50,7 @@ class CretaModelSnippet {
     required List<CretaManager> managerList,
     required Widget Function()? consumerFunc,
     Widget Function()? waitFunc,
+    ScrollController? scrollController,
   }) {
     return FutureBuilder<bool>(
         future: CretaModelSnippet._waitUntilAllManager(managerList),

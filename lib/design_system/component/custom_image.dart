@@ -8,6 +8,7 @@ import 'snippet.dart';
 
 class ImageDetail {
   late bool isLoaded = false;
+  late bool isError = false;
   late int cumulativeBytesLoaded = 0;
   late int expectedTotalBytes = 1;
 }
@@ -21,6 +22,11 @@ class ImageValueNotifier extends ValueNotifier<ImageDetail> {
 
   void changeLoadingState(bool isLoaded) {
     _imageDetail.isLoaded = isLoaded;
+    notifyListeners();
+  }
+
+  void changeErrorState(bool isError) {
+    _imageDetail.isError = isError;
     notifyListeners();
   }
 
@@ -40,6 +46,8 @@ class CustomImage extends StatefulWidget {
     this.duration = 700,
     this.hasAni = true,
     this.boxFit = BoxFit.fill,
+    this.imageOnError,
+    this.useDefaultErrorImage = false,
   });
   final double width;
   final double height;
@@ -48,6 +56,8 @@ class CustomImage extends StatefulWidget {
   final bool hasMouseOverEffect;
   final bool hasAni;
   final BoxFit boxFit;
+  final Widget? imageOnError;
+  final bool useDefaultErrorImage;
 
   @override
   State<CustomImage> createState() => _CustomImageState();
@@ -62,6 +72,8 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
 
   late AnimationController _controller;
   late Animation<Size?> _animation;
+
+  late Widget? imageOnError;
 
   @override
   void initState() {
@@ -91,7 +103,15 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
         _imageDetail.expectedTotalBytes = event.expectedTotalBytes!;
         _imageValueNotifier.changeCumulativeBytesLoaded(event.cumulativeBytesLoaded);
       },
+      onError: (exception, stackTrace) {
+        _imageValueNotifier.changeErrorState(true);
+      },
     ));
+    if (widget.useDefaultErrorImage) {
+      imageOnError = _error();
+    } else {
+      imageOnError = widget.imageOnError;
+    }
     super.initState();
   }
 
@@ -118,8 +138,23 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
     return ValueListenableBuilder(
       valueListenable: _imageValueNotifier,
       builder: ((context, value, child) {
-        return !value.isLoaded ? Center(child: Snippet.showWaitSign()) : Center(child: _show());
+        return (value.isError && imageOnError != null)
+          ? Center(child: imageOnError)
+          : !value.isLoaded
+            ? Center(child: Snippet.showWaitSign())
+            : Center(child: _show());
       }),
+    );
+  }
+
+  Widget _error() {
+    return SizedBox(
+      height: widget.height,
+      width: widget.width,
+      child: const Image(
+        image: AssetImage('assets/Artboard12.png'),
+        fit: BoxFit.cover,
+      ),
     );
   }
 

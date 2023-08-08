@@ -198,6 +198,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                       image: bModel.thumbnailUrl.value,
                       hasAni: false,
                       hasMouseOverEffect: false,
+                      useDefaultErrorImage: true,
                     ),
                   ),
                 );

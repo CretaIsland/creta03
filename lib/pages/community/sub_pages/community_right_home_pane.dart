@@ -426,19 +426,22 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     if (_onceDBGetComplete) {
       return _getItemPane();
     }
-    var retval = CretaModelSnippet.waitDatum(
-      managerList: [
-        bookPublishedManagerHolder,
-        channelManagerHolder,
-        userPropertyManagerHolder,
-        teamManagerHolder,
-        favoritesManagerHolder,
-        playlistManagerHolder,
-        bookPublishedManagerHolder,
-        dummyManagerHolder,
-      ],
-      //userId: AccountManager.currentLoginUser.email,
-      consumerFunc: _getItemPane,
+    var retval = Scrollbar(
+      controller: widget.scrollController,
+      child: CretaModelSnippet.waitDatum(
+        managerList: [
+          bookPublishedManagerHolder,
+          channelManagerHolder,
+          userPropertyManagerHolder,
+          teamManagerHolder,
+          favoritesManagerHolder,
+          playlistManagerHolder,
+          bookPublishedManagerHolder,
+          dummyManagerHolder,
+        ],
+        //userId: AccountManager.currentLoginUser.email,
+        consumerFunc: _getItemPane,
+      ),
     );
     //_onceDBGetComplete = true;
     return retval;
