@@ -404,16 +404,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             }
             ContentsModel? current = widget.contentsManager.getCurrentModel();
             if (model.isShow.value == false) {
-              if (current != null && model.isMusic()) {
-                debugPrint('=====Hide this song ${model.name} at $index =====');
-                String frameId = widget.contentsManager.frameModel.mid;
-                GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
-                if (musicKey != null) {
-                  musicKey.currentState?.removeMusic(model);
-                } else {
-                  logger.severe('musicKey is null');
-                }
-              }
+              widget.contentsManager.unshowMusic(model);
               if (current != null && current.mid == model.mid) {
                 // 현재 방송중인 것을 unshow 하려고 한다.
                 if (len > 0) {
@@ -423,16 +414,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 }
               }
             } else {
-              if (current != null && model.isMusic()) {
-                debugPrint('=====Unhidden this song ${model.name} at $index =====');
-                String frameId = widget.contentsManager.frameModel.mid;
-                GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
-                if (musicKey != null) {
-                  musicKey.currentState?.unhiddenMusic(model, index);
-                } else {
-                  logger.severe('musicKey is null');
-                }
-              }
+              widget.contentsManager.showMusic(model, index);
               // show 했는데, current 가 null 이다.
               if (current == null && widget.contentsManager.isEmptySelected()) {
                 if (len > 0) {

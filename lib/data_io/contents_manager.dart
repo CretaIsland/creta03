@@ -1109,4 +1109,30 @@ class ContentsManager extends CretaManager {
     }
     return conNodes;
   }
+
+  void unshowMusic(ContentsModel model) {
+    if (model.isMusic() == false) {
+      return;
+    }
+    String frameId = frameModel.mid;
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    if (musicKey == null) {
+      logger.severe('musicKey is null');
+      return;
+    }
+    musicKey.currentState?.removeMusic(model);
+  }
+
+  void showMusic(ContentsModel model, int index) {
+    if (model.isMusic() == false) {
+      return;
+    }
+    String frameId = frameModel.mid;
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    if (musicKey == null) {
+      logger.severe('musicKey is null');
+      return;
+    }
+    musicKey.currentState?.unhiddenMusic(model, index);
+  }
 }
