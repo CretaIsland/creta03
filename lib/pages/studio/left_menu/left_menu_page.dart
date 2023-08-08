@@ -42,7 +42,7 @@ class LeftMenuPage extends StatefulWidget {
   static List<Node> _nodes = [];
   static List<Node> get nodes => _nodes;
 
-  static Future<void> treeInvalidate()  async {
+  static Future<void> treeInvalidate() async {
     if (LeftMenuPage._flipToTree == false) {
       //print('-------------treeInvalidate()------------------');
       LeftMenuPage.treeViewKey.currentState?.setSelectedNode();
@@ -69,6 +69,8 @@ class LeftMenuPage extends StatefulWidget {
     logger.info('pageManagerHolder is inited');
     LeftMenuPage._nodes.clear();
     LeftMenuPage._nodes = pageManager.toNodes(selectedModel);
+    // LeftMenuPage._nodes =
+    //     BookMainPage.bookManagerHolder!.toNodes(pageManager.bookModel!, pageManager);
   }
 
   final bool isFolded;

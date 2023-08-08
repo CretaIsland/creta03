@@ -270,7 +270,7 @@ class CretaButton extends StatefulWidget {
         break;
       case CretaButtonColor.forTree:
         fgColor = CretaColor.text[700]!;
-        bgColor = CretaColor.primary[200]!;
+        bgColor = Colors.transparent;
         hoverColor = CretaColor.primary[300]!;
         clickColor = CretaColor.primary[400]!;
         selectColor = CretaColor.primary[500]!;

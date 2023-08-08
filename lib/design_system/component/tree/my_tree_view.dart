@@ -52,6 +52,7 @@ class MyTreeView extends StatefulWidget {
 class MyTreeViewState extends State<MyTreeView> {
   //List<tree.Node> _nodes = [];
   FrameEventController? _sendEvent;
+  //bool _isHover = false;
   String _selectedNode = '';
   late tree.TreeViewController _treeViewController;
   bool docsOpen = true;
@@ -219,10 +220,13 @@ class MyTreeViewState extends State<MyTreeView> {
     );
 
     return tree.TreeView(
+      button1: _button1,
+      button2: _button2,
       controller: _treeViewController,
       allowParentSelect: _allowParentSelect,
       supportParentDoubleTap: _supportParentDoubleTap,
       onExpansionChanged: (key, expanded) => _expandNode(key, expanded),
+      //onNodeHover: (key, hover) {},
       onNodeTap: (key) {
         //print('------------------Selected: $key');
         if (_selectedNode == key) {
@@ -292,26 +296,35 @@ class MyTreeViewState extends State<MyTreeView> {
       nodeBuilder: (BuildContext context, tree.Node<dynamic> node) {
         // 한 Row에서 딱 Text Label 과 버튼 Area 아 있는 부분의 모양을 결정한다.
         CretaModel model = node.data!;
-        double verticalPadding = model.type == ExModelType.page ? 9 : 3;
+        bool isShow = true;
+        if (model is FrameModel) {
+          isShow = model.isShow.value;
+        }
+        if (model is ContentsModel) {
+          isShow = model.isShow.value;
+        }
+        if (model is PageModel) {
+          isShow = model.isShow.value;
+        }
+        double verticalPadding = model.type == ExModelType.page ? 9 : 6;
         bool isSelected = _isSelected(node);
         if (isSelected) {
           // 현재 선택된 노드의 Root Node 를 알고 있어야 한다.
           //print("selectedRoot fixed = ${node.root}");
           tree.TreeNode.selectedRoot = node.root;
         }
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: isSelected ? 200 : 272,
-              padding: EdgeInsets.symmetric(vertical: verticalPadding),
-              child: Text(
-                node.label,
-                style: node.isParent ? CretaFont.bodySmall : CretaFont.titleSmall,
-              ),
-            ),
-            if (isSelected) _buttons(model),
-          ],
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: verticalPadding),
+          child: Text(
+            node.label,
+            style: node.isParent
+                ? isShow
+                    ? CretaFont.bodySmall
+                    : CretaFont.bodySmall.copyWith(color: CretaColor.text[300])
+                : isShow
+                    ? CretaFont.titleSmall
+                    : CretaFont.titleSmall.copyWith(color: CretaColor.text[300]),
+          ),
         );
       },
       theme: treeViewTheme,
@@ -364,72 +377,92 @@ class MyTreeViewState extends State<MyTreeView> {
     return _treeViewController.selectedKey != null && _treeViewController.selectedKey == node.key;
   }
 
-  Widget _buttons(CretaModel model) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        BTN.fill_blue_i_m(
-          fgColor: CretaColor.text[700]!,
-          buttonColor: CretaButtonColor.forTree,
-          tooltip: CretaStudioLang.showUnshow,
-          tooltipBg: CretaColor.text[200]!,
-          icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-          onPressed: () {
-            setState(() {
-              _toggleShow(model);
-            });
-            widget.showUnshow(model);
-          },
-        ),
-        BTN.fill_blue_i_m(
-          fgColor: CretaColor.text[700]!,
-          buttonColor: CretaButtonColor.forTree,
-          tooltip: CretaStudioLang.tooltipDelete,
-          tooltipBg: CretaColor.text[200]!,
-          //iconImageFile: "assets/delete.svg",
-          icon: Icons.delete,
-          onPressed: () {
-            // Delete Page
-            logger.info('remove page');
-            if (model.type == ExModelType.page) {
-              widget.removePage(model as PageModel);
-              return;
-            }
-            if (model.type == ExModelType.frame) {
-              widget.removeFrame(model as FrameModel);
-              return;
-            }
-            if (model.type == ExModelType.contents) {
-              widget.removeContents(model as ContentsModel);
-              return;
-            }
-          },
-        ),
-      ],
+  // Widget _buttons(CretaModel model) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.end,
+  //     children: [
+  //       BTN.fill_blue_i_m(
+  //         fgColor: CretaColor.text[700]!,
+  //         buttonColor: CretaButtonColor.forTree,
+  //         tooltip: CretaStudioLang.showUnshow,
+  //         tooltipBg: CretaColor.text[200]!,
+  //         icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+  //         onPressed: () {
+  //           setState(() {
+  //             _toggleShow(model);
+  //           });
+  //           widget.showUnshow(model);
+  //         },
+  //       ),
+  //       BTN.fill_blue_i_m(
+  //         fgColor: CretaColor.text[700]!,
+  //         buttonColor: CretaButtonColor.forTree,
+  //         tooltip: CretaStudioLang.tooltipDelete,
+  //         tooltipBg: CretaColor.text[200]!,
+  //         //iconImageFile: "assets/delete.svg",
+  //         icon: Icons.delete,
+  //         onPressed: () {
+  //           // Delete Page
+  //           logger.info('remove page');
+  //           if (model.type == ExModelType.page) {
+  //             widget.removePage(model as PageModel);
+  //             return;
+  //           }
+  //           if (model.type == ExModelType.frame) {
+  //             widget.removeFrame(model as FrameModel);
+  //             return;
+  //           }
+  //           if (model.type == ExModelType.contents) {
+  //             widget.removeContents(model as ContentsModel);
+  //             return;
+  //           }
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  Widget _button1(CretaModel model) {
+    return BTN.fill_blue_i_m(
+      fgColor: CretaColor.text[700]!,
+      buttonColor: CretaButtonColor.forTree,
+      tooltip: CretaStudioLang.showUnshow,
+      tooltipBg: CretaColor.text[200]!,
+      icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+      onPressed: () {
+        setState(() {
+          _toggleShow(model);
+        });
+        widget.showUnshow(model);
+      },
     );
-    // return IconButton(
-    //   constraints: BoxConstraints.tight(Size(16, 16)),
-    //   iconSize: 16,
-    //   padding: EdgeInsets.zero,
-    //   onPressed: () {
-    //     //setState(() {
-    //     if (model.type == ExModelType.page) {
-    //       widget.removePage(model as PageModel);
-    //       return;
-    //     }
-    //     if (model.type == ExModelType.frame) {
-    //       widget.removeFrame(model as FrameModel);
-    //       return;
-    //     }
-    //     if (model.type == ExModelType.contents) {
-    //       widget.removeContents(model as ContentsModel);
-    //       return;
-    //     }
-    //     //});
-    //   },
-    //   icon: Icon(Icons.delete_outline),
-    //   color: CretaColor.text[300]!,
-    // );
+  }
+
+  Widget _button2(CretaModel model) {
+    return BTN.fill_blue_i_m(
+      fgColor: CretaColor.text[700]!,
+      buttonColor: CretaButtonColor.forTree,
+      tooltip: CretaStudioLang.tooltipDelete,
+      tooltipBg: CretaColor.text[200]!,
+      //iconImageFile: "assets/delete.svg",
+      icon: Icons.delete,
+      onPressed: () {
+        // Delete Page
+        logger.info('remove page');
+        if (model.type == ExModelType.page) {
+          widget.removePage(model as PageModel);
+          return;
+        }
+        if (model.type == ExModelType.frame) {
+          widget.removeFrame(model as FrameModel);
+          return;
+        }
+        if (model.type == ExModelType.contents) {
+          widget.removeContents(model as ContentsModel);
+          return;
+        }
+      },
+    );
   }
 
   bool _isShow(CretaModel model) {
@@ -492,6 +525,8 @@ class MyTreeViewState extends State<MyTreeView> {
     }
   }
 }
+
+class CretaColors {}
 
 class ModContainer extends StatelessWidget {
   final tree.ExpanderModifier modifier;

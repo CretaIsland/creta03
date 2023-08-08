@@ -4,6 +4,7 @@ import 'dart:math' show pi;
 
 import 'package:flutter/material.dart';
 
+import '../../../../model/creta_model.dart';
 import '../../../creta_color.dart';
 import 'tree_view.dart';
 import 'tree_view_theme.dart';
@@ -27,8 +28,11 @@ class TreeNode extends StatefulWidget {
 
   /// The node object used to display the widget state
   final Node node;
+  final Widget Function(CretaModel model) button1;
+  final Widget Function(CretaModel model) button2;
 
-  const TreeNode({Key? key, required this.node}) : super(key: key);
+  const TreeNode({Key? key, required this.node, required this.button1, required this.button2})
+      : super(key: key);
 
   @override
   _TreeNodeState createState() => _TreeNodeState();
@@ -40,6 +44,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   late AnimationController _controller;
   late Animation<double> _heightFactor;
   bool _isExpanded = false;
+  bool _isHover = false;
 
   @override
   void initState() {
@@ -100,6 +105,15 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     if (treeView!.onExpansionChanged != null) {
       treeView.onExpansionChanged!(widget.node.key, _isExpanded);
     }
+  }
+
+  void _handleHover(bool hover) {
+    TreeView? treeView = TreeView.of(context);
+    assert(treeView != null, 'TreeView must exist in context');
+    setState(() {
+      _isHover = hover;
+    });
+    treeView?.onNodeHover?.call(widget.node.key, hover);
   }
 
   void _handleTap() {
@@ -213,6 +227,14 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     bool isSelected = treeView.controller.selectedKey != null &&
         treeView.controller.selectedKey == widget.node.key;
 
+    final Widget buttons = Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        widget.button1(widget.node.data!),
+        widget.button2(widget.node.data!),
+      ],
+    );
+
     // if (isSelected) {
     //   print('_buildNodeWidget(treeView.controller.selectedKey=${treeView.controller.selectedKey})');
     //   print('_buildNodeWidget(widget.node.key=${widget.node.key})');
@@ -223,36 +245,51 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     final labelContainer = treeView.nodeBuilder != null
         ? treeView.nodeBuilder!(context, widget.node)
         : _buildNodeLabel();
+
+    final eachRow = _isHover
+        ? Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(width: _isHover ? 200 : 272, child: labelContainer),
+              buttons,
+            ],
+          )
+        : labelContainer;
     Widget tappable = treeView.onNodeDoubleTap != null
         ? InkWell(
+            onHover: _handleHover,
             onTap: _handleTap,
             onDoubleTap: _handleDoubleTap,
-            child: labelContainer,
+            child: eachRow,
           )
         : InkWell(
+            onHover: _handleHover,
             onTap: _handleTap,
-            child: labelContainer,
+            child: eachRow,
           );
     if (widget.node.isParent) {
       if (treeView.supportParentDoubleTap && canSelectParent) {
         tappable = InkWell(
+          onHover: _handleHover,
           onTap: canSelectParent ? _handleTap : _handleExpand,
           onDoubleTap: () {
             _handleExpand();
             _handleDoubleTap();
           },
-          child: labelContainer,
+          child: eachRow,
         );
       } else if (treeView.supportParentDoubleTap) {
         tappable = InkWell(
+          onHover: _handleHover,
           onTap: _handleExpand,
           onDoubleTap: _handleDoubleTap,
-          child: labelContainer,
+          child: eachRow,
         );
       } else {
         tappable = InkWell(
+          onHover: _handleHover,
           onTap: canSelectParent ? _handleTap : _handleExpand,
-          child: labelContainer,
+          child: eachRow,
         );
       }
     }
@@ -328,7 +365,11 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
                       child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: widget.node.children.map((Node node) {
-                            return TreeNode(node: node);
+                            return TreeNode(
+                              node: node,
+                              button1: widget.button1,
+                              button2: widget.button2,
+                            );
                           }).toList()),
                     ),
             )

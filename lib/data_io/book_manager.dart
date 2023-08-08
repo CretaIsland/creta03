@@ -3,12 +3,14 @@ import 'dart:math';
 import 'package:creta03/model/user_property_model.dart';
 import 'package:hycop/hycop.dart';
 import '../common/creta_utils.dart';
+import '../design_system/component/tree/src/models/node.dart';
 import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/creta_model.dart';
+import '../model/page_model.dart';
 import '../model/team_model.dart';
 import '../pages/login_page.dart';
 import 'creta_manager.dart';
@@ -255,5 +257,25 @@ class BookManager extends CretaManager {
     query['isRemoved'] = QueryValue(value: false);
     await pageManager.queryFromDB(query);
     await pageManager.removeAll();
+  }
+
+  List<Node> toNodes(BookModel model, PageManager pageManager) {
+    //print('invoke pageMangaer.toNodes()');
+    List<Node> nodes = [];
+    List<Node> childNodes = [];
+    PageModel? selectedModel = pageManager.getSelected() as PageModel?;
+    if (selectedModel != null) {
+      childNodes = pageManager.toNodes(selectedModel);
+    }
+    nodes.add(Node<CretaModel>(
+      key: model.mid,
+      label: 'CretaBook ${model.name.value}',
+      data: model,
+      expanded: model.expanded,
+      children: childNodes,
+      root: model.mid,
+    ));
+
+    return nodes;
   }
 }
