@@ -57,7 +57,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   // List<UserPropertyModel> channelUserModelList = [];
 
   List<TeamModel> teamModelList = [];
-  List<String> publishingChannelIdList = [];
+  List<String> publishingChannelIdList = [LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId];
+  final String myChannelId = LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId;
 
   bool _onceDBGetComplete1 = false;
   //bool _onceDBGetComplete2 = false;
@@ -645,11 +646,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           width: 180,
           textWidth: 90,
           onPressed: () {
-            setState(() {
-              _addReaders(e.mid);
-              userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
-              _resetList();
-            });
+            UserPropertyModel? user = _findModel(e.mid);
+            if (user == null) {
+              setState(() {
+                _addReaders(e.mid);
+                userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
+                _resetList();
+              });
+            }
           });
     }).toList();
   }
@@ -871,12 +875,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                   //         .add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
                   //   });
                   // }
-                  setState(() {
-                    publishingChannelIdList.add(LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId);
-                    //widget.model!.save();
-                    // channelUserModelList
-                    //     .add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
-                  });
+                  if (!publishingChannelIdList.contains(myChannelId)) {
+                    setState(() {
+                      publishingChannelIdList.add(myChannelId);
+                      //widget.model!.save();
+                      // channelUserModelList
+                      //     .add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
+                    });
+                  }
                 }),
             ..._myChannelTeams(),
           ],
@@ -895,12 +901,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           width: 180,
           textWidth: 90,
           onPressed: () {
-            setState(() {
-              //widget.model!.channels.add(e.channelId);
-              //widget.model!.save();
-              //channelUserModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
-              publishingChannelIdList.add(e.channelId);
-            });
+            if (!publishingChannelIdList.contains(e.channelId)) {
+              setState(() {
+                //widget.model!.channels.add(e.channelId);
+                //widget.model!.save();
+                //channelUserModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
+                publishingChannelIdList.add(e.channelId);
+              });
+            }
           });
     }).toList();
   }
@@ -973,7 +981,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                             (teamModel == null)
                                 ? CretaLang.myChannel
                                 : '${teamModel.name} 채널',
-                            style: isNotCreator
+                            style: (index > 0) // isNotCreator
                                 ? CretaFont.bodySmall
                                 : CretaFont.bodySmall.copyWith(
                                     color: CretaColor.primary,
@@ -996,10 +1004,12 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                                 //     break;
                                 //   }
                                 // }
-                                setState(() {
-                                  //widget.model!.save();
-                                  publishingChannelIdList.remove(channelId);
-                                });
+                                if (publishingChannelIdList.length > 1) {
+                                  setState(() {
+                                    //widget.model!.save();
+                                    publishingChannelIdList.remove(channelId);
+                                  });
+                                }
                               },
                               buttonSize: 24,
                             )
