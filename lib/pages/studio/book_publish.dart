@@ -57,7 +57,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   // List<UserPropertyModel> channelUserModelList = [];
 
   List<TeamModel> teamModelList = [];
-  List<String> publishingChannelIdList = [LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId];
+  List<String> publishingChannelIdList = [
+    LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId
+  ];
   final String myChannelId = LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId;
 
   bool _onceDBGetComplete1 = false;
@@ -952,7 +954,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                 String channelId = publishingChannelIdList[index];
                 TeamModel? teamModel = _findTeamModel(channelId);
                 //bool isNotCreator = (userModel.email != widget.model!.creator);
-                UserPropertyModel userModel = LoginPage.userPropertyManagerHolder!.userPropertyModel!;
+                UserPropertyModel userModel =
+                    LoginPage.userPropertyManagerHolder!.userPropertyModel!;
+                // ignore: unused_local_variable
                 bool isNotCreator = (teamModel != null);
                 return Container(
                   padding: const EdgeInsets.only(left: 0, bottom: 6, right: 12.0),
@@ -965,22 +969,22 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       //     radius: 28,
                       //     color: userModel.email == 'public' ? CretaColor.primary : null),
                       LoginPage.userPropertyManagerHolder!.imageCircle(
-                        teamModel?.profileImg ?? LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg,
-                        teamModel?.name ?? LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname,
+                        teamModel?.profileImg ??
+                            LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg,
+                        teamModel?.name ??
+                            LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname,
                         radius: 28,
                       ),
                       //const Icon(Icons.account_circle_outlined),
                       SizedBox(
                         //color: Colors.amber,
-                        width: 120 + 96,//isNotCreator ? 120 + 96 : 120 + 96 + 24,
+                        width: 120 + 96, //isNotCreator ? 120 + 96 : 120 + 96 + 24,
                         child: Tooltip(
                           message: (teamModel == null)
                               ? userModel.email
                               : '${teamModel.name} ${CretaLang.team}',
                           child: Text(
-                            (teamModel == null)
-                                ? CretaLang.myChannel
-                                : '${teamModel.name} 채널',
+                            (teamModel == null) ? CretaLang.myChannel : '${teamModel.name} 채널',
                             style: (index > 0) // isNotCreator
                                 ? CretaFont.bodySmall
                                 : CretaFont.bodySmall.copyWith(
@@ -994,26 +998,26 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       ),
 
                       /*isNotCreator
-                          ?*/ BTN.fill_gray_i_s(
-                              icon: Icons.close,
-                              onPressed: () {
-                                // widget.model!.channels.remove(userModel.channelId);
-                                // for (var ele in channelUserModelList) {
-                                //   if (ele.email == userModel.email) {
-                                //     channelUserModelList.remove(ele);
-                                //     break;
-                                //   }
-                                // }
-                                if (publishingChannelIdList.length > 1) {
-                                  setState(() {
-                                    //widget.model!.save();
-                                    publishingChannelIdList.remove(channelId);
-                                  });
-                                }
-                              },
-                              buttonSize: 24,
-                            )
-                          /*: const SizedBox.shrink()*/,
+                          ?*/
+                      BTN.fill_gray_i_s(
+                        icon: Icons.close,
+                        onPressed: () {
+                          // widget.model!.channels.remove(userModel.channelId);
+                          // for (var ele in channelUserModelList) {
+                          //   if (ele.email == userModel.email) {
+                          //     channelUserModelList.remove(ele);
+                          //     break;
+                          //   }
+                          // }
+                          if (publishingChannelIdList.length > 1) {
+                            setState(() {
+                              //widget.model!.save();
+                              publishingChannelIdList.remove(channelId);
+                            });
+                          }
+                        },
+                        buttonSize: 24,
+                      ) /*: const SizedBox.shrink()*/,
                     ],
                   ),
                 );

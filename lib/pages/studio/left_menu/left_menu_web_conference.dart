@@ -42,7 +42,7 @@ class _LeftMenuWebConferenceState extends State<LeftMenuWebConference> with Left
   Future<void> connectServer() async {
     //for webRTC
     mediaDeviceDataHolder ??= MediaDeviceData();
-    peersDataHolder = PeersData();
+    peersDataHolder = PeersData();   
     producerDataHolder = ProducerData();
     await mediaDeviceDataHolder!.loadMediaDevice();
     webRTCClient = WebRTCClient(

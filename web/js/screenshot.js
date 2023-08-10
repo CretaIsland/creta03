@@ -22,7 +22,7 @@ async function jsScreenshot(x, y, width, height) {
 
 }
 
-// 필터 함수: video 태그 제외
+// 필터 함수: video 태그 제외   
 const filterFunction = (node) => {
   // video 태그는 제외
   return node.tagName !== 'VIDEO';

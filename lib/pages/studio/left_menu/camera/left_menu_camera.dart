@@ -99,7 +99,4 @@ class _LeftMenuCameraState extends State<LeftMenuCamera> {
     );
     mychangeStack.endTrans();
   }
-
-
-
 }
