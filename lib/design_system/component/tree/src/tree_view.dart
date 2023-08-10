@@ -33,7 +33,8 @@ class TreeView extends InheritedWidget {
   final TreeViewController controller;
 
   /// The tap handler for a node. Passes the node key.
-  final Function(String)? onNodeTap;
+  final Function(String, int)? onNodeTap;
+  final Function(String, int)? onNodeShiftTap;
   final Function(String, bool)? onNodeHover;
 
   /// Custom builder for nodes. Parameters are the build context and tree node.
@@ -80,13 +81,14 @@ class TreeView extends InheritedWidget {
   /// a single or double tap._
   final bool supportParentDoubleTap;
 
-  final Widget Function(CretaModel model) button1;
+  final Widget Function(CretaModel model, int index) button1;
   final Widget Function(CretaModel model) button2;
 
   TreeView({
     Key? key,
     required this.controller,
     this.onNodeTap,
+    this.onNodeShiftTap,
     this.onNodeHover,
     this.onNodeDoubleTap,
     this.physics,
@@ -130,7 +132,7 @@ class _TreeViewData extends StatefulWidget {
   final bool? shrinkWrap;
   final bool? primary;
   final ScrollPhysics? physics;
-  final Widget Function(CretaModel model) button1;
+  final Widget Function(CretaModel model, int index) button1;
   final Widget Function(CretaModel model) button2;
 
   const _TreeViewData(
@@ -157,15 +159,21 @@ class _TreeViewDataState extends State<_TreeViewData> {
         primary: widget.primary,
         physics: widget.physics,
         padding: EdgeInsets.zero,
-        children: widget._controller.children.map((Node node) {
-          //print('--- build _TreeViewData ${node.key} selectedRoot=${TreeNode.selectedRoot}');
-          return TreeNode(
-            node: node,
-            button1: widget.button1,
-            button2: widget.button2,
-          );
-        }).toList(),
+        children: _childrenNode(),
       ),
     );
+  }
+
+  List<Widget> _childrenNode() {
+    int index = 0;
+    return widget._controller.children.map((Node node) {
+      //print('--- build _TreeViewData ${node.key} selectedRoot=${TreeNode.selectedRoot}');
+      return TreeNode(
+        index: index++,
+        node: node,
+        button1: widget.button1,
+        button2: widget.button2,
+      );
+    }).toList();
   }
 }

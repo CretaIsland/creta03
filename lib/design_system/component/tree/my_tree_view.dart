@@ -33,7 +33,7 @@ class MyTreeView extends StatefulWidget {
   final void Function(PageModel model) removePage;
   final void Function(FrameModel model) removeFrame;
   final void Function(ContentsModel model) removeContents;
-  final void Function(CretaModel model) showUnshow;
+  final void Function(CretaModel model, int index) showUnshow;
 
   MyTreeView({
     Key? key,
@@ -54,6 +54,7 @@ class MyTreeViewState extends State<MyTreeView> {
   FrameEventController? _sendEvent;
   //bool _isHover = false;
   String _selectedNode = '';
+  final Set<String> _selectedNodeSet = {};
   late tree.TreeViewController _treeViewController;
   bool docsOpen = true;
   bool deepExpanded = true;
@@ -227,7 +228,10 @@ class MyTreeViewState extends State<MyTreeView> {
       supportParentDoubleTap: _supportParentDoubleTap,
       onExpansionChanged: (key, expanded) => _expandNode(key, expanded),
       //onNodeHover: (key, hover) {},
-      onNodeTap: (key) {
+      onNodeShiftTap: (key, index) {
+        _selectedNodeSet.add(key);
+      },
+      onNodeTap: (key, index) {
         //print('------------------Selected: $key');
         if (_selectedNode == key) {
           if (BookMainPage.containeeNotifier!.isBook()) {
@@ -287,7 +291,13 @@ class MyTreeViewState extends State<MyTreeView> {
           return;
         }
         //print('contentsMid=$contentsMid');
-        _selectContents(frameModel, contentsModel, frameManager, contentsManager);
+        _selectContents(
+          frameModel,
+          contentsModel,
+          frameManager,
+          contentsManager,
+          index,
+        );
         //});
       },
       onNodeDoubleTap: (key) {
@@ -346,7 +356,7 @@ class MyTreeViewState extends State<MyTreeView> {
   }
 
   void _selectContents(FrameModel frameModel, ContentsModel contentsModel,
-      FrameManager frameManager, ContentsManager contentsManager) {
+      FrameManager frameManager, ContentsManager contentsManager, int index) {
     // 프레임을 선택되게 하기 위해서 참 많은 이벤트를 날려야 한다.;
     //print('_selectContents=${contentsModel.mid}');
     MiniMenu.showFrame = false;
@@ -369,6 +379,9 @@ class MyTreeViewState extends State<MyTreeView> {
         });
       } else {
         contentsManager.setSelectedMid(contentsModel.mid, doNotify: true);
+      }
+      if (contentsModel.isMusic()) {
+        contentsManager.selectMusic(contentsModel, index);
       }
     }
   }
@@ -422,7 +435,7 @@ class MyTreeViewState extends State<MyTreeView> {
   //   );
   // }
 
-  Widget _button1(CretaModel model) {
+  Widget _button1(CretaModel model, int index) {
     return BTN.fill_blue_i_m(
       fgColor: CretaColor.text[700]!,
       buttonColor: CretaButtonColor.forTree,
@@ -431,9 +444,9 @@ class MyTreeViewState extends State<MyTreeView> {
       icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
       onPressed: () {
         setState(() {
-          _toggleShow(model);
+          _toggleShow(model, index);
         });
-        widget.showUnshow(model);
+        widget.showUnshow(model, index);
       },
     );
   }
@@ -459,6 +472,10 @@ class MyTreeViewState extends State<MyTreeView> {
         }
         if (model.type == ExModelType.contents) {
           widget.removeContents(model as ContentsModel);
+          if (model.isMusic()) {
+            ContentsManager? contentsManager = findContentsManager(model);
+            contentsManager?.removeMusic(model);
+          }
           return;
         }
       },
@@ -481,7 +498,7 @@ class MyTreeViewState extends State<MyTreeView> {
     return true;
   }
 
-  void _toggleShow(CretaModel model) {
+  void _toggleShow(CretaModel model, int index) {
     if (model.type == ExModelType.page) {
       PageModel page = model as PageModel;
       page.isShow.set(!(page.isShow.value));
@@ -493,6 +510,14 @@ class MyTreeViewState extends State<MyTreeView> {
     if (model.type == ExModelType.contents) {
       ContentsModel contents = model as ContentsModel;
       contents.isShow.set(!(contents.isShow.value));
+      if (contents.isMusic()) {
+        ContentsManager? contentsManager = findContentsManager(model);
+        if (contents.isShow.value == true) {
+          contentsManager?.showMusic(model, index);
+        } else {
+          contentsManager?.unshowMusic(model);
+        }
+      }
     }
   }
 
@@ -523,6 +548,19 @@ class MyTreeViewState extends State<MyTreeView> {
         _treeViewController = _treeViewController.copyWith(children: updated);
       });
     }
+  }
+
+  ContentsManager? findContentsManager(CretaModel model) {
+    PageModel? pageModel = widget.pageManager.getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    FrameManager? frameManager = widget.pageManager.findFrameManager(pageModel.mid);
+    if (frameManager == null) {
+      logger.severe('Invalid key');
+      return null;
+    } // _selectPage
+    return frameManager.getContentsManager(model.parentMid.value);
   }
 }
 

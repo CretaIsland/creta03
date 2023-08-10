@@ -303,8 +303,21 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         removePage: _removePage,
         removeFrame: _removeFrame,
         removeContents: _removeContents,
-        showUnshow: (model) {
-          _pageManager!.notify();
+        showUnshow: (model, index) {
+          BookMainPage.containeeNotifier!.notify();
+          if (model is PageModel || model is FrameModel) {
+            _pageManager!.notify();
+          } else if (model is ContentsModel) {
+            FrameManager? frameManager = _pageManager!.findCurrentFrameManager();
+            //frameManager?.notify();
+            if (frameManager != null) {
+              ContentsManager? contentsManager =
+                  frameManager.getContentsManager(model.parentMid.value);
+              //contentsManager?.notify();
+              contentsManager?.afterShowUnshow(model, index, null);
+            }
+          }
+          //...more...
         },
       ),
     );
@@ -531,7 +544,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     BookMainPage.containeeNotifier!.setFrameClick(true);
     contentsManager.removeSelected(context).then((value) {
       BookMainPage.containeeNotifier!.notify();
-      _pageManager!.notify();
+      //_pageManager!.notify();
+      frameManager.notify();
       Future.delayed(const Duration(seconds: 1)).then((value) {
         LeftMenuPage.treeInvalidate();
         return null;

@@ -48,6 +48,10 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   int _selectedIndex = 0;
   //static bool _isExpanded = false;
 
+  void invalidate() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -169,6 +173,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                         logger.severe('musicKey is null');
                       }
                     }
+                    LeftMenuPage.treeInvalidate();
+                    LeftMenuPage.initTreeNodes();
                   });
 
                   // widget.contentsManager.reOrdering().then((value) {
@@ -228,15 +234,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     setState(() {
                       _selectedIndex = index;
                       logger.info('ContentsOrderedList $_selectedIndex $index');
-                      if (model.isMusic()) {
-                        String frameId = widget.contentsManager.frameModel.mid;
-                        GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
-                        if (musicKey != null) {
-                          musicKey.currentState?.selectedSong(model, index);
-                        } else {
-                          logger.severe('musicKey is null');
-                        }
-                      }
+                      widget.contentsManager.selectMusic(model, index);
                     });
                   }
                 },
@@ -402,29 +400,31 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               widget.contentsManager.notify();
               return;
             }
-            ContentsModel? current = widget.contentsManager.getCurrentModel();
-            if (model.isShow.value == false) {
-              widget.contentsManager.unshowMusic(model);
-              if (current != null && current.mid == model.mid) {
-                // 현재 방송중인 것을 unshow 하려고 한다.
-                if (len > 0) {
-                  widget.contentsManager.gotoNext();
-                  setState(() {});
-                  return;
-                }
-              }
-            } else {
-              widget.contentsManager.showMusic(model, index);
-              // show 했는데, current 가 null 이다.
-              if (current == null && widget.contentsManager.isEmptySelected()) {
-                if (len > 0) {
-                  widget.contentsManager.setSelectedMid(model.mid);
-                  widget.contentsManager.gotoNext();
-                  setState(() {});
-                  return;
-                }
-              }
-            }
+            widget.contentsManager.afterShowUnshow(model, index, invalidate);
+
+            // ContentsModel? current = widget.contentsManager.getCurrentModel();
+            // if (model.isShow.value == false) {
+            //   widget.contentsManager.unshowMusic(model);
+            //   if (current != null && current.mid == model.mid) {
+            //     // 현재 방송중인 것을 unshow 하려고 한다.
+            //     if (len > 0) {
+            //       widget.contentsManager.gotoNext();
+            //       setState(() {});
+            //       return;
+            //     }
+            //   }
+            // } else {
+            //   widget.contentsManager.showMusic(model, index);
+            //   // show 했는데, current 가 null 이다.
+            //   if (current == null && widget.contentsManager.isEmptySelected()) {
+            //     if (len > 0) {
+            //       widget.contentsManager.setSelectedMid(model.mid);
+            //       widget.contentsManager.gotoNext();
+            //       setState(() {});
+            //       return;
+            //     }
+            //   }
+            // }
 
             //if(current != null && current.mid == model.mid || len <= 2) {
             setState(() {});
@@ -456,15 +456,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             });
             widget.contentsManager.removeContents(context, model).then((value) {
               if (value == true) {
-                if (model.isMusic()) {
-                  String frameId = widget.contentsManager.frameModel.mid;
-                  GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
-                  if (musicKey != null) {
-                    musicKey.currentState?.removeMusic(model);
-                  } else {
-                    logger.severe('musicKey is null');
-                  }
-                }
+                widget.contentsManager.removeMusic(model);
                 showSnackBar(context, model.name + CretaLang.contentsDeleted);
               }
             });

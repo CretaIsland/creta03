@@ -1135,4 +1135,58 @@ class ContentsManager extends CretaManager {
     }
     musicKey.currentState?.unhiddenMusic(model, index);
   }
+
+  void selectMusic(ContentsModel model, int index) {
+    if (model.isMusic() == false) {
+      return;
+    }
+    String frameId = frameModel.mid;
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    if (musicKey == null) {
+      logger.severe('musicKey is null');
+      return;
+    }
+    musicKey.currentState?.selectedSong(model, index);
+  }
+
+  void removeMusic(ContentsModel model) {
+    if (model.isMusic() == false) {
+      return;
+    }
+    String frameId = frameModel.mid;
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    if (musicKey == null) {
+      logger.severe('musicKey is null');
+      return;
+    }
+    musicKey.currentState?.removeMusic(model);
+  }
+
+  void afterShowUnshow(
+      ContentsModel model, int index, void Function()? invalidate) {
+    int len = getShowLength();
+    ContentsModel? current = getCurrentModel();
+    if (model.isShow.value == false) {
+      unshowMusic(model);
+      if (current != null && current.mid == model.mid) {
+        // 현재 방송중인 것을 unshow 하려고 한다.
+        if (len > 0) {
+          gotoNext();
+          invalidate?.call();
+          return;
+        }
+      }
+    } else {
+      showMusic(model, index);
+      // show 했는데, current 가 null 이다.
+      if (current == null && isEmptySelected()) {
+        if (len > 0) {
+          setSelectedMid(model.mid);
+          gotoNext();
+          invalidate?.call();
+          return;
+        }
+      }
+    }
+  }
 }

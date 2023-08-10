@@ -54,6 +54,8 @@ class StudioVariables {
   static String? clipBoardAction;
   static CretaManager? clipBoardManager;
 
+  static bool isShiftPressed = false;
+
   static void clearClipBoard() {
     clipBoard = null;
     clipBoardDataType = null;

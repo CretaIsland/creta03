@@ -5,6 +5,7 @@ import 'dart:math' show pi;
 import 'package:flutter/material.dart';
 
 import '../../../../model/creta_model.dart';
+import '../../../../pages/studio/studio_variables.dart';
 import '../../../creta_color.dart';
 import 'tree_view.dart';
 import 'tree_view_theme.dart';
@@ -28,10 +29,16 @@ class TreeNode extends StatefulWidget {
 
   /// The node object used to display the widget state
   final Node node;
-  final Widget Function(CretaModel model) button1;
+  final int index;
+  final Widget Function(CretaModel model, int index) button1;
   final Widget Function(CretaModel model) button2;
 
-  const TreeNode({Key? key, required this.node, required this.button1, required this.button2})
+  const TreeNode(
+      {Key? key,
+      required this.index,
+      required this.node,
+      required this.button1,
+      required this.button2})
       : super(key: key);
 
   @override
@@ -119,16 +126,15 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   void _handleTap() {
     TreeView? treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
-
-    // bool isSelected = treeView!.controller.selectedKey != null &&
-    //     treeView.controller.selectedKey == widget.node.key;
-    // _TreeNodeState._selectedRoot = null; //skpark
-    // if (isSelected) {
-    //setState(() {
     TreeNode.selectedRoot = widget.node.root;
-    //});
-    //}
-    treeView?.onNodeTap!(widget.node.key);
+
+    if (StudioVariables.isShiftPressed) {
+      //print('shift pressed');
+      treeView?.onNodeShiftTap!(widget.node.key, widget.index);
+      return;
+    }
+
+    treeView?.onNodeTap!(widget.node.key, widget.index);
   }
 
   void _handleDoubleTap() {
@@ -230,7 +236,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     final Widget buttons = Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        widget.button1(widget.node.data!),
+        widget.button1(widget.node.data!, widget.index),
         widget.button2(widget.node.data!),
       ],
     );
@@ -260,11 +266,13 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
             onHover: _handleHover,
             onTap: _handleTap,
             onDoubleTap: _handleDoubleTap,
+            onSecondaryTapDown: _onRightMouseButton,
             child: eachRow,
           )
         : InkWell(
             onHover: _handleHover,
             onTap: _handleTap,
+            onSecondaryTapDown: _onRightMouseButton,
             child: eachRow,
           );
     if (widget.node.isParent) {
@@ -276,6 +284,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
             _handleExpand();
             _handleDoubleTap();
           },
+          onSecondaryTapDown: _onRightMouseButton,
           child: eachRow,
         );
       } else if (treeView.supportParentDoubleTap) {
@@ -283,12 +292,14 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
           onHover: _handleHover,
           onTap: _handleExpand,
           onDoubleTap: _handleDoubleTap,
+          onSecondaryTapDown: _onRightMouseButton,
           child: eachRow,
         );
       } else {
         tappable = InkWell(
           onHover: _handleHover,
           onTap: canSelectParent ? _handleTap : _handleExpand,
+          onSecondaryTapDown: _onRightMouseButton,
           child: eachRow,
         );
       }
@@ -363,20 +374,31 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
                           left:
                               treeView!.theme.horizontalSpacing ?? treeView.theme.iconTheme.size!),
                       child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: widget.node.children.map((Node node) {
-                            return TreeNode(
-                              node: node,
-                              button1: widget.button1,
-                              button2: widget.button2,
-                            );
-                          }).toList()),
+                        mainAxisSize: MainAxisSize.min,
+                        children: _childrenNode(),
+                      ),
                     ),
             )
           : Container(
               child: nodeWidget,
             ),
     );
+  }
+
+  List<Widget> _childrenNode() {
+    int index = 0;
+    return widget.node.children.map((Node node) {
+      return TreeNode(
+        index: index++,
+        node: node,
+        button1: widget.button1,
+        button2: widget.button2,
+      );
+    }).toList();
+  }
+
+  void _onRightMouseButton(TapDownDetails details) {
+    //print('rightMouse button pressed');
   }
 }
 
