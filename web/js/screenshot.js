@@ -1,7 +1,7 @@
 async function jsScreenshot(x, y, width, height) {
 
   try {
-      var fullCanvas = await htmlToImage.toCanvas(document.body);
+      var fullCanvas = await htmlToImage.toCanvas(document.body, {filter: filterFunction});
       var cropCanvas = document.createElement("canvas");
       var context = cropCanvas.getContext("2d");
 
@@ -21,3 +21,10 @@ async function jsScreenshot(x, y, width, height) {
   }
 
 }
+
+// 필터 함수: video 태그 제외
+const filterFunction = (node) => {
+  // video 태그는 제외
+  return node.tagName !== 'VIDEO';
+};
+
