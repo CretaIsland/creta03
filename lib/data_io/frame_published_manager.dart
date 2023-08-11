@@ -50,7 +50,7 @@ class FramePublishedManager extends CretaManager {
     query['isRemoved'] = QueryValue(value: false);
     final retval = await queryFromDB(query);
     for (var ele in retval) {
-      print('removeChild ${ele.mid}');
+      //print('removeChild ${ele.mid}');
       ContentsPublishedManager childManager = ContentsPublishedManager(null);
       await childManager.removeChild(ele.mid);
       ele.isRemoved.set(true, save: false, noUndo: true);

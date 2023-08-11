@@ -43,7 +43,7 @@ class ContentsPublishedManager extends CretaManager {
     // ignore: unused_local_variable
     final retval = await queryFromDB(query);
     for (var ele in retval) {
-      print('removeChild ${ele.mid}');
+      //print('removeChild ${ele.mid}');
 
       ele.isRemoved.set(true, save: false, noUndo: true);
       await setToDB(ele as CretaModel);

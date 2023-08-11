@@ -52,6 +52,12 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   late Animation<double> _heightFactor;
   bool _isExpanded = false;
   bool _isHover = false;
+  //bool _isMultiSelected = false;
+  bool _isMultiSelected() {
+    TreeView? treeView = TreeView.of(context);
+    assert(treeView != null, 'TreeView must exist in context');
+    return treeView!.isMultiSelected(widget.node.key);
+  }
 
   @override
   void initState() {
@@ -130,10 +136,18 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
 
     if (StudioVariables.isShiftPressed) {
       //print('shift pressed');
-      treeView?.onNodeShiftTap!(widget.node.key, widget.index);
+      setState(
+        () {
+          //_isMultiSelected = !_isMultiSelected;
+          if (treeView?.setMultiSelected(widget.node.key) == true) {
+            treeView?.onNodeShiftTap!(widget.node.key, widget.index);
+          }
+        },
+      );
       return;
     }
 
+    treeView?.clearMultiSelected();
     treeView?.onNodeTap!(widget.node.key, widget.index);
   }
 
@@ -306,7 +320,11 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     }
     return Container(
       //color: isSelected ? theme.colorScheme.primary : null,
-      color: isSelected ? CretaColor.primary[200]! : null, //skpark
+      color: isSelected
+          ? CretaColor.primary[200]!
+          : _isMultiSelected()
+              ? CretaColor.secondary[200]!
+              : null, //skpark
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,

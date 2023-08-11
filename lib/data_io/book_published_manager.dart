@@ -211,7 +211,7 @@ class BookPublishedManager extends CretaManager {
       await setToDB(published);
       // 예전 자식은 모두 지우고
       publishedManager.removeChild(published.mid);
-      print('delete old children');
+      //print('delete old children');
       // 자식은 모두 새로 만든다.
       int count = await publishedManager.makeCopyAll(published.mid);
       logger.info('published updated ${published.mid}, source=${published.sourceMid} $count');

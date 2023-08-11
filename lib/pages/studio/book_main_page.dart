@@ -1339,7 +1339,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   void _keyEventHandler(RawKeyEvent event) {
     final key = event.logicalKey;
-    logger.info('key pressed $key');
+    //logger.info('key pressed $key');
     if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
       StudioVariables.isShiftPressed = true;
     } else if (event is RawKeyUpEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../model/creta_model.dart';
+import '../../../../pages/studio/containees/containee_nofifier.dart';
 import 'tree_view_controller.dart';
 import 'tree_view_theme.dart';
 import 'tree_node.dart';
@@ -28,6 +29,8 @@ import 'models/node.dart';
 ///   theme: treeViewTheme
 /// ),
 /// ```
+
+// ignore: must_be_immutable
 class TreeView extends InheritedWidget {
   /// The controller for the [TreeView]. It manages the data and selected key.
   final TreeViewController controller;
@@ -114,6 +117,40 @@ class TreeView extends InheritedWidget {
 
   static TreeView? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType(aspect: TreeView);
+
+  final Set<String> _selectedNodeSet = {};
+  //final ContaineeEnum _keyType = ContaineeEnum.None;
+  bool isMultiSelected(String key) {
+    return _selectedNodeSet.lookup(key) != null;
+  }
+
+  bool setMultiSelected(key) {
+    // 콘텐츠만 선택 가능하다.
+    if (key.contains("contents=") == false) {
+      return false;
+    }
+    //bool changed = false;
+    //ContaineeEnum lastType = getKeyType(key);
+    //if (_keyType != lastType) {
+    //_selectedNodeSet.clear();
+    //_keyType = lastType;
+    //  changed = true;
+    //}
+    _selectedNodeSet.add(key);
+    //return changed;
+    return true;
+  }
+
+  void clearMultiSelected() {
+    _selectedNodeSet.clear();
+  }
+
+  ContaineeEnum getKeyType(String key) {
+    if (key.contains("contents=") == true) return ContaineeEnum.Contents;
+    if (key.contains("frame=") == true) return ContaineeEnum.Frame;
+    if (key.contains("page=") == true) return ContaineeEnum.Page;
+    return ContaineeEnum.Book;
+  }
 
   @override
   bool updateShouldNotify(TreeView oldWidget) {

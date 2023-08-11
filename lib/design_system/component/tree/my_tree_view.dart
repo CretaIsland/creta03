@@ -54,7 +54,7 @@ class MyTreeViewState extends State<MyTreeView> {
   FrameEventController? _sendEvent;
   //bool _isHover = false;
   String _selectedNode = '';
-  final Set<String> _selectedNodeSet = {};
+
   late tree.TreeViewController _treeViewController;
   bool docsOpen = true;
   bool deepExpanded = true;
@@ -228,9 +228,7 @@ class MyTreeViewState extends State<MyTreeView> {
       supportParentDoubleTap: _supportParentDoubleTap,
       onExpansionChanged: (key, expanded) => _expandNode(key, expanded),
       //onNodeHover: (key, hover) {},
-      onNodeShiftTap: (key, index) {
-        _selectedNodeSet.add(key);
-      },
+      onNodeShiftTap: (key, index) {},
       onNodeTap: (key, index) {
         //print('------------------Selected: $key');
         if (_selectedNode == key) {
