@@ -344,6 +344,17 @@ abstract class CretaManager extends AbsExModelManager {
     return retval;
   }
 
+   Future<AbsExModel> getFromAnotherCollection(String mid, String pcollectionId) async {
+    try {
+      AbsExModel model = newModel(mid);
+      model.fromMap(await HycopFactory.dataBase!.getData(pcollectionId, mid));
+      return model;
+    } catch (e) {
+      logger.severe('databaseError', e);
+      throw HycopException(message: 'databaseError', exception: e as Exception);
+    }
+  }
+
   Future<List<AbsExModel>> myDataOnly(String userId, {int? limit}) async {
     logger.finest('myDataOnly');
     Map<String, QueryValue> query = {};

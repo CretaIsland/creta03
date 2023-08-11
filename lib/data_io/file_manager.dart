@@ -16,7 +16,7 @@ class FileManager extends ChangeNotifier {
   void notify() => notifyListeners();
 
   Future<void> getImgFileList() async {
-    debugPrint("----Start----");
+    debugPrint("----Start obtaining image list----");
     imgFileList = [];
 
     final res = (await HycopFactory.storage!.getFileInfoList());
@@ -38,6 +38,7 @@ class FileManager extends ChangeNotifier {
   }
 
   Future<void> getVideoFileList() async {
+    debugPrint("----Start obtaining video list----");
     videoFileList = [];
 
     final res = await HycopFactory.storage!.getFileInfoList();
@@ -53,6 +54,7 @@ class FileManager extends ChangeNotifier {
             fileType: element.fileType));
       }
     }
+    debugPrint("----Done----");
     notifyListeners();
   }
 

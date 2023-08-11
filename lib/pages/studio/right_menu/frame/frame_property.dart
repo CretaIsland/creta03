@@ -224,7 +224,6 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     int index = 0;
     Size frameSize = Size(widget.model.width.value, widget.model.height.value);
     for (Size ele in StudioConst.musicPlayerSize) {
-
       if (frameSize == ele) {
         return CretaStudioLang.playerSize.values.toList()[index];
       }

@@ -283,7 +283,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     List<String> size = CretaStudioLang.playerSize.values.toList();
     double frameScale = StudioVariables.applyScale / 0.7025000000000001;
     // logger.info('Size of Music app: $_selectedSize------------------');
-    if (StudioVariables.applyScale <= 0.40) {
+    if (StudioVariables.applyScale <= 0.45) {
       return const Icon(Icons.queue_music_outlined);
     }
     if (_selectedSize == size[0]) {

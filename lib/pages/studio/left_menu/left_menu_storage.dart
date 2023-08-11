@@ -1,12 +1,10 @@
 import 'package:creta03/data_io/file_manager.dart';
-import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/design_system/menu/creta_drop_down_button.dart';
+import 'package:creta03/pages/studio/left_menu/storage/storage_image_selected.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
-
-import '../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../design_system/component/custom_image.dart';
+import '../../../design_system/buttons/creta_tab_button.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../design_system/menu/creta_popup_menu.dart';
@@ -171,39 +169,61 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     );
   }
 
+  // Widget _storageType1() {
+  //   return Row(
+  //     children: [
+  //       BTN.line_blue_t_m(
+  //         text: CretaStudioLang.storageTypes.keys.toList()[0], // 전제
+  //         onPressed: () {
+  //           setState(() {
+  //             _selectedType = CretaStudioLang.storageTypes.values.toList()[0];
+  //           });
+  //         },
+  //       ),
+  //       const SizedBox(width: 8.0),
+  //       BTN.line_blue_t_m(
+  //         text: CretaStudioLang.storageTypes.keys.toList()[1], // 이미지
+  //         onPressed: () {
+  //           setState(() {
+  //             _selectedType = CretaStudioLang.storageTypes.values.toList()[1];
+  //           });
+  //         },
+  //       ),
+  //       const SizedBox(width: 8.0),
+  //       BTN.line_blue_t_m(
+  //         text: CretaStudioLang.storageTypes.keys.toList()[2], // 영상
+  //         onPressed: () {
+  //           setState(() {
+  //             _selectedType = CretaStudioLang.storageTypes.values.toList()[2];
+  //           });
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
+
   Widget _storageType() {
-    return Row(
-      children: [
-        BTN.line_blue_t_m(
-          text: CretaStudioLang.storageTypes.keys.toList()[0],
-          onPressed: () {
-            debugPrint('Type 0');
+    return CretaTabButton(
+      onEditComplete: (value) {
+        int idx = 0;
+        for (String val in CretaStudioLang.storageTypes.values) {
+          if (value == val) {
             setState(() {
-              _selectedType = CretaStudioLang.storageTypes.values.toList()[0];
+              _selectedType = CretaStudioLang.storageTypes.values.toList()[idx];
             });
-          },
-        ),
-        const SizedBox(width: 8.0),
-        BTN.line_blue_t_m(
-          text: CretaStudioLang.storageTypes.keys.toList()[1],
-          onPressed: () {
-            debugPrint('Type 1');
-            setState(() {
-              _selectedType = CretaStudioLang.storageTypes.values.toList()[1];
-            });
-          },
-        ),
-        const SizedBox(width: 8.0),
-        BTN.line_blue_t_m(
-          text: CretaStudioLang.storageTypes.keys.toList()[2],
-          onPressed: () {
-            debugPrint('Type 2');
-            setState(() {
-              _selectedType = CretaStudioLang.storageTypes.values.toList()[2];
-            });
-          },
-        ),
-      ],
+          }
+          idx++;
+        }
+      },
+      width: 55,
+      height: 32,
+      selectedTextColor: Colors.white,
+      unSelectedTextColor: CretaColor.primary,
+      selectedColor: CretaColor.primary,
+      unSelectedColor: Colors.white,
+      unSelectedBorderColor: CretaColor.primary,
+      buttonLables: CretaStudioLang.storageTypes.keys.toList(),
+      buttonValues: CretaStudioLang.storageTypes.values.toList(),
     );
   }
 
@@ -216,46 +236,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
       );
     }
     if (_selectedType == type[1]) {
-      return FutureBuilder(
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            debugPrint("State Done");
-            return SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(top: 10),
-                height: StudioVariables.workHeight,
-                child: GridView.builder(
-                  itemCount: fileManagerHolder!.imgFileList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    mainAxisSpacing: 8.0,
-                    crossAxisSpacing: 8.0,
-                    crossAxisCount: 2,
-                    childAspectRatio: 160 / 95,
-                  ),
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (BuildContext context, int index) {
-                    return CustomImage(
-                      key: GlobalKey(),
-                      width: 160,
-                      height: 95,
-                      image: fileManagerHolder!.imgFileList[index].fileView,
-                      hasAni: false,
-                    );
-                  },
-                ),
-              ),
-            );
-          } else {
-            return Container(
-              padding: EdgeInsets.symmetric(vertical: verticalPadding),
-              height: 352.0,
-              alignment: Alignment.center,
-              child: Snippet.showWaitSign(),
-            );
-          }
-        },
-        future: fileManagerHolder!.getImgFileList(),
-      );
+      return const ImageSelectedClass();
     }
     if (_selectedType == type[2]) {
       return Container(

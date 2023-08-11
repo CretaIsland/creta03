@@ -1,3 +1,4 @@
+import 'package:creta03/model/depot_model.dart';
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
@@ -65,6 +66,46 @@ class FavoritesManager extends CretaManager {
     );
   }
 
+  Future<List<AbsExModel>> queryFavoritesFromDepotModelList(List<AbsExModel> depotModelList) {
+    if (depotModelList.isEmpty) {
+      setState(DBState.idle);
+      return Future.value([]);
+    }
+    List<String> depotIdList = [];
+    for (var exModel in depotModelList) {
+      DepotModel depotModel = exModel as DepotModel;
+      depotIdList.add(depotModel.mid);
+    }
+    if (depotModelList.isEmpty) {
+      setState(DBState.idle);
+      return Future.value([]);
+    }
+    Map<String, QueryValue> query = {};
+    query['isRemoved'] = QueryValue(value: false);
+    query['parentId'] = QueryValue(value: depotModelList, operType: OperType.whereIn);
+    query['userId'] = QueryValue(value: AccountManager.currentLoginUser.email);
+    return queryFromDB(
+      query,
+      //limit: ,
+      //orderBy: orderBy,
+    );
+  }
+
+  Future<List<AbsExModel>> queryFavoritesFromContentsMidList(List<String> contentsMidList) {
+    if (contentsMidList.isEmpty) {
+      setState(DBState.idle);
+      return Future.value([]);
+    }
+    Map<String, QueryValue> query = {};
+    query['isRemoved'] = QueryValue(value: false);
+    query['bookId'] = QueryValue(value: contentsMidList, operType: OperType.whereIn);
+    return queryFromDB(
+      query,
+      //limit: ,
+      //orderBy: orderBy,
+    );
+  }
+
   Future<String> addFavoritesToDB(String bookId, String userId) async {
     // check already exist
     Map<String, QueryValue> query = {};
@@ -73,7 +114,8 @@ class FavoritesManager extends CretaManager {
     query['bookId'] = QueryValue(value: bookId);
     queryFromDB(query);
     List<AbsExModel> list = await isGetListFromDBComplete().catchError((error, stackTrace) =>
-        throw HycopUtils.getHycopException(error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));
+        throw HycopUtils.getHycopException(
+            error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));
     if (list.isNotEmpty) {
       // already exist in DB
       FavoritesModel favModel = list[0] as FavoritesModel; // 1개만 있다고 가정
@@ -87,7 +129,8 @@ class FavoritesManager extends CretaManager {
     );
     createToDB(favModel);
     await isGetListFromDBComplete().catchError((error, stackTrace) =>
-        throw HycopUtils.getHycopException(error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));
+        throw HycopUtils.getHycopException(
+            error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));
     return favModel.mid;
   }
 
@@ -99,7 +142,8 @@ class FavoritesManager extends CretaManager {
     query['bookId'] = QueryValue(value: bookId);
     queryFromDB(query);
     List<AbsExModel> list = await isGetListFromDBComplete().catchError((error, stackTrace) =>
-        throw HycopUtils.getHycopException(error: error, defaultMessage: 'removeFavoritesFromDB Failed !!!'));
+        throw HycopUtils.getHycopException(
+            error: error, defaultMessage: 'removeFavoritesFromDB Failed !!!'));
     if (list.isEmpty) {
       // already not exist in DB
       return true;
@@ -108,7 +152,8 @@ class FavoritesManager extends CretaManager {
     FavoritesModel favModel = list[0] as FavoritesModel; // 무조건 1개만 있다고 가정
     removeToDB(favModel.mid);
     await isGetListFromDBComplete().catchError((error, stackTrace) =>
-        throw HycopUtils.getHycopException(error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));
+        throw HycopUtils.getHycopException(
+            error: error, defaultMessage: 'addFavoritesToDB Failed !!!'));
     return true;
   }
 

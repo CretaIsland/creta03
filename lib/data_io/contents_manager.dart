@@ -873,9 +873,9 @@ class ContentsManager extends CretaManager {
                   '-----------Dropping song named ${currentModel.name} with remoteUrl ${currentModel.remoteUrl}');
 
               String mid = contentsManager!.frameModel.mid;
-              debugPrint('--1-- frameModel.mid ${frameModel.mid}-----');
+              // debugPrint('--1-- frameModel.mid ${frameModel.mid}-----');
               GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[mid];
-              debugPrint('--2-- musicKey $musicKey-----');
+              // debugPrint('--2-- musicKey $musicKey-----');
               if (musicKey != null) {
                 musicKey.currentState?.addMusic(currentModel);
               } else {
@@ -884,8 +884,8 @@ class ContentsManager extends CretaManager {
             }
           },
         );
-        debugPrint(
-            '---------uploaded successfully-------${contentsModel.name} with remoteUrl ${contentsModel.remoteUrl}-');
+        // debugPrint(
+        //     '---------uploaded successfully-------${contentsModel.name} with remoteUrl ${contentsModel.remoteUrl}-');
       }
       // 콘텐츠 객체를 DB에 Creta 한다.
       await contentsManager.createNextContents(contentsModel, doNotify: false);
