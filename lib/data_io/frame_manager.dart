@@ -16,6 +16,7 @@ import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_preview_menu.dart';
 import '../pages/studio/containees/frame/sticker/stickerview.dart';
+import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 import 'contents_manager.dart';
@@ -130,6 +131,9 @@ class FrameManager extends CretaManager {
       },
     );
     mychangeStack.add(c);
+
+    LeftMenuPage.initTreeNodes();
+    LeftMenuPage.treeInvalidate();
 
     return defaultFrame;
   }

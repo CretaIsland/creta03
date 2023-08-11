@@ -29,6 +29,13 @@ class LeftMenuCamera extends StatefulWidget {
 
 class _LeftMenuCameraState extends State<LeftMenuCamera> {
 
+
+  @override
+  void initState() {
+    super.initState();
+    mediaDeviceDataHolder ??= MediaDeviceData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -92,7 +99,4 @@ class _LeftMenuCameraState extends State<LeftMenuCamera> {
     );
     mychangeStack.endTrans();
   }
-
-
-
 }

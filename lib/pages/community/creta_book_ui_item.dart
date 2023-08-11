@@ -671,6 +671,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                             height: widget.height - _itemDescriptionHeight,
                             image: widget.bookModel.thumbnailUrl.value,
                             hasAni: false,
+                            useDefaultErrorImage: true,
                           ),
                         ),
                         // 그라데이션

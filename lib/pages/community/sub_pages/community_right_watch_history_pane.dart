@@ -478,17 +478,20 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     //     });
     if (_onceDBGetComplete == false) {
       if (kDebugMode) print('---build-3');
-      return CretaModelSnippet.waitDatum(
-        managerList: [
-          watchHistoryManagerHolder,
-          bookPublishedManagerHolder,
-          channelManagerHolder,
-          userPropertyManagerHolder,
-          teamManagerHolder,
-          favoritesManagerHolder,
-          dummyManagerHolder
-        ],
-        consumerFunc: _getItemPane,
+      return Scrollbar(
+        controller: widget.scrollController,
+        child: CretaModelSnippet.waitDatum(
+          managerList: [
+            watchHistoryManagerHolder,
+            bookPublishedManagerHolder,
+            channelManagerHolder,
+            userPropertyManagerHolder,
+            teamManagerHolder,
+            favoritesManagerHolder,
+            dummyManagerHolder
+          ],
+          consumerFunc: _getItemPane,
+        ),
       );
     }
     return _getItemPane();

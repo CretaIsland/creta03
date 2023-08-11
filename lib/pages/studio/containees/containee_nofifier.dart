@@ -42,6 +42,10 @@ class ContaineeNotifier extends ChangeNotifier {
     return _selectedClass == ContaineeEnum.Frame;
   }
 
+  bool isNone() {
+    return _selectedClass == ContaineeEnum.None;
+  }
+
   void set(ContaineeEnum val, {bool doNoti = true}) {
     _selectedClass = val;
     //print('set($val)------------------------');

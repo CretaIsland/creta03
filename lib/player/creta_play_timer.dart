@@ -19,6 +19,7 @@ import '../model/link_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_variables.dart';
 import 'creta_abs_player.dart';
 import 'creta_abs_media_widget.dart';
@@ -321,6 +322,7 @@ class CretaPlayTimer extends ChangeNotifier {
           logger.finest('notifyToProperty');
           contentsManager.setSelectedMid(content.mid, doNotify: false);
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
+          LeftMenuPage.treeInvalidate();
         }
       }
     }

@@ -1,12 +1,15 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables, no_leading_underscores_for_local_identifiers
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// ignore: depend_on_referenced_packages
+
 //import 'package:flutter_treeview/flutter_treeview.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../pages/studio/book_main_page.dart';
 import '../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../../../pages/studio/containees/frame/sticker/mini_menu.dart';
+import '../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../pages/studio/studio_getx_controller.dart';
 import '../../buttons/creta_button.dart';
 import '../../buttons/creta_button_wrapper.dart';
@@ -25,16 +28,16 @@ import '../../../model/page_model.dart';
 import '../../creta_color.dart';
 
 class MyTreeView extends StatefulWidget {
-  final List<tree.Node> nodes;
+  //final List<tree.Node> nodes;
   final PageManager pageManager;
   final void Function(PageModel model) removePage;
   final void Function(FrameModel model) removeFrame;
   final void Function(ContentsModel model) removeContents;
-  final void Function(CretaModel model) showUnshow;
+  final void Function(CretaModel model, int index) showUnshow;
 
   MyTreeView({
     Key? key,
-    required this.nodes,
+    //required this.nodes,
     required this.pageManager,
     required this.removePage,
     required this.removeFrame,
@@ -47,8 +50,11 @@ class MyTreeView extends StatefulWidget {
 }
 
 class MyTreeViewState extends State<MyTreeView> {
+  //List<tree.Node> _nodes = [];
   FrameEventController? _sendEvent;
+  //bool _isHover = false;
   String _selectedNode = '';
+  final Set<String> _selectedNodeSet = {};
   late tree.TreeViewController _treeViewController;
   bool docsOpen = true;
   bool deepExpanded = true;
@@ -89,6 +95,9 @@ class MyTreeViewState extends State<MyTreeView> {
   }
 
   String _getSelectedNode() {
+    if (BookMainPage.containeeNotifier!.isBook() || BookMainPage.containeeNotifier!.isNone()) {
+      return '';
+    }
     PageModel? pageModel = widget.pageManager.getSelected() as PageModel?;
     if (pageModel == null) {
       return '';
@@ -96,7 +105,7 @@ class MyTreeViewState extends State<MyTreeView> {
     String pageKey = pageModel.mid;
 
     FrameManager? frameManager = widget.pageManager.getSelectedFrameManager();
-    if (frameManager == null) {
+    if (frameManager == null || BookMainPage.containeeNotifier!.isPage()) {
       return pageKey;
     }
     FrameModel? frameModel = frameManager.getSelected() as FrameModel?;
@@ -106,7 +115,7 @@ class MyTreeViewState extends State<MyTreeView> {
     String frameKey = '$pageKey/${frameModel.mid}';
 
     ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
-    if (contentsManager == null) {
+    if (contentsManager == null || BookMainPage.containeeNotifier!.isFrame()) {
       return frameKey;
     }
     ContentsModel? contentsModel = contentsManager.getCurrentModel();
@@ -116,23 +125,52 @@ class MyTreeViewState extends State<MyTreeView> {
     return '$frameKey/${contentsModel.mid}';
   }
 
+  // void initNodes() {
+  //   PageModel? selectedModel = widget.pageManager.getSelected() as PageModel?;
+  //   if (selectedModel == null) {
+  //     logger.warning('pageManagerHolder is not inited');
+  //     // _nodes = [
+  //     //   Node(
+  //     //       label: 'samples',
+  //     //       key: 'key',
+  //     //       expanded: true,
+  //     //       icon: Icons.folder_open, //Icons.folder,
+  //     //       children: []),
+  //     // ];
+  //     return;
+  //   }
+  //   logger.info('pageManagerHolder is inited');
+  //   _nodes.clear();
+  //   _nodes = widget.pageManager.toNodes(selectedModel);
+  // }
+
   void invalidate() {
     setState(() {});
   }
 
   @override
+  void dispose() {
+    //_nodes.clear();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     //_selectedNode = widget.pageManager.getSelected()!.id.toString();
+    //initNodes();
+
     final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
     _sendEvent = sendEvent;
     _selectedNode = _getSelectedNode();
 
     logger.info('myTreeView inited : _selectedNode=$_selectedNode');
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    //_initNodes(widget.pageManager.getSelected() as PageModel?);
     tree.TreeViewTheme treeViewTheme = tree.TreeViewTheme(
       expanderTheme: tree.ExpanderThemeData(
         // 꼭지점 테마임.
@@ -173,20 +211,27 @@ class MyTreeViewState extends State<MyTreeView> {
     //       }
     //       _selectedNode = snapshot.data!;
 
-    //print('_selectedNode = $_selectedNode');
+    //print('nodes length = ${LeftMenuPage.nodes.length}');
 
     //logger.info('_getSelectedNode=$_selectedNode', level: 5);
     _treeViewController = tree.TreeViewController(
-      children: widget.nodes,
+      //children: widget.nodes,
+      children: LeftMenuPage.nodes,
       selectedKey: _selectedNode,
     );
 
     return tree.TreeView(
+      button1: _button1,
+      button2: _button2,
       controller: _treeViewController,
       allowParentSelect: _allowParentSelect,
       supportParentDoubleTap: _supportParentDoubleTap,
       onExpansionChanged: (key, expanded) => _expandNode(key, expanded),
-      onNodeTap: (key) {
+      //onNodeHover: (key, hover) {},
+      onNodeShiftTap: (key, index) {
+        _selectedNodeSet.add(key);
+      },
+      onNodeTap: (key, index) {
         //print('------------------Selected: $key');
         if (_selectedNode == key) {
           if (BookMainPage.containeeNotifier!.isBook()) {
@@ -246,7 +291,13 @@ class MyTreeViewState extends State<MyTreeView> {
           return;
         }
         //print('contentsMid=$contentsMid');
-        _selectContents(frameModel, contentsModel, frameManager, contentsManager);
+        _selectContents(
+          frameModel,
+          contentsModel,
+          frameManager,
+          contentsManager,
+          index,
+        );
         //});
       },
       onNodeDoubleTap: (key) {
@@ -255,26 +306,35 @@ class MyTreeViewState extends State<MyTreeView> {
       nodeBuilder: (BuildContext context, tree.Node<dynamic> node) {
         // 한 Row에서 딱 Text Label 과 버튼 Area 아 있는 부분의 모양을 결정한다.
         CretaModel model = node.data!;
-        double verticalPadding = model.type == ExModelType.page ? 9 : 3;
+        bool isShow = true;
+        if (model is FrameModel) {
+          isShow = model.isShow.value;
+        }
+        if (model is ContentsModel) {
+          isShow = model.isShow.value;
+        }
+        if (model is PageModel) {
+          isShow = model.isShow.value;
+        }
+        double verticalPadding = model.type == ExModelType.page ? 9 : 6;
         bool isSelected = _isSelected(node);
         if (isSelected) {
           // 현재 선택된 노드의 Root Node 를 알고 있어야 한다.
           //print("selectedRoot fixed = ${node.root}");
           tree.TreeNode.selectedRoot = node.root;
         }
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: isSelected ? 200 : 272,
-              padding: EdgeInsets.symmetric(vertical: verticalPadding),
-              child: Text(
-                node.label,
-                style: node.isParent ? CretaFont.bodySmall : CretaFont.titleSmall,
-              ),
-            ),
-            if (isSelected) _buttons(model),
-          ],
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: verticalPadding),
+          child: Text(
+            node.label,
+            style: node.isParent
+                ? isShow
+                    ? CretaFont.bodySmall
+                    : CretaFont.bodySmall.copyWith(color: CretaColor.text[300])
+                : isShow
+                    ? CretaFont.titleSmall
+                    : CretaFont.titleSmall.copyWith(color: CretaColor.text[300]),
+          ),
         );
       },
       theme: treeViewTheme,
@@ -296,7 +356,7 @@ class MyTreeViewState extends State<MyTreeView> {
   }
 
   void _selectContents(FrameModel frameModel, ContentsModel contentsModel,
-      FrameManager frameManager, ContentsManager contentsManager) {
+      FrameManager frameManager, ContentsManager contentsManager, int index) {
     // 프레임을 선택되게 하기 위해서 참 많은 이벤트를 날려야 한다.;
     //print('_selectContents=${contentsModel.mid}');
     MiniMenu.showFrame = false;
@@ -320,6 +380,9 @@ class MyTreeViewState extends State<MyTreeView> {
       } else {
         contentsManager.setSelectedMid(contentsModel.mid, doNotify: true);
       }
+      if (contentsModel.isMusic()) {
+        contentsManager.selectMusic(contentsModel, index);
+      }
     }
   }
 
@@ -327,72 +390,96 @@ class MyTreeViewState extends State<MyTreeView> {
     return _treeViewController.selectedKey != null && _treeViewController.selectedKey == node.key;
   }
 
-  Widget _buttons(CretaModel model) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        BTN.fill_blue_i_m(
-          fgColor: CretaColor.text[700]!,
-          buttonColor: CretaButtonColor.forTree,
-          tooltip: CretaStudioLang.showUnshow,
-          tooltipBg: CretaColor.text[200]!,
-          icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-          onPressed: () {
-            setState(() {
-              _toggleShow(model);
-            });
-            widget.showUnshow(model);
-          },
-        ),
-        BTN.fill_blue_i_m(
-          fgColor: CretaColor.text[700]!,
-          buttonColor: CretaButtonColor.forTree,
-          tooltip: CretaStudioLang.tooltipDelete,
-          tooltipBg: CretaColor.text[200]!,
-          //iconImageFile: "assets/delete.svg",
-          icon: Icons.delete,
-          onPressed: () {
-            // Delete Page
-            logger.info('remove page');
-            if (model.type == ExModelType.page) {
-              widget.removePage(model as PageModel);
-              return;
-            }
-            if (model.type == ExModelType.frame) {
-              widget.removeFrame(model as FrameModel);
-              return;
-            }
-            if (model.type == ExModelType.contents) {
-              widget.removeContents(model as ContentsModel);
-              return;
-            }
-          },
-        ),
-      ],
+  // Widget _buttons(CretaModel model) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.end,
+  //     children: [
+  //       BTN.fill_blue_i_m(
+  //         fgColor: CretaColor.text[700]!,
+  //         buttonColor: CretaButtonColor.forTree,
+  //         tooltip: CretaStudioLang.showUnshow,
+  //         tooltipBg: CretaColor.text[200]!,
+  //         icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+  //         onPressed: () {
+  //           setState(() {
+  //             _toggleShow(model);
+  //           });
+  //           widget.showUnshow(model);
+  //         },
+  //       ),
+  //       BTN.fill_blue_i_m(
+  //         fgColor: CretaColor.text[700]!,
+  //         buttonColor: CretaButtonColor.forTree,
+  //         tooltip: CretaStudioLang.tooltipDelete,
+  //         tooltipBg: CretaColor.text[200]!,
+  //         //iconImageFile: "assets/delete.svg",
+  //         icon: Icons.delete,
+  //         onPressed: () {
+  //           // Delete Page
+  //           logger.info('remove page');
+  //           if (model.type == ExModelType.page) {
+  //             widget.removePage(model as PageModel);
+  //             return;
+  //           }
+  //           if (model.type == ExModelType.frame) {
+  //             widget.removeFrame(model as FrameModel);
+  //             return;
+  //           }
+  //           if (model.type == ExModelType.contents) {
+  //             widget.removeContents(model as ContentsModel);
+  //             return;
+  //           }
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  Widget _button1(CretaModel model, int index) {
+    return BTN.fill_blue_i_m(
+      fgColor: CretaColor.text[700]!,
+      buttonColor: CretaButtonColor.forTree,
+      tooltip: CretaStudioLang.showUnshow,
+      tooltipBg: CretaColor.text[200]!,
+      icon: _isShow(model) ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+      onPressed: () {
+        setState(() {
+          _toggleShow(model, index);
+        });
+        widget.showUnshow(model, index);
+      },
     );
-    // return IconButton(
-    //   constraints: BoxConstraints.tight(Size(16, 16)),
-    //   iconSize: 16,
-    //   padding: EdgeInsets.zero,
-    //   onPressed: () {
-    //     //setState(() {
-    //     if (model.type == ExModelType.page) {
-    //       widget.removePage(model as PageModel);
-    //       return;
-    //     }
-    //     if (model.type == ExModelType.frame) {
-    //       widget.removeFrame(model as FrameModel);
-    //       return;
-    //     }
-    //     if (model.type == ExModelType.contents) {
-    //       widget.removeContents(model as ContentsModel);
-    //       return;
-    //     }
-    //     //});
-    //   },
-    //   icon: Icon(Icons.delete_outline),
-    //   color: CretaColor.text[300]!,
-    // );
+  }
+
+  Widget _button2(CretaModel model) {
+    return BTN.fill_blue_i_m(
+      fgColor: CretaColor.text[700]!,
+      buttonColor: CretaButtonColor.forTree,
+      tooltip: CretaStudioLang.tooltipDelete,
+      tooltipBg: CretaColor.text[200]!,
+      //iconImageFile: "assets/delete.svg",
+      icon: Icons.delete,
+      onPressed: () {
+        // Delete Page
+        logger.info('remove page');
+        if (model.type == ExModelType.page) {
+          widget.removePage(model as PageModel);
+          return;
+        }
+        if (model.type == ExModelType.frame) {
+          widget.removeFrame(model as FrameModel);
+          return;
+        }
+        if (model.type == ExModelType.contents) {
+          widget.removeContents(model as ContentsModel);
+          if (model.isMusic()) {
+            ContentsManager? contentsManager = findContentsManager(model);
+            contentsManager?.removeMusic(model);
+          }
+          return;
+        }
+      },
+    );
   }
 
   bool _isShow(CretaModel model) {
@@ -411,7 +498,7 @@ class MyTreeViewState extends State<MyTreeView> {
     return true;
   }
 
-  void _toggleShow(CretaModel model) {
+  void _toggleShow(CretaModel model, int index) {
     if (model.type == ExModelType.page) {
       PageModel page = model as PageModel;
       page.isShow.set(!(page.isShow.value));
@@ -423,6 +510,14 @@ class MyTreeViewState extends State<MyTreeView> {
     if (model.type == ExModelType.contents) {
       ContentsModel contents = model as ContentsModel;
       contents.isShow.set(!(contents.isShow.value));
+      if (contents.isMusic()) {
+        ContentsManager? contentsManager = findContentsManager(model);
+        if (contents.isShow.value == true) {
+          contentsManager?.showMusic(model, index);
+        } else {
+          contentsManager?.unshowMusic(model);
+        }
+      }
     }
   }
 
@@ -454,7 +549,22 @@ class MyTreeViewState extends State<MyTreeView> {
       });
     }
   }
+
+  ContentsManager? findContentsManager(CretaModel model) {
+    PageModel? pageModel = widget.pageManager.getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    FrameManager? frameManager = widget.pageManager.findFrameManager(pageModel.mid);
+    if (frameManager == null) {
+      logger.severe('Invalid key');
+      return null;
+    } // _selectPage
+    return frameManager.getContentsManager(model.parentMid.value);
+  }
 }
+
+class CretaColors {}
 
 class ModContainer extends StatelessWidget {
   final tree.ExpanderModifier modifier;

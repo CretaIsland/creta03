@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../model/creta_model.dart';
 import 'tree_view_controller.dart';
 import 'tree_view_theme.dart';
 import 'tree_node.dart';
@@ -32,7 +33,9 @@ class TreeView extends InheritedWidget {
   final TreeViewController controller;
 
   /// The tap handler for a node. Passes the node key.
-  final Function(String)? onNodeTap;
+  final Function(String, int)? onNodeTap;
+  final Function(String, int)? onNodeShiftTap;
+  final Function(String, bool)? onNodeHover;
 
   /// Custom builder for nodes. Parameters are the build context and tree node.
   final Widget Function(BuildContext, Node)? nodeBuilder;
@@ -78,10 +81,15 @@ class TreeView extends InheritedWidget {
   /// a single or double tap._
   final bool supportParentDoubleTap;
 
+  final Widget Function(CretaModel model, int index) button1;
+  final Widget Function(CretaModel model) button2;
+
   TreeView({
     Key? key,
     required this.controller,
     this.onNodeTap,
+    this.onNodeShiftTap,
+    this.onNodeHover,
     this.onNodeDoubleTap,
     this.physics,
     this.onExpansionChanged,
@@ -90,16 +98,18 @@ class TreeView extends InheritedWidget {
     this.shrinkWrap = false,
     this.primary = true,
     this.nodeBuilder,
+    required this.button1,
+    required this.button2,
     TreeViewTheme? theme,
   })  : theme = theme ?? const TreeViewTheme(),
         super(
           key: key,
-          child: _TreeViewData(
-            controller,
-            shrinkWrap: shrinkWrap,
-            primary: primary,
-            physics: physics,
-          ),
+          child: _TreeViewData(controller,
+              shrinkWrap: shrinkWrap,
+              primary: primary,
+              physics: physics,
+              button1: button1,
+              button2: button2),
         );
 
   static TreeView? of(BuildContext context) =>
@@ -109,6 +119,7 @@ class TreeView extends InheritedWidget {
   bool updateShouldNotify(TreeView oldWidget) {
     return oldWidget.controller.children != controller.children ||
         oldWidget.onNodeTap != onNodeTap ||
+        oldWidget.onNodeHover != onNodeHover ||
         oldWidget.onExpansionChanged != onExpansionChanged ||
         oldWidget.theme != theme ||
         oldWidget.supportParentDoubleTap != supportParentDoubleTap ||
@@ -121,8 +132,17 @@ class _TreeViewData extends StatefulWidget {
   final bool? shrinkWrap;
   final bool? primary;
   final ScrollPhysics? physics;
+  final Widget Function(CretaModel model, int index) button1;
+  final Widget Function(CretaModel model) button2;
 
-  const _TreeViewData(this._controller, {this.shrinkWrap, this.primary, this.physics});
+  const _TreeViewData(
+    this._controller, {
+    this.shrinkWrap,
+    this.primary,
+    this.physics,
+    required this.button1,
+    required this.button2,
+  });
 
   @override
   State<_TreeViewData> createState() => _TreeViewDataState();
@@ -139,11 +159,21 @@ class _TreeViewDataState extends State<_TreeViewData> {
         primary: widget.primary,
         physics: widget.physics,
         padding: EdgeInsets.zero,
-        children: widget._controller.children.map((Node node) {
-          //print('--- build _TreeViewData ${node.key} selectedRoot=${TreeNode.selectedRoot}');
-          return TreeNode(node: node);
-        }).toList(),
+        children: _childrenNode(),
       ),
     );
+  }
+
+  List<Widget> _childrenNode() {
+    int index = 0;
+    return widget._controller.children.map((Node node) {
+      //print('--- build _TreeViewData ${node.key} selectedRoot=${TreeNode.selectedRoot}');
+      return TreeNode(
+        index: index++,
+        node: node,
+        button1: widget.button1,
+        button2: widget.button2,
+      );
+    }).toList();
   }
 }

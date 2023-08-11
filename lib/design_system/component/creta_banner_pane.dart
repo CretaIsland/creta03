@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
@@ -248,6 +249,7 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
               ? CretaSearchBar(
                   hintText: CretaLang.searchBar,
                   onSearch: (value) {
+                    if (kDebugMode) print('widget.onSearch($value)');
                     widget.onSearch?.call(value);
                   },
                   width: 246,

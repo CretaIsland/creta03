@@ -16,6 +16,7 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
+import '../../left_menu/left_menu_page.dart';
 import '../../right_menu/right_menu.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
@@ -141,6 +142,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
           _sendEvent?.sendEvent(model);
           setState(() {});
+          LeftMenuPage.initTreeNodes();
+          LeftMenuPage.treeInvalidate();
         }
       },
       onFrameBack: (aMid, bMid) {
@@ -197,6 +200,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
               contentsManager.setSelectedMid(content.mid, doNotify: false);
               BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
+              LeftMenuPage.treeInvalidate();
+              
               return;
             }
           }
@@ -212,6 +217,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
           frameManager?.setSelectedMid(mid, doNotify: false);
+          LeftMenuPage.treeInvalidate();
           //});
         }
         //frame = frameManager?.getSelected() as FrameModel?;

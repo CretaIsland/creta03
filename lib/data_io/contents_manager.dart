@@ -17,6 +17,7 @@ import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/left_menu/music/music_player_frame.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_getx_controller.dart';
@@ -378,7 +379,7 @@ class ContentsManager extends CretaManager {
       },
     );
     //await setToDB(model);
-    remove(model);
+    //remove(model);
     //print('remove contents ${model.name}, ${model.mid}');
     await playTimer?.reOrdering();
 
@@ -389,9 +390,12 @@ class ContentsManager extends CretaManager {
       _frameManager?.notify();
     } else {
       BookMainPage.containeeNotifier!.notify();
+      LeftMenuPage.treeInvalidate();
       _frameManager?.notify();
       //print('getVisibleLength is not 0');
     }
+    LeftMenuPage.initTreeNodes();
+    LeftMenuPage.treeInvalidate();
     removeChild(model.mid);
 
     return;
@@ -893,6 +897,8 @@ class ContentsManager extends CretaManager {
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
     DraggableStickers.frameSelectNotifier!.set(frameModel.mid, doNotify: false);
     frameManager.setSelectedMid(frameModel.mid);
+    LeftMenuPage.initTreeNodes();
+    LeftMenuPage.treeInvalidate();
     //frameManager!.notify();
     // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
   }
@@ -1093,6 +1099,7 @@ class ContentsManager extends CretaManager {
       if (model.isRemoved.value == true) {
         continue;
       }
+      //print('model.name=${model.name}');
       conNodes.add(tree.Node<CretaModel>(
           key: '${pageModel.mid}/${frame.mid}/${model.mid}',
           label: model.name,
@@ -1101,5 +1108,85 @@ class ContentsManager extends CretaManager {
           root: pageModel.mid));
     }
     return conNodes;
+  }
+
+  void unshowMusic(ContentsModel model) {
+    if (model.isMusic() == false) {
+      return;
+    }
+    String frameId = frameModel.mid;
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    if (musicKey == null) {
+      logger.severe('musicKey is null');
+      return;
+    }
+    musicKey.currentState?.removeMusic(model);
+  }
+
+  void showMusic(ContentsModel model, int index) {
+    if (model.isMusic() == false) {
+      return;
+    }
+    String frameId = frameModel.mid;
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    if (musicKey == null) {
+      logger.severe('musicKey is null');
+      return;
+    }
+    musicKey.currentState?.unhiddenMusic(model, index);
+  }
+
+  void selectMusic(ContentsModel model, int index) {
+    if (model.isMusic() == false) {
+      return;
+    }
+    String frameId = frameModel.mid;
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    if (musicKey == null) {
+      logger.severe('musicKey is null');
+      return;
+    }
+    musicKey.currentState?.selectedSong(model, index);
+  }
+
+  void removeMusic(ContentsModel model) {
+    if (model.isMusic() == false) {
+      return;
+    }
+    String frameId = frameModel.mid;
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    if (musicKey == null) {
+      logger.severe('musicKey is null');
+      return;
+    }
+    musicKey.currentState?.removeMusic(model);
+  }
+
+  void afterShowUnshow(
+      ContentsModel model, int index, void Function()? invalidate) {
+    int len = getShowLength();
+    ContentsModel? current = getCurrentModel();
+    if (model.isShow.value == false) {
+      unshowMusic(model);
+      if (current != null && current.mid == model.mid) {
+        // 현재 방송중인 것을 unshow 하려고 한다.
+        if (len > 0) {
+          gotoNext();
+          invalidate?.call();
+          return;
+        }
+      }
+    } else {
+      showMusic(model, index);
+      // show 했는데, current 가 null 이다.
+      if (current == null && isEmptySelected()) {
+        if (len > 0) {
+          setSelectedMid(model.mid);
+          gotoNext();
+          invalidate?.call();
+          return;
+        }
+      }
+    }
   }
 }

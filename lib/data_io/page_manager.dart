@@ -71,6 +71,14 @@ class PageManager extends CretaManager {
     return frameManagerList[pageMid];
   }
 
+  FrameManager? findCurrentFrameManager() {
+    PageModel? pageModel = getSelected() as PageModel?;
+    if (pageModel == null) {
+      return null;
+    }
+    return findFrameManager(pageModel.mid);
+  }
+
   FrameManager newFrameManager(BookModel bookModel, PageModel pageModel) {
     FrameManager retval = FrameManager(
       bookModel: bookModel,

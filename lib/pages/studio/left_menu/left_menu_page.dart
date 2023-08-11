@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../../../data_io/contents_manager.dart';
 import '../../../data_io/frame_manager.dart';
-import '../../../design_system/component/tree/flutter_treeview.dart';
 import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -20,6 +19,8 @@ import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../design_system/component/tree/my_tree_view.dart';
+//import '../../../design_system/component/tree/src/models/node.dart';
+import '../../../design_system/component/tree/src/models/node.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
 import '../../../design_system/menu/creta_popup_menu.dart';
@@ -35,6 +36,43 @@ import '../studio_constant.dart';
 import '../studio_variables.dart';
 
 class LeftMenuPage extends StatefulWidget {
+  static GlobalObjectKey<MyTreeViewState> treeViewKey =
+      GlobalObjectKey<MyTreeViewState>('treeViewKey');
+  static bool _flipToTree = true;
+  static List<Node> _nodes = [];
+  static List<Node> get nodes => _nodes;
+
+  static Future<void> treeInvalidate() async {
+    if (LeftMenuPage._flipToTree == false) {
+      //print('-------------treeInvalidate()------------------');
+      LeftMenuPage.treeViewKey.currentState?.setSelectedNode();
+    }
+  }
+
+  static void initTreeNodes({PageManager? pageManager}) {
+    //print('-------------initTreeNodes()------------------');
+    pageManager ??= BookMainPage.pageManagerHolder;
+    if (pageManager == null) return;
+    PageModel? selectedModel = pageManager.getSelected() as PageModel?;
+    if (selectedModel == null) {
+      logger.warning('pageManagerHolder is not inited');
+      // _nodes = [
+      //   Node(
+      //       label: 'samples',
+      //       key: 'key',
+      //       expanded: true,
+      //       icon: Icons.folder_open, //Icons.folder,
+      //       children: []),
+      // ];
+      return;
+    }
+    logger.info('pageManagerHolder is inited');
+    LeftMenuPage._nodes.clear();
+    LeftMenuPage._nodes = pageManager.toNodes(selectedModel);
+    // LeftMenuPage._nodes =
+    //     BookMainPage.bookManagerHolder!.toNodes(pageManager.bookModel!, pageManager);
+  }
+
   final bool isFolded;
 
   const LeftMenuPage({super.key, this.isFolded = false});
@@ -70,13 +108,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   int _pageCount = 0;
   bool _buildComplete = false;
   late GlobalObjectKey _pageViewKey;
-  late GlobalObjectKey<MyTreeViewState> _treeViewKey;
 
   Timer? _screenshotTimer;
   Rect? _thumbArea;
 
-  bool _flipToTree = true;
-  List<Node> _nodes = [];
+  //bool _flipToTree = true;
 
   //final int _firstPage = 100;
 
@@ -99,8 +135,6 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     cardHeight = bodyHeight + headerHeight;
     addCardSpace = headerHeight + verticalPadding;
     _pageViewKey = GlobalObjectKey('pageViewKey');
-    _treeViewKey = GlobalObjectKey<MyTreeViewState>('treeViewKey');
-
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(() {
       // ScrollDirection scrollDirection = _scrollController.position.userScrollDirection;
@@ -140,6 +174,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   void dispose() {
     //_scrollController.stop();
     logger.info('left_menu_page disposed..........................');
+    LeftMenuPage._nodes.clear();
     _stopScreenshotTimer();
     super.dispose();
   }
@@ -160,24 +195,6 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     _addCardSpace = addCardSpace * widthScale;
   }
 
-  void _initNodes(PageModel? selectedModel) {
-    if (_pageManager == null || selectedModel == null) {
-      logger.warning('pageManagerHolder is not inited');
-      // _nodes = [
-      //   Node(
-      //       label: 'samples',
-      //       key: 'key',
-      //       expanded: true,
-      //       icon: Icons.folder_open, //Icons.folder,
-      //       children: []),
-      // ];
-      return;
-    }
-    logger.info('pageManagerHolder is inited');
-    _nodes.clear();
-    _nodes = _pageManager!.toNodes(selectedModel);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<PageManager>(builder: (context, pageManager, child) {
@@ -196,7 +213,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           Column(
             children: [
               _menuBar(),
-              _flipToTree ? _pageView() : _treeView(),
+              LeftMenuPage._flipToTree ? _pageView() : _treeView(),
             ],
           ),
         ],
@@ -230,11 +247,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
               child: BTN.fill_gray_100_i_m(
                   tooltip: CretaStudioLang.treePage,
                   tooltipBg: CretaColor.text[700]!,
-                  icon: _flipToTree ? Icons.account_tree_outlined : Icons.splitscreen_outlined,
+                  icon: LeftMenuPage._flipToTree
+                      ? Icons.account_tree_outlined
+                      : Icons.splitscreen_outlined,
                   onPressed: (() {
                     setState(
                       () {
-                        _flipToTree = !_flipToTree;
+                        LeftMenuPage._flipToTree = !LeftMenuPage._flipToTree;
                       },
                     );
                   })),
@@ -273,19 +292,32 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   Widget _treeView() {
-    _initNodes(_pageManager!.getSelected() as PageModel?);
+    LeftMenuPage.initTreeNodes(pageManager: _pageManager);
     return Container(
       padding: const EdgeInsets.only(top: 10, bottom: 20),
       height: StudioVariables.workHeight - 100,
       child: MyTreeView(
-        key: _treeViewKey,
-        nodes: _nodes,
+        key: LeftMenuPage.treeViewKey,
+        //nodes: LeftMenuPage._nodes,
         pageManager: _pageManager!,
         removePage: _removePage,
         removeFrame: _removeFrame,
         removeContents: _removeContents,
-        showUnshow: (model) {
-          _pageManager!.notify();
+        showUnshow: (model, index) {
+          BookMainPage.containeeNotifier!.notify();
+          if (model is PageModel || model is FrameModel) {
+            _pageManager!.notify();
+          } else if (model is ContentsModel) {
+            FrameManager? frameManager = _pageManager!.findCurrentFrameManager();
+            //frameManager?.notify();
+            if (frameManager != null) {
+              ContentsManager? contentsManager =
+                  frameManager.getContentsManager(model.parentMid.value);
+              //contentsManager?.notify();
+              contentsManager?.afterShowUnshow(model, index, null);
+            }
+          }
+          //...more...
         },
       ),
     );
@@ -457,8 +489,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   void _showUnshowPage(PageModel model) {
     model.isShow.set(!(model.isShow.value));
     _pageManager?.notify();
-    // if (_treeViewKey.currentState != null && _flipToTree == false) {
-    //   _treeViewKey.currentState?.invalidate();
+    // if (LeftMenuPage.treeViewKey.currentState != null && LeftMenuPage._flipToTree == false) {
+    //   LeftMenuPage.treeViewKey.currentState?.treeInvalidate();
     // }
   }
 
@@ -482,9 +514,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         }
       }
       _pageManager!.notify();
-      if (_treeViewKey.currentState != null && _flipToTree == false) {
-        _treeViewKey.currentState?.setSelectedNode();
-      }
+      LeftMenuPage.treeInvalidate();
       return;
     });
   }
@@ -497,9 +527,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     mychangeStack.endTrans();
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
     _pageManager!.notify();
-    if (_treeViewKey.currentState != null && _flipToTree == false) {
-      _treeViewKey.currentState?.setSelectedNode();
-    }
+    LeftMenuPage.treeInvalidate();
   }
 
   void _removeContents(ContentsModel contents) {
@@ -515,10 +543,13 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     }
     BookMainPage.containeeNotifier!.setFrameClick(true);
     contentsManager.removeSelected(context).then((value) {
-      _pageManager!.notify();
-      if (_treeViewKey.currentState != null && _flipToTree == false) {
-        _treeViewKey.currentState?.setSelectedNode();
-      }
+      BookMainPage.containeeNotifier!.notify();
+      //_pageManager!.notify();
+      frameManager.notify();
+      Future.delayed(const Duration(seconds: 1)).then((value) {
+        LeftMenuPage.treeInvalidate();
+        return null;
+      });
       return null;
     });
   }

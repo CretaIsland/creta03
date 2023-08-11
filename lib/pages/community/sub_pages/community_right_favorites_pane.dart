@@ -301,17 +301,20 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
     if (_onceDBGetComplete) {
       return _getItemPane();
     }
-    var retval = CretaModelSnippet.waitDatum(
-      managerList: [
-        favoritesManagerHolder,
-        bookPublishedManagerHolder,
-        channelManagerHolder,
-        userPropertyManagerHolder,
-        teamManagerHolder,
-        dummyManagerHolder,
-      ],
-      //userId: AccountManager.currentLoginUser.email,
-      consumerFunc: _getItemPane,
+    var retval = Scrollbar(
+      controller: widget.scrollController,
+      child: CretaModelSnippet.waitDatum(
+        managerList: [
+          favoritesManagerHolder,
+          bookPublishedManagerHolder,
+          channelManagerHolder,
+          userPropertyManagerHolder,
+          teamManagerHolder,
+          dummyManagerHolder,
+        ],
+        //userId: AccountManager.currentLoginUser.email,
+        consumerFunc: _getItemPane,
+      ),
     );
     return retval;
   }

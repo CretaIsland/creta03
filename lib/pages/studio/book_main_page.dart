@@ -1340,7 +1340,11 @@ class _BookMainPageState extends State<BookMainPage> {
   void _keyEventHandler(RawKeyEvent event) {
     final key = event.logicalKey;
     logger.info('key pressed $key');
-    if (event is RawKeyDownEvent) {
+    if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
+      StudioVariables.isShiftPressed = true;
+    } else if (event is RawKeyUpEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
+      StudioVariables.isShiftPressed = false;
+    } else if (event is RawKeyDownEvent) {
       if (keys.contains(key)) return;
       // textField 의 focus bug 때문에, delete  key 를 사용할 수 없다.
       // if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
@@ -1358,6 +1362,7 @@ class _BookMainPageState extends State<BookMainPage> {
       }
       keys.add(key);
       // Ctrl Key Area
+
       if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
           keys.contains(LogicalKeyboardKey.controlRight))) {
         if (keys.contains(LogicalKeyboardKey.keyZ)) {
