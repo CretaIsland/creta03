@@ -186,33 +186,38 @@ class BookPublishedManager extends CretaManager {
     bool isNew = false;
 
     BookModel? oldOne = await findPublished(src.mid);
+    BookModel? published;
     if (oldOne == null) {
+      // 신규 생성이다.
       isNew = true;
-    } else {}
-    BookModel published = BookModel('');
+      published = BookModel('');
+      published.copyFrom(src, newMid: published.mid, pMid: published.parentMid.value);
+    } else {
+      // 이미 있다.
+      published = oldOne;
+      published.copyFrom(src, newMid: published.mid, pMid: published.parentMid.value);
+    }
+
+    published.sourceMid = src.mid;
     src.publishMid = published.mid;
     src.save();
 
-    // creat_book_published data 를 만든다.
-    published.copyFrom(src, newMid: published.mid, pMid: published.parentMid.value);
-    published.sourceMid = src.mid;
     PagePublishedManager publishedManager = PagePublishedManager(pageManager, src);
-    //if (isNew) {
-    await createToDB(published);
-    logger.info('published created ${published.mid}, source=${published.sourceMid}');
-    //} else {
-    //  await setToDB(published);
-    //  logger.info('published updated ${published.mid}, , source=${published.sourceMid}');
-    //}
-    await publishedManager.makeCopyAll(published.mid);
+    if (isNew) {
+      await createToDB(published);
+      await publishedManager.makeCopyAll(published.mid);
+      logger.info('published created ${published.mid}, source=${published.sourceMid}');
+    } else {
+      await setToDB(published);
+      // 예전 자식은 모두 지우고
+      publishedManager.removeChild(published.mid);
+      print('delete old children');
+      // 자식은 모두 새로 만든다.
+      int count = await publishedManager.makeCopyAll(published.mid);
+      logger.info('published updated ${published.mid}, source=${published.sourceMid} $count');
+    }
     onComplete?.call(isNew);
 
-    if (isNew == false) {
-      // 예전것을 지운다.
-      oldOne!.isRemoved.set(true, save: false, noUndo: true);
-      await setToDB(oldOne);
-      publishedManager.removeChild(oldOne.mid);
-    }
     return true;
   }
 }

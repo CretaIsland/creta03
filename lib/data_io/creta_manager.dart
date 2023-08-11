@@ -1060,7 +1060,10 @@ abstract class CretaManager extends AbsExModelManager {
     mychangeStack.endTrans();
   }
 
-  Future<void> removeChild(String parentMid) async {}
+  Future<void> removeChild(String parentMid) async {
+    print('------------------------');
+  }
+
   Future<void> removeAll() async {
     for (var model in modelList) {
       model.isRemoved.set(
@@ -1082,6 +1085,8 @@ abstract class CretaManager extends AbsExModelManager {
     AbsExModel newOne = newModel('');
     // creat_book_published data 를 만든다.
     newOne.copyFrom(src, newMid: newOne.mid, pMid: newParentMid ?? newOne.parentMid.value);
+    print('makeCopy : newMid=${newOne.mid}, parent=$newParentMid');
+
     await createToDB(newOne);
     return newOne;
   }
