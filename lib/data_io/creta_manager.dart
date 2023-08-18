@@ -405,7 +405,7 @@ abstract class CretaManager extends AbsExModelManager {
             : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
       );
       if (resultList.isEmpty) {
-        logger.warning('no data founded...');
+        logger.info('no data founded...');
         _lastFetchedCount = 0;
         if (_lastSortedObjectList != null) {
           _lastSortedObjectList!.clear();

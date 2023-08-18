@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../model/creta_model.dart';
 import '../../../../pages/studio/containees/containee_nofifier.dart';
+import '../../../../pages/studio/left_menu/left_menu_page.dart';
+import '../../../../pages/studio/studio_variables.dart';
 import 'tree_view_controller.dart';
 import 'tree_view_theme.dart';
 import 'tree_node.dart';
@@ -124,32 +126,72 @@ class TreeView extends InheritedWidget {
     return _selectedNodeSet.lookup(key) != null;
   }
 
-  bool setMultiSelected(key) {
-    // 콘텐츠만 선택 가능하다.
-    if (key.contains("contents=") == false) {
-      return false;
+  int getMultiSelectedLength() {
+    return _selectedNodeSet.length;
+  }
+
+  void _foldByType(ContaineeEnum keyType, List<Node> nodes) {
+    for (var ele in nodes) {
+      if (ele.keyType == keyType) {
+        ele.expanded = false;
+      } else {
+        _foldByType(keyType, ele.children);
+      }
     }
-    //bool changed = false;
-    //ContaineeEnum lastType = getKeyType(key);
-    //if (_keyType != lastType) {
-    //_selectedNodeSet.clear();
-    //_keyType = lastType;
-    //  changed = true;
-    //}
-    _selectedNodeSet.add(key);
+  }
+
+  void _setBeeween(
+    ContaineeEnum keyType,
+    String firstKey,
+    String lastKey,
+  ) {
+    bool matched = false;
+    for (var ele in LeftMenuPage.nodeKeys.keys) {
+      if (matched == false) {
+        if (ele == firstKey) {
+          matched = true;
+        }
+        continue;
+      }
+      if (ele == lastKey) {
+        _selectedNodeSet.add(ele);
+        return;
+      }
+      if (keyType == LeftMenuPage.nodeKeys[ele]) {
+        _selectedNodeSet.add(ele);
+      }
+    }
+    return;
+  }
+
+  bool setMultiSelected(Node node) {
+    if (StudioVariables.isShiftPressed == true) {
+      if (StudioVariables.selectedKeyType != node.keyType) {
+        StudioVariables.selectedKeyType = node.keyType;
+        // 만약, keyType 이 Page,Frame 이면,  모두 닫는다.
+        if (node.keyType == ContaineeEnum.Page || node.keyType == ContaineeEnum.Frame) {
+          _foldByType(StudioVariables.selectedKeyType, LeftMenuPage.nodes);
+        }
+        _selectedNodeSet.clear();
+        _selectedNodeSet.add(node.key);
+        return true;
+      }
+      if (_selectedNodeSet.isNotEmpty) {
+        // 마지작 키와 현재 선택된 키사이의 모든 key (단, 동일타입) 을 모두 선택한다.
+        _setBeeween(
+          StudioVariables.selectedKeyType,
+          _selectedNodeSet.last,
+          node.key,
+        );
+      }
+      return true;
+    }
     //return changed;
-    return true;
+    return false;
   }
 
   void clearMultiSelected() {
     _selectedNodeSet.clear();
-  }
-
-  ContaineeEnum getKeyType(String key) {
-    if (key.contains("contents=") == true) return ContaineeEnum.Contents;
-    if (key.contains("frame=") == true) return ContaineeEnum.Frame;
-    if (key.contains("page=") == true) return ContaineeEnum.Page;
-    return ContaineeEnum.Book;
   }
 
   @override

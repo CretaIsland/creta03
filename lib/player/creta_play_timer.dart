@@ -56,6 +56,7 @@ class CretaPlayTimer extends ChangeNotifier {
 
   bool _isPauseTimer = false;
   bool _isPrevPauseTimer = false;
+  //bool _isPausedBySelection = false;
   bool get isPauseTimer => _isPauseTimer;
 
   bool _isNextButtonBusy = false;
@@ -456,6 +457,7 @@ class CretaPlayTimer extends ChangeNotifier {
           logger.info('i am busy');
           return;
         }
+
         // if (BookMainPage.pageManagerHolder!.isSelected(contentsManager.pageModel.mid) == false) {
         //   // 현재 보여지고 있는 페이지가 아니라면 타이머는 쉰다.
         //   // logger.info(
@@ -486,6 +488,23 @@ class CretaPlayTimer extends ChangeNotifier {
         if (_currentModel == null) {
           logger.warning('_curentModel is null');
           return;
+        }
+
+        // Studio 에서 선택된 프레임의 경우, 플레이가 정지한다.
+        if (DraggableStickers.frameSelectNotifier != null && _currentModel != null) {
+          if (DraggableStickers.frameSelectNotifier!.selectedAssetId ==
+                  _currentModel!.parentMid.value &&
+              _currentModel!.isRemoved.value == false) {
+            if (_currentModel!.isVideo() || _isPauseTimer == false) {}
+            // _isPausedBySelection = true;
+            // togglePause();
+            return;
+          }
+          // if (_isPauseTimer == true && _isPausedBySelection == true) {
+          //   _isPausedBySelection = false;
+          //   togglePause();
+          //   return;
+          // }
         }
 
         if (_currentModel != null && _currentModel!.isImage() || _currentModel!.isText()) {

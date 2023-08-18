@@ -53,10 +53,12 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   bool _isExpanded = false;
   bool _isHover = false;
   //bool _isMultiSelected = false;
-  bool _isMultiSelected() {
-    TreeView? treeView = TreeView.of(context);
-    assert(treeView != null, 'TreeView must exist in context');
-    return treeView!.isMultiSelected(widget.node.key);
+  bool _isMultiSelected(TreeView treeView) {
+    return treeView.isMultiSelected(widget.node.key);
+  }
+
+  int _getMultiSelectedLength(TreeView treeView) {
+    return treeView.getMultiSelectedLength();
   }
 
   @override
@@ -106,12 +108,14 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     assert(treeView != null, 'TreeView must exist in context');
     setState(() {
       _isExpanded = !_isExpanded;
+      //print('_handleExpand ($_isExpanded)-------------------------------------------------');
+      widget.node.expanded = _isExpanded; //skpark 삼각형 모양이 안바뀌길래 넣어봤는데, 됨...신기..
       if (_isExpanded) {
         _controller.forward();
       } else {
         _controller.reverse().then<void>((void value) {
-          if (!mounted) return;
-          setState(() {});
+          //if (!mounted) return;
+          //setState(() {});
         });
       }
     });
@@ -132,14 +136,14 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   void _handleTap() {
     TreeView? treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
-    TreeNode.selectedRoot = widget.node.root;
+    TreeNode.selectedRoot = widget.node.key;
 
     if (StudioVariables.isShiftPressed) {
       //print('shift pressed');
       setState(
         () {
           //_isMultiSelected = !_isMultiSelected;
-          if (treeView?.setMultiSelected(widget.node.key) == true) {
+          if (treeView?.setMultiSelected(widget.node) == true) {
             treeView?.onNodeShiftTap!(widget.node.key, widget.index);
           }
         },
@@ -164,13 +168,17 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     assert(treeView != null, 'TreeView must exist in context');
     TreeViewTheme theme = treeView!.theme;
     if (theme.expanderTheme.type == ExpanderType.none) return Container();
+
+    //print('_buildNodeExpander=========================${widget.node.expanded}');
     return widget.node.isParent
         ? GestureDetector(
             onTap: () => _handleExpand(),
             child: _TreeNodeExpander(
               speed: _controller.duration!,
-              expanded: widget.node.expanded,
+              //expanded: widget.node.expanded,
+              expanded: _isExpanded,
               themeData: theme.expanderTheme,
+              //node: widget.node,
             ),
           )
         : Container(width: theme.expanderTheme.size);
@@ -180,8 +188,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     TreeView? treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
     TreeViewTheme theme = treeView!.theme;
-    bool isSelected = treeView.controller.selectedKey != null &&
-        treeView.controller.selectedKey == widget.node.key;
+    bool isSelected = _isSelected(treeView);
     return Container(
       alignment: Alignment.center,
       width: widget.node.hasIcon ? theme.iconTheme.size! + theme.iconPadding : 0,
@@ -202,8 +209,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     TreeView? treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
     TreeViewTheme theme = treeView!.theme;
-    bool isSelected = treeView.controller.selectedKey != null &&
-        treeView.controller.selectedKey == widget.node.key;
+    bool isSelected = _isSelected(treeView);
     final icon = _buildNodeIcon();
     return Container(
       padding: EdgeInsets.symmetric(
@@ -239,13 +245,22 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     );
   }
 
+  bool _isSelected(TreeView treeView) {
+    bool retval = treeView.controller.selectedKey != null &&
+        treeView.controller.selectedKey == widget.node.key;
+    if (retval && _getMultiSelectedLength(treeView) > 0) {
+      //print('isSelected but ShiftPressed-----------------');
+      return false;
+    }
+    return retval;
+  }
+
   Widget _buildNodeWidget() {
     TreeView? treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
     TreeViewTheme theme = treeView!.theme;
 
-    bool isSelected = treeView.controller.selectedKey != null &&
-        treeView.controller.selectedKey == widget.node.key;
+    bool isSelected = _isSelected(treeView);
 
     final Widget buttons = Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -320,9 +335,9 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     }
     return Container(
       //color: isSelected ? theme.colorScheme.primary : null,
-      color: isSelected
+      color: isSelected // || _isMultiSelected()
           ? CretaColor.primary[200]!
-          : _isMultiSelected()
+          : _isMultiSelected(treeView)
               ? CretaColor.secondary[200]!
               : null, //skpark
       child: Row(
@@ -361,12 +376,15 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     // if (isSelected) {
     //   _TreeNodeState._selectedRoot = widget.node.root;
     // }
-    bool isSelectedRoot = (widget.node.root == TreeNode.selectedRoot);
+    bool isSelectedRoot = TreeNode.selectedRoot != null &&
+        (widget.node.key != TreeNode.selectedRoot! &&
+            widget.node.key.contains(TreeNode.selectedRoot!));
 
     //print('TreeNode.build $isSelectedRoot');
 
     return Container(
       // 모든 노드를 포함하는 전체 영역 박스임.
+      //color: Colors.white,
       color: isSelectedRoot ? CretaColor.primary[100] : Colors.white,
       child: widget.node.isParent
           ? AnimatedBuilder(
@@ -424,11 +442,13 @@ class _TreeNodeExpander extends StatefulWidget {
   final ExpanderThemeData themeData;
   final bool expanded;
   final Duration _expandSpeed;
+  //final Node<dynamic> node;
 
   const _TreeNodeExpander({
     required Duration speed,
     required this.themeData,
     required this.expanded,
+    //required this.node,
   }) : _expandSpeed = speed;
 
   @override
@@ -470,6 +490,7 @@ class _TreeNodeExpanderState extends State<_TreeNodeExpander> with SingleTickerP
 
   @override
   void didUpdateWidget(_TreeNodeExpander oldWidget) {
+    //print('***************_TreeNodeExpander.didUpdateWidget ${widget.expanded},${oldWidget.expanded}');
     if (widget.themeData != oldWidget.themeData || widget.expanded != oldWidget.expanded) {
       bool isEnd = widget.themeData.position == ExpanderPosition.end;
       setState(() {

@@ -15,6 +15,7 @@ import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
+import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/studio_variables.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
@@ -541,6 +542,7 @@ class PageManager extends CretaManager {
       }
       nodes.add(Node<CretaModel>(
         key: model.mid,
+        keyType: ContaineeEnum.Page,      
         label: 'Page ${pageNo.toString().padLeft(2, '0')}. $desc',
         data: model,
         expanded: (selectedModel != null && model.mid == selectedModel.mid) || model.expanded,
