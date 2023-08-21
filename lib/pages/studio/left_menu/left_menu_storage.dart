@@ -1,18 +1,21 @@
-import 'package:creta03/data_io/file_manager.dart';
-import 'package:creta03/design_system/menu/creta_drop_down_button.dart';
-import 'package:creta03/pages/studio/left_menu/storage/storage_image_selected.dart';
+import 'package:creta03/data_io/depot_manager.dart';
+import 'package:creta03/pages/studio/left_menu/depot/depot_selected.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop.dart';
 import '../../../design_system/buttons/creta_tab_button.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
-import '../../../design_system/menu/creta_popup_menu.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
-import '../../../lang/creta_lang.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../studio_constant.dart';
 import '../studio_variables.dart';
+
+enum SelectedContentsType {
+  none,
+  image,
+  video,
+}
 
 class LeftMenuStorage extends StatefulWidget {
   const LeftMenuStorage({super.key});
@@ -29,30 +32,35 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   late double bodyWidth;
 
   String searchText = '';
-  late String _selectedType;
+  // late String _selectedType;
+  String _selectedType = '';
 
-  final List<CretaMenuItem> _dropDownOptions = [
-    CretaMenuItem(
-      caption: CretaLang.basicBookSortFilter[0], // 최신순
-      onPressed: () {},
-      selected: true,
-    ),
-    CretaMenuItem(
-      caption: CretaLang.basicBookSortFilter[1], // 이름순
-      onPressed: () {},
-      selected: false,
-    ),
-  ];
+  // late String contentsMid;
+
+  late DepotManager depotManager;
+
+  // final List<CretaMenuItem> _dropDownOptions = [
+  //   CretaMenuItem(
+  //     caption: CretaLang.basicBookSortFilter[0], // 최신순
+  //     onPressed: () {},
+  //     selected: true,
+  //   ),
+  //   CretaMenuItem(
+  //     caption: CretaLang.basicBookSortFilter[1], // 이름순
+  //     onPressed: () {},
+  //     selected: false,
+  //   ),
+  // ];
 
   @override
   void initState() {
     logger.info('_LeftMenuStorageState.initState');
-    _selectedTab = CretaStudioLang.storageMenuTabBar.values.first;
-    _selectedType = CretaStudioLang.storageTypes.values.first;
-    bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
-
-    fileManagerHolder = FileManager();
     super.initState();
+
+    _selectedTab = CretaStudioLang.storageMenuTabBar.values.first;
+    bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
+    depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
+    _selectedType = CretaStudioLang.storageTypes.values.first;
   }
 
   @override
@@ -157,10 +165,10 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _storageType(),
-              CretaDropDownButton(
-                dropDownMenuItemList: _dropDownOptions,
-                height: 30.0,
-              )
+              // CretaDropDownButton(
+              //   dropDownMenuItemList: _dropDownOptions,
+              //   height: 30.0,
+              // ),
             ],
           ),
           _selectedStorage(),
@@ -168,39 +176,6 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
       ),
     );
   }
-
-  // Widget _storageType1() {
-  //   return Row(
-  //     children: [
-  //       BTN.line_blue_t_m(
-  //         text: CretaStudioLang.storageTypes.keys.toList()[0], // 전제
-  //         onPressed: () {
-  //           setState(() {
-  //             _selectedType = CretaStudioLang.storageTypes.values.toList()[0];
-  //           });
-  //         },
-  //       ),
-  //       const SizedBox(width: 8.0),
-  //       BTN.line_blue_t_m(
-  //         text: CretaStudioLang.storageTypes.keys.toList()[1], // 이미지
-  //         onPressed: () {
-  //           setState(() {
-  //             _selectedType = CretaStudioLang.storageTypes.values.toList()[1];
-  //           });
-  //         },
-  //       ),
-  //       const SizedBox(width: 8.0),
-  //       BTN.line_blue_t_m(
-  //         text: CretaStudioLang.storageTypes.keys.toList()[2], // 영상
-  //         onPressed: () {
-  //           setState(() {
-  //             _selectedType = CretaStudioLang.storageTypes.values.toList()[2];
-  //           });
-  //         },
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _storageType() {
     return CretaTabButton(
@@ -229,20 +204,35 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
 
   Widget _selectedStorage() {
     List<String> type = CretaStudioLang.storageTypes.values.toList();
+
     if (_selectedType == type[0]) {
-      return Container(
-        height: StudioVariables.workHeight - 250.0,
-        padding: const EdgeInsets.only(top: 10),
-      );
+      return const DepotSelectedClass(contentsType: ContentsType.none);
     }
+
     if (_selectedType == type[1]) {
-      return const ImageSelectedClass();
+      return const DepotSelectedClass(contentsType: ContentsType.image);
     }
+
     if (_selectedType == type[2]) {
-      return Container(
-        height: StudioVariables.workHeight - 250.0,
-        padding: const EdgeInsets.only(top: 10),
-      );
+      return const DepotSelectedClass(contentsType: ContentsType.video);
+    }
+
+    if (_selectedType == type[3]) {
+      debugPrint('Depot------Added to DB-----');
+      depotManager.createNextDepot(
+          'contents=63a90f61-2f2b-4a47-aa5f-6144b7c72c37', ContentsType.image);
+      depotManager.createNextDepot(
+          'contents=1db8ece7-2a0b-442b-be9e-5a68d309f346', ContentsType.image);
+      depotManager.createNextDepot(
+          'contents=14d4d89a-2ba5-40e7-b78b-976ebed789b3', ContentsType.image);
+      depotManager.createNextDepot(
+          'contents=12f6eaf1-99da-4de3-b357-1b3a31f08085', ContentsType.image);
+      depotManager.createNextDepot(
+          'contents=64087921-9cf3-4040-be15-f82469ee15b7', ContentsType.video);
+      depotManager.createNextDepot(
+          'contents=a12a82cc-a4ad-4873-bc89-e729cd59d156', ContentsType.video);
+      depotManager.createNextDepot(
+          'contents=f6ec7825-7beb-4671-a732-9691f2d7cd76', ContentsType.video);
     }
     return const SizedBox.shrink();
   }

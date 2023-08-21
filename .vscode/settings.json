@@ -1,5 +1,6 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
     "cmake.configureOnOpen": true,
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "cmake.sourceDirectory": "D:/creta03/linux"
 }

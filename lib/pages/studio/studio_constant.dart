@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../../design_system/creta_color.dart';
 
@@ -168,6 +169,12 @@ class StudioConst {
     Size(480, 320),
     Size(460, 142),
     Size(260, 100),
+  ];
+
+  static List<ContentsType> depotsType = [
+    ContentsType.none,
+    ContentsType.image,
+    ContentsType.video,
   ];
 
   static int maxMyFavFrame = 12;

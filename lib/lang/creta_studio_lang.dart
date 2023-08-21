@@ -93,6 +93,7 @@ class CretaStudioLang {
     '전체': 'all',
     '이미지': 'image',
     '영상': 'video',
+    'CretaTest': 'test',
   };
 
   static List<String> menuStick = [

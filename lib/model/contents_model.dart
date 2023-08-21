@@ -416,7 +416,6 @@ class ContentsModel extends CretaModel {
     textType = TextType.fromInt(map["textType"] ?? 0);
     remoteUrl = map["remoteUrl"] ?? '';
     thumbnail = map["thumbnail"] ?? '';
-
     subList.set(map["subList"] ?? '', save: false, noUndo: true);
     playTime.set(map["playTime"] ?? 15000, save: false, noUndo: true);
     videoPlayTime.set(map["videoPlayTime"] ?? 15000, save: false, noUndo: true);
@@ -432,7 +431,6 @@ class ContentsModel extends CretaModel {
     //isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
     lastModifiedTime = map["lastModifiedTime"] ?? '';
     prevPlayTime = map["prevPlayTime"] ?? '';
-
     font.set(map["font"] ?? CretaFont.fontFamily, save: false, noUndo: true);
     fontWeight.set(map["fontWeight"] ?? 400, save: false, noUndo: true);
     isBold.set(map["isBold"] ?? false, save: false, noUndo: true);

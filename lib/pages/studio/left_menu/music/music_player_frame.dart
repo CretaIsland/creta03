@@ -187,6 +187,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       logger.severe('Selected size is not specified ${widget.size} ');
       _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
     }
+    
     _audioPlayer.setVolume(0.0);
 
     _init();

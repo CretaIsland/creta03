@@ -2,12 +2,10 @@
 
 //import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
-import '../pages/studio/studio_constant.dart';
 import 'creta_model.dart';
 
 // ignore: camel_case_types
@@ -15,9 +13,9 @@ class DepotModel extends CretaModel {
   String creator = '';
   String creatorName = '';
   String contentsMid = '';
-  late UndoAble<bool> isFavorite;
+  ContentsType contentsType = ContentsType.none;
 
-  Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
+  late UndoAble<bool> isFavorite;
 
   @override
   List<Object?> get props => [
@@ -26,24 +24,25 @@ class DepotModel extends CretaModel {
         creatorName,
         contentsMid,
         isFavorite,
+        contentsType,
       ];
-  DepotModel(String pmid) : super(pmid: pmid, type: ExModelType.depot, parent: '') {
+  DepotModel(String pmid, String userEmail)
+      : super(pmid: pmid, type: ExModelType.depot, parent: userEmail) {
     isFavorite = UndoAble<bool>(false, mid, 'isFavorite');
 
-    parentMid.set(mid, noUndo: true, save: false);
     setRealTimeKey(mid);
   }
 
-  DepotModel.withName(
-    String nameStr, {
-    required this.creator,
-    required this.creatorName,
-    required this.contentsMid,
-  }) : super(pmid: '', type: ExModelType.book, parent: '') {
+  DepotModel.withName(String userEmail,
+      {required this.creator,
+      required this.creatorName,
+      required this.contentsMid,
+      required this.contentsType})
+      : super(pmid: '', type: ExModelType.depot, parent: userEmail) {
     //print('new mid = $mid');
 
     isFavorite = UndoAble<bool>(false, mid, 'isFavorite');
-    parentMid.set(mid, noUndo: true, save: false);
+
     setRealTimeKey(mid);
   }
   @override
@@ -53,22 +52,25 @@ class DepotModel extends CretaModel {
     creator = src.creator;
     creatorName = src.creatorName;
     contentsMid = src.contentsMid;
+    contentsType = src.contentsType;
 
     isFavorite = UndoAble<bool>(srcBook.isFavorite.value, mid, 'isFavorite');
 
-    logger.finest('BookCopied($mid)');
+    logger.finest('DepotCopied($mid)');
   }
 
   @override
   void updateFrom(AbsExModel src) {
     super.updateFrom(src);
-    DepotModel srcBook = src as DepotModel;
+    DepotModel srcDepot = src as DepotModel;
     creator = src.creator;
     creatorName = src.creatorName;
     contentsMid = src.contentsMid;
+    contentsType = src.contentsType;
 
-    isFavorite.init(srcBook.isFavorite.value);
-    logger.finest('BookCopied($mid)');
+    isFavorite.init(srcDepot.isFavorite.value);
+
+    logger.finest('DepotCopied($mid)');
   }
 
   @override
@@ -78,6 +80,8 @@ class DepotModel extends CretaModel {
     creatorName = map["creatorName"] ?? '';
     contentsMid = map["contentsMid"] ?? '';
     isFavorite.set(map["isFavorite"] ?? true, save: false, noUndo: true);
+    // contentsType = map["contentsType"] ?? ContentsType.none;
+    contentsType = ContentsType.fromInt(map["contentsType"] ?? 0);
   }
 
   @override
@@ -88,6 +92,7 @@ class DepotModel extends CretaModel {
         "creatorName": creatorName,
         "contentsMid": contentsMid,
         "isFavorite": isFavorite.value,
+        "contentsType": contentsType.index,
       }.entries);
   }
 }
