@@ -8,6 +8,7 @@ import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
 import '../login_page.dart';
 import 'book_main_page.dart';
+import 'containees/containee_nofifier.dart';
 import 'studio_constant.dart';
 
 class StudioVariables {
@@ -55,6 +56,8 @@ class StudioVariables {
   static CretaManager? clipBoardManager;
 
   static bool isShiftPressed = false;
+  static bool isCtrlPressed = false;
+  static ContaineeEnum selectedKeyType = ContaineeEnum.None;
 
   static void clearClipBoard() {
     clipBoard = null;

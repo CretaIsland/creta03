@@ -1,4 +1,5 @@
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:hycop/hycop/database/abs_database.dart';
 
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
@@ -8,7 +9,7 @@ import 'creta_manager.dart';
 import 'frame_manager.dart';
 
 class FramePublishedManager extends CretaManager {
-  final FrameManager frameManager;
+  final FrameManager? frameManager;
   FramePublishedManager(this.frameManager) : super('creta_frame_published', null);
 
   @override
@@ -25,12 +26,12 @@ class FramePublishedManager extends CretaManager {
   Future<int> makeCopyAll(String? newParentMid) async {
     lock();
     int counter = 0;
-    for (var ele in frameManager.modelList) {
+    for (var ele in frameManager!.modelList) {
       if (ele.isRemoved.value == true) {
         continue;
       }
       AbsExModel newOne = await makeCopy(ele, newParentMid);
-      ContentsManager? contentsManager = frameManager.findContentsManager(ele.mid);
+      ContentsManager? contentsManager = frameManager!.findContentsManager(ele.mid);
       if (contentsManager == null) {
         continue;
       }
@@ -40,5 +41,21 @@ class FramePublishedManager extends CretaManager {
     }
     unlock();
     return counter;
+  }
+
+  @override
+  Future<void> removeChild(String parentMid) async {
+    Map<String, QueryValue> query = {};
+    query['parentMid'] = QueryValue(value: parentMid);
+    query['isRemoved'] = QueryValue(value: false);
+    final retval = await queryFromDB(query);
+    for (var ele in retval) {
+      //print('removeChild ${ele.mid}');
+      ContentsPublishedManager childManager = ContentsPublishedManager(null);
+      await childManager.removeChild(ele.mid);
+      ele.isRemoved.set(true, save: false, noUndo: true);
+      await setToDB(ele as CretaModel);
+    }
+    modelList.clear();
   }
 }

@@ -13,6 +13,7 @@ import '../model/creta_model.dart';
 import '../model/page_model.dart';
 import '../model/team_model.dart';
 import '../pages/login_page.dart';
+import '../pages/studio/containees/containee_nofifier.dart';
 import 'creta_manager.dart';
 import 'page_manager.dart';
 
@@ -269,6 +270,7 @@ class BookManager extends CretaManager {
     }
     nodes.add(Node<CretaModel>(
       key: model.mid,
+      keyType: ContaineeEnum.Book,      
       label: 'CretaBook ${model.name.value}',
       data: model,
       expanded: model.expanded,

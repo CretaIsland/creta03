@@ -1102,6 +1102,7 @@ class ContentsManager extends CretaManager {
       //print('model.name=${model.name}');
       conNodes.add(tree.Node<CretaModel>(
           key: '${pageModel.mid}/${frame.mid}/${model.mid}',
+          keyType: ContaineeEnum.Contents,
           label: model.name,
           expanded: model.expanded || isSelected(model.mid),
           data: model,
@@ -1162,8 +1163,7 @@ class ContentsManager extends CretaManager {
     musicKey.currentState?.removeMusic(model);
   }
 
-  void afterShowUnshow(
-      ContentsModel model, int index, void Function()? invalidate) {
+  void afterShowUnshow(ContentsModel model, int index, void Function()? invalidate) {
     int len = getShowLength();
     ContentsModel? current = getCurrentModel();
     if (model.isShow.value == false) {

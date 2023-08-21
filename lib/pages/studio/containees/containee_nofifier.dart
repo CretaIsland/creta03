@@ -8,6 +8,10 @@ enum ContaineeEnum {
   Page,
   Frame,
   Contents,
+  End;
+
+  static int validCheck(int val) => (val > End.index || val < None.index) ? None.index : val;
+  static ContaineeEnum fromInt(int? val) => ContaineeEnum.values[validCheck(val ?? None.index)];
 }
 
 class ContaineeNotifier extends ChangeNotifier {

@@ -40,12 +40,21 @@ class LeftMenuPage extends StatefulWidget {
       GlobalObjectKey<MyTreeViewState>('treeViewKey');
   static bool _flipToTree = true;
   static List<Node> _nodes = [];
+  static final Map<String, ContaineeEnum> _nodeKeys = {};
   static List<Node> get nodes => _nodes;
+  static Map<String, ContaineeEnum> get nodeKeys => _nodeKeys;
 
   static Future<void> treeInvalidate() async {
     if (LeftMenuPage._flipToTree == false) {
       //print('-------------treeInvalidate()------------------');
       LeftMenuPage.treeViewKey.currentState?.setSelectedNode();
+    }
+  }
+
+  static void _initNodeKeys(List<Node> pnodes) {
+    for (Node ele in pnodes) {
+      _nodeKeys[ele.key] = ele.keyType;
+      _initNodeKeys(ele.children);
     }
   }
 
@@ -69,6 +78,7 @@ class LeftMenuPage extends StatefulWidget {
     logger.info('pageManagerHolder is inited');
     LeftMenuPage._nodes.clear();
     LeftMenuPage._nodes = pageManager.toNodes(selectedModel);
+    _initNodeKeys(LeftMenuPage._nodes);
     // LeftMenuPage._nodes =
     //     BookMainPage.bookManagerHolder!.toNodes(pageManager.bookModel!, pageManager);
   }
@@ -202,7 +212,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       pageManager.reOrdering();
       pageManager.resetPageSize();
       _pageCount = pageManager.getAvailLength();
-      logger.finest('PageManager Consumer  $_pageCount');
+      logger.info('PageManager Consumer  $_pageCount');
       if (pageManager.getSelected() == null && _pageCount > 0) {
         pageManager.setSelected(0);
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);

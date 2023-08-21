@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 
+import '../../../../../pages/studio/containees/containee_nofifier.dart';
 import '../tree_node.dart';
 import '../utilities.dart';
 
@@ -35,7 +36,7 @@ class Node<T> {
 
   /// The open or closed state of the [TreeNode]. Applicable only if the
   /// node is a parent
-  final bool expanded;
+  bool expanded = false;
 
   /// Generic data model that can be assigned to the [TreeNode]. This makes
   /// it useful to assign and retrieve data associated with the [TreeNode]
@@ -49,10 +50,13 @@ class Node<T> {
   final bool parent;
   final String root;
 
-  const Node({
+  final ContaineeEnum keyType;
+
+  Node({
     required this.key,
     required this.label,
     required this.root,
+    required this.keyType,
     this.children = const [],
     this.expanded = false,
     this.parent = false,
@@ -62,11 +66,19 @@ class Node<T> {
     this.data,
   });
 
+  static ContaineeEnum genKeyType(String key) {
+    if (key.contains("contents=") == true) return ContaineeEnum.Contents;
+    if (key.contains("frame=") == true) return ContaineeEnum.Frame;
+    if (key.contains("page=") == true) return ContaineeEnum.Page;
+    return ContaineeEnum.Book;
+  }
+
   /// Creates a [Node] from a string value. It generates a unique key.
-  static Node<T> fromLabel<T>(String label, String root) {
+  static Node<T> fromLabel<T>(String label, String root, ContaineeEnum keyType) {
     String key = Utilities.generateRandom();
     return Node<T>(
       key: '${key}_$label',
+      keyType: keyType,
       label: label,
       root: root,
     );
@@ -81,6 +93,7 @@ class Node<T> {
   static Node<T> fromMap<T>(Map<String, dynamic> map) {
     String? key = map['key'];
     String label = map['label'];
+    ContaineeEnum keyType = ContaineeEnum.fromInt(map['keyType'] ?? 0);
     String root = map['root'];
     var data = map['data'];
     List<Node> children = [];
@@ -96,12 +109,17 @@ class Node<T> {
     // }
     // _icon = const IconData(_iconData);
     // }
+    if (keyType == ContaineeEnum.None) {
+      keyType = genKeyType(key);
+    }
+
     if (map['children'] != null) {
       List<Map<String, dynamic>> childrenMap = List.from(map['children']);
       children = childrenMap.map((Map<String, dynamic> child) => Node.fromMap(child)).toList();
     }
     return Node<T>(
       key: key,
+      keyType: keyType,
       label: label,
       data: data,
       expanded: Utilities.truthful(map['expanded']),
@@ -115,6 +133,7 @@ class Node<T> {
   /// replaced with the new values.
   Node<T> copyWith({
     String? key,
+    ContaineeEnum? keyType,
     String? label,
     List<Node>? children,
     bool? expanded,
@@ -127,6 +146,7 @@ class Node<T> {
   }) =>
       Node<T>(
         key: key ?? this.key,
+        keyType: keyType ?? this.keyType,
         label: label ?? this.label,
         icon: icon ?? this.icon,
         iconColor: iconColor ?? this.iconColor,
@@ -151,6 +171,7 @@ class Node<T> {
   Map<String, dynamic> get asMap {
     Map<String, dynamic> map = {
       "key": key,
+      "keyType": keyType.index,
       "label": label,
       "root": root,
       "icon": icon == null ? null : icon!.codePoint,
@@ -176,6 +197,7 @@ class Node<T> {
   int get hashCode {
     return hashValues(
       key,
+      keyType,
       label,
       root,
       icon,
@@ -193,6 +215,7 @@ class Node<T> {
     if (other.runtimeType != runtimeType) return false;
     return other is Node &&
         other.key == key &&
+        other.keyType == keyType &&
         other.label == label &&
         other.root == root &&
         other.icon == icon &&

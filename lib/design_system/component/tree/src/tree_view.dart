@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../model/creta_model.dart';
+import '../../../../pages/studio/containees/containee_nofifier.dart';
+import '../../../../pages/studio/left_menu/left_menu_page.dart';
+import '../../../../pages/studio/studio_variables.dart';
 import 'tree_view_controller.dart';
 import 'tree_view_theme.dart';
 import 'tree_node.dart';
@@ -28,6 +31,8 @@ import 'models/node.dart';
 ///   theme: treeViewTheme
 /// ),
 /// ```
+
+// ignore: must_be_immutable
 class TreeView extends InheritedWidget {
   /// The controller for the [TreeView]. It manages the data and selected key.
   final TreeViewController controller;
@@ -114,6 +119,80 @@ class TreeView extends InheritedWidget {
 
   static TreeView? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType(aspect: TreeView);
+
+  final Set<String> _selectedNodeSet = {};
+  //final ContaineeEnum _keyType = ContaineeEnum.None;
+  bool isMultiSelected(String key) {
+    return _selectedNodeSet.lookup(key) != null;
+  }
+
+  int getMultiSelectedLength() {
+    return _selectedNodeSet.length;
+  }
+
+  void _foldByType(ContaineeEnum keyType, List<Node> nodes) {
+    for (var ele in nodes) {
+      if (ele.keyType == keyType) {
+        ele.expanded = false;
+      } else {
+        _foldByType(keyType, ele.children);
+      }
+    }
+  }
+
+  void _setBeeween(
+    ContaineeEnum keyType,
+    String firstKey,
+    String lastKey,
+  ) {
+    bool matched = false;
+    for (var ele in LeftMenuPage.nodeKeys.keys) {
+      if (matched == false) {
+        if (ele == firstKey) {
+          matched = true;
+        }
+        continue;
+      }
+      if (ele == lastKey) {
+        _selectedNodeSet.add(ele);
+        return;
+      }
+      if (keyType == LeftMenuPage.nodeKeys[ele]) {
+        _selectedNodeSet.add(ele);
+      }
+    }
+    return;
+  }
+
+  bool setMultiSelected(Node node) {
+    if (StudioVariables.isShiftPressed == true) {
+      if (StudioVariables.selectedKeyType != node.keyType) {
+        StudioVariables.selectedKeyType = node.keyType;
+        // 만약, keyType 이 Page,Frame 이면,  모두 닫는다.
+        if (node.keyType == ContaineeEnum.Page || node.keyType == ContaineeEnum.Frame) {
+          _foldByType(StudioVariables.selectedKeyType, LeftMenuPage.nodes);
+        }
+        _selectedNodeSet.clear();
+        _selectedNodeSet.add(node.key);
+        return true;
+      }
+      if (_selectedNodeSet.isNotEmpty) {
+        // 마지작 키와 현재 선택된 키사이의 모든 key (단, 동일타입) 을 모두 선택한다.
+        _setBeeween(
+          StudioVariables.selectedKeyType,
+          _selectedNodeSet.last,
+          node.key,
+        );
+      }
+      return true;
+    }
+    //return changed;
+    return false;
+  }
+
+  void clearMultiSelected() {
+    _selectedNodeSet.clear();
+  }
 
   @override
   bool updateShouldNotify(TreeView oldWidget) {

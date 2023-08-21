@@ -11,6 +11,7 @@ import '../../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../../../pages/studio/containees/frame/sticker/mini_menu.dart';
 import '../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../pages/studio/studio_getx_controller.dart';
+import '../../../pages/studio/studio_variables.dart';
 import '../../buttons/creta_button.dart';
 import '../../buttons/creta_button_wrapper.dart';
 import '../../creta_font.dart';
@@ -54,7 +55,7 @@ class MyTreeViewState extends State<MyTreeView> {
   FrameEventController? _sendEvent;
   //bool _isHover = false;
   String _selectedNode = '';
-  final Set<String> _selectedNodeSet = {};
+
   late tree.TreeViewController _treeViewController;
   bool docsOpen = true;
   bool deepExpanded = true;
@@ -144,9 +145,9 @@ class MyTreeViewState extends State<MyTreeView> {
   //   _nodes = widget.pageManager.toNodes(selectedModel);
   // }
 
-  void invalidate() {
-    setState(() {});
-  }
+  // void invalidate1() {
+  //   setState(() {});
+  // }
 
   @override
   void dispose() {
@@ -228,10 +229,9 @@ class MyTreeViewState extends State<MyTreeView> {
       supportParentDoubleTap: _supportParentDoubleTap,
       onExpansionChanged: (key, expanded) => _expandNode(key, expanded),
       //onNodeHover: (key, hover) {},
-      onNodeShiftTap: (key, index) {
-        _selectedNodeSet.add(key);
-      },
+      onNodeShiftTap: (key, index) {},
       onNodeTap: (key, index) {
+        StudioVariables.selectedKeyType = ContaineeEnum.None;
         //print('------------------Selected: $key');
         if (_selectedNode == key) {
           if (BookMainPage.containeeNotifier!.isBook()) {
@@ -321,7 +321,7 @@ class MyTreeViewState extends State<MyTreeView> {
         if (isSelected) {
           // 현재 선택된 노드의 Root Node 를 알고 있어야 한다.
           //print("selectedRoot fixed = ${node.root}");
-          tree.TreeNode.selectedRoot = node.root;
+          //tree.TreeNode.selectedRoot = node.root;
         }
         return Padding(
           padding: EdgeInsets.symmetric(vertical: verticalPadding),
@@ -541,7 +541,12 @@ class MyTreeViewState extends State<MyTreeView> {
               icon: expanded ? Icons.folder_open : Icons.folder,
             ));
       } else {
-        updated = _treeViewController.updateNode(key, node.copyWith(expanded: expanded));
+        //print('_expandNode ($expanded)');
+        updated = _treeViewController.updateNode(
+            key,
+            node.copyWith(
+              expanded: expanded,
+            ));
       }
       setState(() {
         if (key == 'docs') docsOpen = expanded;

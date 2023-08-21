@@ -35,3 +35,7 @@ creta_page	isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순
 creta_link	isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순 __name__ 내림차순
 
 creta_connected_user	isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순 __name__ 내림차순
+
+creta_page_published isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순
+creta_frame_published isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순
+creta_contents_published isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순
