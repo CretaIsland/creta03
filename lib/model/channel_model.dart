@@ -22,6 +22,7 @@ class ChannelModel extends CretaModel {
   String userId = '';
   String teamId = '';
   int followerCount = 0;
+  String latestContentsTime = '';
   String get name => userPropertyModel?.nickname ?? teamModel?.name ?? '';
   String get profileImg => userPropertyModel?.profileImg ?? teamModel?.profileImg ?? '';
   String get channelBannerImg => userPropertyModel?.channelBannerImg ?? teamModel?.channelBannerImg ?? '';
@@ -34,6 +35,7 @@ class ChannelModel extends CretaModel {
         userId,
         teamId,
         followerCount,
+        latestContentsTime,
       ];
   ChannelModel(String pmid) : super(pmid: pmid, type: ExModelType.channel, parent: '');
 
@@ -41,6 +43,7 @@ class ChannelModel extends CretaModel {
     required this.userId,
     required this.teamId,
     this.followerCount = 0,
+    this.latestContentsTime = '',
   }) : super(pmid: '', type: ExModelType.channel, parent: '');
 
   @override
@@ -50,6 +53,7 @@ class ChannelModel extends CretaModel {
     userId = srcChannel.userId;
     teamId = srcChannel.teamId;
     followerCount = srcChannel.followerCount;
+    latestContentsTime = srcChannel.latestContentsTime;
     logger.finest('ChannelCopied($mid)');
   }
 
@@ -60,6 +64,7 @@ class ChannelModel extends CretaModel {
     userId = srcChannel.userId;
     teamId = srcChannel.teamId;
     followerCount = srcChannel.followerCount;
+    latestContentsTime = srcChannel.latestContentsTime;
     logger.finest('ChannelCopied($mid)');
   }
 
@@ -69,6 +74,7 @@ class ChannelModel extends CretaModel {
     userId = map["userId"] ?? '';
     teamId = map["teamId"] ?? '';
     followerCount = map["followerCount"] ?? 0;
+    latestContentsTime = map["latestContentsTime"] ?? '';
   }
 
   @override
@@ -78,6 +84,7 @@ class ChannelModel extends CretaModel {
         "userId": userId,
         "teamId": teamId,
         "followerCount": followerCount,
+        "latestContentsTime": latestContentsTime,
       }.entries);
   }
 
