@@ -34,7 +34,6 @@ class _DepotSelectedClassState extends State<DepotSelectedClass> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           List<ContentsModel> filteredContents = snapshot.data!;
-          debugPrint("====Obtaining Data Done====");
           return SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.only(top: 10),
