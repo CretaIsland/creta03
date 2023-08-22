@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:creta03/model/user_property_model.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
+//import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop.dart';
 import 'package:progress_bar_steppers/steppers.dart';
 
 import '../../common/creta_utils.dart';
 import '../../data_io/book_published_manager.dart';
+import '../../data_io/channel_manager.dart';
 import '../../design_system/animation/staggerd_animation.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_toggle_button.dart';
@@ -474,6 +476,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       src: widget.model!,
       pageManager: BookMainPage.pageManagerHolder!,
       onComplete: (isNew) {
+        ChannelManager channelManagerHolder = ChannelManager();
+        channelManagerHolder.updateToDB(
+          LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+          {"lastPublishTime": HycopUtils.dateTimeToDB(DateTime.now()) },
+        );
         _modifier = isNew ? CretaStudioLang.newely : CretaStudioLang.update;
         _publishResultStr = CretaStudioLang.publishComplete;
         _onceDBPublishComplete = true;

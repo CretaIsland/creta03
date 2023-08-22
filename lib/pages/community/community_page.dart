@@ -29,12 +29,13 @@ import '../../model/book_model.dart';
 //import '../../model/team_model.dart';
 import '../../model/user_property_model.dart';
 import '../../model/channel_model.dart';
+import '../../model/subscription_model.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../model/playlist_model.dart';
 
-import 'community_sample_data.dart';
+//import 'community_sample_data.dart';
 import 'sub_pages/community_right_home_pane.dart';
 import 'sub_pages/community_right_channel_pane.dart';
 import 'sub_pages/community_right_favorites_pane.dart';
@@ -43,6 +44,7 @@ import 'sub_pages/community_right_playlist_detail_pane.dart';
 import 'sub_pages/community_right_subscription_pane.dart';
 import 'sub_pages/community_right_watch_history_pane.dart';
 import 'sub_pages/community_right_book_pane.dart';
+import 'creta_subscription_ui_item.dart';
 
 class CommunityPage extends StatefulWidget {
   final String subPageUrl;
@@ -61,7 +63,6 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   late final Widget Function(Size)? _titlePane;
 
-  final Map<String, CretaBookData> _subscriptionUserMap = {};
   final ScrollController _rightOverlayPaneScrollController = ScrollController();
 
   PlaylistModel? _currentPlaylistModel;
@@ -69,6 +70,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   ChannelModel? _currentChannelModel;
   UserPropertyModel? _userPropertyModelOfBookModel;
   //TeamModel? _teamModel;
+  List<SubscriptionModel> _subscriptionList = [];
+  SubscriptionModel? _selectedSubscriptionModel;
   bool _bookIsFavorites = false;
 
   BookType _filterBookType = BookType.none;
@@ -94,10 +97,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
     StudioVariables.isFullscreen = false;
 
-    List<CretaBookData> cretaBookList = CommunitySampleData.getCretaBookList();
-    for (final cretaBookData in cretaBookList) {
-      _subscriptionUserMap.putIfAbsent(cretaBookData.creator, () => cretaBookData);
-    }
+    // List<CretaBookData> cretaBookList = CommunitySampleData.getCretaBookList();
+    // for (final cretaBookData in cretaBookList) {
+    //   _subscriptionUserMap.putIfAbsent(cretaBookData.creator, () => cretaBookData);
+    // }
 
     _leftMenuItemList = [
       CretaMenuItem(
@@ -1322,7 +1325,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   GlobalObjectKey _getRightPaneKey() {
     String key =
         //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
-        '${Uri.base.query}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
+        '${Uri.base.query}-${_selectedSubscriptionModel?.subscriptionChannel?.name ?? ''}-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
     if (kDebugMode) print('_getRightPaneKey=$key');
     return GlobalObjectKey(key);
   }
@@ -1347,6 +1350,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     });
   }
 
+  void _onUpdateSubscriptionModelList(List<SubscriptionModel> subscriptionList) {
+    setState(() {
+      _subscriptionList = [...subscriptionList];
+    });
+  }
+
   Widget _getRightPane(BuildContext context) {
     //Size size = Size(rightPaneRect.childWidth, rightPaneRect.childHeight);
     switch (widget.subPageUrl) {
@@ -1366,7 +1375,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
-          selectedUserId: _selectedSubscriptionUserId,
+          selectedSubscriptionModel: _selectedSubscriptionModel,
+          onUpdateSubscriptionModelList: _onUpdateSubscriptionModelList,
+          filterBookType: _filterBookType,
+          filterBookSort: _filterBookSort,
+          filterPermissionType: _filterPermissionType,
+          filterSearchKeyword: _filterSearchKeyword,
         );
       case AppRoutes.watchHistory:
         return CommunityRightWatchHistoryPane(
@@ -1470,24 +1484,23 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return SizedBox.shrink();
   }
 
-  String _selectedSubscriptionUserId = '';
-  void _changeSubscriptionUser(String id) {
+  void _changeSubscriptionModel(SubscriptionModel? model) {
     setState(() {
-      _selectedSubscriptionUserId = id;
+      _selectedSubscriptionModel = model;
     });
   }
 
   List<Widget> _getSubscriptionUserList() {
     List<Widget> widgetList = [];
-    _subscriptionUserMap.forEach((key, cretaBookData) {
+    for(final item in _subscriptionList) {
       widgetList.add(
-        SubscribeUserItem(
-          cretaBookData: cretaBookData,
-          onChangeSelectUser: _changeSubscriptionUser,
-          isSelectedUser: (_selectedSubscriptionUserId == cretaBookData.creator),
+        SubscriptionItem(
+          subscriptionModel: item,
+          onChangeSelectUser: _changeSubscriptionModel,
+          isSelectedUser: (_selectedSubscriptionModel?.getMid == item.getMid),
         ),
       );
-    });
+    }
     return widgetList;
   }
 
@@ -1542,102 +1555,6 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           ),
           _getRightOverlayPane(),
         ],
-      ),
-    );
-  }
-}
-
-////////////////////////////////////////////////
-class SubscribeUserItem extends StatefulWidget {
-  final CretaBookData cretaBookData;
-  final double width;
-  final double height;
-  final Function(String) onChangeSelectUser;
-  final bool isSelectedUser;
-
-  const SubscribeUserItem({
-    super.key,
-    required this.cretaBookData,
-    this.width = 286,
-    this.height = 80,
-    required this.onChangeSelectUser,
-    required this.isSelectedUser,
-  });
-
-  @override
-  State<SubscribeUserItem> createState() => _SubscribeUserItemState();
-}
-
-class _SubscribeUserItemState extends State<SubscribeUserItem> {
-  bool _mouseOver = false;
-  late Color? textColor;
-
-  @override
-  void initState() {
-    super.initState();
-    textColor = widget.isSelectedUser ? CretaColor.primary[400] : CretaColor.text[700];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: _mouseOver ? SystemMouseCursors.click : MouseCursor.defer,
-      onEnter: (event) {
-        setState(() {
-          _mouseOver = true;
-        });
-      },
-      onExit: (event) {
-        setState(() {
-          _mouseOver = false;
-        });
-      },
-      child: InkWell(
-        onTap: () {
-          widget.onChangeSelectUser.call(widget.isSelectedUser ? '' : widget.cretaBookData.creator);
-        },
-        child: Container(
-          width: 246,
-          height: 80,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: widget.isSelectedUser ? Colors.white : null,
-          ),
-          clipBehavior: Clip.antiAlias,
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-          child: Row(
-            children: [
-              //Icon(Icons.account_circle, size:40),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  widget.cretaBookData.thumbnailUrl,
-                  height: 40,
-                  width: 40,
-                ),
-              ),
-              SizedBox(width: 12),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 246 - 40 - 12 - 20 - 20,
-                    child: Text(
-                      widget.cretaBookData.creator,
-                      style: CretaFont.buttonLarge.copyWith(color: textColor),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Text(
-                    '구독자 xx명',
-                    style: CretaFont.bodySmall.copyWith(color: textColor),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
