@@ -48,10 +48,10 @@ extension GlobalKeyExtension on GlobalKey {
 class Snippet {
   static List<LogicalKeyboardKey> keys = [];
 
-  static Widget showWaitSign({double size = 40.0}) {
+  static Widget showWaitSign({double size = 40.0, Color color = CretaColor.primary}) {
     return LoadingAnimationWidget.fourRotatingDots(
-      color: CretaColor.primary,
-      size: 40.0,
+      color: color,
+      size: size,
     );
   }
 

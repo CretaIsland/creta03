@@ -30,7 +30,7 @@ import '../../design_system/creta_color.dart';
 //import 'package:url_launcher/link.dart';
 //import '../../../design_system/buttons/creta_button_wrapper.dart';
 // import '../../../design_system/menu/creta_popup_menu.dart';
-// import '../../../design_system/component/custom_image.dart';
+import '../../../design_system/component/custom_image.dart';
 // import '../../../design_system/creta_font.dart';
 // import '../../../design_system/creta_color.dart';
 //import '../../../design_system/buttons/creta_button.dart';
@@ -118,10 +118,12 @@ class _SubscriptionItemState extends State<SubscriptionItem> {
               //Icon(Icons.account_circle, size:40),
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  widget.subscriptionModel.subscriptionChannel!.channelBannerImg,
+                child: CustomImage(
+                  image: widget.subscriptionModel.subscriptionChannel!.channelBannerImg,
                   height: 40,
                   width: 40,
+                  hasAni: false,
+                  hasMouseOverEffect: false,
                 ),
               ),
               SizedBox(width: 12),

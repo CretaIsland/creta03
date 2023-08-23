@@ -208,6 +208,7 @@ class BookPublishedManager extends CretaManager {
       await publishedManager.makeCopyAll(published.mid);
       logger.info('published created ${published.mid}, source=${published.sourceMid}');
     } else {
+      published.setUpdateTime();
       await setToDB(published);
       // 예전 자식은 모두 지우고
       publishedManager.removeChild(published.mid);

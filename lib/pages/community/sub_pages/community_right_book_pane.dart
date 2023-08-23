@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:ui';
+import 'package:creta03/model/subscription_model.dart';
 import 'package:flutter/rendering.dart';
 import 'package:universal_html/html.dart';
 import 'package:creta03/design_system/buttons/creta_button.dart';
@@ -29,6 +30,7 @@ import '../../../design_system/text_field/creta_text_field.dart';
 import '../../../design_system/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
+import '../../../pages/login_page.dart';
 //import '../../common/cross_common_job.dart';
 //import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
@@ -54,6 +56,7 @@ import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/channel_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
+import '../../../data_io/subscription_manager.dart';
 import '../../../data_io/team_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 
@@ -87,11 +90,14 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager watchHistoryManagerHolder;
   //late FavoritesManager favoritesManagerHolder;
+  late SubscriptionManager subscriptionManagerHolder;
   late PlaylistManager dummyManagerHolder;
   //bool _onceDBGetComplete = false;
   BookModel? _currentBookModel;
   final List<ChannelModel> _channelList = [];
+  ChannelModel? _channelModel;
   //UserPropertyModel? _userPropertyModel;
+  SubscriptionModel? _subscriptionModel;
   final Map<String, String> _userIdMap = {};
   final Map<String, UserPropertyModel> _userPropertyMap = {};
   final Map<String, String> _teamIdMap = {};
@@ -129,6 +135,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     teamManagerHolder = TeamManager();
     userPropertyManagerHolder = UserPropertyManager();
     dummyManagerHolder = PlaylistManager();
+    subscriptionManagerHolder = SubscriptionManager();
 
     CretaManager.startQueries(
       joinList: [
@@ -137,6 +144,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
         QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
         QuerySet(CommunityRightBookPane.favoritesManagerHolder!, _getFavoritesFromDB, _resultFavoritesFromDB),
+        QuerySet(subscriptionManagerHolder, _getSubscriptionFromDB, _resultSubscriptionFromDB),
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
       ],
       completeFunc: () {
@@ -190,29 +198,37 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       channelManagerHolder.setState(DBState.idle);
       return;
     }
-    channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    channelManagerHolder.addWhereClause(
-        'mid', QueryValue(value: _currentBookModel!.channels, operType: OperType.whereIn));
-    channelManagerHolder.queryByAddedContitions();
+    channelManagerHolder.queryFromIdList(_currentBookModel!.channels);
   }
 
   void _resultChannelsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _resultChannelFromDB(${modelList.length})');
+    final Map<String, ChannelModel> channelMap = {};
     for (var model in modelList) {
       ChannelModel chModel = model as ChannelModel;
-      _channelList.add(chModel);
-      if (chModel.userId.isNotEmpty) {
-        _userIdMap[chModel.userId] = chModel.userId;
+      channelMap[chModel.mid] = chModel;
+    }
+    if (_currentBookModel != null) {
+      for (final channelId in _currentBookModel!.channels) {
+        ChannelModel? chModel = channelMap[channelId];
+        if (chModel == null) continue;
+        _channelList.add(chModel);
+        if (chModel.userId.isNotEmpty) {
+          _userIdMap[chModel.userId] = chModel.userId;
+        }
+        if (chModel.teamId.isNotEmpty) {
+          _teamIdMap[chModel.teamId] = chModel.teamId;
+        }
       }
-      if (chModel.teamId.isNotEmpty) {
-        _teamIdMap[chModel.teamId] = chModel.teamId;
+      if (_channelList.isNotEmpty) {
+        _channelModel = _channelList[0];
       }
     }
   }
 
   void _getUserPropertyFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getUserPropertyFromDB(${modelList.length})');
-    userPropertyManagerHolder.queryFromMap(_userIdMap);
+    userPropertyManagerHolder.queryFromIdMap(_userIdMap);
   }
 
   void _resultUserPropertyFromDB(List<AbsExModel> modelList) {
@@ -225,7 +241,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _getTeamsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getUserPropertyFromDB(${modelList.length})');
-    teamManagerHolder.queryFromMap(_teamIdMap);
+    teamManagerHolder.queryFromIdMap(_teamIdMap);
   }
 
   void _resultTeamsFromDB(List<AbsExModel> modelList) {
@@ -238,6 +254,11 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _getFavoritesFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getFavoritesFromDB(${modelList.length})');
+    if (_currentBookModel == null) {
+      // no book-data ==> skip
+      CommunityRightBookPane.favoritesManagerHolder!.setState(DBState.idle);
+      return;
+    }
     List<AbsExModel> bookList = [_currentBookModel!];
     CommunityRightBookPane.favoritesManagerHolder!.queryFavoritesFromBookModelList(bookList);
   }
@@ -250,6 +271,27 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     } else {
       // something is exist in DB ==> Favorites
       _bookIsInFavorites = true;
+    }
+  }
+
+  void _getSubscriptionFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getSubscriptionFromDB(${modelList.length})');
+    if (_currentBookModel == null || _channelModel == null) {
+      // no book-data ==> skip
+      subscriptionManagerHolder.setState(DBState.idle);
+      return;
+    }
+    subscriptionManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    subscriptionManagerHolder.addWhereClause(
+        'channelId', QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId));
+    subscriptionManagerHolder.addWhereClause('subscriptionChannelId', QueryValue(value: _channelModel!.mid));
+    subscriptionManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultSubscriptionFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _resultSubscriptionFromDB(${modelList.length})');
+    if (modelList.isNotEmpty) {
+      _subscriptionModel = modelList[0] as SubscriptionModel;
     }
   }
 
@@ -557,7 +599,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           SizedBox(
             width: 52,
             height: 52,
-            child: _channelList.isEmpty
+            child: (_channelModel == null)
                 ? SizedBox.shrink()
                 // : CustomImage(
                 //     //key: ValueKey('related-${item.thumbnailUrl}'),
@@ -568,8 +610,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                 //     hasAni: false,
                 //   ),
                 : userPropertyManagerHolder.imageCircle(
-                    _channelList[0].profileImg,
-                    _channelList[0].name,
+                    _channelModel!.profileImg,
+                    _channelModel!.name,
                     radius: 52,
                   ),
           ),
@@ -577,28 +619,33 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
             width: 12,
           ),
           Text(
-            _channelList.isNotEmpty ? _channelList[0].name : '',
+            _channelModel?.name ?? '',
             style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700]),
           ),
           SizedBox(
             width: 42,
           ),
           Text(
-            _channelList.isNotEmpty ? '구독자 ${_channelList[0].followerCount}명' : '',
+            (_channelModel != null) ? '구독자 ${_channelModel!.followerCount}명' : '',
             style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
           ),
           SizedBox(
             width: 16,
           ),
-          _channelList.isEmpty
+          (_channelModel == null)
               ? SizedBox.shrink()
               : BTN.fill_blue_t_m(
-                  text: '구독하기',
+                  text: (_subscriptionModel == null) ? '구독하기' : '구독중',
                   width: 84,
                   onPressed: () {
-                    //
-                    // 구독 기능 추가 필요 !!!
-                    //
+                    subscriptionManagerHolder.createSubscription(
+                      LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                      _channelModel!.mid,
+                    ).then(
+                      (value) {
+                        showSnackBar(context, '구독되었습니다');
+                      },
+                    );
                   },
                 ),
         ],

@@ -156,7 +156,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   }
 
   void _getBooksFromDB(List<AbsExModel> modelList) {
-    bookPublishedManagerHolder.queryFromList(_bookIdList);
+    bookPublishedManagerHolder.queryFromIdList(_bookIdList);
   }
 
   void _resultBooksFromDB(List<AbsExModel> modelList) {
@@ -174,7 +174,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   }
 
   void _getChannelsFromDB(List<AbsExModel> modelList) {
-    channelManagerHolder.queryFromMap(_channelIdMap);
+    channelManagerHolder.queryFromIdMap(_channelIdMap);
   }
 
   void _resultChannelsFromDB(List<AbsExModel> modelList) {
@@ -186,7 +186,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   }
 
   void _getUserPropertyFromDB(List<AbsExModel> modelList) {
-    userPropertyManagerHolder.queryFromMap(_userIdMap);
+    userPropertyManagerHolder.queryFromIdMap(_userIdMap);
   }
 
   void _resultUserPropertyFromDB(List<AbsExModel> modelList) {
@@ -198,7 +198,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   }
 
   void _getTeamsFromDB(List<AbsExModel> modelList) {
-    teamManagerHolder.queryFromMap(_teamIdMap);
+    teamManagerHolder.queryFromIdMap(_teamIdMap);
   }
 
   void _resultTeamsFromDB(List<AbsExModel> modelList) {
