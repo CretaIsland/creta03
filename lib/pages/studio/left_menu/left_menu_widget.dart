@@ -48,7 +48,6 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
                   titleStyle: titleStyle,
                   dataStyle: dataStyle,
                 ),
-                const SizedBox(height: 24.0),
                 LeftMenuMusic(
                   title: CretaStudioLang.music,
                   titleStyle: titleStyle,
@@ -67,7 +66,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
                   height: _itemHeight,
                   titleStyle: titleStyle,
                   dataStyle: dataStyle,
-                )
+                ),
               ],
             ),
           ),

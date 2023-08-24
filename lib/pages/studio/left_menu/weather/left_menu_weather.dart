@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/pages/studio/left_menu/weather/weather_live_data.dart';
 import 'package:flutter/material.dart';
 import 'package:creta03/pages/studio/left_menu/weather/weather_base.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
@@ -94,6 +95,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                   //BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
                 },
               ),
+              _getElement(WeatherInfoType.cityname, 180),
               _getElement(WeatherInfoType.temperature, 100),
               _getElement(WeatherInfoType.humidity, 100),
               _getElement(WeatherInfoType.uv, 120),
@@ -101,10 +103,11 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
               _getElement(WeatherInfoType.microDust, 160),
               _getElement(WeatherInfoType.superMicroDust, 160),
               _getElement(WeatherInfoType.pressure, 160),
-              _getElement(WeatherInfoType.wind, 220),
+              _getElement(WeatherInfoType.wind, 160),
             ],
           ),
         ),
+        const CurrentWeatherClass(),
       ],
     );
   }

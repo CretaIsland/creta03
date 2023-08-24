@@ -42,7 +42,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   bool _isPlaylistOpened = false;
 
-  bool _isMusicPlaying = true;
+  bool _isMusicPlaying = false;
 
   void setSelectedSize(String selectedValue) {
     _selectedSize = selectedValue;
@@ -70,7 +70,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     );
 
     _audioPlayer.seek(Duration.zero, index: 0).then((val) {
-      _audioPlayer.play();
+      _audioPlayer.pause();
     });
     // _audioPlayer.seek(Duration.zero, index: 0);
     // _audioPlayer.play();
@@ -187,7 +187,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       logger.severe('Selected size is not specified ${widget.size} ');
       _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
     }
-    
+
     _audioPlayer.setVolume(0.0);
 
     _init();

@@ -82,8 +82,9 @@ class FavoritesManager extends CretaManager {
     }
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
-    query['parentId'] = QueryValue(value: depotModelList, operType: OperType.whereIn);
-    query['userId'] = QueryValue(value: AccountManager.currentLoginUser.email);
+    query['parentId'] =
+        QueryValue(value: AccountManager.currentLoginUser.email, operType: OperType.whereIn);
+    // query['userId'] = QueryValue(value: AccountManager.currentLoginUser.email);
     return queryFromDB(
       query,
       //limit: ,
