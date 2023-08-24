@@ -96,8 +96,9 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                     userPropertyManager.userPropertyModel!.bookCount.toString(),
                     style: CretaFont.bodyMedium,
                   ),
-                  const SizedBox(height: 24.0),
+                  const SizedBox(height: 20.0),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
@@ -106,6 +107,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                       ),
                       const SizedBox(width: 24.0),
                       BTN.line_blue_t_m(
+                        height: 32.0,
                         text: CretaMyPageLang.ratePlanChangeBTN, 
                         onPressed: () {
                           showDialog(
@@ -152,7 +154,12 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                 const SizedBox(width: 192.0),
                 Text(
                   '지난 30일', 
-                  style: CretaFont.titleMedium
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: Colors.grey.shade400,
+                  )
                 )
               ],
             ),
@@ -198,12 +205,12 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                     '${userPropertyManager.userPropertyModel!.bookViewTime.toString()} 시간',
                     style: CretaFont.bodyMedium,
                   ),
-                  const SizedBox(height: 24.0),
+                  const SizedBox(height: 28.0),
                   Text(
                     userPropertyManager.userPropertyModel!.likeCount.toString(),
                     style: CretaFont.bodyMedium,
                   ),
-                  const SizedBox(height: 20.0),
+                  const SizedBox(height: 28.0),
                   Text(
                     userPropertyManager.userPropertyModel!.commentCount.toString(),
                     style: CretaFont.bodyMedium,
@@ -276,7 +283,6 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                   width: 200.0,
                   height: 200.0,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade200),
                     borderRadius: BorderRadius.circular(100.0),
                     color: widget.replaceColor,
                     image: userPropertyManager.userPropertyModel!.profileImg == '' ? null : DecorationImage(image: Image.network(userPropertyManager.userPropertyModel!.profileImg).image, fit: BoxFit.cover)
@@ -303,7 +309,12 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
                 // user email
                 Text(
                   userPropertyManager.userPropertyModel!.email,
-                  style: CretaFont.buttonLarge,
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: Colors.grey.shade400,
+                  )
                 ),
                 const SizedBox(height: 86.0),
                 // data components

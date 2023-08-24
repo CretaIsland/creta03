@@ -79,7 +79,6 @@ class _MyPageInfoState extends State<MyPageInfo> {
       width: 200.0,
       height: 200.0,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(20.0),
         color: widget.replaceColor,
         image: userPropertyManager.userPropertyModel!.profileImg == '' ? null : DecorationImage(
@@ -223,6 +222,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                   ),
                   divideLine(width: widget.width * .7, topPadding: 22.0, bottomPadding: 32.0),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const SizedBox(width: 12.0),
@@ -277,21 +277,46 @@ class _MyPageInfoState extends State<MyPageInfo> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            userPropertyManager.userPropertyModel!.nickname,
-                            style: CretaFont.bodyMedium,
+                          SizedBox(
+                            width: 100,
+                            height: 16,
+                            child: TextField(
+                              cursorHeight: 16,
+                              maxLines: 1,
+                              style: CretaFont.bodyMedium,
+                              decoration: InputDecoration(
+                                hintText: userPropertyManager.userPropertyModel!.nickname,
+                                border: InputBorder.none,
+                                hintMaxLines: 1
+                              ),
+                              onChanged: (value) {
+                                userPropertyManager.userPropertyModel!.nickname = value;
+                                userPropertyManager.notify();
+                              }
+                            ),
                           ),
-                          const SizedBox(height: 28.0),
+                          const SizedBox(height: 32.0),
                           Text(
                             userPropertyManager.userPropertyModel!.email,
-                            style: CretaFont.bodyMedium,
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: Colors.grey.shade400,
+                            ),
                           ),
-                          const SizedBox(height: 28.0),
+                          const SizedBox(height: 32.0),
                           Text(
-                            userPropertyManager.userPropertyModel!.phoneNumber,
-                            style: CretaFont.bodyMedium,
+                            "01012341234",
+                            //userPropertyManager.userPropertyModel!.phoneNumber,
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: Colors.grey.shade400,
+                            ),
                           ),
-                          const SizedBox(height: 28.0),
+                          const SizedBox(height: 24.0),
                           BTN.line_blue_t_m(
                             text: CretaMyPageLang.passwordChangeBTN, 
                             onPressed: () {

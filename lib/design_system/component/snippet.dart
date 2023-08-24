@@ -303,26 +303,18 @@ class Snippet {
   }
 
   // MyPage Scaffold
-  static Widget CretaScaffoldOfMyPage(
-      {required Widget title, required BuildContext context, required Widget child}) {
+  static Widget CretaScaffoldOfMyPage({required Widget title, required BuildContext context, required Widget child}) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfMyPage(context, title),
       floatingActionButton:
-          CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
-      body:
-          // GestureDetector(
-          //   behavior: HitTestBehavior.opaque,
-          //   onLongPressDown: ((details) {
-          //     logger.finest('onLongPressDown');
-          //     LastClicked.clickedOutSide(details.globalPosition);
-          //   }),
-          //   child:
-          Container(
+        CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+      body: Container(
+        color: Colors.white,
         child: child,
       ),
-      //),
     );
   }
+
 
   // Creta MyPage AppBar
   static PreferredSizeWidget CretaAppBarOfMyPage(BuildContext context, Widget title) {

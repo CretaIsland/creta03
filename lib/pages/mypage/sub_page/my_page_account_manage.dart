@@ -147,7 +147,12 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                         const SizedBox(height: 13.0),
                         Text(
                           CretaMyPageLang.ratePlanTip,
-                          style: CretaFont.bodySmall,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Colors.grey.shade400,
+                          ),
                         )
                       ],
                     ),
@@ -183,7 +188,12 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                         const SizedBox(height: 16.0),
                         Text(
                           CretaMyPageLang.profileTip,
-                          style: CretaFont.bodySmall,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: Colors.grey.shade400,
+                          ),
                         ),
                         const SizedBox(height: 23.0),
                         Row(
