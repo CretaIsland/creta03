@@ -26,4 +26,9 @@ class SubscriptionManager extends CretaManager {
   }
 
   String prefix() => CretaManager.modelPrefix(ExModelType.subscription);
+
+  Future<void> createSubscription(String channelId, String subscriptionChannelId) {
+    SubscriptionModel model = SubscriptionModel.withName(channelId: channelId, subscriptionChannelId: subscriptionChannelId);
+    return createToDB(model);
+  }
 }

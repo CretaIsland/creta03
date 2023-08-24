@@ -40,15 +40,19 @@ class FavoritesManager extends CretaManager {
       setState(DBState.idle);
       return Future.value([]);
     }
-    Map<String, QueryValue> query = {};
-    query['isRemoved'] = QueryValue(value: false);
-    query['bookId'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
-    query['userId'] = QueryValue(value: AccountManager.currentLoginUser.email);
-    return queryFromDB(
-      query,
-      //limit: ,
-      //orderBy: orderBy,
-    );
+    // Map<String, QueryValue> query = {};
+    // query['isRemoved'] = QueryValue(value: false);
+    // query['bookId'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
+    // query['userId'] = QueryValue(value: AccountManager.currentLoginUser.email);
+    // return queryFromDB(
+    //   query,
+    //   //limit: ,
+    //   //orderBy: orderBy,
+    // );
+    addWhereClause('isRemoved', QueryValue(value: false));
+    addWhereClause('bookId', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
+    return queryByAddedContitions();
   }
 
   Future<List<AbsExModel>> queryFavoritesFromBookIdList(List<String> bookIdList) {
@@ -56,14 +60,17 @@ class FavoritesManager extends CretaManager {
       setState(DBState.idle);
       return Future.value([]);
     }
-    Map<String, QueryValue> query = {};
-    query['isRemoved'] = QueryValue(value: false);
-    query['bookId'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
-    return queryFromDB(
-      query,
-      //limit: ,
-      //orderBy: orderBy,
-    );
+    // Map<String, QueryValue> query = {};
+    // query['isRemoved'] = QueryValue(value: false);
+    // query['bookId'] = QueryValue(value: bookIdList, operType: OperType.whereIn);
+    // return queryFromDB(
+    //   query,
+    //   //limit: ,
+    //   //orderBy: orderBy,
+    // );
+    addWhereClause('isRemoved', QueryValue(value: false));
+    addWhereClause('bookId', QueryValue(value: bookIdList, operType: OperType.whereIn));
+    return queryByAddedContitions();
   }
 
   Future<List<AbsExModel>> queryFavoritesFromDepotModelList(List<AbsExModel> depotModelList) {
@@ -80,16 +87,19 @@ class FavoritesManager extends CretaManager {
       setState(DBState.idle);
       return Future.value([]);
     }
-    Map<String, QueryValue> query = {};
-    query['isRemoved'] = QueryValue(value: false);
-    query['parentId'] =
-        QueryValue(value: AccountManager.currentLoginUser.email, operType: OperType.whereIn);
+    // Map<String, QueryValue> query = {};
+    // query['isRemoved'] = QueryValue(value: false);
+    // query['parentId'] = QueryValue(value: depotIdList, operType: OperType.whereIn);
     // query['userId'] = QueryValue(value: AccountManager.currentLoginUser.email);
-    return queryFromDB(
-      query,
-      //limit: ,
-      //orderBy: orderBy,
-    );
+    // return queryFromDB(
+    //   query,
+    //   //limit: ,
+    //   //orderBy: orderBy,
+    // );
+    addWhereClause('isRemoved', QueryValue(value: false));
+    addWhereClause('parentId', QueryValue(value: depotIdList, operType: OperType.whereIn));
+    addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
+    return queryByAddedContitions();
   }
 
   Future<List<AbsExModel>> queryFavoritesFromContentsMidList(List<String> contentsMidList) {
@@ -97,14 +107,17 @@ class FavoritesManager extends CretaManager {
       setState(DBState.idle);
       return Future.value([]);
     }
-    Map<String, QueryValue> query = {};
-    query['isRemoved'] = QueryValue(value: false);
-    query['bookId'] = QueryValue(value: contentsMidList, operType: OperType.whereIn);
-    return queryFromDB(
-      query,
-      //limit: ,
-      //orderBy: orderBy,
-    );
+    // Map<String, QueryValue> query = {};
+    // query['isRemoved'] = QueryValue(value: false);
+    // query['bookId'] = QueryValue(value: contentsMidList, operType: OperType.whereIn);
+    // return queryFromDB(
+    //   query,
+    //   //limit: ,
+    //   //orderBy: orderBy,
+    // );
+    addWhereClause('isRemoved', QueryValue(value: false));
+    addWhereClause('bookId', QueryValue(value: contentsMidList, operType: OperType.whereIn));
+    return queryByAddedContitions();
   }
 
   Future<String> addFavoritesToDB(String bookId, String userId) async {

@@ -194,7 +194,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       channelManagerHolder.setState(DBState.idle);
       return;
     }
-    channelManagerHolder.queryFromMap(_channelIdMap);
+    channelManagerHolder.queryFromIdMap(_channelIdMap);
   }
 
   void _resultChannelsFromDB(List<AbsExModel> modelList) {
@@ -211,7 +211,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _getUserPropertyFromDB(List<AbsExModel> modelList) {
-    userPropertyManagerHolder.queryFromMap(_userIdMap);
+    userPropertyManagerHolder.queryFromIdMap(_userIdMap);
   }
 
   void _resultUserPropertyFromDB(List<AbsExModel> modelList) {
@@ -226,7 +226,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _getTeamsFromDB(List<AbsExModel> modelList) {
-    teamManagerHolder.queryFromMap(_teamIdMap);
+    teamManagerHolder.queryFromIdMap(_teamIdMap);
   }
 
   void _resultTeamsFromDB(List<AbsExModel> modelList) {

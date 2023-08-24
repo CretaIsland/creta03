@@ -24,7 +24,9 @@ mixin CretaBasicLayoutMixin {
   ScrollController get getBannerScrollController => _bannerScrollController;
   void setScrollOffset(double offset) {
     _scrollOffset = offset;
-    _bannerScrollController.jumpTo(_scrollOffset);
+    if (_bannerScrollController.hasClients) {
+      _bannerScrollController.jumpTo(_scrollOffset);
+    }
   }
 
   void setUsingBannerScrollBar({
@@ -215,7 +217,7 @@ mixin CretaBasicLayoutMixin {
                     // banner pane (over on item pane)
                     Listener(
                       onPointerSignal: (PointerSignalEvent event) {
-                        if (event is PointerScrollEvent) {
+                        if (event is PointerScrollEvent && _bannerScrollController.hasClients) {
                           _scrollOffset += event.scrollDelta.dy;
                           if (_scrollOffset < 0) _scrollOffset = 0;
                           if (_scrollOffset > _bannerScrollController.position.maxScrollExtent) {

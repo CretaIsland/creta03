@@ -70,7 +70,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   ChannelModel? _currentChannelModel;
   UserPropertyModel? _userPropertyModelOfBookModel;
   //TeamModel? _teamModel;
-  List<SubscriptionModel> _subscriptionList = [];
+  List<SubscriptionModel>? _subscriptionModelList;
   SubscriptionModel? _selectedSubscriptionModel;
   bool _bookIsFavorites = false;
 
@@ -1325,8 +1325,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   GlobalObjectKey _getRightPaneKey() {
     String key =
         //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
-        '${Uri.base.query}-${_selectedSubscriptionModel?.subscriptionChannel?.name ?? ''}-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
-    if (kDebugMode) print('_getRightPaneKey=$key');
+        '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
+    if (kDebugMode) print('_getRightPaneKey = $key');
     return GlobalObjectKey(key);
   }
 
@@ -1351,8 +1351,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   void _onUpdateSubscriptionModelList(List<SubscriptionModel> subscriptionList) {
+    if (kDebugMode) print('_onUpdateSubscriptionModelList=${subscriptionList.length}');
     setState(() {
-      _subscriptionList = [...subscriptionList];
+      _subscriptionModelList = [...subscriptionList];
+      _selectedSubscriptionModel = _subscriptionModelList?[0];
     });
   }
 
@@ -1375,6 +1377,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           key: _getRightPaneKey(),
           cretaLayoutRect: rightPaneRect,
           scrollController: getBannerScrollController,
+          subscriptionModelList: _subscriptionModelList,
           selectedSubscriptionModel: _selectedSubscriptionModel,
           onUpdateSubscriptionModelList: _onUpdateSubscriptionModelList,
           filterBookType: _filterBookType,
@@ -1466,7 +1469,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   direction: Axis.horizontal,
                   spacing: 20,
                   runSpacing: 20,
-                  children: _getSubscriptionUserList(),
+                  children: _getSubscriptionList(),
                 ),
               ),
             ),
@@ -1490,9 +1493,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     });
   }
 
-  List<Widget> _getSubscriptionUserList() {
+  List<Widget> _getSubscriptionList() {
     List<Widget> widgetList = [];
-    for(final item in _subscriptionList) {
+    for(final item in _subscriptionModelList ?? []) {
       widgetList.add(
         SubscriptionItem(
           subscriptionModel: item,

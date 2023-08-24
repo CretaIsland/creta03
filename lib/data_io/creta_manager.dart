@@ -1289,8 +1289,8 @@ abstract class CretaManager extends AbsExModelManager {
     return retVal;
   }
 
-  void queryFromList(List<String> idList, {bool clear = true}) {
-    if (clear) {
+  void queryFromIdList(List<String> idList, {bool isRemoved = false, bool clearPrevCondition = true}) {
+    if (clearPrevCondition) {
       clearAll();
       clearConditions();
     }
@@ -1298,12 +1298,12 @@ abstract class CretaManager extends AbsExModelManager {
       setState(DBState.idle);
       return;
     }
-    addWhereClause('isRemoved', QueryValue(value: false));
+    addWhereClause('isRemoved', QueryValue(value: isRemoved));
     addWhereClause(getMidFieldName, QueryValue(value: idList, operType: OperType.whereIn));
     queryByAddedContitions();
   }
 
-  void queryFromMap(Map<String, String> idMap, {bool clear = true}) {
+  void queryFromIdMap(Map<String, String> idMap, {bool clear = true}) {
     if (clear) {
       clearAll();
       clearConditions();

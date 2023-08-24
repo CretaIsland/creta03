@@ -9,7 +9,7 @@ import 'package:routemaster/routemaster.dart';
 
 import '../login_page.dart';
 import '../../routes.dart';
-//import '../../design_system/component/snippet.dart';
+import '../../design_system/component/snippet.dart';
 import '../../design_system/buttons/creta_button.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_checkbox.dart';
@@ -58,6 +58,7 @@ class LoginDialog extends StatefulWidget {
     if (kDebugMode) print('setShowExtraInfoDialog($show)');
     _showExtraInfoDialog = show;
   }
+
   static void popupDialog({
     required BuildContext context,
     // Function? doAfterLogin,
@@ -127,6 +128,8 @@ class _LoginDialogState extends State<LoginDialog> {
 
   final _resetEmailTextEditingController = TextEditingController();
 
+  bool _isLoginProcessing = false;
+
   @override
   void initState() {
     super.initState();
@@ -174,7 +177,7 @@ class _LoginDialogState extends State<LoginDialog> {
         if (isNewUser) {
           // create model objects
           UserPropertyModel userModel =
-          LoginPage.userPropertyManagerHolder!.getNewUserProperty(agreeUsingMarketing: true);
+              LoginPage.userPropertyManagerHolder!.getNewUserProperty(agreeUsingMarketing: true);
           TeamModel teamModel = LoginPage.teamManagerHolder!.getNewTeam(
             createAndSetToCurrent: true,
             username: AccountManager.currentLoginUser.name,
@@ -518,7 +521,7 @@ class _LoginDialogState extends State<LoginDialog> {
           Container(width: 294, height: 2, color: CretaColor.text[200]),
           const SizedBox(height: 31),
           CretaTextField(
-              textFieldKey: GlobalKey(),
+              textFieldKey: GlobalObjectKey('login-email'),
               controller: _loginEmailTextEditingController,
               width: 294,
               height: 30,
@@ -528,7 +531,7 @@ class _LoginDialogState extends State<LoginDialog> {
               onEditComplete: (value) {}),
           const SizedBox(height: 20),
           CretaTextField(
-              textFieldKey: GlobalKey(),
+              textFieldKey: GlobalObjectKey('login-password'),
               controller: _loginPasswordTextEditingController,
               width: 294,
               height: 30,
@@ -538,19 +541,39 @@ class _LoginDialogState extends State<LoginDialog> {
               textType: CretaTextFieldType.password,
               onEditComplete: (value) {}),
           const SizedBox(height: 24),
-          BTN.line_blue_iti_m(
-            width: 294,
-            text: '로그인하기',
-            buttonColor: CretaButtonColor.skyTitle,
-            decoType: CretaButtonDeco.fill,
-            textColor: Colors.white,
-            onPressed: () {
-              TextInput.finishAutofillContext();
-              String id = _loginEmailTextEditingController.text;
-              String pwd = _loginPasswordTextEditingController.text;
-              _login(id, pwd);
-            },
-          ),
+          _isLoginProcessing
+              ? BTN.line_blue_iwi_m(
+                  width: 294,
+                  widget: Snippet.showWaitSign(color: Colors.white, size: 16),
+                  buttonColor: CretaButtonColor.skyTitle,
+                  decoType: CretaButtonDeco.fill,
+                  textColor: Colors.white,
+                  onPressed: () {
+                    TextInput.finishAutofillContext();
+                    String id = _loginEmailTextEditingController.text;
+                    String pwd = _loginPasswordTextEditingController.text;
+                    setState(() {
+                      _isLoginProcessing = true;
+                      _login(id, pwd);
+                    });
+                  },
+                )
+              : BTN.line_blue_iti_m(
+                  width: 294,
+                  text: '로그인하기',
+                  buttonColor: CretaButtonColor.skyTitle,
+                  decoType: CretaButtonDeco.fill,
+                  textColor: Colors.white,
+                  onPressed: () {
+                    TextInput.finishAutofillContext();
+                    String id = _loginEmailTextEditingController.text;
+                    String pwd = _loginPasswordTextEditingController.text;
+                    setState(() {
+                      _isLoginProcessing = true;
+                      _login(id, pwd);
+                    });
+                  },
+                ),
           const SizedBox(height: 11),
           SizedBox(
             width: 304,
@@ -582,7 +605,9 @@ class _LoginDialogState extends State<LoginDialog> {
           ),
           const SizedBox(height: 64),
           Padding(
-            padding: (!kDebugMode) ? const EdgeInsets.fromLTRB(111, 0, 110, 0) : const EdgeInsets.fromLTRB(111 - 20, 0, 110 - 20, 0),
+            padding: (!kDebugMode)
+                ? const EdgeInsets.fromLTRB(111, 0, 110, 0)
+                : const EdgeInsets.fromLTRB(111 - 20, 0, 110 - 20, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -636,7 +661,12 @@ class _LoginDialogState extends State<LoginDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AutofillGroup(
+    //return AutofillGroup(
+    // => 웹 자동완성을 활용하기 위해서 AutofillGroup 필요.
+    // => flutter 버그 때문인지 AutofillGroup를 사용하면
+    //    build시에 SearchTextField에서 onSubmitted가 호출되면서 setState가 호출되고 오류가 발생.
+    // => 위 버그가 해결되기 전까지 AutofillGroup 은 막아둠
+    return SizedBox(
       child: SizedBox(
         width: widget.size.width,
         height: widget.size.height,
@@ -678,7 +708,7 @@ class ExtraInfoDialog extends StatefulWidget {
   @override
   State<ExtraInfoDialog> createState() => _ExtraInfoDialogState();
 
-  static bool _popAfterClose  = true;
+  static bool _popAfterClose = true;
   static void setPopAfterClose(bool popAfterClose) => (_popAfterClose = popAfterClose);
   static void popupDialog({
     required BuildContext context,

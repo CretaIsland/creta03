@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
@@ -23,6 +24,7 @@ import 'package:hycop/hycop.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
+import '../../../pages/login_page.dart';
 import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
@@ -67,6 +69,7 @@ class CommunityRightSubscriptionPane extends StatefulWidget {
     super.key,
     required this.cretaLayoutRect,
     required this.scrollController,
+    required this.subscriptionModelList,
     required this.selectedSubscriptionModel,
     required this.filterBookType,
     required this.filterBookSort,
@@ -76,6 +79,7 @@ class CommunityRightSubscriptionPane extends StatefulWidget {
   });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
+  final List<SubscriptionModel>? subscriptionModelList;
   final SubscriptionModel? selectedSubscriptionModel;
   final BookType filterBookType;
   final BookSort filterBookSort;
@@ -88,7 +92,7 @@ class CommunityRightSubscriptionPane extends StatefulWidget {
 }
 
 class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscriptionPane> {
-  final GlobalKey _key = GlobalKey();
+  late final GlobalKey _key;
 
   late BookPublishedManager bookPublishedManagerHolder;
   late ChannelManager channelManagerHolder;
@@ -118,13 +122,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   void initState() {
     super.initState();
 
-    //
-    // get subscription-channel-id-list from my-channel-id (sort by time/name)
-    // get channel-objects from id-list
-    // get user/team-objects
-    // get book-list from channel-id
-    // get fav-list
-    // get play-list
+    _key = GlobalObjectKey('_CommunityRightSubscriptionPaneState|${widget.subscriptionModelList?.length}|${widget.selectedSubscriptionModel?.channelId}|${widget.selectedSubscriptionModel?.subscriptionChannelId}');
 
     subscriptionManagerHolder = SubscriptionManager();
     bookPublishedManagerHolder = BookPublishedManager();
@@ -135,7 +133,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     playlistManagerHolder = PlaylistManager();
     dummyManagerHolder = WatchHistoryManager();
 
-    if (widget.selectedSubscriptionModel == null) {
+    if (widget.subscriptionModelList == null) {
+      if (kDebugMode) print('widget.subscriptionModelList == null');
       CretaManager.startQueries(
         joinList: [
           QuerySet(subscriptionManagerHolder, _getSubscriptionListFromDB, _resultSubscriptionListFromDB),
@@ -149,6 +148,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
         },
       );
     } else {
+      if (kDebugMode) print('widget.subscriptionModelList.length=${widget.subscriptionModelList!.length}');
       CretaManager.startQueries(
         joinList: [
           QuerySet(bookPublishedManagerHolder, _getBookListFromDB, _resultBookListFromDB),
@@ -165,18 +165,20 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   }
 
   void _getSubscriptionListFromDB(List<AbsExModel> modelList) {
-    subscriptionManagerHolder.addCretaFilters(
-      //bookType: widget.filterBookType,
-      bookSort: BookSort.updateTime, //widget.filterBookSort,
-      //permissionType: widget.filterPermissionType,
-      //searchKeyword: widget.filterSearchKeyword,
-      sortTimeName: 'lastPublishTime',
-    );
+    // subscriptionManagerHolder.addCretaFilters(
+    //   //bookType: widget.filterBookType,
+    //   bookSort: BookSort.updateTime, //widget.filterBookSort,
+    //   //permissionType: widget.filterPermissionType,
+    //   //searchKeyword: widget.filterSearchKeyword,
+    //   sortTimeName: 'lastPublishTime',
+    // );
     subscriptionManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    subscriptionManagerHolder.addWhereClause('channelId', QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId));
     subscriptionManagerHolder.queryByAddedContitions();
   }
 
   void _resultSubscriptionListFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_resultSubscriptionListFromDB=${modelList.length}');
     for (var model in modelList) {
       SubscriptionModel subModel = model as SubscriptionModel;
       _subscriptionList.add(subModel);
@@ -184,16 +186,22 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   }
 
   void _getChannelListFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getChannelListFromDB=${modelList.length}');
     final List<String> channelIdList = [];
     for (var subModel in _subscriptionList) {
       channelIdList.add(subModel.channelId);
     }
-    channelManagerHolder.addWhereClause('mid', QueryValue(value: channelIdList, operType: OperType.whereIn));
+    if (channelIdList.isEmpty) {
+      channelManagerHolder.setState(DBState.idle);
+      return;
+    }
     channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    channelManagerHolder.addWhereClause('mid', QueryValue(value: channelIdList, operType: OperType.whereIn));
     channelManagerHolder.queryByAddedContitions();
   }
 
   void _resultChannelListFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_resultChannelListFromDB=${modelList.length}');
     for (var model in modelList) {
       ChannelModel chModel = model as ChannelModel;
       _channelMap[chModel.getMid] = chModel;
@@ -201,6 +209,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   }
 
   void _getUserPropertyListFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getUserPropertyListFromDB=${modelList.length}');
     final List<String> userIdList = [];
     _channelMap.forEach((mid, chModel) {
       if (chModel.userId.isNotEmpty) {
@@ -211,12 +220,11 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
       userPropertyManagerHolder.setState(DBState.idle);
       return;
     }
-    userPropertyManagerHolder.addWhereClause('mid', QueryValue(value: userIdList, operType: OperType.whereIn));
-    userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    userPropertyManagerHolder.queryByAddedContitions();
+    userPropertyManagerHolder.queryFromIdList(userIdList);
   }
 
   void _resultUserPropertyListFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_resultUserPropertyListFromDB=${modelList.length}');
     for (var model in modelList) {
       UserPropertyModel userModel = model as UserPropertyModel;
       _userMap[userModel.getMid] = userModel;
@@ -224,6 +232,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   }
 
   void _getTeamListFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getTeamListFromDB=${modelList.length}');
     final List<String> teamIdList = [];
     _channelMap.forEach((mid, chModel) {
       if (chModel.teamId.isNotEmpty) {
@@ -234,12 +243,11 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
       teamManagerHolder.setState(DBState.idle);
       return;
     }
-    teamManagerHolder.addWhereClause('mid', QueryValue(value: teamIdList, operType: OperType.whereIn));
-    teamManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    teamManagerHolder.queryByAddedContitions();
+    teamManagerHolder.queryFromIdList(teamIdList);
   }
 
   void _resultTeamListFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_resultTeamListFromDB=${modelList.length}');
     for (var model in modelList) {
       TeamModel teamModel = model as TeamModel;
       _teamMap[teamModel.getMid] = teamModel;
@@ -247,18 +255,28 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   }
 
   void _getBookListFromDB(List<AbsExModel> modelList) {
-    bookPublishedManagerHolder.addCretaFilters(
-      bookType: widget.filterBookType,
-      bookSort: widget.filterBookSort,
-      permissionType: widget.filterPermissionType,
-      searchKeyword: widget.filterSearchKeyword,
-      sortTimeName: 'updateTime',
-    );
+    if (kDebugMode) print('_getBookListFromDB=${modelList.length}');
+    if (widget.selectedSubscriptionModel == null) {
+      if (kDebugMode) print('_selectedSubscriptionModel == null');
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
+    }
+    List<String> channelIdList = [widget.selectedSubscriptionModel!.subscriptionChannelId];
+    // bookPublishedManagerHolder.addCretaFilters(
+    //   bookType: widget.filterBookType,
+    //   bookSort: widget.filterBookSort,
+    //   permissionType: widget.filterPermissionType,
+    //   searchKeyword: widget.filterSearchKeyword,
+    //   sortTimeName: 'updateTime',
+    // );
+    // => arrayContainsAny 때문에 filter를 사용할수가 없음
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    bookPublishedManagerHolder.addWhereClause('channels', QueryValue(value: channelIdList, operType: OperType.arrayContainsAny));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 
   void _resultBookListFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_resultBookListFromDB=${modelList.length}');
     for (var model in modelList) {
       BookModel bookModel = model as BookModel;
       _cretaBooksList.add(bookModel);
@@ -266,10 +284,12 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   }
 
   void _getFavoritesFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getFavoritesFromDB=${modelList.length}');
     favoritesManagerHolder.queryFavoritesFromBookModelList(_cretaBooksList);
   }
 
   void _resultFavoritesFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_resultFavoritesFromDB=${modelList.length}');
     for (var model in modelList) {
       FavoritesModel fModel = model as FavoritesModel;
       _favoritesBookIdMap[fModel.bookId] = true;
@@ -277,18 +297,21 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   }
 
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getPlaylistsFromDB=${modelList.length}');
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
     playlistManagerHolder.queryByAddedContitions();
   }
 
   void _resultPlaylistsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_resultPlaylistsFromDB=${modelList.length}');
     for (var plModel in modelList) {
       _playlistModelList.add(plModel as PlaylistModel);
     }
   }
 
   void _getPlaylistsBooksFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getPlaylistsBooksFromDB=${modelList.length}');
     final List<String> bookIdList = [];
     for (var model in modelList) {
       PlaylistModel plModel = model as PlaylistModel;
@@ -296,10 +319,11 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
         bookIdList.add(plModel.bookIdList[0]);
       }
     }
-    bookPublishedManagerHolder.queryFromList(bookIdList);
+    bookPublishedManagerHolder.queryFromIdList(bookIdList);
   }
 
   void _resultPlaylistsBooksFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_resultPlaylistsBooksFromDB=${modelList.length}');
     for (var model in modelList) {
       BookModel bModel = model as BookModel;
       _playlistsBooksMap[bModel.getMid] = bModel;
@@ -307,7 +331,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   }
 
   void _dummyCompleteDB(List<AbsExModel> modelList) {
-    if (widget.selectedSubscriptionModel == null) {
+    if (kDebugMode) print('_dummyCompleteDB=${modelList.length}');
+    if (widget.subscriptionModelList == null) {
       for (var subModel in _subscriptionList) {
         subModel.getModelFromMaps(_channelMap, _userMap, _teamMap);
       }
@@ -459,7 +484,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
-        managerList: (widget.selectedSubscriptionModel == null)
+        managerList: (widget.subscriptionModelList == null)
             ? [
                 subscriptionManagerHolder,
                 channelManagerHolder,
