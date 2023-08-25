@@ -42,6 +42,7 @@ enum FrameType {
   analogWatch,
   digitalWatch,
   camera,
+  map,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;

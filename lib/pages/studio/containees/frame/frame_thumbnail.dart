@@ -216,6 +216,9 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     if (model.isCameraType()) {
       return CameraFrame(model: model);
     }
+    if (model.isMapType()) {
+      return Image.asset('assets/google_map_thumbnail.png');
+    }
 
     return Container(
       key: ValueKey('Container${model.mid}'),

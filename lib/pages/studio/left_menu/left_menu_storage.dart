@@ -14,12 +14,6 @@ import '../../../lang/creta_studio_lang.dart';
 import '../studio_constant.dart';
 import '../studio_variables.dart';
 
-enum SelectedContentsType {
-  none,
-  image,
-  video,
-}
-
 class LeftMenuStorage extends StatefulWidget {
   const LeftMenuStorage({super.key});
 
@@ -36,8 +30,6 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
 
   String searchText = '';
   static String _selectedType = CretaStudioLang.storageTypes.values.first;
-
-  late String contentsMid;
 
   late DepotManager depotManager;
 

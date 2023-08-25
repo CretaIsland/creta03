@@ -253,7 +253,6 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
     if (widget.frameModel.isWeatherTYpe()) {
       return false;
     }
-
     return (widget.frameModel.bgColor1.value == widget.pageModel.bgColor1.value ||
             widget.frameModel.bgColor1.value == Colors.transparent) &&
         (widget.frameModel.borderWidth.value == 0 ||

@@ -132,6 +132,8 @@ dependencies:
   marquee: ^2.2.3
   flutter_media_metadata: ^1.0.0+1
   geolocator: ^10.0.0
+  google_maps_flutter_web: ^0.5.3
+  google_maps_flutter: ^2.4.0
   #flutter_treeview: ^1.0.7+1
   
 
@@ -204,6 +206,7 @@ flutter:
     - assets/medSize_music_app.png
     - assets/smallSize_music_app.png
     - assets/miniSize_music_app.png
+    - assets/google_map_thumbnail.png
 
 
 

@@ -1,9 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'weather_constant.dart' as k;
+import '../../../login_page.dart';
 
 class CurrentWeatherClass extends StatefulWidget {
   static String cityName = '';
@@ -23,6 +22,8 @@ class CurrentWeatherClass extends StatefulWidget {
 
 class _CurrentWeatherClassState extends State<CurrentWeatherClass> {
   bool isLoaded = false;
+  String domain = "https://api.openweathermap.org/data/2.5/weather?";
+  String apiKey = LoginPage.enterpriseHolder!.enterpriseModel!.openWeatherApiKey;
 
   @override
   void initState() {
@@ -56,7 +57,7 @@ class _CurrentWeatherClassState extends State<CurrentWeatherClass> {
 
   getCurrentCityWeather(Position position) async {
     var client = http.Client();
-    var uri = '${k.domain}lat=${position.latitude}&lon=${position.longitude}&appid=${k.apiKey}';
+    var uri = '${domain}lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey';
     var url = Uri.parse(uri);
     var response = await client.get(url);
     if (response.statusCode == 200) {
@@ -83,7 +84,7 @@ class _CurrentWeatherClassState extends State<CurrentWeatherClass> {
         CurrentWeatherClass.cover = 0;
         CurrentWeatherClass.vis = 0;
         CurrentWeatherClass.wind = 0;
-        CurrentWeatherClass.cityName = 'Not available';
+        CurrentWeatherClass.cityName = 'N/A';
       } else {
         CurrentWeatherClass.temp = decodedData['main']['temp'] - 273;
         CurrentWeatherClass.press = decodedData['main']['pressure'];

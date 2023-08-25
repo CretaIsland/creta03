@@ -45,14 +45,14 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
   Widget build(BuildContext context) {
     initFrameManager();
     return Padding(
-      padding: const EdgeInsets.only(top: 12.0),
+      padding: const EdgeInsets.only(top: 12.0, left: 24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(widget.title, style: widget.dataStyle),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
+            padding: const EdgeInsets.only(top: 12.0),
             child: MusicPlayerBase(
               playerWidget: playerWidget(),
               width: musicBgWidth,
