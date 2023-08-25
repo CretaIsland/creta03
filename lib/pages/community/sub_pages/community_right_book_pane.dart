@@ -638,14 +638,37 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                   text: (_subscriptionModel == null) ? '구독하기' : '구독중',
                   width: 84,
                   onPressed: () {
-                    subscriptionManagerHolder.createSubscription(
-                      LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
-                      _channelModel!.mid,
-                    ).then(
-                      (value) {
-                        showSnackBar(context, '구독되었습니다');
-                      },
-                    );
+                    if (_subscriptionModel == null) {
+                      subscriptionManagerHolder
+                          .createSubscription(
+                        LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                        _channelModel!.mid,
+                      )
+                          .then(
+                        (value) {
+                          showSnackBar(context, '구독되었습니다');
+                          setState(() {
+                            _subscriptionModel = SubscriptionModel.withName(
+                                channelId: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                                subscriptionChannelId: _channelModel!.mid);
+                          });
+                        },
+                      );
+                    } else {
+                      subscriptionManagerHolder
+                          .removeSubscription(
+                        LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                        _channelModel!.mid,
+                      )
+                          .then(
+                        (value) {
+                          showSnackBar(context, '구독 해지되었습니다');
+                          setState(() {
+                            _subscriptionModel = null;
+                          });
+                        },
+                      );
+                    }
                   },
                 ),
         ],

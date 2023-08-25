@@ -69,6 +69,10 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return (frameType == FrameType.camera);
   }
 
+  bool isMapType() {
+    return (frameType == FrameType.map);
+  }
+
   double prevWidth = -1;
   double prevHeight = -1;
   double prevPosX = -1;

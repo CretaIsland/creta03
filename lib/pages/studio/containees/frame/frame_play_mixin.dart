@@ -24,6 +24,7 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
+import '../../left_menu/google_map/google_map.dart';
 import '../../left_menu/weather/weather_base.dart';
 import '../../studio_variables.dart';
 // import '../../../../model/contents_model.dart';
@@ -53,9 +54,6 @@ mixin FramePlayMixin {
     logger.info('frameCreated(${frameModel.mid}');
     await ContentsManager.createContents(frameManager, modelList, frameModel, pageModel);
 
-    
-
-    
     mychangeStack.endTrans();
   }
 
@@ -68,6 +66,9 @@ mixin FramePlayMixin {
       return false;
     }
     if (model.isCameraType()) {
+      return false;
+    }
+    if (model.isMapType()) {
       return false;
     }
     if (contentsManager.getShowLength() > 0) {
@@ -147,6 +148,13 @@ mixin FramePlayMixin {
           datetime: DateTime.now());
     }
     return const SizedBox.shrink();
+  }
+
+  Widget mapFrame(FrameModel model) {
+    return const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: GoogleMapClass(),
+    );
   }
 
   // Future<Widget> cameraFrame(FrameModel model) async {

@@ -96,6 +96,17 @@ class CretaStudioLang {
     // 'CretaTest': 'test',
   };
 
+  static Map<String, String> widgetTypes = {
+    '전체': 'all',
+    '뮤직': 'music',
+    '날씨': 'weather',
+    '시계': 'clock',
+    '스티커': 'sticker',
+    '효과': 'effect',
+    '카메라': 'camera',
+    '구글맵': 'map',
+  };
+
   static List<String> menuStick = [
     "템플릿",
     "페이지",
@@ -540,6 +551,7 @@ class CretaStudioLang {
   static String weather = '날씨 위젯';
   static String clockandWatch = '시계와 스톱워치';
   static String camera = '카메라';
+  static String map = '맵';
 
   static var onlineWeather = '날씨 온라인 연결';
   static String offLineWeather = "날씨 수동으로 선택";

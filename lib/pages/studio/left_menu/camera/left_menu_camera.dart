@@ -28,8 +28,6 @@ class LeftMenuCamera extends StatefulWidget {
 }
 
 class _LeftMenuCameraState extends State<LeftMenuCamera> {
-
-
   @override
   void initState() {
     super.initState();
@@ -42,26 +40,26 @@ class _LeftMenuCameraState extends State<LeftMenuCamera> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 12.0),
+          padding: const EdgeInsets.only(top: 12.0, left: 24.0),
           child: Text(widget.title, style: widget.dataStyle),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 12.0),
+          padding: const EdgeInsets.only(top: 12.0, left: 24.0),
           child: FutureBuilder(
             future: mediaDeviceDataHolder!.loadMediaDevice(),
             builder: (context, snapshot) {
-              if(snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done) {
                 return GestureDetector(
                   child: Container(
-                    width: 80,
-                    height: 80,
-                    color: Colors.grey,
-                    child: const Center(
-                      child: Icon(Icons.camera_alt_outlined, color: Colors.white, size: 20),
-                    )
-                  ),
+                      width: 80,
+                      height: 80,
+                      color: Colors.grey,
+                      child: const Center(
+                        child: Icon(Icons.camera_alt_outlined, color: Colors.white, size: 20),
+                      )),
                   onTap: () {
-                    _createCamera(frameType: FrameType.camera).then((value) => BookMainPage.pageManagerHolder!.notify());
+                    _createCamera(frameType: FrameType.camera)
+                        .then((value) => BookMainPage.pageManagerHolder!.notify());
                   },
                 );
               } else {

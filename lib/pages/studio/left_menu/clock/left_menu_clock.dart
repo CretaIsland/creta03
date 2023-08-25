@@ -43,11 +43,11 @@ class _LeftMenuWeatherState extends State<LeftMenuClock> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 12.0),
+          padding: const EdgeInsets.only(top: 12.0, left: 24.0),
           child: Text(widget.title, style: widget.dataStyle),
         ),
         Padding(
-            padding: const EdgeInsets.only(top: 12.0),
+            padding: const EdgeInsets.only(top: 12.0, left: 24.0),
             child: Wrap(
               spacing: 12.0,
               runSpacing: 6.0,

@@ -316,7 +316,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.camera) {
       return false;
     }
-
+    if (model.frameType == FrameType.map) {
+      return false;
+    }
     return true;
   }
 
@@ -459,6 +461,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     }
     if (model.isCameraType()) {
       return CameraFrame(model: model);
+    }
+    if (model.isMapType()) {
+      return mapFrame(model);
     }
     return ClipRect(
       clipBehavior: Clip.hardEdge,
