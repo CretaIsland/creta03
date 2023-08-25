@@ -24,6 +24,7 @@ import '../../design_system/component/snippet.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
 import '../../lang/creta_lang.dart';
+import '../../data_io/subscription_manager.dart';
 import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
 //import '../../model/team_model.dart';
@@ -35,7 +36,6 @@ import '../../pages/studio/studio_snippet.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../../model/playlist_model.dart';
 
-//import 'community_sample_data.dart';
 import 'sub_pages/community_right_home_pane.dart';
 import 'sub_pages/community_right_channel_pane.dart';
 import 'sub_pages/community_right_favorites_pane.dart';
@@ -763,7 +763,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                 fontWeight: CretaFont.medium,
                               ),
                             ),
-                          // SizedBox(width: 20), // 구독중 => 기획 회의중 제거 결론 (23-07-27)
+                          // SizedBox(width: 20), // => 기획 회의중 제거 결론 (23-07-27)
                           // Text(
                           //   '구독중 453명',
                           //   overflow: TextOverflow.ellipsis,
@@ -787,8 +787,42 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           SizedBox(width: 12),
                           BTN.fill_blue_t_m(
                             width: 84,
-                            text: '구독하기',
-                            onPressed: () {},
+                            text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
+                            onPressed: () {
+                              SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
+                              if (_selectedSubscriptionModel == null) {
+                                subscriptionManagerHolder
+                                    .createSubscription(
+                                  LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                                  _currentChannelModel!.getMid,
+                                )
+                                    .then(
+                                      (value) {
+                                    showSnackBar(context, '구독되었습니다');
+                                    setState(() {
+                                      _selectedSubscriptionModel = SubscriptionModel.withName(
+                                          channelId: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                                          subscriptionChannelId: _currentChannelModel!.getMid);
+                                    });
+                                  },
+                                );
+                              }
+                              else {
+                                subscriptionManagerHolder
+                                    .removeSubscription(
+                                  LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                                  _currentChannelModel!.mid,
+                                )
+                                    .then(
+                                      (value) {
+                                    showSnackBar(context, '구독 해지되었습니다');
+                                    setState(() {
+                                      _selectedSubscriptionModel = null;
+                                    });
+                                  },
+                                );
+                              }
+                            },
                             textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
                           ),
                         ],
@@ -957,8 +991,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
               SizedBox(width: 12),
               BTN.fill_blue_t_m(
                 width: 84,
-                text: '구독하기',
-                onPressed: () {},
+                text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
+                onPressed: () {
+
+                },
                 textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
               ),
             ],
@@ -1323,9 +1359,14 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   GlobalObjectKey _getRightPaneKey() {
-    String key =
-        //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
-        '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
+    String key = '';
+    if (widget.subPageUrl == AppRoutes.channel) {
+      //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
+      key = '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
+    }
+    else {
+      key = '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
+    }
     if (kDebugMode) print('_getRightPaneKey = $key');
     return GlobalObjectKey(key);
   }
@@ -1344,9 +1385,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     });
   }
 
-  void _onUpdateChannelModel(ChannelModel? chModel) {
+  void _onUpdateModel({ChannelModel? channelModel, SubscriptionModel? subscriptionModel}) {
     setState(() {
-      _currentChannelModel = chModel;
+      _currentChannelModel = channelModel;
+      _selectedSubscriptionModel = subscriptionModel;
     });
   }
 
@@ -1370,7 +1412,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           filterBookSort: _filterBookSort,
           filterPermissionType: _filterPermissionType,
           filterSearchKeyword: _filterSearchKeyword,
-          onUpdateChannelModel: _onUpdateChannelModel,
+          onUpdateModel: _onUpdateModel,
+          currentChannelModel: _currentChannelModel,
+          currentSubscriptionModel: _selectedSubscriptionModel,
         );
       case AppRoutes.subscriptionList:
         return CommunityRightSubscriptionPane(
@@ -1487,7 +1531,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return SizedBox.shrink();
   }
 
-  void _changeSubscriptionModel(SubscriptionModel? model) {
+  void _onUpdateSubscriptionModel(SubscriptionModel? model) {
     setState(() {
       _selectedSubscriptionModel = model;
     });
@@ -1499,7 +1543,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       widgetList.add(
         SubscriptionItem(
           subscriptionModel: item,
-          onChangeSelectUser: _changeSubscriptionModel,
+          onChangeSelectUser: _onUpdateSubscriptionModel,
           isSelectedUser: (_selectedSubscriptionModel?.getMid == item.getMid),
         ),
       );

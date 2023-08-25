@@ -140,7 +140,7 @@ class _SubscriptionItemState extends State<SubscriptionItem> {
                     ),
                   ),
                   Text(
-                    '구독자 xx명',
+                    '구독자 ${widget.subscriptionModel.subscriptionChannel!.followerCount}명',
                     style: CretaFont.bodySmall.copyWith(color: textColor),
                   ),
                 ],
