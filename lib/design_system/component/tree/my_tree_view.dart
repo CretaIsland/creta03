@@ -164,7 +164,7 @@ class MyTreeViewState extends State<MyTreeView> {
     _sendEvent = sendEvent;
     _selectedNode = _getSelectedNode();
 
-    logger.info('myTreeView inited : _selectedNode=$_selectedNode');
+    //print('myTreeView inited : _selectedNode=$_selectedNode');
 
     super.initState();
   }
@@ -172,6 +172,23 @@ class MyTreeViewState extends State<MyTreeView> {
   @override
   Widget build(BuildContext context) {
     //_initNodes(widget.pageManager.getSelected() as PageModel?);
+
+    // return FutureBuilder(
+    //     future: _getSelectedNode(),
+    //     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+    //       if (snapshot.hasData == false) {
+    //         //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
+    //         return Snippet.showWaitSign();
+    //       }
+    //       if (snapshot.hasError) {
+    //         //error가 발생하게 될 경우 반환하게 되는 부분
+    //         return Snippet.errMsgWidget(snapshot);
+    //       }
+    //       _selectedNode = snapshot.data!;
+
+    //print('nodes length = ${LeftMenuPage.nodes.length}');
+
+    //logger.info('_getSelectedNode=$_selectedNode', level: 5);
     tree.TreeViewTheme treeViewTheme = tree.TreeViewTheme(
       expanderTheme: tree.ExpanderThemeData(
         // 꼭지점 테마임.
@@ -199,29 +216,15 @@ class MyTreeViewState extends State<MyTreeView> {
       colorScheme: Theme.of(context).colorScheme,
     );
 
-    // return FutureBuilder(
-    //     future: _getSelectedNode(),
-    //     builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-    //       if (snapshot.hasData == false) {
-    //         //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-    //         return Snippet.showWaitSign();
-    //       }
-    //       if (snapshot.hasError) {
-    //         //error가 발생하게 될 경우 반환하게 되는 부분
-    //         return Snippet.errMsgWidget(snapshot);
-    //       }
-    //       _selectedNode = snapshot.data!;
-
-    //print('nodes length = ${LeftMenuPage.nodes.length}');
-
-    //logger.info('_getSelectedNode=$_selectedNode', level: 5);
     _treeViewController = tree.TreeViewController(
       //children: widget.nodes,
       children: LeftMenuPage.nodes,
       selectedKey: _selectedNode,
     );
 
+    //print('build');
     return tree.TreeView(
+      key: GlobalObjectKey('TreeView'),
       button1: _button1,
       button2: _button2,
       controller: _treeViewController,
@@ -229,75 +232,27 @@ class MyTreeViewState extends State<MyTreeView> {
       supportParentDoubleTap: _supportParentDoubleTap,
       onExpansionChanged: (key, expanded) => _expandNode(key, expanded),
       //onNodeHover: (key, hover) {},
-      onNodeShiftTap: (key, index) {},
+      onNodeShiftTap: (key, index) {
+        //print('onNodeShiftTap');
+        setState(() {});
+      },
       onNodeTap: (key, index) {
+        //print('onNodeTap');
         StudioVariables.selectedKeyType = ContaineeEnum.None;
         //print('------------------Selected: $key');
         if (_selectedNode == key) {
           if (BookMainPage.containeeNotifier!.isBook()) {
             BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
           }
+          setState(() {});
           return;
         }
-        //setState(() {
-        _selectedNode = key;
-        _treeViewController = _treeViewController.copyWith(selectedKey: key);
-        tree.Node? node = _treeViewController.getNode(key);
-        if (node == null) {
-          logger.severe('Invalid key $key');
-          return;
-        }
-        if (key.contains('page=') == false) {
-          logger.severe('Invalid key $key');
-          return;
-        }
+        setState(() {
+          _selectedNode = key;
+          _treeViewController = _treeViewController.copyWith(selectedKey: key);
+        });
+        _afterSelect(index, key);
 
-        logger.info('key=$key');
-        String pageMid = key.substring(0, 5 + 36);
-        // _selectPage
-        widget.pageManager.setSelectedMid(pageMid);
-        BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
-
-        String frameMid = '';
-        if (key.contains('frame=') == false) {
-          return;
-        }
-        frameMid = key.substring(5 + 36 + 1, 5 + 36 + 1 + 6 + 36);
-        FrameManager? frameManager = widget.pageManager.findFrameManager(pageMid);
-        if (frameManager == null) {
-          logger.severe('Invalid key $key');
-          return;
-        }
-        //print('frameMid=$frameMid');
-        FrameModel? frameModel = frameManager.getModel(frameMid) as FrameModel?;
-        if (frameModel == null) {
-          logger.severe('Invalid MID $frameMid');
-          return;
-        }
-        ContentsManager? contentsManager = frameManager.getContentsManager(frameMid);
-        if (contentsManager == null) {
-          _selectFrame(frameModel, frameManager);
-          return;
-        }
-        if (key.contains('contents=') == false) {
-          _selectFrame(frameModel, frameManager);
-          return;
-        }
-        String contentsMid =
-            key.substring(5 + 36 + 1 + 6 + 36 + 1, 5 + 36 + 1 + 6 + 36 + 1 + 9 + 36);
-        ContentsModel? contentsModel = contentsManager.getModel(contentsMid) as ContentsModel?;
-        if (contentsModel == null) {
-          logger.severe('Invalid MID $contentsMid');
-          return;
-        }
-        //print('contentsMid=$contentsMid');
-        _selectContents(
-          frameModel,
-          contentsModel,
-          frameManager,
-          contentsManager,
-          index,
-        );
         //});
       },
       onNodeDoubleTap: (key) {
@@ -342,6 +297,68 @@ class MyTreeViewState extends State<MyTreeView> {
     //});
   }
 
+  Future<void> _afterSelect(int index, String key) async {
+    Future.delayed(Duration(milliseconds: 1)).then((value) {
+      // 이 함수를 진정한 async 함수로 만들기 위해 필요하다.
+      tree.Node? node = _treeViewController.getNode(key);
+      if (node == null) {
+        logger.severe('Invalid key $key');
+        return;
+      }
+      if (key.contains('page=') == false) {
+        logger.severe('Invalid key $key');
+        return;
+      }
+
+      logger.info('key=$key');
+      String pageMid = key.substring(0, 5 + 36);
+      // _selectPage
+      widget.pageManager.setSelectedMid(pageMid);
+      BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
+
+      String frameMid = '';
+      if (key.contains('frame=') == false) {
+        return;
+      }
+      frameMid = key.substring(5 + 36 + 1, 5 + 36 + 1 + 6 + 36);
+      FrameManager? frameManager = widget.pageManager.findFrameManager(pageMid);
+      if (frameManager == null) {
+        logger.severe('Invalid key $key');
+        return;
+      }
+      //print('frameMid=$frameMid');
+      FrameModel? frameModel = frameManager.getModel(frameMid) as FrameModel?;
+      if (frameModel == null) {
+        logger.severe('Invalid MID $frameMid');
+        return;
+      }
+      ContentsManager? contentsManager = frameManager.getContentsManager(frameMid);
+      if (contentsManager == null) {
+        _selectFrame(frameModel, frameManager);
+        return;
+      }
+      if (key.contains('contents=') == false) {
+        _selectFrame(frameModel, frameManager);
+        return;
+      }
+      String contentsMid = key.substring(5 + 36 + 1 + 6 + 36 + 1, 5 + 36 + 1 + 6 + 36 + 1 + 9 + 36);
+      ContentsModel? contentsModel = contentsManager.getModel(contentsMid) as ContentsModel?;
+      if (contentsModel == null) {
+        logger.severe('Invalid MID $contentsMid');
+        return;
+      }
+      //print('contentsMid=$contentsMid');
+      _selectContents(
+        frameModel,
+        contentsModel,
+        frameManager,
+        contentsManager,
+        index,
+      );
+    });
+    //print('contentsMid=$contentsMid');
+  }
+
   void _selectFrame(FrameModel frameModel, FrameManager frameManager) {
     // 프레임을 선택되게 하기 위해서 참 많은 이벤트를 날려야 한다.;
     //print('_selectFrame=${frameModel.mid}');
@@ -355,8 +372,8 @@ class MyTreeViewState extends State<MyTreeView> {
     _sendEvent!.sendEvent(frameModel); // frame_main 이 reBuild 되게 하기 위해
   }
 
-  void _selectContents(FrameModel frameModel, ContentsModel contentsModel,
-      FrameManager frameManager, ContentsManager contentsManager, int index) {
+  Future<void> _selectContents(FrameModel frameModel, ContentsModel contentsModel,
+      FrameManager frameManager, ContentsManager contentsManager, int index) async {
     // 프레임을 선택되게 하기 위해서 참 많은 이벤트를 날려야 한다.;
     //print('_selectContents=${contentsModel.mid}');
     MiniMenu.showFrame = false;

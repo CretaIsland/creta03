@@ -1,6 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 
 import '../../../../model/creta_model.dart';
 import '../../../../pages/studio/containees/containee_nofifier.dart';
@@ -120,25 +121,26 @@ class TreeView extends InheritedWidget {
   static TreeView? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType(aspect: TreeView);
 
-  final Set<String> _selectedNodeSet = {};
+  static Set<String> shiftNodeSet = {};
+  static Set<String> ctrlNodeSet = {};
   //final ContaineeEnum _keyType = ContaineeEnum.None;
   bool isMultiSelected(String key) {
-    return _selectedNodeSet.lookup(key) != null;
+    return TreeView.shiftNodeSet.lookup(key) != null || TreeView.ctrlNodeSet.lookup(key) != null;
   }
 
   int getMultiSelectedLength() {
-    return _selectedNodeSet.length;
+    return TreeView.shiftNodeSet.length + TreeView.ctrlNodeSet.length;
   }
 
-  void _foldByType(ContaineeEnum keyType, List<Node> nodes) {
-    for (var ele in nodes) {
-      if (ele.keyType == keyType) {
-        ele.expanded = false;
-      } else {
-        _foldByType(keyType, ele.children);
-      }
-    }
-  }
+  // void _foldByType(ContaineeEnum keyType, List<Node> nodes) {
+  //   for (var ele in nodes) {
+  //     if (ele.keyType == keyType) {
+  //       ele.expanded = false;
+  //     } else {
+  //       _foldByType(keyType, ele.children);
+  //     }
+  //   }
+  // }
 
   void _setBeeween(
     ContaineeEnum keyType,
@@ -146,52 +148,152 @@ class TreeView extends InheritedWidget {
     String lastKey,
   ) {
     bool matched = false;
+    if (lastKey == firstKey) {
+      return;
+    }
     for (var ele in LeftMenuPage.nodeKeys.keys) {
       if (matched == false) {
+        if (ele == lastKey) {
+          // firstKey 가 나오기전에 lastKey 가 먼저나온것은 순서가 바뀐것이다.
+          break;
+        }
         if (ele == firstKey) {
           matched = true;
         }
         continue;
       }
       if (ele == lastKey) {
-        _selectedNodeSet.add(ele);
+        TreeView.shiftNodeSet.add(ele);
         return;
       }
       if (keyType == LeftMenuPage.nodeKeys[ele]) {
-        _selectedNodeSet.add(ele);
+        TreeView.shiftNodeSet.add(ele);
       }
     }
+    if (matched == false) {
+      // match 된것이 없다면, 위 아래가 바뀐것이다.
+      _setBeeween(keyType, lastKey, firstKey);
+    }
+
     return;
   }
 
   bool setMultiSelected(Node node) {
     if (StudioVariables.isShiftPressed == true) {
-      if (StudioVariables.selectedKeyType != node.keyType) {
-        StudioVariables.selectedKeyType = node.keyType;
-        // 만약, keyType 이 Page,Frame 이면,  모두 닫는다.
-        if (node.keyType == ContaineeEnum.Page || node.keyType == ContaineeEnum.Frame) {
-          _foldByType(StudioVariables.selectedKeyType, LeftMenuPage.nodes);
+      if (TreeView.ctrlNodeSet.isNotEmpty) {
+        // 타입이 다르면 선택이 안되야 한다.
+        if (StudioVariables.selectedKeyType != node.keyType) {
+          //print('keyType is different');
+          return false;
         }
-        _selectedNodeSet.clear();
-        _selectedNodeSet.add(node.key);
-        return true;
-      }
-      if (_selectedNodeSet.isNotEmpty) {
-        // 마지작 키와 현재 선택된 키사이의 모든 key (단, 동일타입) 을 모두 선택한다.
+
+        // 현재 shift key 와 가까운 쪽에 있는 key 를 남기고 모두 지워야 한다.
+        // 가장 가까운 key 를 얻는 함수
+        String? ctrlKey = _getMostClosedCtrl(node.key);
+
+        TreeView.ctrlNodeSet.clear();
+        TreeView.shiftNodeSet.clear();
+        StudioVariables.selectedKeyType = node.keyType;
+        TreeView.shiftNodeSet.add(node.key);
+        if (ctrlKey != null) {
+          TreeView.shiftNodeSet.add(ctrlKey);
+          _setBeeween(
+            StudioVariables.selectedKeyType,
+            ctrlKey,
+            node.key,
+          );
+          return true;
+        } else {
+          logger.severe('_getMostCloseCtrl return null');
+        }
+
+        return false;
+      } else if (controller.selectedKey != null && controller.selectedKey!.isNotEmpty) {
+        TreeView.shiftNodeSet.clear();
+        StudioVariables.selectedKeyType = node.keyType;
+        TreeView.shiftNodeSet.add(node.key);
+        TreeView.shiftNodeSet.add(controller.selectedKey!);
+
         _setBeeween(
           StudioVariables.selectedKeyType,
-          _selectedNodeSet.last,
+          controller.selectedKey!,
           node.key,
         );
+        //}
+        return true;
       }
-      return true;
     }
+    if (StudioVariables.isCtrlPressed) {
+      // 이미 있으면 해제해야 한다.
+      if (TreeView.ctrlNodeSet.contains(node.key)) {
+        TreeView.ctrlNodeSet.remove(node.key);
+        return true;
+      }
+      if (TreeView.shiftNodeSet.contains(node.key)) {
+        TreeView.shiftNodeSet.remove(node.key);
+        return true;
+      }
+      if (controller.selectedKey != null && controller.selectedKey!.isNotEmpty) {
+        if (TreeView.ctrlNodeSet.isEmpty) {
+          StudioVariables.selectedKeyType = Node.genKeyType(controller.selectedKey!);
+          TreeView.ctrlNodeSet.add(controller.selectedKey!);
+        }
+      }
+      if (TreeView.ctrlNodeSet.isNotEmpty) {
+        if (StudioVariables.selectedKeyType != node.keyType) {
+          // 타입이 다르면 add 되지 않는다.
+          //print('keyType is different');
+          return false;
+        }
+      }
+      StudioVariables.selectedKeyType = node.keyType;
+      TreeView.ctrlNodeSet.add(node.key);
+    }
+
     //return changed;
     return false;
   }
 
+  String? getLastKey(Set<String> targetSet) {
+    List<String> retval = [];
+    for (var ele in LeftMenuPage.nodeKeys.keys) {
+      if (targetSet.contains(ele)) {
+        retval.add(ele);
+      }
+    }
+    return retval.last;
+  }
+
+  String? getFirstKey(Set<String> targetSet) {
+    for (var ele in LeftMenuPage.nodeKeys.keys) {
+      if (targetSet.contains(ele)) {
+        return ele;
+      }
+    }
+    return null;
+  }
+
+  String? _getMostClosedCtrl(String key) {
+    //무조건 제일 나중에 찍은것을 기준으로 한다.
+    return TreeView.ctrlNodeSet.last;
+    // String? lastKey = getLastKey(TreeView.ctrlNodeSet);
+    // String? firstKey = getFirstKey(TreeView.ctrlNodeSet);
+    // for (var ele in LeftMenuPage.nodeKeys.keys) {
+    //   if (lastKey != null && ele == lastKey) {
+    //     // firstKey 가 나오기전에 lastKey key 가 ctrlNodeSet 아래에 있다는 뜻이다.
+    //     return lastKey;
+    //   }
+    //   if (firstKey != null && ele == key) {
+    //     // 라스트키가 나오기 전에, key 가 나왔다.  ctrlNodeSet 위에 있다는 뜻이다.
+    //     return firstKey;
+    //   }
+    // }
+    // return null;
+  }
+
   void clearMultiSelected() {
-    _selectedNodeSet.clear();
+    TreeView.shiftNodeSet.clear();
+    TreeView.ctrlNodeSet.clear();
   }
 
   @override

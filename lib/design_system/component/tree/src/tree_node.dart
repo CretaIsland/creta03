@@ -5,6 +5,7 @@ import 'dart:math' show pi;
 import 'package:flutter/material.dart';
 
 import '../../../../model/creta_model.dart';
+import '../../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../../pages/studio/studio_variables.dart';
 import '../../../creta_color.dart';
 import 'tree_view.dart';
@@ -25,7 +26,7 @@ const double _kBorderWidth = 0.75;
 /// The [TreeView] and [TreeViewController] handlers the data and rendering
 /// of the nodes.
 class TreeNode extends StatefulWidget {
-  static String? selectedRoot;
+  //static String? selectedRoot;
 
   /// The node object used to display the widget state
   final Node node;
@@ -52,17 +53,20 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   late Animation<double> _heightFactor;
   bool _isExpanded = false;
   bool _isHover = false;
+  TreeView? treeView;
+
   //bool _isMultiSelected = false;
-  bool _isMultiSelected(TreeView treeView) {
-    return treeView.isMultiSelected(widget.node.key);
+  bool _isMultiSelected() {
+    return treeView!.isMultiSelected(widget.node.key);
   }
 
-  int _getMultiSelectedLength(TreeView treeView) {
-    return treeView.getMultiSelectedLength();
+  int _getMultiSelectedLength() {
+    return treeView!.getMultiSelectedLength();
   }
 
   @override
   void initState() {
+    //print('treeNode initState');
     super.initState();
     _controller = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
     _heightFactor = _controller.drive(_easeInTween);
@@ -103,9 +107,9 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     super.didUpdateWidget(oldWidget);
   }
 
-  void _handleExpand() {
-    TreeView? treeView = TreeView.of(context);
-    assert(treeView != null, 'TreeView must exist in context');
+  void _handleExpand(TapDownDetails details) {
+    treeView ??= TreeView.of(context);
+
     setState(() {
       _isExpanded = !_isExpanded;
       //print('_handleExpand ($_isExpanded)-------------------------------------------------');
@@ -120,59 +124,86 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       }
     });
     if (treeView!.onExpansionChanged != null) {
-      treeView.onExpansionChanged!(widget.node.key, _isExpanded);
+      treeView!.onExpansionChanged!(widget.node.key, _isExpanded);
     }
   }
 
   void _handleHover(bool hover) {
-    TreeView? treeView = TreeView.of(context);
-    assert(treeView != null, 'TreeView must exist in context');
+    treeView ??= TreeView.of(context);
     setState(() {
       _isHover = hover;
     });
     treeView?.onNodeHover?.call(widget.node.key, hover);
   }
 
-  void _handleTap() {
-    TreeView? treeView = TreeView.of(context);
-    assert(treeView != null, 'TreeView must exist in context');
-    TreeNode.selectedRoot = widget.node.key;
+  void _handleTap(TapDownDetails details) {
+    treeView ??= TreeView.of(context);
+    //TreeNode.selectedRoot = widget.node.key;
+    //print('_handleTap ${treeView!.controller.selectedKey}');
 
-    if (StudioVariables.isShiftPressed) {
+    if (StudioVariables.isShiftPressed &&
+        treeView!.controller.selectedKey != null &&
+        treeView!.controller.selectedKey!.isNotEmpty) {
       //print('shift pressed');
+
+      // 현재 Select 된 Key 와 shift 로 눌린 key 의 type 이 다르면 무시된다.
+      ContaineeEnum selectedKeyType = Node.genKeyType(treeView!.controller.selectedKey!);
+      if (selectedKeyType != widget.node.keyType) {
+        StudioVariables.isShiftPressed = false;
+        //print('keyType is different');
+        return;
+      }
+
+      bool isMultiSelectedChanged = false;
       setState(
         () {
           //_isMultiSelected = !_isMultiSelected;
-          if (treeView?.setMultiSelected(widget.node) == true) {
-            treeView?.onNodeShiftTap!(widget.node.key, widget.index);
-          }
+          isMultiSelectedChanged = treeView!.setMultiSelected(widget.node);
         },
       );
+      if (isMultiSelectedChanged) {
+        // 다른 Node 를 모두 setState 해주어야 한다.
+        treeView?.onNodeShiftTap!(widget.node.key, widget.index);
+      }
+      return;
+    }
+    if (StudioVariables.isCtrlPressed) {
+      
+      bool isMultiSelectedChanged = false;
+      setState(
+        () {
+          //_isMultiSelected = !_isMultiSelected;
+          isMultiSelectedChanged = treeView!.setMultiSelected(widget.node);
+        },
+      );
+      if (isMultiSelectedChanged) {
+        // 다른 Node 를 모두 setState 해주어야 한다.
+        treeView?.onNodeShiftTap!(widget.node.key, widget.index);
+      }
       return;
     }
 
+    StudioVariables.isShiftPressed = false;
     treeView?.clearMultiSelected();
     treeView?.onNodeTap!(widget.node.key, widget.index);
   }
 
   void _handleDoubleTap() {
-    TreeView? treeView = TreeView.of(context);
+    treeView ??= TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
     if (treeView!.onNodeDoubleTap != null) {
-      treeView.onNodeDoubleTap!(widget.node.key);
+      treeView!.onNodeDoubleTap!(widget.node.key);
     }
   }
 
   Widget _buildNodeExpander() {
-    TreeView? treeView = TreeView.of(context);
-    assert(treeView != null, 'TreeView must exist in context');
     TreeViewTheme theme = treeView!.theme;
     if (theme.expanderTheme.type == ExpanderType.none) return Container();
 
     //print('_buildNodeExpander=========================${widget.node.expanded}');
     return widget.node.isParent
         ? GestureDetector(
-            onTap: () => _handleExpand(),
+            onTapDown: (d) => _handleExpand(d),
             child: _TreeNodeExpander(
               speed: _controller.duration!,
               //expanded: widget.node.expanded,
@@ -185,10 +216,9 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   }
 
   Widget _buildNodeIcon() {
-    TreeView? treeView = TreeView.of(context);
-    assert(treeView != null, 'TreeView must exist in context');
+    treeView ??= TreeView.of(context);
     TreeViewTheme theme = treeView!.theme;
-    bool isSelected = _isSelected(treeView);
+    bool isSelected = _isSelected();
     return Container(
       alignment: Alignment.center,
       width: widget.node.hasIcon ? theme.iconTheme.size! + theme.iconPadding : 0,
@@ -206,10 +236,9 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
 
   Widget _buildNodeLabel() {
     // skpark : TreeView 의 nodeBuilder 가 사용되므로 사용되지 않는 코드이다.
-    TreeView? treeView = TreeView.of(context);
-    assert(treeView != null, 'TreeView must exist in context');
+    treeView ??= TreeView.of(context);
     TreeViewTheme theme = treeView!.theme;
-    bool isSelected = _isSelected(treeView);
+    bool isSelected = _isSelected();
     final icon = _buildNodeIcon();
     return Container(
       padding: EdgeInsets.symmetric(
@@ -245,22 +274,23 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     );
   }
 
-  bool _isSelected(TreeView treeView) {
-    bool retval = treeView.controller.selectedKey != null &&
-        treeView.controller.selectedKey == widget.node.key;
-    if (retval && _getMultiSelectedLength(treeView) > 0) {
+  bool _isSelected() {
+    treeView ??= TreeView.of(context);
+    bool retval = treeView!.controller.selectedKey != null &&
+        treeView!.controller.selectedKey == widget.node.key;
+    if (retval && _getMultiSelectedLength() > 0) {
       //print('isSelected but ShiftPressed-----------------');
       return false;
     }
+    //print('isSelected = $retval-----------------');
     return retval;
   }
 
   Widget _buildNodeWidget() {
-    TreeView? treeView = TreeView.of(context);
-    assert(treeView != null, 'TreeView must exist in context');
+    treeView ??= TreeView.of(context);
     TreeViewTheme theme = treeView!.theme;
 
-    bool isSelected = _isSelected(treeView);
+    bool isSelected = _isSelected();
 
     final Widget buttons = Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -275,10 +305,10 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     //   print('_buildNodeWidget(widget.node.key=${widget.node.key})');
     // }
 
-    bool canSelectParent = treeView.allowParentSelect;
+    bool canSelectParent = treeView!.allowParentSelect;
     final arrowContainer = _buildNodeExpander();
-    final labelContainer = treeView.nodeBuilder != null
-        ? treeView.nodeBuilder!(context, widget.node)
+    final labelContainer = treeView!.nodeBuilder != null
+        ? treeView!.nodeBuilder!(context, widget.node)
         : _buildNodeLabel();
 
     final eachRow = _isHover
@@ -290,36 +320,36 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
             ],
           )
         : labelContainer;
-    Widget tappable = treeView.onNodeDoubleTap != null
+    Widget tappable = treeView!.onNodeDoubleTap != null
         ? InkWell(
             onHover: _handleHover,
-            onTap: _handleTap,
+            onTapDown: _handleTap,
             onDoubleTap: _handleDoubleTap,
             onSecondaryTapDown: _onRightMouseButton,
             child: eachRow,
           )
         : InkWell(
             onHover: _handleHover,
-            onTap: _handleTap,
+            onTapDown: _handleTap,
             onSecondaryTapDown: _onRightMouseButton,
             child: eachRow,
           );
     if (widget.node.isParent) {
-      if (treeView.supportParentDoubleTap && canSelectParent) {
+      if (treeView!.supportParentDoubleTap && canSelectParent) {
         tappable = InkWell(
           onHover: _handleHover,
-          onTap: canSelectParent ? _handleTap : _handleExpand,
+          onTapDown: canSelectParent ? _handleTap : _handleExpand,
           onDoubleTap: () {
-            _handleExpand();
+            _handleExpand(TapDownDetails());
             _handleDoubleTap();
           },
           onSecondaryTapDown: _onRightMouseButton,
           child: eachRow,
         );
-      } else if (treeView.supportParentDoubleTap) {
+      } else if (treeView!.supportParentDoubleTap) {
         tappable = InkWell(
           onHover: _handleHover,
-          onTap: _handleExpand,
+          onTapDown: _handleExpand,
           onDoubleTap: _handleDoubleTap,
           onSecondaryTapDown: _onRightMouseButton,
           child: eachRow,
@@ -327,46 +357,48 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       } else {
         tappable = InkWell(
           onHover: _handleHover,
-          onTap: canSelectParent ? _handleTap : _handleExpand,
+          onTapDown: canSelectParent ? _handleTap : _handleExpand,
           onSecondaryTapDown: _onRightMouseButton,
           child: eachRow,
         );
       }
     }
-    return Container(
-      //color: isSelected ? theme.colorScheme.primary : null,
-      color: isSelected // || _isMultiSelected()
-          ? CretaColor.primary[200]!
-          : _isMultiSelected(treeView)
-              ? CretaColor.secondary[200]!
-              : null, //skpark
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: theme.expanderTheme.position == ExpanderPosition.end
-            ? <Widget>[
-                const SizedBox(width: 20), //skpark
-                Expanded(
-                  child: tappable,
-                ),
-                arrowContainer,
-                const SizedBox(width: 20), //skpark
-              ]
-            : <Widget>[
-                const SizedBox(width: 20), //skpark
-                arrowContainer,
-                Expanded(
-                  child: tappable,
-                ),
-                const SizedBox(width: 20), //skpark
-              ],
+    return RepaintBoundary(
+      child: Container(
+        //color: isSelected ? theme.colorScheme.primary : null,
+        color: isSelected // || _isMultiSelected()
+            ? CretaColor.primary[200]!
+            : _isMultiSelected()
+                ? CretaColor.secondary[200]!
+                : null, //skpark
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: theme.expanderTheme.position == ExpanderPosition.end
+              ? <Widget>[
+                  const SizedBox(width: 20), //skpark
+                  Expanded(
+                    child: tappable,
+                  ),
+                  arrowContainer,
+                  const SizedBox(width: 20), //skpark
+                ]
+              : <Widget>[
+                  const SizedBox(width: 20), //skpark
+                  arrowContainer,
+                  Expanded(
+                    child: tappable,
+                  ),
+                  const SizedBox(width: 20), //skpark
+                ],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    TreeView? treeView = TreeView.of(context);
+    treeView = TreeView.of(context);
     assert(treeView != null, 'TreeView must exist in context');
     final bool closed = (!_isExpanded || !widget.node.expanded) && _controller.isDismissed;
     final nodeWidget = _buildNodeWidget();
@@ -376,16 +408,16 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     // if (isSelected) {
     //   _TreeNodeState._selectedRoot = widget.node.root;
     // }
-    bool isSelectedRoot = TreeNode.selectedRoot != null &&
-        (widget.node.key != TreeNode.selectedRoot! &&
-            widget.node.key.contains(TreeNode.selectedRoot!));
+    // bool isSelectedRoot = TreeNode.selectedRoot != null &&
+    //     (widget.node.key != TreeNode.selectedRoot! &&
+    //         widget.node.key.contains(TreeNode.selectedRoot!));
 
     //print('TreeNode.build $isSelectedRoot');
 
     return Container(
       // 모든 노드를 포함하는 전체 영역 박스임.
-      //color: Colors.white,
-      color: isSelectedRoot ? CretaColor.primary[100] : Colors.white,
+      color: Colors.white,
+      // color: isSelectedRoot ? CretaColor.primary[100] : Colors.white,
       child: widget.node.isParent
           ? AnimatedBuilder(
               animation: _controller.view,
@@ -408,7 +440,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
                   : Container(
                       margin: EdgeInsets.only(
                           left:
-                              treeView!.theme.horizontalSpacing ?? treeView.theme.iconTheme.size!),
+                              treeView!.theme.horizontalSpacing ?? treeView!.theme.iconTheme.size!),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: _childrenNode(),
