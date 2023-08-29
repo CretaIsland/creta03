@@ -57,6 +57,20 @@ class LeftMenuPage extends StatefulWidget {
     return _nodeModels[key];
   }
 
+  static List<Node<dynamic>>? findChildren(String key) => _findChildren(key, _nodes);
+  static List<Node<dynamic>>? _findChildren(String key, List<Node<dynamic>> pnodes) {
+    print('findChildren : $key');
+    for (var ele in pnodes) {
+      if (ele.key == key) {
+        return ele.children;
+      }
+    }
+    for (var ele in pnodes) {
+      return _findChildren(key, ele.children);
+    }
+    return null;
+  }
+
   static void _initNodeKeys(List<Node> pnodes) {
     for (Node ele in pnodes) {
       _nodeKeys[ele.key] = ele.keyType;

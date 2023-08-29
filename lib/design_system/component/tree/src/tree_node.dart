@@ -9,6 +9,8 @@ import '../../../../data_io/depot_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
+import '../../../../model/frame_model.dart';
+import '../../../../model/page_model.dart';
 import '../../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../../pages/studio/studio_variables.dart';
@@ -478,44 +480,68 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       title: 'frameRightMouseMenu',
       context: context,
       popupMenu: [
-        if (widget.node.keyType == ContaineeEnum.Contents)
-          CretaMenuItem(
-              caption: CretaStudioLang.putInDepot,
-              onPressed: () {
-                Set<String> targetList = TreeView.ctrlNodeSet;
-                if (TreeView.shiftNodeSet.isNotEmpty) {
-                  targetList.addAll(TreeView.shiftNodeSet);
+        CretaMenuItem(
+            caption: CretaStudioLang.putInDepot,
+            onPressed: () {
+              DepotManager depotManager =
+                  DepotManager(userEmail: AccountManager.currentLoginUser.email);
+              Set<String> targetList = TreeView.ctrlNodeSet;
+              if (TreeView.shiftNodeSet.isNotEmpty) {
+                targetList.addAll(TreeView.shiftNodeSet);
+              }
+              if (targetList.isEmpty) {
+                CretaModel? model = widget.node.data as CretaModel?;
+                _putInDepot(depotManager, model, widget.node.key);
+              } else {
+                for (var ele in targetList) {
+                  CretaModel? model = LeftMenuPage.findModel(ele);
+                  _putInDepot(depotManager, model, ele);
                 }
-                if (targetList.isEmpty) {
-                  if (widget.node.data is ContentsModel) {
-                    ContentsModel? model = widget.node.data as ContentsModel?;
-                    if (model == null) return;
-                    DepotManager depotManager =
-                        DepotManager(userEmail: AccountManager.currentLoginUser.email);
-                    depotManager.createNextDepot(model.mid, model.contentsType);
-                  }
-                } else {
-                  for (var ele in targetList) {
-                    CretaModel? model = LeftMenuPage.findModel(ele);
-                    if (model != null && model is ContentsModel) {
-                      DepotManager depotManager =
-                          DepotManager(userEmail: AccountManager.currentLoginUser.email);
-                      depotManager.createNextDepot(model.mid, model.contentsType);
-                    }
-                  }
-                }
-              }),
+              }
+            }),
       ],
       itemHeight: 24,
       x: details.globalPosition.dx,
       y: details.globalPosition.dy,
       width: 150,
-      height: 170,
+      height: 32,
       //textStyle: CretaFont.bodySmall,
       iconSize: 12,
       alwaysShowBorder: true,
       borderRadius: 8,
     );
+  }
+
+  void _putInDepot(DepotManager depotManager, CretaModel? model, String key) {
+    if (model == null) return;
+    if (model is ContentsModel) {
+      depotManager.createNextDepot(model.mid, model.contentsType);
+    }
+    if (model is FrameModel) {
+      List<Node<dynamic>>? children = LeftMenuPage.findChildren(key);
+      if (children != null) {
+        for (var node in children) {
+          if (node.data is ContentsModel) {
+            depotManager.createNextDepot(node.data.mid, node.data.contentsType);
+          }
+        }
+      }
+    }
+    if (model is PageModel) {
+      List<Node<dynamic>>? children = LeftMenuPage.findChildren(key);
+      if (children != null) {
+        for (var frameNode in children) {
+          List<Node<dynamic>>? grandChildren = LeftMenuPage.findChildren(frameNode.key);
+          if (grandChildren != null) {
+            for (var node in grandChildren) {
+              if (node.data is ContentsModel) {
+                depotManager.createNextDepot(node.data.mid, node.data.contentsType);
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
