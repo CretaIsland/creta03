@@ -122,7 +122,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   void initState() {
     super.initState();
 
-    _key = GlobalObjectKey('_CommunityRightSubscriptionPaneState|${widget.subscriptionModelList?.length}|${widget.selectedSubscriptionModel?.channelId}|${widget.selectedSubscriptionModel?.subscriptionChannelId}');
+    _key = GlobalObjectKey(
+        '_CommunityRightSubscriptionPaneState|${widget.subscriptionModelList?.length}|${widget.selectedSubscriptionModel?.channelId}|${widget.selectedSubscriptionModel?.subscriptionChannelId}');
 
     subscriptionManagerHolder = SubscriptionManager();
     bookPublishedManagerHolder = BookPublishedManager();
@@ -173,7 +174,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     //   sortTimeName: 'lastPublishTime',
     // );
     subscriptionManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    subscriptionManagerHolder.addWhereClause('channelId', QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId));
+    subscriptionManagerHolder.addWhereClause(
+        'channelId', QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId));
     subscriptionManagerHolder.queryByAddedContitions();
   }
 
@@ -189,7 +191,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     if (kDebugMode) print('_getChannelListFromDB=${modelList.length}');
     final List<String> channelIdList = [];
     for (var subModel in _subscriptionList) {
-      channelIdList.add(subModel.channelId);
+      channelIdList.add(subModel.subscriptionChannelId);
     }
     if (channelIdList.isEmpty) {
       channelManagerHolder.setState(DBState.idle);
@@ -262,16 +264,16 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
       return;
     }
     List<String> channelIdList = [widget.selectedSubscriptionModel!.subscriptionChannelId];
-    // bookPublishedManagerHolder.addCretaFilters(
-    //   bookType: widget.filterBookType,
-    //   bookSort: widget.filterBookSort,
-    //   permissionType: widget.filterPermissionType,
-    //   searchKeyword: widget.filterSearchKeyword,
-    //   sortTimeName: 'updateTime',
-    // );
-    // => arrayContainsAny 때문에 filter를 사용할수가 없음
+    bookPublishedManagerHolder.addCretaFilters(
+      bookType: widget.filterBookType,
+      bookSort: widget.filterBookSort,
+      //permissionType: widget.filterPermissionType, // => arrayContainsAny 때문에 permissionType를 사용할수가 없음
+      // searchKeyword: widget.filterSearchKeyword,
+      sortTimeName: 'updateTime',
+    );
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    bookPublishedManagerHolder.addWhereClause('channels', QueryValue(value: channelIdList, operType: OperType.arrayContainsAny));
+    bookPublishedManagerHolder.addWhereClause(
+        'channels', QueryValue(value: channelIdList, operType: OperType.arrayContainsAny));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 

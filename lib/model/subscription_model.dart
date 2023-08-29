@@ -74,7 +74,7 @@ class SubscriptionModel extends CretaModel {
   }
 
   void getModelFromMaps(Map<String, ChannelModel> channelMap, Map<String, UserPropertyModel> userMap, Map<String, TeamModel> teamMap) {
-    subscriptionChannel = channelMap[channelId];
+    subscriptionChannel = channelMap[subscriptionChannelId];
     subscriptionChannel?.getModelFromMaps(userMap, teamMap);
   }
 

@@ -544,7 +544,12 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                         const SizedBox(height: 16.0),
                         Text(
                           CretaMyPageLang.profileTip,
-                          style: CretaFont.bodySmall
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: CretaColor.text.shade400,
+                          )
                         ),
                         const SizedBox(height: 30.0),
                         Row(
@@ -578,7 +583,12 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                             const SizedBox(width: 40.0),
                             Text(
                               '초대 가능 인원 2 / 4',
-                              style: CretaFont.bodySmall,
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: CretaColor.text.shade400,
+                              )
                             )
                           ],
                         ),

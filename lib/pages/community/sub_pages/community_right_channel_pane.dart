@@ -35,6 +35,7 @@ import '../../../data_io/channel_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
+import '../../../data_io/subscription_manager.dart';
 import '../../../data_io/team_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/watch_history_manager.dart';
@@ -44,6 +45,7 @@ import '../../../model/channel_model.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/favorites_model.dart';
 import '../../../model/playlist_model.dart';
+import '../../../model/subscription_model.dart';
 import '../../../model/team_model.dart';
 import '../../../model/user_property_model.dart';
 
@@ -72,7 +74,9 @@ class CommunityRightChannelPane extends StatefulWidget {
     required this.filterBookSort,
     required this.filterPermissionType,
     required this.filterSearchKeyword,
-    required this.onUpdateChannelModel,
+    required this.onUpdateModel,
+    required this.currentChannelModel,
+    required this.currentSubscriptionModel,
   });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
@@ -80,7 +84,9 @@ class CommunityRightChannelPane extends StatefulWidget {
   final BookSort filterBookSort;
   final PermissionType filterPermissionType;
   final String filterSearchKeyword;
-  final Function(ChannelModel?)? onUpdateChannelModel;
+  final Function({ChannelModel? channelModel, SubscriptionModel? subscriptionModel})? onUpdateModel;
+  final ChannelModel? currentChannelModel;
+  final SubscriptionModel? currentSubscriptionModel;
 
   static String channelId = '';
 
@@ -97,10 +103,12 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager favoritesManagerHolder;
   late PlaylistManager playlistManagerHolder;
+  late SubscriptionManager subscriptionManagerHolder;
   late TeamManager teamManagerHolder;
   late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager dummyManagerHolder;
   ChannelModel? _currentChannelModel;
+  SubscriptionModel? _currentSubscriptionModel;
   final List<BookModel> _cretaBooksList = [];
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   final List<PlaylistModel> _playlistModelList = [];
@@ -112,6 +120,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   final Map<String, String> _teamIdMap = {};
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
   bool _onceDBGetComplete = false;
+  bool _hasNoChannelModel = false;
 
   @override
   void initState() {
@@ -122,38 +131,73 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
     favoritesManagerHolder = FavoritesManager();
     playlistManagerHolder = PlaylistManager();
     userPropertyManagerHolder = UserPropertyManager();
+    subscriptionManagerHolder = SubscriptionManager();
     teamManagerHolder = TeamManager();
     dummyManagerHolder = WatchHistoryManager();
 
-    CretaManager.startQueries(
-      joinList: [
-        QuerySet(channelManagerHolder, _getChannelFromDB, _resultChannelFromDB),
-        QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
-        QuerySet(channelManagerHolder, _getChannelsFromDB, _resultChannelsFromDB),
-        QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
-        QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
-        QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
-        QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
-        QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
-        QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
-      ],
-      completeFunc: () {
-        _onceDBGetComplete = true;
-      },
-    );
+    if (widget.currentChannelModel == null) {
+      CretaManager.startQueries(
+        joinList: [
+          QuerySet(channelManagerHolder, _getCurrentChannelFromDB, _resultCurrentChannelFromDB),
+          QuerySet(subscriptionManagerHolder, _getSubscriptionFromDB, _resultSubscriptionFromDB),
+          QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
+          QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
+          QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+        ],
+        completeFunc: () {
+          _onceDBGetComplete = true;
+        },
+      );
+    }
+    else {
+      _currentChannelModel = widget.currentChannelModel;
+      _currentSubscriptionModel = widget.currentSubscriptionModel;
+      CretaManager.startQueries(
+        joinList: [
+          QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+          QuerySet(channelManagerHolder, _getBooksChannelFromDB, _resultBooksChannelFromDB),
+          QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
+          QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
+          QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
+          QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
+          QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
+          QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
+        ],
+        completeFunc: () {
+          _onceDBGetComplete = true;
+        },
+      );
+    }
   }
 
-  void _getChannelFromDB(List<AbsExModel> modelList) {
+  void _getCurrentChannelFromDB(List<AbsExModel> modelList) {
     channelManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     channelManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightChannelPane.channelId));
     channelManagerHolder.queryByAddedContitions();
   }
 
-  void _resultChannelFromDB(List<AbsExModel> modelList) {
+  void _resultCurrentChannelFromDB(List<AbsExModel> modelList) {
     if (modelList.isEmpty) return;
     _currentChannelModel = modelList[0] as ChannelModel; // 오직 1개만 있다고 가정
-    _userIdMap[_currentChannelModel!.userId] = _currentChannelModel!.userId; // <= email
-    _teamIdMap[_currentChannelModel!.teamId] = _currentChannelModel!.teamId; // <= email
+    if (_currentChannelModel!.userId.isNotEmpty) {
+      _userIdMap[_currentChannelModel!.userId] = _currentChannelModel!.userId; // <= email
+    }
+    if (_currentChannelModel!.teamId.isNotEmpty) {
+      _teamIdMap[_currentChannelModel!.teamId] = _currentChannelModel!.teamId;
+    }
+  }
+
+  void _getSubscriptionFromDB(List<AbsExModel> modelList) {
+    if (_currentChannelModel == null) {
+      subscriptionManagerHolder.setState(DBState.idle);
+      return;
+    }
+    subscriptionManagerHolder.queryMySubscription(_currentChannelModel!.getMid);
+  }
+
+  void _resultSubscriptionFromDB(List<AbsExModel> modelList) {
+    if (modelList.isEmpty) return;
+    _currentSubscriptionModel = modelList[0] as SubscriptionModel; // 오직 1개만 있다고 가정
   }
 
   void _getBooksFromDB(List<AbsExModel> modelList) {
@@ -189,7 +233,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
     }
   }
 
-  void _getChannelsFromDB(List<AbsExModel> modelList) {
+  void _getBooksChannelFromDB(List<AbsExModel> modelList) {
     if (_channelIdMap.isEmpty) {
       channelManagerHolder.setState(DBState.idle);
       return;
@@ -197,7 +241,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
     channelManagerHolder.queryFromIdMap(_channelIdMap);
   }
 
-  void _resultChannelsFromDB(List<AbsExModel> modelList) {
+  void _resultBooksChannelFromDB(List<AbsExModel> modelList) {
     for(var model in modelList) {
       ChannelModel chModel = model as ChannelModel;
       _channelMap[chModel.getMid] = chModel;
@@ -219,9 +263,6 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       UserPropertyModel userModel = model as UserPropertyModel;
       //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.getKeyId})');
       _userPropertyMap[userModel.getMid] = userModel;
-    }
-    if (_currentChannelModel != null) {
-      _currentChannelModel!.userPropertyModel = _userPropertyMap[_currentChannelModel!.userId];
     }
   }
 
@@ -310,10 +351,18 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   void _dummyCompleteDB(List<AbsExModel> modelList) {
-    _currentChannelModel?.getModelFromMaps(_userPropertyMap, _teamMap);
+    if (widget.currentChannelModel == null) {
+      if (_currentChannelModel != null) {
+        _currentChannelModel?.getModelFromMaps(_userPropertyMap, _teamMap);
+        widget.onUpdateModel?.call(channelModel: _currentChannelModel, subscriptionModel: _currentSubscriptionModel);
+      }
+      else {
+        _hasNoChannelModel = true;
+      }
+      return;
+    }
     _channelMap.forEach((key, chModel) => chModel.getModelFromMaps(_userPropertyMap, _teamMap));
     dummyManagerHolder.setState(DBState.idle);
-    widget.onUpdateChannelModel?.call(_currentChannelModel);
   }
 
   void _addToFavorites(String bookId, bool isFavorites) async {
@@ -395,6 +444,19 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   }
 
   Widget _getItemPane() {
+    if (_hasNoChannelModel) {
+      return Scrollbar(
+        key: _key,
+        thumbVisibility: true,
+        controller: widget.scrollController,
+        child: SizedBox(
+          child: Center(
+            child: Text('No channel Info !!!'),
+          ),
+        ),
+      );
+    }
+
     final int columnCount =
         CretaUtils.getItemColumnCount(widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 

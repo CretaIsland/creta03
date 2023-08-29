@@ -175,7 +175,12 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                         const SizedBox(height: 14.0),
                         Text(
                           CretaMyPageLang.themeTip,
-                          style: CretaFont.bodySmall,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: CretaColor.text.shade400,
+                          )
                         ),
                         const SizedBox(height: 23.0),
                         Row(
@@ -201,7 +206,12 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                         const SizedBox(height: 14.0),
                         Text(
                           CretaMyPageLang.initPageTip,
-                          style: CretaFont.bodySmall,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: CretaColor.text.shade400,
+                          )
                         ),
                         const SizedBox(height: 23.0),
                         Row(
@@ -227,7 +237,12 @@ class _MyPageSettingsState extends State<MyPageSettings> {
                         const SizedBox(height: 14.0),
                         Text(
                           CretaMyPageLang.cookieSettingTip,
-                          style: CretaFont.bodySmall,
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: CretaColor.text.shade400,
+                          )
                         ),
                       ],
                     ),
