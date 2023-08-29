@@ -58,10 +58,18 @@ class _GoogleMapClassState extends State<GoogleMapClass> {
             ),
             markers: {
               Marker(
-                markerId: const MarkerId("marker1"),
+                markerId: const MarkerId("current"),
                 position: currentLatLng,
                 draggable: true,
                 onDragEnd: (value) {},
+              ),
+              const Marker(
+                markerId: MarkerId("Seoul"),
+                position: LatLng(37.5519, 126.9918),
+                infoWindow: InfoWindow(
+                  title: "Seoul",
+                  snippet: "Capital of South Korea",
+                ), // InfoWindow
               ),
             },
             onCameraMove: _onCameraMove,

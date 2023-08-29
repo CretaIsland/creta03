@@ -24,7 +24,7 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
-import '../../left_menu/google_map/google_map.dart';
+import '../../left_menu/google_map/creta_map_widget.dart';
 import '../../left_menu/weather/weather_base.dart';
 import '../../studio_variables.dart';
 // import '../../../../model/contents_model.dart';
@@ -151,10 +151,7 @@ mixin FramePlayMixin {
   }
 
   Widget mapFrame(FrameModel model) {
-    return const Padding(
-      padding: EdgeInsets.all(8.0),
-      child: GoogleMapClass(),
-    );
+    return const CretaMapWidget();
   }
 
   // Future<Widget> cameraFrame(FrameModel model) async {
