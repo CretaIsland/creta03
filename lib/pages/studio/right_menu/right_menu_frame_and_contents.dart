@@ -164,16 +164,20 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     //print('222222222222222222222222222222');
     ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
     if (contentsManager == null || contentsManager.getAvailLength() == 0) {
+      if (frame.isWeatherTYpe()) {
+        return WeatherProperty(frameModel: frame, frameManager: frameManager);
+      }
       return SizedBox.shrink();
     }
     //print('333333333333333333333333');
     ContentsModel? contents = contentsManager.getCurrentModel();
     if (contents == null) {
-      if (frame.isWeatherTYpe()) {
-        return WeatherProperty(frameModel: frame, frameManager: frameManager);
-      }
-      //return SizedBox.shrink();
+      // if (frame.isWeatherTYpe()) {
+      //   return WeatherProperty(frameModel: frame, frameManager: frameManager);
+      // }
+      return SizedBox.shrink();
     }
+
     contents = contentsManager.getFirstModel();
     if (contents == null) {
       return SizedBox.shrink();

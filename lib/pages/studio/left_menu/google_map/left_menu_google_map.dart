@@ -64,8 +64,8 @@ class _LeftMenuMapState extends State<LeftMenuMap> {
       height: 80,
       width: 80,
       onPressed: () {
-        _createMapFrame(frameType: FrameType.map);
-        BookMainPage.pageManagerHolder!.notify();
+        _createMapFrame(frameType: FrameType.map)
+            .then((value) => BookMainPage.pageManagerHolder!.notify());
       },
       child: Container(),
     );
