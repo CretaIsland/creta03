@@ -569,4 +569,6 @@ class CretaStudioLang {
   static String maxSize = "최대 사이즈로";
 
   static String useThisThumbnail = "이 콘텐츠를 썸네일로 사용";
+  
+  static String putInDepot = "보관함에 넣기";
 }

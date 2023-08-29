@@ -41,6 +41,7 @@ class LeftMenuPage extends StatefulWidget {
   static bool _flipToTree = true;
   static List<Node> _nodes = [];
   static final Map<String, ContaineeEnum> _nodeKeys = {};
+  static final Map<String, CretaModel> _nodeModels = {};
   static List<Node> get nodes => _nodes;
   static Map<String, ContaineeEnum> get nodeKeys => _nodeKeys;
 
@@ -51,9 +52,15 @@ class LeftMenuPage extends StatefulWidget {
     }
   }
 
+  static CretaModel? findModel(String key) {
+    print('findModel : $key');
+    return _nodeModels[key];
+  }
+
   static void _initNodeKeys(List<Node> pnodes) {
     for (Node ele in pnodes) {
       _nodeKeys[ele.key] = ele.keyType;
+      _nodeModels[ele.key] = ele.data;
       _initNodeKeys(ele.children);
     }
   }

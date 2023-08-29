@@ -3,15 +3,22 @@
 import 'dart:math' show pi;
 
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 
+import '../../../../data_io/depot_manager.dart';
+import '../../../../lang/creta_studio_lang.dart';
+import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../pages/studio/containees/containee_nofifier.dart';
+import '../../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../../pages/studio/studio_variables.dart';
 import '../../../creta_color.dart';
+import '../../../menu/creta_popup_menu.dart';
 import 'tree_view.dart';
 import 'tree_view_theme.dart';
 import 'expander_theme_data.dart';
 import 'models/node.dart';
+import '../../../../../design_system/component/creta_right_mouse_menu.dart';
 
 const double _kBorderWidth = 0.75;
 
@@ -168,7 +175,6 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       return;
     }
     if (StudioVariables.isCtrlPressed) {
-      
       bool isMultiSelectedChanged = false;
       setState(
         () {
@@ -466,7 +472,50 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   }
 
   void _onRightMouseButton(TapDownDetails details) {
-    //print('rightMouse button pressed');
+    print('rightMouse button pressed');
+
+    CretaRightMouseMenu.showMenu(
+      title: 'frameRightMouseMenu',
+      context: context,
+      popupMenu: [
+        if (widget.node.keyType == ContaineeEnum.Contents)
+          CretaMenuItem(
+              caption: CretaStudioLang.putInDepot,
+              onPressed: () {
+                Set<String> targetList = TreeView.ctrlNodeSet;
+                if (TreeView.shiftNodeSet.isNotEmpty) {
+                  targetList.addAll(TreeView.shiftNodeSet);
+                }
+                if (targetList.isEmpty) {
+                  if (widget.node.data is ContentsModel) {
+                    ContentsModel? model = widget.node.data as ContentsModel?;
+                    if (model == null) return;
+                    DepotManager depotManager =
+                        DepotManager(userEmail: AccountManager.currentLoginUser.email);
+                    depotManager.createNextDepot(model.mid, model.contentsType);
+                  }
+                } else {
+                  for (var ele in targetList) {
+                    CretaModel? model = LeftMenuPage.findModel(ele);
+                    if (model != null && model is ContentsModel) {
+                      DepotManager depotManager =
+                          DepotManager(userEmail: AccountManager.currentLoginUser.email);
+                      depotManager.createNextDepot(model.mid, model.contentsType);
+                    }
+                  }
+                }
+              }),
+      ],
+      itemHeight: 24,
+      x: details.globalPosition.dx,
+      y: details.globalPosition.dy,
+      width: 150,
+      height: 170,
+      //textStyle: CretaFont.bodySmall,
+      iconSize: 12,
+      alwaysShowBorder: true,
+      borderRadius: 8,
+    );
   }
 }
 
