@@ -57,7 +57,8 @@ class DepotManager extends CretaManager {
     DepotModel model = DepotModel('', parentMid!);
     model.contentsMid = contentsMid;
     model.contentsType = contentsType;
-    return _createNextDepot(model, doNotify: doNotify);
+    // return _createNextDepot(model, doNotify: doNotify);
+    return await _createNextDepot(model, doNotify: doNotify);
   }
 
   Future<DepotModel> _createNextDepot(
