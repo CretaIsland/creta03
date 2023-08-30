@@ -129,7 +129,14 @@ class StickerViewState extends State<StickerView> {
     if (stickerList != null) {
       return RepaintBoundary(
         key: GlobalKey(),
-        child: SizedBox(
+        child:
+            // OverflowBox(
+            //   minHeight: widget.height,
+            //   maxHeight: widget.height * 2.5,
+            //   minWidth: widget.width,
+            //   maxWidth: widget.width * 2.5,
+            SizedBox(
+          //color: Colors.amber,
           height: widget.height,
           width: widget.width,
           child: DraggableStickers(

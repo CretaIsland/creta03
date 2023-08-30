@@ -140,7 +140,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!, false);
     if (widget.model.shouldInsideRotate()) {
       return Transform(
-        key: GlobalObjectKey('Transform${widget.model.mid}'),
+        key: GlobalObjectKey('ThumbNail_Transform${widget.model.mid}'),
         alignment: Alignment.center,
         transform: Matrix4.identity()
           ..scale(1.0)

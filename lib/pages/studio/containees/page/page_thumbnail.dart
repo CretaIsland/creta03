@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
-import '../../../../common/creta_utils.dart';
+//import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
@@ -293,15 +293,17 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       return Positioned(
                         left: frameModel.posX.value * applyScale,
                         top: frameModel.posY.value * applyScale,
-                        child: frameModel.shouldOutsideRotate()
-                            ? Transform(
-                                alignment: Alignment.center,
-                                transform: Matrix4.identity()
-                                  ..scale(1.0)
-                                  ..rotateZ(CretaUtils.degreeToRadian(frameModel.angle.value)),
-                                child: frameBox,
-                              )
-                            : frameBox,
+                        child:
+                            // frameModel.shouldOutsideRotate()
+                            //     ? Transform(
+                            //         alignment: Alignment.center,
+                            //         transform: Matrix4.identity()
+                            //           ..scale(1.0)
+                            //           ..rotateZ(CretaUtils.degreeToRadian(frameModel.angle.value)),
+                            //         child: frameBox,
+                            //       )
+                            //     :
+                            frameBox,
                       );
                     }).toList(),
 

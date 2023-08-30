@@ -540,7 +540,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     mychangeStack.startTrans();
     if (model is PageModel) {
       model.isRemoved.set(true);
-      BookMainPage.pageManagerHolder?.removeChild(model.mid);
+      await BookMainPage.pageManagerHolder?.removeChild(model.mid);
       if (BookMainPage.pageManagerHolder!.isSelected(model.mid)) {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: true);
       }
@@ -570,8 +570,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     } else if (model is LinkModel) {
       model.isRemoved.set(true);
     }
-    LeftMenuPage.initTreeNodes();
-    LeftMenuPage.treeInvalidate();
+
     MyChange<CretaModel> c = MyChange<CretaModel>(
       model,
       execute: () async {

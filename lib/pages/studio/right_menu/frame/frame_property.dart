@@ -580,21 +580,21 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         }),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('${CretaStudioLang.inSideRotate} ', style: titleStyle),
-                    CretaToggleButton(
-                      width: 54 * 0.75,
-                      height: 28 * 0.75,
-                      defaultValue: widget.model.isInsideRotate.value,
-                      onSelected: (value) {
-                        widget.model.isInsideRotate.set(value);
-                        _sendEvent!.sendEvent(widget.model);
-                      },
-                    ),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text('${CretaStudioLang.inSideRotate} ', style: titleStyle),
+                //     CretaToggleButton(
+                //       width: 54 * 0.75,
+                //       height: 28 * 0.75,
+                //       defaultValue: widget.model.isInsideRotate.value,
+                //       onSelected: (value) {
+                //         widget.model.isInsideRotate.set(value);
+                //         _sendEvent!.sendEvent(widget.model);
+                //       },
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),

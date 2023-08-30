@@ -511,15 +511,17 @@ class _DraggableResizableState extends State<DraggableResizable> {
             Positioned(
               top: normalizedTop,
               left: normalizedLeft,
-              child: isRotate()
-                  ? Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()
-                        ..scale(1.0)
-                        ..rotateZ(_angle),
-                      child: dragablePoint,
-                    )
-                  : dragablePoint,
+              child:
+                  // isRotate()
+                  //     ? Transform(
+                  //         alignment: Alignment.center,
+                  //         transform: Matrix4.identity()
+                  //           ..scale(1.0)
+                  //           ..rotateZ(_angle),
+                  //         child: dragablePoint,
+                  //       )
+                  //     :
+                  dragablePoint,
             ),
           ],
         );
@@ -528,71 +530,71 @@ class _DraggableResizableState extends State<DraggableResizable> {
   }
 
   bool _sizeValidCheck(Size updatedSize, Offset pos, Offset moveDirection, Offset details) {
-    double offset = LayoutConst.stikerOffset / 2;
+    // double offset = LayoutConst.stikerOffset / 2;
 
-    if (moveDirection.dx < 0) {
-      if (updatedSize.width < LayoutConst.minFrameSize) {
-        logger.info('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
-        return false;
-      }
-    }
-    if (moveDirection.dy < 0) {
-      if (updatedSize.height < LayoutConst.minFrameSize) {
-        logger.info('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
-        return false;
-      }
-    }
-    if (moveDirection.dx > 0) {
-      if (pos.dx + updatedSize.width + offset > widget.pageWidth) {
-        logger.info(
-            'maxinumSize constraint  ${updatedSize.width}, ${updatedSize.height}, pos.dx=${pos.dx}, offset=$offset');
-        return false;
-      }
-    }
+    // if (moveDirection.dx < 0) {
+    //   if (updatedSize.width < LayoutConst.minFrameSize) {
+    //     logger.info('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
+    //     return false;
+    //   }
+    // }
+    // if (moveDirection.dy < 0) {
+    //   if (updatedSize.height < LayoutConst.minFrameSize) {
+    //     logger.info('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
+    //     return false;
+    //   }
+    // }
+    // if (moveDirection.dx > 0) {
+    //   if (pos.dx + updatedSize.width + offset > widget.pageWidth) {
+    //     logger.info(
+    //         'maxinumSize constraint  ${updatedSize.width}, ${updatedSize.height}, pos.dx=${pos.dx}, offset=$offset');
+    //     return false;
+    //   }
+    // }
 
-    if (moveDirection.dy < 0) {
-      if (pos.dy + updatedSize.height + offset > widget.pageHeight) {
-        logger.info(
-            'maxinumSize constraint  ${updatedSize.width}, ${updatedSize.height} pos.dy=${pos.dy}, offset=$offset');
-        return false;
-      }
-    }
+    // if (moveDirection.dy < 0) {
+    //   if (pos.dy + updatedSize.height + offset > widget.pageHeight) {
+    //     logger.info(
+    //         'maxinumSize constraint  ${updatedSize.width}, ${updatedSize.height} pos.dy=${pos.dy}, offset=$offset');
+    //     return false;
+    //   }
+    // }
 
     return _moveValidCheck(updatedSize, pos, details);
   }
 
   bool _moveValidCheck(Size updatedSize, Offset pos, Offset move) {
-    double offset = LayoutConst.stikerOffset / 2;
-    if (move.dx <= 0) {
-      if (pos.dx + offset < 0) {
-        logger.info('1.postion constraint  ${move.dx},pos.dx=${pos.dx}, offset=$offset');
-        return false;
-      }
-    }
-    if (move.dy <= 0) {
-      if (pos.dy + offset < 0) {
-        logger.info('2.postion constraint ${move.dy}, pos.dy=${pos.dy}, offset=$offset');
-        return false;
-      }
-    }
+    // double offset = LayoutConst.stikerOffset / 2;
+    // if (move.dx <= 0) {
+    //   if (pos.dx + offset < 0) {
+    //     logger.info('1.postion constraint  ${move.dx},pos.dx=${pos.dx}, offset=$offset');
+    //     return false;
+    //   }
+    // }
+    // if (move.dy <= 0) {
+    //   if (pos.dy + offset < 0) {
+    //     logger.info('2.postion constraint ${move.dy}, pos.dy=${pos.dy}, offset=$offset');
+    //     return false;
+    //   }
+    // }
 
-    if (move.dx >= 0) {
-      if (updatedSize.width + pos.dx + offset > widget.pageWidth) {
-        logger.info('3.postion constraint  ${updatedSize.width},pos.dx=${pos.dx}, offset=$offset');
-        return false;
-      }
-    }
-    if (move.dy >= 0) {
-      if (updatedSize.height + pos.dy + offset > widget.pageHeight) {
-        logger.info('4.postion constraint ${updatedSize.height}, pos.dy=${pos.dy}, offset=$offset');
-        return false;
-      }
-    }
+    // if (move.dx >= 0) {
+    //   if (updatedSize.width + pos.dx + offset > widget.pageWidth) {
+    //     logger.info('3.postion constraint  ${updatedSize.width},pos.dx=${pos.dx}, offset=$offset');
+    //     return false;
+    //   }
+    // }
+    // if (move.dy >= 0) {
+    //   if (updatedSize.height + pos.dy + offset > widget.pageHeight) {
+    //     logger.info('4.postion constraint ${updatedSize.height}, pos.dy=${pos.dy}, offset=$offset');
+    //     return false;
+    //   }
+    // }
 
     return true;
   }
 
-  bool isRotate() {
-    return (widget.frameModel != null && widget.frameModel!.shouldOutsideRotate());
-  }
+  // bool isRotate() {
+  //   return (widget.frameModel != null && widget.frameModel!.shouldOutsideRotate());
+  // }
 }
