@@ -632,7 +632,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           SizedBox(
             width: 16,
           ),
-          (_channelModel == null)
+          (_channelModel == null || LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId == _channelModel?.mid)
               ? SizedBox.shrink()
               : BTN.fill_blue_t_m(
                   text: (_subscriptionModel == null) ? '구독하기' : '구독중',
