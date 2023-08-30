@@ -135,9 +135,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           //BookMainPage.containeeNotifier!.notify();
         }
       },
-      onFrameDelete: (mid) {
+      onFrameDelete: (mid) async {
         logger.fine('Frame onFrameDelete $mid');
-        FrameModel? model = removeItem(mid);
+        FrameModel? model = await removeItem(mid);
         if (model != null) {
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
           _sendEvent?.sendEvent(model);
@@ -201,7 +201,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
               BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
               LeftMenuPage.treeInvalidate();
-              
+
               return;
             }
           }
@@ -665,13 +665,13 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     }
   }
 
-  FrameModel? removeItem(String mid) {
+  Future<FrameModel?> removeItem(String mid) async {
     mychangeStack.startTrans();
     for (var item in frameManager!.modelList) {
       if (item.mid != mid) continue;
       FrameModel model = item as FrameModel;
       model.isRemoved.set(true);
-      frameManager!.removeChild(model.mid);
+      await frameManager!.removeChild(model.mid);
       return model;
     }
     mychangeStack.endTrans();

@@ -53,13 +53,13 @@ class LeftMenuPage extends StatefulWidget {
   }
 
   static CretaModel? findModel(String key) {
-    print('findModel : $key');
+    //print('findModel : $key');
     return _nodeModels[key];
   }
 
   static List<Node<dynamic>>? findChildren(String key) => _findChildren(key, _nodes);
   static List<Node<dynamic>>? _findChildren(String key, List<Node<dynamic>> pnodes) {
-    print('findChildren : $key');
+    //print('findChildren : $key');
     for (var ele in pnodes) {
       if (ele.key == key) {
         return ele.children;
@@ -550,11 +550,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     });
   }
 
-  void _removeFrame(FrameModel frame) {
+  Future<void> _removeFrame(FrameModel frame) async {
     mychangeStack.startTrans();
     FrameManager? frameManager = _pageManager!.findFrameManager(frame.parentMid.value);
     frame.isRemoved.set(true);
-    frameManager!.removeChild(frame.mid);
+    await frameManager!.removeChild(frame.mid);
     mychangeStack.endTrans();
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
     _pageManager!.notify();

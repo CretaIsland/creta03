@@ -2,14 +2,19 @@
 
 import 'dart:math' show pi;
 
+import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
+import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/depot_manager.dart';
+import '../../../../data_io/frame_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
+import '../../../../model/link_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../../pages/studio/left_menu/left_menu_page.dart';
@@ -474,7 +479,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   }
 
   void _onRightMouseButton(TapDownDetails details) {
-    print('rightMouse button pressed');
+    //print('rightMouse button pressed');
 
     CretaRightMouseMenu.showMenu(
       title: 'frameRightMouseMenu',
@@ -499,17 +504,91 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
                 }
               }
             }),
+        CretaMenuItem(
+            caption: CretaStudioLang.tooltipDelete,
+            onPressed: () {
+              Set<String> targetList = TreeView.ctrlNodeSet;
+              if (TreeView.shiftNodeSet.isNotEmpty) {
+                targetList.addAll(TreeView.shiftNodeSet);
+              }
+              if (targetList.isEmpty) {
+                CretaModel? model = widget.node.data as CretaModel?;
+                _deleteNode(model);
+              } else {
+                for (var ele in targetList) {
+                  CretaModel? model = LeftMenuPage.findModel(ele);
+                  _deleteNode(model);
+                }
+              }
+            }),
       ],
       itemHeight: 24,
       x: details.globalPosition.dx,
       y: details.globalPosition.dy,
       width: 150,
-      height: 32,
+      height: 64,
       //textStyle: CretaFont.bodySmall,
       iconSize: 12,
       alwaysShowBorder: true,
       borderRadius: 8,
     );
+  }
+
+  Future<void> _deleteNode(CretaModel? model) async {
+    if (model == null) return;
+
+    mychangeStack.startTrans();
+    if (model is PageModel) {
+      model.isRemoved.set(true);
+      BookMainPage.pageManagerHolder?.removeChild(model.mid);
+      if (BookMainPage.pageManagerHolder!.isSelected(model.mid)) {
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: true);
+      }
+      BookMainPage.pageManagerHolder!.notify();
+    } else if (model is FrameModel) {
+      model.isRemoved.set(true);
+      FrameManager? frameManager =
+          BookMainPage.pageManagerHolder?.findFrameManager(model.parentMid.value);
+      await frameManager?.removeChild(model.mid);
+      if (frameManager != null && frameManager.isSelected(model.mid)) {
+        BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
+      }
+      BookMainPage.pageManagerHolder!.notify();
+    } else if (model is ContentsModel) {
+      model.isRemoved.set(true);
+      String pageMid = Node.extractMid(widget.node.key, 'page=');
+      // key 에서 pageMid 를 추출해야 한다.
+      FrameManager? frameManager = BookMainPage.pageManagerHolder?.findFrameManager(pageMid);
+      if (frameManager != null) {
+        ContentsManager? contentsManager = frameManager.findContentsManager(model.parentMid.value);
+        await contentsManager?.removeChild(model.mid);
+        if (contentsManager != null && contentsManager.isSelected(model.mid)) {
+          BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+        }
+        frameManager.notify();
+      }
+    } else if (model is LinkModel) {
+      model.isRemoved.set(true);
+    }
+    LeftMenuPage.initTreeNodes();
+    LeftMenuPage.treeInvalidate();
+    MyChange<CretaModel> c = MyChange<CretaModel>(
+      model,
+      execute: () async {
+        LeftMenuPage.initTreeNodes();
+        LeftMenuPage.treeInvalidate();
+      },
+      redo: () async {
+        LeftMenuPage.initTreeNodes();
+        LeftMenuPage.treeInvalidate();
+      },
+      undo: (CretaModel oldModel) async {
+        LeftMenuPage.initTreeNodes();
+        LeftMenuPage.treeInvalidate();
+      },
+    );
+    mychangeStack.add(c);
+    mychangeStack.endTrans();
   }
 
   void _putInDepot(DepotManager depotManager, CretaModel? model, String key) {

@@ -447,7 +447,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     width: 180,
                     icon: Icons.crop_original_outlined,
                     text: CretaStudioLang.autoFitContents,
-                    onPressed: () {
+                    onPressed: () async {
                       if (_frameManager == null) {
                         logger.info('frameManager is null');
                         return;
@@ -457,7 +457,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         widget.model.isAutoFit.set(true, save: false);
                         widget.model.isFixedRatio.set(true);
                       });
-                      _frameManager?.resizeFrame2(widget.model);
+                      await _frameManager?.resizeFrame2(widget.model);
                       mychangeStack.endTrans();
                       _sendEvent?.sendEvent(widget.model);
                     },
