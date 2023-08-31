@@ -497,7 +497,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           Padding(
             padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
                   width: 97,
@@ -544,42 +544,37 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    BTN.fill_gray_i_m(
-                        tooltip: CretaStudioLang.angleTooltip,
-                        tooltipBg: CretaColor.text[400]!,
-                        iconSize: 18,
-                        icon: Icons.rotate_90_degrees_ccw_outlined,
-                        onPressed: () {
-                          setState(() {
-                            int turns = (widget.model.angle.value / 15).round() - 1;
-                            double angle = (turns * 15.0) % 360;
-                            if (angle < 0) {
-                              angle = 360 - angle;
-                            }
-                            widget.model.angle.set(angle);
-                          });
-                          logger.finest('sendEvent');
-                          _sendEvent!.sendEvent(widget.model);
-                        }),
-                    BTN.fill_gray_i_m(
-                        tooltip: CretaStudioLang.angleTooltip,
-                        tooltipBg: CretaColor.text[400]!,
-                        iconSize: 18,
-                        icon: Icons.rotate_90_degrees_cw_outlined,
-                        onPressed: () {
-                          setState(() {
-                            int turns = (widget.model.angle.value / 15).round() + 1;
-                            widget.model.angle.set((turns * 15.0) % 360);
-                          });
+                BTN.fill_gray_i_m(
+                    tooltip: CretaStudioLang.angleTooltip,
+                    tooltipBg: CretaColor.text[400]!,
+                    iconSize: 18,
+                    icon: Icons.rotate_90_degrees_ccw_outlined,
+                    onPressed: () {
+                      setState(() {
+                        int turns = (widget.model.angle.value / 15).round() - 1;
+                        double angle = (turns * 15.0) % 360;
+                        if (angle < 0) {
+                          angle = 360 - angle;
+                        }
+                        widget.model.angle.set(angle);
+                      });
+                      logger.finest('sendEvent');
+                      _sendEvent!.sendEvent(widget.model);
+                    }),
+                BTN.fill_gray_i_m(
+                    tooltip: CretaStudioLang.angleTooltip,
+                    tooltipBg: CretaColor.text[400]!,
+                    iconSize: 18,
+                    icon: Icons.rotate_90_degrees_cw_outlined,
+                    onPressed: () {
+                      setState(() {
+                        int turns = (widget.model.angle.value / 15).round() + 1;
+                        widget.model.angle.set((turns * 15.0) % 360);
+                      });
 
-                          logger.finest('sendEvent');
-                          _sendEvent!.sendEvent(widget.model);
-                        }),
-                  ],
-                ),
+                      logger.finest('sendEvent');
+                      _sendEvent!.sendEvent(widget.model);
+                    }),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 //   children: [

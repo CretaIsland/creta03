@@ -654,9 +654,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
       //logger.finest('before save widthxheight = ${model.width.value}x${model.height.value}');
 
+      double dx =
+          (update.position.dx - BookMainPage.pageOffset.dx + (LayoutConst.stikerOffset / 2)) /
+              applyScale;
+      double dy =
+          (update.position.dy - BookMainPage.pageOffset.dy + (LayoutConst.stikerOffset / 2)) /
+              applyScale;
+
       model.angle.set(update.angle * (180 / pi), save: false);
-      model.posX.set((update.position.dx + LayoutConst.stikerOffset / 2) / applyScale, save: false);
-      model.posY.set((update.position.dy + LayoutConst.stikerOffset / 2) / applyScale, save: false);
+      model.posX.set(dx, save: false);
+      model.posY.set(dy, save: false);
       model.width.set(update.size.width / applyScale, save: false);
       model.height.set(update.size.height / applyScale, save: false);
       //model.save();

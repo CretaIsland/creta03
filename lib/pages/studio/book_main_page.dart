@@ -77,6 +77,7 @@ class BookMainPage extends StatefulWidget {
   static bool thumbnailChanged = false;
   static double pageWidth = 0;
   static double pageHeight = 0;
+  static Offset pageOffset = Offset.zero;
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
@@ -630,7 +631,11 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _resize() {
-    double pageDisplayRate = 0.9;
+    double pageDisplayRate = 0.7;
+    if (_bookModel!.width.value <= _bookModel!.height.value) {
+      pageDisplayRate = 0.9;
+    }
+
     if (StudioVariables.isPreview) {
       StudioVariables.topMenuBarHeight = 0;
       StudioVariables.menuStickWidth = 0;
@@ -680,6 +685,11 @@ class _BookMainPageState extends State<BookMainPage> {
         StudioVariables.scale = heightRatio;
       }
     }
+    // virtual width 에서, 페이지 부분이 얼마나 떨어져 있는지 나타냄.
+    BookMainPage.pageOffset = Offset(
+      (StudioVariables.virtualWidth - BookMainPage.pageWidth) / 2,
+      (StudioVariables.virtualHeight - BookMainPage.pageHeight) / 2,
+    );
 
     padding = 16 * (StudioVariables.displayWidth / 1920);
     if (padding < 2) {
@@ -1103,11 +1113,11 @@ class _BookMainPageState extends State<BookMainPage> {
     return Center(
         child: StudioVariables.isPreview
             ? noneScrollBox(isPageExist)
-            : scrollBox(totalWidth, marginX, marginY));
+            : scrollBox(totalWidth, scrollWidth, marginX, marginY));
     //});
   }
 
-  Widget scrollBox(double totalWidth, double marginX, double marginY) {
+  Widget scrollBox(double totalWidth, double scrollWidth, double marginX, double marginY) {
     return Container(
       width: StudioVariables.workWidth, //scrollWidth,
       height: StudioVariables.workHeight,
@@ -1130,7 +1140,8 @@ class _BookMainPageState extends State<BookMainPage> {
           currentVerticalScrollBarOffset: (value) {
             StudioVariables.verticalScrollOffset = value;
           },
-
+          //initialScrollOffsetX: BookMainPage.pageOffset.dx - 30,
+          initialScrollOffsetX: (StudioVariables.workWidth - scrollWidth) / 2,
           child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
             pageManager.reOrdering();
             PageModel? pageModel = pageManager.getSelected() as PageModel?;
@@ -1261,7 +1272,7 @@ class _BookMainPageState extends State<BookMainPage> {
       bookModel: _bookModel!,
       pageModel: pageModel,
       pageWidth: BookMainPage.pageWidth,
-      pageHeight: BookMainPage.pageHeight + LayoutConst.miniMenuArea,
+      pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,
     );
   }
 
