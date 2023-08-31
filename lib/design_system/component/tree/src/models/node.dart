@@ -73,6 +73,11 @@ class Node<T> {
     return ContaineeEnum.Book;
   }
 
+  static String extractMid(String key, String prefix) {
+    int pos = key.indexOf(prefix);
+    return key.substring(pos, pos+prefix.length + 36);
+  }
+
   /// Creates a [Node] from a string value. It generates a unique key.
   static Node<T> fromLabel<T>(String label, String root, ContaineeEnum keyType) {
     String key = Utilities.generateRandom();

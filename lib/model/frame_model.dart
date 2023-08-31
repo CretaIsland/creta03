@@ -142,7 +142,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posX = UndoAble<double>(0, mid, 'posX');
     posY = UndoAble<double>(0, mid, 'posY');
     angle = UndoAble<double>(0, mid, 'angle');
-    isInsideRotate = UndoAble<bool>(false, mid, 'isInsideRotate');
+    isInsideRotate = UndoAble<bool>(true, mid, 'isInsideRotate');
     radius = UndoAble<double>(0, mid, 'radius');
     radiusLeftTop = UndoAble<double>(0, mid, 'radiusLeftTop');
     radiusRightTop = UndoAble<double>(0, mid, 'radiusRightTop');
@@ -181,7 +181,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posX = UndoAble<double>(100, mid, 'posX');
     posY = UndoAble<double>(100, mid, 'posY');
     angle = UndoAble<double>(0, mid, 'angle');
-    isInsideRotate = UndoAble<bool>(false, mid, 'isInsideRotate');
+    isInsideRotate = UndoAble<bool>(true, mid, 'isInsideRotate');
     radius = UndoAble<double>(0, mid, 'radius');
     radiusLeftTop = UndoAble<double>(0, mid, 'radiusLeftTop');
     radiusRightTop = UndoAble<double>(0, mid, 'radiusRightTop');
@@ -300,7 +300,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posY.set(y < 0 ? 0 : y, save: false, noUndo: true);
 
     angle.set((map["angle"] ?? 0), save: false, noUndo: true);
-    isInsideRotate.set((map["isInsideRotate"] ?? false), save: false, noUndo: true);
+    isInsideRotate.set((map["isInsideRotate"] ?? true), save: false, noUndo: true);
 
     radius.set((map["radius"] ?? 0), save: false, noUndo: true);
     radiusLeftTop.set((map["radiusLeftTop"] ?? 0), save: false, noUndo: true);
@@ -421,12 +421,13 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return (angle.value > 0);
   }
 
-  bool shouldOutsideRotate() {
-    return (angle.value > 0 && isInsideRotate.value == false);
-  }
+  // bool shouldOutsideRotate() {
+  //   return (angle.value > 0 && isInsideRotate.value == false);
+  // }
 
   bool shouldInsideRotate() {
-    return (angle.value > 0 && isInsideRotate.value == true);
+    //return (angle.value > 0 && isInsideRotate.value == true);
+    return (angle.value > 0);
   }
 
   void changeOrderByIsShow(FrameManager frameManager) {

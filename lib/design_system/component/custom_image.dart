@@ -163,7 +163,8 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
       return AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
-          return OverflowBox(
+          return 
+          OverflowBox(
             minHeight: widget.height,
             maxHeight: widget.height * 2.5,
             minWidth: widget.width,

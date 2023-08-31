@@ -49,15 +49,19 @@ class DepotManager extends CretaManager {
     return retval;
   }
 
-  Future<DepotModel> createNextDepot(
+  Future<DepotModel?> createNextDepot(
     String contentsMid,
     ContentsType contentsType, {
     bool doNotify = true,
   }) async {
+   
+    if (await isExist(contentsMid) == true) {
+      return null;
+    }
     DepotModel model = DepotModel('', parentMid!);
     model.contentsMid = contentsMid;
     model.contentsType = contentsType;
-    // return _createNextDepot(model, doNotify: doNotify);
+
     return await _createNextDepot(model, doNotify: doNotify);
   }
 
@@ -138,6 +142,19 @@ class DepotManager extends CretaManager {
     return contentsCount;
   }
 
+  Future<int> _getDepotCount(String contentsMid) async {
+    try {
+      Map<String, QueryValue> query = {};
+      query['contentsMid'] = QueryValue(value: contentsMid); // parentMid = userId
+      query['isRemoved'] = QueryValue(value: false);
+      await queryFromDB(query);
+      return modelList.length;
+    } catch (e) {
+      logger.finest('something wrong $e');
+    }
+    return 0;
+  }
+
   // Future<int> _getDepotList({int limit = 99}) async {
   //   print('Depot------getContents--------1-------');
   //   Map<String, QueryValue> query = {};
@@ -172,6 +189,10 @@ class DepotManager extends CretaManager {
       filteredContents.add(model);
     }
     return filteredContents;
+  }
+
+  Future<bool> isExist(String contentsMid) async {
+    return (await _getDepotCount(contentsMid) > 0);
   }
 
   // getContents Detail Info Using contents mid

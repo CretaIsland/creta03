@@ -447,7 +447,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     width: 180,
                     icon: Icons.crop_original_outlined,
                     text: CretaStudioLang.autoFitContents,
-                    onPressed: () {
+                    onPressed: () async {
                       if (_frameManager == null) {
                         logger.info('frameManager is null');
                         return;
@@ -457,7 +457,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         widget.model.isAutoFit.set(true, save: false);
                         widget.model.isFixedRatio.set(true);
                       });
-                      _frameManager?.resizeFrame2(widget.model);
+                      await _frameManager?.resizeFrame2(widget.model);
                       mychangeStack.endTrans();
                       _sendEvent?.sendEvent(widget.model);
                     },
@@ -580,21 +580,21 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         }),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('${CretaStudioLang.inSideRotate} ', style: titleStyle),
-                    CretaToggleButton(
-                      width: 54 * 0.75,
-                      height: 28 * 0.75,
-                      defaultValue: widget.model.isInsideRotate.value,
-                      onSelected: (value) {
-                        widget.model.isInsideRotate.set(value);
-                        _sendEvent!.sendEvent(widget.model);
-                      },
-                    ),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text('${CretaStudioLang.inSideRotate} ', style: titleStyle),
+                //     CretaToggleButton(
+                //       width: 54 * 0.75,
+                //       height: 28 * 0.75,
+                //       defaultValue: widget.model.isInsideRotate.value,
+                //       onSelected: (value) {
+                //         widget.model.isInsideRotate.set(value);
+                //         _sendEvent!.sendEvent(widget.model);
+                //       },
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),

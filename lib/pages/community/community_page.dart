@@ -785,6 +785,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             ),
                           ),
                           SizedBox(width: 12),
+                          (LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId == _currentChannelModel?.getMid)
+                              ? SizedBox.shrink() :
                           BTN.fill_blue_t_m(
                             width: 84,
                             text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
@@ -989,11 +991,45 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
               ),
               SizedBox(width: 12),
+              (LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId == _currentChannelModel?.getMid)
+                  ? SizedBox.shrink() :
               BTN.fill_blue_t_m(
                 width: 84,
                 text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
                 onPressed: () {
-
+                  SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
+                  if (_selectedSubscriptionModel == null) {
+                    subscriptionManagerHolder
+                        .createSubscription(
+                      LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                      _currentChannelModel!.getMid,
+                    )
+                        .then(
+                          (value) {
+                        showSnackBar(context, '구독되었습니다');
+                        setState(() {
+                          _selectedSubscriptionModel = SubscriptionModel.withName(
+                              channelId: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                              subscriptionChannelId: _currentChannelModel!.getMid);
+                        });
+                      },
+                    );
+                  }
+                  else {
+                    subscriptionManagerHolder
+                        .removeSubscription(
+                      LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                      _currentChannelModel!.mid,
+                    )
+                        .then(
+                          (value) {
+                        showSnackBar(context, '구독 해지되었습니다');
+                        setState(() {
+                          _selectedSubscriptionModel = null;
+                        });
+                      },
+                    );
+                  }
                 },
                 textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
               ),
