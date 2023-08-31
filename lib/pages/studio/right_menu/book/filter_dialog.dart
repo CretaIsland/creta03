@@ -11,7 +11,8 @@ import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/filter_model.dart';
-import '../../../login_page.dart';
+//import '../../../login_page.dart';
+import '../../../login/creta_account_manager.dart';
 import '../property_mixin.dart';
 
 class FilterDialog extends StatefulWidget {
@@ -50,7 +51,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
     //('model.filter=${widget.model.filter.value}=====$_isNew=========================');
 
     _filter = BookMainPage.filterManagerHolder!.findFilter(widget.model.filter.value);
-    _filter ??= FilterModel(LoginPage.userPropertyManagerHolder!.userModel.email);
+    _filter ??= FilterModel(CretaAccountManager.currentLoginUser.email);
 
     _textController = TextEditingController();
     //_includeController = TextEditingController();
@@ -121,7 +122,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                               if (isChecked) {
                                 _newName = '';
                                 _filter = FilterModel(
-                                    LoginPage.userPropertyManagerHolder!.userModel.email);
+                                    CretaAccountManager.currentLoginUser.email);
                               }
                             });
                           },

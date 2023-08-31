@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
-import 'package:creta03/pages/login_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +26,7 @@ import '../buttons/creta_button_wrapper.dart';
 import '../menu/creta_drop_down.dart';
 import '../menu/creta_popup_menu.dart';
 import '../../pages/login/login_dialog.dart';
+import '../../pages/login/creta_account_manager.dart';
 
 // get widgets Global Size and Position
 extension GlobalKeyExtension on GlobalKey {
@@ -411,7 +411,7 @@ class Snippet {
         CretaMenuItem(
           caption: CretaLang.accountMenu[2], // 로그아웃
           onPressed: () {
-            LoginPage.logout().then((value) => Routemaster.of(context).push(AppRoutes.login));
+            CretaAccountManager.logout().then((value) => Routemaster.of(context).push(AppRoutes.login));
           },
         ),
         CretaMenuItem(
@@ -479,12 +479,12 @@ class Snippet {
                     key: GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'),
                     buttonColor: CretaButtonColor.blue,
                     //text: AccountManager.currentLoginUser.name,
-                    text: LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname,
+                    text: CretaAccountManager.getUserProperty!.nickname,
                     icon: Icons.arrow_drop_down_outlined,
                     // image: NetworkImage(
                     //     'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
                     image: NetworkImage(
-                        LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg),
+                        CretaAccountManager.getUserProperty!.profileImg),
                     onPressed: () {
                       _popupAccountMenu(
                           GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context,

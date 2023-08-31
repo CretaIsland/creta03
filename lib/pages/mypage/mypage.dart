@@ -15,7 +15,7 @@ import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/menu/creta_popup_menu.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/model/creta_model.dart';
-import 'package:creta03/pages/login_page.dart';
+//import 'package:creta03/pages/login_page.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_account_manage.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_dashboard.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_info.dart';
@@ -23,6 +23,7 @@ import 'package:creta03/pages/mypage/sub_page/my_page_settings.dart';
 import 'package:creta03/pages/mypage/sub_page/my_page_team_manage.dart';
 import 'package:creta03/pages/studio/studio_constant.dart';
 import 'package:creta03/routes.dart';
+import '../login/creta_account_manager.dart';
 
 class MyPage extends StatefulWidget {
   final String selectedPage;
@@ -34,7 +35,7 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   late List<CretaMenuItem> _leftMenuItem;
-  Color replaceColor = LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg == "" ? Colors.primaries[Random().nextInt(Colors.primaries.length)] : Colors.transparent;
+  Color replaceColor = CretaAccountManager.getUserProperty!.profileImg == "" ? Colors.primaries[Random().nextInt(Colors.primaries.length)] : Colors.transparent;
   bool _alreadyDataGet = false;
 
   @override
@@ -184,7 +185,7 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
             width: rightPaneRect.childWidth,
             height: rightPaneRect.childHeight + LayoutConst.cretaBannerMinHeight,
             child: CretaModelSnippet.waitData(
-                consumerFunc: rightArea, manager: LoginPage.enterpriseHolder!))
+                consumerFunc: rightArea, manager: CretaAccountManager.enterpriseManagerHolder))
       ],
     );
     _alreadyDataGet = true;
@@ -198,8 +199,8 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<UserPropertyManager>.value(
-            value: LoginPage.userPropertyManagerHolder!),
-        ChangeNotifierProvider<TeamManager>.value(value: LoginPage.teamManagerHolder!),
+            value: CretaAccountManager.userPropertyManagerHolder),
+        ChangeNotifierProvider<TeamManager>.value(value: CretaAccountManager.teamManagerHolder),
       ],
       child: Snippet.CretaScaffoldOfMyPage(
           title: Container(

@@ -1,7 +1,6 @@
 // stream list
 
 
-import 'package:creta03/pages/login_page.dart';
 import 'package:creta03/pages/studio/left_menu/left_template_mixin.dart';
 import 'package:creta03/pages/studio/left_menu/web_conference/stream/list_remote_stream.dart';
 import 'package:creta03/pages/studio/left_menu/web_conference/stream/local_stream.dart';
@@ -13,6 +12,7 @@ import 'package:hycop/hycop/webrtc/producers/producers_data.dart';
 import 'package:hycop/hycop/webrtc/webrtc_client.dart';
 
 import '../book_main_page.dart';
+import '../../login/creta_account_manager.dart';
 
 class LeftMenuWebConference extends StatefulWidget {
   final double maxHeight;
@@ -48,8 +48,8 @@ class _LeftMenuWebConferenceState extends State<LeftMenuWebConference> with Left
     webRTCClient = WebRTCClient(
       roomId: BookMainPage.selectedMid,
       peerId: AccountManager.currentLoginUser.email,
-      serverUrl: LoginPage.enterpriseHolder!.enterpriseModel!.webrtcUrl,
-      peerName: LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname
+      serverUrl: CretaAccountManager.getEnterprise!.webrtcUrl,
+      peerName: CretaAccountManager.getUserProperty!.nickname
     );
     webRTCClient!.connectSocket();
   }

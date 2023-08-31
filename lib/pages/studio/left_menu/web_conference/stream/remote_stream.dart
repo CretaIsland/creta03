@@ -1,10 +1,11 @@
 
 import 'dart:math';
 import 'package:creta03/design_system/component/snippet.dart';
-import 'package:creta03/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:hycop/hycop/webrtc/peers/enitity/peer.dart';
+
+import '../../../../login/creta_account_manager.dart';
 
 // ignore: must_be_immutable
 class RemoteStream extends StatelessWidget {
@@ -25,7 +26,7 @@ class RemoteStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: LoginPage.userPropertyManagerHolder!.getMemberProperty(email: peer.id),
+      future: CretaAccountManager.userPropertyManagerHolder.getMemberProperty(email: peer.id),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
           if(peer.renderer != null && peer.video != null) {

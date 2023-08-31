@@ -23,7 +23,8 @@ import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 //import 'community_sample_data.dart';
 //import '../../design_system/component/custom_image.dart';
-import '../../pages/login_page.dart';
+//import '../../pages/login_page.dart';
+import '../../pages/login/creta_account_manager.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../model/book_model.dart';
 import '../../model/playlist_model.dart';
@@ -112,7 +113,7 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
               ),
               SizedBox(height: 48),
               Text(
-                LoginPage.userPropertyManagerHolder!.userPropertyModel?.nickname ?? '',//widget.playlistModel.userId,
+                CretaAccountManager.getUserProperty?.nickname ?? '',//widget.playlistModel.userId,
                 style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]),
               ),
               SizedBox(height: 10),

@@ -11,7 +11,8 @@ import '../buttons/creta_tapbar_button.dart';
 import '../creta_color.dart';
 import '../menu/creta_popup_menu.dart';
 import 'snippet.dart';
-import '../../pages/login_page.dart';
+//import '../../pages/login_page.dart';
+import '../../pages/login/creta_account_manager.dart';
 import '../../routes.dart';
 
 class CretaLeftBar extends StatefulWidget {
@@ -64,7 +65,7 @@ class _CretaLeftBarState extends State<CretaLeftBar> {
     if (userMenuHeight > CretaComponentLocation.UserMenuInTabBar.height) {
       userMenuHeight = CretaComponentLocation.UserMenuInTabBar.height;
     }
-    String channelId = LoginPage.userPropertyManagerHolder?.userPropertyModel?.channelId ?? '';
+    String channelId = CretaAccountManager.getUserProperty?.channelId ?? '';
     String channelLinkUrl = '${AppRoutes.channel}?$channelId';
     return Container(
       width: CretaComponentLocation.TabBar.width,

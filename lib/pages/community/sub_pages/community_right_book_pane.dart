@@ -30,7 +30,8 @@ import '../../../design_system/text_field/creta_text_field.dart';
 import '../../../design_system/creta_color.dart';
 //import 'package:image_network/image_network.dart';
 //import 'package:cached_network_image/cached_network_image.dart';
-import '../../../pages/login_page.dart';
+//import '../../../pages/login_page.dart';
+import '../../../pages/login/creta_account_manager.dart';
 //import '../../common/cross_common_job.dart';
 //import '../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
@@ -283,7 +284,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     }
     subscriptionManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     subscriptionManagerHolder.addWhereClause(
-        'channelId', QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId));
+        'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     subscriptionManagerHolder.addWhereClause('subscriptionChannelId', QueryValue(value: _channelModel!.mid));
     subscriptionManagerHolder.queryByAddedContitions();
   }
@@ -632,7 +633,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           SizedBox(
             width: 16,
           ),
-          (_channelModel == null || LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId == _channelModel?.mid)
+          (_channelModel == null || CretaAccountManager.getUserProperty!.channelId == _channelModel?.mid)
               ? SizedBox.shrink()
               : BTN.fill_blue_t_m(
                   text: (_subscriptionModel == null) ? '구독하기' : '구독중',
@@ -641,7 +642,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                     if (_subscriptionModel == null) {
                       subscriptionManagerHolder
                           .createSubscription(
-                        LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                        CretaAccountManager.getUserProperty!.channelId,
                         _channelModel!.mid,
                       )
                           .then(
@@ -649,7 +650,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                           showSnackBar(context, '구독되었습니다');
                           setState(() {
                             _subscriptionModel = SubscriptionModel.withName(
-                                channelId: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                                channelId: CretaAccountManager.getUserProperty!.channelId,
                                 subscriptionChannelId: _channelModel!.mid);
                           });
                         },
@@ -657,7 +658,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                     } else {
                       subscriptionManagerHolder
                           .removeSubscription(
-                        LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                        CretaAccountManager.getUserProperty!.channelId,
                         _channelModel!.mid,
                       )
                           .then(

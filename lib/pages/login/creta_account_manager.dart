@@ -30,6 +30,8 @@ import '../../model/team_model.dart';
 import '../../model/channel_model.dart';
 import '../../model/enterprise_model.dart';
 import '../../model/frame_model.dart';
+import '../../model/page_model.dart';
+import '../../model/book_model.dart';
 import '../../pages/studio/studio_constant.dart';
 
 class CretaAccountManager {
@@ -61,7 +63,7 @@ class CretaAccountManager {
   static List<TeamModel> get getTeamList => _loginTeamList;
 
   static TeamModel? _currentTeam;
-  static TeamModel? get getCurentTeam => _currentTeam;
+  static TeamModel? get getCurrentTeam => _currentTeam;
   static final Map<String, List<UserPropertyModel>> _teamMemberMap = {};
   static Map<String, List<UserPropertyModel>> get getTeamMemberMap => _teamMemberMap;
 
@@ -89,10 +91,10 @@ class CretaAccountManager {
       _teamManagerHolder?.configEvent();
       _teamManagerHolder?.clearAll();
     }
-    if (_teamManagerHolder == null) {
-      _teamManagerHolder = TeamManager();
-      _teamManagerHolder?.configEvent();
-      _teamManagerHolder?.clearAll();
+    if (_frameManagerHolder == null) {
+      _frameManagerHolder = FrameManager(pageModel: PageModel('', BookModel('')), bookModel: BookModel(''));
+      _frameManagerHolder?.configEvent();
+      _frameManagerHolder?.clearAll();
     }
     if (_enterpriseManagerHolder == null) {
       _enterpriseManagerHolder = EnterpriseManager();
@@ -421,7 +423,7 @@ class CretaAccountManager {
     }
     if (isChannelExist == false) {
       // not exist channelId ==> create to DB
-      _loginChannel = channelManagerHolder.getNewChannel(userId: _loginUserProperty!.getMid);
+      _loginChannel = channelManagerHolder.makeNewChannel(userId: _loginUserProperty!.getMid);
       await channelManagerHolder.createChannel(_loginChannel!);
       _loginUserProperty!.channelId = _loginChannel!.getMid;
       await userPropertyManagerHolder.setToDB(_loginUserProperty!);
@@ -433,7 +435,7 @@ class CretaAccountManager {
       String channelId = teamModel.channelId;
       if (channelId.isEmpty) {
         // not exist team-channelId
-        ChannelModel newChannelModel = channelManagerHolder.getNewChannel(teamId: teamModel.mid);
+        ChannelModel newChannelModel = channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
         await channelManagerHolder.createChannel(newChannelModel);
         teamModel.channelId = newChannelModel.mid;
         await teamManagerHolder.setToDB(teamModel);
