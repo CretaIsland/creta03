@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/pages/release_note_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 //import 'package:routemaster/routemaster.dart';
@@ -18,6 +19,9 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   late VideoPlayerController controller;
+  final List<String> cretaVersionList = ["0.2.36", "0.2.35", "0.2.34", "0.2.33", "0.2.32", "0.2.31"];
+  final String hycopVersion = "0.2.21";
+  final String buildNumber = "20230831-18";
 
   @override
   void initState() {
@@ -99,9 +103,19 @@ class _IntroPageState extends State<IntroPage> {
                 width: videoWidth,
                 height: videoHeight,
                 child: Center(
-                  child: Text(
-                    "Version 0.2.35 (hycop 0.2.21) - build 202300830-18",
-                    style: CretaFont.headlineLarge,
+                  child: TextButton(
+                    child: Text(
+                      "Version ${cretaVersionList.first} (hycop $hycopVersion) - build $buildNumber",
+                      style: CretaFont.headlineLarge,
+                    ),
+                    onPressed: () {
+                      showDialog(
+                        context: context, 
+                        builder: (context) {
+                          return ReleaseNoteDialog(versionList: cretaVersionList);
+                        }
+                      );
+                    },
                   ),
                 ),
               ),
