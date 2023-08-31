@@ -24,20 +24,21 @@ class _DepotSelectedClassState extends State<DepotSelectedClass> {
   final double imageHeight = 95.0;
 
   final depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
+  List<ContentsModel> filteredContents = [];
 
   Map<int, bool> hoverStates = {}; // Map to track hover state for each image
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<List<ContentsModel>>(
       future: depotManager.getContentInfoList(contentsType: widget.contentsType),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          List<ContentsModel> filteredContents = snapshot.data!;
+          filteredContents = snapshot.data!;
           return SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.only(top: 10),
-              height: StudioVariables.workHeight,
+              height: StudioVariables.workHeight - 250.0,
               child: GridView.builder(
                 itemCount: filteredContents.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
