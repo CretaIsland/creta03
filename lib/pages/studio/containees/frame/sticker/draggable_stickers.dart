@@ -141,10 +141,12 @@ class _DraggableStickersState extends State<DraggableStickers> {
           Positioned(
             left: BookMainPage.pageOffset.dx,
             top: BookMainPage.pageOffset.dy,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.black),
-              ),
+            child:
+                // Container(
+                //   decoration: BoxDecoration(
+                //     border: Border.all(width: 1, color: Colors.black),
+                //   ),
+                SizedBox(
               width: widget.pageWidth,
               height: widget.pageHeight, // - LayoutConst.miniMenuArea,
             ),

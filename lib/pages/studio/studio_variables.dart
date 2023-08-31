@@ -45,6 +45,8 @@ class StudioVariables {
   static bool isMute = false;
   static bool isReadOnly = false;
   static bool isAutoPlay = true;
+  static bool useMagnet = true;
+  static double magnetMargin = 5;
 
   static bool isPreview = false;
 
