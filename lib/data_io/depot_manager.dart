@@ -13,14 +13,6 @@ import 'contents_manager.dart';
 import 'creta_manager.dart';
 
 class DepotManager extends CretaManager {
-  // Map<String, ContentsManager> contentsManagerMap = {};
-
-  // void setContentsManager(String contentsMid, ContentsManager c) {
-  //   contentsManagerMap[contentsMid] = c;
-  // }
-
-  // ContentsManager? getContentsManager(String contentsMid) => contentsManagerMap[contentsMid];
-
   DepotManager({required String userEmail, String tableName = 'creta_depot'})
       : super(tableName, userEmail) {
     saveManagerHolder?.registerManager('depot', this, postfix: userEmail);
@@ -114,11 +106,6 @@ class DepotManager extends CretaManager {
     return oldModel;
   }
 
-  Future<void> removeDepot(ContentsModel model) async {
-    await removeToDB(model.mid);
-    remove(model);
-  }
-
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> _getDepotList(ContentsType contentsType) async {
@@ -173,7 +160,6 @@ class DepotManager extends CretaManager {
 
   Future<List<ContentsModel>> getContentInfoList(
       {ContentsType contentsType = ContentsType.none}) async {
-    print('-11111111111111111------');
     //PageManager pageManager = BookMainPage.pageManagerHolder!;  // Current Selected Page's manager
     await _getDepotList(contentsType);
     BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;

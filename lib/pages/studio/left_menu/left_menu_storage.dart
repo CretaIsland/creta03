@@ -224,24 +224,6 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     if (_selectedType == type[2]) {
       return const DepotDisplayClass(contentsType: ContentsType.video);
     }
-
-    // if (_selectedType == type[3]) {
-    //   debugPrint('Depot------Added to DB-----');
-    //   depotManager.createNextDepot(
-    //       'contents=63a90f61-2f2b-4a47-aa5f-6144b7c72c37', ContentsType.image);
-    //   depotManager.createNextDepot(
-    //       'contents=1db8ece7-2a0b-442b-be9e-5a68d309f346', ContentsType.image);
-    //   depotManager.createNextDepot(
-    //       'contents=14d4d89a-2ba5-40e7-b78b-976ebed789b3', ContentsType.image);
-    //   depotManager.createNextDepot(
-    //       'contents=12f6eaf1-99da-4de3-b357-1b3a31f08085', ContentsType.image);
-    //   depotManager.createNextDepot(
-    //       'contents=64087921-9cf3-4040-be15-f82469ee15b7', ContentsType.video);
-    //   depotManager.createNextDepot(
-    //       'contents=a12a82cc-a4ad-4873-bc89-e729cd59d156', ContentsType.video);
-    //   depotManager.createNextDepot(
-    //       'contents=f6ec7825-7beb-4671-a732-9691f2d7cd76', ContentsType.video);
-    // }
     return const SizedBox.shrink();
   }
 }
