@@ -1,97 +1,97 @@
-import 'package:creta03/data_io/depot_manager.dart';
+import 'package:creta03/model/contents_model.dart';
+import 'package:creta03/pages/studio/left_menu/depot/depot_display.dart';
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/hycop.dart';
 
-import '../../../../design_system/component/custom_image.dart';
-import '../../../../design_system/component/snippet.dart';
-import '../../../../model/contents_model.dart';
-import '../../studio_variables.dart';
-import '../left_menu_ele_button.dart';
+import '../../../../design_system/creta_color.dart';
 
 class DepotSelectedClass extends StatefulWidget {
-  final ContentsType contentsType;
-  const DepotSelectedClass({required this.contentsType, super.key});
+  final Widget child;
+  final double width;
+  final double height;
+  final ContentsModel contents;
+  final Function onTapDown;
+  const DepotSelectedClass({
+    required this.child,
+    required this.width,
+    required this.height,
+    required this.contents,
+    required this.onTapDown,
+    super.key,
+  });
 
   @override
   State<DepotSelectedClass> createState() => _DepotSelectedClassState();
 }
 
 class _DepotSelectedClassState extends State<DepotSelectedClass> {
-  final double verticalPadding = 16;
-  final double horizontalPadding = 24;
+  bool _isHover = false;
 
-  final double imageWidth = 160.0;
-  final double imageHeight = 95.0;
+  void _handleHover(bool hover) {
+    setState(() {
+      _isHover = hover;
+    });
+  }
 
-  final depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
-  List<ContentsModel> filteredContents = [];
+  void _handleTap(TapDownDetails details, ContentsModel contentsModel) {
+    if (StudioVariables.isCtrlPressed) {
+      print("Ctrl key pressed");
+      if (DepotDisplayClass.ctrlSelectedSet.contains(contentsModel)) {
+        setState(() {
+          DepotDisplayClass.ctrlSelectedSet.remove(contentsModel.mid);
+        });
+        widget.onTapDown();
+      } else {
+        setState(() {
+          DepotDisplayClass.ctrlSelectedSet.add(contentsModel);
+        });
+        widget.onTapDown();
+      }
+    } else {
+      //setState(() {
+      print("Ctrl key released");
+      DepotDisplayClass.ctrlSelectedSet = {contentsModel};
+      //});
+      widget.onTapDown();
+      //sflsfks.notify()
+    }
+  }
 
-  Map<int, bool> hoverStates = {}; // Map to track hover state for each image
+  void clearMultiSelected() {
+    // setState(() {
+    DepotDisplayClass.ctrlSelectedSet.clear();
+    // });
+    widget.onTapDown();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ContentsModel>>(
-      future: depotManager.getContentInfoList(contentsType: widget.contentsType),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          filteredContents = snapshot.data!;
-          return SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.only(top: 10),
-              height: StudioVariables.workHeight - 250.0,
-              child: GridView.builder(
-                itemCount: filteredContents.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0,
-                  crossAxisCount: 2,
-                  childAspectRatio: 160 / 95,
-                ),
-                scrollDirection: Axis.vertical,
-                itemBuilder: (BuildContext context, int index) {
-                  ContentsModel contents = filteredContents[index];
-                  String? depotUrl = contents.thumbnail;
-                  return Stack(
-                    children: [
-                      if (depotUrl == null || depotUrl.isEmpty)
-                        SizedBox(
-                          width: 160.0,
-                          height: 95.0,
-                          child: Image.asset('assets/no_image.png'), // No Image
-                        )
-                      else
-                        CustomImage(
-                          key: GlobalKey(),
-                          width: imageWidth,
-                          height: imageHeight,
-                          image: depotUrl,
-                          hasAni: false,
-                        ),
-                      _imageFG(),
-                    ],
-                  );
-                },
-              ),
-            ),
-          );
-        } else {
-          return Container(
-            padding: EdgeInsets.symmetric(vertical: verticalPadding),
-            height: 352.0,
-            alignment: Alignment.center,
-            child: Snippet.showWaitSign(),
-          );
-        }
-      },
-    );
-  }
+    final isSelectedbyCltr = DepotDisplayClass.ctrlSelectedSet.contains(widget.contents);
 
-  Widget _imageFG() {
-    return LeftMenuEleButton(
-      height: imageHeight,
-      width: imageWidth,
-      onPressed: () {},
-      child: Container(),
+    return InkWell(
+      onHover: _handleHover,
+      onSecondaryTap: () {},
+      onTapDown: (details) {
+        _handleTap(details, widget.contents);
+      },
+      onDoubleTap: clearMultiSelected,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: isSelectedbyCltr ? CretaColor.primary : CretaColor.text[200]!,
+            width: isSelectedbyCltr
+                ? 4
+                : _isHover
+                    ? 4
+                    : 1,
+          ),
+        ),
+        child: Center(
+          child: widget.child,
+        ),
+      ),
     );
   }
 }

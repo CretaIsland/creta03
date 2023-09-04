@@ -1,5 +1,5 @@
 import 'package:creta03/data_io/depot_manager.dart';
-import 'package:creta03/pages/studio/left_menu/depot/depot_selected.dart';
+import 'package:creta03/pages/studio/left_menu/depot/depot_display.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -214,15 +214,15 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     List<String> type = CretaStudioLang.storageTypes.values.toList();
 
     if (_selectedType == type[0]) {
-      return const DepotSelectedClass(contentsType: ContentsType.none);
+      return const DepotDisplayClass(contentsType: ContentsType.none);
     }
 
     if (_selectedType == type[1]) {
-      return const DepotSelectedClass(contentsType: ContentsType.image);
+      return const DepotDisplayClass(contentsType: ContentsType.image);
     }
 
     if (_selectedType == type[2]) {
-      return const DepotSelectedClass(contentsType: ContentsType.video);
+      return const DepotDisplayClass(contentsType: ContentsType.video);
     }
 
     // if (_selectedType == type[3]) {

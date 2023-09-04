@@ -54,7 +54,6 @@ class DepotManager extends CretaManager {
     ContentsType contentsType, {
     bool doNotify = true,
   }) async {
-   
     if (await isExist(contentsMid) == true) {
       return null;
     }
@@ -115,6 +114,11 @@ class DepotManager extends CretaManager {
     return oldModel;
   }
 
+  Future<void> removeDepot(ContentsModel model) async {
+    await removeToDB(model.mid);
+    remove(model);
+  }
+
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> _getDepotList(ContentsType contentsType) async {
@@ -169,6 +173,7 @@ class DepotManager extends CretaManager {
 
   Future<List<ContentsModel>> getContentInfoList(
       {ContentsType contentsType = ContentsType.none}) async {
+    print('-11111111111111111------');
     //PageManager pageManager = BookMainPage.pageManagerHolder!;  // Current Selected Page's manager
     await _getDepotList(contentsType);
     BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
