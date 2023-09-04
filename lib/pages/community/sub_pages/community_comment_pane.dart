@@ -38,7 +38,8 @@ import '../../../model/comment_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../data_io/comment_manager.dart';
 import '../../../data_io/user_property_manager.dart';
-import '../../../pages/login_page.dart';
+//import '../../../pages/login_page.dart';
+import '../../../pages/login/creta_account_manager.dart';
 
 //import '../../../data_io/watch_history_manager.dart';
 //import '../../../data_io/creta_manager.dart';
@@ -123,7 +124,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       comment: '',
     );
     model.barType = barType;
-    model.profileImg = LoginPage.userPropertyManagerHolder?.userPropertyModel?.profileImg ??
+    model.profileImg = CretaAccountManager.getUserProperty?.profileImg ??
         'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif';
     return model;
   }
@@ -310,7 +311,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
                     hasAni: false,
                     width: 40,
                     height: 40,
-                    image: LoginPage.userPropertyManagerHolder?.userPropertyModel?.profileImg ??
+                    image: CretaAccountManager.getUserProperty?.profileImg ??
                         'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif',
                   ),
                 ),

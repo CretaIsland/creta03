@@ -16,7 +16,8 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/team_model.dart';
 import '../../../../model/user_property_model.dart';
-import '../../../login_page.dart';
+//import '../../../login_page.dart';
+import '../../../login/creta_account_manager.dart';
 import '../../studio_snippet.dart';
 import '../property_mixin.dart';
 
@@ -43,7 +44,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
 
     _resetList();
 
-    LoginPage.userPropertyManagerHolder!.getUserPropertyFromEmail(emailList).then((value) {
+    CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
       for (var ele in value) {
         userModelMap[ele.email] = ele;
       }
@@ -186,7 +187,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
     bool isEmail = CretaUtils.isValidEmail(email);
     if (isEmail) {
       // 헤당 유저가 회원인지 찾는다.
-      UserPropertyModel? user = await LoginPage.userPropertyManagerHolder!.emailToModel(email);
+      UserPropertyModel? user = await CretaAccountManager.userPropertyManagerHolder.emailToModel(email);
       if (user != null) {
         setState(() {
           _addWriters(email);
@@ -201,11 +202,11 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
       return false;
     }
     // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
-    TeamModel? team = await LoginPage.teamManagerHolder!.findTeamModelByName(email, 'creta');
+    TeamModel? team = await CretaAccountManager.findTeamModelByName(email, 'creta');
     if (team != null) {
       setState(() {
         _addWriters(team.mid);
-        UserPropertyModel user = LoginPage.userPropertyManagerHolder!.makeDummyModel(team);
+        UserPropertyModel user = CretaAccountManager.userPropertyManagerHolder.makeDummyModel(team);
         userModelMap[user.email] = user;
         _resetList();
       });
@@ -235,17 +236,17 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
   }
 
   List<Widget> _myMembers() {
-    List<UserPropertyModel>? myMembers = LoginPage.teamManagerHolder!.getMyTeamMembers();
+    List<UserPropertyModel>? myMembers = CretaAccountManager.getMyTeamMembers();
     if (myMembers == null) {
       return [];
     }
     return myMembers.map((e) {
       // 자기 자신은 제외함.
-      if (e.email == LoginPage.userPropertyManagerHolder!.userModel.email) {
+      if (e.email == CretaAccountManager.currentLoginUser.email) {
         return SizedBox.shrink();
       }
       return BTN.line_blue_wmi_m(
-          leftWidget: LoginPage.userPropertyManagerHolder!
+          leftWidget: CretaAccountManager.userPropertyManagerHolder
               .imageCircle(e.profileImg, e.nickname, radius: 24),
           icon: Icons.add_outlined,
           text: e.nickname,
@@ -262,10 +263,10 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
   }
 
   List<Widget> _myTeams() {
-    return LoginPage.teamManagerHolder!.teamModelList.map((e) {
+    return CretaAccountManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget:
-              LoginPage.userPropertyManagerHolder!.imageCircle(e.profileImg, e.name, radius: 24),
+          CretaAccountManager.userPropertyManagerHolder.imageCircle(e.profileImg, e.name, radius: 24),
           icon: Icons.add_outlined,
           text: '${e.name} ${CretaLang.team}',
           width: 180,
@@ -273,7 +274,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
           onPressed: () {
             setState(() {
               _addWriters(e.mid);
-              UserPropertyModel user = LoginPage.userPropertyManagerHolder!.makeDummyModel(e);
+              UserPropertyModel user = CretaAccountManager.userPropertyManagerHolder.makeDummyModel(e);
               userModelMap[user.email] = user;
               _resetList();
             });
@@ -332,10 +333,11 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      LoginPage.userPropertyManagerHolder!.profileImageBox(
-                          model: userModel,
-                          radius: 28,
-                          color: email == 'public' ? CretaColor.primary : null),
+                      CretaAccountManager.userPropertyManagerHolder.profileImageBox(
+                        model: userModel,
+                        radius: 28,
+                        color: email == 'public' ? CretaColor.primary : null,
+                      ),
                       //const Icon(Icons.account_circle_outlined),
                       SizedBox(
                         //color: Colors.amber,

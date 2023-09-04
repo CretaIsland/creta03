@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import '../../../login_page.dart';
+//import '../../../login_page.dart';
+import '../../../login/creta_account_manager.dart';
 
 class CurrentWeatherClass extends StatefulWidget {
   static String cityName = '';
@@ -23,7 +24,7 @@ class CurrentWeatherClass extends StatefulWidget {
 class _CurrentWeatherClassState extends State<CurrentWeatherClass> {
   bool isLoaded = false;
   String domain = "https://api.openweathermap.org/data/2.5/weather?";
-  String apiKey = LoginPage.enterpriseHolder!.enterpriseModel!.openWeatherApiKey;
+  String apiKey = CretaAccountManager.getEnterprise!.openWeatherApiKey;
 
   @override
   void initState() {

@@ -1,11 +1,11 @@
 import 'dart:math';
-import 'package:creta03/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:hycop/hycop/webrtc/producers/producers_data.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
+import '../../../../login/creta_account_manager.dart';
 import '../button/audio_btn.dart';
 import '../button/video_btn.dart';
 
@@ -78,7 +78,7 @@ class _LocalStreamState extends State<LocalStream> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname, style: userNameStyle),
+                        Text(CretaAccountManager.getUserProperty!.nickname, style: userNameStyle),
                         const Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -122,11 +122,11 @@ class _LocalStreamState extends State<LocalStream> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-                          image: LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg != "" ? 
-                            DecorationImage(image: Image.network(LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg).image, fit: BoxFit.cover) : null
+                          image: CretaAccountManager.getUserProperty!.profileImg != "" ?
+                            DecorationImage(image: Image.network(CretaAccountManager.getUserProperty!.profileImg).image, fit: BoxFit.cover) : null
                         ),
-                        child: LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg != "" ? const SizedBox.shrink() :
-                          Center(child: Text(LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname.substring(0, 1), style: userNameStyle)),
+                        child: CretaAccountManager.getUserProperty!.profileImg != "" ? const SizedBox.shrink() :
+                          Center(child: Text(CretaAccountManager.getUserProperty!.nickname.substring(0, 1), style: userNameStyle)),
                       ),
                     ),
                     Padding(
@@ -135,7 +135,7 @@ class _LocalStreamState extends State<LocalStream> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname, style: userNameStyle),
+                          Text(CretaAccountManager.getUserProperty!.nickname, style: userNameStyle),
                           const Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,

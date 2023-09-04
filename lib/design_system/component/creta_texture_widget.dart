@@ -80,6 +80,8 @@ extension GlassWidget<T extends Widget> on T {
     BoxShadow? boxShadow,
     required double width,
     required double height,
+    double? pageWidth,
+    double? pageHeight,
   }) {
     return _asCretaGlass(
       blurX: blurX,
@@ -98,6 +100,8 @@ extension GlassWidget<T extends Widget> on T {
       boxShadow: boxShadow,
       width: width,
       height: height,
+      pageWidth: pageWidth,
+      pageHeight: pageHeight,
     );
   }
 
@@ -119,6 +123,8 @@ extension GlassWidget<T extends Widget> on T {
     BoxShadow? boxShadow,
     required double width,
     required double height,
+    double? pageWidth,
+    double? pageHeight,
   }) {
     return Container(
       width: width,
@@ -138,26 +144,57 @@ extension GlassWidget<T extends Widget> on T {
             sigmaY: blurY,
             tileMode: tileMode,
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: gradient ??
-                  LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      bgColor1.withOpacity(opacity),
-                      bgColor2.withOpacity(opacity / 2),
-                    ],
+          child: pageWidth != null && pageHeight != null
+              ? Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: pageWidth,
+                        height: pageHeight,
+                        decoration: BoxDecoration(
+                          gradient: gradient ??
+                              LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  bgColor1.withOpacity(opacity),
+                                  bgColor2.withOpacity(opacity / 2),
+                                ],
+                              ),
+                          image: frosted
+                              ? const DecorationImage(
+                                  image: AssetImage('assets/noise.png'),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        //child: this,
+                      ),
+                    ),
+                    this,
+                  ],
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    gradient: gradient ??
+                        LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            bgColor1.withOpacity(opacity),
+                            bgColor2.withOpacity(opacity / 2),
+                          ],
+                        ),
+                    image: frosted
+                        ? const DecorationImage(
+                            image: AssetImage('assets/noise.png'),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
                   ),
-              image: frosted
-                  ? const DecorationImage(
-                      image: AssetImage('assets/noise.png'),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
-            ),
-            child: this,
-          ),
+                  child: this,
+                ),
         ),
       ),
     );

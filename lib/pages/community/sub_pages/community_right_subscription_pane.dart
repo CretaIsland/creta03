@@ -24,7 +24,8 @@ import 'package:hycop/hycop.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
-import '../../../pages/login_page.dart';
+//import '../../../pages/login_page.dart';
+import '../../../pages/login/creta_account_manager.dart';
 import '../../../common/creta_utils.dart';
 import '../../../design_system/component/creta_layout_rect.dart';
 import '../creta_book_ui_item.dart';
@@ -175,7 +176,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     // );
     subscriptionManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     subscriptionManagerHolder.addWhereClause(
-        'channelId', QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId));
+        'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     subscriptionManagerHolder.queryByAddedContitions();
   }
 

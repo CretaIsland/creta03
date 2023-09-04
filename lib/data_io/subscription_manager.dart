@@ -3,7 +3,8 @@ import 'package:hycop/hycop.dart';
 //import '../design_system/menu/creta_popup_menu.dart';
 //import '../lang/creta_lang.dart';
 //import '../lang/creta_studio_lang.dart';
-import '../pages/login_page.dart';
+//import '../pages/login_page.dart';
+import '../pages/login/creta_account_manager.dart';
 //import '../model/app_enums.dart';
 //import '../model/book_model.dart';
 import '../model/subscription_model.dart';
@@ -54,7 +55,7 @@ class SubscriptionManager extends CretaManager {
 
   Future<void> queryMySubscription(String subscriptionChannelId) {
     addWhereClause('isRemoved', QueryValue(value: false));
-    addWhereClause('channelId', QueryValue(value: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId));
+    addWhereClause('channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     addWhereClause('subscriptionChannelId', QueryValue(value: subscriptionChannelId));
     return queryByAddedContitions();
   }

@@ -15,7 +15,6 @@ import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
-import '../../../studio_constant.dart';
 import '../../../studio_getx_controller.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
@@ -117,30 +116,50 @@ class _DraggableStickersState extends State<DraggableStickers> {
     stickers = widget.stickerList;
 
     logger.info('_DraggableStickersState build');
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FrameSelectNotifier>.value(
           value: DraggableStickers.frameSelectNotifier!,
         ),
       ],
-      child: Stack(
-        fit: StackFit.expand,
+      child: //Stack(
+          //fit: StackFit.expand,
+          //children: [
+          // Container(
+          //   //color: Colors.green,
+          //   width: widget.pageWidth,
+          //   height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+          //   decoration: BoxDecoration(
+          //     border: Border.all(width: 1, color: Colors.black),
+          //   ),
+          //   child:
+          Stack(
+        //fit: StackFit.expand,
         children: [
-          SizedBox(
-            width: widget.pageWidth,
-            height: widget.pageHeight - LayoutConst.miniMenuArea,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                _pageDropZone(widget.book.mid),
-                for (final sticker in stickers) _drawEachStiker(sticker),
-              ],
+          //Align(
+          //alignment: Alignment.topCenter,
+          Positioned(
+            left: BookMainPage.pageOffset.dx,
+            top: BookMainPage.pageOffset.dy,
+            child:
+                // Container(
+                //   decoration: BoxDecoration(
+                //     border: Border.all(width: 1, color: Colors.black),
+                //   ),
+                SizedBox(
+              width: widget.pageWidth,
+              height: widget.pageHeight, // - LayoutConst.miniMenuArea,
             ),
           ),
+          _pageDropZone(widget.book.mid),
+          for (final sticker in stickers) _drawEachStiker(sticker),
           _drawMiniMenu(),
         ],
       ),
+      //),
+      //_drawMiniMenu(),
+      //],
+      //),
     );
   }
 
@@ -148,17 +167,17 @@ class _DraggableStickersState extends State<DraggableStickers> {
     // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
 
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
-
+    //print('_drawEachStiker---------------');
     return DraggableResizable(
       key: GlobalKey(),
       mid: sticker.id,
       angle: sticker.angle,
-      position: sticker.position,
+      position: sticker.position + BookMainPage.pageOffset,
       borderWidth: sticker.borderWidth,
       isMain: sticker.isMain,
       frameModel: frameModel,
       pageWidth: widget.pageWidth,
-      pageHeight: widget.pageHeight - LayoutConst.miniMenuArea,
+      pageHeight: widget.pageHeight, // - LayoutConst.miniMenuArea,
       // Size of the sticker
       size: sticker.isText == true
           ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
@@ -405,107 +424,108 @@ class _DraggableStickersState extends State<DraggableStickers> {
       //     return const SizedBox.shrink();
       //   }
       // }
+      //print('MiniMenu---------------');
+      return
 
-      return BookMainPage.miniMenuNotifier!.isShow == false
-          ? const SizedBox.shrink()
-          : MiniMenu(
-              key: const GlobalObjectKey('MiniMenu'),
-              contentsManager: contentsManager,
-              frameManager: frameManager,
-              parentPosition: selectedSticker.position,
-              parentSize: selectedSticker.size,
-              parentBorderWidth: selectedSticker.borderWidth,
-              pageHeight: widget.pageHeight,
-              frameModel: frameModel,
-              onFrameDelete: () {
-                logger.fine('onFrameDelete');
-                stickers.remove(selectedSticker);
-                widget.onFrameDelete.call(selectedSticker.id);
-                //setState(() {});
-              },
-              onFrameBack: () {
-                logger.fine('onFrameBack');
-                var ind = stickers.indexOf(selectedSticker);
-                if (ind > 0) {
-                  // 제일 뒤에 있는것은 제외한다.
-                  // 뒤로 빼는 것이므로, 현재 보다 한숫자 작은 인덱스로 보내야 한다.
-                  stickers.remove(selectedSticker);
-                  stickers.insert(ind - 1, selectedSticker);
-                  Sticker target = stickers[ind];
-                  widget.onFrameBack.call(selectedSticker.id, target.id);
-                  setState(() {});
-                }
-              },
-              onFrontBackHover: widget.onFrontBackHover,
-              onFrameFront: () {
-                logger.fine('onFrameFront');
-                var listLength = stickers.length;
-                var ind = stickers.indexOf(selectedSticker);
-                if (ind < listLength - 1) {
-                  // 제일 앞에 있는것은 제외한다.
-                  // 앞으로 빼는 것이므로, 현재 보다 한숫자 큰 인덱스로 보내야 한다.
-                  stickers.remove(selectedSticker);
-                  stickers.insert(ind + 1, selectedSticker);
-                  Sticker target = stickers[ind];
-                  widget.onFrameFront.call(selectedSticker.id, target.id);
-                  setState(() {});
-                }
-              },
-              onFrameMain: () {
-                logger.fine('onFrameMain');
-                selectedSticker.isMain = true;
-                widget.onFrameMain.call(selectedSticker.id);
-                //setState(() {});
-              },
-              onFrameShowUnshow: () {
-                logger.fine('onFrameShowUnshow');
-                //selectedSticker.isMain = true;
-                widget.onFrameShowUnshow.call(selectedSticker.id);
-                //setState(() {});
-              },
-              onFrameCopy: () {
-                logger.fine('onFrameCopy');
-                widget.onFrameCopy.call(selectedSticker.id);
-                //setState(() {});
-              },
-              // onFrameRotate: () {
-              //   double reverse = 180 / pi;
-              //   double before = (selectedSticker.angle * reverse).roundToDouble();
-              //   logger.info('onFrameRotate  before $before');
-              //   int turns = (before / 15).round() + 1;
-              //   double after = ((turns * 15.0) % 360).roundToDouble();
-              //   selectedSticker.angle = after / reverse;
-              //   logger.info('onFrameRotate  after $after');
-              //   widget.onFrameRotate.call(selectedSticker.id, after);
-              //   setState(() {});
-              // },
-              // onFrameLink: () {
-              //   logger.fine('onFrameLink');
-              //   widget.onFrameLink.call(selectedSticker.id);
-              //   //setState(() {});
-              // },
+          //  BookMainPage.miniMenuNotifier!.isShow == false
+          //     ? const SizedBox.shrink()
+          //     :
+          MiniMenu(
+        key: GlobalObjectKey('MiniMenu${selectedSticker.id}'),
+        contentsManager: contentsManager,
+        frameManager: frameManager,
+        sticker: selectedSticker,
+        pageHeight: widget.pageHeight,
+        frameModel: frameModel,
+        onFrameDelete: () {
+          logger.fine('onFrameDelete');
+          stickers.remove(selectedSticker);
+          widget.onFrameDelete.call(selectedSticker.id);
+          //setState(() {});
+        },
+        onFrameBack: () {
+          logger.fine('onFrameBack');
+          var ind = stickers.indexOf(selectedSticker);
+          if (ind > 0) {
+            // 제일 뒤에 있는것은 제외한다.
+            // 뒤로 빼는 것이므로, 현재 보다 한숫자 작은 인덱스로 보내야 한다.
+            stickers.remove(selectedSticker);
+            stickers.insert(ind - 1, selectedSticker);
+            Sticker target = stickers[ind];
+            widget.onFrameBack.call(selectedSticker.id, target.id);
+            setState(() {});
+          }
+        },
+        onFrontBackHover: widget.onFrontBackHover,
+        onFrameFront: () {
+          logger.fine('onFrameFront');
+          var listLength = stickers.length;
+          var ind = stickers.indexOf(selectedSticker);
+          if (ind < listLength - 1) {
+            // 제일 앞에 있는것은 제외한다.
+            // 앞으로 빼는 것이므로, 현재 보다 한숫자 큰 인덱스로 보내야 한다.
+            stickers.remove(selectedSticker);
+            stickers.insert(ind + 1, selectedSticker);
+            Sticker target = stickers[ind];
+            widget.onFrameFront.call(selectedSticker.id, target.id);
+            setState(() {});
+          }
+        },
+        onFrameMain: () {
+          logger.fine('onFrameMain');
+          selectedSticker.isMain = true;
+          widget.onFrameMain.call(selectedSticker.id);
+          //setState(() {});
+        },
+        onFrameShowUnshow: () {
+          logger.fine('onFrameShowUnshow');
+          //selectedSticker.isMain = true;
+          widget.onFrameShowUnshow.call(selectedSticker.id);
+          //setState(() {});
+        },
+        onFrameCopy: () {
+          logger.fine('onFrameCopy');
+          widget.onFrameCopy.call(selectedSticker.id);
+          //setState(() {});
+        },
+        // onFrameRotate: () {
+        //   double reverse = 180 / pi;
+        //   double before = (selectedSticker.angle * reverse).roundToDouble();
+        //   logger.info('onFrameRotate  before $before');
+        //   int turns = (before / 15).round() + 1;
+        //   double after = ((turns * 15.0) % 360).roundToDouble();
+        //   selectedSticker.angle = after / reverse;
+        //   logger.info('onFrameRotate  after $after');
+        //   widget.onFrameRotate.call(selectedSticker.id, after);
+        //   setState(() {});
+        // },
+        // onFrameLink: () {
+        //   logger.fine('onFrameLink');
+        //   widget.onFrameLink.call(selectedSticker.id);
+        //   //setState(() {});
+        // },
 
-              onContentsFlip: () {
-                logger.fine('onContentsFlip');
-              },
-              onContentsRotate: () {
-                logger.fine('onContentsRotate');
-              },
-              onContentsCrop: () {
-                logger.fine('onContentsCrop');
-              },
-              onContentsFullscreen: () {
-                logger.fine('onContentsFullscreen');
-              },
-              onContentsDelete: () {
-                logger.fine('onContentsDelete');
-                contentsManager.removeSelected(context);
-                //setState(() {});
-              },
-              onContentsEdit: () {
-                logger.fine('onContentsEdit');
-              },
-            );
+        onContentsFlip: () {
+          logger.fine('onContentsFlip');
+        },
+        onContentsRotate: () {
+          logger.fine('onContentsRotate');
+        },
+        onContentsCrop: () {
+          logger.fine('onContentsCrop');
+        },
+        onContentsFullscreen: () {
+          logger.fine('onContentsFullscreen');
+        },
+        onContentsDelete: () {
+          logger.fine('onContentsDelete');
+          contentsManager.removeSelected(context);
+          //setState(() {});
+        },
+        onContentsEdit: () {
+          logger.fine('onContentsEdit');
+        },
+      );
     });
   }
 

@@ -14,13 +14,14 @@ import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/model/team_model.dart';
 import 'package:creta03/model/user_property_model.dart';
-import 'package:creta03/pages/login_page.dart';
+//import 'package:creta03/pages/login_page.dart';
 import 'package:creta03/pages/mypage/popup/popup_rateplan.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:image_picker/image_picker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
+import '../../login/creta_account_manager.dart';
 
 class MyPageTeamManage extends StatefulWidget {
 
@@ -60,8 +61,8 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
       teamPermissionList.add(Text(element, style: CretaFont.bodyMedium));
     }
     
-    if(LoginPage.teamManagerHolder!.teamModelList.isNotEmpty) {
-      for (var element in LoginPage.teamManagerHolder!.teamModelList) {
+    if(CretaAccountManager.getTeamList.isNotEmpty) {
+      for (var element in CretaAccountManager.getTeamList) {
         teamList.add(element.name);
       }
     }
@@ -421,7 +422,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
 
   @override
   Widget build(BuildContext context) {
-    return LoginPage.teamManagerHolder!.teamModelList.isEmpty ? const SizedBox.shrink() : 
+    return CretaAccountManager.getTeamList.isEmpty ? const SizedBox.shrink() :
     Consumer2<UserPropertyManager, TeamManager>(
       builder: (context, userPropertyManager, teamManager, child) {
         return Container(

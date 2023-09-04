@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import 'draggable_point.dart';
 import 'seleted_box.dart';
@@ -444,6 +445,10 @@ class _DraggableResizableState extends State<DraggableResizable> {
             if (_moveValidCheck(_size, newPosition, details) == false) {
               return;
             }
+            if (StudioVariables.useMagnet) {
+              newPosition = _applyMagnet(_size, newPosition, details);
+            }
+
             setState(() {
               _position = newPosition;
             });
@@ -561,6 +566,40 @@ class _DraggableResizableState extends State<DraggableResizable> {
     // }
 
     return _moveValidCheck(updatedSize, pos, details);
+  }
+
+  Offset _applyMagnet(Size updatedSize, Offset pos, Offset move) {
+    double leftLimit = BookMainPage.pageOffset.dx - (LayoutConst.stikerOffset / 2);
+    double rightLimit = leftLimit + widget.pageWidth;
+    //print('leftLimit=$leftLimit, rightLimit=$rightLimit');
+    double leftGap = pos.dx - leftLimit;
+    double rightGap = rightLimit - (pos.dx + updatedSize.width);
+    //print('leftGap=$leftGap,rightGap=$rightGap, ');
+
+    double topLimit = BookMainPage.pageOffset.dy - (LayoutConst.stikerOffset / 2);
+    double bottomLimit = topLimit + widget.pageHeight;
+    //print('topLimit=$topLimit, bottomLimit=$bottomLimit');
+    double topGap = pos.dy - topLimit;
+    double bottomGap = bottomLimit - (pos.dy + updatedSize.height);
+    //print('topGap=$topGap,bottomGap=$bottomGap, ');
+
+    double dx = pos.dx;
+    double dy = pos.dy;
+
+    if (leftGap < StudioVariables.magnetMargin && leftGap > -StudioVariables.magnetMargin) {
+      dx = dx - leftGap;
+    } else if (rightGap < StudioVariables.magnetMargin &&
+        rightGap > -StudioVariables.magnetMargin) {
+      dx = dx + rightGap;
+    }
+
+    if (topGap < StudioVariables.magnetMargin && topGap > -StudioVariables.magnetMargin) {
+      dy = dy - topGap;
+    } else if (bottomGap < StudioVariables.magnetMargin &&
+        bottomGap > -StudioVariables.magnetMargin) {
+      dy = dy + bottomGap;
+    }
+    return Offset(dx, dy);
   }
 
   bool _moveValidCheck(Size updatedSize, Offset pos, Offset move) {

@@ -25,7 +25,8 @@ import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
 import '../../model/team_model.dart';
 import '../../routes.dart';
-import '../login_page.dart';
+//import '../login_page.dart';
+import '../login/creta_account_manager.dart';
 import 'book_info_mixin.dart';
 import 'book_main_page.dart';
 import 'studio_snippet.dart';
@@ -60,9 +61,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   List<TeamModel> teamModelList = [];
   List<String> publishingChannelIdList = [
-    LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId
+    CretaAccountManager.getUserProperty!.channelId
   ];
-  final String myChannelId = LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId;
+  final String myChannelId = CretaAccountManager.getUserProperty!.channelId;
 
   bool _onceDBGetComplete1 = false;
   //bool _onceDBGetComplete2 = false;
@@ -96,7 +97,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
     _resetList();
 
-    LoginPage.userPropertyManagerHolder!.getUserPropertyFromEmail(emailList).then((value) {
+    CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
       userModelList = [...value];
       for (var ele in userModelList) {
         logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
@@ -478,7 +479,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       onComplete: (isNew) {
         ChannelManager channelManagerHolder = ChannelManager();
         channelManagerHolder.updateToDB(
-          LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+          CretaAccountManager.getUserProperty!.channelId,
           {"lastPublishTime": HycopUtils.dateTimeToDB(DateTime.now()) },
         );
         _modifier = isNew ? CretaStudioLang.newely : CretaStudioLang.update;
@@ -583,7 +584,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     bool isEmail = CretaUtils.isValidEmail(email);
     if (isEmail) {
       // 헤당 유저가 회원인지 찾는다.
-      UserPropertyModel? user = await LoginPage.userPropertyManagerHolder!.emailToModel(email);
+      UserPropertyModel? user = await CretaAccountManager.userPropertyManagerHolder.emailToModel(email);
       if (user != null) {
         setState(() {
           _addReaders(email);
@@ -598,11 +599,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       return false;
     }
     // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
-    TeamModel? team = await LoginPage.teamManagerHolder!.findTeamModelByName(email, 'creta');
+    TeamModel? team = await CretaAccountManager.findTeamModelByName(email, 'creta');
     if (team != null) {
       setState(() {
         _addReaders(team.mid);
-        userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(team));
+        userModelList.add(CretaAccountManager.userPropertyManagerHolder.makeDummyModel(team));
         _resetList();
       });
       return true;
@@ -623,7 +624,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BTN.line_blue_wmi_m(
-                leftWidget: LoginPage.userPropertyManagerHolder!
+                leftWidget: CretaAccountManager.userPropertyManagerHolder
                     .imageCircle('', CretaLang.entire, radius: 24, color: CretaColor.primary),
                 icon: Icons.add_outlined,
                 text: CretaLang.entire,
@@ -633,7 +634,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                     //아직 전체가 없을 때만 넣는다.
                     setState(() {
                       _addReaders('public');
-                      userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(null));
+                      userModelList.add(CretaAccountManager.userPropertyManagerHolder.makeDummyModel(null));
                       _resetList();
                     });
                   }
@@ -646,10 +647,10 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   List<Widget> _myTeams() {
-    return LoginPage.teamManagerHolder!.teamModelList.map((e) {
+    return CretaAccountManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget:
-              LoginPage.userPropertyManagerHolder!.imageCircle(e.profileImg, e.name, radius: 24),
+            CretaAccountManager.userPropertyManagerHolder.imageCircle(e.profileImg, e.name, radius: 24),
           icon: Icons.add_outlined,
           text: '${e.name} ${CretaLang.team}',
           width: 180,
@@ -659,7 +660,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
             if (user == null) {
               setState(() {
                 _addReaders(e.mid);
-                userModelList.add(LoginPage.userPropertyManagerHolder!.makeDummyModel(e));
+                userModelList.add(CretaAccountManager.userPropertyManagerHolder.makeDummyModel(e));
                 _resetList();
               });
             }
@@ -732,7 +733,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      LoginPage.userPropertyManagerHolder!.profileImageBox(
+                      CretaAccountManager.userPropertyManagerHolder.profileImageBox(
                           model: userModel,
                           radius: 28,
                           color: email == 'public' ? CretaColor.primary : null),
@@ -869,7 +870,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BTN.line_blue_wmi_m(
-                leftWidget: LoginPage.userPropertyManagerHolder!
+                leftWidget: CretaAccountManager.userPropertyManagerHolder
                     .imageCircle('', CretaLang.entire, radius: 24, color: CretaColor.primary),
                 icon: Icons.add_outlined,
                 text: CretaLang.myChannel,
@@ -901,10 +902,10 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   List<Widget> _myChannelTeams() {
-    return LoginPage.teamManagerHolder!.teamModelList.map((e) {
+    return CretaAccountManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget:
-              LoginPage.userPropertyManagerHolder!.imageCircle(e.profileImg, e.name, radius: 24),
+            CretaAccountManager.userPropertyManagerHolder.imageCircle(e.profileImg, e.name, radius: 24),
           icon: Icons.add_outlined,
           text: '${e.name} ${CretaLang.team}',
           width: 180,
@@ -923,7 +924,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   TeamModel? _findTeamModel(String channelId) {
-    for (var teamModel in LoginPage.teamManagerHolder!.teamModelList) {
+    for (var teamModel in CretaAccountManager.getTeamList) {
       if (teamModel.channelId == channelId) {
         return teamModel;
       }
@@ -961,8 +962,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                 String channelId = publishingChannelIdList[index];
                 TeamModel? teamModel = _findTeamModel(channelId);
                 //bool isNotCreator = (userModel.email != widget.model!.creator);
-                UserPropertyModel userModel =
-                    LoginPage.userPropertyManagerHolder!.userPropertyModel!;
+                UserPropertyModel userModel = CretaAccountManager.getUserProperty!;
                 // ignore: unused_local_variable
                 bool isNotCreator = (teamModel != null);
                 return Container(
@@ -975,11 +975,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       //     model: userModel,
                       //     radius: 28,
                       //     color: userModel.email == 'public' ? CretaColor.primary : null),
-                      LoginPage.userPropertyManagerHolder!.imageCircle(
+                      CretaAccountManager.userPropertyManagerHolder.imageCircle(
                         teamModel?.profileImg ??
-                            LoginPage.userPropertyManagerHolder!.userPropertyModel!.profileImg,
+                            CretaAccountManager.getUserProperty!.profileImg,
                         teamModel?.name ??
-                            LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname,
+                            CretaAccountManager.getUserProperty!.nickname,
                         radius: 28,
                       ),
                       //const Icon(Icons.account_circle_outlined),

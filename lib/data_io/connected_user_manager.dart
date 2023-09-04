@@ -4,7 +4,8 @@ import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta03/model/creta_model.dart';
 import '../model/connected_user_model.dart';
 import '../model/user_property_model.dart';
-import '../pages/login_page.dart';
+//import '../pages/login_page.dart';
+import '../pages/login/creta_account_manager.dart';
 
 class ConnectedUserManager extends CretaManager {
   static int monitorPerid = 10; //sec
@@ -229,7 +230,7 @@ class ConnectedUserManager extends CretaManager {
       return true;
     }
     UserPropertyModel? user =
-        await LoginPage.userPropertyManagerHolder!.getMemberProperty(email: email);
+        await CretaAccountManager.userPropertyManagerHolder.getMemberProperty(email: email);
     if (user == null) {
       //logger.warning('user not founded($email)');
       return false;

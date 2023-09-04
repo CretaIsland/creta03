@@ -12,7 +12,8 @@ import '../model/book_model.dart';
 import '../model/creta_model.dart';
 import '../model/page_model.dart';
 import '../model/team_model.dart';
-import '../pages/login_page.dart';
+//import '../pages/login_page.dart';
+import '../pages/login/creta_account_manager.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import 'creta_manager.dart';
 import 'page_manager.dart';
@@ -150,7 +151,7 @@ class BookManager extends CretaManager {
       '<${PermissionType.owner.name}>$userId',
       '<${PermissionType.owner.name}>public',
     ];
-    TeamModel? myTeam = LoginPage.teamManagerHolder!.currentTeam;
+    TeamModel? myTeam = CretaAccountManager.getCurrentTeam;
     if (myTeam != null) {
       String myTeamId = myTeam.name;
       queryVal.add('<${PermissionType.reader.name}>$myTeamId');
@@ -177,7 +178,7 @@ class BookManager extends CretaManager {
     Map<String, QueryValue> query = {};
     List<String> creators = [];
     List<String> queryVal = [];
-    TeamModel? myTeam = LoginPage.teamManagerHolder!.currentTeam;
+    TeamModel? myTeam = CretaAccountManager.getCurrentTeam;
     if (myTeam != null) {
       String myTeamId = myTeam.name;
       queryVal.add('<${PermissionType.reader.name}>$myTeamId');
@@ -185,7 +186,7 @@ class BookManager extends CretaManager {
       queryVal.add('<${PermissionType.owner.name}>$myTeamId');
     }
 
-    List<UserPropertyModel>? myMembers = LoginPage.teamManagerHolder!.getMyTeamMembers();
+    List<UserPropertyModel>? myMembers = CretaAccountManager.getMyTeamMembers();
     if (myMembers == null) {
       return [];
     }
@@ -234,8 +235,8 @@ class BookManager extends CretaManager {
     newOne.name.set('${srcModel.name.value}${CretaLang.copyOf}');
     newOne.sourceMid = "";
     newOne.publishMid = "";
-    if (LoginPage.userPropertyManagerHolder!.userPropertyModel != null) {
-      newOne.creator = LoginPage.userPropertyManagerHolder!.userPropertyModel!.email;
+    if (CretaAccountManager.getUserProperty != null) {
+      newOne.creator = CretaAccountManager.getUserProperty!.email;
     }
     await createToDB(newOne);
     logger.info('newBook created ${newOne.mid}, source=${newOne.sourceMid}');

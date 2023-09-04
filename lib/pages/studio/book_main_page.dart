@@ -41,7 +41,7 @@ import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/frame_model.dart';
 import '../../model/page_model.dart';
 import '../../routes.dart';
-import '../login_page.dart';
+import '../login/creta_account_manager.dart';
 import 'book_preview_menu.dart';
 import 'book_publish.dart';
 import 'containees/click_event.dart';
@@ -77,6 +77,7 @@ class BookMainPage extends StatefulWidget {
   static bool thumbnailChanged = false;
   static double pageWidth = 0;
   static double pageHeight = 0;
+  static Offset pageOffset = Offset.zero;
 
   //static ContaineeEnum selectedClass = ContaineeEnum.Book;
   final bool isPreviewX;
@@ -149,7 +150,7 @@ class _BookMainPageState extends State<BookMainPage> {
     // _linkSendEvent = linkSendEvent;
     // final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
     // _autoPlaySendEvent = autoPlaySendEvent;
-    LoginPage.initUserProperty();
+    CretaAccountManager.initUserProperty();
 
     BookPreviewMenu.previewMenuPressed = false;
 
@@ -178,11 +179,9 @@ class _BookMainPageState extends State<BookMainPage> {
     // BookMainPage.animationFrameManagerHolder = FrameTemplateManager(frameType: FrameType.animation);
     //BookMainPage.userPropertyManagerHolder = UserPropertyManager();
 
-    if (LoginPage.userPropertyManagerHolder != null) {
-      String userEmail = LoginPage.userPropertyManagerHolder!.userModel.email;
-      BookMainPage.filterManagerHolder = FilterManager(userEmail);
-      BookMainPage.filterManagerHolder!.getFilter();
-    }
+    String userEmail = CretaAccountManager.currentLoginUser.email;
+    BookMainPage.filterManagerHolder = FilterManager(userEmail);
+    BookMainPage.filterManagerHolder!.getFilter();
     BookMainPage.connectedUserHolder = ConnectedUserManager();
 
     String url = Uri.base.origin;
@@ -229,7 +228,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     mouseTracerHolder = MouseTracer();
     mouseTracerHolder!.initialize();
-    client.initialize(LoginPage.enterpriseHolder!.enterpriseModel!.socketUrl);
+    client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
     client.connectServer(BookMainPage.selectedMid);
 
     mouseTracerHolder!.addListener(() {
@@ -311,11 +310,9 @@ class _BookMainPageState extends State<BookMainPage> {
 
     _onceDBGetComplete = true;
 
-    if (LoginPage.userPropertyManagerHolder != null) {
-      StudioVariables.isMute = LoginPage.userPropertyManagerHolder!.getMute();
-      if ((widget.isPublishedMode ?? false) == false) {
-        StudioVariables.isAutoPlay = LoginPage.userPropertyManagerHolder!.getAutoPlay();
-      }
+    StudioVariables.isMute = CretaAccountManager.getMute();
+    if ((widget.isPublishedMode ?? false) == false) {
+      StudioVariables.isAutoPlay = CretaAccountManager.getAutoPlay();
     }
 
     HycopFactory.realtime!.startTemp(model.mid);
@@ -630,7 +627,11 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _resize() {
-    double pageDisplayRate = 0.9;
+    double pageDisplayRate = 0.7;
+    if (_bookModel!.width.value <= _bookModel!.height.value) {
+      pageDisplayRate = 0.9;
+    }
+
     if (StudioVariables.isPreview) {
       StudioVariables.topMenuBarHeight = 0;
       StudioVariables.menuStickWidth = 0;
@@ -680,6 +681,11 @@ class _BookMainPageState extends State<BookMainPage> {
         StudioVariables.scale = heightRatio;
       }
     }
+    // virtual width 에서, 페이지 부분이 얼마나 떨어져 있는지 나타냄.
+    BookMainPage.pageOffset = Offset(
+      (StudioVariables.virtualWidth - BookMainPage.pageWidth) / 2,
+      (StudioVariables.virtualHeight - BookMainPage.pageHeight) / 2,
+    );
 
     padding = 16 * (StudioVariables.displayWidth / 1920);
     if (padding < 2) {
@@ -897,7 +903,7 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget _avartars() {
     return Consumer<ConnectedUserManager>(builder: (context, connectedUserManager, child) {
       Set<ConnectedUserModel> connectedUserSet = connectedUserManager
-          .getConnectedUserSet(LoginPage.userPropertyManagerHolder!.userPropertyModel!.nickname);
+          .getConnectedUserSet(CretaAccountManager.getUserProperty!.nickname);
       //print('Consumer<ConnectedUserManager>(${connectedUserSet.length} )');
       return Visibility(
           // 아바타
@@ -1103,11 +1109,11 @@ class _BookMainPageState extends State<BookMainPage> {
     return Center(
         child: StudioVariables.isPreview
             ? noneScrollBox(isPageExist)
-            : scrollBox(totalWidth, marginX, marginY));
+            : scrollBox(totalWidth, scrollWidth, marginX, marginY));
     //});
   }
 
-  Widget scrollBox(double totalWidth, double marginX, double marginY) {
+  Widget scrollBox(double totalWidth, double scrollWidth, double marginX, double marginY) {
     return Container(
       width: StudioVariables.workWidth, //scrollWidth,
       height: StudioVariables.workHeight,
@@ -1130,7 +1136,8 @@ class _BookMainPageState extends State<BookMainPage> {
           currentVerticalScrollBarOffset: (value) {
             StudioVariables.verticalScrollOffset = value;
           },
-
+          //initialScrollOffsetX: BookMainPage.pageOffset.dx - 30,
+          initialScrollOffsetX: (StudioVariables.workWidth - scrollWidth) / 2,
           child: Center(child: Consumer<PageManager>(builder: (context, pageManager, child) {
             pageManager.reOrdering();
             PageModel? pageModel = pageManager.getSelected() as PageModel?;
@@ -1261,7 +1268,7 @@ class _BookMainPageState extends State<BookMainPage> {
       bookModel: _bookModel!,
       pageModel: pageModel,
       pageWidth: BookMainPage.pageWidth,
-      pageHeight: BookMainPage.pageHeight + LayoutConst.miniMenuArea,
+      pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,
     );
   }
 

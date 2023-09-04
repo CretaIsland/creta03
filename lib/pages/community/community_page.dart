@@ -10,7 +10,8 @@ import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import '../../routes.dart';
-import '../../pages/login_page.dart';
+//import '../../pages/login_page.dart';
+import '../../pages/login/creta_account_manager.dart';
 //import '../../common/cross_common_job.dart';
 import '../../common/creta_utils.dart';
 import '../../design_system/creta_font.dart';
@@ -708,9 +709,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         child: (_currentChannelModel == null)
                             ? SizedBox.shrink()
                             : profileImg.isEmpty
-                                ? LoginPage.userPropertyManagerHolder!.imageCircle(
+                                ? CretaAccountManager.userPropertyManagerHolder.imageCircle(
                                     profileImg,
-                                    LoginPage.userPropertyManagerHolder?.userPropertyModel?.nickname ?? '',
+                                    CretaAccountManager.getUserProperty?.nickname ?? '',
                                     radius: 100,
                                   )
                                 : CustomImage(
@@ -785,7 +786,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             ),
                           ),
                           SizedBox(width: 12),
-                          (LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId == _currentChannelModel?.getMid)
+                          (CretaAccountManager.getUserProperty!.channelId == _currentChannelModel?.getMid)
                               ? SizedBox.shrink() :
                           BTN.fill_blue_t_m(
                             width: 84,
@@ -795,7 +796,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                               if (_selectedSubscriptionModel == null) {
                                 subscriptionManagerHolder
                                     .createSubscription(
-                                  LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                                  CretaAccountManager.getUserProperty!.channelId,
                                   _currentChannelModel!.getMid,
                                 )
                                     .then(
@@ -803,7 +804,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                     showSnackBar(context, '구독되었습니다');
                                     setState(() {
                                       _selectedSubscriptionModel = SubscriptionModel.withName(
-                                          channelId: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                                          channelId: CretaAccountManager.getUserProperty!.channelId,
                                           subscriptionChannelId: _currentChannelModel!.getMid);
                                     });
                                   },
@@ -812,7 +813,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                               else {
                                 subscriptionManagerHolder
                                     .removeSubscription(
-                                  LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                                  CretaAccountManager.getUserProperty!.channelId,
                                   _currentChannelModel!.mid,
                                 )
                                     .then(
@@ -991,7 +992,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                 style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
               ),
               SizedBox(width: 12),
-              (LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId == _currentChannelModel?.getMid)
+              (CretaAccountManager.getUserProperty!.channelId == _currentChannelModel?.getMid)
                   ? SizedBox.shrink() :
               BTN.fill_blue_t_m(
                 width: 84,
@@ -1001,7 +1002,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   if (_selectedSubscriptionModel == null) {
                     subscriptionManagerHolder
                         .createSubscription(
-                      LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                      CretaAccountManager.getUserProperty!.channelId,
                       _currentChannelModel!.getMid,
                     )
                         .then(
@@ -1009,7 +1010,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         showSnackBar(context, '구독되었습니다');
                         setState(() {
                           _selectedSubscriptionModel = SubscriptionModel.withName(
-                              channelId: LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                              channelId: CretaAccountManager.getUserProperty!.channelId,
                               subscriptionChannelId: _currentChannelModel!.getMid);
                         });
                       },
@@ -1018,7 +1019,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   else {
                     subscriptionManagerHolder
                         .removeSubscription(
-                      LoginPage.userPropertyManagerHolder!.userPropertyModel!.channelId,
+                      CretaAccountManager.getUserProperty!.channelId,
                       _currentChannelModel!.mid,
                     )
                         .then(

@@ -192,9 +192,11 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   Widget _textureBox() {
     if (textureType == TextureType.glass) {
       logger.finest('GrassType!!!');
-      return _clickPage(true).asCretaGlass(
-        width: widget.pageWidth,
-        height: widget.pageHeight,
+      return _clickPage(false).asCretaGlass(
+        width: StudioVariables.virtualWidth,
+        height: StudioVariables.virtualHeight,
+        pageWidth: widget.pageWidth,
+        pageHeight: widget.pageHeight,
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
         opacity: opacity,
@@ -265,14 +267,19 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
     return Stack(
       children: [
-        Container(
-          decoration: useColor ? _pageDeco() : null,
-          width: widget.pageWidth,
-          height: widget.pageHeight - LayoutConst.miniMenuArea,
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            decoration: useColor ? _pageDeco() : null,
+            width: widget.pageWidth,
+            height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+          ),
         ),
         SizedBox(
-          width: widget.pageWidth,
-          height: widget.pageHeight,
+          width: StudioVariables.virtualWidth,
+          height: StudioVariables.virtualHeight,
+          // width: widget.pageWidth,
+          // height: widget.pageHeight,
           child: _waitFrame(),
         ),
       ],

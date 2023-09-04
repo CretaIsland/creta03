@@ -1,7 +1,6 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 import 'dart:convert';
-import 'package:creta03/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
@@ -20,6 +19,7 @@ import '../../../design_system/creta_color.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../studio_constant.dart';
+import '../../login/creta_account_manager.dart';
 import 'imageAI/api_services.dart';
 import 'imageAI/search_tip_position.dart';
 import 'imageAI/style_selected.dart';
@@ -113,7 +113,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
     http
         .post(
-            Uri.parse("${LoginPage.enterpriseHolder!.enterpriseModel!.mediaApiUrl}/downloadAiImg"),
+            Uri.parse("${CretaAccountManager.getEnterprise!.mediaApiUrl}/downloadAiImg"),
             headers: {"Content-type": "application/json"},
             body: jsonEncode(
                 {"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage}))
@@ -132,7 +132,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   Future<void> storageImage(String urlImage) async {
     await http.post(
-      Uri.parse("${LoginPage.enterpriseHolder!.enterpriseModel!.mediaApiUrl}/downloadAiImg"),
+      Uri.parse("${CretaAccountManager.getEnterprise!.mediaApiUrl}/downloadAiImg"),
       headers: {"Content-type": "application/json"},
       body: jsonEncode(
           {"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage}),

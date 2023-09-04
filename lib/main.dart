@@ -13,7 +13,8 @@ import 'common/creta_constant.dart';
 import 'common/cross_common_job.dart';
 import 'pages/studio/studio_constant.dart';
 import 'pages/studio/studio_getx_controller.dart';
-import 'pages/login_page.dart';
+//import 'pages/login_page.dart';
+import 'pages/login/creta_account_manager.dart';
 import 'routes.dart';
 
 void main() async {
@@ -23,7 +24,7 @@ void main() async {
   Logger.root.level = Level.WARNING;
   HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
-  await LoginPage.initUserProperty();
+  await CretaAccountManager.initUserProperty();
 
   //SampleData.initSample();
   StudioConst.initLangMap();

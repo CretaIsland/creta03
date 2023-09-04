@@ -17,6 +17,7 @@ import '../../../left_menu/left_menu_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
+import 'stickerview.dart';
 
 class MiniMenu extends StatefulWidget {
   final ContentsManager contentsManager;
@@ -24,9 +25,7 @@ class MiniMenu extends StatefulWidget {
 
   static bool showFrame = false;
 
-  final Offset parentPosition;
-  final Size parentSize;
-  final double parentBorderWidth;
+  final Sticker sticker;
   final double pageHeight;
   final FrameModel frameModel;
   final void Function() onFrameDelete;
@@ -50,9 +49,7 @@ class MiniMenu extends StatefulWidget {
     required this.frameModel,
     required this.contentsManager,
     required this.frameManager,
-    required this.parentPosition,
-    required this.parentSize,
-    required this.parentBorderWidth,
+    required this.sticker,
     required this.pageHeight,
     required this.onFrameDelete,
     required this.onFrameFront,
@@ -80,22 +77,33 @@ class MiniMenuState extends State<MiniMenu> {
   final double radius = LayoutConst.miniMenuHeight / 2;
   //OffsetEventController? _linkSendEvent;
 
+  late bool isFirstTime;
+
   @override
   void initState() {
     super.initState();
     //final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     //_linkSendEvent = linkSendEvent;
+    isFirstTime = true;
+    //print('MiniMenu initState isFirstTime=$isFirstTime');
   }
 
   @override
   Widget build(BuildContext context) {
-    logger.fine('MiniMenu build');
+    //print('MiniMenu build isFirstTime=$isFirstTime');
 
-    double centerX =
-        widget.parentPosition.dx + (widget.parentSize.width + LayoutConst.stikerOffset) / 2;
+    Offset stickerOffset = Offset.zero;
+    if (isFirstTime == true) {
+      stickerOffset = widget.sticker.position + BookMainPage.pageOffset;
+      isFirstTime = false;
+    } else {
+      stickerOffset = widget.sticker.position;
+    }
+    double centerX = stickerOffset.dx + (widget.sticker.size.width + LayoutConst.stikerOffset) / 2;
+
     double left = centerX - LayoutConst.miniMenuWidth / 2;
-    double top = widget.parentPosition.dy +
-        widget.parentSize.height +
+    double top = stickerOffset.dy +
+        widget.sticker.size.height +
         LayoutConst.miniMenuGap +
         LayoutConst.dragHandle;
 
@@ -112,29 +120,32 @@ class MiniMenuState extends State<MiniMenu> {
 
     bool hasContents = widget.contentsManager.hasContents();
 
-    return Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
-      return Positioned(
-        left: left,
-        top: top,
-        child: SizedBox(
-          width: LayoutConst.miniMenuWidth,
-          height: LayoutConst.miniMenuHeight,
-          child: MiniMenu.showFrame
-              ? Stack(
-                  children: [
-                    if (hasContents) _contentsMenu(),
-                    _frameMenu(hasContents),
-                  ],
-                )
-              : Stack(
-                  children: [
-                    _frameMenu(hasContents),
-                    if (hasContents) _contentsMenu(),
-                  ],
-                ),
-        ),
-      );
-    });
+    return Visibility(
+      visible: BookMainPage.miniMenuNotifier!.isShow,
+      child: Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
+        return Positioned(
+          left: left,
+          top: top,
+          child: SizedBox(
+            width: LayoutConst.miniMenuWidth,
+            height: LayoutConst.miniMenuHeight,
+            child: MiniMenu.showFrame
+                ? Stack(
+                    children: [
+                      if (hasContents) _contentsMenu(),
+                      _frameMenu(hasContents),
+                    ],
+                  )
+                : Stack(
+                    children: [
+                      _frameMenu(hasContents),
+                      if (hasContents) _contentsMenu(),
+                    ],
+                  ),
+          ),
+        );
+      }),
+    );
   }
 
   Widget _frameMenu(bool hasContents) {

@@ -6,7 +6,7 @@ import '../../data_io/creta_manager.dart';
 import '../../data_io/frame_manager.dart';
 import '../../model/creta_model.dart';
 import '../../model/page_model.dart';
-import '../login_page.dart';
+import '../login/creta_account_manager.dart';
 import 'book_main_page.dart';
 import 'containees/containee_nofifier.dart';
 import 'studio_constant.dart';
@@ -45,6 +45,8 @@ class StudioVariables {
   static bool isMute = false;
   static bool isReadOnly = false;
   static bool isAutoPlay = true;
+  static bool useMagnet = true;
+  static double magnetMargin = 5;
 
   static bool isPreview = false;
 
@@ -96,7 +98,7 @@ class StudioVariables {
   static void globalToggleMute({bool save = true}) {
     StudioVariables.isMute = !StudioVariables.isMute;
     if (save) {
-      LoginPage.userPropertyManagerHolder?.setMute(StudioVariables.isMute);
+      CretaAccountManager.setMute(StudioVariables.isMute);
     }
     if (BookMainPage.pageManagerHolder == null) {
       return;
@@ -131,7 +133,7 @@ class StudioVariables {
       StudioVariables.isAutoPlay = forceValue;
     }
     if (save) {
-      LoginPage.userPropertyManagerHolder?.setAutoPlay(StudioVariables.isAutoPlay);
+      CretaAccountManager.setAutoPlay(StudioVariables.isAutoPlay);
     }
 
     // _sendEvent 가 필요

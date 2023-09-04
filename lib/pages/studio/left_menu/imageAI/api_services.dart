@@ -1,12 +1,12 @@
-import 'package:creta03/pages/login_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:hycop/common/util/logger.dart';
+import '../../../login/creta_account_manager.dart';
 
 class Api {
   static final url = Uri.parse("https://api.openai.com/v1/images/generations");
-  static final apikeys = LoginPage.enterpriseHolder!.enterpriseModel!.openAiKey;
+  static final apikeys = CretaAccountManager.getEnterprise!.openAiKey;
 
   static final headers = {
     "Content-Type": "application/json",

@@ -139,7 +139,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
     if (textureType == TextureType.glass) {
       logger.finest('GrassType!!!');
 
-      return _drawPage(true).asCretaGlass(
+      return _drawPage(false).asCretaGlass(
         width: widget.pageWidth,
         height: widget.pageHeight,
         gradient: StudioSnippet.gradient(

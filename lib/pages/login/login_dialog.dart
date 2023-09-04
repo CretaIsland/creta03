@@ -7,7 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:hycop/hycop.dart';
 import 'package:routemaster/routemaster.dart';
 
-import '../login_page.dart';
+//import '../login_page.dart';
+import 'creta_account_manager.dart';
 import '../../routes.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/buttons/creta_button.dart';
@@ -142,7 +143,7 @@ class _LoginDialogState extends State<LoginDialog> {
     logger.finest('_login pressed');
     AccountManager.login(email, password).then((value) async {
       HycopFactory.setBucketId();
-      LoginPage.initUserProperty().then((value) {
+      CretaAccountManager.initUserProperty().then((value) {
         if (value) {
           Navigator.of(widget.context).pop();
           //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
@@ -170,34 +171,35 @@ class _LoginDialogState extends State<LoginDialog> {
 
     AccountManager.createAccountByGoogle(myConfig!.config.googleOAuthCliendId).then((value) {
       HycopFactory.setBucketId();
-      LoginPage.userPropertyManagerHolder!.addWhereClause('isRemoved', QueryValue(value: false));
-      LoginPage.userPropertyManagerHolder!
+      CretaAccountManager.userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+      CretaAccountManager.userPropertyManagerHolder
           .addWhereClause('email', QueryValue(value: AccountManager.currentLoginUser.email));
-      LoginPage.userPropertyManagerHolder!.queryByAddedContitions().then((value) async {
+      CretaAccountManager.userPropertyManagerHolder.queryByAddedContitions().then((value) async {
         bool isNewUser = value.isEmpty;
         if (isNewUser) {
           // create model objects
           UserPropertyModel userModel =
-              LoginPage.userPropertyManagerHolder!.getNewUserProperty(agreeUsingMarketing: true);
-          TeamModel teamModel = LoginPage.teamManagerHolder!.getNewTeam(
+            CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(agreeUsingMarketing: true);
+          TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
             createAndSetToCurrent: true,
             username: AccountManager.currentLoginUser.name,
             userEmail: userModel.email,
           );
-          ChannelModel teamChannelModel = LoginPage.channelManagerHolder!.getNewChannel(teamId: teamModel.mid);
-          ChannelModel myChannelModel = LoginPage.channelManagerHolder!.getNewChannel(userId: userModel.email);
+          ChannelModel teamChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
+          ChannelModel myChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
           userModel.channelId = myChannelModel.mid;
           teamModel.channelId = teamChannelModel.mid;
           userModel.channelId = myChannelModel.mid;
           userModel.teams = [teamModel.mid];
           // create to DB
-          await LoginPage.channelManagerHolder!.createChannel(teamChannelModel);
-          await LoginPage.channelManagerHolder!.createChannel(myChannelModel);
-          await LoginPage.teamManagerHolder!.createTeam(teamModel);
-          await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: userModel);
+          await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
+          await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
+          await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
+          await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
+          await CretaAccountManager.initUserProperty();
           LoginDialog.setShowExtraInfoDialog(true);
         }
-        LoginPage.initUserProperty().then((value) {
+        CretaAccountManager.initUserProperty().then((value) {
           if (value) {
             Navigator.of(widget.context).pop();
             //Routemaster.of(widget.getBuildContext.call()).push(AppRoutes.intro);
@@ -245,23 +247,24 @@ class _LoginDialogState extends State<LoginDialog> {
         logger.finest('register end');
         // create model objects
         UserPropertyModel userModel =
-            LoginPage.userPropertyManagerHolder!.getNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
-        TeamModel teamModel = LoginPage.teamManagerHolder!.getNewTeam(
+        CretaAccountManager.userPropertyManagerHolder.makeCurrentNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
+        TeamModel teamModel = CretaAccountManager.teamManagerHolder.getNewTeam(
           createAndSetToCurrent: true,
           username: nickname,
           userEmail: userModel.email,
         );
-        ChannelModel teamChannelModel = LoginPage.channelManagerHolder!.getNewChannel(teamId: teamModel.mid);
-        ChannelModel myChannelModel = LoginPage.channelManagerHolder!.getNewChannel(userId: userModel.email);
+        ChannelModel teamChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(teamId: teamModel.mid);
+        ChannelModel myChannelModel = CretaAccountManager.channelManagerHolder.makeNewChannel(userId: userModel.email);
         userModel.channelId = myChannelModel.mid;
         teamModel.channelId = teamChannelModel.mid;
         userModel.channelId = myChannelModel.mid;
         userModel.teams = [teamModel.mid];
         // create to DB
-        await LoginPage.channelManagerHolder!.createChannel(teamChannelModel);
-        await LoginPage.channelManagerHolder!.createChannel(myChannelModel);
-        await LoginPage.teamManagerHolder!.createTeam(teamModel);
-        await LoginPage.userPropertyManagerHolder!.createUserProperty(createModel: userModel);
+        await CretaAccountManager.channelManagerHolder.createChannel(teamChannelModel);
+        await CretaAccountManager.channelManagerHolder.createChannel(myChannelModel);
+        await CretaAccountManager.teamManagerHolder.createTeam(teamModel);
+        await CretaAccountManager.userPropertyManagerHolder.createUserProperty(createModel: userModel);
+        await CretaAccountManager.initUserProperty();
         LoginDialog.setShowExtraInfoDialog(true);
         if (kDebugMode) print('_signup.widget.doAfterSignup?.call()');
         //widget.doAfterSignup?.call();
@@ -633,14 +636,14 @@ class _LoginDialogState extends State<LoginDialog> {
                     onTap: () {
                       String email = _loginEmailTextEditingController.text;
                       List<String> emailList = [email];
-                      LoginPage.userPropertyManagerHolder!.getUserPropertyFromEmail(emailList).then((value) {
+                      CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
                         if (value.isEmpty) {
                           showSnackBar(widget.context, '가입된 회원이 아닙니다');
                           return;
                         }
                         UserPropertyModel userModel = value[0];
                         // creta_user_property
-                        LoginPage.userPropertyManagerHolder!.removeToDB(userModel.mid);
+                        CretaAccountManager.userPropertyManagerHolder.removeToDB(userModel.mid);
                         // hycop_users
                         String hycopUserId = 'user=${userModel.parentMid.value}';
                         UserPropertyManager manager = UserPropertyManager(tableName: 'hycop_users');
