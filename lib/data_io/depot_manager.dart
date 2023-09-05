@@ -156,22 +156,22 @@ class DepotManager extends CretaManager {
     return contentsCount;
   }
 
-  // Future<DepotModel?> _getDepotCount(String contentsMid) async {
-  //   debugPrint('----a-----------_getDepotCount $contentsMid');
-  //   try {
-  //     Map<String, QueryValue> query = {};
-  //     query['contentsMid'] = QueryValue(value: contentsMid); // parentMid = userId
-  //     query['isRemoved'] = QueryValue(value: false);
-  //     await queryFromDB(query);
-  //     if (modelList.isEmpty) {
-  //       return null;
-  //     }
-  //     return modelList.first as DepotModel?;
-  //   } catch (err) {
-  //     logger.severe('_getDepotCount error $err');
-  //     return null;
-  //   }
-  // }
+  Future<DepotModel?> _getDepotCount(String contentsMid) async {
+    debugPrint('----a-----------_getDepotCount $contentsMid');
+    try {
+      Map<String, QueryValue> query = {};
+      query['contentsMid'] = QueryValue(value: contentsMid); // parentMid = userId
+      query['isRemoved'] = QueryValue(value: false);
+      await queryFromDB(query);
+      if (modelList.isEmpty) {
+        return null;
+      }
+      return modelList.first as DepotModel?;
+    } catch (err) {
+      logger.severe('_getDepotCount error $err');
+      return null;
+    }
+  }
 
   // Future<int> _getDepotList({int limit = 99}) async {
   //   print('Depot------getContents--------1-------');
@@ -203,11 +203,11 @@ class DepotManager extends CretaManager {
     for (var ele in modelList) {
       String contentsMid = (ele as DepotModel).contentsMid;
       // find contents manager for each contentsMid
-      //if (contentsMidSet.add(contentsMid)) {
-      ContentsModel model =
-          await _getContentsInfo(contentsMid: contentsMid, contentsManager: dummyManager);
-      filteredContents.add(model);
-      //}
+      if (contentsMidSet.add(contentsMid)) {
+        ContentsModel model =
+            await _getContentsInfo(contentsMid: contentsMid, contentsManager: dummyManager);
+        filteredContents.add(model);
+      }
     }
     // print('----getContentInfoList----- $contentsType, ${filteredContents.length}');
     contentsMidSet.clear();
@@ -215,8 +215,8 @@ class DepotManager extends CretaManager {
   }
 
   Future<DepotModel?> isExist(String contentsMid) async {
-    return null;
-    //return await _getDepotCount(contentsMid);
+    // return null;
+    return await _getDepotCount(contentsMid);
   }
 
   // getContents Detail Info Using contents mid
