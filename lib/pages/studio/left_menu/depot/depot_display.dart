@@ -7,6 +7,10 @@ import '../../../../design_system/component/snippet.dart';
 import '../../../../model/contents_model.dart';
 import '../../studio_variables.dart';
 import 'depot_selected.dart';
+// ignore: depend_on_referenced_packages
+import 'package:provider/provider.dart';
+
+import 'selection_manager.dart';
 
 class DepotDisplayClass extends StatefulWidget {
   final ContentsType contentsType;
@@ -19,8 +23,8 @@ class DepotDisplayClass extends StatefulWidget {
     super.key,
   });
 
-  static Set<ContentsModel> shiftSelectedSet = {};
-  static Set<ContentsModel> ctrlSelectedSet = {};
+  static Set<DepotModel> shiftSelectedSet = {};
+  static Set<DepotModel> ctrlSelectedSet = {};
 
   @override
   State<DepotDisplayClass> createState() => _DepotDisplayClassState();
@@ -34,89 +38,102 @@ class _DepotDisplayClassState extends State<DepotDisplayClass> {
   final double imageHeight = 95.0;
 
   final depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
-  static List<ContentsModel> filteredContents = [];
-  // bool _dbJobComplete = false;
+  // static List<ContentsModel> filteredContents = [];
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   depotManager.getContentInfoList(contentsType: widget.contentsType).then(
-  //     (value) {
-  //       setState(
-  //         () {
-  //           filteredContents = value;
-  //           _dbJobComplete = true;
-  //         },
-  //       );
-  //       return value;
-  //     },
-  //   );
-  // }
+  bool _dbJobComplete = false;
 
-  // Future<List<ContentsModel>> _waitDbJobComplete() async {
-  //   while (_dbJobComplete == false) {
-  //     await Future.delayed(const Duration(milliseconds: 100));
-  //   }
-  //   return filteredContents;
-  // }
+  @override
+  void initState() {
+    // print('initState-------------------');
+    super.initState();
+    _dbJobComplete = false;
+    depotManager.getContentInfoList(contentsType: widget.contentsType).then(
+      (value) {
+        SelectionStateManager.filteredContents = value;
+        _dbJobComplete = true;
+        return value;
+      },
+    );
+  }
+
+  Future<List<ContentsModel>> _waitDbJobComplete() async {
+    while (_dbJobComplete == false) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return SelectionStateManager.filteredContents;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ContentsModel>>(
-      // future: _waitDbJobComplete(),
-      future: depotManager.getContentInfoList(contentsType: widget.contentsType),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          filteredContents = snapshot.data!;
-          return SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.only(top: 10),
-              height: StudioVariables.workHeight - 220.0,
-              child: GridView.builder(
-                itemCount: filteredContents.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0,
-                  crossAxisCount: 2,
-                  childAspectRatio: 160 / 95,
-                ),
-                scrollDirection: Axis.vertical,
-                itemBuilder: (BuildContext context, int index) {
-                  ContentsModel contents = filteredContents[index];
-                  String? depotUrl = contents.thumbnail;
-                  if (depotUrl == null || depotUrl.isEmpty) {
-                    return SizedBox(
-                      width: 160.0,
-                      height: 95.0,
-                      child: Image.asset('assets/no_image.png'), // No Image
-                    );
-                  } else {
-                    return DepotSelectedClass(
-                      width: imageWidth,
-                      height: imageHeight,
-                      contents: contents,
-                      childContents: CustomImage(
-                        key: GlobalKey(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: selectionStateManager),
+      ],
+      child: Consumer<SelectionStateManager>(builder: (context, selectionStateManager, child) {
+        // print('-Consumer 1------------------');
+        return FutureBuilder<List<ContentsModel>>(
+          future: _waitDbJobComplete(),
+          //future: depotManager.getContentInfoList(contentsType: widget.contentsType),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              SelectionStateManager.filteredContents = snapshot.data!;
+              // List<ContentsModel> contentsList = filteredContents.toList();
+              return SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.only(top: 10),
+                  height: StudioVariables.workHeight - 220.0,
+                  child: GridView.builder(
+                    itemCount: SelectionStateManager.filteredContents.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisSpacing: 8.0,
+                      crossAxisSpacing: 8.0,
+                      crossAxisCount: 2,
+                      childAspectRatio: 160 / 95,
+                    ),
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (BuildContext context, int index) {
+                      ContentsModel contents = SelectionStateManager.filteredContents[index];
+                      DepotModel? depot = depotManager.getModelByContentsMid(contents.mid);
+                      String? depotUrl = contents.thumbnail;
+
+                      return DepotSelectedClass(
+                        depotManager: depotManager,
                         width: imageWidth,
                         height: imageHeight,
-                        image: depotUrl,
-                        hasAni: false,
-                      ),
-                    );
-                  }
-                },
-              ),
-            ),
-          );
-        } else {
-          return Container(
-            padding: EdgeInsets.symmetric(vertical: verticalPadding),
-            height: 352.0,
-            alignment: Alignment.center,
-            child: Snippet.showWaitSign(),
-          );
-        }
-      },
+                        depot: depot,
+                        childContents: (depotUrl == null || depotUrl.isEmpty)
+                            ? SizedBox(
+                                width: 160.0,
+                                height: 95.0,
+                                child: Image.asset('assets/no_image.png'), // No Image
+                              )
+                            : CustomImage(
+                                key: GlobalKey(),
+                                width: imageWidth,
+                                height: imageHeight,
+                                image: depotUrl,
+                                hasAni: false,
+                              ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            } else {
+              if (_dbJobComplete == false) {
+                return Container(
+                  padding: EdgeInsets.symmetric(vertical: verticalPadding),
+                  height: 352.0,
+                  alignment: Alignment.center,
+                  child: Snippet.showWaitSign(),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            }
+          },
+        );
+      }),
     );
   }
 }

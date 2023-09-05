@@ -29,7 +29,9 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   late double bodyWidth;
 
   String searchText = '';
+  // static String _selectedType = CretaStudioLang.storageTypes.values.first;
   static String _selectedType = CretaStudioLang.storageTypes.values.first;
+  // bool _isDepotSelected = false;
 
   late DepotManager depotManager;
 
@@ -92,6 +94,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
             radioButtonValue: (value) {
               setState(() {
                 _selectedTab = value;
+                // _isDepotSelected = false;
               });
             },
             width: 95,
@@ -193,6 +196,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
           if (value == val) {
             setState(() {
               _selectedType = CretaStudioLang.storageTypes.values.toList()[idx];
+              // _isDepotSelected = true;
             });
           }
           idx++;
@@ -211,19 +215,21 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   }
 
   Widget _selectedStorage() {
+    // if (_isDepotSelected) {
     List<String> type = CretaStudioLang.storageTypes.values.toList();
-
     if (_selectedType == type[0]) {
-      return const DepotDisplayClass(contentsType: ContentsType.none);
+      return const DepotDisplayClass(
+          key: GlobalObjectKey('DepotDisplayClass_0'), contentsType: ContentsType.none);
     }
-
     if (_selectedType == type[1]) {
-      return const DepotDisplayClass(contentsType: ContentsType.image);
+      return const DepotDisplayClass(
+          key: GlobalObjectKey('DepotDisplayClass_1'), contentsType: ContentsType.image);
     }
-
     if (_selectedType == type[2]) {
-      return const DepotDisplayClass(contentsType: ContentsType.video);
+      return const DepotDisplayClass(
+          key: GlobalObjectKey('DepotDisplayClass_2'), contentsType: ContentsType.video);
     }
+    // }
     return const SizedBox.shrink();
   }
 }

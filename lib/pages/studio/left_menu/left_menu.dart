@@ -185,7 +185,7 @@ class _LeftMenuState
       case LeftMenuEnum.Frame:
         return LeftMenuFrame();
       case LeftMenuEnum.Storage:
-        return LeftMenuStorage();
+        return LeftMenuStorage(key: GlobalObjectKey('LeftMenuStorage'));
       case LeftMenuEnum.Image:
         return LeftMenuImage();
       case LeftMenuEnum.Video:

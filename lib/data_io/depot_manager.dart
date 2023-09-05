@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import '../model/book_model.dart';
 import '../model/contents_model.dart';
@@ -9,6 +10,7 @@ import '../model/depot_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
+import '../pages/studio/left_menu/depot/selection_manager.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
 
@@ -46,7 +48,10 @@ class DepotManager extends CretaManager {
     ContentsType contentsType, {
     bool doNotify = true,
   }) async {
-    if (await isExist(contentsMid) == true) {
+    DepotModel? depoModel = await isExist(contentsMid);
+    if (depoModel != null) {
+      debugPrint('$contentsMid is already exist');
+      depoModel.save();
       return null;
     }
     DepotModel model = DepotModel('', parentMid!);
@@ -106,6 +111,24 @@ class DepotManager extends CretaManager {
     return oldModel;
   }
 
+  Future<void> removeDepots(DepotModel depot) async {
+    debugPrint('----------1--------removeDepots----------');
+    depot.isRemoved.set(
+      true,
+      save: false,
+      doComplete: (val) {
+        remove(depot);
+      },
+      undoComplete: (val) {
+        insert(depot);
+      },
+    );
+    await setToDB(depot);
+    remove(depot);
+    SelectionStateManager.removeContents(depot.contentsMid);
+    debugPrint('remove depotContents ${depot.contentsType}, ${depot.mid}');
+  }
+
   String prefix() => CretaManager.modelPrefix(ExModelType.contents);
 
   Future<int> _getDepotList(ContentsType contentsType) async {
@@ -121,7 +144,7 @@ class DepotManager extends CretaManager {
       query['isRemoved'] = QueryValue(value: false);
       Map<String, OrderDirection> orderBy = {};
 
-      orderBy['order'] = OrderDirection.ascending;
+      orderBy['updateTime'] = OrderDirection.descending;
       await queryFromDB(query, orderBy: orderBy);
       contentsCount = modelList.length;
       logger.info('contentsCount ${modelList.length}, contentsType: $contentsType');
@@ -133,18 +156,22 @@ class DepotManager extends CretaManager {
     return contentsCount;
   }
 
-  Future<int> _getDepotCount(String contentsMid) async {
-    try {
-      Map<String, QueryValue> query = {};
-      query['contentsMid'] = QueryValue(value: contentsMid); // parentMid = userId
-      query['isRemoved'] = QueryValue(value: false);
-      await queryFromDB(query);
-      return modelList.length;
-    } catch (e) {
-      logger.finest('something wrong $e');
-    }
-    return 0;
-  }
+  // Future<DepotModel?> _getDepotCount(String contentsMid) async {
+  //   debugPrint('----a-----------_getDepotCount $contentsMid');
+  //   try {
+  //     Map<String, QueryValue> query = {};
+  //     query['contentsMid'] = QueryValue(value: contentsMid); // parentMid = userId
+  //     query['isRemoved'] = QueryValue(value: false);
+  //     await queryFromDB(query);
+  //     if (modelList.isEmpty) {
+  //       return null;
+  //     }
+  //     return modelList.first as DepotModel?;
+  //   } catch (err) {
+  //     logger.severe('_getDepotCount error $err');
+  //     return null;
+  //   }
+  // }
 
   // Future<int> _getDepotList({int limit = 99}) async {
   //   print('Depot------getContents--------1-------');
@@ -171,19 +198,25 @@ class DepotManager extends CretaManager {
         ContentsManager(pageModel: PageModel('', book), frameModel: FrameModel('', book.mid));
 
     List<ContentsModel> filteredContents = [];
+    Set<String> contentsMidSet = {};
 
     for (var ele in modelList) {
       String contentsMid = (ele as DepotModel).contentsMid;
       // find contents manager for each contentsMid
+      //if (contentsMidSet.add(contentsMid)) {
       ContentsModel model =
           await _getContentsInfo(contentsMid: contentsMid, contentsManager: dummyManager);
       filteredContents.add(model);
+      //}
     }
+    // print('----getContentInfoList----- $contentsType, ${filteredContents.length}');
+    contentsMidSet.clear();
     return filteredContents;
   }
 
-  Future<bool> isExist(String contentsMid) async {
-    return (await _getDepotCount(contentsMid) > 0);
+  Future<DepotModel?> isExist(String contentsMid) async {
+    return null;
+    //return await _getDepotCount(contentsMid);
   }
 
   // getContents Detail Info Using contents mid
@@ -193,5 +226,14 @@ class DepotManager extends CretaManager {
     ContentsModel contentsModel = await contentsManager.getFromDB(contentsMid) as ContentsModel;
 
     return contentsModel;
+  }
+
+  DepotModel? getModelByContentsMid(String mid) {
+    for (var ele in modelList) {
+      if ((ele as DepotModel).contentsMid == mid) {
+        return ele;
+      }
+    }
+    return null;
   }
 }
