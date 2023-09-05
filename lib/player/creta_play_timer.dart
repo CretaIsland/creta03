@@ -422,6 +422,10 @@ class CretaPlayTimer extends ChangeNotifier {
           player: player,
         );
       case ContentsType.document:
+        // return CretaEmptyPlayerWidget(
+        //   key: GlobalObjectKey(player.keyString),
+        //   player: player,
+        // );
         //print('-------------createWidget${model.name}, ${model.contentsType})------------');
         return CretaDocWidget(
           key: GlobalObjectKey(player.keyString),
