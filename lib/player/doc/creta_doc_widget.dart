@@ -1,21 +1,27 @@
 // ignore: implementation_imports
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages, must_be_immutable
 
-import 'package:appflowy_editor/appflowy_editor.dart';
+//import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 
 import '../../data_io/frame_manager.dart';
+import '../../design_system/buttons/creta_button.dart';
+import '../../design_system/buttons/creta_button_wrapper.dart';
+import '../../lang/creta_lang.dart';
 import '../../model/contents_model.dart';
 import '../../model/frame_model.dart';
-import '../../pages/studio/left_menu/word_pad/quill_appflowy.dart';
+//import '../../pages/studio/left_menu/word_pad/quill_appflowy.dart';
 import '../../pages/studio/studio_getx_controller.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
 import 'creta_doc_mixin.dart';
 import 'creta_doc_player.dart';
+import 'editor_dialog.dart';
 
 class CretaDocWidget extends CretaAbsPlayerWidget {
   final FrameManager frameManager;
@@ -27,6 +33,9 @@ class CretaDocWidget extends CretaAbsPlayerWidget {
 
 class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin {
   ContentsEventController? _receiveEvent;
+  late HtmlEditorController controller;
+  Size _dialogSize = const Size(800, 600);
+  Offset _dialogOffset = Offset.zero;
 
   @override
   void setState(VoidCallback fn) {
@@ -39,11 +48,13 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
     //widget.player.afterBuild();
     final ContentsEventController receiveEvent = Get.find(tag: 'text-property-to-textplayer');
     _receiveEvent = receiveEvent;
+    controller = HtmlEditorController();
   }
 
   @override
   void dispose() {
     super.dispose();
+    controller.clear();
     widget.player.stop();
   }
 
@@ -89,42 +100,109 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
     logger.fine("uri=<$uri>");
     player?.buttonIdle();
 
+    // ignore: unused_local_variable
     GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
 
-    //print('++++++++++++++++++++++playDoc+++++++++++$realSize');
+    //print('++++++++++++++++++++++playDoc+++++++++++$uri');
 
-    return SizedBox(
-      // color: Colors.white,
-      // padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
-      //     realSize.width * 0.05, realSize.height * 0.05),
-      // padding: EdgeInsets.fromLTRB(realSize.width * 0.01, realSize.height * 0.0075,
-      //     realSize.width * 0.01, realSize.height * 0.0075),
-      // alignment: AlignmentDirectional.center,
-      width: realSize.width,
-      height: realSize.height,
-      // child: QuillHtmlEnhanced(
-      //     document: model,
-      //     size: Size(realSize.width, realSize.height),
-      //     bgColor: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value)),
-      child: MaterialApp(
-        localizationsDelegates: const [
-          AppFlowyEditorLocalizations.delegate,
-        ],
-        debugShowCheckedModeBanner: false,
-        color: Colors.transparent,
-        home: AppFlowyEditorWidget(
-          key: GlobalObjectKey('AppFlowyEditorWidget${model.mid}'),
-          model: model,
-          frameModel: frameModel,
-          frameKey: frameKey,
-          size: realSize,
-          onComplete: () {
-            player!.acc.setToDB(model);
-            setState(() {});
-            //print('saved : ${model.remoteUrl}');
-          },
+    Size screenSize = MediaQuery.of(context).size;
+    _dialogSize = screenSize / 2;
+    _dialogOffset = Offset(
+      (screenSize.width - _dialogSize.width) / 2,
+      (screenSize.height - _dialogSize.height) / 2,
+    ); //rootBundle.loadString('assets/example.json');
+
+    //String lineSpacing = uri.replaceAll('<p>', '<p><p style="line-height: 0;">');
+
+    return Stack(
+      children: [
+        Container(
+          color: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value),
+          width: realSize.width,
+          height: realSize.height,
+          child: Html(data: uri),
+        ),
+        if (isPagePreview == false) _editButton(model, realSize, frameModel, frameManager, uri),
+      ],
+    );
+  }
+
+  Widget _editButton(
+    ContentsModel model,
+    Size realSize,
+    FrameModel frameModel,
+    FrameManager frameManager,
+    String initialText,
+  ) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Colors.transparent,
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 4,
+            right: 4,
+          ),
+          child: BTN.fill_blue_i_menu(
+            tooltip: CretaLang.edit,
+            width: 20,
+            height: 20,
+            buttonColor: CretaButtonColor.gray2,
+            icon: Icons.edit_outlined,
+            onPressed: () {
+              _showDialog(model, realSize, frameModel, frameManager, initialText);
+            },
+            //text: 'move mode',
+            //width: 80,
+          ),
         ),
       ),
     );
+  }
+
+  void _showDialog(
+    ContentsModel model,
+    Size realSize,
+    FrameModel frameModel,
+    FrameManager frameManager,
+    String initialText,
+  ) {
+    GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            child: EditorDialog(
+              initialText: initialText,
+              dialogOffset: _dialogOffset,
+              //key: GlobalObjectKey('SimpleEditor-CretaAlertDialog'),
+              width: _dialogSize.width,
+              height: _dialogSize.height,
+              frameSize: realSize,
+              frameKey: frameKey,
+              backgroundColor: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value),
+              onChanged: (value) {
+                //print('onChanged $value');
+              },
+              onPressedOK: (value) {
+                setState(() {
+                  model.remoteUrl = value;
+                  //print('onPressedOK: ${model.remoteUrl}');
+                  model.save();
+                });
+                Navigator.of(context).pop();
+              },
+              onPressedCancel: () {
+                //widget.model.remoteUrl = _oldJsonString;
+                //setState(() {});
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+        });
   }
 }
