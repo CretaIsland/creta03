@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../../design_system/creta_color.dart';
+// import '../studio_variables.dart';
 
 class LeftMenuEleButton extends StatefulWidget {
   final Widget child;
@@ -16,6 +16,7 @@ class LeftMenuEleButton extends StatefulWidget {
     required this.height,
     this.onPressed,
     this.hasBorder = true,
+    // this.isMultiSelectedCallback,
   });
 
   @override
@@ -79,7 +80,6 @@ class _LeftMenuEleButtonState extends State<LeftMenuEleButton> {
           ),
         ),
       ),
-      //),
     );
   }
 }

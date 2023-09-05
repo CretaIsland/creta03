@@ -13,14 +13,6 @@ import 'contents_manager.dart';
 import 'creta_manager.dart';
 
 class DepotManager extends CretaManager {
-  // Map<String, ContentsManager> contentsManagerMap = {};
-
-  // void setContentsManager(String contentsMid, ContentsManager c) {
-  //   contentsManagerMap[contentsMid] = c;
-  // }
-
-  // ContentsManager? getContentsManager(String contentsMid) => contentsManagerMap[contentsMid];
-
   DepotManager({required String userEmail, String tableName = 'creta_depot'})
       : super(tableName, userEmail) {
     saveManagerHolder?.registerManager('depot', this, postfix: userEmail);
@@ -54,7 +46,6 @@ class DepotManager extends CretaManager {
     ContentsType contentsType, {
     bool doNotify = true,
   }) async {
-   
     if (await isExist(contentsMid) == true) {
       return null;
     }
