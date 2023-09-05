@@ -103,7 +103,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
     // ignore: unused_local_variable
     GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
 
-    print('++++++++++++++++++++++playDoc+++++++++++$uri');
+    //print('++++++++++++++++++++++playDoc+++++++++++$uri');
 
     Size screenSize = MediaQuery.of(context).size;
     _dialogSize = screenSize / 2;
@@ -186,12 +186,12 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
               frameKey: frameKey,
               backgroundColor: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value),
               onChanged: (value) {
-                print('onChanged $value');
+                //print('onChanged $value');
               },
               onPressedOK: (value) {
                 setState(() {
                   model.remoteUrl = value;
-                  print('onPressedOK: ${model.remoteUrl}');
+                  //print('onPressedOK: ${model.remoteUrl}');
                   model.save();
                 });
                 Navigator.of(context).pop();

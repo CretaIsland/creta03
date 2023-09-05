@@ -19,9 +19,17 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   late VideoPlayerController controller;
-  final List<String> cretaVersionList = ["0.2.36", "0.2.35", "0.2.34", "0.2.33", "0.2.32", "0.2.31"];
+  final List<String> cretaVersionList = [
+    "0.2.37",
+    "0.2.36",
+    "0.2.35",
+    "0.2.34",
+    "0.2.33",
+    "0.2.32",
+    "0.2.31"
+  ];
   final String hycopVersion = "0.2.21";
-  final String buildNumber = "20230831-18";
+  final String buildNumber = "202300905-18";
 
   @override
   void initState() {
@@ -110,11 +118,10 @@ class _IntroPageState extends State<IntroPage> {
                     ),
                     onPressed: () {
                       showDialog(
-                        context: context, 
-                        builder: (context) {
-                          return ReleaseNoteDialog(versionList: cretaVersionList);
-                        }
-                      );
+                          context: context,
+                          builder: (context) {
+                            return ReleaseNoteDialog(versionList: cretaVersionList);
+                          });
                     },
                   ),
                 ),

@@ -5,7 +5,6 @@ import 'package:html_editor_enhanced/html_editor.dart';
 
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
-import '../../pages/studio/studio_constant.dart';
 
 class EditorDialog extends StatefulWidget {
   final double width;
@@ -331,7 +330,7 @@ class _EditorDialogState extends State<EditorDialog> {
     // }
 
     return Container(
-      color: LayoutConst.studioBGColor,
+      color: widget.backgroundColor, //LayoutConst.studioBGColor,
       // color: Colors.white,
       // padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
       //     realSize.width * 0.05, realSize.height * 0.05),
@@ -390,7 +389,7 @@ class _EditorDialogState extends State<EditorDialog> {
             ///
             /// This function will return the current HTML in the editor as an argument.
             _retval = await controller.getText();
-            print('onChangeContent : $value');
+            //print('onChangeContent : $value');
           },
           onChangeCodeview: (value) {
             /// Called whenever the code of the editor is changed and the editor
@@ -411,7 +410,7 @@ class _EditorDialogState extends State<EditorDialog> {
             /// toolbar item UI when the editor formatting changes.
             // 뭔가 속성이 변했을때 온다.  폰트를 빠꿨다던가...
             _retval = await controller.getText();
-            print('onChangeSelection: $_retval');
+            //print('onChangeSelection: $_retval');
           },
           onDialogShown: () {
             /// Called whenever a dialog is shown in the editor. The dialogs will be either
@@ -425,13 +424,13 @@ class _EditorDialogState extends State<EditorDialog> {
             /// Note: The onChange callback will also be triggered at the same time as
             /// this callback, please design your implementation accordingly.
             _retval = await controller.getText();
-            print('onChangeSelection: $_retval');
+            //print('onChangeSelection: $_retval');
           },
           onFocus: () {
             /// Called whenever the rich text field gains focus. This will not be called
             /// when the code view editor gains focus, instead use [onBlurCodeview] for
             /// that.
-            print('onFocus:');
+            //print('onFocus:');
           },
           onBlur: () {
             /// Called whenever either the rich text field or the codeview field loses
@@ -442,7 +441,7 @@ class _EditorDialogState extends State<EditorDialog> {
             /// the webview or dismissing the keyboard does not trigger this callback.
             /// This callback will only be triggered if the user taps on an empty space
             /// in the toolbar or switches the view mode of the editor.
-            print('offFocus:');
+            //print('offFocus:');
           },
           onBlurCodeview: () {
             /// Called whenever the code view either gains or loses focus (the Summernote
@@ -487,7 +486,7 @@ class _EditorDialogState extends State<EditorDialog> {
             ///
             /// You can use this method to set certain properties - e.g. set the editor
             /// to fullscreen mode - as soon as the editor is ready to accept these commands.
-            print('onInit:');
+            //print('onInit:');
           },
           onKeyUp: (value) {
             /// Called whenever a key is released and the editor is in rich text view.
