@@ -32,7 +32,7 @@ class CretaDocPlayer extends CretaAbsPlayer {
 
   @override
   void stop() {
-    logger.info("doc player stop,${model!.name}");
+    logger.info("doc player stop   ,${model!.name}");
     //widget.wcontroller!.dispose();
     super.stop();
     model!.setPlayState(PlayState.stop);
