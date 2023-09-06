@@ -119,7 +119,7 @@ class _SubscriptionItemState extends State<SubscriptionItem> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: CustomImage(
-                  image: widget.subscriptionModel.subscriptionChannel!.channelBannerImg,
+                  image: widget.subscriptionModel.subscriptionChannel!.bannerImg,
                   height: 40,
                   width: 40,
                   hasAni: false,

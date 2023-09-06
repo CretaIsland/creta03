@@ -23,9 +23,11 @@ class ChannelModel extends CretaModel {
   String teamId = '';
   int followerCount = 0;
   String latestContentsTime = '';
+  String bannerImg = '';
+  String description = '';
   String get name => userPropertyModel?.nickname ?? teamModel?.name ?? '';
   String get profileImg => userPropertyModel?.profileImg ?? teamModel?.profileImg ?? '';
-  String get channelBannerImg => userPropertyModel?.channelBannerImg ?? teamModel?.channelBannerImg ?? '';
+  //String get channelBannerImg => userPropertyModel?.channelBannerImg ?? teamModel?.channelBannerImg ?? '';
   UserPropertyModel? userPropertyModel;
   TeamModel? teamModel;
 
@@ -36,6 +38,8 @@ class ChannelModel extends CretaModel {
         teamId,
         followerCount,
         latestContentsTime,
+        bannerImg,
+        description
       ];
   ChannelModel(String pmid) : super(pmid: pmid, type: ExModelType.channel, parent: '');
 
@@ -44,6 +48,8 @@ class ChannelModel extends CretaModel {
     required this.teamId,
     this.followerCount = 0,
     this.latestContentsTime = '',
+    this.bannerImg = '',
+    this.description = ''
   }) : super(pmid: '', type: ExModelType.channel, parent: '');
 
   @override
@@ -54,6 +60,8 @@ class ChannelModel extends CretaModel {
     teamId = srcChannel.teamId;
     followerCount = srcChannel.followerCount;
     latestContentsTime = srcChannel.latestContentsTime;
+    bannerImg = srcChannel.bannerImg;
+    description = srcChannel.description;
     logger.finest('ChannelCopied($mid)');
   }
 
@@ -65,6 +73,8 @@ class ChannelModel extends CretaModel {
     teamId = srcChannel.teamId;
     followerCount = srcChannel.followerCount;
     latestContentsTime = srcChannel.latestContentsTime;
+    bannerImg = srcChannel.bannerImg;
+    description = srcChannel.description;
     logger.finest('ChannelCopied($mid)');
   }
 
@@ -75,6 +85,8 @@ class ChannelModel extends CretaModel {
     teamId = map["teamId"] ?? '';
     followerCount = map["followerCount"] ?? 0;
     latestContentsTime = map["latestContentsTime"] ?? '';
+    bannerImg = map["bannerImg"] ?? '';
+    description = map["description"] ?? '';
   }
 
   @override
@@ -85,6 +97,8 @@ class ChannelModel extends CretaModel {
         "teamId": teamId,
         "followerCount": followerCount,
         "latestContentsTime": latestContentsTime,
+        "bannerImg": bannerImg,
+        "description": description
       }.entries);
   }
 

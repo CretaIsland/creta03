@@ -123,7 +123,7 @@ class CretaAccountManager {
     //await LoginPage.enterpriseHolder?.initEnterprise();
     await _initEnterprise();
     //await LoginPage.channelManagerHolder?.initChannel();
-    _initChannel();
+    await _initChannel();
     //if (LoginPage.teamManagerHolder!.modelList.isEmpty || LoginPage.enterpriseHolder!.modelList.isEmpty) {
     // team이 없거나, ent없으면 모든정보초기화
     if (_loginEnterprise == null) {
@@ -441,6 +441,16 @@ class CretaAccountManager {
         await teamManagerHolder.setToDB(teamModel);
       }
     }
+  }
+
+  static void setChannelBannerImg(ChannelModel targetModel) {
+    channelManagerHolder.setToDB(targetModel);
+    channelManagerHolder.notify();
+  }
+
+  static void setChannelDescription(ChannelModel targetModel) {
+    channelManagerHolder.setToDB(targetModel);
+    channelManagerHolder.notify();
   }
 
 }

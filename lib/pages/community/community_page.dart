@@ -656,7 +656,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       );
     }
     String profileImg = _currentChannelModel?.profileImg ?? '';
-    String channelBannerImg = _currentChannelModel?.channelBannerImg ?? '';
+    String channelBannerImg = _currentChannelModel?.bannerImg ?? '';
     // max size
     if (size.height > 100 + 100 + 24 + 8) {
       return Stack(

@@ -1,3 +1,4 @@
+import 'package:creta03/data_io/channel_manager.dart';
 import 'package:creta03/data_io/team_manager.dart';
 import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:flutter/material.dart';
@@ -198,9 +199,9 @@ class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
     resize(context);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<UserPropertyManager>.value(
-            value: CretaAccountManager.userPropertyManagerHolder),
+        ChangeNotifierProvider<UserPropertyManager>.value(value: CretaAccountManager.userPropertyManagerHolder),
         ChangeNotifierProvider<TeamManager>.value(value: CretaAccountManager.teamManagerHolder),
+        ChangeNotifierProvider<ChannelManager>.value(value: CretaAccountManager.channelManagerHolder),
       ],
       child: Snippet.CretaScaffoldOfMyPage(
           title: Container(

@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 
+import 'package:creta03/data_io/channel_manager.dart';
 import 'package:creta03/design_system/dialog/creta_dialog.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
+import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/pages/mypage/popup/popup_rateplan.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
@@ -45,26 +47,27 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
     );
   }
 
-  Widget bannerImageComponent(UserPropertyManager userPropertyManager) {
+  Widget bannerImageComponent() {
     return Container(
       width: widget.width * .6,
       height: 181.0,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(20.0),
-        color: CretaColor.primary.shade200,
-        image: userPropertyManager.userPropertyModel!.channelBannerImg == '' ? null : DecorationImage(
-          image: Image.network(userPropertyManager.userPropertyModel!.channelBannerImg).image,
+        image: CretaAccountManager.getChannel!.bannerImg == '' ? null : DecorationImage(
+          image: Image.network(CretaAccountManager.getChannel!.bannerImg).image,
           fit: BoxFit.cover
         )
       ),
       child: Center(
         child: Stack(
           children: [
-            userPropertyManager.userPropertyModel!.channelBannerImg != '' ? const SizedBox() : 
-              Text(
-                '선택된 배경 이미지가 없습니다.',
-                style: CretaFont.bodySmall
+            CretaAccountManager.getChannel!.bannerImg != '' ? const SizedBox() : 
+              Center(
+                child: Text(
+                  '선택된 배경 이미지가 없습니다.',
+                  style: CretaFont.bodySmall
+                ),
               ),
             Container(
               margin: EdgeInsets.only(top: 110, left: widget.width * .6 - 68.0),
@@ -79,7 +82,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                           // popup 호출
                           showDialog(
                             context: context, 
-                            builder: (context) => editBannerImgPopUp(fileBytes, userPropertyManager),
+                            builder: (context) => editBannerImgPopUp(fileBytes),
                           );
                         }
                       });
@@ -97,7 +100,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
   }
 
   // popup screen
-  Widget editBannerImgPopUp(Uint8List bannerImgBytes, UserPropertyManager userPropertyManager) {
+  Widget editBannerImgPopUp(Uint8List bannerImgBytes) {
     return CretaDialog(
       width: 897,
       height: 518,
@@ -122,6 +125,8 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
               onPressed: () {
                 HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, bannerImgBytes, folderName: "banner/").then((fileModel) {
                   if(fileModel != null) {
+                    CretaAccountManager.getChannel!.bannerImg = fileModel.fileView;
+                    CretaAccountManager.setChannelBannerImg(CretaAccountManager.getChannel!);
                     Navigator.of(context).pop();
                   }
                 });
@@ -133,7 +138,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
     );
   }
 
-  Widget channelDiscriptionComponent(UserPropertyManager userPropertyManager) {
+  Widget channelDiscriptionComponent() {
     return Container(
       width: widget.width * .6,
       height: 181.0,
@@ -143,11 +148,12 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
       ),
       child: CretaTextField.long(
         textFieldKey: GlobalKey(), 
-        value: '', 
-        hintText: '',
+        value: CretaAccountManager.getChannel!.description, 
+        hintText: '채널 설명을 입력하세요',
         radius: 20, 
         onEditComplete: (value) {
-          
+          CretaAccountManager.getChannel!.description = value;
+          CretaAccountManager.setChannelDescription(CretaAccountManager.getChannel!);
         }
       )
     );
@@ -156,8 +162,8 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<UserPropertyManager, TeamManager>(
-      builder: (context, userPropertyManager, teamManager, child) {
+    return Consumer3<UserPropertyManager, TeamManager, ChannelManager>(
+      builder: (context, userPropertyManager, teamManager, channelManager, child) {
         return Container(
           width: widget.width,
           height: widget.height,
@@ -322,7 +328,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                             ),
                             const SizedBox(width: 50),
                             // image select box
-                            bannerImageComponent(userPropertyManager)
+                            bannerImageComponent()
                           ],
                         ),
                         const SizedBox(height: 32),
@@ -336,7 +342,7 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                             ),
                             const SizedBox(width: 63),
                             // image select box
-                            channelDiscriptionComponent(userPropertyManager)
+                            channelDiscriptionComponent()
                           ],
                         ),
                       ],
