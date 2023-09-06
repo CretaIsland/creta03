@@ -28,6 +28,7 @@ import '../player/creta_play_timer.dart';
 import '../player/music/creta_music_mixin.dart';
 import '../player/video/creta_video_player.dart';
 import 'creta_manager.dart';
+import 'depot_manager.dart';
 import 'frame_manager.dart';
 import 'link_manager.dart';
 
@@ -1187,6 +1188,30 @@ class ContentsManager extends CretaManager {
           return;
         }
       }
+    }
+  }
+
+  void putInDepot(ContentsModel? selectedModel) {
+    DepotManager depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
+
+    if (selectedModel == null) {
+      for (var ele in modelList) {
+        ContentsModel model = ele as ContentsModel;
+        if (model.isRemoved.value == true) {
+          continue;
+        }
+        if (model.thumbnail == null || model.thumbnail!.isEmpty) {
+          continue;
+        }
+        if (model.contentsType != ContentsType.image && model.contentsType != ContentsType.video) {
+          continue;
+        }
+        depotManager.createNextDepot(ele.mid, ele.contentsType);
+        depotManager.notify();
+      }
+    } else {
+      depotManager.createNextDepot(selectedModel.mid, selectedModel.contentsType);
+      depotManager.notify();
     }
   }
 }

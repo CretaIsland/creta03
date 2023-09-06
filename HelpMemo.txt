@@ -12,7 +12,7 @@ flutter run -d chrome --web-renderer canvaskit
 
 # 초기에 한번, 빌드 위치를 잡아준다.  이미 잡았다면, 기존 빌드 폴더가 무효가 되므로 주의한다.
 cd example
-flutter config --build-dir=../release/creta03_v4  
+flutter config --build-dir=../release/creta03_v5  
 
 
 # 그리고 VCode 를 다시 시작해야 한다. 다시 시작한 후에는 반드시 
@@ -25,25 +25,25 @@ flutter run -d chrome --web-renderer canvaskit
 
 ## login_page.dart 에서 version 번호를 바꾸는 것을 잊지말자.  ver 0.01
 
-# flutter build web --web-renderer html --release --base-href="/creta03_v4/" --no-tree-shake-icons
+# flutter build web --web-renderer html --release --base-href="/creta03_v5/" --no-tree-shake-icons
 # or
-flutter build web --web-renderer canvaskit --release --base-href="/creta03_v4/"
+flutter build web --web-renderer canvaskit --release --base-href="/creta03_v5/"
 
-# 이후  relase 폴더의 index html 에서 creta03_v4 를 넣어주자.
+# 이후  relase 폴더의 index html 에서 creta03_v5 를 넣어주자.
 
 # ############################
 # Release
 # ############################
 # GitHub에 릴리즈하기
 # 먼저 GitHub page 에서 repository 를 만든다.  반드시 public 으로 만들어야 한다.
-# creta03_v4 로 repository 를 만든것을 가정한다.
+# creta03_v5 로 repository 를 만든것을 가정한다.
 
-cd ../release/creta03_v4/web
+cd ../release/creta03_v5/web
 git init
 git add .
 git commit -m "first commit"
 git branch -M main
-git remote add origin https://github.com/CretaIsland/creta03_v4.git
+git remote add origin https://github.com/CretaIsland/creta03_v5.git
 git push -u origin main
 
 # GitHub repository 에서  Settings - 좌측 세로 메뉴에서 Pages
@@ -51,14 +51,14 @@ git push -u origin main
 # 한 5분 정도 기다린 다음 page 를 refresh 하면 아래와 같은 페이지 주소가 나온다.
 # 릴리즈 된것이다.
 
-https://cretaisland.github.io/creta03_v4
+https://cretaisland.github.io/creta03_v5
 
 
 그런데, 만약 page 가 동작하지 않는다면, 
-3.7 이 되기 전에는,  ./release/creta03_v4/web 폴더에 flutter.js 파일이 자동으로 생겼었는데, 이제는 안생긴다.
+3.7 이 되기 전에는,  ./release/creta03_v5/web 폴더에 flutter.js 파일이 자동으로 생겼었는데, 이제는 안생긴다.
 그래서 손으로 가져다 놓고, 다시 commit 해야 한다.
 
-cp D:\Flutter\project\release\cretaTest04\web\flutter.js  D:\Flutter\project\release\creta03_v4\web\.
+cp D:\Flutter\project\release\cretaTest04\web\flutter.js  D:\Flutter\project\release\creta03_v5\web\.
 git commit -m "first commit"
 git push -u origin main
 

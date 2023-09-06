@@ -290,6 +290,28 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       context: context,
                       popupMenu: [
                         CretaMenuItem(
+                            caption: CretaStudioLang.putInDepotContents,
+                            onPressed: () {
+                              logger.info('${CretaStudioLang.putInDepotContents} menu clicked');
+                              ContentsManager? contentsManager =
+                                  widget.frameManager!.getContentsManager(frameModel.mid);
+                              if (contentsManager != null) {
+                                ContentsModel? selected =
+                                    contentsManager.getSelected() as ContentsModel?;
+                                if (selected != null) {
+                                  contentsManager.putInDepot(selected);
+                                }
+                              }
+                            }),
+                        CretaMenuItem(
+                            caption: CretaStudioLang.putInDepotFrame,
+                            onPressed: () {
+                              logger.info('${CretaStudioLang.putInDepotFrame} menu clicked');
+                              ContentsManager? contentsManager =
+                                  widget.frameManager!.getContentsManager(frameModel.mid);
+                              contentsManager?.putInDepot(null);
+                            }),
+                        CretaMenuItem(
                             caption:
                                 isFullScreen ? CretaStudioLang.realSize : CretaStudioLang.maxSize,
                             onPressed: () {
@@ -333,8 +355,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       itemHeight: 24,
                       x: details.globalPosition.dx,
                       y: details.globalPosition.dy,
-                      width: 150,
-                      height: 170,
+                      width: 283,
+                      height: 200,
                       //textStyle: CretaFont.bodySmall,
                       iconSize: 12,
                       alwaysShowBorder: true,

@@ -571,4 +571,6 @@ class CretaStudioLang {
   static String useThisThumbnail = "이 콘텐츠를 썸네일로 사용";
   
   static String putInDepot = "보관함에 넣기";
+  static String putInDepotContents = "현재 콘텐츠만 보관함에 넣기";
+  static String putInDepotFrame = "현재 프레임의 모든 콘텐츠 보관함에 넣기";
 }
