@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:creta03/data_io/channel_manager.dart';
 import 'package:creta03/design_system/dialog/creta_dialog.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
@@ -53,7 +54,6 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(20.0),
-        color: CretaColor.primary.shade200,
         image: CretaAccountManager.getChannel!.bannerImg == '' ? null : DecorationImage(
           image: Image.network(CretaAccountManager.getChannel!.bannerImg).image,
           fit: BoxFit.cover
@@ -63,9 +63,11 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
         child: Stack(
           children: [
             CretaAccountManager.getChannel!.bannerImg != '' ? const SizedBox() : 
-              Text(
-                '선택된 배경 이미지가 없습니다.',
-                style: CretaFont.bodySmall
+              Center(
+                child: Text(
+                  '선택된 배경 이미지가 없습니다.',
+                  style: CretaFont.bodySmall
+                ),
               ),
             Container(
               margin: EdgeInsets.only(top: 110, left: widget.width * .6 - 68.0),
@@ -160,8 +162,8 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<UserPropertyManager, TeamManager>(
-      builder: (context, userPropertyManager, teamManager, child) {
+    return Consumer3<UserPropertyManager, TeamManager, ChannelManager>(
+      builder: (context, userPropertyManager, teamManager, channelManager, child) {
         return Container(
           width: widget.width,
           height: widget.height,
