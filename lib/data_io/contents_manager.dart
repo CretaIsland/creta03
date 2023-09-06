@@ -17,6 +17,7 @@ import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
+import '../pages/studio/left_menu/depot/depot_display.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/left_menu/music/music_player_frame.dart';
 import '../pages/studio/studio_constant.dart';
@@ -28,7 +29,7 @@ import '../player/creta_play_timer.dart';
 import '../player/music/creta_music_mixin.dart';
 import '../player/video/creta_video_player.dart';
 import 'creta_manager.dart';
-import 'depot_manager.dart';
+//import 'depot_manager.dart';
 import 'frame_manager.dart';
 import 'link_manager.dart';
 
@@ -1191,9 +1192,7 @@ class ContentsManager extends CretaManager {
     }
   }
 
-  void putInDepot(ContentsModel? selectedModel) {
-    DepotManager depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
-
+  Future<void> putInDepot(ContentsModel? selectedModel) async {
     if (selectedModel == null) {
       for (var ele in modelList) {
         ContentsModel model = ele as ContentsModel;
@@ -1206,12 +1205,15 @@ class ContentsManager extends CretaManager {
         if (model.contentsType != ContentsType.image && model.contentsType != ContentsType.video) {
           continue;
         }
-        depotManager.createNextDepot(ele.mid, ele.contentsType);
-        depotManager.notify();
+        await DepotDisplay.depotManager.createNextDepot(ele.mid, ele.contentsType);
+        DepotDisplay.depotManager.filteredContents.insert(0, model);
       }
+      DepotDisplay.depotManager.notify();
     } else {
-      depotManager.createNextDepot(selectedModel.mid, selectedModel.contentsType);
-      depotManager.notify();
+      await DepotDisplay.depotManager
+          .createNextDepot(selectedModel.mid, selectedModel.contentsType);
+      DepotDisplay.depotManager.filteredContents.insert(0, selectedModel);
+      DepotDisplay.depotManager.notify();
     }
   }
 }

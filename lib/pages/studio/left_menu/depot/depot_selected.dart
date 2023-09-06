@@ -1,25 +1,23 @@
 //import 'package:creta03/model/contents_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../data_io/depot_manager.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../model/depot_model.dart';
+import 'depot_display.dart';
 import 'selection_manager.dart';
 // ignore: depend_on_referenced_packages
 
-class DepotSelectedClass extends StatelessWidget {
+class DepotSelected extends StatelessWidget {
   final Widget childContents;
   final double width;
   final double height;
   final DepotModel? depot;
-  final DepotManager depotManager;
 
-  const DepotSelectedClass({
+  const DepotSelected({
     required this.childContents,
     required this.width,
     required this.height,
     required this.depot,
-    required this.depotManager,
     super.key,
   });
 
@@ -30,29 +28,31 @@ class DepotSelectedClass extends StatelessWidget {
     }
     return InkWell(
       onHover: (isHover) {
-        selectionStateManager.handleHover(isHover, depot!.mid);
+        selectionManager.handleHover(isHover, depot!);
       },
       onTapDown: (details) {
-        selectionStateManager.handleTap(details, depot!);
+        selectionManager.handleTap(details, depot!);
       },
       onDoubleTap: () {
-        selectionStateManager.clearMultiSelected();
+        selectionManager.clearMultiSelected();
       },
       onSecondaryTapDown: (details) {
-        selectionStateManager.onRightMouseButton.call(details, depotManager, context);
+        selectionManager.onRightMouseButton.call(details, DepotDisplay.depotManager, context);
       },
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
           border: Border.all(
-            color: selectionStateManager.selectedContents.contains(depot!.mid)
+            color: selectionManager.selectedDepot.contains(depot!.mid)
                 ? CretaColor.primary
-                : CretaColor.text[200]!,
-            width: selectionStateManager.selectedContents.contains(depot!.mid)
-                ? 4
-                : selectionStateManager.hoveredContents.contains(depot!.mid)
-                    ? 4
+                // : CretaColor.text[200]!,
+                : Colors.transparent,
+            width: selectionManager.selectedDepot.contains(depot!.mid)
+                ? 3
+                : selectionManager.hoveredDepot != null &&
+                        selectionManager.hoveredDepot!.mid == depot!.mid
+                    ? 3
                     : 1,
           ),
         ),

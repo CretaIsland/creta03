@@ -10,15 +10,21 @@ import '../model/depot_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
-import '../pages/studio/left_menu/depot/selection_manager.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
+
+enum DepotOrderEnum {
+  latest,
+  name,
+}
 
 class DepotManager extends CretaManager {
   DepotManager({required String userEmail, String tableName = 'creta_depot'})
       : super(tableName, userEmail) {
     saveManagerHolder?.registerManager('depot', this, postfix: userEmail);
   }
+
+  List<ContentsModel> filteredContents = [];
 
   @override
   AbsExModel newModel(String mid) => DepotModel(mid, parentMid!);
@@ -32,6 +38,20 @@ class DepotManager extends CretaManager {
 
   bool _onceDBGetComplete = false;
   bool get onceDBGetComplete => _onceDBGetComplete;
+  DepotOrderEnum depotOrder = DepotOrderEnum.latest;
+
+  void removeContents(String contentsMid) {
+    ContentsModel? target;
+    for (var ele in filteredContents) {
+      if (ele.mid == contentsMid) {
+        target = ele;
+        break;
+      }
+    }
+    if (target != null) {
+      filteredContents.remove(target);
+    }
+  }
 
   double getMaxModelOrder() {
     double retval = 0;
@@ -57,7 +77,6 @@ class DepotManager extends CretaManager {
     DepotModel model = DepotModel('', parentMid!);
     model.contentsMid = contentsMid;
     model.contentsType = contentsType;
-
     return await _createNextDepot(model, doNotify: doNotify);
   }
 
@@ -70,7 +89,6 @@ class DepotManager extends CretaManager {
     model.order.set(getMaxModelOrder() + 1, save: false, noUndo: true);
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
-
     MyChange<DepotModel> c = MyChange<DepotModel>(
       model,
       execute: () async {
@@ -84,7 +102,6 @@ class DepotManager extends CretaManager {
       },
     );
     mychangeStack.add(c);
-
     return model;
   }
 
@@ -125,7 +142,7 @@ class DepotManager extends CretaManager {
     );
     await setToDB(depot);
     remove(depot);
-    SelectionStateManager.removeContents(depot.contentsMid);
+    removeContents(depot.contentsMid);
     debugPrint('remove depotContents ${depot.contentsType}, ${depot.mid}');
   }
 
@@ -142,10 +159,15 @@ class DepotManager extends CretaManager {
         query['contentsType'] = QueryValue(value: contentsType.index);
       }
       query['isRemoved'] = QueryValue(value: false);
-      Map<String, OrderDirection> orderBy = {};
 
+      //if (depotOrder == DepotOrderEnum.latest) {
+      Map<String, OrderDirection> orderBy = {};
       orderBy['updateTime'] = OrderDirection.descending;
       await queryFromDB(query, orderBy: orderBy);
+      //} else {
+      //  await queryFromDB(query);
+      // }
+
       contentsCount = modelList.length;
       logger.info('contentsCount ${modelList.length}, contentsType: $contentsType');
       _onceDBGetComplete = true;
@@ -156,8 +178,7 @@ class DepotManager extends CretaManager {
     return contentsCount;
   }
 
-  Future<DepotModel?> _getDepotCount(String contentsMid) async {
-    debugPrint('----a-----------_getDepotCount $contentsMid');
+  Future<DepotModel?> getDepotCount(String contentsMid) async {
     try {
       Map<String, QueryValue> query = {};
       query['contentsMid'] = QueryValue(value: contentsMid); // parentMid = userId
@@ -197,26 +218,32 @@ class DepotManager extends CretaManager {
     ContentsManager dummyManager =
         ContentsManager(pageModel: PageModel('', book), frameModel: FrameModel('', book.mid));
 
-    List<ContentsModel> filteredContents = [];
     Set<String> contentsMidSet = {};
 
+    filteredContents.clear();
     for (var ele in modelList) {
       String contentsMid = (ele as DepotModel).contentsMid;
       // find contents manager for each contentsMid
       if (contentsMidSet.add(contentsMid)) {
         ContentsModel model =
             await _getContentsInfo(contentsMid: contentsMid, contentsManager: dummyManager);
+
         filteredContents.add(model);
       }
     }
-    // print('----getContentInfoList----- $contentsType, ${filteredContents.length}');
+    if (depotOrder == DepotOrderEnum.name) {
+      filteredContents.sort((a, b) => a.name.compareTo(b.name));
+    }
+
+    debugPrint('----getContentInfoList-----${filteredContents.length}');
     contentsMidSet.clear();
     return filteredContents;
   }
 
   Future<DepotModel?> isExist(String contentsMid) async {
     // return null;
-    return await _getDepotCount(contentsMid);
+    DepotManager dummy = DepotManager(userEmail: AccountManager.currentLoginUser.email);
+    return await dummy.getDepotCount(contentsMid);
   }
 
   // getContents Detail Info Using contents mid
@@ -235,5 +262,13 @@ class DepotManager extends CretaManager {
       }
     }
     return null;
+  }
+
+  void sort() {
+    if (depotOrder == DepotOrderEnum.latest) {
+      filteredContents.sort((a, b) => b.updateTime.compareTo(a.updateTime));
+    } else if (depotOrder == DepotOrderEnum.name) {
+      filteredContents.sort((a, b) => a.name.compareTo(b.name));
+    }
   }
 }

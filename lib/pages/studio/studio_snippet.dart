@@ -320,7 +320,9 @@ class StudioSnippet {
     double? height,
     double? width,
     bool alwaysEditable = false,
+    TextStyle? textStyle,
   }) {
+    textStyle ??= CretaFont.titleLarge;
     logger.finest('_showTitletext $title');
     height ??= 32;
     width ??= StudioVariables.displayWidth * 0.25;
@@ -332,7 +334,7 @@ class StudioSnippet {
       width: width,
       text: title,
       maxLine: 2,
-      textStyle: CretaFont.titleLarge,
+      textStyle: textStyle,
       align: TextAlign.center,
       onEditComplete: onEditComplete,
       onLabelHovered: () {},

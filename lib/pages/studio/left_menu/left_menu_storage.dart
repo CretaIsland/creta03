@@ -29,21 +29,25 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   late double bodyWidth;
 
   String searchText = '';
-  // static String _selectedType = CretaStudioLang.storageTypes.values.first;
   static String _selectedType = CretaStudioLang.storageTypes.values.first;
-  // bool _isDepotSelected = false;
 
   late DepotManager depotManager;
 
   final List<CretaMenuItem> _dropDownOptions = [
     CretaMenuItem(
       caption: CretaLang.basicBookSortFilter[0], // 최신순
-      onPressed: () {},
+      onPressed: () {
+        DepotDisplay.depotManager.depotOrder = DepotOrderEnum.latest;
+        DepotDisplay.depotManager.notify();
+      },
       selected: true,
     ),
     CretaMenuItem(
       caption: CretaLang.basicBookSortFilter[1], // 이름순
-      onPressed: () {},
+      onPressed: () {
+        DepotDisplay.depotManager.depotOrder = DepotOrderEnum.name;
+        DepotDisplay.depotManager.notify();
+      },
       selected: false,
     ),
   ];
@@ -196,7 +200,6 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
           if (value == val) {
             setState(() {
               _selectedType = CretaStudioLang.storageTypes.values.toList()[idx];
-              // _isDepotSelected = true;
             });
           }
           idx++;
@@ -215,21 +218,19 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   }
 
   Widget _selectedStorage() {
-    // if (_isDepotSelected) {
     List<String> type = CretaStudioLang.storageTypes.values.toList();
     if (_selectedType == type[0]) {
-      return const DepotDisplayClass(
+      return const DepotDisplay(
           key: GlobalObjectKey('DepotDisplayClass_0'), contentsType: ContentsType.none);
     }
     if (_selectedType == type[1]) {
-      return const DepotDisplayClass(
+      return const DepotDisplay(
           key: GlobalObjectKey('DepotDisplayClass_1'), contentsType: ContentsType.image);
     }
     if (_selectedType == type[2]) {
-      return const DepotDisplayClass(
+      return const DepotDisplay(
           key: GlobalObjectKey('DepotDisplayClass_2'), contentsType: ContentsType.video);
     }
-    // }
     return const SizedBox.shrink();
   }
 }

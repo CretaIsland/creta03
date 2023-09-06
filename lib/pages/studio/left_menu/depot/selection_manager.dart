@@ -4,103 +4,103 @@ import '../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../lang/creta_studio_lang.dart';
 //import '../../../../model/contents_model.dart';
-import '../../../../model/contents_model.dart';
 import '../../../../model/depot_model.dart';
 import '../../studio_variables.dart';
 import 'depot_display.dart';
 
-SelectionStateManager selectionStateManager = SelectionStateManager();
+SelectionManager selectionManager = SelectionManager();
 
-class SelectionStateManager extends ChangeNotifier {
+class SelectionManager {
   bool isSelected = false;
-  List<String> selectedContents = [];
-  String hoveredContents = ''; // Store the hovered content
-  //List<String> deletedContents = [];
+  List<String> selectedDepot = [];
+  DepotModel? hoveredDepot; // Store the hovered content
 
-  static List<ContentsModel> filteredContents = [];
-
-  void handleHover(bool hover, String contentsModel) {
+  void handleHover(bool hover, DepotModel depotModel) {
     if (hover) {
-      hoveredContents = contentsModel; // Update the hoveredContents
+      hoveredDepot = depotModel; // Update the hoveredDepot
     } else {
-      hoveredContents = ''; // Reset hoveredContents when not hovered
+      hoveredDepot = null; // Reset hoveredDepot when not hovered
     }
-    //notifyListeners();
+    // DepotDisplay.depotManager.notify();
   }
 
   void handleTap(TapDownDetails details, DepotModel depotModel) {
     if (StudioVariables.isCtrlPressed) {
-      // print("Ctrl key pressed");
-      if (DepotDisplayClass.ctrlSelectedSet.contains(depotModel)) {
-        // DepotDisplayClass.ctrlSelectedSet.remove(contentsModel.mid);
-        DepotDisplayClass.ctrlSelectedSet.remove(depotModel);
+      if (DepotDisplay.ctrlSelectedSet.contains(depotModel)) {
+        DepotDisplay.ctrlSelectedSet.remove(depotModel);
         isSelected = false;
-        selectedContents.remove(depotModel.mid);
+        selectedDepot.remove(depotModel.mid);
       } else {
         isSelected = true;
-        DepotDisplayClass.ctrlSelectedSet.add(depotModel);
-        selectedContents.add(depotModel.mid);
+        DepotDisplay.ctrlSelectedSet.add(depotModel);
+        selectedDepot.add(depotModel.mid);
       }
     } else if (StudioVariables.isShiftPressed) {
       debugPrint('Shift key pressed');
-      if (selectedContents.isEmpty) {
-        debugPrint('DepotDisplayClass.shiftSelectedSet is Empty');
+      if (selectedDepot.isEmpty) {
+        debugPrint('DepotDisplay.shiftSelectedSet is Empty');
         // Find the currentIndex
-        int currentIndex = selectedContents.indexOf(depotModel.mid);
+        int currentIndex = selectedDepot.indexOf(depotModel.mid);
         // print('currentIndex $currentIndex');
 
         if (currentIndex != -1) {
-          selectedContents.clear();
+          selectedDepot.clear();
           // Add items in the range from index 0 to the current index
           // for (int i = 0; i <= currentIndex; i++) {
           //   isSelected = true;
-          //   String itemMid = selectedContents[i];
-          //   DepotDisplayClass.shiftSelectedSet.add(itemMid as DepotModel);
-          //   selectedContents.add(itemMid);
+          //   String itemMid = selectedDepot[i];
+          //   DepotDisplay.shiftSelectedSet.add(itemMid as DepotModel);
+          //   selectedDepot.add(itemMid);
           // }
         }
       } else {
         isSelected = true;
         // Select a range of items between the first selected item and the current selected item
-        int startIndex = selectedContents.indexOf('0');
-        int endIndex = selectedContents.indexOf(depotModel.mid);
+        int startIndex = selectedDepot.indexOf('0');
+        int endIndex = selectedDepot.indexOf(depotModel.mid);
         // print('startIndex $startIndex');
         // print('endIndex $endIndex');
         // Check if the elements are found in the list
         if (startIndex != -1 && endIndex != -1) {
           // Clear the current selection and add items in the range
-          DepotDisplayClass.shiftSelectedSet.clear();
-          selectedContents.clear();
+          DepotDisplay.shiftSelectedSet.clear();
+          selectedDepot.clear();
 
           // for (int i = startIndex; i <= endIndex; i++) {
-          //   DepotDisplayClass.shiftSelectedSet.add(selectedContents[i]);
+          //   DepotDisplay.shiftSelectedSet.add(selectedDepot[i]);
           // }
-          List<String> rangeSelection = selectedContents.sublist(startIndex, endIndex + 1);
-          selectedContents.addAll(rangeSelection);
+          List<String> rangeSelection = selectedDepot.sublist(startIndex, endIndex + 1);
+          selectedDepot.addAll(rangeSelection);
         }
       }
     } else {
       // print("Ctrl key released");
-      DepotDisplayClass.ctrlSelectedSet = {depotModel};
-      selectedContents.clear();
-      selectedContents.add(depotModel.mid);
+      DepotDisplay.ctrlSelectedSet = {depotModel};
+      selectedDepot.clear();
+      selectedDepot.add(depotModel.mid);
       // isSelected = true;
       isSelected = !isSelected;
     }
-    notifyListeners();
+    DepotDisplay.depotManager.notify();
   }
 
   void clearMultiSelected() {
-    DepotDisplayClass.ctrlSelectedSet.clear();
-    selectedContents.clear();
-    notifyListeners();
+    DepotDisplay.ctrlSelectedSet.clear();
+    selectedDepot.clear();
+    DepotDisplay.depotManager.notify();
   }
 
   void onRightMouseButton(TapDownDetails details, DepotManager depotManager, BuildContext context) {
-    debugPrint('remove from depot DB');
-    if (DepotDisplayClass.ctrlSelectedSet.isEmpty &&
-        DepotDisplayClass.shiftSelectedSet.isEmpty &&
-        selectedContents.isEmpty) {
+    if (DepotDisplay.ctrlSelectedSet.isEmpty &&
+        DepotDisplay.shiftSelectedSet.isEmpty &&
+        selectedDepot.isEmpty) {
+      return;
+    }
+
+    if (hoveredDepot != null &&
+        DepotDisplay.ctrlSelectedSet.contains(hoveredDepot) == false &&
+        DepotDisplay.shiftSelectedSet.contains(hoveredDepot) == false &&
+        selectedDepot.contains(hoveredDepot!.mid) == false) {
       return;
     }
 
@@ -111,16 +111,15 @@ class SelectionStateManager extends ChangeNotifier {
         CretaMenuItem(
             caption: CretaStudioLang.tooltipDelete,
             onPressed: () async {
-              Set<DepotModel> targetList = DepotDisplayClass.ctrlSelectedSet;
-              if (DepotDisplayClass.shiftSelectedSet.isNotEmpty) {
-                targetList.addAll(DepotDisplayClass.shiftSelectedSet);
-                //eletedContents.remove(contents.mid);
+              Set<DepotModel> targetList = DepotDisplay.ctrlSelectedSet;
+              if (DepotDisplay.shiftSelectedSet.isNotEmpty) {
+                targetList.addAll(DepotDisplay.shiftSelectedSet);
               }
               for (var ele in targetList) {
                 await depotManager.removeDepots(ele);
-                //deletedContents.remove(contents.mid);
               }
-              notifyListeners();
+              debugPrint('remove from depot DB');
+              DepotDisplay.depotManager.notify();
             }),
       ],
       itemHeight: 24,
@@ -132,18 +131,5 @@ class SelectionStateManager extends ChangeNotifier {
       alwaysShowBorder: true,
       borderRadius: 8,
     );
-  }
-
-  static void removeContents(String contentsMid) {
-    ContentsModel? target;
-    for (var ele in filteredContents) {
-      if (ele.mid == contentsMid) {
-        target = ele;
-        break;
-      }
-    }
-    if (target != null) {
-      filteredContents.remove(target);
-    }
   }
 }
