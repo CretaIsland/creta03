@@ -14,6 +14,7 @@ import '../../../../../lang/creta_studio_lang.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_getx_controller.dart';
 import '../../../studio_variables.dart';
@@ -285,6 +286,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     logger.info('right mouse button clicked ${details.localPosition}');
                     bool isFullScreen = frameModel!.isFullScreenTest(widget.book);
 
+                    double menuWidth = 283;
+                    double menuHeight = 200;
+
                     CretaRightMouseMenu.showMenu(
                       title: 'frameRightMouseMenu',
                       context: context,
@@ -292,7 +296,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
                         CretaMenuItem(
                             caption: CretaStudioLang.putInDepotContents,
                             onPressed: () {
-                              logger.info('${CretaStudioLang.putInDepotContents} menu clicked');
+                              // print('${CretaStudioLang.putInDepotContents} menu clicked');
+                              // _showTeamListMenu(details.globalPosition.dx + menuWidth,
+                              //     details.globalPosition.dy + 80, frameModel, true);
                               ContentsManager? contentsManager =
                                   widget.frameManager!.getContentsManager(frameModel.mid);
                               if (contentsManager != null) {
@@ -306,7 +312,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
                         CretaMenuItem(
                             caption: CretaStudioLang.putInDepotFrame,
                             onPressed: () {
-                              logger.info('${CretaStudioLang.putInDepotFrame} menu clicked');
+                              // _showTeamListMenu(details.globalPosition.dx + menuWidth,
+                              //     details.globalPosition.dy + 100, frameModel, true);
+                              // print('${CretaStudioLang.putInDepotFrame} menu clicked');
                               ContentsManager? contentsManager =
                                   widget.frameManager!.getContentsManager(frameModel.mid);
                               contentsManager?.putInDepot(null);
@@ -355,8 +363,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       itemHeight: 24,
                       x: details.globalPosition.dx,
                       y: details.globalPosition.dy,
-                      width: 283,
-                      height: 200,
+                      width: menuWidth,
+                      height: menuHeight,
                       //textStyle: CretaFont.bodySmall,
                       iconSize: 12,
                       alwaysShowBorder: true,
@@ -393,6 +401,56 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 ),
       //),
     );
+  }
+
+  // ignore: unused_element
+  void _showTeamListMenu(double dx, double dy, FrameModel frameModel, bool isContents) {
+    List<CretaMenuItem> teamMenuList = CretaAccountManager.getTeamList.map((e) {
+      String teamName = e.name;
+      return CretaMenuItem(
+          caption: '$teamName${CretaStudioLang.putInTeamDepot}',
+          onPressed: () {
+            _putInDepot(frameModel, isContents);
+          });
+    }).toList();
+
+    CretaRightMouseMenu.showMenu(
+      title: 'frameRightMouseMenu2',
+      context: context,
+      popupMenu: [
+        CretaMenuItem(
+            caption: CretaStudioLang.putInMyDepot,
+            onPressed: () {
+              _putInDepot(frameModel, isContents);
+            }),
+        ...teamMenuList,
+      ],
+      itemHeight: 24,
+      x: 0,
+      y: 0,
+      width: 283,
+      height: 100,
+      //textStyle: CretaFont.bodySmall,
+      iconSize: 12,
+      alwaysShowBorder: true,
+      borderRadius: 8,
+    );
+  }
+
+  void _putInDepot(FrameModel frameModel, bool isContents) {
+    if (isContents) {
+      ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
+      if (contentsManager != null) {
+        ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
+        if (selected != null) {
+          contentsManager.putInDepot(selected);
+        }
+      }
+    } else {
+      // frame Case
+      ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
+      contentsManager?.putInDepot(null);
+    }
   }
 
   Sticker? _getSelectedSticker() {

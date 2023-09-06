@@ -573,4 +573,9 @@ class CretaStudioLang {
   static String putInDepot = "보관함에 넣기";
   static String putInDepotContents = "현재 콘텐츠만 보관함에 넣기";
   static String putInDepotFrame = "현재 프레임의 모든 콘텐츠 보관함에 넣기";
+
+  static String putInMyDepot = "내 보관함에 넣기";
+  static String putInTeamDepot = "팀 보관함에 넣기";
+
+
 }
