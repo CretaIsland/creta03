@@ -98,7 +98,7 @@ class UserPropertyManager extends CretaManager {
       cretaGrade: CretaGradeType.none,
       ratePlan: RatePlanType.none,
       profileImg: AccountManager.currentLoginUser.imagefile,
-      channelBannerImg: '',
+      // channelBannerImg: '',
       country: CountryType.none,
       language: LanguageType.none,
       job: JobType.none,
