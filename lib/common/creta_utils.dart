@@ -30,6 +30,8 @@ class ShadowData {
 }
 
 class CretaUtils {
+  static DateTime debugTime = DateTime.now();
+
   static Size getDisplaySize(BuildContext context) {
     StudioVariables.displayWidth = MediaQuery.of(context).size.width;
     StudioVariables.displayHeight = MediaQuery.of(context).size.height;
@@ -644,5 +646,12 @@ class CretaUtils {
         );
       },
     ).toList();
+  }
+
+  static int timeLap() {
+    DateTime now = DateTime.now();
+    int retval = now.difference(debugTime).inMicroseconds;
+    debugTime = now;
+    return retval;
   }
 }

@@ -143,7 +143,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
     //bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
     double whRatio = (_size.height / _size.width);
 
-    //logger.info('whRatio=${_size.height} / ${_size.width}');
+    logger.info('DraggableResizable');
 
     return LayoutBuilder(
       builder: (context, constraints) {

@@ -308,7 +308,7 @@ class _BookMainPageState extends State<BookMainPage> {
     // Get User property
     //await BookMainPage.userPropertyManagerHolder!.initUserProperty();
 
-    _onceDBGetComplete = true;
+    //_onceDBGetComplete = true;
 
     StudioVariables.isMute = CretaAccountManager.getMute();
     if ((widget.isPublishedMode ?? false) == false) {
@@ -317,6 +317,8 @@ class _BookMainPageState extends State<BookMainPage> {
 
     HycopFactory.realtime!.startTemp(model.mid);
     HycopFactory.realtime!.setPrefix('creta');
+
+    _onceDBGetComplete = true;
   }
 
   //   Future<int> _getPolygonFrameTemplates() async {
@@ -902,8 +904,8 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Widget _avartars() {
     return Consumer<ConnectedUserManager>(builder: (context, connectedUserManager, child) {
-      Set<ConnectedUserModel> connectedUserSet = connectedUserManager
-          .getConnectedUserSet(CretaAccountManager.getUserProperty!.nickname);
+      Set<ConnectedUserModel> connectedUserSet =
+          connectedUserManager.getConnectedUserSet(CretaAccountManager.getUserProperty!.nickname);
       //print('Consumer<ConnectedUserManager>(${connectedUserSet.length} )');
       return Visibility(
           // 아바타

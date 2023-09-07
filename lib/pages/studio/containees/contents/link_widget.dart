@@ -247,6 +247,12 @@ class _LinkWidgetState extends State<LinkWidget> {
     if (!_isPlayAble()) return false;
     if (LinkParams.isLinkNewMode) return false;
     if (widget.contentsModel.isLinkEditMode) return false;
+    // Frame 이 선택된 경우에만 보이도록 수정한다.
+    // if (DraggableStickers.frameSelectNotifier != null) {
+    //   if (DraggableStickers.frameSelectNotifier!.selectedAssetId != widget.frameModel.mid) {
+    //     return false;
+    //   }
+    // }
     //if (widget.contentsModel.contentsType == ContentsType.document) return false;
     return true;
   }

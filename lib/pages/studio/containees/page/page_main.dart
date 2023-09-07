@@ -170,9 +170,59 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         height: StudioVariables.virtualHeight,
         color: LayoutConst.studioBGColor,
         //color: Colors.amber,
-        child: Center(child: _animatedPage()),
+        child: Center(
+            child: StudioVariables.isHandToolMode == false
+                ? GestureDetector(
+                    behavior: HitTestBehavior.deferToChild,
+                    onLongPressDown: pageClicked,
+                    onTapUp: (details) {},
+                    onSecondaryTapDown: _showRightMouseMenu,
+                    child: _animatedPage(),
+                  )
+                : _animatedPage()),
       ),
       //),
+    );
+  }
+
+  void _showRightMouseMenu(TapDownDetails details) {
+    if (StudioVariables.isPreview) {
+      return;
+    }
+    logger.info('right mouse button clicked ${details.globalPosition}');
+    logger.info('right mouse button clicked ${details.localPosition}');
+    CretaRightMouseMenu.showMenu(
+      title: 'pageRightMouseMenu',
+      context: context,
+      popupMenu: [
+        CretaMenuItem(
+            disabled:
+                StudioVariables.clipBoard != null && StudioVariables.clipBoardDataType == 'frame'
+                    ? false
+                    : true,
+            caption: CretaStudioLang.paste,
+            onPressed: () {
+              if (StudioVariables.clipBoard is FrameModel?) {
+                FrameModel? frame = StudioVariables.clipBoard as FrameModel?;
+                FrameManager? srcManager = StudioVariables.clipBoardManager as FrameManager?;
+                if (frame != null && srcManager != null) {
+                  _frameManager?.copyFrame(frame,
+                      parentMid: widget.pageModel.mid,
+                      srcFrameManager: srcManager,
+                      samePage: widget.pageModel.mid == frame.parentMid.value);
+                }
+              }
+            }),
+      ],
+      itemHeight: 24,
+      x: details.globalPosition.dx,
+      y: details.globalPosition.dy,
+      width: 150,
+      height: 36,
+      //textStyle: CretaFont.bodySmall,
+      iconSize: 12,
+      alwaysShowBorder: true,
+      borderRadius: 8,
     );
   }
 
@@ -192,7 +242,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   Widget _textureBox() {
     if (textureType == TextureType.glass) {
       logger.finest('GrassType!!!');
-      return _clickPage(false).asCretaGlass(
+      return _drawPage(false).asCretaGlass(
         width: StudioVariables.virtualWidth,
         height: StudioVariables.virtualHeight,
         pageWidth: widget.pageWidth,
@@ -204,64 +254,20 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         bgColor2: bgColor2,
       );
     }
-    return _clickPage(true);
+    return _drawPage(true);
   }
 
-  Widget _clickPage(bool useColor) {
-    //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
-    return StudioVariables.isHandToolMode == false
-        ? GestureDetector(
-            behavior: HitTestBehavior.deferToChild,
-            onLongPressDown: pageClicked,
-            onTapUp: (details) {
-              //logger
-              //    .info('onTapUp======================================${details.localPosition.dx}');
-            },
-            onSecondaryTapDown: (details) {
-              if (StudioVariables.isPreview) {
-                return;
-              }
-              logger.info('right mouse button clicked ${details.globalPosition}');
-              logger.info('right mouse button clicked ${details.localPosition}');
-              CretaRightMouseMenu.showMenu(
-                title: 'frameRightMouseMenu',
-                context: context,
-                popupMenu: [
-                  CretaMenuItem(
-                      disabled: StudioVariables.clipBoard != null &&
-                              StudioVariables.clipBoardDataType == 'frame'
-                          ? false
-                          : true,
-                      caption: CretaStudioLang.paste,
-                      onPressed: () {
-                        if (StudioVariables.clipBoard is FrameModel?) {
-                          FrameModel? frame = StudioVariables.clipBoard as FrameModel?;
-                          FrameManager? srcManager =
-                              StudioVariables.clipBoardManager as FrameManager?;
-                          if (frame != null && srcManager != null) {
-                            _frameManager?.copyFrame(frame,
-                                parentMid: widget.pageModel.mid,
-                                srcFrameManager: srcManager,
-                                samePage: widget.pageModel.mid == frame.parentMid.value);
-                          }
-                        }
-                      }),
-                ],
-                itemHeight: 24,
-                x: details.globalPosition.dx,
-                y: details.globalPosition.dy,
-                width: 150,
-                height: 36,
-                //textStyle: CretaFont.bodySmall,
-                iconSize: 12,
-                alwaysShowBorder: true,
-                borderRadius: 8,
-              );
-            },
-            child: _drawPage(useColor),
-          )
-        : _drawPage(useColor);
-  }
+  // Widget _clickPage(bool useColor) {
+  //   //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
+  //   return StudioVariables.isHandToolMode == false
+  //       ? GestureDetector(
+  //           behavior: HitTestBehavior.deferToChild,
+  //           onLongPressDown: pageClicked,
+  //           onTapUp: (details) {},
+  //           child: _drawPage(useColor),
+  //         )
+  //       : _drawPage(useColor);
+  // }
 
   Widget _drawPage(bool useColor) {
     //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false

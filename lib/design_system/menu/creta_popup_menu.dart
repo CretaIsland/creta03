@@ -11,6 +11,8 @@ class CretaMenuItem {
   final IconData? iconData;
   final double? iconSize;
   Function? onPressed;
+  Function(bool)? onHover;
+  List<CretaMenuItem>? subMenu;
   String? referencedAttr;
   bool? isDescending;
   bool selected;
@@ -19,10 +21,13 @@ class CretaMenuItem {
   final String fontFamily;
   final FontWeight? fontWeight;
   final bool disabled;
+  bool isHover;
+  final bool isSub;
 
   CretaMenuItem({
     required this.caption,
     required this.onPressed,
+    this.onHover,
     this.selected = false,
     this.iconData,
     this.iconSize,
@@ -33,6 +38,9 @@ class CretaMenuItem {
     this.fontFamily = 'Pretendard',
     this.fontWeight,
     this.disabled = false,
+    this.subMenu,
+    this.isHover = false,
+    this.isSub = false,
   });
 
   CretaMenuItem.clone(CretaMenuItem src)
@@ -41,6 +49,7 @@ class CretaMenuItem {
           iconData: src.iconData,
           iconSize: src.iconSize,
           onPressed: src.onPressed,
+          onHover: src.onHover,
           referencedAttr: src.referencedAttr,
           isDescending: src.isDescending,
           selected: src.selected,
@@ -49,7 +58,19 @@ class CretaMenuItem {
           fontFamily: src.fontFamily,
           fontWeight: src.fontWeight,
           disabled: src.disabled,
+          subMenu: src.subMenu,
+          isHover: src.isHover,
         );
+
+  // bool get isSubHover {
+  //   bool retval = false;
+  //   if (isSub) return isHover;
+  //   if (subMenu == null || subMenu!.isEmpty) return isHover;
+  //   subMenu!.map((e) {
+  //     retval |= e.isHover;
+  //   });
+  //   return retval;
+  // }
 }
 
 class CretaPopupMenu {
@@ -175,7 +196,6 @@ class CretaPopupMenu {
           } catch (e) {
             return SizedBox.shrink();
           }
-
         } else {
           x = position!.dx;
           y = position.dy;

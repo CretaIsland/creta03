@@ -59,7 +59,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   ContentsManager? _contentsManager;
   CretaPlayTimer? _playTimer;
 
-  bool _isInitialized = false;
+  Future<bool>? _isInitialized;
   //final bool _isHover = false;
   bool _isShowBorder = false;
 
@@ -77,7 +77,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   @override
   void initState() {
     super.initState();
-    initChildren();
+    _isInitialized = initChildren();
 
     // final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkSendEvent = sendEvent;
@@ -85,7 +85,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     _linkReceiveEvent = linkReceiveEvent;
   }
 
-  Future<void> initChildren() async {
+  Future<bool> initChildren() async {
     //logger.info('==========================FrameEach initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
@@ -109,7 +109,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       _contentsManager!.reOrdering();
     }
     //print('frame initChildren(${_contentsManager!.getAvailLength()})');
-    _isInitialized = true;
+    return true;
   }
 
   @override
@@ -128,22 +128,25 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
           value: _playTimer!,
         ),
       ],
-      child: _isInitialized ? _frameDropZone() : _futureBuider(),
+      //child: _isInitialized ? _frameDropZone() : _futureBuider(),
+      child: _futureBuider(),
     );
   }
 
-  Future<bool> _waitInit() async {
-    //await widget.init();
-    //bool isReady = widget.wcontroller!.value.isInitialized;
-    while (!_isInitialized) {
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-    return true;
-  }
+  // Future<bool> _waitInit() async {
+  //   //await widget.init();
+  //   //bool isReady = widget.wcontroller!.value.isInitialized;
+  //   while (!_isInitialized) {
+  //     await Future.delayed(const Duration(milliseconds: 100));
+  //   }
+  //   return true;
+  // }
 
   Widget _futureBuider() {
     return FutureBuilder<bool>(
-        future: _waitInit(),
+        initialData: false,
+        //future: _waitInit(),
+        future: _isInitialized,
         builder: (context, snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
@@ -161,7 +164,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameDropZone() {
-    //logger.info('_frameDropZone...');
+    logger.info('_frameDropZone...');
 
     _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!, true);
     // Widget frameBody = Stack(
@@ -438,7 +441,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   // }
 
   Widget _frameBox(FrameModel model, bool useColor) {
-    //logger.info('_frameBox');
+    logger.info('_frameBox');
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,
