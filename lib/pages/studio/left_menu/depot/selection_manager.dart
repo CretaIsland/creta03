@@ -37,42 +37,6 @@ class SelectionManager {
       }
     } else if (StudioVariables.isShiftPressed) {
       debugPrint('Shift key pressed');
-      if (selectedDepot.isEmpty) {
-        debugPrint('DepotDisplay.shiftSelectedSet is Empty');
-        // Find the currentIndex
-        int currentIndex = selectedDepot.indexOf(depotModel.mid);
-        // print('currentIndex $currentIndex');
-
-        if (currentIndex != -1) {
-          selectedDepot.clear();
-          // Add items in the range from index 0 to the current index
-          // for (int i = 0; i <= currentIndex; i++) {
-          //   isSelected = true;
-          //   String itemMid = selectedDepot[i];
-          //   DepotDisplay.shiftSelectedSet.add(itemMid as DepotModel);
-          //   selectedDepot.add(itemMid);
-          // }
-        }
-      } else {
-        isSelected = true;
-        // Select a range of items between the first selected item and the current selected item
-        int startIndex = selectedDepot.indexOf('0');
-        int endIndex = selectedDepot.indexOf(depotModel.mid);
-        // print('startIndex $startIndex');
-        // print('endIndex $endIndex');
-        // Check if the elements are found in the list
-        if (startIndex != -1 && endIndex != -1) {
-          // Clear the current selection and add items in the range
-          DepotDisplay.shiftSelectedSet.clear();
-          selectedDepot.clear();
-
-          // for (int i = startIndex; i <= endIndex; i++) {
-          //   DepotDisplay.shiftSelectedSet.add(selectedDepot[i]);
-          // }
-          List<String> rangeSelection = selectedDepot.sublist(startIndex, endIndex + 1);
-          selectedDepot.addAll(rangeSelection);
-        }
-      }
     } else {
       // print("Ctrl key released");
       DepotDisplay.ctrlSelectedSet = {depotModel};

@@ -1,4 +1,5 @@
 import 'package:creta03/data_io/depot_manager.dart';
+import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:creta03/pages/studio/left_menu/depot/depot_display.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,15 @@ import '../../../design_system/menu/creta_popup_menu.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
 import '../../../lang/creta_lang.dart';
 import '../../../lang/creta_studio_lang.dart';
+import '../../../model/team_model.dart';
 import '../studio_constant.dart';
-import '../studio_variables.dart';
 
 class LeftMenuStorage extends StatefulWidget {
   const LeftMenuStorage({super.key});
 
   @override
   State<LeftMenuStorage> createState() => _LeftMenuStorageState();
+  static String selectedType = CretaStudioLang.storageTypes.values.first;
 }
 
 class _LeftMenuStorageState extends State<LeftMenuStorage> {
@@ -32,6 +34,8 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   static String _selectedType = CretaStudioLang.storageTypes.values.first;
 
   late DepotManager depotManager;
+
+  List<TeamModel> userTeams = CretaAccountManager.getTeamList;
 
   final List<CretaMenuItem> _dropDownOptions = [
     CretaMenuItem(
@@ -65,15 +69,32 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     return CretaStudioLang.storageTypes.values.toString()[0];
   }
 
+  Map<String, String> getMenuTabName() {
+    Map<String, String> depotMenuTabBar = {'내 보관함': 'myDepot'};
+
+    for (int i = 0; i < userTeams.length; i++) {
+      String teamName = userTeams[i].name;
+      String tabKey = teamName;
+      String tabValue = 'team_$i';
+      depotMenuTabBar[tabKey] = tabValue;
+    }
+    return depotMenuTabBar;
+  }
+
+  late Map<String, String> depotMenuTabBar;
+
   @override
   void initState() {
     logger.info('_LeftMenuStorageState.initState');
     super.initState();
 
-    _selectedTab = CretaStudioLang.storageMenuTabBar.values.first;
+    // _selectedTab = CretaStudioLang.storageMenuTabBar.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
-    depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
+    // depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
+    depotManager = DepotDisplay.depotManager;
     _selectedType = _getCurrentTypes();
+    depotMenuTabBar = getMenuTabName();
+    _selectedTab = depotMenuTabBar.values.first;
   }
 
   @override
@@ -92,35 +113,31 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
         width: LayoutConst.rightMenuWidth, // width: 380
         color: CretaColor.text[100],
         alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 100.0),
-          child: CustomRadioButton(
-            radioButtonValue: (value) {
-              setState(() {
-                _selectedTab = value;
-                // _isDepotSelected = false;
-              });
-            },
-            width: 95,
-            autoWidth: true,
-            height: 24,
-            buttonTextStyle: ButtonTextStyle(
-              selectedColor: CretaColor.primary,
-              unSelectedColor: CretaColor.text[700]!,
-              textStyle: CretaFont.buttonMedium,
-            ),
-            selectedColor: Colors.white,
-            unSelectedColor: CretaColor.text[100]!,
-            defaultSelected: _selectedTab,
-            buttonLables: CretaStudioLang.storageMenuTabBar.keys.toList(),
-            buttonValues: CretaStudioLang.storageMenuTabBar.values.toList(),
-            selectedBorderColor: Colors.transparent,
-            unSelectedBorderColor: Colors.transparent,
-            elevation: 0,
-            enableButtonWrap: true,
-            enableShape: true,
-            shapeRadius: 60,
+        child: CustomRadioButton(
+          radioButtonValue: (value) {
+            setState(() {
+              _selectedTab = value;
+            });
+          },
+          width: 95,
+          autoWidth: true,
+          height: 24,
+          buttonTextStyle: ButtonTextStyle(
+            selectedColor: CretaColor.primary,
+            unSelectedColor: CretaColor.text[700]!,
+            textStyle: CretaFont.buttonMedium,
           ),
+          selectedColor: Colors.white,
+          unSelectedColor: CretaColor.text[100]!,
+          defaultSelected: _selectedTab,
+          buttonLables: depotMenuTabBar.keys.toList(),
+          buttonValues: depotMenuTabBar.values.toList(),
+          selectedBorderColor: Colors.transparent,
+          unSelectedBorderColor: Colors.transparent,
+          elevation: 0,
+          enableButtonWrap: true,
+          enableShape: true,
+          shapeRadius: 60,
         ));
   }
 
@@ -132,30 +149,28 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   }
 
   Widget _storageMenu() {
-    List<String> menu = CretaStudioLang.storageMenuTabBar.values.toList();
-    if (_selectedTab == menu[0]) {
-      return _myStorageView();
+    List<String> menu = depotMenuTabBar.values.toList();
+
+    for (int i = 0; i < menu.length; i++) {
+      if (_selectedTab == menu[i]) {
+        if (i == 0) {
+          return _myStorageView('');
+        } else if (i - 1 < userTeams.length) {
+          return _myStorageView(userTeams[i - 1].mid);
+        }
+      }
     }
-    if (_selectedTab == menu[1]) {
-      return Container(
-        height: StudioVariables.workHeight - 250.0,
-        padding: const EdgeInsets.only(top: 10),
-      );
-    }
-    if (_selectedTab == menu[2]) {
-      return Container(
-        height: StudioVariables.workHeight - 250.0,
-        padding: const EdgeInsets.only(top: 10),
-      );
-    }
-    return const SizedBox.shrink();
+    // return const SizedBox.shrink();
+    return const Center(
+      child: Text('Something wroing'),
+    );
   }
 
-  Widget _myStorageView() {
+  Widget _myStorageView(String? teamId) {
     return Column(
       children: [
         _textQuery(),
-        _storageOptions(),
+        _storageOptions(teamId!),
       ],
     );
   }
@@ -170,7 +185,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     );
   }
 
-  Widget _storageOptions() {
+  Widget _storageOptions(String? teamId) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: verticalPadding),
       child: Column(
@@ -185,7 +200,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
               ),
             ],
           ),
-          _selectedStorage(),
+          _selectedStorage(teamId!),
         ],
       ),
     );
@@ -217,19 +232,27 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     );
   }
 
-  Widget _selectedStorage() {
+  Widget _selectedStorage(String teamId) {
     List<String> type = CretaStudioLang.storageTypes.values.toList();
     if (_selectedType == type[0]) {
       return const DepotDisplay(
-          key: GlobalObjectKey('DepotDisplayClass_0'), contentsType: ContentsType.none);
+        key: GlobalObjectKey('DepotDisplayClass_0'),
+        contentsType: ContentsType.none,
+      );
     }
     if (_selectedType == type[1]) {
-      return const DepotDisplay(
-          key: GlobalObjectKey('DepotDisplayClass_1'), contentsType: ContentsType.image);
+      return DepotDisplay(
+        key: const GlobalObjectKey('DepotDisplayClass_1'),
+        contentsType: ContentsType.image,
+        myTeamMid: teamId,
+      );
     }
     if (_selectedType == type[2]) {
-      return const DepotDisplay(
-          key: GlobalObjectKey('DepotDisplayClass_2'), contentsType: ContentsType.video);
+      return DepotDisplay(
+        key: const GlobalObjectKey('DepotDisplayClass_2'),
+        contentsType: ContentsType.video,
+        myTeamMid: teamId,
+      );
     }
     return const SizedBox.shrink();
   }

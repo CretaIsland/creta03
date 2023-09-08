@@ -19,8 +19,14 @@ enum DepotOrderEnum {
 }
 
 class DepotManager extends CretaManager {
-  DepotManager({required String userEmail, String tableName = 'creta_depot'})
-      : super(tableName, userEmail) {
+  DepotManager({
+    required String userEmail,
+    String? myTeamMid,
+    String tableName = 'creta_depot',
+  }) : super(
+          tableName,
+          userEmail,
+        ) {
     saveManagerHolder?.registerManager('depot', this, postfix: userEmail);
   }
 
@@ -187,6 +193,7 @@ class DepotManager extends CretaManager {
       if (modelList.isEmpty) {
         return null;
       }
+      // print('modelList ${modelList.length}');
       return modelList.first as DepotModel?;
     } catch (err) {
       logger.severe('_getDepotCount error $err');
