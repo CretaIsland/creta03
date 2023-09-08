@@ -123,6 +123,7 @@ class MiniMenuState extends State<MiniMenu> {
     return Visibility(
       visible: BookMainPage.miniMenuNotifier!.isShow,
       child: Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
+        //print('Consumer<ContaineeNotifier> - MiniMenu  ${CretaUtils.timeLap()}');
         return Positioned(
           left: left,
           top: top,

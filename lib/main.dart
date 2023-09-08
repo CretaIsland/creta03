@@ -21,7 +21,7 @@ void main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
-  Logger.root.level = Level.SEVERE;
+  Logger.root.level = Level.WARNING;
   HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
   await CretaAccountManager.initUserProperty();

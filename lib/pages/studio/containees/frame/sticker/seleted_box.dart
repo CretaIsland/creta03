@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import 'draggable_stickers.dart';
 import 'resize_point.dart';
 
-class SelectedBox extends StatelessWidget {
+// ignore: must_be_immutable
+class SelectedBox extends StatefulWidget {
   final String mid;
   final double normalizedHeight;
   final double normalizedWidth;
@@ -50,18 +51,52 @@ class SelectedBox extends StatelessWidget {
   });
 
   @override
+  State<SelectedBox> createState() => _SelectedBoxState();
+}
+
+class _SelectedBoxState extends State<SelectedBox> {
+  late Widget topLeftCorner;
+  late Widget bottomRightCorner;
+  late Widget topRightCorner;
+  late Widget bottomLeftCorner;
+  late Widget upPlane;
+  late Widget rightPlane;
+  late Widget downPlane;
+  late Widget leftPlane;
+
+  // @override
+  // void didUpdateWidget(SelectedBox oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+
+  //   if (oldWidget.mid != widget.mid) {
+  //     print('SelectedBox mid changed');
+  //   }
+  //   print('didUpdateWidget-------------------------------');
+  // }
+
+  Future<void> _invokeNotify() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    // 속도 향상을 위해, miniMenuNotifier  와 containeeNotifier 를 이곳에서 한다.
+    //print('5 before set and notify MiniMenuNotifier : ${CretaUtils.timeLap()}');
+    BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
+    //print('6.before notify ContaineeNotifier : ${CretaUtils.timeLap()}');
+    BookMainPage.containeeNotifier!.notify();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    logger.info('SelectedBox');
+    //print('SelectedBox-------------------------------------------');
+
     final selectedBox = IgnorePointer(
+      key: Key('selectedBox-${widget.mid}'),
       child: Container(
-        key: Key('selectedBox-$mid'),
         alignment: Alignment.center,
-        height: normalizedHeight + LayoutConst.stikerOffset,
-        width: normalizedWidth + LayoutConst.stikerOffset,
+        height: widget.normalizedHeight + LayoutConst.stikerOffset,
+        width: widget.normalizedWidth + LayoutConst.stikerOffset,
         color: Colors.transparent,
         child: Container(
-            height: normalizedHeight,
-            width: normalizedWidth,
+            height: widget.normalizedHeight,
+            width: widget.normalizedWidth,
             decoration: BoxDecoration(
               color: Colors.transparent,
               border: Border.all(
@@ -72,27 +107,110 @@ class SelectedBox extends StatelessWidget {
       ),
     );
 
-    // ignore: unused_local_variable
-    final linkCandiator = ScaleAniContainer(
-      width: normalizedWidth,
-      height: normalizedHeight,
+    topLeftCorner = ResizePoint(
+      key: Key('draggableResizable_topLeft_resizePoint-${widget.mid}'),
+      type: ResizePointType.topLeft,
+      onDrag: widget.onDragTopLeft,
+      onTap: widget.onResizeButtonTap,
+      onScaleStart: widget.onScaleStart,
+      //iconData: Icons.zoom_out_map,
+      onComplete: widget.onComplete,
     );
 
-    double heightCenter = normalizedHeight / 2 + resizePointerOffset;
-    double widthCenter = normalizedWidth / 2 + resizePointerOffset;
+    bottomRightCorner = ResizePoint(
+      key: Key('draggableResizable_bottomRight_resizePoint-${widget.mid}'),
+      type: ResizePointType.bottomRight,
+      onDrag: widget.onDragBottomRight,
+      onTap: widget.onResizeButtonTap,
+      onScaleStart: widget.onScaleStart,
+      //iconData: Icons.zoom_out_map,
+      onComplete: widget.onComplete,
+    );
+
+    topRightCorner = ResizePoint(
+      key: Key('draggableResizable_topRight_resizePoint-${widget.mid}'),
+      type: ResizePointType.topRight,
+      onDrag: widget.onDragTopRight,
+      onTap: widget.onResizeButtonTap,
+      onScaleStart: widget.onScaleStart,
+      //iconData: Icons.zoom_out_map,
+      onComplete: widget.onComplete,
+    );
+
+    bottomLeftCorner = ResizePoint(
+      key: Key('draggableResizable_bottomLeft_resizePoint-${widget.mid}'),
+      type: ResizePointType.bottomLeft,
+      onDrag: widget.onDragBottomLeft,
+      onTap: widget.onResizeButtonTap,
+      onScaleStart: widget.onScaleStart,
+      //iconData: Icons.zoom_out_map,
+      onComplete: widget.onComplete,
+    );
+
+    upPlane = ResizePoint(
+      key: Key('draggableResizable_upPlane_resizePoint-${widget.mid}'),
+      type: ResizePointType.up,
+      onDrag: widget.onDragUp,
+      onTap: widget.onResizeButtonTap,
+      onScaleStart: widget.onScaleStart,
+      //iconData: Icons.zoom_out_map,
+      onComplete: widget.onComplete,
+    );
+
+    rightPlane = ResizePoint(
+      key: Key('draggableResizable_rightPlane_resizePoint-${widget.mid}'),
+      type: ResizePointType.right,
+      onDrag: widget.onDragRight,
+      onTap: widget.onResizeButtonTap,
+      onScaleStart: widget.onScaleStart,
+      //iconData: Icons.zoom_out_map,
+      onComplete: widget.onComplete,
+    );
+
+    downPlane = ResizePoint(
+      key: Key('draggableResizable_downPlane_resizePoint-${widget.mid}'),
+      type: ResizePointType.down,
+      onDrag: widget.onDragDown,
+      onTap: widget.onResizeButtonTap,
+      onScaleStart: widget.onScaleStart,
+      //iconData: Icons.zoom_out_map,
+      onComplete: widget.onComplete,
+    );
+
+    leftPlane = ResizePoint(
+      key: Key('draggableResizable_leftPlane_resizePoint-${widget.mid}'),
+      type: ResizePointType.left,
+      onDrag: widget.onDragLeft,
+      onScaleStart: widget.onScaleStart,
+      onTap: widget.onResizeButtonTap,
+      //iconData: Icons.zoom_out_map,
+      onComplete: widget.onComplete,
+    );
+
+    // ignore: unused_local_variable
+    // linkCandiator = ScaleAniContainer(
+    //   width: normalizedWidth,
+    //   height: normalizedHeight,
+    // );
+
+    double heightCenter = widget.normalizedHeight / 2 + widget.resizePointerOffset;
+    double widthCenter = widget.normalizedWidth / 2 + widget.resizePointerOffset;
 
     return Consumer<FrameSelectNotifier>(builder: (context, frameSelectNotifier, childW) {
       //if (StudioVariables.isLinkSelectMode == false) {
-      //print('${frameSelectNotifier.selectedAssetId} , $mid -------------------');
-      if (frameSelectNotifier.selectedAssetId == mid) {
-        return Stack(
+      //print(
+      //    'Consumer<FrameSelectNotifier>  ${CretaUtils.timeLap()} ${widget.mid} -------------------');
+      if (frameSelectNotifier.selectedAssetId == widget.mid) {
+        Widget mainBuild = Stack(
           children: [
             selectedBox,
-            if (frameModel == null) ..._dragBoxes(heightCenter, widthCenter),
-            if (frameModel != null && frameModel!.isMusicType() == false)
+            if (widget.frameModel == null) ..._dragBoxes(heightCenter, widthCenter),
+            if (widget.frameModel != null && widget.frameModel!.isMusicType() == false)
               ..._dragBoxes(heightCenter, widthCenter),
           ],
         );
+        _invokeNotify();
+        return mainBuild;
       }
       // } else {
       //   if (frameSelectNotifier.selectedAssetId != mid) {
@@ -105,110 +223,35 @@ class SelectedBox extends StatelessWidget {
     });
   }
 
-  List<Widget> _dragBoxes(double heightCenter, double widthCenter) {
-    final topLeftCorner = ResizePoint(
-      key: Key('draggableResizable_topLeft_resizePoint-$mid'),
-      type: ResizePointType.topLeft,
-      onDrag: onDragTopLeft,
-      onTap: onResizeButtonTap,
-      onScaleStart: onScaleStart,
-      //iconData: Icons.zoom_out_map,
-      onComplete: onComplete,
-    );
+  List<Widget> _dragBoxes(
+    double heightCenter,
+    double widthCenter,
+  ) {
+    //print('_dragBoxes....start.${CretaUtils.timeLap()}');
 
-    final bottomRightCorner = ResizePoint(
-      key: Key('draggableResizable_bottomRight_resizePoint-$mid'),
-      type: ResizePointType.bottomRight,
-      onDrag: onDragBottomRight,
-      onTap: onResizeButtonTap,
-      onScaleStart: onScaleStart,
-      //iconData: Icons.zoom_out_map,
-      onComplete: onComplete,
-    );
-
-    final topRightCorner = ResizePoint(
-      key: Key('draggableResizable_topRight_resizePoint-$mid'),
-      type: ResizePointType.topRight,
-      onDrag: onDragTopRight,
-      onTap: onResizeButtonTap,
-      onScaleStart: onScaleStart,
-      //iconData: Icons.zoom_out_map,
-      onComplete: onComplete,
-    );
-
-    final bottomLeftCorner = ResizePoint(
-      key: Key('draggableResizable_bottomLeft_resizePoint-$mid'),
-      type: ResizePointType.bottomLeft,
-      onDrag: onDragBottomLeft,
-      onTap: onResizeButtonTap,
-      onScaleStart: onScaleStart,
-      //iconData: Icons.zoom_out_map,
-      onComplete: onComplete,
-    );
-
-    final upPlane = ResizePoint(
-      key: Key('draggableResizable_upPlane_resizePoint-$mid'),
-      type: ResizePointType.up,
-      onDrag: onDragUp,
-      onTap: onResizeButtonTap,
-      onScaleStart: onScaleStart,
-      //iconData: Icons.zoom_out_map,
-      onComplete: onComplete,
-    );
-
-    final rightPlane = ResizePoint(
-      key: Key('draggableResizable_rightPlane_resizePoint-$mid'),
-      type: ResizePointType.right,
-      onDrag: onDragRight,
-      onTap: onResizeButtonTap,
-      onScaleStart: onScaleStart,
-      //iconData: Icons.zoom_out_map,
-      onComplete: onComplete,
-    );
-
-    final downPlane = ResizePoint(
-      key: Key('draggableResizable_downPlane_resizePoint-$mid'),
-      type: ResizePointType.down,
-      onDrag: onDragDown,
-      onTap: onResizeButtonTap,
-      onScaleStart: onScaleStart,
-      //iconData: Icons.zoom_out_map,
-      onComplete: onComplete,
-    );
-
-    final leftPlane = ResizePoint(
-      key: Key('draggableResizable_leftPlane_resizePoint-$mid'),
-      type: ResizePointType.left,
-      onDrag: onDragLeft,
-      onScaleStart: onScaleStart,
-      onTap: onResizeButtonTap,
-      //iconData: Icons.zoom_out_map,
-      onComplete: onComplete,
-    );
-
-    return [
+    List<Widget> retval = [
       Positioned(
         //topLeft
-        top: resizePointerOffset,
-        left: resizePointerOffset,
+        top: widget.resizePointerOffset,
+        left: widget.resizePointerOffset,
         child: topLeftCorner,
       ),
       Positioned(
         // bottomLeft
-        bottom: resizePointerOffset,
-        left: resizePointerOffset,
+        bottom: widget.resizePointerOffset,
+        left: widget.resizePointerOffset,
         child: bottomLeftCorner,
       ),
       Positioned(
         //bottomRight
-        bottom: resizePointerOffset,
-        right: resizePointerOffset,
+        bottom: widget.resizePointerOffset,
+        right: widget.resizePointerOffset,
         child: bottomRightCorner,
       ),
       Positioned(
         // topRight
-        top: resizePointerOffset,
-        right: resizePointerOffset,
+        top: widget.resizePointerOffset,
+        right: widget.resizePointerOffset,
         child: topRightCorner,
       ),
 
@@ -216,29 +259,32 @@ class SelectedBox extends StatelessWidget {
 
       Positioned(
         //topMidle
-        top: resizePointerOffset,
+        top: widget.resizePointerOffset,
         left: widthCenter,
         child: upPlane,
       ),
       Positioned(
         // leftMiddle
         top: heightCenter,
-        left: resizePointerOffset,
+        left: widget.resizePointerOffset,
         child: leftPlane,
       ),
       Positioned(
         //bottomMiddle
-        bottom: resizePointerOffset,
+        bottom: widget.resizePointerOffset,
         left: widthCenter,
         child: downPlane,
       ),
       Positioned(
         // rightMiddle
         top: heightCenter,
-        right: resizePointerOffset,
+        right: widget.resizePointerOffset,
         child: rightPlane,
       ),
     ];
+
+    //print('_dragBoxes....end.${CretaUtils.timeLap()}');
+    return retval;
   }
 }
 

@@ -157,11 +157,11 @@ class _DraggableStickersState extends State<DraggableStickers> {
           for (final sticker in stickers) _drawEachStiker(sticker),
           _drawMiniMenu(),
         ],
+        //),
+        //),
+        //_drawMiniMenu(),
+        //],
       ),
-      //),
-      //_drawMiniMenu(),
-      //],
-      //),
     );
   }
 
@@ -265,9 +265,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
               },
               onTap: () {
                 // To update the selected widget
-                //print('1.....${CretaUtils.timeLap()}');
+                //print('1. before notify DraggableStickers.frameSelectNotifier : ${CretaUtils.timeLap()}');
                 DraggableStickers.frameSelectNotifier?.set(sticker.id);
-                //print('2.....${CretaUtils.timeLap()}');
+                //print('2. after notify DraggableStickers.frameSelectNotifier : ${CretaUtils.timeLap()}');
                 //print('InkWell onTap from draggable_stickers...');
                 widget.onTap?.call(sticker.id);
                 //print('end.....${CretaUtils.timeLap()}');
@@ -469,7 +469,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     //return Consumer<ContaineeNotifier>(builder: (context, notifier, child) {
     return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
       logger.info(
-          '_drawMiniMenu(${BookMainPage.miniMenuNotifier!.isShow})------------------------------------------');
+          'Consumer<MiniMenuNotifier> _drawMiniMenu(${BookMainPage.miniMenuNotifier!.isShow})------------------------------------------');
 
       Sticker? selectedSticker = _getSelectedSticker();
       if (selectedSticker == null) {

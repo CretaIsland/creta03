@@ -63,9 +63,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   List<String> publishingChannelIdList = [CretaAccountManager.getUserProperty!.channelId];
   final String myChannelId = CretaAccountManager.getUserProperty!.channelId;
 
-  bool _onceDBGetComplete1 = false;
+  Future<bool>? _onceDBGetComplete1;
   //bool _onceDBGetComplete2 = false;
-  bool _onceDBPublishComplete = false;
+  Future<bool>? _onceDBPublishComplete;
 
   final ScrollController _scrollController1 = ScrollController();
   final ScrollController _scrollController2 = ScrollController();
@@ -95,14 +95,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
     _resetList();
 
-    CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList).then((value) {
-      userModelList = [...value];
-      for (var ele in userModelList) {
-        logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
-      }
-      _onceDBGetComplete1 = true;
-      return value;
-    });
+    _onceDBGetComplete1 = _initData();
 
     // LoginPage.channelManagerHolder!
     //     .getChannelFromList(widget.model!.channels)
@@ -136,19 +129,25 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     // );
   }
 
+  Future<bool> _initData() async {
+    userModelList =
+        await CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList);
+    return true;
+  }
+
   void _resetList() {
     Map<String, PermissionType> shares = widget.model!.getSharesAsMap();
     emailList = shares.keys.toList();
     permitionList = shares.values.toList();
   }
 
-  Future<bool> _waitDBJob() async {
-    while (_onceDBGetComplete1 == false /*|| _onceDBGetComplete2 == false*/) {
-      await Future.delayed(const Duration(microseconds: 500));
-    }
-    logger.info('_onceDBGetComplete=$_onceDBGetComplete1 wait end');
-    return _onceDBGetComplete1;
-  }
+  // Future<bool> _waitDBJob() async {
+  //   while (_onceDBGetComplete1 == false /*|| _onceDBGetComplete2 == false*/) {
+  //     await Future.delayed(const Duration(microseconds: 500));
+  //   }
+  //   logger.info('_onceDBGetComplete=$_onceDBGetComplete1 wait end');
+  //   return _onceDBGetComplete1;
+  // }
 
   Widget _stepsWidget(int steps) {
     switch (steps) {
@@ -175,7 +174,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       child: FutureBuilder(
           initialData: false,
-          future: _waitDBJob(),
+          future: _onceDBGetComplete1,
           builder: (context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.hasData == false) {
               //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
@@ -184,6 +183,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
             if (snapshot.hasError) {
               //error가 발생하게 될 경우 반환하게 되는 부분
               return Snippet.errMsgWidget(snapshot);
+            }
+            if (snapshot.connectionState != ConnectionState.done) {
+              return SizedBox(width: width, height: height, child: Snippet.showWaitSign());
             }
             return SafeArea(
               child: SizedBox(
@@ -365,7 +367,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   Widget step4() {
     return FutureBuilder(
         initialData: false,
-        future: _waitPublish(),
+        future: _onceDBPublishComplete,
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
@@ -376,7 +378,10 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
             return Snippet.errMsgWidget(snapshot);
           }
           if (snapshot.data == false) {
-            return const SizedBox.shrink();
+            return SizedBox(width: width, height: 365, child: Snippet.showWaitSign());
+          }
+          if (snapshot.connectionState != ConnectionState.done) {
+            return SizedBox(width: width, height: 365, child: Snippet.showWaitSign());
           }
           return SizedBox(
             height: 365,
@@ -456,17 +461,20 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
   void _doWork() {
     if (currentStep < 3) {
-      _onceDBPublishComplete = false;
+      _onceDBPublishComplete = _beforePublish();
     } else if (currentStep == 3) {
-      _publish();
+      _onceDBPublishComplete = _publish();
     }
   }
 
-  Future<bool> _waitPublish() async {
-    while (_onceDBPublishComplete == false) {
-      await Future.delayed(const Duration(microseconds: 500));
-    }
-    return true;
+  // Future<bool> _waitPublish() async {
+  //   while (_onceDBPublishComplete == false) {
+  //     await Future.delayed(const Duration(microseconds: 500));
+  //   }
+  //   return true;
+  // }
+  Future<bool> _beforePublish() async {
+    return false;
   }
 
   Future<bool> _publish() async {
@@ -484,7 +492,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         );
         _modifier = isNew ? CretaStudioLang.newely : CretaStudioLang.update;
         _publishResultStr = CretaStudioLang.publishComplete;
-        _onceDBPublishComplete = true;
+        //_onceDBPublishComplete = true;
       },
     );
   }

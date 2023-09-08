@@ -488,6 +488,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
               decoratedChild,
               if (!StudioVariables.isPreview)
                 SelectedBox(
+                  key: GlobalObjectKey('SelectedBox-$widget.mid}'),
                   mid: widget.mid,
                   normalizedHeight: normalizedHeight,
                   normalizedWidth: normalizedWidth,
@@ -503,7 +504,6 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   onScaleStart: widget.onScaleStart,
                   onResizeButtonTap: widget.onResizeButtonTap,
                   onComplete: widget.onComplete,
-                  key: GlobalObjectKey('SelectedBox-$widget.mid}'),
                   frameModel: widget.frameModel,
                 ),
               if (widget.isMain) mainSymbol,
