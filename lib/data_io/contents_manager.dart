@@ -30,6 +30,7 @@ import '../player/music/creta_music_mixin.dart';
 import '../player/video/creta_video_player.dart';
 import 'creta_manager.dart';
 //import 'depot_manager.dart';
+import 'depot_manager.dart';
 import 'frame_manager.dart';
 import 'link_manager.dart';
 
@@ -1192,16 +1193,21 @@ class ContentsManager extends CretaManager {
     }
   }
 
-  Future<void> putInDepot(ContentsModel? selectedModel) async {
+  Future<void> putInDepot(ContentsModel? selectedModel, String? teamId) async {
     if (selectedModel == null) {
-      ContentsManager.insertDepot(null, modelList, true);
+      ContentsManager.insertDepot(null, modelList, true, teamId);
     } else {
-      ContentsManager.insertDepot(selectedModel, null, true);
+      ContentsManager.insertDepot(selectedModel, null, true, teamId);
     }
   }
 
-  static Future<void> insertDepot(
-      ContentsModel? selectedModel, List<AbsExModel>? targetList, bool notify) async {
+  static Future<void> insertDepot(ContentsModel? selectedModel, List<AbsExModel>? targetList,
+      bool notify, String? teamId) async {
+    DepotManager? depotManager = DepotDisplay.getMyTeamManager(teamId);
+    if (depotManager == null) {
+      return;
+    }
+
     if (targetList != null) {
       int count = 0;
       for (var ele in targetList) {
@@ -1215,23 +1221,21 @@ class ContentsManager extends CretaManager {
         if (model.contentsType != ContentsType.image && model.contentsType != ContentsType.video) {
           continue;
         }
-        if (await DepotDisplay.depotManager.createNextDepot(model.mid, model.contentsType) !=
-            null) {
-          DepotDisplay.depotManager.filteredContents.insert(0, model);
+        if (await depotManager.createNextDepot(model.mid, model.contentsType, teamId) != null) {
+          depotManager.filteredContents.insert(0, model);
           count++;
         }
       }
       if (notify && count > 0) {
-        DepotDisplay.depotManager.notify();
+        depotManager.notify();
       }
     }
     if (selectedModel != null) {
-      if (await DepotDisplay.depotManager
-              .createNextDepot(selectedModel.mid, selectedModel.contentsType) !=
+      if (await depotManager.createNextDepot(selectedModel.mid, selectedModel.contentsType, teamId) !=
           null) {
-        DepotDisplay.depotManager.filteredContents.insert(0, selectedModel);
+        depotManager.filteredContents.insert(0, selectedModel);
         if (notify) {
-          DepotDisplay.depotManager.notify();
+          depotManager.notify();
         }
       }
     }

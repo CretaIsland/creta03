@@ -379,11 +379,12 @@ class _DraggableStickersState extends State<DraggableStickers> {
   List<CretaMenuItem> _subMenuItems(FrameModel frameModel, bool isContents) {
     List<CretaMenuItem> teamMenuList = CretaAccountManager.getTeamList.map((e) {
       String teamName = e.name;
+      String teamId = e.mid;
       return CretaMenuItem(
           isSub: true,
           caption: '$teamName${CretaStudioLang.putInTeamDepot}',
           onPressed: () {
-            _putInDepot(frameModel, isContents);
+            _putInDepot(frameModel, isContents, teamId);
           });
     }).toList();
 
@@ -392,7 +393,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           isSub: true,
           caption: CretaStudioLang.putInMyDepot,
           onPressed: () {
-            _putInDepot(frameModel, isContents);
+            _putInDepot(frameModel, isContents, null);
           }),
       ...teamMenuList,
     ];
@@ -434,19 +435,19 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //   );
   // }
 
-  void _putInDepot(FrameModel frameModel, bool isContents) {
+  void _putInDepot(FrameModel frameModel, bool isContents, String? teamId) {
     if (isContents) {
       ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
       if (contentsManager != null) {
         ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
         if (selected != null) {
-          contentsManager.putInDepot(selected);
+          contentsManager.putInDepot(selected, teamId);
         }
       }
     } else {
       // frame Case
       ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
-      contentsManager?.putInDepot(null);
+      contentsManager?.putInDepot(null, teamId);
     }
   }
 

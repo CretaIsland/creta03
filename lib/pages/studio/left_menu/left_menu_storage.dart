@@ -12,7 +12,6 @@ import '../../../design_system/menu/creta_popup_menu.dart';
 import '../../../design_system/text_field/creta_search_bar.dart';
 import '../../../lang/creta_lang.dart';
 import '../../../lang/creta_studio_lang.dart';
-import '../../../model/team_model.dart';
 import '../studio_constant.dart';
 
 class LeftMenuStorage extends StatefulWidget {
@@ -33,28 +32,11 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   String searchText = '';
   static String _selectedType = CretaStudioLang.storageTypes.values.first;
 
-  late DepotManager depotManager;
+  Map<String, String> depotMenuTabBar = {'내 보관함': 'myDepot'};
+  String? _myTeamId;
+  late DepotManager _depotManager;
 
-  List<TeamModel> userTeams = CretaAccountManager.getTeamList;
-
-  final List<CretaMenuItem> _dropDownOptions = [
-    CretaMenuItem(
-      caption: CretaLang.basicBookSortFilter[0], // 최신순
-      onPressed: () {
-        DepotDisplay.depotManager.depotOrder = DepotOrderEnum.latest;
-        DepotDisplay.depotManager.notify();
-      },
-      selected: true,
-    ),
-    CretaMenuItem(
-      caption: CretaLang.basicBookSortFilter[1], // 이름순
-      onPressed: () {
-        DepotDisplay.depotManager.depotOrder = DepotOrderEnum.name;
-        DepotDisplay.depotManager.notify();
-      },
-      selected: false,
-    ),
-  ];
+  late List<CretaMenuItem> _dropDownOptions;
 
   String _getCurrentTypes() {
     int index = 0;
@@ -69,32 +51,41 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     return CretaStudioLang.storageTypes.values.toString()[0];
   }
 
-  Map<String, String> getMenuTabName() {
-    Map<String, String> depotMenuTabBar = {'내 보관함': 'myDepot'};
-
-    for (int i = 0; i < userTeams.length; i++) {
-      String teamName = userTeams[i].name;
-      String tabKey = teamName;
-      String tabValue = 'team_$i';
-      depotMenuTabBar[tabKey] = tabValue;
+  void _initMenuTabName() {
+    for (var ele in CretaAccountManager.getTeamList) {
+      depotMenuTabBar[ele.name] = ele.mid;
     }
-    return depotMenuTabBar;
   }
-
-  late Map<String, String> depotMenuTabBar;
 
   @override
   void initState() {
     logger.info('_LeftMenuStorageState.initState');
     super.initState();
-
     // _selectedTab = CretaStudioLang.storageMenuTabBar.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
-    // depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
-    depotManager = DepotDisplay.depotManager;
     _selectedType = _getCurrentTypes();
-    depotMenuTabBar = getMenuTabName();
+    _initMenuTabName();
     _selectedTab = depotMenuTabBar.values.first;
+    _depotManager = DepotDisplay.getMyTeamManager(_myTeamId)!;
+
+    _dropDownOptions = [
+      CretaMenuItem(
+        caption: CretaLang.basicBookSortFilter[0], // 최신순
+        onPressed: () {
+          _depotManager.depotOrder = DepotOrderEnum.latest;
+          _depotManager.notify();
+        },
+        selected: true,
+      ),
+      CretaMenuItem(
+        caption: CretaLang.basicBookSortFilter[1], // 이름순
+        onPressed: () {
+          _depotManager.depotOrder = DepotOrderEnum.name;
+          _depotManager.notify();
+        },
+        selected: false,
+      ),
+    ];
   }
 
   @override
@@ -117,7 +108,19 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
           radioButtonValue: (value) {
             setState(() {
               _selectedTab = value;
+              List<String> menu = depotMenuTabBar.values.toList();
+              for (int i = 0; i < menu.length; i++) {
+                if (_selectedTab == menu[i]) {
+                  if (i == 0) {
+                    _myTeamId = null;
+                  } else if (i - 1 < CretaAccountManager.getTeamList.length) {
+                    _myTeamId = CretaAccountManager.getTeamList[i - 1].mid;
+                  }
+                }
+              }
             });
+            _depotManager = DepotDisplay.getMyTeamManager(_myTeamId)!;
+            _depotManager.notify();
           },
           width: 95,
           autoWidth: true,
@@ -144,33 +147,16 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
   Widget _storageView() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding),
-      child: _storageMenu(),
+      //child: _storageMenu(),
+      child: _myStorageView(),
     );
   }
 
-  Widget _storageMenu() {
-    List<String> menu = depotMenuTabBar.values.toList();
-
-    for (int i = 0; i < menu.length; i++) {
-      if (_selectedTab == menu[i]) {
-        if (i == 0) {
-          return _myStorageView('');
-        } else if (i - 1 < userTeams.length) {
-          return _myStorageView(userTeams[i - 1].mid);
-        }
-      }
-    }
-    // return const SizedBox.shrink();
-    return const Center(
-      child: Text('Something wroing'),
-    );
-  }
-
-  Widget _myStorageView(String? teamId) {
+  Widget _myStorageView() {
     return Column(
       children: [
         _textQuery(),
-        _storageOptions(teamId!),
+        _storageOptions(),
       ],
     );
   }
@@ -185,7 +171,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     );
   }
 
-  Widget _storageOptions(String? teamId) {
+  Widget _storageOptions() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: verticalPadding),
       child: Column(
@@ -200,7 +186,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
               ),
             ],
           ),
-          _selectedStorage(teamId!),
+          _selectedStorage(),
         ],
       ),
     );
@@ -232,26 +218,27 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
     );
   }
 
-  Widget _selectedStorage(String teamId) {
+  Widget _selectedStorage() {
     List<String> type = CretaStudioLang.storageTypes.values.toList();
     if (_selectedType == type[0]) {
-      return const DepotDisplay(
-        key: GlobalObjectKey('DepotDisplayClass_0'),
+      return DepotDisplay(
+        key: const GlobalObjectKey('DepotDisplayClass_0'),
         contentsType: ContentsType.none,
+        myTeamId: _myTeamId,
       );
     }
     if (_selectedType == type[1]) {
       return DepotDisplay(
         key: const GlobalObjectKey('DepotDisplayClass_1'),
         contentsType: ContentsType.image,
-        myTeamMid: teamId,
+        myTeamId: _myTeamId,
       );
     }
     if (_selectedType == type[2]) {
       return DepotDisplay(
         key: const GlobalObjectKey('DepotDisplayClass_2'),
         contentsType: ContentsType.video,
-        myTeamMid: teamId,
+        myTeamId: _myTeamId,
       );
     }
     return const SizedBox.shrink();

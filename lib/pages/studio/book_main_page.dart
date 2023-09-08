@@ -46,6 +46,7 @@ import 'book_preview_menu.dart';
 import 'book_publish.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
+import 'left_menu/depot/depot_display.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
 import 'right_menu/right_menu.dart';
@@ -247,6 +248,8 @@ class _BookMainPageState extends State<BookMainPage> {
           break;
       }
     });
+
+    DepotDisplay.initDepotTeamManagers();
 
     logger.info("end ---_BookMainPageState-----------------------------------------");
 // //for webRTC
