@@ -1194,7 +1194,17 @@ class ContentsManager extends CretaManager {
 
   Future<void> putInDepot(ContentsModel? selectedModel) async {
     if (selectedModel == null) {
-      for (var ele in modelList) {
+      ContentsManager.insertDepot(null, modelList, true);
+    } else {
+      ContentsManager.insertDepot(selectedModel, null, true);
+    }
+  }
+
+  static Future<void> insertDepot(
+      ContentsModel? selectedModel, List<AbsExModel>? targetList, bool notify) async {
+    if (targetList != null) {
+      int count = 0;
+      for (var ele in targetList) {
         ContentsModel model = ele as ContentsModel;
         if (model.isRemoved.value == true) {
           continue;
@@ -1205,15 +1215,25 @@ class ContentsManager extends CretaManager {
         if (model.contentsType != ContentsType.image && model.contentsType != ContentsType.video) {
           continue;
         }
-        await DepotDisplay.depotManager.createNextDepot(ele.mid, ele.contentsType);
-        DepotDisplay.depotManager.filteredContents.insert(0, model);
+        if (await DepotDisplay.depotManager.createNextDepot(model.mid, model.contentsType) !=
+            null) {
+          DepotDisplay.depotManager.filteredContents.insert(0, model);
+          count++;
+        }
       }
-      DepotDisplay.depotManager.notify();
-    } else {
-      await DepotDisplay.depotManager
-          .createNextDepot(selectedModel.mid, selectedModel.contentsType);
-      DepotDisplay.depotManager.filteredContents.insert(0, selectedModel);
-      DepotDisplay.depotManager.notify();
+      if (notify && count > 0) {
+        DepotDisplay.depotManager.notify();
+      }
+    }
+    if (selectedModel != null) {
+      if (await DepotDisplay.depotManager
+              .createNextDepot(selectedModel.mid, selectedModel.contentsType) !=
+          null) {
+        DepotDisplay.depotManager.filteredContents.insert(0, selectedModel);
+        if (notify) {
+          DepotDisplay.depotManager.notify();
+        }
+      }
     }
   }
 }

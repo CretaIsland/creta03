@@ -10,6 +10,7 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
+//import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
@@ -116,7 +117,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   Widget showFrame() {
     //FrameModel? model = frameManager!.getSelected() as FrameModel?;
     //logger.info('showFrame $applyScale  ${StudioVariables.applyScale}');
-    //('showFrame');
+    //print('showFrame----------------------------------');
     return StickerView(
       //key: ValueKey('StickerView-${widget.pageModel.mid}'),
       book: widget.bookModel,
@@ -196,11 +197,17 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           if (contentsManager != null) {
             ContentsModel? content = contentsManager.getCurrentModel();
             if (content != null && contentsManager.getAvailLength() > 0) {
+              //print('3.....${CretaUtils.timeLap()}');
               frameManager?.setSelectedMid(mid, doNotify: false);
+              //print('4.....${CretaUtils.timeLap()}');
               contentsManager.setSelectedMid(content.mid, doNotify: false);
+              //print('5.....${CretaUtils.timeLap()}');
               BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
+              //print('6.....${CretaUtils.timeLap()}');
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
+              //print('7.....${CretaUtils.timeLap()}');
               LeftMenuPage.treeInvalidate();
+              //print('8.....${CretaUtils.timeLap()}');
 
               return;
             }
@@ -213,11 +220,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             BookMainPage.miniMenuNotifier!.isShow == false ||
             BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame ||
             RightMenu.isOpen == false) {
+          //print('1.nope...here....${CretaUtils.timeLap()}');
           //setState(() {
           BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
+          //print('2.nope...here....${CretaUtils.timeLap()}');
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);
+          //print('3.nope...here....${CretaUtils.timeLap()}');
           frameManager?.setSelectedMid(mid, doNotify: false);
+          //print('4.nope...here....${CretaUtils.timeLap()}');
           LeftMenuPage.treeInvalidate();
+          //print('5.nope...here....${CretaUtils.timeLap()}');
           //});
         }
         //frame = frameManager?.getSelected() as FrameModel?;

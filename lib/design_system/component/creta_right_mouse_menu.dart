@@ -15,7 +15,7 @@ class CretaRightMouseMenu {
     required double x,
     required double y,
     required double width,
-    required double height,
+    double? height,
     TextStyle? textStyle,
     required double iconSize,
     required bool alwaysShowBorder,
@@ -24,6 +24,7 @@ class CretaRightMouseMenu {
     EdgeInsetsGeometry? padding,
     int maxVisibleRowCount = 8,
   }) async {
+    //print('showDialog');
     await showDialog(
       context: context,
       barrierDismissible: true, // Dialog를 제외한 다른 화면 터치 x
@@ -31,7 +32,7 @@ class CretaRightMouseMenu {
       builder: (BuildContext context) {
         if (initFunc != null) initFunc();
         return CretaRightMouseMenuWidget(
-          key: GlobalObjectKey(title),
+          //key: GlobalObjectKey(title),
           x: x,
           y: y,
           width: width,
@@ -52,13 +53,17 @@ class CretaRightMouseMenu {
 
     return Future.value();
   }
+
+  static void closeMenu(BuildContext context) {
+    Navigator.pop(context);
+  }
 }
 
 class CretaRightMouseMenuWidget extends StatefulWidget {
   final double x;
   final double y;
   final double width;
-  final double height;
+  final double? height;
   final double itemHeight;
   final double itemSpacing;
   final List<CretaMenuItem> menuItem;
@@ -75,7 +80,7 @@ class CretaRightMouseMenuWidget extends StatefulWidget {
     required this.x,
     required this.y,
     required this.width,
-    required this.height,
+    this.height,
     required this.itemHeight,
     required this.itemSpacing,
     required this.menuItem,
@@ -95,10 +100,25 @@ class CretaRightMouseMenuWidget extends StatefulWidget {
 class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
   int _itemIndex = 0;
   final ScrollController _scrollController = ScrollController();
+  late double _widgetHeight;
+  late double _baseHeight;
+
+  @override
+  void initState() {
+    super.initState();
+    //print('initState----------------------------------');
+    if (widget.height == null) {
+      _widgetHeight = widget.itemHeight * widget.menuItem.length;
+    } else {
+      _widgetHeight = widget.height!;
+    }
+    _baseHeight = _widgetHeight;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return _createDropDownMenu();
+    //print('build -----------------------------');
+    return SizedBox(child: _createDropDownMenu());
   }
 
   Widget _createDropDownMenu() {
@@ -109,7 +129,7 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
           left: widget.x,
           top: widget.y,
           child: Container(
-            height: widget.height,
+            height: _widgetHeight,
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(color: CretaColor.text[300]!),
@@ -121,77 +141,32 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
               thumbVisibility: true,
               child: SingleChildScrollView(
                 controller: _scrollController,
-                child: Wrap(
-                  direction: Axis.vertical,
-                  spacing: widget.itemSpacing, // <-- Spacing between children
+                child: Column(
+                  //direction: Axis.vertical,
+                  //spacing: widget.itemSpacing, // <-- Spacing between children
                   children: widget.menuItem.map((item) {
                     if (item.caption.isEmpty) {
                       return SizedBox(
                         width: widget.width,
                         child: Divider(
-                          color: CretaColor.text[100]!,
+                          color: CretaColor.text[200]!,
                           height: 4,
                           indent: 8,
                         ),
                       );
                     }
+                    //print('${item.caption} = ${item.isHover}');
+                    if (item.isHover && item.subMenu != null) {
+                      return Column(
+                        children: [
+                          _eachItemWidget(item),
+                          ..._subMenus(item.subMenu!),
+                        ],
+                      );
+                    }
+                    Widget retval = _eachItemWidget(item);
                     _itemIndex++;
-                    return SizedBox(
-                      width: widget.width + 8,
-                      height: widget.itemHeight,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: ElevatedButton(
-                          style: _buttonStyle(item.selected, item.disabled, true),
-                          onPressed: () {
-                            setState(() {
-                              for (var ele in widget.menuItem) {
-                                if (ele.selected == true) {
-                                  ele.selected = false;
-                                }
-                              }
-                              item.selected = true;
-                              item.onPressed?.call();
-                            });
-                            Navigator.pop(context);
-                          },
-                          child: Row(
-                            children: [
-                              widget.hintList == null || widget.hintList!.length < _itemIndex
-                                  ? Text(
-                                      item.caption,
-                                      style: widget.textStyle?.copyWith(
-                                        fontFamily: item.fontFamily,
-                                        fontWeight: item.fontWeight,
-                                      ),
-                                      overflow: TextOverflow.fade,
-                                    )
-                                  : Text.rich(
-                                      TextSpan(
-                                          text: item.caption,
-                                          style: widget.textStyle,
-                                          children: [
-                                            TextSpan(
-                                              text: ' (${widget.hintList![_itemIndex - 1]})',
-                                              style: widget.textStyle?.copyWith(
-                                                  color: CretaColor.secondary,
-                                                  overflow: TextOverflow.fade),
-                                            ),
-                                          ]),
-                                    ),
-                              Expanded(child: Container()),
-                              item.selected
-                                  ? Icon(
-                                      Icons.check,
-                                      size: widget.iconSize,
-                                      color: widget.allTextColor,
-                                    )
-                                  : const SizedBox.shrink(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
+                    return retval;
                   }).toList(),
                 ),
               ),
@@ -202,7 +177,97 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
     );
   }
 
-  ButtonStyle _buttonStyle(bool isSelected, bool disabled, bool isPopup) {
+  List<Widget> _subMenus(List<CretaMenuItem> subItems) {
+    return subItems.map((e) {
+      return _eachItemWidget(e, leftPadding: 20, isSub: true);
+    }).toList();
+  }
+
+  Widget _eachItemWidget(CretaMenuItem item, {double leftPadding = 0, bool isSub = false}) {
+    return SizedBox(
+      width: widget.width + 8,
+      height: widget.itemHeight,
+      child: Padding(
+        padding: EdgeInsets.only(left: 4.0 + leftPadding, right: 4.0),
+        child: ElevatedButton(
+          style: _buttonStyle(item.selected, item.disabled, true, item.isSub),
+          onHover: (value) {
+            // 1. hover 여부는 parent 만 체크하고, sub는 체크하지 않는다.
+            // 2. 마우스가 나한테 들어오면, 나는 true 가 되고, 나머지 item 들은 모두 false 가 된다.
+            // 3. 마우스가 나가면, 아무것도 하지 않는다.  즉,  마우스가 들어오면 true 이지만, 나가도 true 이다.
+            // 4. 마우스가 나갔다고 해서 false 가 되는 것이 아니고, 다른 애 한테 들어가면, 그때 false 가 되는 것이다.
+            if (item.isSub == false) {
+              if (value == true) {
+                item.isHover = true;
+                for (var e in widget.menuItem) {
+                  if (e.caption != item.caption) {
+                    e.isHover = false;
+                  }
+                }
+               
+                setState(() {
+                  (item.isHover && item.subMenu != null)
+                      ? _widgetHeight = _baseHeight + (widget.itemHeight * item.subMenu!.length)
+                      : _widgetHeight = _baseHeight;
+                });
+              } else {
+                // 5. 단, 마우스가 메뉴를 완전히 완전히 빠져 나가면, 모두 false 가 되어야 한다.
+                // 마우스가 내 메뉴에서 빠져나갔는데, 나를 제외한 모두가 다 false 라면, 완전히 빠진것이다.
+              }
+            }
+
+            //print('${item.caption} isHover = ${item.isHover}');
+
+            item.onHover?.call(value);
+          },
+          onPressed: () {
+            setState(() {
+              for (var ele in widget.menuItem) {
+                if (ele.selected == true) {
+                  ele.selected = false;
+                }
+              }
+              item.selected = true;
+              item.onPressed?.call();
+            });
+            Navigator.pop(context);
+          },
+          child: Row(
+            children: [
+              widget.hintList == null || widget.hintList!.length <= _itemIndex
+                  ? Text(
+                      item.caption,
+                      style: widget.textStyle?.copyWith(
+                        fontFamily: item.fontFamily,
+                        fontWeight: item.fontWeight,
+                      ),
+                      overflow: TextOverflow.fade,
+                    )
+                  : Text.rich(
+                      TextSpan(text: item.caption, style: widget.textStyle, children: [
+                        TextSpan(
+                          text: ' (${widget.hintList![_itemIndex]})',
+                          style: widget.textStyle
+                              ?.copyWith(color: CretaColor.secondary, overflow: TextOverflow.fade),
+                        ),
+                      ]),
+                    ),
+              Expanded(child: Container()),
+              item.selected
+                  ? Icon(
+                      Icons.check,
+                      size: widget.iconSize,
+                      color: widget.allTextColor,
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  ButtonStyle _buttonStyle(bool isSelected, bool disabled, bool isPopup, bool isSubMenu) {
     return ButtonStyle(
       padding: widget.padding != null
           ? MaterialStateProperty.all<EdgeInsetsGeometry>(widget.padding!)
@@ -228,9 +293,17 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
             return CretaColor.primary;
           }
           if (states.contains(MaterialState.hovered)) {
-            return disabled ? CretaColor.text[200]! : CretaColor.text[600]!;
+            return disabled
+                ? CretaColor.text[200]!
+                : isSubMenu
+                    ? CretaColor.primary
+                    : CretaColor.text[600]!;
           }
-          return disabled ? CretaColor.text[200]! : CretaColor.text;
+          return disabled
+              ? CretaColor.text[200]!
+              : isSubMenu
+                  ? CretaColor.primary
+                  : CretaColor.text[600]!;
         },
       ),
       backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
@@ -241,7 +314,7 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
                   side: (!isPopup && widget.alwaysShowBorder)
                       ? const BorderSide(width: 0.5, color: Colors.grey)
                       : BorderSide.none,
-                  borderRadius: BorderRadius.circular(widget.borderRadius ?? widget.height / 2),
+                  borderRadius: BorderRadius.circular(widget.borderRadius ?? _baseHeight / 2),
                 );
               },
             )

@@ -53,7 +53,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
 
   ContentsManager? _contentsManager;
 
-  bool _isInitialized = false;
+  Future<bool>? _isInitialized;
   //final bool _isHover = false;
 
   @override
@@ -65,10 +65,10 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   @override
   void initState() {
     super.initState();
-    initChildren();
+    _isInitialized = initChildren();
   }
 
-  Future<void> initChildren() async {
+  Future<bool> initChildren() async {
     //logger.info('FrameThumbnail initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
@@ -83,15 +83,16 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       //logger.info('old ContentsManager used (${widget.model.mid})');
     }
 
-    if (_contentsManager!.onceDBGetComplete == false) {
+    //if (_contentsManager!.onceDBGetComplete == false) {
       // 썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
       // print('frame_thumbnail : getContents');
       // await _contentsManager!.getContents();
       // _contentsManager!.addRealTimeListen(widget.model.mid);
       // _contentsManager!.reOrdering();
-    }
+      //return false;
+    //}
     logger.info('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
-    _isInitialized = true;
+    return true;
   }
 
   @override
@@ -104,22 +105,25 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
           value: _contentsManager!,
         ),
       ],
-      child: _isInitialized ? _frameDropZone() : _futureBuider(),
+      //child: _isInitialized ? _frameDropZone() : _futureBuider(),
+      child: _futureBuider(),
     );
   }
 
-  Future<bool> _waitInit() async {
-    //await widget.init();
-    //bool isReady = widget.wcontroller!.value.isInitialized;
-    while (!_isInitialized) {
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-    return true;
-  }
+  // Future<bool> _waitInit() async {
+  //   //await widget.init();
+  //   //bool isReady = widget.wcontroller!.value.isInitialized;
+  //   while (!_isInitialized) {
+  //     await Future.delayed(const Duration(milliseconds: 100));
+  //   }
+  //   return true;
+  // }
 
   Widget _futureBuider() {
     return FutureBuilder<bool>(
-        future: _waitInit(),
+        initialData: false,
+        //future: _waitInit(),
+        future: _isInitialized,
         builder: (context, snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.

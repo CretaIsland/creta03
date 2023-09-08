@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
@@ -50,6 +51,7 @@ class SelectedBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.info('SelectedBox');
     final selectedBox = IgnorePointer(
       child: Container(
         key: Key('selectedBox-$mid'),

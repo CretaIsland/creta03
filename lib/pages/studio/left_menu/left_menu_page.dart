@@ -614,7 +614,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         logger.info('right mouse button clicked ${details.globalPosition}');
         logger.info('right mouse button clicked ${details.localPosition}');
         CretaRightMouseMenu.showMenu(
-          title: 'frameRightMouseMenu',
+          title: 'leftRightMouseMenu',
           context: context,
           popupMenu: [
             CretaMenuItem(
@@ -652,7 +652,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
           x: details.globalPosition.dx,
           y: details.globalPosition.dy,
           width: 150,
-          height: 120,
+          height: 110,
           //textStyle: CretaFont.bodySmall,
           iconSize: 12,
           alwaysShowBorder: true,
@@ -796,7 +796,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         logger.info('right mouse button clicked ${details.globalPosition}');
         logger.info('right mouse button clicked ${details.localPosition}');
         CretaRightMouseMenu.showMenu(
-          title: 'frameRightMouseMenu',
+          title: 'leftAddRightMouseMenu',
           context: context,
           popupMenu: [
             CretaMenuItem(

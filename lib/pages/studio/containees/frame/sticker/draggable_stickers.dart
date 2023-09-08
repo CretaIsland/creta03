@@ -11,9 +11,11 @@ import '../../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../../lang/creta_studio_lang.dart';
+import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_getx_controller.dart';
 import '../../../studio_variables.dart';
@@ -167,6 +169,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
     // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
 
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
+    //FrameModel? selectedFrame = widget.frameManager!.getSelected() as FrameModel?;
+
     //print('_drawEachStiker---------------');
     return DraggableResizable(
       key: GlobalKey(),
@@ -241,158 +245,209 @@ class _DraggableStickersState extends State<DraggableStickers> {
           setState(() {});
         }
       },
-
-      // Constraints of the sticker
-      // constraints: sticker.isText == true
-      //     ? BoxConstraints.tight(
-      //         Size(
-      //           64 * _initialStickerScale / 3,
-      //           64 * _initialStickerScale / 3,
-      //         ),
-      //       )
-      //     : BoxConstraints.tight(
-      //         Size(
-      //           64 * _initialStickerScale,
-      //           64 * _initialStickerScale,
-      //         ),
-      //       ),
-
-      // Child widget in which sticker is passed
-      child:
-          // GestureDetector(
-          //   //behavior: HitTestBehavior.translucent,
-          //   onLongPressDown: (details) {
-          //     logger
-          //         .info('Gest1 : onLongPressDown in DraggableStickers for Real Area for each sticker');
-          //     DraggableStickers.selectedAssetId = sticker.id;
-          //     widget.onTap?.call(DraggableStickers.selectedAssetId!);
-          //   },
-          //   child: SizedBox(
-          //     width: double.infinity,
-          //     height: double.infinity,
-          //     child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
-          //   ),
-          // ),
-          StudioVariables.isHandToolMode == false &&
-                  StudioVariables.isPreview == false //&& StudioVariables.isNotLinkState
-              ? InkWell(
-                  splashColor: Colors.transparent,
-                  onSecondaryTapDown: (details) {
-                    if (StudioVariables.isPreview) {
-                      return;
-                    }
-                    logger.info('right mouse button clicked ${details.globalPosition}');
-                    logger.info('right mouse button clicked ${details.localPosition}');
-                    bool isFullScreen = frameModel!.isFullScreenTest(widget.book);
-
-                    CretaRightMouseMenu.showMenu(
-                      title: 'frameRightMouseMenu',
-                      context: context,
-                      popupMenu: [
-                        CretaMenuItem(
-                            caption: CretaStudioLang.putInDepotContents,
-                            onPressed: () {
-                              logger.info('${CretaStudioLang.putInDepotContents} menu clicked');
-                              ContentsManager? contentsManager =
-                                  widget.frameManager!.getContentsManager(frameModel.mid);
-                              if (contentsManager != null) {
-                                ContentsModel? selected =
-                                    contentsManager.getSelected() as ContentsModel?;
-                                if (selected != null) {
-                                  contentsManager.putInDepot(selected);
-                                }
-                              }
-                            }),
-                        CretaMenuItem(
-                            caption: CretaStudioLang.putInDepotFrame,
-                            onPressed: () {
-                              logger.info('${CretaStudioLang.putInDepotFrame} menu clicked');
-                              ContentsManager? contentsManager =
-                                  widget.frameManager!.getContentsManager(frameModel.mid);
-                              contentsManager?.putInDepot(null);
-                            }),
-                        CretaMenuItem(
-                            caption:
-                                isFullScreen ? CretaStudioLang.realSize : CretaStudioLang.maxSize,
-                            onPressed: () {
-                              logger.info('${CretaStudioLang.maxSize} menu clicked');
-                              setState(() {
-                                frameModel.toggleFullscreen(isFullScreen, widget.book);
-                                _sendEvent!.sendEvent(frameModel);
-                              });
-                            }),
-                        CretaMenuItem(
-                            caption: frameModel.isShow.value
-                                ? CretaStudioLang.unshow
-                                : CretaStudioLang.show,
-                            onPressed: () {
-                              BookMainPage.containeeNotifier!.setFrameClick(true);
-                              frameModel.isShow.set(!frameModel.isShow.value);
-                              frameModel.changeOrderByIsShow(widget.frameManager!);
-                              widget.onFrameShowUnshow.call(frameModel.mid);
-                            }),
-                        CretaMenuItem(caption: '', onPressed: () {}), //divider
-                        CretaMenuItem(
-                            caption: CretaStudioLang.copy,
-                            onPressed: () {
-                              StudioVariables.clipFrame(frameModel, widget.frameManager!);
-                              //widget.onFrameShowUnshow.call(frameModel.mid);
-                            }),
-                        CretaMenuItem(
-                            caption: CretaStudioLang.crop,
-                            onPressed: () {
-                              frameModel.isRemoved.set(true);
-                              StudioVariables.cropFrame(frameModel, widget.frameManager!);
-                              widget.onFrameShowUnshow.call(frameModel.mid);
-                            }),
-                        // CretaMenuItem(
-                        //     disabled: StudioVariables.clipBoard == null ? true : false,
-                        //     caption: CretaStudioLang.paste,
-                        //     onPressed: () {
-                        //
-                        //     }),
-                      ],
-                      itemHeight: 24,
-                      x: details.globalPosition.dx,
-                      y: details.globalPosition.dy,
-                      width: 283,
-                      height: 200,
-                      //textStyle: CretaFont.bodySmall,
-                      iconSize: 12,
-                      alwaysShowBorder: true,
-                      borderRadius: 8,
-                    );
-                  },
-                  onTap: () {
-                    // To update the selected widget
-                    DraggableStickers.frameSelectNotifier?.set(sticker.id);
-                    logger.info('InkWell onTap from draggable_stickers...');
-                    //print(
-                    //    'InkWell onTap from draggable_stickers...${BookMainPage.containeeNotifier!.selectedClass}');
-                    //setState(() {});
-                    widget.onTap?.call(sticker.id);
-                  },
-                  child:
-                      // _frameDropZone(
-                      //   sticker,
-                      //child:
-                      SizedBox(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
-                  ),
-                  //),
-                )
-              : //_frameDropZone(
-              //sticker,
-              //child:
-              SizedBox(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
-                ),
+      child: (StudioVariables.isHandToolMode == false) //&& StudioVariables.isNotLinkState
+          ? InkWell(
+              splashColor: Colors.transparent,
+              onSecondaryTapDown: (details) {
+                if (DraggableStickers.frameSelectNotifier != null) {
+                  if (DraggableStickers.frameSelectNotifier!.selectedAssetId != sticker.id) return;
+                }
+                // DraggableStickers.frameSelectNotifier?.set(sticker.id);
+                // logger.info('InkWell onTap from draggable_stickers...');
+                // widget.onTap?.call(sticker.id);
+                // Right Mouse Button
+                _showRightMouseMenu(details, frameModel!);
+                // if (selectedFrame != null &&
+                //     frameModel != null &&
+                //     frameModel.mid == selectedFrame.mid) {
+                //   _showRightMouseMenu(details, frameModel);
+                // }
+              },
+              onTap: () {
+                // To update the selected widget
+                //print('1.....${CretaUtils.timeLap()}');
+                DraggableStickers.frameSelectNotifier?.set(sticker.id);
+                //print('2.....${CretaUtils.timeLap()}');
+                //print('InkWell onTap from draggable_stickers...');
+                widget.onTap?.call(sticker.id);
+                //print('end.....${CretaUtils.timeLap()}');
+              },
+              child: SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+              ),
+              //),
+            )
+          : SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+            ),
       //),
     );
+  }
+
+  void _showRightMouseMenu(TapDownDetails details, FrameModel frameModel) {
+    logger.info('right mouse button clicked ${details.globalPosition}');
+    logger.info('right mouse button clicked ${details.localPosition}');
+
+    bool isFullScreen = frameModel.isFullScreenTest(widget.book);
+
+    double menuWidth = 283;
+
+    CretaRightMouseMenu.showMenu(
+      title: 'frameRightMouseMenu',
+      context: context,
+      popupMenu: [
+        if (frameModel.frameType == FrameType.none && StudioVariables.isPreview == false)
+          CretaMenuItem(
+              subMenu: _subMenuItems(frameModel, true),
+              caption: CretaStudioLang.putInDepotContents,
+              onPressed: () {
+                // ContentsManager? contentsManager =
+                //     widget.frameManager!.getContentsManager(frameModel.mid);
+                // if (contentsManager != null) {
+                //   ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
+                //   if (selected != null) {
+                //     contentsManager.putInDepot(selected);
+                //   }
+                // }
+              }),
+        if (frameModel.frameType == FrameType.none && StudioVariables.isPreview == false)
+          CretaMenuItem(
+              subMenu: _subMenuItems(frameModel, false),
+              caption: CretaStudioLang.putInDepotFrame,
+              onPressed: () {
+                // ContentsManager? contentsManager =
+                //     widget.frameManager!.getContentsManager(frameModel.mid);
+                // contentsManager?.putInDepot(null);
+              }),
+        CretaMenuItem(
+            caption: isFullScreen ? CretaStudioLang.realSize : CretaStudioLang.maxSize,
+            onPressed: () {
+              logger.info('${CretaStudioLang.maxSize} menu clicked');
+              setState(() {
+                frameModel.toggleFullscreen(isFullScreen, widget.book);
+                _sendEvent!.sendEvent(frameModel);
+              });
+            }),
+        CretaMenuItem(
+            caption: frameModel.isShow.value ? CretaStudioLang.unshow : CretaStudioLang.show,
+            onPressed: () {
+              BookMainPage.containeeNotifier!.setFrameClick(true);
+              frameModel.isShow.set(!frameModel.isShow.value);
+              frameModel.changeOrderByIsShow(widget.frameManager!);
+              widget.onFrameShowUnshow.call(frameModel.mid);
+            }),
+        if (StudioVariables.isPreview == false)
+          CretaMenuItem(caption: '', onPressed: () {}), //divider
+        if (StudioVariables.isPreview == false)
+          CretaMenuItem(
+              caption: CretaStudioLang.copy,
+              onPressed: () {
+                StudioVariables.clipFrame(frameModel, widget.frameManager!);
+                //widget.onFrameShowUnshow.call(frameModel.mid);
+              }),
+        if (StudioVariables.isPreview == false)
+          CretaMenuItem(
+              caption: CretaStudioLang.crop,
+              onPressed: () {
+                frameModel.isRemoved.set(true);
+                StudioVariables.cropFrame(frameModel, widget.frameManager!);
+                widget.onFrameShowUnshow.call(frameModel.mid);
+              }),
+        // CretaMenuItem(
+        //     disabled: StudioVariables.clipBoard == null ? true : false,
+        //     caption: CretaStudioLang.paste,
+        //     onPressed: () {
+        //
+        //     }),
+      ],
+      itemHeight: 24,
+      x: details.globalPosition.dx,
+      y: details.globalPosition.dy,
+      width: menuWidth,
+      //height: menuHeight,
+      //textStyle: CretaFont.bodySmall,
+      iconSize: 12,
+      alwaysShowBorder: true,
+      borderRadius: 8,
+    );
+  }
+
+  List<CretaMenuItem> _subMenuItems(FrameModel frameModel, bool isContents) {
+    List<CretaMenuItem> teamMenuList = CretaAccountManager.getTeamList.map((e) {
+      String teamName = e.name;
+      return CretaMenuItem(
+          isSub: true,
+          caption: '$teamName${CretaStudioLang.putInTeamDepot}',
+          onPressed: () {
+            _putInDepot(frameModel, isContents);
+          });
+    }).toList();
+
+    return [
+      CretaMenuItem(
+          isSub: true,
+          caption: CretaStudioLang.putInMyDepot,
+          onPressed: () {
+            _putInDepot(frameModel, isContents);
+          }),
+      ...teamMenuList,
+    ];
+  }
+
+  // ignore: unused_element
+  // void _showTeamListMenu(double dx, double dy, FrameModel frameModel, bool isContents) {
+  //   List<CretaMenuItem> teamMenuList = CretaAccountManager.getTeamList.map((e) {
+  //     String teamName = e.name;
+  //     return CretaMenuItem(
+  //         caption: '$teamName${CretaStudioLang.putInTeamDepot}',
+  //         onPressed: () {
+  //           _putInDepot(frameModel, isContents);
+  //         });
+  //   }).toList();
+
+  //   print('_showTeamListMenu');
+
+  //   CretaRightMouseMenu.showMenu(
+  //     title: 'frameRightMouseMenu2',
+  //     context: context,
+  //     popupMenu: [
+  //       CretaMenuItem(
+  //           caption: CretaStudioLang.putInMyDepot,
+  //           onPressed: () {
+  //             _putInDepot(frameModel, isContents);
+  //           }),
+  //       ...teamMenuList,
+  //     ],
+  //     itemHeight: 24,
+  //     x: dx,
+  //     y: dy,
+  //     width: 283,
+  //     height: 100,
+  //     //textStyle: CretaFont.bodySmall,
+  //     iconSize: 12,
+  //     alwaysShowBorder: true,
+  //     borderRadius: 8,
+  //   );
+  // }
+
+  void _putInDepot(FrameModel frameModel, bool isContents) {
+    if (isContents) {
+      ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
+      if (contentsManager != null) {
+        ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
+        if (selected != null) {
+          contentsManager.putInDepot(selected);
+        }
+      }
+    } else {
+      // frame Case
+      ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
+      contentsManager?.putInDepot(null);
+    }
   }
 
   Sticker? _getSelectedSticker() {
