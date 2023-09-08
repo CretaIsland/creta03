@@ -648,10 +648,10 @@ class CretaUtils {
     ).toList();
   }
 
-  static int timeLap() {
+  static double timeLap() {
     DateTime now = DateTime.now();
     int retval = now.difference(debugTime).inMicroseconds;
     debugTime = now;
-    return retval;
+    return retval.toDouble() / 1000000;
   }
 }
