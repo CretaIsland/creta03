@@ -1,11 +1,13 @@
 import 'package:creta03/data_io/depot_manager.dart';
 import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/model/depot_model.dart';
+import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import '../../../../design_system/component/custom_image.dart';
 import '../../../../design_system/component/snippet.dart';
 import '../../../../model/contents_model.dart';
+import '../../../../model/team_model.dart';
 import '../../studio_variables.dart';
 import 'depot_selected.dart';
 // ignore: depend_on_referenced_packages
@@ -14,17 +16,18 @@ import 'package:provider/provider.dart';
 class DepotDisplay extends StatefulWidget {
   final ContentsType contentsType;
   final DepotModel? model;
-  final bool isMultipleSelected;
+  final String? myTeamMid;
   const DepotDisplay({
     required this.contentsType,
-    this.isMultipleSelected = false,
     this.model,
+    this.myTeamMid,
     super.key,
   });
 
   static Set<DepotModel> shiftSelectedSet = {};
   static Set<DepotModel> ctrlSelectedSet = {};
-  static DepotManager depotManager = DepotManager(userEmail: AccountManager.currentLoginUser.email);
+  static DepotManager depotManager =
+      DepotManager(userEmail: AccountManager.currentLoginUser.email, myTeamMid: 'myTeamMid');
 
   @override
   State<DepotDisplay> createState() => _DepotDisplayClassState();
@@ -37,11 +40,10 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
   final double imageWidth = 160.0;
   final double imageHeight = 95.0;
 
-  // static List<ContentsModel> filteredContents = [];
-
   // bool _dbJobComplete = false;
 
-  static Future<List<ContentsModel>>? _contentInfo;
+  Future<List<ContentsModel>>? _contentInfo;
+  List<TeamModel> userTeam = CretaAccountManager.getTeamList;
 
   @override
   void initState() {
@@ -55,14 +57,18 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
     //     return value;
     //   },
     // );
+    // _contentInfo = DepotDisplay.depotManager
+    //     .getContentInfoList(contentsType: widget.contentsType, widget.teamName);
     _contentInfo = DepotDisplay.depotManager.getContentInfoList(contentsType: widget.contentsType);
   }
 
-  @override
-  void didUpdateWidget(DepotDisplay oldWidget) {
-    setState(() {});
-    super.didUpdateWidget(oldWidget);
-  }
+  // update _contentInfo based on
+
+  // @override
+  // void didUpdateWidget(DepotDisplay oldWidget) {
+  //   setState(() {});
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
   // Future<List<ContentsModel>> _waitDbJobComplete() async {
   //   while (_dbJobComplete == false) {
@@ -70,6 +76,7 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
   //   }
   //   return SelectionManager.filteredContents;
   // }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

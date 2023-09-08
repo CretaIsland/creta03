@@ -82,13 +82,6 @@ class CretaStudioLang {
     'AI 생성': 'AI_generated_image',
   };
 
-  // ---- Added by Mai 230718 ---- //
-  static Map<String, String> storageMenuTabBar = {
-    '내 보관함': 'myStorage',
-    '팀 이름 1': 'team_1',
-    '팀 이름 2': 'team_2',
-  };
-
   static Map<String, String> storageTypes = {
     '전체': 'all',
     '이미지': 'image',
@@ -569,7 +562,7 @@ class CretaStudioLang {
   static String maxSize = "최대 사이즈로";
 
   static String useThisThumbnail = "이 콘텐츠를 썸네일로 사용";
-  
+
   static String putInDepot = "보관함에 넣기";
   static String putInDepotContents = "현재 콘텐츠만 보관함에 넣기";
   static String putInDepotFrame = "현재 프레임의 모든 콘텐츠 보관함에 넣기";
