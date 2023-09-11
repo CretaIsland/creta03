@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/frame_model.dart';
-import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import 'draggable_stickers.dart';
 import 'resize_point.dart';
@@ -74,14 +73,14 @@ class _SelectedBoxState extends State<SelectedBox> {
   //   print('didUpdateWidget-------------------------------');
   // }
 
-  Future<void> _invokeNotify() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    // 속도 향상을 위해, miniMenuNotifier  와 containeeNotifier 를 이곳에서 한다.
-    //print('5 before set and notify MiniMenuNotifier : ${CretaUtils.timeLap()}');
-    BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
-    //print('6.before notify ContaineeNotifier : ${CretaUtils.timeLap()}');
-    BookMainPage.containeeNotifier!.notify();
-  }
+  // Future<void> _invokeNotify() async {
+  //   await Future.delayed(const Duration(milliseconds: 500));
+  //   // 속도 향상을 위해, miniMenuNotifier  와 containeeNotifier 를 이곳에서 한다.
+  //   //print('5 before set and notify MiniMenuNotifier : ${CretaUtils.timeLap()}');
+  //   BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
+  //   //print('6.before notify ContaineeNotifier : ${CretaUtils.timeLap()}');
+  //   BookMainPage.containeeNotifier!.notify();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +208,7 @@ class _SelectedBoxState extends State<SelectedBox> {
               ..._dragBoxes(heightCenter, widthCenter),
           ],
         );
-        _invokeNotify();
+        //_invokeNotify();
         return mainBuild;
       }
       // } else {
