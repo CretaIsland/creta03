@@ -30,7 +30,7 @@ class CretaSlider extends StatefulWidget {
 
 class _CretaSliderState extends State<CretaSlider> {
   bool hover = false;
-  bool clicked = false;
+  //bool clicked = false;
   double _value = 0;
 
   @override
@@ -70,19 +70,19 @@ class _CretaSliderState extends State<CretaSlider> {
         //foregroundDecoration:
         //BoxDecoration(color: clicked ? CretaColor.primary[500] : CretaColor.primary),
         onDragStarted: (handlerIndex, lowerValue, upperValue) {
-          setState(() {
-            clicked = true;
-          });
+          // setState(() {
+          //   clicked = true;
+          // });
         },
         onDragging: (handlerIndex, lowerValue, upperValue) {
           widget.onDragging?.call(lowerValue);
         },
         onDragCompleted: (handlerIndex, lowerValue, upperValue) {
-          setState(() {
-            _value = lowerValue;
-            clicked = false;
-            logger.finest("result=$handlerIndex,$lowerValue, $upperValue");
-          });
+          //setState(() {
+          _value = lowerValue;
+          //clicked = false;
+          logger.finest("result=$handlerIndex,$lowerValue, $upperValue");
+          //});
           widget.onDragComplete(lowerValue);
         },
         values: [_value],
@@ -98,9 +98,9 @@ class _CretaSliderState extends State<CretaSlider> {
             //borderRadius: BorderRadius.all(Radius.circular(hover ? 20 : 12)),
             shape: BoxShape.circle,
             color: hover
-                ? clicked
-                    ? CretaColor.primary[500]
-                    : CretaColor.primary
+                //? clicked
+                ? CretaColor.primary[500]
+                //  : CretaColor.primary
                 : Colors.white,
             border: Border.all(color: CretaColor.primary, width: 1.0),
           ),

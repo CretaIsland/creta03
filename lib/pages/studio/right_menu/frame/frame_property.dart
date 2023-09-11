@@ -369,8 +369,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                               onEditComplete: ((value) {
                                 _sizeChanged(value, widget.model.width, widget.model.height);
                               }),
-                              minNumber: LayoutConst.minFrameSize,
-                              maxNumber: _bookModel!.width.value.round(),
+                              minNumber: LayoutConst.minFrameSize.toDouble(),
+                              maxNumber: _bookModel!.width.value,
                             ),
                           ],
                         ),
@@ -406,8 +406,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                               textFieldKey: GlobalKey(),
                               value: widget.model.height.value.round().toString(),
                               hintText: '',
-                              minNumber: LayoutConst.minFrameSize,
-                              maxNumber: _bookModel!.height.value.round(),
+                              minNumber: LayoutConst.minFrameSize.toDouble(),
+                              maxNumber: _bookModel!.height.value,
                               onEditComplete: ((value) {
                                 _sizeChanged(value, widget.model.height, widget.model.width);
                               }),

@@ -60,6 +60,7 @@ enum CretaTextFieldType {
   text,
   longText,
   number,
+  double,
   color,
   password,
 }
@@ -76,8 +77,8 @@ class CretaTextField extends LastClickable {
   final CretaTextFieldType textType;
   final bool selectAtInit;
   final int limit;
-  final int? minNumber;
-  final int? maxNumber;
+  final double? minNumber;
+  final double? maxNumber;
   final TextEditingController? controller;
   final TextAlign align;
   final Border? defaultBorder;
@@ -131,6 +132,34 @@ class CretaTextField extends LastClickable {
     this.maxLines = 1,
     this.radius = 3,
     this.textType = CretaTextFieldType.number,
+    this.limit = 3,
+    this.selectAtInit = true,
+    this.maxNumber,
+    this.minNumber,
+    this.align = TextAlign.end,
+    this.enabled = true,
+    this.defaultBorder,
+    this.onChanged,
+    this.textInputAction,
+    this.keyboardType,
+    this.alignVertical = TextAlignVertical.center,
+    this.autoComplete = false,
+    this.autoHeight = false,
+    this.autofillHints = const <String>[],
+  }) : super(key: textFieldKey);
+
+  CretaTextField.double({
+    required this.textFieldKey,
+    required this.value,
+    required this.hintText,
+    required super.onEditComplete,
+    this.onTapOutside,
+    this.controller,
+    this.width = 40,
+    this.height = 22,
+    this.maxLines = 1,
+    this.radius = 3,
+    this.textType = CretaTextFieldType.double,
     this.limit = 3,
     this.selectAtInit = true,
     this.maxNumber,
@@ -324,6 +353,11 @@ class CretaTextFieldState extends State<CretaTextField> {
   // }
 
   @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
   void initState() {
     _controller = widget.controller ?? TextEditingController();
     _controller.text = widget.value;
@@ -350,7 +384,7 @@ class CretaTextFieldState extends State<CretaTextField> {
             if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
               logger.finest('onKeyEvent(${event.logicalKey.debugName})');
               int number = int.parse(_controller.text);
-              if (widget.maxNumber == null || number < widget.maxNumber!) {
+              if (widget.maxNumber == null || number < widget.maxNumber!.round()) {
                 number++;
                 setState(() {
                   _controller.text = '$number';
@@ -361,8 +395,32 @@ class CretaTextFieldState extends State<CretaTextField> {
             if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
               logger.finest('onKeyEvent(${event.logicalKey.debugName})');
               int number = int.parse(_controller.text);
-              if (widget.maxNumber == null || number > widget.minNumber!) {
+              if (widget.maxNumber == null || number > widget.minNumber!.round()) {
                 number--;
+                setState(() {
+                  _controller.text = '$number';
+                });
+              }
+              return KeyEventResult.handled;
+            }
+          }
+          if (widget.textType == CretaTextFieldType.double) {
+            if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+              logger.finest('onKeyEvent(${event.logicalKey.debugName})');
+              double number = double.parse(_controller.text);
+              if (widget.maxNumber == null || number < widget.maxNumber!) {
+                number = number + 0.1;
+                setState(() {
+                  _controller.text = '$number';
+                });
+              }
+              return KeyEventResult.handled;
+            }
+            if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+              logger.finest('onKeyEvent(${event.logicalKey.debugName})');
+              double number = double.parse(_controller.text);
+              if (widget.maxNumber == null || number > widget.minNumber!) {
+                number = number - 0.1;
                 setState(() {
                   _controller.text = '$number';
                 });
@@ -430,6 +488,26 @@ class CretaTextFieldState extends State<CretaTextField> {
     //);
   }
 
+  List<TextInputFormatter>? _format(CretaTextFieldType textType) {
+    switch (textType) {
+      case CretaTextFieldType.number:
+        return [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(widget.limit),
+        ];
+      case CretaTextFieldType.double:
+        return [
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]*')),
+        ];
+      case CretaTextFieldType.color:
+        return [
+          FilteringTextInputFormatter.allow(RegExp('^[0-9#A-Fa-f]{0,${widget.limit}}\$')),
+        ];
+      default:
+        return null;
+    }
+  }
+
   Widget _cupertinoTextField() {
     return MouseRegion(
       onEnter: (event) {
@@ -460,7 +538,8 @@ class CretaTextFieldState extends State<CretaTextField> {
         enabled: widget.enabled,
         textAlign: widget.align,
         keyboardType: widget.keyboardType ??
-            (widget.textType == CretaTextFieldType.number
+            ((widget.textType == CretaTextFieldType.number ||
+                    widget.textType == CretaTextFieldType.double)
                 ? TextInputType.number
                 : TextInputType.none),
         focusNode: _focusNode,
@@ -471,18 +550,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         //         ? OverlayVisibilityMode.editing
         //         : OverlayVisibilityMode.never
         //     : OverlayVisibilityMode.never,
-        inputFormatters: widget.textType == CretaTextFieldType.number
-            ? [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(widget.limit),
-                //FilteringTextInputFormatter.allow(RegExp('^[0-9]\$')),
-              ]
-            : widget.textType == CretaTextFieldType.color
-                ? [
-                    //LengthLimitingTextInputFormatter(widget.limit),
-                    FilteringTextInputFormatter.allow(RegExp('^[0-9#A-Fa-f]{0,${widget.limit}}\$')),
-                  ]
-                : null,
+        inputFormatters: _format(widget.textType),
         maxLines: widget.maxLines,
         minLines: widget.maxLines,
         //maxLines: 1,
@@ -565,7 +633,7 @@ class CretaTextFieldState extends State<CretaTextField> {
 
   void _onSubmitted(String value) {
     if (isNumeric()) {
-      int num = int.parse(value);
+      double num = double.parse(value);
       if (widget.maxNumber != null && num > widget.maxNumber!) {
         setState(() {
           _controller.text = '${widget.maxNumber!}';
@@ -618,6 +686,7 @@ class CretaTextFieldState extends State<CretaTextField> {
 
   bool isNumeric() {
     return (widget.textType == CretaTextFieldType.number ||
+        widget.textType == CretaTextFieldType.double ||
         widget.textType == CretaTextFieldType.color);
   }
 

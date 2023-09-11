@@ -81,10 +81,12 @@ class ContentsModel extends CretaModel {
   late UndoAble<bool> isUnderline;
   late UndoAble<bool> isStrike;
   //late UndoAble<TextLineType> line;
-  late UndoAble<double> letterSpacing;
-  late UndoAble<double> wordSpacing;
+  late UndoAble<double> letterSpacing; // 자간
+  late UndoAble<double> lineHeight; // 행간
+  late UndoAble<double> scaleFactor; //장평
   late UndoAble<TextAniType> aniType;
-  late UndoAble<TextAlign> align; // 정렬
+  late UndoAble<TextAlign> align; // horizontal 정렬
+  late UndoAble<TextAlign> valign; // vertical 정렬
   late UndoAble<double> anyDuration;
   late UndoAble<bool> isTTS;
   late UndoAble<String> lang;
@@ -134,10 +136,12 @@ class ContentsModel extends CretaModel {
         isStrike,
         //line,
         letterSpacing,
-        wordSpacing,
+        lineHeight,
+        scaleFactor,
         aniType,
         imageAniType,
         align,
+        valign,
         anyDuration,
         isTTS,
         lang,
@@ -218,11 +222,13 @@ class ContentsModel extends CretaModel {
     isItalic = UndoAble<bool>(false, mid, 'isItalic');
     isUnderline = UndoAble<bool>(false, mid, 'isUnderline');
     isStrike = UndoAble<bool>(false, mid, 'isStrike');
-    letterSpacing = UndoAble<double>(0, mid, 'letterSpacing');
-    wordSpacing = UndoAble<double>(0, mid, 'wordSpacing');
+    letterSpacing = UndoAble<double>(1.0, mid, 'letterSpacing');
+    lineHeight = UndoAble<double>(0, mid, 'lineHeight');
+    scaleFactor = UndoAble<double>(100, mid, 'scaleFactor');
     aniType = UndoAble<TextAniType>(TextAniType.none, mid, 'aniType');
     imageAniType = UndoAble<ImageAniType>(ImageAniType.none, mid, 'imageAniType');
     align = UndoAble<TextAlign>(TextAlign.center, mid, 'align');
+    valign = UndoAble<TextAlign>(TextAlign.center, mid, 'valign');
     anyDuration = UndoAble<double>(0, mid, 'anyDuration');
     isTTS = UndoAble<bool>(false, mid, 'isTTS');
     lang = UndoAble<String>('ko', mid, 'lang');
@@ -281,9 +287,11 @@ class ContentsModel extends CretaModel {
     isItalic = UndoAble<bool>(srcContents.isItalic.value, mid, 'isItalic');
     isUnderline = UndoAble<bool>(srcContents.isUnderline.value, mid, 'isUnderline');
     isStrike = UndoAble<bool>(srcContents.isStrike.value, mid, 'isStrike');
-    letterSpacing = UndoAble<double>(srcContents.letterSpacing.value, mid, 'letterSpacing');
-    wordSpacing = UndoAble<double>(srcContents.wordSpacing.value, mid, 'wordSpacing');
+    letterSpacing = UndoAble<double>(srcContents.letterSpacing.value, mid, 'letterSpacing'); //  자간
+    lineHeight = UndoAble<double>(srcContents.lineHeight.value, mid, 'lineHeight'); // 행간
+    scaleFactor = UndoAble<double>(srcContents.scaleFactor.value, mid, 'scaleFactor'); // 행간
     align = UndoAble<TextAlign>(srcContents.align.value, mid, 'align');
+    valign = UndoAble<TextAlign>(srcContents.valign.value, mid, 'valign');
     aniType = UndoAble<TextAniType>(srcContents.aniType.value, mid, 'aniType');
     imageAniType = UndoAble<ImageAniType>(srcContents.imageAniType.value, mid, 'imageAniType');
     anyDuration = UndoAble<double>(srcContents.anyDuration.value, mid, 'anyDuration');
@@ -353,8 +361,10 @@ class ContentsModel extends CretaModel {
     isUnderline.init(srcContents.isUnderline.value);
     isStrike.init(srcContents.isStrike.value);
     letterSpacing.init(srcContents.letterSpacing.value);
-    wordSpacing.init(srcContents.wordSpacing.value);
+    lineHeight.init(srcContents.lineHeight.value);
+    scaleFactor.init(srcContents.scaleFactor.value);
     align.init(srcContents.align.value);
+    valign.init(srcContents.valign.value);
     aniType.init(srcContents.aniType.value);
     imageAniType.init(srcContents.imageAniType.value);
     anyDuration.init(srcContents.anyDuration.value);
@@ -449,9 +459,11 @@ class ContentsModel extends CretaModel {
     isUnderline.set(map["isUnderline"] ?? false, save: false, noUndo: true);
     isStrike.set(map["isStrike"] ?? false, save: false, noUndo: true);
     //line.set(TextLineType.fromInt(map["line"] ?? 0), save: false, noUndo: true);
-    letterSpacing.set(map["letterSpacing"] ?? 0, save: false, noUndo: true);
-    wordSpacing.set(map["wordSpacing"] ?? 0, save: false, noUndo: true);
+    letterSpacing.set(map["letterSpacing"] ?? 1.0, save: false, noUndo: true);
+    lineHeight.set(map["lineHeight"] ?? 0, save: false, noUndo: true);
+    scaleFactor.set(map["scaleFactor"] ?? 100, save: false, noUndo: true);
     align.set(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
+    valign.set(intToTextAlign(map["valign"] ?? 2), save: false, noUndo: true);
     aniType.set(TextAniType.fromInt(map["aniType"] ?? 0), save: false, noUndo: true);
     imageAniType.set(ImageAniType.fromInt(map["imageAniType"] ?? 0), save: false, noUndo: true);
     anyDuration.set(map["anyDuration"] ?? 0, save: false, noUndo: true);
@@ -505,8 +517,10 @@ class ContentsModel extends CretaModel {
         "isStrike": isStrike.value,
         //"line": line.value.index,
         "letterSpacing": letterSpacing.value,
-        "wordSpacing": wordSpacing.value,
+        "lineHeight": lineHeight.value,
+        "scaleFactor": scaleFactor.value,
         "align": align.value.index,
+        "valign": valign.value.index,
         "aniType": aniType.value.index,
         "imageAniType": imageAniType.value.index,
         "anyDuration": anyDuration.value,

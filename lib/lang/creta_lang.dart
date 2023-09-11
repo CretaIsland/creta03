@@ -95,6 +95,8 @@ class CretaLang {
 
   static String text = "텍스트";
   static String font = "폰트";
+  static String fontColor = "폰트색";
+  static String fontControl = "폰트 조정";
 
   static String fontNanum_Myeongjo = '나눔명조';
   static String fontJua = '유아';
