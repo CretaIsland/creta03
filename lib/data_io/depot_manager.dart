@@ -25,7 +25,7 @@ class DepotManager extends CretaManager {
     String tableName = 'creta_depot',
   }) : super(
           tableName,
-          userEmail,
+          myTeamMid ?? userEmail,
         ) {
     saveManagerHolder?.registerManager('depot', this, postfix: userEmail);
   }
@@ -71,10 +71,11 @@ class DepotManager extends CretaManager {
 
   Future<DepotModel?> createNextDepot(
     String contentsMid,
-    ContentsType contentsType, {
+    ContentsType contentsType,
+    String? teamId, {
     bool doNotify = true,
   }) async {
-    DepotModel? depoModel = await isExist(contentsMid);
+    DepotModel? depoModel = await isExist(contentsMid, teamId);
     if (depoModel != null) {
       debugPrint('$contentsMid is already exist');
       depoModel.save();
@@ -83,11 +84,12 @@ class DepotManager extends CretaManager {
     DepotModel model = DepotModel('', parentMid!);
     model.contentsMid = contentsMid;
     model.contentsType = contentsType;
-    return await _createNextDepot(model, doNotify: doNotify);
+    return await _createNextDepot(model, teamId, doNotify: doNotify);
   }
 
   Future<DepotModel> _createNextDepot(
-    DepotModel model, {
+    DepotModel model,
+    String? teamId, {
     bool doNotify = true,
   }) async {
     logger.info('createNextDepot()');
@@ -166,13 +168,13 @@ class DepotManager extends CretaManager {
       }
       query['isRemoved'] = QueryValue(value: false);
 
-      //if (depotOrder == DepotOrderEnum.latest) {
-      Map<String, OrderDirection> orderBy = {};
-      orderBy['updateTime'] = OrderDirection.descending;
-      await queryFromDB(query, orderBy: orderBy);
-      //} else {
-      //  await queryFromDB(query);
-      // }
+      if (depotOrder == DepotOrderEnum.latest) {
+        Map<String, OrderDirection> orderBy = {};
+        orderBy['updateTime'] = OrderDirection.descending;
+        await queryFromDB(query, orderBy: orderBy);
+      } else {
+        await queryFromDB(query);
+      }
 
       contentsCount = modelList.length;
       logger.info('contentsCount ${modelList.length}, contentsType: $contentsType');
@@ -184,10 +186,14 @@ class DepotManager extends CretaManager {
     return contentsCount;
   }
 
-  Future<DepotModel?> getDepotCount(String contentsMid) async {
+  Future<DepotModel?> getDepotCount(String contentsMid, String? teamId) async {
     try {
       Map<String, QueryValue> query = {};
-      query['contentsMid'] = QueryValue(value: contentsMid); // parentMid = userId
+      query['contentsMid'] = QueryValue(value: contentsMid);
+      if (teamId != null) {
+        // parentMid = userId
+        query['parentMid'] = QueryValue(value: teamId);
+      } // parentMid = userId
       query['isRemoved'] = QueryValue(value: false);
       await queryFromDB(query);
       if (modelList.isEmpty) {
@@ -242,15 +248,15 @@ class DepotManager extends CretaManager {
       filteredContents.sort((a, b) => a.name.compareTo(b.name));
     }
 
-    debugPrint('----getContentInfoList-----${filteredContents.length}');
+    // print('----getContentInfoList-----${filteredContents.length}');
     contentsMidSet.clear();
     return filteredContents;
   }
 
-  Future<DepotModel?> isExist(String contentsMid) async {
+  Future<DepotModel?> isExist(String contentsMid, String? teamId) async {
     // return null;
     DepotManager dummy = DepotManager(userEmail: AccountManager.currentLoginUser.email);
-    return await dummy.getDepotCount(contentsMid);
+    return await dummy.getDepotCount(contentsMid, teamId);
   }
 
   // getContents Detail Info Using contents mid

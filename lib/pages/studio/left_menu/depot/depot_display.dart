@@ -3,6 +3,7 @@ import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/model/depot_model.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
+//import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
 import '../../../../design_system/component/custom_image.dart';
 import '../../../../design_system/component/snippet.dart';
@@ -16,18 +17,38 @@ import 'package:provider/provider.dart';
 class DepotDisplay extends StatefulWidget {
   final ContentsType contentsType;
   final DepotModel? model;
-  final String? myTeamMid;
+  final String? myTeamId;
   const DepotDisplay({
     required this.contentsType,
     this.model,
-    this.myTeamMid,
+    this.myTeamId,
     super.key,
   });
 
   static Set<DepotModel> shiftSelectedSet = {};
   static Set<DepotModel> ctrlSelectedSet = {};
-  static DepotManager depotManager =
-      DepotManager(userEmail: AccountManager.currentLoginUser.email, myTeamMid: 'myTeamMid');
+  static final DepotManager _depotManager =
+      DepotManager(userEmail: AccountManager.currentLoginUser.email, myTeamMid: null);
+  static final List<DepotManager> _depotTeamManagerList = [];
+
+  static int initDepotTeamManagers() {
+    for (var ele in CretaAccountManager.getTeamList) {
+      DepotDisplay._depotTeamManagerList.add(DepotManager(userEmail: ele.mid, myTeamMid: ele.mid));
+    }
+    return DepotDisplay._depotTeamManagerList.length;
+  }
+
+  static DepotManager? getMyTeamManager(String? teamId) {
+    if (teamId == null) {
+      return _depotManager;
+    }
+    for (var ele in DepotDisplay._depotTeamManagerList) {
+      if (ele.parentMid == teamId) {
+        return ele;
+      }
+    }
+    return null;
+  }
 
   @override
   State<DepotDisplay> createState() => _DepotDisplayClassState();
@@ -44,6 +65,26 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
 
   Future<List<ContentsModel>>? _contentInfo;
   List<TeamModel> userTeam = CretaAccountManager.getTeamList;
+  late DepotManager _localManager;
+
+  @override
+  void didUpdateWidget(DepotDisplay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.myTeamId != widget.myTeamId) {
+      if (widget.myTeamId == null) {
+        _localManager = DepotDisplay._depotManager;
+      } else {
+        for (var ele in DepotDisplay._depotTeamManagerList) {
+          if (widget.myTeamId == ele.parentMid) {
+            _localManager = ele;
+            break;
+          }
+        }
+      }
+      _contentInfo = _localManager.getContentInfoList(contentsType: widget.contentsType);
+      setState(() {});
+    }
+  }
 
   @override
   void initState() {
@@ -57,18 +98,20 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
     //     return value;
     //   },
     // );
-    // _contentInfo = DepotDisplay.depotManager
-    //     .getContentInfoList(contentsType: widget.contentsType, widget.teamName);
-    _contentInfo = DepotDisplay.depotManager.getContentInfoList(contentsType: widget.contentsType);
+
+    if (widget.myTeamId == null) {
+      _localManager = DepotDisplay._depotManager;
+    } else {
+      for (var ele in DepotDisplay._depotTeamManagerList) {
+        if (widget.myTeamId == ele.parentMid) {
+          _localManager = ele;
+          break;
+        }
+      }
+    }
+
+    _contentInfo = _localManager.getContentInfoList(contentsType: widget.contentsType);
   }
-
-  // update _contentInfo based on
-
-  // @override
-  // void didUpdateWidget(DepotDisplay oldWidget) {
-  //   setState(() {});
-  //   super.didUpdateWidget(oldWidget);
-  // }
 
   // Future<List<ContentsModel>> _waitDbJobComplete() async {
   //   while (_dbJobComplete == false) {
@@ -81,7 +124,7 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: DepotDisplay.depotManager),
+        ChangeNotifierProvider.value(value: _localManager),
       ],
       child: Consumer<DepotManager>(builder: (context, manager, child) {
         return FutureBuilder<List<ContentsModel>>(
@@ -91,7 +134,7 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
           //future: depotManager.getContentInfoList(contentsType: widget.contentsType),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              DepotDisplay.depotManager.sort();
+              _localManager.sort();
               return SingleChildScrollView(
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
@@ -106,47 +149,45 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
                     ),
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
-                      ContentsModel contents = DepotDisplay.depotManager.filteredContents[index];
+                      ContentsModel contents = _localManager.filteredContents[index];
                       DepotModel? depot = manager.getModelByContentsMid(contents.mid);
                       String? depotUrl = contents.thumbnail;
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          DepotSelected(
-                            key: GlobalObjectKey('DepotSelected${depot!.mid}$index'),
-                            width: imageWidth,
-                            // height: imageHeight + 26.0,
-                            height: imageHeight,
-                            depot: depot,
-                            childContents: (depotUrl == null || depotUrl.isEmpty)
-                                ? SizedBox(
-                                    width: 160.0,
-                                    height: 95.0,
-                                    child: Image.asset('assets/no_image.png'), // No Image
-                                  )
-                                : CustomImage(
-                                    key: GlobalObjectKey('CustomImage${depot.mid}$index'),
-                                    width: imageWidth,
-                                    height: imageHeight,
-                                    image: depotUrl,
-                                    hasAni: false,
-                                  ),
+                      return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        DepotSelected(
+                          depotManager: _localManager,
+                          key: GlobalObjectKey('DepotSelected${depot!.mid}$index'),
+                          width: imageWidth,
+                          // height: imageHeight + 26.0,
+                          height: imageHeight,
+                          depot: depot,
+                          childContents: (depotUrl == null || depotUrl.isEmpty)
+                              ? SizedBox(
+                                  width: 160.0,
+                                  height: 95.0,
+                                  child: Image.asset('assets/no_image.png'), // No Image
+                                )
+                              : CustomImage(
+                                  key: GlobalObjectKey('CustomImage${depot.mid}$index'),
+                                  width: imageWidth,
+                                  height: imageHeight,
+                                  image: depotUrl,
+                                  hasAni: false,
+                                ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          alignment: Alignment.centerLeft,
+                          width: 160.0,
+                          height: 20.0,
+                          child: Text(
+                            contents.name,
+                            maxLines: 1,
+                            style: CretaFont.bodyESmall,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            alignment: Alignment.centerLeft,
-                            width: 160.0,
-                            height: 20.0,
-                            child: Text(
-                              contents.name,
-                              maxLines: 1,
-                              style: CretaFont.bodyESmall,
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      );
+                        ),
+                      ]);
                     },
                   ),
                 ),

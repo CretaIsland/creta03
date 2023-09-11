@@ -45,13 +45,13 @@ class SelectionManager {
       // isSelected = true;
       isSelected = !isSelected;
     }
-    DepotDisplay.depotManager.notify();
+    // DepotDisplay.depotManager.notify();
   }
 
   void clearMultiSelected() {
     DepotDisplay.ctrlSelectedSet.clear();
     selectedDepot.clear();
-    DepotDisplay.depotManager.notify();
+    // DepotDisplay.depotManager.notify();
   }
 
   void onRightMouseButton(TapDownDetails details, DepotManager depotManager, BuildContext context) {
@@ -83,7 +83,7 @@ class SelectionManager {
                 await depotManager.removeDepots(ele);
               }
               debugPrint('remove from depot DB');
-              DepotDisplay.depotManager.notify();
+              // DepotDisplay.depotManager.notify();
             }),
       ],
       itemHeight: 24,
