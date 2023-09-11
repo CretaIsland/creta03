@@ -1,6 +1,5 @@
 //import 'package:creta03/model/contents_model.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../data_io/depot_manager.dart';
 import '../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../design_system/creta_color.dart';
@@ -19,13 +18,17 @@ class DepotSelected extends StatefulWidget {
   final double width;
   final double height;
   final DepotModel? depot;
+  bool isSelected;
+  final int index;
 
-  const DepotSelected({
+  DepotSelected({
     required this.depotManager,
     required this.childContents,
     required this.width,
     required this.height,
     required this.depot,
+    required this.isSelected,
+    required this.index,
     super.key,
   });
 
@@ -35,10 +38,9 @@ class DepotSelected extends StatefulWidget {
 
 class _DepotSelectedState extends State<DepotSelected> {
   bool _isHover = false;
-  bool isSelected = false;
-  bool _isMultiSelectedChanged = false;
+  DepotModel? firstSelected;
+  DepotModel? lastSelected;
 
-  // List<String> selectedDepot = [];
   @override
   Widget build(BuildContext context) {
     if (widget.depot == null) {
@@ -47,10 +49,9 @@ class _DepotSelectedState extends State<DepotSelected> {
     return InkWell(
       onHover: (isHover) {
         _isHover = isHover;
-//        selectionManager.handleHover(isHover, depot!);
       },
       onTapDown: (details) {
-        handleTap(details, widget.depot);
+        handleTap(details, widget.depot, widget.index);
       },
       onDoubleTap: () {
         clearMultiSelected();
@@ -63,11 +64,8 @@ class _DepotSelectedState extends State<DepotSelected> {
         height: widget.height,
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected
-                ? CretaColor.primary
-                // : CretaColor.text[200]!,
-                : Colors.transparent,
-            width: DepotDisplay.ctrlSelectedSet.contains(widget.depot) ? 4 : 1,
+            color: widget.isSelected ? CretaColor.primary : Colors.transparent,
+            width: widget.isSelected ? 3 : 1,
           ),
         ),
         child: Center(
@@ -77,57 +75,42 @@ class _DepotSelectedState extends State<DepotSelected> {
     );
   }
 
-  void handleTap(TapDownDetails details, DepotModel? depotModel) {
+  void handleTap(TapDownDetails details, DepotModel? depotModel, int index) {
+    if (depotModel == null) {
+      return;
+    }
     if (StudioVariables.isCtrlPressed) {
       if (DepotDisplay.ctrlSelectedSet.contains(depotModel)) {
         DepotDisplay.ctrlSelectedSet.remove(depotModel);
-        setState(() {
-          _isMultiSelectedChanged = !_isMultiSelectedChanged;
-        });
-        // selectedDepot.remove(depotModel!.mid);
       } else {
-        setState(() {
-          _isMultiSelectedChanged = !_isMultiSelectedChanged;
-        });
-        DepotDisplay.ctrlSelectedSet.add(depotModel!);
-        // selectedDepot.add(depotModel.mid);
+        DepotDisplay.ctrlSelectedSet.add(depotModel);
       }
     } else if (StudioVariables.isShiftPressed) {
-      debugPrint('Shift key pressed');
+      // print('Shift key pressed');
     } else {
       // print("Ctrl key released");
-      DepotDisplay.ctrlSelectedSet = {depotModel!};
+      DepotDisplay.ctrlSelectedSet = {depotModel};
       DepotDisplay.ctrlSelectedSet.clear();
-      // selectedDepot.clear();
-      // selectedDepot.add(depotModel.mid);
-      setState(() {
-        isSelected = !isSelected;
-      });
+      DepotDisplay.ctrlSelectedSet.add(depotModel);
+      widget.isSelected = true;
     }
     widget.depotManager.notify();
   }
 
   void clearMultiSelected() {
     DepotDisplay.ctrlSelectedSet.clear();
-    // selectedDepot.clear();
     widget.depotManager.notify();
   }
 
   void onRightMouseButton(TapDownDetails details, DepotModel? depotModel, DepotManager depotManager,
       BuildContext context) {
-    if (DepotDisplay.ctrlSelectedSet.isEmpty && DepotDisplay.shiftSelectedSet.isEmpty
-        // &&
-        // selectedDepot.isEmpty
-        ) {
+    if (DepotDisplay.ctrlSelectedSet.isEmpty && DepotDisplay.shiftSelectedSet.isEmpty) {
       return;
     }
 
     if (_isHover &&
-            DepotDisplay.ctrlSelectedSet.contains(depotModel) == false &&
-            DepotDisplay.shiftSelectedSet.contains(depotModel) == false
-        // &&
-        // selectedDepot.contains(depotModel!.mid) == false
-        ) {
+        DepotDisplay.ctrlSelectedSet.contains(depotModel) == false &&
+        DepotDisplay.shiftSelectedSet.contains(depotModel) == false) {
       return;
     }
 

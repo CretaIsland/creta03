@@ -152,6 +152,8 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
                       ContentsModel contents = _localManager.filteredContents[index];
                       DepotModel? depot = manager.getModelByContentsMid(contents.mid);
                       String? depotUrl = contents.thumbnail;
+                      bool isSelected = DepotDisplay.ctrlSelectedSet.contains(depot) ||
+                          DepotDisplay.shiftSelectedSet.contains(depot);
                       return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                         DepotSelected(
                           depotManager: _localManager,
@@ -159,7 +161,9 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
                           width: imageWidth,
                           // height: imageHeight + 26.0,
                           height: imageHeight,
+                          isSelected: isSelected,
                           depot: depot,
+                          index: index,
                           childContents: (depotUrl == null || depotUrl.isEmpty)
                               ? SizedBox(
                                   width: 160.0,
