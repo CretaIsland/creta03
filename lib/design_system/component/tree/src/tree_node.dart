@@ -5,10 +5,8 @@ import 'dart:math' show pi;
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
-import 'package:hycop/hycop/account/account_manager.dart';
 
 import '../../../../data_io/contents_manager.dart';
-import '../../../../data_io/depot_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/contents_model.dart';
@@ -16,6 +14,7 @@ import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/link_model.dart';
 import '../../../../model/page_model.dart';
+import '../../../../pages/login/creta_account_manager.dart';
 import '../../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../../pages/studio/left_menu/left_menu_page.dart';
 import '../../../../pages/studio/studio_variables.dart';
@@ -479,7 +478,6 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   }
 
   void _onRightMouseButton(TapDownDetails details) {
-    String? teamId;
     //teamId = '';
     //print('rightMouse button pressed');
 
@@ -488,23 +486,22 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       context: context,
       popupMenu: [
         CretaMenuItem(
+            subMenu: _subMenuItems(),
             caption: CretaStudioLang.putInDepot,
             onPressed: () {
-              DepotManager depotManager =
-                  DepotManager(userEmail: AccountManager.currentLoginUser.email);
-              Set<String> targetList = TreeView.ctrlNodeSet;
-              if (TreeView.shiftNodeSet.isNotEmpty) {
-                targetList.addAll(TreeView.shiftNodeSet);
-              }
-              if (targetList.isEmpty) {
-                CretaModel? model = widget.node.data as CretaModel?;
-                _putInDepot(depotManager, model, widget.node.key, teamId);
-              } else {
-                for (var ele in targetList) {
-                  CretaModel? model = LeftMenuPage.findModel(ele);
-                  _putInDepot(depotManager, model, ele, teamId);
-                }
-              }
+              // Set<String> targetList = TreeView.ctrlNodeSet;
+              // if (TreeView.shiftNodeSet.isNotEmpty) {
+              //   targetList.addAll(TreeView.shiftNodeSet);
+              // }
+              // if (targetList.isEmpty) {
+              //   CretaModel? model = widget.node.data as CretaModel?;
+              //   _putInDepot(model, widget.node.key);
+              // } else {
+              //   for (var ele in targetList) {
+              //     CretaModel? model = LeftMenuPage.findModel(ele);
+              //     _putInDepot(model, ele);
+              //   }
+              // }
             }),
         CretaMenuItem(
             caption: CretaStudioLang.tooltipDelete,
@@ -527,13 +524,60 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       itemHeight: 24,
       x: details.globalPosition.dx,
       y: details.globalPosition.dy,
-      width: 150,
+      width: 235,
       height: 64,
       //textStyle: CretaFont.bodySmall,
       iconSize: 12,
       alwaysShowBorder: true,
       borderRadius: 8,
     );
+  }
+
+  List<CretaMenuItem> _subMenuItems() {
+    List<CretaMenuItem> teamMenuList = CretaAccountManager.getTeamList.map((e) {
+      String teamName = e.name;
+      String teamId = e.mid;
+      return CretaMenuItem(
+          isSub: true,
+          caption: '$teamName${CretaStudioLang.putInTeamDepot}',
+          onPressed: () {
+            Set<String> targetList = TreeView.ctrlNodeSet;
+            if (TreeView.shiftNodeSet.isNotEmpty) {
+              targetList.addAll(TreeView.shiftNodeSet);
+            }
+            if (targetList.isEmpty) {
+              CretaModel? model = widget.node.data as CretaModel?;
+              _putInDepot(model, widget.node.key, teamId);
+            } else {
+              for (var ele in targetList) {
+                CretaModel? model = LeftMenuPage.findModel(ele);
+                _putInDepot(model, ele, teamId);
+              }
+            }
+          });
+    }).toList();
+
+    return [
+      CretaMenuItem(
+          isSub: true,
+          caption: CretaStudioLang.putInMyDepot,
+          onPressed: () {
+            Set<String> targetList = TreeView.ctrlNodeSet;
+            if (TreeView.shiftNodeSet.isNotEmpty) {
+              targetList.addAll(TreeView.shiftNodeSet);
+            }
+            if (targetList.isEmpty) {
+              CretaModel? model = widget.node.data as CretaModel?;
+              _putInDepot(model, widget.node.key, null);
+            } else {
+              for (var ele in targetList) {
+                CretaModel? model = LeftMenuPage.findModel(ele);
+                _putInDepot(model, ele, null);
+              }
+            }
+          }),
+      ...teamMenuList,
+    ];
   }
 
   Future<void> _deleteNode(CretaModel? model) async {
@@ -592,7 +636,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
     mychangeStack.endTrans();
   }
 
-  void _putInDepot(DepotManager depotManager, CretaModel? model, String key, String? teamId) {
+  void _putInDepot(CretaModel? model, String key, String? teamId) {
     if (model == null) return;
     if (model is ContentsModel) {
       ContentsManager.insertDepot(

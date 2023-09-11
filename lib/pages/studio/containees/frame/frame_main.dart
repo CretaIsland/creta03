@@ -210,6 +210,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
               //print('6.not notify, set only ContaineeNotifier : ${CretaUtils.timeLap()}');
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: false);
               //print('7.before tree update : ${CretaUtils.timeLap()}');
+              _invokeNotify();
+
               LeftMenuPage.treeInvalidate();
               //print('8.after tee update.${CretaUtils.timeLap()}');
 
@@ -229,10 +231,13 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           //setState(() {
           // 아래 4번 5 번 두가지 Notification 때문에, 느려지게 된다.  따라서, 이를 여기서 하지 않고,
           // SelectedBox 에서 SelectedBox 가 다 그려지고 나서 하도록 한다.
+          // Delay 를 주고 async 함수로 보냈다.
           // print('4.notify...here....${CretaUtils.timeLap()}');
           // BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
           //print('5.not notify, set only ContaineeNotifier: ${CretaUtils.timeLap()}');
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: false);
+
+          _invokeNotify();
           //print('6.before tree update : ${CretaUtils.timeLap()}');
           LeftMenuPage.treeInvalidate();
           //print('7.after tee update.${CretaUtils.timeLap()}');
@@ -288,6 +293,15 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
       stickerList: getStickerList(),
     );
+  }
+
+  Future<void> _invokeNotify() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    // 속도 향상을 위해, miniMenuNotifier  와 containeeNotifier 를 이곳에서 한다.
+    //print('5 before set and notify MiniMenuNotifier : ${CretaUtils.timeLap()}');
+    BookMainPage.miniMenuNotifier!.set(true, doNoti: true);
+    //print('6.before notify ContaineeNotifier : ${CretaUtils.timeLap()}');
+    BookMainPage.containeeNotifier!.notify();
   }
 
   void _exchangeOrder(String aMid, String bMid, String hint) {
