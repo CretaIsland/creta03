@@ -58,3 +58,9 @@ copy src_modify\color_menu.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub
 
 #skpark modify 9/5
 copy summernote-lite.min.jsxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\assets\summernote-lite.min.js
+
+#nr.han modify 9/12
+copy summernote-lite.min.jsxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\assets\summernote-lite.min.js
+copy html_editor_widget_web.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\html_editor_widget_web.dart
+copy toolbar_widget.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\toolbar_widget.dart
+copy options.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\utils\options.dart

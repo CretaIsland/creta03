@@ -329,21 +329,7 @@ class _EditorDialogState extends State<EditorDialog> {
     //   }
     // }
 
-    return Container(
-      color: widget.backgroundColor, //LayoutConst.studioBGColor,
-      // color: Colors.white,
-      // padding: EdgeInsets.fromLTRB(realSize.width * 0.05, realSize.height * 0.05,
-      //     realSize.width * 0.05, realSize.height * 0.05),
-      // padding: EdgeInsets.fromLTRB(realSize.width * 0.01, realSize.height * 0.0075,
-      //     realSize.width * 0.01, realSize.height * 0.0075),
-      // alignment: AlignmentDirectional.center,
-      width: realSize.width,
-      height: realSize.height,
-      // child: QuillHtmlEnhanced(
-      //     document: model,
-      //     size: Size(realSize.width, realSize.height),
-      //     bgColor: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value)),
-      child: HtmlEditor(
+    return HtmlEditor(
         controller: controller,
         htmlToolbarOptions: const HtmlToolbarOptions(
           toolbarItemHeight: 32,
@@ -364,6 +350,8 @@ class _EditorDialogState extends State<EditorDialog> {
           //disabled: true,
           hint: "Type you Text here",
           initialText: widget.initialText,
+          backgroundColor: widget.backgroundColor ?? Colors.transparent,
+          width: _isFullScreen ? realSize.width - 200 : realSize.width
         ),
         otherOptions: OtherOptions(
           decoration: BoxDecoration(
@@ -553,7 +541,6 @@ class _EditorDialogState extends State<EditorDialog> {
         //     },
         //   ),
         // ),
-      ),
-    );
+      );
   }
 }
