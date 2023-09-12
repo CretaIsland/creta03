@@ -570,5 +570,7 @@ class CretaStudioLang {
   static String putInMyDepot = "내 보관함에 넣기";
   static String putInTeamDepot = "팀 보관함에 넣기";
 
-
+  static String letterSpacing = "자간";
+  static String lineHeight = "행간";
+  static String scaleFactor = "장평";
 }

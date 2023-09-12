@@ -21,6 +21,7 @@ class CretaExSlider extends StatefulWidget {
   final double sliderWidth;
   final double textWidth;
   final int textlimit;
+  final CretaTextFieldType textType;
 
   const CretaExSlider({
     super.key,
@@ -36,6 +37,7 @@ class CretaExSlider extends StatefulWidget {
     this.sliderWidth = 168,
     this.textWidth = 40,
     this.textlimit = 3,
+    this.textType = CretaTextFieldType.number,
   });
 
   @override
@@ -50,6 +52,11 @@ class _CretaExSliderState extends State<CretaExSlider> {
   void initState() {
     super.initState();
     _value = widget.value;
+  }
+  
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
   }
 
   @override
@@ -82,20 +89,35 @@ class _CretaExSliderState extends State<CretaExSlider> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            CretaTextField.xshortNumber(
-              defaultBorder: Border.all(color: CretaColor.text[100]!),
-              width: widget.textWidth,
-              limit: widget.textlimit,
-              textFieldKey: GlobalKey(),
-              value: _makeValueString(_value, widget.valueType),
-              hintText: '',
-              onEditComplete: ((value) {
-                setState(() {
-                  _value = _reverseValue(int.parse(value).toDouble(), widget.valueType);
-                  widget.onChannged(_value);
-                });
-              }),
-            ),
+            widget.textType == CretaTextFieldType.number
+                ? CretaTextField.xshortNumber(
+                    defaultBorder: Border.all(color: CretaColor.text[100]!),
+                    width: widget.textWidth,
+                    limit: widget.textlimit,
+                    textFieldKey: GlobalKey(),
+                    value: _makeValueString(_value, widget.valueType),
+                    hintText: '',
+                    onEditComplete: ((value) {
+                      setState(() {
+                        _value = _reverseValue(int.parse(value).toDouble(), widget.valueType);
+                        widget.onChannged(_value);
+                      });
+                    }),
+                  )
+                : CretaTextField.double(
+                    defaultBorder: Border.all(color: CretaColor.text[100]!),
+                    width: widget.textWidth,
+                    limit: widget.textlimit,
+                    textFieldKey: GlobalKey(),
+                    value: '$_value',
+                    hintText: '',
+                    onEditComplete: ((value) {
+                      setState(() {
+                        _value = double.parse(value);
+                        widget.onChannged(_value);
+                      });
+                    }),
+                  ),
             widget.postfix != null
                 ? Text(widget.postfix!, style: CretaFont.bodySmall)
                 : const Padding(padding: EdgeInsets.only(right: 12))

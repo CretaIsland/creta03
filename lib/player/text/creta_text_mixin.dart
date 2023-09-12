@@ -97,13 +97,56 @@ mixin CretaTextMixin {
 
     return Container(
       color: Colors.transparent,
-      padding: EdgeInsets.fromLTRB(realSize.width * 0.025, realSize.height * 0.05,
-          realSize.width * 0.025, realSize.height * 0.05),
-      alignment: AlignmentDirectional.center,
+      //padding: EdgeInsets.fromLTRB(realSize.width * 0.025, realSize.height * 0.05,
+      //   realSize.width * 0.025, realSize.height * 0.05),
+      alignment: _toAlign(model.align.value, model.valign.value),
       width: realSize.width,
       height: realSize.height,
       child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
+  }
+
+  AlignmentDirectional _toAlign(TextAlign align, TextAlign valign) {
+    switch (align) {
+      case TextAlign.left:
+        switch (valign) {
+          case TextAlign.start:
+            return AlignmentDirectional.topStart;
+          case TextAlign.end:
+            return AlignmentDirectional.bottomStart;
+          default:
+            return AlignmentDirectional.centerStart;
+        }
+      case TextAlign.right:
+        switch (valign) {
+          case TextAlign.start:
+            return AlignmentDirectional.topEnd;
+          case TextAlign.end:
+            return AlignmentDirectional.bottomEnd;
+          default:
+            return AlignmentDirectional.centerEnd;
+        }
+      case TextAlign.center:
+        switch (valign) {
+          case TextAlign.start:
+            return AlignmentDirectional.topCenter;
+          case TextAlign.end:
+            return AlignmentDirectional.bottomCenter;
+          default:
+            return AlignmentDirectional.center;
+        }
+      case TextAlign.justify:
+        switch (valign) {
+          case TextAlign.start:
+            return AlignmentDirectional.topCenter;
+          case TextAlign.end:
+            return AlignmentDirectional.bottomCenter;
+          default:
+            return AlignmentDirectional.center;
+        }
+      default:
+        return AlignmentDirectional.center;
+    }
   }
 
   Widget _playText(ContentsModel? model, String text, TextStyle style, double fontSize,
