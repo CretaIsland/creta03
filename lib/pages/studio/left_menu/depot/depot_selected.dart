@@ -1,4 +1,5 @@
 //import 'package:creta03/model/contents_model.dart';
+
 import 'package:flutter/material.dart';
 import '../../../../data_io/depot_manager.dart';
 import '../../../../design_system/component/creta_right_mouse_menu.dart';
@@ -19,7 +20,6 @@ class DepotSelected extends StatefulWidget {
   final double height;
   final DepotModel? depot;
   bool isSelected;
-  final int index;
 
   DepotSelected({
     required this.depotManager,
@@ -28,7 +28,6 @@ class DepotSelected extends StatefulWidget {
     required this.height,
     required this.depot,
     required this.isSelected,
-    required this.index,
     super.key,
   });
 
@@ -38,8 +37,6 @@ class DepotSelected extends StatefulWidget {
 
 class _DepotSelectedState extends State<DepotSelected> {
   bool _isHover = false;
-  DepotModel? firstSelected;
-  DepotModel? lastSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +48,7 @@ class _DepotSelectedState extends State<DepotSelected> {
         _isHover = isHover;
       },
       onTapDown: (details) {
-        handleTap(details, widget.depot, widget.index);
+        handleTap(details, widget.depot, widget.depotManager);
       },
       onDoubleTap: () {
         clearMultiSelected();
@@ -75,30 +72,71 @@ class _DepotSelectedState extends State<DepotSelected> {
     );
   }
 
-  void handleTap(TapDownDetails details, DepotModel? depotModel, int index) {
+  void handleTap(TapDownDetails details, DepotModel? depotModel, DepotManager manager) {
     if (depotModel == null) {
       return;
     }
     if (StudioVariables.isCtrlPressed) {
       if (DepotDisplay.ctrlSelectedSet.contains(depotModel)) {
         DepotDisplay.ctrlSelectedSet.remove(depotModel);
+        widget.isSelected = false;
       } else {
         DepotDisplay.ctrlSelectedSet.add(depotModel);
+        widget.isSelected = !widget.isSelected;
       }
     } else if (StudioVariables.isShiftPressed) {
       // print('Shift key pressed');
+      Map<String, int> gridIndexOfDepot = {};
+      int currentSelectedIndex = -1;
+      int firstSelectedIndex = -1;
+
+      for (int i = 0; i < manager.filteredContents.length; i++) {
+        if (manager.filteredContents[i].mid == depotModel.contentsMid) {
+          gridIndexOfDepot[depotModel.contentsMid] = i;
+          currentSelectedIndex = i;
+          break;
+        }
+      }
+
+      if (DepotDisplay.shiftSelectedSet.isEmpty) {
+        for (int i = 0; i <= currentSelectedIndex; i++) {
+          DepotModel? depot = manager.getModelByContentsMid(manager.filteredContents[i].mid);
+          if (depot != null) {
+            DepotDisplay.shiftSelectedSet.add(depot);
+          }
+        }
+      } else {
+        for (int i = 0; i < manager.filteredContents.length; i++) {
+          if (manager.filteredContents[i].mid == DepotDisplay.shiftSelectedSet.first.contentsMid) {
+            gridIndexOfDepot[depotModel.contentsMid] = i;
+            firstSelectedIndex = i;
+            break;
+          }
+        }
+        int start =
+            firstSelectedIndex < currentSelectedIndex ? firstSelectedIndex : currentSelectedIndex;
+
+        int end =
+            firstSelectedIndex < currentSelectedIndex ? currentSelectedIndex : firstSelectedIndex;
+        for (int i = start; i <= end; i++) {
+          DepotModel? depot = manager.getModelByContentsMid(manager.filteredContents[i].mid);
+          if (depot != null) {
+            DepotDisplay.shiftSelectedSet.add(depot);
+          }
+        }
+      }
     } else {
-      // print("Ctrl key released");
       DepotDisplay.ctrlSelectedSet = {depotModel};
-      DepotDisplay.ctrlSelectedSet.clear();
-      DepotDisplay.ctrlSelectedSet.add(depotModel);
-      widget.isSelected = true;
+      DepotDisplay.shiftSelectedSet = {depotModel};
+      // widget.isSelected = true;
+      widget.isSelected = !widget.isSelected;
     }
     widget.depotManager.notify();
   }
 
   void clearMultiSelected() {
     DepotDisplay.ctrlSelectedSet.clear();
+    DepotDisplay.shiftSelectedSet.clear();
     widget.depotManager.notify();
   }
 
@@ -141,5 +179,22 @@ class _DepotSelectedState extends State<DepotSelected> {
       alwaysShowBorder: true,
       borderRadius: 8,
     );
+  }
+
+  int indexFor(DepotModel? selectedModel, Set<DepotModel> selectedSet) {
+    if (selectedModel == null) {
+      return -1;
+    }
+
+    final selectedList = selectedSet.toList();
+    final selectedModelId = selectedModel.mid; // Replace with the actual identifier property
+
+    for (int i = 0; i < selectedList.length; i++) {
+      if (selectedList[i].mid == selectedModelId) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 }

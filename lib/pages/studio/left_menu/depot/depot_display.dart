@@ -157,13 +157,11 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
                       return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                         DepotSelected(
                           depotManager: _localManager,
-                          key: GlobalObjectKey('DepotSelected${depot!.mid}$index'),
+                          key: GlobalObjectKey('DepotSelected${depot!.mid} $index'),
                           width: imageWidth,
-                          // height: imageHeight + 26.0,
                           height: imageHeight,
                           isSelected: isSelected,
                           depot: depot,
-                          index: index,
                           childContents: (depotUrl == null || depotUrl.isEmpty)
                               ? SizedBox(
                                   width: 160.0,
