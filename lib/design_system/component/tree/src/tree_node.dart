@@ -5,7 +5,7 @@ import 'dart:math' show pi;
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
-
+import 'package:hycop/common/util/logger.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -548,11 +548,13 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
             if (targetList.isEmpty) {
               CretaModel? model = widget.node.data as CretaModel?;
               _putInDepot(model, widget.node.key, teamId);
+              showSnackBar(context, CretaStudioLang.depotComplete);
             } else {
               for (var ele in targetList) {
                 CretaModel? model = LeftMenuPage.findModel(ele);
                 _putInDepot(model, ele, teamId);
               }
+              showSnackBar(context, CretaStudioLang.depotComplete);
             }
           });
     }).toList();

@@ -73,6 +73,10 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return (frameType == FrameType.map);
   }
 
+  bool isTextType() {
+    return (frameType == FrameType.text);
+  }
+
   double prevWidth = -1;
   double prevHeight = -1;
   double prevPosX = -1;

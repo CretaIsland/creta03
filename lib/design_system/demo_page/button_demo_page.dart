@@ -1,17 +1,18 @@
 // ignore_for_file: must_be_immutable, prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/design_system/buttons/creta_checkbox.dart';
-import 'package:creta03/design_system/buttons/creta_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 //import '../buttons/creta_button.dart';
 import '../buttons/creta_button_wrapper.dart';
+import '../buttons/creta_ex_slider.dart';
 import '../buttons/creta_radio_button.dart';
 //import '../buttons/creta_radio_button2.dart';
 //import '../buttons/creta_radio_button3.dart';
 import '../buttons/creta_tab_button.dart';
 import '../buttons/creta_thick_choice.dart';
 import '../buttons/creta_toggle_button.dart';
+import '../component/creta_proprty_slider.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
 //import '../creta_color.dart';
@@ -882,13 +883,17 @@ class _ButtonDemoPageState extends State<ButtonDemoPage> {
                     SizedBox(width: 30),
                     SizedBox(
                       height: 20,
-                      width: 164,
-                      child: CretaSlider(
+                      width: 250,
+                      child: CretaExSlider(
+                        valueType: SliderValueType.normal,
                         max: 100,
                         min: 0,
                         value: 50,
-                        onDragComplete: (value) {
-                          logger.finest('selected slider value=$value');
+                        onChannged: (val) {},
+                        onChanngeComplete: (value) {
+                          //setState(() {
+                          //print('selected slider value=$value');
+                          //});
                         },
                       ),
                     ),

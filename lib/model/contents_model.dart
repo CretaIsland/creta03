@@ -459,8 +459,8 @@ class ContentsModel extends CretaModel {
     isUnderline.set(map["isUnderline"] ?? false, save: false, noUndo: true);
     isStrike.set(map["isStrike"] ?? false, save: false, noUndo: true);
     //line.set(TextLineType.fromInt(map["line"] ?? 0), save: false, noUndo: true);
-    letterSpacing.set(map["letterSpacing"] ?? 1.0, save: false, noUndo: true);
-    lineHeight.set(map["lineHeight"] ?? 0, save: false, noUndo: true);
+    letterSpacing.set(map["letterSpacing"] ?? 0.0, save: false, noUndo: true);
+    lineHeight.set(map["lineHeight"] ?? 10, save: false, noUndo: true);
     scaleFactor.set(map["scaleFactor"] ?? 100, save: false, noUndo: true);
     align.set(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
     valign.set(intToTextAlign(map["valign"] ?? 2), save: false, noUndo: true);

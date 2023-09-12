@@ -41,14 +41,17 @@ class _CretaFontSelectorState extends State<CretaFontSelector> {
     return Padding(
       padding: EdgeInsets.only(top: widget.topPadding),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           CretaDropDownButton(
+            borderRadius: 2,
+            alwaysShowBorder: true,
+            pulldownIcon: Icons.arrow_drop_down_outlined,
             align: MainAxisAlignment.start,
             selectedColor: CretaColor.text[700]!,
             textStyle: widget.textStyle,
-            width: 260,
-            height: 36,
+            width: 180,
+            height: 22,
             itemHeight: 24,
             dropDownMenuItemList: StudioSnippet.getFontListItem(
                 defaultValue: _defaultFont,
@@ -62,13 +65,17 @@ class _CretaFontSelectorState extends State<CretaFontSelector> {
                   }
                 }),
           ),
+          const SizedBox(width: 20),
           CretaDropDownButton(
+            borderRadius: 2,
+            alwaysShowBorder: true,
+            pulldownIcon: Icons.arrow_drop_down_outlined,
             key: Key(_defaultFont),
             align: MainAxisAlignment.start,
             selectedColor: CretaColor.text[700]!,
             textStyle: widget.textStyle,
-            width: 260,
-            height: 36,
+            width: 116,
+            height: 22,
             itemHeight: 24,
             dropDownMenuItemList: StudioSnippet.getFontWeightListItem(
                 font: _defaultFont,

@@ -271,9 +271,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           widget: CretaExSlider(
             valueType: SliderValueType.normal,
             value: widget.model.letterSpacing.value,
-            textType: CretaTextFieldType.double,
-            min: -5,
-            max: 5,
+            textType: CretaTextFieldType.number,
+            min: -10,
+            max: 10,
             onChanngeComplete: (val) {
               //setState(() {
               widget.model.letterSpacing.set(val);
@@ -293,10 +293,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           name: CretaStudioLang.lineHeight,
           widget: CretaExSlider(
             valueType: SliderValueType.normal,
-            textType: CretaTextFieldType.double,
+            textType: CretaTextFieldType.number,
             value: widget.model.lineHeight.value,
             min: 0,
-            max: 10,
+            max: 100,
             onChanngeComplete: (val) {
               //setState(() {
               widget.model.lineHeight.set(val);
@@ -317,7 +317,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           widget: CretaExSlider(
             postfix: '%',
             valueType: SliderValueType.normal,
-            textType: CretaTextFieldType.double,
+            textType: CretaTextFieldType.number,
             value: widget.model.scaleFactor.value,
             min: 50,
             max: 200,

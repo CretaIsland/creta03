@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
 import 'package:neonpen/neonpen.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
 import 'package:uuid/uuid.dart';
@@ -15,7 +14,6 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import '../../common/creta_utils.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
-import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_text_player.dart';
 
@@ -42,56 +40,63 @@ mixin CretaTextMixin {
     // double topRight = player.acc.frameModel.radiusRightTop.value;
     // double bottomLeft = player.acc.frameModel.radiusLeftBottom.value;
     // double bottomRight = player.acc.frameModel.radiusRightBottom.value;
-
-    String uri = model.getURI();
-    String errMsg = '${model.name} uri is null';
-    if (uri.isEmpty) {
-      logger.fine(errMsg);
-    }
-    logger.fine("uri=<$uri>");
     player?.buttonIdle();
 
-    double fontSize = model.fontSize.value * applyScale;
+    late TextStyle style;
+    late String uri;
+    late double fontSize;
+    (style, uri, fontSize) = CretaTextPlayer.makeStyle(context, model, applyScale);
 
-    if (model.isAutoSize.value == true &&
-        (model.aniType.value != TextAniType.rotate ||
-            model.aniType.value != TextAniType.bounce ||
-            model.aniType.value != TextAniType.fade ||
-            model.aniType.value != TextAniType.shimmer ||
-            model.aniType.value != TextAniType.typewriter ||
-            model.aniType.value != TextAniType.wavy ||
-            model.aniType.value != TextAniType.fidget)) {
-      fontSize = StudioConst.maxFontSize * applyScale;
-    }
-    //fontSize = fontSize.roundToDouble();
-    if (fontSize == 0) fontSize = 1;
+    // String uri = model.getURI();
+    // String errMsg = '${model.name} uri is null';
+    // if (uri.isEmpty) {
+    //   logger.fine(errMsg);
+    // }
+    // logger.fine("uri=<$uri>");
 
-    FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
+    // double fontSize = model.fontSize.value * applyScale;
 
-    TextStyle style = DefaultTextStyle.of(context).style.copyWith(
-        fontFamily: model.font.value,
-        color: model.fontColor.value.withOpacity(model.opacity.value),
-        fontSize: fontSize,
-        decoration: (model.isUnderline.value && model.isStrike.value)
-            ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
-            : model.isUnderline.value
-                ? TextDecoration.underline
-                : model.isStrike.value
-                    ? TextDecoration.lineThrough
-                    : TextDecoration.none,
-        //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
-        fontWeight: fontWeight,
-        fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal);
+    // if (model.isAutoSize.value == true &&
+    //     (model.aniType.value != TextAniType.rotate ||
+    //         model.aniType.value != TextAniType.bounce ||
+    //         model.aniType.value != TextAniType.fade ||
+    //         model.aniType.value != TextAniType.shimmer ||
+    //         model.aniType.value != TextAniType.typewriter ||
+    //         model.aniType.value != TextAniType.wavy ||
+    //         model.aniType.value != TextAniType.fidget)) {
+    //   fontSize = StudioConst.maxFontSize * applyScale;
+    // }
+    // //fontSize = fontSize.roundToDouble();
+    // if (fontSize == 0) fontSize = 1;
 
-    if (model.isBold.value) {
-      style = style.copyWith(fontWeight: FontWeight.bold);
-    }
+    // FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
 
-    if (model.isAutoSize.value == false) {
-      style.copyWith(
-        fontSize: fontSize,
-      );
-    }
+    // TextStyle style = DefaultTextStyle.of(context).style.copyWith(
+    //     height: (model.lineHeight.value / 10) * applyScale, // 행간
+    //     letterSpacing: model.letterSpacing.value * applyScale, // 자간,
+    //     fontFamily: model.font.value,
+    //     color: model.fontColor.value.withOpacity(model.opacity.value),
+    //     fontSize: fontSize,
+    //     decoration: (model.isUnderline.value && model.isStrike.value)
+    //         ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+    //         : model.isUnderline.value
+    //             ? TextDecoration.underline
+    //             : model.isStrike.value
+    //                 ? TextDecoration.lineThrough
+    //                 : TextDecoration.none,
+    //     //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+    //     fontWeight: fontWeight,
+    //     fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal);
+
+    // if (model.isBold.value) {
+    //   style = style.copyWith(fontWeight: FontWeight.bold);
+    // }
+
+    // if (model.isAutoSize.value == false) {
+    //   style.copyWith(
+    //     fontSize: fontSize,
+    //   );
+    // }
 
     //print('isThumbnail=$isThumbnail, fontSize=$fontSize, shrinkRatio=$shrinkRatio');
 
@@ -203,16 +208,28 @@ mixin CretaTextMixin {
                   style: outlineStyle,
                 ),
           model.isAutoSize.value
-              ? AutoSizeText(text, textAlign: model.align.value, style: style)
-              : Text(text, textAlign: model.align.value, style: style),
+              ? AutoSizeText(text,
+                  textAlign: model.align.value,
+                  style: style,
+                  textScaleFactor: (model.scaleFactor.value / 100) * applyScale)
+              : Text(text,
+                  textAlign: model.align.value,
+                  style: style,
+                  textScaleFactor: (model.scaleFactor.value / 100) * applyScale),
         ],
       );
     }
 
     // 아웃라인도 아니고, 애니매이션도 아닌 경우.
     return model.isAutoSize.value
-        ? AutoSizeText(text, textAlign: model.align.value, style: style)
-        : Text(text, textAlign: model.align.value, style: style);
+        ? AutoSizeText(text,
+            textAlign: model.align.value,
+            style: style,
+            textScaleFactor: (model.scaleFactor.value / 100))
+        : Text(text,
+            textAlign: model.align.value,
+            style: style,
+            textScaleFactor: (model.scaleFactor.value / 100));
   }
 
   Widget _animationText(ContentsModel? model, String text, TextStyle style, Widget? textWidget,

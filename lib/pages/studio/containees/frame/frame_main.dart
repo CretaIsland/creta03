@@ -271,6 +271,10 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           //BookMainPage.miniMenuContentsNotifier!.isShow = true;
           //BookMainPage.miniMenuContentsNotifier?.notify();
         }
+        if (model != null && model.isTextType()) {
+          ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
+          contentsManager?.notify();
+        }
       },
       onScaleStart: (mid) {
         FrameModel? model = frameManager!.getSelected() as FrameModel?;

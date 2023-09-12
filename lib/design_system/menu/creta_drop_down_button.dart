@@ -24,6 +24,7 @@ class CretaDropDownButton extends StatefulWidget {
   final bool alwaysShowBorder;
   final Color? allTextColor;
   final int maxVisibleRowCount;
+  final IconData pulldownIcon;
 
   CretaDropDownButton({
     super.key,
@@ -41,6 +42,7 @@ class CretaDropDownButton extends StatefulWidget {
     this.alwaysShowBorder = false,
     this.allTextColor,
     this.maxVisibleRowCount = 8,
+    this.pulldownIcon = Icons.keyboard_arrow_down,
   });
 
   @override
@@ -101,15 +103,17 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
             Text(
               displayString,
               style: widget.textStyle?.copyWith(
-                color: widget.allTextColor ?? (allText == displayString ? CretaColor.text[700] : widget.selectedColor),
+                color: widget.allTextColor ??
+                    (allText == displayString ? CretaColor.text[700] : widget.selectedColor),
               ),
               overflow: TextOverflow.fade,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Icon(
-                color: widget.allTextColor ?? (allText == displayString ? CretaColor.text[700] : widget.selectedColor),
-                Icons.keyboard_arrow_down,
+                color: widget.allTextColor ??
+                    (allText == displayString ? CretaColor.text[700] : widget.selectedColor),
+                widget.pulldownIcon, //Icons.keyboard_arrow_down,
                 size: iconSize,
               ),
             ),
@@ -192,12 +196,13 @@ class _CretaDropDownButtonState extends State<CretaDropDownButton> {
         final size = renderBox.size;
 
         double x = position.dx;
-        double y = position.dy + size.height;// - 1;
+        double y = position.dy + size.height; // - 1;
 
-        int maxRow = (popupMenu.length > widget.maxVisibleRowCount ? widget.maxVisibleRowCount : popupMenu.length);
+        int maxRow = (popupMenu.length > widget.maxVisibleRowCount
+            ? widget.maxVisibleRowCount
+            : popupMenu.length);
         double itemSpacing = 5;
-        double dialogHeight =
-            (widget.itemHeight + itemSpacing) * maxRow + itemSpacing * 2;
+        double dialogHeight = (widget.itemHeight + itemSpacing) * maxRow + itemSpacing * 2;
         if (y + dialogHeight > StudioVariables.displayHeight) {
           //dialogHeight = StudioVariables.workHeight - y;
           y = y - dialogHeight - widget.height;

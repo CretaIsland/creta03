@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../design_system/component/creta_right_mouse_menu.dart';
+import '../../../../../design_system/creta_color.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../../lang/creta_studio_lang.dart';
@@ -15,6 +17,7 @@ import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../../../player/text/creta_text_player.dart';
 import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_getx_controller.dart';
@@ -98,9 +101,18 @@ class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
   final _initialStickerScale = 5.0;
   FrameEventController? _sendEvent;
-  //final bool _isContents = false;
-
   List<Sticker> stickers = [];
+
+  bool _isEditMode = false;
+  bool _isEditorAlreadyExist = false;
+  final TextEditingController _textController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _textController.dispose();
+  }
+
   @override
   void initState() {
     // setState(() {
@@ -124,31 +136,12 @@ class _DraggableStickersState extends State<DraggableStickers> {
           value: DraggableStickers.frameSelectNotifier!,
         ),
       ],
-      child: //Stack(
-          //fit: StackFit.expand,
-          //children: [
-          // Container(
-          //   //color: Colors.green,
-          //   width: widget.pageWidth,
-          //   height: widget.pageHeight, // - LayoutConst.miniMenuArea,
-          //   decoration: BoxDecoration(
-          //     border: Border.all(width: 1, color: Colors.black),
-          //   ),
-          //   child:
-          Stack(
-        //fit: StackFit.expand,
+      child: Stack(
         children: [
-          //Align(
-          //alignment: Alignment.topCenter,
           Positioned(
             left: BookMainPage.pageOffset.dx,
             top: BookMainPage.pageOffset.dy,
-            child:
-                // Container(
-                //   decoration: BoxDecoration(
-                //     border: Border.all(width: 1, color: Colors.black),
-                //   ),
-                SizedBox(
+            child: SizedBox(
               width: widget.pageWidth,
               height: widget.pageHeight, // - LayoutConst.miniMenuArea,
             ),
@@ -157,21 +150,19 @@ class _DraggableStickersState extends State<DraggableStickers> {
           for (final sticker in stickers) _drawEachStiker(sticker),
           _drawMiniMenu(),
         ],
-        //),
-        //),
-        //_drawMiniMenu(),
-        //],
       ),
     );
   }
 
   Widget _drawEachStiker(Sticker sticker) {
-    // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
+    if (_isEditMode && _isEditorAlreadyExist == false) {
+      return _editText(sticker);
+    }
+    return _dragableResizable(sticker);
+  }
 
+  Widget _dragableResizable(Sticker sticker) {
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
-    //FrameModel? selectedFrame = widget.frameManager!.getSelected() as FrameModel?;
-
-    //print('_drawEachStiker---------------');
     return DraggableResizable(
       key: GlobalKey(),
       mid: sticker.id,
@@ -248,7 +239,19 @@ class _DraggableStickersState extends State<DraggableStickers> {
       child: (StudioVariables.isHandToolMode == false) //&& StudioVariables.isNotLinkState
           ? InkWell(
               splashColor: Colors.transparent,
+              onDoubleTap: () {
+                if (frameModel!.isTextType() == false) {
+                  return;
+                }
+                //print('Frame double is tapped');
+                setState(
+                  () {
+                    _isEditMode = true;
+                  },
+                );
+              },
               onSecondaryTapDown: (details) {
+                // 오른쪽 마우스 버튼 --> 메뉴
                 if (DraggableStickers.frameSelectNotifier != null) {
                   if (DraggableStickers.frameSelectNotifier!.selectedAssetId != sticker.id) return;
                 }
@@ -385,6 +388,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           caption: '$teamName${CretaStudioLang.putInTeamDepot}',
           onPressed: () {
             _putInDepot(frameModel, isContents, teamId);
+            showSnackBar(context, CretaStudioLang.depotComplete);
           });
     }).toList();
 
@@ -394,6 +398,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           caption: CretaStudioLang.putInMyDepot,
           onPressed: () {
             _putInDepot(frameModel, isContents, null);
+            showSnackBar(context, CretaStudioLang.depotComplete);
           }),
       ...teamMenuList,
     ];
@@ -683,4 +688,65 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //     child: child,
   //   );
   // }
+
+  Widget _editText(Sticker sticker) {
+    FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
+    if (frameModel == null) {
+      return const SizedBox.shrink();
+    }
+    ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
+    if (contentsManager == null) {
+      return const SizedBox.shrink();
+    }
+    ContentsModel? model = contentsManager.getFirstModel();
+    if (model == null) {
+      return const SizedBox.shrink();
+    }
+
+    _isEditorAlreadyExist = true;
+
+    late TextStyle style;
+    // late String uri;
+    // late double fontSize;
+    (style, _, _) = CretaTextPlayer.makeStyle(context, model, StudioVariables.applyScale);
+
+    Offset framePostion = sticker.position + BookMainPage.pageOffset;
+    _textController.text = model.remoteUrl == null ? '' : model.remoteUrl!;
+    return Positioned(
+      left: framePostion.dx,
+      top: framePostion.dy,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 2, color: CretaColor.primary),
+        ),
+        width: frameModel.width.value * StudioVariables.applyScale,
+        height: frameModel.height.value * StudioVariables.applyScale, // - LayoutConst.miniMenuArea,
+        child: CupertinoTextField(
+          minLines: 100,
+          maxLines: 100,
+          keyboardType: TextInputType.multiline,
+          textInputAction: TextInputAction.newline,
+          //expands: true,
+          style: style,
+          controller: _textController,
+          onEditingComplete: () {
+            setState(() {
+              _isEditorAlreadyExist = false;
+              _isEditMode = false;
+              model.remoteUrl = _textController.text;
+              model.save();
+            });
+          },
+          onTapOutside: (event) {
+            setState(() {
+              _isEditorAlreadyExist = false;
+              _isEditMode = false;
+              model.remoteUrl = _textController.text;
+              model.save();
+            });
+          },
+        ),
+      ),
+    );
+  }
 }

@@ -14,6 +14,7 @@ import 'package:hycop/common/util/logger.dart';
 
 //import '../../common/creta_utils.dart';
 import '../../model/app_enums.dart';
+import '../../model/contents_model.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../creta_abs_player.dart';
 import 'tts.dart';
@@ -349,4 +350,59 @@ class CretaTextPlayer extends CretaAbsPlayer {
   //   //logHolder.log("font = ${model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
   //   //    level: 6);
   // }
+
+  static (TextStyle, String, double) makeStyle(BuildContext context, ContentsModel model, double applyScale) {
+    String uri = model.getURI();
+    String errMsg = '${model.name} uri is null';
+    if (uri.isEmpty) {
+      logger.fine(errMsg);
+    }
+    logger.fine("uri=<$uri>");
+
+    double fontSize = model.fontSize.value * applyScale;
+
+    if (model.isAutoSize.value == true &&
+        (model.aniType.value != TextAniType.rotate ||
+            model.aniType.value != TextAniType.bounce ||
+            model.aniType.value != TextAniType.fade ||
+            model.aniType.value != TextAniType.shimmer ||
+            model.aniType.value != TextAniType.typewriter ||
+            model.aniType.value != TextAniType.wavy ||
+            model.aniType.value != TextAniType.fidget)) {
+      fontSize = StudioConst.maxFontSize * applyScale;
+    }
+    //fontSize = fontSize.roundToDouble();
+    if (fontSize == 0) fontSize = 1;
+
+    FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
+
+    TextStyle style = DefaultTextStyle.of(context).style.copyWith(
+        height: (model.lineHeight.value / 10) * applyScale, // 행간
+        letterSpacing: model.letterSpacing.value * applyScale, // 자간,
+        fontFamily: model.font.value,
+        color: model.fontColor.value.withOpacity(model.opacity.value),
+        fontSize: fontSize,
+        decoration: (model.isUnderline.value && model.isStrike.value)
+            ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+            : model.isUnderline.value
+                ? TextDecoration.underline
+                : model.isStrike.value
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+        //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+        fontWeight: fontWeight,
+        fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal);
+
+    if (model.isBold.value) {
+      style = style.copyWith(fontWeight: FontWeight.bold);
+    }
+
+    if (model.isAutoSize.value == false) {
+      style.copyWith(
+        fontSize: fontSize,
+      );
+    }
+
+    return (style, uri, fontSize);
+  }
 }

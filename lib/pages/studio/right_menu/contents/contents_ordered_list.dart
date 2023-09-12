@@ -8,6 +8,7 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_button.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/buttons/creta_checkbox.dart';
 import '../../../../design_system/buttons/creta_ex_slider.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/component/creta_font_selector.dart';
@@ -18,7 +19,6 @@ import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
-import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
@@ -785,22 +785,77 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           },
           textStyle: dataStyle,
         ),
-        propertyLine(
-          // 프레임 크기에 자동 맞춤
-          name: CretaStudioLang.autoSizeFont,
-          widget: CretaToggleButton(
-            width: 54 * 0.75,
-            height: 28 * 0.75,
-            defaultValue: model.isAutoSize.value,
-            onSelected: (value) {
-              model.isAutoSize.set(value);
-              //_sendEvent!.sendEvent(model);
-              widget.contentsManager.notify();
-              setState(() {});
-            },
-          ),
+        const SizedBox(height: 20),
+        // 폰트 사이즈
+        Row(
+          children: [
+            CretaExSlider(
+              //disabled: model.fontSizeType.value != FontSizeType.userDefine,
+              key: GlobalKey(),
+              min: 6,
+              max: StudioConst.maxFontSize,
+              value: model.fontSize.value,
+              valueType: SliderValueType.normal,
+              sliderWidth: 136,
+              onChanngeComplete: (val) {
+                //setState(() {
+                model.fontSize.set(val);
+                FontSizeType? fontSyzeType = FontSizeType.valToEnum[val];
+                if (fontSyzeType == null ||
+                    fontSyzeType == FontSizeType.userDefine ||
+                    fontSyzeType == FontSizeType.none ||
+                    fontSyzeType == FontSizeType.end) {
+                  if (model.fontSizeType.value != FontSizeType.userDefine) {
+                    model.fontSizeType.set(FontSizeType.userDefine);
+                  }
+                } else {
+                  if (model.fontSizeType.value != fontSyzeType) {
+                    model.fontSizeType.set(fontSyzeType);
+                  }
+                }
+                widget.contentsManager.notify();
+
+                //_sendEvent!.sendEvent(model);
+                //});
+              },
+              onChannged: (val) {
+                model.fontSize.set(val);
+                widget.contentsManager.notify();
+
+                //_sendEvent!.sendEvent(model);
+              },
+            ),
+            CretaCheckbox(
+              valueMap: {
+                CretaStudioLang.autoSizeFont: model.isAutoSize.value,
+              },
+              onSelected: (title, value, nvMap) {
+                model.isAutoSize.set(value);
+                //_sendEvent!.sendEvent(model);
+                widget.contentsManager.notify();
+                setState(() {});
+              },
+            ),
+          ],
         ),
-        if (model.isAutoSize.value == false) _fontSizeArea2(model),
+        // 창 크기에 맞춤
+
+        // propertyLine(
+        //   // 프레임 크기에 자동 맞춤
+        //   name: CretaStudioLang.autoSizeFont,
+        //   widget: CretaToggleButton(
+        //     width: 54 * 0.75,
+        //     height: 28 * 0.75,
+        //     defaultValue: model.isAutoSize.value,
+        //     onSelected: (value) {
+        //       model.isAutoSize.set(value);
+        //       //_sendEvent!.sendEvent(model);
+        //       widget.contentsManager.notify();
+        //       setState(() {});
+        //     },
+        //   ),
+        // ),
+        //if (model.isAutoSize.value == false) _fontSizeArea2(model),
 
         // _translateRow(model),
         // propertyLine(
@@ -825,82 +880,82 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     );
   }
 
-  Widget _fontSizeArea2(ContentsModel model) {
-    return propertyLine2(
-      // 프레임 크기에 자동 맞춤
-      widget1: CretaDropDownButton(
-        align: MainAxisAlignment.start,
-        selectedColor: CretaColor.text[700]!,
-        textStyle: dataStyle,
-        width: 176,
-        height: 36,
-        itemHeight: 24,
-        dropDownMenuItemList: _getFontSizeItem(
-            defaultValue: model.fontSizeType.value,
-            onChanged: (val) {
-              model.fontSizeType.set(val);
-              if (FontSizeType.userDefine != model.fontSizeType.value) {
-                model.fontSize.set(FontSizeType.enumToVal[val]!);
-              }
-              //_sendEvent!.sendEvent(model);
-              widget.contentsManager.notify();
-              setState(() {});
-            }),
-      ),
-      widget2: CretaExSlider(
-        //disabled: model.fontSizeType.value != FontSizeType.userDefine,
-        key: GlobalKey(),
-        min: 6,
-        max: StudioConst.maxFontSize,
-        value: model.fontSize.value,
-        valueType: SliderValueType.normal,
-        sliderWidth: 136,
-        onChanngeComplete: (val) {
-          //setState(() {
-          model.fontSize.set(val);
-          FontSizeType? fontSyzeType = FontSizeType.valToEnum[val];
-          if (fontSyzeType == null ||
-              fontSyzeType == FontSizeType.userDefine ||
-              fontSyzeType == FontSizeType.none ||
-              fontSyzeType == FontSizeType.end) {
-            if (model.fontSizeType.value != FontSizeType.userDefine) {
-              model.fontSizeType.set(FontSizeType.userDefine);
-            }
-          } else {
-            if (model.fontSizeType.value != fontSyzeType) {
-              model.fontSizeType.set(fontSyzeType);
-            }
-          }
-          widget.contentsManager.notify();
+  // Widget _fontSizeArea2(ContentsModel model) {
+  //   return propertyLine2(
+  //     // 프레임 크기에 자동 맞춤
+  //     widget1: CretaDropDownButton(
+  //       align: MainAxisAlignment.start,
+  //       selectedColor: CretaColor.text[700]!,
+  //       textStyle: dataStyle,
+  //       width: 176,
+  //       height: 36,
+  //       itemHeight: 24,
+  //       dropDownMenuItemList: _getFontSizeItem(
+  //           defaultValue: model.fontSizeType.value,
+  //           onChanged: (val) {
+  //             model.fontSizeType.set(val);
+  //             if (FontSizeType.userDefine != model.fontSizeType.value) {
+  //               model.fontSize.set(FontSizeType.enumToVal[val]!);
+  //             }
+  //             //_sendEvent!.sendEvent(model);
+  //             widget.contentsManager.notify();
+  //             setState(() {});
+  //           }),
+  //     ),
+  //     widget2: CretaExSlider(
+  //       //disabled: model.fontSizeType.value != FontSizeType.userDefine,
+  //       key: GlobalKey(),
+  //       min: 6,
+  //       max: StudioConst.maxFontSize,
+  //       value: model.fontSize.value,
+  //       valueType: SliderValueType.normal,
+  //       sliderWidth: 136,
+  //       onChanngeComplete: (val) {
+  //         //setState(() {
+  //         model.fontSize.set(val);
+  //         FontSizeType? fontSyzeType = FontSizeType.valToEnum[val];
+  //         if (fontSyzeType == null ||
+  //             fontSyzeType == FontSizeType.userDefine ||
+  //             fontSyzeType == FontSizeType.none ||
+  //             fontSyzeType == FontSizeType.end) {
+  //           if (model.fontSizeType.value != FontSizeType.userDefine) {
+  //             model.fontSizeType.set(FontSizeType.userDefine);
+  //           }
+  //         } else {
+  //           if (model.fontSizeType.value != fontSyzeType) {
+  //             model.fontSizeType.set(fontSyzeType);
+  //           }
+  //         }
+  //         widget.contentsManager.notify();
 
-          //_sendEvent!.sendEvent(model);
-          //});
-        },
-        onChannged: (val) {
-          model.fontSize.set(val);
-          widget.contentsManager.notify();
+  //         //_sendEvent!.sendEvent(model);
+  //         //});
+  //       },
+  //       onChannged: (val) {
+  //         model.fontSize.set(val);
+  //         widget.contentsManager.notify();
 
-          //_sendEvent!.sendEvent(model);
-        },
-      ),
-    );
-  }
+  //         //_sendEvent!.sendEvent(model);
+  //       },
+  //     ),
+  //   );
+  // }
 
-  List<CretaMenuItem> _getFontSizeItem(
-      {required FontSizeType defaultValue, required void Function(FontSizeType) onChanged}) {
-    return CretaStudioLang.textSizeMap.keys.map(
-      (sizeStr) {
-        double sizeVal = CretaStudioLang.textSizeMap[sizeStr]!;
-        double currentVal = FontSizeType.enumToVal[defaultValue]!;
-        return CretaMenuItem(
-            caption: sizeStr,
-            onPressed: () {
-              onChanged(FontSizeType.valToEnum[sizeVal]!);
-            },
-            selected: sizeVal == currentVal);
-      },
-    ).toList();
-  }
+  // List<CretaMenuItem> _getFontSizeItem(
+  //     {required FontSizeType defaultValue, required void Function(FontSizeType) onChanged}) {
+  //   return CretaStudioLang.textSizeMap.keys.map(
+  //     (sizeStr) {
+  //       double sizeVal = CretaStudioLang.textSizeMap[sizeStr]!;
+  //       double currentVal = FontSizeType.enumToVal[defaultValue]!;
+  //       return CretaMenuItem(
+  //           caption: sizeStr,
+  //           onPressed: () {
+  //             onChanged(FontSizeType.valToEnum[sizeVal]!);
+  //           },
+  //           selected: sizeVal == currentVal);
+  //     },
+  //   ).toList();
+  // }
 
   Widget _textAlign(ContentsModel model) {
     return Padding(
