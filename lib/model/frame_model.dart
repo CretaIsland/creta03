@@ -48,6 +48,12 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   FrameType frameType = FrameType.none;
   int subType = -1;
 
+  bool _isEditMode = false;
+  bool get isEditMode => _isEditMode;
+  void setEditMode(bool value) {
+    _isEditMode = value;
+  }
+
   bool isWeatherTYpe() {
     if (frameType == FrameType.weatherInfo) return true;
     if (frameType == FrameType.weather1) return true;

@@ -45,7 +45,7 @@ mixin CretaTextMixin {
     late TextStyle style;
     late String uri;
     late double fontSize;
-    (style, uri, fontSize) = CretaTextPlayer.makeStyle(context, model, applyScale);
+    (style, uri, fontSize) = CretaTextPlayer.makeStyle(context, model, applyScale,isThumbnail);
 
     // String uri = model.getURI();
     // String errMsg = '${model.name} uri is null';
@@ -100,10 +100,11 @@ mixin CretaTextMixin {
 
     //print('isThumbnail=$isThumbnail, fontSize=$fontSize, shrinkRatio=$shrinkRatio');
 
+    const double baseVerticalPadding = 15.0;
+
     return Container(
       color: Colors.transparent,
-      //padding: EdgeInsets.fromLTRB(realSize.width * 0.025, realSize.height * 0.05,
-      //   realSize.width * 0.025, realSize.height * 0.05),
+      padding: const EdgeInsets.fromLTRB(0, baseVerticalPadding, 0, baseVerticalPadding),
       alignment: _toAlign(model.align.value, model.valign.value),
       width: realSize.width,
       height: realSize.height,
@@ -199,37 +200,45 @@ mixin CretaTextMixin {
           model.isAutoSize.value
               ? AutoSizeText(
                   text,
-                  textAlign: model.align.value,
+                  //textAlign: model.align.value,
                   style: outlineStyle,
                 )
               : Text(
                   text,
-                  textAlign: model.align.value,
+                  //textAlign: model.align.value,
                   style: outlineStyle,
                 ),
           model.isAutoSize.value
-              ? AutoSizeText(text,
-                  textAlign: model.align.value,
+              ? AutoSizeText(
+                  text,
+                  //textAlign: model.align.value,
                   style: style,
-                  textScaleFactor: (model.scaleFactor.value / 100) * applyScale)
-              : Text(text,
-                  textAlign: model.align.value,
+                  //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
+                )
+              : Text(
+                  text,
+                  //textAlign: model.align.value,
                   style: style,
-                  textScaleFactor: (model.scaleFactor.value / 100) * applyScale),
+                  //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
+                ),
         ],
       );
     }
 
     // 아웃라인도 아니고, 애니매이션도 아닌 경우.
     return model.isAutoSize.value
-        ? AutoSizeText(text,
+        ? AutoSizeText(
+            text,
             textAlign: model.align.value,
             style: style,
-            textScaleFactor: (model.scaleFactor.value / 100))
-        : Text(text,
+            //textScaleFactor: (model.scaleFactor.value / 100)
+          )
+        : Text(
+            text,
             textAlign: model.align.value,
             style: style,
-            textScaleFactor: (model.scaleFactor.value / 100));
+            //textScaleFactor: (model.scaleFactor.value / 100)
+          );
   }
 
   Widget _animationText(ContentsModel? model, String text, TextStyle style, Widget? textWidget,

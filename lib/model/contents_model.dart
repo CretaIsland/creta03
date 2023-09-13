@@ -223,7 +223,7 @@ class ContentsModel extends CretaModel {
     isUnderline = UndoAble<bool>(false, mid, 'isUnderline');
     isStrike = UndoAble<bool>(false, mid, 'isStrike');
     letterSpacing = UndoAble<double>(1.0, mid, 'letterSpacing');
-    lineHeight = UndoAble<double>(0, mid, 'lineHeight');
+    lineHeight = UndoAble<double>(19, mid, 'lineHeight');
     scaleFactor = UndoAble<double>(100, mid, 'scaleFactor');
     aniType = UndoAble<TextAniType>(TextAniType.none, mid, 'aniType');
     imageAniType = UndoAble<ImageAniType>(ImageAniType.none, mid, 'imageAniType');
@@ -460,7 +460,7 @@ class ContentsModel extends CretaModel {
     isStrike.set(map["isStrike"] ?? false, save: false, noUndo: true);
     //line.set(TextLineType.fromInt(map["line"] ?? 0), save: false, noUndo: true);
     letterSpacing.set(map["letterSpacing"] ?? 0.0, save: false, noUndo: true);
-    lineHeight.set(map["lineHeight"] ?? 10, save: false, noUndo: true);
+    lineHeight.set(map["lineHeight"] ?? 19, save: false, noUndo: true);
     scaleFactor.set(map["scaleFactor"] ?? 100, save: false, noUndo: true);
     align.set(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
     valign.set(intToTextAlign(map["valign"] ?? 2), save: false, noUndo: true);

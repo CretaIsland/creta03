@@ -351,7 +351,8 @@ class CretaTextPlayer extends CretaAbsPlayer {
   //   //    level: 6);
   // }
 
-  static (TextStyle, String, double) makeStyle(BuildContext context, ContentsModel model, double applyScale) {
+  static (TextStyle, String, double) makeStyle(
+      BuildContext context, ContentsModel model, double applyScale, bool isThumbnail) {
     String uri = model.getURI();
     String errMsg = '${model.name} uri is null';
     if (uri.isEmpty) {
@@ -360,6 +361,9 @@ class CretaTextPlayer extends CretaAbsPlayer {
     logger.fine("uri=<$uri>");
 
     double fontSize = model.fontSize.value * applyScale;
+    if (isThumbnail) {
+      fontSize = fontSize * 0.9; // 썸네일의 경우, 폰트가 조금 크게 나오는 경향이 있어서 조금 더 작게 보정해준다.
+    }
 
     if (model.isAutoSize.value == true &&
         (model.aniType.value != TextAniType.rotate ||
@@ -376,8 +380,16 @@ class CretaTextPlayer extends CretaAbsPlayer {
 
     FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
 
+    double lineHeight = (model.lineHeight.value / 10) * applyScale; // 행간
+    if (isThumbnail) {
+      if (model.lineHeight.value >= 10 && lineHeight < 1) {
+        // lineHeight 가 값이 어느 정도 잡혀있는데,  thumbnail 로 가다보면, 값이 매우 작아지는 경우가 있다. 이때는 보정해주어야 한다.
+        lineHeight += 0.25;
+      }
+    }
+
     TextStyle style = DefaultTextStyle.of(context).style.copyWith(
-        height: (model.lineHeight.value / 10) * applyScale, // 행간
+        height: lineHeight, // 행간
         letterSpacing: model.letterSpacing.value * applyScale, // 자간,
         fontFamily: model.font.value,
         color: model.fontColor.value.withOpacity(model.opacity.value),

@@ -708,7 +708,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     late TextStyle style;
     // late String uri;
     // late double fontSize;
-    (style, _, _) = CretaTextPlayer.makeStyle(context, model, StudioVariables.applyScale);
+    (style, _, _) = CretaTextPlayer.makeStyle(context, model, StudioVariables.applyScale, false);
 
     Offset framePostion = sticker.position + BookMainPage.pageOffset;
     _textController.text = model.remoteUrl == null ? '' : model.remoteUrl!;
@@ -726,6 +726,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           maxLines: 100,
           keyboardType: TextInputType.multiline,
           textInputAction: TextInputAction.newline,
+          textAlign: model.align.value,
           //expands: true,
           style: style,
           controller: _textController,

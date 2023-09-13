@@ -311,30 +311,30 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             },
           ),
         ),
-        propertyLine(
-          // scaleFactor  장평
-          name: CretaStudioLang.scaleFactor,
-          widget: CretaExSlider(
-            postfix: '%',
-            valueType: SliderValueType.normal,
-            textType: CretaTextFieldType.number,
-            value: widget.model.scaleFactor.value,
-            min: 50,
-            max: 200,
-            onChanngeComplete: (val) {
-              //setState(() {
-              widget.model.scaleFactor.set(val);
-              //});
-              _contentsManager?.notify();
-              //_sendEvent!.sendEvent(widget.model);
-            },
-            onChannged: (val) {
-              widget.model.scaleFactor.set(val);
-              _contentsManager?.notify();
-              //_sendEvent!.sendEvent(widget.model);
-            },
-          ),
-        ),
+        // propertyLine(
+        //   // scaleFactor  장평
+        //   name: CretaStudioLang.scaleFactor,
+        //   widget: CretaExSlider(
+        //     postfix: '%',
+        //     valueType: SliderValueType.normal,
+        //     textType: CretaTextFieldType.number,
+        //     value: widget.model.scaleFactor.value,
+        //     min: 50,
+        //     max: 200,
+        //     onChanngeComplete: (val) {
+        //       //setState(() {
+        //       widget.model.scaleFactor.set(val);
+        //       //});
+        //       _contentsManager?.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //     onChannged: (val) {
+        //       widget.model.scaleFactor.set(val);
+        //       _contentsManager?.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //   ),
+        // ),
         _translateRow(widget.model),
         propertyLine(
           // TTS

@@ -144,7 +144,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                     //   htmlValidator: HtmlValidator.loose(),
                     // );
                   } else {
-                    //print('widget.applyScale: ${widget.applyScale}');
+                    print('widget.applyScale: ${widget.applyScale}');
                     return playText(
                       context,
                       null,
@@ -176,7 +176,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                       GlobalObjectKey<MusicPlayerFrameState>('Music${widget.frameModel.mid}');
                   musicKeyMap[widget.frameModel.mid] = musicKey;
                   //print(model.remoteUrl!);
-                  //print('widget.applyScale: ${widget.applyScale}');
+
                   String selectedSize = '';
                   int index = 0;
                   FrameModel frameModel = widget.contentsManager.frameModel;
