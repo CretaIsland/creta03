@@ -1018,34 +1018,34 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               BTN.fill_gray_i_m(
                   icon: Icons.vertical_align_top,
                   //iconColor: model.valign.value == TextAlign.start ? CretaColor.primary[700] : null,
-                  buttonColor: model.valign.value == TextAlign.start
+                  buttonColor: model.valign.value == -1 //TextAlignVertical.top
                       ? CretaButtonColor.primary
                       : CretaButtonColor.white,
                   onPressed: () {
                     setState(() {
-                      model.valign.set(TextAlign.start);
+                      model.valign.set(-1 /*TextAlignVertical.top*/);
                     });
                     widget.contentsManager.notify();
                   }),
               BTN.fill_gray_i_m(
                   icon: Icons.vertical_align_center,
-                  buttonColor: model.valign.value == TextAlign.center
+                  buttonColor: model.valign.value == 0 //TextAlignVertical.center
                       ? CretaButtonColor.primary
                       : CretaButtonColor.white,
                   onPressed: () {
                     setState(() {
-                      model.valign.set(TextAlign.center);
+                      model.valign.set(0 /*TextAlignVertical.center*/);
                     });
                     widget.contentsManager.notify();
                   }),
               BTN.fill_gray_i_m(
                   icon: Icons.vertical_align_bottom,
-                  buttonColor: model.valign.value == TextAlign.end
+                  buttonColor: model.valign.value == 1 //TextAlignVertical.bottom
                       ? CretaButtonColor.primary
                       : CretaButtonColor.white,
                   onPressed: () {
                     setState(() {
-                      model.valign.set(TextAlign.end);
+                      model.valign.set(1 /*TextAlignVertical.bottom*/);
                     });
                     widget.contentsManager.notify();
                   }),

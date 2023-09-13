@@ -45,7 +45,7 @@ mixin CretaTextMixin {
     late TextStyle style;
     late String uri;
     late double fontSize;
-    (style, uri, fontSize) = CretaTextPlayer.makeStyle(context, model, applyScale,isThumbnail);
+    (style, uri, fontSize) = CretaTextPlayer.makeStyle(context, model, applyScale, isThumbnail);
 
     // String uri = model.getURI();
     // String errMsg = '${model.name} uri is null';
@@ -105,56 +105,14 @@ mixin CretaTextMixin {
     return Container(
       color: Colors.transparent,
       padding: const EdgeInsets.fromLTRB(0, baseVerticalPadding, 0, baseVerticalPadding),
-      alignment: _toAlign(model.align.value, model.valign.value),
+      alignment: CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
       width: realSize.width,
       height: realSize.height,
       child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
   }
 
-  AlignmentDirectional _toAlign(TextAlign align, TextAlign valign) {
-    switch (align) {
-      case TextAlign.left:
-        switch (valign) {
-          case TextAlign.start:
-            return AlignmentDirectional.topStart;
-          case TextAlign.end:
-            return AlignmentDirectional.bottomStart;
-          default:
-            return AlignmentDirectional.centerStart;
-        }
-      case TextAlign.right:
-        switch (valign) {
-          case TextAlign.start:
-            return AlignmentDirectional.topEnd;
-          case TextAlign.end:
-            return AlignmentDirectional.bottomEnd;
-          default:
-            return AlignmentDirectional.centerEnd;
-        }
-      case TextAlign.center:
-        switch (valign) {
-          case TextAlign.start:
-            return AlignmentDirectional.topCenter;
-          case TextAlign.end:
-            return AlignmentDirectional.bottomCenter;
-          default:
-            return AlignmentDirectional.center;
-        }
-      case TextAlign.justify:
-        switch (valign) {
-          case TextAlign.start:
-            return AlignmentDirectional.topCenter;
-          case TextAlign.end:
-            return AlignmentDirectional.bottomCenter;
-          default:
-            return AlignmentDirectional.center;
-        }
-      default:
-        return AlignmentDirectional.center;
-    }
-  }
-
+  
   Widget _playText(ContentsModel? model, String text, TextStyle style, double fontSize,
       Size realSize, bool isThumbnail) {
     //logHolder.log('playText ${model!.outLineWidth.value} ${model!.aniType.value}',level: 6);

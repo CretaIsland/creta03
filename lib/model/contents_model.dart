@@ -86,7 +86,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<double> scaleFactor; //장평
   late UndoAble<TextAniType> aniType;
   late UndoAble<TextAlign> align; // horizontal 정렬
-  late UndoAble<TextAlign> valign; // vertical 정렬
+  late UndoAble<int> valign; // vertical 정렬
   late UndoAble<double> anyDuration;
   late UndoAble<bool> isTTS;
   late UndoAble<String> lang;
@@ -228,7 +228,7 @@ class ContentsModel extends CretaModel {
     aniType = UndoAble<TextAniType>(TextAniType.none, mid, 'aniType');
     imageAniType = UndoAble<ImageAniType>(ImageAniType.none, mid, 'imageAniType');
     align = UndoAble<TextAlign>(TextAlign.center, mid, 'align');
-    valign = UndoAble<TextAlign>(TextAlign.center, mid, 'valign');
+    valign = UndoAble<int>(0, mid, 'valign');
     anyDuration = UndoAble<double>(0, mid, 'anyDuration');
     isTTS = UndoAble<bool>(false, mid, 'isTTS');
     lang = UndoAble<String>('ko', mid, 'lang');
@@ -291,7 +291,7 @@ class ContentsModel extends CretaModel {
     lineHeight = UndoAble<double>(srcContents.lineHeight.value, mid, 'lineHeight'); // 행간
     scaleFactor = UndoAble<double>(srcContents.scaleFactor.value, mid, 'scaleFactor'); // 행간
     align = UndoAble<TextAlign>(srcContents.align.value, mid, 'align');
-    valign = UndoAble<TextAlign>(srcContents.valign.value, mid, 'valign');
+    valign = UndoAble<int>(srcContents.valign.value, mid, 'valign');
     aniType = UndoAble<TextAniType>(srcContents.aniType.value, mid, 'aniType');
     imageAniType = UndoAble<ImageAniType>(srcContents.imageAniType.value, mid, 'imageAniType');
     anyDuration = UndoAble<double>(srcContents.anyDuration.value, mid, 'anyDuration');
@@ -463,7 +463,7 @@ class ContentsModel extends CretaModel {
     lineHeight.set(map["lineHeight"] ?? 19, save: false, noUndo: true);
     scaleFactor.set(map["scaleFactor"] ?? 100, save: false, noUndo: true);
     align.set(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
-    valign.set(intToTextAlign(map["valign"] ?? 2), save: false, noUndo: true);
+    valign.set((map["valign"] ?? 0), save: false, noUndo: true);
     aniType.set(TextAniType.fromInt(map["aniType"] ?? 0), save: false, noUndo: true);
     imageAniType.set(ImageAniType.fromInt(map["imageAniType"] ?? 0), save: false, noUndo: true);
     anyDuration.set(map["anyDuration"] ?? 0, save: false, noUndo: true);
@@ -520,7 +520,7 @@ class ContentsModel extends CretaModel {
         "lineHeight": lineHeight.value,
         "scaleFactor": scaleFactor.value,
         "align": align.value.index,
-        "valign": valign.value.index,
+        "valign": valign.value,
         "aniType": aniType.value.index,
         "imageAniType": imageAniType.value.index,
         "anyDuration": anyDuration.value,

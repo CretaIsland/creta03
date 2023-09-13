@@ -14,7 +14,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 
 enum BookType {
   none,
@@ -519,6 +519,30 @@ TextAlign intToTextAlign(int t) {
   return TextAlign.center;
 }
 
+TextAlignVertical intToTextAlignVertical(int t) {
+  switch (t) {
+    case 1:
+      return TextAlignVertical.bottom;
+    case 0:
+      return TextAlignVertical.center;
+    case -1:
+      return TextAlignVertical.top;
+  }
+  return TextAlignVertical.center;
+}
+
+int textAlignVerticalToInt(TextAlignVertical t) {
+  switch (t) {
+    case TextAlignVertical.bottom:
+      return 1;
+    case TextAlignVertical.center:
+      return 0;
+    case TextAlignVertical.top:
+      return -1;
+  }
+  return 0;
+}
+
 enum GenderType {
   none,
   male,
@@ -568,5 +592,6 @@ enum CommunityChannelType {
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
-  static CommunityChannelType fromInt(int? val) => CommunityChannelType.values[validCheck(val ?? none.index)];
+  static CommunityChannelType fromInt(int? val) =>
+      CommunityChannelType.values[validCheck(val ?? none.index)];
 }

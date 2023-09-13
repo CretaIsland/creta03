@@ -1,6 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -712,6 +711,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
     Offset framePostion = sticker.position + BookMainPage.pageOffset;
     _textController.text = model.remoteUrl == null ? '' : model.remoteUrl!;
+
+    print('${model.valign.value}------------------------------------------');
+
     return Positioned(
       left: framePostion.dx,
       top: framePostion.dy,
@@ -719,14 +721,26 @@ class _DraggableStickersState extends State<DraggableStickers> {
         decoration: BoxDecoration(
           border: Border.all(width: 2, color: CretaColor.primary),
         ),
+        alignment: AlignmentDirectional.center,
+        //CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
         width: frameModel.width.value * StudioVariables.applyScale,
-        height: frameModel.height.value * StudioVariables.applyScale, // - LayoutConst.miniMenuArea,
-        child: CupertinoTextField(
-          minLines: 100,
+        height: frameModel.height.value * StudioVariables.applyScale,
+
+        child: TextField(
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.zero,
+            isDense: true,
+          ),
+          // decoration: BoxDecoration(
+          //   border: Border.all(width: 2, color: Colors.amber),
+          // ),
+          minLines: 1,
           maxLines: 100,
           keyboardType: TextInputType.multiline,
           textInputAction: TextInputAction.newline,
           textAlign: model.align.value,
+          textAlignVertical: TextAlignVertical.center, //intToTextAlignVertical(model.valign.value),
           //expands: true,
           style: style,
           controller: _textController,

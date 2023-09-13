@@ -362,7 +362,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
 
     double fontSize = model.fontSize.value * applyScale;
     if (isThumbnail) {
-      fontSize = fontSize * 0.9; // 썸네일의 경우, 폰트가 조금 크게 나오는 경향이 있어서 조금 더 작게 보정해준다.
+      //fontSize = fontSize * 0.9; // 썸네일의 경우, 폰트가 조금 크게 나오는 경향이 있어서 조금 더 작게 보정해준다.
     }
 
     if (model.isAutoSize.value == true &&
@@ -417,4 +417,48 @@ class CretaTextPlayer extends CretaAbsPlayer {
 
     return (style, uri, fontSize);
   }
+
+  static AlignmentDirectional toAlign(TextAlign align, TextAlignVertical valign) {
+    switch (align) {
+      case TextAlign.left:
+        switch (valign) {
+          case TextAlignVertical.top:
+            return AlignmentDirectional.topStart;
+          case TextAlignVertical.bottom:
+            return AlignmentDirectional.bottomStart;
+          default:
+            return AlignmentDirectional.centerStart;
+        }
+      case TextAlign.right:
+        switch (valign) {
+          case TextAlignVertical.top:
+            return AlignmentDirectional.topEnd;
+          case TextAlignVertical.bottom:
+            return AlignmentDirectional.bottomEnd;
+          default:
+            return AlignmentDirectional.centerEnd;
+        }
+      case TextAlign.center:
+        switch (valign) {
+          case TextAlignVertical.top:
+            return AlignmentDirectional.topCenter;
+          case TextAlignVertical.bottom:
+            return AlignmentDirectional.bottomCenter;
+          default:
+            return AlignmentDirectional.center;
+        }
+      case TextAlign.justify:
+        switch (valign) {
+          case TextAlignVertical.top:
+            return AlignmentDirectional.topCenter;
+          case TextAlignVertical.bottom:
+            return AlignmentDirectional.bottomCenter;
+          default:
+            return AlignmentDirectional.center;
+        }
+      default:
+        return AlignmentDirectional.center;
+    }
+  }
+
 }
