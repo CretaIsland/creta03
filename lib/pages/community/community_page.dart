@@ -39,6 +39,7 @@ import '../../model/playlist_model.dart';
 
 import 'sub_pages/community_right_home_pane.dart';
 import 'sub_pages/community_right_channel_pane.dart';
+import 'sub_pages/community_right_channel_playlist_pane.dart';
 import 'sub_pages/community_right_favorites_pane.dart';
 import 'sub_pages/community_right_playlist_pane.dart';
 import 'sub_pages/community_right_playlist_detail_pane.dart';
@@ -58,6 +59,7 @@ class CommunityPage extends StatefulWidget {
 class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixin {
   late final List<CretaMenuItem> _leftMenuItemList;
 
+  late final List<CretaMenuItem> _rightTabMenuList;
   late final List<CretaMenuItem> _dropDownMenuItemListPurpose;
   late final List<CretaMenuItem> _dropDownMenuItemListPermission;
   late final List<CretaMenuItem> _dropDownMenuItemListSort;
@@ -65,6 +67,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   late final Widget Function(Size)? _titlePane;
 
   final ScrollController _rightOverlayPaneScrollController = ScrollController();
+
+  CommunityChannelType _communityChannelType = CommunityChannelType.books;
 
   PlaylistModel? _currentPlaylistModel;
   BookModel? _currentBookModel;
@@ -98,11 +102,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
     StudioVariables.isFullscreen = false;
 
-    // List<CretaBookData> cretaBookList = CommunitySampleData.getCretaBookList();
-    // for (final cretaBookData in cretaBookList) {
-    //   _subscriptionUserMap.putIfAbsent(cretaBookData.creator, () => cretaBookData);
-    // }
+    _initLeftMenu();
+    _initDropdownMenu();
+    _initPageVariables();
+  }
 
+  void _initLeftMenu() {
     _leftMenuItemList = [
       CretaMenuItem(
         caption: '커뮤니티 홈',
@@ -150,92 +155,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         isIconText: true,
       ),
     ];
+  }
 
-    switch (widget.subPageUrl) {
-      case AppRoutes.channel:
-        //_leftMenuItemList[1].selected = true;
-        //_leftMenuItemList[1].onPressed = () {};
-        //_leftMenuItemList[1].linkUrl = null;
-        _titlePane = _getTitlePane;
-        setUsingBannerScrollBar(
-          scrollChangedCallback: _scrollChangedCallback,
-          bannerMaxHeight: 436,
-        );
-        break;
-      case AppRoutes.subscriptionList:
-        _leftMenuItemList[1].selected = true;
-        _leftMenuItemList[1].onPressed = () {};
-        _leftMenuItemList[1].linkUrl = null;
-        _titlePane = _getTitlePane;
-        setUsingBannerScrollBar(
-          scrollChangedCallback: _scrollChangedCallback,
-          //bannerMinHeight: 160,
-          //bannerMaxHeight: 160,
-        );
-        break;
-      case AppRoutes.watchHistory:
-        _leftMenuItemList[2].selected = true;
-        _leftMenuItemList[2].onPressed = () {};
-        _leftMenuItemList[2].linkUrl = null;
-        _titlePane = _getTitlePane;
-        setUsingBannerScrollBar(
-          scrollChangedCallback: _scrollChangedCallback,
-        );
-        break;
-      case AppRoutes.favorites:
-        _leftMenuItemList[3].selected = true;
-        _leftMenuItemList[3].onPressed = () {};
-        _leftMenuItemList[3].linkUrl = null;
-        _titlePane = _getTitlePane;
-        setUsingBannerScrollBar(
-          scrollChangedCallback: _scrollChangedCallback,
-        );
-        break;
-      case AppRoutes.playlist:
-        _leftMenuItemList[4].selected = true;
-        _leftMenuItemList[4].onPressed = () {};
-        _leftMenuItemList[4].linkUrl = null;
-        _titlePane = _getTitlePane;
-        setUsingBannerScrollBar(
-          scrollChangedCallback: _scrollChangedCallback,
-        );
-        break;
-      case AppRoutes.playlistDetail:
-        _leftMenuItemList[4].selected = true;
-        _leftMenuItemList[4].onPressed = () {};
-        _leftMenuItemList[4].linkUrl = null;
-        _titlePane = _getTitlePane;
-        setUsingBannerScrollBar(
-          scrollChangedCallback: _scrollChangedCallback,
-          bannerMinHeight: 160,
-          bannerMaxHeight: 160,
-        );
-        break;
-      case AppRoutes.communityBook:
-        // _leftMenuItemList[4].selected = true;
-        // _leftMenuItemList[4].onPressed = () {};
-        // _leftMenuItemList[4].linkUrl = null;
-        _titlePane = _getTitlePane;
-        setUsingBannerScrollBar(
-          scrollChangedCallback: _scrollChangedCallback,
-          bannerMinHeight: 140,
-          bannerMaxHeight: 140,
-        );
-        break;
-      case AppRoutes.communityHome:
-      default:
-        _leftMenuItemList[0].selected = true;
-        _leftMenuItemList[0].onPressed = () {};
-        _leftMenuItemList[0].linkUrl = null;
-        _titlePane = _getTitlePane;
-        setUsingBannerScrollBar(
-          scrollChangedCallback: _scrollChangedCallback,
-          bannerMaxHeight: 436,
-          //bannerMinHeight: ,
-        );
-        break;
-    }
-
+  void _initDropdownMenu() {
     _dropDownMenuItemListPurpose = [
       CretaMenuItem(
         caption: CretaLang.basicBookFilter[0], // 용도별(전체)
@@ -282,7 +204,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
     ];
-
+    //
     _dropDownMenuItemListPermission = [
       CretaMenuItem(
         caption: CretaLang.basicBookPermissionFilter[0], // 권한별(전체)
@@ -329,7 +251,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
     ];
-
+    //
     _dropDownMenuItemListSort = [
       CretaMenuItem(
         caption: CretaLang.basicBookSortFilter[0], // 최신순
@@ -376,9 +298,194 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         selected: false,
       ),
     ];
+    //
     if (widget.subPageUrl == AppRoutes.playlist) {
       _dropDownMenuItemListSort.removeLast(); // 삭제(조회수)
       _dropDownMenuItemListSort.removeLast(); // 삭제(좋아요)
+    }
+  }
+
+  void _initPageVariables() {
+    switch (widget.subPageUrl) {
+      case AppRoutes.channel:
+        //_leftMenuItemList[1].selected = true;
+        //_leftMenuItemList[1].onPressed = () {};
+        //_leftMenuItemList[1].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+          bannerMaxHeight: 436 + 64,
+          bannerMinHeight: LayoutConst.cretaBannerMinHeight + 64,
+        );
+        _rightTabMenuList = [
+          CretaMenuItem(
+            caption: '크레타북',
+            //iconData: null,
+            index: CommunityChannelType.books.index,
+            selected: true,
+            onPressed: () {
+              if (kDebugMode) print('pressed CommunityChannelType.books');
+              if (_communityChannelType != CommunityChannelType.books) {
+                setState(() {
+                  _communityChannelType = CommunityChannelType.books;
+                  for (var menuItem in _rightTabMenuList) {
+                    menuItem.selected = (menuItem.index == CommunityChannelType.books.index);
+                    if (menuItem.selected) {
+                      if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
+                    }
+                  }
+                  //if (kDebugMode) print('setBannerScrollController1=${CommunityRightChannelPane.lastScrollPosition}');
+                  setBannerScrollController(ScrollController(initialScrollOffset: 436 + 64 - getBannerHeight));
+                });
+              }
+            },
+            //linkUrl: null,
+            //isIconText: true,
+          ),
+          CretaMenuItem(
+            caption: '재생목록',
+            //iconData: null,
+            index: CommunityChannelType.playlists.index,
+            onPressed: () {
+              if (_communityChannelType != CommunityChannelType.playlists) {
+                if (kDebugMode) print('pressed CommunityChannelType.playlists');
+                setState(() {
+                  _communityChannelType = CommunityChannelType.playlists;
+                  for (var menuItem in _rightTabMenuList) {
+                    menuItem.selected = (menuItem.index == CommunityChannelType.playlists.index);
+                    if (menuItem.selected) {
+                      if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
+                    }
+                  }
+                  //if (kDebugMode) print('setBannerScrollController2=${CommunityRightChannelPane.lastScrollPosition}');
+                  setBannerScrollController(ScrollController(initialScrollOffset: 436 + 64 - getBannerHeight));
+                });
+              }
+            },
+            //linkUrl: null,
+            //isIconText: true,
+          ),
+          CretaMenuItem(
+            caption: '팀원 채널',
+            //iconData: null,
+            index: CommunityChannelType.memberChannels.index,
+            onPressed: () {
+              if (_communityChannelType != CommunityChannelType.memberChannels) {
+                setState(() {
+                  _communityChannelType = CommunityChannelType.memberChannels;
+                  for (var menuItem in _rightTabMenuList) {
+                    menuItem.selected = (menuItem.index == CommunityChannelType.memberChannels.index);
+                    if (menuItem.selected) {
+                      if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
+                    }
+                  }
+                });
+              }
+            },
+            //linkUrl: null,
+            //isIconText: true,
+          ),
+          CretaMenuItem(
+            caption: '정보',
+            //iconData: null,
+            index: CommunityChannelType.info.index,
+            onPressed: () {
+              if (_communityChannelType != CommunityChannelType.info) {
+                setState(() {
+                  _communityChannelType = CommunityChannelType.info;
+                  for (var menuItem in _rightTabMenuList) {
+                    menuItem.selected = (menuItem.index == CommunityChannelType.info.index);
+                    if (menuItem.selected) {
+                      if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
+                    }
+                  }
+                });
+              }
+            },
+            //linkUrl: null,
+            //isIconText: true,
+          ),
+        ];
+        break;
+      case AppRoutes.subscriptionList:
+        _leftMenuItemList[1].selected = true;
+        _leftMenuItemList[1].onPressed = () {};
+        _leftMenuItemList[1].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+          //bannerMinHeight: 160,
+          //bannerMaxHeight: 160,
+        );
+        _rightTabMenuList = [];
+        break;
+      case AppRoutes.watchHistory:
+        _leftMenuItemList[2].selected = true;
+        _leftMenuItemList[2].onPressed = () {};
+        _leftMenuItemList[2].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+        );
+        _rightTabMenuList = [];
+        break;
+      case AppRoutes.favorites:
+        _leftMenuItemList[3].selected = true;
+        _leftMenuItemList[3].onPressed = () {};
+        _leftMenuItemList[3].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+        );
+        _rightTabMenuList = [];
+        break;
+      case AppRoutes.playlist:
+        _leftMenuItemList[4].selected = true;
+        _leftMenuItemList[4].onPressed = () {};
+        _leftMenuItemList[4].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+        );
+        _rightTabMenuList = [];
+        break;
+      case AppRoutes.playlistDetail:
+        _leftMenuItemList[4].selected = true;
+        _leftMenuItemList[4].onPressed = () {};
+        _leftMenuItemList[4].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+          bannerMinHeight: 160,
+          bannerMaxHeight: 160,
+        );
+        _rightTabMenuList = [];
+        break;
+      case AppRoutes.communityBook:
+        // _leftMenuItemList[4].selected = true;
+        // _leftMenuItemList[4].onPressed = () {};
+        // _leftMenuItemList[4].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+          bannerMinHeight: 140,
+          bannerMaxHeight: 140,
+        );
+        _rightTabMenuList = [];
+        break;
+      case AppRoutes.communityHome:
+      default:
+        _leftMenuItemList[0].selected = true;
+        _leftMenuItemList[0].onPressed = () {};
+        _leftMenuItemList[0].linkUrl = null;
+        _titlePane = _getTitlePane;
+        setUsingBannerScrollBar(
+          scrollChangedCallback: _scrollChangedCallback,
+          bannerMaxHeight: 436,
+          //bannerMinHeight: ,
+        );
+        _rightTabMenuList = [];
+        break;
     }
   }
 
@@ -787,47 +894,46 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                           ),
                           SizedBox(width: 12),
                           (CretaAccountManager.getUserProperty!.channelId == _currentChannelModel?.getMid)
-                              ? SizedBox.shrink() :
-                          BTN.fill_blue_t_m(
-                            width: 84,
-                            text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
-                            onPressed: () {
-                              SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
-                              if (_selectedSubscriptionModel == null) {
-                                subscriptionManagerHolder
-                                    .createSubscription(
-                                  CretaAccountManager.getUserProperty!.channelId,
-                                  _currentChannelModel!.getMid,
-                                )
-                                    .then(
-                                      (value) {
-                                    showSnackBar(context, '구독되었습니다');
-                                    setState(() {
-                                      _selectedSubscriptionModel = SubscriptionModel.withName(
-                                          channelId: CretaAccountManager.getUserProperty!.channelId,
-                                          subscriptionChannelId: _currentChannelModel!.getMid);
-                                    });
+                              ? SizedBox.shrink()
+                              : BTN.fill_blue_t_m(
+                                  width: 84,
+                                  text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
+                                  onPressed: () {
+                                    SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
+                                    if (_selectedSubscriptionModel == null) {
+                                      subscriptionManagerHolder
+                                          .createSubscription(
+                                        CretaAccountManager.getUserProperty!.channelId,
+                                        _currentChannelModel!.getMid,
+                                      )
+                                          .then(
+                                        (value) {
+                                          showSnackBar(context, '구독되었습니다');
+                                          setState(() {
+                                            _selectedSubscriptionModel = SubscriptionModel.withName(
+                                                channelId: CretaAccountManager.getUserProperty!.channelId,
+                                                subscriptionChannelId: _currentChannelModel!.getMid);
+                                          });
+                                        },
+                                      );
+                                    } else {
+                                      subscriptionManagerHolder
+                                          .removeSubscription(
+                                        CretaAccountManager.getUserProperty!.channelId,
+                                        _currentChannelModel!.mid,
+                                      )
+                                          .then(
+                                        (value) {
+                                          showSnackBar(context, '구독 해지되었습니다');
+                                          setState(() {
+                                            _selectedSubscriptionModel = null;
+                                          });
+                                        },
+                                      );
+                                    }
                                   },
-                                );
-                              }
-                              else {
-                                subscriptionManagerHolder
-                                    .removeSubscription(
-                                  CretaAccountManager.getUserProperty!.channelId,
-                                  _currentChannelModel!.mid,
-                                )
-                                    .then(
-                                      (value) {
-                                    showSnackBar(context, '구독 해지되었습니다');
-                                    setState(() {
-                                      _selectedSubscriptionModel = null;
-                                    });
-                                  },
-                                );
-                              }
-                            },
-                            textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
-                          ),
+                                  textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                                ),
                         ],
                       ),
                     ],
@@ -993,47 +1099,46 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
               ),
               SizedBox(width: 12),
               (CretaAccountManager.getUserProperty!.channelId == _currentChannelModel?.getMid)
-                  ? SizedBox.shrink() :
-              BTN.fill_blue_t_m(
-                width: 84,
-                text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
-                onPressed: () {
-                  SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
-                  if (_selectedSubscriptionModel == null) {
-                    subscriptionManagerHolder
-                        .createSubscription(
-                      CretaAccountManager.getUserProperty!.channelId,
-                      _currentChannelModel!.getMid,
-                    )
-                        .then(
-                          (value) {
-                        showSnackBar(context, '구독되었습니다');
-                        setState(() {
-                          _selectedSubscriptionModel = SubscriptionModel.withName(
-                              channelId: CretaAccountManager.getUserProperty!.channelId,
-                              subscriptionChannelId: _currentChannelModel!.getMid);
-                        });
+                  ? SizedBox.shrink()
+                  : BTN.fill_blue_t_m(
+                      width: 84,
+                      text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
+                      onPressed: () {
+                        SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
+                        if (_selectedSubscriptionModel == null) {
+                          subscriptionManagerHolder
+                              .createSubscription(
+                            CretaAccountManager.getUserProperty!.channelId,
+                            _currentChannelModel!.getMid,
+                          )
+                              .then(
+                            (value) {
+                              showSnackBar(context, '구독되었습니다');
+                              setState(() {
+                                _selectedSubscriptionModel = SubscriptionModel.withName(
+                                    channelId: CretaAccountManager.getUserProperty!.channelId,
+                                    subscriptionChannelId: _currentChannelModel!.getMid);
+                              });
+                            },
+                          );
+                        } else {
+                          subscriptionManagerHolder
+                              .removeSubscription(
+                            CretaAccountManager.getUserProperty!.channelId,
+                            _currentChannelModel!.mid,
+                          )
+                              .then(
+                            (value) {
+                              showSnackBar(context, '구독 해지되었습니다');
+                              setState(() {
+                                _selectedSubscriptionModel = null;
+                              });
+                            },
+                          );
+                        }
                       },
-                    );
-                  }
-                  else {
-                    subscriptionManagerHolder
-                        .removeSubscription(
-                      CretaAccountManager.getUserProperty!.channelId,
-                      _currentChannelModel!.mid,
-                    )
-                        .then(
-                          (value) {
-                        showSnackBar(context, '구독 해지되었습니다');
-                        setState(() {
-                          _selectedSubscriptionModel = null;
-                        });
-                      },
-                    );
-                  }
-                },
-                textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
-              ),
+                      textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                    ),
             ],
           ),
         ],
@@ -1086,7 +1191,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       children: [
                         Expanded(
                           child: Text(
-                            _currentBookModel!.name.value, //'[아이유의 팔레트🎨] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
+                            _currentBookModel!.name.value, //'[아이유의 팔레트??] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
                             overflow: TextOverflow.ellipsis,
                             style: CretaFont.titleELarge.copyWith(color: Colors.white),
                           ),
@@ -1399,10 +1504,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     String key = '';
     if (widget.subPageUrl == AppRoutes.channel) {
       //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
-      key = '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
-    }
-    else {
-      key = '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
+      key =
+          '${Uri.base.query}|${_currentChannelModel?.getMid ?? ''}|${_communityChannelType.name}|${_subscriptionModelList?.length ?? -1}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
+    } else {
+      key =
+          '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
     }
     if (kDebugMode) print('_getRightPaneKey = $key');
     return GlobalObjectKey(key);
@@ -1441,18 +1547,38 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     //Size size = Size(rightPaneRect.childWidth, rightPaneRect.childHeight);
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
-        return CommunityRightChannelPane(
-          key: _getRightPaneKey(),
-          cretaLayoutRect: rightPaneRect,
-          scrollController: getBannerScrollController,
-          filterBookType: _filterBookType,
-          filterBookSort: _filterBookSort,
-          filterPermissionType: _filterPermissionType,
-          filterSearchKeyword: _filterSearchKeyword,
-          onUpdateModel: _onUpdateModel,
-          currentChannelModel: _currentChannelModel,
-          currentSubscriptionModel: _selectedSubscriptionModel,
-        );
+        switch (_communityChannelType) {
+          case CommunityChannelType.playlists:
+            return CommunityRightChannelPlaylistPane(
+              key: _getRightPaneKey(),
+              cretaLayoutRect: rightPaneRect,
+              scrollController: getBannerScrollController,
+              filterBookType: _filterBookType,
+              filterBookSort: _filterBookSort,
+              filterPermissionType: _filterPermissionType,
+              filterSearchKeyword: _filterSearchKeyword,
+              onUpdateModel: _onUpdateModel,
+              currentChannelModel: _currentChannelModel,
+            );
+          case CommunityChannelType.memberChannels:
+            return Container();
+          case CommunityChannelType.info:
+            return Container();
+          case CommunityChannelType.books:
+          default:
+            return CommunityRightChannelPane(
+              key: _getRightPaneKey(),
+              cretaLayoutRect: rightPaneRect,
+              scrollController: getBannerScrollController,
+              filterBookType: _filterBookType,
+              filterBookSort: _filterBookSort,
+              filterPermissionType: _filterPermissionType,
+              filterSearchKeyword: _filterSearchKeyword,
+              onUpdateModel: _onUpdateModel,
+              currentChannelModel: _currentChannelModel,
+              currentSubscriptionModel: _selectedSubscriptionModel,
+            );
+        }
       case AppRoutes.subscriptionList:
         return CommunityRightSubscriptionPane(
           key: _getRightPaneKey(),
@@ -1576,7 +1702,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   List<Widget> _getSubscriptionList() {
     List<Widget> widgetList = [];
-    for(final item in _subscriptionModelList ?? []) {
+    for (final item in _subscriptionModelList ?? []) {
       widgetList.add(
         SubscriptionItem(
           subscriptionModel: item,
@@ -1617,6 +1743,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       child: Stack(
         children: [
           mainPage(
+            bannerKey: GlobalObjectKey(_communityChannelType.name),
             context,
             gotoButtonPressed: () {
               Routemaster.of(context).push(AppRoutes.studioBookGridPage);
@@ -1636,6 +1763,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             topMarginOnRightPane: 3,
             rightMarginOnRightPane: 1,
             bottomMarginOnRightPane: 3,
+            tabMenuList: _rightTabMenuList,
           ),
           _getRightOverlayPane(),
         ],

@@ -302,7 +302,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB=${modelList.length}');
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
+    playlistManagerHolder.addWhereClause('channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
