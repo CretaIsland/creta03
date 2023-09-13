@@ -84,12 +84,12 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     }
 
     //if (_contentsManager!.onceDBGetComplete == false) {
-      // 썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
-      // print('frame_thumbnail : getContents');
-      // await _contentsManager!.getContents();
-      // _contentsManager!.addRealTimeListen(widget.model.mid);
-      // _contentsManager!.reOrdering();
-      //return false;
+    // 썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
+    // print('frame_thumbnail : getContents');
+    // await _contentsManager!.getContents();
+    // _contentsManager!.addRealTimeListen(widget.model.mid);
+    // _contentsManager!.reOrdering();
+    //return false;
     //}
     logger.info('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
     return true;
@@ -215,7 +215,17 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       return weatherFrame(model, widget.width, widget.height);
     }
     if (model.isWatchTYpe()) {
-      return watchFrame(model, null);
+      // return watchFrame(model, null);
+      return model.frameType == FrameType.stopWatch
+          ? Container(
+              width: 20,
+              height: 20,
+              color: Colors.grey,
+              child: const Center(
+                child: Icon(Icons.timer, color: Colors.white, size: 16),
+              ),
+            )
+          : watchFrame(model, null);
     }
     if (model.isCameraType()) {
       return CameraFrame(model: model);
