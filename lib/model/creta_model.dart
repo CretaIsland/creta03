@@ -63,7 +63,7 @@ class CretaModelSnippet {
           }
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitData)");
-            double? height = (initScreenHeight ?? 0) > 0 ? initScreenHeight! : null;
+            // double? height = (initScreenHeight ?? 0) > 0 ? initScreenHeight! : null;
             // return Scrollbar(
             //   //controller: scrollController,
             //   thumbVisibility: true,
