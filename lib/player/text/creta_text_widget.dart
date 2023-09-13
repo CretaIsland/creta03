@@ -34,7 +34,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> with CretaTextMi
     //widget.player.afterBuild();
     final ContentsEventController receiveEvent = Get.find(tag: 'text-property-to-textplayer');
     _receiveEvent = receiveEvent;
-    applyScale = StudioVariables.applyScale;
+    //applyScale = StudioVariables.applyScale;
   }
 
   @override
@@ -45,6 +45,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> with CretaTextMi
 
   @override
   Widget build(BuildContext context) {
+    applyScale = StudioVariables.applyScale;
     final CretaTextPlayer player = widget.player as CretaTextPlayer;
 
     // return ClipRRect(

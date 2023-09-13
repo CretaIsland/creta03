@@ -144,7 +144,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                     //   htmlValidator: HtmlValidator.loose(),
                     // );
                   } else {
-                    print('widget.applyScale: ${widget.applyScale}');
+                    //print('widget.applyScale: ${widget.applyScale}');
                     return playText(
                       context,
                       null,
