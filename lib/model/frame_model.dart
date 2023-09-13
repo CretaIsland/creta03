@@ -58,6 +58,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   bool isWatchTYpe() {
     if (frameType == FrameType.analogWatch) return true;
     if (frameType == FrameType.digitalWatch) return true;
+    if (frameType == FrameType.stopWatch) return true;
     return false;
   }
 

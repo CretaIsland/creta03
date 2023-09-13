@@ -24,6 +24,7 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
+import '../../left_menu/clock/stop_watch.dart';
 import '../../left_menu/google_map/creta_map_widget.dart';
 import '../../left_menu/weather/weather_base.dart';
 import '../../studio_variables.dart';
@@ -146,6 +147,9 @@ mixin FramePlayMixin {
           //     shape: BoxShape.rectangle,
           //     borderRadius: BorderRadius.all(Radius.circular(15))),
           datetime: DateTime.now());
+    }
+    if (model.frameType == FrameType.stopWatch) {
+      return const StopWatch();
     }
     return const SizedBox.shrink();
   }

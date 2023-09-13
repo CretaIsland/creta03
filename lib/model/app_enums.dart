@@ -41,6 +41,7 @@ enum FrameType {
   music,
   analogWatch,
   digitalWatch,
+  stopWatch,
   camera,
   map,
   end;

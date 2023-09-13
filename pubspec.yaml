@@ -136,6 +136,7 @@ dependencies:
   google_maps_flutter: ^2.4.0
   html_editor_enhanced: ^2.5.1
   flutter_html: ^3.0.0-beta.2
+  stop_watch_timer: ^3.0.1
   #flutter_treeview: ^1.0.7+1
   
 

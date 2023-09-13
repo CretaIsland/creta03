@@ -156,9 +156,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
             //error가 발생하게 될 경우 반환하게 되는 부분
             return Snippet.errMsgWidget(snapshot);
           }
-        
-          if (snapshot.connectionState == ConnectionState.done) {
 
+          if (snapshot.connectionState == ConnectionState.done) {
             return _frameDropZone();
           }
           return const SizedBox.shrink();
@@ -313,6 +312,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       return false;
     }
     if (model.frameType == FrameType.digitalWatch) {
+      return false;
+    }
+    if (model.frameType == FrameType.stopWatch) {
       return false;
     }
     if (model.frameType == FrameType.weather2) {
