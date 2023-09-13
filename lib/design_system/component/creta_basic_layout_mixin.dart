@@ -12,7 +12,7 @@ import 'snippet.dart';
 import 'creta_layout_rect.dart';
 
 mixin CretaBasicLayoutMixin {
-  final ScrollController _bannerScrollController = ScrollController();
+  ScrollController _bannerScrollController = ScrollController();
   double _bannerHeight = LayoutConst.cretaBannerMinHeight;
   double _bannerPaneMaxHeight = LayoutConst.cretaBannerMinHeight;
   double _bannerPaneMinHeight = LayoutConst.cretaBannerMinHeight;
@@ -22,6 +22,10 @@ mixin CretaBasicLayoutMixin {
 
   double get getBannerHeight => _bannerHeight;
   ScrollController get getBannerScrollController => _bannerScrollController;
+  void setBannerScrollController(ScrollController sc) {
+    _bannerScrollController = sc;
+    _bannerScrollController.addListener(_scrollListener);
+  }
   void setScrollOffset(double offset) {
     _scrollOffset = offset;
     if (_bannerScrollController.hasClients) {
@@ -118,6 +122,7 @@ mixin CretaBasicLayoutMixin {
   Widget getBannerPane({
     required double width,
     required double height,
+    Key? key,
     String? title,
     String? description,
     List<List<CretaMenuItem>>? listOfListFilter,
@@ -127,8 +132,10 @@ mixin CretaBasicLayoutMixin {
     List<List<CretaMenuItem>>? listOfListFilterOnRight,
     void Function(String)? onSearch,
     double? leftPaddingOnFilter,
+    List<CretaMenuItem>? tabMenuList,
   }) {
     return CretaBannerPane(
+      key: key,
       width: width,
       height: height,
       color: Colors.white,
@@ -141,12 +148,14 @@ mixin CretaBasicLayoutMixin {
       listOfListFilterOnRight: listOfListFilterOnRight,
       onSearch: onSearch,
       leftPaddingOnFilter: leftPaddingOnFilter,
+      tabMenuList: tabMenuList,
     );
   }
 
   Widget mainPage(
     BuildContext context, {
     Key? key,
+    Key? bannerKey,
     required List<CretaMenuItem> leftMenuItemList,
     required Function gotoButtonPressed,
     required String gotoButtonTitle,
@@ -165,6 +174,7 @@ mixin CretaBasicLayoutMixin {
     double topMarginOnRightPane = 0,
     double rightMarginOnRightPane = 0,
     double bottomMarginOnRightPane = 0,
+    List<CretaMenuItem>? tabMenuList,
   }) {
     // cacluate pane-size
     resize(
@@ -229,6 +239,7 @@ mixin CretaBasicLayoutMixin {
                       child: (bannerPane != null)
                           ? bannerPane.call(bannerPaneRect.size)
                           : getBannerPane(
+                              key: bannerKey,
                               width: bannerPaneRect.width,
                               height: bannerPaneRect.height,
                               title: bannerTitle,
@@ -240,6 +251,7 @@ mixin CretaBasicLayoutMixin {
                               listOfListFilterOnRight: listOfListFilterOnRight,
                               onSearch: onSearch,
                               leftPaddingOnFilter: leftPaddingOnFilter,
+                              tabMenuList: tabMenuList,
                             ),
                     ),
                   ],
@@ -250,6 +262,7 @@ mixin CretaBasicLayoutMixin {
                     StudioVariables.displayHeight >
                             bannerPaneRect.height + CretaComponentLocation.BarTop.height
                         ? getBannerPane(
+                            key: bannerKey,
                             width: bannerPaneRect.width,
                             height: bannerPaneRect.height,
                             title: bannerTitle,
@@ -259,6 +272,7 @@ mixin CretaBasicLayoutMixin {
                             listOfListFilterOnRight: listOfListFilterOnRight,
                             onSearch: onSearch,
                             leftPaddingOnFilter: leftPaddingOnFilter,
+                            tabMenuList: tabMenuList,
                           )
                         : const SizedBox.shrink(),
                     // child pane

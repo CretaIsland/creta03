@@ -42,8 +42,8 @@ class CretaAccountManager {
   static EnterpriseManager? _enterpriseManagerHolder;
   static EnterpriseManager get enterpriseManagerHolder => _enterpriseManagerHolder!;
 
-  static FrameManager? _frameManagerHolder;
-  static FrameManager get frameManagerHolder => _frameManagerHolder!;
+  static FrameManager? _favFrameManagerHolder;
+  //static FrameManager get frameManagerHolder => _favFrameManagerHolder!;
 
   static TeamManager? _teamManagerHolder;
   static TeamManager get teamManagerHolder => _teamManagerHolder!;
@@ -91,10 +91,10 @@ class CretaAccountManager {
       _teamManagerHolder?.configEvent();
       _teamManagerHolder?.clearAll();
     }
-    if (_frameManagerHolder == null) {
-      _frameManagerHolder = FrameManager(pageModel: PageModel('', BookModel('')), bookModel: BookModel(''));
-      _frameManagerHolder?.configEvent();
-      _frameManagerHolder?.clearAll();
+    if (_favFrameManagerHolder == null) {
+      _favFrameManagerHolder = FrameManager(pageModel: PageModel('', BookModel('')), bookModel: BookModel(''));
+      _favFrameManagerHolder?.configEvent();
+      _favFrameManagerHolder?.clearAll();
     }
     if (_enterpriseManagerHolder == null) {
       _enterpriseManagerHolder = EnterpriseManager();
@@ -137,7 +137,7 @@ class CretaAccountManager {
   static Future<bool> logout() async {
     channelManagerHolder.clearAll();
     enterpriseManagerHolder.clearAll();
-    frameManagerHolder.clearAll();
+    _favFrameManagerHolder?.clearAll();
     teamManagerHolder.clearAll();
     userPropertyManagerHolder.clearAll();
 
@@ -167,9 +167,9 @@ class CretaAccountManager {
     if (getUserProperty!.latestUseFrames.isEmpty) {
       return await _getAnyLattestFrames();
     }
-    frameManagerHolder.queryFromIdList(getUserProperty!.latestUseFrames);
-    await frameManagerHolder.isGetListFromDBComplete();
-    for (AbsExModel model in frameManagerHolder.modelList) {
+    _favFrameManagerHolder?.queryFromIdList(getUserProperty!.latestUseFrames);
+    await _favFrameManagerHolder?.isGetListFromDBComplete();
+    for (AbsExModel model in _favFrameManagerHolder?.modelList ?? []) {
       FrameModel frameModel = model as FrameModel;
       _loginFrameList.add(frameModel);
     }

@@ -23,6 +23,7 @@ class CretaMenuItem {
   final bool disabled;
   bool isHover;
   final bool isSub;
+  final int index;
 
   CretaMenuItem({
     required this.caption,
@@ -41,6 +42,7 @@ class CretaMenuItem {
     this.subMenu,
     this.isHover = false,
     this.isSub = false,
+    this.index = 0,
   });
 
   CretaMenuItem.clone(CretaMenuItem src)
@@ -60,6 +62,7 @@ class CretaMenuItem {
           disabled: src.disabled,
           subMenu: src.subMenu,
           isHover: src.isHover,
+          index: src.index,
         );
 
   // bool get isSubHover {

@@ -814,7 +814,7 @@ class BTN {
       buttonType: CretaButtonType.textOnly,
       buttonColor: CretaButtonColor.blue,
       text: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        padding: sidePadding == null ? const EdgeInsets.fromLTRB(16, 0, 16, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -1873,20 +1873,42 @@ class BTN {
         text: Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)));
   }
 
-  static CretaTextButton fill_color_t_m({
+  static CretaButton fill_color_t_m({
     required String text,
     required Function onPressed,
-    double width = 58,
+    double? width = 58,
+    double? height = 24,
+    CretaButtonSidePadding? sidePadding,
+    TextStyle? textStyle,
+    bool isSelected = false,
+    CretaButtonColor buttonColor = CretaButtonColor.channelTabUnselected,
   }) {
-    return CretaTextButton(
-        width: width,
-        height: 21,
-        onPressed: onPressed,
-        fgColor: CretaColor.text[700]!,
-        clickColor: CretaColor.primary,
-        hoverColor: CretaColor.primary,
-        textStyle: CretaFont.buttonSmall,
-        text: text);
+    // return CretaTextButton(
+    //     width: width,
+    //     height: 21,
+    //     onPressed: onPressed,
+    //     fgColor: CretaColor.text[700]!,
+    //     clickColor: CretaColor.primary,
+    //     hoverColor: CretaColor.primary,
+    //     textStyle: CretaFont.buttonSmall,
+    //     text: text);
+    return CretaButton(
+      width: width,
+      height: height,
+      buttonType: CretaButtonType.textOnly,
+      buttonColor: buttonColor,
+      text: Padding(
+        padding: sidePadding == null ? const EdgeInsets.fromLTRB(16, 0, 16, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(text, style: textStyle ?? CretaFont.buttonMedium.copyWith(color: isSelected ? CretaColor.primary[400] : CretaColor.text[700])),
+          ],
+        ),
+      ),
+      onPressed: onPressed,
+      sidePadding: sidePadding,
+    );
   }
 
   static CretaTextButton fill_color_it_m({

@@ -557,3 +557,15 @@ enum CommentBarType {
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static CommentBarType fromInt(int? val) => CommentBarType.values[validCheck(val ?? none.index)];
 }
+
+enum CommunityChannelType {
+  none,
+  books,
+  playlists,
+  memberChannels,
+  info,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static CommunityChannelType fromInt(int? val) => CommunityChannelType.values[validCheck(val ?? none.index)];
+}

@@ -1,4 +1,5 @@
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
+import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
@@ -11,6 +12,7 @@ import '../design_system/text_field/creta_text_field.dart';
 import '../model/playlist_model.dart';
 import '../model/creta_model.dart';
 import '../model/book_model.dart';
+import '../model/channel_model.dart';
 import 'creta_manager.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
 import '../../../design_system/creta_color.dart';
@@ -55,7 +57,7 @@ class PlaylistManager extends CretaManager {
   }) async {
     PlaylistModel plModel = PlaylistModel.withName(
       name: name,
-      userId: userId,
+      //userId: userId,
       channelId: channelId,
       isPublic: isPublic,
       lastUpdateTime: DateTime.now(),
@@ -193,6 +195,7 @@ class PlaylistManager extends CretaManager {
     required Map<String, BookModel> bookModelMap,
     required Function(String) onNewPlaylist,
     required Function(String, String) onSelectDone,
+    Map<String, ChannelModel>? channelMap,
   }) {
     _selectedPlaylistId = '';
     return CretaDialog(
@@ -222,6 +225,7 @@ class PlaylistManager extends CretaManager {
                   size: const Size(333, 211),
                   playlist: playlistModelList,
                   bookModelMap: bookModelMap,
+                  channelMap: channelMap,
                   selectCallback: (id) {
                     _selectedPlaylistId = id;
                   },
@@ -279,11 +283,13 @@ class PlaylistListControl extends StatefulWidget {
     required this.playlist,
     required this.bookModelMap,
     required this.selectCallback,
+    this.channelMap,
   });
   final Size size;
   final List<PlaylistModel> playlist;
   final Function(String) selectCallback;
   final Map<String, BookModel> bookModelMap;
+  final Map<String, ChannelModel>? channelMap;
 
   @override
   State<PlaylistListControl> createState() => _PlaylistListControlState();
@@ -330,6 +336,7 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
               children: [
                 const SizedBox(height: 10),
                 ...widget.playlist.expand((element) {
+                  String channelName = widget.channelMap?[element.channelId]?.name ?? CretaAccountManager.getUserProperty!.nickname;
                   String bookThumbnailUrl = '';
                   if (element.bookIdList.isNotEmpty) {
                     BookModel? model = widget.bookModelMap[element.bookIdList[0]];
@@ -377,7 +384,7 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                                         style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
                                       ),
                                       Text(
-                                        element.userId,
+                                        channelName,//element.userId,
                                         style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]),
                                       ),
                                     ],

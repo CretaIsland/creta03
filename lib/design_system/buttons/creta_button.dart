@@ -48,6 +48,8 @@ enum CretaButtonColor {
   secondary,
   primary,
   forTree,
+  channelTabSelected,
+  channelTabUnselected,
 }
 
 class CretaButton extends StatefulWidget {
@@ -274,6 +276,21 @@ class CretaButton extends StatefulWidget {
         hoverColor = CretaColor.primary[300]!;
         clickColor = CretaColor.primary[400]!;
         selectColor = CretaColor.primary[500]!;
+        break;
+      case CretaButtonColor.channelTabSelected:
+        fgColor = CretaColor.text[700]!;
+        bgColor = Colors.white;
+        hoverColor = CretaColor.text[100]!;
+        clickColor = CretaColor.text[100]!;
+        selectColor = CretaColor.text[100]!;
+        break;
+      case CretaButtonColor.channelTabUnselected:
+        fgColor = CretaColor.text[700]!;
+        bgColor = CretaColor.text[100]!;
+        hoverColor = CretaColor.text[100]!;
+        clickColor = CretaColor.text[100]!;
+        selectColor = CretaColor.text[100]!;
+        // fgHoverColor = CretaColor.primary[400]!;
         break;
       default:
         bgColor = CretaColor.primary[400]!;
