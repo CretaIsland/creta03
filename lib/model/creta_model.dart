@@ -51,6 +51,7 @@ class CretaModelSnippet {
     required Widget Function()? consumerFunc,
     Widget Function()? waitFunc,
     ScrollController? scrollController,
+    double? initScreenHeight,
   }) {
     return FutureBuilder<bool>(
         future: CretaModelSnippet._waitUntilAllManager(managerList),
@@ -62,6 +63,25 @@ class CretaModelSnippet {
           }
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitData)");
+            // double? height = (initScreenHeight ?? 0) > 0 ? initScreenHeight! : null;
+            // return Scrollbar(
+            //   //controller: scrollController,
+            //   thumbVisibility: true,
+            //   child: ListView.builder(
+            //     //controller: scrollController,
+            //     itemCount: 1,
+            //     //itemExtent: initScreenHeight ?? 100,
+            //     itemBuilder: (context, index) {
+            //       return Container(
+            //         color: Colors.red,
+            //         height: height,
+            //         child: Center(
+            //           child: waitFunc?.call() ?? Snippet.showWaitSign(),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // );
             return Center(
               child: waitFunc?.call() ?? Snippet.showWaitSign(),
             );

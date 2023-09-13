@@ -30,6 +30,7 @@ import '../../../design_system/component/creta_layout_rect.dart';
 //import '../../../design_system/menu/creta_drop_down.dart';
 // import '../../../design_system/menu/creta_drop_down_button.dart';
 // import '../../../design_system/text_field/creta_search_bar.dart';
+import '../../login/creta_account_manager.dart';
 import '../creta_book_ui_item.dart';
 //import '../community_sample_data.dart';
 //import 'community_right_pane_mixin.dart';
@@ -227,7 +228,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB');
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
+    playlistManagerHolder.addWhereClause('channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 

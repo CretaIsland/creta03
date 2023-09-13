@@ -89,6 +89,8 @@ class CommunityRightChannelPane extends StatefulWidget {
   final SubscriptionModel? currentSubscriptionModel;
 
   static String channelId = '';
+  static double lastScreenHeight = 0;
+  static double lastScrollPosition = 0;
 
   @override
   State<CommunityRightChannelPane> createState() => _CommunityRightChannelPaneState();
@@ -125,6 +127,8 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   @override
   void initState() {
     super.initState();
+
+    widget.scrollController.addListener(_scrollListener);
 
     channelManagerHolder = ChannelManager();
     bookPublishedManagerHolder = BookPublishedManager();
@@ -167,6 +171,21 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
           _onceDBGetComplete = true;
         },
       );
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.scrollController.removeListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    CommunityRightChannelPane.lastScreenHeight = MediaQuery.of(context).size.height + widget.scrollController.position.maxScrollExtent - 60;
+    CommunityRightChannelPane.lastScrollPosition = widget.scrollController.offset;
+    if (kDebugMode) {
+      print('lastScreenHeight=${CommunityRightChannelPane.lastScreenHeight}');
+      print('lastScrollPosition=${CommunityRightChannelPane.lastScrollPosition}');
     }
   }
 
@@ -308,7 +327,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       return;
     }
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('userId', QueryValue(value: AccountManager.currentLoginUser.email));
+    playlistManagerHolder.addWhereClause('channelId', QueryValue(value: CommunityRightChannelPane.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -362,6 +381,9 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
       return;
     }
     _channelMap.forEach((key, chModel) => chModel.getModelFromMaps(_userPropertyMap, _teamMap));
+    if (CommunityRightChannelPane.lastScrollPosition > 0) {
+      //widget.scrollController.jumpTo(CommunityRightChannelPane.lastScrollPosition);
+    }
     dummyManagerHolder.setState(DBState.idle);
   }
 
@@ -531,6 +553,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
+        initScreenHeight: CommunityRightChannelPane.lastScreenHeight,
         managerList: [
           channelManagerHolder,
           bookPublishedManagerHolder,

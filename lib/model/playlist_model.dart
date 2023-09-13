@@ -16,7 +16,7 @@ import 'creta_model.dart';
 // ignore: camel_case_types
 class PlaylistModel extends CretaModel {
   String name = '';
-  String userId = '';
+  //String userId = '';
   String channelId = '';
   bool isPublic = true;
   DateTime lastUpdateTime = DateTime.now(); // 추후에 updateTime 으로 대체
@@ -26,7 +26,7 @@ class PlaylistModel extends CretaModel {
   List<Object?> get props => [
         ...super.props,
         name,
-        userId,
+        //userId,
         channelId,
         isPublic,
         lastUpdateTime,
@@ -36,7 +36,7 @@ class PlaylistModel extends CretaModel {
 
   PlaylistModel.withName({
     required this.name,
-    required this.userId,
+    //required this.userId,
     required this.channelId,
     required this.isPublic,
     required this.lastUpdateTime,
@@ -50,7 +50,7 @@ class PlaylistModel extends CretaModel {
     super.copyFrom(src, newMid: newMid, pMid: pMid);
     PlaylistModel srcPlaylist = src as PlaylistModel;
     name = srcPlaylist.name;
-    userId = srcPlaylist.userId;
+    //userId = srcPlaylist.userId;
     channelId = srcPlaylist.channelId;
     isPublic = srcPlaylist.isPublic;
     lastUpdateTime = srcPlaylist.lastUpdateTime;
@@ -62,7 +62,7 @@ class PlaylistModel extends CretaModel {
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name = map["name"] ?? '';
-    userId = map["userId"] ?? '';
+    //userId = map["userId"] ?? '';
     channelId = map["channelId"] ?? '';
     isPublic = map["isPublic"] ?? false;
     lastUpdateTime = convertValue(map["lastUpdateTime"]); // Timestamp(in Firebase) => DateTime(in Flutter)
@@ -74,7 +74,7 @@ class PlaylistModel extends CretaModel {
     return super.toMap()
       ..addEntries({
         "name": name,
-        "userId": userId,
+        //"userId": userId,
         "channelId": channelId,
         "isPublic": isPublic,
         "lastUpdateTime": lastUpdateTime,

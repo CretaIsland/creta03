@@ -1,7 +1,9 @@
+import 'package:creta03/design_system/buttons/creta_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
+import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../lang/creta_lang.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_snippet.dart';
@@ -9,6 +11,7 @@ import '../creta_font.dart';
 //import '../menu/creta_drop_down_button.dart';
 import '../menu/creta_popup_menu.dart';
 import '../text_field/creta_search_bar.dart';
+import '../../design_system/creta_color.dart';
 import 'creta_filter_pane.dart';
 
 //const double cretaBannerMinHeight = 196;
@@ -26,6 +29,7 @@ class CretaBannerPane extends StatefulWidget {
   final List<List<CretaMenuItem>>? listOfListFilterOnRight;
   final bool? scrollbarOnRight;
   final double? leftPaddingOnFilter;
+  final List<CretaMenuItem>? tabMenuList;
   const CretaBannerPane({
     super.key,
     required this.width,
@@ -40,6 +44,7 @@ class CretaBannerPane extends StatefulWidget {
     this.scrollbarOnRight,
     this.onSearch,
     this.leftPaddingOnFilter,
+    this.tabMenuList,
   });
 
   @override
@@ -60,6 +65,10 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
       heightDelta -= LayoutConst.cretaTopFilterHeight;
     } else {
       heightDelta -= LayoutConst.cretaPaddingPixel;
+    }
+    bool isExistTabMenu = (widget.tabMenuList ?? []).isNotEmpty;
+    if (isExistTabMenu) {
+      heightDelta -= (32 + 36 + 16 - 20);
     }
     return Container(
       width: widget.width - ((widget.scrollbarOnRight ?? false) ? LayoutConst.cretaScrollbarWidth : 0),
@@ -95,9 +104,38 @@ class _CretaBannerPaneState extends State<CretaBannerPane> {
                     ),
             ),
           ),
+          if (isExistTabMenu)
+            Positioned(
+              left: 0,
+              top: LayoutConst.cretaTopFilterPaddingLT.height + heightDelta + 12,
+              child: Container(
+                width: widget.width,
+                height: 36,
+                color: CretaColor.text[100],
+                child: Row(
+                  children: [
+                    const SizedBox(width: 40),
+                    ...widget.tabMenuList!.expand((menuItem) {
+                      return [
+                        BTN.fill_color_t_m(
+                          text: menuItem.caption,
+                          height:24,
+                          width: null,
+                          sidePadding: CretaButtonSidePadding(left: 12, right: 12),
+                          buttonColor: menuItem.selected ? CretaButtonColor.channelTabSelected : CretaButtonColor.channelTabUnselected,
+                          isSelected: menuItem.selected,
+                          onPressed: menuItem.onPressed ?? () {},
+                        ),
+                        const SizedBox(width: 4),
+                      ];
+                    }),
+                  ],
+                ),
+              ),
+            ),
           Positioned(
             left: LayoutConst.cretaTopFilterPaddingLT.width + (widget.leftPaddingOnFilter ?? 0),
-            top: LayoutConst.cretaTopFilterPaddingLT.height + heightDelta,
+            top: LayoutConst.cretaTopFilterPaddingLT.height + heightDelta + (isExistTabMenu ? 64 : 0),
             child: CretaFilterPane(
               width: internalWidth - (widget.leftPaddingOnFilter ?? 0),
               height: LayoutConst.cretaTopFilterItemHeight,
