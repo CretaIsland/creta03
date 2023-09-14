@@ -317,6 +317,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.stopWatch) {
       return false;
     }
+    if (model.frameType == FrameType.countDownTimer) {
+      return false;
+    }
     if (model.frameType == FrameType.weather2) {
       return false;
     }

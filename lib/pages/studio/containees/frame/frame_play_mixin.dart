@@ -9,6 +9,7 @@
 
 // import '../../../../data_io/contents_manager.dart';
 
+import 'package:creta03/pages/studio/left_menu/clock/count_down_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
@@ -150,6 +151,9 @@ mixin FramePlayMixin {
     }
     if (model.frameType == FrameType.stopWatch) {
       return const StopWatch();
+    }
+    if (model.frameType == FrameType.countDownTimer) {
+      return const CountDownTimer();
     }
     return const SizedBox.shrink();
   }
