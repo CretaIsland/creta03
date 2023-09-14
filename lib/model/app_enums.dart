@@ -16,6 +16,8 @@
 
 import 'package:flutter/cupertino.dart';
 
+import '../lang/creta_studio_lang.dart';
+
 enum BookType {
   none,
   presentaion,
@@ -375,6 +377,27 @@ enum FontSizeType {
     40: FontSizeType.userDefine,
     -1: FontSizeType.end,
   };
+}
+
+enum AutoSizeType {
+  none,
+  autoFontSize,
+  autoFrameSize,
+  noAutoSize,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static AutoSizeType fromInt(int? val) => AutoSizeType.values[validCheck(val ?? none.index)];
+  static AutoSizeType fromString(String val) {
+    switch (val) {
+      case CretaStudioLang.autoFontSize:
+        return AutoSizeType.autoFontSize;
+      case CretaStudioLang.autoFrameSize:
+        return AutoSizeType.autoFrameSize;
+      default:
+        return AutoSizeType.noAutoSize;
+    }
+  }
 }
 
 enum PlayState {

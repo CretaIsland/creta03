@@ -264,6 +264,13 @@ class CretaUtils {
     return box.size;
   }
 
+  static (Offset?, Size?) getBoxByKey(GlobalKey widgetKey) {
+    final RenderBox? box = widgetKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) return (null, null);
+    final Offset offset = box.localToGlobal(Offset.zero);
+    return (offset, box.size);
+  }
+
   static bool isMousePointerOnWidget(GlobalKey widgetKey, Offset pointerPosition) {
     final RenderBox? box = widgetKey.currentContext?.findRenderObject() as RenderBox?;
     if (box == null) return false;

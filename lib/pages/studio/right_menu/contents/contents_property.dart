@@ -18,13 +18,11 @@ import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_ex_slider.dart';
 import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
-import '../../../../design_system/component/creta_font_deco_bar.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
 import '../../../../design_system/component/time_input_widget.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../design_system/menu/creta_drop_down_button.dart';
-import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
@@ -53,7 +51,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   // static bool _isInfoOpen = false;
   static bool _isLinkControlOpen = false;
   static bool _isPlayControlOpen = false;
-  static bool _isTextFontColorOpen = false;
+  //static bool _isTextFontColorOpen = false;
   static bool _isTextFontControlOpen = false;
   static bool _isTextBorderOpen = false;
   static bool _isTextAni = false;
@@ -131,14 +129,14 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       if (!widget.model.isText()) propertyDivider(height: 28),
       if (!widget.model.isText()) _imageControl(),
       if (widget.model.isText()) _textFontColor(),
-      if (widget.model.isText()) propertyDivider(height: 28),
-      if (widget.model.isText()) _textFontControl(),
       propertyDivider(height: 28),
       if (widget.model.isImage()) _imageFilter(),
       if (widget.model.isText()) _textBorder(),
       if (widget.model.isText()) propertyDivider(height: 28),
       if (widget.model.isText()) _textAni(),
       propertyDivider(height: 28),
+      if (widget.model.isText()) _textFontControl(),
+      if (widget.model.isText()) propertyDivider(height: 28),
       _hashTag(),
     ]);
     //});
@@ -147,31 +145,116 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   Widget _textFontColor() {
     return Padding(
       padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
-      child: propertyCard(
-        isOpen: _isTextFontColorOpen,
-        onPressed: () {
-          setState(() {
-            _isTextFontColorOpen = !_isTextFontColorOpen;
-          });
+      child: colorPropertyCard(
+        title: CretaLang.fontColor,
+        color1: widget.model.fontColor.value,
+        color2: widget.model.fontColor.value,
+        opacity: widget.model.opacity.value,
+        gradationType: GradationType.none,
+        cardOpenPressed: () {
+          setState(() {});
         },
-        titleWidget: Text(CretaLang.fontColor, style: CretaFont.titleSmall),
-        //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: Text(
-          '${CretaUtils.extractColorString(widget.model.fontColor.value.toString())},${(1 - widget.model.opacity.value) * 100}%',
-          textAlign: TextAlign.right,
-          style: CretaFont.titleSmall.copyWith(
-            overflow: TextOverflow.fade,
-            color: widget.model.fontColor.value.withOpacity(widget.model.opacity.value),
-            fontFamily: widget.model.font.value,
-            fontWeight: StudioConst.fontWeight2Type[widget.model.fontWeight.value],
-          ),
-        ),
-        hasRemoveButton: false,
-        onDelete: () {},
-        bodyWidget: _fontColorBody(),
+        onOpacityDragComplete: (value) {
+          //setState(() {
+          widget.model.opacity.set(value);
+          //});
+          _contentsManager?.notify();
+          //_sendEvent!.sendEvent(widget.model);
+        },
+        onOpacityDrag: (value) {
+          widget.model.opacity.set(value);
+          _contentsManager?.notify();
+          //_sendEvent!.sendEvent(widget.model);
+        },
+        onColor1Changed: (color) {
+          setState(() {
+            widget.model.fontColor.set(color);
+          });
+          //_contentsManager?.notify();
+          _sendEvent!.sendEvent(widget.model);
+        },
+        onColorIndicatorClicked: () {
+          PropertyMixin.isColorOpen = true;
+          setState(() {});
+        },
+        onDelete: () {
+          setState(() {
+            widget.model.fontColor.set(Colors.black);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
       ),
+      //   propertyCard(
+      //     isOpen: _isTextFontColorOpen,
+      //     onPressed: () {
+      //       setState(() {
+      //         _isTextFontColorOpen = !_isTextFontColorOpen;
+      //       });
+      //     },
+      //     titleWidget: Text(CretaLang.fontColor, style: CretaFont.titleSmall),
+      //     //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+      //     trailWidget: Text(
+      //       '${CretaUtils.extractColorString(widget.model.fontColor.value.toString())},${(1 - widget.model.opacity.value) * 100}%',
+      //       textAlign: TextAlign.right,
+      //       style: CretaFont.titleSmall.copyWith(
+      //         overflow: TextOverflow.fade,
+      //         color: widget.model.fontColor.value.withOpacity(widget.model.opacity.value),
+      //         fontFamily: widget.model.font.value,
+      //         fontWeight: StudioConst.fontWeight2Type[widget.model.fontWeight.value],
+      //       ),
+      //     ),
+      //     hasRemoveButton: false,
+      //     onDelete: () {},
+      //     bodyWidget: _fontColorBody(),
+      //   ),
     );
   }
+
+  // Widget _fontColorBody() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       propertyLine(
+  //         // fontColor
+  //         name: CretaStudioLang.color,
+  //         widget: colorIndicator(
+  //           widget.model.fontColor.value,
+  //           widget.model.opacity.value,
+  //           onColorChanged: (color) {
+  //             setState(() {
+  //               widget.model.fontColor.set(color);
+  //             });
+  //             //_contentsManager?.notify();
+  //             _sendEvent!.sendEvent(widget.model);
+  //           },
+  //           onClicked: () {},
+  //         ),
+  //       ),
+  //       propertyLine(
+  //         // Opacity
+  //         name: CretaStudioLang.opacity,
+  //         widget: CretaExSlider(
+  //           valueType: SliderValueType.reverse,
+  //           value: widget.model.opacity.value,
+  //           min: 0,
+  //           max: 100,
+  //           onChanngeComplete: (val) {
+  //             //setState(() {
+  //             widget.model.opacity.set(val);
+  //             //});
+  //             _contentsManager?.notify();
+  //             //_sendEvent!.sendEvent(widget.model);
+  //           },
+  //           onChannged: (val) {
+  //             widget.model.opacity.set(val);
+  //             _contentsManager?.notify();
+  //             //_sendEvent!.sendEvent(widget.model);
+  //           },
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _textFontControl() {
     return Padding(
@@ -214,103 +297,57 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     );
   }
 
-  Widget _fontColorBody() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        propertyLine(
-          // fontColor
-          name: CretaStudioLang.color,
-          widget: colorIndicator(
-            widget.model.fontColor.value,
-            widget.model.opacity.value,
-            onColorChanged: (color) {
-              setState(() {
-                widget.model.fontColor.set(color);
-              });
-              //_contentsManager?.notify();
-              _sendEvent!.sendEvent(widget.model);
-            },
-            onClicked: () {},
-          ),
-        ),
-        propertyLine(
-          // Opacity
-          name: CretaStudioLang.opacity,
-          widget: CretaExSlider(
-            valueType: SliderValueType.reverse,
-            value: widget.model.opacity.value,
-            min: 0,
-            max: 100,
-            onChanngeComplete: (val) {
-              //setState(() {
-              widget.model.opacity.set(val);
-              //});
-              _contentsManager?.notify();
-              //_sendEvent!.sendEvent(widget.model);
-            },
-            onChannged: (val) {
-              widget.model.opacity.set(val);
-              _contentsManager?.notify();
-              //_sendEvent!.sendEvent(widget.model);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _fontControlBody() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _fontDecoBar(),
-        propertyLine(
-          // letterSpacing  자간
-          name: CretaStudioLang.letterSpacing,
-          widget: CretaExSlider(
-            valueType: SliderValueType.normal,
-            value: widget.model.letterSpacing.value,
-            textType: CretaTextFieldType.number,
-            min: -10,
-            max: 10,
-            onChanngeComplete: (val) {
-              //setState(() {
-              widget.model.letterSpacing.set(val);
-              //});
-              _contentsManager?.notify();
-              //_sendEvent!.sendEvent(widget.model);
-            },
-            onChannged: (val) {
-              widget.model.letterSpacing.set(val);
-              _contentsManager?.notify();
-              //_sendEvent!.sendEvent(widget.model);
-            },
-          ),
-        ),
-        propertyLine(
-          // lineHeight  행간
-          name: CretaStudioLang.lineHeight,
-          widget: CretaExSlider(
-            valueType: SliderValueType.normal,
-            textType: CretaTextFieldType.number,
-            value: widget.model.lineHeight.value,
-            min: 0,
-            max: 100,
-            onChanngeComplete: (val) {
-              //setState(() {
-              widget.model.lineHeight.set(val);
-              //});
-              _contentsManager?.notify();
-              //_sendEvent!.sendEvent(widget.model);
-            },
-            onChannged: (val) {
-              widget.model.lineHeight.set(val);
-              _contentsManager?.notify();
-              //_sendEvent!.sendEvent(widget.model);
-            },
-          ),
-        ),
+        //_fontDecoBar(),
+        // propertyLine(
+        //   // letterSpacing  자간
+        //   name: CretaStudioLang.letterSpacing,
+        //   widget: CretaExSlider(
+        //     valueType: SliderValueType.normal,
+        //     value: widget.model.letterSpacing.value,
+        //     textType: CretaTextFieldType.number,
+        //     min: -10,
+        //     max: 10,
+        //     onChanngeComplete: (val) {
+        //       //setState(() {
+        //       widget.model.letterSpacing.set(val);
+        //       //});
+        //       _contentsManager?.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //     onChannged: (val) {
+        //       widget.model.letterSpacing.set(val);
+        //       _contentsManager?.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //   ),
+        // ),
+        // propertyLine(
+        //   // lineHeight  행간
+        //   name: CretaStudioLang.lineHeight,
+        //   widget: CretaExSlider(
+        //     valueType: SliderValueType.normal,
+        //     textType: CretaTextFieldType.number,
+        //     value: widget.model.lineHeight.value,
+        //     min: 0,
+        //     max: 100,
+        //     onChanngeComplete: (val) {
+        //       //setState(() {
+        //       widget.model.lineHeight.set(val);
+        //       //});
+        //       _contentsManager?.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //     onChannged: (val) {
+        //       widget.model.lineHeight.set(val);
+        //       _contentsManager?.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //   ),
+        // ),
         // propertyLine(
         //   // scaleFactor  장평
         //   name: CretaStudioLang.scaleFactor,
@@ -395,33 +432,33 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     );
   }
 
-  Widget _fontDecoBar() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: CretaFontDecoBar(
-        bold: widget.model.isBold.value,
-        italic: widget.model.isItalic.value,
-        underline: widget.model.isUnderline.value,
-        strike: widget.model.isStrike.value,
-        toggleBold: (val) {
-          widget.model.isBold.set(val);
-          _sendEvent!.sendEvent(widget.model);
-        },
-        toggleItalic: (val) {
-          widget.model.isItalic.set(val);
-          _sendEvent!.sendEvent(widget.model);
-        },
-        toggleUnderline: (val) {
-          widget.model.isUnderline.set(val);
-          _sendEvent!.sendEvent(widget.model);
-        },
-        toggleStrikethrough: (val) {
-          widget.model.isStrike.set(val);
-          _sendEvent!.sendEvent(widget.model);
-        },
-      ),
-    );
-  }
+  // Widget _fontDecoBar() {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 20),
+  //     child: CretaFontDecoBar(
+  //       bold: widget.model.isBold.value,
+  //       italic: widget.model.isItalic.value,
+  //       underline: widget.model.isUnderline.value,
+  //       strike: widget.model.isStrike.value,
+  //       toggleBold: (val) {
+  //         widget.model.isBold.set(val);
+  //         _sendEvent!.sendEvent(widget.model);
+  //       },
+  //       toggleItalic: (val) {
+  //         widget.model.isItalic.set(val);
+  //         _sendEvent!.sendEvent(widget.model);
+  //       },
+  //       toggleUnderline: (val) {
+  //         widget.model.isUnderline.set(val);
+  //         _sendEvent!.sendEvent(widget.model);
+  //       },
+  //       toggleStrikethrough: (val) {
+  //         widget.model.isStrike.set(val);
+  //         _sendEvent!.sendEvent(widget.model);
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget _translateRow(ContentsModel model) {
     return propertyLine(

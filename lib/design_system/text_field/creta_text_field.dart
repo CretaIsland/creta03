@@ -91,6 +91,7 @@ class CretaTextField extends LastClickable {
   final bool autoHeight;
   final void Function(PointerDownEvent)? onTapOutside;
   final Iterable<String>? autofillHints;
+  final TextStyle? style;
 
   CretaTextField({
     required this.textFieldKey,
@@ -118,6 +119,7 @@ class CretaTextField extends LastClickable {
     this.autoComplete = false,
     this.autoHeight = false,
     this.autofillHints = const <String>[],
+    this.style,
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -146,6 +148,7 @@ class CretaTextField extends LastClickable {
     this.autoComplete = false,
     this.autoHeight = false,
     this.autofillHints = const <String>[],
+    this.style,
   }) : super(key: textFieldKey);
 
   CretaTextField.double({
@@ -174,6 +177,7 @@ class CretaTextField extends LastClickable {
     this.autoComplete = false,
     this.autoHeight = false,
     this.autofillHints = const <String>[],
+    this.style,
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -202,6 +206,7 @@ class CretaTextField extends LastClickable {
     this.autoComplete = false,
     this.autoHeight = false,
     this.autofillHints = const <String>[],
+    this.style,
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -230,6 +235,7 @@ class CretaTextField extends LastClickable {
     this.autoComplete = false,
     this.autoHeight = false,
     this.autofillHints = const <String>[],
+    this.style,
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -258,6 +264,7 @@ class CretaTextField extends LastClickable {
     this.autoComplete = false,
     this.autoHeight = false,
     this.autofillHints = const <String>[],
+    this.style,
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -286,6 +293,7 @@ class CretaTextField extends LastClickable {
     this.autoComplete = false,
     this.autoHeight = false,
     this.autofillHints = const <String>[],
+    this.style,
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -314,6 +322,7 @@ class CretaTextField extends LastClickable {
     this.autoComplete = false,
     this.autoHeight = false,
     this.autofillHints = const <String>[],
+    this.style,
   }) : super(key: textFieldKey);
 
   @override
@@ -361,15 +370,17 @@ class CretaTextFieldState extends State<CretaTextField> {
   void initState() {
     _controller = widget.controller ?? TextEditingController();
     _controller.text = widget.value;
-    // _controller.addListener(() {
-    //   if (_controller.text.isNotEmpty) {
-    //     // 키보드 이벤트 처리
-    //     _handleKeyboardEvent(_controller.text[_controller.text.length - 1]);
-    //   }
-    // });
+
+    // 커서를 제일 끝으로 이동
+     _controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: _controller.text.length),
+    );
 
     if (widget.autoHeight) {
       _lineCount = CretaUtils.countAs(widget.value, '\n');
+
+      print('_lineCount= $_lineCount');
+
       if (_lineCount > 10) _lineCount = 10;
       if (_lineCount < 1) _lineCount = 1;
     }
@@ -509,6 +520,15 @@ class CretaTextFieldState extends State<CretaTextField> {
   }
 
   Widget _cupertinoTextField() {
+    int? lines;
+    if (widget.maxLines != null) {
+      lines = widget.maxLines;
+    } else {
+      if (widget.autoHeight) {
+        lines = _lineCount;
+      }
+    }
+
     return MouseRegion(
       onEnter: (event) {
         setState(() {
@@ -551,8 +571,8 @@ class CretaTextFieldState extends State<CretaTextField> {
         //         : OverlayVisibilityMode.never
         //     : OverlayVisibilityMode.never,
         inputFormatters: _format(widget.textType),
-        maxLines: widget.maxLines,
-        minLines: widget.maxLines,
+        maxLines: lines,
+        minLines: lines,
         //maxLines: 1,
         autofocus: false,
         //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
@@ -566,7 +586,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         controller: _controller,
         placeholder: _clicked ? null : widget.hintText,
         placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),
-        style: CretaFont.bodySmall.copyWith(color: CretaColor.text[900]!),
+        style: widget.style ?? CretaFont.bodySmall.copyWith(color: CretaColor.text[900]!),
         suffixMode: OverlayVisibilityMode.always,
         // onEditingComplete: () {
         //   _focusNode?.requestFocus();

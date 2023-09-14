@@ -66,7 +66,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<String> font;
   late UndoAble<int> fontWeight;
   late UndoAble<bool> isBold; //bold
-  late UndoAble<bool> isAutoSize; //자동 크기
+  late UndoAble<AutoSizeType> autoSizeType; //자동 크기
   late UndoAble<double> glassFill; // 글라스질
   late UndoAble<double> opacity; // 투명도
   late UndoAble<double> fontSize;
@@ -120,7 +120,7 @@ class ContentsModel extends CretaModel {
         font,
         fontWeight,
         isBold,
-        isAutoSize,
+        autoSizeType,
         glassFill,
         opacity,
         fontSize,
@@ -208,7 +208,7 @@ class ContentsModel extends CretaModel {
     font = UndoAble<String>(CretaFont.fontFamily, mid, 'font');
     fontWeight = UndoAble<int>(400, mid, 'fontWeight');
     isBold = UndoAble<bool>(false, mid, 'isBold');
-    isAutoSize = UndoAble<bool>(true, mid, 'isAutoSize');
+    autoSizeType = UndoAble<AutoSizeType>(AutoSizeType.noAutoSize, mid, 'autoSizeType');
     glassFill = UndoAble<double>(0, mid, 'glassFill');
     opacity = UndoAble<double>(1, mid, 'opacity');
     fontSize = UndoAble<double>(14, mid, 'fontSize');
@@ -273,7 +273,7 @@ class ContentsModel extends CretaModel {
     font = UndoAble<String>(srcContents.font.value, mid, 'font');
     fontWeight = UndoAble<int>(srcContents.fontWeight.value, mid, 'fontWeight');
     isBold = UndoAble<bool>(srcContents.isBold.value, mid, 'isBold');
-    isAutoSize = UndoAble<bool>(srcContents.isAutoSize.value, mid, 'isAutoSize');
+    autoSizeType = UndoAble<AutoSizeType>(srcContents.autoSizeType.value, mid, 'autoSizeType');
     glassFill = UndoAble<double>(srcContents.glassFill.value, mid, 'glassFill');
     opacity = UndoAble<double>(srcContents.opacity.value, mid, 'opacity');
     fontSize = UndoAble<double>(srcContents.fontSize.value, mid, 'fontSize');
@@ -346,7 +346,7 @@ class ContentsModel extends CretaModel {
     font.init(srcContents.font.value);
     fontWeight.init(srcContents.fontWeight.value);
     isBold.init(srcContents.isBold.value);
-    isAutoSize.init(srcContents.isAutoSize.value);
+    autoSizeType.init(srcContents.autoSizeType.value);
     glassFill.init(srcContents.glassFill.value);
     opacity.init(srcContents.opacity.value);
     fontSize.init(srcContents.fontSize.value);
@@ -444,7 +444,7 @@ class ContentsModel extends CretaModel {
     font.set(map["font"] ?? CretaFont.fontFamily, save: false, noUndo: true);
     fontWeight.set(map["fontWeight"] ?? 400, save: false, noUndo: true);
     isBold.set(map["isBold"] ?? false, save: false, noUndo: true);
-    isAutoSize.set(map["isAutoSize"] ?? true, save: false, noUndo: true);
+    autoSizeType.set(AutoSizeType.fromInt(map["autoSizeType"] ?? 3), save: false, noUndo: true);
     glassFill.set(map["glassFill"] ?? 0, save: false, noUndo: true);
     opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
     fontSize.set(map["fontSize"] ?? 14, save: false, noUndo: true);
@@ -501,7 +501,7 @@ class ContentsModel extends CretaModel {
         "font": font.value,
         "fontWeight": fontWeight.value,
         "isBold": isBold.value,
-        "isAutoSize": isAutoSize.value,
+        "autoSizeType": autoSizeType.value.index,
         "glassFill": glassFill.value,
         "opacity": opacity.value,
         "fontSize": fontSize.value,

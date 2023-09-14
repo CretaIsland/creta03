@@ -8,6 +8,7 @@ import 'package:material_tag_editor/tag_editor.dart';
 import '../../../common/creta_utils.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_checkbox.dart';
+import '../../../design_system/buttons/creta_ex_slider.dart';
 import '../../../design_system/component/colorPicker/gradation_indicator.dart';
 import '../../../design_system/component/colorPicker/my_color_indicator.dart';
 import '../../../design_system/component/colorPicker/my_image_filter_indicator.dart';
@@ -315,16 +316,18 @@ mixin PropertyMixin {
           ),
         ),
         if (opacity != null)
-          CretaPropertySlider(
-            // 투명도
+          propertyLine(
             name: CretaStudioLang.opacity,
-            min: 0,
-            max: 100,
-            value: opacity,
-            valueType: SliderValueType.reverse,
-            onChannged: onOpactityChanged,
-            onChanngeComplete: onOpactityChangedComplete,
-            postfix: '%',
+            widget: CretaExSlider(
+              // 투명도
+              min: 0,
+              max: 100,
+              value: opacity,
+              valueType: SliderValueType.reverse,
+              onChannged: onOpactityChanged,
+              onChanngeComplete: onOpactityChangedComplete,
+              postfix: '%',
+            ),
           ),
       ],
     );

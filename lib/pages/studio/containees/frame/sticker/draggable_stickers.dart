@@ -8,7 +8,6 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../design_system/component/creta_right_mouse_menu.dart';
-import '../../../../../design_system/creta_color.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../../lang/creta_studio_lang.dart';
@@ -16,13 +15,13 @@ import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
-import '../../../../../player/text/creta_text_player.dart';
 import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_getx_controller.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
 import 'draggable_resizable.dart';
+import 'instant_editor.dart';
 import 'mini_menu.dart';
 import 'stickerview.dart';
 
@@ -104,12 +103,10 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   bool _isEditMode = false;
   bool _isEditorAlreadyExist = false;
-  final TextEditingController _textController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
-    _textController.dispose();
   }
 
   @override
@@ -120,7 +117,6 @@ class _DraggableStickersState extends State<DraggableStickers> {
     DraggableStickers.frameSelectNotifier ??= FrameSelectNotifier();
     final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
     _sendEvent = sendEvent;
-
     super.initState();
   }
 
@@ -155,7 +151,19 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   Widget _drawEachStiker(Sticker sticker) {
     if (_isEditMode && _isEditorAlreadyExist == false) {
-      return _editText(sticker);
+      _isEditorAlreadyExist = true;
+      return InstantEditor(
+        sticker: sticker,
+        frameManager: widget.frameManager,
+        onEditComplete: () {
+          setState(
+            () {
+              _isEditorAlreadyExist = false;
+              _isEditMode = false;
+            },
+          );
+        },
+      );
     }
     return _dragableResizable(sticker);
   }
@@ -687,81 +695,4 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //     child: child,
   //   );
   // }
-
-  Widget _editText(Sticker sticker) {
-    FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
-    if (frameModel == null) {
-      return const SizedBox.shrink();
-    }
-    ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
-    if (contentsManager == null) {
-      return const SizedBox.shrink();
-    }
-    ContentsModel? model = contentsManager.getFirstModel();
-    if (model == null) {
-      return const SizedBox.shrink();
-    }
-
-    _isEditorAlreadyExist = true;
-
-    late TextStyle style;
-    // late String uri;
-    // late double fontSize;
-    (style, _, _) = CretaTextPlayer.makeStyle(context, model, StudioVariables.applyScale, false);
-
-    Offset framePostion = sticker.position + BookMainPage.pageOffset;
-    _textController.text = model.remoteUrl == null ? '' : model.remoteUrl!;
-
-    print('${model.valign.value}------------------------------------------');
-
-    return Positioned(
-      left: framePostion.dx,
-      top: framePostion.dy,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(width: 2, color: CretaColor.primary),
-        ),
-        alignment: AlignmentDirectional.center,
-        //CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
-        width: frameModel.width.value * StudioVariables.applyScale,
-        height: frameModel.height.value * StudioVariables.applyScale,
-
-        child: TextField(
-          decoration: const InputDecoration(
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.zero,
-            isDense: true,
-          ),
-          // decoration: BoxDecoration(
-          //   border: Border.all(width: 2, color: Colors.amber),
-          // ),
-          minLines: 1,
-          maxLines: 100,
-          keyboardType: TextInputType.multiline,
-          textInputAction: TextInputAction.newline,
-          textAlign: model.align.value,
-          textAlignVertical: TextAlignVertical.center, //intToTextAlignVertical(model.valign.value),
-          //expands: true,
-          style: style,
-          controller: _textController,
-          onEditingComplete: () {
-            setState(() {
-              _isEditorAlreadyExist = false;
-              _isEditMode = false;
-              model.remoteUrl = _textController.text;
-              model.save();
-            });
-          },
-          onTapOutside: (event) {
-            setState(() {
-              _isEditorAlreadyExist = false;
-              _isEditMode = false;
-              model.remoteUrl = _textController.text;
-              model.save();
-            });
-          },
-        ),
-      ),
-    );
-  }
 }
