@@ -137,10 +137,10 @@ class CretaTextPlayer extends CretaAbsPlayer {
   //     return Stack(
   //       alignment: AlignmentDirectional.center,
   //       children: [
-  //         model!.isAutoSize.value
+  //         model!.autoSizeType.value
   //             ? AutoSizeText(text, textAlign: model!.align.value, style: outlineStyle)
   //             : Text(text, textAlign: model!.align.value, style: outlineStyle),
-  //         model!.isAutoSize.value
+  //         model!.autoSizeType.value
   //             ? AutoSizeText(text, textAlign: model!.align.value, style: style)
   //             : Text(text, textAlign: model!.align.value, style: style),
   //       ],
@@ -148,7 +148,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
   //   }
 
   //   // 아웃라인도 아니고, 애니매이션도 아닌 경우.
-  //   return model!.isAutoSize.value
+  //   return model!.autoSizeType.value
   //       ? AutoSizeText(text, textAlign: model!.align.value, style: style)
   //       : Text(text, textAlign: model!.align.value, style: style);
   // }
@@ -281,7 +281,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
   //             period: Duration(milliseconds: duration),
   //             baseColor: model!.fontColor.value,
   //             highlightColor: model!.outLineColor.value,
-  //             child: model!.isAutoSize.value
+  //             child: model!.autoSizeType.value
   //                 ? AutoSizeText(text, textAlign: model!.align.value, style: style)
   //                 : Text(text, textAlign: model!.align.value, style: style));
   //       }
@@ -316,7 +316,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
   //         );
   //       }
   //     default:
-  //       return model!.isAutoSize.value
+  //       return model!.autoSizeType.value
   //           ? AutoSizeText(
   //               text,
   //               textAlign: model!.align.value,
@@ -333,7 +333,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
   // double getAutoFontSize(int textSize, Size realSize, double fontSize) {
   //   //double fontSize = model!.fontSize.value;
 
-  //   if (model!.isAutoSize.value == false) {
+  //   if (model!.autoSizeType.value == false) {
   //     return fontSize;
   //   }
   //   // 텍스트 길이
@@ -365,7 +365,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
       //fontSize = fontSize * 0.9; // 썸네일의 경우, 폰트가 조금 크게 나오는 경향이 있어서 조금 더 작게 보정해준다.
     }
 
-    if (model.isAutoSize.value == true &&
+    if (model.autoSizeType.value == AutoSizeType.autoFontSize &&
         (model.aniType.value != TextAniType.rotate ||
             model.aniType.value != TextAniType.bounce ||
             model.aniType.value != TextAniType.fade ||
@@ -409,7 +409,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
       style = style.copyWith(fontWeight: FontWeight.bold);
     }
 
-    if (model.isAutoSize.value == false) {
+    if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
       style.copyWith(
         fontSize: fontSize,
       );
@@ -460,5 +460,4 @@ class CretaTextPlayer extends CretaAbsPlayer {
         return AlignmentDirectional.center;
     }
   }
-
 }

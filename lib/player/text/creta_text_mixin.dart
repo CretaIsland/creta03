@@ -56,7 +56,7 @@ mixin CretaTextMixin {
 
     // double fontSize = model.fontSize.value * applyScale;
 
-    // if (model.isAutoSize.value == true &&
+    // if (model.autoSizeType.value == true &&
     //     (model.aniType.value != TextAniType.rotate ||
     //         model.aniType.value != TextAniType.bounce ||
     //         model.aniType.value != TextAniType.fade ||
@@ -92,7 +92,7 @@ mixin CretaTextMixin {
     //   style = style.copyWith(fontWeight: FontWeight.bold);
     // }
 
-    // if (model.isAutoSize.value == false) {
+    // if (model.autoSizeType.value == false) {
     //   style.copyWith(
     //     fontSize: fontSize,
     //   );
@@ -105,14 +105,14 @@ mixin CretaTextMixin {
     return Container(
       color: Colors.transparent,
       padding: const EdgeInsets.fromLTRB(0, baseVerticalPadding, 0, baseVerticalPadding),
-      alignment: CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
+      alignment:
+          CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
       width: realSize.width,
       height: realSize.height,
       child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
   }
 
-  
   Widget _playText(ContentsModel? model, String text, TextStyle style, double fontSize,
       Size realSize, bool isThumbnail) {
     //logHolder.log('playText ${model!.outLineWidth.value} ${model!.aniType.value}',level: 6);
@@ -155,7 +155,7 @@ mixin CretaTextMixin {
       return Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          model.isAutoSize.value
+          model.autoSizeType.value == AutoSizeType.autoFontSize
               ? AutoSizeText(
                   text,
                   //textAlign: model.align.value,
@@ -166,7 +166,7 @@ mixin CretaTextMixin {
                   //textAlign: model.align.value,
                   style: outlineStyle,
                 ),
-          model.isAutoSize.value
+          model.autoSizeType.value == AutoSizeType.autoFontSize
               ? AutoSizeText(
                   text,
                   //textAlign: model.align.value,
@@ -184,7 +184,7 @@ mixin CretaTextMixin {
     }
 
     // 아웃라인도 아니고, 애니매이션도 아닌 경우.
-    return model.isAutoSize.value
+    return model.autoSizeType.value == AutoSizeType.autoFontSize
         ? AutoSizeText(
             text,
             textAlign: model.align.value,
@@ -327,7 +327,7 @@ mixin CretaTextMixin {
               period: Duration(milliseconds: duration),
               baseColor: model.fontColor.value,
               highlightColor: model.outLineColor.value,
-              child: model.isAutoSize.value
+              child: model.autoSizeType.value == AutoSizeType.autoFontSize
                   ? AutoSizeText(text, textAlign: model.align.value, style: style)
                   : Text(text, textAlign: model.align.value, style: style));
         }
@@ -364,7 +364,7 @@ mixin CretaTextMixin {
       case TextAniType.neon:
         {
           return Neonpen(
-            text: model.isAutoSize.value
+            text: model.autoSizeType.value == AutoSizeType.autoFontSize
                 ? AutoSizeText(text, textAlign: model.align.value, style: style)
                 : Text(text, textAlign: model.align.value, style: style),
             color: model.outLineColor.value == Colors.transparent
@@ -381,7 +381,7 @@ mixin CretaTextMixin {
           );
         }
       default:
-        return model.isAutoSize.value
+        return model.autoSizeType.value == AutoSizeType.autoFontSize
             ? AutoSizeText(
                 text,
                 textAlign: model.align.value,
@@ -398,7 +398,7 @@ mixin CretaTextMixin {
   double _getAutoFontSize(ContentsModel? model, int textSize, Size realSize, double fontSize) {
     //double fontSize = model!.fontSize.value;
 
-    if (model!.isAutoSize.value == false) {
+    if (model!.autoSizeType.value == AutoSizeType.autoFontSize) {
       return fontSize;
     }
     // 텍스트 길이

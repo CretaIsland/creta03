@@ -493,7 +493,9 @@ class CretaStudioLang {
     userDefineText: 40,
   };
 
-  static const String autoSizeFont = '창 크기에 맞춤 ';
+  static const String autoFontSize = '프레임 크기에 텍스트 크기 조절 ';
+  static const String autoFrameSize = '텍스트 크기에 프레임 크기 조절 ';
+  static const String noAutoSize = '자동 크기 조절 사용 안함 ';
   static const String tts = '음성으로 방송';
   static const String translate = '번역';
 
@@ -572,7 +574,8 @@ class CretaStudioLang {
 
   static String letterSpacing = "자간";
   static String lineHeight = "행간";
-  static String scaleFactor = "장평";
+  static String fontName = "폰트";
+  static String fontSize = "폰트크기";
 
   static String depotComplete = "보관함으로 이동이 완료되었습니다";
 }

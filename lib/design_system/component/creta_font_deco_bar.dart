@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../creta_color.dart';
+import '../buttons/creta_button.dart';
+import '../buttons/creta_button_wrapper.dart';
 
 class CretaFontDecoBar extends StatefulWidget {
   final bool bold;
@@ -88,37 +89,25 @@ class _CretaFontDecoBarState extends State<CretaFontDecoBar> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        IconButton(
-          icon: const Icon(
-            Icons.format_bold,
-            size: 16,
-          ),
+        BTN.fill_gray_i_m(
+          icon: Icons.format_bold,
           onPressed: _toggleBold,
-          color: _isBold ? CretaColor.primary : CretaColor.text[700],
+          buttonColor: _isBold ? CretaButtonColor.primary : CretaButtonColor.white,
         ),
-        IconButton(
-          icon: const Icon(
-            Icons.format_italic,
-            size: 16,
-          ),
+        BTN.fill_gray_i_m(
+          icon: Icons.format_italic,
           onPressed: _toggleItalic,
-          color: _isItalic ? CretaColor.primary : CretaColor.text[700],
+          buttonColor: _isItalic ? CretaButtonColor.primary : CretaButtonColor.white,
         ),
-        IconButton(
-          icon: const Icon(
-            Icons.format_underlined,
-            size: 16,
-          ),
+        BTN.fill_gray_i_m(
+          icon: Icons.format_underlined,
           onPressed: _toggleUnderline,
-          color: _isUnderlined ? CretaColor.primary : CretaColor.text[700],
+          buttonColor: _isUnderlined ? CretaButtonColor.primary : CretaButtonColor.white,
         ),
-        IconButton(
-          icon: const Icon(
-            Icons.format_strikethrough,
-            size: 16,
-          ),
+        BTN.fill_gray_i_m(
+          icon: Icons.format_strikethrough,
           onPressed: _toggleStrikethrough,
-          color: _isStrikethrough ? CretaColor.primary : CretaColor.text[700],
+          buttonColor: _isStrikethrough ? CretaButtonColor.primary : CretaButtonColor.white,
         ),
       ],
     );
