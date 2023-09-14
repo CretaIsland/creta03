@@ -82,7 +82,7 @@ class _InstantEditorState extends State<InstantEditor> {
 
     int lineCount = 1;
     lineCount = CretaUtils.countAs(uri, '\n') + 1;
-    print('lineCount=$lineCount------------------------------------------');
+    //print('lineCount=$lineCount------------------------------------------');
 
     _textFieldKey ??= GlobalObjectKey('TextEditorKey${model.mid}');
 
@@ -150,13 +150,13 @@ class _InstantEditorState extends State<InstantEditor> {
           style: style,
           controller: _textController,
           onEditingComplete: () {
-            print('onEditingComplete');
+            //print('onEditingComplete');
             model.remoteUrl = _textController.text;
             model.save();
             widget.onEditComplete();
           },
           onTapOutside: (event) {
-            print('onTapOutside');
+            //print('onTapOutside');
             model.remoteUrl = _textController.text;
             if (model.height.value != _realSize!.height) {
               model.height.set(_realSize!.height, save: false, noUndo: true);
@@ -167,7 +167,7 @@ class _InstantEditorState extends State<InstantEditor> {
           onChanged: (value) {
             int newlineCount = CretaUtils.countAs(value, '\n') + 1;
             if (newlineCount != lineCount) {
-              print('newlineCount=$newlineCount != lineCount=$lineCount');
+              //print('newlineCount=$newlineCount != lineCount=$lineCount');
               setState(() {
                 model.remoteUrl = _textController.text;
                 lineCount = newlineCount;

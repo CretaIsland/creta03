@@ -896,6 +896,46 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         ),
 
         // propertyLine(
+        //   //  폰트 컬러  글자색
+        //   name: CretaLang.fontColor,
+        //   widget: colorIndicator(
+        //     model.fontColor.value,
+        //     model.opacity.value,
+        //     onColorChanged: (color) {
+        //       setState(() {
+        //         model.fontColor.set(color);
+        //       });
+        //       widget.contentsManager.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //     onClicked: () {},
+        //   ),
+        // ),
+
+        // propertyLine(
+        //   // Opacity
+        //   name: CretaStudioLang.opacity,
+        //   widget: CretaExSlider(
+        //     valueType: SliderValueType.reverse,
+        //     value: model.opacity.value,
+        //     min: 0,
+        //     max: 100,
+        //     onChanngeComplete: (val) {
+        //       //setState(() {
+        //       model.opacity.set(val);
+        //       //});
+        //       widget.contentsManager.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //     onChannged: (val) {
+        //       model.opacity.set(val);
+        //       widget.contentsManager.notify();
+        //       //_sendEvent!.sendEvent(widget.model);
+        //     },
+        //   ),
+        // ),
+
+        // propertyLine(
         //   // 프레임 크기에 자동 맞춤
         //   name: CretaStudioLang.autoSizeFont,
         //   widget: CretaToggleButton(

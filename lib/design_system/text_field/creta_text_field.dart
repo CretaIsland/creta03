@@ -379,7 +379,7 @@ class CretaTextFieldState extends State<CretaTextField> {
     if (widget.autoHeight) {
       _lineCount = CretaUtils.countAs(widget.value, '\n');
 
-      print('_lineCount= $_lineCount');
+      //print('_lineCount= $_lineCount');
 
       if (_lineCount > 10) _lineCount = 10;
       if (_lineCount < 1) _lineCount = 1;

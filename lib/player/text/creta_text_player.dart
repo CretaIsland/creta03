@@ -409,7 +409,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
       style = style.copyWith(fontWeight: FontWeight.bold);
     }
 
-    if (model.autoSizeType.value == false) {
+    if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
       style.copyWith(
         fontSize: fontSize,
       );
