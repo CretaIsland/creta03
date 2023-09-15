@@ -181,7 +181,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
               dialogOffset: _dialogOffset,
               //key: GlobalObjectKey('SimpleEditor-CretaAlertDialog'),
               width: _dialogSize.width,
-              height: _dialogSize.height,
+              height: _dialogSize.height * 1.5,
               frameSize: realSize,
               frameKey: frameKey,
               backgroundColor: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value),
