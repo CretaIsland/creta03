@@ -173,7 +173,7 @@ class _InstantEditorState extends State<InstantEditor> {
     _textController.text = uri;
 
     // 커서를 원래 위치로 이동
-    print('_cursorPos=$_cursorPos, length=${_textController.text.length}');
+    //print('_cursorPos=$_cursorPos, length=${_textController.text.length}   ');
     if (_textController.text.length >= _cursorPos) {
       _textController.selection = TextSelection.fromPosition(
         TextPosition(offset: _cursorPos),
@@ -192,7 +192,7 @@ class _InstantEditorState extends State<InstantEditor> {
   }
 
   Widget _editText(Sticker sticker, ContentsModel model, String uri) {
-    print('_editText height=${_realSize!.height}');
+    //print('_editText height=${_realSize!.height}');
     return Positioned(
       left: _offset.dx,
       top: _offset.dy,
@@ -240,16 +240,16 @@ class _InstantEditorState extends State<InstantEditor> {
             // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
             // if (newlineCount != _textLineCount) {
             _cursorPos = _textController.selection.baseOffset;
-            print('cur=_$_cursorPos');
+            //print('cur=_$_cursorPos');
             if (_reConfigureSize(value, model.fontSize.value)) {
-              print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+              //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
               setState(() {
                 model.remoteUrl = _textController.text;
                 double totalHieght = _textLineHeight * _textLineCount!.toDouble();
-                print('1.before realSize.height=${_realSize!.height}');
-                print('1.lineH=$_textLineHeight, lineCount=$_textLineCount');
+                //print('1.before realSize.height=${_realSize!.height}');
+                //print('1.lineH=$_textLineHeight, lineCount=$_textLineCount');
                 _realSize = Size(_realSize!.width, totalHieght + (_defaultPadding * 2));
-                print('1.after realSize.height=${_realSize!.height}');
+                //print('1.after realSize.height=${_realSize!.height}');
               });
             }
           },
@@ -268,7 +268,7 @@ class _InstantEditorState extends State<InstantEditor> {
       if (_frameModel != null) {
         _frameModel!.height.set(dbHeight, save: false, noUndo: true);
         _frameModel!.save();
-        print('2.db.height=$dbHeight');
+        //print('2.db.height=$dbHeight');
       }
     }
     model.save();
