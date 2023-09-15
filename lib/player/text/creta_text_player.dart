@@ -352,7 +352,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
   // }
 
   static (TextStyle, String, double) makeStyle(
-      BuildContext context, ContentsModel model, double applyScale, bool isThumbnail) {
+      BuildContext? context, ContentsModel model, double applyScale, bool isThumbnail) {
     String uri = model.getURI();
     String errMsg = '${model.name} uri is null';
     if (uri.isEmpty) {
@@ -388,22 +388,44 @@ class CretaTextPlayer extends CretaAbsPlayer {
       }
     }
 
-    TextStyle style = DefaultTextStyle.of(context).style.copyWith(
-        height: lineHeight, // 행간
-        letterSpacing: model.letterSpacing.value * applyScale, // 자간,
-        fontFamily: model.font.value,
-        color: model.fontColor.value.withOpacity(model.opacity.value),
-        fontSize: fontSize,
-        decoration: (model.isUnderline.value && model.isStrike.value)
-            ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
-            : model.isUnderline.value
-                ? TextDecoration.underline
-                : model.isStrike.value
-                    ? TextDecoration.lineThrough
-                    : TextDecoration.none,
-        //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
-        fontWeight: fontWeight,
-        fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal);
+    TextStyle style = (context != null)
+        ? DefaultTextStyle.of(context).style.copyWith(
+            height: lineHeight, // 행간
+            letterSpacing: model.letterSpacing.value * applyScale, // 자간,
+            fontFamily: model.font.value,
+            color: model.fontColor.value.withOpacity(model.opacity.value),
+            fontSize: fontSize,
+            decoration: (model.isUnderline.value && model.isStrike.value)
+                ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+                : model.isUnderline.value
+                    ? TextDecoration.underline
+                    : model.isStrike.value
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+            //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+            //textWidthBasis: TextWidthBasis.longestLine,
+            overflow: TextOverflow.clip,
+            fontWeight: fontWeight,
+            fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal)
+        : TextStyle(
+            height: lineHeight, // 행간
+            letterSpacing: model.letterSpacing.value * applyScale, // 자간,
+            fontFamily: model.font.value,
+            color: model.fontColor.value.withOpacity(model.opacity.value),
+            fontSize: fontSize,
+            decoration: (model.isUnderline.value && model.isStrike.value)
+                ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+                : model.isUnderline.value
+                    ? TextDecoration.underline
+                    : model.isStrike.value
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+            //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+            //textWidthBasis: TextWidthBasis.longestLine,
+
+            overflow: TextOverflow.clip,
+            fontWeight: fontWeight,
+            fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal);
 
     if (model.isBold.value) {
       style = style.copyWith(fontWeight: FontWeight.bold);

@@ -102,7 +102,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   List<Sticker> stickers = [];
 
   bool _isEditMode = false;
-  bool _isEditorAlreadyExist = false;
+  //bool _isEditorAlreadyExist = false;
 
   @override
   void dispose() {
@@ -111,6 +111,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   @override
   void initState() {
+    //print('initState--------------------------');
     // setState(() {
     //   stickers = widget.stickerList ?? [];
     // });
@@ -124,7 +125,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   Widget build(BuildContext context) {
     stickers = widget.stickerList;
 
-    logger.info('_DraggableStickersState build');
+    //print('_DraggableStickersState build-----------------------------------');
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FrameSelectNotifier>.value(
@@ -150,18 +151,20 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   Widget _drawEachStiker(Sticker sticker) {
-    if (_isEditMode && _isEditorAlreadyExist == false) {
-      _isEditorAlreadyExist = true;
+    //if (_isEditMode && _isEditorAlreadyExist == false) {
+    if (_isEditMode) {
+      //_isEditorAlreadyExist = true;
       return InstantEditor(
         sticker: sticker,
         frameManager: widget.frameManager,
         onEditComplete: () {
           setState(
             () {
-              _isEditorAlreadyExist = false;
+              //_isEditorAlreadyExist = false;
               _isEditMode = false;
             },
           );
+          widget.frameManager?.notify();
         },
       );
     }
@@ -247,15 +250,20 @@ class _DraggableStickersState extends State<DraggableStickers> {
           ? InkWell(
               splashColor: Colors.transparent,
               onDoubleTap: () {
-                if (frameModel!.isTextType() == false) {
-                  return;
-                }
                 //print('Frame double is tapped');
-                setState(
-                  () {
-                    _isEditMode = true;
-                  },
-                );
+                // 자동으로 Text Contents 로 가야한다.
+                if (frameModel!.isTextType()) {
+                  setState(
+                    () {
+                      _isEditMode = true;
+                    },
+                  );
+                }
+                // double click action !!!
+                DraggableStickers.frameSelectNotifier?.set(sticker.id);
+                //print('2. after notify DraggableStickers.frameSelectNotifier : ${CretaUtils.timeLap()}');
+                //print('InkWell onTap from draggable_stickers...');
+                widget.onTap?.call(sticker.id);
               },
               onSecondaryTapDown: (details) {
                 // 오른쪽 마우스 버튼 --> 메뉴

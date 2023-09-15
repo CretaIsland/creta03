@@ -372,7 +372,7 @@ class CretaTextFieldState extends State<CretaTextField> {
     _controller.text = widget.value;
 
     // 커서를 제일 끝으로 이동
-     _controller.selection = TextSelection.fromPosition(
+    _controller.selection = TextSelection.fromPosition(
       TextPosition(offset: _controller.text.length),
     );
 
@@ -475,6 +475,13 @@ class CretaTextFieldState extends State<CretaTextField> {
   @override
   Widget build(BuildContext context) {
     widget.widgetSize = MediaQuery.of(context).size;
+    int lineCount = _lineCount;
+    if (widget.maxLines != 0 && lineCount > widget.maxLines!) {
+      lineCount = widget.maxLines!;
+      if (lineCount > 1) {
+        lineCount--;
+      }
+    }
     return
         // MouseRegion(
         //   onExit: (val) {
@@ -491,7 +498,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         //child:
         (widget.height > 0 && widget.width > 0)
             ? SizedBox(
-                height: widget.autoHeight ? widget.height * (_lineCount + 1) + 10 : widget.height,
+                height: widget.autoHeight ? widget.height * (lineCount + 1) + 10 : widget.height,
                 width: widget.width,
                 child: _cupertinoTextField(),
               )
@@ -581,8 +588,8 @@ class CretaTextFieldState extends State<CretaTextField> {
         padding: isNumeric()
             ? EdgeInsetsDirectional.only(start: 8, end: 0)
             : widget.textType == CretaTextFieldType.longText
-                ? EdgeInsetsDirectional.only(start: 18, end: 18, top: 5, bottom: 5)
-                : EdgeInsetsDirectional.only(start: 18, end: 18),
+                ? EdgeInsetsDirectional.only(start: 10, end: 10, top: 5, bottom: 5)
+                : EdgeInsetsDirectional.only(start: 10, end: 10),
         controller: _controller,
         placeholder: _clicked ? null : widget.hintText,
         placeholderStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!),

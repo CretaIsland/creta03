@@ -11,6 +11,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 //import '../../../../common/creta_utils.dart';
+//import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
@@ -190,16 +191,17 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         setState(() {});
       },
       onTap: (mid) {
-        logger.info('FrameMain.onTap : from InkWell , frame_main.dart, no setState $mid');
+        //print('FrameMain.onTap : from InkWell , frame_main.dart, no setState $mid');
 
         if (MiniMenu.showFrame == false) {
           ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
           if (contentsManager != null) {
             ContentsModel? content = contentsManager.getCurrentModel();
             if (content != null && contentsManager.getAvailLength() > 0) {
-              //print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
+             // print('contentsManager is not null');
+             // print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
               frameManager?.setSelectedMid(mid, doNotify: false);
-              //print('4.contentsManager.setSelectedMid : ${CretaUtils.timeLap()}');
+             // print('4.contentsManager.setSelectedMid : ${CretaUtils.timeLap()}');
               contentsManager.setSelectedMid(content.mid, doNotify: false);
 
               // 아래 5번 6번 두가지 Notification 때문에, 느려지게 된다.  따라서, 이를 여기서 하지 않고,
@@ -216,17 +218,21 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
               //print('8.after tee update.${CretaUtils.timeLap()}');
 
               return;
+            } else {
+              //print('get current model is null');
             }
           }
+          //print('contentsManager is null');
         }
         FrameModel? frame = frameManager?.getSelected() as FrameModel?;
-
+        //print('MiniMenu.showFrame == true case');
         if (frame == null ||
             frame.mid != mid ||
             BookMainPage.miniMenuNotifier!.isShow == false ||
             BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame ||
             RightMenu.isOpen == false) {
           //print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
+
           frameManager?.setSelectedMid(mid, doNotify: false);
           //setState(() {
           // 아래 4번 5 번 두가지 Notification 때문에, 느려지게 된다.  따라서, 이를 여기서 하지 않고,
