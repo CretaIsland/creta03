@@ -12,8 +12,9 @@ class StopWatch extends StatefulWidget {
 
 class _StopWatchState extends State<StopWatch> {
   final _isHours = true;
-  bool _isStopPressed = false;
-  final bool _isLapPressed = true;
+  bool _isStartPressed = false;
+  bool _isResetPressed = false;
+  bool _isShown = false;
 
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countUp,
@@ -28,23 +29,26 @@ class _StopWatchState extends State<StopWatch> {
 
   void _startOrStopTimer() {
     setState(() {
-      if (!_isStopPressed) {
-        // print('_isStopPressed $_isStopPressed');
+      _isStartPressed = !_isStartPressed;
+      if (_isStartPressed) {
         _stopWatchTimer.onStartTimer();
+        _isResetPressed = false;
+        _isShown = true;
       } else {
-        // print('_isStopPressed $_isStopPressed');
         _stopWatchTimer.onStopTimer();
+        _isResetPressed = true;
       }
-      _isStopPressed = !_isStopPressed;
     });
   }
 
   void _lapOrResetTimer() {
     setState(() {
-      if (_isLapPressed && _isStopPressed) {
-        _stopWatchTimer.onAddLap();
-      } else {
+      if (_isResetPressed) {
         _stopWatchTimer.onResetTimer();
+        _isResetPressed = false;
+        _isShown = false;
+      } else {
+        _stopWatchTimer.onAddLap();
       }
     });
   }
@@ -104,94 +108,89 @@ class _StopWatchState extends State<StopWatch> {
               ElevatedButton(
                 onPressed: _startOrStopTimer,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: !_isStopPressed ? Colors.green[200] : Colors.red[200],
+                  backgroundColor: !_isStartPressed ? Colors.green[200] : Colors.red[200],
                   fixedSize: const Size(64.0, 64.0),
                   shape: const CircleBorder(),
                 ),
-                child: Text(
-                  !_isStopPressed ? 'Start' : 'Stop',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    color: !_isStopPressed ? Colors.green[700] : Colors.red[700],
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Icon(
+                  !_isStartPressed ? Icons.play_arrow_rounded : Icons.stop_rounded,
+                  size: 28.0,
+                  color: !_isStartPressed ? Colors.green[700] : Colors.red[700],
                 ),
               ),
               ElevatedButton(
                 onPressed: _lapOrResetTimer,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: CretaColor.text[200],
+                  backgroundColor: CretaColor.text[700],
                   fixedSize: const Size(64.0, 64.0),
                   shape: const CircleBorder(),
                 ),
-                child: Text(
-                  _isLapPressed && _isStopPressed ? 'Lap' : 'Reset',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    color: CretaColor.text[700],
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: Icon(
+                  !_isResetPressed ? Icons.add : Icons.refresh_sharp,
+                  size: 28.0,
+                  color: CretaColor.text[200],
                 ),
               ),
             ],
           ),
           // Lap Time
-          Container(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            height: 150.0,
-            child: StreamBuilder<List<StopWatchRecord>>(
-              stream: _stopWatchTimer.records,
-              initialData: _stopWatchTimer.records.value,
-              builder: (context, snap) {
-                final value = snap.data!;
-                if (value.isEmpty) {
-                  return const SizedBox.shrink();
-                }
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-                      duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
-                });
-                return ListView.builder(
-                  controller: _scrollController,
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (BuildContext context, int index) {
-                    final data = value[index];
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          const Divider(height: 1),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Lap ${index + 1}',
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      fontFamily: 'Helvetica',
-                                      fontWeight: FontWeight.normal),
-                                ),
-                                Text(
-                                  ' ${data.displayTime}',
-                                  style: const TextStyle(
-                                      fontSize: 13,
-                                      fontFamily: 'Helvetica',
-                                      fontWeight: FontWeight.normal),
-                                ),
-                              ],
+          if (_isShown)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              height: 120.0,
+              child: StreamBuilder<List<StopWatchRecord>>(
+                stream: _stopWatchTimer.records,
+                initialData: _stopWatchTimer.records.value,
+                builder: (context, snap) {
+                  final value = snap.data!;
+                  if (value.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+                  });
+                  return ListView.builder(
+                    controller: _scrollController,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (BuildContext context, int index) {
+                      final data = value[index];
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            const Divider(height: 1),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Lap ${index + 1}',
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        fontFamily: 'Helvetica',
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  Text(
+                                    ' ${data.displayTime}',
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        fontFamily: 'Helvetica',
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const Divider(height: 1),
-                        ],
-                      ),
-                    );
-                  },
-                  itemCount: value.length,
-                );
-              },
+                            const Divider(height: 1),
+                          ],
+                        ),
+                      );
+                    },
+                    itemCount: value.length,
+                  );
+                },
+              ),
             ),
-          ),
         ],
       ),
     );

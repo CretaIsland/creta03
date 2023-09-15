@@ -25,15 +25,12 @@ class _CountDownTimerState extends State<CountDownTimer> {
   late StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
   void resetTimer() {
-    _stopWatchTimer.clearPresetTime();
-
     _hoursController.text = '';
     _minutesController.text = '';
     _secondsController.text = '';
 
     setState(() {
       _isTimeStarted = false;
-      _isPaused = false;
     });
   }
 
@@ -47,19 +44,15 @@ class _CountDownTimerState extends State<CountDownTimer> {
     _stopWatchTimer.fetchStopped.listen((value) => {});
     _stopWatchTimer.fetchEnded.listen((value) => {});
 
-    _hoursController.text = '';
-    _minutesController.text = '';
-    _secondsController.text = '';
-
     _stopWatchTimer.setPresetTime(mSec: initialTime * 1000);
 
     _stopWatchTimer = StopWatchTimer(
       mode: StopWatchMode.countDown,
       presetMillisecond: StopWatchTimer.getMilliSecFromSecond(0),
-      onChange: (value) => {},
-      onChangeRawSecond: (value) => {},
-      onChangeRawMinute: (value) => {},
-      onStopped: () {},
+      // onChange: (value) => {},
+      // onChangeRawSecond: (value) => {},
+      // onChangeRawMinute: (value) => {},
+      // onStopped: () {},
       onEnded: () {
         resetTimer();
       },
@@ -193,10 +186,12 @@ class _CountDownTimerState extends State<CountDownTimer> {
                         int seconds = int.tryParse(_secondsController.text) ?? 00;
                         int totalTime = ((hours * 60 + minutes) * 60 + seconds) * 1000;
 
+                        _stopWatchTimer.onResetTimer();
                         _stopWatchTimer.setPresetTime(mSec: totalTime);
                         _stopWatchTimer.onStartTimer();
                         setState(() {
                           _isTimeStarted = true;
+                          _isPaused = false;
                         });
                       },
                       style: ElevatedButton.styleFrom(

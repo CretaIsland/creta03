@@ -101,7 +101,16 @@ class _LeftMenuWeatherState extends State<LeftMenuClock> {
                     height: 80,
                     color: Colors.grey,
                     child: const Center(
-                      child: Icon(Icons.timer, color: Colors.white, size: 24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.timer, color: Colors.white, size: 24),
+                          Text(
+                            'Stop watch',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -117,8 +126,14 @@ class _LeftMenuWeatherState extends State<LeftMenuClock> {
                     width: 80,
                     height: 80,
                     color: Colors.grey,
-                    child: const Center(
-                      child: Icon(Icons.timer, color: Colors.white, size: 24),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.av_timer, color: Colors.white, size: 24),
+                          Text('Timer', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -146,9 +161,9 @@ class _LeftMenuWeatherState extends State<LeftMenuClock> {
     await frameManager.createNextFrame(
       doNotify: false,
       size: frameType == FrameType.stopWatch
-          ? Size(500, 550)
+          ? Size(460, 480)
           : frameType == FrameType.countDownTimer
-              ? Size(440, 280)
+              ? Size(474, 284)
               : Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
