@@ -45,6 +45,7 @@ enum FrameType {
   digitalWatch,
   stopWatch,
   countDownTimer,
+  dateFormat,
   camera,
   map,
   end;

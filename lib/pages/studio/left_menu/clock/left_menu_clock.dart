@@ -28,10 +28,10 @@ class LeftMenuClock extends StatefulWidget {
   });
 
   @override
-  State<LeftMenuClock> createState() => _LeftMenuWeatherState();
+  State<LeftMenuClock> createState() => _LeftMenuClockState();
 }
 
-class _LeftMenuWeatherState extends State<LeftMenuClock> {
+class _LeftMenuClockState extends State<LeftMenuClock> {
   @override
   void initState() {
     super.initState();

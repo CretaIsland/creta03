@@ -69,6 +69,10 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return false;
   }
 
+  bool isDateType() {
+    return (frameType == FrameType.dateFormat);
+  }
+
   bool isMusicType() {
     return (frameType == FrameType.music);
   }

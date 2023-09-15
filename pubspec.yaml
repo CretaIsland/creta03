@@ -86,7 +86,7 @@ dependencies:
   widget_and_text_animator: ^1.0.9
   text_to_speech: ^0.2.3
   image_picker: ^0.8.7
-  intl: ^0.18.0
+  intl: ^0.18.1
   flutter_svg: ^2.0.5
   translator: ^0.1.7
   progress_bar_steppers: ^0.0.2+2
