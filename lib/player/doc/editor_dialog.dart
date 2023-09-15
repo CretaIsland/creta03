@@ -76,15 +76,12 @@ class _EditorDialogState extends State<EditorDialog> {
       width: widget.width,
       height: widget.height,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _titleArea(),
-          Expanded(
-            // 본체 Area
-            child: Padding(
-              padding: widget.padding,
-              child: _htmlEditor(),
-            ),
+          Padding(
+            padding: _isFullScreen ? const EdgeInsets.only(left: 8.0, right: 8.0) : const EdgeInsets.all(0.0),
+            child: _htmlEditor(),
           ),
           _okAndCancelButtonArea(),
         ],
@@ -151,7 +148,7 @@ class _EditorDialogState extends State<EditorDialog> {
             children: [
               //_translationButtonArea(),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                BTN.line_red_t_m(
+                BTN.line_blue_t_m(
                     text: widget.cancelButtonText,
                     onPressed: () {
                       if (widget.onPressedCancel != null) {
@@ -161,7 +158,7 @@ class _EditorDialogState extends State<EditorDialog> {
                       }
                     }),
                 const SizedBox(width: 8.0),
-                BTN.fill_red_t_m(
+                BTN.fill_blue_t_m(
                     text: widget.okButtonText,
                     width: widget.okButtonWidth,
                     onPressed: () {
@@ -338,12 +335,12 @@ class _EditorDialogState extends State<EditorDialog> {
           defaultToolbarButtons: [
             StyleButtons(),
             FontSettingButtons(fontSizeUnit: false),
-            FontButtons(),
+            FontButtons(superscript: false, subscript: false),
             ColorButtons(),
             ListButtons(),
             ParagraphButtons(caseConverter: false, textDirection: false),
             //InsertButtons(),
-            OtherButtons(fullscreen: false, codeview: false),
+           // OtherButtons(fullscreen: false, codeview: false),
           ],
         ),
         htmlEditorOptions: HtmlEditorOptions(
