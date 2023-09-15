@@ -169,8 +169,8 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
-    double width = 240;
-    double height = 64;
+    double width = 320;
+    double height = 110;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 

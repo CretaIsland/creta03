@@ -165,7 +165,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
       });
     }
     //check the font name if it matches one of the predetermined fonts and update the toolbar
-    if (['Courier New', 'sans-serif', 'Times New Roman'].contains(fontName)) {
+    if (['Courier New', 'sans-serif', 'Times New Roman', 'Jua', 'Macondo', 'NanumGothic', 'NanumMyeongjo', 'NanumPenScript', 'NotoSansKR', 'Pretendard'].contains(fontName)) {
       setState(mounted, this.setState, () {
         _fontNameSelectedItem = fontName;
       });
@@ -658,6 +658,48 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                     child: PointerInterceptor(
                         child: Text('Times New Roman',
                             style: TextStyle(fontFamily: 'Times'))),
+                  ),
+                  CustomDropdownMenuItem(
+                    value: 'NanumMyeongjo',
+                    child: PointerInterceptor(
+                        child: Text('나눔명조',
+                            style: TextStyle(fontFamily: 'NanumMyeongjo'))),
+                  ),
+                  CustomDropdownMenuItem(
+                    value: 'Jua',
+                    child: PointerInterceptor(
+                        child: Text('유아',
+                            style: TextStyle(fontFamily: 'Jua'))),
+                  ),
+                  CustomDropdownMenuItem(
+                    value: 'NanumGothic',
+                    child: PointerInterceptor(
+                        child: Text('나눔고딕',
+                            style: TextStyle(fontFamily: 'NanumGothic'))),
+                  ),
+                  CustomDropdownMenuItem(
+                    value: 'NanumPenScript',
+                    child: PointerInterceptor(
+                        child: Text('나눔펜스크립트',
+                            style: TextStyle(fontFamily: 'NanumPenScript'))),
+                  ),
+                  CustomDropdownMenuItem(
+                    value: 'NotoSansKR',
+                    child: PointerInterceptor(
+                        child: Text('노토산스KR',
+                            style: TextStyle(fontFamily: 'NotoSansKR'))),
+                  ),
+                  CustomDropdownMenuItem(
+                    value: 'Pretendard',
+                    child: PointerInterceptor(
+                        child: Text('프리텐다드',
+                            style: TextStyle(fontFamily: 'Pretendard'))),
+                  ),
+                  CustomDropdownMenuItem(
+                    value: 'Macondo',
+                    child: PointerInterceptor(
+                        child: Text('Macondo마콘도',
+                            style: TextStyle(fontFamily: 'Macondo'))),
                   ),
                 ],
                 value: _fontNameSelectedItem,

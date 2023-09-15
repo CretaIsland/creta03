@@ -216,16 +216,26 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     }
     if (model.isWatchTYpe()) {
       // return watchFrame(model, null);
-      return model.frameType == FrameType.stopWatch
-          ? Container(
-              width: 20,
-              height: 20,
-              color: Colors.grey,
-              child: const Center(
-                child: Icon(Icons.timer, color: Colors.white, size: 16),
-              ),
-            )
-          : watchFrame(model, null);
+      if (model.frameType == FrameType.stopWatch) {
+        return Container(
+          width: 20,
+          height: 20,
+          color: Colors.grey,
+          child: const Center(
+            child: Icon(Icons.access_alarms, color: Colors.white, size: 24),
+          ),
+        );
+      } else if (model.frameType == FrameType.countDownTimer) {
+        return Container(
+          width: 20,
+          height: 20,
+          color: Colors.grey,
+          child: const Center(
+            child: Icon(Icons.timer, color: Colors.white, size: 24),
+          ),
+        );
+      }
+      return watchFrame(model, null);
     }
     if (model.isCameraType()) {
       return CameraFrame(model: model);

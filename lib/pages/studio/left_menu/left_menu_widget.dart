@@ -1,6 +1,7 @@
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/pages/studio/left_menu/camera/left_menu_camera.dart';
 import 'package:creta03/pages/studio/left_menu/music/left_menu_music.dart';
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
@@ -10,6 +11,7 @@ import '../../../design_system/text_field/creta_search_bar.dart';
 import '../studio_constant.dart';
 import 'clock/left_menu_clock.dart';
 import 'google_map/left_menu_google_map.dart';
+import 'left_menu_date.dart/left_menu_date.dart';
 import 'left_template_mixin.dart';
 import 'weather/left_menu_weather.dart';
 
@@ -124,7 +126,59 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
   Widget _selectedWidget() {
     List<String> type = CretaStudioLang.widgetTypes.values.toList();
     if (_selectedType == type[0]) {
-      return Container();
+      return SizedBox(
+        height: StudioVariables.workHeight - 242.0,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              LeftMenuMusic(
+                title: CretaStudioLang.music,
+                titleStyle: titleStyle,
+                dataStyle: dataStyle,
+              ),
+              LeftMenuWeather(
+                title: CretaStudioLang.weather,
+                width: _itemWidth,
+                height: _itemHeight,
+                titleStyle: titleStyle,
+                dataStyle: dataStyle,
+              ),
+              LeftMenuDate(
+                title: CretaStudioLang.date,
+                width: _itemWidth,
+                height: _itemHeight,
+                titleStyle: titleStyle,
+                dataStyle: dataStyle,
+              ),
+              LeftMenuClock(
+                title: CretaStudioLang.clockandWatch,
+                width: _itemWidth,
+                height: _itemHeight,
+                titleStyle: titleStyle,
+                dataStyle: dataStyle,
+              ),
+              Container(),
+              Container(),
+              LeftMenuCamera(
+                title: CretaStudioLang.camera,
+                width: _itemWidth,
+                height: _itemHeight,
+                titleStyle: titleStyle,
+                dataStyle: dataStyle,
+              ),
+              LeftMenuMap(
+                title: CretaStudioLang.map,
+                width: _itemWidth,
+                height: _itemHeight,
+                titleStyle: titleStyle,
+                dataStyle: dataStyle,
+              ),
+            ],
+          ),
+        ),
+      );
     }
     if (_selectedType == type[1]) {
       return LeftMenuMusic(
@@ -143,6 +197,15 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
       );
     }
     if (_selectedType == type[3]) {
+      return LeftMenuDate(
+        title: CretaStudioLang.date,
+        width: _itemWidth,
+        height: _itemHeight,
+        titleStyle: titleStyle,
+        dataStyle: dataStyle,
+      );
+    }
+    if (_selectedType == type[4]) {
       return LeftMenuClock(
         title: CretaStudioLang.clockandWatch,
         width: _itemWidth,
@@ -151,13 +214,13 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
         dataStyle: dataStyle,
       );
     }
-    if (_selectedType == type[4]) {
-      return Container();
-    }
     if (_selectedType == type[5]) {
       return Container();
     }
     if (_selectedType == type[6]) {
+      return Container();
+    }
+    if (_selectedType == type[7]) {
       return LeftMenuCamera(
         title: CretaStudioLang.camera,
         width: _itemWidth,
@@ -166,7 +229,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
         dataStyle: dataStyle,
       );
     }
-    if (_selectedType == type[7]) {
+    if (_selectedType == type[8]) {
       return LeftMenuMap(
         title: CretaStudioLang.map,
         width: _itemWidth,

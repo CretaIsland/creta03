@@ -28,10 +28,10 @@ class LeftMenuClock extends StatefulWidget {
   });
 
   @override
-  State<LeftMenuClock> createState() => _LeftMenuWeatherState();
+  State<LeftMenuClock> createState() => _LeftMenuClockState();
 }
 
-class _LeftMenuWeatherState extends State<LeftMenuClock> {
+class _LeftMenuClockState extends State<LeftMenuClock> {
   @override
   void initState() {
     super.initState();
@@ -92,8 +92,8 @@ class _LeftMenuWeatherState extends State<LeftMenuClock> {
                     await _createWatch(frameType: FrameType.stopWatch);
                     BookMainPage.pageManagerHolder!.notify();
                   },
-                  width: widget.width,
-                  height: widget.width,
+                  width: 94,
+                  height: 94,
                   hasBorder: false,
                   // child: StopWatch(),
                   child: Container(
@@ -101,7 +101,39 @@ class _LeftMenuWeatherState extends State<LeftMenuClock> {
                     height: 80,
                     color: Colors.grey,
                     child: const Center(
-                      child: Icon(Icons.timer, color: Colors.white, size: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.timer, color: Colors.white, size: 24),
+                          Text(
+                            'Stop watch',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createWatch(frameType: FrameType.countDownTimer);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 94,
+                  height: 94,
+                  hasBorder: false,
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    color: Colors.grey,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.av_timer, color: Colors.white, size: 24),
+                          Text('Timer', style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -115,8 +147,8 @@ class _LeftMenuWeatherState extends State<LeftMenuClock> {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
-    double width = 160.0;
-    double height = 160.0;
+    double width = 320.0;
+    double height = 320.0;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
 
@@ -128,7 +160,11 @@ class _LeftMenuWeatherState extends State<LeftMenuClock> {
     mychangeStack.startTrans();
     await frameManager.createNextFrame(
       doNotify: false,
-      size: frameType == FrameType.stopWatch ? Size(500, 550) : Size(width, height),
+      size: frameType == FrameType.stopWatch
+          ? Size(460, 480)
+          : frameType == FrameType.countDownTimer
+              ? Size(474, 284)
+              : Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
       type: frameType,

@@ -93,6 +93,7 @@ class CretaStudioLang {
     '전체': 'all',
     '뮤직': 'music',
     '날씨': 'weather',
+    '날짜': 'date',
     '시계': 'clock',
     '스티커': 'sticker',
     '효과': 'effect',
@@ -547,6 +548,7 @@ class CretaStudioLang {
   static String clockandWatch = '시계와 스톱워치';
   static String camera = '카메라';
   static String map = '맵';
+  static String date = '날짜';
 
   static var onlineWeather = '날씨 온라인 연결';
   static String offLineWeather = "날씨 수동으로 선택";
