@@ -39,6 +39,8 @@ import '../../model/playlist_model.dart';
 
 import 'sub_pages/community_right_home_pane.dart';
 import 'sub_pages/community_right_channel_pane.dart';
+import 'sub_pages/community_right_channel_info_pane.dart';
+import 'sub_pages/community_right_channel_members_pane.dart';
 import 'sub_pages/community_right_channel_playlist_pane.dart';
 import 'sub_pages/community_right_favorites_pane.dart';
 import 'sub_pages/community_right_playlist_pane.dart';
@@ -334,8 +336,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
                     }
                   }
-                  //if (kDebugMode) print('setBannerScrollController1=${CommunityRightChannelPane.lastScrollPosition}');
-                  setBannerScrollController(ScrollController(initialScrollOffset: 436 + 64 - getBannerHeight));
+                  if (CommunityRightChannelPane.lastDropdownMenuCount == 0) {
+                    setBannerHeight = getBannerHeight + 36;
+                  }
+                  double bannerHeight = 436 + 64 - getBannerHeight;
+                  setBannerScrollController(ScrollController(initialScrollOffset: bannerHeight));
                 });
               }
             },
@@ -357,8 +362,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
                     }
                   }
-                  //if (kDebugMode) print('setBannerScrollController2=${CommunityRightChannelPane.lastScrollPosition}');
-                  setBannerScrollController(ScrollController(initialScrollOffset: 436 + 64 - getBannerHeight));
+                  if (CommunityRightChannelPane.lastDropdownMenuCount == 0) {
+                    setBannerHeight = getBannerHeight + 36;
+                  }
+                  double bannerHeight = 436 + 64 - getBannerHeight;
+                  setBannerScrollController(ScrollController(initialScrollOffset: bannerHeight));
                 });
               }
             },
@@ -379,6 +387,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
                     }
                   }
+                  if (CommunityRightChannelPane.lastDropdownMenuCount > 0) {
+                    setBannerHeight = getBannerHeight - 36;
+                  }
+                  double bannerHeight = 436 + 64 - getBannerHeight;
+                  setBannerScrollController(ScrollController(initialScrollOffset: bannerHeight));
                 });
               }
             },
@@ -399,6 +412,11 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       if (kDebugMode) print('pressed CommunityChannelType.books (${menuItem.index})');
                     }
                   }
+                  if (CommunityRightChannelPane.lastDropdownMenuCount > 0) {
+                    setBannerHeight = getBannerHeight - 36;
+                  }
+                  double bannerHeight = 436 + 64 - getBannerHeight;
+                  setBannerScrollController(ScrollController(initialScrollOffset: bannerHeight));
                 });
               }
             },
@@ -1447,7 +1465,17 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         break;
       case AppRoutes.communityHome:
       case AppRoutes.channel:
-        return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+      switch (_communityChannelType) {
+        case CommunityChannelType.playlists:
+          return [_dropDownMenuItemListSort];
+        case CommunityChannelType.memberChannels:
+          return [];
+        case CommunityChannelType.info:
+          return [];
+        case CommunityChannelType.books:
+        default:
+          return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+      }
     }
     return [];
   }
@@ -1493,7 +1521,15 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           });
         };
       case AppRoutes.channel:
-        return (value) {};
+        switch (_communityChannelType) {
+          case CommunityChannelType.books:
+            return (value) {};
+          case CommunityChannelType.playlists:
+            return (value) {};
+          default:
+            break;
+        }
+        break;
       default:
         break;
     }
@@ -1561,9 +1597,29 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
               currentChannelModel: _currentChannelModel,
             );
           case CommunityChannelType.memberChannels:
-            return Container();
+            return CommunityRightChannelMembersPane(
+              key: _getRightPaneKey(),
+              cretaLayoutRect: rightPaneRect,
+              scrollController: getBannerScrollController,
+              filterBookType: _filterBookType,
+              filterBookSort: _filterBookSort,
+              filterPermissionType: _filterPermissionType,
+              filterSearchKeyword: _filterSearchKeyword,
+              onUpdateModel: _onUpdateModel,
+              currentChannelModel: _currentChannelModel,
+            );
           case CommunityChannelType.info:
-            return Container();
+            return CommunityRightChannelInfoPane(
+              key: _getRightPaneKey(),
+              cretaLayoutRect: rightPaneRect,
+              scrollController: getBannerScrollController,
+              filterBookType: _filterBookType,
+              filterBookSort: _filterBookSort,
+              filterPermissionType: _filterPermissionType,
+              filterSearchKeyword: _filterSearchKeyword,
+              onUpdateModel: _onUpdateModel,
+              currentChannelModel: _currentChannelModel,
+            );
           case CommunityChannelType.books:
           default:
             return CommunityRightChannelPane(
@@ -1724,6 +1780,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       return _getRightPane(context);
     }
     //resize(context);
+    CommunityRightChannelPane.lastDropdownMenuCount = _getLeftDropdownMenuOnBanner().length;
     return Snippet.CretaScaffoldOfCommunity(
       //title: Text('Community page'),
       title: Row(
