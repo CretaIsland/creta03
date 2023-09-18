@@ -21,6 +21,7 @@ mixin CretaBasicLayoutMixin {
   void Function(bool)? _scrollChangedCallback;
 
   double get getBannerHeight => _bannerHeight;
+  set setBannerHeight(val) => _bannerHeight = val;
   ScrollController get getBannerScrollController => _bannerScrollController;
   void setBannerScrollController(ScrollController sc) {
     _bannerScrollController = sc;
@@ -99,7 +100,7 @@ mixin CretaBasicLayoutMixin {
     );
     bannerPaneRect = CretaLayoutRect.fromPadding(
       rightPaneRect.width,
-      _bannerHeight,
+      _bannerHeight - 1,
       40,
       40,
       40,

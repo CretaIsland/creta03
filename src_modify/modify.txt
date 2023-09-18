@@ -60,15 +60,19 @@ copy src_modify\color_menu.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub
 copy summernote-lite.min.jsxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\assets\summernote-lite.min.js
 
 #nr.han modify 9/12
-copy ./html_editor_enhanced/summernote-lite.min.jsxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\assets\summernote-lite.min.js
-copy ./html_editor_enhanced/html_editor_widget_web.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\html_editor_widget_web.dart
-copy ./html_editor_enhanced/toolbar_widget.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\toolbar_widget.dart
-copy ./html_editor_enhanced/options.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\utils\options.dart
+copy src_modify/html_editor_enhanced/summernote-lite.min.jsxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\assets\summernote-lite.min.js
+copy src_modify/html_editor_enhanced/html_editor_widget_web.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\html_editor_widget_web.dart
+copy src_modify/html_editor_enhanced/toolbar_widget.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\toolbar_widget.dart
+copy src_modify/html_editor_enhanced/options.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\utils\options.dart
 
 #nr.han modify 9/15
-copy ./html_editor_enhanced/toolbar_widget.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\toolbar_widget.dart
-copy ./html_editor_enhanced/pubspec.yaxl c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\pubspec.yaml
-copy ./html_editor_enhanced/summernote-lite.min.cxs c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\assets\summernote-lite.min.css
-
 ※ c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\assets\font 폴더에 폰트 파일을 추가해줘야함.
 ※ creta03의 fonts 폴더에 있는 모든 폰트 폴더를 복사 후 위에 경로에 붙여넣기 해주기
+
+copy src_modify/html_editor_enhanced/toolbar_widget.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\src\widgets\toolbar_widget.dart
+copy src_modify/html_editor_enhanced/pubspec.yaxl c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\pubspec.yaml
+copy src_modify/html_editor_enhanced/summernote-lite.min.cxs c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\assets\summernote-lite.min.css
+
+
+#nr.han modify 9/18
+copy src_modify\constants.daxt flutter설치경로/packages/flutter/lib/src/material/constants.dart
