@@ -29,6 +29,47 @@ class CretaDocWidget extends CretaAbsPlayerWidget {
 
   @override
   CretaDocPlayerWidgetState createState() => CretaDocPlayerWidgetState();
+
+  static void showHtmlEditor(
+    BuildContext context,
+    ContentsModel model,
+    Size realSize,
+    FrameModel frameModel,
+    FrameManager frameManager,
+    String initialText,
+    Offset dialogOffset,
+    Size dialogSize, {
+    required dynamic Function(String) onPressedOK,
+  }) {
+    GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            child: EditorDialog(
+              initialText: initialText,
+              dialogOffset: dialogOffset,
+              //key: GlobalObjectKey('SimpleEditor-CretaAlertDialog'),
+              width: dialogSize.width,
+              height: dialogSize.height * 1.5,
+              frameSize: realSize,
+              frameKey: frameKey,
+              backgroundColor: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value),
+              onChanged: (value) {
+                //print('onChanged $value');
+              },
+              onPressedOK: onPressedOK,
+              onPressedCancel: () {
+                //widget.model.remoteUrl = _oldJsonString;
+                //setState(() {});
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+        });
+  }
 }
 
 class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin {
@@ -152,7 +193,24 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
             buttonColor: CretaButtonColor.gray2,
             icon: Icons.edit_outlined,
             onPressed: () {
-              _showDialog(model, realSize, frameModel, frameManager, initialText);
+              CretaDocWidget.showHtmlEditor(
+                context,
+                model,
+                realSize,
+                frameModel,
+                frameManager,
+                initialText,
+                _dialogOffset,
+                _dialogSize,
+                onPressedOK: (value) {
+                  setState(() {
+                    model.remoteUrl = value;
+                    //print('onPressedOK: ${model.remoteUrl}');
+                    model.save();
+                  });
+                  Navigator.of(context).pop();
+                },
+              );
             },
             //text: 'move mode',
             //width: 80,
@@ -160,49 +218,5 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
         ),
       ),
     );
-  }
-
-  void _showDialog(
-    ContentsModel model,
-    Size realSize,
-    FrameModel frameModel,
-    FrameManager frameManager,
-    String initialText,
-  ) {
-    GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            backgroundColor: Colors.white,
-            //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-            child: EditorDialog(
-              initialText: initialText,
-              dialogOffset: _dialogOffset,
-              //key: GlobalObjectKey('SimpleEditor-CretaAlertDialog'),
-              width: _dialogSize.width,
-              height: _dialogSize.height * 1.5,
-              frameSize: realSize,
-              frameKey: frameKey,
-              backgroundColor: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value),
-              onChanged: (value) {
-                //print('onChanged $value');
-              },
-              onPressedOK: (value) {
-                setState(() {
-                  model.remoteUrl = value;
-                  //print('onPressedOK: ${model.remoteUrl}');
-                  model.save();
-                });
-                Navigator.of(context).pop();
-              },
-              onPressedCancel: () {
-                //widget.model.remoteUrl = _oldJsonString;
-                //setState(() {});
-                Navigator.of(context).pop();
-              },
-            ),
-          );
-        });
   }
 }

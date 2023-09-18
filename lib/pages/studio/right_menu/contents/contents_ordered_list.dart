@@ -27,6 +27,7 @@ import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../player/music/creta_music_mixin.dart';
+import '../../containees/frame/sticker/draggable_stickers.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
@@ -775,9 +776,12 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             CretaStudioLang.noAutoSize: model.autoSizeType.value == AutoSizeType.noAutoSize,
           },
           onSelected: (title, value, nvMap) {
+            //print('onSelected !!!!!!!');
             model.autoSizeType.set(AutoSizeType.fromString(title));
             //_sendEvent!.sendEvent(model);
-            widget.contentsManager.notify();
+            //widget.contentsManager.notify();
+            //widget.frameManager?.notify();
+            DraggableStickers.frameSelectNotifier!.notify();
             setState(() {});
           },
         ),

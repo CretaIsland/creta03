@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
 
-//import 'package:creta03/pages/studio/left_menu/word_pad/left_wordpad_template.dart';
+import 'package:creta03/pages/studio/left_menu/word_pad/left_wordpad_template.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -113,8 +113,8 @@ class _LeftMenuTextState extends State<LeftMenuText> {
         // padding: EdgeInsets.symmetric(vertical: horizontalPadding),
         padding: EdgeInsets.all(horizontalPadding),
         width: LayoutConst.rightMenuWidth,
-        child: Center(child: Text('HTML EDITOR')),
-        //child: LeftWordPadTemplate(),
+        //child: Center(child: Text('HTML EDITOR')),
+        child: LeftWordPadTemplate(),
       );
     }
     if (_selectedTab == menu[2]) {

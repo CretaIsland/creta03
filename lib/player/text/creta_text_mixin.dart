@@ -14,6 +14,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import '../../common/creta_utils.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
+import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_text_player.dart';
 
@@ -100,11 +101,9 @@ mixin CretaTextMixin {
 
     //print('isThumbnail=$isThumbnail, fontSize=$fontSize, shrinkRatio=$shrinkRatio');
 
-    const double baseVerticalPadding = 15.0;
-
     return Container(
       color: Colors.transparent,
-      padding: const EdgeInsets.fromLTRB(0, baseVerticalPadding, 0, baseVerticalPadding),
+      padding: const EdgeInsets.all(StudioConst.defaultTextVerticalPadding),
       alignment:
           CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
       width: realSize.width,

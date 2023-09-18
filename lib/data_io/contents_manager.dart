@@ -119,6 +119,8 @@ class ContentsManager extends CretaManager {
   }
 
   Future<ContentsModel> _createNextContents(ContentsModel model, bool doNotify) async {
+    //print('_createNextContents(${model.mid})---------------------------');
+
     await createToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
 
@@ -824,7 +826,7 @@ class ContentsManager extends CretaManager {
     onComplete?.call();
   }
 
-  static Future<void> createContents(
+  static Future<ContentsManager?> createContents(
     FrameManager? frameManager,
     List<ContentsModel> contentsModelList,
     FrameModel frameModel,
@@ -904,6 +906,8 @@ class ContentsManager extends CretaManager {
     LeftMenuPage.treeInvalidate();
     //frameManager!.notify();
     // 플레이를 해야하는데, 플레이는 timer 가 model list 에 모델이 있을 경우 계속 돌리고 있게 된다.
+
+    return contentsManager;
   }
 
   static Future<void> _imageProcess(FrameManager? frameManager, ContentsManager contentsManager,
@@ -1231,7 +1235,8 @@ class ContentsManager extends CretaManager {
       }
     }
     if (selectedModel != null) {
-      if (await depotManager.createNextDepot(selectedModel.mid, selectedModel.contentsType, teamId) !=
+      if (await depotManager.createNextDepot(
+              selectedModel.mid, selectedModel.contentsType, teamId) !=
           null) {
         depotManager.filteredContents.insert(0, selectedModel);
         if (notify) {
