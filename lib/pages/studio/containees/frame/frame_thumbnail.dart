@@ -237,6 +237,10 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       }
       return watchFrame(model, null);
     }
+    if (model.isTimelineType()) {
+      // return timelineFrame(model);
+      return Image.asset('assets/timeline_samples/timeline_thumbnail.jpeg');
+    }
     if (model.isCameraType()) {
       return CameraFrame(model: model);
     }

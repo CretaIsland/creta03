@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/pages/studio/left_menu/left_menu_date.dart/date_time_elements.dart';
+import 'package:creta03/pages/studio/left_menu/date_time/date_time_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';

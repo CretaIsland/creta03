@@ -308,6 +308,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.weather1) {
       return false;
     }
+    if (model.frameType == FrameType.weather2) {
+      return false;
+    }
     if (model.frameType == FrameType.analogWatch) {
       return false;
     }
@@ -320,7 +323,25 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.countDownTimer) {
       return false;
     }
-    if (model.frameType == FrameType.weather2) {
+    if (model.frameType == FrameType.timeline1) {
+      return false;
+    }
+    if (model.frameType == FrameType.timeline2) {
+      return false;
+    }
+    if (model.frameType == FrameType.timeline3) {
+      return false;
+    }
+    if (model.frameType == FrameType.timeline4) {
+      return false;
+    }
+    if (model.frameType == FrameType.timeline5) {
+      return false;
+    }
+    if (model.frameType == FrameType.timeline6) {
+      return false;
+    }
+    if (model.frameType == FrameType.timeline7) {
       return false;
     }
     if (model.frameType == FrameType.camera) {
@@ -468,6 +489,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         model,
         const Text('GMT-9'),
       );
+    }
+    if (model.isTimelineType()) {
+      return timelineFrame(model);
     }
     if (model.isCameraType()) {
       return CameraFrame(model: model);

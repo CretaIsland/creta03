@@ -46,6 +46,13 @@ enum FrameType {
   stopWatch,
   countDownTimer,
   dateFormat,
+  timeline1,
+  timeline2,
+  timeline3,
+  timeline4,
+  timeline5,
+  timeline6,
+  timeline7,
   camera,
   map,
   end;

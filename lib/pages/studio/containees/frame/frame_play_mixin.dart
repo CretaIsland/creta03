@@ -27,6 +27,13 @@ import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/clock/stop_watch.dart';
 import '../../left_menu/google_map/creta_map_widget.dart';
+import '../../left_menu/timeline/creta_timeline_sample_1.dart';
+import '../../left_menu/timeline/creta_timeline_sample_2.dart';
+import '../../left_menu/timeline/creta_timeline_sample_3.dart';
+import '../../left_menu/timeline/creta_timeline_sample_4.dart';
+import '../../left_menu/timeline/creta_timeline_sample_5.dart';
+import '../../left_menu/timeline/creta_timeline_sample_6.dart';
+import '../../left_menu/timeline/creta_timeline_sample_7.dart';
 import '../../left_menu/weather/weather_base.dart';
 import '../../studio_variables.dart';
 // import '../../../../model/contents_model.dart';
@@ -68,6 +75,9 @@ mixin FramePlayMixin {
       return false;
     }
     if (model.isCameraType()) {
+      return false;
+    }
+    if (model.isTimelineType()) {
       return false;
     }
     if (model.isMapType()) {
@@ -155,6 +165,32 @@ mixin FramePlayMixin {
     if (model.frameType == FrameType.countDownTimer) {
       return const CountDownTimer();
     }
+    return const SizedBox.shrink();
+  }
+
+  Widget timelineFrame(FrameModel model) {
+    if (model.frameType == FrameType.timeline1) {
+      return const CretaTimelineSample1();
+    }
+    if (model.frameType == FrameType.timeline2) {
+      return const CretaTimelineSample2();
+    }
+    if (model.frameType == FrameType.timeline3) {
+      return const CretaTimelineSample3();
+    }
+    if (model.frameType == FrameType.timeline4) {
+      return const CretaTimelineSample4();
+    }
+    if (model.frameType == FrameType.timeline5) {
+      return const CretaTimelineSample5();
+    }
+    if (model.frameType == FrameType.timeline6) {
+      return const CretaTimelineSample6();
+    }
+    if (model.frameType == FrameType.timeline7) {
+      return const CretaTimelineSample7();
+    }
+
     return const SizedBox.shrink();
   }
 

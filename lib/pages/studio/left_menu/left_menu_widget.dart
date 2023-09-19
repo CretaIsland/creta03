@@ -1,6 +1,7 @@
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/pages/studio/left_menu/camera/left_menu_camera.dart';
 import 'package:creta03/pages/studio/left_menu/music/left_menu_music.dart';
+import 'package:creta03/pages/studio/left_menu/timeline/left_menu_timeline.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -11,7 +12,7 @@ import '../../../design_system/text_field/creta_search_bar.dart';
 import '../studio_constant.dart';
 import 'clock/left_menu_clock.dart';
 import 'google_map/left_menu_google_map.dart';
-import 'left_menu_date.dart/left_menu_date.dart';
+import 'date_time/left_menu_date.dart';
 import 'left_template_mixin.dart';
 import 'weather/left_menu_weather.dart';
 
@@ -218,9 +219,18 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
       return Container();
     }
     if (_selectedType == type[6]) {
-      return Container();
+      return LeftMenuTimeline(
+        title: CretaStudioLang.clockandWatch,
+        width: _itemWidth,
+        height: _itemHeight,
+        titleStyle: titleStyle,
+        dataStyle: dataStyle,
+      );
     }
     if (_selectedType == type[7]) {
+      return Container();
+    }
+    if (_selectedType == type[8]) {
       return LeftMenuCamera(
         title: CretaStudioLang.camera,
         width: _itemWidth,
@@ -229,7 +239,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
         dataStyle: dataStyle,
       );
     }
-    if (_selectedType == type[8]) {
+    if (_selectedType == type[9]) {
       return LeftMenuMap(
         title: CretaStudioLang.map,
         width: _itemWidth,
