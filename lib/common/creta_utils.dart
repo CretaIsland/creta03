@@ -661,4 +661,61 @@ class CretaUtils {
     debugTime = now;
     return retval.toDouble() / 1000000;
   }
+
+  static (double, int) getLineHeightAndCount(
+      String text, double fontSize, double boxWidth, TextStyle? style, TextAlign? align,
+      {double adjust = 3.0}) {
+    //print('_getLineHeightAndCount, fontSize=$fontSize----------------------------------');
+
+    //int offset = 0;
+    List<String> lines = text.split('\n');
+    double textLineHeight = 0;
+    List<int> eachLineCount = [];
+    for (var line in lines) {
+      TextPainter textPainter = getTextPainter(line, style, align);
+
+      //TextRange range =
+      // 글자수를 구할 수 있다.
+      //int charCount = textPainter.getLineBoundary(TextPosition(offset: text.length)).end;
+      final double lineWidth = textPainter.width + (fontSize / adjust);
+      int count = (lineWidth / boxWidth).ceil();
+      //print('frameWidth=${_realSize!.width.round()}, lineWidth=${lineWidth.round()}, count=$count');
+      eachLineCount.add(count);
+      // 텍스트 하이트는 나중에, frameSize 를 늘리기 위해서 필요하다.
+      textLineHeight = textPainter.preferredLineHeight; //textPainter.height;
+
+      //Size size = textPainter.size;
+      //print('width,height = ${te ....................... xtPainter.width.round()},${textPainter.height.round()}');
+      //print('size=${size.width.round()}, ${size.height.round()}), $visualLineCount, $ddd');
+    }
+
+    int textLineCount = 0;
+    for (var ele in eachLineCount) {
+      textLineCount += ele;
+    }
+    //print('old _textLineCount=$_textLineCount,  new textLineCount=$textLineCount -------------');
+
+    return (textLineHeight, textLineCount);
+  }
+
+  static TextPainter getTextPainter(String text, TextStyle? style, TextAlign? align) {
+    final span = TextSpan(text: text, style: style);
+    // final words = span.toPlainText().split(RegExp('\\s+'));
+    // final wordspan = TextSpan(
+    //   style: style,
+    //   text: words.join('\n'),
+    // );
+
+    return TextPainter(
+      text: span, // span,
+      textDirection: TextDirection.ltr,
+      textAlign: align ?? TextAlign.center,
+      maxLines: null, // to support multi-line
+    )..layout();
+  }
+
+  static double resizeTextHeight(double textLineHeight, int textLineCount,
+      {double padding = StudioConst.defaultTextVerticalPadding}) {
+    return ((textLineHeight * textLineCount.toDouble())).roundToDouble() + (padding * 2);
+  }
 }

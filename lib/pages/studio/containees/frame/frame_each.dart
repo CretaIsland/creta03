@@ -460,6 +460,22 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _contentsMain(FrameModel model) {
+    // if (model.isTextType() && model.isEditMode) {
+    //   return InstantEditor(
+    //     frameModel: model,
+    //     frameManager: widget.frameManager,
+    //     onEditComplete: () {
+    //       setState(
+    //         () {
+    //           //_isEditorAlreadyExist = false;
+    //           model.isEditMode = false;
+    //         },
+    //       );
+    //       widget.frameManager.notify();
+    //     },
+    //   );
+    // }
+
     if (model.isWeatherTYpe()) {
       return weatherFrame(model, widget.width, widget.height);
     }

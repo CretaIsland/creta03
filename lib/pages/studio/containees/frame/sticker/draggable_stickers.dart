@@ -153,32 +153,41 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   Widget _drawEachStiker(Sticker sticker) {
     //if (sticker.isEditMode && _isEditorAlreadyExist == false) {
-    if (sticker.isEditMode) {
+    FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
+    if (frameModel != null && frameModel.isEditMode) {
       //_isEditorAlreadyExist = true;
-      return InstantEditor(
-        sticker: sticker,
-        frameManager: widget.frameManager,
-        onEditComplete: () {
-          setState(
-            () {
-              //_isEditorAlreadyExist = false;
-              sticker.isEditMode = false;
+      return Stack(
+        children: [
+          _dragableResizable(sticker, frameModel),
+          InstantEditor(
+            frameModel: frameModel,
+            frameManager: widget.frameManager,
+            onEditComplete: () {
+              setState(
+                () {
+                  //_isEditorAlreadyExist = false;
+                  frameModel.isEditMode = false;
+                },
+              );
+              widget.frameManager?.notify();
             },
-          );
-          widget.frameManager?.notify();
-        },
+          ),
+        ],
       );
     }
-    return _dragableResizable(sticker);
+    return _dragableResizable(sticker, frameModel!);
   }
 
-  Widget _dragableResizable(Sticker sticker) {
-    FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
+  Widget _dragableResizable(Sticker sticker, FrameModel frameModel) {
+    double posX = frameModel.getRealPosX();
+    double posY = frameModel.getRealPosY();
+
     return DraggableResizable(
       key: GlobalKey(),
       mid: sticker.id,
       angle: sticker.angle,
-      position: sticker.position + BookMainPage.pageOffset,
+      //position: sticker.position + BookMainPage.pageOffset,
+      position: Offset(posX, posY),
       borderWidth: sticker.borderWidth,
       isMain: sticker.isMain,
       frameModel: frameModel,
@@ -252,92 +261,33 @@ class _DraggableStickersState extends State<DraggableStickers> {
               splashColor: Colors.transparent,
               onDoubleTap: () {
                 ContentsManager? contentsManager =
-                    widget.frameManager!.getContentsManager(frameModel!.mid);
+                    widget.frameManager!.getContentsManager(frameModel.mid);
                 if (contentsManager == null) {
                   return;
                 }
                 ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
 
                 if (selected == null) {
+                  // 클릭되어 있지 않으면 싱글클릭과 동일하게 동작한다.
+                  DraggableStickers.frameSelectNotifier?.set(sticker.id);
+                  widget.onTap?.call(sticker.id);
                   return;
                 }
-
-                // 자동으로 Text Contents 로 가야한다.
-                if (frameModel.isTextType()) {
-                  //print('Frame double is tapped ${selected.contentsType}');
-                  //print('selected  =${selected.parentMid.value}');
-                  //print('sticker.id=${sticker.id}');
-                  if (selected.contentsType == ContentsType.text &&
-                      selected.parentMid.value == sticker.id) {
-                    setState(
-                      () {
-                        sticker.isEditMode = true;
-                      },
-                    );
-                  } else if (selected.contentsType == ContentsType.document) {
-                    Size realSize = Size(frameModel.width.value * StudioVariables.applyScale,
-                        frameModel.height.value * StudioVariables.applyScale);
-
-                    // ignore: use_build_context_synchronously
-                    Size screenSize = MediaQuery.of(context).size;
-                    Size dialogSize = screenSize / 2;
-                    Offset dialogOffset = Offset(
-                      (screenSize.width - dialogSize.width) / 2,
-                      (screenSize.height - dialogSize.height) / 2,
-                    ); //rootBundle.loadString('assets/example.json');
-
-                    CretaDocWidget.showHtmlEditor(
-                      context,
-                      selected,
-                      realSize,
-                      frameModel,
-                      widget.frameManager!,
-                      selected.getURI(),
-                      dialogOffset,
-                      dialogSize,
-                      onPressedOK: (value) {
-                        setState(() {
-                          selected.remoteUrl = value;
-                          contentsManager.setToDB(selected).then((value) {
-                            _sendEvent?.sendEvent(frameModel);
-                            return null;
-                          });
-                        });
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  }
-                }
                 // double click action !!!
-                DraggableStickers.frameSelectNotifier?.set(sticker.id);
-                //print('2. after notify DraggableStickers.frameSelectNotifier : ${CretaUtils.timeLap()}');
-                //print('InkWell onTap from draggable_stickers...');
-                widget.onTap?.call(sticker.id);
+                _doubleClieckAction(contentsManager, selected, frameModel, sticker);
               },
               onSecondaryTapDown: (details) {
                 // 오른쪽 마우스 버튼 --> 메뉴
                 if (DraggableStickers.frameSelectNotifier != null) {
                   if (DraggableStickers.frameSelectNotifier!.selectedAssetId != sticker.id) return;
                 }
-                // DraggableStickers.frameSelectNotifier?.set(sticker.id);
-                // logger.info('InkWell onTap from draggable_stickers...');
-                // widget.onTap?.call(sticker.id);
-                // Right Mouse Button
-                _showRightMouseMenu(details, frameModel!);
-                // if (selectedFrame != null &&
-                //     frameModel != null &&
-                //     frameModel.mid == selectedFrame.mid) {
-                //   _showRightMouseMenu(details, frameModel);
-                // }
+                _showRightMouseMenu(details, frameModel);
               },
               onTap: () {
+                // single click action !!!
                 // To update the selected widget
-                //print('1. before notify DraggableStickers.frameSelectNotifier : ${CretaUtils.timeLap()}');
                 DraggableStickers.frameSelectNotifier?.set(sticker.id);
-                //print('2. after notify DraggableStickers.frameSelectNotifier : ${CretaUtils.timeLap()}');
-                //print('InkWell onTap from draggable_stickers...');
                 widget.onTap?.call(sticker.id);
-                //print('end.....${CretaUtils.timeLap()}');
               },
               child: SizedBox(
                 width: double.infinity,
@@ -353,6 +303,62 @@ class _DraggableStickersState extends State<DraggableStickers> {
             ),
       //),
     );
+  }
+
+  void _doubleClieckAction(
+    ContentsManager contentsManager,
+    ContentsModel selected,
+    FrameModel frameModel,
+    Sticker sticker,
+  ) {
+    if (frameModel.isTextType()) {
+      //print('Frame double is tapped ${selected.contentsType}');
+      //print('selected  =${selected.parentMid.value}');
+      //print('sticker.id=${sticker.id}');
+      if (selected.contentsType == ContentsType.text && selected.parentMid.value == sticker.id) {
+        setState(
+          () {
+            frameModel.isEditMode = true;
+            // 편집이 끝나면, 선택했던 프레임이 다시 선택되어 있어야 한다.
+            BookMainPage.containeeNotifier!.setFrameClick(true);
+            DraggableStickers.frameSelectNotifier?.set(sticker.id);
+            widget.onTap?.call(sticker.id);
+          },
+        );
+      } else if (selected.contentsType == ContentsType.document) {
+        Size realSize = Size(frameModel.width.value * StudioVariables.applyScale,
+            frameModel.height.value * StudioVariables.applyScale);
+
+        // ignore: use_build_context_synchronously
+        Size screenSize = MediaQuery.of(context).size;
+        Size dialogSize = screenSize / 2;
+        Offset dialogOffset = Offset(
+          (screenSize.width - dialogSize.width) / 2,
+          (screenSize.height - dialogSize.height) / 2,
+        ); //rootBundle.loadString('assets/example.json');
+
+        CretaDocWidget.showHtmlEditor(
+          context,
+          selected,
+          realSize,
+          frameModel,
+          widget.frameManager!,
+          selected.getURI(),
+          dialogOffset,
+          dialogSize,
+          onPressedOK: (value) {
+            setState(() {
+              selected.remoteUrl = value;
+              contentsManager.setToDB(selected).then((value) {
+                _sendEvent?.sendEvent(frameModel);
+                return null;
+              });
+            });
+            Navigator.of(context).pop();
+          },
+        );
+      }
+    }
   }
 
   void _showRightMouseMenu(TapDownDetails details, FrameModel frameModel) {

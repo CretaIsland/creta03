@@ -11,6 +11,9 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 import '../common/creta_utils.dart';
 import '../data_io/frame_manager.dart';
 import '../lang/creta_studio_lang.dart';
+import '../pages/studio/book_main_page.dart';
+import '../pages/studio/studio_constant.dart';
+import '../pages/studio/studio_variables.dart';
 import 'app_enums.dart';
 import 'book_model.dart';
 import 'creta_model.dart';
@@ -48,11 +51,11 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   FrameType frameType = FrameType.none;
   int subType = -1;
 
-  bool _isEditMode = false;
-  bool get isEditMode => _isEditMode;
-  void setEditMode(bool value) {
-    _isEditMode = value;
-  }
+  bool isEditMode = false;
+  // bool get isEditMode => _isEditMode;
+  // void setEditMode(bool value) {
+  //   _isEditMode = value;
+  // }
 
   bool isWeatherTYpe() {
     if (frameType == FrameType.weatherInfo) return true;
@@ -490,5 +493,17 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     posY.set(0, save: false);
     save();
     mychangeStack.endTrans();
+  }
+
+  double getRealPosX() {
+    return (posX.value * StudioVariables.applyScale) +
+        BookMainPage.pageOffset.dx -
+        (LayoutConst.stikerOffset / 2);
+  }
+
+  double getRealPosY() {
+    return (posY.value * StudioVariables.applyScale) +
+        BookMainPage.pageOffset.dy -
+        (LayoutConst.stikerOffset / 2);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 
@@ -31,6 +32,7 @@ import '../../containees/frame/sticker/draggable_stickers.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
+import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
 import '../property_mixin.dart';
 
@@ -48,7 +50,7 @@ class ContentsOrderedList extends StatefulWidget {
 
 class _ContentsOrderedListState extends State<ContentsOrderedList> with PropertyMixin {
   //final ScrollController scrollController = ScrollController();
-
+  FrameEventController? _sendEvent;
   bool _isPlayListOpen = true;
   final double spacing = 6.0;
   final double lineHeight = LayoutConst.contentsListHeight;
@@ -63,6 +65,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   void initState() {
     super.initState();
     initMixin();
+    final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
+    _sendEvent = sendEvent;
   }
 
   @override
@@ -778,7 +782,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           onSelected: (title, value, nvMap) {
             //print('onSelected !!!!!!!');
             model.autoSizeType.set(AutoSizeType.fromString(title));
-            //_sendEvent!.sendEvent(model);
+            _sendEvent!.sendEvent(model);
             //widget.contentsManager.notify();
             //widget.frameManager?.notify();
             DraggableStickers.frameSelectNotifier!.notify();
@@ -816,166 +820,124 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         ),
         //const SizedBox(height: 10),
         // 폰트 사이즈
-        propertyLine(
-          // letterSpacing  자간
-          name: CretaStudioLang.fontSize,
-          widget: CretaExSlider(
-            valueType: SliderValueType.normal,
-            value: model.fontSize.value,
-            textType: CretaTextFieldType.number,
-            min: 6,
-            max: StudioConst.maxFontSize,
-            onChanngeComplete: (val) {
-              //setState(() {
-              model.fontSize.set(val);
-              FontSizeType? fontSyzeType = FontSizeType.valToEnum[val];
-              if (fontSyzeType == null ||
-                  fontSyzeType == FontSizeType.userDefine ||
-                  fontSyzeType == FontSizeType.none ||
-                  fontSyzeType == FontSizeType.end) {
-                if (model.fontSizeType.value != FontSizeType.userDefine) {
-                  model.fontSizeType.set(FontSizeType.userDefine);
-                }
-              } else {
-                if (model.fontSizeType.value != fontSyzeType) {
-                  model.fontSizeType.set(fontSyzeType);
-                }
-              }
-              widget.contentsManager.notify();
-
-              //_sendEvent!.sendEvent(model);
-              //});
-            },
-            onChannged: (val) {
-              model.fontSize.set(val);
-              widget.contentsManager.notify();
-            },
-          ),
-        ),
-        propertyLine(
-          // letterSpacing  자간
-          name: CretaStudioLang.letterSpacing,
-          widget: CretaExSlider(
-            valueType: SliderValueType.normal,
-            value: model.letterSpacing.value,
-            textType: CretaTextFieldType.number,
-            min: -10,
-            max: 10,
-            onChanngeComplete: (val) {
-              //setState(() {
-              model.letterSpacing.set(val);
-              //});
-              widget.contentsManager.notify();
-              //_sendEvent!.sendEvent(model);
-            },
-            onChannged: (val) {
-              model.letterSpacing.set(val);
-              widget.contentsManager.notify();
-              //_sendEvent!.sendEvent(model);
-            },
-          ),
-        ),
-        propertyLine(
-          // lineHeight  행간
-          name: CretaStudioLang.lineHeight,
-          widget: CretaExSlider(
-            valueType: SliderValueType.normal,
-            textType: CretaTextFieldType.number,
-            value: model.lineHeight.value,
-            min: 0,
-            max: 100,
-            onChanngeComplete: (val) {
-              //setState(() {
-              model.lineHeight.set(val);
-              //});
-              widget.contentsManager.notify();
-              //_sendEvent!.sendEvent(model);
-            },
-            onChannged: (val) {
-              model.lineHeight.set(val);
-              widget.contentsManager.notify();
-              //_sendEvent!.sendEvent(model);
-            },
-          ),
-        ),
-
-        // propertyLine(
-        //   //  폰트 컬러  글자색
-        //   name: CretaLang.fontColor,
-        //   widget: colorIndicator(
-        //     model.fontColor.value,
-        //     model.opacity.value,
-        //     onColorChanged: (color) {
-        //       setState(() {
-        //         model.fontColor.set(color);
-        //       });
-        //       widget.contentsManager.notify();
-        //       //_sendEvent!.sendEvent(widget.model);
-        //     },
-        //     onClicked: () {},
-        //   ),
-        // ),
-
-        // propertyLine(
-        //   // Opacity
-        //   name: CretaStudioLang.opacity,
-        //   widget: CretaExSlider(
-        //     valueType: SliderValueType.reverse,
-        //     value: model.opacity.value,
-        //     min: 0,
-        //     max: 100,
-        //     onChanngeComplete: (val) {
-        //       //setState(() {
-        //       model.opacity.set(val);
-        //       //});
-        //       widget.contentsManager.notify();
-        //       //_sendEvent!.sendEvent(widget.model);
-        //     },
-        //     onChannged: (val) {
-        //       model.opacity.set(val);
-        //       widget.contentsManager.notify();
-        //       //_sendEvent!.sendEvent(widget.model);
-        //     },
-        //   ),
-        // ),
-
-        // propertyLine(
-        //   // 프레임 크기에 자동 맞춤
-        //   name: CretaStudioLang.autoSizeFont,
-        //   widget: CretaToggleButton(
-        //     width: 54 * 0.75,
-        //     height: 28 * 0.75,
-        //     defaultValue: model.autoSizeType.value,
-        //     onSelected: (value) {
-        //       model.autoSizeType.set(value);
-        //       //_sendEvent!.sendEvent(model);
-        //       widget.contentsManager.notify();
-        //       setState(() {});
-        //     },
-        //   ),
-        // ),
-        //if (model.autoSizeType.value == false) _fontSizeArea2(model),
-
-        // _translateRow(model),
-        // propertyLine(
-        //   // TTS
-        //   topPadding: 10,
-        //   name: CretaStudioLang.tts,
-        //   widget: CretaToggleButton(
-        //     width: 54 * 0.75,
-        //     height: 28 * 0.75,
-        //     defaultValue: model.isTTS.value,
-        //     onSelected: (value) {
-        //       model.isTTS.set(value);
-        //       model.mute.set(!value);
-        //       widget.contentsManager.notify();
-        //       setState(() {});
-        //     },
-        //   ),
-        // ),
-        // if (model.isTTS.value) const SizedBox(height: 14),
-        // if (model.isTTS.value) _textDurationWidget(model),
+        model.autoSizeType.value == AutoSizeType.autoFontSize
+            ? Stack(
+                children: [
+                  Column(children: [
+                    _fontSize(model),
+                    _letterSpace(model),
+                    _lineHeight(model),
+                  ]),
+                  Container(
+                    width: double.infinity,
+                    height: 126,
+                    color: Colors.white.withOpacity(0.7),
+                  ),
+                ],
+              )
+            : Column(children: [
+                _fontSize(model),
+                _letterSpace(model),
+                _lineHeight(model),
+              ]),
       ],
+    );
+  }
+
+  Widget _fontSize(ContentsModel model) {
+    return propertyLine(
+      // FontSize  폰트사이즈
+      name: CretaStudioLang.fontSize,
+      widget: CretaExSlider(
+        valueType: SliderValueType.normal,
+        value: model.fontSize.value,
+        textType: CretaTextFieldType.number,
+        min: 6,
+        max: StudioConst.maxFontSize,
+        onChanngeComplete: (val) {
+          //setState(() {
+          model.fontSize.set(val);
+          FontSizeType? fontSyzeType = FontSizeType.valToEnum[val];
+          if (fontSyzeType == null ||
+              fontSyzeType == FontSizeType.userDefine ||
+              fontSyzeType == FontSizeType.none ||
+              fontSyzeType == FontSizeType.end) {
+            if (model.fontSizeType.value != FontSizeType.userDefine) {
+              model.fontSizeType.set(FontSizeType.userDefine);
+            }
+          } else {
+            if (model.fontSizeType.value != fontSyzeType) {
+              model.fontSizeType.set(fontSyzeType);
+            }
+          }
+          widget.contentsManager.notify();
+          widget.frameManager?.notify();
+
+          //_sendEvent!.sendEvent(model);
+          //});
+        },
+        onChannged: (val) {
+          model.fontSize.set(val);
+          widget.contentsManager.notify();
+          widget.frameManager?.notify();
+        },
+      ),
+    );
+  }
+
+  Widget _letterSpace(ContentsModel model) {
+    return propertyLine(
+      // letterSpacing  자간
+      name: CretaStudioLang.letterSpacing,
+      widget: CretaExSlider(
+        valueType: SliderValueType.normal,
+        value: model.letterSpacing.value,
+        textType: CretaTextFieldType.number,
+        min: -10,
+        max: 10,
+        onChanngeComplete: (val) {
+          // //setState(() {
+          // model.letterSpacing.set(val);
+          // //});
+          // widget.contentsManager.notify();
+          // widget.frameManager?.notify();
+          // //_sendEvent!.sendEvent(model);
+        },
+        onChannged: (val) {
+          model.letterSpacing.set(val);
+          widget.contentsManager.notify();
+          widget.frameManager?.notify();
+          //_sendEvent!.sendEvent(model);
+        },
+      ),
+    );
+  }
+
+  Widget _lineHeight(ContentsModel model) {
+    return propertyLine(
+      // lineHeight  행간
+      name: CretaStudioLang.lineHeight,
+      widget: CretaExSlider(
+        valueType: SliderValueType.normal,
+        textType: CretaTextFieldType.number,
+        value: model.lineHeight.value,
+        min: 0,
+        max: 100,
+        onChanngeComplete: (val) {
+          // //setState(() {
+          // model.lineHeight.set(val);
+          // //});
+          // widget.contentsManager.notify();
+          // widget.frameManager?.notify();
+          // //_sendEvent!.sendEvent(model);
+        },
+        onChannged: (val) {
+          model.lineHeight.set(val);
+          widget.contentsManager.notify();
+          widget.frameManager?.notify();
+          //_sendEvent!.sendEvent(model);
+        },
+      ),
     );
   }
 
