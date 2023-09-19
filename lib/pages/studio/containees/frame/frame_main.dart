@@ -390,7 +390,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             (lineHeight, lineCount) = CretaUtils.getLineHeightAndCount(
                 uri, contentsModel.fontSize.value, frameWidth, style, contentsModel.align.value);
             frameHeight = CretaUtils.resizeTextHeight(lineHeight, lineCount);
-            print('AutoSizeType.autoFrameSize after  $frameHeight');
+            //print('AutoSizeType.autoFrameSize after  $frameHeight');
             model.height.set(frameHeight, noUndo: true);
           }
         }
@@ -735,7 +735,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       model.posY.set(dy, save: false);
       model.width.set(update.size.width / applyScale, save: false);
 
-      print('setItem...................................');
+      //print('setItem...................................');
       model.height.set(update.size.height / applyScale, save: false);
       //model.save();
 

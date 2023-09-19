@@ -209,16 +209,16 @@ class _InstantEditorState extends State<InstantEditor> {
     if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
       // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
       // 초기에 텍스트가 overflow 가 되기 위해 계산해 주어야 한다.
-      print('AutoSizeType.noAutoSize _fontSize=$fontSize');
+      //print('AutoSizeType.noAutoSize _fontSize=$fontSize');
       _getLineHeightAndCount(uri, _fontSize);
       _resize();
     } else if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
       // 초기 프레임사이즈를 결정해 주어야 한다.
-      print('AutoSizeType.autoFrameSize _fontSize=$fontSize');
+      //print('AutoSizeType.autoFrameSize _fontSize=$fontSize');
       _getLineHeightAndCount(uri, _fontSize);
       _resize();
     } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
-      print('AutoSizeType.autoFontSize _fontSize=$fontSize');
+      //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
     }
     _frameSize = Size(widget.frameModel.width.value * StudioVariables.applyScale,
         widget.frameModel.height.value * StudioVariables.applyScale);
@@ -254,7 +254,7 @@ class _InstantEditorState extends State<InstantEditor> {
       );
     }
 
-    print('${applySize.height.roundToDouble()},  ${widget.frameModel.height.value}');
+    //print('${applySize.height.roundToDouble()},  ${widget.frameModel.height.value}');
     return Positioned(
       left: _posX,
       top: _posY,
@@ -329,7 +329,7 @@ class _InstantEditorState extends State<InstantEditor> {
         if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
           // 프레임이 늘어나거나 줄어든다.
           if (_getLineHeightAndCount(value, _fontSize)) {
-            print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
             setState(() {
               model.remoteUrl = _textController.text;
               _resize();
@@ -366,7 +366,7 @@ class _InstantEditorState extends State<InstantEditor> {
 
     if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
       if (widget.frameModel.height.value != _realSize!.height) {
-        print('_saveChanges  ${widget.frameModel.height.value} , ${_realSize!.height}');
+        //print('_saveChanges  ${widget.frameModel.height.value} , ${_realSize!.height}');
         widget.frameModel.height.set(_realSize!.height, save: false, noUndo: true);
         widget.frameModel.save();
         //print('2.db.height=$dbHeight');
