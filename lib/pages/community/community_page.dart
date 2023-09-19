@@ -765,11 +765,25 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         Row(children: _getHashtagListOnBanner()),
       ]);
     }
-    return Container(
+    return SizedBox(
       width: size.width,
       height: size.height,
-      padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Row(children: titleList),
+      child: Stack(
+        children: [
+          Image(
+            image: AssetImage('assets/Artboard12.png'),
+            width: size.width,
+            height: size.height,
+            fit: BoxFit.cover,
+          ),
+          Container(
+            width: size.width,
+            height: size.height,
+            padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+            child: Row(children: titleList),
+          ),
+        ],
+      ),
     );
   }
 
@@ -782,31 +796,59 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     }
     String profileImg = _currentChannelModel?.profileImg ?? '';
     String channelBannerImg = _currentChannelModel?.bannerImg ?? '';
+    Widget? bannerImage;
+    if (_currentChannelModel == null) {
+      bannerImage = SizedBox.shrink();
+    } else if (channelBannerImg.isEmpty) {
+      bannerImage = Image(
+        image: AssetImage('assets/Artboard12.png'),
+        width: size.width,
+        height: size.height,
+        fit: BoxFit.cover,
+      );
+    } else {
+      bannerImage = CustomImage(
+        key: GlobalObjectKey(channelBannerImg),
+        image: channelBannerImg,
+        width: size.width,
+        height: size.height,
+        hasMouseOverEffect: false,
+        hasAni: false,
+        boxFit: BoxFit.cover,
+      );
+    }
+    String titleKey = (_currentChannelModel == null)
+        ? '_getChannelTitlePane(_currentChannelModel == null)'
+        : channelBannerImg.isEmpty
+            ? '_getChannelTitlePane(AssetImage)'
+            : '_getChannelTitlePane($channelBannerImg)';
     // max size
     if (size.height > 100 + 100 + 24 + 8) {
       return Stack(
+        key: GlobalObjectKey(titleKey),
         children: [
           SizedBox(
             width: size.width,
             height: size.height,
-            child: (_currentChannelModel == null)
-                ? SizedBox.shrink()
-                : channelBannerImg.isEmpty
-                    ? Image(
-                        image: AssetImage('assets/Artboard12.png'),
-                        width: size.width,
-                        height: size.height,
-                        fit: BoxFit.cover,
-                      )
-                    : CustomImage(
-                        key: GlobalObjectKey(channelBannerImg),
-                        image: channelBannerImg,
-                        width: size.width,
-                        height: size.height,
-                        hasMouseOverEffect: false,
-                        hasAni: false,
-                        boxFit: BoxFit.cover,
-                      ),
+            child: bannerImage,
+            // child: (_currentChannelModel == null)
+            //     ? SizedBox.shrink()
+            //     : channelBannerImg.isEmpty
+            //         ? Image(
+            //             image: AssetImage('assets/Artboard12.png'),
+            //             width: size.width,
+            //             height: size.height,
+            //             fit: BoxFit.cover,
+            //           )
+            //         : CustomImage(
+            //             key: GlobalObjectKey(channelBannerImg),
+            //             image: channelBannerImg,
+            //             width: size.width,
+            //             height: size.height,
+            //             hasMouseOverEffect: false,
+            //             hasAni: false,
+            //             boxFit: BoxFit.cover,
+            //           ),
           ),
           Container(
             width: size.width,
@@ -965,6 +1007,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     } else if (size.height > 122 + 40) {
       // mid size
       // return SizedBox(
+      // key: GlobalObjectKey(titleKey),
       //   width: size.width,
       //   height: size.height,
       //   child: Stack(
@@ -1040,124 +1083,157 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       // );
     }
     // min size
-    return Container(
+    return SizedBox(
+      key: GlobalObjectKey(titleKey),
       width: size.width,
       height: size.height,
-      padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Stack(
         children: [
-          // left (icon + channel-name + link)
-          Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                clipBehavior: Clip.antiAlias,
-                // child: CustomImage(
-                //   key: CommunitySampleData.bannerKey,
-                //   duration: 500,
-                //   hasMouseOverEffect: false,
-                //   width: 32,
-                //   height: 32,
-                //   image: CommunitySampleData.bannerUrl,
-                //   hasAni: false,
-                // ),
-                child: profileImg.isEmpty
-                    ? Image(
-                        image: AssetImage('assets/Artboard12.png'),
-                        width: 32,
-                        height: 32,
-                        fit: BoxFit.cover,
-                      )
-                    : CustomImage(
-                        key: GlobalObjectKey(profileImg),
-                        image: profileImg,
-                        width: 32,
-                        height: 32,
-                        hasMouseOverEffect: false,
-                        hasAni: false,
-                      ),
-              ),
-              SizedBox(width: 12),
-              Text(
-                (_currentChannelModel == null) ? '' : '${_currentChannelModel!.name}님의 채널',
-                style: CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
-              ),
-              SizedBox(width: 20),
-              Text(
-                (_currentChannelModel == null)
-                    ? ''
-                    : '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
-                style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
-              ),
-              SizedBox(width: 20),
-              BTN.fill_gray_i_l(
-                icon: Icons.link_outlined,
-                buttonColor: CretaButtonColor.gray100light,
-                iconColor: CretaColor.text[700],
-                tooltip: '채널 주소 복사',
-                onPressed: () {
-                  String url = Uri.base.origin;
-                  url += '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
-                  Clipboard.setData(ClipboardData(text: url));
-                },
-              ),
-            ],
+          SizedBox(
+            width: size.width,
+            height: size.height,
+            child : bannerImage,
+            // child: (_currentChannelModel == null)
+            //     ? SizedBox.shrink()
+            //     : channelBannerImg.isEmpty
+            //         ? Image(
+            //             image: AssetImage('assets/Artboard12.png'),
+            //             width: size.width,
+            //             height: size.height,
+            //             fit: BoxFit.cover,
+            //           )
+            //         : CustomImage(
+            //             key: GlobalObjectKey(channelBannerImg),
+            //             image: channelBannerImg,
+            //             width: size.width,
+            //             height: size.height,
+            //             hasMouseOverEffect: false,
+            //             hasAni: false,
+            //             boxFit: BoxFit.cover,
+            //           ),
           ),
-          // right (follow + icon)
-          Row(
-            children: [
-              Text(
-                (_currentChannelModel == null) ? '' : '구독자 ${_currentChannelModel!.followerCount}명',
-                style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
-              ),
-              SizedBox(width: 12),
-              (CretaAccountManager.getUserProperty!.channelId == _currentChannelModel?.getMid)
-                  ? SizedBox.shrink()
-                  : BTN.fill_blue_t_m(
-                      width: 84,
-                      text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
-                      onPressed: () {
-                        SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
-                        if (_selectedSubscriptionModel == null) {
-                          subscriptionManagerHolder
-                              .createSubscription(
-                            CretaAccountManager.getUserProperty!.channelId,
-                            _currentChannelModel!.getMid,
-                          )
-                              .then(
-                            (value) {
-                              showSnackBar(context, '구독되었습니다');
-                              setState(() {
-                                _selectedSubscriptionModel = SubscriptionModel.withName(
-                                    channelId: CretaAccountManager.getUserProperty!.channelId,
-                                    subscriptionChannelId: _currentChannelModel!.getMid);
-                              });
-                            },
-                          );
-                        } else {
-                          subscriptionManagerHolder
-                              .removeSubscription(
-                            CretaAccountManager.getUserProperty!.channelId,
-                            _currentChannelModel!.mid,
-                          )
-                              .then(
-                            (value) {
-                              showSnackBar(context, '구독 해지되었습니다');
-                              setState(() {
-                                _selectedSubscriptionModel = null;
-                              });
-                            },
-                          );
-                        }
-                      },
-                      textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+          Container(
+            width: size.width,
+            height: size.height,
+            padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // left (icon + channel-name + link)
+                Row(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      // child: CustomImage(
+                      //   key: CommunitySampleData.bannerKey,
+                      //   duration: 500,
+                      //   hasMouseOverEffect: false,
+                      //   width: 32,
+                      //   height: 32,
+                      //   image: CommunitySampleData.bannerUrl,
+                      //   hasAni: false,
+                      // ),
+                      child: profileImg.isEmpty
+                          ? Image(
+                              image: AssetImage('assets/Artboard12.png'),
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.cover,
+                            )
+                          : CustomImage(
+                              key: GlobalObjectKey(profileImg),
+                              image: profileImg,
+                              width: 32,
+                              height: 32,
+                              hasMouseOverEffect: false,
+                              hasAni: false,
+                            ),
                     ),
-            ],
+                    SizedBox(width: 12),
+                    Text(
+                      (_currentChannelModel == null) ? '' : '${_currentChannelModel!.name}님의 채널',
+                      style:
+                          CretaFont.titleELarge.copyWith(color: CretaColor.text[700], fontWeight: CretaFont.semiBold),
+                    ),
+                    SizedBox(width: 20),
+                    Text(
+                      (_currentChannelModel == null)
+                          ? ''
+                          : '${_currentChannelModel!.name} 외 ${_currentChannelModel!.followerCount}명',
+                      style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
+                    ),
+                    SizedBox(width: 20),
+                    BTN.fill_gray_i_l(
+                      icon: Icons.link_outlined,
+                      buttonColor: CretaButtonColor.gray100light,
+                      iconColor: CretaColor.text[700],
+                      tooltip: '채널 주소 복사',
+                      onPressed: () {
+                        String url = Uri.base.origin;
+                        url += '${AppRoutes.channel}?${CommunityRightChannelPane.channelId}';
+                        Clipboard.setData(ClipboardData(text: url));
+                      },
+                    ),
+                  ],
+                ),
+                // right (follow + icon)
+                Row(
+                  children: [
+                    Text(
+                      (_currentChannelModel == null) ? '' : '구독자 ${_currentChannelModel!.followerCount}명',
+                      style: CretaFont.buttonLarge.copyWith(color: CretaColor.text[400]),
+                    ),
+                    SizedBox(width: 12),
+                    (CretaAccountManager.getUserProperty!.channelId == _currentChannelModel?.getMid)
+                        ? SizedBox.shrink()
+                        : BTN.fill_blue_t_m(
+                            width: 84,
+                            text: (_selectedSubscriptionModel == null) ? '구독하기' : '구독중',
+                            onPressed: () {
+                              SubscriptionManager subscriptionManagerHolder = SubscriptionManager();
+                              if (_selectedSubscriptionModel == null) {
+                                subscriptionManagerHolder
+                                    .createSubscription(
+                                  CretaAccountManager.getUserProperty!.channelId,
+                                  _currentChannelModel!.getMid,
+                                )
+                                    .then(
+                                  (value) {
+                                    showSnackBar(context, '구독되었습니다');
+                                    setState(() {
+                                      _selectedSubscriptionModel = SubscriptionModel.withName(
+                                          channelId: CretaAccountManager.getUserProperty!.channelId,
+                                          subscriptionChannelId: _currentChannelModel!.getMid);
+                                    });
+                                  },
+                                );
+                              } else {
+                                subscriptionManagerHolder
+                                    .removeSubscription(
+                                  CretaAccountManager.getUserProperty!.channelId,
+                                  _currentChannelModel!.mid,
+                                )
+                                    .then(
+                                  (value) {
+                                    showSnackBar(context, '구독 해지되었습니다');
+                                    setState(() {
+                                      _selectedSubscriptionModel = null;
+                                    });
+                                  },
+                                );
+                              }
+                            },
+                            textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                          ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -1465,17 +1541,17 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         break;
       case AppRoutes.communityHome:
       case AppRoutes.channel:
-      switch (_communityChannelType) {
-        case CommunityChannelType.playlists:
-          return [_dropDownMenuItemListSort];
-        case CommunityChannelType.memberChannels:
-          return [];
-        case CommunityChannelType.info:
-          return [];
-        case CommunityChannelType.books:
-        default:
-          return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
-      }
+        switch (_communityChannelType) {
+          case CommunityChannelType.playlists:
+            return [_dropDownMenuItemListSort];
+          case CommunityChannelType.memberChannels:
+            return [];
+          case CommunityChannelType.info:
+            return [];
+          case CommunityChannelType.books:
+          default:
+            return [_dropDownMenuItemListPurpose, _dropDownMenuItemListPermission, _dropDownMenuItemListSort];
+        }
     }
     return [];
   }
@@ -1800,7 +1876,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       child: Stack(
         children: [
           mainPage(
-            bannerKey: GlobalObjectKey(_communityChannelType.name),
+            bannerKey: GlobalObjectKey('${_communityChannelType.name}|${_currentChannelModel?.bannerImg ?? ' '}'),
             context,
             gotoButtonPressed: () {
               Routemaster.of(context).push(AppRoutes.studioBookGridPage);
