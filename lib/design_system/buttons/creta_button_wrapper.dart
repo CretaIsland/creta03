@@ -1873,7 +1873,7 @@ class BTN {
         text: Text(text, style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[700]!)));
   }
 
-  static CretaButton fill_color_t_m({
+  static Widget fill_color_t_m({
     required String text,
     required Function onPressed,
     double? width = 58,
@@ -1884,14 +1884,15 @@ class BTN {
     CretaButtonColor buttonColor = CretaButtonColor.channelTabUnselected,
   }) {
     // return CretaTextButton(
-    //     width: width,
-    //     height: 21,
-    //     onPressed: onPressed,
-    //     fgColor: CretaColor.text[700]!,
-    //     clickColor: CretaColor.primary,
-    //     hoverColor: CretaColor.primary,
-    //     textStyle: CretaFont.buttonSmall,
-    //     text: text);
+    //   width: width ?? 58,
+    //   height: height ?? 24,
+    //   onPressed: onPressed,
+    //   fgColor: isSelected ? CretaColor.primary[400]! : CretaColor.text[700]!,
+    //   clickColor: CretaColor.text[700]!,
+    //   hoverColor: CretaColor.primary[400]!,
+    //   textStyle: CretaFont.buttonMedium,
+    //   text: text,
+    // );
     return CretaButton(
       width: width,
       height: height,

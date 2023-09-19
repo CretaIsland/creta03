@@ -181,6 +181,7 @@ class Sticker extends StatefulWidget {
   Widget? child;
   // set isText to true if passed Text widget as child
   bool? isText = false;
+  bool isEditMode = false;
   // every sticker must be assigned with unique id
   //final String id;
   String get id => model.mid;

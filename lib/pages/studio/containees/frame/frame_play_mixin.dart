@@ -51,7 +51,8 @@ mixin FramePlayMixin {
     frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
   }
 
-  Future<void> createNewFrameAndContents(List<ContentsModel> modelList, PageModel pageModel,
+  Future<ContentsManager?> createNewFrameAndContents(
+      List<ContentsModel> modelList, PageModel pageModel,
       {FrameModel? frameModel}) async {
     // 프레임을 생성한다.
     //if (mychangeStack.transState != TransState.start) {
@@ -61,9 +62,11 @@ mixin FramePlayMixin {
     frameModel ??= await frameManager!.createNextFrame(doNotify: false);
     // 코텐츠를 play 하고 DB 에 Create 하고 업로드까지 한다.
     logger.info('frameCreated(${frameModel.mid}');
-    await ContentsManager.createContents(frameManager, modelList, frameModel, pageModel);
+    ContentsManager? manager =
+        await ContentsManager.createContents(frameManager, modelList, frameModel, pageModel);
 
     mychangeStack.endTrans();
+    return manager;
   }
 
   bool showBorder(

@@ -1,6 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../common/creta_utils.dart';
@@ -12,6 +11,7 @@ import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../../player/text/creta_text_player.dart';
 import '../../../book_main_page.dart';
+import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
 import 'stickerview.dart';
 
@@ -36,6 +36,7 @@ class _InstantEditorState extends State<InstantEditor> {
   final TextEditingController _textController = TextEditingController();
   GlobalObjectKey? _textFieldKey;
   Size? _realSize;
+  late Size _frameSize;
   Offset _offset = Offset.zero;
   int? _textLineCount;
   double _textLineHeight = 0;
@@ -44,8 +45,6 @@ class _InstantEditorState extends State<InstantEditor> {
   int _cursorPos = 0;
   ContentsManager? _contentsManager;
   FrameModel? _frameModel;
-
-  final double _defaultPadding = 7.0; // 쿠퍼티노 텍스트필든느 기본적으로 7의 패딩을 가지고 있다.
 
   TextPainter _getTextPainter(String text) {
     return TextPainter(
@@ -56,8 +55,8 @@ class _InstantEditorState extends State<InstantEditor> {
     )..layout();
   }
 
-  bool _reConfigureSize(String text, double fontSize) {
-    //print('_reConfigureSize, fontSize=$fontSize----------------------------------');
+  bool _getLineHeightAndCount(String text, double fontSize) {
+    //print('_getLineHeightAndCount, fontSize=$fontSize----------------------------------');
 
     //int offset = 0;
     List<String> lines = text.split('\n');
@@ -118,12 +117,14 @@ class _InstantEditorState extends State<InstantEditor> {
               CretaTextPlayer.makeStyle(null, model, StudioVariables.applyScale, false);
           _style = style;
           _align = model.align.value;
-          _reConfigureSize(uri, model.fontSize.value);
+
+          _getLineHeightAndCount(uri, model.fontSize.value);
+
           //print('initial lineCount=$_textLineCount');
 
           // _textController.addListener(() {
           //   final text = _textController.text;
-          //   _reConfigureSize(text);
+          //   _getLineHeightAndCount(text);
           // });
         }
       }
@@ -180,19 +181,52 @@ class _InstantEditorState extends State<InstantEditor> {
       );
     }
 
-    _textLineCount ??= CretaUtils.countAs(uri, '\n') + 1;
-    //print('_textLineCount=$_textLineCount------------------------------------------');
-
     _textFieldKey ??= GlobalObjectKey('TextEditorKey${model.mid}');
 
-    _realSize ??= Size(_frameModel!.width.value * StudioVariables.applyScale,
+    if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+      // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
+      // 초기에 텍스트가 overflow 가 되기 위해 계산해 주어야 한다.
+      _getLineHeightAndCount(uri, model.fontSize.value);
+      _resize();
+    } else if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+      // 초기 프레임사이즈를 결정해 주어야 한다.
+      _getLineHeightAndCount(uri, model.fontSize.value);
+      _resize();
+    }
+    _frameSize = Size(_frameModel!.width.value * StudioVariables.applyScale,
         _frameModel!.height.value * StudioVariables.applyScale);
+    _realSize ??= _frameSize;
+    _textLineCount ??= CretaUtils.countAs(uri, '\n') + 1;
+    //print('_textLineCount=$_textLineCount------------------------------------------');
 
     return _editText(widget.sticker, model, uri);
   }
 
   Widget _editText(Sticker sticker, ContentsModel model, String uri) {
     //print('_editText height=${_realSize!.height}');
+
+    late Size applySize;
+    late Widget editorWidget;
+    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+      // 프레임 사이즈가 변한다.
+      applySize = _realSize!;
+      editorWidget = _myTextField(sticker, model, uri);
+    } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+      // 프레임 사이즈도 . 에디터 사이즈도 변하지 않ㄴ느다.
+      applySize = _frameSize;
+      editorWidget = _myTextField(sticker, model, uri);
+    } else if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+      // 프레임 사이즈가 변하지 않는다. 에디터 사이즈는 변할 수 있다.
+      applySize = _frameSize;
+      editorWidget = OverflowBox(
+        alignment: alignVToAlignment(model.valign.value),
+        //alignment: Alignment.topCenter,
+        maxHeight: _realSize!.height,
+        maxWidth: _realSize!.width,
+        child: _myTextField(sticker, model, uri),
+      );
+    }
+
     return Positioned(
       left: _offset.dx,
       top: _offset.dy,
@@ -202,60 +236,97 @@ class _InstantEditorState extends State<InstantEditor> {
         ),
         alignment:
             CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
-        width: _realSize!.width,
-        height: _realSize!.height,
-        child: CupertinoTextField(
-          strutStyle: const StrutStyle(
-            forceStrutHeight: true,
-            height: 1.0,
-          ),
-          key: _textFieldKey,
-          // decoration: const InputDecoration(
-          //   border: InputBorder.none,
-          //   contentPadding: EdgeInsets.zero,
-          //   isDense: true,
-          //   fillColor: Colors.amber,
-          // ),
-          padding: EdgeInsets.all(_defaultPadding), // defaut 값이다.
-          decoration: BoxDecoration(
-            border: Border.all(width: 2, color: Colors.amber),
-          ),
-          minLines: 1,
-          //    _textLineCount, // _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
-          maxLines: _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
-          keyboardType: TextInputType.multiline,
-          //textInputAction: TextInputAction.none,
-          textAlign: model.align.value,
-          textAlignVertical: intToTextAlignVertical(model.valign.value),
-          //expands: true,
-          style: _style!.copyWith(backgroundColor: Colors.green), //_style,
-          controller: _textController,
-          onEditingComplete: () {
-            _saveChanges(model);
-          },
-          onTapOutside: (event) {
-            _saveChanges(model);
-          },
-          onChanged: (value) {
-            // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
-            // if (newlineCount != _textLineCount) {
-            _cursorPos = _textController.selection.baseOffset;
-            //print('cur=_$_cursorPos');
-            if (_reConfigureSize(value, model.fontSize.value)) {
-              //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-              setState(() {
-                model.remoteUrl = _textController.text;
-                double totalHieght = _textLineHeight * _textLineCount!.toDouble();
-                //print('1.before realSize.height=${_realSize!.height}');
-                //print('1.lineH=$_textLineHeight, lineCount=$_textLineCount');
-                _realSize = Size(_realSize!.width, totalHieght + (_defaultPadding * 2));
-                //print('1.after realSize.height=${_realSize!.height}');
-              });
-            }
-          },
-        ),
+        width: applySize.width,
+        height: applySize.height,
+        child: editorWidget,
       ),
     );
+  }
+
+  Widget _myTextField(Sticker sticker, ContentsModel model, String uri) {
+    return TextField(
+      strutStyle: const StrutStyle(
+        forceStrutHeight: true,
+        height: 1.0,
+      ),
+      key: _textFieldKey,
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+        contentPadding: EdgeInsets.all(StudioConst.defaultTextVerticalPadding),
+        isDense: true,
+        filled: true,
+        fillColor: Colors.transparent,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.amber,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.amber,
+          ),
+        ),
+      ),
+      //padding: EdgeInsets.all(_defaultPadding), // defaut 값이다.
+      // decoration: BoxDecoration(
+      //   border: Border.all(width: 2, color: Colors.amber),
+      // ),
+      minLines: 1,
+      //    _textLineCount, // _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
+      maxLines: _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
+      keyboardType: TextInputType.multiline,
+      //textInputAction: TextInputAction.none,
+      textAlign: model.align.value,
+      textAlignVertical: intToTextAlignVertical(model.valign.value),
+      //expands: true,
+      style: _style!.copyWith(backgroundColor: Colors.green), //_style,
+      controller: _textController,
+      onEditingComplete: () {
+        _saveChanges(model);
+      },
+      onTapOutside: (event) {
+        _saveChanges(model);
+      },
+      onChanged: (value) {
+        // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
+        // if (newlineCount != _textLineCount) {
+        _cursorPos = _textController.selection.baseOffset;
+        //print('cur=_$_cursorPos');
+
+        if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+          // 프레임이 늘어나거나 줄어든다.
+          if (_getLineHeightAndCount(value, model.fontSize.value)) {
+            //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            setState(() {
+              model.remoteUrl = _textController.text;
+              _resize();
+            });
+          }
+        } else if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+          // 폰트가 늘어나거나 줄어든다. 프레임은 변하지 않는다.
+          setState(() {
+            model.remoteUrl = _textController.text;
+          });
+        } else if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+          // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
+          if (_getLineHeightAndCount(value, model.fontSize.value)) {
+            //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+            setState(() {
+              model.remoteUrl = _textController.text;
+              _resize();
+            });
+          }
+        }
+      },
+    );
+  }
+
+  void _resize() {
+    double totalHieght = _textLineHeight * _textLineCount!.toDouble();
+    //print('1.before realSize.height=${_realSize!.height}');
+    //print('1.lineH=$_textLineHeight, lineCount=$_textLineCount');
+    _realSize = Size(_realSize!.width, totalHieght + (StudioConst.defaultTextVerticalPadding * 2));
+    //print('1.after realSize.height=${_realSize!.height}');
   }
 
   Future<void> _saveChanges(ContentsModel model) async {
@@ -263,12 +334,15 @@ class _InstantEditorState extends State<InstantEditor> {
 
     double dbHeight = _realSize!.height / StudioVariables.applyScale;
     model.remoteUrl = _textController.text;
-    if (model.height.value != dbHeight) {
-      model.height.set(dbHeight, save: false, noUndo: true);
-      if (_frameModel != null) {
-        _frameModel!.height.set(dbHeight, save: false, noUndo: true);
-        _frameModel!.save();
-        //print('2.db.height=$dbHeight');
+
+    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+      if (model.height.value != dbHeight) {
+        model.height.set(dbHeight, save: false, noUndo: true);
+        if (_frameModel != null) {
+          _frameModel!.height.set(dbHeight, save: false, noUndo: true);
+          _frameModel!.save();
+          //print('2.db.height=$dbHeight');
+        }
       }
     }
     model.save();

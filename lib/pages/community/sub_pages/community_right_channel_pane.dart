@@ -91,6 +91,7 @@ class CommunityRightChannelPane extends StatefulWidget {
   static String channelId = '';
   static double lastScreenHeight = 0;
   static double lastScrollPosition = 0;
+  static int lastDropdownMenuCount = 0;
 
   @override
   State<CommunityRightChannelPane> createState() => _CommunityRightChannelPaneState();

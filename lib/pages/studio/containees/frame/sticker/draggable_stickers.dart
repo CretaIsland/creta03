@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
@@ -15,6 +16,7 @@ import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../../../player/doc/creta_doc_widget.dart';
 import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_getx_controller.dart';
@@ -101,7 +103,6 @@ class _DraggableStickersState extends State<DraggableStickers> {
   FrameEventController? _sendEvent;
   List<Sticker> stickers = [];
 
-  bool _isEditMode = false;
   //bool _isEditorAlreadyExist = false;
 
   @override
@@ -151,8 +152,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   Widget _drawEachStiker(Sticker sticker) {
-    //if (_isEditMode && _isEditorAlreadyExist == false) {
-    if (_isEditMode) {
+    //if (sticker.isEditMode && _isEditorAlreadyExist == false) {
+    if (sticker.isEditMode) {
       //_isEditorAlreadyExist = true;
       return InstantEditor(
         sticker: sticker,
@@ -161,7 +162,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           setState(
             () {
               //_isEditorAlreadyExist = false;
-              _isEditMode = false;
+              sticker.isEditMode = false;
             },
           );
           widget.frameManager?.notify();
@@ -250,14 +251,62 @@ class _DraggableStickersState extends State<DraggableStickers> {
           ? InkWell(
               splashColor: Colors.transparent,
               onDoubleTap: () {
-                //print('Frame double is tapped');
+                ContentsManager? contentsManager =
+                    widget.frameManager!.getContentsManager(frameModel!.mid);
+                if (contentsManager == null) {
+                  return;
+                }
+                ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
+
+                if (selected == null) {
+                  return;
+                }
+
                 // 자동으로 Text Contents 로 가야한다.
-                if (frameModel!.isTextType()) {
-                  setState(
-                    () {
-                      _isEditMode = true;
-                    },
-                  );
+                if (frameModel.isTextType()) {
+                  //print('Frame double is tapped ${selected.contentsType}');
+                  //print('selected  =${selected.parentMid.value}');
+                  //print('sticker.id=${sticker.id}');
+                  if (selected.contentsType == ContentsType.text &&
+                      selected.parentMid.value == sticker.id) {
+                    setState(
+                      () {
+                        sticker.isEditMode = true;
+                      },
+                    );
+                  } else if (selected.contentsType == ContentsType.document) {
+                    Size realSize = Size(frameModel.width.value * StudioVariables.applyScale,
+                        frameModel.height.value * StudioVariables.applyScale);
+
+                    // ignore: use_build_context_synchronously
+                    Size screenSize = MediaQuery.of(context).size;
+                    Size dialogSize = screenSize / 2;
+                    Offset dialogOffset = Offset(
+                      (screenSize.width - dialogSize.width) / 2,
+                      (screenSize.height - dialogSize.height) / 2,
+                    ); //rootBundle.loadString('assets/example.json');
+
+                    CretaDocWidget.showHtmlEditor(
+                      context,
+                      selected,
+                      realSize,
+                      frameModel,
+                      widget.frameManager!,
+                      selected.getURI(),
+                      dialogOffset,
+                      dialogSize,
+                      onPressedOK: (value) {
+                        setState(() {
+                          selected.remoteUrl = value;
+                          contentsManager.setToDB(selected).then((value) {
+                            _sendEvent?.sendEvent(frameModel);
+                            return null;
+                          });
+                        });
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  }
                 }
                 // double click action !!!
                 DraggableStickers.frameSelectNotifier?.set(sticker.id);

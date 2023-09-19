@@ -86,6 +86,7 @@ class ContentsMainState extends State<ContentsMain> {
   }
 
   bool isURINotNull(ContentsModel model) {
+    //print('isURINotNull(${model.mid}, ${model.remoteUrl})');
     return model.url.isNotEmpty || (model.remoteUrl != null && model.remoteUrl!.isNotEmpty);
   }
 
@@ -93,18 +94,20 @@ class ContentsMainState extends State<ContentsMain> {
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       //int contentsCount = contentsManager.getShowLength();
       int contentsCount = contentsManager.getShowLength();
-      //print('ContentsMain = $contentsCount');
+      //print('Consumer<ContentsManager> ContentsMain = $contentsCount');
       return Consumer<CretaPlayTimer>(builder: (context, playTimer, child) {
         logger.info('Consumer<CretaPlayTimer>');
         return StreamBuilder<AbsExModel>(
             stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {
+              //print('snapshot.data=${snapshot.data}');
+              //print('snapshot.data is ContentsModel=${snapshot.data is ContentsModel}');
               if (snapshot.data != null && snapshot.data is ContentsModel) {
                 ContentsModel model = snapshot.data! as ContentsModel;
                 contentsManager.updateModel(model);
                 logger.info('model updated ${model.name}, ${model.url}');
               }
-              logger.fine('StreamBuilder<AbsExModel> $contentsCount');
+              logger.info('StreamBuilder<AbsExModel> $contentsCount');
               if (contentsCount == 0) {
                 logger.info('current model is null');
                 return SizedBox.shrink();

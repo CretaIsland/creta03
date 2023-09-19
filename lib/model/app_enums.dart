@@ -551,6 +551,18 @@ TextAlign intToTextAlign(int t) {
   return TextAlign.center;
 }
 
+AlignmentGeometry alignVToAlignment(int t) {
+  switch (t) {
+    case 1:
+      return Alignment.bottomCenter;
+    case 0:
+      return Alignment.center;
+    case -1:
+      return Alignment.topCenter;
+  }
+  return Alignment.center;
+}
+
 TextAlignVertical intToTextAlignVertical(int t) {
   switch (t) {
     case 1:

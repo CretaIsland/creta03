@@ -344,7 +344,7 @@ abstract class CretaManager extends AbsExModelManager {
     return retval;
   }
 
-   Future<AbsExModel> getFromAnotherCollection(String mid, String pcollectionId) async {
+  Future<AbsExModel> getFromAnotherCollection(String mid, String pcollectionId) async {
     try {
       AbsExModel model = newModel(mid);
       model.fromMap(await HycopFactory.dataBase!.getData(pcollectionId, mid));
@@ -1039,7 +1039,7 @@ abstract class CretaManager extends AbsExModelManager {
       CretaModel model = ele as CretaModel;
       if (model.mid == newModel.mid) {
         model.updateFrom(newModel);
-        //logger.info('updateModel ${newModel.mid}');
+        logger.info('updateModel ${newModel.mid}');
         //print('updateModel ${newModel.mid}');
         retval = true;
         break;
@@ -1289,7 +1289,8 @@ abstract class CretaManager extends AbsExModelManager {
     return retVal;
   }
 
-  void queryFromIdList(List<String> idList, {bool isRemoved = false, bool clearPrevCondition = true}) {
+  void queryFromIdList(List<String> idList,
+      {bool isRemoved = false, bool clearPrevCondition = true}) {
     if (clearPrevCondition) {
       clearAll();
       clearConditions();
