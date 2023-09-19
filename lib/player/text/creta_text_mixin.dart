@@ -99,7 +99,16 @@ mixin CretaTextMixin {
     //   );
     // }
 
-    //print('isThumbnail=$isThumbnail, fontSize=$fontSize, shrinkRatio=$shrinkRatio');
+    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+      // 자동 프레임사이즈를 결정해 주어야 한다.
+      //print('AutoSizeType.autoFrameSize before ${realSize.height}');
+      int lineCount = 0;
+      double lineHeight = 1.0;
+      (lineHeight, lineCount) = CretaUtils.getLineHeightAndCount(
+          uri, model.fontSize.value, realSize.width, style, model.align.value);
+      realSize = Size(realSize.width, CretaUtils.resizeTextHeight(lineHeight, lineCount));
+      //print('AutoSizeType.autoFrameSize after  ${realSize.height}');
+    }
 
     return Container(
       color: Colors.transparent,
@@ -108,7 +117,11 @@ mixin CretaTextMixin {
           CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
       width: realSize.width,
       height: realSize.height,
-      child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
+      child: (player != null &&
+              player.acc.frameModel.isEditMode == true &&
+              isThumbnail == false) // 에디트 모드에서는 글자를 표시하지 않는다.
+          ? const SizedBox.shrink()
+          : _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
   }
 
@@ -135,21 +148,23 @@ mixin CretaTextMixin {
     return _outLineAndShadowText(model, text, shadowStyle ?? style);
   }
 
-  TextStyle _getOutLineStyle(ContentsModel? model, TextStyle style) {
-    return style.copyWith(
-      foreground: Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = model!.outLineWidth.value * applyScale
-        ..color = model.outLineColor.value,
-    );
-  }
+  // TextStyle _getOutLineStyle(ContentsModel? model, TextStyle style) {
+  //   return style.copyWith(
+  //     foreground: Paint()
+  //       ..style = PaintingStyle.stroke
+  //       ..strokeWidth = model!.outLineWidth.value * applyScale
+  //       ..color = model.outLineColor.value,
+  //   );
+  // }
 
   Widget _outLineAndShadowText(ContentsModel? model, String text, TextStyle style) {
     // 새도우의 경우.
 
     // 아웃라인의 경우.
     if (model!.outLineWidth.value > 0) {
-      TextStyle outlineStyle = _getOutLineStyle(model, style);
+      TextStyle outlineStyle = model.addOutLineStyle(style);
+
+      
 
       return Stack(
         alignment: AlignmentDirectional.center,
@@ -157,24 +172,24 @@ mixin CretaTextMixin {
           model.autoSizeType.value == AutoSizeType.autoFontSize
               ? AutoSizeText(
                   text,
-                  //textAlign: model.align.value,
+                  textAlign: model.align.value,
                   style: outlineStyle,
                 )
               : Text(
                   text,
-                  //textAlign: model.align.value,
+                  textAlign: model.align.value,
                   style: outlineStyle,
                 ),
           model.autoSizeType.value == AutoSizeType.autoFontSize
               ? AutoSizeText(
                   text,
-                  //textAlign: model.align.value,
+                  textAlign: model.align.value,
                   style: style,
                   //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
                 )
               : Text(
                   text,
-                  //textAlign: model.align.value,
+                  textAlign: model.align.value,
                   style: style,
                   //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
                 ),

@@ -12,11 +12,14 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 //import '../../../../common/creta_utils.dart';
 //import '../../../../common/creta_utils.dart';
+import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
+import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
+import '../../../../player/text/creta_text_player.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../right_menu/right_menu.dart';
@@ -198,10 +201,10 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           if (contentsManager != null) {
             ContentsModel? content = contentsManager.getCurrentModel();
             if (content != null && contentsManager.getAvailLength() > 0) {
-             // print('contentsManager is not null');
-             // print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
+              // print('contentsManager is not null');
+              // print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
               frameManager?.setSelectedMid(mid, doNotify: false);
-             // print('4.contentsManager.setSelectedMid : ${CretaUtils.timeLap()}');
+              // print('4.contentsManager.setSelectedMid : ${CretaUtils.timeLap()}');
               contentsManager.setSelectedMid(content.mid, doNotify: false);
 
               // 아래 5번 6번 두가지 Notification 때문에, 느려지게 된다.  따라서, 이를 여기서 하지 않고,
@@ -368,6 +371,29 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         }
       } else {
         stickerKey = GlobalKey<StickerState>();
+      }
+
+      ContentsManager? contentsManager = frameManager!.getContentsManager(model.mid);
+      if (contentsManager != null) {
+        ContentsModel? contentsModel = contentsManager.getFirstModel();
+        if (contentsModel != null) {
+          if (contentsModel.autoSizeType.value == AutoSizeType.autoFrameSize) {
+            // 자동 프레임사이즈를 결정해 주어야 한다.
+            //print('AutoSizeType.autoFrameSize before $frameHeight');
+            late String uri;
+            late TextStyle style;
+            (style, uri, _) =
+                CretaTextPlayer.makeStyle(null, contentsModel, StudioVariables.applyScale, false);
+
+            int lineCount = 0;
+            double lineHeight = 1.0;
+            (lineHeight, lineCount) = CretaUtils.getLineHeightAndCount(
+                uri, contentsModel.fontSize.value, frameWidth, style, contentsModel.align.value);
+            frameHeight = CretaUtils.resizeTextHeight(lineHeight, lineCount);
+            //print('AutoSizeType.autoFrameSize after  $frameHeight');
+            model.height.set(frameHeight, noUndo: true);
+          }
+        }
       }
 
       Widget eachFrame =
@@ -708,6 +734,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       model.posX.set(dx, save: false);
       model.posY.set(dy, save: false);
       model.width.set(update.size.width / applyScale, save: false);
+
+      //print('setItem...................................');
       model.height.set(update.size.height / applyScale, save: false);
       //model.save();
 

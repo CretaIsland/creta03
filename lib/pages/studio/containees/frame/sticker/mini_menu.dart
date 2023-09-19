@@ -92,20 +92,28 @@ class MiniMenuState extends State<MiniMenu> {
   Widget build(BuildContext context) {
     //print('MiniMenu build isFirstTime=$isFirstTime');
 
-    Offset stickerOffset = Offset.zero;
-    if (isFirstTime == true) {
-      stickerOffset = widget.sticker.position + BookMainPage.pageOffset;
-      isFirstTime = false;
-    } else {
-      stickerOffset = widget.sticker.position;
-    }
-    double centerX = stickerOffset.dx + (widget.sticker.size.width + LayoutConst.stikerOffset) / 2;
+    // Offset stickerOffset = Offset.zero;
+    // if (isFirstTime == true) {
+    //   stickerOffset = widget.sticker.position + BookMainPage.pageOffset;
+    //   isFirstTime = false;
+    // } else {
+    //   stickerOffset = widget.sticker.position;
+    // }
+    // double centerX = stickerOffset.dx + (widget.sticker.size.width + LayoutConst.stikerOffset) / 2;
 
+    // double left = centerX - LayoutConst.miniMenuWidth / 2;
+    // double top = stickerOffset.dy +
+    //     widget.sticker.size.height +
+    //     LayoutConst.miniMenuGap +
+    //     LayoutConst.dragHandle;
+
+    double posX = widget.frameModel.getRealPosX();
+    double posY = widget.frameModel.getRealPosY();
+
+    double centerX = posX + (widget.sticker.size.width + LayoutConst.stikerOffset) / 2;
     double left = centerX - LayoutConst.miniMenuWidth / 2;
-    double top = stickerOffset.dy +
-        widget.sticker.size.height +
-        LayoutConst.miniMenuGap +
-        LayoutConst.dragHandle;
+    double top =
+        posY + widget.sticker.size.height + LayoutConst.miniMenuGap + LayoutConst.dragHandle;
 
     // if (top + LayoutConst.miniMenuHeight > widget.pageHeight) {
     //   // 화면의 영역을 벗어나면 어쩔 것인가...

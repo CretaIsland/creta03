@@ -352,7 +352,12 @@ class CretaTextPlayer extends CretaAbsPlayer {
   // }
 
   static (TextStyle, String, double) makeStyle(
-      BuildContext? context, ContentsModel model, double applyScale, bool isThumbnail) {
+    BuildContext? context,
+    ContentsModel model,
+    double applyScale,
+    bool isThumbnail, {
+    bool isEditMode = false,
+  }) {
     String uri = model.getURI();
     String errMsg = '${model.name} uri is null';
     if (uri.isEmpty) {
@@ -365,7 +370,8 @@ class CretaTextPlayer extends CretaAbsPlayer {
       //fontSize = fontSize * 0.9; // 썸네일의 경우, 폰트가 조금 크게 나오는 경향이 있어서 조금 더 작게 보정해준다.
     }
 
-    if (model.autoSizeType.value == AutoSizeType.autoFontSize &&
+    if (isEditMode == false &&
+        model.autoSizeType.value == AutoSizeType.autoFontSize &&
         (model.aniType.value != TextAniType.rotate ||
             model.aniType.value != TextAniType.bounce ||
             model.aniType.value != TextAniType.fade ||

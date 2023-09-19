@@ -12,11 +12,14 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../common/creta_utils.dart';
 import '../design_system/creta_font.dart';
+import '../pages/studio/studio_variables.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
 
 class ContentsModel extends CretaModel {
   // DB 에 저장하지 않는 member [
+  int cursorPos = 0; // 텍스트의 커서 위치를 보관
+
   double prevShadowBlur = 0;
   TextAniType prevAniType = TextAniType.none;
   Color prevFontColor = Colors.transparent;
@@ -622,5 +625,15 @@ class ContentsModel extends CretaModel {
       return url;
     }
     return '';
+  }
+
+  TextStyle addOutLineStyle(TextStyle style, {double? applyScale}) {
+    applyScale ??= StudioVariables.applyScale;
+    return style.copyWith(
+      foreground: Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = outLineWidth.value * applyScale
+        ..color = outLineColor.value,
+    );
   }
 }
