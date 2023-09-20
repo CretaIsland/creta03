@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
@@ -16,7 +15,6 @@ import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
-import '../../../../../player/doc/creta_doc_widget.dart';
 import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_getx_controller.dart';
@@ -162,6 +160,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           InstantEditor(
             frameModel: frameModel,
             frameManager: widget.frameManager,
+            onTap: widget.onTap,
             onEditComplete: () {
               setState(
                 () {
@@ -259,23 +258,28 @@ class _DraggableStickersState extends State<DraggableStickers> {
       child: (StudioVariables.isHandToolMode == false) //&& StudioVariables.isNotLinkState
           ? InkWell(
               splashColor: Colors.transparent,
-              onDoubleTap: () {
-                ContentsManager? contentsManager =
-                    widget.frameManager!.getContentsManager(frameModel.mid);
-                if (contentsManager == null) {
-                  return;
-                }
-                ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
+              // onDoubleTap: () {
+              //   ContentsManager? contentsManager =
+              //       widget.frameManager!.getContentsManager(frameModel.mid);
+              //   if (contentsManager == null) {
+              //     return;
+              //   }
+              //   ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
 
-                if (selected == null) {
-                  // 클릭되어 있지 않으면 싱글클릭과 동일하게 동작한다.
-                  DraggableStickers.frameSelectNotifier?.set(sticker.id);
-                  widget.onTap?.call(sticker.id);
-                  return;
-                }
-                // double click action !!!
-                _doubleClieckAction(contentsManager, selected, frameModel, sticker);
-              },
+              //   if (selected == null) {
+              //     // 클릭되어 있지 않으면 싱글클릭과 동일하게 동작한다.
+              //     BookMainPage.containeeNotifier!.setFrameClick(true);
+              //     DraggableStickers.frameSelectNotifier?.set(sticker.id);
+              //     widget.onTap?.call(sticker.id);
+              //     selected = contentsManager.getSelected() as ContentsModel?;
+              //     if (selected == null) {
+              //       return;
+              //     }
+              //   }
+
+              //   // double click action !!!
+              //   _gotoEditMode(contentsManager, selected, frameModel, sticker);
+              // },
               onSecondaryTapDown: (details) {
                 // 오른쪽 마우스 버튼 --> 메뉴
                 if (DraggableStickers.frameSelectNotifier != null) {
@@ -284,6 +288,25 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 _showRightMouseMenu(details, frameModel);
               },
               onTap: () {
+                //print('DraggableSticker');
+                if (DraggableStickers.frameSelectNotifier != null &&
+                    DraggableStickers.frameSelectNotifier!.selectedAssetId == sticker.id) {
+                  if (frameModel.isTextType()) {
+                    ContentsManager? contentsManager =
+                        widget.frameManager!.getContentsManager(frameModel.mid);
+                    if (contentsManager != null) {
+                      ContentsModel? selected = contentsManager.getSelected() as ContentsModel?;
+                      if (selected != null && (selected.isText() || selected.isDocument())) {
+                        // Frame이 이미 선택되어 있고, 텍스트일때는 또 click 이 일어나면 더블클릭으로 간주된다.
+                        //print('text edit');
+                        if (frameModel.isEditMode == false) {
+                          _gotoEditMode(contentsManager, selected, frameModel, sticker);
+                        }
+                        //return;
+                      }
+                    }
+                  }
+                }
                 // single click action !!!
                 // To update the selected widget
                 DraggableStickers.frameSelectNotifier?.set(sticker.id);
@@ -305,7 +328,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     );
   }
 
-  void _doubleClieckAction(
+  void _gotoEditMode(
     ContentsManager contentsManager,
     ContentsModel selected,
     FrameModel frameModel,
@@ -315,48 +338,50 @@ class _DraggableStickersState extends State<DraggableStickers> {
       //print('Frame double is tapped ${selected.contentsType}');
       //print('selected  =${selected.parentMid.value}');
       //print('sticker.id=${sticker.id}');
-      if (selected.contentsType == ContentsType.text && selected.parentMid.value == sticker.id) {
+      if (selected.isText() && selected.parentMid.value == sticker.id) {
+        // Text Editor
         setState(
           () {
             frameModel.isEditMode = true;
-            // 편집이 끝나면, 선택했던 프레임이 다시 선택되어 있어야 한다.
+            // 편집모드에서도, 선택했던 프레임이 다시 선택되어 있어야 한다.
             BookMainPage.containeeNotifier!.setFrameClick(true);
             DraggableStickers.frameSelectNotifier?.set(sticker.id);
             widget.onTap?.call(sticker.id);
           },
         );
-      } else if (selected.contentsType == ContentsType.document) {
-        Size realSize = Size(frameModel.width.value * StudioVariables.applyScale,
-            frameModel.height.value * StudioVariables.applyScale);
+      } else if (selected.isDocument()) {
+        // // HTML Editor
+        // Size realSize = Size(frameModel.width.value * StudioVariables.applyScale,
+        //     frameModel.height.value * StudioVariables.applyScale);
 
-        // ignore: use_build_context_synchronously
-        Size screenSize = MediaQuery.of(context).size;
-        Size dialogSize = screenSize / 2;
-        Offset dialogOffset = Offset(
-          (screenSize.width - dialogSize.width) / 2,
-          (screenSize.height - dialogSize.height) / 2,
-        ); //rootBundle.loadString('assets/example.json');
+        // // ignore: use_build_context_synchronously
+        // Size screenSize = MediaQuery.of(context).size;
+        // Size dialogSize = screenSize / 2;
+        // Offset dialogOffset = Offset(
+        //   (screenSize.width - dialogSize.width) / 2,
+        //   (screenSize.height - dialogSize.height) / 2,
+        // ); //rootBundle.loadString('assets/example.json');
 
-        CretaDocWidget.showHtmlEditor(
-          context,
-          selected,
-          realSize,
-          frameModel,
-          widget.frameManager!,
-          selected.getURI(),
-          dialogOffset,
-          dialogSize,
-          onPressedOK: (value) {
-            setState(() {
-              selected.remoteUrl = value;
-              contentsManager.setToDB(selected).then((value) {
-                _sendEvent?.sendEvent(frameModel);
-                return null;
-              });
-            });
-            Navigator.of(context).pop();
-          },
-        );
+        // CretaDocWidget.showHtmlEditor(
+        //   context,
+        //   selected,
+        //   realSize,
+        //   frameModel,
+        //   widget.frameManager!,
+        //   selected.getURI(),
+        //   dialogOffset,
+        //   dialogSize,
+        //   onPressedOK: (value) {
+        //     setState(() {
+        //       selected.remoteUrl = value;
+        //       contentsManager.setToDB(selected).then((value) {
+        //         _sendEvent?.sendEvent(frameModel);
+        //         return null;
+        //       });
+        //     });
+        //     Navigator.of(context).pop();
+        //   },
+        // );
       }
     }
   }

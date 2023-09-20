@@ -716,6 +716,6 @@ class CretaUtils {
 
   static double resizeTextHeight(double textLineHeight, int textLineCount,
       {double padding = StudioConst.defaultTextVerticalPadding}) {
-    return ((textLineHeight * textLineCount.toDouble())).roundToDouble() + (padding * 2);
+    return ((textLineHeight * textLineCount.toDouble())) + (padding * 2);
   }
 }

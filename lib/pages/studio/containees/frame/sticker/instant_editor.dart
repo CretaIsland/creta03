@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:creta03/design_system/component/autoSizeText/creta_auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../common/creta_utils.dart';
@@ -9,19 +11,23 @@ import '../../../../../model/app_enums.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../../player/text/creta_text_player.dart';
+import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
+import 'draggable_stickers.dart';
 
 class InstantEditor extends StatefulWidget {
   final FrameManager? frameManager;
   final FrameModel frameModel;
   final Function onEditComplete;
+  final void Function(String)? onTap;
 
   const InstantEditor({
     super.key,
     required this.frameManager,
     required this.frameModel,
     required this.onEditComplete,
+    this.onTap,
   });
   @override
   State<InstantEditor> createState() => _InstantEditorState();
@@ -115,13 +121,14 @@ class _InstantEditorState extends State<InstantEditor> {
     if (_contentsManager != null) {
       ContentsModel? model = _contentsManager!.getFirstModel();
       if (model != null) {
-        late TextStyle style;
+        _textFieldKey ??= GlobalObjectKey('TextEditorKey${model.mid}');
 
-        // late double fontSize;
+        late TextStyle style;
         late String uri;
         late double fontSize;
-        (style, uri, fontSize) =
-            CretaTextPlayer.makeStyle(null, model, StudioVariables.applyScale, false);
+        (style, uri, fontSize) = CretaTextPlayer.makeStyle(
+            null, model, StudioVariables.applyScale, false,
+            isEditMode: true);
         _fontSize = fontSize;
 
         if (model.outLineWidth.value > 0) {
@@ -171,6 +178,16 @@ class _InstantEditorState extends State<InstantEditor> {
       return const SizedBox.shrink();
     }
 
+    if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+      //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
+      double? autofontSize = AutoSizeGroup.autoSizeMap[model.mid];
+      if (autofontSize != null) {
+        double newFontSize = (autofontSize / StudioVariables.applyScale).roundToDouble();
+        model.fontSize.set(newFontSize, save: false, noUndo: true);
+        //print('AutoSizeType.autoFontSize =$autofontSize, $newFontSize');
+      }
+    }
+
     late TextStyle style;
     late String uri;
     late double fontSize;
@@ -204,8 +221,6 @@ class _InstantEditorState extends State<InstantEditor> {
       );
     }
 
-    _textFieldKey ??= GlobalObjectKey('TextEditorKey${model.mid}');
-
     if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
       // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
       // 초기에 텍스트가 overflow 가 되기 위해 계산해 주어야 한다.
@@ -219,6 +234,10 @@ class _InstantEditorState extends State<InstantEditor> {
       _resize();
     } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
       //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
+      // double? autofontSize = AutoSizeGroup.autoSizeMap[model.mid];
+      // if (autofontSize != null) {
+      //   _fontSize = autofontSize;
+      // }
     }
     _frameSize = Size(widget.frameModel.width.value * StudioVariables.applyScale,
         widget.frameModel.height.value * StudioVariables.applyScale);
@@ -260,52 +279,55 @@ class _InstantEditorState extends State<InstantEditor> {
       top: _posY,
       child: Container(
         decoration: const BoxDecoration(
-          //border: Border.all(width: 2, color: CretaColor.secondary),
+          //border: Border.all(width: 1, color: CretaColor.secondary),
+          //color: widget.frameModel.bgColor1.value,
           color: Colors.transparent,
         ),
         alignment:
             CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
         width: applySize.width,
-        height: applySize.height.roundToDouble(),
+        height: applySize.height,
         child: editorWidget,
       ),
     );
   }
 
   Widget _myTextField(ContentsModel model, String uri) {
-    return TextField(
-      cursorWidth: 4.0,
+    return CupertinoTextField(
+      key: _textFieldKey,
+      cursorWidth: 1.0,
       strutStyle: const StrutStyle(
         forceStrutHeight: true,
         height: 1.0,
       ),
-      key: _textFieldKey,
-      decoration: const InputDecoration(
-        border: InputBorder.none,
-        contentPadding: EdgeInsets.all(
-          StudioConst.defaultTextVerticalPadding,
-        ),
-        isDense: true,
-        filled: true,
-        fillColor: Colors.transparent,
-        // enabledBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(
-        //     color: CretaColor.text[200]!,
-        //   ),
-        // ),
-        // focusedBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(
-        //     color: CretaColor.text[200]!,
-        //   ),
-        // ),
-      ),
-      //padding: EdgeInsets.all(_defaultPadding), // defaut 값이다.
-      // decoration: BoxDecoration(
-      //   border: Border.all(width: 2, color: Colors.amber),
+      // decoration: InputDecoration(
+      //   border: InputBorder.none,
+      //   contentPadding: const EdgeInsets.all(StudioConst.defaultTextVerticalPadding),
+      //   isDense: true,
+      //   filled: true,
+      //   fillColor: Colors.transparent,
+      //   enabledBorder: OutlineInputBorder(
+      //     borderSide: BorderSide(
+      //       color: CretaColor.text[200]!,
+      //     ),
+      //   ),
+      //   focusedBorder: OutlineInputBorder(
+      //     borderSide: BorderSide(
+      //       color: CretaColor.text[200]!,
+      //     ),
+      //   ),
       // ),
-      minLines: 1,
+      padding: const EdgeInsets.all(StudioConst.defaultTextVerticalPadding),
+      decoration: BoxDecoration(
+        border: Border.all(width: 2, color: Colors.amber),
+        color: Colors.transparent,
+      ),
+      expands: true,
+      minLines: null,
+      maxLines: null,
+      //minLines: 1,
       //    _textLineCount, // _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
-      maxLines: _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
+      //maxLines: _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
       keyboardType: TextInputType.multiline,
       //textInputAction: TextInputAction.none,
       textAlign: model.align.value,
@@ -316,15 +338,19 @@ class _InstantEditorState extends State<InstantEditor> {
       controller: _textController,
       onEditingComplete: () {
         _saveChanges(model);
+        //print('onEditingComplete');
       },
       onTapOutside: (event) {
         _saveChanges(model);
+        BookMainPage.containeeNotifier!.setFrameClick(true);
+        DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
+        widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
       },
       onChanged: (value) {
         // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
         // if (newlineCount != _textLineCount) {
         model.cursorPos = _textController.selection.baseOffset;
-        //print('cur=_$_cursorPos');
+        //print('cur=${model.cursorPos}');
 
         if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
           // 프레임이 늘어나거나 줄어든다.

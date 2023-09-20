@@ -585,6 +585,10 @@ class ContentsModel extends CretaModel {
     return (contentsType == ContentsType.text);
   }
 
+  bool isDocument() {
+    return (contentsType == ContentsType.document);
+  }
+
   bool isEffect() {
     return (contentsType == ContentsType.effect);
   }

@@ -293,8 +293,22 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   void pageClicked(LongPressDownDetails details) {
+    //print('pageClicked');
+    if (_frameManager!.clickedInsideSelectedFrame(details.globalPosition) == true) {
+      //print('selected frame clicked');
+      FrameModel? frameModel = _frameManager!.getSelected() as FrameModel?;
+      if (frameModel != null && frameModel.isEditMode == true) {
+        // BookMainPage.containeeNotifier!.setFrameClick(true);
+        // _frameManager!.setSelectedMid(frameModel.mid);
+        // BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
+        //DraggableStickers.frameSelectNotifier?.set(frameModel.mid);
+        //print('Its edit mode');
+        return;
+      }
+    }
+
     logger.info(
-        'Gest3 : onLongPressDown in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
+        'Gest3 : onLongPressDown ${details.localPosition}in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
     if (BookMainPage.containeeNotifier!.isFrameClick == true) {
       BookMainPage.containeeNotifier!.setFrameClick(false);
       logger.info('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');

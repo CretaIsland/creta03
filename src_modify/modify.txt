@@ -23,7 +23,7 @@ copy  src_modify\video_player.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted
 copy src_modify\CustomRadioButton.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\custom_radio_grouped_button-2.2.0\lib\CustomButtons\CustomRadioButton.dart 
 
 #skpark modify 6/29
-copy src_modify\auto_size_text.daxt    C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\auto_size_text-3.0.0\lib\src\auto_size_text.dart
+#copy src_modify\auto_size_text.daxt    C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\auto_size_text-3.0.0\lib\src\auto_size_text.dart
 
 
 #mai modify 7/5

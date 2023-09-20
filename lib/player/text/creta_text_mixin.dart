@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:neonpen/neonpen.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
@@ -12,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 import '../../common/creta_utils.dart';
+import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
 import '../../pages/studio/studio_constant.dart';
@@ -122,6 +122,7 @@ mixin CretaTextMixin {
               isThumbnail == false) // 에디트 모드에서는 글자를 표시하지 않는다.
           ? const SizedBox.shrink()
           : _playText(model, uri, style, fontSize, realSize, isThumbnail),
+      //child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
   }
 
@@ -164,14 +165,13 @@ mixin CretaTextMixin {
     if (model!.outLineWidth.value > 0) {
       TextStyle outlineStyle = model.addOutLineStyle(style);
 
-      
-
       return Stack(
         alignment: AlignmentDirectional.center,
         children: [
           model.autoSizeType.value == AutoSizeType.autoFontSize
-              ? AutoSizeText(
+              ? CretaAutoSizeText(
                   text,
+                  mid: model.mid,
                   textAlign: model.align.value,
                   style: outlineStyle,
                 )
@@ -181,8 +181,9 @@ mixin CretaTextMixin {
                   style: outlineStyle,
                 ),
           model.autoSizeType.value == AutoSizeType.autoFontSize
-              ? AutoSizeText(
+              ? CretaAutoSizeText(
                   text,
+                  mid: model.mid,
                   textAlign: model.align.value,
                   style: style,
                   //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
@@ -199,8 +200,10 @@ mixin CretaTextMixin {
 
     // 아웃라인도 아니고, 애니매이션도 아닌 경우.
     return model.autoSizeType.value == AutoSizeType.autoFontSize
-        ? AutoSizeText(
+        ? CretaAutoSizeText(
             text,
+            mid: model.mid,
+
             textAlign: model.align.value,
             style: style,
             //textScaleFactor: (model.scaleFactor.value / 100)
@@ -342,8 +345,17 @@ mixin CretaTextMixin {
               baseColor: model.fontColor.value,
               highlightColor: model.outLineColor.value,
               child: model.autoSizeType.value == AutoSizeType.autoFontSize
-                  ? AutoSizeText(text, textAlign: model.align.value, style: style)
-                  : Text(text, textAlign: model.align.value, style: style));
+                  ? CretaAutoSizeText(
+                      text,
+                      mid: model.mid,
+                      textAlign: model.align.value,
+                      style: style,
+                    )
+                  : Text(
+                      text,
+                      textAlign: model.align.value,
+                      style: style,
+                    ));
         }
       case TextAniType.typewriter:
         {
@@ -379,7 +391,12 @@ mixin CretaTextMixin {
         {
           return Neonpen(
             text: model.autoSizeType.value == AutoSizeType.autoFontSize
-                ? AutoSizeText(text, textAlign: model.align.value, style: style)
+                ? CretaAutoSizeText(
+                    text,
+                    mid: model.mid,
+                    textAlign: model.align.value,
+                    style: style,
+                  )
                 : Text(text, textAlign: model.align.value, style: style),
             color: model.outLineColor.value == Colors.transparent
                 ? Colors.red
@@ -396,8 +413,9 @@ mixin CretaTextMixin {
         }
       default:
         return model.autoSizeType.value == AutoSizeType.autoFontSize
-            ? AutoSizeText(
+            ? CretaAutoSizeText(
                 text,
+                mid: model.mid,
                 textAlign: model.align.value,
                 style: style,
               )
