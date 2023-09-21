@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:weather_icons/weather_icons.dart';
 
-class CretaTimelineSample6 extends StatelessWidget {
-  const CretaTimelineSample6({super.key});
+class WeatherTimeline extends StatelessWidget {
+  const WeatherTimeline({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -239,7 +239,33 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     }
     if (model.isTimelineType()) {
       // return timelineFrame(model);
-      return Image.asset('assets/timeline_samples/timeline_thumbnail.jpeg');
+      if (model.frameType == FrameType.showcaseTimeline) {
+        return Image.asset('assets/timeline_samples/showcase_timeline.png');
+      }
+      if (model.frameType == FrameType.footballTimeline) {
+        return Image.asset('assets/timeline_samples/football_timeline.png');
+      }
+      if (model.frameType == FrameType.activityTimeline) {
+        return Image.asset('assets/timeline_samples/activity_timeline.png');
+      }
+      if (model.frameType == FrameType.successTimeline) {
+        return Image.asset('assets/timeline_samples/success_timeline.png');
+      }
+      if (model.frameType == FrameType.deliveryTimeline) {
+        return Image.asset('assets/timeline_samples/delivery_timeline.png');
+      }
+      if (model.frameType == FrameType.weatherTimeline) {
+        return Image.asset('assets/timeline_samples/weather_timeline.png');
+      }
+      if (model.frameType == FrameType.monthHorizTimeline) {
+        return Image.asset('assets/timeline_samples/monthHoriz_timeline.png');
+      }
+      if (model.frameType == FrameType.appHorizTimeline) {
+        return Image.asset('assets/timeline_samples/appHoriz_timeline.png');
+      }
+      if (model.frameType == FrameType.deliveryHorizTimeline) {
+        return Image.asset('assets/timeline_samples/deliveryHoriz_timeline.png');
+      }
     }
     if (model.isCameraType()) {
       return CameraFrame(model: model);

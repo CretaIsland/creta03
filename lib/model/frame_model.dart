@@ -77,13 +77,15 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   }
 
   bool isTimelineType() {
-    if (frameType == FrameType.timeline1) return true;
-    if (frameType == FrameType.timeline2) return true;
-    if (frameType == FrameType.timeline3) return true;
-    if (frameType == FrameType.timeline4) return true;
-    if (frameType == FrameType.timeline5) return true;
-    if (frameType == FrameType.timeline6) return true;
-    if (frameType == FrameType.timeline7) return true;
+    if (frameType == FrameType.showcaseTimeline) return true;
+    if (frameType == FrameType.footballTimeline) return true;
+    if (frameType == FrameType.activityTimeline) return true;
+    if (frameType == FrameType.successTimeline) return true;
+    if (frameType == FrameType.deliveryTimeline) return true;
+    if (frameType == FrameType.weatherTimeline) return true;
+    if (frameType == FrameType.monthHorizTimeline) return true;
+    if (frameType == FrameType.appHorizTimeline) return true;
+    if (frameType == FrameType.deliveryHorizTimeline) return true;
 
     return false;
   }

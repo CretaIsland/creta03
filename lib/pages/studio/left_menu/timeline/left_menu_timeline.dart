@@ -2,9 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
-
 import '../../../../data_io/frame_manager.dart';
-import '../../../../design_system/creta_color.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
@@ -38,163 +36,160 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 12.0, left: 24.0),
-          child: Text(widget.title, style: widget.dataStyle),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 12.0, left: 24.0),
-          child: Wrap(
-            spacing: 12.0,
-            runSpacing: 6.0,
-            children: [
-              LeftMenuEleButton(
-                onPressed: () async {
-                  await _createTimeline(frameType: FrameType.timeline1);
-                  BookMainPage.pageManagerHolder!.notify();
-                },
-                width: 70.0,
-                height: 70.0,
-                hasBorder: false,
-                child: Container(
-                  width: 60.0,
-                  height: 60.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(border: Border.all(color: CretaColor.primary)),
-                  child: Center(
-                      child: Text(
-                    'Sample 1',
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ),
-              LeftMenuEleButton(
-                onPressed: () async {
-                  await _createTimeline(frameType: FrameType.timeline2);
-                  BookMainPage.pageManagerHolder!.notify();
-                },
-                width: 70.0,
-                height: 70.0,
-                hasBorder: false,
-                child: Container(
-                  width: 60.0,
-                  height: 60.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(border: Border.all(color: CretaColor.primary)),
-                  child: Center(
-                      child: Text(
-                    'Sample 2',
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ),
-              LeftMenuEleButton(
-                onPressed: () async {
-                  await _createTimeline(frameType: FrameType.timeline3);
-                  BookMainPage.pageManagerHolder!.notify();
-                },
-                width: 70.0,
-                height: 70.0,
-                hasBorder: false,
-                child: Container(
-                  width: 60.0,
-                  height: 60.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(border: Border.all(color: CretaColor.primary)),
-                  child: Center(
-                      child: Text(
-                    'Sample 3',
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ),
-              LeftMenuEleButton(
-                onPressed: () async {
-                  await _createTimeline(frameType: FrameType.timeline4);
-                  BookMainPage.pageManagerHolder!.notify();
-                },
-                width: 70.0,
-                height: 70.0,
-                hasBorder: false,
-                child: Container(
-                  width: 60.0,
-                  height: 60.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(border: Border.all(color: CretaColor.primary)),
-                  child: Center(
-                      child: Text(
-                    'Sample 4',
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ),
-              LeftMenuEleButton(
-                onPressed: () async {
-                  await _createTimeline(frameType: FrameType.timeline5);
-                  BookMainPage.pageManagerHolder!.notify();
-                },
-                width: 70.0,
-                height: 70.0,
-                hasBorder: false,
-                child: Container(
-                  width: 60.0,
-                  height: 60.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(border: Border.all(color: CretaColor.primary)),
-                  child: Center(
-                      child: Text(
-                    'Sample 5',
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ),
-              LeftMenuEleButton(
-                onPressed: () async {
-                  await _createTimeline(frameType: FrameType.timeline6);
-                  BookMainPage.pageManagerHolder!.notify();
-                },
-                width: 70.0,
-                height: 70.0,
-                hasBorder: false,
-                child: Container(
-                  width: 60.0,
-                  height: 60.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(border: Border.all(color: CretaColor.primary)),
-                  child: Center(
-                      child: Text(
-                    'Sample 6',
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ),
-              LeftMenuEleButton(
-                onPressed: () async {
-                  await _createTimeline(frameType: FrameType.timeline7);
-                  BookMainPage.pageManagerHolder!.notify();
-                },
-                width: 70.0,
-                height: 70.0,
-                hasBorder: false,
-                child: Container(
-                  width: 60.0,
-                  height: 60.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(border: Border.all(color: CretaColor.primary)),
-                  child: Center(
-                      child: Text(
-                    'Sample 7',
-                    textAlign: TextAlign.center,
-                  )),
-                ),
-              ),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0, left: 24.0),
+            child: Text(widget.title, style: widget.dataStyle),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0, left: 12.0, right: 8.0),
+            child: Wrap(
+              spacing: 6.0,
+              runSpacing: 8.0,
+              children: [
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.showcaseTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 102.0,
+                  height: 124.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 120.0,
+                    height: 320.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/showcase_timeline.png'),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.footballTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 102.0,
+                  height: 124.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 120.0,
+                    height: 320.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/football_timeline.png'),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.activityTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 102.0,
+                  height: 124.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 120.0,
+                    height: 320.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/activity_timeline.png'),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.successTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 102.0,
+                  height: 124.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 120.0,
+                    height: 320.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/success_timeline.png'),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.deliveryTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 102.0,
+                  height: 124.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 120.0,
+                    height: 320.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/delivery_timeline.png'),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.weatherTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 102.0,
+                  height: 124.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 120.0,
+                    height: 320.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/weather_timeline.png'),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.monthHorizTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 480.0,
+                  height: 76.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 540.0,
+                    height: 240.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/monthHoriz_timeline.png'),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.appHorizTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 480.0,
+                  height: 96.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 540.0,
+                    height: 240.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/appHoriz_timeline.png'),
+                  ),
+                ),
+                LeftMenuEleButton(
+                  onPressed: () async {
+                    await _createTimeline(frameType: FrameType.deliveryHorizTimeline);
+                    BookMainPage.pageManagerHolder!.notify();
+                  },
+                  width: 480.0,
+                  height: 116.0,
+                  hasBorder: false,
+                  child: Container(
+                    width: 540.0,
+                    height: 240.0,
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset('assets/timeline_samples/deliveryHoriz_timeline.png'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -215,7 +210,13 @@ class _LeftMenuTimelineState extends State<LeftMenuTimeline> {
     mychangeStack.startTrans();
     await frameManager.createNextFrame(
       doNotify: false,
-      size: Size(width, height),
+      size: frameType == FrameType.monthHorizTimeline
+          ? Size(1220, 300)
+          : frameType == FrameType.appHorizTimeline
+              ? Size(1290, 340)
+              : frameType == FrameType.deliveryHorizTimeline
+                  ? Size(1644, 400)
+                  : Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
       type: frameType,

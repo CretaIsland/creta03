@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-class CretaTimelineSample2 extends StatefulWidget {
-  const CretaTimelineSample2({super.key});
+class FootballTimeline extends StatefulWidget {
+  const FootballTimeline({super.key});
 
   @override
-  State<CretaTimelineSample2> createState() => _CretaTimelineSample2State();
+  State<FootballTimeline> createState() => _CretaTimelineSample2State();
 }
 
-class _CretaTimelineSample2State extends State<CretaTimelineSample2> {
+class _CretaTimelineSample2State extends State<FootballTimeline> {
   List<FootballData>? _firstHalf;
   List<FootballData>? _secondHalf;
 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-class CretaTimelineSample5 extends StatelessWidget {
-  const CretaTimelineSample5({super.key});
+class DeliveryTimeline extends StatelessWidget {
+  const DeliveryTimeline({super.key});
 
   @override
   Widget build(BuildContext context) {

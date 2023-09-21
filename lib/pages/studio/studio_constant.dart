@@ -172,6 +172,19 @@ class StudioConst {
     Size(260, 100),
   ];
 
+  static List<double> widgetBtnWidth = [
+    55,
+    55,
+    55,
+    55,
+    55,
+    66,
+    77,
+    55,
+    66,
+    66,
+  ];
+
   static List<ContentsType> depotsType = [
     ContentsType.none,
     ContentsType.image,

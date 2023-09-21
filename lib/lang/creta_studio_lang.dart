@@ -500,6 +500,19 @@ class CretaStudioLang {
     "세피아",
   ];
 
+  static const List<String> timelineShowcase = [
+    "The simplest tile",
+    "A centered tile with children",
+    "Manual aligning the indicator",
+    "Is it the first or the last?",
+    "Start to make a timeline!",
+    "Customize the indicator as you wish.",
+    "Give an Icon to the indicator.",
+    "Or provide your own custom indicator.",
+    "Customize the tile's line.",
+    "Connect tiles with TimelineDivider.",
+  ];
+
   static String toFrameMenu = '프레임 메뉴로 전환';
   static String toContentsMenu = '콘텐츠 메뉴로 전환';
 
@@ -579,6 +592,7 @@ class CretaStudioLang {
   static String camera = '카메라';
   static String map = '맵';
   static String date = '날짜';
+  static String timeline = '타임라인';
 
   static var onlineWeather = '날씨 온라인 연결';
   static String offLineWeather = "날씨 수동으로 선택";

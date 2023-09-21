@@ -54,7 +54,6 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     super.initState();
     initMixin();
     _selectedType = _getCurrentTypes();
-
     _itemWidth = 160;
     _itemHeight = _itemWidth * (1080 / 1920);
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
@@ -161,6 +160,13 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
                 dataStyle: dataStyle,
               ),
               Container(),
+              LeftMenuTimeline(
+                title: CretaStudioLang.timeline,
+                width: _itemWidth,
+                height: _itemHeight,
+                titleStyle: titleStyle,
+                dataStyle: dataStyle,
+              ),
               Container(),
               LeftMenuCamera(
                 title: CretaStudioLang.camera,
@@ -220,7 +226,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     if (_selectedType == type[6]) {
       return LeftMenuTimeline(
-        title: CretaStudioLang.clockandWatch,
+        title: CretaStudioLang.timeline,
         width: _itemWidth,
         height: _itemHeight,
         titleStyle: titleStyle,

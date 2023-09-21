@@ -323,25 +323,32 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.countDownTimer) {
       return false;
     }
-    if (model.frameType == FrameType.timeline1) {
+    if (model.frameType == FrameType.showcaseTimeline) {
       return false;
     }
-    if (model.frameType == FrameType.timeline2) {
+    if (model.frameType == FrameType.footballTimeline) {
       return false;
     }
-    if (model.frameType == FrameType.timeline3) {
+    if (model.frameType == FrameType.activityTimeline) {
       return false;
     }
-    if (model.frameType == FrameType.timeline4) {
+    if (model.frameType == FrameType.successTimeline) {
       return false;
     }
-    if (model.frameType == FrameType.timeline5) {
+    if (model.frameType == FrameType.deliveryTimeline) {
       return false;
     }
-    if (model.frameType == FrameType.timeline6) {
+    if (model.frameType == FrameType.weatherTimeline) {
       return false;
     }
-    if (model.frameType == FrameType.timeline7) {
+
+    if (model.frameType == FrameType.monthHorizTimeline) {
+      return false;
+    }
+    if (model.frameType == FrameType.appHorizTimeline) {
+      return false;
+    }
+    if (model.frameType == FrameType.deliveryHorizTimeline) {
       return false;
     }
     if (model.frameType == FrameType.camera) {

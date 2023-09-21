@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
-class CretaTimelineSample3 extends StatefulWidget {
-  const CretaTimelineSample3({super.key});
+class ActivityTimeline extends StatefulWidget {
+  const ActivityTimeline({super.key});
 
   @override
-  State<CretaTimelineSample3> createState() => __CretaTimelineSample3();
+  State<ActivityTimeline> createState() => __CretaTimelineSample3();
 }
 
-class __CretaTimelineSample3 extends State<CretaTimelineSample3> {
+class __CretaTimelineSample3 extends State<ActivityTimeline> {
   List<Step>? _steps;
 
   @override
