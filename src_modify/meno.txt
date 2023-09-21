@@ -29,4 +29,15 @@ FrameMain.onTap   <-- 함수에서 모든일이 일언다.
 
 따라서, InkWell 루트는 GuesterDetector 루트와 쫑이 나고 있다.
 
-
+3. page 쪽은 다음과 같다.
+ℹ️   INFO: Gest3 : onLongPressDown in PageMain false
+ℹ️   INFO: page clicked
+   FINEST: unselected,
+   prev=frame=d0175472-7964-4fb5-ae0e-afde91964c4d
+ℹ️   INFO: BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
+   FINE: _eachTitle ContaineeEnum.Page
+   FINEST: _showTitletext 이름없는 페이지 2
+   FINER: _PagePropertyState.initState
+   FINEST: pageTransition=0
+ℹ️   INFO: ...hashTagList=[]
+ℹ️   INFO: Consumer<MiniMenuNotifier>

@@ -81,7 +81,7 @@ dependencies:
   # youtube_player_iframe: ^3.1.0
   youtube_player_iframe: ^4.0.4
   animated_text_kit: ^4.2.2
-  auto_size_text: ^3.0.0
+  #auto_size_text: ^3.0.0
   scroll_loop_auto_scroll: ^0.0.5
   widget_and_text_animator: ^1.0.9
   text_to_speech: ^0.2.3

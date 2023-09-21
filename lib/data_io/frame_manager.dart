@@ -16,6 +16,7 @@ import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_preview_menu.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
+import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
@@ -537,7 +538,7 @@ class FrameManager extends CretaManager {
       }
       accNodes.add(Node<CretaModel>(
         key: '${page.mid}/${model.mid}',
-        keyType: ContaineeEnum.Frame,      
+        keyType: ContaineeEnum.Frame,
         label: model.name.value,
         data: model,
         expanded: model.expanded || isSelected(model.mid),
@@ -546,5 +547,15 @@ class FrameManager extends CretaManager {
       ));
     }
     return accNodes;
+  }
+
+  bool clickedInsideSelectedFrame(Offset position) {
+    if (DraggableStickers.frameSelectNotifier == null) return false;
+    GlobalKey? key = frameKeyMap[DraggableStickers.frameSelectNotifier!.selectedAssetId];
+    if (key == null) {
+      //print(' key is null , ${DraggableStickers.frameSelectNotifier!.selectedAssetId}');
+      return false;
+    }
+    return CretaUtils.isMousePointerOnWidget(key, position);
   }
 }

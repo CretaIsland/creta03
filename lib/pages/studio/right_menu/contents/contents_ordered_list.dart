@@ -770,7 +770,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           },
         ),
         _textAlign(model),
-        _fontDecoBar(model),
+        //_fontDecoBar(model),
         propertyDivider(height: 28),
         CretaCheckbox(
           // 창 크기에 맞춤
@@ -781,7 +781,10 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           },
           onSelected: (title, value, nvMap) {
             //print('onSelected !!!!!!!');
+            //mychangeStack.startTrans();
             model.autoSizeType.set(AutoSizeType.fromString(title));
+            //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
+            //mychangeStack.endTrans();
             _sendEvent!.sendEvent(model);
             //widget.contentsManager.notify();
             //widget.frameManager?.notify();
@@ -1020,7 +1023,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
   Widget _textAlign(ContentsModel model) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 12.0),
       child: Row(
         children: [
           Row(
@@ -1059,20 +1062,20 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     });
                     widget.contentsManager.notify();
                   }),
-              BTN.fill_gray_i_m(
-                  icon: Icons.format_align_justify,
-                  buttonColor: model.align.value == TextAlign.justify
-                      ? CretaButtonColor.primary
-                      : CretaButtonColor.white,
-                  onPressed: () {
-                    setState(() {
-                      model.align.set(TextAlign.justify);
-                    });
-                    widget.contentsManager.notify();
-                  }),
+              // BTN.fill_gray_i_m(
+              //     icon: Icons.format_align_justify,
+              //     buttonColor: model.align.value == TextAlign.justify
+              //         ? CretaButtonColor.primary
+              //         : CretaButtonColor.white,
+              //     onPressed: () {
+              //       setState(() {
+              //         model.align.set(TextAlign.justify);
+              //       });
+              //       widget.contentsManager.notify();
+              //     }),
             ],
           ),
-          const SizedBox(width: 20),
+          const SizedBox(width: 6),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -1112,6 +1115,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                   }),
             ],
           ),
+          _fontDecoBar(model),
         ],
       ),
     );
@@ -1119,7 +1123,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
   Widget _fontDecoBar(ContentsModel model) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(left: 6.0),
       child: CretaFontDecoBar(
         bold: model.isBold.value,
         italic: model.isItalic.value,

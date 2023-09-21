@@ -520,4 +520,9 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         BookMainPage.pageOffset.dy -
         (LayoutConst.stikerOffset / 2);
   }
+
+  Size getRealSize() {
+    return Size(
+        width.value * StudioVariables.applyScale, height.value * StudioVariables.applyScale);
+  }
 }

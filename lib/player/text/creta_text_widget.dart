@@ -88,6 +88,8 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> with CretaTextMi
           }
           logger.fine('Text StreamBuilder<AbsExModel>');
 
+          // print(
+          //     'playText invoked   -----${player.acc.frameModel.height.value}---------------------');
           return playText(context, player, player.model!, player.acc.getRealSize());
 
           // if (StudioVariables.isAutoPlay) {

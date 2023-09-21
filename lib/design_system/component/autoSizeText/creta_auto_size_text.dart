@@ -1,4 +1,6 @@
-part of auto_size_text;
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 
 /// Flutter widget that automatically resizes text to fit perfectly within its
 /// bounds.
@@ -6,14 +8,16 @@ part of auto_size_text;
 /// All size constraints as well as maxLines are taken into account. If the text
 /// overflows anyway, you should check if the parent widget actually constraints
 /// the size of this widget.
-class AutoSizeText extends StatefulWidget {
-  /// Creates a [AutoSizeText] widget.
+class CretaAutoSizeText extends StatefulWidget {
+  /// Creates a [CretaAutoSizeText] widget.
   ///
   /// If the [style] argument is null, the text will use the style from the
   /// closest enclosing [DefaultTextStyle].
-  const AutoSizeText(
+  const CretaAutoSizeText(
     String this.data, {
     Key? key,
+    required this.mid, //skpark
+    required this.fontSizeChanged, //skpark
     this.textKey,
     this.style,
     this.strutStyle,
@@ -35,9 +39,11 @@ class AutoSizeText extends StatefulWidget {
   })  : textSpan = null,
         super(key: key);
 
-  /// Creates a [AutoSizeText] widget with a [TextSpan].
-  const AutoSizeText.rich(
+  /// Creates a [CretaAutoSizeText] widget with a [TextSpan].
+  const CretaAutoSizeText.rich(
     TextSpan this.textSpan, {
+    required this.mid, //skpark
+    required this.fontSizeChanged, //skpark
     Key? key,
     this.textKey,
     this.style,
@@ -62,8 +68,11 @@ class AutoSizeText extends StatefulWidget {
 
   /// Sets the key for the resulting [Text] widget.
   ///
-  /// This allows you to find the actual `Text` widget built by `AutoSizeText`.
+  /// This allows you to find the actual `Text` widget built by `CretaAutoSizeText`.
   final Key? textKey;
+
+  final String mid; //skpark
+  final void Function(double) fontSizeChanged; //skpark
 
   /// The text to display.
   ///
@@ -123,11 +132,11 @@ class AutoSizeText extends StatefulWidget {
   /// **Important:** PresetFontSizes have to be in descending order.
   final List<double>? presetFontSizes;
 
-  /// Synchronizes the size of multiple [AutoSizeText]s.
+  /// Synchronizes the size of multiple [CretaAutoSizeText]s.
   ///
-  /// If you want multiple [AutoSizeText]s to have the same text size, give all
+  /// If you want multiple [CretaAutoSizeText]s to have the same text size, give all
   /// of them the same [AutoSizeGroup] instance. All of them will have the
-  /// size of the smallest [AutoSizeText]
+  /// size of the smallest [CretaAutoSizeText]
   final AutoSizeGroup? group;
 
   /// How the text should be aligned horizontally.
@@ -211,15 +220,16 @@ class AutoSizeText extends StatefulWidget {
   /// text value:
   ///
   /// ```dart
-  /// AutoSizeText(r'$$', semanticsLabel: 'Double dollars')
+  /// CretaAutoSizeText(r'$$', semanticsLabel: 'Double dollars')
   /// ```
   final String? semanticsLabel;
 
   @override
-  _AutoSizeTextState createState() => _AutoSizeTextState();
+  CretaAutoSizeTextState createState() => CretaAutoSizeTextState();
 }
 
-class _AutoSizeTextState extends State<AutoSizeText> {
+class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
+  bool _isCallbackPending = false;
   @override
   void initState() {
     super.initState();
@@ -227,8 +237,19 @@ class _AutoSizeTextState extends State<AutoSizeText> {
     widget.group?._register(this);
   }
 
+  //skpark
+  Future<void> afterBuildComplete() async {
+    if (!_isCallbackPending) {
+      _isCallbackPending = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _isCallbackPending = false;
+        //print('000000000000000000000000');
+      });
+    }
+  }
+
   @override
-  void didUpdateWidget(AutoSizeText oldWidget) {
+  void didUpdateWidget(CretaAutoSizeText oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.group != widget.group) {
@@ -239,6 +260,7 @@ class _AutoSizeTextState extends State<AutoSizeText> {
 
   @override
   Widget build(BuildContext context) {
+    afterBuildComplete(); //skpark
     return LayoutBuilder(builder: (context, size) {
       final defaultTextStyle = DefaultTextStyle.of(context);
 
@@ -247,7 +269,7 @@ class _AutoSizeTextState extends State<AutoSizeText> {
         style = defaultTextStyle.style.merge(widget.style);
       }
       if (style!.fontSize == null) {
-        style = style.copyWith(fontSize: AutoSizeText._defaultFontSize);
+        style = style.copyWith(fontSize: CretaAutoSizeText._defaultFontSize);
       }
 
       final maxLines = widget.maxLines ?? defaultTextStyle.maxLines;
@@ -404,6 +426,9 @@ class _AutoSizeTextState extends State<AutoSizeText> {
   }
 
   Widget _buildText(double fontSize, TextStyle style, int? maxLines) {
+    AutoSizeGroup.autoSizeMap[widget.mid] = fontSize; //skpark
+    widget.fontSizeChanged(fontSize); //skpark
+    //print('fontSize = $fontSize');
     if (widget.data != null) {
       return Text(
         widget.data!,
@@ -447,5 +472,61 @@ class _AutoSizeTextState extends State<AutoSizeText> {
       widget.group!._remove(this);
     }
     super.dispose();
+  }
+}
+
+/// Controller to synchronize the fontSize of multiple CretaAutoSizeTexts.
+class AutoSizeGroup {
+  static Map<String, double> autoSizeMap = {}; //skpark
+  static void clearMap() {
+    autoSizeMap.clear();
+  }
+
+  final _listeners = <CretaAutoSizeTextState, double>{};
+  var _widgetsNotified = false;
+  var _fontSize = double.infinity;
+
+  void _register(CretaAutoSizeTextState text) {
+    _listeners[text] = double.infinity;
+  }
+
+  void _updateFontSize(CretaAutoSizeTextState text, double maxFontSize) {
+    final oldFontSize = _fontSize;
+    if (maxFontSize <= _fontSize) {
+      _fontSize = maxFontSize;
+      _listeners[text] = maxFontSize;
+    } else if (_listeners[text] == _fontSize) {
+      _listeners[text] = maxFontSize;
+      _fontSize = double.infinity;
+      for (final size in _listeners.values) {
+        if (size < _fontSize) _fontSize = size;
+      }
+    } else {
+      _listeners[text] = maxFontSize;
+    }
+
+    if (oldFontSize != _fontSize) {
+      _widgetsNotified = false;
+      scheduleMicrotask(_notifyListeners);
+    }
+  }
+
+  void _notifyListeners() {
+    if (_widgetsNotified) {
+      return;
+    } else {
+      _widgetsNotified = true;
+    }
+
+    for (final textState in _listeners.keys) {
+      if (textState.mounted) {
+        textState._notifySync();
+      }
+    }
+  }
+
+  void _remove(CretaAutoSizeTextState text) {
+    _updateFontSize(text, double.infinity);
+    _listeners.remove(text);
   }
 }

@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:neonpen/neonpen.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
@@ -12,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 import '../../common/creta_utils.dart';
+import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
 import '../../pages/studio/studio_constant.dart';
@@ -99,20 +99,27 @@ mixin CretaTextMixin {
     //   );
     // }
 
-    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+    double padding = StudioConst.defaultTextPadding * applyScale;
+    if (model.autoSizeType.value == AutoSizeType.autoFrameSize && isThumbnail == false) {
       // 자동 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize before ${realSize.height}');
       int lineCount = 0;
       double lineHeight = 1.0;
-      (lineHeight, lineCount) = CretaUtils.getLineHeightAndCount(
-          uri, model.fontSize.value, realSize.width, style, model.align.value);
-      realSize = Size(realSize.width, CretaUtils.resizeTextHeight(lineHeight, lineCount));
-      //print('AutoSizeType.autoFrameSize after  ${realSize.height}');
+      (lineHeight, lineCount) =
+          CretaUtils.getLineHeightAndCount(uri, realSize.width, style, model.align.value);
+      realSize = Size(
+          realSize.width,
+          CretaUtils.resizeTextHeight(
+            lineHeight,
+            lineCount,
+            padding,
+          ));
     }
+    //print('AutoSizeType.autoFrameSize after isThumbnail=$isThumbnail, ${realSize.height}');
 
     return Container(
       color: Colors.transparent,
-      padding: const EdgeInsets.all(StudioConst.defaultTextVerticalPadding),
+      padding: EdgeInsets.all(padding),
       alignment:
           CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
       width: realSize.width,
@@ -122,6 +129,7 @@ mixin CretaTextMixin {
               isThumbnail == false) // 에디트 모드에서는 글자를 표시하지 않는다.
           ? const SizedBox.shrink()
           : _playText(model, uri, style, fontSize, realSize, isThumbnail),
+      //child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
   }
 
@@ -162,16 +170,19 @@ mixin CretaTextMixin {
 
     // 아웃라인의 경우.
     if (model!.outLineWidth.value > 0) {
-      TextStyle outlineStyle = model.addOutLineStyle(style);
-
-      
+      TextStyle outlineStyle = model.addOutLineStyle(style, applyScale: applyScale);
 
       return Stack(
         alignment: AlignmentDirectional.center,
         children: [
           model.autoSizeType.value == AutoSizeType.autoFontSize
-              ? AutoSizeText(
+              ? CretaAutoSizeText(
                   text,
+                  mid: model.mid,
+                  fontSizeChanged: (value) {
+                    model.updateByAutoSize(value, applyScale);
+                    //BookMainPage.containeeNotifier!.notify();
+                  },
                   textAlign: model.align.value,
                   style: outlineStyle,
                 )
@@ -181,8 +192,13 @@ mixin CretaTextMixin {
                   style: outlineStyle,
                 ),
           model.autoSizeType.value == AutoSizeType.autoFontSize
-              ? AutoSizeText(
+              ? CretaAutoSizeText(
                   text,
+                  mid: model.mid,
+                  fontSizeChanged: (value) {
+                    model.updateByAutoSize(value, applyScale);
+                    //BookMainPage.containeeNotifier!.notify();
+                  },
                   textAlign: model.align.value,
                   style: style,
                   //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
@@ -199,8 +215,13 @@ mixin CretaTextMixin {
 
     // 아웃라인도 아니고, 애니매이션도 아닌 경우.
     return model.autoSizeType.value == AutoSizeType.autoFontSize
-        ? AutoSizeText(
+        ? CretaAutoSizeText(
             text,
+            mid: model.mid,
+            fontSizeChanged: (value) {
+              model.updateByAutoSize(value, applyScale);
+              //BookMainPage.containeeNotifier!.notify();
+            },
             textAlign: model.align.value,
             style: style,
             //textScaleFactor: (model.scaleFactor.value / 100)
@@ -342,8 +363,21 @@ mixin CretaTextMixin {
               baseColor: model.fontColor.value,
               highlightColor: model.outLineColor.value,
               child: model.autoSizeType.value == AutoSizeType.autoFontSize
-                  ? AutoSizeText(text, textAlign: model.align.value, style: style)
-                  : Text(text, textAlign: model.align.value, style: style));
+                  ? CretaAutoSizeText(
+                      text,
+                      mid: model.mid,
+                      fontSizeChanged: (value) {
+                        model.updateByAutoSize(value, applyScale);
+                        //BookMainPage.containeeNotifier!.notify();
+                      },
+                      textAlign: model.align.value,
+                      style: style,
+                    )
+                  : Text(
+                      text,
+                      textAlign: model.align.value,
+                      style: style,
+                    ));
         }
       case TextAniType.typewriter:
         {
@@ -379,7 +413,16 @@ mixin CretaTextMixin {
         {
           return Neonpen(
             text: model.autoSizeType.value == AutoSizeType.autoFontSize
-                ? AutoSizeText(text, textAlign: model.align.value, style: style)
+                ? CretaAutoSizeText(
+                    text,
+                    mid: model.mid,
+                    fontSizeChanged: (value) {
+                      model.updateByAutoSize(value, applyScale);
+                      //BookMainPage.containeeNotifier!.notify();
+                    },
+                    textAlign: model.align.value,
+                    style: style,
+                  )
                 : Text(text, textAlign: model.align.value, style: style),
             color: model.outLineColor.value == Colors.transparent
                 ? Colors.red
@@ -396,8 +439,13 @@ mixin CretaTextMixin {
         }
       default:
         return model.autoSizeType.value == AutoSizeType.autoFontSize
-            ? AutoSizeText(
+            ? CretaAutoSizeText(
                 text,
+                mid: model.mid,
+                fontSizeChanged: (value) {
+                  model.updateByAutoSize(value, applyScale);
+                  //BookMainPage.containeeNotifier!.notify();
+                },
                 textAlign: model.align.value,
                 style: style,
               )

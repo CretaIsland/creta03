@@ -226,7 +226,7 @@ class ContentsModel extends CretaModel {
     isUnderline = UndoAble<bool>(false, mid, 'isUnderline');
     isStrike = UndoAble<bool>(false, mid, 'isStrike');
     letterSpacing = UndoAble<double>(1.0, mid, 'letterSpacing');
-    lineHeight = UndoAble<double>(19, mid, 'lineHeight');
+    lineHeight = UndoAble<double>(10, mid, 'lineHeight');
     scaleFactor = UndoAble<double>(100, mid, 'scaleFactor');
     aniType = UndoAble<TextAniType>(TextAniType.none, mid, 'aniType');
     imageAniType = UndoAble<ImageAniType>(ImageAniType.none, mid, 'imageAniType');
@@ -463,7 +463,7 @@ class ContentsModel extends CretaModel {
     isStrike.set(map["isStrike"] ?? false, save: false, noUndo: true);
     //line.set(TextLineType.fromInt(map["line"] ?? 0), save: false, noUndo: true);
     letterSpacing.set(map["letterSpacing"] ?? 0.0, save: false, noUndo: true);
-    lineHeight.set(map["lineHeight"] ?? 19, save: false, noUndo: true);
+    lineHeight.set(map["lineHeight"] ?? 10, save: false, noUndo: true);
     scaleFactor.set(map["scaleFactor"] ?? 100, save: false, noUndo: true);
     align.set(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
     valign.set((map["valign"] ?? 0), save: false, noUndo: true);
@@ -585,6 +585,10 @@ class ContentsModel extends CretaModel {
     return (contentsType == ContentsType.text);
   }
 
+  bool isDocument() {
+    return (contentsType == ContentsType.document);
+  }
+
   bool isEffect() {
     return (contentsType == ContentsType.effect);
   }
@@ -635,5 +639,16 @@ class ContentsModel extends CretaModel {
         ..strokeWidth = outLineWidth.value * applyScale
         ..color = outLineColor.value,
     );
+  }
+
+  double updateByAutoSize(double value, double? applyScale) {
+    if (isText() == false) {
+      return fontSize.value;
+    }
+    applyScale ??= StudioVariables.applyScale;
+    double newFontSize = value / applyScale;
+    // print('updateByAutoSize $newFontSize');
+    fontSize.set(newFontSize);
+    return newFontSize;
   }
 }

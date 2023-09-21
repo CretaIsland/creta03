@@ -267,11 +267,13 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
       },
       onComplete: (mid) {
-        //print('1FrameMain onComplete----------------------------------------------');
-
         FrameModel? model = frameManager!.getModel(mid) as FrameModel?;
+        if (model == null) {
+          return;
+        }
         //FrameModel? model = frameManager!.getSelected() as FrameModel?;
-        if (model != null && model.mid == mid) {
+
+        if (model.mid == mid) {
           //print('2FrameMain onComplete----------------------------------------------');
           model.save();
           logger.info('onComplete');
@@ -280,9 +282,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           //BookMainPage.miniMenuContentsNotifier!.isShow = true;
           //BookMainPage.miniMenuContentsNotifier?.notify();
         }
-        if (model != null && model.isTextType()) {
+        if (model.isTextType()) {
           ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
-          contentsManager?.notify();
+          if (contentsManager != null) {
+            // ContentsModel? contentsModel = contentsManager.getFirstModel();
+            // if (contentsModel != null) {
+            //print('font size changed notify');
+            BookMainPage.containeeNotifier!.notify(); // for rightMenu
+            // }
+            contentsManager.notify();
+          }
         }
       },
       onScaleStart: (mid) {
@@ -387,11 +396,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
             int lineCount = 0;
             double lineHeight = 1.0;
-            (lineHeight, lineCount) = CretaUtils.getLineHeightAndCount(
-                uri, contentsModel.fontSize.value, frameWidth, style, contentsModel.align.value);
-            frameHeight = CretaUtils.resizeTextHeight(lineHeight, lineCount);
+            (lineHeight, lineCount) =
+                CretaUtils.getLineHeightAndCount(uri, frameWidth, style, contentsModel.align.value);
+            frameHeight = CretaUtils.resizeTextHeight(
+              lineHeight,
+              lineCount,
+              StudioConst.defaultTextPadding * StudioVariables.applyScale,
+            );
             //print('AutoSizeType.autoFrameSize after  $frameHeight');
-            model.height.set(frameHeight, noUndo: true);
+            model.height.set(frameHeight / StudioVariables.applyScale, noUndo: true);
+            //print('frameHeight changed ${frameHeight / StudioVariables.applyScale}-----');
           }
         }
       }

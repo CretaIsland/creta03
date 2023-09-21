@@ -13,6 +13,7 @@ import 'package:routemaster/routemaster.dart';
 import 'package:hycop/hycop.dart';
 import '../../common/creta_constant.dart';
 import '../../common/creta_utils.dart';
+import '../../data_io/frame_manager.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../pages/studio/book_main_page.dart';
@@ -121,11 +122,23 @@ class Snippet {
                   // 양쪽 메뉴 Area 의 click 을 무시해주어야 한다.
 
                   if (BookMainPage.outSideClick == false) {
+                    //print('......................');
                     BookMainPage.outSideClick = true;
                     return;
                   }
-                  //print(
-                  //    'space clicked ${details.globalPosition}-------------------------------------------');
+
+                  if (BookMainPage.pageManagerHolder != null) {
+                    FrameManager? frameManager =
+                        BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+                    if (frameManager != null) {
+                      if (frameManager.clickedInsideSelectedFrame(details.globalPosition)) {
+                        //print('click inside the selected frame, return');
+                        return;
+                      }
+                    }
+                  }
+                  // print(
+                  //     'space clicked ${details.globalPosition}-------------------------------------------');
                   DraggableStickers.frameSelectNotifier?.set("", doNotify: true);
                   BookMainPage.miniMenuNotifier?.set(false, doNoti: true);
                 }),
@@ -303,18 +316,18 @@ class Snippet {
   }
 
   // MyPage Scaffold
-  static Widget CretaScaffoldOfMyPage({required Widget title, required BuildContext context, required Widget child}) {
+  static Widget CretaScaffoldOfMyPage(
+      {required Widget title, required BuildContext context, required Widget child}) {
     return Scaffold(
       appBar: Snippet.CretaAppBarOfMyPage(context, title),
       floatingActionButton:
-        CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
+          CretaVariables.isDeveloper ? Snippet.CretaDial(context) : SizedBox.shrink(),
       body: Container(
         color: Colors.white,
         child: child,
       ),
     );
   }
-
 
   // Creta MyPage AppBar
   static PreferredSizeWidget CretaAppBarOfMyPage(BuildContext context, Widget title) {
@@ -411,7 +424,8 @@ class Snippet {
         CretaMenuItem(
           caption: CretaLang.accountMenu[2], // 로그아웃
           onPressed: () {
-            CretaAccountManager.logout().then((value) => Routemaster.of(context).push(AppRoutes.login));
+            CretaAccountManager.logout()
+                .then((value) => Routemaster.of(context).push(AppRoutes.login));
           },
         ),
         CretaMenuItem(
@@ -483,8 +497,7 @@ class Snippet {
                     icon: Icons.arrow_drop_down_outlined,
                     // image: NetworkImage(
                     //     'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                    image: NetworkImage(
-                        CretaAccountManager.getUserProperty!.profileImg),
+                    image: NetworkImage(CretaAccountManager.getUserProperty!.profileImg),
                     onPressed: () {
                       _popupAccountMenu(
                           GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context,
