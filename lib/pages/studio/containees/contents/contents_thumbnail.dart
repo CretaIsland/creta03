@@ -145,6 +145,8 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                     // );
                   } else {
                     //print('widget.applyScale: ${widget.applyScale}');
+                    // print(
+                    //     'thumbnail playText invoked   -----${widget.frameModel.height.value}--------');
                     return playText(
                       context,
                       null,

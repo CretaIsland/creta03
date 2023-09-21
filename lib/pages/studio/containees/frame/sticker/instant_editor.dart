@@ -63,7 +63,7 @@ class _InstantEditorState extends State<InstantEditor> {
     int textLineCount = 0;
     double textLineHeight = 1.0;
     (textLineHeight, textLineCount) =
-        CretaUtils.getLineHeightAndCount(text, fontSize, _realSize!.width, _style, _align);
+        CretaUtils.getLineHeightAndCount(text, _realSize!.width, _style, _align);
 
     bool retval = (_textLineCount != textLineCount);
     _textLineCount = textLineCount;
@@ -302,7 +302,7 @@ class _InstantEditorState extends State<InstantEditor> {
       ),
       // decoration: InputDecoration(
       //   border: InputBorder.none,
-      //   contentPadding: const EdgeInsets.all(StudioConst.defaultTextVerticalPadding),
+      //   contentPadding: const EdgeInsets.all(StudioConst.defaultTextPadding),
       //   isDense: true,
       //   filled: true,
       //   fillColor: Colors.transparent,
@@ -317,7 +317,7 @@ class _InstantEditorState extends State<InstantEditor> {
       //     ),
       //   ),
       // ),
-      padding: const EdgeInsets.all(StudioConst.defaultTextVerticalPadding),
+      padding: const EdgeInsets.all(StudioConst.defaultTextPadding),
       decoration: BoxDecoration(
         border: Border.all(width: 2, color: Colors.amber),
         color: Colors.transparent,
@@ -382,7 +382,11 @@ class _InstantEditorState extends State<InstantEditor> {
   }
 
   void _resize() {
-    double newHeight = CretaUtils.resizeTextHeight(_textLineHeight, _textLineCount!);
+    double newHeight = CretaUtils.resizeTextHeight(
+      _textLineHeight,
+      _textLineCount!,
+      StudioConst.defaultTextPadding * StudioVariables.applyScale,
+    );
     _realSize = Size(_realSize!.width, newHeight);
   }
 

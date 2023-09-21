@@ -17,6 +17,7 @@ class CretaAutoSizeText extends StatefulWidget {
     String this.data, {
     Key? key,
     required this.mid, //skpark
+    required this.fontSizeChanged, //skpark
     this.textKey,
     this.style,
     this.strutStyle,
@@ -41,7 +42,8 @@ class CretaAutoSizeText extends StatefulWidget {
   /// Creates a [CretaAutoSizeText] widget with a [TextSpan].
   const CretaAutoSizeText.rich(
     TextSpan this.textSpan, {
-    required this.mid,
+    required this.mid, //skpark
+    required this.fontSizeChanged, //skpark
     Key? key,
     this.textKey,
     this.style,
@@ -70,6 +72,7 @@ class CretaAutoSizeText extends StatefulWidget {
   final Key? textKey;
 
   final String mid; //skpark
+  final void Function(double) fontSizeChanged; //skpark
 
   /// The text to display.
   ///
@@ -226,11 +229,23 @@ class CretaAutoSizeText extends StatefulWidget {
 }
 
 class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
+  bool _isCallbackPending = false;
   @override
   void initState() {
     super.initState();
 
     widget.group?._register(this);
+  }
+
+  //skpark
+  Future<void> afterBuildComplete() async {
+    if (!_isCallbackPending) {
+      _isCallbackPending = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _isCallbackPending = false;
+        //print('000000000000000000000000');
+      });
+    }
   }
 
   @override
@@ -245,6 +260,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
 
   @override
   Widget build(BuildContext context) {
+    afterBuildComplete(); //skpark
     return LayoutBuilder(builder: (context, size) {
       final defaultTextStyle = DefaultTextStyle.of(context);
 
@@ -411,6 +427,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
 
   Widget _buildText(double fontSize, TextStyle style, int? maxLines) {
     AutoSizeGroup.autoSizeMap[widget.mid] = fontSize; //skpark
+    widget.fontSizeChanged(fontSize); //skpark
     //print('fontSize = $fontSize');
     if (widget.data != null) {
       return Text(
@@ -461,6 +478,9 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
 /// Controller to synchronize the fontSize of multiple CretaAutoSizeTexts.
 class AutoSizeGroup {
   static Map<String, double> autoSizeMap = {}; //skpark
+  static void clearMap() {
+    autoSizeMap.clear();
+  }
 
   final _listeners = <CretaAutoSizeTextState, double>{};
   var _widgetsNotified = false;

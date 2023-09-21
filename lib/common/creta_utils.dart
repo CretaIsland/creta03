@@ -663,9 +663,10 @@ class CretaUtils {
   }
 
   static (double, int) getLineHeightAndCount(
-      String text, double fontSize, double boxWidth, TextStyle? style, TextAlign? align,
+      String text, double boxWidth, TextStyle? style, TextAlign? align,
       {double adjust = 3.0}) {
-    //print('_getLineHeightAndCount, fontSize=$fontSize----------------------------------');
+    //print(
+    //    '_getLineHeightAndCount, style.fontSize=${style!.fontSize}------------------------------');
 
     //int offset = 0;
     List<String> lines = text.split('\n');
@@ -677,7 +678,7 @@ class CretaUtils {
       //TextRange range =
       // 글자수를 구할 수 있다.
       //int charCount = textPainter.getLineBoundary(TextPosition(offset: text.length)).end;
-      final double lineWidth = textPainter.width + (fontSize / adjust);
+      final double lineWidth = textPainter.width + (style!.fontSize! / adjust);
       int count = (lineWidth / boxWidth).ceil();
       //print('frameWidth=${_realSize!.width.round()}, lineWidth=${lineWidth.round()}, count=$count');
       eachLineCount.add(count);
@@ -714,8 +715,8 @@ class CretaUtils {
     )..layout();
   }
 
-  static double resizeTextHeight(double textLineHeight, int textLineCount,
-      {double padding = StudioConst.defaultTextVerticalPadding}) {
+  static double resizeTextHeight(double textLineHeight, int textLineCount, padding) {
+    //print('lineCount=$textLineCount, lineHeight=$textLineHeight');
     return ((textLineHeight * textLineCount.toDouble())) + (padding * 2);
   }
 }

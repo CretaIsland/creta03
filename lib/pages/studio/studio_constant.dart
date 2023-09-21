@@ -110,7 +110,7 @@ class StudioConst {
   static const double orderVar = 0.0000001;
   static const int maxFavColor = 7;
   static const double maxFontSize = 256;
-  static const double defaultTextVerticalPadding = 7.0;
+  static const double defaultTextPadding = 14.0;
 
   static List<List<Size>> signageResolution = [
     [],

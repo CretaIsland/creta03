@@ -99,20 +99,27 @@ mixin CretaTextMixin {
     //   );
     // }
 
-    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+    double padding = StudioConst.defaultTextPadding * applyScale;
+    if (model.autoSizeType.value == AutoSizeType.autoFrameSize && isThumbnail == false) {
       // 자동 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize before ${realSize.height}');
       int lineCount = 0;
       double lineHeight = 1.0;
-      (lineHeight, lineCount) = CretaUtils.getLineHeightAndCount(
-          uri, model.fontSize.value, realSize.width, style, model.align.value);
-      realSize = Size(realSize.width, CretaUtils.resizeTextHeight(lineHeight, lineCount));
-      //print('AutoSizeType.autoFrameSize after  ${realSize.height}');
+      (lineHeight, lineCount) =
+          CretaUtils.getLineHeightAndCount(uri, realSize.width, style, model.align.value);
+      realSize = Size(
+          realSize.width,
+          CretaUtils.resizeTextHeight(
+            lineHeight,
+            lineCount,
+            padding,
+          ));
     }
+    //print('AutoSizeType.autoFrameSize after isThumbnail=$isThumbnail, ${realSize.height}');
 
     return Container(
       color: Colors.transparent,
-      padding: const EdgeInsets.all(StudioConst.defaultTextVerticalPadding),
+      padding: EdgeInsets.all(padding),
       alignment:
           CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
       width: realSize.width,
@@ -163,7 +170,7 @@ mixin CretaTextMixin {
 
     // 아웃라인의 경우.
     if (model!.outLineWidth.value > 0) {
-      TextStyle outlineStyle = model.addOutLineStyle(style);
+      TextStyle outlineStyle = model.addOutLineStyle(style, applyScale: applyScale);
 
       return Stack(
         alignment: AlignmentDirectional.center,
@@ -172,6 +179,10 @@ mixin CretaTextMixin {
               ? CretaAutoSizeText(
                   text,
                   mid: model.mid,
+                  fontSizeChanged: (value) {
+                    model.updateByAutoSize(value, applyScale);
+                    //BookMainPage.containeeNotifier!.notify();
+                  },
                   textAlign: model.align.value,
                   style: outlineStyle,
                 )
@@ -184,6 +195,10 @@ mixin CretaTextMixin {
               ? CretaAutoSizeText(
                   text,
                   mid: model.mid,
+                  fontSizeChanged: (value) {
+                    model.updateByAutoSize(value, applyScale);
+                    //BookMainPage.containeeNotifier!.notify();
+                  },
                   textAlign: model.align.value,
                   style: style,
                   //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
@@ -203,7 +218,10 @@ mixin CretaTextMixin {
         ? CretaAutoSizeText(
             text,
             mid: model.mid,
-
+            fontSizeChanged: (value) {
+              model.updateByAutoSize(value, applyScale);
+              //BookMainPage.containeeNotifier!.notify();
+            },
             textAlign: model.align.value,
             style: style,
             //textScaleFactor: (model.scaleFactor.value / 100)
@@ -348,6 +366,10 @@ mixin CretaTextMixin {
                   ? CretaAutoSizeText(
                       text,
                       mid: model.mid,
+                      fontSizeChanged: (value) {
+                        model.updateByAutoSize(value, applyScale);
+                        //BookMainPage.containeeNotifier!.notify();
+                      },
                       textAlign: model.align.value,
                       style: style,
                     )
@@ -394,6 +416,10 @@ mixin CretaTextMixin {
                 ? CretaAutoSizeText(
                     text,
                     mid: model.mid,
+                    fontSizeChanged: (value) {
+                      model.updateByAutoSize(value, applyScale);
+                      //BookMainPage.containeeNotifier!.notify();
+                    },
                     textAlign: model.align.value,
                     style: style,
                   )
@@ -416,6 +442,10 @@ mixin CretaTextMixin {
             ? CretaAutoSizeText(
                 text,
                 mid: model.mid,
+                fontSizeChanged: (value) {
+                  model.updateByAutoSize(value, applyScale);
+                  //BookMainPage.containeeNotifier!.notify();
+                },
                 textAlign: model.align.value,
                 style: style,
               )

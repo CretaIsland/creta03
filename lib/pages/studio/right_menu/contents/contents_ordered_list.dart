@@ -781,7 +781,10 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           },
           onSelected: (title, value, nvMap) {
             //print('onSelected !!!!!!!');
+            //mychangeStack.startTrans();
             model.autoSizeType.set(AutoSizeType.fromString(title));
+            //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
+            //mychangeStack.endTrans();
             _sendEvent!.sendEvent(model);
             //widget.contentsManager.notify();
             //widget.frameManager?.notify();
