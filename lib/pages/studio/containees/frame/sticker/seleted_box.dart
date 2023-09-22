@@ -15,6 +15,7 @@ class SelectedBox extends StatefulWidget {
   final double normalizedWidth;
   final double resizePointerOffset;
   final VoidCallback onScaleStart;
+  final bool isResizable;
   final void Function(Offset) onDragTopLeft;
   final void Function(Offset) onDragBottomRight;
   final void Function(Offset) onDragTopRight;
@@ -47,6 +48,7 @@ class SelectedBox extends StatefulWidget {
     required this.onResizeButtonTap,
     required this.onComplete,
     required this.frameModel,
+    this.isResizable = true,
   });
 
   @override
@@ -203,8 +205,11 @@ class _SelectedBoxState extends State<SelectedBox> {
         Widget mainBuild = Stack(
           children: [
             selectedBox,
-            if (widget.frameModel == null) ..._dragBoxes(heightCenter, widthCenter),
-            if (widget.frameModel != null && widget.frameModel!.isMusicType() == false)
+            if (widget.frameModel == null && widget.isResizable == true)
+              ..._dragBoxes(heightCenter, widthCenter),
+            if (widget.frameModel != null &&
+                widget.frameModel!.isMusicType() == false &&
+                widget.isResizable == true)
               ..._dragBoxes(heightCenter, widthCenter),
           ],
         );

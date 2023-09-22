@@ -28,12 +28,12 @@ import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../player/music/creta_music_mixin.dart';
-import '../../containees/frame/sticker/draggable_stickers.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
+import '../../studio_variables.dart';
 import '../property_mixin.dart';
 
 class ContentsOrderedList extends StatefulWidget {
@@ -744,6 +744,28 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
   Widget _textEditor(ContentsModel model) {
     GlobalKey<CretaTextFieldState> key = GlobalKey<CretaTextFieldState>();
+
+    Widget autoSizeTypeWidget = CretaCheckbox(
+      // 창 크기에 맞춤
+      valueMap: {
+        CretaStudioLang.autoFontSize: model.autoSizeType.value == AutoSizeType.autoFontSize,
+        CretaStudioLang.autoFrameSize: model.autoSizeType.value == AutoSizeType.autoFrameSize,
+        CretaStudioLang.noAutoSize: model.autoSizeType.value == AutoSizeType.noAutoSize,
+      },
+      onSelected: (title, value, nvMap) {
+        //print('onSelected !!!!!!!');
+        //mychangeStack.startTrans();
+        model.autoSizeType.set(AutoSizeType.fromString(title));
+        //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
+        //mychangeStack.endTrans();
+        _sendEvent!.sendEvent(model);
+        //widget.contentsManager.notify();
+        //widget.frameManager?.notify();
+        //DraggableStickers.frameSelectNotifier!.notify();
+        setState(() {});
+      },
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -772,26 +794,18 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         _textAlign(model),
         //_fontDecoBar(model),
         propertyDivider(height: 28),
-        CretaCheckbox(
-          // 창 크기에 맞춤
-          valueMap: {
-            CretaStudioLang.autoFontSize: model.autoSizeType.value == AutoSizeType.autoFontSize,
-            CretaStudioLang.autoFrameSize: model.autoSizeType.value == AutoSizeType.autoFrameSize,
-            CretaStudioLang.noAutoSize: model.autoSizeType.value == AutoSizeType.noAutoSize,
-          },
-          onSelected: (title, value, nvMap) {
-            //print('onSelected !!!!!!!');
-            //mychangeStack.startTrans();
-            model.autoSizeType.set(AutoSizeType.fromString(title));
-            //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
-            //mychangeStack.endTrans();
-            _sendEvent!.sendEvent(model);
-            //widget.contentsManager.notify();
-            //widget.frameManager?.notify();
-            DraggableStickers.frameSelectNotifier!.notify();
-            setState(() {});
-          },
-        ),
+        widget.contentsManager.frameModel.isEditMode == false
+            ? autoSizeTypeWidget
+            : Stack(
+                children: [
+                  autoSizeTypeWidget,
+                  Container(
+                    width: double.infinity,
+                    height: 90,
+                    color: Colors.white.withOpacity(0.7),
+                  ),
+                ],
+              ),
         propertyDivider(height: 28),
         CretaFontSelector(
           // 폰트, 폰트 weight
@@ -848,18 +862,22 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   }
 
   Widget _fontSize(ContentsModel model) {
+    double minFontSize = StudioConst.minFontSize / StudioVariables.applyScale;
+    double fontSize = model.fontSize.value;
+    if (fontSize < minFontSize) {
+      fontSize = minFontSize;
+    }
     return propertyLine(
       // FontSize  폰트사이즈
       name: CretaStudioLang.fontSize,
       widget: CretaExSlider(
         valueType: SliderValueType.normal,
-        value: model.fontSize.value,
+        value: fontSize,
         textType: CretaTextFieldType.number,
-        min: 6,
+        min: minFontSize,
         max: StudioConst.maxFontSize,
         onChanngeComplete: (val) {
           //setState(() {
-          model.fontSize.set(val);
           FontSizeType? fontSyzeType = FontSizeType.valToEnum[val];
           if (fontSyzeType == null ||
               fontSyzeType == FontSizeType.userDefine ||

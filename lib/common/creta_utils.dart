@@ -662,43 +662,6 @@ class CretaUtils {
     return retval.toDouble() / 1000000;
   }
 
-  static (double, int) getLineHeightAndCount(
-      String text, double boxWidth, TextStyle? style, TextAlign? align,
-      {double adjust = 3.0}) {
-    //print(
-    //    '_getLineHeightAndCount, style.fontSize=${style!.fontSize}------------------------------');
-
-    //int offset = 0;
-    List<String> lines = text.split('\n');
-    double textLineHeight = 0;
-    List<int> eachLineCount = [];
-    for (var line in lines) {
-      TextPainter textPainter = getTextPainter(line, style, align);
-
-      //TextRange range =
-      // 글자수를 구할 수 있다.
-      //int charCount = textPainter.getLineBoundary(TextPosition(offset: text.length)).end;
-      final double lineWidth = textPainter.width + (style!.fontSize! / adjust);
-      int count = (lineWidth / boxWidth).ceil();
-      //print('frameWidth=${_realSize!.width.round()}, lineWidth=${lineWidth.round()}, count=$count');
-      eachLineCount.add(count);
-      // 텍스트 하이트는 나중에, frameSize 를 늘리기 위해서 필요하다.
-      textLineHeight = textPainter.preferredLineHeight; //textPainter.height;
-
-      //Size size = textPainter.size;
-      //print('width,height = ${te ....................... xtPainter.width.round()},${textPainter.height.round()}');
-      //print('size=${size.width.round()}, ${size.height.round()}), $visualLineCount, $ddd');
-    }
-
-    int textLineCount = 0;
-    for (var ele in eachLineCount) {
-      textLineCount += ele;
-    }
-    //print('old _textLineCount=$_textLineCount,  new textLineCount=$textLineCount -------------');
-
-    return (textLineHeight, textLineCount);
-  }
-
   static TextPainter getTextPainter(String text, TextStyle? style, TextAlign? align) {
     final span = TextSpan(text: text, style: style);
     // final words = span.toPlainText().split(RegExp('\\s+'));
@@ -715,8 +678,123 @@ class CretaUtils {
     )..layout();
   }
 
-  static double resizeTextHeight(double textLineHeight, int textLineCount, padding) {
+  static (double, double, int) getLineSizeAndCount(String text, AutoSizeType autoSizeType,
+      double boxWidth, double boxHeight, TextStyle? style, TextAlign? align,
+      {double adjust = 2.0}) {
+    //print(
+    //    '_getLineHeightAndCount, style.fontSize=${style!.fontSize}------------------------------');
+
+    //int offset = 0;
+    List<String> lines = text.split('\n');
+    double textLineWidth = 0;
+    double textLineHeight = 0;
+    List<int> eachLineCount = [];
+    for (var line in lines) {
+      TextPainter textPainter = getTextPainter(line, style, align);
+
+      //TextRange range =
+      // 글자수를 구할 수 있다.
+      //int charCount = textPainter.getLineBoundary(TextPosition(offset: text.length)).end;
+      double wMargin = (style!.fontSize! / adjust);
+      // ignore: unused_local_variable
+      double hMargin = wMargin * (boxHeight / boxWidth);
+
+      final double lineWidth = textPainter.width; // + wMargin;
+      if (textLineWidth < lineWidth) {
+        textLineWidth = lineWidth;
+      }
+      int count = 1;
+      if (autoSizeType != AutoSizeType.autoFrameSize) {
+        count = (lineWidth / boxWidth).ceil();
+      }
+      eachLineCount.add(count);
+      //print('frameWidth=${_realSize!.width.round()}, lineWidth=${lineWidth.round()}, count=$count');
+      // 텍스트 하이트는 나중에, frameSize 를 늘리기 위해서 필요하다.
+      textLineHeight = textPainter.preferredLineHeight; // + hMargin; //textPainter.height;
+
+      //Size size = textPainter.size;
+      //print('width,height = ${te ....................... xtPainter.width.round()},${textPainter.height.round()}');
+      //print('size=${size.width.round()}, ${size.height.round()}), $visualLineCount, $ddd');
+    }
+
+    int textLineCount = 0;
+    for (var ele in eachLineCount) {
+      textLineCount += ele;
+    }
+    //print('old _textLineCount=$_textLineCount,  new textLineCount=$textLineCount -------------');
+
+    return (textLineWidth, textLineHeight, textLineCount);
+  }
+
+  static (double, double) resizeText(
+    double textLineWidth,
+    double textLineHeight,
+    int textLineCount,
+    double padding,
+  ) {
     //print('lineCount=$textLineCount, lineHeight=$textLineHeight');
-    return ((textLineHeight * textLineCount.toDouble())) + (padding * 2);
+    return (
+      textLineWidth + (padding * 2),
+      (textLineHeight * textLineCount.toDouble()) + (padding * 2),
+    );
+  }
+
+  static (double, double) getTextBoxSize(
+    String text,
+    AutoSizeType autoSizeType,
+    double boxWidth,
+    double boxHeight,
+    TextStyle? style,
+    TextAlign? align,
+    double padding, {
+    double adjust = 3.0,
+  }) {
+    print('style.fontSize=${style!.fontSize}-,boxWidth=$boxWidth----------------');
+
+    //int offset = 0;
+    List<String> lines = text.split('\n');
+    double textLineWidth = 0;
+    double textLineHeight = 0;
+    List<int> eachLineCount = [];
+
+    for (var line in lines) {
+      TextPainter textPainter = getTextPainter(line, style, align);
+
+      //TextRange range =
+      // 글자수를 구할 수 있다.
+      //int charCount = textPainter.getLineBoundary(TextPosition(offset: text.length)).end;
+
+      double wMargin = (style.fontSize! / adjust);
+      // ignore: unused_local_variable
+      double hMargin = wMargin * (boxHeight / boxWidth);
+      final double lineWidth = textPainter.width; // + wMargin;
+      if (textLineWidth < lineWidth) {
+        textLineWidth = lineWidth;
+      }
+      int count = 1;
+      if (autoSizeType != AutoSizeType.autoFrameSize) {
+        count = (lineWidth / boxWidth).ceil();
+      }
+      eachLineCount.add(count);
+      // 텍스트 하이트는 나중에, frameSize 를 늘리기 위해서 필요하다.
+      textLineHeight = textPainter.preferredLineHeight; // + hMargin; //textPainter.height;
+
+      //Size size = textPainter.size;
+      //print('width,height = ${te ....................... xtPainter.width.round()},${textPainter.height.round()}');
+      //print('size=${size.width.round()}, ${size.height.round()}), $visualLineCount, $ddd');
+    }
+
+    int textLineCount = 0;
+    for (var ele in eachLineCount) {
+      textLineCount += ele;
+    }
+
+    double width = textLineWidth + (padding * 2);
+    double height = (textLineHeight * textLineCount.toDouble()) + (padding * 2);
+
+    print('width=$width, height=$height, textLineCount=$textLineCount -------------');
+
+    //print('lineCount=$textLineCount, lineHeight=$textLineHeight');
+    return (width, height);
   }
 }

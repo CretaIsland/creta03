@@ -394,16 +394,17 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             (style, uri, _) =
                 CretaTextPlayer.makeStyle(null, contentsModel, StudioVariables.applyScale, false);
 
-            int lineCount = 0;
-            double lineHeight = 1.0;
-            (lineHeight, lineCount) =
-                CretaUtils.getLineHeightAndCount(uri, frameWidth, style, contentsModel.align.value);
-            frameHeight = CretaUtils.resizeTextHeight(
-              lineHeight,
-              lineCount,
+            (frameWidth, frameHeight) = CretaUtils.getTextBoxSize(
+              uri,
+              contentsModel.autoSizeType.value,
+              frameWidth,
+              frameHeight,
+              style,
+              contentsModel.align.value,
               StudioConst.defaultTextPadding * StudioVariables.applyScale,
             );
             //print('AutoSizeType.autoFrameSize after  $frameHeight');
+            model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
             model.height.set(frameHeight / StudioVariables.applyScale, noUndo: true);
             //print('frameHeight changed ${frameHeight / StudioVariables.applyScale}-----');
           }

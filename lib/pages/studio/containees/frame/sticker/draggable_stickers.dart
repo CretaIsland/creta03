@@ -151,38 +151,48 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   Widget _drawEachStiker(Sticker sticker) {
     //if (sticker.isEditMode && _isEditorAlreadyExist == false) {
+    bool isResiazble = true;
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
-    if (frameModel != null && frameModel.isEditMode) {
-      //_isEditorAlreadyExist = true;
-      return Stack(
-        children: [
-          _dragableResizable(sticker, frameModel),
-          InstantEditor(
-            frameModel: frameModel,
-            frameManager: widget.frameManager,
-            onTap: widget.onTap,
-            onEditComplete: () {
-              setState(
-                () {
-                  //_isEditorAlreadyExist = false;
-                  frameModel.isEditMode = false;
+    if (frameModel != null && frameModel.isTextType()) {
+      ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
+      if (contentsModel != null) {
+        if (contentsModel.autoSizeType.value == AutoSizeType.autoFrameSize) {
+          isResiazble = false;
+        }
+        if (frameModel.isEditMode && contentsModel.isText()) {
+          //_isEditorAlreadyExist = true;
+          return Stack(
+            children: [
+              _dragableResizable(sticker, frameModel, isResiazble),
+              InstantEditor(
+                frameModel: frameModel,
+                frameManager: widget.frameManager,
+                onTap: widget.onTap,
+                onEditComplete: () {
+                  setState(
+                    () {
+                      //_isEditorAlreadyExist = false;
+                      frameModel.isEditMode = false;
+                    },
+                  );
+                  widget.frameManager?.notify();
                 },
-              );
-              widget.frameManager?.notify();
-            },
-          ),
-        ],
-      );
+              ),
+            ],
+          );
+        }
+      }
     }
-    return _dragableResizable(sticker, frameModel!);
+    return _dragableResizable(sticker, frameModel!, isResiazble);
   }
 
-  Widget _dragableResizable(Sticker sticker, FrameModel frameModel) {
+  Widget _dragableResizable(Sticker sticker, FrameModel frameModel, bool isResiazble) {
     double posX = frameModel.getRealPosX();
     double posY = frameModel.getRealPosY();
 
     return DraggableResizable(
       key: GlobalKey(),
+      isResiazble: isResiazble,
       mid: sticker.id,
       angle: sticker.angle,
       //position: sticker.position + BookMainPage.pageOffset,

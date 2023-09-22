@@ -423,7 +423,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   double getRealradiusRightTop(double scale) {
     double maxRadius = ((width.value < height.value) ? width.value / 2 : height.value / 2);
     double retval = radiusRightTop.value * scale;
-    if (radiusLeftTop.value > maxRadius) {
+    if (radiusRightTop.value > maxRadius) {
       retval = maxRadius * scale;
     }
     logger.fine('applied RightTop : $retval');
@@ -433,7 +433,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   double getRealradiusLeftBottom(double scale) {
     double maxRadius = ((width.value < height.value) ? width.value / 2 : height.value / 2);
     double retval = radiusLeftBottom.value * scale;
-    if (radiusLeftTop.value > maxRadius) {
+    if (radiusLeftBottom.value > maxRadius) {
       retval = maxRadius * scale;
     }
     logger.fine('applied LeftBottom : $retval');
@@ -443,7 +443,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   double getRealradiusRightBottom(double scale) {
     double maxRadius = ((width.value < height.value) ? width.value / 2 : height.value / 2);
     double retval = radiusRightBottom.value * scale;
-    if (radiusLeftTop.value > maxRadius) {
+    if (radiusRightBottom.value > maxRadius) {
       retval = maxRadius * scale;
     }
     logger.fine('applied RightBottom : $retval');

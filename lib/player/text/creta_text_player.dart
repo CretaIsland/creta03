@@ -379,14 +379,20 @@ class CretaTextPlayer extends CretaAbsPlayer {
       fontSize = StudioConst.maxFontSize * applyScale;
     }
     //fontSize = fontSize.roundToDouble();
-    if (fontSize == 0) fontSize = 1;
+    if (isThumbnail == false) {
+      double minFontSize = StudioConst.minFontSize / applyScale;
+      if (fontSize < StudioConst.minFontSize) fontSize = minFontSize;
+    }
+    if (fontSize > StudioConst.maxFontSize * applyScale) {
+      fontSize = StudioConst.maxFontSize * applyScale;
+    }
 
     FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
 
     //double lineHeight = (model.lineHeight.value / 10) * applyScale; // 행간
     // 행간은 폰트사이즈에 대한 배율이므로, applyScale 을 해서는 안된다.
     double lineHeight = (model.lineHeight.value / 10); // 행간
-       //print('isThumbnail=$isThumbnail, lineHeight=$lineHeight');
+    //print('isThumbnail=$isThumbnail, lineHeight=$lineHeight');
 
     TextStyle style = (context != null)
         ? DefaultTextStyle.of(context).style.copyWith(

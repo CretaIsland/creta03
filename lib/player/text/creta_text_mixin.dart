@@ -14,6 +14,7 @@ import '../../common/creta_utils.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
+import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_text_player.dart';
@@ -103,17 +104,19 @@ mixin CretaTextMixin {
     if (model.autoSizeType.value == AutoSizeType.autoFrameSize && isThumbnail == false) {
       // 자동 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize before ${realSize.height}');
-      int lineCount = 0;
-      double lineHeight = 1.0;
-      (lineHeight, lineCount) =
-          CretaUtils.getLineHeightAndCount(uri, realSize.width, style, model.align.value);
-      realSize = Size(
-          realSize.width,
-          CretaUtils.resizeTextHeight(
-            lineHeight,
-            lineCount,
-            padding,
-          ));
+      late double frameWidth;
+      late double frameHeight;
+      (frameWidth, frameHeight) = CretaUtils.getTextBoxSize(
+        uri,
+        model.autoSizeType.value,
+        realSize.width,
+        realSize.height,
+        style,
+        model.align.value,
+        padding,
+      );
+
+      realSize = Size(frameWidth, frameHeight);
     }
     //print('AutoSizeType.autoFrameSize after isThumbnail=$isThumbnail, ${realSize.height}');
 
@@ -150,10 +153,22 @@ mixin CretaTextMixin {
     }
 
     if (model.aniType.value != TextAniType.none && isThumbnail == false) {
-      return _animationText(model, text, shadowStyle ?? style,
-          _outLineAndShadowText(model, text, shadowStyle ?? style), realSize, fontSize);
+      return _animationText(
+        model,
+        text,
+        shadowStyle ?? style,
+        _outLineAndShadowText(
+          model,
+          text,
+          shadowStyle ?? style,
+          isThumbnail,
+        ),
+        realSize,
+        fontSize,
+        isThumbnail,
+      );
     }
-    return _outLineAndShadowText(model, text, shadowStyle ?? style);
+    return _outLineAndShadowText(model, text, shadowStyle ?? style, isThumbnail);
   }
 
   // TextStyle _getOutLineStyle(ContentsModel? model, TextStyle style) {
@@ -165,7 +180,8 @@ mixin CretaTextMixin {
   //   );
   // }
 
-  Widget _outLineAndShadowText(ContentsModel? model, String text, TextStyle style) {
+  Widget _outLineAndShadowText(
+      ContentsModel? model, String text, TextStyle style, bool isThumbnail) {
     // 새도우의 경우.
 
     // 아웃라인의 경우.
@@ -180,8 +196,10 @@ mixin CretaTextMixin {
                   text,
                   mid: model.mid,
                   fontSizeChanged: (value) {
-                    model.updateByAutoSize(value, applyScale);
-                    //BookMainPage.containeeNotifier!.notify();
+                    if (isThumbnail == false) {
+                      model.updateByAutoSize(value, applyScale);
+                      BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
+                    }
                   },
                   textAlign: model.align.value,
                   style: outlineStyle,
@@ -195,10 +213,12 @@ mixin CretaTextMixin {
               ? CretaAutoSizeText(
                   text,
                   mid: model.mid,
-                  fontSizeChanged: (value) {
-                    model.updateByAutoSize(value, applyScale);
-                    //BookMainPage.containeeNotifier!.notify();
-                  },
+                  // fontSizeChanged: (value) {
+                  //   if (isThumbnail == false) {
+                  //     model.updateByAutoSize(value, applyScale);
+                  //     BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
+                  //   }
+                  // },
                   textAlign: model.align.value,
                   style: style,
                   //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
@@ -219,8 +239,10 @@ mixin CretaTextMixin {
             text,
             mid: model.mid,
             fontSizeChanged: (value) {
-              model.updateByAutoSize(value, applyScale);
-              //BookMainPage.containeeNotifier!.notify();
+              if (isThumbnail == false) {
+                model.updateByAutoSize(value, applyScale);
+                BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
+              }
             },
             textAlign: model.align.value,
             style: style,
@@ -234,8 +256,15 @@ mixin CretaTextMixin {
           );
   }
 
-  Widget _animationText(ContentsModel? model, String text, TextStyle style, Widget? textWidget,
-      Size realSize, double fontSize) {
+  Widget _animationText(
+    ContentsModel? model,
+    String text,
+    TextStyle style,
+    Widget? textWidget,
+    Size realSize,
+    double fontSize,
+    bool isThumbnail,
+  ) {
     int textSize = CretaUtils.getStringSize(text);
     // duration 이 50 이면 실제로는 5초 정도에  문자열을 다 흘려보내다.
     // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
@@ -263,7 +292,12 @@ mixin CretaTextMixin {
           return ScrollLoopAutoScroll(
               key: ValueKey(key),
               // ignore: sort_child_properties_last
-              child: _outLineAndShadowText(model, text.replaceAll('\n', ' '), style),
+              child: _outLineAndShadowText(
+                model,
+                text.replaceAll('\n', ' '),
+                style,
+                isThumbnail,
+              ),
               scrollDirection: Axis.horizontal,
               delay: const Duration(seconds: 1),
               duration: Duration(seconds: duration),
@@ -279,7 +313,12 @@ mixin CretaTextMixin {
           return ScrollLoopAutoScroll(
               key: ValueKey(key),
               // ignore: sort_child_properties_last
-              child: _outLineAndShadowText(model, text, style),
+              child: _outLineAndShadowText(
+                model,
+                text,
+                style,
+                isThumbnail,
+              ),
               scrollDirection: Axis.vertical, //required
               delay: const Duration(seconds: 1),
               duration: Duration(seconds: duration),
@@ -367,8 +406,10 @@ mixin CretaTextMixin {
                       text,
                       mid: model.mid,
                       fontSizeChanged: (value) {
-                        model.updateByAutoSize(value, applyScale);
-                        //BookMainPage.containeeNotifier!.notify();
+                        if (isThumbnail == false) {
+                          model.updateByAutoSize(value, applyScale);
+                          BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
+                        }
                       },
                       textAlign: model.align.value,
                       style: style,
@@ -417,8 +458,10 @@ mixin CretaTextMixin {
                     text,
                     mid: model.mid,
                     fontSizeChanged: (value) {
-                      model.updateByAutoSize(value, applyScale);
-                      //BookMainPage.containeeNotifier!.notify();
+                      if (isThumbnail == false) {
+                        model.updateByAutoSize(value, applyScale);
+                        BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
+                      }
                     },
                     textAlign: model.align.value,
                     style: style,
@@ -443,8 +486,10 @@ mixin CretaTextMixin {
                 text,
                 mid: model.mid,
                 fontSizeChanged: (value) {
-                  model.updateByAutoSize(value, applyScale);
-                  //BookMainPage.containeeNotifier!.notify();
+                  if (isThumbnail == false) {
+                    model.updateByAutoSize(value, applyScale);
+                    BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
+                  }
                 },
                 textAlign: model.align.value,
                 style: style,
@@ -473,7 +518,11 @@ mixin CretaTextMixin {
     // 이상적인 사이즈가 현재 사이즈보다 크다면, 폰트가 줄어들어야 하고,
     // 현재 사이즈보다 작다면,  폰트가 커져야 한다.
     double fontRatio = sqrt(realSize.width * realSize.height) / sqrt(idealWidth * idealHeight);
-    return fontSize * fontRatio;
+
+    fontSize *= fontRatio;
+    double minFontSize = StudioConst.minFontSize / applyScale;
+    if (fontSize < minFontSize) fontSize = minFontSize;
+    return fontSize;
     //logHolder.log("font = ${model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
     //    level: 6);
   }

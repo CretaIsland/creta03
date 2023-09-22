@@ -495,20 +495,23 @@ class CretaPlayTimer extends ChangeNotifier {
         }
 
         // Studio 에서 선택된 프레임의 경우, 플레이가 정지한다.
-        if (DraggableStickers.frameSelectNotifier != null && _currentModel != null) {
-          if (DraggableStickers.frameSelectNotifier!.selectedAssetId ==
-                  _currentModel!.parentMid.value &&
-              _currentModel!.isRemoved.value == false) {
-            if (_currentModel!.isVideo() || _isPauseTimer == false) {}
-            // _isPausedBySelection = true;
-            // togglePause();
-            return;
+
+        if (StudioVariables.isPreview == false) {
+          if (DraggableStickers.frameSelectNotifier != null && _currentModel != null) {
+            if (DraggableStickers.frameSelectNotifier!.selectedAssetId ==
+                    _currentModel!.parentMid.value &&
+                _currentModel!.isRemoved.value == false) {
+              if (_currentModel!.isVideo() || _isPauseTimer == false) {}
+              // _isPausedBySelection = true;
+              // togglePause();
+              return;
+            }
+            // if (_isPauseTimer == true && _isPausedBySelection == true) {
+            //   _isPausedBySelection = false;
+            //   togglePause();
+            //   return;
+            // }
           }
-          // if (_isPauseTimer == true && _isPausedBySelection == true) {
-          //   _isPausedBySelection = false;
-          //   togglePause();
-          //   return;
-          // }
         }
 
         if (_currentModel != null && _currentModel!.isImage() || _currentModel!.isText()) {

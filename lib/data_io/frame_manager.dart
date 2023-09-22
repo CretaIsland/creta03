@@ -558,4 +558,16 @@ class FrameManager extends CretaManager {
     }
     return CretaUtils.isMousePointerOnWidget(key, position);
   }
+
+  ContentsModel? getFirstContents(String frameMid) {
+    FrameModel? frameModel = getModel(frameMid) as FrameModel?;
+    if (frameModel == null) {
+      return null;
+    }
+    ContentsManager? contentsManager = getContentsManager(frameMid);
+    if (contentsManager == null) {
+      return null;
+    }
+    return contentsManager.getFirstModel();
+  }
 }

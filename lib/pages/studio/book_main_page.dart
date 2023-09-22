@@ -1050,7 +1050,7 @@ class _BookMainPageState extends State<BookMainPage> {
               LinkParams.isLinkNewMode = false;
               //StudioVariables.isLinkEditMode = false;
               //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
-              StudioVariables.globalToggleAutoPlay(forceValue: false, save: false);
+              StudioVariables.globalToggleAutoPlay(forceValue: true, save: true);
               if (kReleaseMode) {
                 // String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
                 // AppRoutes.launchTab(url);

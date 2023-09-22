@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../../pages/studio/studio_constant.dart';
+
 /// Flutter widget that automatically resizes text to fit perfectly within its
 /// bounds.
 ///
@@ -17,7 +19,7 @@ class CretaAutoSizeText extends StatefulWidget {
     String this.data, {
     Key? key,
     required this.mid, //skpark
-    required this.fontSizeChanged, //skpark
+    this.fontSizeChanged, //skpark
     this.textKey,
     this.style,
     this.strutStyle,
@@ -43,7 +45,7 @@ class CretaAutoSizeText extends StatefulWidget {
   const CretaAutoSizeText.rich(
     TextSpan this.textSpan, {
     required this.mid, //skpark
-    required this.fontSizeChanged, //skpark
+    this.fontSizeChanged, //skpark
     Key? key,
     this.textKey,
     this.style,
@@ -72,7 +74,7 @@ class CretaAutoSizeText extends StatefulWidget {
   final Key? textKey;
 
   final String mid; //skpark
-  final void Function(double) fontSizeChanged; //skpark
+  final void Function(double?)? fontSizeChanged; //skpark
 
   /// The text to display.
   ///
@@ -241,7 +243,9 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
   Future<void> afterBuildComplete() async {
     if (!_isCallbackPending) {
       _isCallbackPending = true;
+      //print('afterBuildComplete');
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.fontSizeChanged?.call(AutoSizeGroup.autoSizeMap[widget.mid]); //skpark
         _isCallbackPending = false;
         //print('000000000000000000000000');
       });
@@ -260,7 +264,9 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
 
   @override
   Widget build(BuildContext context) {
-    afterBuildComplete(); //skpark
+    if (widget.fontSizeChanged != null) {
+      afterBuildComplete(); //skpark
+    }
     return LayoutBuilder(builder: (context, size) {
       final defaultTextStyle = DefaultTextStyle.of(context);
 
@@ -426,9 +432,13 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
   }
 
   Widget _buildText(double fontSize, TextStyle style, int? maxLines) {
+    // 보이는 폰트 사이즈가 10 보다 작을 수 없다. skpark
+    if (fontSize < StudioConst.minFontSize) {
+      fontSize = StudioConst.minFontSize;
+    }
     AutoSizeGroup.autoSizeMap[widget.mid] = fontSize; //skpark
-    widget.fontSizeChanged(fontSize); //skpark
-    //print('fontSize = $fontSize');
+
+    print('fontSize = $fontSize');
     if (widget.data != null) {
       return Text(
         widget.data!,

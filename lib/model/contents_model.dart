@@ -641,13 +641,24 @@ class ContentsModel extends CretaModel {
     );
   }
 
-  double updateByAutoSize(double value, double? applyScale) {
+  double updateByAutoSize(double? value, double? applyScale) {
+    if (value == null) {
+      return fontSize.value;
+    }
     if (isText() == false) {
       return fontSize.value;
     }
+
+    // 보이는 사이즈 10 보다 작으면, AutoSizeText package 가 경기를 일으킨다.  따라서 이보다 작게할 수 없다.
+    if (value < StudioConst.minFontSize) {
+      value = StudioConst.minFontSize;
+    }
+
     applyScale ??= StudioVariables.applyScale;
+
     double newFontSize = value / applyScale;
-    // print('updateByAutoSize $newFontSize');
+
+    print('updateByAutoSize $value, $newFontSize');
     fontSize.set(newFontSize);
     return newFontSize;
   }
