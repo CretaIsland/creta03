@@ -35,7 +35,7 @@ extension ShapeWidget<T extends Widget> on T {
     Color strokeColor = Colors.transparent,
     required double applyScale,
   }) {
-    print('asShape()');
+   // print('asShape()');
     return LayoutBuilder(builder: (context, constraints) {
       double width = constraints.maxWidth;
       double height = constraints.maxHeight;

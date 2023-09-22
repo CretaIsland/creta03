@@ -438,7 +438,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
     }
     AutoSizeGroup.autoSizeMap[widget.mid] = fontSize; //skpark
 
-    print('fontSize = $fontSize');
+    //print('fontSize = $fontSize');
     if (widget.data != null) {
       return Text(
         widget.data!,

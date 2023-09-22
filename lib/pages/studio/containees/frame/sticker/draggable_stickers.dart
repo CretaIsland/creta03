@@ -165,6 +165,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             children: [
               _dragableResizable(sticker, frameModel, isResiazble),
               InstantEditor(
+                key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
                 frameModel: frameModel,
                 frameManager: widget.frameManager,
                 onTap: widget.onTap,

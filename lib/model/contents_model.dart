@@ -658,7 +658,7 @@ class ContentsModel extends CretaModel {
 
     double newFontSize = value / applyScale;
 
-    print('updateByAutoSize $value, $newFontSize');
+    //print('updateByAutoSize $value, $newFontSize');
     fontSize.set(newFontSize);
     return newFontSize;
   }
