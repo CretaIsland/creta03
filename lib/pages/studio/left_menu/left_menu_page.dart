@@ -210,7 +210,6 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     super.dispose();
   }
 
-  // ----------------- Added by Mai 230518 -----------------
   void _resize() {
     if (widget.isFolded) {
       widthScale = LayoutConst.leftMenuWidthCollapsed / LayoutConst.leftMenuWidth;

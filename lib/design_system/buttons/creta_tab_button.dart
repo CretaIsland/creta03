@@ -22,12 +22,14 @@ class CretaTabButton extends StatefulWidget {
   final Color unSelectedTextColor;
   final bool absoluteZeroSpacing;
   final TextStyle? textStyle;
+  final bool autoWidth;
 
   CretaTabButton({
     super.key,
     required this.onEditComplete,
     this.width = 332,
     this.height = 30,
+    this.autoWidth = false,
     required this.buttonLables,
     this.buttonIcons,
     required this.buttonValues,
@@ -56,7 +58,7 @@ class _CretaTabButtonState extends State<CretaTabButton> {
       defaultSelected: widget.defaultString,
       height: widget.height,
       width: widget.width,
-      //autoWidth: true,
+      autoWidth: widget.autoWidth,
       buttonTextStyle: ButtonTextStyle(
         selectedColor: widget.selectedTextColor,
         unSelectedColor: widget.unSelectedTextColor,

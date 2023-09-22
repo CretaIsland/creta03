@@ -116,34 +116,6 @@ class CretaStudioLang {
     "코멘트",
   ];
 
-  static List<String> timelineStart = [
-    "템플릿",
-    "페이지",
-    "프레임",
-    "보관함",
-    "이미지",
-    "동영상",
-    "텍스트",
-    "도형",
-    "위젯",
-    "화상회의",
-    "코멘트",
-  ];
-
-  static List<String> timelineEnd = [
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",
-  ];
-
   static List<IconData> menuIconList = [
     Icons.library_books_outlined, //Icons.dynamic_feed_outlined, //MaterialIcons.dynamic_feed,
     Icons.insert_drive_file_outlined, //MaterialIcons.insert_drive_file,
