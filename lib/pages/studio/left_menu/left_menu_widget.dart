@@ -95,7 +95,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
       padding: EdgeInsets.only(
         top: verticalPadding,
         bottom: verticalPadding,
-        right: horizontalPadding,
+        right: 2.0,
       ),
       child: CretaTabButton(
         defaultString: _getCurrentTypes(),
@@ -110,7 +110,8 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
             idx++;
           }
         },
-        width: 55,
+        // width: 55,
+        autoWidth: true,
         height: 32,
         selectedTextColor: Colors.white,
         unSelectedTextColor: CretaColor.primary,
@@ -127,7 +128,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     List<String> type = CretaStudioLang.widgetTypes.values.toList();
     if (_selectedType == type[0]) {
       return SizedBox(
-        height: StudioVariables.workHeight - 242.0,
+        height: StudioVariables.workHeight - 240.0,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,6 +183,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
                 titleStyle: titleStyle,
                 dataStyle: dataStyle,
               ),
+              const SizedBox(height: 60.0),
             ],
           ),
         ),
@@ -256,51 +258,4 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
     }
     return const SizedBox.shrink();
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return SizedBox(
-  //     height: widget.maxHeight,
-  //     child: SingleChildScrollView(
-  //       child: Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: horizontalPadding),
-  //         child: SizedBox(
-  //           height: 900, // 아래 항목이 늘어나면, 그 크기에 맞게 키워줘야 한다.
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.start,
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               LeftMenuWeather(
-  //                 title: CretaStudioLang.weather,
-  //                 width: _itemWidth,
-  //                 height: _itemHeight,
-  //                 titleStyle: titleStyle,
-  //                 dataStyle: dataStyle,
-  //               ),
-  //               LeftMenuMusic(
-  //                 title: CretaStudioLang.music,
-  //                 titleStyle: titleStyle,
-  //                 dataStyle: dataStyle,
-  //               ),
-  // LeftMenuClock(
-  //   title: CretaStudioLang.clockandWatch,
-  //   width: _itemWidth,
-  //   height: _itemHeight,
-  //   titleStyle: titleStyle,
-  //   dataStyle: dataStyle,
-  // ),
-  //               LeftMenuCamera(
-  //                 title: CretaStudioLang.camera,
-  //                 width: _itemWidth,
-  //                 height: _itemHeight,
-  //                 titleStyle: titleStyle,
-  //                 dataStyle: dataStyle,
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

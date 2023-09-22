@@ -83,3 +83,33 @@ class _LeftMenuEleButtonState extends State<LeftMenuEleButton> {
     );
   }
 }
+
+class TimelineSample extends StatelessWidget {
+  const TimelineSample({
+    super.key,
+    required this.child,
+    required this.title,
+  });
+
+  final Widget child;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Column(
+        children: [
+          child,
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
