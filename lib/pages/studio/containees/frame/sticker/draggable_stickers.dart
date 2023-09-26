@@ -159,28 +159,48 @@ class _DraggableStickersState extends State<DraggableStickers> {
         if (contentsModel.autoSizeType.value == AutoSizeType.autoFrameSize) {
           isResiazble = false;
         }
-        if (frameModel.isEditMode && contentsModel.isText()) {
-          //_isEditorAlreadyExist = true;
-          return Stack(
-            children: [
-              _dragableResizable(sticker, frameModel, isResiazble),
-              InstantEditor(
-                key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
-                frameModel: frameModel,
-                frameManager: widget.frameManager,
-                onTap: widget.onTap,
-                onEditComplete: () {
-                  setState(
-                    () {
-                      //_isEditorAlreadyExist = false;
-                      frameModel.isEditMode = false;
-                    },
-                  );
-                  widget.frameManager?.notify();
-                },
-              ),
-            ],
-          );
+        if (contentsModel.isText()) {
+          if (frameModel.isEditMode) {
+            //print('editor selected');
+            return Stack(
+              children: [
+                _dragableResizable(sticker, frameModel, isResiazble),
+                InstantEditor(
+                  key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
+                  frameModel: frameModel,
+                  frameManager: widget.frameManager,
+                  onTap: widget.onTap,
+                  onEditComplete: () {
+                    setState(
+                      () {
+                        //_isEditorAlreadyExist = false;
+                        frameModel.isEditMode = false;
+                      },
+                    );
+                    widget.frameManager?.notify();
+                  },
+                ),
+              ],
+            );
+          } else if (contentsModel.autoSizeType.value == AutoSizeType.noAutoSize) {
+            return Stack(
+              children: [
+                _dragableResizable(sticker, frameModel, isResiazble),
+                //IgnorePointer(
+                  //child: 
+                  InstantEditor(
+                    readOnly: true,
+                    enabled: false,
+                    key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
+                    frameModel: frameModel,
+                    frameManager: widget.frameManager,
+                    onTap: (v) {},
+                    onEditComplete: () {},
+                  ),
+                //),
+              ],
+            );
+          }
         }
       }
     }

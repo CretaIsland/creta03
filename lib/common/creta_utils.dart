@@ -747,7 +747,7 @@ class CretaUtils {
     TextStyle? style,
     TextAlign? align,
     double padding, {
-    double adjust = 3.0,
+    double adjust = 2.0,
   }) {
     //print('style.fontSize=${style!.fontSize}-,boxWidth=$boxWidth----------------');
 
@@ -764,9 +764,6 @@ class CretaUtils {
       // 글자수를 구할 수 있다.
       //int charCount = textPainter.getLineBoundary(TextPosition(offset: text.length)).end;
 
-      double wMargin = (style!.fontSize! / adjust);
-      // ignore: unused_local_variable
-      double hMargin = wMargin * (boxHeight / boxWidth);
       final double lineWidth = textPainter.width; // + wMargin;
       if (textLineWidth < lineWidth) {
         textLineWidth = lineWidth;
@@ -791,6 +788,15 @@ class CretaUtils {
 
     double width = textLineWidth + (padding * 2);
     double height = (textLineHeight * textLineCount.toDouble()) + (padding * 2);
+
+    //print('textLineCount=$textLineCount, height=$height');
+
+    if (autoSizeType == AutoSizeType.autoFrameSize) {
+      double wMargin = (style!.fontSize! / adjust);
+      double hMargin = wMargin * (height / width);
+      width += wMargin;
+      height += hMargin;
+    }
 
     //print('width=$width, height=$height, textLineCount=$textLineCount -------------');
 

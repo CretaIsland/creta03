@@ -115,7 +115,6 @@ mixin CretaTextMixin {
         model.align.value,
         padding,
       );
-
       realSize = Size(frameWidth, frameHeight);
     }
     //print('AutoSizeType.autoFrameSize after isThumbnail=$isThumbnail, ${realSize.height}');
@@ -127,8 +126,10 @@ mixin CretaTextMixin {
           CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
       width: realSize.width,
       height: realSize.height,
+
       child: (player != null &&
-              player.acc.frameModel.isEditMode == true &&
+              (player.acc.frameModel.isEditMode == true ||
+                  model.autoSizeType.value == AutoSizeType.noAutoSize) &&
               isThumbnail == false) // 에디트 모드에서는 글자를 표시하지 않는다.
           ? const SizedBox.shrink()
           : _playText(model, uri, style, fontSize, realSize, isThumbnail),
