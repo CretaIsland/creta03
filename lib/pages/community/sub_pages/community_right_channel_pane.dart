@@ -122,8 +122,9 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
   final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _teamIdMap = {};
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
-  bool _onceDBGetComplete = false;
+  //bool _onceDBGetComplete = false;
   bool _hasNoChannelModel = false;
+  late Future<bool> _dbGetComplete;
 
   @override
   void initState() {
@@ -150,7 +151,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
-          _onceDBGetComplete = true;
+          //_onceDBGetComplete = true;
         },
       );
     }
@@ -169,10 +170,19 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
-          _onceDBGetComplete = true;
+          //_onceDBGetComplete = true;
         },
       );
     }
+    _dbGetComplete = _getDBGetComplete();
+  }
+
+  Future<bool> _getDBGetComplete() async {
+    // while(_onceDBGetComplete == false) {
+    //   await Future.delayed(const Duration(milliseconds: 250));
+    // }
+    await dummyManagerHolder.isGetListFromDBComplete();
+    return true;
   }
 
   @override
@@ -548,9 +558,9 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBGetComplete) {
-      return _getItemPane();
-    }
+    // if (_onceDBGetComplete) {
+    //   return _getItemPane();
+    // }
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
@@ -568,6 +578,7 @@ class _CommunityRightChannelPaneState extends State<CommunityRightChannelPane> {
         ],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,
+        dbComplete: _dbGetComplete,
       ),
     );
     //_onceDBGetComplete = true;

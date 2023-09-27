@@ -11,7 +11,7 @@ import 'package:hycop/hycop.dart';
 //import 'package:hycop/hycop/account/account_manager.dart';
 //import 'package:hycop/common/util/logger.dart';
 //import 'package:url_strategy/url_strategy.dart';
-//import '../../design_system/component/snippet.dart';
+//import '../../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../../design_system/component/creta_popup.dart';
 //import '../../../design_system/dialog/creta_dialog.dart';
@@ -111,7 +111,9 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
   final Map<String, String> _userIdMap = {};
   final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
-  bool _onceDBGetComplete = false;
+  //bool _onceDBGetComplete = false;
+  late Future<bool> _dbGetComplete;
+  //Future<bool>? _dbGetComplete;
 
   @override
   void initState() {
@@ -137,9 +139,19 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
       ],
       completeFunc: () {
-        _onceDBGetComplete = true;
+        //_onceDBGetComplete = true;
       },
     );
+
+    _dbGetComplete = _getDBGetComplete();
+  }
+
+  Future<bool> _getDBGetComplete() async {
+    // while(_onceDBGetComplete == false) {
+    //   await Future.delayed(const Duration(milliseconds: 250));
+    // }
+    await dummyManagerHolder.isGetListFromDBComplete();
+    return true;
   }
 
   void _getBooksFromDB(List<AbsExModel> modelList) {
@@ -159,7 +171,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
       if (kDebugMode) print('_resultBooksFromDB(${bookModel.getMid})');
       _cretaBooksList.add(bookModel);
       _userIdMap[bookModel.creator] = bookModel.creator;
-      for(var channelId in bookModel.channels) {
+      for (var channelId in bookModel.channels) {
         _channelIdMap[channelId] = channelId;
       }
     }
@@ -261,6 +273,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   void _dummyCompleteDB(List<AbsExModel> modelList) {
     _channelMap.forEach((key, chModel) => chModel.getModelFromMaps(_userPropertyMap, _teamMap));
     dummyManagerHolder.setState(DBState.idle);
+    if (kDebugMode) print('_dummyCompleteDB(length=${modelList.length})');
   }
 
   void _addToFavorites(String bookId, bool isFavorites) async {
@@ -374,7 +387,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         itemBuilder: (BuildContext context, int index) {
           BookModel bookModel = _cretaBooksList[index];
           ChannelModel? chModel = bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
-          if (kDebugMode) print('${bookModel.getMid} is Favorites=${_favoritesBookIdMap[bookModel.getMid]}');
+          //if (kDebugMode) print('${bookModel.getMid} is Favorites=${_favoritesBookIdMap[bookModel.getMid]}');
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
                   key: GlobalObjectKey(bookModel.getMid),
@@ -424,9 +437,9 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBGetComplete) {
-      return _getItemPane();
-    }
+    // if (_onceDBGetComplete != null) {
+    //   return _getItemPane();
+    // }
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
@@ -442,6 +455,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         ],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,
+        dbComplete: _dbGetComplete,
       ),
     );
     //_onceDBGetComplete = true;

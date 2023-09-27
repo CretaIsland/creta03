@@ -103,8 +103,9 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
   final List<PlaylistModel> _playlistModelList = [];
   final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
-  bool _onceDBGetComplete = false;
+  //bool _onceDBGetComplete = false;
   bool _hasNoChannelModel = false;
+  late Future<bool> _dbGetComplete;
 
   @override
   void initState() {
@@ -130,7 +131,7 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
-          _onceDBGetComplete = true;
+          //_onceDBGetComplete = true;
         },
       );
     } else {
@@ -142,10 +143,19 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
-          _onceDBGetComplete = true;
+          //_onceDBGetComplete = true;
         },
       );
     }
+    _dbGetComplete = _getDBGetComplete();
+  }
+
+  Future<bool> _getDBGetComplete() async {
+    // while(_onceDBGetComplete == false) {
+    //   await Future.delayed(const Duration(milliseconds: 250));
+    // }
+    await dummyManagerHolder.isGetListFromDBComplete();
+    return true;
   }
 
   @override
@@ -314,9 +324,9 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBGetComplete) {
-      return _getItemPane();
-    }
+    // if (_onceDBGetComplete) {
+    //   return _getItemPane();
+    // }
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
@@ -326,6 +336,7 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
             : [playlistManagerHolder, bookPublishedManagerHolder, dummyManagerHolder],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,
+        dbComplete: _dbGetComplete,
       ),
     );
     //_onceDBGetComplete = true;

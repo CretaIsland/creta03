@@ -108,8 +108,9 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
   final Map<String, UserPropertyModel> _membersPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
   final List<String> _membersIdList = [];
   final Map<String, ChannelModel> _membersChannelMap = {};
-  bool _onceDBGetComplete = false;
+  //bool _onceDBGetComplete = false;
   bool _hasNoChannelModel = false;
+  late Future<bool> _dbGetComplete;
 
   @override
   void initState() {
@@ -135,7 +136,7 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
-          _onceDBGetComplete = true;
+          //_onceDBGetComplete = true;
         },
       );
     } else {
@@ -147,10 +148,19 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
-          _onceDBGetComplete = true;
+          //_onceDBGetComplete = true;
         },
       );
     }
+    _dbGetComplete = _getDBGetComplete();
+  }
+
+  Future<bool> _getDBGetComplete() async {
+    // while(_onceDBGetComplete == false) {
+    //   await Future.delayed(const Duration(milliseconds: 250));
+    // }
+    await dummyManagerHolder.isGetListFromDBComplete();
+    return true;
   }
 
   @override
@@ -343,9 +353,9 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBGetComplete) {
-      return _getItemPane();
-    }
+    // if (_onceDBGetComplete) {
+    //   return _getItemPane();
+    // }
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
@@ -355,9 +365,10 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
             : [userPropertyManagerHolder, channelManagerHolder, dummyManagerHolder],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,
+        dbComplete: _dbGetComplete,
       ),
     );
-    _onceDBGetComplete = true;
+    //_onceDBGetComplete = true;
     return retval;
   }
 }
