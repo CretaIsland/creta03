@@ -80,7 +80,8 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
   late PlaylistManager playlistManagerHolder;
   late BookPublishedManager bookPublishedManagerHolder;
   late FavoritesManager dummyManagerHolder;
-  bool _onceDBGetComplete = false;
+  //bool _onceDBGetComplete = false;
+  late Future<bool> _dbGetComplete;
 
   @override
   void initState() {
@@ -106,9 +107,18 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
       ],
       completeFunc: () {
-        _onceDBGetComplete = true;
+        //_onceDBGetComplete = true;
       },
     );
+    _dbGetComplete = _getDBGetComplete();
+  }
+
+  Future<bool> _getDBGetComplete() async {
+    // while(_onceDBGetComplete == false) {
+    //   await Future.delayed(const Duration(milliseconds: 250));
+    // }
+    await dummyManagerHolder.isGetListFromDBComplete();
+    return true;
   }
 
   void _getPlaylistFromDB(List<AbsExModel> modelList) {
@@ -198,15 +208,16 @@ class _CommunityRightPlaylistDetailPaneState extends State<CommunityRightPlaylis
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBGetComplete) {
-      return _getItemPane();
-    }
+    // if (_onceDBGetComplete) {
+    //   return _getItemPane();
+    // }
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
         managerList: [bookPublishedManagerHolder, playlistManagerHolder, dummyManagerHolder],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,
+        dbComplete: _dbGetComplete,
       ),
     );
     return retval;

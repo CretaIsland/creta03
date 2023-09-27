@@ -7,7 +7,6 @@ import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
-import 'package:creta03/design_system/dialog/creta_alert_dialog.dart';
 import 'package:creta03/design_system/dialog/creta_dialog.dart';
 import 'package:creta03/design_system/menu/creta_widget_drop_down.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
@@ -411,13 +410,28 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
             }
            )
        );
-    
   }
 
-
-
-
-
+  Widget channelDiscriptionComponent() {
+    return Container(
+      width: widget.width * .6,
+      height: 181.0,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: CretaTextField.long(
+        textFieldKey: GlobalKey(), 
+        value: CretaAccountManager.getChannel!.description, 
+        hintText: '채널 설명을 입력하세요',
+        radius: 20, 
+        onEditComplete: (value) {
+          CretaAccountManager.getChannel!.description = value;
+          CretaAccountManager.setChannelDescription(CretaAccountManager.getChannel!);
+        }
+      )
+    );
+  }
 
 
   @override
@@ -524,62 +538,12 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          CretaMyPageLang.teamChannel,
-                          style: CretaFont.titleELarge,
-                        ),
-                        const SizedBox(height: 32.0),
-                        Row(
-                          children: [
-                            Text(
-                              CretaMyPageLang.publicProfile,
-                              style: CretaFont.titleMedium,
-                            ),
-                            const SizedBox(width: 199.0),
-                            CretaToggleButton(
-                              defaultValue: teamManager.currentTeam!.isPublicProfile,
-                              onSelected: (value) {}
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 16.0),
-                        Text(
-                          CretaMyPageLang.profileTip,
-                          style: TextStyle(
-                            fontFamily: 'Pretendard',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: CretaColor.text.shade400,
-                          )
-                        ),
-                        const SizedBox(height: 30.0),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              CretaMyPageLang.backgroundImg,
-                              style: CretaFont.titleMedium,
-                            ),
-                            const SizedBox(width: 49.0),
-                            // bannerBox
-                            bannerImageComponent(teamManager)
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  divideLine(topPadding: 32.0, bottomPadding: 32.0, width: widget.width * .7),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
                               CretaMyPageLang.teamMemberManage,
-                              style: CretaFont.titleMedium,
+                              style: CretaFont.titleELarge,
                             ),
                             const SizedBox(width: 40.0),
                             Text(
@@ -611,37 +575,90 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                   ),
                   divideLine(topPadding: 32.0, bottomPadding: 32.0, width: widget.width * .7),
                   Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Row(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '팀에서 나가기',
-                          style: CretaFont.titleMedium,
+                          CretaMyPageLang.teamChannel,
+                          style: CretaFont.titleELarge,
                         ),
-                        const SizedBox(width: 25.0),
-                        BTN.line_red_t_m(
-                          text: '나가기', 
-                          onPressed: () {
-                            showDialog(
-                              context: context, 
-                              builder: (context) {
-                                return CretaAlertDialog
-                                (
-                                  width: 387,
-                                  height: 308,
-                                  content: Container(
-                                    width: 30,
-                                    height: 30,
-                                    color: Colors.red,
-                                  ), 
-                                  onPressedOK: () {}
-                                );
-                              },
-                            );
-                          }
+                        const SizedBox(height: 32.0),
+                        Row(
+                          children: [
+                            Text(
+                              '채널 공개',
+                              style: CretaFont.titleMedium,
+                            ),
+                            const SizedBox(width: 199.0),
+                            CretaToggleButton(
+                              defaultValue: teamManager.currentTeam!.isPublicProfile,
+                              onSelected: (value) {}
+                            )
+                          ],
                         ),
+                        const SizedBox(height: 16.0),
+                        Text(
+                          '모든 사람들에게 채널이 공개됩니다.',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: CretaColor.text.shade400,
+                          )
+                        ),
+                        const SizedBox(height: 20.0),
+                        Row(
+                          children: [
+                            Text(
+                              '팀원 공개',
+                              style: CretaFont.titleMedium,
+                            ),
+                            const SizedBox(width: 199.0),
+                            CretaToggleButton(
+                              defaultValue: teamManager.currentTeam!.isPublicProfile,
+                              onSelected: (value) {}
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text(
+                          '팀 채널에 팀원의 채널이 공개됩니다.',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: CretaColor.text.shade400,
+                          )
+                        ),
+                        const SizedBox(height: 30.0),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              CretaMyPageLang.backgroundImg,
+                              style: CretaFont.titleMedium,
+                            ),
+                            const SizedBox(width: 49.0),
+                            // bannerBox
+                            bannerImageComponent(teamManager)
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '정보 설명',
+                              style: CretaFont.titleMedium,
+                            ),
+                            const SizedBox(width: 63.0),
+                            // bannerBox
+                            channelDiscriptionComponent()
+                          ],
+                        )
                       ],
-                    )
+                    ),
                   ),
                   const SizedBox(height: 120.0)
                 ],

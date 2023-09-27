@@ -104,7 +104,8 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
   late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager dummyManagerHolder;
 
-  bool _onceDBGetComplete = false;
+  //bool _onceDBGetComplete = false;
+  late Future<bool> _dbGetComplete;
 
   final List<SubscriptionModel> _subscriptionList = [];
   final Map<String, ChannelModel> _channelMap = {};
@@ -146,7 +147,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
-          _onceDBGetComplete = true;
+          //_onceDBGetComplete = true;
         },
       );
     } else {
@@ -160,10 +161,19 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
           QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
         ],
         completeFunc: () {
-          _onceDBGetComplete = true;
+          //_onceDBGetComplete = true;
         },
       );
     }
+    _dbGetComplete = _getDBGetComplete();
+  }
+
+  Future<bool> _getDBGetComplete() async {
+    // while(_onceDBGetComplete == false) {
+    //   await Future.delayed(const Duration(milliseconds: 250));
+    // }
+    await dummyManagerHolder.isGetListFromDBComplete();
+    return true;
   }
 
   void _getSubscriptionListFromDB(List<AbsExModel> modelList) {
@@ -481,9 +491,9 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBGetComplete) {
-      return _getItemPane();
-    }
+    // if (_onceDBGetComplete) {
+    //   return _getItemPane();
+    // }
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
@@ -503,6 +513,7 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
                 dummyManagerHolder,
               ],
         consumerFunc: _getItemPane,
+        dbComplete: _dbGetComplete,
       ),
     );
     return retval;

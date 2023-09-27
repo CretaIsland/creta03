@@ -102,7 +102,8 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
   final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _channelIdMap = {};
   final Map<String, ChannelModel> _channelMap = {}; // <ChannelModel.mid, ChannelModel>
-  bool _onceDBGetComplete = false;
+  //bool _onceDBGetComplete = false;
+  late Future<bool> _dbGetComplete;
 
   @override
   void initState() {
@@ -125,9 +126,18 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
       ],
       completeFunc: () {
-        _onceDBGetComplete = true;
+        //_onceDBGetComplete = true;
       },
     );
+    _dbGetComplete = _getDBGetComplete();
+  }
+
+  Future<bool> _getDBGetComplete() async {
+    // while(_onceDBGetComplete == false) {
+    //   await Future.delayed(const Duration(milliseconds: 250));
+    // }
+    await dummyManagerHolder.isGetListFromDBComplete();
+    return true;
   }
 
   void _getFavoritesFromDB(List<AbsExModel> modelList) {
@@ -149,6 +159,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
     if (kDebugMode) print('_resultFavoritesFromDB.length=${modelList.length}');
     for (var exModel in modelList) {
       FavoritesModel favModel = exModel as FavoritesModel;
+      if (kDebugMode) print('_resultFavoritesFromDB.mid=${favModel.bookId}');
       _favoritesBookList.add(favModel);
       _favoritesBookIdMap[favModel.bookId] = true;
       _bookIdList.add(favModel.bookId);
@@ -237,7 +248,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
     double itemWidth = -1;
     double itemHeight = -1;
 
-    BookModel dummyBookModel = BookModel('');
+    //BookModel dummyBookModel = BookModel('');
 
     // return ScrollConfiguration( // 스크롤바 감추기
     //   behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), // 스크롤바 감추기
@@ -262,7 +273,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
         ),
         itemBuilder: (BuildContext context, int index) {
           FavoritesModel fModel = _favoritesBookList[index];
-          BookModel bookModel = _cretaBooksMap[fModel.bookId] ?? dummyBookModel;
+          BookModel bookModel = _cretaBooksMap[fModel.bookId] ?? BookModel('');
           ChannelModel? chModel = bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
@@ -298,9 +309,9 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
 
   @override
   Widget build(BuildContext context) {
-    if (_onceDBGetComplete) {
-      return _getItemPane();
-    }
+    // if (_onceDBGetComplete) {
+    //   return _getItemPane();
+    // }
     var retval = Scrollbar(
       controller: widget.scrollController,
       child: CretaModelSnippet.waitDatum(
@@ -314,6 +325,7 @@ class _CommunityRightFavoritesPaneState extends State<CommunityRightFavoritesPan
         ],
         //userId: AccountManager.currentLoginUser.email,
         consumerFunc: _getItemPane,
+        dbComplete: _dbGetComplete,
       ),
     );
     return retval;

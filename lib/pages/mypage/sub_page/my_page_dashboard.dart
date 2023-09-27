@@ -13,7 +13,6 @@ import 'package:creta03/design_system/creta_font.dart';
 
 
 class MyPageDashBoard extends StatefulWidget {
-
   final double width;
   final double height;
   final Color replaceColor;
@@ -22,6 +21,8 @@ class MyPageDashBoard extends StatefulWidget {
   @override
   State<MyPageDashBoard> createState() => _MyPageDashBoardState();
 }
+
+
 
 class _MyPageDashBoardState extends State<MyPageDashBoard> {
 
@@ -37,6 +38,33 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
     );
   }
 
+  Widget profileImgComponent(UserPropertyManager userPropertyManager) {
+    return Container(
+      width: 200.0,
+      height: 200.0,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(100.0),
+        color: widget.replaceColor,
+        image: userPropertyManager.userPropertyModel!.profileImg == '' ? null : DecorationImage(
+          image: NetworkImage(userPropertyManager.userPropertyModel!.profileImg),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: userPropertyManager.userPropertyModel!.profileImg == '' ? Center(
+        child: Text(
+          userPropertyManager.userPropertyModel!.nickname.substring(0, 1),
+          style: const TextStyle(
+            fontFamily: 'Pretendard',
+            fontWeight: FontWeight.w500,
+            fontSize: 80,
+            color: Colors.white,
+          ),
+        ),
+      ) : null
+    );
+  }
+
   Widget accountInfoComponent(UserPropertyManager userPropertyManager) {
     return Container(
       width: 400.0,
@@ -49,82 +77,50 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 32.0, top: 32.0),
-            child: Text(
-              CretaMyPageLang.accountInfo,
-              style: CretaFont.titleELarge
-            ),
+            padding: const EdgeInsets.only(left: 30, top: 30, bottom: 30),
+            child: Text('계정 정보', style: CretaFont.titleELarge),
           ),
-          divideLine(topPadding: 32, bottomPadding: 40.0, width: 400.0),
+          divideLine(width: 400.0, bottomPadding: 40.0),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(width: 32.0),
+              const SizedBox(width: 30),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    CretaMyPageLang.grade,
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    CretaMyPageLang.bookCount,
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    CretaMyPageLang.ratePlan,
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    CretaMyPageLang.freeSpace,
-                    style: CretaFont.bodyMedium,
-                  )
+                  Text('등급', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400)),
+                  const SizedBox(height: 28),
+                  Text('북 개수', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400)),
+                  const SizedBox(height: 28),
+                  Text('요금제', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400)),
+                  const SizedBox(height: 28),
+                  Text('남은 용량', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400))
                 ],
               ),
-              const SizedBox(width: 40.0),
+              const SizedBox(width: 40), 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    CretaMyPageLang.cretaGradeList[userPropertyManager.userPropertyModel!.cretaGrade.index],
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    userPropertyManager.userPropertyModel!.bookCount.toString(),
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 20.0),
+                  Text(CretaMyPageLang.cretaGradeList[userPropertyManager.userPropertyModel!.cretaGrade.index], style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade700)),
+                  const SizedBox(height: 28 ),
+                  Text(userPropertyManager.userPropertyModel!.bookCount.toString(), style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade700)),
+                  const SizedBox(height: 20),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        CretaMyPageLang.ratePlanList[userPropertyManager.userPropertyModel!.ratePlan.index],
-                        style: CretaFont.bodyMedium,
-                      ),
-                      const SizedBox(width: 24.0),
-                      BTN.line_blue_t_m(
-                        height: 32.0,
-                        text: CretaMyPageLang.ratePlanChangeBTN, 
-                        onPressed: () {
-                          showDialog(
-                            context: context, 
-                            builder: (context) => PopUpRatePlan.ratePlanPopUp(context),
-                          );
-                        }
-                      )
+                      Text(CretaMyPageLang.ratePlanList[userPropertyManager.userPropertyModel!.ratePlan.index], style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade700)),
+                      const SizedBox(width: 10),
+                      BTN.line_blue_t_m(text: '요금제 변경', onPressed: () {
+                        showDialog(
+                          context: context, 
+                          builder: (context) => PopUpRatePlan.ratePlanPopUp(context),
+                        );
+                      })
                     ],
                   ),
-                  const SizedBox(height: 20.0),
-                  Text(
-                    '${userPropertyManager.userPropertyModel!.freeSpace} (전체 1024MB)',
-                    style: CretaFont.bodyMedium,
-                  )
+                  const SizedBox(height: 20),
+                  Text('${userPropertyManager.userPropertyModel!.freeSpace} (전체 1024MB)', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade700))
                 ],
-              )
+              ),
             ],
           )
         ],
@@ -144,79 +140,46 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 32.0, top: 32.0),
+            padding: const EdgeInsets.only(left: 30, top: 30, bottom: 30),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  CretaMyPageLang.accountInfo,
-                  style: CretaFont.titleELarge
-                ),
-                const SizedBox(width: 192.0),
-                Text(
-                  '지난 30일', 
-                  style: TextStyle(
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: Colors.grey.shade400,
-                  )
-                )
+                Text('최근 요약', style: CretaFont.titleELarge),
+                const SizedBox(width: 180),
+                Text('지난 30일', style: CretaFont.titleMedium.copyWith(color: CretaColor.text.shade400)),
               ],
             ),
           ),
-          divideLine(topPadding: 32, bottomPadding: 40.0, width: 400.0),
+          divideLine(width: 400.0, bottomPadding: 40.0),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(width: 32.0),
+              const SizedBox(width: 30),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    CretaMyPageLang.bookViewCount,
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    CretaMyPageLang.bookViewTime,
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    CretaMyPageLang.likeCount,
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    CretaMyPageLang.commentCount,
-                    style: CretaFont.bodyMedium,
-                  )
+                  Text('북 조회수', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400)),
+                  const SizedBox(height: 28),
+                  Text('북 시청시간', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400)),
+                  const SizedBox(height: 28),
+                  Text('좋아요 개수', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400)),
+                  const SizedBox(height: 28),
+                  Text('댓글 개수', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade400))
                 ],
               ),
-              const SizedBox(width: 40.0),
+              const SizedBox(width: 40), 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    userPropertyManager.userPropertyModel!.bookViewCount.toString(),
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    '${userPropertyManager.userPropertyModel!.bookViewTime.toString()} 시간',
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    userPropertyManager.userPropertyModel!.likeCount.toString(),
-                    style: CretaFont.bodyMedium,
-                  ),
-                  const SizedBox(height: 28.0),
-                  Text(
-                    userPropertyManager.userPropertyModel!.commentCount.toString(),
-                    style: CretaFont.bodyMedium,
-                  )
+                  Text('${userPropertyManager.userPropertyModel!.bookViewCount}', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade700)),
+                  const SizedBox(height: 28 ),
+                  Text('${userPropertyManager.userPropertyModel!.bookViewTime} 시간', style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade700)),
+                  const SizedBox(height: 28),
+                  Text(userPropertyManager.userPropertyModel!.likeCount.toString(), style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade700)),
+                  const SizedBox(height: 28),
+                  Text(userPropertyManager.userPropertyModel!.commentCount.toString(), style: CretaFont.bodyMedium.copyWith(color: CretaColor.text.shade700))
                 ],
-              )
+              ),
             ],
           )
         ],
@@ -236,13 +199,10 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 32.0, top: 32.0),
-            child: Text(
-              CretaMyPageLang.myTeam,
-              style: CretaFont.titleELarge
-            ),
+            padding: const EdgeInsets.only(left: 30, top: 30, bottom: 30),
+            child: Text('내 팀', style: CretaFont.titleELarge),
           ),
-          divideLine(topPadding: 32, bottomPadding: 40.0, width: 400.0),
+          divideLine(width: 400.0, bottomPadding: 40.0),
           Padding(
             padding: const EdgeInsets.only(left: 32.0),
             child: Column(
@@ -258,7 +218,7 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               ],
             ),
           )
-        ]
+        ],
       ),
     );
   }
@@ -278,24 +238,8 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 60.0),
-                // profile image component
-                Container(
-                  width: 200.0,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100.0),
-                    color: widget.replaceColor,
-                    image: userPropertyManager.userPropertyModel!.profileImg == '' ? null : DecorationImage(image: Image.network(userPropertyManager.userPropertyModel!.profileImg).image, fit: BoxFit.cover)
-                  ),
-                  child: userPropertyManager.userPropertyModel!.profileImg == '' ? Center(
-                    child: Text(
-                      userPropertyManager.userPropertyModel!.nickname.substring(0, 1),
-                      style: const TextStyle(fontFamily: 'Pretendard', fontWeight: CretaFont.semiBold, fontSize: 64, color: Colors.white),
-                    ),
-                  ) : null,
-                ),
+                profileImgComponent(userPropertyManager),
                 const SizedBox(height: 40.0),
-                // user nickname
                 Text(
                   userPropertyManager.userPropertyModel!.nickname,
                   style: const TextStyle(
