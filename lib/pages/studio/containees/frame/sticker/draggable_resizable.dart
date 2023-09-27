@@ -68,7 +68,8 @@ class DraggableResizable extends StatefulWidget {
     this.onLayerTapped,
     this.onEdit,
     this.onFrameDelete,
-    this.isResiazble = true,
+    this.isResiable = true,
+    this.isVerticalResiable = true,
     //this.canTransform = false,
   }) : //constraints = constraints ?? BoxConstraints.loose(Size.infinite),
         super(key: key);
@@ -110,7 +111,8 @@ class DraggableResizable extends StatefulWidget {
   final double pageWidth;
   final double pageHeight;
   final FrameModel? frameModel;
-  final bool isResiazble;
+  final bool isResiable;
+  final bool isVerticalResiable;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -491,7 +493,8 @@ class _DraggableResizableState extends State<DraggableResizable> {
               if (!StudioVariables.isPreview)
                 SelectedBox(
                   key: GlobalObjectKey('SelectedBox-$widget.mid}'),
-                  isResizable : widget.isResiazble,
+                  isResiable: widget.isResiable,
+                  isVerticalResiable: widget.isVerticalResiable,
                   mid: widget.mid,
                   normalizedHeight: normalizedHeight,
                   normalizedWidth: normalizedWidth,

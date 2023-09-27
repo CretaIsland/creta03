@@ -186,7 +186,7 @@ class _InstantEditorState extends State<InstantEditor> {
       return const SizedBox.shrink();
     }
 
-    // if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+    // if (model.isAutoFontSize()) {
     //   //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
     //   double? autofontSize = AutoSizeGroup.autoSizeMap[model.mid];
     //   if (autofontSize != null) {
@@ -236,20 +236,20 @@ class _InstantEditorState extends State<InstantEditor> {
       );
     }
 
-    if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+    if (model.isNoAutoSize()) {
       // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
       // 초기에 텍스트가 overflow 가 되기 위해 계산해 주어야 한다.
       //print('AutoSizeType.noAutoSize _fontSize=$fontSize');
       _resize(uri, model.autoSizeType.value);
       // _getLineHeightAndCount(uri, _fontSize, model.autoSizeType.value);
       // _resize();
-    } else if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+    } else if (model.isAutoFrameSize()) {
       // 초기 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize _fontSize=$fontSize');
       _resize(uri, model.autoSizeType.value);
       // _getLineHeightAndCount(uri, _fontSize, model.autoSizeType.value);
       // _resize();
-    } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+    } else if (model.isAutoFontSize()) {
       //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
       // double? autofontSize = AutoSizeGroup.autoSizeMap[model.mid];
       // if (autofontSize != null) {
@@ -262,24 +262,27 @@ class _InstantEditorState extends State<InstantEditor> {
     //_textLineCount ??= CretaUtils.countAs(uri, '\n') + 1;
     //print('_textLineCount=$_textLineCount------------------------------------------');
 
-    return _editText(model, uri);
+    return _editText(model, uri, style);
   }
 
-  Widget _editText(ContentsModel model, String uri) {
+  Widget _editText(ContentsModel model, String uri, TextStyle style) {
     //print('_editText height=${_realSize!.height}');
 
     late Size applySize;
     late Widget editorWidget;
-    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+    if (model.isAutoFrameSize()) {
       double padding =
           //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
           (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
       //(StudioConst.defaultTextPadding * StudioVariables.applyScale);
       if (padding < 0) padding = 0;
       // 프레임 사이즈가 변한다.
-      applySize = _realSize!;
-      editorWidget = _myTextField(model, uri, padding);
-    } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+      applySize = Size(_frameSize.width, _realSize!.height);
+      //print('applySize=$applySize');
+      editorWidget =
+          _autoTextField(model, uri, padding, model.fontSize.value * StudioVariables.applyScale);
+      //editorWidget = _myTextField(model, uri, padding);
+    } else if (model.isAutoFontSize()) {
       double padding =
           //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
           (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
@@ -289,7 +292,7 @@ class _InstantEditorState extends State<InstantEditor> {
       applySize = _frameSize;
 
       editorWidget = _autoTextField(model, uri, padding, null);
-    } else if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+    } else if (model.isNoAutoSize()) {
       double padding =
           //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
           (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
@@ -297,15 +300,26 @@ class _InstantEditorState extends State<InstantEditor> {
       if (padding < 0) padding = 0;
       // 프레임 사이즈가 변하지 않는다. 에디터 사이즈는 변할 수 있다.
       applySize = Size(_frameSize.width, _realSize!.height);
-      editorWidget = OverflowBox(
-        alignment: alignVToAlignment(model.valign.value),
-        //alignment: Alignment.topCenter,
-        maxHeight: _realSize!.height, // double.infinity, //,
-        maxWidth: _frameSize.width,
-        child:
-            _autoTextField(model, uri, padding, model.fontSize.value * StudioVariables.applyScale),
-        //child: _myTextField(model, uri, padding),
-      );
+
+      if (widget.enabled == true) {
+        editorWidget = OverflowBox(
+          alignment: alignVToAlignment(model.valign.value),
+          //alignment: Alignment.topCenter,
+          maxHeight: _realSize!.height, // double.infinity, //,
+          maxWidth: _frameSize.width,
+          child: _autoTextField(
+              model, uri, padding, model.fontSize.value * StudioVariables.applyScale),
+          //child: _myTextField(model, uri, padding),
+        );
+      } else {
+        editorWidget = OverflowBox(
+          alignment: alignVToAlignment(model.valign.value),
+          //alignment: Alignment.topCenter,
+          maxHeight: _realSize!.height, // double.infinity, //,
+          maxWidth: _frameSize.width,
+          child: Text(uri, style: style),
+        );
+      }
     }
 
     //print('${applySize.height.roundToDouble()},  ${widget.frameModel.height.value}');
@@ -313,20 +327,17 @@ class _InstantEditorState extends State<InstantEditor> {
       left: _posX,
       top: _posY,
       child: Container(
-        decoration: const BoxDecoration(
-          //border: Border.all(width: 1, color: Colors.black),
-          //color: widget.frameModel.bgColor1.value,
-          color: Colors.transparent,
-        ),
-        alignment:
-            CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
-        width: applySize.width,
-        height: applySize.height,
-        //padding: const EdgeInsets.all(50),
-        child: widget.enabled
-            ? editorWidget
-            : IgnorePointer(child: editorWidget), //<-- IgnorePointer 대신 그냥 TextWidget 으로 바꿔야 한다.
-      ),
+          decoration: const BoxDecoration(
+            //border: Border.all(width: 1, color: Colors.black),
+            //color: widget.frameModel.bgColor1.value,
+            color: Colors.transparent,
+          ),
+          alignment: CretaTextPlayer.toAlign(
+              model.align.value, intToTextAlignVertical(model.valign.value)),
+          width: applySize.width,
+          height: applySize.height,
+          //padding: const EdgeInsets.all(50),
+          child: editorWidget),
     );
   }
 
@@ -350,7 +361,7 @@ class _InstantEditorState extends State<InstantEditor> {
       cursorWidth: cursorSize,
       cursorColor:
           widget.frameModel.bgColor1.value.computeLuminance() > 0.5 ? Colors.black : Colors.white,
-      stepGranularity: 1.0,
+      stepGranularity: 2.0, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
       strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
       decoration: InputDecoration(
         border: InputBorder.none,
@@ -403,7 +414,7 @@ class _InstantEditorState extends State<InstantEditor> {
         model.cursorPos = _textController.selection.baseOffset;
         //print('cur=${model.cursorPos}');
 
-        if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+        if (model.isAutoFrameSize()) {
           // 프레임이 늘어나거나 줄어든다.
           if (_resize(value, model.autoSizeType.value)) {
             //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -416,12 +427,12 @@ class _InstantEditorState extends State<InstantEditor> {
             //});
             widget.frameManager?.notify();
           }
-        } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+        } else if (model.isAutoFontSize()) {
           // 폰트가 늘어나거나 줄어든다. 프레임은 변하지 않는다.
           //setState(() {
           model.remoteUrl = _textController.text;
           //});
-        } else if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+        } else if (model.isNoAutoSize()) {
           // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
           if (_resize(value, model.autoSizeType.value)) {
             //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -435,6 +446,7 @@ class _InstantEditorState extends State<InstantEditor> {
     );
   }
 
+  // ignore: unused_element
   Widget _myTextField(ContentsModel model, String uri, double padding) {
     double cursorSize = padding * 0.7471818504075;
 
@@ -509,7 +521,7 @@ class _InstantEditorState extends State<InstantEditor> {
         model.cursorPos = _textController.selection.baseOffset;
         //print('cur=${model.cursorPos}');
 
-        if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+        if (model.isAutoFrameSize()) {
           // 프레임이 늘어나거나 줄어든다.
           if (_resize(value, model.autoSizeType.value)) {
             //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -522,12 +534,12 @@ class _InstantEditorState extends State<InstantEditor> {
             //});
             widget.frameManager?.notify();
           }
-        } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+        } else if (model.isAutoFontSize()) {
           // 폰트가 늘어나거나 줄어든다. 프레임은 변하지 않는다.
           //setState(() {
           model.remoteUrl = _textController.text;
           //});
-        } else if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+        } else if (model.isNoAutoSize()) {
           // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
           if (_resize(value, model.autoSizeType.value)) {
             //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -554,7 +566,7 @@ class _InstantEditorState extends State<InstantEditor> {
       _padding,
     );
 
-    if (autoSizeType == AutoSizeType.noAutoSize) {
+    if (autoSizeType == AutoSizeType.noAutoSize || autoSizeType == AutoSizeType.autoFrameSize) {
       if (_realSize!.height.round() != height.round()) {
         //if (_realSize!.height.round() != height.round()) {
         //print('oldSize = (${_realSize!.height.round()})');
@@ -578,7 +590,7 @@ class _InstantEditorState extends State<InstantEditor> {
     //double dbHeight = _realSize!.height / StudioVariables.applyScale;
     model.remoteUrl = _textController.text;
 
-    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+    if (model.isAutoFrameSize()) {
       widget.frameModel.save();
       // if (widget.frameModel.height.value != _realSize!.height  ) {
       //   //print('_saveChanges  ${widget.frameModel.height.value} , ${_realSize!.height}');

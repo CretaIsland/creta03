@@ -368,7 +368,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
     double fontSize = model.fontSize.value * applyScale;
 
     if (isEditMode == false &&
-        model.autoSizeType.value == AutoSizeType.autoFontSize &&
+        model.isAutoFontSize() &&
         (model.aniType.value != TextAniType.rotate ||
             model.aniType.value != TextAniType.bounce ||
             model.aniType.value != TextAniType.fade ||
@@ -437,7 +437,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
       style = style.copyWith(fontWeight: FontWeight.bold);
     }
 
-    if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+    if (model.isAutoFontSize()) {
       style.copyWith(
         fontSize: fontSize,
       );

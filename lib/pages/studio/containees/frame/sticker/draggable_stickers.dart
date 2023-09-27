@@ -151,20 +151,20 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   Widget _drawEachStiker(Sticker sticker) {
     //if (sticker.isEditMode && _isEditorAlreadyExist == false) {
-    bool isResiazble = true;
+    bool isVerticalResiable = true;
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
     if (frameModel != null && frameModel.isTextType()) {
       ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
       if (contentsModel != null) {
-        if (contentsModel.autoSizeType.value == AutoSizeType.autoFrameSize) {
-          isResiazble = false;
+        if (contentsModel.isAutoFrameSize()) {
+          isVerticalResiable = false;
         }
         if (contentsModel.isText()) {
           if (frameModel.isEditMode) {
             //print('editor selected');
             return Stack(
               children: [
-                _dragableResizable(sticker, frameModel, isResiazble),
+                _dragableResizable(sticker, frameModel, isVerticalResiable),
                 InstantEditor(
                   key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
                   frameModel: frameModel,
@@ -182,38 +182,35 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 ),
               ],
             );
-          } else if (contentsModel.autoSizeType.value == AutoSizeType.noAutoSize) {
-            return Stack(
-              children: [
-                _dragableResizable(sticker, frameModel, isResiazble),
-                //IgnorePointer(
-                  //child: 
-                  InstantEditor(
-                    readOnly: true,
-                    enabled: false,
-                    key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
-                    frameModel: frameModel,
-                    frameManager: widget.frameManager,
-                    onTap: (v) {},
-                    onEditComplete: () {},
-                  ),
-                //),
-              ],
-            );
+            // } else if (contentsModel.isNoAutoSize()) {
+            //   return Stack(
+            //     children: [
+            //       _dragableResizable(sticker, frameModel, isResiable),
+            //       InstantEditor(
+            //         readOnly: true,
+            //         enabled: false,
+            //         key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
+            //         frameModel: frameModel,
+            //         frameManager: widget.frameManager,
+            //         onTap: (v) {},
+            //         onEditComplete: () {},
+            //       ),
+            //     ],
+            //   );
           }
         }
       }
     }
-    return _dragableResizable(sticker, frameModel!, isResiazble);
+    return _dragableResizable(sticker, frameModel!, isVerticalResiable);
   }
 
-  Widget _dragableResizable(Sticker sticker, FrameModel frameModel, bool isResiazble) {
+  Widget _dragableResizable(Sticker sticker, FrameModel frameModel, bool isVerticalResiable) {
     double posX = frameModel.getRealPosX();
     double posY = frameModel.getRealPosY();
 
     return DraggableResizable(
       key: GlobalKey(),
-      isResiazble: isResiazble,
+      isVerticalResiable: isVerticalResiable,
       mid: sticker.id,
       angle: sticker.angle,
       //position: sticker.position + BookMainPage.pageOffset,

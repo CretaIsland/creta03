@@ -749,7 +749,16 @@ class CretaUtils {
     double padding, {
     double adjust = 2.0,
   }) {
-    //print('style.fontSize=${style!.fontSize}-,boxWidth=$boxWidth----------------');
+    //print('text lenght = ${text.length}----------------');
+    if (text.isEmpty) {
+      if (style != null && style.fontSize != null) {
+        double height = (style.fontSize! * StudioVariables.applyScale) + (padding * 2);
+        //print('empty case height=$height');
+        return (boxWidth, height);
+      }
+      //print('empty case height=100');
+      return (boxWidth, 100);
+    }
 
     //int offset = 0;
     List<String> lines = text.split('\n');
@@ -769,16 +778,12 @@ class CretaUtils {
         textLineWidth = lineWidth;
       }
       int count = 1;
-      if (autoSizeType != AutoSizeType.autoFrameSize) {
-        count = (lineWidth / boxWidth).ceil();
-      }
+      //if (autoSizeType != AutoSizeType.autoFrameSize) {
+      count = (lineWidth / boxWidth).ceil();
+      if (count == 0) count = 1; // 빈줄의 경우이다.
       eachLineCount.add(count);
       // 텍스트 하이트는 나중에, frameSize 를 늘리기 위해서 필요하다.
       textLineHeight = textPainter.preferredLineHeight; // + hMargin; //textPainter.height;
-
-      //Size size = textPainter.size;
-      //print('width,height = ${te ....................... xtPainter.width.round()},${textPainter.height.round()}');
-      //print('size=${size.width.round()}, ${size.height.round()}), $visualLineCount, $ddd');
     }
 
     int textLineCount = 0;
@@ -789,7 +794,7 @@ class CretaUtils {
     double width = textLineWidth + (padding * 2);
     double height = (textLineHeight * textLineCount.toDouble()) + (padding * 2);
 
-    //print('textLineCount=$textLineCount, height=$height');
+    //print('textLineCount=$textLineCount, textLineHeight=$textLineHeight, height=$height');
 
     if (autoSizeType == AutoSizeType.autoFrameSize) {
       double wMargin = (style!.fontSize! / adjust);
@@ -797,6 +802,8 @@ class CretaUtils {
       width += wMargin;
       height += hMargin;
     }
+
+    //print('height=$height');
 
     //print('width=$width, height=$height, textLineCount=$textLineCount -------------');
 

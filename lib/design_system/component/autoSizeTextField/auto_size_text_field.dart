@@ -4,6 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../pages/studio/studio_constant.dart';
+
 /// Flutter widget that automatically resizes text field to fit perfectly within its bounds.
 ///
 /// All size constraints as well as maxLines are taken into account. If the text
@@ -636,6 +638,12 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
     TextStyle? style,
     int? maxLines,
   ) {
+    if (widget.data.isEmpty) {
+      //skpark
+      _textSpanWidth = 1.0;
+      return [style!.fontSize ?? StudioConst.defaultFontSize, false];
+    }
+
     var span = TextSpan(
       style: widget.textSpan?.style ?? style,
       text: widget.textSpan?.text ?? widget.data,

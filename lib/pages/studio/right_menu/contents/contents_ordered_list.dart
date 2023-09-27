@@ -743,25 +743,27 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //}
 
   Widget _textEditor(ContentsModel model) {
-    GlobalKey<CretaTextFieldState> key = GlobalKey<CretaTextFieldState>();
+    //GlobalKey<CretaTextFieldState> key = GlobalKey<CretaTextFieldState>();
 
     Widget autoSizeTypeWidget = CretaCheckbox(
       // 창 크기에 맞춤
       valueMap: {
-        CretaStudioLang.autoFontSize: model.autoSizeType.value == AutoSizeType.autoFontSize,
-        CretaStudioLang.autoFrameSize: model.autoSizeType.value == AutoSizeType.autoFrameSize,
-        CretaStudioLang.noAutoSize: model.autoSizeType.value == AutoSizeType.noAutoSize,
+        CretaStudioLang.autoFontSize: model.isAutoFontSize(),
+        CretaStudioLang.autoFrameSize: model.isAutoFrameSize(),
+        CretaStudioLang.noAutoSize: model.isNoAutoSize(),
       },
       onSelected: (title, value, nvMap) {
         //print('onSelected !!!!!!!');
         //mychangeStack.startTrans();
-        model.autoSizeType.set(AutoSizeType.fromString(title));
+        AutoSizeType type = AutoSizeType.fromString(title);
+        model.autoSizeType.set(type);
         //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
         //mychangeStack.endTrans();
-        _sendEvent!.sendEvent(model);
-        //widget.contentsManager.notify();
-        //widget.frameManager?.notify();
-        //DraggableStickers.frameSelectNotifier!.notify();
+        _sendEvent!.sendEvent(widget.contentsManager.frameModel);
+        //  widget.contentsManager.notify();
+        //   DraggableStickers.frameSelectNotifier!.notify();
+        //   widget.frameManager?.notify();
+
         setState(() {});
       },
     );
@@ -769,28 +771,29 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CretaTextField.long(
-          textFieldKey: key,
-          value: model.remoteUrl ?? '',
-          hintText: model.name,
-          selectAtInit: true,
-          autoComplete: true,
-          autoHeight: true,
-          height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
-          keyboardType: TextInputType.multiline,
-          maxLines: 5,
-          textInputAction: TextInputAction.newline,
-          alignVertical: TextAlignVertical.top,
-          onEditComplete: (value) {
-            model.remoteUrl = value;
-            widget.contentsManager.setToDB(model);
-            widget.contentsManager.notify();
-          },
-          onChanged: (value) {
-            model.remoteUrl = value;
-            widget.contentsManager.notify();
-          },
-        ),
+        // CretaTextField.long(
+        //   textFieldKey: key,
+        //   value: model.remoteUrl ?? '',
+        //   hintText: model.name,
+        //   selectAtInit: true,
+        //   autoComplete: true,
+        //   autoHeight: true,
+        //   height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
+        //   keyboardType: TextInputType.multiline,
+        //   maxLines: 5,
+        //   textInputAction: TextInputAction.newline,
+        //   alignVertical: TextAlignVertical.top,
+        //   autofocus: false,
+        //   onEditComplete: (value) {
+        //     model.remoteUrl = value;
+        //     widget.contentsManager.setToDB(model);
+        //     widget.contentsManager.notify();
+        //   },
+        //   onChanged: (value) {
+        //     model.remoteUrl = value;
+        //     //widget.contentsManager.notify();
+        //   },
+        // ),
         _textAlign(model),
         //_fontDecoBar(model),
         propertyDivider(height: 28),
@@ -837,7 +840,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         ),
         //const SizedBox(height: 10),
         // 폰트 사이즈
-        model.autoSizeType.value == AutoSizeType.autoFontSize
+        model.isAutoFontSize()
             ? Stack(
                 children: [
                   Column(children: [

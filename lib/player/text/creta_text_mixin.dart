@@ -16,11 +16,13 @@ import '../../model/app_enums.dart';
 import '../../model/contents_model.dart';
 import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
+import '../../pages/studio/studio_getx_controller.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_text_player.dart';
 
 mixin CretaTextMixin {
   double applyScale = 1;
+  FrameEventController? sendEvent;
 
   Widget playText(
     BuildContext context,
@@ -101,12 +103,13 @@ mixin CretaTextMixin {
     // }
 
     double padding = StudioConst.defaultTextPadding * applyScale;
-    if (model.autoSizeType.value == AutoSizeType.autoFrameSize && isThumbnail == false) {
+    if (model.isAutoFrameSize() && isThumbnail == false) {
       // 자동 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize before ${realSize.height}');
-      late double frameWidth;
+      //late double frameWidth;
+      //print('old frame size ${realSize.height}');
       late double frameHeight;
-      (frameWidth, frameHeight) = CretaUtils.getTextBoxSize(
+      (_, frameHeight) = CretaUtils.getTextBoxSize(
         uri,
         model.autoSizeType.value,
         realSize.width,
@@ -115,7 +118,13 @@ mixin CretaTextMixin {
         model.align.value,
         padding,
       );
-      realSize = Size(frameWidth, frameHeight);
+      //print('new frame size $frameHeight');
+
+      //realSize = Size(frameWidth, frameHeight);
+      if (realSize.height.round() != frameHeight.round()) {
+        realSize = Size(realSize.width, frameHeight);
+        //print('frame size changed ${realSize.height.round()} --> ${frameHeight.round()}');
+      }
     }
     //print('AutoSizeType.autoFrameSize after isThumbnail=$isThumbnail, ${realSize.height}');
 
@@ -128,8 +137,7 @@ mixin CretaTextMixin {
       height: realSize.height,
 
       child: (player != null &&
-              (player.acc.frameModel.isEditMode == true ||
-                  model.autoSizeType.value == AutoSizeType.noAutoSize) &&
+              (player.acc.frameModel.isEditMode == true) &&
               isThumbnail == false) // 에디트 모드에서는 글자를 표시하지 않는다.
           ? const SizedBox.shrink()
           : _playText(model, uri, style, fontSize, realSize, isThumbnail),
@@ -192,7 +200,7 @@ mixin CretaTextMixin {
       return Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          model.autoSizeType.value == AutoSizeType.autoFontSize
+          model.isAutoFontSize()
               ? CretaAutoSizeText(
                   text,
                   mid: model.mid,
@@ -210,7 +218,7 @@ mixin CretaTextMixin {
                   textAlign: model.align.value,
                   style: outlineStyle,
                 ),
-          model.autoSizeType.value == AutoSizeType.autoFontSize
+          model.isAutoFontSize()
               ? CretaAutoSizeText(
                   text,
                   mid: model.mid,
@@ -235,7 +243,7 @@ mixin CretaTextMixin {
     }
 
     // 아웃라인도 아니고, 애니매이션도 아닌 경우.
-    return model.autoSizeType.value == AutoSizeType.autoFontSize
+    return model.isAutoFontSize()
         ? CretaAutoSizeText(
             text,
             mid: model.mid,
@@ -402,7 +410,7 @@ mixin CretaTextMixin {
               period: Duration(milliseconds: duration),
               baseColor: model.fontColor.value,
               highlightColor: model.outLineColor.value,
-              child: model.autoSizeType.value == AutoSizeType.autoFontSize
+              child: model.isAutoFontSize()
                   ? CretaAutoSizeText(
                       text,
                       mid: model.mid,
@@ -454,7 +462,7 @@ mixin CretaTextMixin {
       case TextAniType.neon:
         {
           return Neonpen(
-            text: model.autoSizeType.value == AutoSizeType.autoFontSize
+            text: model.isAutoFontSize()
                 ? CretaAutoSizeText(
                     text,
                     mid: model.mid,
@@ -482,7 +490,7 @@ mixin CretaTextMixin {
           );
         }
       default:
-        return model.autoSizeType.value == AutoSizeType.autoFontSize
+        return model.isAutoFontSize()
             ? CretaAutoSizeText(
                 text,
                 mid: model.mid,
@@ -506,7 +514,7 @@ mixin CretaTextMixin {
   double _getAutoFontSize(ContentsModel? model, int textSize, Size realSize, double fontSize) {
     //double fontSize = model!.fontSize.value;
 
-    if (model!.autoSizeType.value == AutoSizeType.autoFontSize) {
+    if (model!.isAutoFontSize()) {
       return fontSize;
     }
     // 텍스트 길이

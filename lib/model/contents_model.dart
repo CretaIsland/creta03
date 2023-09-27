@@ -621,6 +621,18 @@ class ContentsModel extends CretaModel {
     logger.info('------------1-------name=[$name],mime=[$mime],bytes=[$bytes],url=[$url]');
   }
 
+  bool isAutoFrameSize() {
+    return autoSizeType.value == AutoSizeType.autoFrameSize;
+  }
+
+  bool isAutoFontSize() {
+    return autoSizeType.value == AutoSizeType.autoFontSize;
+  }
+
+  bool isNoAutoSize() {
+    return autoSizeType.value == AutoSizeType.noAutoSize;
+  }
+
   String getURI() {
     if (remoteUrl != null && remoteUrl!.isNotEmpty) {
       return remoteUrl!;
@@ -661,5 +673,99 @@ class ContentsModel extends CretaModel {
     //print('updateByAutoSize $value, $newFontSize');
     fontSize.set(newFontSize);
     return newFontSize;
+  }
+
+  (TextStyle, String, double) makeStyle(
+    BuildContext? context,
+    double applyScale,
+    bool isThumbnail, {
+    bool isEditMode = false,
+  }) {
+    String uri = getURI();
+    String errMsg = '$name uri is null';
+    if (uri.isEmpty) {
+      logger.fine(errMsg);
+    }
+    logger.fine("uri=<$uri>");
+
+    double newFontSize = fontSize.value * applyScale;
+
+    if (isEditMode == false &&
+        autoSizeType.value == AutoSizeType.autoFontSize &&
+        (aniType.value != TextAniType.rotate ||
+            aniType.value != TextAniType.bounce ||
+            aniType.value != TextAniType.fade ||
+            aniType.value != TextAniType.shimmer ||
+            aniType.value != TextAniType.typewriter ||
+            aniType.value != TextAniType.wavy ||
+            aniType.value != TextAniType.fidget)) {
+      newFontSize = StudioConst.maxFontSize * applyScale;
+    }
+    //newFontSize = newFontSize.roundToDouble();
+    if (isThumbnail == false) {
+      double minFontSize = StudioConst.minFontSize / applyScale;
+      if (newFontSize < StudioConst.minFontSize) newFontSize = minFontSize;
+    }
+    if (newFontSize > StudioConst.maxFontSize * applyScale) {
+      newFontSize = StudioConst.maxFontSize * applyScale;
+    }
+
+    FontWeight? newfontWeight = StudioConst.fontWeight2Type[fontWeight.value];
+
+    //double newlineHeight = (lineHeight.value / 10) * applyScale; // 행간
+    // 행간은 폰트사이즈에 대한 배율이므로, applyScale 을 해서는 안된다.
+    double newlineHeight = (lineHeight.value / 10); // 행간
+    //print('isThumbnail=$isThumbnail, newlineHeight=$newlineHeight');
+
+    TextStyle style = (context != null)
+        ? DefaultTextStyle.of(context).style.copyWith(
+            height: newlineHeight, // 행간
+            letterSpacing: letterSpacing.value * applyScale, // 자간,
+            fontFamily: font.value,
+            color: fontColor.value.withOpacity(opacity.value),
+            fontSize: newFontSize,
+            decoration: (isUnderline.value && isStrike.value)
+                ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+                : isUnderline.value
+                    ? TextDecoration.underline
+                    : isStrike.value
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+            //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+            //textWidthBasis: TextWidthBasis.longestLine,
+            overflow: TextOverflow.clip,
+            fontWeight: newfontWeight,
+            fontStyle: isItalic.value ? FontStyle.italic : FontStyle.normal)
+        : TextStyle(
+            height: newlineHeight, // 행간
+            letterSpacing: letterSpacing.value * applyScale, // 자간,
+            fontFamily: font.value,
+            color: fontColor.value.withOpacity(opacity.value),
+            fontSize: newFontSize,
+            decoration: (isUnderline.value && isStrike.value)
+                ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+                : isUnderline.value
+                    ? TextDecoration.underline
+                    : isStrike.value
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+            //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+            //textWidthBasis: TextWidthBasis.longestLine,
+
+            overflow: TextOverflow.clip,
+            fontWeight: newfontWeight,
+            fontStyle: isItalic.value ? FontStyle.italic : FontStyle.normal);
+
+    if (isBold.value) {
+      style = style.copyWith(fontWeight: FontWeight.bold);
+    }
+
+    if (autoSizeType.value == AutoSizeType.autoFontSize) {
+      style.copyWith(
+        fontSize: newFontSize,
+      );
+    }
+
+    return (style, uri, newFontSize);
   }
 }

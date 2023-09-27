@@ -112,6 +112,7 @@ class StudioConst {
   static const double maxFontSize = 512;
   static const double minFontSize = 10;
   static const double defaultTextPadding = 14.0;
+  static const double defaultFontSize = 64.0;
 
   static List<List<Size>> signageResolution = [
     [],

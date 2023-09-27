@@ -15,7 +15,8 @@ class SelectedBox extends StatefulWidget {
   final double normalizedWidth;
   final double resizePointerOffset;
   final VoidCallback onScaleStart;
-  final bool isResizable;
+  final bool isResiable;
+  final bool isVerticalResiable;
   final void Function(Offset) onDragTopLeft;
   final void Function(Offset) onDragBottomRight;
   final void Function(Offset) onDragTopRight;
@@ -48,7 +49,8 @@ class SelectedBox extends StatefulWidget {
     required this.onResizeButtonTap,
     required this.onComplete,
     required this.frameModel,
-    this.isResizable = true,
+    this.isResiable = true,
+    this.isVerticalResiable = true,
   });
 
   @override
@@ -205,11 +207,11 @@ class _SelectedBoxState extends State<SelectedBox> {
         Widget mainBuild = Stack(
           children: [
             selectedBox,
-            if (widget.frameModel == null && widget.isResizable == true)
+            if (widget.frameModel == null && widget.isResiable == true)
               ..._dragBoxes(heightCenter, widthCenter),
             if (widget.frameModel != null &&
                 widget.frameModel!.isMusicType() == false &&
-                widget.isResizable == true)
+                widget.isResiable == true)
               ..._dragBoxes(heightCenter, widthCenter),
           ],
         );
@@ -234,51 +236,59 @@ class _SelectedBoxState extends State<SelectedBox> {
     //print('_dragBoxes....start.${CretaUtils.timeLap()}');
 
     List<Widget> retval = [
-      Positioned(
-        //topLeft
-        top: widget.resizePointerOffset,
-        left: widget.resizePointerOffset,
-        child: topLeftCorner,
-      ),
-      Positioned(
-        // bottomLeft
-        bottom: widget.resizePointerOffset,
-        left: widget.resizePointerOffset,
-        child: bottomLeftCorner,
-      ),
-      Positioned(
-        //bottomRight
-        bottom: widget.resizePointerOffset,
-        right: widget.resizePointerOffset,
-        child: bottomRightCorner,
-      ),
-      Positioned(
-        // topRight
-        top: widget.resizePointerOffset,
-        right: widget.resizePointerOffset,
-        child: topRightCorner,
-      ),
+      if (widget.isVerticalResiable)
+        Positioned(
+          //topLeft
+          top: widget.resizePointerOffset,
+          left: widget.resizePointerOffset,
+          child: topLeftCorner,
+        ),
+      if (widget.isVerticalResiable)
+        Positioned(
+          // bottomLeft
+          bottom: widget.resizePointerOffset,
+          left: widget.resizePointerOffset,
+          child: bottomLeftCorner,
+        ),
+      if (widget.isVerticalResiable)
+        Positioned(
+          //bottomRight
+          bottom: widget.resizePointerOffset,
+          right: widget.resizePointerOffset,
+          child: bottomRightCorner,
+        ),
+      if (widget.isVerticalResiable)
+        Positioned(
+          // topRight
+          top: widget.resizePointerOffset,
+          right: widget.resizePointerOffset,
+          child: topRightCorner,
+        ),
 
       // centerButtons !!!
 
-      Positioned(
-        //topMidle
-        top: widget.resizePointerOffset,
-        left: widthCenter,
-        child: upPlane,
-      ),
+      if (widget.isVerticalResiable)
+        Positioned(
+          //topMidle
+          top: widget.resizePointerOffset,
+          left: widthCenter,
+          child: upPlane,
+        ),
+
       Positioned(
         // leftMiddle
         top: heightCenter,
         left: widget.resizePointerOffset,
         child: leftPlane,
       ),
-      Positioned(
-        //bottomMiddle
-        bottom: widget.resizePointerOffset,
-        left: widthCenter,
-        child: downPlane,
-      ),
+      if (widget.isVerticalResiable)
+        Positioned(
+          //bottomMiddle
+          bottom: widget.resizePointerOffset,
+          left: widthCenter,
+          child: downPlane,
+        ),
+
       Positioned(
         // rightMiddle
         top: heightCenter,
