@@ -14,7 +14,6 @@ import 'package:hycop/common/util/logger.dart';
 
 //import '../../common/creta_utils.dart';
 import '../../model/app_enums.dart';
-import '../../model/contents_model.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../creta_abs_player.dart';
 import 'tts.dart';
@@ -351,100 +350,100 @@ class CretaTextPlayer extends CretaAbsPlayer {
   //   //    level: 6);
   // }
 
-  static (TextStyle, String, double) makeStyle(
-    BuildContext? context,
-    ContentsModel model,
-    double applyScale,
-    bool isThumbnail, {
-    bool isEditMode = false,
-  }) {
-    String uri = model.getURI();
-    String errMsg = '${model.name} uri is null';
-    if (uri.isEmpty) {
-      logger.fine(errMsg);
-    }
-    logger.fine("uri=<$uri>");
+  // static (TextStyle, String, double) makeStyle(
+  //   BuildContext? context,
+  //   ContentsModel model,
+  //   double applyScale,
+  //   bool isThumbnail, {
+  //   bool isEditMode = false,
+  // }) {
+  //   String uri = model.getURI();
+  //   String errMsg = '${model.name} uri is null';
+  //   if (uri.isEmpty) {
+  //     logger.fine(errMsg);
+  //   }
+  //   logger.fine("uri=<$uri>");
 
-    double fontSize = model.fontSize.value * applyScale;
+  //   double fontSize = model.fontSize.value * applyScale;
 
-    if (isEditMode == false &&
-        model.isAutoFontSize() &&
-        (model.aniType.value != TextAniType.rotate ||
-            model.aniType.value != TextAniType.bounce ||
-            model.aniType.value != TextAniType.fade ||
-            model.aniType.value != TextAniType.shimmer ||
-            model.aniType.value != TextAniType.typewriter ||
-            model.aniType.value != TextAniType.wavy ||
-            model.aniType.value != TextAniType.fidget)) {
-      fontSize = StudioConst.maxFontSize * applyScale;
-    }
-    //fontSize = fontSize.roundToDouble();
-    if (isThumbnail == false) {
-      double minFontSize = StudioConst.minFontSize / applyScale;
-      if (fontSize < StudioConst.minFontSize) fontSize = minFontSize;
-    }
-    if (fontSize > StudioConst.maxFontSize * applyScale) {
-      fontSize = StudioConst.maxFontSize * applyScale;
-    }
+  //   if (isEditMode == false &&
+  //       model.isAutoFontSize() &&
+  //       (model.aniType.value != TextAniType.rotate ||
+  //           model.aniType.value != TextAniType.bounce ||
+  //           model.aniType.value != TextAniType.fade ||
+  //           model.aniType.value != TextAniType.shimmer ||
+  //           model.aniType.value != TextAniType.typewriter ||
+  //           model.aniType.value != TextAniType.wavy ||
+  //           model.aniType.value != TextAniType.fidget)) {
+  //     fontSize = StudioConst.maxFontSize * applyScale;
+  //   }
+  //   //fontSize = fontSize.roundToDouble();
+  //   if (isThumbnail == false) {
+  //     double minFontSize = StudioConst.minFontSize / applyScale;
+  //     if (fontSize < StudioConst.minFontSize) fontSize = minFontSize;
+  //   }
+  //   if (fontSize > StudioConst.maxFontSize * applyScale) {
+  //     fontSize = StudioConst.maxFontSize * applyScale;
+  //   }
 
-    FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
+  //   FontWeight? fontWeight = StudioConst.fontWeight2Type[model.fontWeight.value];
 
-    //double lineHeight = (model.lineHeight.value / 10) * applyScale; // 행간
-    // 행간은 폰트사이즈에 대한 배율이므로, applyScale 을 해서는 안된다.
-    double lineHeight = (model.lineHeight.value / 10); // 행간
-    //print('isThumbnail=$isThumbnail, lineHeight=$lineHeight');
+  //   //double lineHeight = (model.lineHeight.value / 10) * applyScale; // 행간
+  //   // 행간은 폰트사이즈에 대한 배율이므로, applyScale 을 해서는 안된다.
+  //   double lineHeight = (model.lineHeight.value / 10); // 행간
+  //   //print('isThumbnail=$isThumbnail, lineHeight=$lineHeight');
 
-    TextStyle style = (context != null)
-        ? DefaultTextStyle.of(context).style.copyWith(
-            height: lineHeight, // 행간
-            letterSpacing: model.letterSpacing.value * applyScale, // 자간,
-            fontFamily: model.font.value,
-            color: model.fontColor.value.withOpacity(model.opacity.value),
-            fontSize: fontSize,
-            decoration: (model.isUnderline.value && model.isStrike.value)
-                ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
-                : model.isUnderline.value
-                    ? TextDecoration.underline
-                    : model.isStrike.value
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-            //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
-            //textWidthBasis: TextWidthBasis.longestLine,
-            overflow: TextOverflow.clip,
-            fontWeight: fontWeight,
-            fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal)
-        : TextStyle(
-            height: lineHeight, // 행간
-            letterSpacing: model.letterSpacing.value * applyScale, // 자간,
-            fontFamily: model.font.value,
-            color: model.fontColor.value.withOpacity(model.opacity.value),
-            fontSize: fontSize,
-            decoration: (model.isUnderline.value && model.isStrike.value)
-                ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
-                : model.isUnderline.value
-                    ? TextDecoration.underline
-                    : model.isStrike.value
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-            //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
-            //textWidthBasis: TextWidthBasis.longestLine,
+  //   TextStyle style = (context != null)
+  //       ? DefaultTextStyle.of(context).style.copyWith(
+  //           height: lineHeight, // 행간
+  //           letterSpacing: model.letterSpacing.value * applyScale, // 자간,
+  //           fontFamily: model.font.value,
+  //           color: model.fontColor.value.withOpacity(model.opacity.value),
+  //           fontSize: fontSize,
+  //           decoration: (model.isUnderline.value && model.isStrike.value)
+  //               ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+  //               : model.isUnderline.value
+  //                   ? TextDecoration.underline
+  //                   : model.isStrike.value
+  //                       ? TextDecoration.lineThrough
+  //                       : TextDecoration.none,
+  //           //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+  //           //textWidthBasis: TextWidthBasis.longestLine,
+  //           overflow: TextOverflow.clip,
+  //           fontWeight: fontWeight,
+  //           fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal)
+  //       : TextStyle(
+  //           height: lineHeight, // 행간
+  //           letterSpacing: model.letterSpacing.value * applyScale, // 자간,
+  //           fontFamily: model.font.value,
+  //           color: model.fontColor.value.withOpacity(model.opacity.value),
+  //           fontSize: fontSize,
+  //           decoration: (model.isUnderline.value && model.isStrike.value)
+  //               ? TextDecoration.combine([TextDecoration.underline, TextDecoration.lineThrough])
+  //               : model.isUnderline.value
+  //                   ? TextDecoration.underline
+  //                   : model.isStrike.value
+  //                       ? TextDecoration.lineThrough
+  //                       : TextDecoration.none,
+  //           //fontWeight: model!.isBold.value ? FontWeight.bold : FontWeight.normal,
+  //           //textWidthBasis: TextWidthBasis.longestLine,
 
-            overflow: TextOverflow.clip,
-            fontWeight: fontWeight,
-            fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal);
+  //           overflow: TextOverflow.clip,
+  //           fontWeight: fontWeight,
+  //           fontStyle: model.isItalic.value ? FontStyle.italic : FontStyle.normal);
 
-    if (model.isBold.value) {
-      style = style.copyWith(fontWeight: FontWeight.bold);
-    }
+  //   if (model.isBold.value) {
+  //     style = style.copyWith(fontWeight: FontWeight.bold);
+  //   }
 
-    if (model.isAutoFontSize()) {
-      style.copyWith(
-        fontSize: fontSize,
-      );
-    }
+  //   if (model.isAutoFontSize()) {
+  //     style.copyWith(
+  //       fontSize: fontSize,
+  //     );
+  //   }
 
-    return (style, uri, fontSize);
-  }
+  //   return (style, uri, fontSize);
+  // }
 
   static AlignmentDirectional toAlign(TextAlign align, TextAlignVertical valign) {
     switch (align) {

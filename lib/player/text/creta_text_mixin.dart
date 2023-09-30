@@ -49,7 +49,7 @@ mixin CretaTextMixin {
     late TextStyle style;
     late String uri;
     late double fontSize;
-    (style, uri, fontSize) = CretaTextPlayer.makeStyle(context, model, applyScale, isThumbnail);
+    (style, uri, fontSize) = model.makeStyle(context, applyScale, isThumbnail);
 
     // String uri = model.getURI();
     // String errMsg = '${model.name} uri is null';

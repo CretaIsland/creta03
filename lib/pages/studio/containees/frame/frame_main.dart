@@ -18,7 +18,6 @@ import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
-import '../../../../player/text/creta_text_player.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../right_menu/right_menu.dart';
@@ -395,8 +394,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             //print('AutoSizeType.autoFrameSize before $frameHeight');
             late String uri;
             late TextStyle style;
-            (style, uri, _) =
-                CretaTextPlayer.makeStyle(null, contentsModel, StudioVariables.applyScale, false);
+            (style, uri, _) = contentsModel.makeStyle(null, StudioVariables.applyScale, false);
 
             //late double newFrameWidth;
             late double newFrameHeight;
