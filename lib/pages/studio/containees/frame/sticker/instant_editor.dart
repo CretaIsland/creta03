@@ -54,7 +54,6 @@ class _InstantEditorState extends State<InstantEditor> {
   ContentsManager? _contentsManager;
   double _padding = 0;
   final double borderWidth = 2;
-  final double _stepGranularity = 2.0; // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
 
   // TextPainter _getTextPainter(String text) {
   //   return TextPainter(
@@ -230,7 +229,7 @@ class _InstantEditorState extends State<InstantEditor> {
       _textController.selection = TextSelection.fromPosition(
         TextPosition(offset: model.cursorPos + 1),
       );
-    } else if (_textController.text.length <= model.cursorPos) {
+    } else if (_textController.text.isNotEmpty && _textController.text.length <= model.cursorPos) {
       _textController.selection = TextSelection.fromPosition(
         TextPosition(offset: _textController.text.length),
       );
@@ -267,6 +266,7 @@ class _InstantEditorState extends State<InstantEditor> {
 
   Widget _editText(ContentsModel model, String uri, TextStyle style) {
     //print('_editText height=${_realSize!.height}');
+    final double fontSize = model.fontSize.value * StudioVariables.applyScale;
 
     late Size applySize;
     late Widget editorWidget;
@@ -278,8 +278,8 @@ class _InstantEditorState extends State<InstantEditor> {
       // if (padding < 0) padding = 0;
       // 프레임 사이즈가 변한다.
       applySize = Size(_frameSize.width, _realSize!.height);
-      //print('applySize=$applySize');
-      editorWidget = _autoTextField(model, uri, model.fontSize.value * StudioVariables.applyScale);
+      print('applySize=$applySize');
+      editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: false);
       //editorWidget = _myTextField(model, uri, padding);
     } else if (model.isAutoFontSize()) {
       // double padding =
@@ -289,7 +289,8 @@ class _InstantEditorState extends State<InstantEditor> {
       // if (padding < 0) padding = 0;
       // 프레임 사이즈도 . 에디터 사이즈도 변하지 않ㄴ느다. 폰트사이즈가 변해야 한다.
       applySize = _frameSize;
-      editorWidget = _autoTextField(model, uri, null);
+      print('applySize=$applySize');
+      editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: true);
     } else if (model.isNoAutoSize()) {
       // double padding =
       //     //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
@@ -306,7 +307,7 @@ class _InstantEditorState extends State<InstantEditor> {
           //alignment: Alignment.topCenter,
           maxHeight: _realSize!.height, // double.infinity, //,
           maxWidth: _frameSize.width,
-          child: _autoTextField(model, uri, model.fontSize.value * StudioVariables.applyScale),
+          child: _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: false),
           //child: _myTextField(model, uri, padding),
         );
       } else {
@@ -335,14 +336,15 @@ class _InstantEditorState extends State<InstantEditor> {
           width: applySize.width,
           height: applySize.height,
           padding: model.isAutoFontSize()
-              ? EdgeInsets.symmetric(vertical: _padding, horizontal: _padding + (_stepGranularity))
+              ? EdgeInsets.symmetric(vertical: _padding, horizontal: _padding + (StudioConst.stepGranularity))
               : EdgeInsets.all(_padding),
-          //padding: const EdgeInsets.all(50),
+          //padding: EdgeInsets.all(_padding),
           child: editorWidget),
     );
   }
 
-  Widget _autoTextField(ContentsModel model, String uri, double? fontSize) {
+  Widget _autoTextField(ContentsModel model, String uri, double fontSize, double initialHeight,
+      {bool useAutoSize = true}) {
     double cursorSize = _padding * 0.7471818504075;
 
     // -((borderWidth * 2) * StudioVariables.applyScale);
@@ -352,7 +354,10 @@ class _InstantEditorState extends State<InstantEditor> {
     }
     return AutoSizeTextField(
       //return TextField(
+
       enabled: widget.enabled,
+      initialHeight: initialHeight,
+      useAutoSize: useAutoSize,
       fontSize: fontSize,
       fullwidth: true,
       //minWidth: _frameSize.width,
@@ -362,10 +367,12 @@ class _InstantEditorState extends State<InstantEditor> {
       cursorWidth: cursorSize,
       cursorColor:
           widget.frameModel.bgColor1.value.computeLuminance() > 0.5 ? Colors.black : Colors.white,
-      stepGranularity: _stepGranularity, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
+      stepGranularity: StudioConst.stepGranularity, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
+      minFontSize: StudioConst.stepGranularity * 2,
       strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
       decoration: const InputDecoration(
         border: InputBorder.none,
+
         // contentPadding: model.isAutoFontSize()
         //     ? EdgeInsets.symmetric(vertical: _padding / 3, horizontal: _padding * 0.9)
         //     : EdgeInsets.all(_padding),
@@ -391,7 +398,6 @@ class _InstantEditorState extends State<InstantEditor> {
       //textInputAction: TextInputAction.none,
       textAlign: model.align.value,
       textAlignVertical: intToTextAlignVertical(model.valign.value),
-      minFontSize: StudioConst.maxFontSize,
       style: _style!.copyWith(
           fontSize: StudioConst.maxFontSize *
               StudioVariables.applyScale), // _style!.copyWith(backgroundColor: Colors.green),

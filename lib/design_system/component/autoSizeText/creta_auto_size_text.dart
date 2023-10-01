@@ -23,7 +23,7 @@ class CretaAutoSizeText extends StatefulWidget {
     this.textKey,
     this.style,
     this.strutStyle,
-    this.minFontSize = 1,
+    required this.minFontSize,
     this.maxFontSize = double.infinity,
     this.stepGranularity = 1,
     this.presetFontSizes,
@@ -50,7 +50,7 @@ class CretaAutoSizeText extends StatefulWidget {
     this.textKey,
     this.style,
     this.strutStyle,
-    this.minFontSize = 12,
+    required this.minFontSize,
     this.maxFontSize = double.infinity,
     this.stepGranularity = 1,
     this.presetFontSizes,
@@ -433,6 +433,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
 
   Widget _buildText(double fontSize, TextStyle style, int? maxLines) {
     // 보이는 폰트 사이즈가 10 보다 작을 수 없다. skpark
+    //fontSize = (fontSize * 0.99).floorToDouble(); //skpark textField 보다 크기 때문에 4% 정도 작게 해준다.
     if (fontSize < StudioConst.minFontSize) {
       fontSize = StudioConst.minFontSize;
     }

@@ -798,9 +798,9 @@ class CretaUtils {
 
     if (autoSizeType == AutoSizeType.autoFrameSize) {
       double wMargin = (style!.fontSize! / adjust);
-      double hMargin = wMargin * (height / width);
+      //double hMargin = wMargin * (height / width);
       width += wMargin;
-      height += hMargin;
+      //height += hMargin;
     }
 
     //print('height=$height');

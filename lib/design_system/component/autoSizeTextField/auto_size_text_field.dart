@@ -430,7 +430,9 @@ class AutoSizeTextField extends StatefulWidget {
 
   final double? minWidth;
 
-  final double? fontSize; //skprak
+  final bool useAutoSize; //skprak
+  final double fontSize; //skprak
+  final double initialHeight; //skprak
   final void Function(PointerDownEvent)? onTapOutside; //skpark
 
   /// Creates a [AutoSizeTextField] widget.
@@ -439,13 +441,15 @@ class AutoSizeTextField extends StatefulWidget {
   /// closest enclosing [DefaultTextStyle].
   const AutoSizeTextField({
     Key? key,
-    this.fontSize, //skpark
+    this.useAutoSize = true, //skpark
+    required this.initialHeight, //skpark , 문자열이 엠프티일때, 초기 높이를 알기 위해.
+    required this.fontSize, //skpark ,
     this.onTapOutside, //skpark
     this.fullwidth = true,
     this.textFieldKey,
     this.style,
     this.strutStyle,
-    this.minFontSize = 12,
+    required this.minFontSize,
     this.maxFontSize = double.infinity,
     this.stepGranularity = 1,
     this.presetFontSizes,
@@ -535,6 +539,8 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
         style = defaultTextStyle.style.merge(widget.style);
       }
       if (style!.fontSize == null) {
+        print(
+            'style.fontSize is null,  default font size will be used ${AutoSizeTextField._defaultFontSize}');
         style = style.copyWith(fontSize: AutoSizeTextField._defaultFontSize);
       }
 
@@ -546,13 +552,15 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
       //('before');
       var result = _calculateFontSize(size, style, maxLines);
       //('after');
-      if (widget.fontSize == null) {
+      if (widget.useAutoSize == true) {
         //skpark
         fontSize = (result[0] as double); //skpark
         textFits = result[1] as bool;
+        print('calculated fontSize = $fontSize  style!.fontSize=${style.fontSize}');
       } else {
         //skpark
-        fontSize = widget.fontSize!; //skpark
+        print('fontSize is given(${widget.fontSize}), This means Its not AutoSizeFont');
+        fontSize = widget.fontSize; //skpark
         textFits = false; //skpark
       } //skpark
       Widget textField;
@@ -579,6 +587,13 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
   }
 
   Widget _buildTextField(double fontSize, TextStyle style, int? maxLines) {
+    bool emptyFlag = false;
+    if (widget.controller != null && widget.controller!.text.isEmpty) {
+      print('Initial string is empty  calc fontSize=$fontSize, given fontSize=${widget.fontSize}');
+      // 문자가 비어있을 때는,  fontSize 계산이 틀리기 때문에,  initialHeight 를 원시 폰트 사이즈로 맞주어준다.
+      emptyFlag = true;
+      fontSize = widget.initialHeight;
+    }
     return SizedBox(
       width: widget.fullwidth ? double.infinity : math.max(fontSize, _textSpanWidth),
       child: TextField(
@@ -599,15 +614,15 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
         enabled: widget.enabled,
         enableInteractiveSelection: widget.enableInteractiveSelection,
         enableSuggestions: widget.enableSuggestions,
-        expands: widget.expands,
+        expands: emptyFlag == true ? false : widget.expands,
         focusNode: widget.focusNode,
         inputFormatters: widget.inputFormatters,
         keyboardAppearance: widget.keyboardAppearance,
         keyboardType: widget.keyboardType,
         maxLength: widget.maxLength,
         maxLengthEnforcement: widget.maxLengthEnforcement,
-        maxLines: widget.maxLines,
-        minLines: widget.minLines,
+        maxLines: emptyFlag == true ? 1 : widget.maxLines,
+        minLines: emptyFlag == true ? 1 : widget.minLines,
         obscureText: widget.obscureText,
         onChanged: widget.onChanged,
         onEditingComplete: widget.onEditingComplete,
@@ -671,7 +686,7 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
       right = presetFontSizes.length - 1;
     }
 
-    if (widget.fontSize != null) {
+    if (widget.useAutoSize == false) {
       //skpark
       return [widget.fontSize, false];
     }

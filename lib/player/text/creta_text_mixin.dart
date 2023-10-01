@@ -130,6 +130,11 @@ mixin CretaTextMixin {
 
     return Container(
       color: Colors.transparent,
+      // padding: model.isAutoFontSize()
+      //     ? EdgeInsets.symmetric(
+      //         vertical: padding, horizontal: padding + (StudioConst.stepGranularity))
+      //     : EdgeInsets.all(padding),
+
       padding: EdgeInsets.all(padding),
       alignment:
           CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
@@ -140,7 +145,11 @@ mixin CretaTextMixin {
               (player.acc.frameModel.isEditMode == true) &&
               isThumbnail == false) // 에디트 모드에서는 글자를 표시하지 않는다.
           ? const SizedBox.shrink()
-          : _playText(model, uri, style, fontSize, realSize, isThumbnail),
+          : Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.amber,
+              child: _playText(model, uri, style, fontSize, realSize, isThumbnail)),
       //child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
   }
@@ -212,6 +221,8 @@ mixin CretaTextMixin {
                   },
                   textAlign: model.align.value,
                   style: outlineStyle,
+                  stepGranularity: StudioConst.stepGranularity,
+                  minFontSize: StudioConst.stepGranularity * 2,
                 )
               : Text(
                   text,
@@ -230,6 +241,8 @@ mixin CretaTextMixin {
                   // },
                   textAlign: model.align.value,
                   style: style,
+                  stepGranularity: StudioConst.stepGranularity,
+                  minFontSize: StudioConst.stepGranularity * 2,
                   //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
                 )
               : Text(
@@ -255,6 +268,8 @@ mixin CretaTextMixin {
             },
             textAlign: model.align.value,
             style: style,
+            stepGranularity: StudioConst.stepGranularity,
+            minFontSize: StudioConst.stepGranularity * 2,
             //textScaleFactor: (model.scaleFactor.value / 100)
           )
         : Text(
@@ -422,6 +437,8 @@ mixin CretaTextMixin {
                       },
                       textAlign: model.align.value,
                       style: style,
+                      stepGranularity: StudioConst.stepGranularity,
+                      minFontSize: StudioConst.stepGranularity * 2,
                     )
                   : Text(
                       text,
@@ -474,6 +491,8 @@ mixin CretaTextMixin {
                     },
                     textAlign: model.align.value,
                     style: style,
+                    stepGranularity: StudioConst.stepGranularity,
+                    minFontSize: StudioConst.stepGranularity * 2,
                   )
                 : Text(text, textAlign: model.align.value, style: style),
             color: model.outLineColor.value == Colors.transparent
@@ -502,6 +521,8 @@ mixin CretaTextMixin {
                 },
                 textAlign: model.align.value,
                 style: style,
+                stepGranularity: StudioConst.stepGranularity,
+                minFontSize: StudioConst.stepGranularity * 2,
               )
             : Text(
                 text,
