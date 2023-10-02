@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/autoSizeTextField/auto_size_text_field.dart';
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/app_enums.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../../player/text/creta_text_player.dart';
-import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
 import 'draggable_stickers.dart';
@@ -278,7 +278,7 @@ class _InstantEditorState extends State<InstantEditor> {
       // if (padding < 0) padding = 0;
       // 프레임 사이즈가 변한다.
       applySize = Size(_frameSize.width, _realSize!.height);
-      print('applySize=$applySize');
+      //print('applySize=$applySize');
       editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: false);
       //editorWidget = _myTextField(model, uri, padding);
     } else if (model.isAutoFontSize()) {
@@ -289,7 +289,7 @@ class _InstantEditorState extends State<InstantEditor> {
       // if (padding < 0) padding = 0;
       // 프레임 사이즈도 . 에디터 사이즈도 변하지 않ㄴ느다. 폰트사이즈가 변해야 한다.
       applySize = _frameSize;
-      print('applySize=$applySize');
+      //print('applySize=$applySize');
       editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: true);
     } else if (model.isNoAutoSize()) {
       // double padding =
@@ -336,7 +336,8 @@ class _InstantEditorState extends State<InstantEditor> {
           width: applySize.width,
           height: applySize.height,
           padding: model.isAutoFontSize()
-              ? EdgeInsets.symmetric(vertical: _padding, horizontal: _padding + (StudioConst.stepGranularity))
+              ? EdgeInsets.symmetric(
+                  vertical: _padding, horizontal: _padding + (StudioConst.stepGranularity))
               : EdgeInsets.all(_padding),
           //padding: EdgeInsets.all(_padding),
           child: editorWidget),
@@ -368,7 +369,7 @@ class _InstantEditorState extends State<InstantEditor> {
       cursorColor:
           widget.frameModel.bgColor1.value.computeLuminance() > 0.5 ? Colors.black : Colors.white,
       stepGranularity: StudioConst.stepGranularity, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
-      minFontSize: StudioConst.stepGranularity * 2,
+      minFontSize: StudioConst.minFontSize,
       strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
       decoration: const InputDecoration(
         border: InputBorder.none,
@@ -412,7 +413,8 @@ class _InstantEditorState extends State<InstantEditor> {
       onTapOutside: (event) {
         // print('onTapOutside');
         _saveChanges(model);
-        BookMainPage.containeeNotifier!.setFrameClick(true);
+        CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true); // rightMenu 에 전달
+        //BookMainPage.containeeNotifier!.setFrameClick(true);
         DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
         widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
       },

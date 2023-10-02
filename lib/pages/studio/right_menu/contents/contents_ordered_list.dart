@@ -1,8 +1,11 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
@@ -12,6 +15,7 @@ import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/buttons/creta_checkbox.dart';
 import '../../../../design_system/buttons/creta_ex_slider.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
+import '../../../../design_system/component/autoSizeText/font_size_changing_notifier.dart';
 import '../../../../design_system/component/creta_font_deco_bar.dart';
 import '../../../../design_system/component/creta_font_selector.dart';
 import '../../../../design_system/component/creta_icon_toggle_button.dart';
@@ -76,6 +80,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
   @override
   Widget build(BuildContext context) {
+    // 이곳에 도착하는 이벤트는  Consumer<ContaineeNotifier> 이다.
+
     List<CretaModel> items = widget.contentsManager.valueList();
     int lineLimit = 10;
     // if (_isExpanded) {
@@ -745,29 +751,6 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   Widget _textEditor(ContentsModel model) {
     //GlobalKey<CretaTextFieldState> key = GlobalKey<CretaTextFieldState>();
 
-    Widget autoSizeTypeWidget = CretaCheckbox(
-      // 창 크기에 맞춤
-      valueMap: {
-        CretaStudioLang.autoFontSize: model.isAutoFontSize(),
-        CretaStudioLang.autoFrameSize: model.isAutoFrameSize(),
-        CretaStudioLang.noAutoSize: model.isNoAutoSize(),
-      },
-      onSelected: (title, value, nvMap) {
-        //print('onSelected !!!!!!!');
-        //mychangeStack.startTrans();
-        AutoSizeType type = AutoSizeType.fromString(title);
-        model.autoSizeType.set(type);
-        //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
-        //mychangeStack.endTrans();
-        _sendEvent!.sendEvent(widget.contentsManager.frameModel);
-        //  widget.contentsManager.notify();
-        //   DraggableStickers.frameSelectNotifier!.notify();
-        //   widget.frameManager?.notify();
-
-        setState(() {});
-      },
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -797,18 +780,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         _textAlign(model),
         //_fontDecoBar(model),
         propertyDivider(height: 28),
-        widget.contentsManager.frameModel.isEditMode == false
-            ? autoSizeTypeWidget
-            : Stack(
-                children: [
-                  autoSizeTypeWidget,
-                  Container(
-                    width: double.infinity,
-                    height: 90,
-                    color: Colors.white.withOpacity(0.7),
-                  ),
-                ],
-              ),
+        _aboutMode(model),
         propertyDivider(height: 28),
         CretaFontSelector(
           // 폰트, 폰트 weight
@@ -839,29 +811,77 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           textStyle: dataStyle,
         ),
         //const SizedBox(height: 10),
-        // 폰트 사이즈
-        model.isAutoFontSize()
-            ? Stack(
-                children: [
-                  Column(children: [
-                    _fontSize(model),
-                    _letterSpace(model),
-                    _lineHeight(model),
-                  ]),
-                  Container(
-                    width: double.infinity,
-                    height: 126,
-                    color: Colors.white.withOpacity(0.7),
-                  ),
-                ],
-              )
-            : Column(children: [
-                _fontSize(model),
-                _letterSpace(model),
-                _lineHeight(model),
-              ]),
+        // 폰트 사이즈, 행간, 자간
+        _aboutFont(model),
       ],
     );
+  }
+
+  Widget _aboutMode(ContentsModel model) {
+    Widget autoSizeTypeWidget = CretaCheckbox(
+      // 창 크기에 맞춤
+      valueMap: {
+        CretaStudioLang.autoFontSize: model.isAutoFontSize(),
+        CretaStudioLang.autoFrameSize: model.isAutoFrameSize(),
+        CretaStudioLang.noAutoSize: model.isNoAutoSize(),
+      },
+      onSelected: (title, value, nvMap) {
+        //print('onSelected !!!!!!!');
+        //mychangeStack.startTrans();
+        AutoSizeType type = AutoSizeType.fromString(title);
+        model.autoSizeType.set(type);
+        //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
+        //mychangeStack.endTrans();
+        _sendEvent!.sendEvent(widget.contentsManager.frameModel);
+        //  widget.contentsManager.notify();
+        //   DraggableStickers.frameSelectNotifier!.notify();
+        //   widget.frameManager?.notify();
+
+        setState(() {});
+      },
+    );
+
+    return Consumer<FontSizeChangingNotifier>(builder: (context, fontSizeNotifier, child) {
+      //print('fontSize changing ${fontSizeNotifier.isChanging}');
+      return widget.contentsManager.frameModel.isEditMode == false &&
+              fontSizeNotifier.isChanging == false
+          ? autoSizeTypeWidget
+          : Stack(
+              children: [
+                autoSizeTypeWidget,
+                Container(
+                  width: double.infinity,
+                  height: 90,
+                  color: Colors.white.withOpacity(0.7),
+                ),
+              ],
+            );
+    });
+  }
+
+  Widget _aboutFont(ContentsModel model) {
+    return Consumer<FontSizeChangingNotifier>(builder: (context, fontSizeNotifier, child) {
+      return model.isAutoFontSize()
+          ? Stack(
+              children: [
+                Column(children: [
+                  _fontSize(model),
+                  _letterSpace(model),
+                  _lineHeight(model),
+                ]),
+                Container(
+                  width: double.infinity,
+                  height: 126,
+                  color: Colors.white.withOpacity(0.7),
+                ),
+              ],
+            )
+          : Column(children: [
+              _fontSize(model),
+              _letterSpace(model),
+              _lineHeight(model),
+            ]);
+    });
   }
 
   Widget _fontSize(ContentsModel model) {
@@ -870,6 +890,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     if (fontSize < minFontSize) {
       fontSize = minFontSize;
     }
+
     return propertyLine(
       // FontSize  폰트사이즈
       name: CretaStudioLang.fontSize,

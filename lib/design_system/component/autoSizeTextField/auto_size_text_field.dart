@@ -539,8 +539,8 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
         style = defaultTextStyle.style.merge(widget.style);
       }
       if (style!.fontSize == null) {
-        print(
-            'style.fontSize is null,  default font size will be used ${AutoSizeTextField._defaultFontSize}');
+        //print(
+        //    'style.fontSize is null,  default font size will be used ${AutoSizeTextField._defaultFontSize}');
         style = style.copyWith(fontSize: AutoSizeTextField._defaultFontSize);
       }
 
@@ -556,10 +556,10 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
         //skpark
         fontSize = (result[0] as double); //skpark
         textFits = result[1] as bool;
-        print('calculated fontSize = $fontSize  style!.fontSize=${style.fontSize}');
+        //print('calculated fontSize = $fontSize  style!.fontSize=${style.fontSize}');
       } else {
         //skpark
-        print('fontSize is given(${widget.fontSize}), This means Its not AutoSizeFont');
+        //print('fontSize is given(${widget.fontSize}), This means Its not AutoSizeFont');
         fontSize = widget.fontSize; //skpark
         textFits = false; //skpark
       } //skpark
@@ -589,7 +589,7 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
   Widget _buildTextField(double fontSize, TextStyle style, int? maxLines) {
     bool emptyFlag = false;
     if (widget.controller != null && widget.controller!.text.isEmpty) {
-      print('Initial string is empty  calc fontSize=$fontSize, given fontSize=${widget.fontSize}');
+      //print('Initial string is empty  calc fontSize=$fontSize, given fontSize=${widget.fontSize}');
       // 문자가 비어있을 때는,  fontSize 계산이 틀리기 때문에,  initialHeight 를 원시 폰트 사이즈로 맞주어준다.
       emptyFlag = true;
       fontSize = widget.initialHeight;

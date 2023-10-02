@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../pages/studio/studio_constant.dart';
+import 'font_size_changing_notifier.dart';
 
 /// Flutter widget that automatically resizes text to fit perfectly within its
 /// bounds.
@@ -11,6 +12,8 @@ import '../../../pages/studio/studio_constant.dart';
 /// overflows anyway, you should check if the parent widget actually constraints
 /// the size of this widget.
 class CretaAutoSizeText extends StatefulWidget {
+  static FontSizeChangingNotifier? fontSizeNotifier;
+
   /// Creates a [CretaAutoSizeText] widget.
   ///
   /// If the [style] argument is null, the text will use the style from the
@@ -245,9 +248,11 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
       _isCallbackPending = true;
       //print('afterBuildComplete');
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.fontSizeChanged?.call(AutoSizeGroup.autoSizeMap[widget.mid]); //skpark
+        if (widget.fontSizeChanged != null) {
+          //print('afterBuildComplete....');
+          widget.fontSizeChanged?.call(AutoSizeGroup.autoSizeMap[widget.mid]); //skpark
+        }
         _isCallbackPending = false;
-        //print('000000000000000000000000');
       });
     }
   }
@@ -264,6 +269,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
 
   @override
   Widget build(BuildContext context) {
+    //print('000000000000000000000000');
     if (widget.fontSizeChanged != null) {
       afterBuildComplete(); //skpark
     }
@@ -525,9 +531,9 @@ class AutoSizeGroup {
   void _notifyListeners() {
     if (_widgetsNotified) {
       return;
-    } else {
-      _widgetsNotified = true;
     }
+
+    _widgetsNotified = true;
 
     for (final textState in _listeners.keys) {
       if (textState.mounted) {

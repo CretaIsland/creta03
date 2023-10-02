@@ -113,7 +113,7 @@ class _RightMenuState
         //   shadowDirection: ShadowDirection.leftTop,
         //   child:
         Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
-      //print('Consumer<ContaineeNotifier> - RightMenu : ${CretaUtils.timeLap()}');
+      //print('Consumer<ContaineeNotifier> - RightMenu :');
       if (_shouldRightMenuOpen() == false) {
         RightMenu.isOpen = false;
         return SizedBox.shrink();

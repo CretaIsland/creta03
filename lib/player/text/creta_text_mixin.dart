@@ -200,84 +200,64 @@ mixin CretaTextMixin {
 
   Widget _outLineAndShadowText(
       ContentsModel? model, String text, TextStyle style, bool isThumbnail) {
-    // 새도우의 경우.
-
-    // 아웃라인의 경우.
-    if (model!.outLineWidth.value > 0) {
-      TextStyle outlineStyle = model.addOutLineStyle(style, applyScale: applyScale);
-
-      return Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-          model.isAutoFontSize()
-              ? CretaAutoSizeText(
-                  text,
-                  mid: model.mid,
-                  fontSizeChanged: (value) {
-                    if (isThumbnail == false) {
-                      model.updateByAutoSize(value, applyScale);
-                      BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
-                    }
-                  },
-                  textAlign: model.align.value,
-                  style: outlineStyle,
-                  stepGranularity: StudioConst.stepGranularity,
-                  minFontSize: StudioConst.stepGranularity * 2,
-                )
-              : Text(
-                  text,
-                  textAlign: model.align.value,
-                  style: outlineStyle,
-                ),
-          model.isAutoFontSize()
-              ? CretaAutoSizeText(
-                  text,
-                  mid: model.mid,
-                  // fontSizeChanged: (value) {
-                  //   if (isThumbnail == false) {
-                  //     model.updateByAutoSize(value, applyScale);
-                  //     BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
-                  //   }
-                  // },
-                  textAlign: model.align.value,
-                  style: style,
-                  stepGranularity: StudioConst.stepGranularity,
-                  minFontSize: StudioConst.stepGranularity * 2,
-                  //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
-                )
-              : Text(
-                  text,
-                  textAlign: model.align.value,
-                  style: style,
-                  //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
-                ),
-        ],
-      );
-    }
-
-    // 아웃라인도 아니고, 애니매이션도 아닌 경우.
-    return model.isAutoFontSize()
+    Widget realText = model!.isAutoFontSize()
         ? CretaAutoSizeText(
             text,
             mid: model.mid,
             fontSizeChanged: (value) {
               if (isThumbnail == false) {
+                //print('fontSize changed !!!');
                 model.updateByAutoSize(value, applyScale);
-                BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
+                CretaAutoSizeText.fontSizeNotifier?.stop(); // rightMenu 에 전달
+                //BookMainPage.containeeNotifier!.notify(); // rightMenu 에 전달
               }
             },
             textAlign: model.align.value,
             style: style,
             stepGranularity: StudioConst.stepGranularity,
-            minFontSize: StudioConst.stepGranularity * 2,
-            //textScaleFactor: (model.scaleFactor.value / 100)
+            minFontSize: StudioConst.minFontSize,
+            //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
           )
         : Text(
             text,
             textAlign: model.align.value,
             style: style,
-            //textScaleFactor: (model.scaleFactor.value / 100)
+            //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
           );
+
+    // 새도우의 경우.
+    // 아직 구현안함.
+
+    if (model.outLineWidth.value > 0) {
+      // 아웃라인의 경우.
+      TextStyle outlineStyle = model.addOutLineStyle(style, applyScale: applyScale);
+
+      Widget shadow = model.isAutoFontSize()
+          ? CretaAutoSizeText(
+              text,
+              mid: model.mid,
+              textAlign: model.align.value,
+              style: outlineStyle,
+              stepGranularity: StudioConst.stepGranularity,
+              minFontSize: StudioConst.minFontSize,
+            )
+          : Text(
+              text,
+              textAlign: model.align.value,
+              style: outlineStyle,
+            );
+
+      return Stack(
+        alignment: AlignmentDirectional.center,
+        children: [
+          shadow,
+          realText,
+        ],
+      );
+    }
+
+    // 아웃라인도 아니고, 애니매이션도 아닌 경우.
+    return realText;
   }
 
   Widget _animationText(
@@ -438,7 +418,7 @@ mixin CretaTextMixin {
                       textAlign: model.align.value,
                       style: style,
                       stepGranularity: StudioConst.stepGranularity,
-                      minFontSize: StudioConst.stepGranularity * 2,
+                      minFontSize: StudioConst.minFontSize,
                     )
                   : Text(
                       text,
@@ -492,7 +472,7 @@ mixin CretaTextMixin {
                     textAlign: model.align.value,
                     style: style,
                     stepGranularity: StudioConst.stepGranularity,
-                    minFontSize: StudioConst.stepGranularity * 2,
+                    minFontSize: StudioConst.minFontSize,
                   )
                 : Text(text, textAlign: model.align.value, style: style),
             color: model.outLineColor.value == Colors.transparent
@@ -522,7 +502,7 @@ mixin CretaTextMixin {
                 textAlign: model.align.value,
                 style: style,
                 stepGranularity: StudioConst.stepGranularity,
-                minFontSize: StudioConst.stepGranularity * 2,
+                minFontSize: StudioConst.minFontSize,
               )
             : Text(
                 text,

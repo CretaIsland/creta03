@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
@@ -255,6 +256,15 @@ class _DraggableStickersState extends State<DraggableStickers> {
         //print('DraggableResizable onScaleStart --------------------------');
 
         widget.onScaleStart.call(sticker.id);
+
+        FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
+        if (frameModel != null && frameModel.isTextType()) {
+          ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
+          if (contentsModel != null && contentsModel.isText() && contentsModel.isAutoFontSize()) {
+            // 마우스를 끌기 시작하여, fontSize 가 변하기 시작한다는 사실을 알림.
+            CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true); // rightMenu 에 전달
+          }
+        }
       },
 
       // To update the layer (manage position of widget in stack)
