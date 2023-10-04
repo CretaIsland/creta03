@@ -142,6 +142,8 @@ dependencies:
   weather_icons: ^3.0.0
   #flutter_treeview: ^1.0.7+1
   
+  image: ^4.1.3
+
 
 dev_dependencies:
   flutter_test:
