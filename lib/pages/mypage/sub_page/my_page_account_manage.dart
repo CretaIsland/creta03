@@ -1,19 +1,18 @@
-import 'dart:typed_data';
-
 import 'package:creta03/data_io/channel_manager.dart';
 import 'package:creta03/data_io/user_property_manager.dart';
 import 'package:creta03/design_system/buttons/creta_button_wrapper.dart';
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/design_system/creta_font.dart';
-import 'package:creta03/design_system/dialog/creta_dialog.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/lang/creta_mypage_lang.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
+import 'package:creta03/pages/mypage/popup/edit_banner_popup.dart';
 import 'package:creta03/pages/mypage/popup/popup_rateplan.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import 'package:image_picker/image_picker.dart';
+
 
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
@@ -245,7 +244,9 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
                           // popup 호출
                           showDialog(
                             context: context, 
-                            builder: (context) => editBannerImgPopUp(fileBytes),
+                            builder: (context) {
+                              return EditBannerImgPopUp(bannerImgBytes: fileBytes, selectedImg: _pickedFile!);
+                            }
                           );
                         }
                       });
@@ -259,45 +260,6 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
           ],
         ),
       ),
-    );
-  }
-
-   // popup screen
-  Widget editBannerImgPopUp(Uint8List bannerImgBytes) {
-    return CretaDialog(
-      width: 897,
-      height: 518,
-      title: '배경 이미지 설정',
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 865,
-            height: 375,
-            margin: const EdgeInsets.only(top: 20.0, left: 16.0),
-            decoration: BoxDecoration(
-              image: DecorationImage(image: Image.memory(bannerImgBytes).image, fit: BoxFit.cover)
-            ),
-          ),
-          divideLine(topPadding: 10.0, bottomPadding: 10.0, width: 897),
-          Padding(
-            padding: const EdgeInsets.only(left: 826.0),
-            child: BTN.fill_blue_t_m(
-              text: '완료', 
-              width: 55,
-              onPressed: () {
-                HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, bannerImgBytes, folderName: "banner/").then((fileModel) {
-                  if(fileModel != null) {
-                    CretaAccountManager.getChannel!.bannerImg = fileModel.fileView;
-                    CretaAccountManager.setChannelBannerImg(CretaAccountManager.getChannel!);
-                    Navigator.of(context).pop();
-                  }
-                }); 
-              }
-            ),
-          )
-        ],
-      )
     );
   }
 

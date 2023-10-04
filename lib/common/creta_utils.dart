@@ -2,8 +2,10 @@
 
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:image/image.dart' as img;
 
 import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
@@ -810,4 +812,32 @@ class CretaUtils {
     //print('lineCount=$textLineCount, lineHeight=$textLineHeight');
     return (width, height);
   }
+
+  // image crop
+  static Uint8List cropImage(Uint8List sourceImgBytes, Offset cropOffset, double ratio, Size frameSize) {
+    int cropWidth = 0;
+    int cropHeight = 0;
+
+    img.Image sourceImg = img.decodeImage(sourceImgBytes)!;
+
+    if(sourceImg.width / sourceImg.height > ratio) {
+      cropWidth = (sourceImg.height * ratio).toInt();
+      cropHeight = sourceImg.height;
+    } else {
+      cropWidth = sourceImg.width;
+      cropHeight = sourceImg.width ~/ ratio;
+    }
+
+    img.Image cropImg = img.copyCrop(
+        sourceImg,
+        x: (cropOffset.dx * (sourceImg.width / frameSize.width)).toInt(),
+        y: (cropOffset.dy * (sourceImg.height / frameSize.height)).toInt(),
+        width: cropWidth,
+        height: cropHeight);
+
+    Uint8List cropImgBytes = Uint8List.fromList(img.encodePng(cropImg));
+
+    return cropImgBytes;
+  }
+
 }

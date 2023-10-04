@@ -36,7 +36,7 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> with CretaBasicLayoutMixin {
   late List<CretaMenuItem> _leftMenuItem;
-  Color replaceColor = CretaAccountManager.getUserProperty!.profileImg == "" ? Colors.primaries[Random().nextInt(Colors.primaries.length)] : Colors.transparent;
+  Color replaceColor = Colors.primaries[Random().nextInt(Colors.primaries.length)];
   bool _alreadyDataGet = false;
 
   @override
