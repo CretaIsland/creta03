@@ -45,7 +45,7 @@ class StudioVariables {
   static double virtualHeight = 961;
 
   static bool isHandToolMode = false;
-  static ClickToCreateEnum clickToCreateMode = ClickToCreateEnum.normal;
+  //static ClickToCreateEnum clickToCreateMode = ClickToCreateEnum.normal;
 
   static double applyScale = 1;
 

@@ -70,6 +70,7 @@ class DraggableResizable extends StatefulWidget {
     this.onFrameDelete,
     this.isResiable = true,
     this.isVerticalResiable = true,
+    this.isHorizontalResiable = true,
     //this.canTransform = false,
   }) : //constraints = constraints ?? BoxConstraints.loose(Size.infinite),
         super(key: key);
@@ -113,6 +114,7 @@ class DraggableResizable extends StatefulWidget {
   final FrameModel? frameModel;
   final bool isResiable;
   final bool isVerticalResiable;
+  final bool isHorizontalResiable;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -495,6 +497,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   key: GlobalObjectKey('SelectedBox-$widget.mid}'),
                   isResiable: widget.isResiable,
                   isVerticalResiable: widget.isVerticalResiable,
+                  isHorizontalResiable: widget.isHorizontalResiable,
                   mid: widget.mid,
                   normalizedHeight: normalizedHeight,
                   normalizedWidth: normalizedWidth,

@@ -512,7 +512,7 @@ class CretaStudioLang {
   };
 
   static const String autoFontSize = '프레임 크기에 텍스트 크기 조절 ';
-  static const String autoFrameSize = '텍스트 크기에 프레임 크기 조절 ';
+  static const String autoFrameHeight = '텍스트 크기에 프레임 크기 조절 ';
   static const String noAutoSize = '자동 크기 조절 사용 안함 ';
   static const String tts = '음성으로 방송';
   static const String translate = '번역';

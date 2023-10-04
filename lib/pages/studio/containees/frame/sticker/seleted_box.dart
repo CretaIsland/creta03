@@ -17,6 +17,7 @@ class SelectedBox extends StatefulWidget {
   final VoidCallback onScaleStart;
   final bool isResiable;
   final bool isVerticalResiable;
+  final bool isHorizontalResiable;
   final void Function(Offset) onDragTopLeft;
   final void Function(Offset) onDragBottomRight;
   final void Function(Offset) onDragTopRight;
@@ -51,6 +52,7 @@ class SelectedBox extends StatefulWidget {
     required this.frameModel,
     this.isResiable = true,
     this.isVerticalResiable = true,
+    this.isHorizontalResiable = true,
   });
 
   @override
@@ -236,28 +238,28 @@ class _SelectedBoxState extends State<SelectedBox> {
     //print('_dragBoxes....start.${CretaUtils.timeLap()}');
 
     List<Widget> retval = [
-      if (widget.isVerticalResiable)
+      if (widget.isVerticalResiable && widget.isHorizontalResiable)
         Positioned(
           //topLeft
           top: widget.resizePointerOffset,
           left: widget.resizePointerOffset,
           child: topLeftCorner,
         ),
-      if (widget.isVerticalResiable)
+      if (widget.isVerticalResiable && widget.isHorizontalResiable)
         Positioned(
           // bottomLeft
           bottom: widget.resizePointerOffset,
           left: widget.resizePointerOffset,
           child: bottomLeftCorner,
         ),
-      if (widget.isVerticalResiable)
+      if (widget.isVerticalResiable && widget.isHorizontalResiable)
         Positioned(
           //bottomRight
           bottom: widget.resizePointerOffset,
           right: widget.resizePointerOffset,
           child: bottomRightCorner,
         ),
-      if (widget.isVerticalResiable)
+      if (widget.isVerticalResiable && widget.isHorizontalResiable)
         Positioned(
           // topRight
           top: widget.resizePointerOffset,
@@ -267,34 +269,34 @@ class _SelectedBoxState extends State<SelectedBox> {
 
       // centerButtons !!!
 
-      if (widget.isVerticalResiable)
+      if (widget.isVerticalResiable && widget.isHorizontalResiable)
         Positioned(
           //topMidle
           top: widget.resizePointerOffset,
           left: widthCenter,
           child: upPlane,
         ),
-
-      Positioned(
-        // leftMiddle
-        top: heightCenter,
-        left: widget.resizePointerOffset,
-        child: leftPlane,
-      ),
-      if (widget.isVerticalResiable)
+      if (widget.isHorizontalResiable)
+        Positioned(
+          // leftMiddle
+          top: heightCenter,
+          left: widget.resizePointerOffset,
+          child: leftPlane,
+        ),
+      if (widget.isVerticalResiable && widget.isHorizontalResiable)
         Positioned(
           //bottomMiddle
           bottom: widget.resizePointerOffset,
           left: widthCenter,
           child: downPlane,
         ),
-
-      Positioned(
-        // rightMiddle
-        top: heightCenter,
-        right: widget.resizePointerOffset,
-        child: rightPlane,
-      ),
+      if (widget.isHorizontalResiable)
+        Positioned(
+          // rightMiddle
+          top: heightCenter,
+          right: widget.resizePointerOffset,
+          child: rightPlane,
+        ),
     ];
 
     //print('_dragBoxes....end.${CretaUtils.timeLap()}');

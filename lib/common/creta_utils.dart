@@ -10,6 +10,7 @@ import 'package:image/image.dart' as img;
 import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
 import '../model/app_enums.dart';
+import '../pages/studio/book_main_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 
@@ -753,13 +754,14 @@ class CretaUtils {
   }) {
     //print('text lenght = ${text.length}----------------');
     if (text.isEmpty) {
-      if (style != null && style.fontSize != null) {
-        double height = (style.fontSize! * StudioVariables.applyScale) + (padding * 2);
-        //print('empty case height=$height');
-        return (boxWidth, height);
-      }
-      //print('empty case height=100');
-      return (boxWidth, 100);
+      text = ' '; // 비어있으면 계산을 못하기 때문에, 그냥 Space 를 넣는다.
+      // if (style != null && style.fontSize != null) {
+      //   double height = (style.fontSize! * StudioVariables.applyScale) + (padding * 2);
+      //   //print('empty case height=$height');
+      //   return (boxWidth, height);
+      // }
+      // //print('empty case height=100');
+      // return (boxWidth, 100);
     }
 
     //int offset = 0;
@@ -798,7 +800,8 @@ class CretaUtils {
 
     //print('textLineCount=$textLineCount, textLineHeight=$textLineHeight, height=$height');
 
-    if (autoSizeType == AutoSizeType.autoFrameSize) {
+    if (autoSizeType == AutoSizeType.autoFrameHeight ||
+        autoSizeType == AutoSizeType.autoFrameSize) {
       double wMargin = (style!.fontSize! / adjust);
       //double hMargin = wMargin * (height / width);
       width += wMargin;
@@ -844,5 +847,26 @@ class CretaUtils {
   static Color luminance(Color color) {
     if (color == Colors.transparent) return Colors.black;
     return color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  }
+
+  // localPosition 을 페이지내의 position 으로 바꿔줌
+  static Offset positionInPage(Offset localPosition, double? applyScale) {
+    applyScale ??= StudioVariables.applyScale;
+    double dx = (localPosition.dx - BookMainPage.pageOffset.dx + (LayoutConst.stikerOffset / 2)) /
+        applyScale;
+    double dy = (localPosition.dy - BookMainPage.pageOffset.dy + (LayoutConst.stikerOffset / 2)) /
+        applyScale;
+    return Offset(dx, dy);
+  }
+
+  // 커서모양을 정해주는 함수
+  static MouseCursor getCursorShape() {
+    if (BookMainPage.topMenuNotifier!.isText()) {
+      return SystemMouseCursors.text;
+    }
+    if (BookMainPage.topMenuNotifier!.isFrame()) {
+      return SystemMouseCursors.cell;
+    }
+    return SystemMouseCursors.basic;
   }
 }

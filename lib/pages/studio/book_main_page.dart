@@ -48,6 +48,7 @@ import 'book_preview_menu.dart';
 import 'book_publish.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
+import 'containees/page/top_menu_notifier.dart';
 import 'left_menu/depot/depot_display.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
@@ -70,6 +71,7 @@ class BookMainPage extends StatefulWidget {
   //static UserPropertyManager? userPropertyManagerHolder;
   static ContaineeNotifier? containeeNotifier;
   static MiniMenuNotifier? miniMenuNotifier;
+  static TopMenuNotifier? topMenuNotifier;
 
   //static MiniMenuContentsNotifier? miniMenuContentsNotifier;
 
@@ -160,6 +162,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     BookMainPage.containeeNotifier = ContaineeNotifier();
     BookMainPage.miniMenuNotifier = MiniMenuNotifier();
+    BookMainPage.topMenuNotifier = TopMenuNotifier();
     BookMainPage.leftMenuNotifier = LeftMenuNotifier();
     CretaAutoSizeText.fontSizeNotifier = FontSizeChangingNotifier();
     //BookMainPage.miniMenuContentsNotifier = MiniMenuContentsNotifier();
@@ -415,6 +418,9 @@ class _BookMainPageState extends State<BookMainPage> {
         ),
         ChangeNotifierProvider<MiniMenuNotifier>.value(
           value: BookMainPage.miniMenuNotifier!,
+        ),
+        ChangeNotifierProvider<TopMenuNotifier>.value(
+          value: BookMainPage.topMenuNotifier!,
         ),
         ChangeNotifierProvider<LeftMenuNotifier>.value(
           value: BookMainPage.leftMenuNotifier!,
@@ -810,7 +816,7 @@ class _BookMainPageState extends State<BookMainPage> {
                 onPressed: () {
                   setState(() {
                     // Create Text Box
-                    StudioVariables.clickToCreateMode = ClickToCreateEnum.textCreate;
+                    BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.textCreate);
                   });
                 },
                 hasShadow: false,
@@ -822,7 +828,7 @@ class _BookMainPageState extends State<BookMainPage> {
                 onPressed: () {
                   setState(() {
                     // Create Frame Box
-                    StudioVariables.clickToCreateMode = ClickToCreateEnum.frameCreate;
+                    BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.frameCreate);
                   });
                 },
                 hasShadow: false,

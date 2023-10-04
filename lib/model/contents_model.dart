@@ -19,6 +19,14 @@ import 'creta_model.dart';
 class ContentsModel extends CretaModel {
   // DB 에 저장하지 않는 member [
   int cursorPos = 0; // 텍스트의 커서 위치를 보관
+  static TextStyle? _lastTextStyle;
+  static TextStyle getLastTextStyle(BuildContext context) {
+    return ContentsModel._lastTextStyle ?? DefaultTextStyle.of(context).style;
+  }
+
+  static void setLastTextStyle(TextStyle style) {
+    _lastTextStyle = style;
+  } // 마지막에 사용자가 선택한 폰트체를 기억하고 있다.
 
   double prevShadowBlur = 0;
   TextAniType prevAniType = TextAniType.none;
@@ -619,6 +627,15 @@ class ContentsModel extends CretaModel {
 
   void printIt() {
     logger.info('------------1-------name=[$name],mime=[$mime],bytes=[$bytes],url=[$url]');
+  }
+
+  bool isAutoFrameHeight() {
+    return autoSizeType.value == AutoSizeType.autoFrameHeight;
+  }
+
+  bool isAutoFrameOrSide() {
+    return autoSizeType.value == AutoSizeType.autoFrameHeight ||
+        autoSizeType.value == AutoSizeType.autoFrameSize;
   }
 
   bool isAutoFrameSize() {

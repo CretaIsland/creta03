@@ -103,13 +103,14 @@ mixin CretaTextMixin {
     // }
 
     double padding = StudioConst.defaultTextPadding * applyScale;
-    if (model.isAutoFrameSize() && isThumbnail == false) {
+    if (model.isAutoFrameOrSide() && isThumbnail == false) {
       // 자동 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize before ${realSize.height}');
       //late double frameWidth;
       //print('old frame size ${realSize.height}');
+      late double frameWidth;
       late double frameHeight;
-      (_, frameHeight) = CretaUtils.getTextBoxSize(
+      (frameWidth, frameHeight) = CretaUtils.getTextBoxSize(
         uri,
         model.autoSizeType.value,
         realSize.width,
@@ -119,11 +120,17 @@ mixin CretaTextMixin {
         padding,
       );
       //print('new frame size $frameHeight');
-
       //realSize = Size(frameWidth, frameHeight);
-      if (realSize.height.round() != frameHeight.round()) {
-        realSize = Size(realSize.width, frameHeight);
-        //print('frame size changed ${realSize.height.round()} --> ${frameHeight.round()}');
+      if (model.isAutoFrameSize()) {
+        if (realSize.width.round() != frameWidth.round()) {
+          realSize = Size(frameWidth, frameHeight);
+          //print('frame size changed ${realSize.height.round()} --> ${frameHeight.round()}');
+        }
+      } else {
+        if (realSize.height.round() != frameHeight.round()) {
+          realSize = Size(realSize.width, frameHeight);
+          //print('frame size changed ${realSize.height.round()} --> ${frameHeight.round()}');
+        }
       }
     }
     //print('AutoSizeType.autoFrameSize after isThumbnail=$isThumbnail, ${realSize.height}');

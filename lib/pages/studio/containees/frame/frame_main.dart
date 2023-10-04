@@ -288,7 +288,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             ContentsModel? contentsModel = contentsManager.getFirstModel();
             if (contentsModel != null) {
               //print('font/frame size changed notify');
-              if (contentsModel.isText() && contentsModel.isAutoFrameSize()) {
+              if (contentsModel.isText() && contentsModel.isAutoFrameOrSide()) {
                 _receiveEvent?.sendEvent(model); // autoFrameSize 를 위해, 프레임사이즈가 변경되도록 하기 위해
               }
             }
@@ -389,16 +389,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       if (contentsManager != null) {
         ContentsModel? contentsModel = contentsManager.getFirstModel();
         if (contentsModel != null) {
-          if (contentsModel.isAutoFrameSize()) {
+          if (contentsModel.isAutoFrameOrSide()) {
             // 자동 프레임사이즈를 결정해 주어야 한다.
             //print('AutoSizeType.autoFrameSize before $frameHeight');
             late String uri;
             late TextStyle style;
             (style, uri, _) = contentsModel.makeStyle(null, StudioVariables.applyScale, false);
 
-            //late double newFrameWidth;
+            late double newFrameWidth;
             late double newFrameHeight;
-            (_, newFrameHeight) = CretaUtils.getTextBoxSize(
+            (newFrameWidth, newFrameHeight) = CretaUtils.getTextBoxSize(
               uri,
               contentsModel.autoSizeType.value,
               frameWidth,
@@ -410,8 +410,12 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
             //print('AutoSizeType.autoFrameSize after  $frameHeight');
             //model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
             model.height.set(newFrameHeight / StudioVariables.applyScale, noUndo: true);
-            // 바뀐값으로 frameHeight 값을 다시 바꾸어 놓아야 한다.
             frameHeight = newFrameHeight;
+            if (contentsModel.isAutoFrameSize()) {
+              model.width.set(newFrameWidth / StudioVariables.applyScale, noUndo: true);
+              frameWidth = newFrameWidth;
+            }
+            // 바뀐값으로 frameHeight 값을 다시 바꾸어 놓아야 한다.
             //print('frameHeight changed ${frameHeight / StudioVariables.applyScale}-----');
           }
         }
@@ -743,17 +747,11 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       FrameModel model = item as FrameModel;
 
       //logger.finest('before save widthxheight = ${model.width.value}x${model.height.value}');
-
-      double dx =
-          (update.position.dx - BookMainPage.pageOffset.dx + (LayoutConst.stikerOffset / 2)) /
-              applyScale;
-      double dy =
-          (update.position.dy - BookMainPage.pageOffset.dy + (LayoutConst.stikerOffset / 2)) /
-              applyScale;
+      Offset pos = CretaUtils.positionInPage(update.position, applyScale);
 
       model.angle.set(update.angle * (180 / pi), save: false);
-      model.posX.set(dx, save: false);
-      model.posY.set(dy, save: false);
+      model.posX.set(pos.dx, save: false);
+      model.posY.set(pos.dy, save: false);
       model.width.set(update.size.width / applyScale, save: false);
 
       //print('setItem...................................');

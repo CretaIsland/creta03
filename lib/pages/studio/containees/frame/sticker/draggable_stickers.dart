@@ -153,19 +153,22 @@ class _DraggableStickersState extends State<DraggableStickers> {
   Widget _drawEachStiker(Sticker sticker) {
     //if (sticker.isEditMode && _isEditorAlreadyExist == false) {
     bool isVerticalResiable = true;
+    bool isHorizontalResiable = true;
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
     if (frameModel != null && frameModel.isTextType()) {
       ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
       if (contentsModel != null) {
-        if (contentsModel.isAutoFrameSize()) {
+        if (contentsModel.isAutoFrameHeight()) {
           isVerticalResiable = false;
+        } else if (contentsModel.isAutoFrameSize()) {
+          isHorizontalResiable = false;
         }
         if (contentsModel.isText()) {
           if (frameModel.isEditMode) {
             //print('editor selected');
             return Stack(
               children: [
-                _dragableResizable(sticker, frameModel, isVerticalResiable),
+                _dragableResizable(sticker, frameModel, isVerticalResiable, isHorizontalResiable),
                 InstantEditor(
                   key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
                   frameModel: frameModel,
@@ -204,16 +207,17 @@ class _DraggableStickersState extends State<DraggableStickers> {
     }
     //print('editor not selected');
 
-    return _dragableResizable(sticker, frameModel!, isVerticalResiable);
+    return _dragableResizable(sticker, frameModel!, isVerticalResiable, isHorizontalResiable);
   }
 
-  Widget _dragableResizable(Sticker sticker, FrameModel frameModel, bool isVerticalResiable) {
+  Widget _dragableResizable(Sticker sticker, FrameModel frameModel, bool isVerticalResiable, bool isHorizontalResiable) {
     double posX = frameModel.getRealPosX();
     double posY = frameModel.getRealPosY();
 
     return DraggableResizable(
       key: GlobalKey(),
       isVerticalResiable: isVerticalResiable,
+      isHorizontalResiable: isHorizontalResiable,
       mid: sticker.id,
       angle: sticker.angle,
       //position: sticker.position + BookMainPage.pageOffset,

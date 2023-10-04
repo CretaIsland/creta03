@@ -10,16 +10,20 @@
 // import '../../../../data_io/contents_manager.dart';
 
 import 'package:creta03/pages/studio/left_menu/clock/count_down_timer.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:one_clock/one_clock.dart';
 import 'package:weather_animation/weather_animation.dart';
 
+import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
@@ -35,6 +39,7 @@ import '../../left_menu/timeline/success_timeline.dart';
 import '../../left_menu/timeline/delivery_timeline.dart';
 import '../../left_menu/timeline/weather_timeline.dart';
 import '../../left_menu/weather/weather_base.dart';
+import '../../studio_constant.dart';
 import '../../studio_variables.dart';
 // import '../../../../model/contents_model.dart';
 // import '../../../../model/frame_model.dart';
@@ -205,6 +210,99 @@ mixin FramePlayMixin {
 
   Widget mapFrame(FrameModel model) {
     return const CretaMapWidget();
+  }
+
+  Future<ContentsModel> _defaultTextModel(
+    double fontSize,
+    String frameMid,
+    String bookMid, {
+    FontSizeType fontSizeType = FontSizeType.userDefine,
+    String remoteUrl = CretaStudioLang.defaultText,
+    String name = CretaStudioLang.defaultText,
+  }) async {
+    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
+
+    retval.contentsType = ContentsType.text;
+
+    retval.name = name;
+    retval.remoteUrl = remoteUrl;
+    retval.fontSize.set(fontSize, noUndo: true, save: false);
+    retval.fontSizeType.set(fontSizeType, noUndo: true, save: false);
+    //retval.playTime.set(-1, noUndo: true, save: false);
+    return retval;
+  }
+
+  Future<void> createText(double widthRatio, double fontSize, FontSizeType fontSizeType) async {
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) return;
+
+    //페이지폭의 80% 로 만든다. 세로는 가로의 1/6 이다.
+    double width = pageModel.width.value * widthRatio;
+    double height = width / 6;
+    double x = (pageModel.width.value - width) / 2;
+    double y = (pageModel.height.value - height) / 2;
+
+    mychangeStack.startTrans();
+    FrameModel frameModel = await frameManager!.createNextFrame(
+      doNotify: false,
+      size: Size(width, height),
+      pos: Offset(x, y),
+      bgColor1: Colors.transparent,
+      type: FrameType.text,
+    );
+    ContentsModel model = await _defaultTextModel(fontSize, frameModel.mid, frameModel.realTimeKey,
+        fontSizeType: fontSizeType);
+
+    await createNewFrameAndContents(
+      [model],
+      pageModel,
+      frameModel: frameModel,
+    );
+  }
+
+  Future<void> createTextByClick(BuildContext context, LongPressDownDetails details) async {
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) return;
+
+    double fontSize = StudioConst.defaultFontSize;
+    //width 는 그냥 가작 작은 사이즈로 만들어야 한다.
+    TextStyle style = ContentsModel.getLastTextStyle(context).copyWith(fontSize: fontSize);
+    ContentsModel.setLastTextStyle(style);
+    double height = (fontSize / StudioVariables.applyScale) +
+        (StudioConst.defaultTextPadding * 2); // 모델상의 크기다. 실제 크기가 아니다.
+    double width = height;
+    print('localPostion= ${details.localPosition}, width= $width');
+
+    Offset pos = CretaUtils.positionInPage(details.localPosition, null);
+    // 커서의 크기가 있어서, 조금 빼주어야 텍스트 박스가 커서 위치에 맞게 나온다.
+    pos = Offset((pos.dx - 24 > 0 ? pos.dx - 24 : 0), (pos.dy - 40 > 0 ? pos.dy - 40 : 0));
+
+    print('position in page= (${pos.dx}, ${pos.dy})');
+
+    mychangeStack.startTrans();
+    FrameModel frameModel = await frameManager!.createNextFrame(
+      doNotify: false,
+      size: Size(width, height),
+      pos: pos,
+      bgColor1: Colors.transparent,
+      type: FrameType.text,
+    );
+    frameModel.isEditMode = true; // 바로 Editor 모드로 들어가도록 한다.
+    print('style.fontSize = ${style.fontSize!}');
+    ContentsModel model = await _defaultTextModel(
+      style.fontSize!,
+      frameModel.mid,
+      frameModel.realTimeKey,
+      name: 'Text',
+      remoteUrl: '',
+    );
+    model.autoSizeType.set(AutoSizeType.autoFrameSize); // 가로 세로 모두 늘어나는 모드
+
+    await createNewFrameAndContents(
+      [model],
+      pageModel,
+      frameModel: frameModel,
+    );
   }
 
   // Future<Widget> cameraFrame(FrameModel model) async {

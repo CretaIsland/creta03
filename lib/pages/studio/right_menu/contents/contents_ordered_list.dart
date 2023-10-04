@@ -797,6 +797,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               logger.info('save ${model.font.value}----------');
               //_sendEvent!.sendEvent(model);
               widget.contentsManager.notify();
+              ContentsModel.getLastTextStyle(context).copyWith(
+                  fontFamily: val, fontWeight: StudioConst.fontWeight2Type[model.fontWeight.value]);
               setState(() {});
             }
           },
@@ -805,6 +807,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               model.fontWeight.set(val);
               //_sendEvent!.sendEvent(model);
               widget.contentsManager.notify();
+              ContentsModel.getLastTextStyle(context)
+                  .copyWith(fontWeight: StudioConst.fontWeight2Type[val]);
               setState(() {});
             }
           },
@@ -822,7 +826,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
       // 창 크기에 맞춤
       valueMap: {
         CretaStudioLang.autoFontSize: model.isAutoFontSize(),
-        CretaStudioLang.autoFrameSize: model.isAutoFrameSize(),
+        CretaStudioLang.autoFrameHeight: model.isAutoFrameOrSide(),
         CretaStudioLang.noAutoSize: model.isNoAutoSize(),
       },
       onSelected: (title, value, nvMap) {
@@ -889,6 +893,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   Widget _fontSize(ContentsModel model) {
     double minFontSize = StudioConst.minFontSize / StudioVariables.applyScale;
     double fontSize = model.fontSize.value;
+
+    print('model.fontSize = $fontSize');
     if (fontSize < minFontSize) {
       fontSize = minFontSize;
     }
@@ -925,6 +931,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.fontSize.set(val);
+          ContentsModel.getLastTextStyle(context).copyWith(fontSize: val);
           widget.contentsManager.notify();
           widget.frameManager?.notify();
         },
@@ -952,6 +959,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.letterSpacing.set(val);
+          ContentsModel.getLastTextStyle(context).copyWith(letterSpacing: val);
           widget.contentsManager.notify();
           widget.frameManager?.notify();
           //_sendEvent!.sendEvent(model);
@@ -980,6 +988,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.lineHeight.set(val);
+          ContentsModel.getLastTextStyle(context).copyWith(height: val);
           widget.contentsManager.notify();
           widget.frameManager?.notify();
           //_sendEvent!.sendEvent(model);

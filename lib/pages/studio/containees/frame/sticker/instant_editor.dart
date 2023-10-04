@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
@@ -244,7 +245,7 @@ class _InstantEditorState extends State<InstantEditor> {
       _resize(uri, model.autoSizeType.value);
       // _getLineHeightAndCount(uri, _fontSize, model.autoSizeType.value);
       // _resize();
-    } else if (model.isAutoFrameSize()) {
+    } else if (model.isAutoFrameOrSide()) {
       // 초기 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize _fontSize=$fontSize');
       _resize(uri, model.autoSizeType.value);
@@ -272,7 +273,7 @@ class _InstantEditorState extends State<InstantEditor> {
 
     late Size applySize;
     late Widget editorWidget;
-    if (model.isAutoFrameSize()) {
+    if (model.isAutoFrameHeight()) {
       // double padding =
       //     //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
       //     (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
@@ -280,6 +281,17 @@ class _InstantEditorState extends State<InstantEditor> {
       // if (padding < 0) padding = 0;
       // 프레임 사이즈가 변한다.
       applySize = Size(_frameSize.width, _realSize!.height);
+      //print('applySize=$applySize');
+      editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: false);
+      //editorWidget = _myTextField(model, uri, padding);
+    } else if (model.isAutoFrameSize()) {
+      // double padding =
+      //     //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
+      //     (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
+      // //(StudioConst.defaultTextPadding * StudioVariables.applyScale);
+      // if (padding < 0) padding = 0;
+      // 프레임 사이즈가 변한다.
+      applySize = Size(_realSize!.width, _realSize!.height);
       //print('applySize=$applySize');
       editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: false);
       //editorWidget = _myTextField(model, uri, padding);
@@ -355,9 +367,19 @@ class _InstantEditorState extends State<InstantEditor> {
     if (cursorWidth < 1) {
       cursorWidth = 1;
     }
+
+    bool autofocus =
+        BookMainPage.topMenuNotifier!.requestFocus; // textCreate 의 경우, 자동으로 포커스가 발생해야 한다.
+    FocusNode? focusNode;
+    if (autofocus) {
+      focusNode = FocusNode();
+      BookMainPage.topMenuNotifier!.releaseFocus(); // 처음 한번만 autofocus 가 되야 하므로 해지해준다.
+    }
+
     return AutoSizeTextField(
       //return TextField(
-
+      autofocus: autofocus,
+      focusNode: focusNode,
       enabled: widget.enabled,
       initialHeight: initialHeight,
       useAutoSize: useAutoSize,
@@ -428,14 +450,16 @@ class _InstantEditorState extends State<InstantEditor> {
         model.cursorPos = _textController.selection.baseOffset;
         //print('cur=${model.cursorPos}');
 
-        if (model.isAutoFrameSize()) {
+        if (model.isAutoFrameOrSide()) {
           // 프레임이 늘어나거나 줄어든다.
           if (_resize(value, model.autoSizeType.value)) {
             //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
             //setState(() {
             model.remoteUrl = _textController.text;
-            widget.frameModel.width
-                .set(_realSize!.width / StudioVariables.applyScale, save: false, noUndo: true);
+            if (model.isAutoFrameSize()) {
+              widget.frameModel.width
+                  .set(_realSize!.width / StudioVariables.applyScale, save: false, noUndo: true);
+            }
             widget.frameModel.height
                 .set(_realSize!.height / StudioVariables.applyScale, save: false, noUndo: true);
             //});
@@ -580,12 +604,22 @@ class _InstantEditorState extends State<InstantEditor> {
       _padding,
     );
 
-    if (autoSizeType == AutoSizeType.noAutoSize || autoSizeType == AutoSizeType.autoFrameSize) {
+    if (autoSizeType == AutoSizeType.noAutoSize || autoSizeType == AutoSizeType.autoFrameHeight) {
       if (_realSize!.height.round() != height.round()) {
         //if (_realSize!.height.round() != height.round()) {
         //print('oldSize = (${_realSize!.height.round()})');
         //print('newSize = (${height.round()})');
         _realSize = Size(_realSize!.width, height);
+        return true;
+      }
+      return false;
+    }
+    if (autoSizeType == AutoSizeType.autoFrameSize) {
+      if (_realSize!.height.round() != height.round() || _realSize!.width != width.round()) {
+        //if (_realSize!.height.round() != height.round()) {
+        //print('oldSize = (${_realSize!.height.round()})');
+        //print('newSize = (${height.round()})');
+        _realSize = Size(width, height);
         return true;
       }
       return false;
@@ -604,7 +638,7 @@ class _InstantEditorState extends State<InstantEditor> {
     //double dbHeight = _realSize!.height / StudioVariables.applyScale;
     model.remoteUrl = _textController.text;
 
-    if (model.isAutoFrameSize()) {
+    if (model.isAutoFrameOrSide()) {
       widget.frameModel.save();
       // if (widget.frameModel.height.value != _realSize!.height  ) {
       //   //print('_saveChanges  ${widget.frameModel.height.value} , ${_realSize!.height}');

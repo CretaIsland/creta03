@@ -157,7 +157,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         onOpacityDragComplete: (value) {
           //setState(() {
           widget.model.opacity.set(value);
-          //});
+          TextStyle style = ContentsModel.getLastTextStyle(context);
+          ContentsModel.setLastTextStyle(
+              (style.copyWith(color: style.color?.withOpacity(value)))); //});
           _contentsManager?.notify();
           //_sendEvent!.sendEvent(widget.model);
         },
@@ -165,10 +167,14 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           widget.model.opacity.set(value);
           _contentsManager?.notify();
           //_sendEvent!.sendEvent(widget.model);
+          TextStyle style = ContentsModel.getLastTextStyle(context);
+          ContentsModel.setLastTextStyle(style.copyWith(color: style.color?.withOpacity(value)));
         },
         onColor1Changed: (color) {
           setState(() {
             widget.model.fontColor.set(color);
+            ContentsModel.setLastTextStyle(
+                ContentsModel.getLastTextStyle(context).copyWith(color: color));
           });
           //_contentsManager?.notify();
           _sendEvent!.sendEvent(widget.model);
@@ -180,6 +186,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         onDelete: () {
           setState(() {
             widget.model.fontColor.set(Colors.black);
+            ContentsModel.setLastTextStyle(
+                ContentsModel.getLastTextStyle(context).copyWith(color: Colors.black));
           });
           _sendEvent!.sendEvent(widget.model);
         },
