@@ -805,6 +805,30 @@ class _BookMainPageState extends State<BookMainPage> {
                 tooltip: CretaStudioLang.tooltipRedo,
               ),
               SizedBox(width: padding),
+              BTN.floating_l(
+                icon: Icons.title_outlined,
+                onPressed: () {
+                  setState(() {
+                    // Create Text Box
+                    StudioVariables.clickToCreateMode = ClickToCreateEnum.textCreate;
+                  });
+                },
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipText,
+              ),
+              SizedBox(width: padding / 2),
+              BTN.floating_l(
+                icon: Icons.space_dashboard_outlined,
+                onPressed: () {
+                  setState(() {
+                    // Create Frame Box
+                    StudioVariables.clickToCreateMode = ClickToCreateEnum.frameCreate;
+                  });
+                },
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipFrame,
+              ),
+              SizedBox(width: padding),
               CretaScaleButton(
                 width: 180,
                 onManualScale: () {

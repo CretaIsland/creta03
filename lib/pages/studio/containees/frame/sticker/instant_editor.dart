@@ -22,6 +22,7 @@ class InstantEditor extends StatefulWidget {
   final void Function(String)? onTap;
   final bool readOnly;
   final bool enabled;
+  //final bool isThumbnail;
 
   const InstantEditor({
     super.key,
@@ -31,6 +32,7 @@ class InstantEditor extends StatefulWidget {
     this.onTap,
     this.readOnly = false,
     this.enabled = true,
+    //required this.isThumbnail,
   });
   @override
   State<InstantEditor> createState() => _InstantEditorState();
@@ -307,7 +309,7 @@ class _InstantEditorState extends State<InstantEditor> {
           //alignment: Alignment.topCenter,
           maxHeight: _realSize!.height, // double.infinity, //,
           maxWidth: _frameSize.width,
-          child: _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: false),
+          child: _autoTextField(model, uri, fontSize, _realSize!.height, useAutoSize: false),
           //child: _myTextField(model, uri, padding),
         );
       } else {
@@ -328,8 +330,8 @@ class _InstantEditorState extends State<InstantEditor> {
       child: Container(
           decoration: const BoxDecoration(
             //border: Border.all(width: 1, color: Colors.black),
-            color: Colors.amber,
-            //color: Colors.transparent,
+            //color: Colors.amber,
+            color: Colors.transparent,
           ),
           alignment: CretaTextPlayer.toAlign(
               model.align.value, intToTextAlignVertical(model.valign.value)),
@@ -346,12 +348,12 @@ class _InstantEditorState extends State<InstantEditor> {
 
   Widget _autoTextField(ContentsModel model, String uri, double fontSize, double initialHeight,
       {bool useAutoSize = true}) {
-    double cursorSize = _padding * 0.7471818504075;
+    double cursorWidth = _padding * 0.7471818504075;
 
     // -((borderWidth * 2) * StudioVariables.applyScale);
     //0.5224074074074073 : 0.725 = 1: x
-    if (cursorSize < 1) {
-      cursorSize = 1;
+    if (cursorWidth < 1) {
+      cursorWidth = 1;
     }
     return AutoSizeTextField(
       //return TextField(
@@ -365,9 +367,8 @@ class _InstantEditorState extends State<InstantEditor> {
       readOnly: widget.readOnly,
       wrapWords: true, // <- 반드시 true 여야함.
       key: _textFieldKey,
-      cursorWidth: cursorSize,
-      cursorColor:
-          widget.frameModel.bgColor1.value.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+      cursorWidth: cursorWidth,
+      cursorColor: CretaUtils.luminance(widget.frameModel.bgColor1.value),
       stepGranularity: StudioConst.stepGranularity, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
       minFontSize: StudioConst.minFontSize,
       strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
@@ -413,7 +414,9 @@ class _InstantEditorState extends State<InstantEditor> {
       onTapOutside: (event) {
         // print('onTapOutside');
         _saveChanges(model);
-        CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true); // rightMenu 에 전달
+        if (model.isAutoFontSize()) {
+          CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true);
+        } // rightMenu 에 전달
         //BookMainPage.containeeNotifier!.setFrameClick(true);
         DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
         widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
@@ -459,21 +462,21 @@ class _InstantEditorState extends State<InstantEditor> {
 
   // ignore: unused_element
   // Widget _myTextField(ContentsModel model, String uri, double padding) {
-  //   double cursorSize = padding * 0.7471818504075;
+  //   double cursorWidth = padding * 0.7471818504075;
 
   //   // -((borderWidth * 2) * StudioVariables.applyScale);
   //   //0.5224074074074073 : 0.725 = 1: x
-  //   if (cursorSize < 1) {
-  //     cursorSize = 1;
+  //   if (cursorWidth < 1) {
+  //     cursorWidth = 1;
   //   }
-  //   //print('cursorSize=$cursorSize, ${StudioVariables.applyScale}');
+  //   //print('cursorWidth=$cursorWidth, ${StudioVariables.applyScale}');
 
   //   return CupertinoTextField(
   //     //return TextField(
   //     readOnly: widget.readOnly,
   //     key: _textFieldKey,
   //     padding: EdgeInsets.fromLTRB(padding, padding, 0, padding), // 커서 크기를 고려하여 right =0
-  //     cursorWidth: cursorSize,
+  //     cursorWidth: cursorWidth,
   //     strutStyle: const StrutStyle(
   //       forceStrutHeight: true,
   //       height: 1.0,

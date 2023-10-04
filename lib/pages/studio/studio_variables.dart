@@ -11,6 +11,12 @@ import 'book_main_page.dart';
 import 'containees/containee_nofifier.dart';
 import 'studio_constant.dart';
 
+enum ClickToCreateEnum {
+  normal,
+  textCreate,
+  frameCreate,
+}
+
 class StudioVariables {
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
   static double menuStickWidth = LayoutConst.menuStickWidth;
@@ -39,6 +45,7 @@ class StudioVariables {
   static double virtualHeight = 961;
 
   static bool isHandToolMode = false;
+  static ClickToCreateEnum clickToCreateMode = ClickToCreateEnum.normal;
 
   static double applyScale = 1;
 

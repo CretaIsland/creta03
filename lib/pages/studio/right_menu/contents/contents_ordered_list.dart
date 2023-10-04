@@ -749,34 +749,34 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //}
 
   Widget _textEditor(ContentsModel model) {
-    //GlobalKey<CretaTextFieldState> key = GlobalKey<CretaTextFieldState>();
+    GlobalKey<CretaTextFieldState> key = GlobalKey<CretaTextFieldState>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // CretaTextField.long(
-        //   textFieldKey: key,
-        //   value: model.remoteUrl ?? '',
-        //   hintText: model.name,
-        //   selectAtInit: true,
-        //   autoComplete: true,
-        //   autoHeight: true,
-        //   height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
-        //   keyboardType: TextInputType.multiline,
-        //   maxLines: 5,
-        //   textInputAction: TextInputAction.newline,
-        //   alignVertical: TextAlignVertical.top,
-        //   autofocus: false,
-        //   onEditComplete: (value) {
-        //     model.remoteUrl = value;
-        //     widget.contentsManager.setToDB(model);
-        //     widget.contentsManager.notify();
-        //   },
-        //   onChanged: (value) {
-        //     model.remoteUrl = value;
-        //     //widget.contentsManager.notify();
-        //   },
-        // ),
+        CretaTextField.long(
+          textFieldKey: key,
+          value: model.remoteUrl ?? '',
+          hintText: model.name,
+          selectAtInit: true,
+          autoComplete: true,
+          autoHeight: true,
+          height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
+          keyboardType: TextInputType.multiline,
+          maxLines: 5,
+          textInputAction: TextInputAction.newline,
+          alignVertical: TextAlignVertical.top,
+          autofocus: false,
+          onEditComplete: (value) {
+            model.remoteUrl = value;
+            widget.contentsManager.setToDB(model);
+            widget.contentsManager.notify();
+          },
+          onChanged: (value) {
+            model.remoteUrl = value;
+            widget.contentsManager.notify();
+          },
+        ),
         _textAlign(model),
         //_fontDecoBar(model),
         propertyDivider(height: 28),
@@ -843,7 +843,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
     return Consumer<FontSizeChangingNotifier>(builder: (context, fontSizeNotifier, child) {
       //print('fontSize changing ${fontSizeNotifier.isChanging}');
-      return widget.contentsManager.frameModel.isEditMode == false &&
+      Widget retval = widget.contentsManager.frameModel.isEditMode == false &&
               fontSizeNotifier.isChanging == false
           ? autoSizeTypeWidget
           : Stack(
@@ -856,6 +856,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 ),
               ],
             );
+
+      return retval;
     });
   }
 

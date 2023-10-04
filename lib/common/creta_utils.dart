@@ -810,4 +810,10 @@ class CretaUtils {
     //print('lineCount=$textLineCount, lineHeight=$textLineHeight');
     return (width, height);
   }
+
+  // 색상에 따라, 잘보이는 색을 선택해줌. (보색)
+  static Color luminance(Color color) {
+    if (color == Colors.transparent) return Colors.black;
+    return color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  }
 }

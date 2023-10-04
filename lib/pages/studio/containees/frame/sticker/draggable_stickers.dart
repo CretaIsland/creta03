@@ -202,6 +202,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
         }
       }
     }
+    //print('editor not selected');
+
     return _dragableResizable(sticker, frameModel!, isVerticalResiable);
   }
 

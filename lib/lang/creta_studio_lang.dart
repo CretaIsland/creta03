@@ -202,6 +202,8 @@ class CretaStudioLang {
   static const String tooltipNoNoti = '알림이 없습니다';
   static const String tooltipVolume = '작업하는 동안 소리를 끄거나 켭니다';
   static const String tooltipEdit = '화면 편집모드로 이동';
+  static const String tooltipText = '텍스트 편집';
+  static const String tooltipFrame = '프레임 생성';
   static const String tooltipNoneEdit = '화면 보기모드로 이동';
   static const String tooltipPause = '작업하는 동안 동영상을 정지하거나 플레이합니다';
   static const String tooltipUndo = '취소';

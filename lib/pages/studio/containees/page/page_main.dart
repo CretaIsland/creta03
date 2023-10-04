@@ -316,9 +316,20 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
       return;
     }
     BookMainPage.outSideClick = false;
-    logger.info('page clicked');
-    //setState(() {
-    _frameManager?.clearSelectedMid();
+    //print('page clicked');
+
+    if (StudioVariables.clickToCreateMode == ClickToCreateEnum.textCreate) {
+      // create text box here
+      //print('createTextBox');
+      StudioVariables.clickToCreateMode = ClickToCreateEnum.normal;
+    } else if (StudioVariables.clickToCreateMode == ClickToCreateEnum.frameCreate) {
+      // create frame box here
+      //print('createFrame');
+      StudioVariables.clickToCreateMode = ClickToCreateEnum.normal;
+    } else {
+      //setState(() {
+      _frameManager?.clearSelectedMid();
+    }
     //});
     if (LinkParams.isLinkNewMode == true) {
       LinkParams.isLinkNewMode = false;

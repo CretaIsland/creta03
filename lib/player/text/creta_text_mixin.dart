@@ -145,12 +145,12 @@ mixin CretaTextMixin {
               (player.acc.frameModel.isEditMode == true) &&
               isThumbnail == false) // 에디트 모드에서는 글자를 표시하지 않는다.
           ? const SizedBox.shrink()
-          : Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.amber,
-              child: _playText(model, uri, style, fontSize, realSize, isThumbnail)),
-      //child: _playText(model, uri, style, fontSize, realSize, isThumbnail),
+          // : SizedBox(
+          //     width: double.infinity,
+          //     height: double.infinity,
+          //     //color: Colors.amber,
+          //     child: _playText(model, uri, style, fontSize, realSize, isThumbnail)),
+          : _playText(model, uri, style, fontSize, realSize, isThumbnail),
     );
   }
 
@@ -200,11 +200,14 @@ mixin CretaTextMixin {
 
   Widget _outLineAndShadowText(
       ContentsModel? model, String text, TextStyle style, bool isThumbnail) {
+    //print('_outLineAndShadowText');
+
     Widget realText = model!.isAutoFontSize()
         ? CretaAutoSizeText(
             text,
             mid: model.mid,
             fontSizeChanged: (value) {
+              //print('fontSize changed !!! , isThumbnail=$isThumbnail');
               if (isThumbnail == false) {
                 //print('fontSize changed !!!');
                 model.updateByAutoSize(value, applyScale);
