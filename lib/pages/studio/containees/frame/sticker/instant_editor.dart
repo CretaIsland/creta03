@@ -1,6 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
@@ -12,6 +11,7 @@ import '../../../../../model/app_enums.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../../player/text/creta_text_player.dart';
+import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
 import 'draggable_stickers.dart';
@@ -206,7 +206,7 @@ class _InstantEditorState extends State<InstantEditor> {
     // ignore: unused_local_variable
     late double fontSize;
     (style, uri, fontSize) =
-        model.makeStyle(context, StudioVariables.applyScale, false, isEditMode: true);
+        model.makeInfo(context, StudioVariables.applyScale, false, isEditMode: true);
 
     //_fontSize = fontSize;
     // if (model.outLineWidth.value > 0) {
@@ -434,7 +434,7 @@ class _InstantEditorState extends State<InstantEditor> {
         //print('onTap');
       },
       onTapOutside: (event) {
-        // print('onTapOutside');
+        print('onTapOutside.........');
         _saveChanges(model);
         if (model.isAutoFontSize()) {
           CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true);

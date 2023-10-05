@@ -23,7 +23,12 @@ class MiniMenu extends StatefulWidget {
   final ContentsManager contentsManager;
   final FrameManager frameManager;
 
-  static bool showFrame = false;
+  static bool _showFrame = false;
+  static bool get showFrame => _showFrame;
+  static void setShowFrame(bool val) {
+    print('setShowFrame($val)------------------------');
+    _showFrame = val;
+  }
 
   final Sticker sticker;
   final double pageHeight;
@@ -336,7 +341,7 @@ class MiniMenuState extends State<MiniMenu> {
               setState(() {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
-                MiniMenu.showFrame = true;
+                MiniMenu.setShowFrame(true);
                 LeftMenuPage.treeInvalidate();
               });
             })
@@ -470,7 +475,7 @@ class MiniMenuState extends State<MiniMenu> {
               setState(() {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
-                MiniMenu.showFrame = false;
+                MiniMenu.setShowFrame(false);
                 LeftMenuPage.treeInvalidate();
               });
             }),

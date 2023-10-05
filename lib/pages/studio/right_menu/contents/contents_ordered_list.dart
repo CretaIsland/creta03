@@ -3,6 +3,7 @@
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:provider/provider.dart';
@@ -790,15 +791,15 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           defaultFontWeight: model.fontWeight.value,
           onFontChanged: (val) {
             if (val != model.font.value) {
+              mychangeStack.startTrans();
               model.fontWeight.set(400); // 폰트가 변경되면, weight 도 초기화
               model.font.set(val);
-
-              logger.info('save ${model.mid}-----------------');
-              logger.info('save ${model.font.value}----------');
+              mychangeStack.endTrans();
+              //print('save ${model.mid}-----------------');
+              //print('save ${model.font.value}----------');
               //_sendEvent!.sendEvent(model);
               widget.contentsManager.notify();
-              ContentsModel.getLastTextStyle(context).copyWith(
-                  fontFamily: val, fontWeight: StudioConst.fontWeight2Type[model.fontWeight.value]);
+              ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
               setState(() {});
             }
           },
@@ -807,8 +808,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               model.fontWeight.set(val);
               //_sendEvent!.sendEvent(model);
               widget.contentsManager.notify();
-              ContentsModel.getLastTextStyle(context)
-                  .copyWith(fontWeight: StudioConst.fontWeight2Type[val]);
+              ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
               setState(() {});
             }
           },
@@ -894,7 +894,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     double minFontSize = StudioConst.minFontSize / StudioVariables.applyScale;
     double fontSize = model.fontSize.value;
 
-    print('model.fontSize = $fontSize');
+    //print('model.fontSize = $fontSize');
     if (fontSize < minFontSize) {
       fontSize = minFontSize;
     }
@@ -931,7 +931,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.fontSize.set(val);
-          ContentsModel.getLastTextStyle(context).copyWith(fontSize: val);
+          ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           widget.contentsManager.notify();
           widget.frameManager?.notify();
         },
@@ -959,7 +959,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.letterSpacing.set(val);
-          ContentsModel.getLastTextStyle(context).copyWith(letterSpacing: val);
+          ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           widget.contentsManager.notify();
           widget.frameManager?.notify();
           //_sendEvent!.sendEvent(model);
@@ -988,7 +988,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         },
         onChannged: (val) {
           model.lineHeight.set(val);
-          ContentsModel.getLastTextStyle(context).copyWith(height: val);
+          ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           widget.contentsManager.notify();
           widget.frameManager?.notify();
           //_sendEvent!.sendEvent(model);

@@ -9,6 +9,7 @@
 
 // import '../../../../data_io/contents_manager.dart';
 
+import 'package:creta03/pages/studio/containees/frame/sticker/mini_menu.dart';
 import 'package:creta03/pages/studio/left_menu/clock/count_down_timer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -213,7 +214,6 @@ mixin FramePlayMixin {
   }
 
   Future<ContentsModel> _defaultTextModel(
-    double fontSize,
     String frameMid,
     String bookMid, {
     FontSizeType fontSizeType = FontSizeType.userDefine,
@@ -221,14 +221,10 @@ mixin FramePlayMixin {
     String name = CretaStudioLang.defaultText,
   }) async {
     ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
-
     retval.contentsType = ContentsType.text;
-
     retval.name = name;
     retval.remoteUrl = remoteUrl;
-    retval.fontSize.set(fontSize, noUndo: true, save: false);
     retval.fontSizeType.set(fontSizeType, noUndo: true, save: false);
-    //retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }
 
@@ -250,8 +246,12 @@ mixin FramePlayMixin {
       bgColor1: Colors.transparent,
       type: FrameType.text,
     );
-    ContentsModel model = await _defaultTextModel(fontSize, frameModel.mid, frameModel.realTimeKey,
-        fontSizeType: fontSizeType);
+    ContentsModel model =
+        await _defaultTextModel(frameModel.mid, frameModel.realTimeKey, fontSizeType: fontSizeType);
+    model.setTextStyleProperty(
+      //fontSize: fontSize / StudioVariables.applyScale,
+      fontSize: fontSize,
+    );
 
     await createNewFrameAndContents(
       [model],
@@ -264,20 +264,27 @@ mixin FramePlayMixin {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
-    double fontSize = StudioConst.defaultFontSize;
-    //width 는 그냥 가작 작은 사이즈로 만들어야 한다.
-    TextStyle style = ContentsModel.getLastTextStyle(context).copyWith(fontSize: fontSize);
-    ContentsModel.setLastTextStyle(style);
+    late TextStyle style;
+    ExtraTextStyle? extraStyle;
+    (style, extraStyle) = ContentsModel.getLastTextStyle(context);
+    double fontSize = StudioConst.defaultFontSize * StudioVariables.applyScale;
+    if (style.fontSize != null) {
+      //print('use style.fontSize=${style.fontSize}');
+      fontSize = style.fontSize!;
+    } else {
+      style = style.copyWith(fontSize: fontSize);
+      ContentsModel.setLastTextStyle(style, null);
+    }
     double height = (fontSize / StudioVariables.applyScale) +
         (StudioConst.defaultTextPadding * 2); // 모델상의 크기다. 실제 크기가 아니다.
     double width = height;
-    print('localPostion= ${details.localPosition}, width= $width');
+    //print('localPostion= ${details.localPosition}, width= $width');
 
     Offset pos = CretaUtils.positionInPage(details.localPosition, null);
     // 커서의 크기가 있어서, 조금 빼주어야 텍스트 박스가 커서 위치에 맞게 나온다.
     pos = Offset((pos.dx - 24 > 0 ? pos.dx - 24 : 0), (pos.dy - 40 > 0 ? pos.dy - 40 : 0));
 
-    print('position in page= (${pos.dx}, ${pos.dy})');
+    //print('position in page= (${pos.dx}, ${pos.dy})');
 
     mychangeStack.startTrans();
     FrameModel frameModel = await frameManager!.createNextFrame(
@@ -288,21 +295,26 @@ mixin FramePlayMixin {
       type: FrameType.text,
     );
     frameModel.isEditMode = true; // 바로 Editor 모드로 들어가도록 한다.
-    print('style.fontSize = ${style.fontSize!}');
+    //print('style.fontSize = ${style.fontSize!}');
     ContentsModel model = await _defaultTextModel(
-      style.fontSize!,
       frameModel.mid,
       frameModel.realTimeKey,
       name: 'Text',
       remoteUrl: '',
     );
+    model.setTextStyle(style);
+    if (extraStyle != null) {
+      model.setExtraTextStyle(extraStyle);
+    }
     model.autoSizeType.set(AutoSizeType.autoFrameSize); // 가로 세로 모두 늘어나는 모드
+    print('createTextByClieck');
 
     await createNewFrameAndContents(
       [model],
       pageModel,
       frameModel: frameModel,
     );
+    MiniMenu.setShowFrame(false); //  프레임이 아닌 콘텐츠가 선택되도록 하기 위해.
   }
 
   // Future<Widget> cameraFrame(FrameModel model) async {

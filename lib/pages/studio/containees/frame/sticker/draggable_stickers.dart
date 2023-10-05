@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
@@ -210,7 +211,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
     return _dragableResizable(sticker, frameModel!, isVerticalResiable, isHorizontalResiable);
   }
 
-  Widget _dragableResizable(Sticker sticker, FrameModel frameModel, bool isVerticalResiable, bool isHorizontalResiable) {
+  Widget _dragableResizable(
+      Sticker sticker, FrameModel frameModel, bool isVerticalResiable, bool isHorizontalResiable) {
     double posX = frameModel.getRealPosX();
     double posY = frameModel.getRealPosY();
 
@@ -438,6 +440,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
     double menuWidth = 283;
 
+    ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
+    ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
+
     CretaRightMouseMenu.showMenu(
       title: 'frameRightMouseMenu',
       context: context,
@@ -498,6 +503,31 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 frameModel.isRemoved.set(true);
                 StudioVariables.cropFrame(frameModel, widget.frameManager!);
                 widget.onFrameShowUnshow.call(frameModel.mid);
+              }),
+        if (StudioVariables.isPreview == false &&
+            frameModel.frameType == FrameType.text &&
+            contentsModel != null &&
+            contentsModel.isText())
+          CretaMenuItem(
+              caption: CretaStudioLang.copyStyle,
+              onPressed: () {
+                ContentsModel.setStyleInClipBoard(contentsModel, context);
+              }),
+        if (StudioVariables.isPreview == false &&
+            frameModel.frameType == FrameType.text &&
+            contentsModel != null &&
+            contentsModel.isText() &&
+            ContentsModel.sytleInClipBoard != null)
+          CretaMenuItem(
+              caption: CretaStudioLang.pasteStyle,
+              onPressed: () {
+                mychangeStack.startTrans();
+                ContentsModel.pasteStyle(contentsModel);
+                mychangeStack.endTrans();
+                contentsManager?.notify();
+                if (contentsModel.isAutoFrameOrSide()) {
+                  _sendEvent!.sendEvent(contentsManager!.frameModel);
+                }
               }),
         // CretaMenuItem(
         //     disabled: StudioVariables.clipBoard == null ? true : false,

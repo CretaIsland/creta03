@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
+import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
@@ -293,10 +294,10 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     );
   }
 
-  void pageClicked(LongPressDownDetails details) {
-    //print('pageClicked');
+  Future<void> pageClicked(LongPressDownDetails details) async {
+    print('pageClicked');
     if (frameManager!.clickedInsideSelectedFrame(details.globalPosition) == true) {
-      //print('selected frame clicked');
+      print('selected frame clicked');
       FrameModel? frameModel = frameManager!.getSelected() as FrameModel?;
       if (frameModel != null && frameModel.isEditMode == true) {
         // BookMainPage.containeeNotifier!.setFrameClick(true);
@@ -312,7 +313,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
         'Gest3 : onLongPressDown ${details.localPosition}in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
     if (BookMainPage.containeeNotifier!.isFrameClick == true) {
       BookMainPage.containeeNotifier!.setFrameClick(false);
-      logger.info('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
+      print('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
       BookMainPage.outSideClick = false;
       BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
       return;
@@ -324,14 +325,28 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       // create text box here
       print('createTextBox');
       StudioVariables.isHandToolMode = false;
-      createTextByClick(context, details);
+      await createTextByClick(context, details);
       BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
+      BookMainPage.containeeNotifier!.setFrameClick(true); //  바탕페이지가 눌리는 것을 막기위해
+      return;
     } else if (BookMainPage.topMenuNotifier!.isFrame()) {
       // create frame box here
       print('createFrame');
-      BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
+      Offset center = Offset(
+        (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
+        (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
+      );
+      Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
+      frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
+        frameManager!.notify();
+        return null;
+      });
+
+      BookMainPage.topMenuNotifier?.clear();
+      return; // 커서의 모양을 되돌린다.
     } else {
       //setState(() {
+      print('clearSelectedMid');
       frameManager?.clearSelectedMid();
     }
 
@@ -343,7 +358,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       logger.info('BookMainPage.bookManagerHolder!.notify()');
       BookMainPage.bookManagerHolder!.notify();
     } else {
-      logger.info('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
+      print('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       LeftMenuPage.treeInvalidate();
     }

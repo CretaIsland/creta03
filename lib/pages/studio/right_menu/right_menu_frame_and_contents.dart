@@ -89,10 +89,10 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
           radioButtonValue: (value) {
             List<String> menu = CretaStudioLang.frameTabBar.values.toList();
             if (value == menu[0]) {
-              MiniMenu.showFrame = true;
+              MiniMenu.setShowFrame(true);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
             } else if (value == menu[1]) {
-              MiniMenu.showFrame = false;
+              MiniMenu.setShowFrame(false);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
             }
             setState(() {

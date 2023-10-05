@@ -94,7 +94,7 @@ class FrameManager extends CretaManager {
 
   Future<FrameModel> createNextFrame(
       {bool doNotify = true,
-      Size size = const Size(600, 400),
+      Size size = LayoutConst.defaultFrameSize,
       Offset? pos,
       Color? bgColor1,
       FrameType? type,

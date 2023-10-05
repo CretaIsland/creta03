@@ -243,6 +243,8 @@ class CretaStudioLang {
   static const String copy = "복사하기";
   static const String paste = "붙여넣기";
   static const String crop = "잘라내기";
+  static const String copyStyle = "서식복사";
+  static const String pasteStyle = "서식붙여넣기";
   static var showUnshow = "보이기/안보이기";
   static var show = "보이기";
   static var unshow = "안보이기";

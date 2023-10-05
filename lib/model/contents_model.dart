@@ -16,16 +16,72 @@ import '../pages/studio/studio_variables.dart';
 import 'app_enums.dart';
 import 'creta_model.dart';
 
+class ExtraTextStyle {
+  bool? isBold;
+  bool? isUnderline;
+  bool? isStrike;
+  bool? isItalic;
+  TextAlign? align;
+  int? valign;
+  Color? outLineColor;
+  double? outLineWidth;
+
+  void set(
+    ContentsModel model,
+  ) {
+    isBold = model.isBold.value;
+    isUnderline = model.isUnderline.value;
+    isStrike = model.isStrike.value;
+    isItalic = model.isItalic.value;
+    align = model.align.value;
+    valign = model.valign.value;
+    outLineColor = model.outLineColor.value;
+    outLineWidth = model.outLineWidth.value;
+  }
+}
+
 class ContentsModel extends CretaModel {
   // DB 에 저장하지 않는 member [
   int cursorPos = 0; // 텍스트의 커서 위치를 보관
-  static TextStyle? _lastTextStyle;
-  static TextStyle getLastTextStyle(BuildContext context) {
-    return ContentsModel._lastTextStyle ?? DefaultTextStyle.of(context).style;
+
+  //  서식 복사용 클립보드
+  static TextStyle? _styleInClipBoard;
+  static ExtraTextStyle? _extraStyleInClipBoard;
+  static TextStyle? get sytleInClipBoard => _styleInClipBoard;
+  static void setStyleInClipBoard(ContentsModel model, BuildContext? context) {
+    _styleInClipBoard = model.makeTextStyle(context);
+    _extraStyleInClipBoard ??= ExtraTextStyle();
+    _extraStyleInClipBoard?.set(model);
   }
 
-  static void setLastTextStyle(TextStyle style) {
+  static void pasteStyle(ContentsModel model) {
+    if (_styleInClipBoard != null) {
+      model.setTextStyle(
+        _styleInClipBoard!, /* doNotChangeFontSize: model.isAutoFrameOrSide()*/
+      );
+    }
+    if (_extraStyleInClipBoard != null) {
+      model.setExtraTextStyle(_extraStyleInClipBoard!);
+    }
+  }
+
+  // 제일 마지막에 수정된 서식
+  static TextStyle? _lastTextStyle;
+  static ExtraTextStyle? _lastExtraTextStyle;
+  static (TextStyle, ExtraTextStyle?) getLastTextStyle(BuildContext context) {
+    ContentsModel._lastTextStyle ??= DefaultTextStyle.of(context)
+        .style
+        .copyWith(fontSize: StudioConst.defaultFontSize * StudioVariables.applyScale);
+    return (_lastTextStyle!, _lastExtraTextStyle);
+  }
+
+  static void setLastTextStyle(TextStyle style, ContentsModel? model) {
+    //print('setLastTextStyle(${style.fontFamily})');
     _lastTextStyle = style;
+    if (model != null) {
+      _lastExtraTextStyle ??= ExtraTextStyle();
+      _lastExtraTextStyle?.set(model);
+    }
   } // 마지막에 사용자가 선택한 폰트체를 기억하고 있다.
 
   double prevShadowBlur = 0;
@@ -222,7 +278,7 @@ class ContentsModel extends CretaModel {
     autoSizeType = UndoAble<AutoSizeType>(AutoSizeType.noAutoSize, mid, 'autoSizeType');
     glassFill = UndoAble<double>(0, mid, 'glassFill');
     opacity = UndoAble<double>(1, mid, 'opacity');
-    fontSize = UndoAble<double>(14, mid, 'fontSize');
+    fontSize = UndoAble<double>(StudioConst.defaultFontSize, mid, 'fontSize');
     fontSizeType = UndoAble<FontSizeType>(FontSizeType.userDefine, mid, 'fontSizeType');
     fontColor = UndoAble<Color>(Colors.black, mid, 'fontColor');
     shadowColor = UndoAble<Color>(Colors.transparent, mid, 'shadowColor');
@@ -458,7 +514,7 @@ class ContentsModel extends CretaModel {
     autoSizeType.set(AutoSizeType.fromInt(map["autoSizeType"] ?? 3), save: false, noUndo: true);
     glassFill.set(map["glassFill"] ?? 0, save: false, noUndo: true);
     opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
-    fontSize.set(map["fontSize"] ?? 14, save: false, noUndo: true);
+    fontSize.set(map["fontSize"] ?? StudioConst.defaultFontSize, save: false, noUndo: true);
     fontSizeType.set(FontSizeType.fromInt(map["fontSizeType"] ?? 5), save: false, noUndo: true);
     fontColor.set(CretaUtils.string2Color(map["fontColor"])!, save: false, noUndo: true);
     shadowColor.set(CretaUtils.string2Color(map["shadowColor"])!, save: false, noUndo: true);
@@ -692,7 +748,7 @@ class ContentsModel extends CretaModel {
     return newFontSize;
   }
 
-  (TextStyle, String, double) makeStyle(
+  (TextStyle, String, double) makeInfo(
     BuildContext? context,
     double applyScale,
     bool isThumbnail, {
@@ -707,17 +763,53 @@ class ContentsModel extends CretaModel {
 
     double newFontSize = fontSize.value * applyScale;
 
-    if (isEditMode == false &&
-        autoSizeType.value == AutoSizeType.autoFontSize &&
-        (aniType.value != TextAniType.rotate ||
-            aniType.value != TextAniType.bounce ||
-            aniType.value != TextAniType.fade ||
-            aniType.value != TextAniType.shimmer ||
-            aniType.value != TextAniType.typewriter ||
-            aniType.value != TextAniType.wavy ||
-            aniType.value != TextAniType.fidget)) {
+    // if (isEditMode == false &&
+    //     autoSizeType.value == AutoSizeType.autoFontSize &&
+    //     (aniType.value != TextAniType.rotate ||
+    //         aniType.value != TextAniType.bounce ||
+    //         aniType.value != TextAniType.fade ||
+    //         aniType.value != TextAniType.shimmer ||
+    //         aniType.value != TextAniType.typewriter ||
+    //         aniType.value != TextAniType.wavy ||
+    //         aniType.value != TextAniType.fidget)) {
+    //   newFontSize = StudioConst.maxFontSize * applyScale;
+    // }
+    //newFontSize = newFontSize.roundToDouble();
+    if (isThumbnail == false) {
+      double minFontSize = StudioConst.minFontSize / applyScale;
+      if (newFontSize < StudioConst.minFontSize) newFontSize = minFontSize;
+    }
+    if (newFontSize > StudioConst.maxFontSize * applyScale) {
       newFontSize = StudioConst.maxFontSize * applyScale;
     }
+
+    TextStyle style = makeTextStyle(context,
+        isThumbnail: isThumbnail, applyScale: applyScale, isEditMode: isEditMode);
+
+    return (style, uri, newFontSize);
+  }
+
+  TextStyle makeTextStyle(
+    BuildContext? context, {
+    bool isThumbnail = false,
+    double? applyScale,
+    bool isEditMode = false,
+  }) {
+    applyScale ??= StudioVariables.applyScale;
+
+    double newFontSize = fontSize.value * applyScale;
+
+    // if (isEditMode == false &&
+    //     autoSizeType.value == AutoSizeType.autoFontSize &&
+    //     (aniType.value != TextAniType.rotate ||
+    //         aniType.value != TextAniType.bounce ||
+    //         aniType.value != TextAniType.fade ||
+    //         aniType.value != TextAniType.shimmer ||
+    //         aniType.value != TextAniType.typewriter ||
+    //         aniType.value != TextAniType.wavy ||
+    //         aniType.value != TextAniType.fidget)) {
+    //   newFontSize = StudioConst.maxFontSize * applyScale;
+    // }
     //newFontSize = newFontSize.roundToDouble();
     if (isThumbnail == false) {
       double minFontSize = StudioConst.minFontSize / applyScale;
@@ -783,6 +875,83 @@ class ContentsModel extends CretaModel {
       );
     }
 
-    return (style, uri, newFontSize);
+    return style;
+  }
+
+  void setExtraTextStyle(ExtraTextStyle style) {
+    if (style.isBold != null) {
+      isBold.set(style.isBold!, save: false);
+    }
+    if (style.isUnderline != null) {
+      isUnderline.set(style.isUnderline!, save: false);
+    }
+    if (style.isStrike != null) {
+      isStrike.set(style.isStrike!, save: false);
+    }
+    if (style.isItalic != null) {
+      isItalic.set(style.isItalic!, save: false);
+    }
+    if (style.align != null) {
+      align.set(style.align!, save: false);
+    }
+    if (style.valign != null) {
+      valign.set(style.valign!, save: false);
+    }
+    if (style.outLineColor != null) {
+      outLineColor.set(style.outLineColor!, save: false);
+    }
+    if (style.outLineWidth != null) {
+      outLineWidth.set(style.outLineWidth!, save: false);
+    }
+  }
+
+  void setTextStyle(
+    TextStyle style,
+    /*{bool doNotChangeFontSize = false}*/
+  ) {
+    setTextStyleProperty(
+      //fontSize: doNotChangeFontSize ? null : style.fontSize,
+      fontSize: style.fontSize,
+      font: style.fontFamily,
+      lineHeight: style.height,
+      letterSpacing: style.letterSpacing,
+      fontColor: style.color,
+      fontWeight: style.fontWeight,
+      opacity: style.color!.opacity,
+    );
+  }
+
+  void setTextStyleProperty({
+    double? fontSize,
+    FontSizeType fontSizeType = FontSizeType.userDefine,
+    Color? fontColor,
+    String? font,
+    double? opacity,
+    FontWeight? fontWeight,
+    double? letterSpacing,
+    double? lineHeight,
+  }) {
+    if (font != null) {
+      this.font.set(font, save: false);
+    }
+    if (opacity != null) {
+      this.opacity.set(opacity, save: false);
+    }
+    if (fontWeight != null && StudioConst.fontWeightStr2Int[fontWeight] != null) {
+      this.fontWeight.set(StudioConst.fontWeightStr2Int[fontWeight]!, save: false);
+    }
+    if (fontSize != null) {
+      this.fontSize.set(fontSize / StudioVariables.applyScale, save: false);
+    }
+    this.fontSizeType.set(fontSizeType, save: false);
+    if (fontColor != null) {
+      this.fontColor.set(fontColor, save: false);
+    }
+    if (letterSpacing != null) {
+      this.letterSpacing.set(letterSpacing / StudioVariables.applyScale, save: false);
+    }
+    if (lineHeight != null) {
+      this.lineHeight.set(lineHeight * 10, save: false);
+    }
   }
 }

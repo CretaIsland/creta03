@@ -72,6 +72,7 @@ class LayoutConst {
     LayoutConst.cretaPaddingPixel,
     LayoutConst.cretaPaddingPixel / 2,
   );
+  static const Size defaultFrameSize = Size(600, 400);
   static const Size bookThumbSize = Size(290.0, 256.0);
   static const double bookThumbSpacing = cretaPaddingPixel / 2;
   static const double bookDescriptionHeight = 56;

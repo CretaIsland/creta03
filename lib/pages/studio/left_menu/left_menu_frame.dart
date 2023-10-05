@@ -132,8 +132,11 @@ class _LeftMenuFrameState extends State<LeftMenuFrame> with FrameMixin {
                 tooltipBg: CretaColor.text[700]!,
                 icon: Icons.add_outlined,
                 onPressed: (() {
-                  _frameManager!.createNextFrame();
-                  _frameManager!.notify();
+                  _frameManager!.createNextFrame().then((value) {
+                    _frameManager!.notify();
+                    return null;
+                  });
+
                   //BookMainPage.bookManagerHolder!.notify();
                   BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None); // leftMenu 를 닫는다.
                 })),

@@ -362,7 +362,7 @@ class MyTreeViewState extends State<MyTreeView> {
   void _selectFrame(FrameModel frameModel, FrameManager frameManager) {
     // 프레임을 선택되게 하기 위해서 참 많은 이벤트를 날려야 한다.;
     //print('_selectFrame=${frameModel.mid}');
-    MiniMenu.showFrame = true;
+    MiniMenu.setShowFrame(true);
     //BookMainPage.miniMenuNotifier!.show();  // 안해도 된다.
     BookMainPage.containeeNotifier!.setFrameClick(true); // page 를 누른 것이 아닌것으로 하기 위해
     DraggableStickers.frameSelectNotifier?.set(frameModel.mid); // 실제 frame이 select 되도록 하기 위해
@@ -376,7 +376,7 @@ class MyTreeViewState extends State<MyTreeView> {
       FrameManager frameManager, ContentsManager contentsManager, int index) async {
     // 프레임을 선택되게 하기 위해서 참 많은 이벤트를 날려야 한다.;
     //print('_selectContents=${contentsModel.mid}');
-    MiniMenu.showFrame = false;
+    MiniMenu.setShowFrame(false);
     //BookMainPage.miniMenuNotifier!.show();  // 안해도 된다.
     BookMainPage.containeeNotifier!.setFrameClick(true); // page 를 누른 것이 아닌것으로 하기 위해
     DraggableStickers.frameSelectNotifier?.set(frameModel.mid); // 실제 frame이 select 되도록 하기 위해
