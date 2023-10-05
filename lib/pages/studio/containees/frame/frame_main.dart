@@ -200,8 +200,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           if (contentsManager != null) {
             ContentsModel? content = contentsManager.getCurrentModel();
             if (content != null && contentsManager.getAvailLength() > 0) {
-              print('contentsManager is not null');
-              print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
+              //print('contentsManager is not null');
+              //print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
               frameManager?.setSelectedMid(mid, doNotify: false);
               // print('4.contentsManager.setSelectedMid : ${CretaUtils.timeLap()}');
               contentsManager.setSelectedMid(content.mid, doNotify: false);
@@ -221,19 +221,19 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
               return;
             } else {
-              print('get current model is null');
+              //print('get current model is null');
             }
           }
-          print('contentsManager is null');
+          //print('contentsManager is null');
         }
         FrameModel? frame = frameManager?.getSelected() as FrameModel?;
-        print('MiniMenu.showFrame == true case');
+        //print('MiniMenu.showFrame == true case');
         if (frame == null ||
             frame.mid != mid ||
             BookMainPage.miniMenuNotifier!.isShow == false ||
             BookMainPage.containeeNotifier!.selectedClass != ContaineeEnum.Frame ||
             RightMenu.isOpen == false) {
-          print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
+          //print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
 
           frameManager?.setSelectedMid(mid, doNotify: false);
           //setState(() {
@@ -246,9 +246,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: false);
 
           _invokeNotify();
-          print('6.before tree update : ${CretaUtils.timeLap()}');
+          //print('6.before tree update : ${CretaUtils.timeLap()}');
           LeftMenuPage.treeInvalidate();
-          print('7.after tee update.${CretaUtils.timeLap()}');
+          //print('7.after tee update.${CretaUtils.timeLap()}');
 
           //});
         }

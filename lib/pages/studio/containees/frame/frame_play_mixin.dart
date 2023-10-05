@@ -307,7 +307,7 @@ mixin FramePlayMixin {
       model.setExtraTextStyle(extraStyle);
     }
     model.autoSizeType.set(AutoSizeType.autoFrameSize); // 가로 세로 모두 늘어나는 모드
-    print('createTextByClieck');
+    //print('createTextByClieck');
 
     await createNewFrameAndContents(
       [model],

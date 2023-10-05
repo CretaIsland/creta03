@@ -434,7 +434,7 @@ class _InstantEditorState extends State<InstantEditor> {
         //print('onTap');
       },
       onTapOutside: (event) {
-        print('onTapOutside.........');
+        //print('onTapOutside.........');
         _saveChanges(model);
         if (model.isAutoFontSize()) {
           CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true);

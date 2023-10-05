@@ -295,9 +295,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
   }
 
   Future<void> pageClicked(LongPressDownDetails details) async {
-    print('pageClicked');
+    //print('pageClicked');
     if (frameManager!.clickedInsideSelectedFrame(details.globalPosition) == true) {
-      print('selected frame clicked');
+      //print('selected frame clicked');
       FrameModel? frameModel = frameManager!.getSelected() as FrameModel?;
       if (frameModel != null && frameModel.isEditMode == true) {
         // BookMainPage.containeeNotifier!.setFrameClick(true);
@@ -313,7 +313,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
         'Gest3 : onLongPressDown ${details.localPosition}in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
     if (BookMainPage.containeeNotifier!.isFrameClick == true) {
       BookMainPage.containeeNotifier!.setFrameClick(false);
-      print('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
+      //print('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
       BookMainPage.outSideClick = false;
       BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
       return;
@@ -323,7 +323,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
 
     if (BookMainPage.topMenuNotifier!.isText()) {
       // create text box here
-      print('createTextBox');
+      //print('createTextBox');
       StudioVariables.isHandToolMode = false;
       await createTextByClick(context, details);
       BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
@@ -331,7 +331,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       return;
     } else if (BookMainPage.topMenuNotifier!.isFrame()) {
       // create frame box here
-      print('createFrame');
+      //print('createFrame');
       Offset center = Offset(
         (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
         (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
@@ -346,7 +346,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       return; // 커서의 모양을 되돌린다.
     } else {
       //setState(() {
-      print('clearSelectedMid');
+      //print('clearSelectedMid');
       frameManager?.clearSelectedMid();
     }
 
@@ -358,7 +358,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       logger.info('BookMainPage.bookManagerHolder!.notify()');
       BookMainPage.bookManagerHolder!.notify();
     } else {
-      print('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
+      //print('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       LeftMenuPage.treeInvalidate();
     }

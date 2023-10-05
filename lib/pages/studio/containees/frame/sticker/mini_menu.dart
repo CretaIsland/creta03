@@ -26,7 +26,7 @@ class MiniMenu extends StatefulWidget {
   static bool _showFrame = false;
   static bool get showFrame => _showFrame;
   static void setShowFrame(bool val) {
-    print('setShowFrame($val)------------------------');
+    //print('setShowFrame($val)------------------------');
     _showFrame = val;
   }
 
