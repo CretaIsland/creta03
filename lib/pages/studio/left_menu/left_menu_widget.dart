@@ -1,6 +1,7 @@
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/pages/studio/left_menu/camera/left_menu_camera.dart';
 import 'package:creta03/pages/studio/left_menu/music/left_menu_music.dart';
+import 'package:creta03/pages/studio/left_menu/sticker/left_menu_sticker.dart';
 import 'package:creta03/pages/studio/left_menu/timeline/left_menu_timeline.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
@@ -224,7 +225,13 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
       );
     }
     if (_selectedType == type[5]) {
-      return Container();
+      return LeftMenuSticker(
+        title: CretaStudioLang.sticker,
+        width: _itemWidth,
+        height: _itemHeight,
+        titleStyle: titleStyle,
+        dataStyle: dataStyle,
+      );
     }
     if (_selectedType == type[6]) {
       return LeftMenuTimeline(

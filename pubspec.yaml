@@ -140,6 +140,7 @@ dependencies:
   timeline_tile: ^2.0.0
   google_fonts: ^4.0.4
   weather_icons: ^3.0.0
+  giphy_get: ^2.0.4
   #flutter_treeview: ^1.0.7+1
   
   image: ^4.1.3
@@ -217,62 +218,8 @@ flutter:
 
     - assets/google_map_thumbnail.png
 
-    - assets/timeline_samples/football/arsenal.png
-    - assets/timeline_samples/football/barcelona.png
-    - assets/timeline_samples/football/foul.png
-    - assets/timeline_samples/football/goal.png
-    - assets/timeline_samples/football/injury.png
-    - assets/timeline_samples/football/offside.png
-    - assets/timeline_samples/football/redCard.png
-    - assets/timeline_samples/football/stoppageTime.png
-    - assets/timeline_samples/football/yellowCard.png
-
-    - assets/timeline_samples/delivery/order_confirmed.png
-    - assets/timeline_samples/delivery/order_placed.png
-    - assets/timeline_samples/delivery/order_processed.png
-    - assets/timeline_samples/delivery/ready_to_pickup.png
-
-    - assets/timeline_samples/horizontal/0.png
-    - assets/timeline_samples/horizontal/1.png
-    - assets/timeline_samples/horizontal/2.png
-    - assets/timeline_samples/horizontal/3.png
-    - assets/timeline_samples/horizontal/4.png
-    - assets/timeline_samples/horizontal/5.png
-
-    - assets/timeline_samples/app/0.png
-    - assets/timeline_samples/app/1.png
-    - assets/timeline_samples/app/2.png
-    - assets/timeline_samples/app/3.png
-    - assets/timeline_samples/app/4.png
-
-    - assets/timeline_samples/timeline_thumbnail.jpeg
-
-    - assets/timeline_samples/showcase_timeline.png
-    - assets/timeline_samples/football_timeline.png
-    - assets/timeline_samples/activity_timeline.png
-    - assets/timeline_samples/success_timeline.png
-    - assets/timeline_samples/delivery_timeline.png
-    - assets/timeline_samples/weather_timeline.png
-    - assets/timeline_samples/monthHoriz_timeline.png
-    - assets/timeline_samples/appHoriz_timeline.png
-    - assets/timeline_samples/deliveryHoriz_timeline.png
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    - assets/timeline_samples/
+    - assets/weather_sticker/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

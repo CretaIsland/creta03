@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:creta03/pages/studio/left_menu/left_menu_ele_button.dart';
 import 'package:creta03/pages/studio/left_menu/weather/weather_live_data.dart';
+import 'package:creta03/pages/studio/left_menu/weather/weather_sticker_base.dart';
+import 'package:creta03/pages/studio/left_menu/weather/weather_sticker_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:creta03/pages/studio/left_menu/weather/weather_base.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
@@ -59,59 +62,131 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 12.0, left: 24.0),
-          child: Text(widget.title, style: widget.dataStyle),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 12.0, left: 24.0),
-          child: Wrap(
-            spacing: 12.0,
-            runSpacing: 6.0,
-            children: [
-              WeatherBase(
-                nameText: Text('BG Type 1', style: widget.dataStyle),
-                weatherWidget: WeatherBg(
-                  weatherType: WeatherType.sunny,
-                  width: widget.width,
-                  height: widget.height,
-                ),
-                width: widget.width,
-                height: widget.height,
-                onPressed: () async {
-                  await _createWeather(FrameType.weather1);
-                  BookMainPage.pageManagerHolder!.notify();
-                  //BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
-                },
+    return SizedBox(
+      // height: StudioVariables.workHeight - 220.0,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0, left: 24.0),
+              child: Text(widget.title, style: widget.dataStyle),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0, left: 24.0),
+              child: Wrap(
+                spacing: 12.0,
+                runSpacing: 6.0,
+                children: [
+                  WeatherBase(
+                    nameText: Text('BG Type 1', style: widget.dataStyle),
+                    weatherWidget: WeatherBg(
+                      weatherType: WeatherType.sunny,
+                      width: widget.width,
+                      height: widget.height,
+                    ),
+                    width: widget.width,
+                    height: widget.height,
+                    onPressed: () async {
+                      await _createWeather(FrameType.weather1);
+                      BookMainPage.pageManagerHolder!.notify();
+                      //BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
+                    },
+                  ),
+                  WeatherBase(
+                    nameText: Text('BG Type 2', style: widget.dataStyle),
+                    weatherWidget: WeatherScene.scorchingSun.getWeather(),
+                    width: widget.width,
+                    height: widget.height,
+                    onPressed: () async {
+                      await _createWeather(FrameType.weather2);
+                      BookMainPage.pageManagerHolder!.notify();
+                    },
+                  ),
+                  _getElement(WeatherInfoType.cityname, 180),
+                  _getElement(WeatherInfoType.temperature, 100),
+                  _getElement(WeatherInfoType.humidity, 100),
+                  _getElement(WeatherInfoType.uv, 120),
+                  _getElement(WeatherInfoType.visibility, 140),
+                  _getElement(WeatherInfoType.microDust, 160),
+                  _getElement(WeatherInfoType.superMicroDust, 160),
+                  _getElement(WeatherInfoType.pressure, 160),
+                  _getElement(WeatherInfoType.wind, 160),
+                ],
               ),
-              WeatherBase(
-                nameText: Text('BG Type 2', style: widget.dataStyle),
-                weatherWidget: WeatherScene.scorchingSun.getWeather(),
-                width: widget.width,
-                height: widget.height,
-                onPressed: () async {
-                  await _createWeather(FrameType.weather2);
-                  BookMainPage.pageManagerHolder!.notify();
-                  //BookMainPage.leftMenuNotifier!.set(LeftMenuEnum.None);
-                },
+            ),
+            const CurrentWeatherClass(),
+            Padding(
+              padding: const EdgeInsets.only(top: 24.0, left: 24.0),
+              child: Text('날씨 스티커', style: widget.dataStyle),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0, left: 24.0),
+              child: Wrap(
+                spacing: 12.0,
+                runSpacing: 6.0,
+                children: [
+                  LeftMenuEleButton(
+                    width: 70.0,
+                    height: 70.0,
+                    onPressed: () async {
+                      await _createWeatherStickers(FrameType.weatherSticker1);
+                      BookMainPage.pageManagerHolder!.notify();
+                    },
+                    child: WeatherStickerBase(
+                      weatherStickerWidget: Container(
+                        color: CretaColor.text[200],
+                        child: Image.asset('assets/weather_sticker/구름조금_A_black.png'),
+                      ),
+                    ),
+                  ),
+                  LeftMenuEleButton(
+                    width: 70.0,
+                    height: 70.0,
+                    onPressed: () async {
+                      await _createWeatherStickers(FrameType.weatherSticker2);
+                      BookMainPage.pageManagerHolder!.notify();
+                    },
+                    child: WeatherStickerBase(
+                      weatherStickerWidget: Container(
+                        color: CretaColor.text[200],
+                        child: Image.asset('assets/weather_sticker/구름조금_A_white.png'),
+                      ),
+                    ),
+                  ),
+                  LeftMenuEleButton(
+                    width: 70.0,
+                    height: 70.0,
+                    onPressed: () async {
+                      await _createWeatherStickers(FrameType.weatherSticker3);
+                      BookMainPage.pageManagerHolder!.notify();
+                    },
+                    child: WeatherStickerBase(
+                      weatherStickerWidget: Container(
+                        color: CretaColor.text[200],
+                        child: Image.asset('assets/weather_sticker/구름조금_B_color.png'),
+                      ),
+                    ),
+                  ),
+                  LeftMenuEleButton(
+                    width: 70.0,
+                    height: 70.0,
+                    onPressed: () async {
+                      await _createWeatherStickers(FrameType.weatherSticker);
+                      BookMainPage.pageManagerHolder!.notify();
+                    },
+                    child: Container(
+                      color: CretaColor.text[200],
+                      child: WeatherStickerElements(),
+                    ),
+                  ),
+                ],
               ),
-              _getElement(WeatherInfoType.cityname, 180),
-              _getElement(WeatherInfoType.temperature, 100),
-              _getElement(WeatherInfoType.humidity, 100),
-              _getElement(WeatherInfoType.uv, 120),
-              _getElement(WeatherInfoType.visibility, 140),
-              _getElement(WeatherInfoType.microDust, 160),
-              _getElement(WeatherInfoType.superMicroDust, 160),
-              _getElement(WeatherInfoType.pressure, 160),
-              _getElement(WeatherInfoType.wind, 160),
-            ],
-          ),
+            ),
+            // const SizedBox(height: 30.0),
+          ],
         ),
-        const CurrentWeatherClass(),
-      ],
+      ),
     );
   }
 
@@ -156,6 +231,32 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
       bgColor1: Colors.transparent,
       type: frameType,
       subType: defaultSubType,
+    );
+    mychangeStack.endTrans();
+  }
+
+  Future<void> _createWeatherStickers(FrameType frameType) async {
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) return;
+
+    //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
+    double width = 120;
+    double height = 120;
+    double x = (pageModel.width.value - width) / 2;
+    double y = (pageModel.height.value - height) / 2;
+
+    FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    if (frameManager == null) {
+      return;
+    }
+
+    mychangeStack.startTrans();
+    await frameManager.createNextFrame(
+      doNotify: false,
+      size: Size(width, height),
+      pos: Offset(x, y),
+      bgColor1: Colors.transparent,
+      type: frameType,
     );
     mychangeStack.endTrans();
   }

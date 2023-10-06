@@ -40,12 +40,17 @@ enum FrameType {
   weatherInfo,
   weather1,
   weather2,
+  weatherSticker,
+  weatherSticker1,
+  weatherSticker2,
+  weatherSticker3,
   music,
   analogWatch,
   digitalWatch,
   stopWatch,
   countDownTimer,
   dateFormat,
+  sticker,
   showcaseTimeline,
   footballTimeline,
   activityTimeline,
@@ -151,6 +156,17 @@ enum AnimationType {
     }
     return retval;
   }
+}
+
+enum NextContentTypes {
+  none,
+  normalCarousel,
+  tiltedCarousel,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static NextContentTypes fromInt(int? val) =>
+      NextContentTypes.values[validCheck(val ?? none.index)];
 }
 
 enum TextureType {

@@ -226,19 +226,18 @@ class CretaStudioLang {
   static const String noNameframe = '이름없는 프레임';
   static const String newText = '기본 텍스트';
 
-  static const String textEditorToolbar = '텍스트 편집기 열기'; // added by Mai 230619
-  static const String paragraphTemplate = '문단'; // added by Mai 230619
-  static const String tableTemplate = '표'; // added by Mai 230619
-
+  static const String textEditorToolbar = '텍스트 편집기 열기';
+  static const String paragraphTemplate = '문단';
+  static const String tableTemplate = '표';
   static const String listText = '';
   static const String defaultText = '샘플 텍스트 입니다.';
 
   static const String wide = "전체 페이지 보기";
-  static const String usual = "원본 보기"; // added by Mai 230517
+  static const String usual = "원본 보기";
   static const String close = "닫기";
-  static const String collapsed = "접기"; // added by Mai 230516
-  static const String open = "열기"; // added by Mai 230516
-  static const String hidden = "압정"; // added by Mai 230516
+  static const String collapsed = "접기";
+  static const String open = "열기";
+  static const String hidden = "압정";
 
   static const String copy = "복사하기";
   static const String paste = "붙여넣기";
@@ -307,6 +306,7 @@ class CretaStudioLang {
   static const String transitionPage = "페이지 전환 효과";
   static const String transitionFrame = "애니메이션";
   static const String effect = "배경효과";
+  static const String contentFlipEffect = "콘텐츠 넘김 효과";
 
   static List<String> animationTypes = [
     "없음",
@@ -317,6 +317,12 @@ class CretaStudioLang {
     "커지기",
   ];
 
+  static List<String> nextContentTypes = [
+    "없음",
+    "일반 캐로셀",
+    "기울어진 캐로셀",
+  ];
+
   static const String lastestFrame = "최근에 사용한 프레임";
   static const String poligonFrame = "도형 프레임";
   static const String animationFrame = "애니메이션 프레임";
@@ -325,33 +331,31 @@ class CretaStudioLang {
   static const String poligonFrameError = "준비된 도형 프레임이 없습니다.";
   static const String animationFrameError = "준비된 애니메이션 프레임이 없습니다.";
 
-  static const String queryHintText = '플레이스 홀더'; // added by Mai 230531
+  static const String queryHintText = '플레이스 홀더';
 
-  static const String recentUsedImage = '최근 사용한 이미지'; // added by Mai 230601
-  static const String recommendedImage = '추천 이미지'; // added by Mai 230601
-  static const String myImage = '내 이미지'; // added by Mai 230601
+  static const String recentUsedImage = '최근 사용한 이미지';
+  static const String recommendedImage = '추천 이미지';
+  static const String myImage = '내 이미지';
 
-  static const String myUploadedImage = '내 파일 가져오기'; // added by Mai 230601
-  static const String recentUploadedImage = '최근 가져온 이미지'; // added by Mai 230601
+  static const String myUploadedImage = '내 파일 가져오기';
+  static const String recentUploadedImage = '최근 가져온 이미지';
 
-  static const String aiImageGeneration = '생성할 이미지'; // added by Mai 230531
-  static const String aiGeneratedImage = '생성된 이미지'; // added by Mai 230531
-  static const String imageStyle = '이미지 스타일'; // added by Mai 230601
-  static const String genAIImage = '이미지 생성하기'; // added by Mai 230602
-  static const String genImageAgain = '다시 생성하기'; // added by Mai 230602
-  static const String genFromBeginning = '처음부터 시작'; // added by Mai 230602
+  static const String aiImageGeneration = '생성할 이미지';
+  static const String aiGeneratedImage = '생성된 이미지';
+  static const String imageStyle = '이미지 스타일';
+  static const String genAIImage = '이미지 생성하기';
+  static const String genImageAgain = '다시 생성하기';
+  static const String genFromBeginning = '처음부터 시작';
 
-  static const String genAIimageTooltip = '팁'; // added by Mai 230608
-  static const String tipSearchExample = '크레타선+드로잉+모내스타일'; // added by Mai 230608
+  static const String genAIimageTooltip = '팁';
+  static const String tipSearchExample = '크레타선+드로잉+모내스타일';
 
-  static const String music = '뮤직 플레이어'; // added by Mai 230602
-  // static const String weather = '날씨'; // added by Mai 230602
-  static const String timer = '시계'; // added by Mai 230602
-  static const String sticker = '스티커'; // added by Mai 230602
-  static const String effects = '효과'; // added by Mai 230602
+  static const String music = '뮤직 플레이어';
+  static const String timer = '시계';
+  static const String sticker = '스티커';
+  static const String effects = '효과';
 
-  static const String genAIerrorMsg =
-      '서버가 혼잡하여 현재 이용할 수 없습니다. \n잠시 후에 다시 시도해주세요. \n불편을 드려 죄송합니다.'; // added by Mai 230613
+  static const String genAIerrorMsg = '서버가 혼잡하여 현재 이용할 수 없습니다. \n잠시 후에 다시 시도해주세요. \n불편을 드려 죄송합니다.';
 
   static const String fixedRatio = "가로세로비를 고정합니다";
   static const String editFilter = "필터를 편집합니다";

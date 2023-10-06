@@ -39,6 +39,8 @@ import '../../left_menu/timeline/success_timeline.dart';
 import '../../left_menu/timeline/delivery_timeline.dart';
 import '../../left_menu/timeline/weather_timeline.dart';
 import '../../left_menu/weather/weather_base.dart';
+import '../../left_menu/weather/weather_sticker_base.dart';
+import '../../left_menu/weather/weather_sticker_elements.dart';
 import '../../studio_constant.dart';
 import '../../studio_variables.dart';
 // import '../../../../model/contents_model.dart';
@@ -83,6 +85,9 @@ mixin FramePlayMixin {
       return false;
     }
     if (model.isCameraType()) {
+      return false;
+    }
+    if (model.isStickerType()) {
       return false;
     }
     if (model.isTimelineType()) {
@@ -138,6 +143,24 @@ mixin FramePlayMixin {
         height: height,
       );
     }
+    if (model.frameType == FrameType.weatherSticker) {
+      return const WeatherStickerElements();
+    }
+    if (model.frameType == FrameType.weatherSticker1) {
+      return WeatherStickerBase(
+        weatherStickerWidget: Image.asset('assets/weather_sticker/구름조금_A_black.png'),
+      );
+    }
+    if (model.frameType == FrameType.weatherSticker2) {
+      return WeatherStickerBase(
+        weatherStickerWidget: Image.asset('assets/weather_sticker/구름조금_A_white.png'),
+      );
+    }
+    if (model.frameType == FrameType.weatherSticker3) {
+      return WeatherStickerBase(
+        weatherStickerWidget: Image.asset('assets/weather_sticker/구름조금_B_color.png'),
+      );
+    }
     return const SizedBox.shrink();
   }
 
@@ -176,6 +199,14 @@ mixin FramePlayMixin {
     return const SizedBox.shrink();
   }
 
+  Widget stickerFrame(FrameModel model) {
+    return Container(
+      width: 50,
+      height: 50,
+      color: Colors.pink[300],
+    );
+  }
+
   Widget timelineFrame(FrameModel model) {
     if (model.frameType == FrameType.showcaseTimeline) {
       return const ShowcaseTimeline();
@@ -195,7 +226,6 @@ mixin FramePlayMixin {
     if (model.frameType == FrameType.weatherTimeline) {
       return const WeatherTimeline();
     }
-
     if (model.frameType == FrameType.monthHorizTimeline) {
       return const HorizontalTimeline(type: FrameType.monthHorizTimeline);
     }
