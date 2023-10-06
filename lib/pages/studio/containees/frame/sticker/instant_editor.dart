@@ -1,11 +1,11 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
+import '../../../../../design_system/component/autoSizeTextField/auto_size_text_field.dart';
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../model/app_enums.dart';
 import '../../../../../model/contents_model.dart';
@@ -21,6 +21,9 @@ class InstantEditor extends StatefulWidget {
   final FrameModel frameModel;
   final Function onEditComplete;
   final void Function(String)? onTap;
+  final bool readOnly;
+  final bool enabled;
+  //final bool isThumbnail;
 
   const InstantEditor({
     super.key,
@@ -28,6 +31,9 @@ class InstantEditor extends StatefulWidget {
     required this.frameModel,
     required this.onEditComplete,
     this.onTap,
+    this.readOnly = false,
+    this.enabled = true,
+    //required this.isThumbnail,
   });
   @override
   State<InstantEditor> createState() => _InstantEditorState();
@@ -114,7 +120,8 @@ class _InstantEditorState extends State<InstantEditor> {
     _realSize ??= Size(widget.frameModel.width.value * StudioVariables.applyScale,
         widget.frameModel.height.value * StudioVariables.applyScale);
 
-    _padding = StudioConst.defaultTextPadding * StudioVariables.applyScale - (borderWidth * 2);
+    //_padding = StudioConst.defaultTextPadding * StudioVariables.applyScale - (borderWidth * 2);
+    _padding = StudioConst.defaultTextPadding * StudioVariables.applyScale;
 
     // _contentsManager = widget.frameManager!.getContentsManager(widget.frameModel.mid);
     // if (_contentsManager != null) {
@@ -182,7 +189,7 @@ class _InstantEditorState extends State<InstantEditor> {
       return const SizedBox.shrink();
     }
 
-    // if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+    // if (model.isAutoFontSize()) {
     //   //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
     //   double? autofontSize = AutoSizeGroup.autoSizeMap[model.mid];
     //   if (autofontSize != null) {
@@ -198,9 +205,8 @@ class _InstantEditorState extends State<InstantEditor> {
     late String uri;
     // ignore: unused_local_variable
     late double fontSize;
-    (style, uri, fontSize) = CretaTextPlayer.makeStyle(
-        context, model, StudioVariables.applyScale, false,
-        isEditMode: true);
+    (style, uri, fontSize) =
+        model.makeInfo(context, StudioVariables.applyScale, false, isEditMode: true);
 
     //_fontSize = fontSize;
     // if (model.outLineWidth.value > 0) {
@@ -226,26 +232,26 @@ class _InstantEditorState extends State<InstantEditor> {
       _textController.selection = TextSelection.fromPosition(
         TextPosition(offset: model.cursorPos + 1),
       );
-    } else if (_textController.text.length <= model.cursorPos) {
+    } else if (_textController.text.isNotEmpty && _textController.text.length <= model.cursorPos) {
       _textController.selection = TextSelection.fromPosition(
         TextPosition(offset: _textController.text.length),
       );
     }
 
-    if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+    if (model.isNoAutoSize()) {
       // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
       // 초기에 텍스트가 overflow 가 되기 위해 계산해 주어야 한다.
       //print('AutoSizeType.noAutoSize _fontSize=$fontSize');
       _resize(uri, model.autoSizeType.value);
       // _getLineHeightAndCount(uri, _fontSize, model.autoSizeType.value);
       // _resize();
-    } else if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+    } else if (model.isAutoFrameOrSide()) {
       // 초기 프레임사이즈를 결정해 주어야 한다.
       //print('AutoSizeType.autoFrameSize _fontSize=$fontSize');
       _resize(uri, model.autoSizeType.value);
       // _getLineHeightAndCount(uri, _fontSize, model.autoSizeType.value);
       // _resize();
-    } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+    } else if (model.isAutoFontSize()) {
       //print('AutoSizeType.autoFontSize _fontSize=$fontSize');
       // double? autofontSize = AutoSizeGroup.autoSizeMap[model.mid];
       // if (autofontSize != null) {
@@ -258,137 +264,213 @@ class _InstantEditorState extends State<InstantEditor> {
     //_textLineCount ??= CretaUtils.countAs(uri, '\n') + 1;
     //print('_textLineCount=$_textLineCount------------------------------------------');
 
-    return _editText(model, uri);
+    return _editText(model, uri, style);
   }
 
-  Widget _editText(ContentsModel model, String uri) {
+  Widget _editText(ContentsModel model, String uri, TextStyle style) {
     //print('_editText height=${_realSize!.height}');
+    final double fontSize = model.fontSize.value * StudioVariables.applyScale;
 
     late Size applySize;
     late Widget editorWidget;
-    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+    if (model.isAutoFrameHeight()) {
+      // double padding =
+      //     //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
+      //     (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
+      // //(StudioConst.defaultTextPadding * StudioVariables.applyScale);
+      // if (padding < 0) padding = 0;
       // 프레임 사이즈가 변한다.
-      applySize = _realSize!;
-      editorWidget = _myTextField(model, uri);
-    } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+      applySize = Size(_frameSize.width, _realSize!.height);
+      //print('applySize=$applySize');
+      editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: false);
+      //editorWidget = _myTextField(model, uri, padding);
+    } else if (model.isAutoFrameSize()) {
+      // double padding =
+      //     //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
+      //     (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
+      // //(StudioConst.defaultTextPadding * StudioVariables.applyScale);
+      // if (padding < 0) padding = 0;
+      // 프레임 사이즈가 변한다.
+      applySize = Size(_realSize!.width, _realSize!.height);
+      //print('applySize=$applySize');
+      editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: false);
+      //editorWidget = _myTextField(model, uri, padding);
+    } else if (model.isAutoFontSize()) {
+      // double padding =
+      //     //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
+      //     (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
+      // //(StudioConst.defaultTextPadding * StudioVariables.applyScale);
+      // if (padding < 0) padding = 0;
       // 프레임 사이즈도 . 에디터 사이즈도 변하지 않ㄴ느다. 폰트사이즈가 변해야 한다.
       applySize = _frameSize;
-      editorWidget = _myTextField(model, uri);
-    } else if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+      //print('applySize=$applySize');
+      editorWidget = _autoTextField(model, uri, fontSize, applySize.height, useAutoSize: true);
+    } else if (model.isNoAutoSize()) {
+      // double padding =
+      //     //(StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
+      //     (StudioConst.defaultTextPadding - (borderWidth * 2)) * StudioVariables.applyScale;
+      // //(StudioConst.defaultTextPadding * StudioVariables.applyScale);
+      // if (padding < 0) padding = 0;
       // 프레임 사이즈가 변하지 않는다. 에디터 사이즈는 변할 수 있다.
+      //applySize = Size(_frameSize.width, _realSize!.height);
       applySize = _frameSize;
-      editorWidget = OverflowBox(
-        //alignment: alignVToAlignment(model.valign.value),
-        alignment: Alignment.topCenter,
-        maxHeight: _realSize!.height,
-        maxWidth: _frameSize.width,
-        child: _myTextField(model, uri),
-      );
+
+      if (widget.enabled == true) {
+        editorWidget = OverflowBox(
+          alignment: alignVToAlignment(model.valign.value),
+          //alignment: Alignment.topCenter,
+          maxHeight: _realSize!.height, // double.infinity, //,
+          maxWidth: _frameSize.width,
+          child: _autoTextField(model, uri, fontSize, _realSize!.height, useAutoSize: false),
+          //child: _myTextField(model, uri, padding),
+        );
+      } else {
+        editorWidget = OverflowBox(
+          alignment: alignVToAlignment(model.valign.value),
+          //alignment: Alignment.topCenter,
+          maxHeight: _realSize!.height, // double.infinity, //,
+          maxWidth: _frameSize.width,
+          child: Text(uri, style: style),
+        );
+      }
     }
 
-    //print('${applySize.height.roundToDouble()},  ${widget.frameModel.height.value}');
+    //print('$_padding,  ${widget.frameModel.height.value * StudioVariables.applyScale}');
     return Positioned(
       left: _posX,
       top: _posY,
       child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(width: 1, color: Colors.black),
-          //color: widget.frameModel.bgColor1.value,
-          color: Colors.transparent,
-        ),
-        alignment:
-            CretaTextPlayer.toAlign(model.align.value, intToTextAlignVertical(model.valign.value)),
-        width: applySize.width,
-        height: applySize.height,
-        child: editorWidget,
-      ),
+          decoration: const BoxDecoration(
+            //border: Border.all(width: 1, color: Colors.black),
+            //color: Colors.amber,
+            color: Colors.transparent,
+          ),
+          alignment: CretaTextPlayer.toAlign(
+              model.align.value, intToTextAlignVertical(model.valign.value)),
+          width: applySize.width,
+          height: applySize.height,
+          padding: model.isAutoFontSize()
+              ? EdgeInsets.symmetric(
+                  vertical: _padding, horizontal: _padding + (StudioConst.stepGranularity))
+              : EdgeInsets.all(_padding),
+          //padding: EdgeInsets.all(_padding),
+          child: editorWidget),
     );
   }
 
-  Widget _myTextField(ContentsModel model, String uri) {
-    // double padding =
-    //     (StudioConst.defaultTextPadding * StudioVariables.applyScale) - (borderWidth * 2);
-    // if (padding < 0) padding = 0;
+  Widget _autoTextField(ContentsModel model, String uri, double fontSize, double initialHeight,
+      {bool useAutoSize = true}) {
+    double cursorWidth = _padding * 0.7471818504075;
 
-    return CupertinoTextField(
+    // -((borderWidth * 2) * StudioVariables.applyScale);
+    //0.5224074074074073 : 0.725 = 1: x
+    if (cursorWidth < 1) {
+      cursorWidth = 1;
+    }
+
+    bool autofocus =
+        BookMainPage.topMenuNotifier!.requestFocus; // textCreate 의 경우, 자동으로 포커스가 발생해야 한다.
+    FocusNode? focusNode;
+    if (autofocus) {
+      focusNode = FocusNode();
+      BookMainPage.topMenuNotifier!.releaseFocus(); // 처음 한번만 autofocus 가 되야 하므로 해지해준다.
+    }
+
+    return AutoSizeTextField(
+      //return TextField(
+      autofocus: autofocus,
+      focusNode: focusNode,
+      enabled: widget.enabled,
+      initialHeight: initialHeight,
+      useAutoSize: useAutoSize,
+      fontSize: fontSize,
+      fullwidth: true,
+      //minWidth: _frameSize.width,
+      readOnly: widget.readOnly,
+      wrapWords: true, // <- 반드시 true 여야함.
       key: _textFieldKey,
-      cursorWidth: 8.0,
-      strutStyle: const StrutStyle(
-        forceStrutHeight: true,
-        height: 1.0,
-      ),
-      // decoration: InputDecoration(
-      //   border: InputBorder.none,
-      //   contentPadding: const EdgeInsets.all(StudioConst.defaultTextPadding),
-      //   isDense: true,
-      //   filled: true,
-      //   fillColor: Colors.transparent,
-      //   enabledBorder: OutlineInputBorder(
-      //     borderSide: BorderSide(
-      //       color: CretaColor.text[200]!,
-      //     ),
-      //   ),
-      //   focusedBorder: OutlineInputBorder(
-      //     borderSide: BorderSide(
-      //       color: CretaColor.text[200]!,
-      //     ),
-      //   ),
-      // ),
+      cursorWidth: cursorWidth,
+      cursorColor: CretaUtils.luminance(widget.frameModel.bgColor1.value),
+      stepGranularity: StudioConst.stepGranularity, // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
+      minFontSize: StudioConst.minFontSize,
+      strutStyle: const StrutStyle(forceStrutHeight: true, height: 1.0),
+      decoration: const InputDecoration(
+        border: InputBorder.none,
 
-      padding: const EdgeInsets.all(0),
-      decoration: BoxDecoration(
-        border: Border.all(width: borderWidth, color: CretaColor.secondary),
-        color: Colors.transparent,
+        // contentPadding: model.isAutoFontSize()
+        //     ? EdgeInsets.symmetric(vertical: _padding / 3, horizontal: _padding * 0.9)
+        //     : EdgeInsets.all(_padding),
+        contentPadding: EdgeInsets.zero,
+        isDense: true,
+        filled: true,
+        fillColor: Colors.transparent,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: CretaColor.secondary,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: CretaColor.secondary,
+          ),
+        ),
       ),
       expands: true,
       minLines: null,
       maxLines: null,
-      //minLines: 1,
-      //    _textLineCount, // _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
-      //maxLines: _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
       keyboardType: TextInputType.multiline,
       //textInputAction: TextInputAction.none,
       textAlign: model.align.value,
       textAlignVertical: intToTextAlignVertical(model.valign.value),
-      //expands: true,
-      style: _style, // _style!.copyWith(backgroundColor: Colors.green),
-      //style: _style!.copyWith(color: Colors.green),
+      style: _style!.copyWith(
+          fontSize: StudioConst.maxFontSize *
+              StudioVariables.applyScale), // _style!.copyWith(backgroundColor: Colors.green),
       controller: _textController,
       onEditingComplete: () {
         _saveChanges(model);
         //print('onEditingComplete');
       },
+      onTap: () {
+        //print('onTap');
+      },
       onTapOutside: (event) {
+        //print('onTapOutside.........');
         _saveChanges(model);
-        BookMainPage.containeeNotifier!.setFrameClick(true);
+        if (model.isAutoFontSize()) {
+          CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true);
+        } // rightMenu 에 전달
+        //BookMainPage.containeeNotifier!.setFrameClick(true);
         DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
         widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
       },
       onChanged: (value) {
+        //print('onChanged');
         // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
         // if (newlineCount != _textLineCount) {
         model.cursorPos = _textController.selection.baseOffset;
         //print('cur=${model.cursorPos}');
 
-        if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+        if (model.isAutoFrameOrSide()) {
           // 프레임이 늘어나거나 줄어든다.
           if (_resize(value, model.autoSizeType.value)) {
             //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
             //setState(() {
             model.remoteUrl = _textController.text;
-            widget.frameModel.width
-                .set(_realSize!.width / StudioVariables.applyScale, save: false, noUndo: true);
+            if (model.isAutoFrameSize()) {
+              widget.frameModel.width
+                  .set(_realSize!.width / StudioVariables.applyScale, save: false, noUndo: true);
+            }
             widget.frameModel.height
                 .set(_realSize!.height / StudioVariables.applyScale, save: false, noUndo: true);
             //});
             widget.frameManager?.notify();
           }
-        } else if (model.autoSizeType.value == AutoSizeType.autoFontSize) {
+        } else if (model.isAutoFontSize()) {
           // 폰트가 늘어나거나 줄어든다. 프레임은 변하지 않는다.
-          setState(() {
-            model.remoteUrl = _textController.text;
-          });
-        } else if (model.autoSizeType.value == AutoSizeType.noAutoSize) {
+          //setState(() {
+          model.remoteUrl = _textController.text;
+          //});
+        } else if (model.isNoAutoSize()) {
           // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
           if (_resize(value, model.autoSizeType.value)) {
             //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -401,6 +483,113 @@ class _InstantEditorState extends State<InstantEditor> {
       },
     );
   }
+
+  // ignore: unused_element
+  // Widget _myTextField(ContentsModel model, String uri, double padding) {
+  //   double cursorWidth = padding * 0.7471818504075;
+
+  //   // -((borderWidth * 2) * StudioVariables.applyScale);
+  //   //0.5224074074074073 : 0.725 = 1: x
+  //   if (cursorWidth < 1) {
+  //     cursorWidth = 1;
+  //   }
+  //   //print('cursorWidth=$cursorWidth, ${StudioVariables.applyScale}');
+
+  //   return CupertinoTextField(
+  //     //return TextField(
+  //     readOnly: widget.readOnly,
+  //     key: _textFieldKey,
+  //     padding: EdgeInsets.fromLTRB(padding, padding, 0, padding), // 커서 크기를 고려하여 right =0
+  //     cursorWidth: cursorWidth,
+  //     strutStyle: const StrutStyle(
+  //       forceStrutHeight: true,
+  //       height: 1.0,
+  //     ),
+  //     // decoration: InputDecoration(
+  //     //   hintText: '한글입력',
+  //     //   border: InputBorder.none,
+  //     //   contentPadding: EdgeInsets.fromLTRB(padding, padding, 0, padding),
+  //     //   isDense: true,
+  //     //   filled: true,
+  //     //   fillColor: Colors.transparent,
+  //     //   enabledBorder: const OutlineInputBorder(
+  //     //     borderSide: BorderSide(
+  //     //       color: CretaColor.secondary,
+  //     //     ),
+  //     //   ),
+  //     //   focusedBorder: const OutlineInputBorder(
+  //     //     borderSide: BorderSide(
+  //     //       color: CretaColor.secondary,
+  //     //     ),
+  //     //   ),
+  //     // ),
+  //     decoration: BoxDecoration(
+  //       border: Border.all(
+  //           width: borderWidth,
+  //           color: widget.readOnly ? CretaColor.text[200]! : CretaColor.secondary),
+  //       color: Colors.transparent,
+  //     ),
+  //     expands: true,
+  //     minLines: null,
+  //     maxLines: null,
+  //     //minLines: 1,
+  //     //    _textLineCount, // _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
+  //     //maxLines: _textLineCount == null || _textLineCount! < 2 ? 2 : _textLineCount,
+  //     keyboardType: TextInputType.multiline,
+  //     //textInputAction: TextInputAction.none,
+  //     textAlign: model.align.value,
+  //     textAlignVertical: intToTextAlignVertical(model.valign.value),
+  //     //expands: true,
+  //     style: _style, // _style!.copyWith(backgroundColor: Colors.green),
+  //     //style: _style!.copyWith(color: Colors.green),
+  //     controller: _textController,
+  //     onEditingComplete: () {
+  //       _saveChanges(model);
+  //       //print('onEditingComplete');
+  //     },
+  //     onTapOutside: (event) {
+  //       _saveChanges(model);
+  //       BookMainPage.containeeNotifier!.setFrameClick(true);
+  //       DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
+  //       widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
+  //     },
+  //     onChanged: (value) {
+  //       // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
+  //       // if (newlineCount != _textLineCount) {
+  //       model.cursorPos = _textController.selection.baseOffset;
+  //       //print('cur=${model.cursorPos}');
+
+  //       if (model.isAutoFrameSize()) {
+  //         // 프레임이 늘어나거나 줄어든다.
+  //         if (_resize(value, model.autoSizeType.value)) {
+  //           //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+  //           //setState(() {
+  //           model.remoteUrl = _textController.text;
+  //           widget.frameModel.width
+  //               .set(_realSize!.width / StudioVariables.applyScale, save: false, noUndo: true);
+  //           widget.frameModel.height
+  //               .set(_realSize!.height / StudioVariables.applyScale, save: false, noUndo: true);
+  //           //});
+  //           widget.frameManager?.notify();
+  //         }
+  //       } else if (model.isAutoFontSize()) {
+  //         // 폰트가 늘어나거나 줄어든다. 프레임은 변하지 않는다.
+  //         //setState(() {
+  //         model.remoteUrl = _textController.text;
+  //         //});
+  //       } else if (model.isNoAutoSize()) {
+  //         // 프레임도 폰트도 변하지 않는다.  그냥 텍스트 부분이 overflow 가 된다.
+  //         if (_resize(value, model.autoSizeType.value)) {
+  //           //print('lineCount changed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+  //           setState(() {
+  //             model.remoteUrl = _textController.text;
+  //             //_resize();
+  //           });
+  //         }
+  //       }
+  //     },
+  //   );
+  // }
 
   bool _resize(String uri, AutoSizeType autoSizeType) {
     late double width;
@@ -415,12 +604,22 @@ class _InstantEditorState extends State<InstantEditor> {
       _padding,
     );
 
-    if (autoSizeType == AutoSizeType.noAutoSize) {
+    if (autoSizeType == AutoSizeType.noAutoSize || autoSizeType == AutoSizeType.autoFrameHeight) {
       if (_realSize!.height.round() != height.round()) {
         //if (_realSize!.height.round() != height.round()) {
         //print('oldSize = (${_realSize!.height.round()})');
         //print('newSize = (${height.round()})');
         _realSize = Size(_realSize!.width, height);
+        return true;
+      }
+      return false;
+    }
+    if (autoSizeType == AutoSizeType.autoFrameSize) {
+      if (_realSize!.height.round() != height.round() || _realSize!.width != width.round()) {
+        //if (_realSize!.height.round() != height.round()) {
+        //print('oldSize = (${_realSize!.height.round()})');
+        //print('newSize = (${height.round()})');
+        _realSize = Size(width, height);
         return true;
       }
       return false;
@@ -439,7 +638,7 @@ class _InstantEditorState extends State<InstantEditor> {
     //double dbHeight = _realSize!.height / StudioVariables.applyScale;
     model.remoteUrl = _textController.text;
 
-    if (model.autoSizeType.value == AutoSizeType.autoFrameSize) {
+    if (model.isAutoFrameOrSide()) {
       widget.frameModel.save();
       // if (widget.frameModel.height.value != _realSize!.height  ) {
       //   //print('_saveChanges  ${widget.frameModel.height.value} , ${_realSize!.height}');

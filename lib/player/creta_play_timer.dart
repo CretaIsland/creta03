@@ -417,6 +417,7 @@ class CretaPlayTimer extends ChangeNotifier {
           player: player,
         );
       case ContentsType.text:
+        //print('createWidget');
         return CretaTextWidget(
           key: GlobalObjectKey(player.keyString),
           player: player,

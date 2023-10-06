@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
+import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
@@ -35,6 +36,7 @@ import '../../studio_variables.dart';
 import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
 import '../frame/frame_main.dart';
+import '../frame/frame_play_mixin.dart';
 
 class PageMain extends StatefulWidget {
   final GlobalObjectKey pageKey;
@@ -55,8 +57,8 @@ class PageMain extends StatefulWidget {
   State<PageMain> createState() => PageMainState();
 }
 
-class PageMainState extends State<PageMain> with ContaineeMixin {
-  FrameManager? _frameManager;
+class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin {
+  //FrameManager? frameManager;  <-- move to FramePlayMixin
 
   bool _onceDBGetComplete = false;
 
@@ -84,15 +86,15 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
 
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
-    _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
+    frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
-    if (_frameManager == null) {
-      _frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
+    if (frameManager == null) {
+      frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
       );
-      await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!, widget.pageModel.mid);
+      await BookMainPage.pageManagerHolder!.initFrameManager(frameManager!, widget.pageModel.mid);
     }
     _onceDBGetComplete = true;
   }
@@ -114,7 +116,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   @override
   void dispose() {
     // logger.severe('dispose');
-    // _frameManager?.removeRealTimeListen();
+    // frameManager?.removeRealTimeListen();
     // saveManagerHolder?.unregisterManager('frame', postfix: widget.pageModel.mid);
     super.dispose();
   }
@@ -206,7 +208,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
                 FrameModel? frame = StudioVariables.clipBoard as FrameModel?;
                 FrameManager? srcManager = StudioVariables.clipBoardManager as FrameManager?;
                 if (frame != null && srcManager != null) {
-                  _frameManager?.copyFrame(frame,
+                  frameManager?.copyFrame(frame,
                       parentMid: widget.pageModel.mid,
                       srcFrameManager: srcManager,
                       samePage: widget.pageModel.mid == frame.parentMid.value);
@@ -292,14 +294,14 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     );
   }
 
-  void pageClicked(LongPressDownDetails details) {
+  Future<void> pageClicked(LongPressDownDetails details) async {
     //print('pageClicked');
-    if (_frameManager!.clickedInsideSelectedFrame(details.globalPosition) == true) {
+    if (frameManager!.clickedInsideSelectedFrame(details.globalPosition) == true) {
       //print('selected frame clicked');
-      FrameModel? frameModel = _frameManager!.getSelected() as FrameModel?;
+      FrameModel? frameModel = frameManager!.getSelected() as FrameModel?;
       if (frameModel != null && frameModel.isEditMode == true) {
         // BookMainPage.containeeNotifier!.setFrameClick(true);
-        // _frameManager!.setSelectedMid(frameModel.mid);
+        // frameManager!.setSelectedMid(frameModel.mid);
         // BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
         //DraggableStickers.frameSelectNotifier?.set(frameModel.mid);
         //print('Its edit mode');
@@ -311,14 +313,43 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         'Gest3 : onLongPressDown ${details.localPosition}in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
     if (BookMainPage.containeeNotifier!.isFrameClick == true) {
       BookMainPage.containeeNotifier!.setFrameClick(false);
-      logger.info('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
+      //print('frame clicked ${BookMainPage.containeeNotifier!.isFrameClick}');
       BookMainPage.outSideClick = false;
+      BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
       return;
     }
     BookMainPage.outSideClick = false;
-    logger.info('page clicked');
-    //setState(() {
-    _frameManager?.clearSelectedMid();
+    //print('page clicked');
+
+    if (BookMainPage.topMenuNotifier!.isText()) {
+      // create text box here
+      //print('createTextBox');
+      StudioVariables.isHandToolMode = false;
+      await createTextByClick(context, details);
+      BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
+      BookMainPage.containeeNotifier!.setFrameClick(true); //  바탕페이지가 눌리는 것을 막기위해
+      return;
+    } else if (BookMainPage.topMenuNotifier!.isFrame()) {
+      // create frame box here
+      //print('createFrame');
+      Offset center = Offset(
+        (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
+        (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
+      );
+      Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
+      frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
+        frameManager!.notify();
+        return null;
+      });
+
+      BookMainPage.topMenuNotifier?.clear();
+      return; // 커서의 모양을 되돌린다.
+    } else {
+      //setState(() {
+      //print('clearSelectedMid');
+      frameManager?.clearSelectedMid();
+    }
+
     //});
     if (LinkParams.isLinkNewMode == true) {
       LinkParams.isLinkNewMode = false;
@@ -327,7 +358,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
       logger.info('BookMainPage.bookManagerHolder!.notify()');
       BookMainPage.bookManagerHolder!.notify();
     } else {
-      logger.info('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
+      //print('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
       BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       LeftMenuPage.treeInvalidate();
     }
@@ -347,14 +378,14 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _waitFrame() {
-    if (_onceDBGetComplete && _frameManager!.initFrameComplete) {
+    if (_onceDBGetComplete && frameManager!.initFrameComplete) {
       logger.info('already _onceDBGetComplete page main');
       return _consumerFunc();
     }
     //var retval = CretaModelSnippet.waitData(
     var retval = CretaModelSnippet.waitDatum(
       managerList: [
-        _frameManager!,
+        frameManager!,
       ],
       //userId: AccountManager.currentLoginUser.email,
       consumerFunc: _consumerFunc,
@@ -372,7 +403,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<FrameManager>.value(
-          value: _frameManager!,
+          value: frameManager!,
         ),
         // ChangeNotifierProvider<SelectedModel>(
         //   create: (context) {
@@ -399,7 +430,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   Widget _drawFrames() {
-    return Consumer<FrameManager>(builder: (context, frameManager, child) {
+    return Consumer<FrameManager>(builder: (context, manager, child) {
       //print('_drawFrames'); // if (StudioVariables.isPreview) {
       //   return Stack(
       //     children: [
@@ -410,7 +441,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
       //         pageModel: widget.pageModel,
       //         bookModel: widget.bookModel,
       //       ),
-      //       _drawLinks(frameManager),
+      //       _drawLinks(manager),
       //     ],
       //   );
       // }
@@ -425,14 +456,14 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
   }
 
   // ignore: unused_element
-  Widget _drawLinks(FrameManager frameManager) {
+  Widget _drawLinks(FrameManager manager) {
     // return StreamBuilder<AbsExModel>(
     //     stream: _receiveEventFromProperty!.eventStream.stream,
     //     builder: (context, snapshot) {
     //       if (snapshot.data != null) {
     //         if (snapshot.data! is FrameModel) {
     //           FrameModel model = snapshot.data! as FrameModel;
-    //           frameManager.updateModel(model);
+    //           manager.updateModel(model);
     //           logger.info('_drawLinks _receiveEventFromProperty-----${model.posY.value}');
     //         } else {
     //           logger.info('_receiveEventFromProperty-----Unknown Model');
@@ -440,22 +471,22 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
     //       }
     //       return Stack(
     //         children: [
-    //           ..._drawLines(frameManager),
+    //           ..._drawLines(manager),
     //         ],
     //       );
     //     });
     return Stack(
       children: [
-        ..._drawLines(frameManager),
+        ..._drawLines(manager),
       ],
     );
   }
 
-  List<Widget> _drawLines(FrameManager frameManager) {
+  List<Widget> _drawLines(FrameManager manager) {
     logger.info('_drawLines()--------------------------------------------');
     List<LinkModel> linkList = [];
-    frameManager.listIterator((frameModel) {
-      ContentsManager? contentsManager = frameManager.findContentsManager(frameModel.mid);
+    manager.listIterator((frameModel) {
+      ContentsManager? contentsManager = manager.findContentsManager(frameModel.mid);
       if (contentsManager == null) {
         return null;
       }
@@ -477,7 +508,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin {
         ...linkList,
         ...linkManager.orderMapIterator((ele) {
           LinkModel model = ele as LinkModel;
-          model.stickerKey = frameManager.frameKeyMap[model.connectedMid];
+          model.stickerKey = manager.frameKeyMap[model.connectedMid];
           return model;
         }).toList()
       ];

@@ -68,7 +68,9 @@ class DraggableResizable extends StatefulWidget {
     this.onLayerTapped,
     this.onEdit,
     this.onFrameDelete,
-    this.isResiazble = true,
+    this.isResiable = true,
+    this.isVerticalResiable = true,
+    this.isHorizontalResiable = true,
     //this.canTransform = false,
   }) : //constraints = constraints ?? BoxConstraints.loose(Size.infinite),
         super(key: key);
@@ -110,7 +112,9 @@ class DraggableResizable extends StatefulWidget {
   final double pageWidth;
   final double pageHeight;
   final FrameModel? frameModel;
-  final bool isResiazble;
+  final bool isResiable;
+  final bool isVerticalResiable;
+  final bool isHorizontalResiable;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -145,7 +149,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
     //bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
     double whRatio = (_size.height / _size.width);
 
-    logger.info('DraggableResizable');
+    //print('DraggableResizable');
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -491,7 +495,9 @@ class _DraggableResizableState extends State<DraggableResizable> {
               if (!StudioVariables.isPreview)
                 SelectedBox(
                   key: GlobalObjectKey('SelectedBox-$widget.mid}'),
-                  isResizable : widget.isResiazble,
+                  isResiable: widget.isResiable,
+                  isVerticalResiable: widget.isVerticalResiable,
+                  isHorizontalResiable: widget.isHorizontalResiable,
                   mid: widget.mid,
                   normalizedHeight: normalizedHeight,
                   normalizedWidth: normalizedWidth,

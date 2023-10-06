@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable, use_function_type_syntax_for_parameters
 
+//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
@@ -15,9 +16,10 @@ class CretaModelSnippet {
     required Widget Function()? consumerFunc,
     Function()? waitFunc,
     Function()? completeFunc,
+    Future<List<AbsExModel>>? dbComplete,
   }) {
     return FutureBuilder<List<AbsExModel>>(
-        future: manager.isGetListFromDBComplete(),
+        future: dbComplete ?? manager.isGetListFromDBComplete(),
         builder: (context, AsyncSnapshot<List<AbsExModel>> snapshot) {
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
@@ -52,9 +54,11 @@ class CretaModelSnippet {
     Widget Function()? waitFunc,
     ScrollController? scrollController,
     double? initScreenHeight,
+    Future<bool>? dbComplete,
   }) {
     return FutureBuilder<bool>(
-        future: CretaModelSnippet._waitUntilAllManager(managerList),
+        //future: CretaModelSnippet._waitUntilAllManager(managerList),
+        future: dbComplete ?? CretaModelSnippet._waitUntilAllManager(managerList),
         builder: (context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasError) {
             //error가 발생하게 될 경우 반환하게 되는 부분
@@ -63,25 +67,6 @@ class CretaModelSnippet {
           }
           if (snapshot.hasData == false) {
             logger.finest("wait data ...(WaitData)");
-            // double? height = (initScreenHeight ?? 0) > 0 ? initScreenHeight! : null;
-            // return Scrollbar(
-            //   //controller: scrollController,
-            //   thumbVisibility: true,
-            //   child: ListView.builder(
-            //     //controller: scrollController,
-            //     itemCount: 1,
-            //     //itemExtent: initScreenHeight ?? 100,
-            //     itemBuilder: (context, index) {
-            //       return Container(
-            //         color: Colors.red,
-            //         height: height,
-            //         child: Center(
-            //           child: waitFunc?.call() ?? Snippet.showWaitSign(),
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // );
             return Center(
               child: waitFunc?.call() ?? Snippet.showWaitSign(),
             );

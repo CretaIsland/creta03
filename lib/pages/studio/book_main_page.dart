@@ -31,6 +31,8 @@ import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/buttons/creta_scale_button.dart';
+import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
+import '../../design_system/component/autoSizeText/font_size_changing_notifier.dart';
 import '../../design_system/component/creta_icon_toggle_button.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
@@ -46,6 +48,7 @@ import 'book_preview_menu.dart';
 import 'book_publish.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
+import 'containees/page/top_menu_notifier.dart';
 import 'left_menu/depot/depot_display.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
@@ -68,6 +71,8 @@ class BookMainPage extends StatefulWidget {
   //static UserPropertyManager? userPropertyManagerHolder;
   static ContaineeNotifier? containeeNotifier;
   static MiniMenuNotifier? miniMenuNotifier;
+  static TopMenuNotifier? topMenuNotifier;
+
   //static MiniMenuContentsNotifier? miniMenuContentsNotifier;
 
   //static LeftMenuEnum selectedStick = LeftMenuEnum.None;
@@ -157,7 +162,9 @@ class _BookMainPageState extends State<BookMainPage> {
 
     BookMainPage.containeeNotifier = ContaineeNotifier();
     BookMainPage.miniMenuNotifier = MiniMenuNotifier();
+    BookMainPage.topMenuNotifier = TopMenuNotifier();
     BookMainPage.leftMenuNotifier = LeftMenuNotifier();
+    CretaAutoSizeText.fontSizeNotifier = FontSizeChangingNotifier();
     //BookMainPage.miniMenuContentsNotifier = MiniMenuContentsNotifier();
 
     // 같은 페이지에서 객체만 바뀌면 static value 들은 그대로 남아있게 되므로
@@ -412,8 +419,14 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<MiniMenuNotifier>.value(
           value: BookMainPage.miniMenuNotifier!,
         ),
+        ChangeNotifierProvider<TopMenuNotifier>.value(
+          value: BookMainPage.topMenuNotifier!,
+        ),
         ChangeNotifierProvider<LeftMenuNotifier>.value(
           value: BookMainPage.leftMenuNotifier!,
+        ),
+        ChangeNotifierProvider<FontSizeChangingNotifier>.value(
+          value: CretaAutoSizeText.fontSizeNotifier!,
         ),
 
         // ChangeNotifierProvider<MiniMenuContentsNotifier>.value(
@@ -796,6 +809,30 @@ class _BookMainPageState extends State<BookMainPage> {
                 },
                 hasShadow: false,
                 tooltip: CretaStudioLang.tooltipRedo,
+              ),
+              SizedBox(width: padding),
+              BTN.floating_l(
+                icon: Icons.title_outlined,
+                onPressed: () {
+                  setState(() {
+                    // Create Text Box
+                    BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.textCreate);
+                  });
+                },
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipText,
+              ),
+              SizedBox(width: padding / 2),
+              BTN.floating_l(
+                icon: Icons.space_dashboard_outlined,
+                onPressed: () {
+                  setState(() {
+                    // Create Frame Box
+                    BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.frameCreate);
+                  });
+                },
+                hasShadow: false,
+                tooltip: CretaStudioLang.tooltipFrame,
               ),
               SizedBox(width: padding),
               CretaScaleButton(

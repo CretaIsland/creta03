@@ -14,12 +14,10 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 //import '../../../../common/creta_utils.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
-import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
-import '../../../../player/text/creta_text_player.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../right_menu/right_menu.dart';
@@ -111,6 +109,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data is FrameModel) {
             FrameModel model = snapshot.data! as FrameModel;
+            //print('_receiveEvent = ${model.height.value * StudioVariables.applyScale}');
             frameManager!.updateModel(model);
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
@@ -201,8 +200,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           if (contentsManager != null) {
             ContentsModel? content = contentsManager.getCurrentModel();
             if (content != null && contentsManager.getAvailLength() > 0) {
-              // print('contentsManager is not null');
-              // print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
+              //print('contentsManager is not null');
+              //print('3.frameManager?.setSelectedMid : ${CretaUtils.timeLap()}');
               frameManager?.setSelectedMid(mid, doNotify: false);
               // print('4.contentsManager.setSelectedMid : ${CretaUtils.timeLap()}');
               contentsManager.setSelectedMid(content.mid, doNotify: false);
@@ -276,8 +275,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         if (model.mid == mid) {
           //print('2FrameMain onComplete----------------------------------------------');
           model.save();
-          logger.info('onComplete');
+          //print('onComplete');
           _sendEvent?.sendEvent(model);
+
           BookMainPage.miniMenuNotifier!.set(true);
           //BookMainPage.miniMenuContentsNotifier!.isShow = true;
           //BookMainPage.miniMenuContentsNotifier?.notify();
@@ -285,11 +285,14 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         if (model.isTextType()) {
           ContentsManager? contentsManager = frameManager?.getContentsManager(mid);
           if (contentsManager != null) {
-            // ContentsModel? contentsModel = contentsManager.getFirstModel();
-            // if (contentsModel != null) {
-            //print('font size changed notify');
+            ContentsModel? contentsModel = contentsManager.getFirstModel();
+            if (contentsModel != null) {
+              //print('font/frame size changed notify');
+              if (contentsModel.isText() && contentsModel.isAutoFrameOrSide()) {
+                _receiveEvent?.sendEvent(model); // autoFrameSize 를 위해, 프레임사이즈가 변경되도록 하기 위해
+              }
+            }
             BookMainPage.containeeNotifier!.notify(); // for rightMenu
-            // }
             contentsManager.notify();
           }
         }
@@ -386,15 +389,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       if (contentsManager != null) {
         ContentsModel? contentsModel = contentsManager.getFirstModel();
         if (contentsModel != null) {
-          if (contentsModel.autoSizeType.value == AutoSizeType.autoFrameSize) {
+          if (contentsModel.isAutoFrameOrSide()) {
             // 자동 프레임사이즈를 결정해 주어야 한다.
             //print('AutoSizeType.autoFrameSize before $frameHeight');
             late String uri;
             late TextStyle style;
-            (style, uri, _) =
-                CretaTextPlayer.makeStyle(null, contentsModel, StudioVariables.applyScale, false);
+            (style, uri, _) = contentsModel.makeInfo(null, StudioVariables.applyScale, false);
 
-            (frameWidth, frameHeight) = CretaUtils.getTextBoxSize(
+            late double newFrameWidth;
+            late double newFrameHeight;
+            (newFrameWidth, newFrameHeight) = CretaUtils.getTextBoxSize(
               uri,
               contentsModel.autoSizeType.value,
               frameWidth,
@@ -404,8 +408,14 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
               StudioConst.defaultTextPadding * StudioVariables.applyScale,
             );
             //print('AutoSizeType.autoFrameSize after  $frameHeight');
-            model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
-            model.height.set(frameHeight / StudioVariables.applyScale, noUndo: true);
+            //model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
+            model.height.set(newFrameHeight / StudioVariables.applyScale, noUndo: true);
+            frameHeight = newFrameHeight;
+            if (contentsModel.isAutoFrameSize()) {
+              model.width.set(newFrameWidth / StudioVariables.applyScale, noUndo: true);
+              frameWidth = newFrameWidth;
+            }
+            // 바뀐값으로 frameHeight 값을 다시 바꾸어 놓아야 한다.
             //print('frameHeight changed ${frameHeight / StudioVariables.applyScale}-----');
           }
         }
@@ -737,17 +747,11 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       FrameModel model = item as FrameModel;
 
       //logger.finest('before save widthxheight = ${model.width.value}x${model.height.value}');
-
-      double dx =
-          (update.position.dx - BookMainPage.pageOffset.dx + (LayoutConst.stikerOffset / 2)) /
-              applyScale;
-      double dy =
-          (update.position.dy - BookMainPage.pageOffset.dy + (LayoutConst.stikerOffset / 2)) /
-              applyScale;
+      Offset pos = CretaUtils.positionInPage(update.position, applyScale);
 
       model.angle.set(update.angle * (180 / pi), save: false);
-      model.posX.set(dx, save: false);
-      model.posY.set(dy, save: false);
+      model.posX.set(pos.dx, save: false);
+      model.posY.set(pos.dy, save: false);
       model.width.set(update.size.width / applyScale, save: false);
 
       //print('setItem...................................');

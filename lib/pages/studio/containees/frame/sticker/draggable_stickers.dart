@@ -2,11 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hycop/common/undo/undo.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
@@ -151,49 +153,73 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
   Widget _drawEachStiker(Sticker sticker) {
     //if (sticker.isEditMode && _isEditorAlreadyExist == false) {
-    bool isResiazble = true;
+    bool isVerticalResiable = true;
+    bool isHorizontalResiable = true;
     FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
     if (frameModel != null && frameModel.isTextType()) {
       ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
       if (contentsModel != null) {
-        if (contentsModel.autoSizeType.value == AutoSizeType.autoFrameSize) {
-          isResiazble = false;
+        if (contentsModel.isAutoFrameHeight()) {
+          isVerticalResiable = false;
+        } else if (contentsModel.isAutoFrameSize()) {
+          isHorizontalResiable = false;
         }
-        if (frameModel.isEditMode && contentsModel.isText()) {
-          //_isEditorAlreadyExist = true;
-          return Stack(
-            children: [
-              _dragableResizable(sticker, frameModel, isResiazble),
-              InstantEditor(
-                key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
-                frameModel: frameModel,
-                frameManager: widget.frameManager,
-                onTap: widget.onTap,
-                onEditComplete: () {
-                  setState(
-                    () {
-                      //_isEditorAlreadyExist = false;
-                      frameModel.isEditMode = false;
-                    },
-                  );
-                  widget.frameManager?.notify();
-                },
-              ),
-            ],
-          );
+        if (contentsModel.isText()) {
+          if (frameModel.isEditMode) {
+            //print('editor selected');
+            return Stack(
+              children: [
+                _dragableResizable(sticker, frameModel, isVerticalResiable, isHorizontalResiable),
+                InstantEditor(
+                  key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
+                  frameModel: frameModel,
+                  frameManager: widget.frameManager,
+                  onTap: widget.onTap,
+                  onEditComplete: () {
+                    setState(
+                      () {
+                        //_isEditorAlreadyExist = false;
+                        frameModel.isEditMode = false;
+                      },
+                    );
+                    widget.frameManager?.notify();
+                  },
+                ),
+              ],
+            );
+            // } else if (contentsModel.isNoAutoSize()) {
+            //   return Stack(
+            //     children: [
+            //       _dragableResizable(sticker, frameModel, isResiable),
+            //       InstantEditor(
+            //         readOnly: true,
+            //         enabled: false,
+            //         key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
+            //         frameModel: frameModel,
+            //         frameManager: widget.frameManager,
+            //         onTap: (v) {},
+            //         onEditComplete: () {},
+            //       ),
+            //     ],
+            //   );
+          }
         }
       }
     }
-    return _dragableResizable(sticker, frameModel!, isResiazble);
+    //print('editor not selected');
+
+    return _dragableResizable(sticker, frameModel!, isVerticalResiable, isHorizontalResiable);
   }
 
-  Widget _dragableResizable(Sticker sticker, FrameModel frameModel, bool isResiazble) {
+  Widget _dragableResizable(
+      Sticker sticker, FrameModel frameModel, bool isVerticalResiable, bool isHorizontalResiable) {
     double posX = frameModel.getRealPosX();
     double posY = frameModel.getRealPosY();
 
     return DraggableResizable(
       key: GlobalKey(),
-      isResiazble: isResiazble,
+      isVerticalResiable: isVerticalResiable,
+      isHorizontalResiable: isHorizontalResiable,
       mid: sticker.id,
       angle: sticker.angle,
       //position: sticker.position + BookMainPage.pageOffset,
@@ -238,6 +264,15 @@ class _DraggableStickersState extends State<DraggableStickers> {
         //print('DraggableResizable onScaleStart --------------------------');
 
         widget.onScaleStart.call(sticker.id);
+
+        FrameModel? frameModel = widget.frameManager!.getModel(sticker.id) as FrameModel?;
+        if (frameModel != null && frameModel.isTextType()) {
+          ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
+          if (contentsModel != null && contentsModel.isText() && contentsModel.isAutoFontSize()) {
+            // 마우스를 끌기 시작하여, fontSize 가 변하기 시작한다는 사실을 알림.
+            CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true); // rightMenu 에 전달
+          }
+        }
       },
 
       // To update the layer (manage position of widget in stack)
@@ -405,6 +440,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
     double menuWidth = 283;
 
+    ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
+    ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
+
     CretaRightMouseMenu.showMenu(
       title: 'frameRightMouseMenu',
       context: context,
@@ -465,6 +503,31 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 frameModel.isRemoved.set(true);
                 StudioVariables.cropFrame(frameModel, widget.frameManager!);
                 widget.onFrameShowUnshow.call(frameModel.mid);
+              }),
+        if (StudioVariables.isPreview == false &&
+            frameModel.frameType == FrameType.text &&
+            contentsModel != null &&
+            contentsModel.isText())
+          CretaMenuItem(
+              caption: CretaStudioLang.copyStyle,
+              onPressed: () {
+                ContentsModel.setStyleInClipBoard(contentsModel, context);
+              }),
+        if (StudioVariables.isPreview == false &&
+            frameModel.frameType == FrameType.text &&
+            contentsModel != null &&
+            contentsModel.isText() &&
+            ContentsModel.sytleInClipBoard != null)
+          CretaMenuItem(
+              caption: CretaStudioLang.pasteStyle,
+              onPressed: () {
+                mychangeStack.startTrans();
+                ContentsModel.pasteStyle(contentsModel);
+                mychangeStack.endTrans();
+                contentsManager?.notify();
+                if (contentsModel.isAutoFrameOrSide()) {
+                  _sendEvent!.sendEvent(contentsManager!.frameModel);
+                }
               }),
         // CretaMenuItem(
         //     disabled: StudioVariables.clipBoard == null ? true : false,

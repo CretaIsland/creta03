@@ -235,6 +235,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       logger.info('PageManager Consumer  $_pageCount');
       if (pageManager.getSelected() == null && _pageCount > 0) {
         pageManager.setSelected(0);
+        //print('1111111');
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
       }
       _resize();
@@ -598,6 +599,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         //setState(() {
         logger.finest('selected = ${model.mid}');
         _pageManager!.setSelectedMid(model.mid);
+        //print('222222222');
+
         BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
         //BookMainPage.bookManagerHolder?.notify();
         //});

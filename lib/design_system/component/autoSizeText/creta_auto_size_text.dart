@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../pages/studio/studio_constant.dart';
+import 'font_size_changing_notifier.dart';
 
 /// Flutter widget that automatically resizes text to fit perfectly within its
 /// bounds.
@@ -11,6 +12,8 @@ import '../../../pages/studio/studio_constant.dart';
 /// overflows anyway, you should check if the parent widget actually constraints
 /// the size of this widget.
 class CretaAutoSizeText extends StatefulWidget {
+  static FontSizeChangingNotifier? fontSizeNotifier;
+
   /// Creates a [CretaAutoSizeText] widget.
   ///
   /// If the [style] argument is null, the text will use the style from the
@@ -23,7 +26,7 @@ class CretaAutoSizeText extends StatefulWidget {
     this.textKey,
     this.style,
     this.strutStyle,
-    this.minFontSize = 1,
+    required this.minFontSize,
     this.maxFontSize = double.infinity,
     this.stepGranularity = 1,
     this.presetFontSizes,
@@ -50,7 +53,7 @@ class CretaAutoSizeText extends StatefulWidget {
     this.textKey,
     this.style,
     this.strutStyle,
-    this.minFontSize = 12,
+    required this.minFontSize,
     this.maxFontSize = double.infinity,
     this.stepGranularity = 1,
     this.presetFontSizes,
@@ -245,9 +248,11 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
       _isCallbackPending = true;
       //print('afterBuildComplete');
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.fontSizeChanged?.call(AutoSizeGroup.autoSizeMap[widget.mid]); //skpark
+        if (widget.fontSizeChanged != null) {
+          //print('afterBuildComplete....');
+          widget.fontSizeChanged?.call(AutoSizeGroup.autoSizeMap[widget.mid]); //skpark
+        }
         _isCallbackPending = false;
-        //print('000000000000000000000000');
       });
     }
   }
@@ -264,6 +269,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
 
   @override
   Widget build(BuildContext context) {
+    //print('000000000000000000000000');
     if (widget.fontSizeChanged != null) {
       afterBuildComplete(); //skpark
     }
@@ -433,6 +439,7 @@ class CretaAutoSizeTextState extends State<CretaAutoSizeText> {
 
   Widget _buildText(double fontSize, TextStyle style, int? maxLines) {
     // 보이는 폰트 사이즈가 10 보다 작을 수 없다. skpark
+    //fontSize = (fontSize * 0.99).floorToDouble(); //skpark textField 보다 크기 때문에 4% 정도 작게 해준다.
     if (fontSize < StudioConst.minFontSize) {
       fontSize = StudioConst.minFontSize;
     }
@@ -524,9 +531,9 @@ class AutoSizeGroup {
   void _notifyListeners() {
     if (_widgetsNotified) {
       return;
-    } else {
-      _widgetsNotified = true;
     }
+
+    _widgetsNotified = true;
 
     for (final textState in _listeners.keys) {
       if (textState.mounted) {

@@ -109,7 +109,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
   final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
   final Map<String, String> _channelIdMap = {};
   final Map<String, ChannelModel> _channelMap = {}; // <ChannelModel.mid, ChannelModel>
-  bool _onceDBGetComplete = false;
+  //bool _onceDBGetComplete = false;
+  late Future<bool> _dbGetComplete;
 
   @override
   void initState() {
@@ -134,9 +135,18 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
       ],
       completeFunc: () {
-        _onceDBGetComplete = true;
+        //_onceDBGetComplete = true;
       },
     );
+    _dbGetComplete = _getDBGetComplete();
+  }
+
+  Future<bool> _getDBGetComplete() async {
+    // while(_onceDBGetComplete == false) {
+    //   await Future.delayed(const Duration(milliseconds: 250));
+    // }
+    await dummyManagerHolder.isGetListFromDBComplete();
+    return true;
   }
 
   void _getWatchHistoriesFromDB(List<AbsExModel> modelList) {
@@ -476,8 +486,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
     //       }
     //       return Container();
     //     });
-    if (_onceDBGetComplete == false) {
-      if (kDebugMode) print('---build-3');
+    // if (_onceDBGetComplete == false) {
+    //   if (kDebugMode) print('---build-3');
       return Scrollbar(
         controller: widget.scrollController,
         child: CretaModelSnippet.waitDatum(
@@ -491,9 +501,10 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
             dummyManagerHolder
           ],
           consumerFunc: _getItemPane,
+          dbComplete: _dbGetComplete,
         ),
       );
-    }
-    return _getItemPane();
+    // }
+    // return _getItemPane();
   }
 }

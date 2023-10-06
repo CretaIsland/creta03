@@ -539,6 +539,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.isMapType()) {
       return mapFrame(model);
     }
+    //print('ClipRect');
     return ClipRect(
       clipBehavior: Clip.hardEdge,
       child: ContentsMain(

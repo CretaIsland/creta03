@@ -409,8 +409,9 @@ enum FontSizeType {
 enum AutoSizeType {
   none,
   autoFontSize,
-  autoFrameSize,
+  autoFrameHeight, // 세로만 늘어나고 가로는 늘어나지 않는다.
   noAutoSize,
+  autoFrameSize, // 가로세로 모두 늘어난다.
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
@@ -419,8 +420,8 @@ enum AutoSizeType {
     switch (val) {
       case CretaStudioLang.autoFontSize:
         return AutoSizeType.autoFontSize;
-      case CretaStudioLang.autoFrameSize:
-        return AutoSizeType.autoFrameSize;
+      case CretaStudioLang.autoFrameHeight:
+        return AutoSizeType.autoFrameHeight;
       default:
         return AutoSizeType.noAutoSize;
     }

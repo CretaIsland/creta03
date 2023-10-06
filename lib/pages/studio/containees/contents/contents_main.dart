@@ -12,6 +12,7 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
+import '../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
@@ -71,6 +72,7 @@ class ContentsMainState extends State<ContentsMain> {
 
   @override
   Widget build(BuildContext context) {
+    //print('ContentsMain');
     if (_onceDBGetComplete) {
       logger.finest('already _onceDBGetComplete contentsMain');
       return _consumerFunc();
@@ -143,8 +145,13 @@ class ContentsMainState extends State<ContentsMain> {
                 }
                 return _mainBuild(model, playTimer);
               }
-              //print('current model is null');
+              //print('current url is empty');
               // ignore: sized_box_for_whitespace
+              if (model != null && model.isText() == true) {
+                if (model.isAutoFontSize()) {
+                  CretaAutoSizeText.fontSizeNotifier?.stop(); // rightMenu 에 전달
+                }
+              }
               return SizedBox.shrink();
               // return Container(
               //   width: double.infinity,

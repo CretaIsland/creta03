@@ -2,12 +2,15 @@
 
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:image/image.dart' as img;
 
 import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
 import '../model/app_enums.dart';
+import '../pages/studio/book_main_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 
@@ -747,9 +750,19 @@ class CretaUtils {
     TextStyle? style,
     TextAlign? align,
     double padding, {
-    double adjust = 3.0,
+    double adjust = 2.0,
   }) {
-    //print('style.fontSize=${style!.fontSize}-,boxWidth=$boxWidth----------------');
+    //print('text lenght = ${text.length}----------------');
+    if (text.isEmpty) {
+      text = ' '; // 비어있으면 계산을 못하기 때문에, 그냥 Space 를 넣는다.
+      // if (style != null && style.fontSize != null) {
+      //   double height = (style.fontSize! * StudioVariables.applyScale) + (padding * 2);
+      //   //print('empty case height=$height');
+      //   return (boxWidth, height);
+      // }
+      // //print('empty case height=100');
+      // return (boxWidth, 100);
+    }
 
     //int offset = 0;
     List<String> lines = text.split('\n');
@@ -764,24 +777,17 @@ class CretaUtils {
       // 글자수를 구할 수 있다.
       //int charCount = textPainter.getLineBoundary(TextPosition(offset: text.length)).end;
 
-      double wMargin = (style!.fontSize! / adjust);
-      // ignore: unused_local_variable
-      double hMargin = wMargin * (boxHeight / boxWidth);
       final double lineWidth = textPainter.width; // + wMargin;
       if (textLineWidth < lineWidth) {
         textLineWidth = lineWidth;
       }
       int count = 1;
-      if (autoSizeType != AutoSizeType.autoFrameSize) {
-        count = (lineWidth / boxWidth).ceil();
-      }
+      //if (autoSizeType != AutoSizeType.autoFrameSize) {
+      count = (lineWidth / boxWidth).ceil();
+      if (count == 0) count = 1; // 빈줄의 경우이다.
       eachLineCount.add(count);
       // 텍스트 하이트는 나중에, frameSize 를 늘리기 위해서 필요하다.
       textLineHeight = textPainter.preferredLineHeight; // + hMargin; //textPainter.height;
-
-      //Size size = textPainter.size;
-      //print('width,height = ${te ....................... xtPainter.width.round()},${textPainter.height.round()}');
-      //print('size=${size.width.round()}, ${size.height.round()}), $visualLineCount, $ddd');
     }
 
     int textLineCount = 0;
@@ -792,9 +798,75 @@ class CretaUtils {
     double width = textLineWidth + (padding * 2);
     double height = (textLineHeight * textLineCount.toDouble()) + (padding * 2);
 
+    //print('textLineCount=$textLineCount, textLineHeight=$textLineHeight, height=$height');
+
+    if (autoSizeType == AutoSizeType.autoFrameHeight ||
+        autoSizeType == AutoSizeType.autoFrameSize) {
+      double wMargin = (style!.fontSize! / adjust);
+      //double hMargin = wMargin * (height / width);
+      width += wMargin;
+      //height += hMargin;
+    }
+
+    //print('height=$height');
+
     //print('width=$width, height=$height, textLineCount=$textLineCount -------------');
 
     //print('lineCount=$textLineCount, lineHeight=$textLineHeight');
     return (width, height);
+  }
+
+  // image crop
+  static Uint8List cropImage(
+      Uint8List sourceImgBytes, Offset cropOffset, double ratio, Size frameSize) {
+    int cropWidth = 0;
+    int cropHeight = 0;
+
+    img.Image sourceImg = img.decodeImage(sourceImgBytes)!;
+
+    if (sourceImg.width / sourceImg.height > ratio) {
+      cropWidth = (sourceImg.height * ratio).toInt();
+      cropHeight = sourceImg.height;
+    } else {
+      cropWidth = sourceImg.width;
+      cropHeight = sourceImg.width ~/ ratio;
+    }
+
+    img.Image cropImg = img.copyCrop(sourceImg,
+        x: (cropOffset.dx * (sourceImg.width / frameSize.width)).toInt(),
+        y: (cropOffset.dy * (sourceImg.height / frameSize.height)).toInt(),
+        width: cropWidth,
+        height: cropHeight);
+
+    Uint8List cropImgBytes = Uint8List.fromList(img.encodePng(cropImg));
+
+    return cropImgBytes;
+  }
+
+  // 색상에 따라, 잘보이는 색을 선택해줌. (보색)
+  static Color luminance(Color color) {
+    if (color == Colors.transparent) return Colors.black;
+    return color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  }
+
+  // localPosition 을 페이지내의 position 으로 바꿔줌
+  static Offset positionInPage(Offset localPosition, double? applyScale) {
+    applyScale ??= StudioVariables.applyScale;
+    double dx = (localPosition.dx - BookMainPage.pageOffset.dx + (LayoutConst.stikerOffset / 2)) /
+        applyScale;
+    double dy = (localPosition.dy - BookMainPage.pageOffset.dy + (LayoutConst.stikerOffset / 2)) /
+        applyScale;
+    return Offset(dx, dy);
+  }
+
+  // 커서모양을 정해주는 함수
+  static MouseCursor getCursorShape() {
+    if (BookMainPage.topMenuNotifier!.isText()) {
+      return SystemMouseCursors.text;
+    }
+    if (BookMainPage.topMenuNotifier!.isFrame()) {
+      return SystemMouseCursors.cell;
+    }
+    return SystemMouseCursors.basic;
   }
 }

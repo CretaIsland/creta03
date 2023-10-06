@@ -72,6 +72,7 @@ class LayoutConst {
     LayoutConst.cretaPaddingPixel,
     LayoutConst.cretaPaddingPixel / 2,
   );
+  static const Size defaultFrameSize = Size(600, 400);
   static const Size bookThumbSize = Size(290.0, 256.0);
   static const double bookThumbSpacing = cretaPaddingPixel / 2;
   static const double bookDescriptionHeight = 56;
@@ -109,10 +110,11 @@ class LayoutConst {
 class StudioConst {
   static const double orderVar = 0.0000001;
   static const int maxFavColor = 7;
-  static const double maxFontSize = 256;
-  static const double minFontSize = 10;
+  static const double maxFontSize = 512;
+  static const double stepGranularity = 2.0; // <-- 폰트 사이즈 정밀도, 작을수록 속도가 느리다.  0.1 이 최소
+  static const double minFontSize = stepGranularity * 5;
   static const double defaultTextPadding = 14.0;
-  
+  static const double defaultFontSize = 64.0;
 
   static List<List<Size>> signageResolution = [
     [],

@@ -202,6 +202,8 @@ class CretaStudioLang {
   static const String tooltipNoNoti = '알림이 없습니다';
   static const String tooltipVolume = '작업하는 동안 소리를 끄거나 켭니다';
   static const String tooltipEdit = '화면 편집모드로 이동';
+  static const String tooltipText = '텍스트 편집';
+  static const String tooltipFrame = '프레임 생성';
   static const String tooltipNoneEdit = '화면 보기모드로 이동';
   static const String tooltipPause = '작업하는 동안 동영상을 정지하거나 플레이합니다';
   static const String tooltipUndo = '취소';
@@ -240,6 +242,8 @@ class CretaStudioLang {
   static const String copy = "복사하기";
   static const String paste = "붙여넣기";
   static const String crop = "잘라내기";
+  static const String copyStyle = "서식복사";
+  static const String pasteStyle = "서식붙여넣기";
   static var showUnshow = "보이기/안보이기";
   static var show = "보이기";
   static var unshow = "안보이기";
@@ -514,7 +518,7 @@ class CretaStudioLang {
   };
 
   static const String autoFontSize = '프레임 크기에 텍스트 크기 조절 ';
-  static const String autoFrameSize = '텍스트 크기에 프레임 크기 조절 ';
+  static const String autoFrameHeight = '텍스트 크기에 프레임 크기 조절 ';
   static const String noAutoSize = '자동 크기 조절 사용 안함 ';
   static const String tts = '음성으로 방송';
   static const String translate = '번역';
