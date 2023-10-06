@@ -36,6 +36,10 @@ class TopMenuNotifier extends ChangeNotifier {
     return _clickToCreateMode == ClickToCreateEnum.frameCreate;
   }
 
+  bool isNormal() {
+    return _clickToCreateMode == ClickToCreateEnum.normal;
+  }
+
   void clear() {
     _clickToCreateMode = ClickToCreateEnum.normal;
     notify();

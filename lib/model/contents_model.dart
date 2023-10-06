@@ -903,6 +903,7 @@ class ContentsModel extends CretaModel {
     if (style.outLineWidth != null) {
       outLineWidth.set(style.outLineWidth!, save: false);
     }
+    save();
   }
 
   void setTextStyle(
@@ -953,5 +954,6 @@ class ContentsModel extends CretaModel {
     if (lineHeight != null) {
       this.lineHeight.set(lineHeight * 10, save: false);
     }
+    save();
   }
 }

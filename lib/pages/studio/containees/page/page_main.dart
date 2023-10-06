@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:creta03/pages/studio/containees/page/top_menu_tracer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
 import '../../../../../design_system/component/creta_texture_widget.dart';
-import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
@@ -124,6 +124,15 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
   @override
   Widget build(BuildContext context) {
     //print('pageMain build');
+    return Stack(
+      children: [
+        _build(context),
+        TopMenuTracer(frameManager: frameManager,),
+      ],
+    );
+  }
+
+  Widget _build(BuildContext context) {
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
@@ -132,59 +141,56 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
             BookMainPage.pageManagerHolder!.updateModel(model);
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
-          return _build(context);
+
+          //print('pageMain _build');
+          // if (widget.pageModel.bgColor1.value != Colors.transparent) {
+          opacity = widget.pageModel.opacity.value;
+          bgColor1 = widget.pageModel.bgColor1.value;
+          bgColor2 = widget.pageModel.bgColor2.value;
+          gradationType = widget.pageModel.gradationType.value;
+          // } else {
+          //   opacity = widget.bookModel.opacity.value;
+          //   bgColor1 = widget.bookModel.bgColor1.value;
+          //   bgColor2 = widget.bookModel.bgColor2.value;
+          //   gradationType = widget.bookModel.gradationType.value;
+          // }
+
+          //if (widget.pageModel.textureType.value != TextureType.none) {
+          textureType = widget.pageModel.textureType.value;
+          //} else {
+          //  textureType = widget.bookModel.textureType.value;
+          //}
+
+          if (bgColor1 == Colors.transparent) {
+            // 배경색이 transparent 일때,  모든 배경색 관련 값은 무효다.
+            gradationType = GradationType.none;
+            opacity = 1;
+            bgColor2 = Colors.transparent;
+            if (textureType == TextureType.glass) {
+              textureType = TextureType.none;
+            }
+          }
+
+          return Center(
+            child: Container(
+              width: StudioVariables.virtualWidth,
+              height: StudioVariables.virtualHeight,
+              color: LayoutConst.studioBGColor,
+              //color: Colors.amber,
+              child: Center(
+                  child: StudioVariables.isHandToolMode == false
+                      ? GestureDetector(
+                          behavior: HitTestBehavior.deferToChild,
+                          onLongPressDown: _pageClicked,
+                          onTapUp: (details) {},
+                          onSecondaryTapDown: _showRightMouseMenu,
+                          child: _animatedPage(),
+                        )
+                      : _animatedPage()),
+            ),
+            //),
+          );
         });
-  }
-
-  Widget _build(BuildContext context) {
-    //print('pageMain _build');
-    // if (widget.pageModel.bgColor1.value != Colors.transparent) {
-    opacity = widget.pageModel.opacity.value;
-    bgColor1 = widget.pageModel.bgColor1.value;
-    bgColor2 = widget.pageModel.bgColor2.value;
-    gradationType = widget.pageModel.gradationType.value;
-    // } else {
-    //   opacity = widget.bookModel.opacity.value;
-    //   bgColor1 = widget.bookModel.bgColor1.value;
-    //   bgColor2 = widget.bookModel.bgColor2.value;
-    //   gradationType = widget.bookModel.gradationType.value;
-    // }
-
-    //if (widget.pageModel.textureType.value != TextureType.none) {
-    textureType = widget.pageModel.textureType.value;
-    //} else {
-    //  textureType = widget.bookModel.textureType.value;
-    //}
-
-    if (bgColor1 == Colors.transparent) {
-      // 배경색이 transparent 일때,  모든 배경색 관련 값은 무효다.
-      gradationType = GradationType.none;
-      opacity = 1;
-      bgColor2 = Colors.transparent;
-      if (textureType == TextureType.glass) {
-        textureType = TextureType.none;
-      }
-    }
-
-    return Center(
-      child: Container(
-        width: StudioVariables.virtualWidth,
-        height: StudioVariables.virtualHeight,
-        color: LayoutConst.studioBGColor,
-        //color: Colors.amber,
-        child: Center(
-            child: StudioVariables.isHandToolMode == false
-                ? GestureDetector(
-                    behavior: HitTestBehavior.deferToChild,
-                    onLongPressDown: pageClicked,
-                    onTapUp: (details) {},
-                    onSecondaryTapDown: _showRightMouseMenu,
-                    child: _animatedPage(),
-                  )
-                : _animatedPage()),
-      ),
-      //),
-    );
   }
 
   void _showRightMouseMenu(TapDownDetails details) {
@@ -294,8 +300,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     );
   }
 
-  Future<void> pageClicked(LongPressDownDetails details) async {
-    //print('pageClicked');
+  Future<void> _pageClicked(LongPressDownDetails details) async {
+    //print('_pageClicked');
     if (frameManager!.clickedInsideSelectedFrame(details.globalPosition) == true) {
       //print('selected frame clicked');
       FrameModel? frameModel = frameManager!.getSelected() as FrameModel?;
@@ -321,34 +327,35 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     BookMainPage.outSideClick = false;
     //print('page clicked');
 
-    if (BookMainPage.topMenuNotifier!.isText()) {
-      // create text box here
-      //print('createTextBox');
-      StudioVariables.isHandToolMode = false;
-      await createTextByClick(context, details);
-      BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
-      BookMainPage.containeeNotifier!.setFrameClick(true); //  바탕페이지가 눌리는 것을 막기위해
-      return;
-    } else if (BookMainPage.topMenuNotifier!.isFrame()) {
-      // create frame box here
-      //print('createFrame');
-      Offset center = Offset(
-        (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
-        (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
-      );
-      Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
-      frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
-        frameManager!.notify();
-        return null;
-      });
+    // if (BookMainPage.topMenuNotifier!.isText()) {
+    //   // create text box here
+    //   //print('createTextBox');
+    //   StudioVariables.isHandToolMode = false;
+    //   await createTextByClick(context, details);
+    //   BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
+    //   BookMainPage.containeeNotifier!.setFrameClick(true); //  바탕페이지가 눌리는 것을 막기위해
+    //   return;
+    // } else if (BookMainPage.topMenuNotifier!.isFrame()) {
+    //   // create frame box here
+    //   //print('createFrame');
+    //   Offset center = Offset(
+    //     (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
+    //     (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
+    //   );
+    //   Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
+    //   frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
+    //     frameManager!.notify();
+    //     return null;
+    //   });
 
-      BookMainPage.topMenuNotifier?.clear();
-      return; // 커서의 모양을 되돌린다.
-    } else {
-      //setState(() {
-      //print('clearSelectedMid');
-      frameManager?.clearSelectedMid();
-    }
+    //   BookMainPage.topMenuNotifier?.clear();
+    //   return; // 커서의 모양을 되돌린다.
+    // } else {
+    //   //setState(() {
+    //   //print('clearSelectedMid');
+    //   frameManager?.clearSelectedMid();
+    // }
+    frameManager?.clearSelectedMid();
 
     //});
     if (LinkParams.isLinkNewMode == true) {

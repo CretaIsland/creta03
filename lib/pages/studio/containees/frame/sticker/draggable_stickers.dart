@@ -19,6 +19,7 @@ import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
+import '../../../left_menu/left_menu_page.dart';
 import '../../../studio_getx_controller.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
@@ -183,6 +184,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
                       },
                     );
                     widget.frameManager?.notify();
+                    //print('Editor Complete');
+                    LeftMenuPage.initTreeNodes();
+                    LeftMenuPage.treeInvalidate();
                   },
                 ),
               ],
@@ -527,6 +531,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 contentsManager?.notify();
                 if (contentsModel.isAutoFrameOrSide()) {
                   _sendEvent!.sendEvent(contentsManager!.frameModel);
+                  //widget.frameManager?.notify();
                 }
               }),
         // CretaMenuItem(

@@ -782,8 +782,9 @@ class CretaUtils {
         textLineWidth = lineWidth;
       }
       int count = 1;
-      //if (autoSizeType != AutoSizeType.autoFrameSize) {
-      count = (lineWidth / boxWidth).ceil();
+      if (autoSizeType != AutoSizeType.autoFrameSize) {
+        count = (lineWidth / boxWidth).ceil();
+      }
       if (count == 0) count = 1; // 빈줄의 경우이다.
       eachLineCount.add(count);
       // 텍스트 하이트는 나중에, frameSize 를 늘리기 위해서 필요하다.
@@ -856,6 +857,8 @@ class CretaUtils {
         applyScale;
     double dy = (localPosition.dy - BookMainPage.pageOffset.dy + (LayoutConst.stikerOffset / 2)) /
         applyScale;
+
+
     return Offset(dx, dy);
   }
 

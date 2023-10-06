@@ -1,12 +1,9 @@
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
-import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
 
-import '../../common/creta_utils.dart';
-import '../../pages/studio/containees/page/top_menu_notifier.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_color.dart';
 
@@ -125,12 +122,7 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
         //           child: _scrolledWidget(),
         //         ),
         //       )
-        : Consumer<TopMenuNotifier>(builder: (context, fontSizeNotifier, child) {
-            return MouseRegion(
-              cursor: CretaUtils.getCursorShape(), // <-- 커서모양을 바꾸기 위해
-              child: _scrolledWidget(),
-            );
-          });
+        : _scrolledWidget();
 
     // return Listener(
     //   behavior: HitTestBehavior.translucent,

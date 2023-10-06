@@ -11,7 +11,6 @@
 
 import 'package:creta03/pages/studio/containees/frame/sticker/mini_menu.dart';
 import 'package:creta03/pages/studio/left_menu/clock/count_down_timer.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
@@ -260,7 +259,8 @@ mixin FramePlayMixin {
     );
   }
 
-  Future<void> createTextByClick(BuildContext context, LongPressDownDetails details) async {
+  //Future<void> createTextByClick(BuildContext context, LongPressDownDetails details) async {
+  Future<void> createTextByClick(BuildContext context, Offset details) async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
@@ -280,9 +280,11 @@ mixin FramePlayMixin {
     double width = height;
     //print('localPostion= ${details.localPosition}, width= $width');
 
-    Offset pos = CretaUtils.positionInPage(details.localPosition, null);
+    Offset pos = CretaUtils.positionInPage(details /*.localPosition*/, null);
     // 커서의 크기가 있어서, 조금 빼주어야 텍스트 박스가 커서 위치에 맞게 나온다.
-    pos = Offset((pos.dx - 24 > 0 ? pos.dx - 24 : 0), (pos.dy - 40 > 0 ? pos.dy - 40 : 0));
+    double posOffset = LayoutConst.topMenuCursorSize / StudioVariables.applyScale;
+    pos = Offset((pos.dx - posOffset > 0 ? pos.dx - posOffset : 0),
+        (pos.dy - posOffset > 0 ? pos.dy - posOffset : 0));
 
     //print('position in page= (${pos.dx}, ${pos.dy})');
 

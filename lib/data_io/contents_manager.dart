@@ -1107,10 +1107,24 @@ class ContentsManager extends CretaManager {
         continue;
       }
       //print('model.name=${model.name}');
+
+      String name = model.name;
+      if (model.isText()) {
+        String uri = model.getURI();
+        if (uri.isNotEmpty) {
+          if (uri.length < 33) {
+            name = uri;
+          } else {
+            name = uri.substring(0, 30);
+            name += '...';
+          }
+        }
+      }
+
       conNodes.add(tree.Node<CretaModel>(
           key: '${pageModel.mid}/${frame.mid}/${model.mid}',
           keyType: ContaineeEnum.Contents,
-          label: model.name,
+          label: name,
           expanded: model.expanded || isSelected(model.mid),
           data: model,
           root: pageModel.mid));
