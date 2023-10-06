@@ -40,28 +40,29 @@ class _ShapeIndicatorState extends State<ShapeIndicator> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () {
-          widget.onTapPressed(widget.shapeType);
-        },
-        child: Container(
-          width: widget.width + 8,
-          height: widget.height + 8,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            border: Border.all(
-              color: widget.isSelected ? CretaColor.primary : Colors.white,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+      onTap: () {
+        widget.onTapPressed(widget.shapeType);
+      },
+      child: Container(
+        width: widget.width + 8,
+        height: widget.height + 8,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(
+            color: widget.isSelected ? CretaColor.primary : Colors.white,
+            width: 2,
           ),
-          child: Center(
-            child: SizedBox(
-              width: widget.width,
-              height: widget.height,
-              child: _drawShape(widget.shapeType, widget.width, widget.height),
-            ),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        child: Center(
+          child: SizedBox(
+            width: widget.width,
+            height: widget.height,
+            child: _drawShape(widget.shapeType, widget.width, widget.height),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _drawShape(ShapeType shapeType, double width, double height) {

@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
 
+import 'package:creta03/pages/studio/right_menu/frame/trans_example_box.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -62,6 +63,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   BookModel? _bookModel;
   bool _isFullScreen = false;
   static bool _isTransitionOpen = false;
+  static bool _isFrameTransOpen = false;
   static bool _isBorderOpen = false;
   static bool _isShadowOpen = false;
   static bool _isSizeOpen = false;
@@ -162,6 +164,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       ),
       propertyDivider(),
       _pageColor(),
+      propertyDivider(),
+      _frameTransition(),
       propertyDivider(),
       _gradation(),
       propertyDivider(),
@@ -1004,6 +1008,72 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     );
   }
 
+  NextContentTypes selectedType = NextContentTypes.none;
+
+  Widget _frameTransition() {
+    logger.finest('frameTransition=${widget.model.nextContentTypes.value}');
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: propertyCard(
+        isOpen: _isFrameTransOpen,
+        onPressed: () {
+          setState(() {
+            _isFrameTransOpen = !_isFrameTransOpen;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.contentFlipEffect, style: CretaFont.titleSmall),
+        trailWidget: Text(
+          selectedType == NextContentTypes.none
+              ? ''
+              : CretaStudioLang.nextContentTypes[selectedType.index],
+          textAlign: TextAlign.right,
+          style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+        ),
+        hasRemoveButton: widget.model.nextContentTypes.value != NextContentTypes.none,
+        onDelete: () {
+          setState(() {
+            selectedType = NextContentTypes.none;
+            widget.model.nextContentTypes.set(NextContentTypes.none);
+          });
+          _sendEvent!.sendEvent(widget.model);
+        },
+        bodyWidget: _transitionType(),
+      ),
+    );
+  }
+
+  Widget _transitionType() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Wrap(
+        spacing: 16.0,
+        runSpacing: 16.0,
+        children: [
+          for (int i = 1; i < NextContentTypes.end.index; i++)
+            TransExampleBox(
+              key: ValueKey(
+                  'frameTransitionType=${NextContentTypes.values[i].name} + ${_isTypeSelected(i, NextContentTypes.values[i])}}'),
+              frameManager: _frameManager!,
+              model: widget.model,
+              nextContentTypes: NextContentTypes.values[i],
+              name: CretaStudioLang.nextContentTypes[i],
+              selectedTyped: _isTypeSelected(i, selectedType),
+              onTypeSelected: () {
+                setState(() {
+                  selectedType = NextContentTypes.values[i];
+                });
+                _sendEvent!.sendEvent(widget.model);
+              },
+            )
+        ],
+      ),
+    );
+  }
+
+  bool _isTypeSelected(int index, NextContentTypes selectedType) {
+    return NextContentTypes.values[index] == selectedType;
+  }
+
   Widget _gradation() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -1079,7 +1149,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         AnimationType.toAniListFromInt(widget.model.transitionEffect.value);
     String trails = '';
     for (var ele in animations) {
-      logger.finest('anymationTy=[$ele]');
+      logger.finest('animationTy=[$ele]');
       if (trails.isNotEmpty) {
         trails += "+";
       }
@@ -1916,6 +1986,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       },
     );
   }
+
 /*
   Widget _eventBody() {
     //return Column(children: [
