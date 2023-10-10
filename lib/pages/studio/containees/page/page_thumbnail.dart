@@ -274,12 +274,13 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                           (model.width.value /* + model.shadowSpread.value */) * applyScale;
                       double frameHeight =
                           (model.height.value /* + model.shadowSpread.value */) * applyScale;
-
+                      // isOverlay   가 있기 때문에, page mid 도 키로 쓰지 않으면 중복된다.
                       Widget frameBox = SizedBox(
                         width: frameWidth,
                         height: frameHeight,
                         child: FrameThumbnail(
-                          key: GlobalObjectKey('FrameThumbnail${frameModel.mid}'),
+                          key: GlobalObjectKey(
+                              'FrameThumbnail${widget.pageModel.mid}/${frameModel.mid}'),
                           model: model,
                           pageModel: widget.pageModel,
                           frameManager: _frameManager!,

@@ -66,7 +66,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   static bool _isFrameTransOpen = false;
   static bool _isBorderOpen = false;
   static bool _isShadowOpen = false;
-  static bool _isSizeOpen = false;
+  static bool _isSizeOpen = true;
   static bool _isRadiusOpen = false;
 
   static bool _isShapeOpen = false;

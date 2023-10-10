@@ -198,7 +198,6 @@ mixin FramePlayMixin {
       //print('fontSize = ${style.fontSize}');
 
       return DigitalClock(
-          key: GlobalKey(),
           textStyle: style,
           showSeconds: true,
           isLive: true,

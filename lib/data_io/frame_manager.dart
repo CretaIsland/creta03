@@ -53,7 +53,7 @@ class FrameManager extends CretaManager {
   // }
 
   //Map<String, ValueKey> frameKeyMap = {};
-  static Map<String,FrameModel> overlayFrameMap = {};
+  static Map<String, FrameModel> overlayFrameMap = {};
   // ignore: prefer_final_fields
   Map<String, GlobalKey<StickerState>> _frameKeyMap = {};
   Map<String, GlobalKey<StickerState>> get frameKeyMap => _frameKeyMap;
@@ -93,6 +93,13 @@ class FrameManager extends CretaManager {
     FrameModel retval = newModel(src.mid) as FrameModel;
     src.copyTo(retval);
     return retval;
+  }
+
+  @override
+  void remove(CretaModel removedItem) {
+    print('remove frame ${removedItem.mid}');
+    FrameManager.overlayFrameMap.remove(removedItem.mid);
+    super.remove(removedItem);
   }
 
   Future<FrameModel> createNextFrame(
@@ -222,13 +229,13 @@ class FrameManager extends CretaManager {
     try {
       frameCount = await _getFrames();
       if (frameCount == 0) {
-        await createNextFrame();
-        frameCount = 1;
+        //await createNextFrame();
+        //frameCount = 1;
       }
     } catch (e) {
       logger.finest('something wrong $e');
-      await createNextFrame();
-      frameCount = 1;
+      //await createNextFrame();
+      //frameCount = 1;
     }
     endTransaction();
     _initFrameComplete = true;

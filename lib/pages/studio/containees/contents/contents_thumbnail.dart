@@ -175,7 +175,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               if (contentsCount > 0) {
                 if (widget.frameModel.frameType == FrameType.music) {
                   GlobalObjectKey<MusicPlayerFrameState> musicKey =
-                      GlobalObjectKey<MusicPlayerFrameState>('Music${widget.frameModel.mid}');
+                      GlobalObjectKey<MusicPlayerFrameState>('Music${widget.pageModel.mid}/${widget.frameModel.mid}');
                   musicKeyMap[widget.frameModel.mid] = musicKey;
                   //print(model.remoteUrl!);
 
@@ -232,7 +232,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               String? thumbnailUrl = contentsManager.getThumbnail();
               if (thumbnailUrl != null) {
                 return Container(
-                  key: GlobalObjectKey('CustomImage${widget.frameModel.mid}$thumbnailUrl'),
+                  key: GlobalObjectKey('CustomImage${widget.pageModel.mid}/${widget.frameModel.mid}$thumbnailUrl'),
                   width: widget.width,
                   height: widget.height,
                   decoration: BoxDecoration(

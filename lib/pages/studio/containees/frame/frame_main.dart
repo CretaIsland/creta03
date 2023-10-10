@@ -527,6 +527,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       FrameModel model = item as FrameModel;
       model.isRemoved.set(true);
       await frameManager!.removeChild(model.mid);
+      if (model.isOverlay.value == true) {
+        FrameManager.overlayFrameMap.remove(model.mid);
+      }
       return model;
     }
     mychangeStack.endTrans();

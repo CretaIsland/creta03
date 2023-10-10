@@ -143,8 +143,9 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   Widget _frameDropZone() {
     _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!, false);
     if (widget.model.shouldInsideRotate()) {
+      // isOrverlay case 가 있기 때문에  page mid 도 key 에 넣어주어야 한다.
       return Transform(
-        key: GlobalObjectKey('ThumbNail_Transform${widget.model.mid}'),
+        key: GlobalObjectKey('ThumbNail_Transform${widget.pageModel.mid}/${widget.model.mid}'),
         alignment: Alignment.center,
         transform: Matrix4.identity()
           ..scale(1.0)
@@ -283,7 +284,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       child: ClipRect(
         clipBehavior: Clip.hardEdge,
         child: ContentsThumbnail(
-          key: GlobalObjectKey<ContentsThumbnailState>('ContentsThumbnail${model.mid}'),
+          key: GlobalObjectKey<ContentsThumbnailState>('ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
           frameModel: model,
           pageModel: widget.pageModel,
           frameManager: frameManager!,
