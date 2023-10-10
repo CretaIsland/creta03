@@ -2023,12 +2023,15 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     setState(() {
       widget.model.isOverlay.set(value);
       if (value == false) {
-        FrameManager.overlayFrameMap.remove(widget.model.mid);
+        FrameManager.removeOverlay(widget.model.mid);
+        print('overlay removed ${FrameManager.overlayLength()}');
       } else {
-        FrameManager.overlayFrameMap[widget.model.mid] = widget.model;
+        FrameManager.addOverlay(widget.model);
+        print('overlay added ${FrameManager.overlayLength()}');
       }
     });
     _sendEvent?.sendEvent(widget.model);
+    BookMainPage.pageManagerHolder!.notify();
   }
 
 /*

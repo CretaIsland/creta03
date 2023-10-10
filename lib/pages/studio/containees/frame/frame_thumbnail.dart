@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
+import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +53,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   bool _isShowBorder = false;
 
   ContentsManager? _contentsManager;
+  FrameManager? _anotherFrameManager;
 
   Future<bool>? _isInitialized;
   //final bool _isHover = false;
@@ -74,14 +76,23 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     if (frameManager == null) {
       logger.severe('frame manager is null');
     }
-    _contentsManager = frameManager!.findContentsManager(widget.model.mid);
-    if (_contentsManager == null) {
-      //print('new ContentsManager created (${widget.model.mid})');
-      _contentsManager = frameManager!.newContentsManager(widget.model);
-      _contentsManager!.clearAll();
-    } else {
-      //logger.info('old ContentsManager used (${widget.model.mid})');
-    }
+    // _contentsManager = frameManager!.findContentsManager(widget.model.mid);
+    // if (_contentsManager == null) {
+    //   //print('new ContentsManager created (${widget.model.mid})');
+    //   if (widget.model.isOverlay.value == true) {
+    //     //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
+    //     // 해당 프레임을 찾아야 한다.
+    //     _anotherFrameManager =
+    //         BookMainPage.pageManagerHolder!.findFrameManager(widget.model.parentMid.value);
+    //     _contentsManager = frameManager!.newContentsManager(widget.model);
+    //     _contentsManager!.clearAll();
+    //   } else {
+    //     _contentsManager = frameManager!.newContentsManager(widget.model);
+    //     _contentsManager!.clearAll();
+    //   }
+    // } else {
+    //   //logger.info('old ContentsManager used (${widget.model.mid})');
+    // }
 
     //if (_contentsManager!.onceDBGetComplete == false) {
     // 썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
@@ -91,14 +102,35 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     // _contentsManager!.reOrdering();
     //return false;
     //}
-    logger.info('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
+    //print('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
+    print('frameThumbnail initChildren()');
     return true;
+  }
+
+  void _initContentsManager() {
+    if (widget.model.isOverlay.value == true) {
+      //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
+      // 해당 프레임을 찾아야 한다.
+      _anotherFrameManager =
+          BookMainPage.pageManagerHolder!.findFrameManager(widget.model.parentMid.value);
+      if (_anotherFrameManager != null) {
+        print('another contents founded');
+        _contentsManager = _anotherFrameManager!.findContentsManager(widget.model.mid);
+      }
+    } else {
+      _contentsManager = frameManager!.findContentsManager(widget.model.mid);
+    }
+
+    if (_contentsManager == null) {
+      _contentsManager = frameManager!.newContentsManager(widget.model);
+      _contentsManager!.clearAll();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    _initContentsManager();
     applyScale = widget.applyScale;
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ContentsManager>.value(
@@ -141,6 +173,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
+    print('_frameDropZone...');
     _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!, false);
     if (widget.model.shouldInsideRotate()) {
       // isOrverlay case 가 있기 때문에  page mid 도 key 에 넣어주어야 한다.
@@ -275,6 +308,11 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       return Image.asset('assets/google_map_thumbnail.png');
     }
 
+    if (_contentsManager!.length() == 0) {
+      print('No contents in this frame');
+      return const SizedBox.shrink();
+    }
+
     //print('kldsfjasdlkfjsdlfjslfjsdlfkjsldfkjsdlk');
     return Container(
       key: ValueKey('Container${model.mid}'),
@@ -284,7 +322,8 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       child: ClipRect(
         clipBehavior: Clip.hardEdge,
         child: ContentsThumbnail(
-          key: GlobalObjectKey<ContentsThumbnailState>('ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
+          key: GlobalObjectKey<ContentsThumbnailState>(
+              'ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
           frameModel: model,
           pageModel: widget.pageModel,
           frameManager: frameManager!,

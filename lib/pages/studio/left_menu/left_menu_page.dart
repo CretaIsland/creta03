@@ -232,7 +232,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       pageManager.reOrdering();
       pageManager.resetPageSize();
       _pageCount = pageManager.getAvailLength();
-      logger.info('PageManager Consumer  $_pageCount');
+      print('PageManager Consumer  $_pageCount');
       if (pageManager.getSelected() == null && _pageCount > 0) {
         pageManager.setSelected(0);
         //print('1111111');

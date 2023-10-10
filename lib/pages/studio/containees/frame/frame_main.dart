@@ -392,7 +392,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         frameManager!.frameKeyMap[model.mid] = stickerKey;
         // 2023.10.09 overlay frame 을 다른 페이지에도 쓰기 위해  static map  에 넣는 장면이다.
         if (model.isOverlay.value == true) {
-          FrameManager.overlayFrameMap[model.mid] = model;
+          FrameManager.addOverlay(model);
         }
       }
     } else {
@@ -481,7 +481,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   List<Sticker> _getOverLayList(List<Sticker> stickerList) {
     List<Sticker> retval = [];
     for (Sticker sticker in stickerList) {
-      FrameModel? model = FrameManager.overlayFrameMap[sticker.id];
+      FrameModel? model = FrameManager.findOverlay(sticker.id);
       // overlay 에 있는 것은 그리면 안되기 때문이다.
       if (model == null) {
         //print('Stikcer founded (${sticker.id})');
@@ -489,7 +489,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       }
     }
 // 오버레이를 뒤에 놔야,  다른 Frame 위로 올라온다.
-    for (FrameModel model in FrameManager.overlayFrameMap.values) {
+    for (FrameModel model in FrameManager.overlayList()) {
       //print('overlay founded (${model.mid})');
       retval.add(_createSticker(model));
       frameManager!.modelList.add(model);
@@ -528,7 +528,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       model.isRemoved.set(true);
       await frameManager!.removeChild(model.mid);
       if (model.isOverlay.value == true) {
-        FrameManager.overlayFrameMap.remove(model.mid);
+        FrameManager.removeOverlay(model.mid);
       }
       return model;
     }

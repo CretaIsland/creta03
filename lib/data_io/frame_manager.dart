@@ -53,7 +53,15 @@ class FrameManager extends CretaManager {
   // }
 
   //Map<String, ValueKey> frameKeyMap = {};
-  static Map<String, FrameModel> overlayFrameMap = {};
+  static final Map<String, FrameModel> _overlayFrameMap = {};
+  static FrameModel? findOverlay(String id) => _overlayFrameMap[id];
+  static void removeOverlay(String id) => _overlayFrameMap.remove(id);
+  static List<FrameModel> overlayList() => _overlayFrameMap.values.toList();
+  static int overlayLength() => _overlayFrameMap.length;
+  static void addOverlay(FrameModel model) {
+    _overlayFrameMap[model.mid] = model;
+  }
+
   // ignore: prefer_final_fields
   Map<String, GlobalKey<StickerState>> _frameKeyMap = {};
   Map<String, GlobalKey<StickerState>> get frameKeyMap => _frameKeyMap;
@@ -98,8 +106,35 @@ class FrameManager extends CretaManager {
   @override
   void remove(CretaModel removedItem) {
     //print('remove frame ${removedItem.mid}');
-    FrameManager.overlayFrameMap.remove(removedItem.mid);
+    FrameManager.removeOverlay(removedItem.mid);
     super.remove(removedItem);
+  }
+
+  void mergeOverlay() {
+    for (var ele in FrameManager.overlayList()) {
+      // 모델리스트에 없으면 modelList 에 넣는다.
+      if (getModel(ele.mid) == null) {
+        modelList.add(ele);
+      }
+    }
+    reOrdering();
+  }
+
+  void eliminateOverlay() {
+    List<FrameModel> removeTargetList = [];
+    for (var ele in modelList) {
+      FrameModel model = ele as FrameModel;
+      if (model.parentMid.value != pageModel.mid) {
+        if (FrameManager.findOverlay(model.mid) == null) {
+          removeTargetList.add(model);
+        }
+      }
+    }
+    for (FrameModel ele in removeTargetList) {
+      print('remove overlay');
+      modelList.remove(ele);
+    }
+    reOrdering();
   }
 
   Future<FrameModel> createNextFrame(
