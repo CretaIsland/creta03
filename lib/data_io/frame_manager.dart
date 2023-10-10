@@ -97,7 +97,7 @@ class FrameManager extends CretaManager {
 
   @override
   void remove(CretaModel removedItem) {
-    print('remove frame ${removedItem.mid}');
+    //print('remove frame ${removedItem.mid}');
     FrameManager.overlayFrameMap.remove(removedItem.mid);
     super.remove(removedItem);
   }
