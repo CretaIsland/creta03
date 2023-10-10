@@ -165,7 +165,8 @@ mixin FramePlayMixin {
     return const SizedBox.shrink();
   }
 
-  Widget watchFrame(FrameModel model, Widget? child, BuildContext context, double applyScale) {
+  Widget watchFrame(
+      FrameModel model, Widget? child, BuildContext context, double applyScale, bool isThumbnail) {
     if (model.frameType == FrameType.analogWatch) {
       return AnalogClock(
         //dateTime: DateTime(2023, 07, 14, 10, 12, 07),
@@ -182,18 +183,28 @@ mixin FramePlayMixin {
       if (frameManager != null) {
         contentsModel = frameManager!.getFirstContents(model.mid);
       }
+      //print('applyScale = $applyScale');
       TextStyle? style;
       if (contentsModel != null) {
-        style = contentsModel.makeTextStyle(context, applyScale: applyScale);
+        style =
+            contentsModel.makeTextStyle(context, applyScale: applyScale, isThumbnail: isThumbnail);
+        //print('contentModel is not null, fontSize=${contentsModel.fontSize.value}');
+      } else {
+        //print('contentModel is null}');
+        style = DefaultTextStyle.of(context)
+            .style
+            .copyWith(fontSize: StudioConst.defaultFontSize * applyScale);
       }
+      //print('fontSize = ${style.fontSize}');
 
       return DigitalClock(
+          key: GlobalKey(),
           textStyle: style,
           showSeconds: true,
           isLive: true,
           digitalClockColor: Colors.black,
-          textScaleFactor: ((model.width.value / (50 * 2)) + 1) *
-              StudioVariables.applyScale, // 50 is minimum contstraint
+          // textScaleFactor:
+          //     ((model.width.value / (50 * 2)) + 1) * applyScale, // 50 is minimum contstraint
           //digitalClockColor: Colors.transparent,
           // decoration: const BoxDecoration(
           //     color: Colors.yellow,

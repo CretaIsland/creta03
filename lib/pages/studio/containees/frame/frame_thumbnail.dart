@@ -76,7 +76,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     }
     _contentsManager = frameManager!.findContentsManager(widget.model.mid);
     if (_contentsManager == null) {
-      print('new ContentsManager created (${widget.model.mid})');
+      //print('new ContentsManager created (${widget.model.mid})');
       _contentsManager = frameManager!.newContentsManager(widget.model);
       _contentsManager!.clearAll();
     } else {
@@ -235,7 +235,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
           ),
         );
       }
-      return watchFrame(model, null, context, applyScale);
+      return watchFrame(model, const Text('GMT-9'), context, applyScale, true);
     }
     if (model.isTimelineType()) {
       // return timelineFrame(model);
@@ -274,6 +274,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       return Image.asset('assets/google_map_thumbnail.png');
     }
 
+    //print('kldsfjasdlkfjsdlfjslfjsdlfkjsldfkjsdlk');
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,

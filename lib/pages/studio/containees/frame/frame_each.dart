@@ -527,6 +527,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         const Text('GMT-9'),
         context,
         StudioVariables.applyScale,
+        false,
       );
     }
     if (model.isStickerType()) {

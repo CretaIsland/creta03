@@ -805,7 +805,7 @@ class ContentsModel extends CretaModel {
       newFontSize = fontSize.value * applyScale;
 
       if (isThumbnail == false) {
-        double minFontSize = StudioConst.minFontSize / applyScale;
+        double minFontSize = StudioConst.minFontSize * applyScale;
         if (newFontSize < StudioConst.minFontSize) newFontSize = minFontSize;
       }
       if (newFontSize > StudioConst.maxFontSize * applyScale) {

@@ -434,7 +434,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         }
       }
     } else {
-      print('contentsManager is not founded');
+      //print('contentsManager is not founded');
     }
 
     Widget eachFrame = FrameEach(
@@ -484,13 +484,13 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       FrameModel? model = FrameManager.overlayFrameMap[sticker.id];
       // overlay 에 있는 것은 그리면 안되기 때문이다.
       if (model == null) {
-        print('Stikcer founded (${sticker.id})');
+        //print('Stikcer founded (${sticker.id})');
         retval.add(sticker);
       }
     }
 // 오버레이를 뒤에 놔야,  다른 Frame 위로 올라온다.
     for (FrameModel model in FrameManager.overlayFrameMap.values) {
-      print('overlay founded (${model.mid})');
+      //print('overlay founded (${model.mid})');
       retval.add(_createSticker(model));
       frameManager!.modelList.add(model);
     }
