@@ -75,6 +75,7 @@ copy src_modify\constants.daxt D:\Flutter\src\flutter\packages\flutter\lib\src\m
 
 #seventhstone 23/10/10
 copy src_modify\snowflake_model.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\snowfall-0.0.2\lib\snowfall\snowflake_model.dart
+copy src_modify\snowfall_pubspec.yaml c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\snowfall-0.0.2\pubspec.yaml
 
 
 #skpark modify 23/10/10
