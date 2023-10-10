@@ -14,6 +14,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 //import '../../../../common/creta_utils.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
+import '../../../../data_io/frame_manager.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
@@ -353,6 +354,11 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   }
 
   List<Sticker> getStickerList() {
+    List<Sticker> stickerList = _getStickerList();
+    return _getOverLayList(stickerList);
+  }
+
+  List<Sticker> _getStickerList() {
     //print('getStickerList()');
     //frameManager!.frameKeyMap.clear();
     frameManager!.reOrdering();
@@ -368,378 +374,130 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         _receiveEvent,
         null,
       );
-
-      double frameWidth = (model.width.value /* + model.shadowSpread.value */) * applyScale;
-      double frameHeight = (model.height.value /* + model.shadowSpread.value */) * applyScale;
-      double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
-      double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
-
-      GlobalKey<StickerState>? stickerKey;
-      if (widget.isPrevious == false) {
-        stickerKey = frameManager!.frameKeyMap[model.mid];
-        if (stickerKey == null) {
-          stickerKey = GlobalKey<StickerState>();
-          frameManager!.frameKeyMap[model.mid] = stickerKey;
-        }
-      } else {
-        stickerKey = GlobalKey<StickerState>();
-      }
-
-      ContentsManager? contentsManager = frameManager!.getContentsManager(model.mid);
-      if (contentsManager != null) {
-        ContentsModel? contentsModel = contentsManager.getFirstModel();
-        if (contentsModel != null) {
-          if (contentsModel.isAutoFrameOrSide()) {
-            // 자동 프레임사이즈를 결정해 주어야 한다.
-            //print('AutoSizeType.autoFrameSize before $frameHeight');
-            late String uri;
-            late TextStyle style;
-            (style, uri, _) = contentsModel.makeInfo(null, StudioVariables.applyScale, false);
-
-            late double newFrameWidth;
-            late double newFrameHeight;
-            (newFrameWidth, newFrameHeight) = CretaUtils.getTextBoxSize(
-              uri,
-              contentsModel.autoSizeType.value,
-              frameWidth,
-              frameHeight,
-              style,
-              contentsModel.align.value,
-              StudioConst.defaultTextPadding * StudioVariables.applyScale,
-            );
-            //print('AutoSizeType.autoFrameSize after  $frameHeight --> $newFrameHeight ($uri)');
-            //model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
-            model.height.set(newFrameHeight / StudioVariables.applyScale, noUndo: true);
-            frameHeight = newFrameHeight;
-            if (contentsModel.isAutoFrameSize()) {
-              model.width.set(newFrameWidth / StudioVariables.applyScale, noUndo: true);
-              frameWidth = newFrameWidth;
-            }
-            // 바뀐값으로 frameHeight 값을 다시 바꾸어 놓아야 한다.
-            //print('frameHeight changed ${frameHeight / StudioVariables.applyScale}-----');
-          }
-        }
-      }
-
-      Widget eachFrame =
-          //  ContextMenuOverlay(
-          //   //key: const GlobalObjectKey('frameRightMenu'),
-          //   cardBuilder: (_, children) {
-          //     return SizedBox(
-          //       width: 180,
-          //       child: Column(children: children),
-          //     );
-          //   },
-          //   buttonStyle: ContextMenuButtonStyle(
-          //     fgColor: CretaColor.text[500],
-          //     bgColor: CretaColor.text[100],
-          //     hoverFgColor: CretaColor.text[700],
-          //     hoverBgColor: CretaColor.text[300],
-          //     textStyle: CretaFont.bodySmall,
-          //   ),
-          //   child: ContextMenuRegion(
-          //     isEnabled: StudioVariables.isPreview == false,
-          //     contextMenu: GenericContextMenu(buttonConfigs: [
-          //       ContextMenuButtonConfig(
-          //         "감추기",
-          //         onPressed: () {
-          //           logger.info('View image in browser');
-          //         },
-          //       ),
-          //       ContextMenuButtonConfig(
-          //         "최대크기로",
-          //         onPressed: () {
-          //           logger.info('Copy image path');
-          //         },
-          //       )
-          //     ]),
-          //    child:
-          FrameEach(
-        model: model,
-        pageModel: widget.pageModel,
-        frameManager: frameManager!,
-        applyScale: applyScale,
-        width: frameWidth,
-        height: frameHeight,
-        frameOffset: Offset(posX, posY),
-        //),
-        //),
-      );
-
-      return Sticker(
-        key: stickerKey,
-        model: model,
-        //id: model.mid,
-        position: Offset(posX, posY),
-        angle: model.angle.value * (pi / 180),
-        size: Size(frameWidth, frameHeight),
-        borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
-        isMain: model.isMain.value,
-        //child: Visibility(
-        //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
-        //visible: _isVisible(model),
-        child: LinkParams.connectedMid == model.mid &&
-                LinkParams.linkPostion != null &&
-                LinkParams.orgPostion != null
-            ? eachFrame
-                .animate()
-                .scaleXY(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut)
-                .move(
-                    duration: const Duration(milliseconds: 1000),
-                    curve: Curves.easeInOut,
-                    begin: LinkParams.linkPostion! +
-                        LinkParams.orgPostion! -
-                        Offset(frameWidth / 2, frameHeight / 2) -
-                        Offset(posX, posY))
-            : eachFrame,
-        //),
-      );
+      return _createSticker(model);
     });
-    // return frameManager!.modelList.map((e) {
-    //   //_randomIndex += 10;
-    //   FrameModel model = e as FrameModel;
-
-    //   logger.fine('applyScale = $applyScale');
-
-    //   BookMainPage.clickEventHandler.subscribeList(
-    //     model.eventReceive.value,
-    //     model,
-    //     _receiveEvent,
-    //     null,
-    //   );
-
-    //   double frameWidth = model.width.value * applyScale;
-    //   double frameHeight = model.height.value * applyScale;
-    //   double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
-    //   double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
-
-    //   GlobalKey? stickerKey = frameManager!.frameKeyMap[model.mid];
-    //   if (stickerKey == null) {
-    //     stickerKey = GlobalKey();
-    //     frameManager!.frameKeyMap[model.mid] = stickerKey;
-    //   }
-
-    //   return Sticker(
-    //     key: stickerKey,
-    //     id: model.mid,
-    //     position: Offset(posX, posY),
-    //     angle: model.angle.value * (pi / 180),
-    //     size: Size(frameWidth, frameHeight),
-    //     borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
-    //     isMain: model.isMain.value,
-    //     child: Visibility(
-    //         visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
-    //   );
-    // }).toList();
   }
 
-  // bool _isVisible(FrameModel model) {
-  //   if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
-  //     logger.fine(
-  //         '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
-  //     List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
-  //     for (String eventName in eventNameList) {
-  //       if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
-  //         return true;
-  //       }
-  //     }
-  //     return false;
-  //   }
-  //   if (BookMainPage.filterManagerHolder!.isVisible(model) == false) {
-  //     return false;
-  //   }
-  //   //if (model.eventReceive.value.isNotEmpty && model.showWhenEventReceived.value == true) {
-  //   //   logger.fine(
-  //   //       '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
-  //   //   if (ClickReceiverHandler.isEventOn(model.eventReceive.value) == true) {
-  //   //     return true;
-  //   //   }
-  //   //   return false;
-  //   // }
-  //   // if (model.isShow.value == false) {
-  //   //   if (model.isTempVisible) return true;
-  //   //   return false;
-  //   // } else {
-  //   //   if (!model.isTempVisible) return false;
-  //   //   return true;
-  //   // }
-  //   return model.isShow.value;
-  // }
+  Sticker _createSticker(FrameModel model) {
+    double frameWidth = (model.width.value /* + model.shadowSpread.value */) * applyScale;
+    double frameHeight = (model.height.value /* + model.shadowSpread.value */) * applyScale;
+    double posX = model.posX.value * applyScale - LayoutConst.stikerOffset / 2;
+    double posY = model.posY.value * applyScale - LayoutConst.stikerOffset / 2;
 
-  // Widget _applyAnimate(FrameModel model) {
-  //   List<AnimationType> animations = AnimationType.toAniListFromInt(model.transitionEffect.value);
-  //   logger.finest('transitionEffect=${model.order.value}:${model.transitionEffect.value}');
-  //   //if (animations.isEmpty || frameManager!.isSelectedChanged() == false) {
-  //   if (animations.isEmpty) {
-  //     return _shapeBox(model);
-  //   }
-  //   return getAnimation(_shapeBox(model), animations);
-  // }
+    GlobalKey<StickerState>? stickerKey;
+    if (widget.isPrevious == false) {
+      stickerKey = frameManager!.frameKeyMap[model.mid];
+      if (stickerKey == null) {
+        stickerKey = GlobalKey<StickerState>();
+        frameManager!.frameKeyMap[model.mid] = stickerKey;
+        // 2023.10.09 overlay frame 을 다른 페이지에도 쓰기 위해  static map  에 넣는 장면이다.
+        if (model.isOverlay.value == true) {
+          FrameManager.overlayFrameMap[model.mid] = model;
+        }
+      }
+    } else {
+      stickerKey = GlobalKey<StickerState>();
+    }
 
-  // Widget _shapeBox(FrameModel model) {
-  //   return _textureBox(model).asShape(
-  //     mid: model.mid,
-  //     shapeType: model.shape.value,
-  //     offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
-  //     blurRadius: model.shadowBlur.value,
-  //     blurSpread: model.shadowSpread.value,
-  //     opacity: model.shadowOpacity.value,
-  //     shadowColor: model.shadowColor.value,
-  //     // width: model.width.value,
-  //     // height: model.height.value,
-  //     strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
-  //     strokeColor: model.borderColor.value,
-  //     radiusLeftBottom: model.radiusLeftBottom.value,
-  //     radiusLeftTop: model.radiusLeftTop.value,
-  //     radiusRightBottom: model.radiusRightBottom.value,
-  //     radiusRightTop: model.radiusRightTop.value,
-  //     borderCap: model.borderCap.value,
-  //   );
-  // }
+    ContentsManager? contentsManager = frameManager!.getContentsManager(model.mid);
+    if (contentsManager != null) {
+      ContentsModel? contentsModel = contentsManager.getFirstModel();
+      if (contentsModel != null) {
+        if (contentsModel.isAutoFrameOrSide()) {
+          // 자동 프레임사이즈를 결정해 주어야 한다.
+          //print('AutoSizeType.autoFrameSize before $frameHeight');
+          late String uri;
+          late TextStyle style;
+          (style, uri, _) = contentsModel.makeInfo(null, StudioVariables.applyScale, false);
 
-  // Widget _textureBox(FrameModel model) {
-  //   logger.finest('mid=${model.mid}, ${model.textureType.value}');
-  //   if (model.textureType.value == TextureType.glass) {
-  //     logger.finest('frame Glass!!!');
-  //     double opacity = model.opacity.value;
-  //     Color bgColor1 = model.bgColor1.value;
-  //     Color bgColor2 = model.bgColor2.value;
-  //     GradationType gradationType = model.gradationType.value;
-  //     return _frameBox(model, false).asCretaGlass(
-  //       gradient: StudioSnippet.gradient(
-  //           gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
-  //       opacity: opacity,
-  //       bgColor1: bgColor1,
-  //       bgColor2: bgColor2,
-  //       //clipBorderRadius: _getBorderRadius(model),
-  //       //radius: _getBorderRadius(model, addRadius: model.borderWidth.value * 0.7),
-  //       //border: _getBorder(model),
-  //       //borderStyle: model.borderType.value,
-  //       //borderWidth: model.borderWidth.value,
-  //       //boxShadow: _getShadow(model),
-  //     );
-  //   }
-  //   return _frameBox(model, true);
-  // }
+          late double newFrameWidth;
+          late double newFrameHeight;
+          (newFrameWidth, newFrameHeight) = CretaUtils.getTextBoxSize(
+            uri,
+            contentsModel.autoSizeType.value,
+            frameWidth,
+            frameHeight,
+            style,
+            contentsModel.align.value,
+            StudioConst.defaultTextPadding * StudioVariables.applyScale,
+          );
+          //print('AutoSizeType.autoFrameSize after  $frameHeight --> $newFrameHeight ($uri)');
+          //model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
+          model.height.set(newFrameHeight / StudioVariables.applyScale, noUndo: true);
+          frameHeight = newFrameHeight;
+          if (contentsModel.isAutoFrameSize()) {
+            model.width.set(newFrameWidth / StudioVariables.applyScale, noUndo: true);
+            frameWidth = newFrameWidth;
+          }
+          // 바뀐값으로 frameHeight 값을 다시 바꾸어 놓아야 한다.
+          //print('frameHeight changed ${frameHeight / StudioVariables.applyScale}-----');
+        }
+      }
+    } else {
+      print('contentsManager is not founded');
+    }
 
-  // Widget _shadowBox(FrameModel model, bool useColor) {
-  //   if (model.isNoShadow() == false && model.shadowIn.value == true) {
-  //     return InnerShadow(
-  //       shadows: [
-  //         Shadow(
-  //           blurRadius:
-  //               model.shadowBlur.value > 0 ? model.shadowBlur.value : model.shadowSpread.value,
-  //           color: model.shadowOpacity.value == 1
-  //               ? model.shadowColor.value
-  //               : model.shadowColor.value.withOpacity(model.shadowOpacity.value),
-  //           offset: CretaUtils.getShadowOffset(
-  //               (180 + model.shadowDirection.value) % 360, model.shadowOffset.value),
-  //         ),
-  //       ],
-  //       child: _frameBox(model, useColor),
-  //     );
-  //   }
-  //   return _frameBox(model, useColor);
-  // }
+    Widget eachFrame = FrameEach(
+      model: model,
+      pageModel: widget.pageModel,
+      frameManager: frameManager!,
+      applyScale: applyScale,
+      width: frameWidth,
+      height: frameHeight,
+      frameOffset: Offset(posX, posY),
+    );
 
-  // Widget _frameBox(FrameModel model, bool useColor) {
-  //   return Container(
-  //     key: ValueKey('Container${model.mid}'),
-  //     decoration: useColor ? _frameDeco(model) : null,
-  //     width: double.infinity,
-  //     height: double.infinity,
-  //     child: ClipRect(
-  //       clipBehavior: Clip.hardEdge,
-  //       child: ContentsMain(
-  //         key: ValueKey('ContentsMain${model.mid}'),
-  //         frameModel: model,
-  //         pageModel: widget.pageModel,
-  //         frameManager: frameManager!,
-  //       ),
-  //       // child: Image.asset(
-  //       //   'assets/creta_default.png',
-  //       //   fit: BoxFit.cover,
-  //       // ),
-  //     ),
-  //   );
-  // }
+    return Sticker(
+      key: stickerKey,
+      model: model,
+      //id: model.mid,
+      position: Offset(posX, posY),
+      angle: model.angle.value * (pi / 180),
+      size: Size(frameWidth, frameHeight),
+      borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
+      isMain: model.isMain.value,
+      //child: Visibility(
+      //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
+      //visible: _isVisible(model),
+      child: LinkParams.connectedMid == model.mid &&
+              LinkParams.linkPostion != null &&
+              LinkParams.orgPostion != null
+          ? eachFrame
+              .animate()
+              .scaleXY(duration: const Duration(milliseconds: 500), curve: Curves.easeInOut)
+              .move(
+                  duration: const Duration(milliseconds: 1000),
+                  curve: Curves.easeInOut,
+                  begin: LinkParams.linkPostion! +
+                      LinkParams.orgPostion! -
+                      Offset(frameWidth / 2, frameHeight / 2) -
+                      Offset(posX, posY))
+          : eachFrame,
+      //),
+    );
+  }
 
-  // BoxDecoration _frameDeco(FrameModel model) {
-  //   double opacity = model.opacity.value;
-  //   Color bgColor1 = model.bgColor1.value;
-  //   Color bgColor2 = model.bgColor2.value;
-  //   GradationType gradationType = model.gradationType.value;
+  // ignore: unused_element
+  List<Sticker> _getOverLayList(List<Sticker> stickerList) {
+    List<Sticker> retval = [];
+    for (Sticker sticker in stickerList) {
+      FrameModel? model = FrameManager.overlayFrameMap[sticker.id];
+      // overlay 에 있는 것은 그리면 안되기 때문이다.
+      if (model == null) {
+        print('Stikcer founded (${sticker.id})');
+        retval.add(sticker);
+      }
+    }
+// 오버레이를 뒤에 놔야,  다른 Frame 위로 올라온다.
+    for (FrameModel model in FrameManager.overlayFrameMap.values) {
+      print('overlay founded (${model.mid})');
+      retval.add(_createSticker(model));
+      frameManager!.modelList.add(model);
+    }
+    frameManager!.reOrdering();
 
-  //   return BoxDecoration(
-  //     color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
-  //     //boxShadow: StudioSnippet.basicShadow(),
-  //     gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
-  //     //borderRadius: _getBorderRadius(model),
-  //     //border: _getBorder(model),
-  //     //boxShadow: model.isNoShadow() == true ? null : [_getShadow(model)],
-  //   );
-  // }
-
-  // BoxShadow _getShadow(FrameModel model) {
-  //   return BoxShadow(
-  //     color: model.shadowColor.value
-  //         .withOpacity(CretaUtils.validCheckDouble(model.shadowOpacity.value, 0, 1)),
-  //     offset: CretaUtils.getShadowOffset(model.shadowDirection.value, model.shadowOffset.value),
-  //     blurRadius: model.shadowBlur.value,
-  //     spreadRadius: model.shadowSpread.value,
-  //     //blurStyle: widget.shadowIn ? BlurStyle.inner : BlurStyle.normal,
-  //   );
-  // }
-
-  // BoxBorder? _getBorder(FrameModel model) {
-  //   if (model.borderColor.value == Colors.transparent ||
-  //       model.borderWidth.value == 0 ||
-  //       model.borderType.value == 0) {
-  //     return null;
-  //   }
-
-  //   BorderSide bs = BorderSide(
-  //       color: model.borderColor.value,
-  //       width: model.borderWidth.value,
-  //       style: BorderStyle.solid,
-  //       strokeAlign: CretaUtils.borderPosition(model.borderPosition.value));
-
-  //   if (model.borderType.value > 1) {
-  //     return RDottedLineBorder(
-  //       dottedLength: CretaUtils.borderStyle[model.borderType.value - 1][0],
-  //       dottedSpace: CretaUtils.borderStyle[model.borderType.value - 1][1],
-  //       bottom: bs,
-  //       top: bs,
-  //       left: bs,
-  //       right: bs,
-  //     );
-  //   }
-  //   return Border.all(
-  //     color: model.borderColor.value,
-  //     width: model.borderWidth.value,
-  //     style: BorderStyle.solid,
-  //     strokeAlign: CretaUtils.borderPosition(model.borderPosition.value),
-  //   );
-  // }
-
-  // BorderRadius? _getBorderRadius(FrameModel model, {double addRadius = 0}) {
-  //   double lt = model.radiusLeftTop.value + addRadius;
-  //   double rt = model.radiusRightTop.value + addRadius;
-  //   double rb = model.radiusRightBottom.value + addRadius;
-  //   double lb = model.radiusLeftBottom.value + addRadius;
-  //   if (lt == rt && rt == rb && rb == lb) {
-  //     if (lt == 0) {
-  //       return BorderRadius.zero;
-  //     }
-  //     return BorderRadius.all(Radius.circular(model.radiusLeftTop.value));
-  //   }
-  //   return BorderRadius.only(
-  //     topLeft: Radius.circular(lt),
-  //     topRight: Radius.circular(rt),
-  //     bottomLeft: Radius.circular(lb),
-  //     bottomRight: Radius.circular(rb),
-  //   );
-  // }
+    return retval;
+  }
 
   void _setItem(DragUpdate update, String mid) async {
     for (var item in frameManager!.modelList) {

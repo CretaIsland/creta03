@@ -53,7 +53,10 @@ class FrameManager extends CretaManager {
   // }
 
   //Map<String, ValueKey> frameKeyMap = {};
-  Map<String, GlobalKey<StickerState>> frameKeyMap = {};
+  static Map<String,FrameModel> overlayFrameMap = {};
+  // ignore: prefer_final_fields
+  Map<String, GlobalKey<StickerState>> _frameKeyMap = {};
+  Map<String, GlobalKey<StickerState>> get frameKeyMap => _frameKeyMap;
   Map<String, ContentsManager> contentsManagerMap = {};
 
   bool _initFrameComplete = false;

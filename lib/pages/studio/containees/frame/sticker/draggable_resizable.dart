@@ -424,6 +424,23 @@ class _DraggableResizableState extends State<DraggableResizable> {
             ),
           ),
         );
+        final overlaySymbol = Positioned(
+          left: LayoutConst.stikerOffset / 2 + 4 + (widget.isMain == true ? 24 : 0),
+          top: LayoutConst.stikerOffset / 2 + 4,
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: CircleAvatar(
+              backgroundColor: Colors.white.withOpacity(0.5),
+              //radius: 16,
+              child: Icon(
+                Icons.push_pin_outlined,
+                size: 16,
+                color: CretaColor.stateCritical,
+              ),
+            ),
+          ),
+        );
 
         logger.finest('DraggableResizable : $normalizedTop, $normalizedLeft');
 
@@ -516,6 +533,8 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   frameModel: widget.frameModel,
                 ),
               if (widget.isMain && StudioVariables.isPreview == false) mainSymbol,
+              if (widget.frameModel!.isOverlay.value && StudioVariables.isPreview == false)
+                overlaySymbol,
             ],
           ),
         );

@@ -874,6 +874,13 @@ mixin PropertyMixin {
         return 0;
     }
   }
+
+  // bool isTextKind(ContentsModel? model, FrameModel frameModel) {
+  //   if (model == null) return false;
+  //   if (model.isText()) return true;
+  //   if (frameModel.frameType == FrameType.digitalWatch) return true;
+  //   return false;
+  // }
 }
 
 class ChipWidget extends StatelessWidget {

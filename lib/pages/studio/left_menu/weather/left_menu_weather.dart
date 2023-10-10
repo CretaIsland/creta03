@@ -307,6 +307,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
 
     retval.name = name;
     retval.remoteUrl = '$name $text';
+    retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
     // retval.remoteUrl = text;
     retval.textType = TextType.weather;
     retval.fontSize.set(48, noUndo: true, save: false);

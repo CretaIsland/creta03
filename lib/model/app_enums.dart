@@ -620,6 +620,8 @@ enum TextType {
   none,
   normal,
   weather,
+  clock,
+  date,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;

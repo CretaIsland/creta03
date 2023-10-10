@@ -17,7 +17,7 @@ class EditorDialog extends StatefulWidget {
   final Function? onPressedCancel;
   final Color? backgroundColor;
   final Offset dialogOffset;
-  final GlobalKey<State<StatefulWidget>>? frameKey;
+  //final GlobalKey<State<StatefulWidget>>? frameKey;
   final Size frameSize;
   final void Function(String)? onChanged;
   //final void Function() onComplete;
@@ -33,7 +33,7 @@ class EditorDialog extends StatefulWidget {
       this.okButtonWidth = 55,
       this.backgroundColor,
       required this.dialogOffset,
-      required this.frameKey,
+      //required this.frameKey,
       required this.onPressedOK,
       required this.onChanged,
       required this.frameSize,

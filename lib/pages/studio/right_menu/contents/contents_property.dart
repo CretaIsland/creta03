@@ -52,7 +52,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   static bool _isLinkControlOpen = false;
   static bool _isPlayControlOpen = false;
   //static bool _isTextFontColorOpen = false;
-  static bool _isTextFontControlOpen = false;
+  static bool _textAIOpen = false;
   static bool _isTextBorderOpen = false;
   static bool _isTextAni = false;
 
@@ -106,6 +106,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
 
   @override
   Widget build(BuildContext context) {
+    //FrameModel frameModel = _contentsManager!.frameModel;
+
     return Column(children: [
       // propertyDivider(height: 28),
       // Padding(
@@ -131,12 +133,15 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       if (widget.model.isText()) _textFontColor(),
       propertyDivider(height: 28),
       if (widget.model.isImage()) _imageFilter(),
-      if (widget.model.isText()) _textBorder(),
-      if (widget.model.isText()) propertyDivider(height: 28),
-      if (widget.model.isText()) _textAni(),
-      propertyDivider(height: 28),
-      if (widget.model.isText()) _textFontControl(),
-      if (widget.model.isText()) propertyDivider(height: 28),
+      if (widget.model.isText() && widget.model.textType == TextType.normal) _textBorder(),
+      if (widget.model.isText() && widget.model.textType == TextType.normal)
+        propertyDivider(height: 28),
+      if (widget.model.isText() && widget.model.textType == TextType.normal) _textAni(),
+      if (widget.model.isText() && widget.model.textType == TextType.normal)
+        propertyDivider(height: 28),
+      if (widget.model.isText() && widget.model.textType == TextType.normal) _textAI(),
+      if (widget.model.isText() && widget.model.textType == TextType.normal)
+        propertyDivider(height: 28),
       _hashTag(),
     ]);
     //});
@@ -160,6 +165,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           ContentsModel.setLastTextStyle(widget.model.makeTextStyle(context), widget.model);
 
           _contentsManager?.notify();
+          if (widget.model.textType == TextType.clock) {
+            widget.frameManager.notify();
+          }
           //_sendEvent!.sendEvent(widget.model);
         },
         onOpacityDrag: (value) {
@@ -175,6 +183,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           });
           //_contentsManager?.notify();
           _sendEvent!.sendEvent(widget.model);
+          if (widget.model.textType == TextType.clock) {
+            widget.frameManager.notify();
+          }
         },
         onColorIndicatorClicked: () {
           PropertyMixin.isColorOpen = true;
@@ -186,6 +197,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             ContentsModel.setLastTextStyle(widget.model.makeTextStyle(context), widget.model);
           });
           _sendEvent!.sendEvent(widget.model);
+          if (widget.model.textType == TextType.clock) {
+            widget.frameManager.notify();
+          }
         },
       ),
       //   propertyCard(
@@ -260,17 +274,17 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //   );
   // }
 
-  Widget _textFontControl() {
+  Widget _textAI() {
     return Padding(
       padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
       child: propertyCard(
-        isOpen: _isTextFontControlOpen,
+        isOpen: _textAIOpen,
         onPressed: () {
           setState(() {
-            _isTextFontControlOpen = !_isTextFontControlOpen;
+            _textAIOpen = !_textAIOpen;
           });
         },
-        titleWidget: Text(CretaLang.fontControl, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaLang.fontAI, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(StudioConst.code2LangMap[widget.model.lang.value]!,
             textAlign: TextAlign.right,
@@ -386,8 +400,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             height: 28 * 0.75,
             defaultValue: widget.model.isTTS.value,
             onSelected: (value) {
+              mychangeStack.startTrans();
               widget.model.isTTS.set(value);
               widget.model.mute.set(!value);
+              mychangeStack.endTrans();
               _contentsManager?.notify();
               setState(() {});
             },

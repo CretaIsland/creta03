@@ -525,6 +525,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       return watchFrame(
         model,
         const Text('GMT-9'),
+        context,
+        StudioVariables.applyScale,
       );
     }
     if (model.isStickerType()) {

@@ -213,7 +213,20 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                   });
                 },
                 titleWidget: Text(CretaStudioLang.frameSize, style: CretaFont.titleSmall),
-                trailWidget: Text('${width.round()} x ${height.round()}', style: dataStyle),
+                trailWidget: widget.model.isOverlay.value == true
+                    ? Row(
+                        children: [
+                          Text('${width.round()} x ${height.round()}', style: dataStyle),
+                          IconButton(
+                            icon: Icon(Icons.push_pin_outlined, color: CretaColor.stateCritical),
+                            iconSize: 20,
+                            onPressed: () {
+                              _setOverlay(false);
+                            },
+                          ),
+                        ],
+                      )
+                    : Text('${width.round()} x ${height.round()}', style: dataStyle),
                 onDelete: () {},
                 hasRemoveButton: false,
                 bodyWidget: _pageSizeBody(width, height),
@@ -439,8 +452,23 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               ],
             ),
           ),
+        // 세번째 줄   overlay
+        Padding(
+          padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
+          child: propertyLine(
+            // overlay
+            topPadding: 10,
+            name: CretaStudioLang.overlayFrame,
+            widget: CretaToggleButton(
+              width: 54 * 0.75,
+              height: 28 * 0.75,
+              defaultValue: widget.model.isOverlay.value,
+              onSelected: _setOverlay,
+            ),
+          ),
+        ),
         if (!widget.model.isMusicType())
-          // 세번째 줄  autofit
+          //  다섯번째 줄  autofit,
           Padding(
               padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
               //child: BTN.line_blue_t_m(
@@ -497,7 +525,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               // ),
               ),
         if (!widget.model.isMusicType())
-          // 네번째 줄  rotate
+          // 여섯번째 줄  rotate
           Padding(
             padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
             child: Row(
@@ -597,7 +625,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               ],
             ),
           ),
-        // 다선번째 줄  radius
+        // 일곱번째 줄  radius
         Padding(
           padding: const EdgeInsets.only(top: 12, left: 30, right: 24),
           child: Row(
@@ -1985,6 +2013,22 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         BookMainPage.bookManagerHolder!.notify();
       },
     );
+  }
+
+  void _setOverlay(bool value) {
+    if (_frameManager == null) {
+      logger.info('frameManager is null');
+      return;
+    }
+    setState(() {
+      widget.model.isOverlay.set(value);
+      if (value == false) {
+        FrameManager.overlayFrameMap.remove(widget.model.mid);
+      } else {
+        FrameManager.overlayFrameMap[widget.model.mid] = widget.model;
+      }
+    });
+    _sendEvent?.sendEvent(widget.model);
   }
 
 /*
