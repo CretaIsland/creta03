@@ -129,7 +129,7 @@ extension ShapeWidget<T extends Widget> on T {
           radiusLeftTop: radiusLeftTop,
           radiusRightBottom: radiusRightBottom,
           radiusRightTop: radiusRightTop,
-        ),
+        )!,
         child: SizedBox(
           width: width,
           height: height,

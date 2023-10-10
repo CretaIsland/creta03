@@ -76,3 +76,6 @@ copy src_modify/html_editor_enhanced/summernote-lite.min.cxs c:\Users\seon\AppDa
 
 #nr.han modify 9/18
 copy src_modify\constants.daxt D:\Flutter\src\flutter\packages\flutter\lib\src\material\constants.dart
+
+#seventhstone 23/10/10
+copy src_modify\snowflake_model.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\snowfall-0.0.2\lib\snowfall\snowflake_model.dart
