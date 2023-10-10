@@ -1033,7 +1033,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         onDelete: () {
           setState(() {
             selectedType = NextContentTypes.none;
-            widget.model.nextContentTypes.set(NextContentTypes.none);
+            widget.model.nextContentTypes.set(selectedType);
           });
           _sendEvent!.sendEvent(widget.model);
         },

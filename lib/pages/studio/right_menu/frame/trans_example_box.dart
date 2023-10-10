@@ -43,7 +43,6 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
 
   void onSelected() {
     setState(() {
-      // widget.model.nextContentTypes.set(NextContentTypes.none);
       widget.model.nextContentTypes.set(widget.nextContentTypes);
     });
     widget.onTypeSelected.call();
@@ -70,6 +69,7 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
   Widget build(BuildContext context) {
     return super.buildMixin(
       context,
+      isSelected: widget.selectedTyped,
       setState: rebuild,
       onSelected: onSelected,
       onUnselected: onUnSelected,
@@ -98,7 +98,7 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
         double value = 0.0;
         if (_pageController.position.haveDimensions) {
           value = index.toDouble() - (_pageController.page ?? 0);
-          value = (value * 0.038).clamp(-1, 1);
+          value = (value * 0.048).clamp(-1, 1);
           // print("value $value index $index");
         }
         double angle = 0.0;
@@ -127,7 +127,11 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: const [
-            BoxShadow(offset: Offset(0, 4), blurRadius: 4, color: Colors.black26),
+            BoxShadow(
+              offset: Offset(0, 4),
+              blurRadius: 4,
+              color: Colors.black26,
+            ),
           ],
         ),
         child: Center(
