@@ -1,7 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:neonpen/neonpen.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
@@ -294,9 +292,10 @@ mixin CretaTextMixin {
             ..color = model.outLineColor.value,
         );
       }
-      if (model.aniType.value != TextAniType.shimmer && model.aniType.value != TextAniType.neon) {
-        style = style.copyWith(fontSize: _getAutoFontSize(model, textSize, realSize, fontSize));
-      }
+      // 2023.10.09  아래코드는 더이상 필요가 없다.
+      // if (model.aniType.value != TextAniType.shimmer && model.aniType.value != TextAniType.neon) {
+      //   style = style.copyWith(fontSize: _getAutoFontSize(model, textSize, realSize, fontSize));
+      // }
     }
 
     switch (model.aniType.value) {
@@ -521,29 +520,29 @@ mixin CretaTextMixin {
               );
     }
   }
+  // 2023.10.09  아래 코드는 더이상 사용되지 않는다.
+  // double _getAutoFontSize(ContentsModel? model, int textSize, Size realSize, double fontSize) {
+  //   //double fontSize = model!.fontSize.value;
 
-  double _getAutoFontSize(ContentsModel? model, int textSize, Size realSize, double fontSize) {
-    //double fontSize = model!.fontSize.value;
+  //   if (model!.isAutoFontSize()) {
+  //     return fontSize;
+  //   }
+  //   // 텍스트 길이
+  //   double entireWidth = fontSize * textSize; // 한줄로 했을때, 필요한 width
+  //   int lineCount =
+  //       (entireWidth / (0.9 * realSize.width)).ceil(); //  현재 폰트사이즈에서 현재 width 상황에서 필요한 라인수
+  //   double idealWidth = fontSize * (textSize.toDouble() / lineCount.toDouble()); //
+  //   double idealHeight = (lineCount + 1) * fontSize;
 
-    if (model!.isAutoFontSize()) {
-      return fontSize;
-    }
-    // 텍스트 길이
-    double entireWidth = fontSize * textSize; // 한줄로 했을때, 필요한 width
-    int lineCount =
-        (entireWidth / (0.9 * realSize.width)).ceil(); //  현재 폰트사이즈에서 현재 width 상황에서 필요한 라인수
-    double idealWidth = fontSize * (textSize.toDouble() / lineCount.toDouble()); //
-    double idealHeight = (lineCount + 1) * fontSize;
+  //   // 이상적인 사이즈가 현재 사이즈보다 크다면, 폰트가 줄어들어야 하고,
+  //   // 현재 사이즈보다 작다면,  폰트가 커져야 한다.
+  //   double fontRatio = sqrt(realSize.width * realSize.height) / sqrt(idealWidth * idealHeight);
 
-    // 이상적인 사이즈가 현재 사이즈보다 크다면, 폰트가 줄어들어야 하고,
-    // 현재 사이즈보다 작다면,  폰트가 커져야 한다.
-    double fontRatio = sqrt(realSize.width * realSize.height) / sqrt(idealWidth * idealHeight);
-
-    fontSize *= fontRatio;
-    double minFontSize = StudioConst.minFontSize / applyScale;
-    if (fontSize < minFontSize) fontSize = minFontSize;
-    return fontSize;
-    //logHolder.log("font = ${model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
-    //    level: 6);
-  }
+  //   fontSize *= fontRatio;
+  //   double minFontSize = StudioConst.minFontSize / applyScale;
+  //   if (fontSize < minFontSize) fontSize = minFontSize;
+  //   return fontSize;
+  //   //logHolder.log("font = ${model!.font.value}, fontRatio=$fontRatio, fontSize=$fontSize",
+  //   //    level: 6);
+  // }
 }

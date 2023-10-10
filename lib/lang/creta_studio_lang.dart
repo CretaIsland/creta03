@@ -252,7 +252,7 @@ class CretaStudioLang {
   static const String hashTab = "해시태그";
   static const String infomation = "정보";
   static const String pageSize = "페이지 크기";
-  static const String frameSize = "프레임 크기";
+  static const String frameSize = "프레임 기본 속성";
   static const String clickEvent = "클릭 이벤트";
   static const String bookBgColor = "전체 배경색";
   static const String pageBgColor = "페이지 배경색";
@@ -383,6 +383,7 @@ class CretaStudioLang {
   static const String posY = 'Y좌표';
 
   static const String autoFitContents = '콘텐츠 크기에 자동 맞춤';
+  static const String overlayFrame = '모든 페이지에서 고정';
 
   static const String ani = '애니메이션';
   static const String speed = '속도';

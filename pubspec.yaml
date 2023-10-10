@@ -121,7 +121,7 @@ dependencies:
   rxdart: ^0.27.7
   id3_codec: ^1.0.3
 
-  one_clock: ^1.0.1
+  #one_clock: ^1.0.1
   mediasoup_client_flutter: ^0.8.5
   protoo_client: ^0.3.3
   flutter_webrtc: ^0.9.35

@@ -17,12 +17,13 @@ import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
-import 'package:one_clock/one_clock.dart';
 import 'package:weather_animation/weather_animation.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/component/clock/analog_clock.dart';
+import '../../../../design_system/component/clock/digital_clock.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
@@ -164,7 +165,8 @@ mixin FramePlayMixin {
     return const SizedBox.shrink();
   }
 
-  Widget watchFrame(FrameModel model, Widget? child) {
+  Widget watchFrame(
+      FrameModel model, Widget? child, BuildContext context, double applyScale, bool isThumbnail) {
     if (model.frameType == FrameType.analogWatch) {
       return AnalogClock(
         //dateTime: DateTime(2023, 07, 14, 10, 12, 07),
@@ -177,12 +179,32 @@ mixin FramePlayMixin {
       );
     }
     if (model.frameType == FrameType.digitalWatch) {
+      ContentsModel? contentsModel;
+      if (frameManager != null) {
+        contentsModel = frameManager!.getFirstContents(model.mid);
+      }
+      //print('applyScale = $applyScale');
+      TextStyle? style;
+      if (contentsModel != null) {
+        style =
+            contentsModel.makeTextStyle(context, applyScale: applyScale, isThumbnail: isThumbnail);
+        //print('contentModel is not null, fontSize=${contentsModel.fontSize.value}');
+      } else {
+        //print('contentModel is null}');
+        style = DefaultTextStyle.of(context)
+            .style
+            .copyWith(fontSize: StudioConst.defaultFontSize * applyScale);
+      }
+      //print('fontSize = ${style.fontSize}');
+
       return DigitalClock(
+          key: GlobalKey(),
+          textStyle: style,
           showSeconds: true,
           isLive: true,
           digitalClockColor: Colors.black,
-          textScaleFactor: ((model.width.value / (50 * 2)) + 1) *
-              StudioVariables.applyScale, // 50 is minimum contstraint
+          // textScaleFactor:
+          //     ((model.width.value / (50 * 2)) + 1) * applyScale, // 50 is minimum contstraint
           //digitalClockColor: Colors.transparent,
           // decoration: const BoxDecoration(
           //     color: Colors.yellow,

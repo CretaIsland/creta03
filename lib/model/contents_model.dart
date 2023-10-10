@@ -784,7 +784,10 @@ class ContentsModel extends CretaModel {
     }
 
     TextStyle style = makeTextStyle(context,
-        isThumbnail: isThumbnail, applyScale: applyScale, isEditMode: isEditMode);
+        isThumbnail: isThumbnail,
+        applyScale: applyScale,
+        isEditMode: isEditMode,
+        newFontSize: newFontSize);
 
     return (style, uri, newFontSize);
   }
@@ -794,29 +797,20 @@ class ContentsModel extends CretaModel {
     bool isThumbnail = false,
     double? applyScale,
     bool isEditMode = false,
+    double? newFontSize,
   }) {
     applyScale ??= StudioVariables.applyScale;
 
-    double newFontSize = fontSize.value * applyScale;
+    if (newFontSize == null) {
+      newFontSize = fontSize.value * applyScale;
 
-    // if (isEditMode == false &&
-    //     autoSizeType.value == AutoSizeType.autoFontSize &&
-    //     (aniType.value != TextAniType.rotate ||
-    //         aniType.value != TextAniType.bounce ||
-    //         aniType.value != TextAniType.fade ||
-    //         aniType.value != TextAniType.shimmer ||
-    //         aniType.value != TextAniType.typewriter ||
-    //         aniType.value != TextAniType.wavy ||
-    //         aniType.value != TextAniType.fidget)) {
-    //   newFontSize = StudioConst.maxFontSize * applyScale;
-    // }
-    //newFontSize = newFontSize.roundToDouble();
-    if (isThumbnail == false) {
-      double minFontSize = StudioConst.minFontSize / applyScale;
-      if (newFontSize < StudioConst.minFontSize) newFontSize = minFontSize;
-    }
-    if (newFontSize > StudioConst.maxFontSize * applyScale) {
-      newFontSize = StudioConst.maxFontSize * applyScale;
+      if (isThumbnail == false) {
+        double minFontSize = StudioConst.minFontSize * applyScale;
+        if (newFontSize < StudioConst.minFontSize) newFontSize = minFontSize;
+      }
+      if (newFontSize > StudioConst.maxFontSize * applyScale) {
+        newFontSize = StudioConst.maxFontSize * applyScale;
+      }
     }
 
     FontWeight? newfontWeight = StudioConst.fontWeight2Type[fontWeight.value];

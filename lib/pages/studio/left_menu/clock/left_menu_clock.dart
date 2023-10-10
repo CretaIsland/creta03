@@ -3,10 +3,15 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter_analog_clock/flutter_analog_clock.dart';
 import 'package:hycop/common/undo/undo.dart';
-import 'package:one_clock/one_clock.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 
+import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/component/clock/analog_clock.dart';
+import '../../../../design_system/component/clock/digital_clock.dart';
 import '../../../../model/app_enums.dart';
+import '../../../../model/contents_model.dart';
+import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../left_menu_ele_button.dart';
@@ -158,7 +163,7 @@ class _LeftMenuClockState extends State<LeftMenuClock> {
     }
 
     mychangeStack.startTrans();
-    await frameManager.createNextFrame(
+    FrameModel frameModel = await frameManager.createNextFrame(
       doNotify: false,
       size: frameType == FrameType.stopWatch
           ? Size(460, 480)
@@ -171,6 +176,57 @@ class _LeftMenuClockState extends State<LeftMenuClock> {
       subType: subType,
       shape: frameType == FrameType.analogWatch ? ShapeType.circle : null,
     );
+    ContentsModel model = await _clockModel(
+      frameModel.mid,
+      frameModel.realTimeKey,
+    );
+    await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
     mychangeStack.endTrans();
   }
+
+  Future<ContentsModel> _clockModel(String frameMid, String bookMid) async {
+    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
+
+    retval.contentsType = ContentsType.text;
+    retval.name = 'clock';
+    retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
+    retval.remoteUrl = '00:00:00';
+    retval.textType = TextType.clock;
+    retval.fontSize.set(48, noUndo: true, save: false);
+    retval.fontSizeType.set(FontSizeType.userDefine, noUndo: true, save: false);
+    //retval.playTime.set(-1, noUndo: true, save: false);
+    return retval;
+  }
+
+  // Future<void> _createDateFormat(DateTimeFormat infoType) async {
+  //   PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+  //   if (pageModel == null) return;
+
+  //   double width = 480;
+  //   double height = 110;
+  //   double x = (pageModel.width.value - width) / 2;
+  //   double y = (pageModel.height.value - height) / 2;
+
+  //   FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+  //   if (frameManager == null) {
+  //     return;
+  //   }
+
+  //   mychangeStack.startTrans();
+  //   FrameModel frameModel = await frameManager.createNextFrame(
+  //     doNotify: false,
+  //     size: Size(width, height),
+  //     pos: Offset(x, y),
+  //     bgColor1: Colors.transparent,
+  //     type: FrameType.text,
+  //     subType: infoType.index,
+  //   );
+  //   ContentsModel model = await _dateTimeTextModel(
+  //     DateTimeType.getDateText(infoType),
+  //     frameModel.mid,
+  //     frameModel.realTimeKey,
+  //   );
+  //   await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
+  //   mychangeStack.endTrans();
+  //}
 }

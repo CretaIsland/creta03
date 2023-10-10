@@ -34,6 +34,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> radiusLeftBottom;
   late UndoAble<bool> isAutoFit;
   late UndoAble<bool> isMain;
+  late UndoAble<bool> isOverlay;
   late UndoAble<Color> borderColor;
   late UndoAble<double> borderWidth;
   late UndoAble<int> borderType;
@@ -161,6 +162,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         radiusLeftBottom,
         isAutoFit,
         isMain,
+        isOverlay,
         borderColor,
         borderWidth,
         borderType,
@@ -193,6 +195,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom = UndoAble<double>(0, mid, 'radiusLeftBottom');
     isAutoFit = UndoAble<bool>(false, mid, 'isAutoFit');
     isMain = UndoAble<bool>(false, mid, 'isMain');
+    isOverlay = UndoAble<bool>(false, mid, 'isOverlay');
     frameType = FrameType.none;
     subType = -1;
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
@@ -234,6 +237,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom = UndoAble<double>(0, mid, 'radiusLeftBottom');
     isAutoFit = UndoAble<bool>(false, mid, 'isAutoFit');
     isMain = UndoAble<bool>(false, mid, 'isMain');
+    isOverlay = UndoAble<bool>(false, mid, 'isOverlay');
     bgColor1 = UndoAble<Color>(Colors.white, mid, 'bgColor1');
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
@@ -274,6 +278,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom = UndoAble<double>(srcFrame.radiusLeftBottom.value, mid, 'radiusLeftBottom');
     isAutoFit = UndoAble<bool>(srcFrame.isAutoFit.value, mid, 'isAutoFit');
     isMain = UndoAble<bool>(srcFrame.isMain.value, mid, 'isMain');
+    isOverlay = UndoAble<bool>(srcFrame.isOverlay.value, mid, 'isOverlay');
     borderColor = UndoAble<Color>(srcFrame.borderColor.value, mid, 'borderColor');
     borderWidth = UndoAble<double>(srcFrame.borderWidth.value, mid, 'borderWidth');
     borderType = UndoAble<int>(srcFrame.borderType.value, mid, 'borderType');
@@ -315,6 +320,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom.init(srcFrame.radiusLeftBottom.value);
     isAutoFit.init(srcFrame.isAutoFit.value);
     isMain.init(srcFrame.isMain.value);
+    isOverlay.init(srcFrame.isOverlay.value);
     borderColor.init(srcFrame.borderColor.value);
     borderWidth.init(srcFrame.borderWidth.value);
     borderType.init(srcFrame.borderType.value);
@@ -359,6 +365,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     radiusLeftBottom.set((map["radiusLeftBottom"] ?? 0), save: false, noUndo: true);
     //isAutoFit.set((map["isAutoFit"] ?? false), save: false, noUndo: true);  // DB 에 쓰지 않는다.
     isMain.set((map["isMain"] ?? false), save: false, noUndo: true);
+    isOverlay.set((map["isOverlay"] ?? false), save: false, noUndo: true);
 
     borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
     borderWidth.set((map["borderWidth"] ?? 0), save: false, noUndo: true);
@@ -402,6 +409,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "radiusLeftBottom": radiusLeftBottom.value,
         //"isAutoFit": isAutoFit.value,   //DB 에서 읽지 않는다.
         "isMain": isMain.value,
+        "isOverlay": isOverlay.value,
         "borderColor": borderColor.value.toString(),
         "borderWidth": borderWidth.value,
         "borderType": borderType.value,

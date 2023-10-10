@@ -147,7 +147,8 @@ class _LeftMenuDateState extends State<LeftMenuDate> {
 
     retval.name = format;
     retval.remoteUrl = '$format ';
-    retval.textType = TextType.weather;
+    retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
+    retval.textType = TextType.date;
     retval.fontSize.set(48, noUndo: true, save: false);
     retval.fontSizeType.set(FontSizeType.small, noUndo: true, save: false);
     //retval.playTime.set(-1, noUndo: true, save: false);

@@ -32,6 +32,7 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
+import '../../../../model/frame_model.dart';
 import '../../../../player/music/creta_music_mixin.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
@@ -62,6 +63,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   int _selectedIndex = 0;
   //static bool _isExpanded = false;
 
+  late FrameModel _frameModel;
+
   void invalidate() {
     setState(() {});
   }
@@ -72,6 +75,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     initMixin();
     final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
     _sendEvent = sendEvent;
+    _frameModel = widget.contentsManager.frameModel;
   }
 
   @override
@@ -159,15 +163,15 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           width: LayoutConst.rightMenuWidth,
           height: boxHeight,
           child: DropZoneWidget(
-            bookMid: widget.contentsManager.frameModel.realTimeKey,
+            bookMid: _frameModel.realTimeKey,
             parentId: '',
             onDroppedFile: (modelList) {
-              String frameId = widget.contentsManager.frameModel.mid;
+              String frameId = _frameModel.mid;
               logger.info(' dropzone contents added to $frameId');
               ContentsManager.createContents(
                 widget.frameManager,
                 modelList,
-                widget.contentsManager.frameModel,
+                _frameModel,
                 widget.contentsManager.pageModel,
                 isResizeFrame: false,
                 onUploadComplete: (currentModel) {
@@ -202,7 +206,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       onComplete: () {
                     widget.contentsManager.reOrdering();
                     if (model != null && model.isMusic()) {
-                      String frameId = widget.contentsManager.frameModel.mid;
+                      String frameId = _frameModel.mid;
                       GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
                       if (musicKey != null) {
                         musicKey.currentState?.reorderPlaylist(model, oldIndex, newIndex);
@@ -755,34 +759,35 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CretaTextField.long(
-          textFieldKey: key,
-          value: model.remoteUrl ?? '',
-          hintText: model.name,
-          selectAtInit: true,
-          autoComplete: true,
-          autoHeight: true,
-          height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
-          keyboardType: TextInputType.multiline,
-          maxLines: 5,
-          textInputAction: TextInputAction.newline,
-          alignVertical: TextAlignVertical.top,
-          autofocus: false,
-          onEditComplete: (value) {
-            model.remoteUrl = value;
-            widget.contentsManager.setToDB(model);
-            widget.contentsManager.notify();
-          },
-          onChanged: (value) {
-            model.remoteUrl = value;
-            widget.contentsManager.notify();
-          },
-        ),
-        _textAlign(model),
+        if (model.isText() && model.textType != TextType.clock)
+          CretaTextField.long(
+            textFieldKey: key,
+            value: model.remoteUrl ?? '',
+            hintText: model.name,
+            selectAtInit: true,
+            autoComplete: true,
+            autoHeight: true,
+            height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
+            keyboardType: TextInputType.multiline,
+            maxLines: 5,
+            textInputAction: TextInputAction.newline,
+            alignVertical: TextAlignVertical.top,
+            autofocus: false,
+            onEditComplete: (value) {
+              model.remoteUrl = value;
+              widget.contentsManager.setToDB(model);
+              widget.contentsManager.notify();
+            },
+            onChanged: (value) {
+              model.remoteUrl = value;
+              widget.contentsManager.notify();
+            },
+          ),
+        if (model.isText()) _textAlign(model),
         //_fontDecoBar(model),
-        propertyDivider(height: 28),
-        _aboutMode(model),
-        propertyDivider(height: 28),
+        if (model.isText()) propertyDivider(height: 28),
+        if (model.isText()) _aboutMode(model),
+        if (model.isText()) propertyDivider(height: 28),
         CretaFontSelector(
           // 폰트, 폰트 weight
           topPadding: 10,
@@ -797,7 +802,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               mychangeStack.endTrans();
               //print('save ${model.mid}-----------------');
               //print('save ${model.font.value}----------');
-              //_sendEvent!.sendEvent(model);
+              if (model.textType == TextType.clock) {
+                _sendEvent!.sendEvent(_frameModel);
+              }
               widget.contentsManager.notify();
               ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
               setState(() {});
@@ -807,6 +814,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             if (val != model.fontWeight.value) {
               model.fontWeight.set(val);
               //_sendEvent!.sendEvent(model);
+              if (model.textType == TextType.clock) {
+                _sendEvent!.sendEvent(_frameModel);
+              }
               widget.contentsManager.notify();
               ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
               setState(() {});
@@ -836,7 +846,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         model.autoSizeType.set(type);
         //model.updateByAutoSize(null); // autoSize 를 초기화하거나 재설정한다.
         //mychangeStack.endTrans();
-        _sendEvent!.sendEvent(widget.contentsManager.frameModel);
+        _sendEvent!.sendEvent(_frameModel);
         //  widget.contentsManager.notify();
         //   DraggableStickers.frameSelectNotifier!.notify();
         //   widget.frameManager?.notify();
@@ -847,8 +857,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
     return Consumer<FontSizeChangingNotifier>(builder: (context, fontSizeNotifier, child) {
       //print('fontSize changing ${fontSizeNotifier.isChanging}');
-      Widget retval = widget.contentsManager.frameModel.isEditMode == false &&
-              fontSizeNotifier.isChanging == false
+      Widget retval = _frameModel.isEditMode == false && fontSizeNotifier.isChanging == false
           ? autoSizeTypeWidget
           : Stack(
               children: [
@@ -1184,18 +1193,30 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         strike: model.isStrike.value,
         toggleBold: (val) {
           model.isBold.set(val);
+          if (model.textType == TextType.clock) {
+            _sendEvent!.sendEvent(_frameModel);
+          }
           widget.contentsManager.notify();
         },
         toggleItalic: (val) {
           model.isItalic.set(val);
+          if (model.textType == TextType.clock) {
+            _sendEvent!.sendEvent(_frameModel);
+          }
           widget.contentsManager.notify();
         },
         toggleUnderline: (val) {
           model.isUnderline.set(val);
+          if (model.textType == TextType.clock) {
+            _sendEvent!.sendEvent(_frameModel);
+          }
           widget.contentsManager.notify();
         },
         toggleStrikethrough: (val) {
           model.isStrike.set(val);
+          if (model.textType == TextType.clock) {
+            _sendEvent!.sendEvent(_frameModel);
+          }
           widget.contentsManager.notify();
         },
       ),

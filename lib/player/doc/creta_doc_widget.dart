@@ -41,7 +41,7 @@ class CretaDocWidget extends CretaAbsPlayerWidget {
     Size dialogSize, {
     required dynamic Function(String) onPressedOK,
   }) {
-    GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
+    //GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
     showDialog(
         context: context,
         builder: (context) {
@@ -55,7 +55,7 @@ class CretaDocWidget extends CretaAbsPlayerWidget {
               width: dialogSize.width,
               height: dialogSize.height * 1.5,
               frameSize: realSize,
-              frameKey: frameKey,
+              //frameKey: frameKey,
               backgroundColor: frameModel.bgColor1.value.withOpacity(frameModel.opacity.value),
               onChanged: (value) {
                 //print('onChanged $value');
@@ -142,7 +142,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
     player?.buttonIdle();
 
     // ignore: unused_local_variable
-    GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
+    //GlobalKey? frameKey = frameManager.frameKeyMap[frameModel.mid];
 
     //print('++++++++++++++++++++++playDoc+++++++++++$uri');
 
