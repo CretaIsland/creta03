@@ -72,6 +72,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   static bool _isShapeOpen = false;
   bool _matched = false;
   bool _isCustom = false;
+  //NextContentTypes _selectedType = NextContentTypes.none;
   // LeftTopSelected _isLeftTopSelected = LeftTopSelected();
   // RightTopSelected _isRightTopSelected = RightTopSelected();
   // LeftBottomSelected _isLeftBottomSelected = LeftBottomSelected();
@@ -141,6 +142,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   @override
   Widget build(BuildContext context) {
     _isFullScreen = widget.model.isFullScreenTest(_bookModel!);
+    //final NextContentTypes selectedType = widget.model.nextContentTypes.value;
     // if (_model == null) {
     //   return SizedBox.shrink();
     // }
@@ -1036,8 +1038,6 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     );
   }
 
-  NextContentTypes selectedType = NextContentTypes.none;
-
   Widget _frameTransition() {
     logger.finest('frameTransition=${widget.model.nextContentTypes.value}');
     return Padding(
@@ -1051,26 +1051,25 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.contentFlipEffect, style: CretaFont.titleSmall),
         trailWidget: Text(
-          selectedType == NextContentTypes.none
+          widget.model.nextContentTypes.value == NextContentTypes.none
               ? ''
-              : CretaStudioLang.nextContentTypes[selectedType.index],
+              : CretaStudioLang.nextContentTypes[widget.model.nextContentTypes.value.index],
           textAlign: TextAlign.right,
           style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
         ),
         hasRemoveButton: widget.model.nextContentTypes.value != NextContentTypes.none,
         onDelete: () {
           setState(() {
-            selectedType = NextContentTypes.none;
-            widget.model.nextContentTypes.set(selectedType);
+            widget.model.nextContentTypes.set( NextContentTypes.none);
           });
           _sendEvent!.sendEvent(widget.model);
         },
-        bodyWidget: _transitionType(),
+        bodyWidget: _nextContentTypes(),
       ),
     );
   }
 
-  Widget _transitionType() {
+  Widget _nextContentTypes() {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Wrap(
@@ -1080,17 +1079,20 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           for (int i = 1; i < NextContentTypes.end.index; i++)
             TransExampleBox(
               key: ValueKey(
-                  'frameTransitionType=${NextContentTypes.values[i].name} + ${_isTypeSelected(i, NextContentTypes.values[i])}}'),
+                  'nextContentType=${NextContentTypes.values[i].name} + ${_isTypeSelected(i, NextContentTypes.values[i])}}'),
               frameManager: _frameManager!,
               model: widget.model,
               nextContentTypes: NextContentTypes.values[i],
               name: CretaStudioLang.nextContentTypes[i],
-              selectedTyped: _isTypeSelected(i, selectedType),
+              selectedType: _isTypeSelected(i, widget.model.nextContentTypes.value),
               onTypeSelected: () {
+                print('11111111111111');
                 setState(() {
-                  selectedType = NextContentTypes.values[i];
+                  //_selectedType = NextContentTypes.values[i];
                 });
+                print('2222222222222');
                 _sendEvent!.sendEvent(widget.model);
+                print('3333333333');
               },
             )
         ],

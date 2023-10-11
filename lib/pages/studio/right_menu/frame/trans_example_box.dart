@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:creta03/design_system/component/example_box_mixin.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../model/app_enums.dart';
+import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 
 class TransExampleBox extends StatefulWidget {
@@ -13,7 +15,7 @@ class TransExampleBox extends StatefulWidget {
   final NextContentTypes nextContentTypes;
   final String name;
   final FrameManager frameManager;
-  final bool selectedTyped;
+  final bool selectedType;
   final Function onTypeSelected;
   const TransExampleBox({
     super.key,
@@ -21,7 +23,7 @@ class TransExampleBox extends StatefulWidget {
     required this.model,
     required this.nextContentTypes,
     required this.name,
-    required this.selectedTyped,
+    required this.selectedType,
     required this.onTypeSelected,
   });
 
@@ -32,11 +34,25 @@ class TransExampleBox extends StatefulWidget {
 class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateMixin {
   late PageController _pageController;
   late int _currentPage;
+  ContentsManager? _contentsManager;
+  bool _emptyCarousel = true;
+  int _length = 3;
 
   @override
   void initState() {
     super.initState();
-    _currentPage = widget.frameManager.modelList.length ~/ 2;
+
+    _contentsManager = widget.frameManager.getContentsManager(widget.model.mid);
+    if (_contentsManager == null) {
+      _currentPage = 0;
+    } else {
+      _currentPage = _contentsManager!.modelList.length ~/ 2;
+      if (_contentsManager!.modelList.length > 3) {
+        _length = _contentsManager!.modelList.length;
+        _emptyCarousel = false;
+      }
+    }
+
     _pageController = PageController(initialPage: _currentPage, viewportFraction: 0.5);
     super.initState();
   }
@@ -51,6 +67,7 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
   void onUnSelected() {
     setState(() {
       widget.model.nextContentTypes.set(NextContentTypes.none);
+      // widget.selectedType == false;
     });
     widget.onTypeSelected.call();
   }
@@ -69,7 +86,7 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
   Widget build(BuildContext context) {
     return super.buildMixin(
       context,
-      isSelected: widget.selectedTyped,
+      isSelected: widget.selectedType,
       setState: rebuild,
       onSelected: onSelected,
       onUnselected: onUnSelected,
@@ -82,7 +99,7 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4.0),
       width: 148.0,
       child: PageView.builder(
-          itemCount: widget.frameManager.modelList.length,
+          itemCount: _length,
           physics: const ClampingScrollPhysics(),
           controller: _pageController,
           itemBuilder: (context, index) {
@@ -105,7 +122,6 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
         switch (widget.nextContentTypes) {
           case NextContentTypes.normalCarousel:
             angle = 0.0;
-            break;
           case NextContentTypes.tiltedCarousel:
             angle = pi * value;
           default:
@@ -113,35 +129,59 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
         }
         return Transform.rotate(
           angle: angle,
-          child: carouselCard(widget.frameManager.modelList[index] as FrameModel),
+          child: carouselCard(
+              _emptyCarousel ? null : _contentsManager!.modelList[index] as ContentsModel),
         );
       },
     );
   }
 
-  Widget carouselCard(FrameModel frameModel) {
+  Widget carouselCard(ContentsModel? contentsModel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              offset: Offset(0, 4),
-              blurRadius: 4,
-              color: Colors.black26,
+      child: contentsModel == null
+          ? Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: const [
+                  BoxShadow(
+                    offset: Offset(0, 4),
+                    blurRadius: 4,
+                    color: Colors.black26,
+                  ),
+                ],
+              ),
+              child: Center(
+                  child: Text(
+                widget.name,
+                style: CretaFont.titleSmall,
+                textAlign: TextAlign.center,
+              )),
+            )
+          : Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [
+                    BoxShadow(
+                      offset: Offset(0, 4),
+                      blurRadius: 4,
+                      color: Colors.black26,
+                    ),
+                  ],
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(_imageName(contentsModel)),
+                  )),
             ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            widget.name,
-            style: CretaFont.titleSmall,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
     );
+  }
+
+  String _imageName(ContentsModel contentsModel) {
+    if (contentsModel.isImage()) return contentsModel.getURI();
+    if (contentsModel.thumbnail == null) return '';
+    return contentsModel.thumbnail!;
   }
 }
