@@ -18,10 +18,6 @@ copy src_modify\tag_editor.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub
 #skpark modify 4/24
 copy src_modify\adaptive_scrollbar.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\adaptive_scrollbar-2.1.2\lib\adaptive_scrollbar.dart  
 
-#skpark modify 5/15
-copy  src_modify\video_player.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\video_player-2.6.1\lib\video_player.dart
-copy src_modify\CustomRadioButton.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\custom_radio_grouped_button-2.2.0\lib\CustomButtons\CustomRadioButton.dart 
-
 #skpark modify 6/29
 #copy src_modify\auto_size_text.daxt    C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\auto_size_text-3.0.0\lib\src\auto_size_text.dart
 
@@ -43,15 +39,13 @@ copy src_modify\weather_bg.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub
 copy src_modify\print_utils.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\flutter_weather_bg_null_safety-1.0.0\lib\utils\print_utils.dart 
 
 #skpark modify 7/7
-copy src_modify\floating_toolbar.daxt           C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\floating_toolbar.dart 
-copy src_modify\editor.daxt                     C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\editor_component\service\editor.dart 
-copy src_modify\keyboard_service_widget.daxt    C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\editor_component\service\keyboard_service_widget.dart 
-
-
+#copy src_modify\floating_toolbar.daxt           C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\floating_toolbar.dart 
+#copy src_modify\editor.daxt                     C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\editor_component\service\editor.dart 
+#copy src_modify\keyboard_service_widget.daxt    C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\editor_component\service\keyboard_service_widget.dart 
 #skpark modify 7/9
-copy src_modify\color_picker.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\color_picker.dart  
-copy src_modify\text_color_toolbar_item.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\text_color_toolbar_item.dart  
-copy src_modify\highlight_color_toolbar_item.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\highlight_color_toolbar_item.dart   
+#copy src_modify\color_picker.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\color_picker.dart  
+#copy src_modify\text_color_toolbar_item.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\text_color_toolbar_item.dart  
+#copy src_modify\highlight_color_toolbar_item.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\highlight_color_toolbar_item.dart   
 
 #skpark modify 7/12
 copy src_modify\color_menu.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\appflowy_editor-1.1.0\lib\src\editor\toolbar\desktop\items\color\color_menu.dart   
@@ -76,3 +70,13 @@ copy src_modify/html_editor_enhanced/summernote-lite.min.cxs c:\Users\seon\AppDa
 
 #nr.han modify 9/18
 copy src_modify\constants.daxt D:\Flutter\src\flutter\packages\flutter\lib\src\material\constants.dart
+
+#seventhstone 23/10/10
+copy src_modify\snowflake_model.daxt c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\snowfall-0.0.2\lib\snowfall\snowflake_model.dart
+copy src_modify\snowfall_pubspec.yaml c:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\snowfall-0.0.2\pubspec.yaml
+
+
+#skpark modify 23/10/10
+copy  src_modify\video_player.daxt  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\video_player-2.7.2\lib\video_player.dart
+copy src_modify\CustomRadioButton.daxt C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\custom_radio_grouped_button-2.2.1\lib\CustomButtons\CustomRadioButton.dart 
+

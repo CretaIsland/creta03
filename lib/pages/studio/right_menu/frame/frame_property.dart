@@ -66,7 +66,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   static bool _isFrameTransOpen = false;
   static bool _isBorderOpen = false;
   static bool _isShadowOpen = false;
-  static bool _isSizeOpen = false;
+  static bool _isSizeOpen = true;
   static bool _isRadiusOpen = false;
 
   static bool _isShapeOpen = false;
@@ -2025,12 +2025,15 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     setState(() {
       widget.model.isOverlay.set(value);
       if (value == false) {
-        FrameManager.overlayFrameMap.remove(widget.model.mid);
+        BookMainPage.removeOverlay(widget.model.mid);
+        print('overlay removed ${BookMainPage.overlayLength()}');
       } else {
-        FrameManager.overlayFrameMap[widget.model.mid] = widget.model;
+        BookMainPage.addOverlay(widget.model);
+        print('overlay added ${BookMainPage.overlayLength()}');
       }
     });
     _sendEvent?.sendEvent(widget.model);
+    BookMainPage.pageManagerHolder!.notify();
   }
 
 /*

@@ -14,7 +14,6 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 //import '../../../../common/creta_utils.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
-import '../../../../data_io/frame_manager.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
@@ -317,7 +316,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         await createNewFrameAndContents(modelList, widget.pageModel);
       },
 
-      stickerList: getStickerList(),
+      stickerList: _getStickerList(),
     );
   }
 
@@ -353,14 +352,20 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     frameManager?.exchangeOrder(aMid, bMid, hint);
   }
 
-  List<Sticker> getStickerList() {
-    List<Sticker> stickerList = _getStickerList();
-    return _getOverLayList(stickerList);
-  }
+  // List<Sticker> getStickerList() {
+  //   List<Sticker> stickerList = _getStickerList();
+  //   return _getOverLayList(stickerList);
+  // }
 
   List<Sticker> _getStickerList() {
     //print('getStickerList()');
     //frameManager!.frameKeyMap.clear();
+
+    // 2023.10.09 overlay frame 을 다른 페이지에도 쓰기 위해  static map  에 넣는 장면이다.
+    // 자기 page 안에 있으면서, Overlay 인 경우에 한한다.  즉  overlay 원본만 넣는다. 사본이
+    // 들어갈 필요는 없기 때문이다.
+    frameManager!.mergeOverlay();
+
     frameManager!.reOrdering();
     return frameManager!.orderMapIterator((e) {
       //_randomIndex += 10;
@@ -378,6 +383,20 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     });
   }
 
+  // List<Sticker> _getOverLayList(List<Sticker> stickerList) {
+  //   List<Sticker> retval = stickerList;
+  //   for (FrameModel model in BookMainPage.overlayList()) {
+  //     // overlay 중에 원본 overlay 는 이미 스티커가 만들어져 있으므로 만들지 않는다.
+  //     if (model.parentMid.value != widget.pageModel.mid) {
+  //       retval.add(_createSticker(model));
+  //       frameManager!.modelList.add(model);
+  //     }
+  //   }
+  //   frameManager!.reOrdering();
+
+  //   return retval;
+  // }
+
   Sticker _createSticker(FrameModel model) {
     double frameWidth = (model.width.value /* + model.shadowSpread.value */) * applyScale;
     double frameHeight = (model.height.value /* + model.shadowSpread.value */) * applyScale;
@@ -386,55 +405,47 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     GlobalKey<StickerState>? stickerKey;
     if (widget.isPrevious == false) {
-      stickerKey = frameManager!.frameKeyMap[model.mid];
+      stickerKey = frameManager!.frameKeyMap['${widget.pageModel.mid}/${model.mid}'];
       if (stickerKey == null) {
         stickerKey = GlobalKey<StickerState>();
-        frameManager!.frameKeyMap[model.mid] = stickerKey;
-        // 2023.10.09 overlay frame 을 다른 페이지에도 쓰기 위해  static map  에 넣는 장면이다.
-        if (model.isOverlay.value == true) {
-          FrameManager.overlayFrameMap[model.mid] = model;
-        }
+        frameManager!.frameKeyMap['${widget.pageModel.mid}/${model.mid}'] = stickerKey;
       }
     } else {
       stickerKey = GlobalKey<StickerState>();
     }
 
-    ContentsManager? contentsManager = frameManager!.getContentsManager(model.mid);
-    if (contentsManager != null) {
-      ContentsModel? contentsModel = contentsManager.getFirstModel();
-      if (contentsModel != null) {
-        if (contentsModel.isAutoFrameOrSide()) {
-          // 자동 프레임사이즈를 결정해 주어야 한다.
-          //print('AutoSizeType.autoFrameSize before $frameHeight');
-          late String uri;
-          late TextStyle style;
-          (style, uri, _) = contentsModel.makeInfo(null, StudioVariables.applyScale, false);
+    // Text Type 의 경우 사이즈 계산을 위해서
+    ContentsModel? contentsModel = frameManager!.getFirstContents(model.mid);
+    if (contentsModel != null && contentsModel.isText()) {
+      if (contentsModel.isAutoFrameOrSide()) {
+        // 자동 프레임사이즈를 결정해 주어야 한다.
+        //print('AutoSizeType.autoFrameSize before $frameHeight');
+        late String uri;
+        late TextStyle style;
+        (style, uri, _) = contentsModel.makeInfo(null, StudioVariables.applyScale, false);
 
-          late double newFrameWidth;
-          late double newFrameHeight;
-          (newFrameWidth, newFrameHeight) = CretaUtils.getTextBoxSize(
-            uri,
-            contentsModel.autoSizeType.value,
-            frameWidth,
-            frameHeight,
-            style,
-            contentsModel.align.value,
-            StudioConst.defaultTextPadding * StudioVariables.applyScale,
-          );
-          //print('AutoSizeType.autoFrameSize after  $frameHeight --> $newFrameHeight ($uri)');
-          //model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
-          model.height.set(newFrameHeight / StudioVariables.applyScale, noUndo: true);
-          frameHeight = newFrameHeight;
-          if (contentsModel.isAutoFrameSize()) {
-            model.width.set(newFrameWidth / StudioVariables.applyScale, noUndo: true);
-            frameWidth = newFrameWidth;
-          }
-          // 바뀐값으로 frameHeight 값을 다시 바꾸어 놓아야 한다.
-          //print('frameHeight changed ${frameHeight / StudioVariables.applyScale}-----');
+        late double newFrameWidth;
+        late double newFrameHeight;
+        (newFrameWidth, newFrameHeight) = CretaUtils.getTextBoxSize(
+          uri,
+          contentsModel.autoSizeType.value,
+          frameWidth,
+          frameHeight,
+          style,
+          contentsModel.align.value,
+          StudioConst.defaultTextPadding * StudioVariables.applyScale,
+        );
+        //print('AutoSizeType.autoFrameSize after  $frameHeight --> $newFrameHeight ($uri)');
+        //model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
+        model.height.set(newFrameHeight / StudioVariables.applyScale, noUndo: true);
+        frameHeight = newFrameHeight;
+        if (contentsModel.isAutoFrameSize()) {
+          model.width.set(newFrameWidth / StudioVariables.applyScale, noUndo: true);
+          frameWidth = newFrameWidth;
         }
+        // 바뀐값으로 frameHeight 값을 다시 바꾸어 놓아야 한다.
+        //print('frameHeight changed ${frameHeight / StudioVariables.applyScale}-----');
       }
-    } else {
-      //print('contentsManager is not founded');
     }
 
     Widget eachFrame = FrameEach(
@@ -450,6 +461,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     return Sticker(
       key: stickerKey,
       model: model,
+      pageMid: widget.pageModel.mid,
       //id: model.mid,
       position: Offset(posX, posY),
       angle: model.angle.value * (pi / 180),
@@ -475,28 +487,6 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
           : eachFrame,
       //),
     );
-  }
-
-  // ignore: unused_element
-  List<Sticker> _getOverLayList(List<Sticker> stickerList) {
-    List<Sticker> retval = [];
-    for (Sticker sticker in stickerList) {
-      FrameModel? model = FrameManager.overlayFrameMap[sticker.id];
-      // overlay 에 있는 것은 그리면 안되기 때문이다.
-      if (model == null) {
-        //print('Stikcer founded (${sticker.id})');
-        retval.add(sticker);
-      }
-    }
-// 오버레이를 뒤에 놔야,  다른 Frame 위로 올라온다.
-    for (FrameModel model in FrameManager.overlayFrameMap.values) {
-      //print('overlay founded (${model.mid})');
-      retval.add(_createSticker(model));
-      frameManager!.modelList.add(model);
-    }
-    frameManager!.reOrdering();
-
-    return retval;
   }
 
   void _setItem(DragUpdate update, String mid) async {
@@ -527,6 +517,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       FrameModel model = item as FrameModel;
       model.isRemoved.set(true);
       await frameManager!.removeChild(model.mid);
+      if (model.isOverlay.value == true) {
+        BookMainPage.removeOverlay(model.mid);
+      }
       return model;
     }
     mychangeStack.endTrans();

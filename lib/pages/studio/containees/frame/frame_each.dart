@@ -199,7 +199,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
     if (widget.model.shouldInsideRotate()) {
       return Transform(
-        key: GlobalObjectKey('Transform${widget.model.mid}'),
+        key: GlobalObjectKey('Transform${widget.pageModel.mid}/${widget.model.mid}'),
         alignment: Alignment.center,
         transform: Matrix4.identity()
           ..scale(1.0)
@@ -265,7 +265,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               (LinkParams.isLinkNewMode == false && StudioVariables.isPreview == false)
                   ? IgnorePointer(
                       child: OnFrameMenu(
-                        key: GlobalObjectKey('OnFrameMenu${widget.model.mid}'),
+                        key: GlobalObjectKey('OnFrameMenu${widget.pageModel.mid}/${widget.model.mid}'),
                         playTimer: _playTimer,
                         model: widget.model,
                       ),
@@ -546,7 +546,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     return ClipRect(
       clipBehavior: Clip.hardEdge,
       child: ContentsMain(
-        key: GlobalObjectKey<ContentsMainState>('ContentsMain${model.mid}'),
+        key: GlobalObjectKey<ContentsMainState>('ContentsMain${widget.pageModel.mid}/${model.mid}'),
         frameModel: model,
         frameOffset: widget.frameOffset,
         pageModel: widget.pageModel,

@@ -94,6 +94,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
       await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!, widget.pageModel.mid);
       logger.info('framManger newly creation end---------------------');
     }
+
     _onceDBGetComplete = true;
   }
 
@@ -107,6 +108,13 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
 
   @override
   Widget build(BuildContext context) {
+    print('PageThumbnail build  ${widget.pageModel.name.value}');
+    // 이 시점에는 FrameManager Overay 에는 없는데,
+    // modelList  에는 있는  frame  을 오히려 제거해 주어야 한다.
+    _frameManager!.eliminateOverlay();
+    print('thumbnail mergeOverlay');
+    _frameManager!.mergeOverlay();
+
     opacity = widget.pageModel.opacity.value;
     bgColor1 = widget.pageModel.bgColor1.value;
     bgColor2 = widget.pageModel.bgColor2.value;
@@ -274,12 +282,13 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                           (model.width.value /* + model.shadowSpread.value */) * applyScale;
                       double frameHeight =
                           (model.height.value /* + model.shadowSpread.value */) * applyScale;
-
+                      // isOverlay   가 있기 때문에, page mid 도 키로 쓰지 않으면 중복된다.
                       Widget frameBox = SizedBox(
                         width: frameWidth,
                         height: frameHeight,
                         child: FrameThumbnail(
-                          key: GlobalObjectKey('FrameThumbnail${frameModel.mid}'),
+                          key: GlobalObjectKey(
+                              'FrameThumbnail${widget.pageModel.mid}/${frameModel.mid}'),
                           model: model,
                           pageModel: widget.pageModel,
                           frameManager: _frameManager!,

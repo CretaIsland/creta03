@@ -28,7 +28,7 @@ extension GlassWidget<T extends Widget> on T {
     return ClipRRect(
       clipper: clipper,
       clipBehavior: clipBehaviour,
-      borderRadius: clipBorderRadius,
+      borderRadius: clipBorderRadius!,
       child: BackdropFilter(
         filter: ImageFilter.blur(
           sigmaX: blurX,
@@ -137,7 +137,7 @@ extension GlassWidget<T extends Widget> on T {
       child: ClipRRect(
         clipper: clipper,
         clipBehavior: clipBehaviour,
-        borderRadius: clipBorderRadius,
+        borderRadius: clipBorderRadius!,
         child: BackdropFilter(
           filter: ImageFilter.blur(
             sigmaX: blurX,

@@ -107,6 +107,8 @@ class PageManager extends CretaManager {
       );
       await initFrameManager(frameManager, ele.mid);
       await frameManager.findOrInitContentsManager();
+
+      frameManager.addOverlay();
     }
     // for (var frameManager in frameManagerList.values.toList()) {
     //   await initFrameManager(frameManager!);
@@ -542,7 +544,7 @@ class PageManager extends CretaManager {
       }
       nodes.add(Node<CretaModel>(
         key: model.mid,
-        keyType: ContaineeEnum.Page,      
+        keyType: ContaineeEnum.Page,
         label: 'Page ${pageNo.toString().padLeft(2, '0')}. $desc',
         data: model,
         expanded: (selectedModel != null && model.mid == selectedModel.mid) || model.expanded,

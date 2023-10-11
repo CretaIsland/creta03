@@ -127,7 +127,7 @@ class ContentsMainState extends State<ContentsMain> {
                           model.contentsType != ContentsType.pdf &&
                           model.contentsType != ContentsType.music)
                         LinkWidget(
-                          key: GlobalObjectKey('LinkWidget${model.mid}'),
+                          key: GlobalObjectKey('LinkWidget${widget.pageModel.mid}/${model.mid}'),
                           applyScale: widget.applyScale,
                           frameManager: widget.frameManager,
                           frameOffset: widget.frameOffset,
