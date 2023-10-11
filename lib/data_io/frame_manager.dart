@@ -132,7 +132,7 @@ class FrameManager extends CretaManager {
       }
     }
     for (FrameModel ele in removeTargetList) {
-      print('remove overlay');
+      //print('remove overlay');
       modelList.remove(ele);
     }
     reOrdering();
