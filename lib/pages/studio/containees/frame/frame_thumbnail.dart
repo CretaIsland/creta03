@@ -103,7 +103,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     //return false;
     //}
     //print('frameThumbnail initChildren(${_contentsManager!.getAvailLength()})');
-    print('frameThumbnail initChildren()');
+    //print('frameThumbnail initChildren()');
     return true;
   }
 
@@ -114,7 +114,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       _anotherFrameManager =
           BookMainPage.pageManagerHolder!.findFrameManager(widget.model.parentMid.value);
       if (_anotherFrameManager != null) {
-        print('another contents founded');
+        //print('another contents founded');
         _contentsManager = _anotherFrameManager!.findContentsManager(widget.model.mid);
       }
     } else {
@@ -173,7 +173,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameDropZone() {
-    print('_frameDropZone...');
+    //print('_frameDropZone...');
     _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!, false);
     if (widget.model.shouldInsideRotate()) {
       // isOrverlay case 가 있기 때문에  page mid 도 key 에 넣어주어야 한다.
@@ -309,7 +309,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     }
 
     if (_contentsManager!.length() == 0) {
-      print('No contents in this frame');
+      //print('No contents in this frame');
       return const SizedBox.shrink();
     }
 

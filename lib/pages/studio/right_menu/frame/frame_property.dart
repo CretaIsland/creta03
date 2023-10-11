@@ -2026,10 +2026,10 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       widget.model.isOverlay.set(value);
       if (value == false) {
         BookMainPage.removeOverlay(widget.model.mid);
-        print('overlay removed ${BookMainPage.overlayLength()}');
+        //print('overlay removed ${BookMainPage.overlayLength()}');
       } else {
         BookMainPage.addOverlay(widget.model);
-        print('overlay added ${BookMainPage.overlayLength()}');
+        //print('overlay added ${BookMainPage.overlayLength()}');
       }
     });
     _sendEvent?.sendEvent(widget.model);
