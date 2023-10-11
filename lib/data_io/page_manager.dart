@@ -107,6 +107,8 @@ class PageManager extends CretaManager {
       );
       await initFrameManager(frameManager, ele.mid);
       await frameManager.findOrInitContentsManager();
+
+      frameManager.addOverlay();
     }
     // for (var frameManager in frameManagerList.values.toList()) {
     //   await initFrameManager(frameManager!);

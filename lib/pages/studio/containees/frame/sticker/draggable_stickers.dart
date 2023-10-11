@@ -172,7 +172,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
               children: [
                 _dragableResizable(sticker, frameModel, isVerticalResiable, isHorizontalResiable),
                 InstantEditor(
-                  key: GlobalObjectKey('InstantEditor${frameModel.mid}'),
+                  key: GlobalObjectKey('InstantEditor${sticker.pageMid}/${frameModel.mid}'),
                   frameModel: frameModel,
                   frameManager: widget.frameManager,
                   onTap: widget.onTap,
@@ -224,6 +224,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       key: GlobalKey(),
       isVerticalResiable: isVerticalResiable,
       isHorizontalResiable: isHorizontalResiable,
+      pageMid: sticker.pageMid,
       mid: sticker.id,
       angle: sticker.angle,
       //position: sticker.position + BookMainPage.pageOffset,
@@ -688,7 +689,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           //     ? const SizedBox.shrink()
           //     :
           MiniMenu(
-        key: GlobalObjectKey('MiniMenu${selectedSticker.id}'),
+        key: GlobalObjectKey('MiniMenu${selectedSticker.pageMid}/${selectedSticker.id}'),
         contentsManager: contentsManager,
         frameManager: frameManager,
         sticker: selectedSticker,

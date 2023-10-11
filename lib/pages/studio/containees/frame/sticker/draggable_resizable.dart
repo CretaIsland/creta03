@@ -50,6 +50,7 @@ class DraggableResizable extends StatefulWidget {
   DraggableResizable({
     Key? key,
     required this.mid,
+    required this.pageMid,
     required this.child,
     required this.size,
     required this.position,
@@ -99,6 +100,7 @@ class DraggableResizable extends StatefulWidget {
 
   /// The child's original size.
   final String mid;
+  final String pageMid;
   final Size size;
   final Offset position;
   final double angle;
@@ -511,7 +513,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
               decoratedChild,
               if (!StudioVariables.isPreview)
                 SelectedBox(
-                  key: GlobalObjectKey('SelectedBox-$widget.mid}'),
+                  key: GlobalObjectKey('SelectedBox-${widget.pageMid}/$widget.mid}'),
                   isResiable: widget.isResiable,
                   isVerticalResiable: widget.isVerticalResiable,
                   isHorizontalResiable: widget.isHorizontalResiable,

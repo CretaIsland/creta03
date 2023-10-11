@@ -53,14 +53,6 @@ class FrameManager extends CretaManager {
   // }
 
   //Map<String, ValueKey> frameKeyMap = {};
-  static final Map<String, FrameModel> _overlayFrameMap = {};
-  static FrameModel? findOverlay(String id) => _overlayFrameMap[id];
-  static void removeOverlay(String id) => _overlayFrameMap.remove(id);
-  static List<FrameModel> overlayList() => _overlayFrameMap.values.toList();
-  static int overlayLength() => _overlayFrameMap.length;
-  static void addOverlay(FrameModel model) {
-    _overlayFrameMap[model.mid] = model;
-  }
 
   // ignore: prefer_final_fields
   Map<String, GlobalKey<StickerState>> _frameKeyMap = {};
@@ -106,12 +98,21 @@ class FrameManager extends CretaManager {
   @override
   void remove(CretaModel removedItem) {
     //print('remove frame ${removedItem.mid}');
-    FrameManager.removeOverlay(removedItem.mid);
+    BookMainPage.removeOverlay(removedItem.mid);
     super.remove(removedItem);
   }
 
+  void addOverlay() {
+    orderMapIterator((e) {
+      FrameModel model = e as FrameModel;
+      if (model.isOverlay.value == true && model.parentMid.value == pageModel.mid) {
+        BookMainPage.addOverlay(model);
+      }
+    });
+  }
+
   void mergeOverlay() {
-    for (var ele in FrameManager.overlayList()) {
+    for (var ele in BookMainPage.overlayList()) {
       // 모델리스트에 없으면 modelList 에 넣는다.
       if (getModel(ele.mid) == null) {
         modelList.add(ele);
@@ -125,7 +126,7 @@ class FrameManager extends CretaManager {
     for (var ele in modelList) {
       FrameModel model = ele as FrameModel;
       if (model.parentMid.value != pageModel.mid) {
-        if (FrameManager.findOverlay(model.mid) == null) {
+        if (BookMainPage.findOverlay(model.mid) == null) {
           removeTargetList.add(model);
         }
       }
@@ -486,7 +487,7 @@ class FrameManager extends CretaManager {
     FrameModel? retval;
     reverseMapIterator((model) {
       FrameModel frame = model as FrameModel;
-      GlobalKey? stickerKey = frameKeyMap[frame.mid];
+      GlobalKey? stickerKey = frameKeyMap['${pageModel.mid}/${frame.mid}'];
       if (stickerKey == null) {
         return null;
       }
@@ -562,7 +563,7 @@ class FrameManager extends CretaManager {
   }
 
   void refreshFrame(String mid) {
-    GlobalKey<StickerState>? frameKey = frameKeyMap[mid];
+    GlobalKey<StickerState>? frameKey = frameKeyMap['${pageModel.mid}/$mid'];
     if (frameKey == null) return;
     frameKey.currentState!.refresh();
   }
@@ -596,7 +597,8 @@ class FrameManager extends CretaManager {
 
   bool clickedInsideSelectedFrame(Offset position) {
     if (DraggableStickers.frameSelectNotifier == null) return false;
-    GlobalKey? key = frameKeyMap[DraggableStickers.frameSelectNotifier!.selectedAssetId];
+    GlobalKey? key =
+        frameKeyMap['${pageModel.mid}/${DraggableStickers.frameSelectNotifier!.selectedAssetId}'];
     if (key == null) {
       //print(' key is null , ${DraggableStickers.frameSelectNotifier!.selectedAssetId}');
       return false;

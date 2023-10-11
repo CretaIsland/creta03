@@ -191,6 +191,7 @@ class Sticker extends StatefulWidget {
   late double borderWidth;
   late bool isMain;
   final FrameModel model;
+  final String pageMid;
 
   Sticker({
     Key? key,
@@ -201,6 +202,7 @@ class Sticker extends StatefulWidget {
     required this.borderWidth,
     required this.isMain,
     required this.model,
+    required this.pageMid,
     this.isText,
     this.child,
   }) : super(key: key);

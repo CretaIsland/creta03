@@ -95,14 +95,6 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
       logger.info('framManger newly creation end---------------------');
     }
 
-    _frameManager!.orderMapIterator((value) {
-      FrameModel model = value as FrameModel;
-      if (model.isOverlay.value == true) {
-        FrameManager.addOverlay(model);
-      }
-    });
-    _frameManager!.mergeOverlay();
-
     _onceDBGetComplete = true;
   }
 
@@ -116,10 +108,12 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
 
   @override
   Widget build(BuildContext context) {
-    print('PageThumbnail build');
+    print('PageThumbnail build  ${widget.pageModel.name.value}');
     // 이 시점에는 FrameManager Overay 에는 없는데,
     // modelList  에는 있는  frame  을 오히려 제거해 주어야 한다.
     _frameManager!.eliminateOverlay();
+    print('thumbnail mergeOverlay');
+    _frameManager!.mergeOverlay();
 
     opacity = widget.pageModel.opacity.value;
     bgColor1 = widget.pageModel.bgColor1.value;

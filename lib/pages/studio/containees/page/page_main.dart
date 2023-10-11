@@ -127,7 +127,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     return Stack(
       children: [
         _build(context),
-        TopMenuTracer(frameManager: frameManager,),
+        TopMenuTracer(
+          frameManager: frameManager,
+        ),
       ],
     );
   }
@@ -515,7 +517,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
         ...linkList,
         ...linkManager.orderMapIterator((ele) {
           LinkModel model = ele as LinkModel;
-          model.stickerKey = manager.frameKeyMap[model.connectedMid];
+          model.stickerKey = manager.frameKeyMap['${widget.pageModel.mid}/${model.connectedMid}'];
           return model;
         }).toList()
       ];

@@ -97,6 +97,16 @@ class BookMainPage extends StatefulWidget {
   static GlobalKey leftMenuKey = GlobalObjectKey('LeftMenu');
   static GlobalKey rightMenuKey = GlobalObjectKey('RightMenu');
 
+  static final Map<String, FrameModel> _overlayFrameMap = {};
+  static void clearOverlay() => _overlayFrameMap.clear();
+  static FrameModel? findOverlay(String id) => _overlayFrameMap[id];
+  static void removeOverlay(String id) => _overlayFrameMap.remove(id);
+  static List<FrameModel> overlayList() => _overlayFrameMap.values.toList();
+  static int overlayLength() => _overlayFrameMap.length;
+  static void addOverlay(FrameModel model) {
+    _overlayFrameMap[model.mid] = model;
+  }
+
   BookMainPage({
     required this.bookKey,
     this.isPreviewX = false,
@@ -156,6 +166,8 @@ class _BookMainPageState extends State<BookMainPage> {
     // _linkSendEvent = linkSendEvent;
     // final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
     // _autoPlaySendEvent = autoPlaySendEvent;
+    BookMainPage.clearOverlay();
+
     CretaAccountManager.initUserProperty();
 
     BookPreviewMenu.previewMenuPressed = false;
