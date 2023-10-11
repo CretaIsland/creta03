@@ -928,7 +928,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     // );
   }
 
-  // Wdiget _eachCorner()
+  // Widget _eachCorner()
   // {
   //   return  child: SizedBox(
   //                 width: 97,
@@ -1060,7 +1060,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         hasRemoveButton: widget.model.nextContentTypes.value != NextContentTypes.none,
         onDelete: () {
           setState(() {
-            widget.model.nextContentTypes.set( NextContentTypes.none);
+            widget.model.nextContentTypes.set(NextContentTypes.none);
           });
           _sendEvent!.sendEvent(widget.model);
         },
@@ -1086,13 +1086,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               name: CretaStudioLang.nextContentTypes[i],
               selectedType: _isTypeSelected(i, widget.model.nextContentTypes.value),
               onTypeSelected: () {
-                print('11111111111111');
-                setState(() {
-                  //_selectedType = NextContentTypes.values[i];
-                });
-                print('2222222222222');
+                setState(() {});
                 _sendEvent!.sendEvent(widget.model);
-                print('3333333333');
               },
             )
         ],

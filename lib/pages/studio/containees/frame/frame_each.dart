@@ -2,6 +2,7 @@
 
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
+import 'package:creta03/pages/studio/right_menu/frame/trans_example_box.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -265,7 +266,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               (LinkParams.isLinkNewMode == false && StudioVariables.isPreview == false)
                   ? IgnorePointer(
                       child: OnFrameMenu(
-                        key: GlobalObjectKey('OnFrameMenu${widget.pageModel.mid}/${widget.model.mid}'),
+                        key: GlobalObjectKey(
+                            'OnFrameMenu${widget.pageModel.mid}/${widget.model.mid}'),
                         playTimer: _playTimer,
                         model: widget.model,
                       ),
@@ -528,6 +530,18 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         context,
         StudioVariables.applyScale,
         false,
+      );
+    }
+    if (model.nextContentTypes.value != NextContentTypes.none) {
+      return TransExampleBox(
+        width: widget.width,
+        height: widget.height,
+        frameManager: frameManager!,
+        model: model,
+        nextContentTypes: widget.model.nextContentTypes.value,
+        name: '',
+        selectedType: false,
+        onTypeSelected: () {},
       );
     }
     if (model.isStickerType()) {

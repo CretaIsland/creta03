@@ -11,6 +11,8 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 
 class TransExampleBox extends StatefulWidget {
+  final double? width;
+  final double? height;
   final FrameModel model;
   final NextContentTypes nextContentTypes;
   final String name;
@@ -19,6 +21,8 @@ class TransExampleBox extends StatefulWidget {
   final Function onTypeSelected;
   const TransExampleBox({
     super.key,
+    this.width,
+    this.height,
     required this.frameManager,
     required this.model,
     required this.nextContentTypes,
@@ -95,9 +99,8 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
   }
 
   Widget selectWidget() {
-    return Container(
+    return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4.0),
-      width: 148.0,
       child: PageView.builder(
           itemCount: _length,
           physics: const ClampingScrollPhysics(),
