@@ -46,31 +46,13 @@ class _TransitionTypesState extends State<TransitionTypes> with ExampleBoxStateM
       _currentPage = 0;
     } else {
       _currentPage = _contentsManager!.modelList.length ~/ 2;
-      if (_contentsManager!.modelList.length > 3) {
+      if (_contentsManager!.modelList.length >= 3) {
         _length = _contentsManager!.modelList.length;
         _emptyCarousel = false;
       }
     }
     _pageController = PageController(initialPage: _currentPage, viewportFraction: 0.7);
     super.initState();
-  }
-
-  void showAnnouceDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Announcement'),
-            content: const Text('Please have at least 3 images to use the carousel display.'),
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'))
-            ],
-          );
-        });
   }
 
   @override
@@ -81,9 +63,6 @@ class _TransitionTypesState extends State<TransitionTypes> with ExampleBoxStateM
 
   @override
   Widget build(BuildContext context) {
-    if (_length < 3) {
-      showAnnouceDialog(context);
-    }
     return selectWidget();
   }
 

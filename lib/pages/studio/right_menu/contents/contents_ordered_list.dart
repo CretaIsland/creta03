@@ -502,7 +502,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               }
             });
             // if (widget.contentsManager.getShowLength() == 1) {
-            //   // 원래 둘이었는데 하나가 되었다.
+            //   원래 둘이었는데 하나가 되었다.
             //   widget.contentsManager.notify();
             // }
           },

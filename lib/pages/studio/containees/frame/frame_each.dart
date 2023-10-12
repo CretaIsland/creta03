@@ -2,7 +2,6 @@
 
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
-import 'package:creta03/pages/studio/right_menu/frame/trans_example_box.dart';
 import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';

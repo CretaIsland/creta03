@@ -1,14 +1,11 @@
 // import 'dart:math';
 
+import 'package:creta03/data_io/contents_manager.dart';
 import 'package:creta03/design_system/component/example_box_mixin.dart';
 import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:flutter/material.dart';
-
-// import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-// import '../../../../design_system/creta_font.dart';
 import '../../../../model/app_enums.dart';
-// import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 
 class TransExampleBox extends StatefulWidget {
@@ -33,10 +30,22 @@ class TransExampleBox extends StatefulWidget {
 }
 
 class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateMixin {
+  ContentsManager? _contentsManager;
+
+  @override
+  void initState() {
+    super.initState();
+    _contentsManager = widget.frameManager.getContentsManager(widget.model.mid);
+  }
+
   void onSelected() {
-    setState(() {
-      widget.model.nextContentTypes.set(widget.nextContentTypes);
-    });
+    if (_contentsManager!.modelList.length < 3) {
+      showAnnouceDialog(context);
+    } else {
+      setState(() {
+        widget.model.nextContentTypes.set(widget.nextContentTypes);
+      });
+    }
     widget.onTypeSelected.call();
   }
 
@@ -49,6 +58,34 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
 
   void rebuild() {
     setState(() {});
+  }
+
+  void showAnnouceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          content: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text('캐러셀 디스플레이를 적용하려면 최소 3개의 이미지가 있어야 합니다.'),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0))),
+                child: const Text('확인'),
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
