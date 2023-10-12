@@ -33,7 +33,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
   @override
   Widget build(BuildContext context) {
     return Consumer<TopMenuNotifier>(builder: (context, topMenuNotifier, child) {
-      if (topMenuNotifier.isNormal()) {
+      if (topMenuNotifier.isNormalCreate()) {
         return const SizedBox.shrink();
       }
       return Center(
@@ -73,7 +73,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
   }
 
   Widget _traceMark() {
-    if (BookMainPage.topMenuNotifier!.isText()) {
+    if (BookMainPage.topMenuNotifier!.isTextCreate()) {
       Offset pos = Offset(
         (_hoverPos!.dx - LayoutConst.topMenuCursorSize > 0
             ? _hoverPos!.dx - LayoutConst.topMenuCursorSize
@@ -92,7 +92,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
         ),
       );
     }
-    if (BookMainPage.topMenuNotifier!.isFrame()) {
+    if (BookMainPage.topMenuNotifier!.isFrameCreate()) {
       Offset center = Offset(
         (LayoutConst.defaultFrameSize.width / 2) * StudioVariables.applyScale,
         (LayoutConst.defaultFrameSize.height / 2) * StudioVariables.applyScale,
@@ -114,7 +114,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
   Future<void> _pageClicked(LongPressDownDetails details) async {
     if (_isHover == false) return;
 
-    if (BookMainPage.topMenuNotifier!.isText()) {
+    if (BookMainPage.topMenuNotifier!.isTextCreate()) {
       // create text box here
       //print('createTextBox');
       StudioVariables.isHandToolMode = false;
@@ -123,7 +123,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
       BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
       BookMainPage.containeeNotifier!.setFrameClick(true); //  바탕페이지가 눌리는 것을 막기위해
       return;
-    } else if (BookMainPage.topMenuNotifier!.isFrame()) {
+    } else if (BookMainPage.topMenuNotifier!.isFrameCreate()) {
       // create frame box here
       //print('createFrame');
       Offset center = Offset(

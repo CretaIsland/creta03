@@ -1,6 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
-import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:provider/provider.dart';
@@ -53,7 +52,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   bool _isShowBorder = false;
 
   ContentsManager? _contentsManager;
-  FrameManager? _anotherFrameManager;
+  //FrameManager? _anotherFrameManager;
 
   Future<bool>? _isInitialized;
   //final bool _isHover = false;
@@ -108,23 +107,24 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   void _initContentsManager() {
-    if (widget.model.isOverlay.value == true) {
-      //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
-      // 해당 프레임을 찾아야 한다.
-      _anotherFrameManager =
-          BookMainPage.pageManagerHolder!.findFrameManager(widget.model.parentMid.value);
-      if (_anotherFrameManager != null) {
-        //print('another contents founded');
-        _contentsManager = _anotherFrameManager!.findContentsManager(widget.model.mid);
-      }
-    } else {
-      _contentsManager = frameManager!.findContentsManager(widget.model.mid);
-    }
+    _contentsManager = frameManager!.findContentsManager(widget.model);
+    // if (widget.model.isOverlay.value == true) {
+    //   //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
+    //   // 해당 프레임을 찾아야 한다.
+    //   _anotherFrameManager =
+    //       BookMainPage.pageManagerHolder!.findFrameManager(widget.model.parentMid.value);
+    //   if (_anotherFrameManager != null) {
+    //     //print('another contents founded');
+    //     _contentsManager = _anotherFrameManager!.findContentsManager(widget.model);
+    //   }
+    // } else {
+    //   _contentsManager = frameManager!.findContentsManager(widget.model);
+    // }
 
-    if (_contentsManager == null) {
-      _contentsManager = frameManager!.newContentsManager(widget.model);
-      _contentsManager!.clearAll();
-    }
+    // if (_contentsManager == null) {
+    //   _contentsManager = frameManager!.newContentsManager(widget.model);
+    //   _contentsManager!.clearAll();
+    // }
   }
 
   @override

@@ -60,6 +60,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   // ignore: unused_field
   FrameEventController? _receiveEvent;
   FrameEventController? _sendEvent;
+  FrameEachEventController? _showOrderSendEvent;
 
   //final Offset _pageOffset = Offset.zero;
 
@@ -73,6 +74,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     final FrameEventController sendEvent = Get.find(tag: 'frame-main-to-property');
     _receiveEvent = receiveEvent;
     _sendEvent = sendEvent;
+
+    final FrameEachEventController showOrderSendEvent = Get.find(tag: 'to-FrameEach');
+    _showOrderSendEvent = showOrderSendEvent;
 
     // final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkReceiveEvent = linkReceiveEvent;
@@ -103,13 +107,15 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
-    initFrameManager();
+    //print('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
+    setFrameManager(null);
+
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data is FrameModel) {
             FrameModel model = snapshot.data! as FrameModel;
-            //print('_receiveEvent = ${model.height.value * StudioVariables.applyScale}');
+            setFrameManager(model);
             frameManager!.updateModel(model);
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());
@@ -307,9 +313,12 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         }
       },
       onFrontBackHover: (hover) {
-        setState(() {
-          DraggableStickers.isFrontBackHover = hover;
-        });
+        //  여기서 setState 를 하지말고, 정확하게 이벤트를 날려서,
+        //  order 만 화면에 표시하는 부분에 정확하게 이벤트를 날리는 것으로 바꿔서 효율을 높인다.
+        //setState(() {
+        DraggableStickers.isFrontBackHover = hover;
+        _showOrderSendEvent!.sendEvent(true);
+        //});
       },
       onDropPage: (modelList) async {
         logger.info('onDropPage(${modelList.length})');
@@ -361,18 +370,14 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     //print('getStickerList()');
     //frameManager!.frameKeyMap.clear();
 
-    // 2023.10.09 overlay frame 을 다른 페이지에도 쓰기 위해  static map  에 넣는 장면이다.
-    // 자기 page 안에 있으면서, Overlay 인 경우에 한한다.  즉  overlay 원본만 넣는다. 사본이
-    // 들어갈 필요는 없기 때문이다.
+    frameManager!.eliminateOverlay();
     frameManager!.mergeOverlay();
 
     frameManager!.reOrdering();
+
     return frameManager!.orderMapIterator((e) {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
-
-      logger.fine('applyScale = $applyScale');
-
       BookMainPage.clickEventHandler.subscribeList(
         model.eventReceive.value,
         model,
@@ -460,6 +465,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     return Sticker(
       key: stickerKey,
+      isOverlay: model.isOverlay.value,
       model: model,
       pageMid: widget.pageModel.mid,
       //id: model.mid,

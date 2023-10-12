@@ -192,6 +192,7 @@ class Sticker extends StatefulWidget {
   late bool isMain;
   final FrameModel model;
   final String pageMid;
+  final bool isOverlay;
 
   Sticker({
     Key? key,
@@ -203,6 +204,7 @@ class Sticker extends StatefulWidget {
     required this.isMain,
     required this.model,
     required this.pageMid,
+    required this.isOverlay,
     this.isText,
     this.child,
   }) : super(key: key);

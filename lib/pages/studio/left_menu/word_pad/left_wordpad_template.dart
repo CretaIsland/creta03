@@ -48,7 +48,7 @@ class _LeftWordPadTemplate extends State<LeftWordPadTemplate>
 
   @override
   Widget build(BuildContext context) {
-    initFrameManager();
+    setFrameManager(null);
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.only(bottom: 12),

@@ -92,6 +92,7 @@ class CretaButton extends StatefulWidget {
   final CretaButtonSidePadding? sidePadding;
 
   final void Function(bool)? onHover;
+  final bool noHoverEffect; // 호버 진입 이벤트를 없앤다.
 
   final bool useTapUp;
 
@@ -121,6 +122,7 @@ class CretaButton extends StatefulWidget {
     this.sidePadding,
     this.onHover,
     this.useTapUp = false,
+    this.noHoverEffect = false,
     Key? key,
   }) : super(key: key) {
     _setColor();
@@ -314,12 +316,37 @@ class _CretaButtonState extends State<CretaButton> {
         bgColor: widget.tooltipBg ?? (widget.bgColor ?? Colors.grey[700]!),
         tooltip: widget.tooltip!,
         child: _myButton(),
+        onShow: () {
+          widget.onHover?.call(true);
+        },
+        // onDismiss: () {
+        //   widget.onHover?.call(false);
+        // },
       );
     }
     return _myButton();
   }
 
   Widget _myButton() {
+    Widget childWidget = SizedBox(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transformAlignment: AlignmentDirectional.center,
+        transform: Matrix4.identity()..scale(_getScale()),
+        decoration: _getDeco(),
+        width: widget.width ?? _getWidth(),
+        height: widget.height ?? _getHeight(),
+        clipBehavior: Clip.antiAlias,
+        //child: Center(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(
+              widget.sidePadding?.left ?? 0, 0, widget.sidePadding?.right ?? 0, 0),
+          child: _getChild(),
+        ),
+        //),
+      ),
+    );
+
     return GestureDetector(
       onLongPressDown: (details) {
         if (widget.useTapUp == false) {
@@ -372,7 +399,10 @@ class _CretaButtonState extends State<CretaButton> {
           setState(() {
             //print('hover is true');
             hover = true;
-            widget.onHover?.call(hover);
+            if (widget.noHoverEffect == false) {
+              // noHoverEffect 의 경우, hover 진입이벤트만 사용하지 않게된다.
+              widget.onHover?.call(hover);
+            }
           });
         },
         // child: Transform.scale(
@@ -386,24 +416,7 @@ class _CretaButtonState extends State<CretaButton> {
         //     ),
         //   ),
         // )
-        child: SizedBox(
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            transformAlignment: AlignmentDirectional.center,
-            transform: Matrix4.identity()..scale(_getScale()),
-            decoration: _getDeco(),
-            width: widget.width ?? _getWidth(),
-            height: widget.height ?? _getHeight(),
-            clipBehavior: Clip.antiAlias,
-            //child: Center(
-            child: Container(
-              margin: EdgeInsets.fromLTRB(
-                  widget.sidePadding?.left ?? 0, 0, widget.sidePadding?.right ?? 0, 0),
-              child: _getChild(),
-            ),
-            //),
-          ),
-        ),
+        child: childWidget,
       ),
     );
   }

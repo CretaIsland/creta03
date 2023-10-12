@@ -65,7 +65,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   bool _isShowBorder = false;
 
   //OffsetEventController? _linkSendEvent;
-  AutoPlayChangeEventController? _linkReceiveEvent;
+  FrameEachEventController? _linkReceiveEvent;
   //bool _isLinkEnter = false;
 
   @override
@@ -82,7 +82,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
     // final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkSendEvent = sendEvent;
-    final AutoPlayChangeEventController linkReceiveEvent = Get.find(tag: 'auto-play-to-frame');
+    final FrameEachEventController linkReceiveEvent = Get.find(tag: 'to-FrameEach');
     _linkReceiveEvent = linkReceiveEvent;
   }
 
@@ -92,19 +92,23 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (frameManager == null) {
       logger.severe('frame manager is null');
     }
-    _contentsManager = frameManager!.findContentsManager(widget.model.mid);
-    if (_contentsManager == null) {
-      //logger.info('new ContentsManager created (${widget.model.mid})');
-      _contentsManager = frameManager!.newContentsManager(widget.model);
-      _contentsManager!.clearAll();
-    } else {
-      //logger.info('old ContentsManager used (${widget.model.mid})');
-    }
+    //print('pageModel=${widget.pageModel.mid}');
+    //print('model.par=${widget.model.parentMid.value}');
+    //print('model.isO=${widget.model.isOverlay.value}');
+    _contentsManager = frameManager!.findContentsManager(widget.model);
+    // if (_contentsManager == null) {
+    //   //logger.info('new ContentsManager created (${widget.model.mid})');
+    //   _contentsManager = frameManager!.newContentsManager(widget.model);
+    //   _contentsManager!.clearAll();
+    // } else {
+    //   //logger.info('old ContentsManager used (${widget.model.mid})');
+    // }
     if (_playTimer == null) {
       _playTimer = CretaPlayTimer(_contentsManager!, widget.frameManager);
       _contentsManager!.setPlayerHandler(_playTimer!);
     }
     if (_contentsManager!.onceDBGetComplete == false) {
+      //print('contentsManager getContents');
       await _contentsManager!.getContents();
       _contentsManager!.addRealTimeListen(widget.model.mid);
       _contentsManager!.reOrdering();

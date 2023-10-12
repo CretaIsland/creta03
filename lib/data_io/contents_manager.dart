@@ -85,6 +85,15 @@ class ContentsManager extends CretaManager {
     return (getAvailLength() > 0);
   }
 
+  Future<void> initContentsManager(String frameMid) async {
+    if (onceDBGetComplete == false) {
+      await getContents();
+      addRealTimeListen(frameMid);
+      reOrdering();
+    }
+    logger.info('$frameMid=initChildren(${getAvailLength()})');
+  }
+
   ContentsModel? getCurrentModel() {
     if (playTimer == null) {
       return null;
@@ -550,11 +559,11 @@ class ContentsManager extends CretaManager {
   }
 
   List<CretaModel> valueList() {
-    return valueEntries().toList().reversed.toList();
+    return orderValues().toList().reversed.toList();
   }
 
   List<double> keyList() {
-    return keyEntries().toList().reversed.toList();
+    return orderKeys().toList().reversed.toList();
   }
 
   bool isVisible(ContentsModel model) {
@@ -578,7 +587,7 @@ class ContentsManager extends CretaManager {
   @override
   double lastOrder() {
     if (isNotEmpty()) {
-      double lastOrder = keyEntries().last;
+      double lastOrder = orderKeys().last;
       ContentsModel? model = getNthOrder(lastOrder) as ContentsModel?;
       if (isVisible(model!) == true) {
         return lastOrder;
@@ -598,7 +607,6 @@ class ContentsManager extends CretaManager {
     return retval;
   }
 
-  @override
   double nextOrder(double currentOrder, {bool alwaysOneExist = false}) {
     int counter = 0;
     int len = getAvailLength();
@@ -628,7 +636,7 @@ class ContentsManager extends CretaManager {
   double _nextOrder(double currentOrder) {
     bool matched = false;
 
-    Iterable<double> keys = keyEntries().toList().reversed;
+    Iterable<double> keys = orderKeys().toList().reversed;
 
     for (double ele in keys) {
       if (matched == true) {
@@ -649,7 +657,7 @@ class ContentsManager extends CretaManager {
   double nextOrderNoLoop(double currentOrder) {
     bool matched = false;
 
-    Iterable<double> keys = keyEntries().toList().reversed;
+    Iterable<double> keys = orderKeys().toList().reversed;
 
     for (double ele in keys) {
       if (matched == true) {
@@ -663,7 +671,6 @@ class ContentsManager extends CretaManager {
     return -1;
   }
 
-  @override
   double prevOrder(double currentOrder) {
     int counter = 0;
     int len = getAvailLength();
@@ -689,7 +696,7 @@ class ContentsManager extends CretaManager {
 
   double _prevOrder(double currentOrder) {
     bool matched = false;
-    late Iterable<double> keys = keyEntries();
+    late Iterable<double> keys = orderKeys();
     for (double ele in keys) {
       if (matched == true) {
         return ele;
@@ -707,7 +714,7 @@ class ContentsManager extends CretaManager {
 
   double prevOrderNoLoop(double currentOrder) {
     bool matched = false;
-    late Iterable<double> keys = keyEntries();
+    late Iterable<double> keys = orderKeys();
 
     for (double ele in keys) {
       if (matched == true) {
@@ -835,8 +842,8 @@ class ContentsManager extends CretaManager {
     void Function(ContentsModel)? onUploadComplete,
   }) async {
     // 콘텐츠 매니저를 생성한다.
-    ContentsManager? contentsManager = frameManager!.findContentsManager(frameModel.mid);
-    contentsManager ??= frameManager.newContentsManager(frameModel);
+    ContentsManager contentsManager = frameManager!.findContentsManager(frameModel);
+    //contentsManager ??= frameManager.newContentsManager(frameModel);
 
     //int counter = contentsModelList.length;
 
@@ -881,7 +888,7 @@ class ContentsManager extends CretaManager {
               debugPrint(
                   '-----------Dropping song named ${currentModel.name} with remoteUrl ${currentModel.remoteUrl}');
 
-              String mid = contentsManager!.frameModel.mid;
+              String mid = contentsManager.frameModel.mid;
               // debugPrint('--1-- frameModel.mid ${frameModel.mid}-----');
               GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[mid];
               // debugPrint('--2-- musicKey $musicKey-----');

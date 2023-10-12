@@ -864,10 +864,10 @@ class CretaUtils {
 
   // 커서모양을 정해주는 함수
   static MouseCursor getCursorShape() {
-    if (BookMainPage.topMenuNotifier!.isText()) {
+    if (BookMainPage.topMenuNotifier!.isTextCreate()) {
       return SystemMouseCursors.text;
     }
-    if (BookMainPage.topMenuNotifier!.isFrame()) {
+    if (BookMainPage.topMenuNotifier!.isFrameCreate()) {
       return SystemMouseCursors.cell;
     }
     return SystemMouseCursors.basic;

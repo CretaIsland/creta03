@@ -119,12 +119,23 @@ class FrameManager extends CretaManager {
       }
     }
     reOrdering();
+    //print('page: ${pageModel.name.value}------------------------------------------------');
+    // for (var ele in modelList) {
+    //   if (ele.isRemoved.value == false) {
+    //     FrameModel model = ele as FrameModel;
+    //     print(
+    //         'order=${model.order.value},${model.name.value},isShow=${model.isShow.value},isOverlay=${model.isOverlay.value}');
+    //     print('   ${model.mid}');
+    //   }
+    // }
   }
 
   void eliminateOverlay() {
     List<FrameModel> removeTargetList = [];
     for (var ele in modelList) {
       FrameModel model = ele as FrameModel;
+      //if (model.isOverlay.value == true && model.parentMid.value != pageModel.mid) {
+      // 이미 오버레이는 해제된 상태이므로  overlay 를 검사하면 안된다.
       if (model.parentMid.value != pageModel.mid) {
         if (BookMainPage.findOverlay(model.mid) == null) {
           removeTargetList.add(model);
@@ -132,7 +143,7 @@ class FrameManager extends CretaManager {
       }
     }
     for (FrameModel ele in removeTargetList) {
-      //print('remove overlay');
+      //print('remove overlay ${ele.name.value}');
       modelList.remove(ele);
     }
     reOrdering();
@@ -229,11 +240,11 @@ class FrameManager extends CretaManager {
     newModel.isRemoved.set(false, save: false, noUndo: true);
 
     if (srcFrameManager != null && samePage == false) {
-      ContentsManager? contentsManager = srcFrameManager.findContentsManager(src.mid);
-      await contentsManager?.copyContents(newModel.mid, bookModel.mid, samePage: samePage);
+      ContentsManager contentsManager = srcFrameManager.findContentsManager(src);
+      await contentsManager.copyContents(newModel.mid, bookModel.mid, samePage: samePage);
     } else {
-      ContentsManager? contentsManager = findContentsManager(src.mid);
-      await contentsManager?.copyContents(newModel.mid, bookModel.mid);
+      ContentsManager? contentsManager = findContentsManager(src);
+      await contentsManager.copyContents(newModel.mid, bookModel.mid);
     }
     await createToDB(newModel);
     insert(newModel, postion: getLength());
@@ -252,8 +263,8 @@ class FrameManager extends CretaManager {
       newModel.order.set(order++, save: false, noUndo: true);
       logger.info('create new FrameModel ${newModel.name},${newModel.mid}');
 
-      ContentsManager? contentsManager = findContentsManager(org.mid);
-      await contentsManager?.copyContents(newModel.mid, bookMid, samePage: samePage);
+      ContentsManager contentsManager = findContentsManager(org);
+      await contentsManager.copyContents(newModel.mid, bookMid, samePage: samePage);
 
       await createToDB(newModel);
     }
@@ -307,9 +318,42 @@ class FrameManager extends CretaManager {
     return retval;
   }
 
-  ContentsManager? findContentsManager(String frameModelMid) {
-    logger.fine('findContentsManager(${pageModel.width.value}, ${pageModel.height.value})*******');
+  ContentsManager? findContentsManagerByMid(String frameModelMid) {
+    logger.fine(
+        'findContentsManagerByMid(${pageModel.width.value}, ${pageModel.height.value})*******');
     return contentsManagerMap[frameModelMid];
+  }
+
+  ContentsManager findContentsManager(FrameModel frameModel) {
+    ContentsManager? retval;
+    if (frameModel.isOverlay.value == true && pageModel.mid != frameModel.parentMid.value) {
+      //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
+      // 해당 프레임을 찾아야 한다.
+      FrameManager? anotherFrameManager =
+          BookMainPage.pageManagerHolder!.findFrameManager(frameModel.parentMid.value);
+      if (anotherFrameManager != null) {
+        //print('anotherFrameManager is founded ${frameModel.parentMid.value}');
+        retval = anotherFrameManager.findContentsManagerByMid(frameModel.mid);
+        if (retval == null) {
+          //print('anotherFrameManager.frameManager not founded ${frameModel.mid}, create here');
+          // 여기서 ContentsManagerMap  에 등록된다.
+          retval = anotherFrameManager.newContentsManager(frameModel);
+          retval.clearAll();
+        }
+      } else {
+        //print(
+        //    'something wrong !!!! anotherFrameManager is not founded ${frameModel.parentMid.value}');
+      }
+    } else {
+      retval = findContentsManagerByMid(frameModel.mid);
+      if (retval == null) {
+        // 여기서 ContentsManagerMap  에 등록된다.
+        retval = newContentsManager(frameModel);
+        retval.clearAll();
+      }
+    }
+
+    return retval!;
   }
 
   ContentsModel? getCurrentModel(String frameMid) {
@@ -441,28 +485,21 @@ class FrameManager extends CretaManager {
         continue;
       }
       FrameModel frameModel = ele as FrameModel;
-      ContentsManager? contentsManager = findContentsManager(frameModel.mid);
-      if (contentsManager == null) {
-        //logger.info('new ContentsManager created (${frameModel.mid})');
-        contentsManager = newContentsManager(frameModel);
-        contentsManager.clearAll();
-      } else {
-        //logger.info('old ContentsManager used (${frameModel.mid})');
-      }
+      //print('findOrInitContentsManager');
+      ContentsManager contentsManager = findContentsManager(frameModel);
+      // if (contentsManager == null) {
+      //   //logger.info('new ContentsManager created (${frameModel.mid})');
+      //   contentsManager = newContentsManager(frameModel);
+      //   contentsManager.clearAll();
+      // } else {
+      //   //logger.info('old ContentsManager used (${frameModel.mid})');
+      // }
+      await contentsManager.initContentsManager(frameModel.mid);
     }
-    for (var mid in contentsManagerMap.keys.toList()) {
-      ContentsManager contentsManager = contentsManagerMap[mid]!;
-      await _initContentsManager(mid, contentsManager);
-    }
-  }
-
-  Future<void> _initContentsManager(String frameMid, ContentsManager contentsManager) async {
-    if (contentsManager.onceDBGetComplete == false) {
-      await contentsManager.getContents();
-      contentsManager.addRealTimeListen(frameMid);
-      contentsManager.reOrdering();
-    }
-    logger.info('$frameMid=initChildren(${contentsManager.getAvailLength()})');
+    // for (var mid in contentsManagerMap.keys.toList()) {
+    //   ContentsManager contentsManager = contentsManagerMap[mid]!;
+    //   await _initContentsManager(mid, contentsManager);
+    // }
   }
 
   @override
@@ -475,8 +512,8 @@ class FrameManager extends CretaManager {
         continue;
       }
       AbsExModel newOne = await makeCopy(ele, newParentMid);
-      ContentsManager? contentsManager = findContentsManager(ele.mid);
-      await contentsManager?.makeCopyAll(newOne.mid);
+      ContentsManager contentsManager = findContentsManager(ele as FrameModel);
+      await contentsManager.makeCopyAll(newOne.mid);
       counter++;
     }
     unlock();
@@ -572,16 +609,16 @@ class FrameManager extends CretaManager {
   List<Node> toNodes(PageModel page) {
     //print('invoke frameMangaer.toNodes()');
     List<Node> accNodes = [];
-    for (var ele in valueEntries()) {
+    for (var ele in orderValues()) {
       FrameModel model = ele as FrameModel;
       if (model.isRemoved.value == true) {
         continue;
       }
       List<Node> conNodes = [];
-      ContentsManager? contentsManager = findContentsManager(model.mid);
-      if (contentsManager != null) {
-        conNodes = contentsManager.toNodes(model);
-      }
+      ContentsManager contentsManager = findContentsManager(model);
+      //if (contentsManager != null) {
+      conNodes = contentsManager.toNodes(model);
+      //}
       accNodes.add(Node<CretaModel>(
         key: '${page.mid}/${model.mid}',
         keyType: ContaineeEnum.Frame,
@@ -616,5 +653,140 @@ class FrameManager extends CretaManager {
       return null;
     }
     return contentsManager.getFirstModel();
+  }
+
+  @override
+  double getMinOrder() {
+    if (isEmpty()) return 1;
+    double retval = 1;
+    // int overlayCount = 0;
+    // int normalCount = 0;
+    lock();
+    for (var ele in modelList) {
+      FrameModel model = ele as FrameModel;
+      if (model.isOverlay.value == true) {
+        //overlayCount++;
+        continue;
+      }
+      if (ele.order.value < retval) {
+        retval = ele.order.value;
+        //normalCount++;
+      }
+    }
+    unlock();
+
+    // if (normalCount == 0 && overlayCount > 0) {
+    //   // 프레임가운데, orverlay 밖에 없는 경우다.
+    //   return super.getMinOrder();
+    // }
+
+    return retval;
+  }
+
+  @override
+  double getMaxOrder() {
+    if (isEmpty()) return 1;
+    double retval = 0;
+    lock();
+    for (var ele in modelList) {
+      FrameModel model = ele as FrameModel;
+      if (model.isOverlay.value == true) {
+        continue;
+      }
+      if (ele.order.value > retval) {
+        retval = ele.order.value;
+      }
+    }
+    unlock();
+    return retval;
+  }
+
+  @override
+  double getBetweenOrder(int nth) {
+    if (nth < 0) return getMinOrder();
+    if (nth == 0) {
+      double min = getMinOrder();
+      if (min > 2) {
+        return min - 1;
+      }
+      return min - StudioConst.orderVar;
+    }
+    int len = getAvailLength();
+    if (len == 0) return 1;
+    if (nth >= len) {
+      logger.severe('1. this cant be happen $nth, $len');
+      return getMaxOrder() + 1;
+    }
+
+    // nth 는 0보다는 크고, len 보다는 작은 수다.
+    int count = 0;
+    double firstValue = -1;
+    double secondValue = -1;
+    lock();
+    for (MapEntry e in orderEntries()) {
+      FrameModel model = e.value as FrameModel;
+      if (model.isOverlay.value == true) {
+        continue;
+      }
+      if (count == nth - 1) {
+        firstValue = e.value.order.value;
+      } else if (count == nth) {
+        secondValue = e.value.order.value;
+        unlock();
+        return (firstValue + secondValue) / 2.0;
+      }
+      count++;
+    }
+    unlock();
+    // 있을수 없다,. 에러다.
+    logger.severe('3. this cant be happen $nth, $len');
+    return getMaxOrder() + 1;
+  }
+
+  @override
+  double lastOrder() {
+    double retval = -1;
+    for (MapEntry e in orderEntries()) {
+      FrameModel model = e.value as FrameModel;
+      if (model.isOverlay.value == true) {
+        continue;
+      }
+      retval = model.order.value;
+    }
+    return retval;
+  }
+
+  double getMaxOrderWithOverlay() {
+    double retval = 0;
+    lock();
+    for (var ele in modelList) {
+      if (ele.order.value > retval) {
+        retval = ele.order.value;
+      }
+    }
+    unlock();
+    return retval;
+  }
+
+  void exchangeOrder(String aMid, String bMid, String hint) {
+    FrameModel? aModel = getModel(aMid) as FrameModel?;
+    FrameModel? bModel = getModel(bMid) as FrameModel?;
+    if (aModel == null) {
+      logger.warning('$aMid does not exist in modelList');
+      return;
+    }
+    if (bModel == null) {
+      logger.warning('$bMid does not exist in modelList');
+      return;
+    }
+    logger.info('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
+
+    double aOrder = aModel.order.value;
+    double bOrder = bModel.order.value;
+
+    mychangeStack.startTrans();
+    aModel.order.set(bOrder);
+    bModel.order.set(aOrder);
+    mychangeStack.endTrans();
   }
 }

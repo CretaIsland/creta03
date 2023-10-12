@@ -24,7 +24,7 @@ import 'frame_manager.dart';
 
 class PageManager extends CretaManager {
   BookModel? bookModel;
-  Map<String, FrameManager?> frameManagerList = {};
+  Map<String, FrameManager?> frameManagerMap = {};
   Map<String, GlobalObjectKey> thumbKeyMap = {};
   final bool isPublishedMode;
 
@@ -60,16 +60,36 @@ class PageManager extends CretaManager {
 
   void clearFrameManager() {
     logger.severe('clearFrameManager');
-    for (FrameManager? ele in frameManagerList.values) {
+    for (FrameManager? ele in frameManagerMap.values) {
       ele?.removeRealTimeListen();
     }
-    for (String mid in frameManagerList.keys) {
+    for (String mid in frameManagerMap.keys) {
       saveManagerHolder?.unregisterManager('frame', postfix: mid);
     }
   }
 
   FrameManager? findFrameManager(String pageMid) {
-    return frameManagerList[pageMid];
+    return frameManagerMap[pageMid];
+  }
+
+  FrameModel? findFrameModel(String frameMid) {
+    // frameMid 만 가지고, 해당  frameModel 을 찾아야 한다.
+    FrameModel? retval;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      PageModel pageModel = ele as PageModel;
+      FrameManager? frameManager = findFrameManager(pageModel.mid);
+      if (frameManager != null) {
+        continue;
+      }
+      retval = frameManager!.getModel(frameMid) as FrameModel?;
+      if (retval != null) {
+        return retval;
+      }
+    }
+    return null;
   }
 
   FrameManager? findCurrentFrameManager() {
@@ -87,7 +107,7 @@ class PageManager extends CretaManager {
       tableName: isPublishedMode ? 'creta_frame_published' : 'creta_frame',
       isPublishedMode: isPublishedMode,
     );
-    frameManagerList[pageModel.mid] = retval;
+    frameManagerMap[pageModel.mid] = retval;
     return retval;
   }
 
@@ -97,20 +117,27 @@ class PageManager extends CretaManager {
         continue;
       }
       PageModel pageModel = ele as PageModel;
-      FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+      FrameManager? frameManager = findFrameManager(pageModel.mid);
       if (frameManager != null) {
         continue;
       }
-      frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
-        bookModel,
-        pageModel,
-      );
-      await initFrameManager(frameManager, ele.mid);
-      await frameManager.findOrInitContentsManager();
 
-      frameManager.addOverlay();
+      // 이곳에서 frameManagerMap  에 등록되었다.
+      frameManager = newFrameManager(bookModel, pageModel);
+      // 프레임을  DB  에서 가져온다.
+      await initFrameManager(frameManager, ele.mid);
+      // 이 for문은 여기까지만 해야한다.  overlay 원본이 뒤쪽 페이지에 있을수도 있으므로
+      // 여기까지만 하고,  아래와 같이  for 문을 다시 돌아야한다.
     }
-    // for (var frameManager in frameManagerList.values.toList()) {
+
+    //   등록된  frameManager 에 대해서,  ContentsManager 를 등록한다.
+    // 반드시  이렇게 for 문을 나누어서 별도로 진행해야 한다.
+    // 모든 page 가  initialize 가 된다음 contents 를 가져와야 하기 때문이다.
+    for (FrameManager? frameManager in frameManagerMap.values.toList()) {
+      await frameManager?.findOrInitContentsManager();
+      frameManager?.addOverlay();
+    }
+    // for (var frameManager in frameManagerMap.values.toList()) {
     //   await initFrameManager(frameManager!);
     //   await frameManager.findOrInitContentsManager();
     // }
@@ -131,7 +158,7 @@ class PageManager extends CretaManager {
     if (pageModel == null) {
       return null;
     }
-    FrameManager? frameManager = frameManagerList[pageModel.mid];
+    FrameManager? frameManager = frameManagerMap[pageModel.mid];
     if (frameManager == null) {
       return null;
     }
@@ -144,11 +171,20 @@ class PageManager extends CretaManager {
       logger.severe('pageModel is null');
       return null;
     }
-    FrameManager? frameManager = frameManagerList[pageModel.mid];
+    FrameManager? frameManager = frameManagerMap[pageModel.mid];
     if (frameManager == null) {
       logger.severe('frameManager is null');
       return null;
     }
+    FrameModel? frameModel = frameManager.getSelected() as FrameModel?;
+    if (frameModel != null &&
+        frameModel.isOverlay.value == true &&
+        frameModel.parentMid.value == pageModel.mid) {
+      // overlay 의 경우이다.
+      //print('this is overlay case');
+      frameManager = frameManagerMap[frameModel.parentMid.value];
+    }
+
     return frameManager;
   }
 
@@ -231,7 +267,7 @@ class PageManager extends CretaManager {
   }
 
   String? getFirstMid() {
-    Iterable<double> keys = keyEntries().toList();
+    Iterable<double> keys = orderKeys().toList();
     for (double ele in keys) {
       PageModel? pageModel = getNth(ele) as PageModel?;
       if (pageModel == null) {
@@ -268,7 +304,7 @@ class PageManager extends CretaManager {
     // if (selectedOrder < 0) {
     //   return null;
     // }
-    Iterable<double> keys = keyEntries().toList();
+    Iterable<double> keys = orderKeys().toList();
     for (double ele in keys) {
       if (matched == true) {
         PageModel? pageModel = getNth(ele) as PageModel?;
@@ -320,7 +356,7 @@ class PageManager extends CretaManager {
     //   return null;
     // }
     logger.info('selectedOrder=$selectedOrder');
-    Iterable<double> keys = keyEntries().toList().reversed;
+    Iterable<double> keys = orderKeys().toList().reversed;
     for (double ele in keys) {
       if (matched == true) {
         PageModel? pageModel = getNth(ele) as PageModel?;
@@ -410,7 +446,7 @@ class PageManager extends CretaManager {
 
   @override
   Future<void> removeChild(String parentMid) async {
-    FrameManager? frameManager = frameManagerList[parentMid];
+    FrameManager? frameManager = frameManagerMap[parentMid];
     await frameManager?.removeAll();
     removeLink(parentMid);
   }
@@ -447,7 +483,7 @@ class PageManager extends CretaManager {
 
   void removeLink(String mid) {
     logger.info('removeLink---------------FrameManager');
-    for (var manager in frameManagerList.values) {
+    for (var manager in frameManagerMap.values) {
       manager?.removeLink(mid);
     }
   }
@@ -478,6 +514,46 @@ class PageManager extends CretaManager {
       return thumbKeyMap.values.first;
     }
     return thumbKeyMap[pageModel.mid];
+  }
+
+  double nextOrder(double currentOrder, {bool alwaysOneExist = false}) {
+    bool matched = false;
+
+    late Iterable<double> keys = orderKeys();
+
+    for (double ele in keys) {
+      if (matched == true) {
+        return ele;
+      }
+      if (ele == currentOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    if (matched == true) {
+      // 끝까지 온것이다.  처음으로 돌아간다.
+      return keys.first;
+    }
+    return -1;
+  }
+
+  double prevOrder(double currentOrder) {
+    bool matched = false;
+    late Iterable<double> keys = orderKeys().toList().reversed;
+
+    for (double ele in keys) {
+      if (matched == true) {
+        return ele;
+      }
+      if (ele == currentOrder) {
+        matched = true;
+        continue;
+      }
+    }
+    if (matched == true) {
+      return keys.first;
+    }
+    return -1;
   }
 
   Future<PageModel> copyPage(PageModel src,
@@ -530,7 +606,7 @@ class PageManager extends CretaManager {
     //       children: [ ]
     //  );
     int pageNo = 1;
-    for (var ele in valueEntries()) {
+    for (var ele in orderValues()) {
       PageModel model = ele as PageModel;
       if (model.isRemoved.value == true) {
         continue;

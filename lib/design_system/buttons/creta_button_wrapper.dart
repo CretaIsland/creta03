@@ -152,6 +152,7 @@ class BTN {
     Color iconColor = CretaColor.primary,
     CretaButtonDeco decoType = CretaButtonDeco.opacity,
     void Function(bool)? onHover,
+    bool noHoverEffect = false,
   }) {
     return CretaButton(
       tooltip: tooltip,
@@ -166,6 +167,7 @@ class BTN {
       isSelectedWidget: true,
       onPressed: onPressed,
       onHover: onHover,
+      noHoverEffect: noHoverEffect,
       child: Center(
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
@@ -814,7 +816,9 @@ class BTN {
       buttonType: CretaButtonType.textOnly,
       buttonColor: CretaButtonColor.blue,
       text: Padding(
-        padding: sidePadding == null ? const EdgeInsets.fromLTRB(16, 0, 16, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        padding: sidePadding == null
+            ? const EdgeInsets.fromLTRB(16, 0, 16, 0)
+            : const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -1450,11 +1454,11 @@ class BTN {
           //child:
           (icon1 != null || svgImg1 != null)
               ? Padding(
-            padding: const EdgeInsets.only(left: 12.0, bottom: 2),
-            child: (icon1 != null)
-                ? Icon(icon1, size: icon1Size ?? 16, color: textColor)
-                : Snippet.SvgIcon(iconImageFile: svgImg1!, iconSize: 16, iconColor: null),
-          )
+                  padding: const EdgeInsets.only(left: 12.0, bottom: 2),
+                  child: (icon1 != null)
+                      ? Icon(icon1, size: icon1Size ?? 16, color: textColor)
+                      : Snippet.SvgIcon(iconImageFile: svgImg1!, iconSize: 16, iconColor: null),
+                )
               : const SizedBox.shrink(),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -1467,11 +1471,11 @@ class BTN {
           ),
           (icon2 != null || svgImg2 != null)
               ? Padding(
-            padding: const EdgeInsets.only(right: 8.0, bottom: 2),
-            child: (icon2 != null)
-                ? Icon(icon2, size: icon2Size ?? 16, color: textColor)
-                : Snippet.SvgIcon(iconImageFile: svgImg2!, iconSize: 16, iconColor: null),
-          )
+                  padding: const EdgeInsets.only(right: 8.0, bottom: 2),
+                  child: (icon2 != null)
+                      ? Icon(icon2, size: icon2Size ?? 16, color: textColor)
+                      : Snippet.SvgIcon(iconImageFile: svgImg2!, iconSize: 16, iconColor: null),
+                )
               : const SizedBox.shrink(),
         ],
       ),
@@ -1899,11 +1903,16 @@ class BTN {
       buttonType: CretaButtonType.textOnly,
       buttonColor: buttonColor,
       text: Padding(
-        padding: sidePadding == null ? const EdgeInsets.fromLTRB(16, 0, 16, 0) : const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        padding: sidePadding == null
+            ? const EdgeInsets.fromLTRB(16, 0, 16, 0)
+            : const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(text, style: textStyle ?? CretaFont.buttonMedium.copyWith(color: isSelected ? CretaColor.primary[400] : CretaColor.text[700])),
+            Text(text,
+                style: textStyle ??
+                    CretaFont.buttonMedium.copyWith(
+                        color: isSelected ? CretaColor.primary[400] : CretaColor.text[700])),
           ],
         ),
       ),

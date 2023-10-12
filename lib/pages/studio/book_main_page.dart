@@ -107,6 +107,19 @@ class BookMainPage extends StatefulWidget {
     _overlayFrameMap[model.mid] = model;
   }
 
+  static double getMaxOrderInBook() {
+    // 자기 페이지에서 최후값이 아닌, 전체 북에서 최후의 값을 가져와야 한다.
+    Map<String, FrameManager?> frameManagerMap = BookMainPage.pageManagerHolder!.frameManagerMap;
+    double maxOrder = 0;
+    for (FrameManager? manager in frameManagerMap.values) {
+      double order = manager!.getMaxOrderWithOverlay();
+      if (order > maxOrder) {
+        maxOrder = order;
+      }
+    }
+    return maxOrder;
+  }
+
   BookMainPage({
     required this.bookKey,
     this.isPreviewX = false,
@@ -155,7 +168,7 @@ class _BookMainPageState extends State<BookMainPage> {
   //Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
-  //AutoPlayChangeEventController? _autoPlaySendEvent;
+  //FrameEachEventController? _autoPlaySendEvent;
 
   @override
   void initState() {
@@ -164,7 +177,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
-    // final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
+    // final FrameEachEventController autoPlaySendEvent = Get.find(tag: 'to-FrameEach');
     // _autoPlaySendEvent = autoPlaySendEvent;
     BookMainPage.clearOverlay();
 
@@ -248,6 +261,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     mouseTracerHolder = MouseTracer();
     mouseTracerHolder!.initialize();
+
     client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
     client.connectServer(BookMainPage.selectedMid);
 

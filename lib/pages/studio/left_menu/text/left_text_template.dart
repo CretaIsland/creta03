@@ -33,7 +33,7 @@ class _LeftTextTemplateState extends State<LeftTextTemplate>
 
   @override
   Widget build(BuildContext context) {
-    initFrameManager();
+    setFrameManager(null);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

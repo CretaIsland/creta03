@@ -490,7 +490,7 @@ class MyTreeViewState extends State<MyTreeView> {
         if (model.type == ExModelType.contents) {
           widget.removeContents(model as ContentsModel);
           if (model.isMusic()) {
-            ContentsManager? contentsManager = findContentsManager(model);
+            ContentsManager? contentsManager = _findContentsManager(model);
             contentsManager?.removeMusic(model);
           }
           return;
@@ -528,7 +528,7 @@ class MyTreeViewState extends State<MyTreeView> {
       ContentsModel contents = model as ContentsModel;
       contents.isShow.set(!(contents.isShow.value));
       if (contents.isMusic()) {
-        ContentsManager? contentsManager = findContentsManager(model);
+        ContentsManager? contentsManager = _findContentsManager(model);
         if (contents.isShow.value == true) {
           contentsManager?.showMusic(model, index);
         } else {
@@ -572,15 +572,27 @@ class MyTreeViewState extends State<MyTreeView> {
     }
   }
 
-  ContentsManager? findContentsManager(CretaModel model) {
+  ContentsManager? _findContentsManager(ContentsModel model) {
     PageModel? pageModel = widget.pageManager.getSelected() as PageModel?;
     if (pageModel == null) {
       return null;
     }
+
     FrameManager? frameManager = widget.pageManager.findFrameManager(pageModel.mid);
     if (frameManager == null) {
-      logger.severe('Invalid key');
-      return null;
+      // 이경우, frame  이 overlay frame  일 수가 있다.
+      // contentsModel 의 parentMid 를 이용하여 frameModel 을 반드시 얻어내야 한다.
+      FrameModel? frameModel = widget.pageManager.findFrameModel(model.parentMid.value);
+      if (frameModel != null && frameModel.isOverlay.value == true) {
+        frameManager = widget.pageManager.findFrameManager(frameModel.parentMid.value);
+        if (frameManager == null) {
+          logger.severe('find frameManager failed ${frameModel.mid}');
+          return null;
+        }
+      } else {
+        logger.severe('something wrong find frameManager is missing ${model.parentMid.value}');
+        return null;
+      }
     } // _selectPage
     return frameManager.getContentsManager(model.parentMid.value);
   }

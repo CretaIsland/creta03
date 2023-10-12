@@ -33,7 +33,7 @@ class OffsetEventController extends GetxController {
   }
 }
 
-class AutoPlayChangeEventController extends GetxController {
+class FrameEachEventController extends GetxController {
   final eventStream = StreamController<bool>.broadcast();
 
   // Method to send an event
@@ -105,7 +105,7 @@ class StudioGetXController extends GetxController {
 
     Get.put(BoolEventController(), tag: 'link-widget-to-property');
 
-    Get.put(AutoPlayChangeEventController(), tag: 'auto-play-to-frame');
+    Get.put(FrameEachEventController(), tag: 'to-FrameEach');
 
     Get.put(BoolEventController(), tag: 'draw-link');
 

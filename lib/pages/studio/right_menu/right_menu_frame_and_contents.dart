@@ -157,10 +157,21 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     //print('1111111111111111111111111111111111');
     BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
     FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-    if (frame == null || frameManager == null) {
+    if (frame == null) {
+      logger.severe('Something wrong, selected Frame is null');
       return SizedBox.shrink();
     }
+    // if (frame.isOverlay.value == true) {
+    //   //print('this is overlay frame');
+    // }
+    FrameManager? frameManager =
+        BookMainPage.pageManagerHolder!.findFrameManager(frame.parentMid.value);
+    //FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    if (frameManager == null) {
+      logger.severe('Something wrong, frameManager is null');
+      return SizedBox.shrink();
+    }
+
     //print('222222222222222222222222222222');
     ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
     if (contentsManager == null || contentsManager.getAvailLength() == 0) {
