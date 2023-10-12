@@ -262,13 +262,9 @@ class _BookMainPageState extends State<BookMainPage> {
     mouseTracerHolder = MouseTracer();
     mouseTracerHolder!.initialize();
 
-    //skpark test code 임시로 막아놓음.
-    try {
-      client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
-      client.connectServer(BookMainPage.selectedMid);
-    } catch (e) {
-      logger.severe('socket error $e');
-    }
+    client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
+    client.connectServer(BookMainPage.selectedMid);
+
     mouseTracerHolder!.addListener(() {
       switch (mouseTracerHolder!.methodFlag) {
         case 'joinUser':

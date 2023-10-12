@@ -698,7 +698,7 @@ class FrameManager extends CretaManager {
     double secondValue = -1;
     lock();
     for (MapEntry e in orderEntries()) {
-      FrameModel model = e as FrameModel;
+      FrameModel model = e.value as FrameModel;
       if (model.isOverlay.value == true) {
         continue;
       }
@@ -721,7 +721,7 @@ class FrameManager extends CretaManager {
   double lastOrder() {
     double retval = -1;
     for (MapEntry e in orderEntries()) {
-      FrameModel model = e as FrameModel;
+      FrameModel model = e.value as FrameModel;
       if (model.isOverlay.value == true) {
         continue;
       }
