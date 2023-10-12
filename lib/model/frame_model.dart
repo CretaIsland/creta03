@@ -201,8 +201,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');
-    nextContentTypes =
-        UndoAble<NextContentTypes>(NextContentTypes.normalCarousel, mid, 'nextContentTypes');
+    nextContentTypes = UndoAble<NextContentTypes>(NextContentTypes.none, mid, 'nextContentTypes');
     borderCap = UndoAble<BorderCapType>(BorderCapType.round, mid, 'borderCap');
     shadowColor = UndoAble<Color>(Colors.black, mid, 'shadowColor');
     shadowOpacity = UndoAble<double>(0.0, mid, 'shadowOpacity');
@@ -242,8 +241,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');
-    nextContentTypes =
-        UndoAble<NextContentTypes>(NextContentTypes.normalCarousel, mid, 'nextContentTypes');
+    nextContentTypes = UndoAble<NextContentTypes>(NextContentTypes.none, mid, 'nextContentTypes');
     borderCap = UndoAble<BorderCapType>(BorderCapType.none, mid, 'borderCap');
     shadowColor = UndoAble<Color>(Colors.black, mid, 'shadowColor');
     shadowOpacity = UndoAble<double>(0.0, mid, 'shadowOpacity');
