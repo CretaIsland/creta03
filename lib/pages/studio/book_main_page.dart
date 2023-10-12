@@ -107,6 +107,19 @@ class BookMainPage extends StatefulWidget {
     _overlayFrameMap[model.mid] = model;
   }
 
+  static double getMaxOrderInBook() {
+    // 자기 페이지에서 최후값이 아닌, 전체 북에서 최후의 값을 가져와야 한다.
+    Map<String, FrameManager?> frameManagerMap = BookMainPage.pageManagerHolder!.frameManagerMap;
+    double maxOrder = 0;
+    for (FrameManager? manager in frameManagerMap.values) {
+      double order = manager!.getMaxOrderWithOverlay();
+      if (order > maxOrder) {
+        maxOrder = order;
+      }
+    }
+    return maxOrder;
+  }
+
   BookMainPage({
     required this.bookKey,
     this.isPreviewX = false,
@@ -248,6 +261,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     mouseTracerHolder = MouseTracer();
     mouseTracerHolder!.initialize();
+
     client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
     client.connectServer(BookMainPage.selectedMid);
 

@@ -104,6 +104,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
     initFrameManager();
+
+    print('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
+
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
@@ -361,18 +364,14 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     //print('getStickerList()');
     //frameManager!.frameKeyMap.clear();
 
-    // 2023.10.09 overlay frame 을 다른 페이지에도 쓰기 위해  static map  에 넣는 장면이다.
-    // 자기 page 안에 있으면서, Overlay 인 경우에 한한다.  즉  overlay 원본만 넣는다. 사본이
-    // 들어갈 필요는 없기 때문이다.
+    frameManager!.eliminateOverlay();
     frameManager!.mergeOverlay();
 
     frameManager!.reOrdering();
+
     return frameManager!.orderMapIterator((e) {
       //_randomIndex += 10;
       FrameModel model = e as FrameModel;
-
-      logger.fine('applyScale = $applyScale');
-
       BookMainPage.clickEventHandler.subscribeList(
         model.eventReceive.value,
         model,
@@ -460,6 +459,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     return Sticker(
       key: stickerKey,
+      isOverlay: model.isOverlay.value,
       model: model,
       pageMid: widget.pageModel.mid,
       //id: model.mid,

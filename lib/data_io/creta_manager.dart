@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
 import 'package:hycop/hycop/account/account_manager.dart';
-import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:deep_collection/deep_collection.dart';
 import 'package:hycop/hycop/utils/hycop_utils.dart';
@@ -714,17 +713,21 @@ abstract class CretaManager extends AbsExModelManager {
     return model.mid;
   }
 
-  Iterable<CretaModel> valueEntries() {
+  Iterable<CretaModel> orderValues() {
     return _orderMap.deepSortByKey().values;
   }
 
-  Iterable<double> keyEntries() {
+  Iterable<double> orderKeys() {
     return _orderMap.deepSortByKey().keys;
   }
 
+  Iterable<MapEntry> orderEntries() {
+    return _orderMap.deepSortByKey().entries;
+  }
+
   double lastOrder() {
-    if (_orderMap.isNotEmpty) {
-      return _orderMap.deepSortByKey().keys.last;
+    if (isNotEmpty()) {
+      return orderKeys().last;
     }
     return -1;
   }
@@ -736,46 +739,6 @@ abstract class CretaManager extends AbsExModelManager {
       return 0;
     }
     return retval;
-  }
-
-  double nextOrder(double currentOrder, {bool alwaysOneExist = false}) {
-    bool matched = false;
-
-    late Iterable<double> keys = _orderMap.deepSortByKey().keys;
-
-    for (double ele in keys) {
-      if (matched == true) {
-        return ele;
-      }
-      if (ele == currentOrder) {
-        matched = true;
-        continue;
-      }
-    }
-    if (matched == true) {
-      // 끝까지 온것이다.  처음으로 돌아간다.
-      return keys.first;
-    }
-    return -1;
-  }
-
-  double prevOrder(double currentOrder) {
-    bool matched = false;
-    late Iterable<double> keys = keyEntries().toList().reversed;
-
-    for (double ele in keys) {
-      if (matched == true) {
-        return ele;
-      }
-      if (ele == currentOrder) {
-        matched = true;
-        continue;
-      }
-    }
-    if (matched == true) {
-      return keys.first;
-    }
-    return -1;
   }
 
   void reOrdering() {
@@ -829,12 +792,12 @@ abstract class CretaManager extends AbsExModelManager {
 
   //CretaModel? getOrderedModel(double order) => _orderMap[order];
 
-  double getMaxOrder() {
+  double getMinOrder() {
     if (_orderMap.isEmpty) return 1;
-    double retval = 0;
+    double retval = 1;
     lock();
     for (var ele in modelList) {
-      if (ele.order.value > retval) {
+      if (ele.order.value < retval) {
         retval = ele.order.value;
       }
     }
@@ -842,12 +805,12 @@ abstract class CretaManager extends AbsExModelManager {
     return retval;
   }
 
-  double getMinOrder() {
+  double getMaxOrder() {
     if (_orderMap.isEmpty) return 1;
-    double retval = 1;
+    double retval = 0;
     lock();
     for (var ele in modelList) {
-      if (ele.order.value < retval) {
+      if (ele.order.value > retval) {
         retval = ele.order.value;
       }
     }
@@ -1047,28 +1010,6 @@ abstract class CretaManager extends AbsExModelManager {
     }
     unlock();
     return retval;
-  }
-
-  void exchangeOrder(String aMid, String bMid, String hint) {
-    CretaModel? aModel = getModel(aMid) as CretaModel?;
-    CretaModel? bModel = getModel(bMid) as CretaModel?;
-    if (aModel == null) {
-      logger.warning('$aMid does not exist in modelList');
-      return;
-    }
-    if (bModel == null) {
-      logger.warning('$bMid does not exist in modelList');
-      return;
-    }
-    logger.info('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
-
-    double aOrder = aModel.order.value;
-    double bOrder = bModel.order.value;
-
-    mychangeStack.startTrans();
-    aModel.order.set(bOrder);
-    bModel.order.set(aOrder);
-    mychangeStack.endTrans();
   }
 
   Future<void> removeChild(String parentMid) async {

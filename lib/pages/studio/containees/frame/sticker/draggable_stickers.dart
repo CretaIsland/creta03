@@ -704,11 +704,12 @@ class _DraggableStickersState extends State<DraggableStickers> {
         onFrameBack: () {
           logger.fine('onFrameBack');
           var ind = stickers.indexOf(selectedSticker);
-          if (ind > 0) {
+          int newIndex = _getPrevIndex(ind, selectedSticker.isOverlay);
+          if (newIndex >= 0) {
             // 제일 뒤에 있는것은 제외한다.
             // 뒤로 빼는 것이므로, 현재 보다 한숫자 작은 인덱스로 보내야 한다.
             stickers.remove(selectedSticker);
-            stickers.insert(ind - 1, selectedSticker);
+            stickers.insert(newIndex, selectedSticker);
             Sticker target = stickers[ind];
             widget.onFrameBack.call(selectedSticker.id, target.id);
             setState(() {});
@@ -717,13 +718,13 @@ class _DraggableStickersState extends State<DraggableStickers> {
         onFrontBackHover: widget.onFrontBackHover,
         onFrameFront: () {
           logger.fine('onFrameFront');
-          var listLength = stickers.length;
           var ind = stickers.indexOf(selectedSticker);
-          if (ind < listLength - 1) {
+          int newIndex = _getNextIndex(ind, selectedSticker.isOverlay);
+          if (newIndex > 0) {
             // 제일 앞에 있는것은 제외한다.
             // 앞으로 빼는 것이므로, 현재 보다 한숫자 큰 인덱스로 보내야 한다.
             stickers.remove(selectedSticker);
-            stickers.insert(ind + 1, selectedSticker);
+            stickers.insert(newIndex, selectedSticker);
             Sticker target = stickers[ind];
             widget.onFrameFront.call(selectedSticker.id, target.id);
             setState(() {});
@@ -785,6 +786,27 @@ class _DraggableStickersState extends State<DraggableStickers> {
         },
       );
     });
+  }
+
+  int _getNextIndex(int currentIndex, bool isOverlay) {
+    var listLength = stickers.length;
+    if (currentIndex >= listLength - 1) return -1;
+    for (int i = currentIndex + 1; i < listLength - 1; i++) {
+      if (stickers[i].isOverlay == isOverlay) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  int _getPrevIndex(int currentIndex, bool isOverlay) {
+    if (currentIndex < 1) return -1;
+    for (int i = currentIndex - 1; i >= 0; i--) {
+      if (stickers[i].isOverlay == isOverlay) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   // Widget _drawMiniMenuContents() {

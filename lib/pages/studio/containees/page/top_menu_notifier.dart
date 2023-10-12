@@ -17,7 +17,7 @@ class TopMenuNotifier extends ChangeNotifier {
     //print('start----------------------------');
     _clickToCreateMode = value;
 
-    if (isText()) {
+    if (isTextCreate()) {
       _requestFocus = true;
     } else {
       _requestFocus = false;
@@ -28,15 +28,15 @@ class TopMenuNotifier extends ChangeNotifier {
     }
   }
 
-  bool isText() {
+  bool isTextCreate() {
     return _clickToCreateMode == ClickToCreateEnum.textCreate;
   }
 
-  bool isFrame() {
+  bool isFrameCreate() {
     return _clickToCreateMode == ClickToCreateEnum.frameCreate;
   }
 
-  bool isNormal() {
+  bool isNormalCreate() {
     return _clickToCreateMode == ClickToCreateEnum.normal;
   }
 

@@ -2018,14 +2018,27 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       return;
     }
     setState(() {
-      widget.model.isOverlay.set(value);
-      if (value == false) {
-        BookMainPage.removeOverlay(widget.model.mid);
-        //print('overlay removed ${BookMainPage.overlayLength()}');
-      } else {
+      mychangeStack.startTrans();
+      if (value == true) {
+        double maxOrder = BookMainPage.getMaxOrderInBook();
+        // 오버레이는 북에서 최고 높은 order 를 가진다.
+        // 이미 있는  overlay 를 포함하여 값을 구한다.
+        // 이떄  order 는 다른 대역폭에서 논다.
+        if (maxOrder < 1000000.0) {
+          maxOrder += 1000000.0;
+        }
+        widget.model.order.set(maxOrder + 1);
+        widget.model.isOverlay.set(value);
         BookMainPage.addOverlay(widget.model);
-        //print('overlay added ${BookMainPage.overlayLength()}');
+      } else {
+        // order 도 내려야 한다.  order 를 구한다음.  isOveraly 를 풀어야 한다.
+        // 이때  order 는 overlay 를 포함하지 않는다.  local maxOrder
+        double maxOrder = _frameManager!.getMaxOrder();
+        widget.model.order.set(maxOrder + 1);
+        widget.model.isOverlay.set(value);
+        BookMainPage.removeOverlay(widget.model.mid);
       }
+      mychangeStack.endTrans();
     });
     _sendEvent?.sendEvent(widget.model);
     BookMainPage.pageManagerHolder!.notify();

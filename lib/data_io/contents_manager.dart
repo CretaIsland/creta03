@@ -550,11 +550,11 @@ class ContentsManager extends CretaManager {
   }
 
   List<CretaModel> valueList() {
-    return valueEntries().toList().reversed.toList();
+    return orderValues().toList().reversed.toList();
   }
 
   List<double> keyList() {
-    return keyEntries().toList().reversed.toList();
+    return orderKeys().toList().reversed.toList();
   }
 
   bool isVisible(ContentsModel model) {
@@ -578,7 +578,7 @@ class ContentsManager extends CretaManager {
   @override
   double lastOrder() {
     if (isNotEmpty()) {
-      double lastOrder = keyEntries().last;
+      double lastOrder = orderKeys().last;
       ContentsModel? model = getNthOrder(lastOrder) as ContentsModel?;
       if (isVisible(model!) == true) {
         return lastOrder;
@@ -598,7 +598,6 @@ class ContentsManager extends CretaManager {
     return retval;
   }
 
-  @override
   double nextOrder(double currentOrder, {bool alwaysOneExist = false}) {
     int counter = 0;
     int len = getAvailLength();
@@ -628,7 +627,7 @@ class ContentsManager extends CretaManager {
   double _nextOrder(double currentOrder) {
     bool matched = false;
 
-    Iterable<double> keys = keyEntries().toList().reversed;
+    Iterable<double> keys = orderKeys().toList().reversed;
 
     for (double ele in keys) {
       if (matched == true) {
@@ -649,7 +648,7 @@ class ContentsManager extends CretaManager {
   double nextOrderNoLoop(double currentOrder) {
     bool matched = false;
 
-    Iterable<double> keys = keyEntries().toList().reversed;
+    Iterable<double> keys = orderKeys().toList().reversed;
 
     for (double ele in keys) {
       if (matched == true) {
@@ -663,7 +662,6 @@ class ContentsManager extends CretaManager {
     return -1;
   }
 
-  @override
   double prevOrder(double currentOrder) {
     int counter = 0;
     int len = getAvailLength();
@@ -689,7 +687,7 @@ class ContentsManager extends CretaManager {
 
   double _prevOrder(double currentOrder) {
     bool matched = false;
-    late Iterable<double> keys = keyEntries();
+    late Iterable<double> keys = orderKeys();
     for (double ele in keys) {
       if (matched == true) {
         return ele;
@@ -707,7 +705,7 @@ class ContentsManager extends CretaManager {
 
   double prevOrderNoLoop(double currentOrder) {
     bool matched = false;
-    late Iterable<double> keys = keyEntries();
+    late Iterable<double> keys = orderKeys();
 
     for (double ele in keys) {
       if (matched == true) {
