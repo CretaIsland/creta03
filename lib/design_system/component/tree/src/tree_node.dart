@@ -608,7 +608,8 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
       // key 에서 pageMid 를 추출해야 한다.
       FrameManager? frameManager = BookMainPage.pageManagerHolder?.findFrameManager(pageMid);
       if (frameManager != null) {
-        ContentsManager? contentsManager = frameManager.findContentsManager(model.parentMid.value);
+        ContentsManager? contentsManager =
+            frameManager.findContentsManagerByMid(model.parentMid.value);
         await contentsManager?.removeChild(model.mid);
         if (contentsManager != null && contentsManager.isSelected(model.mid)) {
           BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame, doNoti: true);

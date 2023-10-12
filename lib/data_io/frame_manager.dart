@@ -240,11 +240,11 @@ class FrameManager extends CretaManager {
     newModel.isRemoved.set(false, save: false, noUndo: true);
 
     if (srcFrameManager != null && samePage == false) {
-      ContentsManager? contentsManager = srcFrameManager.findContentsManager(src.mid);
-      await contentsManager?.copyContents(newModel.mid, bookModel.mid, samePage: samePage);
+      ContentsManager contentsManager = srcFrameManager.findContentsManager(src);
+      await contentsManager.copyContents(newModel.mid, bookModel.mid, samePage: samePage);
     } else {
-      ContentsManager? contentsManager = findContentsManager(src.mid);
-      await contentsManager?.copyContents(newModel.mid, bookModel.mid);
+      ContentsManager? contentsManager = findContentsManager(src);
+      await contentsManager.copyContents(newModel.mid, bookModel.mid);
     }
     await createToDB(newModel);
     insert(newModel, postion: getLength());
@@ -263,8 +263,8 @@ class FrameManager extends CretaManager {
       newModel.order.set(order++, save: false, noUndo: true);
       logger.info('create new FrameModel ${newModel.name},${newModel.mid}');
 
-      ContentsManager? contentsManager = findContentsManager(org.mid);
-      await contentsManager?.copyContents(newModel.mid, bookMid, samePage: samePage);
+      ContentsManager contentsManager = findContentsManager(org);
+      await contentsManager.copyContents(newModel.mid, bookMid, samePage: samePage);
 
       await createToDB(newModel);
     }
@@ -318,9 +318,42 @@ class FrameManager extends CretaManager {
     return retval;
   }
 
-  ContentsManager? findContentsManager(String frameModelMid) {
-    logger.fine('findContentsManager(${pageModel.width.value}, ${pageModel.height.value})*******');
+  ContentsManager? findContentsManagerByMid(String frameModelMid) {
+    logger.fine(
+        'findContentsManagerByMid(${pageModel.width.value}, ${pageModel.height.value})*******');
     return contentsManagerMap[frameModelMid];
+  }
+
+  ContentsManager findContentsManager(FrameModel frameModel) {
+    ContentsManager? retval;
+    if (frameModel.isOverlay.value == true && pageModel.mid != frameModel.parentMid.value) {
+      //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
+      // 해당 프레임을 찾아야 한다.
+      FrameManager? anotherFrameManager =
+          BookMainPage.pageManagerHolder!.findFrameManager(frameModel.parentMid.value);
+      if (anotherFrameManager != null) {
+        //print('anotherFrameManager is founded ${frameModel.parentMid.value}');
+        retval = anotherFrameManager.findContentsManagerByMid(frameModel.mid);
+        if (retval == null) {
+          //print('anotherFrameManager.frameManager not founded ${frameModel.mid}, create here');
+          // 여기서 ContentsManagerMap  에 등록된다.
+          retval = anotherFrameManager.newContentsManager(frameModel);
+          retval.clearAll();
+        }
+      } else {
+        //print(
+        //    'something wrong !!!! anotherFrameManager is not founded ${frameModel.parentMid.value}');
+      }
+    } else {
+      retval = findContentsManagerByMid(frameModel.mid);
+      if (retval == null) {
+        // 여기서 ContentsManagerMap  에 등록된다.
+        retval = newContentsManager(frameModel);
+        retval.clearAll();
+      }
+    }
+
+    return retval!;
   }
 
   ContentsModel? getCurrentModel(String frameMid) {
@@ -452,28 +485,21 @@ class FrameManager extends CretaManager {
         continue;
       }
       FrameModel frameModel = ele as FrameModel;
-      ContentsManager? contentsManager = findContentsManager(frameModel.mid);
-      if (contentsManager == null) {
-        //logger.info('new ContentsManager created (${frameModel.mid})');
-        contentsManager = newContentsManager(frameModel);
-        contentsManager.clearAll();
-      } else {
-        //logger.info('old ContentsManager used (${frameModel.mid})');
-      }
+      //print('findOrInitContentsManager');
+      ContentsManager contentsManager = findContentsManager(frameModel);
+      // if (contentsManager == null) {
+      //   //logger.info('new ContentsManager created (${frameModel.mid})');
+      //   contentsManager = newContentsManager(frameModel);
+      //   contentsManager.clearAll();
+      // } else {
+      //   //logger.info('old ContentsManager used (${frameModel.mid})');
+      // }
+      await contentsManager.initContentsManager(frameModel.mid);
     }
-    for (var mid in contentsManagerMap.keys.toList()) {
-      ContentsManager contentsManager = contentsManagerMap[mid]!;
-      await _initContentsManager(mid, contentsManager);
-    }
-  }
-
-  Future<void> _initContentsManager(String frameMid, ContentsManager contentsManager) async {
-    if (contentsManager.onceDBGetComplete == false) {
-      await contentsManager.getContents();
-      contentsManager.addRealTimeListen(frameMid);
-      contentsManager.reOrdering();
-    }
-    logger.info('$frameMid=initChildren(${contentsManager.getAvailLength()})');
+    // for (var mid in contentsManagerMap.keys.toList()) {
+    //   ContentsManager contentsManager = contentsManagerMap[mid]!;
+    //   await _initContentsManager(mid, contentsManager);
+    // }
   }
 
   @override
@@ -486,8 +512,8 @@ class FrameManager extends CretaManager {
         continue;
       }
       AbsExModel newOne = await makeCopy(ele, newParentMid);
-      ContentsManager? contentsManager = findContentsManager(ele.mid);
-      await contentsManager?.makeCopyAll(newOne.mid);
+      ContentsManager contentsManager = findContentsManager(ele as FrameModel);
+      await contentsManager.makeCopyAll(newOne.mid);
       counter++;
     }
     unlock();
@@ -589,10 +615,10 @@ class FrameManager extends CretaManager {
         continue;
       }
       List<Node> conNodes = [];
-      ContentsManager? contentsManager = findContentsManager(model.mid);
-      if (contentsManager != null) {
-        conNodes = contentsManager.toNodes(model);
-      }
+      ContentsManager contentsManager = findContentsManager(model);
+      //if (contentsManager != null) {
+      conNodes = contentsManager.toNodes(model);
+      //}
       accNodes.add(Node<CretaModel>(
         key: '${page.mid}/${model.mid}',
         keyType: ContaineeEnum.Frame,

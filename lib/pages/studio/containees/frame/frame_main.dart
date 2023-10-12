@@ -107,16 +107,15 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     logger.fine('model.width=${widget.bookModel.width.value}, realWidth=${widget.pageWidth}');
     //applyScaleH = widget.bookModel.height.value / StudioVariables.availHeight;
 
-    initFrameManager();
-
     //print('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
+    setFrameManager(null);
 
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data is FrameModel) {
             FrameModel model = snapshot.data! as FrameModel;
-            //print('_receiveEvent = ${model.height.value * StudioVariables.applyScale}');
+            setFrameManager(model);
             frameManager!.updateModel(model);
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());

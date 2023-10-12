@@ -72,6 +72,26 @@ class PageManager extends CretaManager {
     return frameManagerMap[pageMid];
   }
 
+  FrameModel? findFrameModel(String frameMid) {
+    // frameMid 만 가지고, 해당  frameModel 을 찾아야 한다.
+    FrameModel? retval;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      PageModel pageModel = ele as PageModel;
+      FrameManager? frameManager = findFrameManager(pageModel.mid);
+      if (frameManager != null) {
+        continue;
+      }
+      retval = frameManager!.getModel(frameMid) as FrameModel?;
+      if (retval != null) {
+        return retval;
+      }
+    }
+    return null;
+  }
+
   FrameManager? findCurrentFrameManager() {
     PageModel? pageModel = getSelected() as PageModel?;
     if (pageModel == null) {
@@ -97,18 +117,25 @@ class PageManager extends CretaManager {
         continue;
       }
       PageModel pageModel = ele as PageModel;
-      FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+      FrameManager? frameManager = findFrameManager(pageModel.mid);
       if (frameManager != null) {
         continue;
       }
-      frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
-        bookModel,
-        pageModel,
-      );
-      await initFrameManager(frameManager, ele.mid);
-      await frameManager.findOrInitContentsManager();
 
-      frameManager.addOverlay();
+      // 이곳에서 frameManagerMap  에 등록되었다.
+      frameManager = newFrameManager(bookModel, pageModel);
+      // 프레임을  DB  에서 가져온다.
+      await initFrameManager(frameManager, ele.mid);
+      // 이 for문은 여기까지만 해야한다.  overlay 원본이 뒤쪽 페이지에 있을수도 있으므로
+      // 여기까지만 하고,  아래와 같이  for 문을 다시 돌아야한다.
+    }
+
+    //   등록된  frameManager 에 대해서,  ContentsManager 를 등록한다.
+    // 반드시  이렇게 for 문을 나누어서 별도로 진행해야 한다.
+    // 모든 page 가  initialize 가 된다음 contents 를 가져와야 하기 때문이다.
+    for (FrameManager? frameManager in frameManagerMap.values.toList()) {
+      await frameManager?.findOrInitContentsManager();
+      frameManager?.addOverlay();
     }
     // for (var frameManager in frameManagerMap.values.toList()) {
     //   await initFrameManager(frameManager!);
@@ -149,6 +176,15 @@ class PageManager extends CretaManager {
       logger.severe('frameManager is null');
       return null;
     }
+    FrameModel? frameModel = frameManager.getSelected() as FrameModel?;
+    if (frameModel != null &&
+        frameModel.isOverlay.value == true &&
+        frameModel.parentMid.value == pageModel.mid) {
+      // overlay 의 경우이다.
+      //print('this is overlay case');
+      frameManager = frameManagerMap[frameModel.parentMid.value];
+    }
+
     return frameManager;
   }
 

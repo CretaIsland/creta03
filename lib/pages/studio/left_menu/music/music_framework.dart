@@ -56,7 +56,7 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
 
   @override
   Widget build(BuildContext context) {
-    initFrameManager();
+    setFrameManager(null);
     return Padding(
       padding: const EdgeInsets.only(top: 12.0),
       child: Column(

@@ -85,6 +85,15 @@ class ContentsManager extends CretaManager {
     return (getAvailLength() > 0);
   }
 
+  Future<void> initContentsManager(String frameMid) async {
+    if (onceDBGetComplete == false) {
+      await getContents();
+      addRealTimeListen(frameMid);
+      reOrdering();
+    }
+    logger.info('$frameMid=initChildren(${getAvailLength()})');
+  }
+
   ContentsModel? getCurrentModel() {
     if (playTimer == null) {
       return null;
@@ -833,8 +842,8 @@ class ContentsManager extends CretaManager {
     void Function(ContentsModel)? onUploadComplete,
   }) async {
     // 콘텐츠 매니저를 생성한다.
-    ContentsManager? contentsManager = frameManager!.findContentsManager(frameModel.mid);
-    contentsManager ??= frameManager.newContentsManager(frameModel);
+    ContentsManager contentsManager = frameManager!.findContentsManager(frameModel);
+    //contentsManager ??= frameManager.newContentsManager(frameModel);
 
     //int counter = contentsModelList.length;
 
@@ -879,7 +888,7 @@ class ContentsManager extends CretaManager {
               debugPrint(
                   '-----------Dropping song named ${currentModel.name} with remoteUrl ${currentModel.remoteUrl}');
 
-              String mid = contentsManager!.frameModel.mid;
+              String mid = contentsManager.frameModel.mid;
               // debugPrint('--1-- frameModel.mid ${frameModel.mid}-----');
               GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[mid];
               // debugPrint('--2-- musicKey $musicKey-----');

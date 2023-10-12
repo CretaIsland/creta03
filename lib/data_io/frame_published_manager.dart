@@ -31,10 +31,10 @@ class FramePublishedManager extends CretaManager {
         continue;
       }
       AbsExModel newOne = await makeCopy(ele, newParentMid);
-      ContentsManager? contentsManager = frameManager!.findContentsManager(ele.mid);
-      if (contentsManager == null) {
-        continue;
-      }
+      ContentsManager contentsManager = frameManager!.findContentsManager(ele as FrameModel);
+      // if (contentsManager == null) {
+      //   continue;
+      // }
       ContentsPublishedManager publishedManager = ContentsPublishedManager(contentsManager);
       await publishedManager.makeCopyAll(newOne.mid);
       counter++;

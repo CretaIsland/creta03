@@ -55,8 +55,12 @@ import '../../studio_variables.dart';
 mixin FramePlayMixin {
   FrameManager? frameManager;
 
-  void initFrameManager() {
-    frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+  void setFrameManager(FrameModel? frameModel) {
+    if (frameModel == null) {
+      frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    } else {
+      frameManager = BookMainPage.pageManagerHolder!.findFrameManager(frameModel.parentMid.value);
+    }
   }
 
   Future<ContentsManager?> createNewFrameAndContents(
@@ -183,6 +187,16 @@ mixin FramePlayMixin {
       if (frameManager != null) {
         contentsModel = frameManager!.getFirstContents(model.mid);
       }
+      if (contentsModel == null) {
+        // overlay 경우일 가능성이 크다.
+        //print('sdfdfsdfsdfsdfdfdffs');
+        if (model.isOverlay.value == true) {
+          //print('-------------------------------');
+          frameManager = BookMainPage.pageManagerHolder!.findFrameManager(model.parentMid.value);
+          contentsModel = frameManager!.getFirstContents(model.mid);
+        }
+      }
+
       //print('applyScale = $applyScale');
       TextStyle? style;
       if (contentsModel != null) {
@@ -190,7 +204,7 @@ mixin FramePlayMixin {
             contentsModel.makeTextStyle(context, applyScale: applyScale, isThumbnail: isThumbnail);
         //print('contentModel is not null, fontSize=${contentsModel.fontSize.value}');
       } else {
-        //print('contentModel is null}');
+        //print('contentModel is null');
         style = DefaultTextStyle.of(context)
             .style
             .copyWith(fontSize: StudioConst.defaultFontSize * applyScale);
