@@ -168,7 +168,7 @@ class _BookMainPageState extends State<BookMainPage> {
   //Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
-  //AutoPlayChangeEventController? _autoPlaySendEvent;
+  //FrameEachEventController? _autoPlaySendEvent;
 
   @override
   void initState() {
@@ -177,7 +177,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
-    // final AutoPlayChangeEventController autoPlaySendEvent = Get.find(tag: 'auto-play-to-frame');
+    // final FrameEachEventController autoPlaySendEvent = Get.find(tag: 'to-FrameEach');
     // _autoPlaySendEvent = autoPlaySendEvent;
     BookMainPage.clearOverlay();
 

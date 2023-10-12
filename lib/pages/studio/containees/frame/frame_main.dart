@@ -60,6 +60,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   // ignore: unused_field
   FrameEventController? _receiveEvent;
   FrameEventController? _sendEvent;
+  FrameEachEventController? _showOrderSendEvent;
 
   //final Offset _pageOffset = Offset.zero;
 
@@ -73,6 +74,9 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     final FrameEventController sendEvent = Get.find(tag: 'frame-main-to-property');
     _receiveEvent = receiveEvent;
     _sendEvent = sendEvent;
+
+    final FrameEachEventController showOrderSendEvent = Get.find(tag: 'to-FrameEach');
+    _showOrderSendEvent = showOrderSendEvent;
 
     // final OffsetEventController linkReceiveEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkReceiveEvent = linkReceiveEvent;
@@ -310,9 +314,12 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         }
       },
       onFrontBackHover: (hover) {
-        setState(() {
-          DraggableStickers.isFrontBackHover = hover;
-        });
+        //  여기서 setState 를 하지말고, 정확하게 이벤트를 날려서,
+        //  order 만 화면에 표시하는 부분에 정확하게 이벤트를 날리는 것으로 바꿔서 효율을 높인다.
+        //setState(() {
+        DraggableStickers.isFrontBackHover = hover;
+        _showOrderSendEvent!.sendEvent(true);
+        //});
       },
       onDropPage: (modelList) async {
         logger.info('onDropPage(${modelList.length})');

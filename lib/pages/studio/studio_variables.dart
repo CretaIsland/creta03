@@ -129,7 +129,7 @@ class StudioVariables {
 
   static void globalToggleAutoPlay(
       // OffsetEventController? linkSendEvent,
-      // AutoPlayChangeEventController? autoPlaySendEvent,
+      // FrameEachEventController? autoPlaySendEvent,
       {
     bool save = true,
     bool? forceValue,

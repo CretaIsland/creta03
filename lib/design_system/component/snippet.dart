@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:just_the_tooltip/just_the_tooltip.dart';
 
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
@@ -903,13 +904,26 @@ class Snippet {
     required Color fgColor,
     required Color bgColor,
     required Widget child,
+    void Function()? onShow,
+    //void Function()? onDismiss,
   }) {
-    return Tooltip(
-      preferBelow: false,
-      textStyle: CretaFont.bodyESmall.copyWith(color: fgColor),
-      decoration: BoxDecoration(
-          color: bgColor.withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(24))),
-      message: tooltip,
+    return JustTheTooltip(
+      content: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Text(tooltip, style: CretaFont.bodyESmall.copyWith(color: fgColor)),
+      ),
+      backgroundColor: bgColor.withOpacity(0.7),
+      onShow: onShow,
+      tailBaseWidth: 8,
+      tailLength: 8,
+      //onDismiss: onDismiss,
+      hoverShowDuration: Duration(seconds: 3),
+      //radius: Radius.circular(24),
+      // preferBelow: false,
+      // textStyle: CretaFont.bodyESmall.copyWith(color: fgColor),
+      // decoration: BoxDecoration(
+      //     color: bgColor.withOpacity(0.7), borderRadius: BorderRadius.all(Radius.circular(24))),
+      // message: tooltip,
       child: child,
     );
   }

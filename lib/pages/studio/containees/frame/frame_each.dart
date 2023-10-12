@@ -65,7 +65,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   bool _isShowBorder = false;
 
   //OffsetEventController? _linkSendEvent;
-  AutoPlayChangeEventController? _linkReceiveEvent;
+  FrameEachEventController? _linkReceiveEvent;
   //bool _isLinkEnter = false;
 
   @override
@@ -82,7 +82,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
     // final OffsetEventController sendEvent = Get.find(tag: 'frame-each-to-on-link');
     // _linkSendEvent = sendEvent;
-    final AutoPlayChangeEventController linkReceiveEvent = Get.find(tag: 'auto-play-to-frame');
+    final FrameEachEventController linkReceiveEvent = Get.find(tag: 'to-FrameEach');
     _linkReceiveEvent = linkReceiveEvent;
   }
 

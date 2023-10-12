@@ -235,6 +235,7 @@ class MiniMenuState extends State<MiniMenu> {
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
+          noHoverEffect: true,
           onHover: (hover) {
             widget.onFrontBackHover(hover);
           },
@@ -250,6 +251,7 @@ class MiniMenuState extends State<MiniMenu> {
           decoType: CretaButtonDeco.opacity,
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
+          noHoverEffect: true,
           onHover: (hover) {
             widget.onFrontBackHover(hover);
           },
