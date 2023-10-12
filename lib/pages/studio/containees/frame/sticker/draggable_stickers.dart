@@ -791,7 +791,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   int _getNextIndex(int currentIndex, bool isOverlay) {
     var listLength = stickers.length;
     if (currentIndex >= listLength - 1) return -1;
-    for (int i = currentIndex + 1; i < listLength - 1; i++) {
+    for (int i = currentIndex + 1; i < listLength; i++) {
       if (stickers[i].isOverlay == isOverlay) {
         return i;
       }

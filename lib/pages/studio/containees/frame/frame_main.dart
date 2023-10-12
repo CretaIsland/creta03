@@ -105,7 +105,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     initFrameManager();
 
-    print('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
+    //print('parentPage= ${widget.pageModel.name.value}, =${widget.pageModel.mid}');
 
     return StreamBuilder<AbsExModel>(
         stream: _receiveEvent!.eventStream.stream,

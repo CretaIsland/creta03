@@ -119,15 +119,15 @@ class FrameManager extends CretaManager {
       }
     }
     reOrdering();
-    print('page: ${pageModel.name.value}------------------------------------------------');
-    for (var ele in modelList) {
-      if (ele.isRemoved.value == false) {
-        FrameModel model = ele as FrameModel;
-        print(
-            'order=${model.order.value},${model.name.value},isShow=${model.isShow.value},isOverlay=${model.isOverlay.value}');
-        print('   ${model.mid}');
-      }
-    }
+    //print('page: ${pageModel.name.value}------------------------------------------------');
+    // for (var ele in modelList) {
+    //   if (ele.isRemoved.value == false) {
+    //     FrameModel model = ele as FrameModel;
+    //     print(
+    //         'order=${model.order.value},${model.name.value},isShow=${model.isShow.value},isOverlay=${model.isOverlay.value}');
+    //     print('   ${model.mid}');
+    //   }
+    // }
   }
 
   void eliminateOverlay() {
@@ -143,7 +143,7 @@ class FrameManager extends CretaManager {
       }
     }
     for (FrameModel ele in removeTargetList) {
-      print('remove overlay ${ele.name.value}');
+      //print('remove overlay ${ele.name.value}');
       modelList.remove(ele);
     }
     reOrdering();
