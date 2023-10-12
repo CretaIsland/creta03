@@ -39,7 +39,7 @@ dependencies:
   routemaster: ^1.0.1
   hycop: ^0.2.22
   outline_search_bar: ^2.3.0
-  custom_radio_grouped_button: ^2.2.1
+  custom_radio_grouped_button: 2.2.1
   # elegant_radio_button_group: ^0.0.1
   # roundcheckbox: ^2.0.5
   # flutter_awesome_select: ^6.5.0
@@ -56,28 +56,28 @@ dependencies:
   http: ^0.13.5
   universal_html: ^2.0.8
   firebase_core_platform_interface: 4.5.2
-  adaptive_scrollbar: ^2.1.2
+  adaptive_scrollbar: 2.1.2
   mutex: ^3.0.1
   loading_animation_widget: ^1.2.0+4
   #sortedmap: ^0.5.2
   deep_collection: ^1.0.2
   get: ^4.6.5
   dotted_border: ^2.0.0+3
-  material_tag_editor: ^0.1.2
+  material_tag_editor: 0.1.2
   quiver: ^3.2.1
   flex_color_picker: ^3.1.0
   flutter_animate: ^4.0.0
-  r_dotted_line_border: ^0.1.1
+  r_dotted_line_border: 0.1.1
   flutter_inner_shadow: ^0.0.1
   inner_shadow_widget: ^0.0.3
   confetti: ^0.7.0
-  snowfall: ^0.0.2
+  snowfall: 0.0.2
   parallax_rain: ^1.1.0
   floating_bubbles: ^2.3.0
   starsview: ^0.0.2
   flutter_dropzone: ^3.0.5
   blobs: ^2.0.0
-  video_player: ^2.7.2
+  video_player: 2.7.2
   # youtube_player_iframe: ^3.1.0
   youtube_player_iframe: ^4.0.4
   animated_text_kit: ^4.2.2
@@ -101,7 +101,7 @@ dependencies:
   #quill_html_editor: ^2.1.9
   shimmer: ^2.0.0
   circular_reveal_animation: ^2.0.1
-  neonpen: ^2.0.5
+  neonpen: 2.0.5
   simple_tooltip: ^1.2.0
   # pdfx: ^2.3.0
   # internet_file: ^1.2.0
@@ -110,7 +110,7 @@ dependencies:
   # html_editor_enhanced: ^2.5.1
   # numberpicker: ^2.1.2
   file_picker: ^5.3.1
-  flutter_weather_bg_null_safety: ^1.0.0
+  flutter_weather_bg_null_safety: 1.0.0
   weather_animation: ^0.0.2
   just_audio_background: ^0.0.1-beta.10
   flutter_excel: ^1.0.1
