@@ -82,7 +82,7 @@ class _ReleaseNoteDialogState extends State<ReleaseNoteDialog> {
   Future<void> getReleaseData(List<String> version) async {
     try {
       http.Response response = await http.post(
-        Uri.parse("https://devcreta.com/getReleaseInfo"),
+        Uri.parse("https://devcreta.com:444/getReleaseInfo"),
         headers: {"Content-type": "application/json"},
         body: jsonEncode(
           {"version": version}),
