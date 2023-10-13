@@ -551,4 +551,28 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return Size(
         width.value * StudioVariables.applyScale, height.value * StudioVariables.applyScale);
   }
+
+  void toggeleOverlay(bool value, FrameManager frameManager) {
+    mychangeStack.startTrans();
+    if (value == true) {
+      double maxOrder = BookMainPage.getMaxOrderInBook();
+      // 오버레이는 북에서 최고 높은 order 를 가진다.
+      // 이미 있는  overlay 를 포함하여 값을 구한다.
+      // 이떄  order 는 다른 대역폭에서 논다.
+      if (maxOrder < 1000000.0) {
+        maxOrder += 1000000.0;
+      }
+      order.set(maxOrder + 1);
+      isOverlay.set(value);
+      BookMainPage.addOverlay(this);
+    } else {
+      // order 도 내려야 한다.  order 를 구한다음.  isOveraly 를 풀어야 한다.
+      // 이때  order 는 overlay 를 포함하지 않는다.  local maxOrder
+      double maxOrder = frameManager.getMaxOrder();
+      order.set(maxOrder + 1);
+      isOverlay.set(value);
+      BookMainPage.removeOverlay(mid);
+    }
+    mychangeStack.endTrans();
+  }
 }

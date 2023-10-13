@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../../pages/studio/studio_constant.dart';
 import 'clock_painter.dart';
 
 class DigitalClock extends StatefulWidget {
@@ -42,6 +43,10 @@ class _DigitalClockState extends State<DigitalClock> {
   DateTime initialDatetime; // to keep track of time changes
   DateTime datetime;
 
+  double _width = 0;
+  double _height = 0;
+  late TextPainter _digitalClockTP;
+
   Duration updateDuration = const Duration(seconds: 1); // repaint frequency
   _DigitalClockState(datetime)
       : datetime = datetime ?? DateTime.now(),
@@ -68,19 +73,27 @@ class _DigitalClockState extends State<DigitalClock> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        constraints: const BoxConstraints(minWidth: 50.0, minHeight: 20.0),
-        // width: double.infinity,
-        child: CustomPaint(
-          painter: DigitalClockPainter(
-              textStyle: widget.textStyle,
-              showSeconds: widget.showSeconds,
-              datetime: datetime,
-              useMilitaryTime: widget.useMilitaryTime,
-              digitalClockColor: widget.digitalClockColor,
-              textScaleFactor: widget.textScaleFactor,
-              numberColor: widget.numberColor),
-        ));
+    _paintDigitalClock(
+      textStyle: widget.textStyle,
+      showSeconds: widget.showSeconds,
+      useMilitaryTime: widget.useMilitaryTime,
+      digitalClockColor: widget.digitalClockColor,
+      textScaleFactor: widget.textScaleFactor,
+    );
+
+    return CustomPaint(
+      size: Size(_width, _height),
+      painter: DigitalClockPainter(
+        datetime: datetime,
+        digitalClockTP: _digitalClockTP,
+        // textStyle: widget.textStyle,
+        // showSeconds: widget.showSeconds,
+        // useMilitaryTime: widget.useMilitaryTime,
+        // digitalClockColor: widget.digitalClockColor,
+        // textScaleFactor: widget.textScaleFactor,
+        //numberColor: widget.numberColor,
+      ),
+    );
   }
 
   @override
@@ -91,5 +104,56 @@ class _DigitalClockState extends State<DigitalClock> {
       datetime = widget.datetime ?? DateTime.now();
       datetime = DateTime.now();
     }
+  }
+
+  void _paintDigitalClock({
+    TextStyle? textStyle,
+    Color digitalClockColor = Colors.black,
+    bool showSeconds = true,
+    double scaleFactor = 1,
+    double textScaleFactor = 1,
+    bool useMilitaryTime = true,
+  }) {
+    int hourInt = datetime.hour;
+    String meridiem = '';
+    if (!useMilitaryTime) {
+      if (hourInt > 12) {
+        hourInt = hourInt - 12;
+        meridiem = ' PM';
+      } else {
+        meridiem = ' AM';
+      }
+    }
+    String hour = hourInt.toString().padLeft(2, "0");
+    String minute = datetime.minute.toString().padLeft(2, "0");
+    String second = datetime.second.toString().padLeft(2, "0");
+    String textToBeDisplayed = "$hour:$minute${showSeconds ? ":$second" : ""}$meridiem";
+    double defaultFontSize = StudioConst.defaultFontSize * scaleFactor * textScaleFactor;
+
+    TextSpan digitalClockSpan = TextSpan(
+        style: textStyle ??
+            TextStyle(
+                color: digitalClockColor,
+                fontSize: defaultFontSize,
+                //fontSize: 11,
+                fontWeight: FontWeight.bold),
+        text: textToBeDisplayed);
+
+    _digitalClockTP = TextPainter(
+        text: digitalClockSpan,
+        textAlign: TextAlign.end,
+        textDirection: TextDirection.ltr,
+        textHeightBehavior: const TextHeightBehavior(
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: false,
+        ));
+
+    _digitalClockTP.layout();
+
+    //print('style.height=${digitalClockSpan.style!.height}');
+
+    double heightMultiplier = digitalClockSpan.style!.height ?? 1.0;
+    _height = digitalClockSpan.style!.fontSize! * heightMultiplier;
+    _width = _digitalClockTP.size.width;
   }
 }

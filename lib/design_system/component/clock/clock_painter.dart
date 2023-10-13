@@ -196,30 +196,34 @@ class AnalogClockPainter extends CustomPainter {
 class DigitalClockPainter extends CustomPainter {
   DateTime datetime;
 
-  final bool useMilitaryTime;
+  // final bool useMilitaryTime;
 
-  final Color digitalClockColor;
-  final Color numberColor;
-  final double textScaleFactor;
-  final TextStyle? textStyle;
-  //digital clock
-  final bool showSeconds;
+  // final Color digitalClockColor;
+  // //final Color numberColor;
+  // final double textScaleFactor;
+  // final TextStyle? textStyle;
+  // //digital clock
+  // final bool showSeconds;
+  final TextPainter digitalClockTP;
 
   DigitalClockPainter({
     required this.datetime,
-    this.textStyle,
-    this.showSeconds = true,
-    this.digitalClockColor = Colors.black,
-    this.numberColor = Colors.black,
-    this.textScaleFactor = 1.0,
-    this.useMilitaryTime = true,
+    required this.digitalClockTP,
+    // this.textStyle,
+    // this.showSeconds = true,
+    // this.digitalClockColor = Colors.black,
+    // //this.numberColor = Colors.black,
+    // this.textScaleFactor = 1.0,
+    // this.useMilitaryTime = true,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    double scaleFactor = 1;
+    //double scaleFactor = 1;
 
-    _paintDigitalClock(canvas, size, scaleFactor, useMilitaryTime);
+    //_paintDigitalClock(canvas, size, scaleFactor, useMilitaryTime);
+       //digitalClockTP.paint(canvas, size.center(-digitalClockTP.size.center(const Offset(0.0, 0.0))));
+    digitalClockTP.paint(canvas, Offset.zero);
   }
 
   @override
@@ -227,32 +231,32 @@ class DigitalClockPainter extends CustomPainter {
     return oldDelegate.datetime.isBefore(datetime);
   }
 
-  void _paintDigitalClock(Canvas canvas, Size size, double scaleFactor, bool useMilitaryTime) {
-    int hourInt = datetime.hour;
-    String meridiem = '';
-    if (!useMilitaryTime) {
-      if (hourInt > 12) {
-        hourInt = hourInt - 12;
-        meridiem = ' PM';
-      } else {
-        meridiem = ' AM';
-      }
-    }
-    String hour = hourInt.toString().padLeft(2, "0");
-    String minute = datetime.minute.toString().padLeft(2, "0");
-    String second = datetime.second.toString().padLeft(2, "0");
-    String textToBeDisplayed = "$hour:$minute${showSeconds ? ":$second" : ""}$meridiem";
-    TextSpan digitalClockSpan = TextSpan(
-        style: textStyle ??
-            TextStyle(
-                color: digitalClockColor,
-                fontSize: 18 * scaleFactor * textScaleFactor,
-                //fontSize: 11,
-                fontWeight: FontWeight.bold),
-        text: textToBeDisplayed);
-    TextPainter digitalClockTP = TextPainter(
-        text: digitalClockSpan, textAlign: TextAlign.center, textDirection: TextDirection.ltr);
-    digitalClockTP.layout();
-    digitalClockTP.paint(canvas, size.center(-digitalClockTP.size.center(const Offset(0.0, 0.0))));
-  }
+  // void _paintDigitalClock(Canvas canvas, Size size, double scaleFactor, bool useMilitaryTime) {
+  //   int hourInt = datetime.hour;
+  //   String meridiem = '';
+  //   if (!useMilitaryTime) {
+  //     if (hourInt > 12) {
+  //       hourInt = hourInt - 12;
+  //       meridiem = ' PM';
+  //     } else {
+  //       meridiem = ' AM';
+  //     }
+  //   }
+  //   String hour = hourInt.toString().padLeft(2, "0");
+  //   String minute = datetime.minute.toString().padLeft(2, "0");
+  //   String second = datetime.second.toString().padLeft(2, "0");
+  //   String textToBeDisplayed = "$hour:$minute${showSeconds ? ":$second" : ""}$meridiem";
+  //   TextSpan digitalClockSpan = TextSpan(
+  //       style: textStyle ??
+  //           TextStyle(
+  //               color: digitalClockColor,
+  //               fontSize: 18 * scaleFactor * textScaleFactor,
+  //               //fontSize: 11,
+  //               fontWeight: FontWeight.bold),
+  //       text: textToBeDisplayed);
+  //   TextPainter digitalClockTP = TextPainter(
+  //       text: digitalClockSpan, textAlign: TextAlign.center, textDirection: TextDirection.ltr);
+  //   digitalClockTP.layout();
+  //   digitalClockTP.paint(canvas, size.center(-digitalClockTP.size.center(const Offset(0.0, 0.0))));
+  // }
 }

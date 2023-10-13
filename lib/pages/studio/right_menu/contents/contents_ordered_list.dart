@@ -802,10 +802,12 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               mychangeStack.endTrans();
               //print('save ${model.mid}-----------------');
               //print('save ${model.font.value}----------');
+              //print('It is clock ? ${model.textType}----------');
               if (model.textType == TextType.clock) {
                 _sendEvent!.sendEvent(_frameModel);
               }
               widget.contentsManager.notify();
+
               ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
               setState(() {});
             }
@@ -933,8 +935,11 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             }
           }
           widget.contentsManager.notify();
-          widget.frameManager?.notify();
-
+          //if (model.textType == TextType.clock) {
+          _sendEvent!.sendEvent(_frameModel);
+          //} else {
+          //  widget.frameManager?.notify();
+          //}
           //_sendEvent!.sendEvent(model);
           //});
         },
@@ -942,7 +947,11 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           model.fontSize.set(val);
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           widget.contentsManager.notify();
-          widget.frameManager?.notify();
+          //if (model.textType == TextType.clock) {
+          _sendEvent!.sendEvent(_frameModel);
+          //} else {
+          //  widget.frameManager?.notify();
+          //}
         },
       ),
     );
@@ -970,8 +979,11 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           model.letterSpacing.set(val);
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           widget.contentsManager.notify();
-          widget.frameManager?.notify();
-          //_sendEvent!.sendEvent(model);
+          //if (model.textType == TextType.clock) {
+          _sendEvent!.sendEvent(_frameModel);
+          //} else {
+          //widget.frameManager?.notify();
+          //}
         },
       ),
     );
@@ -999,8 +1011,12 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           model.lineHeight.set(val);
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           widget.contentsManager.notify();
-          widget.frameManager?.notify();
-          //_sendEvent!.sendEvent(model);
+          //if (model.textType == TextType.clock) {
+          //print('ddddddddddddddddddddd');
+          _sendEvent!.sendEvent(_frameModel);
+          //} else {
+          //widget.frameManager?.notify();
+          //}
         },
       ),
     );
