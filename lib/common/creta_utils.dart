@@ -124,6 +124,10 @@ class CretaUtils {
     return '[$retval]';
   }
 
+  static Set<String> stringToSet(String inputString) {
+    return inputString.split(',').toSet();
+  }
+
   static String listToDisplay(List<String> list) {
     logger.finest('listToString=[${list.toString()}]');
     String retval = '';
@@ -857,7 +861,6 @@ class CretaUtils {
         applyScale;
     double dy = (localPosition.dy - BookMainPage.pageOffset.dy + (LayoutConst.stikerOffset / 2)) /
         applyScale;
-
 
     return Offset(dx, dy);
   }

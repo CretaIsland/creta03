@@ -112,7 +112,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
     // 이 시점에는 FrameManager Overay 에는 없는데,
     // modelList  에는 있는  frame  을 오히려 제거해 주어야 한다.
     _frameManager!.eliminateOverlay();
-   // print('thumbnail mergeOverlay');
+    // print('thumbnail mergeOverlay');
     _frameManager!.mergeOverlay();
 
     opacity = widget.pageModel.opacity.value;
@@ -273,7 +273,8 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                     children: _frameManager!.orderMapIterator((model) {
                       FrameModel frameModel = model as FrameModel;
 
-                      if (_frameManager!.isVisible(model) == false) {
+                      //if (_frameManager!.isVisible(model) == false) {
+                      if (model.isVisible(widget.pageModel.mid) == false) {
                         return SizedBox.shrink();
                       }
 

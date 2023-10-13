@@ -336,7 +336,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 if (DraggableStickers.frameSelectNotifier != null) {
                   if (DraggableStickers.frameSelectNotifier!.selectedAssetId != sticker.id) return;
                 }
-                _showRightMouseMenu(details, frameModel);
+                _showRightMouseMenu(details, frameModel, sticker);
               },
               onTap: () {
                 //print('DraggableSticker');
@@ -437,7 +437,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
     }
   }
 
-  void _showRightMouseMenu(TapDownDetails details, FrameModel frameModel) {
+  void _showRightMouseMenu(TapDownDetails details, FrameModel frameModel, Sticker sticker) {
     logger.info('right mouse button clicked ${details.globalPosition}');
     logger.info('right mouse button clicked ${details.localPosition}');
 
@@ -553,6 +553,25 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   frameModel.toggeleOverlay(!frameModel.isOverlay.value, widget.frameManager!);
                   //_sendEvent!.sendEvent(frameModel);
                   BookMainPage.pageManagerHolder!.notify();
+                });
+              }),
+        if (StudioVariables.isPreview == false &&
+            frameModel.isOverlay.value == true &&
+            frameModel.parentMid.value != sticker.pageMid)
+          CretaMenuItem(
+              caption: frameModel.isThisPageExclude(sticker.pageMid)
+                  ? CretaStudioLang.noOverlayExclude
+                  : CretaStudioLang.overlayExclude,
+              onPressed: () {
+                bool value = !frameModel.isThisPageExclude(sticker.pageMid);
+                setState(() {
+                  if (value == true) {
+                    frameModel.addOverlayExclude(sticker.pageMid);
+                  } else {
+                    frameModel.removeOverlayExclude(sticker.pageMid);
+                  }
+                  _sendEvent!.sendEvent(frameModel);
+                  //BookMainPage.pageManagerHolder!.notify();
                 });
               }),
         // CretaMenuItem(

@@ -2,12 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
-import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
-import '../../../book_main_page.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
@@ -220,27 +218,31 @@ class StickerState extends State<Sticker> {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-        visible: _isVisible(widget.model),
+        visible: widget.model.isVisible(widget.pageMid),
         child: widget.child != null ? widget.child! : Container());
   }
 
-  bool _isVisible(FrameModel model) {
-    if (model.isRemoved.value == true) return false;
+  // bool _isVisible(FrameModel model) {
+  //   if (model.isRemoved.value == true) return false;
 
-    if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
-      logger.fine(
-          '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
-      List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
-      for (String eventName in eventNameList) {
-        if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
-          return true;
-        }
-      }
-      return false;
-    }
-    if (BookMainPage.filterManagerHolder!.isVisible(model) == false) {
-      return false;
-    }
-    return model.isShow.value;
-  }
+  //   if (model.eventReceive.value.length > 2 && model.showWhenEventReceived.value == true) {
+  //     logger.fine(
+  //         '_isVisible eventReceive=${model.eventReceive.value}  showWhenEventReceived=${model.showWhenEventReceived.value}');
+  //     List<String> eventNameList = CretaUtils.jsonStringToList(model.eventReceive.value);
+  //     for (String eventName in eventNameList) {
+  //       if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
+  //         return true;
+  //       }
+  //     }
+  //     return false;
+  //   }
+  //   if (BookMainPage.filterManagerHolder!.isVisible(model) == false) {
+  //     return false;
+  //   }
+
+  //   if (model.isThisPageExclude(widget.pageMid)) {
+  //     return false;
+  //   }
+  //   return model.isShow.value;
+  // }
 }

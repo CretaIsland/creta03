@@ -35,6 +35,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<bool> isAutoFit;
   late UndoAble<bool> isMain;
   late UndoAble<bool> isOverlay;
+  late UndoAble<String> overlayExclude;
   late UndoAble<Color> borderColor;
   late UndoAble<double> borderWidth;
   late UndoAble<int> borderType;
@@ -184,6 +185,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
       : super(pmid: pmid, type: ExModelType.frame, parent: '', realTimeKey: bookMid) {
     name = UndoAble<String>('', mid, 'name');
     bgUrl = UndoAble<String>('', mid, 'bgUrl');
+    overlayExclude = UndoAble<String>('', mid, 'overlayExclude');
     posX = UndoAble<double>(0, mid, 'posX');
     posY = UndoAble<double>(0, mid, 'posY');
     angle = UndoAble<double>(0, mid, 'angle');
@@ -225,6 +227,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     name =
         UndoAble<String>('${CretaStudioLang.noNameframe} ${order.value.toString()}', mid, 'name');
     bgUrl = UndoAble<String>('', mid, 'bgUrl');
+    overlayExclude = UndoAble<String>('', mid, 'overlayExclude');
     posX = UndoAble<double>(100, mid, 'posX');
     posY = UndoAble<double>(100, mid, 'posY');
     angle = UndoAble<double>(0, mid, 'angle');
@@ -264,6 +267,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     FrameModel srcFrame = src as FrameModel;
     name = UndoAble<String>(srcFrame.name.value, mid, 'name');
     bgUrl = UndoAble<String>(srcFrame.bgUrl.value, mid, 'bgUrl');
+    overlayExclude = UndoAble<String>(srcFrame.overlayExclude.value, mid, 'overlayExclude');
     posX = UndoAble<double>(srcFrame.posX.value, mid, 'posX');
     posY = UndoAble<double>(srcFrame.posY.value, mid, 'posY');
     angle = UndoAble<double>(srcFrame.angle.value, mid, 'angle');
@@ -307,6 +311,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     FrameModel srcFrame = src as FrameModel;
     name.init(srcFrame.name.value);
     bgUrl.init(srcFrame.bgUrl.value);
+    overlayExclude.init(srcFrame.overlayExclude.value);
     posX.init(srcFrame.posX.value);
     posY.init(srcFrame.posY.value);
     angle.init(srcFrame.angle.value);
@@ -346,6 +351,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     super.fromMap(map);
     name.set(map["name"] ?? '', save: false, noUndo: true);
     bgUrl.set(map["bgUrl"] ?? '', save: false, noUndo: true);
+    overlayExclude.set(map["overlayExclude"] ?? '', save: false, noUndo: true);
 
     double x = map["posX"] ?? 0;
     double y = map["posY"] ?? 0;
@@ -396,6 +402,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
       ..addEntries({
         "name": name.value,
         "bgUrl": bgUrl.value,
+        "overlayExclude": overlayExclude.value,
         "posX": posX.value,
         "posY": posY.value,
         "angle": angle.value,
@@ -574,5 +581,61 @@ class FrameModel extends CretaModel with CretaStyleMixin {
       BookMainPage.removeOverlay(mid);
     }
     mychangeStack.endTrans();
+  }
+
+  bool isThisPageExclude(String pageMid) {
+    return isOverlay.value == true && overlayExclude.value.contains(pageMid);
+  }
+
+  void addOverlayExclude(String pageMid) {
+    Set<String> set = CretaUtils.stringToSet(overlayExclude.value);
+    set.add(pageMid);
+    String val = '';
+    for (var ele in set.toList()) {
+      if (val.isNotEmpty) {
+        val += ',';
+      }
+      val += ele;
+    }
+    overlayExclude.set(val);
+  }
+
+  void removeOverlayExclude(String pageMid) {
+    Set<String> set = CretaUtils.stringToSet(overlayExclude.value);
+    String val = '';
+    for (var ele in set.toList()) {
+      if (val.isNotEmpty) {
+        val += ',';
+      }
+      if (ele == pageMid) {
+        continue;
+      }
+      val += ele;
+    }
+    overlayExclude.set(val);
+  }
+
+  bool isVisible(String pageMid) {
+    if (isRemoved.value == true) return false;
+
+    if (eventReceive.value.length > 2 && showWhenEventReceived.value == true) {
+      logger.fine(
+          '_isVisible eventReceive=${eventReceive.value}  showWhenEventReceived=${showWhenEventReceived.value}');
+      List<String> eventNameList = CretaUtils.jsonStringToList(eventReceive.value);
+      for (String eventName in eventNameList) {
+        if (BookMainPage.clickReceiverHandler.isEventOn(eventName) == true) {
+          return true;
+        }
+      }
+      return false;
+    }
+    if (BookMainPage.filterManagerHolder!.isVisible(this) == false) {
+      return false;
+    }
+
+    if (isThisPageExclude(pageMid)) {
+      return false;
+    }
+    return isShow.value;
   }
 }
