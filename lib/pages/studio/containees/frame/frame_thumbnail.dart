@@ -317,12 +317,29 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       return Image.asset('assets/google_map_thumbnail.png');
     }
 
+    if (model.isDateTimeType()) {
+      dateTimeFrame(
+        frameModel: model,
+        frameManager: widget.frameManager,
+        frameMid: model.mid,
+        child: _childThumbnail(model, useColor),
+        // child: Container(
+        //   width: 50,
+        //   height: 50,
+        //   color: Colors.red,
+        // ),
+      );
+    }
+
     if (_contentsManager!.length() == 0) {
-      //print('No contents in this frame');
+      // print('No contents in this frame');
       return const SizedBox.shrink();
     }
 
-    //print('kldsfjasdlkfjsdlfjslfjsdlfkjsldfkjsdlk');
+    return _childThumbnail(model, useColor);
+  }
+
+  Widget _childThumbnail(FrameModel model, bool useColor) {
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,

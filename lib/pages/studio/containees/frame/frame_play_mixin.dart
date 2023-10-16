@@ -290,9 +290,17 @@ mixin FramePlayMixin {
     return DateTimeFormat.hourMinSecJM;
   }
 
-  Widget dateTimeFrame(FrameModel model) {
+  Widget dateTimeFrame({
+    required FrameModel frameModel,
+    required Widget child,
+    required FrameManager frameManager,
+    required String frameMid,
+  }) {
     return DateTimeType(
-      dateTimeFormat: getDateTimeVal(model.subType),
+      dateTimeFormat: getDateTimeVal(frameModel.subType),
+      frameManager: frameManager,
+      frameMid: frameMid,
+      child: child,
     );
   }
 

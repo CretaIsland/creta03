@@ -52,7 +52,12 @@ class _DateTimeElementsState extends State<DateTimeElements> {
   Widget _main() {
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: DateTimeType(dateTimeFormat: widget.infoType),
+      child: DateTimeType(
+        dateTimeFormat: widget.infoType,
+        frameManager: null,
+        frameMid: null,
+        child: null,
+      ),
     );
   }
 

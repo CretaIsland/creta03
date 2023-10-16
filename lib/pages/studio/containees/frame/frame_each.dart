@@ -575,12 +575,24 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.isMapType()) {
       return mapFrame(model);
     }
-
     if (model.isDateTimeType()) {
-      return dateTimeFrame(model);
+      return dateTimeFrame(
+        frameModel: model,
+        child: _childContents(model),
+        frameManager: widget.frameManager,
+        frameMid: model.mid,
+      );
     }
 
     //print('ClipRect');
+    return _childContents(model);
+    // child: Image.asset(
+    //   'assets/creta_default.png',
+    //   fit: BoxFit.cover,
+    // ),
+  }
+
+  Widget _childContents(FrameModel model) {
     return ClipRect(
       clipBehavior: Clip.hardEdge,
       child: ContentsMain(
@@ -592,10 +604,6 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         contentsManager: _contentsManager!,
         applyScale: applyScale,
       ),
-      // child: Image.asset(
-      //   'assets/creta_default.png',
-      //   fit: BoxFit.cover,
-      // ),
     );
   }
 
