@@ -111,21 +111,32 @@ class StudioVariables {
     if (BookMainPage.pageManagerHolder == null) {
       return;
     }
-    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-    if (pageModel == null) {
-      return;
+
+    for (var frameManager in BookMainPage.pageManagerHolder!.frameManagerMap.values) {
+      if (StudioVariables.isMute == true) {
+        logger.info('frameManager.setSoundOff()--------');
+        frameManager!.setSoundOff();
+      } else {
+        logger.info('frameManager.resumeSound()--------');
+        frameManager!.resumeSound();
+      }
     }
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
-    if (frameManager == null) {
-      return;
-    }
-    if (StudioVariables.isMute == true) {
-      logger.info('frameManager.setSoundOff()--------');
-      frameManager.setSoundOff();
-    } else {
-      logger.info('frameManager.resumeSound()--------');
-      frameManager.resumeSound();
-    }
+
+    // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    // if (pageModel == null) {
+    //   return;
+    // }
+    // FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+    // if (frameManager == null) {
+    //   return;
+    // }
+    // if (StudioVariables.isMute == true) {
+    //   logger.info('frameManager.setSoundOff()--------');
+    //   frameManager.setSoundOff();
+    // } else {
+    //   logger.info('frameManager.resumeSound()--------');
+    //   frameManager.resumeSound();
+    // }
   }
 
   static void globalToggleAutoPlay(
@@ -151,21 +162,31 @@ class StudioVariables {
     if (BookMainPage.pageManagerHolder == null) {
       return;
     }
-    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-    if (pageModel == null) {
-      return;
+    for (var frameManager in BookMainPage.pageManagerHolder!.frameManagerMap.values) {
+      if (StudioVariables.isAutoPlay == true) {
+        logger.info('frameManager.resume()--------');
+        frameManager!.resume();
+      } else {
+        logger.info('frameManager.pause()--------');
+        frameManager!.pause();
+      }
     }
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
-    if (frameManager == null) {
-      return;
-    }
-    if (StudioVariables.isAutoPlay == true) {
-      logger.info('frameManager.resume()--------');
-      frameManager.resume();
-    } else {
-      logger.info('frameManager.pause()--------');
-      frameManager.pause();
-    }
+
+    // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    // if (pageModel == null) {
+    //   return;
+    // }
+    // FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+    // if (frameManager == null) {
+    //   return;
+    // }
+    // if (StudioVariables.isAutoPlay == true) {
+    //   logger.info('frameManager.resume()--------');
+    //   frameManager.resume();
+    // } else {
+    //   logger.info('frameManager.pause()--------');
+    //   frameManager.pause();
+    // }
   }
 }
 
