@@ -165,7 +165,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           ContentsModel.setLastTextStyle(widget.model.makeTextStyle(context), widget.model);
 
           _contentsManager?.notify();
-          if (widget.model.textType == TextType.clock) {
+          if (widget.model.textType == TextType.clock || widget.model.textType == TextType.date) {
             widget.frameManager.notify();
           }
           //_sendEvent!.sendEvent(widget.model);

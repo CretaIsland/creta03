@@ -134,7 +134,10 @@ class _LeftMenuDateState extends State<LeftMenuDate> {
       subType: infoType.index,
     );
 
+    String dateTimeVal = DateTimeType.getFormattedTime(infoType);
+
     ContentsModel model = await _dateTimeTextModel(
+      dateTimeVal,
       frameModel.mid,
       frameModel.realTimeKey,
     );
@@ -142,13 +145,13 @@ class _LeftMenuDateState extends State<LeftMenuDate> {
     mychangeStack.endTrans();
   }
 
-  Future<ContentsModel> _dateTimeTextModel(String frameMid, String bookMid) async {
+  Future<ContentsModel> _dateTimeTextModel(String value, String frameMid, String bookMid) async {
     ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
 
     retval.contentsType = ContentsType.text;
-    retval.name = 'dateTime';
+    retval.name = value;
     retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
-    retval.remoteUrl = '0.0.0';
+    retval.remoteUrl = value;
     retval.textType = TextType.date;
     retval.fontSize.set(48, noUndo: true, save: false);
     retval.fontSizeType.set(FontSizeType.userDefine, noUndo: true, save: false);

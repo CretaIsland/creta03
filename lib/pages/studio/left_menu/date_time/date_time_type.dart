@@ -24,7 +24,11 @@ enum DateTimeFormat {
 
 class DateTimeType extends StatefulWidget {
   final DateTimeFormat dateTimeFormat;
-  const DateTimeType({super.key, required this.dateTimeFormat});
+
+  const DateTimeType({
+    super.key,
+    required this.dateTimeFormat,
+  });
 
   @override
   State<DateTimeType> createState() => _DateTimeTypeState();
