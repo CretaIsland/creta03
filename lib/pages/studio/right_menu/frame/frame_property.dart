@@ -1,5 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
-
+import 'dart:math' as math;
 import 'package:creta03/pages/studio/right_menu/frame/trans_example_box.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,6 +27,7 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
+import '../../../../model/page_model.dart';
 import '../../../../player/music/creta_music_mixin.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
@@ -48,7 +49,8 @@ import '../property_mixin.dart';
 
 class FrameProperty extends StatefulWidget {
   final FrameModel model;
-  const FrameProperty({super.key, required this.model});
+  final PageModel? pageModel;
+  const FrameProperty({super.key, required this.model, this.pageModel});
 
   @override
   State<FrameProperty> createState() => _FramePropertyState();
@@ -219,12 +221,19 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     ? Row(
                         children: [
                           Text('${width.round()} x ${height.round()}', style: dataStyle),
-                          IconButton(
-                            icon: Icon(Icons.push_pin_outlined, color: CretaColor.stateCritical),
-                            iconSize: 20,
-                            onPressed: () {
-                              _setOverlay(false);
-                            },
+                          Transform.rotate(
+                            angle: math.pi / 6,
+                            child: IconButton(
+                              icon: Icon(Icons.push_pin_outlined,
+                                  color: widget.pageModel != null &&
+                                          widget.pageModel!.mid != widget.model.parentMid.value
+                                      ? CretaColor.stateNormal
+                                      : CretaColor.stateCritical),
+                              iconSize: 20,
+                              onPressed: () {
+                                _setOverlay(false);
+                              },
+                            ),
                           ),
                         ],
                       )
@@ -2018,27 +2027,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       return;
     }
     setState(() {
-      mychangeStack.startTrans();
-      if (value == true) {
-        double maxOrder = BookMainPage.getMaxOrderInBook();
-        // 오버레이는 북에서 최고 높은 order 를 가진다.
-        // 이미 있는  overlay 를 포함하여 값을 구한다.
-        // 이떄  order 는 다른 대역폭에서 논다.
-        if (maxOrder < 1000000.0) {
-          maxOrder += 1000000.0;
-        }
-        widget.model.order.set(maxOrder + 1);
-        widget.model.isOverlay.set(value);
-        BookMainPage.addOverlay(widget.model);
-      } else {
-        // order 도 내려야 한다.  order 를 구한다음.  isOveraly 를 풀어야 한다.
-        // 이때  order 는 overlay 를 포함하지 않는다.  local maxOrder
-        double maxOrder = _frameManager!.getMaxOrder();
-        widget.model.order.set(maxOrder + 1);
-        widget.model.isOverlay.set(value);
-        BookMainPage.removeOverlay(widget.model.mid);
-      }
-      mychangeStack.endTrans();
+      widget.model.toggeleOverlay(value, _frameManager!);
     });
     _sendEvent?.sendEvent(widget.model);
     BookMainPage.pageManagerHolder!.notify();

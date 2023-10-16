@@ -108,7 +108,7 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
     super.initState();
     //print('initState----------------------------------');
     if (widget.height == null) {
-      _widgetHeight = widget.itemHeight * widget.menuItem.length;
+      _widgetHeight = widget.itemHeight * widget.menuItem.length - 8; // divider 가 있어서...
     } else {
       _widgetHeight = widget.height!;
     }
@@ -192,35 +192,52 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
         child: ElevatedButton(
           style: _buttonStyle(item.selected, item.disabled, true, item.isSub),
           onHover: (value) {
-            // 1. hover 여부는 parent 만 체크하고, sub는 체크하지 않는다.
-            // 2. 마우스가 나한테 들어오면, 나는 true 가 되고, 나머지 item 들은 모두 false 가 된다.
-            // 3. 마우스가 나가면, 아무것도 하지 않는다.  즉,  마우스가 들어오면 true 이지만, 나가도 true 이다.
-            // 4. 마우스가 나갔다고 해서 false 가 되는 것이 아니고, 다른 애 한테 들어가면, 그때 false 가 되는 것이다.
-            if (item.isSub == false) {
-              if (value == true) {
-                item.isHover = true;
-                for (var e in widget.menuItem) {
-                  if (e.caption != item.caption) {
-                    e.isHover = false;
-                  }
-                }
-               
-                setState(() {
-                  (item.isHover && item.subMenu != null)
-                      ? _widgetHeight = _baseHeight + (widget.itemHeight * item.subMenu!.length)
-                      : _widgetHeight = _baseHeight;
-                });
-              } else {
-                // 5. 단, 마우스가 메뉴를 완전히 완전히 빠져 나가면, 모두 false 가 되어야 한다.
-                // 마우스가 내 메뉴에서 빠져나갔는데, 나를 제외한 모두가 다 false 라면, 완전히 빠진것이다.
-              }
-            }
+            // // 1. hover 여부는 parent 만 체크하고, sub는 체크하지 않는다.
+            // // 2. 마우스가 나한테 들어오면, 나는 true 가 되고, 나머지 item 들은 모두 false 가 된다.
+            // // 3. 마우스가 나가면, 아무것도 하지 않는다.  즉,  마우스가 들어오면 true 이지만, 나가도 true 이다.
+            // // 4. 마우스가 나갔다고 해서 false 가 되는 것이 아니고, 다른 애 한테 들어가면, 그때 false 가 되는 것이다.
+            // if (item.isSub == false) {
+            //   if (value == true) {
+            //     item.isHover = true;
+            //     for (var e in widget.menuItem) {
+            //       if (e.caption != item.caption) {
+            //         e.isHover = false;
+            //       }
+            //     }
 
-            //print('${item.caption} isHover = ${item.isHover}');
+            //     setState(() {
+            //       (item.isHover && item.subMenu != null)
+            //           ? _widgetHeight = _baseHeight + (widget.itemHeight * item.subMenu!.length)
+            //           : _widgetHeight = _baseHeight;
+            //     });
+            //   } else {
+            //     // 5. 단, 마우스가 메뉴를 완전히 완전히 빠져 나가면, 모두 false 가 되어야 한다.
+            //     // 마우스가 내 메뉴에서 빠져나갔는데, 나를 제외한 모두가 다 false 라면, 완전히 빠진것이다.
+            //   }
+            // }
 
-            item.onHover?.call(value);
+            // //print('${item.caption} isHover = ${item.isHover}');
+
+            // item.onHover?.call(value);
           },
           onPressed: () {
+            if (item.subMenu != null) {
+              item.isHover = !item.isHover;
+              setState(() {
+                if (item.subMenu != null) {
+                  if (item.isHover) {
+                    //_widgetHeight = _baseHeight + (widget.itemHeight * item.subMenu!.length);
+                    _widgetHeight += (widget.itemHeight * item.subMenu!.length);
+                  } else {
+                    if (_widgetHeight > _baseHeight) {
+                      _widgetHeight -= (widget.itemHeight * item.subMenu!.length);
+                    }
+                  }
+                }
+              });
+              return;
+            }
+
             setState(() {
               for (var ele in widget.menuItem) {
                 if (ele.selected == true) {
@@ -260,6 +277,15 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
                       color: widget.allTextColor,
                     )
                   : const SizedBox.shrink(),
+              if (item.subMenu != null)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Icon(
+                    item.isHover ? Icons.expand_less_outlined : Icons.expand_more_outlined,
+                    size: widget.iconSize,
+                    color: widget.allTextColor,
+                  ),
+                )
             ],
           ),
         ),

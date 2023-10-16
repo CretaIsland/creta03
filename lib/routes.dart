@@ -156,7 +156,7 @@ final routesLoggedOut = RouteMap(
       }
     },
     AppRoutes.studioBookPreviewPage: (routeData) {
-      if (AccountManager.currentLoginUser.isLoginedUser) {
+      //if (AccountManager.currentLoginUser.isLoginedUser) { // 로그인없이도 프리뷰는 재생 (2023-10-13 seventhstone)
         //skpark test code
         // if (BookMainPage.selectedMid.isEmpty) {
         //   BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
@@ -168,9 +168,9 @@ final routesLoggedOut = RouteMap(
                 //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
                 bookKey: GlobalKey(),
                 isPreviewX: true));
-      } else {
-        return const Redirect(AppRoutes.intro);
-      }
+      // } else {
+      //   return const Redirect(AppRoutes.intro);
+      // }
     },
     AppRoutes.studioBookGridPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {

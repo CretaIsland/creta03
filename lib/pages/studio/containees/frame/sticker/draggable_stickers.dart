@@ -336,7 +336,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 if (DraggableStickers.frameSelectNotifier != null) {
                   if (DraggableStickers.frameSelectNotifier!.selectedAssetId != sticker.id) return;
                 }
-                _showRightMouseMenu(details, frameModel);
+                _showRightMouseMenu(details, frameModel, sticker);
               },
               onTap: () {
                 //print('DraggableSticker');
@@ -437,13 +437,13 @@ class _DraggableStickersState extends State<DraggableStickers> {
     }
   }
 
-  void _showRightMouseMenu(TapDownDetails details, FrameModel frameModel) {
+  void _showRightMouseMenu(TapDownDetails details, FrameModel frameModel, Sticker sticker) {
     logger.info('right mouse button clicked ${details.globalPosition}');
     logger.info('right mouse button clicked ${details.localPosition}');
 
     bool isFullScreen = frameModel.isFullScreenTest(widget.book);
 
-    double menuWidth = 283;
+    double menuWidth = 291;
 
     ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
     ContentsManager? contentsManager = widget.frameManager!.getContentsManager(frameModel.mid);
@@ -488,9 +488,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
             caption: frameModel.isShow.value ? CretaStudioLang.unshow : CretaStudioLang.show,
             onPressed: () {
               BookMainPage.containeeNotifier!.setFrameClick(true);
+              mychangeStack.startTrans();
               frameModel.isShow.set(!frameModel.isShow.value);
               frameModel.changeOrderByIsShow(widget.frameManager!);
+              mychangeStack.endTrans();
               widget.onFrameShowUnshow.call(frameModel.mid);
+              if (frameModel.isOverlay.value == true) {
+                BookMainPage.pageManagerHolder!.notify();
+              }
             }),
         if (StudioVariables.isPreview == false)
           CretaMenuItem(caption: '', onPressed: () {}), //divider
@@ -534,6 +539,40 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   _sendEvent!.sendEvent(contentsManager!.frameModel);
                   //widget.frameManager?.notify();
                 }
+              }),
+        if (StudioVariables.isPreview == false)
+          CretaMenuItem(caption: '', onPressed: () {}), //divider
+        if (StudioVariables.isPreview == false)
+          CretaMenuItem(
+              caption: frameModel.isOverlay.value
+                  ? CretaStudioLang.noOverlayFrame
+                  : CretaStudioLang.overlayFrame,
+              onPressed: () {
+                logger.info('${CretaStudioLang.maxSize} menu clicked');
+                setState(() {
+                  frameModel.toggeleOverlay(!frameModel.isOverlay.value, widget.frameManager!);
+                  //_sendEvent!.sendEvent(frameModel);
+                  BookMainPage.pageManagerHolder!.notify();
+                });
+              }),
+        if (StudioVariables.isPreview == false &&
+            frameModel.isOverlay.value == true &&
+            frameModel.parentMid.value != sticker.pageMid)
+          CretaMenuItem(
+              caption: frameModel.isThisPageExclude(sticker.pageMid)
+                  ? CretaStudioLang.noOverlayExclude
+                  : CretaStudioLang.overlayExclude,
+              onPressed: () {
+                bool value = !frameModel.isThisPageExclude(sticker.pageMid);
+                setState(() {
+                  if (value == true) {
+                    frameModel.addOverlayExclude(sticker.pageMid);
+                  } else {
+                    frameModel.removeOverlayExclude(sticker.pageMid);
+                  }
+                  _sendEvent!.sendEvent(frameModel);
+                  //BookMainPage.pageManagerHolder!.notify();
+                });
               }),
         // CretaMenuItem(
         //     disabled: StudioVariables.clipBoard == null ? true : false,

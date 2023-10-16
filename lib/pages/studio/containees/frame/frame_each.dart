@@ -532,11 +532,14 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     }
     if (model.isWatchTYpe()) {
       return watchFrame(
-        model,
-        const Text('GMT-9'),
-        context,
-        StudioVariables.applyScale,
-        false,
+        contentsManager: _contentsManager,
+        model: model,
+        child: const Text('GMT-9'),
+        context: context,
+        applyScale: StudioVariables.applyScale,
+        isThumbnail: false,
+        width: widget.width,
+        height: widget.height,
       );
     }
     // if (model.nextContentTypes.value != NextContentTypes.none) {

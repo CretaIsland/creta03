@@ -384,6 +384,9 @@ class CretaStudioLang {
 
   static const String autoFitContents = '콘텐츠 크기에 자동 맞춤';
   static const String overlayFrame = '모든 페이지에서 고정';
+  static const String noOverlayFrame = '모든 페이지에서 고정 해제';
+  static const String overlayExclude = '이 페이지에서만 고정 해제';
+  static const String noOverlayExclude = '이 페이지에서만 고정 해제 취소';
 
   static const String ani = '애니메이션';
   static const String speed = '속도';

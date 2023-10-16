@@ -12,6 +12,7 @@ import '../../../data_io/contents_manager.dart';
 import '../../../data_io/frame_manager.dart';
 import '../../../model/contents_model.dart';
 import '../../../model/frame_model.dart';
+import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 import '../containees/containee_nofifier.dart';
 import '../containees/frame/sticker/mini_menu.dart';
@@ -146,11 +147,12 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   }
 
   Widget _frameProperty() {
+    PageModel? page = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
     if (frame == null) {
       return Container();
     }
-    return FrameProperty(key: ValueKey(frame.mid), model: frame);
+    return FrameProperty(key: ValueKey(frame.mid), model: frame, pageModel: page);
   }
 
   Widget _contentsProperty() {

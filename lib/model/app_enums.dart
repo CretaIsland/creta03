@@ -606,6 +606,60 @@ int textAlignVerticalToInt(TextAlignVertical t) {
   return 0;
 }
 
+Alignment textAligntoAlign(TextAlign t) {
+  switch (t) {
+    case TextAlign.left:
+      return Alignment.centerLeft;
+    case TextAlign.center:
+      return Alignment.center;
+    case TextAlign.right:
+      return Alignment.centerLeft;
+    default:
+      return Alignment.center;
+  }
+}
+
+Alignment bothSideAlign(TextAlign align, int valign) {
+  switch (align) {
+    case TextAlign.left:
+      switch (valign) {
+        case 1:
+          return Alignment.bottomLeft;
+        case 0:
+          return Alignment.centerLeft;
+        case -1:
+          return Alignment.topLeft;
+        default:
+          return Alignment.centerLeft;
+      }
+    case TextAlign.center:
+      switch (valign) {
+        case 1:
+          return Alignment.bottomCenter;
+        case 0:
+          return Alignment.center;
+        case -1:
+          return Alignment.topCenter;
+        default:
+          return Alignment.center;
+      }
+
+    case TextAlign.right:
+      switch (valign) {
+        case 1:
+          return Alignment.bottomRight;
+        case 0:
+          return Alignment.centerRight;
+        case -1:
+          return Alignment.topRight;
+        default:
+          return Alignment.centerRight;
+      }
+    default:
+      return Alignment.center;
+  }
+}
+
 enum GenderType {
   none,
   male,

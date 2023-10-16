@@ -433,12 +433,17 @@ class _DraggableResizableState extends State<DraggableResizable> {
             width: 24,
             height: 24,
             child: CircleAvatar(
-              backgroundColor: Colors.white.withOpacity(0.5),
+              backgroundColor: Colors.white.withOpacity(0.1),
               //radius: 16,
-              child: Icon(
-                Icons.push_pin_outlined,
-                size: 16,
-                color: CretaColor.stateCritical,
+              child: Transform.rotate(
+                angle: math.pi / 6, // 180/4 = 30도로 회전
+                child: Icon(
+                  Icons.push_pin_outlined,
+                  color: widget.pageMid != widget.frameModel!.parentMid.value
+                      ? CretaColor.stateNormal
+                      : CretaColor.stateCritical,
+                  size: 16,
+                ),
               ),
             ),
           ),

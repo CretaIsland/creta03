@@ -115,7 +115,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data is FrameModel) {
             FrameModel model = snapshot.data! as FrameModel;
-            setFrameManager(model);
+            //setFrameManager(model);
             frameManager!.updateModel(model);
           }
           //return CretaManager.waitReorder(manager: frameManager!, child: showFrame());

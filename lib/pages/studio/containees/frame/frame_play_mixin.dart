@@ -174,8 +174,16 @@ mixin FramePlayMixin {
     return const SizedBox.shrink();
   }
 
-  Widget watchFrame(
-      FrameModel model, Widget? child, BuildContext context, double applyScale, bool isThumbnail) {
+  Widget watchFrame({
+    required ContentsManager? contentsManager,
+    required FrameModel model,
+    required Widget? child,
+    required BuildContext context,
+    required double applyScale,
+    required bool isThumbnail,
+    required double width,
+    required double height,
+  }) {
     if (model.frameType == FrameType.analogWatch) {
       return AnalogClock(
         //dateTime: DateTime(2023, 07, 14, 10, 12, 07),
@@ -189,16 +197,21 @@ mixin FramePlayMixin {
     }
     if (model.frameType == FrameType.digitalWatch) {
       ContentsModel? contentsModel;
-      if (frameManager != null) {
-        contentsModel = frameManager!.getFirstContents(model.mid);
+      if (contentsManager != null) {
+        contentsModel = contentsManager.getFirstModel();
       }
       if (contentsModel == null) {
-        // overlay 경우일 가능성이 크다.
-        //print('sdfdfsdfsdfsdfdfdffs');
-        if (model.isOverlay.value == true) {
-          //print('-------------------------------');
-          frameManager = BookMainPage.pageManagerHolder!.findFrameManager(model.parentMid.value);
+        if (frameManager != null) {
           contentsModel = frameManager!.getFirstContents(model.mid);
+        }
+        if (contentsModel == null) {
+          // overlay 경우일 가능성이 크다.
+          //print('sdfdfsdfsdfsdfdfdffs');
+          if (model.isOverlay.value == true) {
+            //print('-------------------------------');
+            frameManager = BookMainPage.pageManagerHolder!.findFrameManager(model.parentMid.value);
+            contentsModel = frameManager!.getFirstContents(model.mid);
+          }
         }
       }
 
@@ -214,21 +227,30 @@ mixin FramePlayMixin {
             .style
             .copyWith(fontSize: StudioConst.defaultFontSize * applyScale);
       }
-      //print('fontSize = ${style.fontSize}');
+      //print('width,height = $width, $height');
 
-      return DigitalClock(
-          textStyle: style,
-          showSeconds: true,
-          isLive: true,
-          digitalClockColor: Colors.black,
-          // textScaleFactor:
-          //     ((model.width.value / (50 * 2)) + 1) * applyScale, // 50 is minimum contstraint
-          //digitalClockColor: Colors.transparent,
-          // decoration: const BoxDecoration(
-          //     color: Colors.yellow,
-          //     shape: BoxShape.rectangle,
-          //     borderRadius: BorderRadius.all(Radius.circular(15))),
-          datetime: DateTime.now());
+      return Container(
+        width: width,
+        height: height,
+        padding: const EdgeInsets.all(StudioConst.defaultTextPadding),
+        alignment: contentsModel != null
+            ? bothSideAlign(contentsModel.align.value, contentsModel.valign.value)
+            : Alignment.center,
+        child: DigitalClock(
+            textScaleFactor: applyScale,
+            textStyle: style,
+            showSeconds: true,
+            isLive: true,
+            digitalClockColor: Colors.black,
+            // textScaleFactor:
+            //     ((model.width.value / (50 * 2)) + 1) * applyScale, // 50 is minimum contstraint
+            //digitalClockColor: Colors.transparent,
+            // decoration: const BoxDecoration(
+            //     color: Colors.yellow,
+            //     shape: BoxShape.rectangle,
+            //     borderRadius: BorderRadius.all(Radius.circular(15))),
+            datetime: DateTime.now()),
+      );
     }
     if (model.frameType == FrameType.stopWatch) {
       return const StopWatch();
