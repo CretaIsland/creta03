@@ -763,17 +763,17 @@ class ContentsModel extends CretaModel {
 
     double newFontSize = fontSize.value * applyScale;
 
-    // if (isEditMode == false &&
-    //     autoSizeType.value == AutoSizeType.autoFontSize &&
-    //     (aniType.value != TextAniType.rotate ||
-    //         aniType.value != TextAniType.bounce ||
-    //         aniType.value != TextAniType.fade ||
-    //         aniType.value != TextAniType.shimmer ||
-    //         aniType.value != TextAniType.typewriter ||
-    //         aniType.value != TextAniType.wavy ||
-    //         aniType.value != TextAniType.fidget)) {
-    //   newFontSize = StudioConst.maxFontSize * applyScale;
-    // }
+    if (isEditMode == false &&
+        autoSizeType.value == AutoSizeType.autoFontSize &&
+        (aniType.value != TextAniType.rotate ||
+            aniType.value != TextAniType.bounce ||
+            aniType.value != TextAniType.fade ||
+            aniType.value != TextAniType.shimmer ||
+            aniType.value != TextAniType.typewriter ||
+            aniType.value != TextAniType.wavy ||
+            aniType.value != TextAniType.fidget)) {
+      newFontSize = StudioConst.maxFontSize * applyScale;
+    }
     //newFontSize = newFontSize.roundToDouble();
     if (isThumbnail == false) {
       double minFontSize = StudioConst.minFontSize / applyScale;

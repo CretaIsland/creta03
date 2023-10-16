@@ -114,7 +114,9 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   }
 
   bool isTextType() {
-    return (frameType == FrameType.text);
+    return (frameType == FrameType.text ||
+        frameType == FrameType.digitalWatch ||
+        frameType == FrameType.dateTimeFormat);
   }
 
   double prevWidth = -1;

@@ -106,13 +106,25 @@ class CretaRightMouseMenuWidgetState extends State<CretaRightMouseMenuWidget> {
   @override
   void initState() {
     super.initState();
-    //print('initState----------------------------------');
+
+    int dividerCount = 0;
+    for (var item in widget.menuItem) {
+      if (item.caption.isEmpty) {
+        dividerCount++;
+      }
+    }
+
     if (widget.height == null) {
-      _widgetHeight = widget.itemHeight * widget.menuItem.length - 8; // divider 가 있어서...
+      _widgetHeight =
+          widget.itemHeight * (widget.menuItem.length - dividerCount) + (widget.itemSpacing * 4);
+      // divider 가 있어서...
     } else {
       _widgetHeight = widget.height!;
     }
     _baseHeight = _widgetHeight;
+
+    // print(
+    //     'initState-----$_widgetHeight-------------$dividerCount----------------${widget.menuItem.length}');
   }
 
   @override

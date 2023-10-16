@@ -85,6 +85,7 @@ class _LeftMenuClockState extends State<LeftMenuClock> {
                   child: DigitalClock(
                       showSeconds: true,
                       isLive: false,
+                      scaleFactor: 0.5,
                       digitalClockColor: Colors.black,
                       // decoration: const BoxDecoration(
                       //     color: Colors.yellow,

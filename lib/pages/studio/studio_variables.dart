@@ -3,9 +3,7 @@ import 'package:hycop/common/util/logger.dart';
 
 import '../../common/creta_constant.dart';
 import '../../data_io/creta_manager.dart';
-import '../../data_io/frame_manager.dart';
 import '../../model/creta_model.dart';
-import '../../model/page_model.dart';
 import '../login/creta_account_manager.dart';
 import 'book_main_page.dart';
 import 'containees/containee_nofifier.dart';
@@ -56,6 +54,7 @@ class StudioVariables {
   static double magnetMargin = 5;
 
   static bool isPreview = false;
+  static bool hideMouse = false;
 
   static bool isFullscreen = false;
 
@@ -110,21 +109,32 @@ class StudioVariables {
     if (BookMainPage.pageManagerHolder == null) {
       return;
     }
-    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-    if (pageModel == null) {
-      return;
+
+    for (var frameManager in BookMainPage.pageManagerHolder!.frameManagerMap.values) {
+      if (StudioVariables.isMute == true) {
+        logger.info('frameManager.setSoundOff()--------');
+        frameManager!.setSoundOff();
+      } else {
+        logger.info('frameManager.resumeSound()--------');
+        frameManager!.resumeSound();
+      }
     }
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
-    if (frameManager == null) {
-      return;
-    }
-    if (StudioVariables.isMute == true) {
-      logger.info('frameManager.setSoundOff()--------');
-      frameManager.setSoundOff();
-    } else {
-      logger.info('frameManager.resumeSound()--------');
-      frameManager.resumeSound();
-    }
+
+    // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    // if (pageModel == null) {
+    //   return;
+    // }
+    // FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+    // if (frameManager == null) {
+    //   return;
+    // }
+    // if (StudioVariables.isMute == true) {
+    //   logger.info('frameManager.setSoundOff()--------');
+    //   frameManager.setSoundOff();
+    // } else {
+    //   logger.info('frameManager.resumeSound()--------');
+    //   frameManager.resumeSound();
+    // }
   }
 
   static void globalToggleAutoPlay(
@@ -150,21 +160,31 @@ class StudioVariables {
     if (BookMainPage.pageManagerHolder == null) {
       return;
     }
-    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-    if (pageModel == null) {
-      return;
+    for (var frameManager in BookMainPage.pageManagerHolder!.frameManagerMap.values) {
+      if (StudioVariables.isAutoPlay == true) {
+        logger.info('frameManager.resume()--------');
+        frameManager!.resume();
+      } else {
+        logger.info('frameManager.pause()--------');
+        frameManager!.pause();
+      }
     }
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
-    if (frameManager == null) {
-      return;
-    }
-    if (StudioVariables.isAutoPlay == true) {
-      logger.info('frameManager.resume()--------');
-      frameManager.resume();
-    } else {
-      logger.info('frameManager.pause()--------');
-      frameManager.pause();
-    }
+
+    // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    // if (pageModel == null) {
+    //   return;
+    // }
+    // FrameManager? frameManager = BookMainPage.pageManagerHolder!.findFrameManager(pageModel.mid);
+    // if (frameManager == null) {
+    //   return;
+    // }
+    // if (StudioVariables.isAutoPlay == true) {
+    //   logger.info('frameManager.resume()--------');
+    //   frameManager.resume();
+    // } else {
+    //   logger.info('frameManager.pause()--------');
+    //   frameManager.pause();
+    // }
   }
 }
 

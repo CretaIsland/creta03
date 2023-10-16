@@ -270,15 +270,15 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
         );
       }
       return watchFrame(
-        contentsManager: _contentsManager,
-        model: model,
-        child: const Text('GMT-9'),
-        context: context,
-        applyScale: applyScale,
-        isThumbnail: true,
-        width: widget.width,
-        height: widget.height,
-      );
+          contentsManager: _contentsManager,
+          model: model,
+          child: null,
+          context: context,
+          applyScale: applyScale,
+          isThumbnail: true,
+          width: widget.width,
+          height: widget.height,
+          timeChanged: () {});
     }
     if (model.isTimelineType()) {
       // return timelineFrame(model);

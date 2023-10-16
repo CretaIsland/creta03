@@ -107,7 +107,12 @@ class _LinkWidgetState extends State<LinkWidget> {
                 width: double.infinity,
                 height: double.infinity,
                 child: MouseRegion(
-                  cursor: LinkParams.isLinkNewMode ? SystemMouseCursors.none : MouseCursor.defer,
+                  //cursor: SystemMouseCursors.none,
+                  cursor: StudioVariables.hideMouse
+                      ? SystemMouseCursors.none
+                      : LinkParams.isLinkNewMode
+                          ? SystemMouseCursors.none
+                          : MouseCursor.defer,
                   onEnter: ((event) {
                     setState(() {
                       _isHover = true;
@@ -247,6 +252,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     if (!_isPlayAble()) return false;
     if (LinkParams.isLinkNewMode) return false;
     if (widget.contentsModel.isLinkEditMode) return false;
+    if (StudioVariables.hideMouse) return false;
     // Frame 이 선택된 경우에만 보이도록 수정한다.
     // if (DraggableStickers.frameSelectNotifier != null) {
     //   if (DraggableStickers.frameSelectNotifier!.selectedAssetId != widget.frameModel.mid) {
@@ -264,6 +270,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     if (LinkParams.isLinkNewMode) return false;
     if (widget.contentsModel.isLinkEditMode) return false;
     if (StudioVariables.isPreview == false) return false;
+    if (StudioVariables.hideMouse) return false;
     //if (widget.contentsModel.contentsType == ContentsType.document) return false;
     return true;
   }

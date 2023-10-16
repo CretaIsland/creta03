@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../../../model/contents_model.dart';
 import '../../../pages/studio/studio_constant.dart';
 import 'clock_painter.dart';
 
@@ -18,7 +19,11 @@ class DigitalClock extends StatefulWidget {
   final Color numberColor;
   final bool isLive;
   final double textScaleFactor;
+  final double scaleFactor;
   final TextStyle? textStyle;
+  final Widget? child;
+  final ContentsModel? contentsModel;
+  final void Function()? timeChanged;
 
   const DigitalClock(
       {this.datetime,
@@ -30,6 +35,10 @@ class DigitalClock extends StatefulWidget {
       this.digitalClockColor = Colors.black,
       this.numberColor = Colors.black,
       this.textScaleFactor = 1.0,
+      this.scaleFactor = 1.0,
+      this.child,
+      this.contentsModel,
+      this.timeChanged,
       isLive,
       Key? key})
       : isLive = isLive ?? (datetime == null),
@@ -51,6 +60,9 @@ class _DigitalClockState extends State<DigitalClock> {
   _DigitalClockState(datetime)
       : datetime = datetime ?? DateTime.now(),
         initialDatetime = datetime ?? DateTime.now();
+
+  //ContentsEventController? _sendEvent;
+
   @override
   void initState() {
     super.initState();
@@ -61,13 +73,24 @@ class _DigitalClockState extends State<DigitalClock> {
       // update clock every second or minute based on second hand's visibility.
       Timer.periodic(updateDuration, update);
     }
+
+    // final ContentsEventController sendEvent = Get.find(tag: 'contents-property-to-main');
+
+    // _sendEvent = sendEvent;
   }
 
   update(Timer timer) {
     if (mounted) {
       // update is only called on live clocks. So, it's safe to update datetime.
       datetime = initialDatetime.add(updateDuration * timer.tick);
-      setState(() {});
+      if (widget.timeChanged != null) {
+        widget.timeChanged!.call();
+      } else {
+        setState(() {});
+        // if (widget.contentsModel != null) {
+        //   _sendEvent?.sendEvent(widget.contentsModel!);
+        // }
+      }
     }
   }
 
@@ -80,6 +103,10 @@ class _DigitalClockState extends State<DigitalClock> {
       digitalClockColor: widget.digitalClockColor,
       textScaleFactor: widget.textScaleFactor,
     );
+
+    if (widget.child != null) {
+      return widget.child!;
+    }
 
     return CustomPaint(
       size: Size(_width, _height),
@@ -110,7 +137,6 @@ class _DigitalClockState extends State<DigitalClock> {
     TextStyle? textStyle,
     Color digitalClockColor = Colors.black,
     bool showSeconds = true,
-    double scaleFactor = 1,
     double textScaleFactor = 1,
     bool useMilitaryTime = true,
   }) {
@@ -128,7 +154,11 @@ class _DigitalClockState extends State<DigitalClock> {
     String minute = datetime.minute.toString().padLeft(2, "0");
     String second = datetime.second.toString().padLeft(2, "0");
     String textToBeDisplayed = "$hour:$minute${showSeconds ? ":$second" : ""}$meridiem";
-    double defaultFontSize = StudioConst.defaultFontSize * scaleFactor * textScaleFactor;
+    double defaultFontSize = StudioConst.defaultFontSize * widget.scaleFactor * textScaleFactor;
+
+    if (widget.contentsModel != null) {
+      widget.contentsModel!.remoteUrl = textToBeDisplayed;
+    }
 
     TextSpan digitalClockSpan = TextSpan(
         style: textStyle ??
@@ -141,7 +171,7 @@ class _DigitalClockState extends State<DigitalClock> {
 
     _digitalClockTP = TextPainter(
         text: digitalClockSpan,
-        textAlign: TextAlign.end,
+        textAlign: TextAlign.start,
         textDirection: TextDirection.ltr,
         textHeightBehavior: const TextHeightBehavior(
           applyHeightToFirstAscent: false,
