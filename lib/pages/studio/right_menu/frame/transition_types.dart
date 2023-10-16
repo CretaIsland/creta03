@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:creta03/design_system/component/example_box_mixin.dart';
@@ -33,32 +34,58 @@ class TransitionTypes extends StatefulWidget {
 
 class _TransitionTypesState extends State<TransitionTypes> with ExampleBoxStateMixin {
   late PageController _pageController;
-  late int _currentPage;
+  int _currentPage = 0;
   ContentsManager? _contentsManager;
-  bool _emptyCarousel = true;
   int _length = 3;
+  late double angle;
+  bool _isPlayling = true;
 
   @override
   void initState() {
     super.initState();
     _contentsManager = widget.frameManager.getContentsManager(widget.model.mid);
-    if (_contentsManager == null) {
-      _currentPage = 0;
-    } else {
-      _currentPage = _contentsManager!.modelList.length ~/ 2;
-      if (_contentsManager!.modelList.length >= 3) {
-        _length = _contentsManager!.modelList.length;
-        _emptyCarousel = false;
+    if (_contentsManager != null) {
+      _length = _contentsManager!.modelList.length;
+      if (!_isPlayling) {
+        if (_contentsManager!.modelList.length < 3) {
+          _currentPage = (_contentsManager!.modelList.length * 3) % 2;
+        } else {
+          _currentPage = _contentsManager!.modelList.length % 2;
+        }
       }
     }
-    _pageController = PageController(initialPage: _currentPage, viewportFraction: 0.7);
-    super.initState();
+    // if (_contentsManager == null) {
+    //   _currentPage = 0;
+    // } else {
+    //   _currentPage = _contentsManager!.modelList.length * 3 ~/ 2;
+    //   if (_contentsManager!.modelList.length >= 3) {
+    //     _length = _contentsManager!.modelList.length;
+    //   }
+    // }
+    _pageController = PageController(initialPage: _currentPage, viewportFraction: 0.65);
+    startAutoScroll();
   }
 
   @override
   void dispose() {
     super.dispose();
     _pageController.dispose();
+  }
+
+  void startAutoScroll() {
+    if (_isPlayling) {
+      Future.delayed(const Duration(milliseconds: 5000), () {
+        _pageController.nextPage(
+            duration: const Duration(milliseconds: 5000), curve: Curves.linear);
+        startAutoScroll();
+      });
+    }
+  }
+
+  void pauseAutoScroll() {
+    setState(() {
+      _isPlayling = false;
+    });
   }
 
   @override
@@ -70,7 +97,7 @@ class _TransitionTypesState extends State<TransitionTypes> with ExampleBoxStateM
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 6.0),
       child: PageView.builder(
-          itemCount: _length,
+          itemCount: _length < 3 ? (_length * 3) : _length,
           physics: const ClampingScrollPhysics(),
           controller: _pageController,
           itemBuilder: (context, index) {
@@ -86,10 +113,8 @@ class _TransitionTypesState extends State<TransitionTypes> with ExampleBoxStateM
         double value = 0.0;
         if (_pageController.position.haveDimensions) {
           value = index.toDouble() - (_pageController.page ?? 0);
-          value = (value * 0.048).clamp(-1, 1);
-          // print("value $value index $index");
+          value = (value * 0.038).clamp(-1, 1);
         }
-        late double angle;
         switch (widget.nextContentTypes) {
           case NextContentTypes.normalCarousel:
             angle = 0.0;
@@ -103,8 +128,8 @@ class _TransitionTypesState extends State<TransitionTypes> with ExampleBoxStateM
         }
         return Transform.rotate(
           angle: angle,
-          child: carouselCard(
-              _emptyCarousel ? null : _contentsManager!.modelList[index] as ContentsModel),
+          child: carouselCard(_contentsManager!
+              .modelList[index % _contentsManager!.modelList.length] as ContentsModel),
         );
       },
     );
@@ -112,7 +137,7 @@ class _TransitionTypesState extends State<TransitionTypes> with ExampleBoxStateM
 
   Widget carouselCard(ContentsModel? contentsModel) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: contentsModel == null
           ? Container(
               decoration: BoxDecoration(

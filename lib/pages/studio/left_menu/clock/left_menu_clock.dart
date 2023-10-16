@@ -197,36 +197,4 @@ class _LeftMenuClockState extends State<LeftMenuClock> {
     //retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }
-
-  // Future<void> _createDateFormat(DateTimeFormat infoType) async {
-  //   PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-  //   if (pageModel == null) return;
-
-  //   double width = 480;
-  //   double height = 110;
-  //   double x = (pageModel.width.value - width) / 2;
-  //   double y = (pageModel.height.value - height) / 2;
-
-  //   FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-  //   if (frameManager == null) {
-  //     return;
-  //   }
-
-  //   mychangeStack.startTrans();
-  //   FrameModel frameModel = await frameManager.createNextFrame(
-  //     doNotify: false,
-  //     size: Size(width, height),
-  //     pos: Offset(x, y),
-  //     bgColor1: Colors.transparent,
-  //     type: FrameType.text,
-  //     subType: infoType.index,
-  //   );
-  //   ContentsModel model = await _dateTimeTextModel(
-  //     DateTimeType.getDateText(infoType),
-  //     frameModel.mid,
-  //     frameModel.realTimeKey,
-  //   );
-  //   await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
-  //   mychangeStack.endTrans();
-  //}
 }

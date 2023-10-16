@@ -1,15 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
+
+import 'package:creta03/data_io/contents_manager.dart';
+import 'package:creta03/model/frame_model.dart';
 import 'package:creta03/pages/studio/left_menu/date_time/date_time_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
-import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
-import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import 'date_time_type.dart';
@@ -104,15 +106,15 @@ class _LeftMenuDateState extends State<LeftMenuDate> {
   }
 
   void _onPressedCreateDateTimeFormat(DateTimeFormat infoType) async {
-    await _createDateFormat(infoType);
+    await _createDateTimeFormat(infoType);
     BookMainPage.pageManagerHolder!.notify();
   }
 
-  Future<void> _createDateFormat(DateTimeFormat infoType) async {
+  Future<void> _createDateTimeFormat(DateTimeFormat infoType) async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
-    double width = 480;
+    double width = 560;
     double height = 110;
     double x = (pageModel.width.value - width) / 2;
     double y = (pageModel.height.value - height) / 2;
@@ -128,11 +130,11 @@ class _LeftMenuDateState extends State<LeftMenuDate> {
       size: Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
-      type: FrameType.text,
+      type: FrameType.dateTimeFormat,
       subType: infoType.index,
     );
+
     ContentsModel model = await _dateTimeTextModel(
-      DateTimeType.getDateText(infoType),
       frameModel.mid,
       frameModel.realTimeKey,
     );
@@ -140,17 +142,16 @@ class _LeftMenuDateState extends State<LeftMenuDate> {
     mychangeStack.endTrans();
   }
 
-  Future<ContentsModel> _dateTimeTextModel(String format, String frameMid, String bookMid) async {
+  Future<ContentsModel> _dateTimeTextModel(String frameMid, String bookMid) async {
     ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
 
     retval.contentsType = ContentsType.text;
-
-    retval.name = format;
-    retval.remoteUrl = '$format ';
+    retval.name = 'dateTime';
     retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
+    retval.remoteUrl = '0.0.0';
     retval.textType = TextType.date;
     retval.fontSize.set(48, noUndo: true, save: false);
-    retval.fontSizeType.set(FontSizeType.small, noUndo: true, save: false);
+    retval.fontSizeType.set(FontSizeType.userDefine, noUndo: true, save: false);
     //retval.playTime.set(-1, noUndo: true, save: false);
     return retval;
   }

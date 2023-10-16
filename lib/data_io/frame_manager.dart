@@ -453,14 +453,14 @@ class FrameManager extends CretaManager {
 
   Future<void> pause() async {
     for (var manager in contentsManagerMap.values) {
-      logger.info('frameManager.setSoundOff()********');
+      logger.info('frameManager.pause()********');
       await manager.pause();
     }
   }
 
   Future<void> resume() async {
     for (var manager in contentsManagerMap.values) {
-      logger.info('frameManager.resumeSound()********');
+      logger.info('frameManager.resume()********');
       await manager.resume();
     }
   }
@@ -488,11 +488,11 @@ class FrameManager extends CretaManager {
       //print('findOrInitContentsManager');
       ContentsManager contentsManager = findContentsManager(frameModel);
       // if (contentsManager == null) {
-      //   //logger.info('new ContentsManager created (${frameModel.mid})');
+      //   logger.info('new ContentsManager created (${frameModel.mid})');
       //   contentsManager = newContentsManager(frameModel);
       //   contentsManager.clearAll();
       // } else {
-      //   //logger.info('old ContentsManager used (${frameModel.mid})');
+      //   logger.info('old ContentsManager used (${frameModel.mid})');
       // }
       await contentsManager.initContentsManager(frameModel.mid);
     }

@@ -78,8 +78,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return false;
   }
 
-  bool isDateType() {
-    return (frameType == FrameType.dateFormat);
+  bool isDateTimeType() {
+    return (frameType == FrameType.dateTimeFormat);
   }
 
   bool isTimelineType() {

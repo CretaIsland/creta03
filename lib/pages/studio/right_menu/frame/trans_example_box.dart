@@ -1,6 +1,5 @@
 // import 'dart:math';
 
-import 'package:creta03/data_io/contents_manager.dart';
 import 'package:creta03/design_system/component/example_box_mixin.dart';
 import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:flutter/material.dart';
@@ -30,22 +29,22 @@ class TransExampleBox extends StatefulWidget {
 }
 
 class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateMixin {
-  ContentsManager? _contentsManager;
+  // ContentsManager? _contentsManager;
 
   @override
   void initState() {
     super.initState();
-    _contentsManager = widget.frameManager.getContentsManager(widget.model.mid);
+    // _contentsManager = widget.frameManager.getContentsManager(widget.model.mid);
   }
 
   void onSelected() {
-    if (_contentsManager!.modelList.length < 3) {
-      showAnnouceDialog(context);
-    } else {
-      setState(() {
-        widget.model.nextContentTypes.set(widget.nextContentTypes);
-      });
-    }
+    // if (_contentsManager!.modelList.length < 3) {
+    //   showAnnouceDialog(context);
+    // } else {
+    setState(() {
+      widget.model.nextContentTypes.set(widget.nextContentTypes);
+    });
+    // }
     widget.onTypeSelected.call();
   }
 

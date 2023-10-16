@@ -251,19 +251,36 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
     }
 
     mychangeStack.startTrans();
-    await frameManager.createNextFrame(
+    FrameModel frameModel = await frameManager.createNextFrame(
       doNotify: false,
       size: Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
       type: frameType,
     );
+
+    ContentsModel model = await _weatherStickerModel(frameModel.mid, frameModel.realTimeKey);
+    await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
     mychangeStack.endTrans();
   }
 
   void _onPressedCreateWeatherInfo(WeatherInfoType infoType) async {
     await _createWeatherInfo(infoType);
     BookMainPage.pageManagerHolder!.notify();
+  }
+
+  Future<ContentsModel> _weatherStickerModel(String frameMid, String bookMid) async {
+    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
+
+    retval.contentsType = ContentsType.text;
+    retval.name = 'weather sticker';
+    retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
+    retval.remoteUrl = '';
+    retval.textType = TextType.weather;
+    retval.fontSize.set(48, noUndo: true, save: false);
+    retval.fontSizeType.set(FontSizeType.userDefine, noUndo: true, save: false);
+    //retval.playTime.set(-1, noUndo: true, save: false);
+    return retval;
   }
 
   Future<void> _createWeatherInfo(WeatherInfoType infoType) async {
@@ -309,7 +326,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
     retval.remoteUrl = '$name $text';
     retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
     // retval.remoteUrl = text;
-    retval.textType = TextType.weather;
+    retval.textType = TextType.weatherSticker;
     retval.fontSize.set(48, noUndo: true, save: false);
     retval.fontSizeType.set(FontSizeType.small, noUndo: true, save: false);
     //retval.playTime.set(-1, noUndo: true, save: false);

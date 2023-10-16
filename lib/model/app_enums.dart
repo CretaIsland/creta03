@@ -49,7 +49,7 @@ enum FrameType {
   digitalWatch,
   stopWatch,
   countDownTimer,
-  dateFormat,
+  dateTimeFormat,
   sticker,
   showcaseTimeline,
   footballTimeline,
@@ -620,6 +620,7 @@ enum TextType {
   none,
   normal,
   weather,
+  weatherSticker,
   clock,
   date,
   end;

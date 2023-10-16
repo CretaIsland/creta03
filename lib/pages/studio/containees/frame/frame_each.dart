@@ -338,6 +338,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.stopWatch) {
       return false;
     }
+    if (model.frameType == FrameType.dateTimeFormat) {
+      return false;
+    }
     if (model.frameType == FrameType.countDownTimer) {
       return false;
     }
@@ -548,11 +551,12 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     // }
     if (model.nextContentTypes.value != NextContentTypes.none) {
       return TransitionTypes(
+        key: ValueKey('Frame${model.mid}'),
         width: widget.width,
         height: widget.height,
         frameManager: frameManager!,
         model: model,
-        nextContentTypes: widget.model.nextContentTypes.value,
+        nextContentTypes: model.nextContentTypes.value,
         name: '',
       );
     }
@@ -568,6 +572,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.isMapType()) {
       return mapFrame(model);
     }
+
+    if (model.isDateTimeType()) {
+      return dateTimeFrame(model);
+    }
+
     //print('ClipRect');
     return ClipRect(
       clipBehavior: Clip.hardEdge,
