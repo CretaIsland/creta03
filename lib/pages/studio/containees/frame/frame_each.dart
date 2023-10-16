@@ -2,7 +2,7 @@
 
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
 import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
-import 'package:creta03/pages/studio/right_menu/frame/trans_example_box.dart';
+import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -349,6 +349,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.frameType == FrameType.stopWatch) {
       return false;
     }
+    if (model.frameType == FrameType.dateTimeFormat) {
+      return false;
+    }
     if (model.frameType == FrameType.countDownTimer) {
       return false;
     }
@@ -569,16 +572,25 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         ),
       );
     }
+    // if (model.nextContentTypes.value != NextContentTypes.none) {
+    //   return TransExampleBox(
+    //     frameManager: frameManager!,
+    //     model: model,
+    //     nextContentTypes: widget.model.nextContentTypes.value,
+    //     name: '',
+    //     selectedType: false,
+    //     onTypeSelected: () {},
+    //   );
+    // }
     if (model.nextContentTypes.value != NextContentTypes.none) {
-      return TransExampleBox(
+      return TransitionTypes(
+        key: ValueKey('Frame${model.mid}'),
         width: widget.width,
         height: widget.height,
         frameManager: frameManager!,
         model: model,
-        nextContentTypes: widget.model.nextContentTypes.value,
+        nextContentTypes: model.nextContentTypes.value,
         name: '',
-        selectedType: false,
-        onTypeSelected: () {},
       );
     }
     if (model.isStickerType()) {
@@ -593,6 +605,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (model.isMapType()) {
       return mapFrame(model);
     }
+
+    if (model.isDateTimeType()) {
+      return dateTimeFrame(model);
+    }
+
     //print('ClipRect');
     return ClipRect(
       clipBehavior: Clip.hardEdge,

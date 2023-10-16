@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 
 enum DateTimeFormat {
   date,
@@ -20,10 +22,19 @@ enum DateTimeFormat {
   hourMinSecJM,
 }
 
-class DateTimeType {
-  static String getDateText(DateTimeFormat dateTimeFormat) {
-    initializeDateFormatting('ko');
-    switch (dateTimeFormat) {
+class DateTimeType extends StatefulWidget {
+  final DateTimeFormat dateTimeFormat;
+
+  const DateTimeType({
+    super.key,
+    required this.dateTimeFormat,
+  });
+
+  @override
+  State<DateTimeType> createState() => _DateTimeTypeState();
+
+  static String getFormattedTime(DateTimeFormat format) {
+    switch (format) {
       case DateTimeFormat.date:
         return DateFormat.EEEE('ko').format(DateTime.now());
       case DateTimeFormat.day:
@@ -57,5 +68,75 @@ class DateTimeType {
       case DateTimeFormat.hourMinSecJM:
         return DateFormat.jms('ko').format(DateTime.now());
     }
+  }
+}
+
+class _DateTimeTypeState extends State<DateTimeType> {
+  late String _formattedTime;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('ko');
+
+    _formattedTime = DateTimeType.getFormattedTime(widget.dateTimeFormat);
+    _updateTimeWithTimer();
+  }
+
+  void _updateTimeWithTimer() {
+    Duration updateDuration;
+    switch (widget.dateTimeFormat) {
+      case DateTimeFormat.hourMinSec:
+      case DateTimeFormat.hourMinSecJM:
+      case DateTimeFormat.hourMin:
+      case DateTimeFormat.hourMinJM:
+      case DateTimeFormat.hourJM:
+        updateDuration = const Duration(seconds: 1);
+        break;
+      case DateTimeFormat.date:
+      case DateTimeFormat.day:
+      case DateTimeFormat.dateDay:
+      case DateTimeFormat.monthDay:
+      case DateTimeFormat.dayMonYear:
+      case DateTimeFormat.dateDayMonYear:
+      case DateTimeFormat.month:
+      case DateTimeFormat.yearMonth:
+      case DateTimeFormat.quarter:
+      case DateTimeFormat.quarterYear:
+      case DateTimeFormat.year:
+        updateDuration = const Duration(days: 1);
+        break;
+    }
+
+    _timer = Timer.periodic(updateDuration, (timer) {
+      if (mounted) {
+        setState(() {
+          _formattedTime = DateTimeType.getFormattedTime(widget.dateTimeFormat);
+        });
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(DateTimeType oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.dateTimeFormat != widget.dateTimeFormat) {
+      _timer.cancel();
+
+      _updateTimeWithTimer();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(_formattedTime);
   }
 }

@@ -1,18 +1,13 @@
-import 'dart:math';
+// import 'dart:math';
 
 import 'package:creta03/design_system/component/example_box_mixin.dart';
+import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../design_system/creta_font.dart';
 import '../../../../model/app_enums.dart';
-import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 
 class TransExampleBox extends StatefulWidget {
-  final double? width;
-  final double? height;
   final FrameModel model;
   final NextContentTypes nextContentTypes;
   final String name;
@@ -21,8 +16,6 @@ class TransExampleBox extends StatefulWidget {
   final Function onTypeSelected;
   const TransExampleBox({
     super.key,
-    this.width,
-    this.height,
     required this.frameManager,
     required this.model,
     required this.nextContentTypes,
@@ -36,42 +29,28 @@ class TransExampleBox extends StatefulWidget {
 }
 
 class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateMixin {
-  late PageController _pageController;
-  late int _currentPage;
-  ContentsManager? _contentsManager;
-  bool _emptyCarousel = true;
-  int _length = 3;
+  // ContentsManager? _contentsManager;
 
   @override
   void initState() {
     super.initState();
-
-    _contentsManager = widget.frameManager.getContentsManager(widget.model.mid);
-    if (_contentsManager == null) {
-      _currentPage = 0;
-    } else {
-      _currentPage = _contentsManager!.modelList.length ~/ 2;
-      if (_contentsManager!.modelList.length > 3) {
-        _length = _contentsManager!.modelList.length;
-        _emptyCarousel = false;
-      }
-    }
-
-    _pageController = PageController(initialPage: _currentPage, viewportFraction: 0.5);
-    super.initState();
+    // _contentsManager = widget.frameManager.getContentsManager(widget.model.mid);
   }
 
   void onSelected() {
+    // if (_contentsManager!.modelList.length < 3) {
+    //   showAnnouceDialog(context);
+    // } else {
     setState(() {
       widget.model.nextContentTypes.set(widget.nextContentTypes);
     });
+    // }
     widget.onTypeSelected.call();
   }
 
   void onUnSelected() {
     setState(() {
       widget.model.nextContentTypes.set(NextContentTypes.none);
-      // widget.selectedType == false;
     });
     widget.onTypeSelected.call();
   }
@@ -80,10 +59,32 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
     setState(() {});
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
+  void showAnnouceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          content: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text('캐러셀 디스플레이를 적용하려면 최소 3개의 이미지가 있어야 합니다.'),
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0))),
+                child: const Text('확인'),
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -94,97 +95,15 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
       setState: rebuild,
       onSelected: onSelected,
       onUnselected: onUnSelected,
-      selectWidget: selectWidget,
+      selectWidget: transitionTypesWidget,
     );
   }
 
-  Widget selectWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4.0),
-      child: PageView.builder(
-          itemCount: _length,
-          physics: const ClampingScrollPhysics(),
-          controller: _pageController,
-          itemBuilder: (context, index) {
-            return carouselView(index);
-          }),
-    );
-  }
-
-  Widget carouselView(int index) {
-    return AnimatedBuilder(
-      animation: _pageController,
-      builder: (context, child) {
-        double value = 0.0;
-        if (_pageController.position.haveDimensions) {
-          value = index.toDouble() - (_pageController.page ?? 0);
-          value = (value * 0.048).clamp(-1, 1);
-          // print("value $value index $index");
-        }
-        double angle = 0.0;
-        switch (widget.nextContentTypes) {
-          case NextContentTypes.normalCarousel:
-            angle = 0.0;
-          case NextContentTypes.tiltedCarousel:
-            angle = pi * value;
-          default:
-            angle = 0.0;
-        }
-        return Transform.rotate(
-          angle: angle,
-          child: carouselCard(
-              _emptyCarousel ? null : _contentsManager!.modelList[index] as ContentsModel),
-        );
-      },
-    );
-  }
-
-  Widget carouselCard(ContentsModel? contentsModel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0),
-      child: contentsModel == null
-          ? Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(
-                    offset: Offset(0, 4),
-                    blurRadius: 4,
-                    color: Colors.black26,
-                  ),
-                ],
-              ),
-              child: Center(
-                  child: Text(
-                widget.name,
-                style: CretaFont.titleSmall,
-                textAlign: TextAlign.center,
-              )),
-            )
-          : Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: const [
-                    BoxShadow(
-                      offset: Offset(0, 4),
-                      blurRadius: 4,
-                      color: Colors.black26,
-                    ),
-                  ],
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(_imageName(contentsModel)),
-                  )),
-            ),
-    );
-  }
-
-  String _imageName(ContentsModel contentsModel) {
-    if (contentsModel.isImage()) return contentsModel.getURI();
-    if (contentsModel.thumbnail == null) return '';
-    return contentsModel.thumbnail!;
+  Widget transitionTypesWidget() {
+    return TransitionTypes(
+        frameManager: widget.frameManager,
+        model: widget.model,
+        nextContentTypes: widget.nextContentTypes,
+        name: widget.name);
   }
 }

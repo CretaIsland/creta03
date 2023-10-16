@@ -11,6 +11,7 @@
 
 import 'package:creta03/pages/studio/containees/frame/sticker/mini_menu.dart';
 import 'package:creta03/pages/studio/left_menu/clock/count_down_timer.dart';
+import 'package:creta03/pages/studio/left_menu/date_time/date_time_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/bg/weather_bg.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
@@ -98,6 +99,9 @@ mixin FramePlayMixin {
     if (model.isTimelineType()) {
       return false;
     }
+    if (model.isDateTimeType()) {
+      return false;
+    }
     if (model.isMapType()) {
       return false;
     }
@@ -148,6 +152,7 @@ mixin FramePlayMixin {
         height: height,
       );
     }
+
     if (model.frameType == FrameType.weatherSticker) {
       return const WeatherStickerElements();
     }
@@ -284,6 +289,33 @@ mixin FramePlayMixin {
       width: 50,
       height: 50,
       color: Colors.pink[300],
+    );
+  }
+
+  DateTimeFormat getDateTimeVal(int subType) {
+    if (subType == DateTimeFormat.date.index) return DateTimeFormat.date;
+    if (subType == DateTimeFormat.day.index) return DateTimeFormat.day;
+    if (subType == DateTimeFormat.month.index) return DateTimeFormat.month;
+    if (subType == DateTimeFormat.year.index) return DateTimeFormat.year;
+    if (subType == DateTimeFormat.quarter.index) return DateTimeFormat.quarter;
+    if (subType == DateTimeFormat.dateDay.index) return DateTimeFormat.dateDay;
+    if (subType == DateTimeFormat.monthDay.index) return DateTimeFormat.monthDay;
+    if (subType == DateTimeFormat.yearMonth.index) return DateTimeFormat.yearMonth;
+    if (subType == DateTimeFormat.dayMonYear.index) return DateTimeFormat.dayMonYear;
+    if (subType == DateTimeFormat.dateDayMonYear.index) return DateTimeFormat.dateDayMonYear;
+    if (subType == DateTimeFormat.quarterYear.index) return DateTimeFormat.quarterYear;
+    if (subType == DateTimeFormat.hourMin.index) return DateTimeFormat.hourMin;
+    if (subType == DateTimeFormat.hourMinSec.index) return DateTimeFormat.hourMinSec;
+    if (subType == DateTimeFormat.hourJM.index) return DateTimeFormat.hourJM;
+    if (subType == DateTimeFormat.hourMinJM.index) return DateTimeFormat.hourMinJM;
+    if (subType == DateTimeFormat.hourMinSecJM.index) return DateTimeFormat.hourMinSecJM;
+
+    return DateTimeFormat.hourMinSecJM;
+  }
+
+  Widget dateTimeFrame(FrameModel model) {
+    return DateTimeType(
+      dateTimeFormat: getDateTimeVal(model.subType),
     );
   }
 

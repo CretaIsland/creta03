@@ -47,7 +47,7 @@ mixin ExampleBoxStateMixin {
           } else {
             onUnselected();
           }
-          //setState();
+          // setState();
         },
         child: Container(
           height: height,

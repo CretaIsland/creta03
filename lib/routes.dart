@@ -23,6 +23,7 @@ import 'pages/community/community_page.dart';
 import 'pages/community/sub_pages/community_right_book_pane.dart';
 import 'pages/community/sub_pages/community_right_channel_pane.dart';
 import 'pages/community/sub_pages/community_right_playlist_detail_pane.dart';
+import 'pages/login/creta_account_manager.dart';
 
 abstract class AppRoutes {
   static Future<bool> launchTab(String url, {bool isHttps = false}) async {
@@ -163,11 +164,18 @@ final routesLoggedOut = RouteMap(
         // }
         logger.finest('selectedMid=${BookMainPage.selectedMid}');
 
+        bool? isPublishedMode = (CretaAccountManager.currentLoginUser.isLoginedUser == false)
+          ? true
+          : null;
+
         return TransitionPage(
-            child: BookMainPage(
-                //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
-                bookKey: GlobalKey(),
-                isPreviewX: true));
+          child: BookMainPage(
+            //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
+            bookKey: GlobalKey(),
+            isPreviewX: true,
+            isPublishedMode: isPublishedMode,
+          ),
+        );
       // } else {
       //   return const Redirect(AppRoutes.intro);
       // }
