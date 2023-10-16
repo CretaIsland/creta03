@@ -1117,6 +1117,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       model.align.set(TextAlign.left);
                     });
                     widget.contentsManager.notify();
+                    if (model.textType == TextType.clock) {
+                      _sendEvent!.sendEvent(_frameModel);
+                    }
                   }),
               BTN.fill_gray_i_m(
                   buttonColor: model.align.value == TextAlign.right
@@ -1128,6 +1131,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       model.align.set(TextAlign.right);
                     });
                     widget.contentsManager.notify();
+                    if (model.textType == TextType.clock) {
+                      _sendEvent!.sendEvent(_frameModel);
+                    }
                   }),
               BTN.fill_gray_i_m(
                   icon: Icons.format_align_center,
@@ -1139,6 +1145,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       model.align.set(TextAlign.center);
                     });
                     widget.contentsManager.notify();
+                    if (model.textType == TextType.clock) {
+                      _sendEvent!.sendEvent(_frameModel);
+                    }
                   }),
               // BTN.fill_gray_i_m(
               //     icon: Icons.format_align_justify,
@@ -1168,6 +1177,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       model.valign.set(-1 /*TextAlignVertical.top*/);
                     });
                     widget.contentsManager.notify();
+                    if (model.textType == TextType.clock) {
+                      _sendEvent!.sendEvent(_frameModel);
+                    }
                   }),
               BTN.fill_gray_i_m(
                   icon: Icons.vertical_align_center,
@@ -1179,6 +1191,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       model.valign.set(0 /*TextAlignVertical.center*/);
                     });
                     widget.contentsManager.notify();
+                    if (model.textType == TextType.clock) {
+                      _sendEvent!.sendEvent(_frameModel);
+                    }
                   }),
               BTN.fill_gray_i_m(
                   icon: Icons.vertical_align_bottom,
@@ -1190,6 +1205,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                       model.valign.set(1 /*TextAlignVertical.bottom*/);
                     });
                     widget.contentsManager.notify();
+                    if (model.textType == TextType.clock) {
+                      _sendEvent!.sendEvent(_frameModel);
+                    }
                   }),
             ],
           ),

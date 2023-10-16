@@ -18,6 +18,7 @@ import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
+import '../../../../model/depot_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
@@ -187,13 +188,23 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
     return Center(
       child: _isDropAble(widget.model)
-          ? DropZoneWidget(
-              bookMid: widget.model.realTimeKey,
-              parentId: '',
-              onDroppedFile: (modelList) {
-                _onDropFrame(widget.model.mid, modelList);
+          ? DragTarget<DepotModel>(
+              builder: (context, candidateData, rejectedData) {
+                return DropZoneWidget(
+                  bookMid: widget.model.realTimeKey,
+                  parentId: '',
+                  onDroppedFile: (modelList) {
+                    _onDropFrame(widget.model.mid, modelList);
+                  },
+                  child: _frameBody1(),
+                );
               },
-              child: _frameBody1(),
+              onAccept: (data) {
+                //print('drop depotModel =${data.mid}');
+              },
+              onWillAccept: (data) {
+                return widget.model.frameType == FrameType.none;
+              },
             )
           : _frameBody1(),
     );
@@ -531,12 +542,31 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
       return watchFrame(
         contentsManager: _contentsManager,
         model: model,
-        child: const Text('GMT-9'),
         context: context,
         applyScale: StudioVariables.applyScale,
         isThumbnail: false,
         width: widget.width,
         height: widget.height,
+        timeChanged: () {
+          setState(() {});
+        },
+        child: ClipRect(
+          clipBehavior: Clip.hardEdge,
+          child: ContentsMain(
+            key: GlobalObjectKey<ContentsMainState>(
+                'ContentsMain${widget.pageModel.mid}/${model.mid}'),
+            frameModel: model,
+            frameOffset: widget.frameOffset,
+            pageModel: widget.pageModel,
+            frameManager: frameManager!,
+            contentsManager: _contentsManager!,
+            applyScale: applyScale,
+          ),
+          // child: Image.asset(
+          //   'assets/creta_default.png',
+          //   fit: BoxFit.cover,
+          // ),
+        ),
       );
     }
     if (model.nextContentTypes.value != NextContentTypes.none) {

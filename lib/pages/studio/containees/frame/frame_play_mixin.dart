@@ -178,6 +178,7 @@ mixin FramePlayMixin {
     required bool isThumbnail,
     required double width,
     required double height,
+    required void Function() timeChanged,
   }) {
     if (model.frameType == FrameType.analogWatch) {
       return AnalogClock(
@@ -224,14 +225,8 @@ mixin FramePlayMixin {
       }
       //print('width,height = $width, $height');
 
-      return Container(
-        width: width,
-        height: height,
-        padding: const EdgeInsets.all(StudioConst.defaultTextPadding),
-        alignment: contentsModel != null
-            ? bothSideAlign(contentsModel.align.value, contentsModel.valign.value)
-            : Alignment.center,
-        child: DigitalClock(
+      if (child != null) {
+        return DigitalClock(
             textScaleFactor: applyScale,
             textStyle: style,
             showSeconds: true,
@@ -244,7 +239,35 @@ mixin FramePlayMixin {
             //     color: Colors.yellow,
             //     shape: BoxShape.rectangle,
             //     borderRadius: BorderRadius.all(Radius.circular(15))),
-            datetime: DateTime.now()),
+            datetime: DateTime.now(),
+            contentsModel: contentsModel,
+            timeChanged: timeChanged,
+            child: child);
+      }
+
+      return Container(
+        width: width,
+        height: height,
+        padding: EdgeInsets.all(isThumbnail ? 2 : StudioConst.defaultTextPadding),
+        alignment: contentsModel != null
+            ? bothSideAlign(contentsModel.align.value, contentsModel.valign.value)
+            : Alignment.center,
+        child: DigitalClock(
+          textScaleFactor: applyScale,
+          scaleFactor: isThumbnail ? 0.5 : 1.0,
+          textStyle: style,
+          showSeconds: true,
+          isLive: true,
+          digitalClockColor: Colors.black,
+          // textScaleFactor:
+          //     ((model.width.value / (50 * 2)) + 1) * applyScale, // 50 is minimum contstraint
+          //digitalClockColor: Colors.transparent,
+          // decoration: const BoxDecoration(
+          //     color: Colors.yellow,
+          //     shape: BoxShape.rectangle,
+          //     borderRadius: BorderRadius.all(Radius.circular(15))),
+          datetime: DateTime.now(),
+        ),
       );
     }
     if (model.frameType == FrameType.stopWatch) {

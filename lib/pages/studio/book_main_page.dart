@@ -8,6 +8,7 @@ import 'package:creta03/pages/studio/studio_main_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
@@ -55,6 +56,7 @@ import 'containees/page/page_main.dart';
 import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
+import 'studio_getx_controller.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
 
@@ -172,6 +174,8 @@ class _BookMainPageState extends State<BookMainPage> {
 
   @override
   void initState() {
+    _hideMouseTimer();
+
     super.initState();
     logger.info("---_BookMainPageState-----------------------------------------");
 
@@ -353,8 +357,7 @@ class _BookMainPageState extends State<BookMainPage> {
       if ((widget.isPublishedMode ?? false) == false) {
         StudioVariables.isAutoPlay = CretaAccountManager.getAutoPlay();
       }
-    }
-    else {
+    } else {
       StudioVariables.isMute = false;
       StudioVariables.isAutoPlay = true;
     }
@@ -411,10 +414,53 @@ class _BookMainPageState extends State<BookMainPage> {
   //   return frameCount;
   // }
 
+  // isPreview 모드에서 마우스 커서 안보임 관련 변수들
+  int _mouseMoveCount = 0;
+  DateTime? _lastMouseMoveTime;
+  Timer? _mouseMovetimer;
+  OffsetEventController? _sendMouseEvent;
+  void _hideMouseTimer() {
+    // isPreViewMode = true 인 경우만
+    // 이전 타이머를 취소하고 새 타이머를 시작
+
+    if (StudioVariables.isPreview == true) {
+      final OffsetEventController sendMouseEvent = Get.find(tag: 'on-link-to-link-widget');
+      _sendMouseEvent = sendMouseEvent;
+
+      //print('hide mouse 1');
+      //StudioVariables.hideMouse = true;
+      //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
+      //_mouseMovetimer?.cancel();
+      _mouseMovetimer = Timer.periodic(Duration(seconds: 1), (t) {
+        // 3초 동안 마우스 움직임이 없으면 커서를 숨김
+        //print('runTimer');
+        if (StudioVariables.isPreview == true) {
+          if (_lastMouseMoveTime != null) {
+            if (StudioVariables.hideMouse == false &&
+                DateTime.now().difference(_lastMouseMoveTime!).inSeconds >= 3) {
+              //print('3 second passed');
+              setState(() {
+                StudioVariables.hideMouse = true;
+                _sendMouseEvent?.sendEvent(Offset.zero);
+              });
+
+              _mouseMoveCount = 0;
+            }
+          } else {
+            // setState(() {
+            //   print('hide mouse 2');
+            //   StudioVariables.hideMouse = true;
+            // });
+          }
+        }
+      });
+    }
+  }
+
   @override
   void dispose() {
     logger.severe('BookMainPage.dispose');
-
+    _mouseMovetimer?.cancel();
     //_stopConnectedUserTimer();
 
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
@@ -446,6 +492,8 @@ class _BookMainPageState extends State<BookMainPage> {
     screenHeightPrecentage = MediaQuery.of(context).size.height * 0.01;
     screenWidth = MediaQuery.of(context).size.width;
     DateTime lastEventTime = DateTime.now();
+
+    //print('hideMouse = ${StudioVariables.hideMouse}');
 
     return MultiProvider(
       providers: [
@@ -481,7 +529,41 @@ class _BookMainPageState extends State<BookMainPage> {
         focusNode: FocusNode(),
         onKey: _keyEventHandler,
         child: StudioVariables.isPreview
-            ? Scaffold(body: _waitBook())
+            ? Scaffold(
+                body: MouseRegion(
+                    cursor: StudioVariables.hideMouse
+                        ? SystemMouseCursors.none
+                        : SystemMouseCursors.click,
+                    onExit: (event) {
+                      //print('mouse exit');
+                      setState(() {
+                        StudioVariables.hideMouse = true;
+                      });
+                    },
+                    onEnter: (event) {
+                      // 처음 떳을 때이다.
+                      //print('mouse enter');
+                      setState(() {
+                        StudioVariables.hideMouse = true;
+                      });
+                      // // 마우스가 위젯에 진입할 때 커서를 숨김
+                      // StudioVariables.hideMouse = true;
+                      // SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
+                      // _mouseMoveCount = 0;
+                    },
+                    onHover: (pointerEvent) {
+                      _mouseMoveCount++;
+                      _lastMouseMoveTime = DateTime.now();
+                      if (_mouseMoveCount > 30) {
+                        //print('mouse hover');
+                        //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
+                        setState(() {
+                          StudioVariables.hideMouse = false;
+                        });
+                        _mouseMoveCount = 0;
+                      }
+                    },
+                    child: _waitBook()))
             : Snippet.CretaScaffold(
                 title: Snippet.logo('studio', route: () {
                   Routemaster.of(context).push(AppRoutes.studioBookGridPage);
@@ -1256,35 +1338,36 @@ class _BookMainPageState extends State<BookMainPage> {
                       style: CretaFont.headlineLarge,
                     ),
             ),
-            BookPreviewMenu(
-              goBackProcess: () {
-                setState(() {
-                  StudioVariables.isPreview = false;
-                });
-              },
-              muteFunction: () {
-                StudioVariables.globalToggleMute(save: false);
-              },
-              playFunction: () {
-                //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
-                StudioVariables.globalToggleAutoPlay(save: false);
-                // if (StudioVariables.isAutoPlay && StudioVariables.isPreview) {
-                //   _startConnectedUserTimer();
-                // }
-              },
-              gotoNext: () {
-                BookPreviewMenu.previewMenuPressed = true;
-                pageManager.gotoNext();
-              },
-              gotoPrev: () {
-                BookPreviewMenu.previewMenuPressed = true;
-                pageManager.gotoPrev();
-              },
-              pageNo: pageNo,
-              totalPage: totalPage,
-              isPublishedMode: widget.isPublishedMode,
-              toggleFullscreen: widget.toggleFullscreen,
-            ),
+            if (StudioVariables.hideMouse == false)
+              BookPreviewMenu(
+                goBackProcess: () {
+                  setState(() {
+                    StudioVariables.isPreview = false;
+                  });
+                },
+                muteFunction: () {
+                  StudioVariables.globalToggleMute(save: false);
+                },
+                playFunction: () {
+                  //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
+                  StudioVariables.globalToggleAutoPlay(save: false);
+                  // if (StudioVariables.isAutoPlay && StudioVariables.isPreview) {
+                  //   _startConnectedUserTimer();
+                  // }
+                },
+                gotoNext: () {
+                  BookPreviewMenu.previewMenuPressed = true;
+                  pageManager.gotoNext();
+                },
+                gotoPrev: () {
+                  BookPreviewMenu.previewMenuPressed = true;
+                  pageManager.gotoPrev();
+                },
+                pageNo: pageNo,
+                totalPage: totalPage,
+                isPublishedMode: widget.isPublishedMode,
+                toggleFullscreen: widget.toggleFullscreen,
+              ),
           ],
         );
       }),

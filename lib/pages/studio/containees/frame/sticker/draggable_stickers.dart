@@ -515,7 +515,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 widget.onFrameShowUnshow.call(frameModel.mid);
               }),
         if (StudioVariables.isPreview == false &&
-            frameModel.frameType == FrameType.text &&
+            frameModel.isTextType() &&
             contentsModel != null &&
             contentsModel.isText())
           CretaMenuItem(
@@ -524,7 +524,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 ContentsModel.setStyleInClipBoard(contentsModel, context);
               }),
         if (StudioVariables.isPreview == false &&
-            frameModel.frameType == FrameType.text &&
+            frameModel.isTextType() &&
             contentsModel != null &&
             contentsModel.isText() &&
             ContentsModel.sytleInClipBoard != null)

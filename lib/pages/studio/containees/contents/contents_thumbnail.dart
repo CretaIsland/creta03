@@ -97,7 +97,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
     return Consumer<ContentsManager>(builder: (context, contentsManager, child) {
       int contentsCount = contentsManager.getShowLength();
 
-      if (widget.frameModel.frameType == FrameType.text) {
+      if (widget.frameModel.isTextType()) {
         // 텍스트의 경우
         return StreamBuilder<AbsExModel>(
             stream: _receiveTextEvent!.eventStream.stream,
@@ -110,7 +110,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               //logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
 
               if (contentsCount > 0) {
-                if (widget.frameModel.frameType == FrameType.text) {
+                if (widget.frameModel.isTextType()) {
                   // ContentsModel? model = contentsManager.getFirstModel();
                   ContentsModel model = contentsManager.getFirstModel()!;
                   //print(model.remoteUrl!);

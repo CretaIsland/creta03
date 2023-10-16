@@ -56,17 +56,30 @@ class _DepotSelectedState extends State<DepotSelected> {
       onSecondaryTapDown: (details) {
         onRightMouseButton.call(details, widget.depot, widget.depotManager, context);
       },
-      child: Container(
-        width: widget.width,
-        height: widget.height,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: widget.isSelected ? CretaColor.primary : Colors.transparent,
-            width: widget.isSelected ? 3 : 1,
+      child: Draggable(   // Draggable 과 DragTarget 은 한쌍이다.  DragTarget 은 FrameEach Widget 에 있다.
+        data: widget.depot,
+        feedback: Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: widget.isSelected ? CretaColor.primary : Colors.transparent,
+              width: widget.isSelected ? 3 : 1,
+            ),
           ),
         ),
-        child: Center(
-          child: widget.childContents,
+        child: Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: widget.isSelected ? CretaColor.primary : Colors.transparent,
+              width: widget.isSelected ? 3 : 1,
+            ),
+          ),
+          child: Center(
+            child: widget.childContents,
+          ),
         ),
       ),
     );

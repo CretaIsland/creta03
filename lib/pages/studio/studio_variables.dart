@@ -56,6 +56,7 @@ class StudioVariables {
   static double magnetMargin = 5;
 
   static bool isPreview = false;
+  static bool hideMouse = false;
 
   static bool isFullscreen = false;
 
