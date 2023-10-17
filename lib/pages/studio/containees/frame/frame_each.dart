@@ -539,7 +539,15 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     // }
 
     if (model.isWeatherTYpe()) {
-      return weatherFrame(model, widget.width, widget.height);
+      // return weatherFrame(model, widget.width, widget.height);
+      return weatherFrame(
+        model: model,
+        width: widget.width,
+        height: widget.height,
+        frameManager: widget.frameManager,
+        frameMid: model.mid,
+        child: _childContents(model),
+      );
     }
     if (model.isWatchTYpe()) {
       return watchFrame(

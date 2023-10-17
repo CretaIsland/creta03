@@ -112,7 +112,6 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
     ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
 
     retval.contentsType = ContentsType.music;
-
     //retval.remoteUrl = '$name $text';
     retval.name = '크레타 샘플 뮤직';
     retval.remoteUrl =

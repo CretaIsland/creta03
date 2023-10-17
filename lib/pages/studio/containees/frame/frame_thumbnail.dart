@@ -323,11 +323,6 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
         frameManager: widget.frameManager,
         frameMid: model.mid,
         child: _childThumbnail(model, useColor),
-        // child: Container(
-        //   width: 50,
-        //   height: 50,
-        //   color: Colors.red,
-        // ),
       );
     }
 

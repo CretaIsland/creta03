@@ -129,7 +129,14 @@ mixin FramePlayMixin {
     return const SizedBox.shrink();
   }
 
-  Widget weatherFrame(FrameModel model, double width, double height) {
+  Widget weatherFrame({
+    required FrameModel model,
+    required double width,
+    required double height,
+    required Widget child,
+    required FrameManager frameManager,
+    required String frameMid,
+  }) {
     if (model.frameType == FrameType.weather1) {
       WeatherType value = WeatherType.sunny;
       if (model.subType >= 0 && model.subType <= WeatherType.dusty.index) {
@@ -152,7 +159,6 @@ mixin FramePlayMixin {
         height: height,
       );
     }
-
     if (model.frameType == FrameType.weatherSticker) {
       return const WeatherStickerElements();
     }

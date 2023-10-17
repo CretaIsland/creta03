@@ -272,11 +272,8 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
   Future<ContentsModel> _weatherStickerModel(String frameMid, String bookMid) async {
     ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
 
-    retval.contentsType = ContentsType.text;
-    retval.name = 'weather sticker';
+    retval.contentsType = ContentsType.sticker;
     retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
-    retval.remoteUrl = '';
-    retval.textType = TextType.weather;
     retval.fontSize.set(48, noUndo: true, save: false);
     retval.fontSizeType.set(FontSizeType.userDefine, noUndo: true, save: false);
     //retval.playTime.set(-1, noUndo: true, save: false);
