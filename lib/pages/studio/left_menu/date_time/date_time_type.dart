@@ -1,7 +1,12 @@
+import 'package:creta03/data_io/contents_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
+
+//import '../../../../data_io/contents_manager.dart';
+import '../../../../data_io/frame_manager.dart';
+import '../../../../model/contents_model.dart';
 
 enum DateTimeFormat {
   date,
@@ -24,10 +29,16 @@ enum DateTimeFormat {
 
 class DateTimeType extends StatefulWidget {
   final DateTimeFormat dateTimeFormat;
+  final FrameManager? frameManager;
+  final String? frameMid;
+  final Widget? child;
 
   const DateTimeType({
     super.key,
     required this.dateTimeFormat,
+    required this.frameManager,
+    required this.frameMid,
+    required this.child,
   });
 
   @override
@@ -74,13 +85,24 @@ class DateTimeType extends StatefulWidget {
 class _DateTimeTypeState extends State<DateTimeType> {
   late String _formattedTime;
   late Timer _timer;
+  ContentsModel? _contentsModel;
+  // ContentsEventController? _sendEvent;
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('ko');
 
+    // final ContentsEventController sendEvent = Get.find(tag: 'contents-property-to-main');
+    //final ContentsEventController sendEvent = Get.find(tag: 'contents-main-to-property');
+    // _sendEvent = sendEvent;
+
     _formattedTime = DateTimeType.getFormattedTime(widget.dateTimeFormat);
+
+    if (widget.frameManager != null && widget.frameMid != null) {
+      _contentsModel = widget.frameManager!.getFirstContents(widget.frameMid!);
+      _contentsModel?.remoteUrl = _formattedTime;
+    }
     _updateTimeWithTimer();
   }
 
@@ -113,6 +135,14 @@ class _DateTimeTypeState extends State<DateTimeType> {
       if (mounted) {
         setState(() {
           _formattedTime = DateTimeType.getFormattedTime(widget.dateTimeFormat);
+          if (widget.frameManager != null && widget.frameMid != null) {
+            if (_contentsModel != null) {
+              _contentsModel?.remoteUrl = _formattedTime;
+            }
+            ContentsManager? contentsManager =
+                widget.frameManager!.getContentsManager(widget.frameMid!);
+            contentsManager?.notify();
+          }
         });
       }
     });
@@ -137,6 +167,6 @@ class _DateTimeTypeState extends State<DateTimeType> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(_formattedTime);
+    return (widget.child != null) ? widget.child! : Text(_formattedTime);
   }
 }

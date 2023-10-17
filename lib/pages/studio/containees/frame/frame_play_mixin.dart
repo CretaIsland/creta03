@@ -129,7 +129,11 @@ mixin FramePlayMixin {
     return const SizedBox.shrink();
   }
 
-  Widget weatherFrame(FrameModel model, double width, double height) {
+  Widget weatherFrame({
+    required FrameModel model,
+    required double width,
+    required double height,
+  }) {
     if (model.frameType == FrameType.weather1) {
       WeatherType value = WeatherType.sunny;
       if (model.subType >= 0 && model.subType <= WeatherType.dusty.index) {
@@ -152,10 +156,18 @@ mixin FramePlayMixin {
         height: height,
       );
     }
-
-    if (model.frameType == FrameType.weatherSticker) {
-      return const WeatherStickerElements();
+    if (model.frameType == FrameType.weatherSticker4) {
+      WeatherStickerType stickerValue = WeatherStickerType.sunny;
+      if (model.subType >= 0 && model.subType <= WeatherType.dusty.index) {
+        stickerValue = WeatherStickerType.values[model.subType];
+      }
+      return WeatherStickerElements(
+        weatherType: stickerValue,
+      );
     }
+    // if (model.frameType == FrameType.weatherSticker4) {
+    //   return const WeatherStickerElements();
+    // }
     if (model.frameType == FrameType.weatherSticker1) {
       return WeatherStickerBase(
         weatherStickerWidget: Image.asset('assets/weather_sticker/구름조금_A_black.png'),
@@ -313,9 +325,17 @@ mixin FramePlayMixin {
     return DateTimeFormat.hourMinSecJM;
   }
 
-  Widget dateTimeFrame(FrameModel model) {
+  Widget dateTimeFrame({
+    required FrameModel frameModel,
+    required Widget child,
+    required FrameManager frameManager,
+    required String frameMid,
+  }) {
     return DateTimeType(
-      dateTimeFormat: getDateTimeVal(model.subType),
+      dateTimeFormat: getDateTimeVal(frameModel.subType),
+      frameManager: frameManager,
+      frameMid: frameMid,
+      child: child,
     );
   }
 

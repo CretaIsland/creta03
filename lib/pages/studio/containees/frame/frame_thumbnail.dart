@@ -246,7 +246,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   Widget _frameBox(FrameModel model, bool useColor) {
     //logger.info('_frameBox');
     if (model.isWeatherTYpe()) {
-      return weatherFrame(model, widget.width, widget.height);
+      return weatherFrame(model: model, width: widget.width, height: widget.height);
     }
     if (model.isWatchTYpe()) {
       // return watchFrame(model, null);
@@ -317,12 +317,24 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       return Image.asset('assets/google_map_thumbnail.png');
     }
 
+    if (model.isDateTimeType()) {
+      dateTimeFrame(
+        frameModel: model,
+        frameManager: widget.frameManager,
+        frameMid: model.mid,
+        child: _childThumbnail(model, useColor),
+      );
+    }
+
     if (_contentsManager!.length() == 0) {
-      //print('No contents in this frame');
+      // print('No contents in this frame');
       return const SizedBox.shrink();
     }
 
-    //print('kldsfjasdlkfjsdlfjslfjsdlfkjsldfkjsdlk');
+    return _childThumbnail(model, useColor);
+  }
+
+  Widget _childThumbnail(FrameModel model, bool useColor) {
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,

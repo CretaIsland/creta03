@@ -14,15 +14,14 @@ class CretaRadioButton extends StatefulWidget {
   final Axis direction;
   final EdgeInsets padding;
 
-  const CretaRadioButton({
-    super.key,
-    required this.onSelected,
-    required this.valueMap,
-    required this.defaultTitle,
-    this.spacebetween = 30,
-    this.direction = Axis.vertical,
-    this.padding = const EdgeInsets.all(10.0)
-  });
+  const CretaRadioButton(
+      {super.key,
+      required this.onSelected,
+      required this.valueMap,
+      required this.defaultTitle,
+      this.spacebetween = 30,
+      this.direction = Axis.vertical,
+      this.padding = const EdgeInsets.all(10.0)});
 
   @override
   State<CretaRadioButton> createState() => _CretaRadioButtonState();
@@ -60,7 +59,7 @@ class _CretaRadioButtonState extends State<CretaRadioButton> {
       child: RadioGroup<dynamic>.builder(
         items: widget.valueMap.keys.toList(),
         textStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
-        //spacebetween: widget.spacebetween,
+        // spacebetween: widget.spacebetween,
         onChanged: (title) {
           setState(() {
             logger.finest("Button title $title");
@@ -68,9 +67,11 @@ class _CretaRadioButtonState extends State<CretaRadioButton> {
             widget.onSelected(selectedTitle, widget.valueMap[selectedTitle]!);
           });
         },
-        itemBuilder: (item) => RadioButtonBuilder(
-          item,
-        ),
+        itemBuilder: (item) {
+          return RadioButtonBuilder(
+            item,
+          );
+        },
         //customShape: ShapeBorder(),
         groupValue: selectedTitle,
         activeColor: CretaColor.primary,

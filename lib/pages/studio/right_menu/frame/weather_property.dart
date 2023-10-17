@@ -1,5 +1,6 @@
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
 import 'package:creta03/model/app_enums.dart';
+import 'package:creta03/pages/studio/left_menu/weather/weather_sticker_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -49,16 +50,35 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
     WeatherScene.stormy.name: WeatherScene.stormy.index,
     WeatherScene.rainyOvercast.name: WeatherScene.rainyOvercast.index,
   };
-
+  final Map<String, dynamic> _stickerTypeValueMap = {
+    WeatherStickerType.heavyRainy.name: WeatherStickerType.heavyRainy.index,
+    WeatherStickerType.heavySnow.name: WeatherStickerType.heavySnow.index,
+    WeatherStickerType.middleSnow.name: WeatherStickerType.middleSnow.index,
+    WeatherStickerType.thunder.name: WeatherStickerType.thunder.index,
+    WeatherStickerType.lightRainy.name: WeatherStickerType.lightRainy.index,
+    WeatherStickerType.lightSnow.name: WeatherStickerType.lightSnow.index,
+    WeatherStickerType.sunnyNight.name: WeatherStickerType.sunnyNight.index,
+    WeatherStickerType.sunny.name: WeatherStickerType.sunny.index,
+    WeatherStickerType.cloudy.name: WeatherStickerType.cloudy.index,
+    WeatherStickerType.cloudyNight.name: WeatherStickerType.cloudyNight.index,
+    WeatherStickerType.middleRainy.name: WeatherStickerType.middleRainy.index,
+    WeatherStickerType.overcast.name: WeatherStickerType.overcast.index,
+    WeatherStickerType.hazy.name: WeatherStickerType.hazy.index,
+    WeatherStickerType.foggy.name: WeatherStickerType.foggy.index,
+    WeatherStickerType.dusty.name: WeatherStickerType.dusty.index,
+  };
   Map<String, dynamic> _getValueMap() {
     if (widget.frameModel.frameType == FrameType.weather1) return _type1ValueMap;
     if (widget.frameModel.frameType == FrameType.weather2) return _type2ValueMap;
+    if (widget.frameModel.frameType == FrameType.weatherSticker4) return _stickerTypeValueMap;
     return {};
   }
 
   int _getDefaultSubType() {
     if (widget.frameModel.frameType == FrameType.weather1) return WeatherType.sunny.index;
     if (widget.frameModel.frameType == FrameType.weather2) return WeatherScene.scorchingSun.index;
+    if (widget.frameModel.frameType == FrameType.weatherSticker4)
+      return WeatherStickerType.sunny.index;
     return -1;
   }
 
@@ -75,6 +95,14 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
       if (widget.frameModel.subType >= 0 &&
           widget.frameModel.subType <= WeatherScene.rainyOvercast.index) {
         defaultTitle = WeatherScene.values[widget.frameModel.subType].name;
+      }
+      return defaultTitle;
+    }
+    if (widget.frameModel.frameType == FrameType.weatherSticker4) {
+      String defaultTitle = WeatherStickerType.sunny.name;
+      if (widget.frameModel.subType >= 0 &&
+          widget.frameModel.subType <= WeatherStickerType.dusty.index) {
+        defaultTitle = WeatherStickerType.values[widget.frameModel.subType].name;
       }
       return defaultTitle;
     }
@@ -131,7 +159,7 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
               defaultTitle: _getDefaultTitle(),
               onSelected: (title, value) {
                 setState(() {
-                  logger.finest('selected $title=$value');
+                  logger.finest('selected $title = $value');
                   widget.frameModel.subType = value;
                   _prevValue = value;
                   widget.frameModel.save();

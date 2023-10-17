@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../model/app_enums.dart';
 import '../../pages/studio/studio_variables.dart';
@@ -116,7 +117,8 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
               bottomRight: Radius.circular(bottomRight),
             ),
             //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(widget.model!.url))),
-            image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(uri))),
+            //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(uri))),
+            image: DecorationImage(fit: BoxFit.fill, image: CachedNetworkImageProvider(uri, cacheKey: uri))),
       ),
     );
 
