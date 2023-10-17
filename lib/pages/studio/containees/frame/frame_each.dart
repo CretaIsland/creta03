@@ -12,6 +12,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/design_system/component/creta_texture_widget.dart';
 import '../../../../data_io/contents_manager.dart';
+import '../../../../data_io/depot_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/component/snippet.dart';
 import '../../../../design_system/creta_color.dart';
@@ -22,7 +23,8 @@ import '../../../../model/depot_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
-import '../../../../player/music/creta_music_mixin.dart';
+import '../../book_main_page.dart';
+import '../../left_menu/depot/depot_display.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_getx_controller.dart';
 import '../../studio_snippet.dart';
@@ -189,8 +191,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     return Center(
       child: _isDropAble(widget.model)
           ? DragTarget<DepotModel>(
+              // 보관함에서 끌어다 넣기
               builder: (context, candidateData, rejectedData) {
+                //print('drop depotModel length = ${candidateData.length}');
                 return DropZoneWidget(
+                  // 파일에서 끌어다 넣기
                   bookMid: widget.model.realTimeKey,
                   parentId: '',
                   onDroppedFile: (modelList) {
@@ -199,8 +204,15 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
                   child: _frameBody1(),
                 );
               },
-              onAccept: (data) {
-                //print('drop depotModel =${data.mid}');
+              onAccept: (data) async {
+                //print('drop depotModel =${data.contentsMid}');
+                DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
+                ContentsModel? model = await depotManager?.getContentsInfo(
+                    contentsMid: data.contentsMid, contentsManager: null);
+                if (model != null && model.remoteUrl != null) {
+                  //print(model.remoteUrl);
+                  _onDropFrame(widget.model.mid, [model]);
+                }
               },
               onWillAccept: (data) {
                 return widget.model.frameType == FrameType.none;
@@ -405,7 +417,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         frameManager, contentsModelList, frameModel, widget.pageModel, isResizeFrame: false,
         onUploadComplete: (model) {
       if (model.isMusic()) {
-        GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[widget.model.mid];
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+            BookMainPage.musicKeyMap[widget.model.mid];
         if (musicKey != null) {
           musicKey.currentState!.addMusic(model);
         } else {

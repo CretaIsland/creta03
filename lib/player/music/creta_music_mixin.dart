@@ -1,12 +1,17 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:widget_and_text_animator/widget_and_text_animator.dart';
+import '../../design_system/creta_color.dart';
+import '../../design_system/creta_font.dart';
 import '../../model/contents_model.dart';
+import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/left_menu/music/music_player_frame.dart';
+import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_variables.dart';
 import 'creta_music_player.dart';
-
-Map<String, GlobalObjectKey<MusicPlayerFrameState>> musicKeyMap = {};
 
 mixin CretaMusicMixin {
   Widget playMusic(
@@ -33,7 +38,7 @@ mixin CretaMusicMixin {
     //print('++++++++++++++++++++++playMusic+++++++++++');
     GlobalObjectKey<MusicPlayerFrameState> musicKey =
         GlobalObjectKey<MusicPlayerFrameState>('Music${model.parentMid.value}');
-    musicKeyMap[model.parentMid.value] = musicKey;
+    BookMainPage.musicKeyMap[model.parentMid.value] = musicKey;
     // debugPrint('musicKeyMap $musicKeyMap-----------------');
     return SizedBox(
       width: realSize.width,
@@ -42,6 +47,35 @@ mixin CretaMusicMixin {
         key: musicKey,
         contentsManager: player!.acc,
         size: Size(realSize.width, realSize.height),
+      ),
+    );
+  }
+
+  Widget showBGM(double applyScale) {
+    return Opacity(
+      opacity: 0.5,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white,
+            //child: const Icon(Icons.music_note_outlined, size: 40),
+          ),
+          Transform.rotate(
+              angle: -math.pi / 6,
+              child: TextAnimator(
+                'B.G.M.',
+                incomingEffect: WidgetTransitionEffects.incomingSlideInFromLeft(),
+                atRestEffect: WidgetRestingEffects.fidget(),
+                style: CretaFont.titleELarge.copyWith(
+                    color: CretaColor.secondary,
+                    fontSize: StudioConst.defaultFontSize * applyScale),
+                textAlign: TextAlign.center,
+              )),
+        ],
       ),
     );
   }

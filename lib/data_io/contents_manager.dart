@@ -3,8 +3,10 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:html' as html;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import '../common/creta_utils.dart';
 import '../design_system/component/tree/flutter_treeview.dart' as tree;
 import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
@@ -26,7 +28,6 @@ import '../pages/studio/studio_snippet.dart';
 import '../pages/studio/studio_variables.dart';
 import '../player/creta_abs_player.dart';
 import '../player/creta_play_timer.dart';
-import '../player/music/creta_music_mixin.dart';
 import '../player/video/creta_video_player.dart';
 import 'creta_manager.dart';
 //import 'depot_manager.dart';
@@ -449,7 +450,7 @@ class ContentsManager extends CretaManager {
       }
       if (player.model != null && player.model!.isMusic()) {
         debugPrint('--------------setMusicSoundOff ${player.model!.name}');
-        GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
         if (musicKey != null) {
           musicKey.currentState?.mutedMusic(player.model!);
         } else {
@@ -478,7 +479,7 @@ class ContentsManager extends CretaManager {
       }
       if (player.model != null && player.model!.isMusic()) {
         debugPrint('--------------resumeMusicSound ${player.model!.name}');
-        GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
         if (musicKey != null) {
           musicKey.currentState?.resumedMusic(player.model!);
         } else {
@@ -508,7 +509,7 @@ class ContentsManager extends CretaManager {
         }
         if (player.model != null && player.model!.isMusic()) {
           debugPrint('--------------pauseMusic ${player.model!.name}');
-          GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+          GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.pausedMusic(player.model!);
           } else {
@@ -538,7 +539,7 @@ class ContentsManager extends CretaManager {
         }
         if (player.model != null && player.model!.isMusic()) {
           debugPrint('--------------playMusic ${player.model!.name}');
-          GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+          GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.playedMusic(player.model!);
           } else {
@@ -890,7 +891,7 @@ class ContentsManager extends CretaManager {
 
               String mid = contentsManager.frameModel.mid;
               // debugPrint('--1-- frameModel.mid ${frameModel.mid}-----');
-              GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[mid];
+              GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[mid];
               // debugPrint('--2-- musicKey $musicKey-----');
               if (musicKey != null) {
                 musicKey.currentState?.addMusic(currentModel);
@@ -920,12 +921,20 @@ class ContentsManager extends CretaManager {
   static Future<void> _imageProcess(FrameManager? frameManager, ContentsManager contentsManager,
       ContentsModel contentsModel, FrameModel frameModel, PageModel pageModel,
       {required bool isResizeFrame}) async {
-    final reader = html.FileReader();
-    reader.readAsArrayBuffer(contentsModel.file!);
-    await reader.onLoad.first;
-    Uint8List blob = reader.result as Uint8List;
-
-    var image = await decodeImageFromList(blob);
+    ui.Image? image;
+    Uint8List? blob;
+    if (contentsModel.file != null) {
+      final reader = html.FileReader();
+      reader.readAsArrayBuffer(contentsModel.file!);
+      await reader.onLoad.first;
+      blob = reader.result as Uint8List;
+      image = await decodeImageFromList(blob);
+    } else if (contentsModel.remoteUrl != null) {
+      image = await CretaUtils.loadImageFromUrl(contentsModel.remoteUrl!);
+    } else {
+      logger.severe('contents.file and remoteUrl both null');
+      return;
+    }
     // 그림의 가로 세로 규격을 알아낸다.
     double imageWidth = image.width.toDouble();
     double imageHeight = image.height.toDouble();
@@ -965,6 +974,7 @@ class ContentsManager extends CretaManager {
 
     // 업로드는  async 로 진행한다.
     if (contentsModel.file != null &&
+        blob != null &&
         (contentsModel.remoteUrl == null || contentsModel.remoteUrl!.isEmpty)) {
       // upload 되어 있지 않으므로 업로드한다.
       StudioSnippet.uploadFile(contentsModel, contentsManager, blob);
@@ -1144,7 +1154,7 @@ class ContentsManager extends CretaManager {
       return;
     }
     String frameId = frameModel.mid;
-    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
     if (musicKey == null) {
       logger.severe('musicKey is null');
       return;
@@ -1157,7 +1167,7 @@ class ContentsManager extends CretaManager {
       return;
     }
     String frameId = frameModel.mid;
-    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
     if (musicKey == null) {
       logger.severe('musicKey is null');
       return;
@@ -1170,7 +1180,7 @@ class ContentsManager extends CretaManager {
       return;
     }
     String frameId = frameModel.mid;
-    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
     if (musicKey == null) {
       logger.severe('musicKey is null');
       return;
@@ -1183,7 +1193,7 @@ class ContentsManager extends CretaManager {
       return;
     }
     String frameId = frameModel.mid;
-    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+    GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
     if (musicKey == null) {
       logger.severe('musicKey is null');
       return;

@@ -47,6 +47,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<double> shadowBlur;
   late UndoAble<double> shadowDirection;
   late UndoAble<double> shadowOffset;
+  late UndoAble<double> volume; // musicType 의 경우 volume 정보가 frame 에도 있어야 한다.
+  late UndoAble<bool> mute; // musicType 의 경우 mute 정보가 frame 에도 있어야 한다.
   late UndoAble<ShapeType> shape;
   //late UndoAble<bool> shadowIn;
   late UndoAble<String> eventSend;
@@ -177,6 +179,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         shadowBlur,
         shadowDirection,
         shadowOffset,
+        volume,
+        mute,
         shape,
         eventSend,
         prevOrder,
@@ -213,6 +217,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur = UndoAble<double>(0, mid, 'shadowBlur');
     shadowDirection = UndoAble<double>(90, mid, 'shadowDirection');
     shadowOffset = UndoAble<double>(0, mid, 'shadowOffset');
+    volume = UndoAble<double>(50, mid, 'volume');
+    mute = UndoAble<bool>(false, mid, 'mute');
     shape = UndoAble<ShapeType>(ShapeType.none, mid, 'shape');
     eventSend = UndoAble<String>('', mid, 'eventSend');
     prevOrder = -1;
@@ -254,6 +260,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur = UndoAble<double>(0, mid, 'shadowBlur');
     shadowDirection = UndoAble<double>(90, mid, 'shadowDirection');
     shadowOffset = UndoAble<double>(0, mid, 'shadowOffset');
+    volume = UndoAble<double>(50, mid, 'volume');
+    mute = UndoAble<bool>(false, mid, 'mute');
     shape = UndoAble<ShapeType>(ShapeType.none, mid, 'shape');
     eventSend = UndoAble<String>('', mid, 'eventSend');
     prevOrder = -1;
@@ -295,6 +303,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur = UndoAble<double>(srcFrame.shadowBlur.value, mid, 'shadowBlur');
     shadowDirection = UndoAble<double>(srcFrame.shadowDirection.value, mid, 'shadowDirection');
     shadowOffset = UndoAble<double>(srcFrame.shadowOffset.value, mid, 'shadowOffset');
+    volume = UndoAble<double>(srcFrame.volume.value, mid, 'volume');
+    mute = UndoAble<bool>(srcFrame.mute.value, mid, 'mute');
     shape = UndoAble<ShapeType>(srcFrame.shape.value, mid, 'shape');
     eventSend = UndoAble<String>(srcFrame.eventSend.value, mid, 'eventSend');
     //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
@@ -337,6 +347,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur.init(srcFrame.shadowBlur.value);
     shadowDirection.init(srcFrame.shadowDirection.value);
     shadowOffset.init(srcFrame.shadowOffset.value);
+    volume.init(srcFrame.volume.value);
+    mute.init(srcFrame.mute.value);
     shape.init(srcFrame.shape.value);
     eventSend.init(srcFrame.eventSend.value);
     //shadowIn = UndoAble<bool>(srcFrame.shadowIn.value, mid);
@@ -386,6 +398,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur.set((map["shadowBlur"] ?? 0), save: false, noUndo: true);
     shadowDirection.set((map["shadowDirection"] ?? 90), save: false, noUndo: true);
     shadowOffset.set((map["shadowOffset"] ?? 0), save: false, noUndo: true);
+    volume.set((map["volume"] ?? 0), save: false, noUndo: true);
+    mute.set((map["mute"] ?? false), save: false, noUndo: true);
     shape.set(ShapeType.fromInt(map["shape"] ?? 0), save: false, noUndo: true);
     eventSend.set(map["eventSend"] ?? '', save: false, noUndo: true);
 
@@ -428,6 +442,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "shadowBlur": shadowBlur.value,
         "shadowDirection": shadowDirection.value,
         "shadowOffset": shadowOffset.value,
+        "volume": volume.value,
+        "mute": mute.value,
         "shape": shape.value.index,
         "eventSend": eventSend.value,
         //"shadowIn": shadowIn.value,
@@ -583,6 +599,31 @@ class FrameModel extends CretaModel with CretaStyleMixin {
       BookMainPage.removeOverlay(mid);
     }
     mychangeStack.endTrans();
+  }
+
+  void toggeleBackgoundMusic(bool value, FrameManager frameManager, BookModel book) {
+    // 뮤직인 경우 백그라운드 뮤직이 된다.
+    mychangeStack.startTrans();
+    if (value == true) {
+      //print('set background');
+      BookMainPage.backGroundMusic = this;
+      book.backgroundMusicFrame.set(mid);
+      isShow.set(false);
+    } else {
+      //print('release background');
+      BookMainPage.backGroundMusic = null;
+      book.backgroundMusicFrame.set('');
+      isShow.set(true);
+    }
+    mychangeStack.endTrans();
+    BookMainPage.bookManagerHolder?.notify();
+    return;
+  }
+
+  bool isBackgroundMusic() {
+    return isMusicType() &&
+        BookMainPage.backGroundMusic != null &&
+        BookMainPage.backGroundMusic!.mid == mid;
   }
 
   bool isThisPageExclude(String pageMid) {

@@ -12,7 +12,6 @@ import 'package:rxdart/rxdart.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/frame_model.dart';
-import '../../../../player/music/creta_music_mixin.dart';
 import '../../book_main_page.dart';
 import '../../right_menu/property_mixin.dart';
 import '../../studio_constant.dart';
@@ -131,10 +130,12 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   void mutedMusic(ContentsModel model) {
     _audioPlayer.setVolume(0.0);
+    widget.contentsManager.frameModel.mute.set(true);
   }
 
   void resumedMusic(ContentsModel model) {
-    _audioPlayer.setVolume(1.0);
+    _audioPlayer.setVolume(widget.contentsManager.frameModel.volume.value / 100);
+    widget.contentsManager.frameModel.mute.set(false);
   }
 
   void playedMusic(ContentsModel model) {
@@ -188,7 +189,15 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
     }
 
-    _audioPlayer.setVolume(0.0);
+    if (StudioVariables.isMute == true) {
+      _audioPlayer.setVolume(0.0);
+    } else {
+      if (frameModel.mute.value == false) {
+        _audioPlayer.setVolume(frameModel.volume.value / 100);
+      } else {
+        _audioPlayer.setVolume(0.0);
+      }
+    }
 
     _init();
     afterBuild();
@@ -204,6 +213,9 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     });
     try {
       await _audioPlayer.setAudioSource(_playlist);
+      if (StudioVariables.isAutoPlay == true) {
+        _audioPlayer.play();
+      }
     } catch (e, stackTrace) {
       // Catch load errors: 404, invalid url ...
       logger.fine("Error loading playlist: $e");
@@ -222,7 +234,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
         if (model.isMusic()) {
           String key = widget.contentsManager.frameModel.mid;
-          GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[key];
+          GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[key];
           if (musicKey != null) {
             musicKey.currentState!.addMusic(model);
           }
@@ -234,6 +246,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   @override
   void dispose() {
+    //print('music dispose');
+    _audioPlayer.stop();
     _audioPlayer.dispose();
     super.dispose();
   }
@@ -317,8 +331,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                   if (state?.sequence.isEmpty ?? true) {
                     return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                       SizedBox(
-                        width: 280.0 * scaleVal,
-                        height: 280.0 * scaleVal,
+                        width: 276.0 * scaleVal,
+                        height: 276.0 * scaleVal,
                         child: Image.asset('no_image.png', fit: BoxFit.cover),
                       ),
                       SizedBox(height: 8.0 * scaleVal),
@@ -335,8 +349,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                         Expanded(
                           child: Center(
                             child: SizedBox(
-                              width: 280.0 * scaleVal,
-                              height: 280.0 * scaleVal,
+                              width: 276.0 * scaleVal,
+                              height: 276.0 * scaleVal,
                               child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
                             ),
                           ),
@@ -897,14 +911,19 @@ class ControlButtons extends StatelessWidget {
                 icon: icons[index],
                 onPressed: () {
                   showSliderDialog(
-                    context: context,
-                    title: "볼륨 조절",
-                    divisions: 10,
-                    min: 0.0,
-                    max: 1.0,
-                    stream: audioPlayer.volumeStream,
-                    onChanged: audioPlayer.setVolume,
-                  );
+                      context: context,
+                      title: "볼륨 조절",
+                      divisions: 10,
+                      min: 0.0,
+                      max: 1.0,
+                      stream: audioPlayer.volumeStream,
+                      onChanged: (value) {
+                        audioPlayer.setVolume(value);
+                        contentsManager.frameModel.volume.set(value * 100);
+                        if (value > 0) {
+                          contentsManager.frameModel.mute.set(false);
+                        }
+                      });
                 },
               );
             }),

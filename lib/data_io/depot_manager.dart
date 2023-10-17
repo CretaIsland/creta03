@@ -238,10 +238,11 @@ class DepotManager extends CretaManager {
       String contentsMid = (ele as DepotModel).contentsMid;
       // find contents manager for each contentsMid
       if (contentsMidSet.add(contentsMid)) {
-        ContentsModel model =
-            await _getContentsInfo(contentsMid: contentsMid, contentsManager: dummyManager);
-
-        filteredContents.add(model);
+        ContentsModel? model =
+            await getContentsInfo(contentsMid: contentsMid, contentsManager: dummyManager);
+        if (model != null) {
+          filteredContents.add(model);
+        }
       }
     }
     if (depotOrder == DepotOrderEnum.name) {
@@ -260,9 +261,18 @@ class DepotManager extends CretaManager {
   }
 
   // getContents Detail Info Using contents mid
-  Future<ContentsModel> _getContentsInfo(
-      {required String contentsMid, required ContentsManager contentsManager}) async {
+  Future<ContentsModel?> getContentsInfo(
+      {required String contentsMid, required ContentsManager? contentsManager}) async {
     logger.finest('getContents');
+    if (contentsManager == null) {
+      BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+      if (book == null) {
+        return null;
+      }
+      contentsManager =
+          ContentsManager(pageModel: PageModel('', book), frameModel: FrameModel('', book.mid));
+    }
+
     ContentsModel contentsModel = await contentsManager.getFromDB(contentsMid) as ContentsModel;
 
     return contentsModel;

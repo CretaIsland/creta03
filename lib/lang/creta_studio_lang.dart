@@ -387,6 +387,8 @@ class CretaStudioLang {
   static const String noOverlayFrame = '모든 페이지에서 고정 해제';
   static const String overlayExclude = '이 페이지에서만 고정 해제';
   static const String noOverlayExclude = '이 페이지에서만 고정 해제 취소';
+  static const String backgroundMusic = '백그라운드 뮤직으로 고정';
+  static const String foregroundMusic = '백그라운 뮤직으로 고정 해제';
 
   static const String ani = '애니메이션';
   static const String speed = '속도';

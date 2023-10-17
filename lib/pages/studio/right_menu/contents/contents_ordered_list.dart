@@ -33,7 +33,7 @@ import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
-import '../../../../player/music/creta_music_mixin.dart';
+import '../../book_main_page.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
@@ -177,7 +177,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 onUploadComplete: (currentModel) {
                   if (currentModel.isMusic()) {
                     debugPrint('--------------add song named ${currentModel.name} to playlist');
-                    GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+                    GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+                        BookMainPage.musicKeyMap[frameId];
                     if (musicKey != null) {
                       musicKey.currentState?.addMusic(currentModel);
                     } else {
@@ -207,7 +208,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                     widget.contentsManager.reOrdering();
                     if (model != null && model.isMusic()) {
                       String frameId = _frameModel.mid;
-                      GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[frameId];
+                      GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+                          BookMainPage.musicKeyMap[frameId];
                       if (musicKey != null) {
                         musicKey.currentState?.reorderPlaylist(model, oldIndex, newIndex);
                       } else {

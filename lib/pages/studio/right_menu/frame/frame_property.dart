@@ -28,7 +28,6 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
-import '../../../../player/music/creta_music_mixin.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
@@ -274,7 +273,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               int idx = 0;
               for (String val in CretaStudioLang.playerSize.values) {
                 if (value == val) {
-                  GlobalObjectKey<MusicPlayerFrameState>? musicKey = musicKeyMap[widget.model.mid];
+                  GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[widget.model.mid];
                   musicKey!.currentState!.setSelectedSize(value);
                   mychangeStack.startTrans();
                   widget.model.width.set(StudioConst.musicPlayerSize[idx].width);

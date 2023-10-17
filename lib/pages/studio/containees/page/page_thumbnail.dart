@@ -274,7 +274,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       FrameModel frameModel = model as FrameModel;
 
                       //if (_frameManager!.isVisible(model) == false) {
-                      if (model.isVisible(widget.pageModel.mid) == false) {
+                      if (model.isVisible(widget.pageModel.mid) == false  && model.isBackgroundMusic() == false) {
                         return SizedBox.shrink();
                       }
 

@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:image/image.dart' as img;
@@ -669,6 +671,8 @@ class CretaUtils {
     return retval.toDouble() / 1000000;
   }
 
+// 텍스트가 차이하는 실제 화면상의 사이즈를 구해준다.
+
   static TextPainter getTextPainter(String text, TextStyle? style, TextAlign? align) {
     final span = TextSpan(text: text, style: style);
     // final words = span.toPlainText().split(RegExp('\\s+'));
@@ -821,6 +825,37 @@ class CretaUtils {
     return (width, height);
   }
 
+  static double getOptimalFontSize({
+    required String text,
+    required TextStyle style,
+    required double containerWidth,
+    required double containerHeight,
+    double delta = 1.0,
+  }) {
+    final textPainter = TextPainter(
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    );
+
+    double minFontSize = StudioConst.minFontSize; // 시작 폰트 크기
+    double maxFontSize = StudioConst.maxFontSize; // 최대 시도할 폰트 크기
+    double currentSize = StudioConst.defaultFontSize;
+
+    while (maxFontSize - minFontSize > delta) {
+      currentSize = (minFontSize + maxFontSize) / 2;
+      textPainter.text = TextSpan(text: text, style: style.copyWith(fontSize: currentSize));
+      textPainter.layout(maxWidth: containerWidth);
+
+      if (textPainter.size.height > containerHeight) {
+        maxFontSize = currentSize;
+      } else {
+        minFontSize = currentSize;
+      }
+    }
+
+    return currentSize;
+  }
+
   // image crop
   static Uint8List cropImage(
       Uint8List sourceImgBytes, Offset cropOffset, double ratio, Size frameSize) {
@@ -875,4 +910,20 @@ class CretaUtils {
     }
     return SystemMouseCursors.basic;
   }
+
+
+  static Future<ui.Image> loadImageFromUrl(String imageUrl) async {
+  // 이미지 URL에서 데이터를 가져옵니다.
+  final response = await http.get(Uri.parse(imageUrl));
+
+  if (response.statusCode == 200) {
+    // http 응답이 성공적이면, 바이트 데이터를 dart:ui 의 Image로 변환합니다.
+    final Uint8List uint8list = response.bodyBytes;
+    final ui.Codec codec = await ui.instantiateImageCodec(uint8list);
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+    return frameInfo.image;
+  } else {
+    throw Exception('Failed to load image from the internet');
+  }
+}
 }

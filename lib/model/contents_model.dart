@@ -748,11 +748,22 @@ class ContentsModel extends CretaModel {
     return newFontSize;
   }
 
+  bool isNoAutoSizeAnimationText(TextAniType value) {
+    return (value == TextAniType.tickerUpDown ||
+        value == TextAniType.rotate ||
+        value == TextAniType.bounce ||
+        value == TextAniType.fidget ||
+        value == TextAniType.fade ||
+        value == TextAniType.typewriter ||
+        value == TextAniType.wavy);
+  }
+
   (TextStyle, String, double) makeInfo(
     BuildContext? context,
     double applyScale,
     bool isThumbnail, {
     bool isEditMode = false,
+    Size? realSize,
   }) {
     String uri = getURI();
     String errMsg = '$name uri is null';
@@ -763,16 +774,27 @@ class ContentsModel extends CretaModel {
 
     double newFontSize = fontSize.value * applyScale;
 
-    if (isEditMode == false &&
-        autoSizeType.value == AutoSizeType.autoFontSize &&
-        (aniType.value != TextAniType.rotate ||
-            aniType.value != TextAniType.bounce ||
-            aniType.value != TextAniType.fade ||
-            aniType.value != TextAniType.shimmer ||
-            aniType.value != TextAniType.typewriter ||
-            aniType.value != TextAniType.wavy ||
-            aniType.value != TextAniType.fidget)) {
-      newFontSize = StudioConst.maxFontSize * applyScale;
+    if (isEditMode == false && autoSizeType.value == AutoSizeType.autoFontSize) {
+      if (isNoAutoSizeAnimationText(aniType.value) == false) {
+        newFontSize = StudioConst.maxFontSize * applyScale;
+      } else {
+        if (realSize != null) {
+          // 애니메이션 텍스트 중에 CretaAutoSizeText 로 구현되지 않는 것들은 별도로 사이즈를 구해준다.
+          TextStyle style = makeTextStyle(context,
+              isThumbnail: isThumbnail,
+              applyScale: applyScale,
+              isEditMode: isEditMode,
+              newFontSize: null);
+
+          newFontSize = CretaUtils.getOptimalFontSize(
+            text: uri,
+            style: style,
+            containerHeight: realSize.height,
+            containerWidth: realSize.width,
+            delta: 2.0,  // 델타카 클수록 빠르고, 작을수록 정밀하다.
+          );
+        }
+      }
     }
     //newFontSize = newFontSize.roundToDouble();
     if (isThumbnail == false) {

@@ -26,6 +26,8 @@ import 'package:routemaster/routemaster.dart';
 import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
 import '../../data_io/connected_user_manager.dart';
+import '../../data_io/contents_manager.dart';
+import '../../data_io/creta_manager.dart';
 import '../../data_io/filter_manager.dart';
 import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';
@@ -41,8 +43,10 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
+import '../../model/contents_model.dart';
 import '../../model/frame_model.dart';
 import '../../model/page_model.dart';
+import '../../player/creta_play_timer.dart';
 import '../../routes.dart';
 import '../login/creta_account_manager.dart';
 import 'book_preview_menu.dart';
@@ -53,6 +57,7 @@ import 'containees/page/top_menu_notifier.dart';
 import 'left_menu/depot/depot_display.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
+import 'left_menu/music/music_player_frame.dart';
 import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
@@ -99,6 +104,11 @@ class BookMainPage extends StatefulWidget {
   static GlobalKey leftMenuKey = GlobalObjectKey('LeftMenu');
   static GlobalKey rightMenuKey = GlobalObjectKey('RightMenu');
 
+  // Music widget
+  static Map<String, GlobalObjectKey<MusicPlayerFrameState>> musicKeyMap = {};
+  static FrameModel? backGroundMusic;
+
+  // overlay 관련 모음
   static final Map<String, FrameModel> _overlayFrameMap = {};
   static void clearOverlay() => _overlayFrameMap.clear();
   static FrameModel? findOverlay(String id) => _overlayFrameMap[id];
@@ -184,6 +194,8 @@ class _BookMainPageState extends State<BookMainPage> {
     // final FrameEachEventController autoPlaySendEvent = Get.find(tag: 'to-FrameEach');
     // _autoPlaySendEvent = autoPlaySendEvent;
     BookMainPage.clearOverlay();
+    BookMainPage.musicKeyMap.clear();
+    BookMainPage.backGroundMusic = null;
 
     CretaAccountManager.initUserProperty();
 
@@ -364,6 +376,14 @@ class _BookMainPageState extends State<BookMainPage> {
 
     HycopFactory.realtime!.startTemp(model.mid);
     HycopFactory.realtime!.setPrefix('creta');
+
+    if (model.backgroundMusicFrame.value.isNotEmpty) {
+      BookMainPage.backGroundMusic = await CretaManager.getModelFromDB(
+        model.backgroundMusicFrame.value,
+        "creta_frame",
+        FrameModel('', model.mid),
+      ) as FrameModel?;
+    }
 
     _onceDBGetComplete = true;
   }
@@ -728,6 +748,7 @@ class _BookMainPageState extends State<BookMainPage> {
       ],
       child: Stack(
         children: [
+          if (BookMainPage.backGroundMusic != null) _backgroundMusic(BookMainPage.backGroundMusic!),
           Column(
             children: [
               SizedBox(height: StudioVariables.topMenuBarHeight),
@@ -1607,5 +1628,32 @@ class _BookMainPageState extends State<BookMainPage> {
     } else {
       keys.remove(key);
     }
+  }
+
+  Widget _backgroundMusic(FrameModel frameModel) {
+    FrameManager? frameManager =
+        BookMainPage.pageManagerHolder!.frameManagerMap[frameModel.parentMid.value];
+    if (frameManager == null) {
+      return SizedBox.shrink();
+    }
+    ContentsManager contentsManager = frameManager.findContentsManager(frameModel);
+    ContentsModel? model = contentsManager.getFirstModel();
+    if (model != null) {
+      if (contentsManager.playTimer != null) {
+        //print('bg music played !!!!');
+        return Opacity(
+          opacity: 0.5,
+          child: contentsManager.playTimer!.createWidget(model),
+        );
+      }
+      //print('bg music created and played !!!!');
+      CretaPlayTimer playTimer = CretaPlayTimer(contentsManager, frameManager);
+      contentsManager.setPlayerHandler(playTimer);
+      return Opacity(
+        opacity: 0.5,
+        child: contentsManager.playTimer!.createWidget(model),
+      );
+    }
+    return SizedBox.shrink();
   }
 }

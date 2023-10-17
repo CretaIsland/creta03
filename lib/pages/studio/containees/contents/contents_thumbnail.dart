@@ -21,6 +21,7 @@ import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../../../player/text/creta_text_mixin.dart';
+import '../../book_main_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
@@ -160,8 +161,11 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               logger.info('there is no contents');
               return SizedBox.shrink();
             });
-      } else if (widget.frameModel.frameType == FrameType.music) {
-        // 텍스트의 경우
+      } else if (widget.frameModel.isMusicType()) {
+        //print('this is music frame'); // 뮤직의 경우
+        if (widget.frameModel.isBackgroundMusic()) {
+          return showBGM(applyScale);
+        }
         return StreamBuilder<AbsExModel>(
             stream: _receiveTextEvent!.eventStream.stream,
             builder: (context, snapshot) {
@@ -175,8 +179,9 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               if (contentsCount > 0) {
                 if (widget.frameModel.frameType == FrameType.music) {
                   GlobalObjectKey<MusicPlayerFrameState> musicKey =
-                      GlobalObjectKey<MusicPlayerFrameState>('Music${widget.pageModel.mid}/${widget.frameModel.mid}');
-                  musicKeyMap[widget.frameModel.mid] = musicKey;
+                      GlobalObjectKey<MusicPlayerFrameState>(
+                          'Music${widget.pageModel.mid}/${widget.frameModel.mid}');
+                  BookMainPage.musicKeyMap[widget.frameModel.mid] = musicKey;
                   //print(model.remoteUrl!);
 
                   String selectedSize = '';
@@ -214,6 +219,8 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                   }
                   return const SizedBox.shrink();
                 }
+              } else {
+                //print('No music contents here');
               }
               logger.info('Music thumbnail has NO content');
               return SizedBox.shrink();
@@ -232,7 +239,8 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               String? thumbnailUrl = contentsManager.getThumbnail();
               if (thumbnailUrl != null) {
                 return Container(
-                  key: GlobalObjectKey('CustomImage${widget.pageModel.mid}/${widget.frameModel.mid}$thumbnailUrl'),
+                  key: GlobalObjectKey(
+                      'CustomImage${widget.pageModel.mid}/${widget.frameModel.mid}$thumbnailUrl'),
                   width: widget.width,
                   height: widget.height,
                   decoration: BoxDecoration(

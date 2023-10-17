@@ -1,11 +1,12 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../../../player/music/creta_music_mixin.dart';
+import '../../../studio_variables.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
@@ -210,16 +211,27 @@ class Sticker extends StatefulWidget {
   StickerState createState() => StickerState();
 }
 
-class StickerState extends State<Sticker> {
+class StickerState extends State<Sticker> with CretaMusicMixin {
   void refresh() {
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-        visible: widget.model.isVisible(widget.pageMid),
-        child: widget.child != null ? widget.child! : Container());
+    bool isVisible = widget.model.isVisible(widget.pageMid);
+
+    Widget retval = Visibility(
+      visible: isVisible,
+      child: widget.child != null ? widget.child! : Container(),
+    );
+
+    if (widget.model.isBackgroundMusic() &&
+        isVisible == false &&
+        StudioVariables.isPreview == false) {
+      return showBGM(StudioVariables.applyScale);
+    }
+
+    return retval;
   }
 
   // bool _isVisible(FrameModel model) {

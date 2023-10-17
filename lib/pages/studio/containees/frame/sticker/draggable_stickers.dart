@@ -484,19 +484,20 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 _sendEvent!.sendEvent(frameModel);
               });
             }),
-        CretaMenuItem(
-            caption: frameModel.isShow.value ? CretaStudioLang.unshow : CretaStudioLang.show,
-            onPressed: () {
-              BookMainPage.containeeNotifier!.setFrameClick(true);
-              mychangeStack.startTrans();
-              frameModel.isShow.set(!frameModel.isShow.value);
-              frameModel.changeOrderByIsShow(widget.frameManager!);
-              mychangeStack.endTrans();
-              widget.onFrameShowUnshow.call(frameModel.mid);
-              if (frameModel.isOverlay.value == true) {
-                BookMainPage.pageManagerHolder!.notify();
-              }
-            }),
+        if (frameModel.isBackgroundMusic() == false)
+          CretaMenuItem(
+              caption: frameModel.isShow.value ? CretaStudioLang.unshow : CretaStudioLang.show,
+              onPressed: () {
+                BookMainPage.containeeNotifier!.setFrameClick(true);
+                mychangeStack.startTrans();
+                frameModel.isShow.set(!frameModel.isShow.value);
+                frameModel.changeOrderByIsShow(widget.frameManager!);
+                mychangeStack.endTrans();
+                widget.onFrameShowUnshow.call(frameModel.mid);
+                if (frameModel.isOverlay.value == true) {
+                  BookMainPage.pageManagerHolder!.notify();
+                }
+              }),
         if (StudioVariables.isPreview == false)
           CretaMenuItem(caption: '', onPressed: () {}), //divider
         if (StudioVariables.isPreview == false)
@@ -542,13 +543,27 @@ class _DraggableStickersState extends State<DraggableStickers> {
               }),
         if (StudioVariables.isPreview == false)
           CretaMenuItem(caption: '', onPressed: () {}), //divider
-        if (StudioVariables.isPreview == false)
+        if (StudioVariables.isPreview == false && frameModel.isMusicType() == true) // 뮤직의 경우
+          CretaMenuItem(
+              caption: frameModel.isBackgroundMusic()
+                  ? CretaStudioLang.foregroundMusic
+                  : CretaStudioLang.backgroundMusic,
+              onPressed: () {
+                logger.info('${CretaStudioLang.backgroundMusic} menu clicked');
+                setState(() {
+                  frameModel.toggeleBackgoundMusic(
+                      !frameModel.isBackgroundMusic(), widget.frameManager!, widget.book);
+                  //_sendEvent!.sendEvent(frameModel);
+                  BookMainPage.pageManagerHolder!.notify();
+                });
+              }),
+        if (StudioVariables.isPreview == false && frameModel.isMusicType() == false)
           CretaMenuItem(
               caption: frameModel.isOverlay.value
                   ? CretaStudioLang.noOverlayFrame
                   : CretaStudioLang.overlayFrame,
               onPressed: () {
-                logger.info('${CretaStudioLang.maxSize} menu clicked');
+                logger.info('${CretaStudioLang.overlayFrame} menu clicked');
                 setState(() {
                   frameModel.toggeleOverlay(!frameModel.isOverlay.value, widget.frameManager!);
                   //_sendEvent!.sendEvent(frameModel);

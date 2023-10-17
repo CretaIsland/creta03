@@ -47,9 +47,7 @@ mixin CretaTextMixin {
     late TextStyle style;
     late String uri;
     late double fontSize;
-    (style, uri, fontSize) = model.makeInfo(context, applyScale, isThumbnail);
-
-    
+    (style, uri, fontSize) = model.makeInfo(context, applyScale, isThumbnail, realSize: realSize);
 
     // String uri = model.getURI();
     // String errMsg = '${model.name} uri is null';
