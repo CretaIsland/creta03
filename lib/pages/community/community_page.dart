@@ -1261,6 +1261,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   Widget _getCommunityBookTitlePane(Size size) {
+    final GlobalKey menuButtonKey = GlobalObjectKey('_getCommunityBookTitlePane.BTN.fill_gray_i_l.CretaPopupMenu.showMenu');
     return Container(
       width: size.width - LayoutConst.cretaScrollbarWidth,
       height: 140, //size.height,
@@ -1353,8 +1354,29 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       ),
                       SizedBox(width: 12),
                       BTN.fill_gray_i_l(
+                        key: menuButtonKey,
                         icon: Icons.menu_outlined,
-                        onPressed: () {},
+                        onPressed: () {
+                          CretaPopupMenu.showMenu(
+                            context: context,
+                            globalKey: menuButtonKey,
+                            xOffset: -100,
+                            width: 160,
+                            popupMenu: [
+                              CretaMenuItem(
+                                caption: '전체화면 재생 주소 복사',
+                                onPressed: () {
+                                  String url = Uri.base.origin;
+                                  url += '${AppRoutes.studioBookPreviewPage}?${CommunityRightBookPane.bookId}';
+                                  Clipboard.setData(ClipboardData(text: url));
+                                },
+                              ),
+                            ],
+                            initFunc: () {},
+                          ).then((value) {
+                            //logger.finest('팝업메뉴 닫기');
+                          });
+                        },
                         buttonColor: CretaButtonColor.transparent,
                         iconColor: Colors.white,
                       ),

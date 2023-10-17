@@ -279,6 +279,7 @@ class BTN {
   }
 
   static CretaButton fill_gray_i_l({
+    GlobalKey? key,
     required IconData icon,
     required Function onPressed,
     CretaButtonColor buttonColor = CretaButtonColor.white,
@@ -286,6 +287,7 @@ class BTN {
     String? tooltip,
   }) {
     return CretaButton(
+      key: key,
       width: 36,
       height: 36,
       buttonType: CretaButtonType.child,

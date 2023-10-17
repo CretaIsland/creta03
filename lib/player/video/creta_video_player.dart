@@ -38,7 +38,8 @@ class CretaVideoPlayer extends CretaAbsPlayer {
     }
     logger.info('initVideo(${model!.name},$uri)');
 
-    wcontroller = VideoPlayerController.network(uri,
+    //wcontroller = VideoPlayerController.network(uri,
+    wcontroller = VideoPlayerController.networkUrl(Uri.parse(uri),
         videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
       ..initialize().then((_) {
         logger.info('initialize complete(${model!.name}, ${acc.getAvailLength()})');
