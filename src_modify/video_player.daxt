@@ -473,16 +473,21 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           // Duration duration = now.difference(completeTime);
           // completeTime = now;
           // if (duration.inMilliseconds > 600) {
-          if (_isPlayComplete == false) {
-            _isPlayComplete = true;
-            pause().then((void pauseResult) {
-              seekTo(value.duration);
-              if (onAfterVideoEvent != null) {
-                onAfterVideoEvent!(event, value.position, value.duration);
-              }
-            });
-            value = value.copyWith(isCompleted: true);
-          }
+          // if (_isPlayComplete == false) {
+          //   _isPlayComplete = true;
+          //   pause().then((void pauseResult) {
+          //     seekTo(value.duration);
+          //     if (onAfterVideoEvent != null) {
+          //       onAfterVideoEvent!(event, value.position, value.duration);
+          //     }
+          //   });
+          //   value = value.copyWith(isCompleted: true);
+          // }
+          value = value.copyWith(isCompleted: true);
+          pause().then((void pauseResult) {
+            seekTo(value.duration);
+            onAfterVideoEvent?.call(event, value.position, value.duration);
+          });
           break;
         case VideoEventType.bufferingUpdate:
           value = value.copyWith(buffered: event.buffered);

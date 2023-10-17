@@ -43,7 +43,7 @@ class _IntroPageState extends State<IntroPage> {
     "0.3.00",
   ];
   final String hycopVersion = "0.2.23";
-  final String buildNumber = "20231017-20";
+  final String buildNumber = "20231017-21";
 
   @override
   void initState() {
