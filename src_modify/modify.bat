@@ -75,8 +75,10 @@ copy src_modify\snowflake_model.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev
 copy src_modify\snowfall_pubspec.yaml "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\snowfall-0.0.2\pubspec.yaml"
 
 #skpark modify 23/10/10
-copy src_modify\video_player.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\video_player-2.7.2\lib\video_player.dart"
 copy src_modify\CustomRadioButton.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\custom_radio_grouped_button-2.2.1\lib\CustomButtons\CustomRadioButton.dart"
 
 #seventhstone 23/10/10
 copy src_modify/html_editor_enhanced/utils.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\html_editor_enhanced-2.5.1\lib\utils\utils.dart"
+
+#skpark modify 23/10/17
+copy src_modify\video_player.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\video_player-2.7.2\lib\video_player.dart"

@@ -77,8 +77,9 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
   int _getDefaultSubType() {
     if (widget.frameModel.frameType == FrameType.weather1) return WeatherType.sunny.index;
     if (widget.frameModel.frameType == FrameType.weather2) return WeatherScene.scorchingSun.index;
-    if (widget.frameModel.frameType == FrameType.weatherSticker4)
+    if (widget.frameModel.frameType == FrameType.weatherSticker4) {
       return WeatherStickerType.sunny.index;
+    }
     return -1;
   }
 
