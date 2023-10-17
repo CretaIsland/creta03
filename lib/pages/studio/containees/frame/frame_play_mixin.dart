@@ -133,9 +133,6 @@ mixin FramePlayMixin {
     required FrameModel model,
     required double width,
     required double height,
-    required Widget child,
-    required FrameManager frameManager,
-    required String frameMid,
   }) {
     if (model.frameType == FrameType.weather1) {
       WeatherType value = WeatherType.sunny;
@@ -159,9 +156,18 @@ mixin FramePlayMixin {
         height: height,
       );
     }
-    if (model.frameType == FrameType.weatherSticker) {
-      return const WeatherStickerElements();
+    if (model.frameType == FrameType.weatherSticker4) {
+      WeatherStickerType stickerValue = WeatherStickerType.sunny;
+      if (model.subType >= 0 && model.subType <= WeatherType.dusty.index) {
+        stickerValue = WeatherStickerType.values[model.subType];
+      }
+      return WeatherStickerElements(
+        weatherType: stickerValue,
+      );
     }
+    // if (model.frameType == FrameType.weatherSticker4) {
+    //   return const WeatherStickerElements();
+    // }
     if (model.frameType == FrameType.weatherSticker1) {
       return WeatherStickerBase(
         weatherStickerWidget: Image.asset('assets/weather_sticker/구름조금_A_black.png'),

@@ -37,6 +37,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<bool> isOverlay;
   late UndoAble<String> overlayExclude;
   late UndoAble<Color> borderColor;
+  late UndoAble<Color> subColor;
   late UndoAble<double> borderWidth;
   late UndoAble<int> borderType;
   late UndoAble<NextContentTypes> nextContentTypes;
@@ -64,7 +65,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     if (frameType == FrameType.weatherInfo) return true;
     if (frameType == FrameType.weather1) return true;
     if (frameType == FrameType.weather2) return true;
-    if (frameType == FrameType.weatherSticker) return true;
+    if (frameType == FrameType.weatherSticker4) return true;
     if (frameType == FrameType.weatherSticker1) return true;
     if (frameType == FrameType.weatherSticker2) return true;
     if (frameType == FrameType.weatherSticker3) return true;
@@ -167,6 +168,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         isMain,
         isOverlay,
         borderColor,
+        subColor,
         borderWidth,
         borderType,
         nextContentTypes,
@@ -203,6 +205,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     frameType = FrameType.none;
     subType = -1;
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
+    subColor = UndoAble<Color>(Colors.black, mid, 'subColor');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');
     nextContentTypes = UndoAble<NextContentTypes>(NextContentTypes.none, mid, 'nextContentTypes');
@@ -244,6 +247,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isOverlay = UndoAble<bool>(false, mid, 'isOverlay');
     bgColor1 = UndoAble<Color>(Colors.white, mid, 'bgColor1');
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
+    subColor = UndoAble<Color>(Colors.black, mid, 'subColor');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');
     nextContentTypes = UndoAble<NextContentTypes>(NextContentTypes.none, mid, 'nextContentTypes');
@@ -284,6 +288,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isMain = UndoAble<bool>(srcFrame.isMain.value, mid, 'isMain');
     isOverlay = UndoAble<bool>(srcFrame.isOverlay.value, mid, 'isOverlay');
     borderColor = UndoAble<Color>(srcFrame.borderColor.value, mid, 'borderColor');
+    subColor = UndoAble<Color>(srcFrame.subColor.value, mid, 'subColor');
     borderWidth = UndoAble<double>(srcFrame.borderWidth.value, mid, 'borderWidth');
     borderType = UndoAble<int>(srcFrame.borderType.value, mid, 'borderType');
     nextContentTypes =
@@ -327,6 +332,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isMain.init(srcFrame.isMain.value);
     isOverlay.init(srcFrame.isOverlay.value);
     borderColor.init(srcFrame.borderColor.value);
+    subColor.init(srcFrame.subColor.value);
     borderWidth.init(srcFrame.borderWidth.value);
     borderType.init(srcFrame.borderType.value);
     borderCap.init(srcFrame.borderCap.value);
@@ -374,6 +380,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isOverlay.set((map["isOverlay"] ?? false), save: false, noUndo: true);
 
     borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
+    subColor.set(CretaUtils.string2Color(map["subColor"])!, save: false, noUndo: true);
     borderWidth.set((map["borderWidth"] ?? 0), save: false, noUndo: true);
     borderType.set((map["borderType"] ?? 0), save: false, noUndo: true);
     borderCap.set(BorderCapType.fromInt(map["borderCap"] ?? 0), save: false, noUndo: true);
@@ -418,6 +425,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "isMain": isMain.value,
         "isOverlay": isOverlay.value,
         "borderColor": borderColor.value.toString(),
+        "subColor": subColor.value.toString(),
         "borderWidth": borderWidth.value,
         "borderType": borderType.value,
         "nextContentTypes": nextContentTypes.value.index,

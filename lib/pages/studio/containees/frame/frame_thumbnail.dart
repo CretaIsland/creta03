@@ -246,7 +246,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   Widget _frameBox(FrameModel model, bool useColor) {
     //logger.info('_frameBox');
     if (model.isWeatherTYpe()) {
-      return weatherFrame(model, widget.width, widget.height);
+      return weatherFrame(model: model, width: widget.width, height: widget.height);
     }
     if (model.isWatchTYpe()) {
       // return watchFrame(model, null);

@@ -172,12 +172,12 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                     width: 70.0,
                     height: 70.0,
                     onPressed: () async {
-                      await _createWeatherStickers(FrameType.weatherSticker);
+                      await _createWeatherStickers(FrameType.weatherSticker4);
                       BookMainPage.pageManagerHolder!.notify();
                     },
                     child: Container(
                       color: CretaColor.text[200],
-                      child: WeatherStickerElements(),
+                      child: WeatherStickerElements(weatherType: WeatherStickerType.sunny),
                     ),
                   ),
                 ],
@@ -250,34 +250,25 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
       return;
     }
 
+    int subType = -1;
+    subType = WeatherType.sunny.index;
+
     mychangeStack.startTrans();
-    FrameModel frameModel = await frameManager.createNextFrame(
+    await frameManager.createNextFrame(
       doNotify: false,
       size: Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
       type: frameType,
+      subType: subType,
     );
 
-    ContentsModel model = await _weatherStickerModel(frameModel.mid, frameModel.realTimeKey);
-    await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
     mychangeStack.endTrans();
   }
 
   void _onPressedCreateWeatherInfo(WeatherInfoType infoType) async {
     await _createWeatherInfo(infoType);
     BookMainPage.pageManagerHolder!.notify();
-  }
-
-  Future<ContentsModel> _weatherStickerModel(String frameMid, String bookMid) async {
-    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
-
-    retval.contentsType = ContentsType.sticker;
-    retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
-    retval.fontSize.set(48, noUndo: true, save: false);
-    retval.fontSizeType.set(FontSizeType.userDefine, noUndo: true, save: false);
-    //retval.playTime.set(-1, noUndo: true, save: false);
-    return retval;
   }
 
   Future<void> _createWeatherInfo(WeatherInfoType infoType) async {
@@ -322,8 +313,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
     retval.name = name;
     retval.remoteUrl = '$name $text';
     retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
-    // retval.remoteUrl = text;
-    retval.textType = TextType.weatherSticker;
+    retval.remoteUrl = text;
     retval.fontSize.set(48, noUndo: true, save: false);
     retval.fontSizeType.set(FontSizeType.small, noUndo: true, save: false);
     //retval.playTime.set(-1, noUndo: true, save: false);
