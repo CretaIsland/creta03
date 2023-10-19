@@ -82,3 +82,6 @@ copy src_modify/html_editor_enhanced/utils.daxt "$env:LOCALAPPDATA\Pub\Cache\hos
 
 #skpark modify 23/10/17
 copy src_modify\video_player.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\video_player-2.7.2\lib\video_player.dart"
+
+#skpark modify 23/10/19
+copy src_modify\just_audio.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\just_audio-0.9.35\lib\just_audio.dart"

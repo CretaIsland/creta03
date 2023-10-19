@@ -413,17 +413,17 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                             StreamBuilder<LoopMode>(
                               stream: _audioPlayer.loopModeStream,
                               builder: (context, snapshot) {
-                                final loopMode = snapshot.data ?? LoopMode.off;
+                                final loopMode = snapshot.data ?? LoopMode.all;
                                 var icons = [
-                                  Icon(Icons.repeat,
-                                      color: Colors.black87.withOpacity(0.5),
-                                      size: 24.0 * scaleVal),
+                                  // Icon(Icons.repeat,
+                                  //     color: Colors.black87.withOpacity(0.5),
+                                  //     size: 24.0 * scaleVal),
                                   Icon(Icons.repeat, color: Colors.black87, size: 24.0 * scaleVal),
                                   Icon(Icons.repeat_one,
                                       color: Colors.black87, size: 24.0 * scaleVal),
                                 ];
                                 const cycleModes = [
-                                  LoopMode.off,
+                                  //LoopMode.off,
                                   LoopMode.all,
                                   LoopMode.one,
                                 ];
