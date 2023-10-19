@@ -386,7 +386,50 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                                 size: _selectedSize, contentsId: metadata.id, scaleVal: scaleVal),
                           ],
                         ),
-                        Text(metadata.artist!, style: TextStyle(fontSize: 14.0 * scaleVal)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(metadata.artist!, style: TextStyle(fontSize: 14.0 * scaleVal)),
+                            // IconButton(
+                            //   icon: const Icon(Icons.remove_circle_outline_sharp),
+                            //   iconSize: 24.0,
+                            //   onPressed: () {
+                            //     final playerState = snapshot.data;
+                            //     if (playerState != null) {
+                            //       final playerIndex = playerState.currentIndex;
+                            //       removeMusic(playerIndex);
+                            //     }
+                            //   },
+                            // ),
+                            StreamBuilder<LoopMode>(
+                              stream: _audioPlayer.loopModeStream,
+                              builder: (context, snapshot) {
+                                final loopMode = snapshot.data ?? LoopMode.all;
+                                var icons = [
+                                  // Icon(Icons.repeat,
+                                  //     color: Colors.black87.withOpacity(0.5),
+                                  //     size: 24.0 * scaleVal),
+                                  Icon(Icons.repeat, color: Colors.black87, size: 24.0 * scaleVal),
+                                  Icon(Icons.repeat_one,
+                                      color: Colors.black87, size: 24.0 * scaleVal),
+                                ];
+                                const cycleModes = [
+                                  //LoopMode.off,
+                                  LoopMode.all,
+                                  LoopMode.one,
+                                ];
+                                final index = cycleModes.indexOf(loopMode);
+                                return IconButton(
+                                  icon: icons[index],
+                                  onPressed: () {
+                                    _audioPlayer.setLoopMode(cycleModes[
+                                        (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   );
