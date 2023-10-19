@@ -308,6 +308,8 @@ class CretaStudioLang {
   static const String effect = "배경효과";
   static const String contentFlipEffect = "콘텐츠 넘김 효과";
 
+  static const String iconOption = "아이콘 선택";
+
   static List<String> animationTypes = [
     "없음",
     "페이드 인",

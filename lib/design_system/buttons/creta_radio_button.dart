@@ -14,14 +14,15 @@ class CretaRadioButton extends StatefulWidget {
   final Axis direction;
   final EdgeInsets padding;
 
-  const CretaRadioButton(
-      {super.key,
-      required this.onSelected,
-      required this.valueMap,
-      required this.defaultTitle,
-      this.spacebetween = 30,
-      this.direction = Axis.vertical,
-      this.padding = const EdgeInsets.all(10.0)});
+  const CretaRadioButton({
+    super.key,
+    required this.onSelected,
+    required this.valueMap,
+    required this.defaultTitle,
+    this.spacebetween = 30,
+    this.direction = Axis.vertical,
+    this.padding = const EdgeInsets.all(10.0),
+  });
 
   @override
   State<CretaRadioButton> createState() => _CretaRadioButtonState();
@@ -53,31 +54,31 @@ class _CretaRadioButtonState extends State<CretaRadioButton> {
         //   },
         //   child:
         Container(
-      padding: widget.padding,
-      width: MediaQuery.of(context).size.width,
-      //height: 250,
-      child: RadioGroup<dynamic>.builder(
-        items: widget.valueMap.keys.toList(),
-        textStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
-        // spacebetween: widget.spacebetween,
-        onChanged: (title) {
-          setState(() {
-            logger.finest("Button title $title");
-            selectedTitle = title;
-            widget.onSelected(selectedTitle, widget.valueMap[selectedTitle]!);
-          });
-        },
-        itemBuilder: (item) {
-          return RadioButtonBuilder(
-            item,
-          );
-        },
-        //customShape: ShapeBorder(),
-        groupValue: selectedTitle,
-        activeColor: CretaColor.primary,
-        direction: widget.direction,
-      ),
-      //),
-    );
+            padding: widget.padding,
+            width: MediaQuery.of(context).size.width,
+            //height: 250,
+            child: RadioGroup<dynamic>.builder(
+              items: widget.valueMap.keys.toList(),
+              textStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
+              // spacebetween: widget.spacebetween,
+              onChanged: (title) {
+                setState(() {
+                  logger.finest("Button title $title");
+                  selectedTitle = title;
+                  widget.onSelected(selectedTitle, widget.valueMap[selectedTitle]!);
+                });
+              },
+              itemBuilder: (item) {
+                return RadioButtonBuilder(
+                  item,
+                );
+              },
+              //customShape: ShapeBorder(),
+              groupValue: selectedTitle,
+              activeColor: CretaColor.primary,
+              direction: widget.direction,
+            )
+            //),
+            );
   }
 }

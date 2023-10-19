@@ -136,7 +136,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                     child: WeatherStickerBase(
                       weatherStickerWidget: Container(
                         color: CretaColor.text[200],
-                        child: Image.asset('assets/weather_sticker/구름조금_A_black.png'),
+                        child: Image.asset('assets/weather_sticker/흐린후갬_A_black.png'),
                       ),
                     ),
                   ),
@@ -150,7 +150,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                     child: WeatherStickerBase(
                       weatherStickerWidget: Container(
                         color: CretaColor.text[200],
-                        child: Image.asset('assets/weather_sticker/구름조금_A_white.png'),
+                        child: Image.asset('assets/weather_sticker/흐린후갬_A_white.png'),
                       ),
                     ),
                   ),
@@ -164,7 +164,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                     child: WeatherStickerBase(
                       weatherStickerWidget: Container(
                         color: CretaColor.text[200],
-                        child: Image.asset('assets/weather_sticker/구름조금_B_color.png'),
+                        child: Image.asset('assets/weather_sticker/흐린후갬_B_color.png'),
                       ),
                     ),
                   ),
@@ -176,8 +176,12 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                       BookMainPage.pageManagerHolder!.notify();
                     },
                     child: Container(
+                      alignment: Alignment.bottomCenter,
                       color: CretaColor.text[200],
-                      child: WeatherStickerElements(weatherType: WeatherStickerType.sunny),
+                      child: WeatherStickerElements(
+                        frameModel: null,
+                        weatherType: WeatherStickerType.cloudy,
+                      ),
                     ),
                   ),
                 ],
@@ -251,7 +255,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
     }
 
     int subType = -1;
-    subType = WeatherType.sunny.index;
+    subType = WeatherType.cloudy.index;
 
     mychangeStack.startTrans();
     await frameManager.createNextFrame(

@@ -38,6 +38,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<String> overlayExclude;
   late UndoAble<Color> borderColor;
   late UndoAble<Color> subColor;
+  late UndoAble<double> subSize;
   late UndoAble<double> borderWidth;
   late UndoAble<int> borderType;
   late UndoAble<NextContentTypes> nextContentTypes;
@@ -56,7 +57,6 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   double prevOrder = -1;
   FrameType frameType = FrameType.none;
   int subType = -1;
-
   bool isEditMode = false;
   // bool get isEditMode => _isEditMode;
   // void setEditMode(bool value) {
@@ -171,6 +171,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         isOverlay,
         borderColor,
         subColor,
+        subSize,
         borderWidth,
         borderType,
         nextContentTypes,
@@ -210,6 +211,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     subType = -1;
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
     subColor = UndoAble<Color>(Colors.black, mid, 'subColor');
+    subSize = UndoAble<double>(30, mid, 'subSize');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');
     nextContentTypes = UndoAble<NextContentTypes>(NextContentTypes.none, mid, 'nextContentTypes');
@@ -254,6 +256,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     bgColor1 = UndoAble<Color>(Colors.white, mid, 'bgColor1');
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
     subColor = UndoAble<Color>(Colors.black, mid, 'subColor');
+    subSize = UndoAble<double>(30, mid, 'subSize');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');
     nextContentTypes = UndoAble<NextContentTypes>(NextContentTypes.none, mid, 'nextContentTypes');
@@ -297,6 +300,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isOverlay = UndoAble<bool>(srcFrame.isOverlay.value, mid, 'isOverlay');
     borderColor = UndoAble<Color>(srcFrame.borderColor.value, mid, 'borderColor');
     subColor = UndoAble<Color>(srcFrame.subColor.value, mid, 'subColor');
+    subSize = UndoAble<double>(srcFrame.subSize.value, mid, 'subSize');
     borderWidth = UndoAble<double>(srcFrame.borderWidth.value, mid, 'borderWidth');
     borderType = UndoAble<int>(srcFrame.borderType.value, mid, 'borderType');
     nextContentTypes =
@@ -343,6 +347,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isOverlay.init(srcFrame.isOverlay.value);
     borderColor.init(srcFrame.borderColor.value);
     subColor.init(srcFrame.subColor.value);
+    subSize.init(srcFrame.subSize.value);
     borderWidth.init(srcFrame.borderWidth.value);
     borderType.init(srcFrame.borderType.value);
     borderCap.init(srcFrame.borderCap.value);
@@ -393,6 +398,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
 
     borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
     subColor.set(CretaUtils.string2Color(map["subColor"])!, save: false, noUndo: true);
+    subSize.set((map["subSize"] ?? 0), save: false, noUndo: true);
     borderWidth.set((map["borderWidth"] ?? 0), save: false, noUndo: true);
     borderType.set((map["borderType"] ?? 0), save: false, noUndo: true);
     borderCap.set(BorderCapType.fromInt(map["borderCap"] ?? 0), save: false, noUndo: true);
@@ -440,6 +446,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "isOverlay": isOverlay.value,
         "borderColor": borderColor.value.toString(),
         "subColor": subColor.value.toString(),
+        "subSize": subSize.value,
         "borderWidth": borderWidth.value,
         "borderType": borderType.value,
         "nextContentTypes": nextContentTypes.value.index,

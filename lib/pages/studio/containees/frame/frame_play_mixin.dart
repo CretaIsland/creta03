@@ -41,7 +41,6 @@ import '../../left_menu/timeline/success_timeline.dart';
 import '../../left_menu/timeline/delivery_timeline.dart';
 import '../../left_menu/timeline/weather_timeline.dart';
 import '../../left_menu/weather/weather_base.dart';
-import '../../left_menu/weather/weather_sticker_base.dart';
 import '../../left_menu/weather/weather_sticker_elements.dart';
 import '../../studio_constant.dart';
 import '../../studio_variables.dart';
@@ -156,31 +155,17 @@ mixin FramePlayMixin {
         height: height,
       );
     }
-    if (model.frameType == FrameType.weatherSticker4) {
-      WeatherStickerType stickerValue = WeatherStickerType.sunny;
+    if (model.frameType == FrameType.weatherSticker1 ||
+        model.frameType == FrameType.weatherSticker2 ||
+        model.frameType == FrameType.weatherSticker3 ||
+        model.frameType == FrameType.weatherSticker4) {
+      WeatherStickerType stickerType = WeatherStickerType.cloudy;
       if (model.subType >= 0 && model.subType <= WeatherType.dusty.index) {
-        stickerValue = WeatherStickerType.values[model.subType];
+        stickerType = WeatherStickerType.values[model.subType];
       }
       return WeatherStickerElements(
-        weatherType: stickerValue,
-      );
-    }
-    // if (model.frameType == FrameType.weatherSticker4) {
-    //   return const WeatherStickerElements();
-    // }
-    if (model.frameType == FrameType.weatherSticker1) {
-      return WeatherStickerBase(
-        weatherStickerWidget: Image.asset('assets/weather_sticker/구름조금_A_black.png'),
-      );
-    }
-    if (model.frameType == FrameType.weatherSticker2) {
-      return WeatherStickerBase(
-        weatherStickerWidget: Image.asset('assets/weather_sticker/구름조금_A_white.png'),
-      );
-    }
-    if (model.frameType == FrameType.weatherSticker3) {
-      return WeatherStickerBase(
-        weatherStickerWidget: Image.asset('assets/weather_sticker/구름조금_B_color.png'),
+        frameModel: model,
+        weatherType: stickerType,
       );
     }
     return const SizedBox.shrink();

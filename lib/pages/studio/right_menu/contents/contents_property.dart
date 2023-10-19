@@ -154,7 +154,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         title: CretaLang.fontColor,
         color1: widget.model.fontColor.value,
         color2: widget.model.fontColor.value,
-        opacity: widget.model.opacity.value,
+        opacity: widget.model.opacity.value, 
         gradationType: GradationType.none,
         cardOpenPressed: () {
           setState(() {});

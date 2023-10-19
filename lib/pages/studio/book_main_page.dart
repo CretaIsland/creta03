@@ -278,7 +278,7 @@ class _BookMainPageState extends State<BookMainPage> {
     mouseTracerHolder = MouseTracer();
     mouseTracerHolder!.initialize();
 
-    if (CretaAccountManager.currentLoginUser.isLoginedUser) {
+    if ((widget.isPublishedMode ?? false) == false) {
       client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
       client.connectServer(BookMainPage.selectedMid);
     }
@@ -364,14 +364,14 @@ class _BookMainPageState extends State<BookMainPage> {
 
     //_onceDBGetComplete = true;
 
-    if (CretaAccountManager.currentLoginUser.isLoginedUser == false) {
+    if (widget.isPublishedMode ?? false) {
+      StudioVariables.isMute = false;
+      StudioVariables.isAutoPlay = true;
+    } else {
       StudioVariables.isMute = CretaAccountManager.getMute();
       if ((widget.isPublishedMode ?? false) == false) {
         StudioVariables.isAutoPlay = CretaAccountManager.getAutoPlay();
       }
-    } else {
-      StudioVariables.isMute = false;
-      StudioVariables.isAutoPlay = true;
     }
 
     HycopFactory.realtime!.startTemp(model.mid);
@@ -497,7 +497,7 @@ class _BookMainPageState extends State<BookMainPage> {
     //horizontalScroll?.dispose();
 
     HycopFactory.realtime!.stop();
-    if (CretaAccountManager.currentLoginUser.isLoginedUser) {
+    if ((widget.isPublishedMode ?? false) == false) {
       client.disconnect();
     }
     if (webRTCClient != null) {

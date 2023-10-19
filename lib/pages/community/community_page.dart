@@ -1363,6 +1363,13 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             xOffset: -100,
                             width: 160,
                             popupMenu: [
+                              CretaMenuItem(caption: '재생하기', onPressed: () {}),
+                              CretaMenuItem(caption: '편집하기', onPressed: () {}),
+                              CretaMenuItem(caption: '재생목록에 추가', onPressed: () {}),
+                              CretaMenuItem(caption: '공유하기', onPressed: () {}),
+                              CretaMenuItem(caption: '다운로드', onPressed: () {}),
+                              CretaMenuItem(caption: '삭제하기', onPressed: () {}),
+                              CretaMenuItem(caption: '복사하기', onPressed: () {}),
                               CretaMenuItem(
                                 caption: '전체화면 재생 주소 복사',
                                 onPressed: () {
