@@ -988,34 +988,33 @@ class ContentsManager extends CretaManager {
     //dropdown 하는 순간에 이미 플레이되고 있는 video 가 있다면, 정지시켜야 한다.
     //contentsManager.pause();
 
-    if (contentsModel.file == null) {
+    if (contentsModel.file != null) {
+      //bool uploadComplete = false;
+      html.FileReader fileReader = html.FileReader();
+      fileReader.onLoadEnd.listen((event) async {
+        logger.info('upload waiting ...............${contentsModel.name}');
+        StudioSnippet.uploadFile(
+          contentsModel,
+          contentsManager,
+          fileReader.result as Uint8List,
+        );
+        fileReader = html.FileReader(); // file reader 초기화
+        //uploadComplete = true;
+        logger.info('upload complete');
+      });
+
+      // while (uploadComplete) {
+      //   await Future.delayed(const Duration(milliseconds: 100));
+      // }
+
+      fileReader.onError.listen((err) {
+        logger.severe('message: ${err.toString()}');
+      });
+
+      fileReader.readAsArrayBuffer(contentsModel.file!);
       return;
     }
-
-    //bool uploadComplete = false;
-    html.FileReader fileReader = html.FileReader();
-    fileReader.onLoadEnd.listen((event) async {
-      logger.info('upload waiting ...............${contentsModel.name}');
-      StudioSnippet.uploadFile(
-        contentsModel,
-        contentsManager,
-        fileReader.result as Uint8List,
-      );
-      fileReader = html.FileReader(); // file reader 초기화
-      //uploadComplete = true;
-      logger.info('upload complete');
-    });
-
-    // while (uploadComplete) {
-    //   await Future.delayed(const Duration(milliseconds: 100));
-    // }
-
-    fileReader.onError.listen((err) {
-      logger.severe('message: ${err.toString()}');
-    });
-
-    fileReader.readAsArrayBuffer(contentsModel.file!);
-    return;
+    // 이미 remoteUrl 에 값이 있는 경우는 아무것도 하지않아도 된다.
   }
 
   static Future<void> _uploadProcess(ContentsManager contentsManager, ContentsModel contentsModel,

@@ -66,6 +66,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   Future<bool>? _isInitialized;
   //final bool _isHover = false;
   bool _isShowBorder = false;
+  // ignore: prefer_final_fields
+  bool _dragOnMove = false;
 
   //OffsetEventController? _linkSendEvent;
   FrameEachEventController? _linkReceiveEvent;
@@ -188,12 +190,26 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     //   ],
     // );
 
-    return Center(
+    Widget dropTarget = Center(
       child: _isDropAble(widget.model)
           ? DragTarget<DepotModel>(
               // 보관함에서 끌어다 넣기
               builder: (context, candidateData, rejectedData) {
                 //print('drop depotModel length = ${candidateData.length}');
+
+                if (_dragOnMove) {
+                  return Stack(
+                    children: [
+                      _frameBody1(),
+                      Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        color: Colors.white.withOpacity(0.5),
+                      ),
+                    ],
+                  );
+                }
+
                 return DropZoneWidget(
                   // 파일에서 끌어다 넣기
                   bookMid: widget.model.realTimeKey,
@@ -204,6 +220,23 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
                   child: _frameBody1(),
                 );
               },
+              onMove: (data) {
+                //print('onMove');
+                // if (_dragOnMove == false) {
+                //   setState(() {
+                //     _dragOnMove = true;
+                //   });
+                // }
+              },
+              onLeave: (data) {
+                //print('onLeave');
+                // if (_dragOnMove == true) {
+                //   setState(() {
+                //     _dragOnMove = false;
+                //   });
+                // }
+              },
+
               onAccept: (data) async {
                 //print('drop depotModel =${data.contentsMid}');
                 DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
@@ -220,6 +253,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
             )
           : _frameBody1(),
     );
+
+    return dropTarget;
   }
 
   Widget _frameBody1() {

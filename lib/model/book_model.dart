@@ -129,7 +129,7 @@ class BookModel extends CretaModel with BookMixin {
     //print('new mid = $mid');
     name = UndoAble<String>(nameStr, mid, 'name');
     thumbnailUrl = UndoAble<String>(imageUrl, mid, 'thumbnailType');
-    backgroundMusicFrame = UndoAble<String>(imageUrl, mid, 'backgroundMusicFrame');
+    backgroundMusicFrame = UndoAble<String>('', mid, 'backgroundMusicFrame');
     thumbnailType = UndoAble<ContentsType>(ContentsType.image, mid, 'thumbnailType');
     thumbnailAspectRatio = UndoAble<double>(imageRatio, mid, 'thumbnailAspectRatio');
     isSilent = UndoAble<bool>(false, mid, 'isSilent');
@@ -169,7 +169,8 @@ class BookModel extends CretaModel with BookMixin {
     creatorName = src.creatorName;
     name = UndoAble<String>(srcBook.name.value, mid, 'name');
     thumbnailUrl = UndoAble<String>(srcBook.thumbnailUrl.value, mid, 'thumbnailUrl');
-    backgroundMusicFrame = UndoAble<String>(srcBook.backgroundMusicFrame.value, mid, 'backgroundMusicFrame');
+    backgroundMusicFrame =
+        UndoAble<String>(srcBook.backgroundMusicFrame.value, mid, 'backgroundMusicFrame');
     thumbnailType = UndoAble<ContentsType>(srcBook.thumbnailType.value, mid, 'thumbnailType');
     thumbnailAspectRatio =
         UndoAble<double>(srcBook.thumbnailAspectRatio.value, mid, 'thumbnailAspectRatio');

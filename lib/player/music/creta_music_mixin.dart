@@ -53,7 +53,7 @@ mixin CretaMusicMixin {
 
   Widget showBGM(double applyScale) {
     return Opacity(
-      opacity: 0.5,
+      opacity: 0.2,
       child: Stack(
         alignment: Alignment.center,
         children: [
