@@ -1,5 +1,12 @@
+import 'package:creta03/design_system/buttons/creta_ex_slider.dart';
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
+import 'package:creta03/design_system/component/creta_proprty_slider.dart';
+import 'package:creta03/design_system/creta_color.dart';
+import 'package:creta03/design_system/creta_font.dart';
+import 'package:creta03/design_system/text_field/creta_text_field.dart';
+import 'package:creta03/lang/creta_lang.dart';
 import 'package:creta03/model/app_enums.dart';
+import 'package:creta03/pages/studio/left_menu/left_menu_ele_button.dart';
 import 'package:creta03/pages/studio/left_menu/weather/weather_sticker_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_bg_null_safety/utils/weather_type.dart';
@@ -23,6 +30,7 @@ class WeatherProperty extends StatefulWidget {
 
 class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
   int _prevValue = -1;
+  bool _isIconOptionOpened = false;
 
   final Map<String, dynamic> _type1ValueMap = {
     WeatherType.heavyRainy.name: WeatherType.heavyRainy.index,
@@ -70,16 +78,19 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
   Map<String, dynamic> _getValueMap() {
     if (widget.frameModel.frameType == FrameType.weather1) return _type1ValueMap;
     if (widget.frameModel.frameType == FrameType.weather2) return _type2ValueMap;
-    if (widget.frameModel.frameType == FrameType.weatherSticker4) return _stickerTypeValueMap;
+    if (widget.frameModel.frameType == FrameType.weatherSticker1 ||
+        widget.frameModel.frameType == FrameType.weatherSticker2 ||
+        widget.frameModel.frameType == FrameType.weatherSticker3 ||
+        widget.frameModel.frameType == FrameType.weatherSticker4) return _stickerTypeValueMap;
     return {};
   }
 
   int _getDefaultSubType() {
     if (widget.frameModel.frameType == FrameType.weather1) return WeatherType.sunny.index;
     if (widget.frameModel.frameType == FrameType.weather2) return WeatherScene.scorchingSun.index;
-    if (widget.frameModel.frameType == FrameType.weatherSticker4) {
-      return WeatherStickerType.sunny.index;
-    }
+    // if (widget.frameModel.frameType == FrameType.weatherSticker4) {
+    //   return WeatherStickerType.sunny.index;
+    // }
     return -1;
   }
 
@@ -99,14 +110,14 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
       }
       return defaultTitle;
     }
-    if (widget.frameModel.frameType == FrameType.weatherSticker4) {
-      String defaultTitle = WeatherStickerType.sunny.name;
-      if (widget.frameModel.subType >= 0 &&
-          widget.frameModel.subType <= WeatherStickerType.dusty.index) {
-        defaultTitle = WeatherStickerType.values[widget.frameModel.subType].name;
-      }
-      return defaultTitle;
-    }
+    // if (widget.frameModel.frameType == FrameType.weatherSticker4) {
+    //   String defaultTitle = WeatherStickerType.cloudy.name;
+    //   if (widget.frameModel.subType >= 0 &&
+    //       widget.frameModel.subType <= WeatherStickerType.dusty.index) {
+    //     defaultTitle = WeatherStickerType.values[widget.frameModel.subType].name;
+    //   }
+    //   return defaultTitle;
+    // }
     return '';
   }
 
@@ -150,25 +161,191 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
             ),
           ),
           if (widget.frameModel.subType != 99)
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: Text(CretaStudioLang.offLineWeather, style: titleStyle),
-            ),
+            if (widget.frameModel.frameType == FrameType.weather1 &&
+                widget.frameModel.frameType == FrameType.weather2)
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Text(CretaStudioLang.offLineWeather, style: titleStyle),
+              ),
           if (widget.frameModel.subType != 99)
-            CretaRadioButton(
-              valueMap: _getValueMap(),
-              defaultTitle: _getDefaultTitle(),
-              onSelected: (title, value) {
-                setState(() {
-                  logger.finest('selected $title = $value');
-                  widget.frameModel.subType = value;
-                  _prevValue = value;
-                  widget.frameModel.save();
-                  widget.frameManager.notify();
-                });
-              },
-            ),
+            if (widget.frameModel.frameType == FrameType.weather1 &&
+                widget.frameModel.frameType == FrameType.weather2)
+              CretaRadioButton(
+                valueMap: _getValueMap(),
+                defaultTitle: _getDefaultTitle(),
+                onSelected: (title, value) {
+                  setState(() {
+                    logger.finest('selected $title = $value');
+                    widget.frameModel.subType = value;
+                    _prevValue = value;
+                    widget.frameModel.save();
+                    widget.frameManager.notify();
+                  });
+                },
+              ),
+          propertyDivider(),
+          if (widget.frameModel.subType != 99) _iconOptions(),
+          propertyDivider(),
+          if (widget.frameModel.frameType == FrameType.weatherSticker4) _iconSetting(),
         ],
+      ),
+    );
+  }
+
+  Widget _iconOptions() {
+    String trail = _stickerTypeValueMap.keys.firstWhere(
+        (key) => _stickerTypeValueMap[key] == widget.frameModel.subType,
+        orElse: () => "");
+    return propertyCard(
+      isOpen: _isIconOptionOpened,
+      onPressed: () {
+        setState(() {
+          _isIconOptionOpened = !_isIconOptionOpened;
+        });
+      },
+      titleWidget: Text(CretaStudioLang.iconOption, style: CretaFont.titleSmall),
+      trailWidget: Text(trail, style: CretaFont.titleSmall),
+      hasRemoveButton: false,
+      onDelete: () {},
+      bodyWidget: _iconIllustration(),
+    );
+  }
+
+  Widget _iconIllustration() {
+    return Container(
+      padding: const EdgeInsets.only(top: 4.0),
+      height: 350.0,
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 1 / 1,
+          mainAxisSpacing: 6.0,
+          crossAxisSpacing: 6.0,
+        ),
+        itemCount: _getValueMap().length,
+        itemBuilder: (BuildContext context, int index) {
+          final valueMap = _getValueMap();
+          final titles = valueMap.keys.toList();
+          final title = titles[index];
+          final value = valueMap[title];
+
+          return Column(
+            children: [
+              LeftMenuEleButton(
+                onPressed: () {
+                  setState(() {
+                    widget.frameModel.subType = value;
+                    _prevValue = value;
+                    widget.frameModel.save();
+                    widget.frameManager.notify();
+                  });
+                },
+                width: 80,
+                height: 80,
+                child: Container(
+                  color: widget.frameModel.frameType == FrameType.weatherSticker2
+                      ? CretaColor.text[200]
+                      : widget.frameModel.frameType == FrameType.weatherSticker3
+                          ? CretaColor.text[700]
+                          : Colors.transparent,
+                  child: WeatherStickerElements(
+                    weatherType: WeatherStickerType.values[value],
+                    frameModel: widget.frameModel,
+                  ),
+                ),
+              ),
+              Text(title, style: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!)),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _iconSetting() {
+    return Column(
+      children: [
+        _iconSize(),
+        propertyDivider(),
+        _iconColor(),
+      ],
+    );
+  }
+
+  Widget _iconColor() {
+    return colorPropertyCard(
+      color1: widget.frameModel.subColor.value,
+      color2: widget.frameModel.subColor.value,
+      opacity: widget.frameModel.subColor.value.opacity,
+      title: CretaLang.iconColor,
+      gradationType: GradationType.none,
+      cardOpenPressed: () {
+        setState(() {});
+      },
+      onOpacityDragComplete: (value) {
+        value = value.clamp(0.0, 1.0);
+        setState(() {
+          widget.frameModel.subColor.set(
+            widget.frameModel.subColor.value.withOpacity(value),
+          );
+          widget.frameManager.notify();
+        });
+      },
+      onOpacityDrag: (value) {
+        value = value.clamp(0.0, 1.0);
+        setState(() {
+          widget.frameModel.subColor.set(
+            widget.frameModel.subColor.value.withOpacity(value),
+          );
+          widget.frameManager.notify();
+        });
+      },
+      onColor1Changed: (color) {
+        setState(() {
+          widget.frameModel.subColor.set(color);
+        });
+        widget.frameManager.notify();
+      },
+      onColorIndicatorClicked: () {
+        PropertyMixin.isColorOpen = true;
+        setState(() {});
+      },
+      onDelete: () {
+        setState(() {
+          widget.frameModel.subColor.set(Colors.black);
+        });
+        widget.frameManager.notify();
+      },
+    );
+  }
+
+  Widget _iconSize() {
+    double minFontSize = 30.0;
+    double maxFontSize = 80.0;
+    double iconSize = widget.frameModel.subSize.value;
+
+    if (iconSize < minFontSize) {
+      iconSize = minFontSize;
+    } else if (iconSize > maxFontSize) {
+      iconSize = maxFontSize;
+    }
+
+    return propertyLine(
+      name: CretaStudioLang.fontSize,
+      widget: CretaExSlider(
+        valueType: SliderValueType.normal,
+        value: iconSize,
+        textType: CretaTextFieldType.number,
+        min: minFontSize,
+        max: maxFontSize,
+        onChanngeComplete: (val) {
+          widget.frameModel.subSize.set(val);
+          widget.frameManager.notify();
+        },
+        onChannged: (val) {
+          widget.frameModel.subSize.set(val);
+          widget.frameManager.notify();
+        },
       ),
     );
   }
