@@ -41,7 +41,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   bool _isPlaylistOpened = false;
 
-  bool _isMusicPlaying = false;
+  bool _isMusicPlaying = true;
 
   void setSelectedSize(String selectedValue) {
     _selectedSize = selectedValue;
@@ -189,14 +189,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
     }
 
-    if (StudioVariables.isMute == true) {
-      _audioPlayer.setVolume(0.0);
-    } else {
-      if (frameModel.mute.value == false) {
-        _audioPlayer.setVolume(frameModel.volume.value / 100);
-      } else {
-        _audioPlayer.setVolume(0.0);
-      }
+    if (frameModel.mute.value) {
+      _audioPlayer.setVolume(frameModel.volume.value / 100);
     }
 
     _init();
@@ -225,13 +219,11 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      //
       widget.contentsManager.orderMapIterator((ele) {
         if (ele.isRemoved.value == true) return null;
 
         ContentsModel model = ele as ContentsModel;
         if (model.isShow.value == false) return null;
-
         if (model.isMusic()) {
           String key = widget.contentsManager.frameModel.mid;
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[key];
@@ -246,7 +238,6 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   @override
   void dispose() {
-    //print('music dispose');
     _audioPlayer.stop();
     _audioPlayer.dispose();
     super.dispose();
@@ -395,50 +386,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                                 size: _selectedSize, contentsId: metadata.id, scaleVal: scaleVal),
                           ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(metadata.artist!, style: TextStyle(fontSize: 14.0 * scaleVal)),
-                            // IconButton(
-                            //   icon: const Icon(Icons.remove_circle_outline_sharp),
-                            //   iconSize: 24.0,
-                            //   onPressed: () {
-                            //     final playerState = snapshot.data;
-                            //     if (playerState != null) {
-                            //       final playerIndex = playerState.currentIndex;
-                            //       removeMusic(playerIndex);
-                            //     }
-                            //   },
-                            // ),
-                            StreamBuilder<LoopMode>(
-                              stream: _audioPlayer.loopModeStream,
-                              builder: (context, snapshot) {
-                                final loopMode = snapshot.data ?? LoopMode.off;
-                                var icons = [
-                                  Icon(Icons.repeat,
-                                      color: Colors.black87.withOpacity(0.5),
-                                      size: 24.0 * scaleVal),
-                                  Icon(Icons.repeat, color: Colors.black87, size: 24.0 * scaleVal),
-                                  Icon(Icons.repeat_one,
-                                      color: Colors.black87, size: 24.0 * scaleVal),
-                                ];
-                                const cycleModes = [
-                                  LoopMode.off,
-                                  LoopMode.all,
-                                  LoopMode.one,
-                                ];
-                                final index = cycleModes.indexOf(loopMode);
-                                return IconButton(
-                                  icon: icons[index],
-                                  onPressed: () {
-                                    _audioPlayer.setLoopMode(cycleModes[
-                                        (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                        Text(metadata.artist!, style: TextStyle(fontSize: 14.0 * scaleVal)),
                       ],
                     ),
                   );
@@ -910,20 +858,22 @@ class ControlButtons extends StatelessWidget {
               return IconButton(
                 icon: icons[index],
                 onPressed: () {
-                  showSliderDialog(
-                      context: context,
-                      title: "볼륨 조절",
-                      divisions: 10,
-                      min: 0.0,
-                      max: 1.0,
-                      stream: audioPlayer.volumeStream,
-                      onChanged: (value) {
-                        audioPlayer.setVolume(value);
-                        contentsManager.frameModel.volume.set(value * 100);
-                        if (value > 0) {
-                          contentsManager.frameModel.mute.set(false);
-                        }
-                      });
+                  contentsManager.frameModel.mute.value == true
+                      ? contentsManager.frameModel.mute.set(false)
+                      : showSliderDialog(
+                          context: context,
+                          title: "볼륨 조절",
+                          divisions: 10,
+                          min: 0.0,
+                          max: 1.0,
+                          stream: audioPlayer.volumeStream,
+                          onChanged: (value) {
+                            audioPlayer.setVolume(value);
+                            contentsManager.frameModel.volume.set(value * 100);
+                            if (value > 0) {
+                              contentsManager.frameModel.mute.set(false);
+                            }
+                          });
                 },
               );
             }),
@@ -990,29 +940,55 @@ class ControlButtons extends StatelessWidget {
           ),
         ),
         Flexible(
-          child: StreamBuilder<double>(
-            stream: audioPlayer.speedStream,
+          child: StreamBuilder<LoopMode>(
+            stream: audioPlayer.loopModeStream,
             builder: (context, snapshot) {
-              // double speedValue = snapshot.data ?? 1.000;
+              final loopMode = snapshot.data ?? LoopMode.off;
+              var icons = [
+                Icon(Icons.repeat, color: Colors.black87.withOpacity(0.5), size: 24.0 * scaleVal),
+                Icon(Icons.repeat, color: CretaColor.secondary, size: 24.0 * scaleVal),
+                Icon(Icons.repeat_one, color: CretaColor.secondary, size: 24.0 * scaleVal),
+              ];
+              const cycleModes = [
+                LoopMode.off,
+                LoopMode.all,
+                LoopMode.one,
+              ];
+              final index = cycleModes.indexOf(loopMode);
               return IconButton(
-                icon: Icon(Icons.speed, size: iconSize / 2.0),
-                // style: const TextStyle(fontWeight: FontWeight.bold)),
+                icon: icons[index],
                 onPressed: () {
-                  showSliderDialog(
-                    context: context,
-                    title: "재생 속도",
-                    divisions: 4,
-                    min: 0.5,
-                    max: 1.5,
-                    valueSuffix: 'x',
-                    stream: audioPlayer.speedStream,
-                    onChanged: audioPlayer.setSpeed,
-                  );
+                  audioPlayer.setLoopMode(
+                      cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
                 },
               );
             },
           ),
         ),
+        // Flexible(
+        //   child: StreamBuilder<double>(
+        //     stream: audioPlayer.speedStream,
+        //     builder: (context, snapshot) {
+        //       // double speedValue = snapshot.data ?? 1.000;
+        //       return IconButton(
+        //         icon: Icon(Icons.speed, size: iconSize / 2.0),
+        //         // style: const TextStyle(fontWeight: FontWeight.bold)),
+        //         onPressed: () {
+        //           showSliderDialog(
+        //             context: context,
+        //             title: "재생 속도",
+        //             divisions: 4,
+        //             min: 0.5,
+        //             max: 1.5,
+        //             valueSuffix: 'x',
+        //             stream: audioPlayer.speedStream,
+        //             onChanged: audioPlayer.setSpeed,
+        //           );
+        //         },
+        //       );
+        //     },
+        //   ),
+        // ),
       ],
     );
   }

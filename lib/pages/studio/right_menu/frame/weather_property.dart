@@ -183,9 +183,9 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
                   });
                 },
               ),
-          propertyDivider(),
+          if (widget.frameModel.subType != 99) propertyDivider(),
           if (widget.frameModel.subType != 99) _iconOptions(),
-          propertyDivider(),
+          if (widget.frameModel.subType != 99) propertyDivider(),
           if (widget.frameModel.frameType == FrameType.weatherSticker4) _iconSetting(),
         ],
       ),
