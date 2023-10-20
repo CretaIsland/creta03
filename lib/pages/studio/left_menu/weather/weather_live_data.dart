@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 //import '../../../login_page.dart';
 import '../../../login/creta_account_manager.dart';
 
-class CurrentWeatherClass extends StatefulWidget {
+class WeatherLiveData extends StatefulWidget {
   static String cityName = '';
   static num temp = 0;
   static num press = 0;
@@ -13,15 +13,15 @@ class CurrentWeatherClass extends StatefulWidget {
   static num cover = 0;
   static num vis = 0;
   static num wind = 0;
-  const CurrentWeatherClass({
+  const WeatherLiveData({
     super.key,
   });
 
   @override
-  State<CurrentWeatherClass> createState() => _CurrentWeatherClassState();
+  State<WeatherLiveData> createState() => _WeatherLiveDataState();
 }
 
-class _CurrentWeatherClassState extends State<CurrentWeatherClass> {
+class _WeatherLiveDataState extends State<WeatherLiveData> {
   bool isLoaded = false;
   String domain = "https://api.openweathermap.org/data/2.5/weather?";
   String apiKey = CretaAccountManager.getEnterprise!.openWeatherApiKey;
@@ -79,21 +79,21 @@ class _CurrentWeatherClassState extends State<CurrentWeatherClass> {
   updateUI(var decodedData) {
     setState(() {
       if (decodedData == null) {
-        CurrentWeatherClass.temp = 0;
-        CurrentWeatherClass.press = 0;
-        CurrentWeatherClass.hum = 0;
-        CurrentWeatherClass.cover = 0;
-        CurrentWeatherClass.vis = 0;
-        CurrentWeatherClass.wind = 0;
-        CurrentWeatherClass.cityName = 'N/A';
+        WeatherLiveData.temp = 0;
+        WeatherLiveData.press = 0;
+        WeatherLiveData.hum = 0;
+        WeatherLiveData.cover = 0;
+        WeatherLiveData.vis = 0;
+        WeatherLiveData.wind = 0;
+        WeatherLiveData.cityName = 'N/A';
       } else {
-        CurrentWeatherClass.temp = decodedData['main']['temp'] - 273;
-        CurrentWeatherClass.press = decodedData['main']['pressure'];
-        CurrentWeatherClass.hum = decodedData['main']['humidity'];
-        CurrentWeatherClass.cover = decodedData['clouds']['all'];
-        CurrentWeatherClass.wind = decodedData['wind']['speed'];
-        CurrentWeatherClass.vis = decodedData['visibility'];
-        CurrentWeatherClass.cityName = decodedData['name'];
+        WeatherLiveData.temp = decodedData['main']['temp'] - 273;
+        WeatherLiveData.press = decodedData['main']['pressure'];
+        WeatherLiveData.hum = decodedData['main']['humidity'];
+        WeatherLiveData.cover = decodedData['clouds']['all'];
+        WeatherLiveData.wind = decodedData['wind']['speed'];
+        WeatherLiveData.vis = decodedData['visibility'];
+        WeatherLiveData.cityName = decodedData['name'];
       }
     });
   }

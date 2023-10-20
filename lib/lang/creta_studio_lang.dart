@@ -610,6 +610,7 @@ class CretaStudioLang {
   static String lineHeight = "행간";
   static String fontName = "폰트";
   static String fontSize = "폰트크기";
+  static String iconSize = "아이콘크기";
 
   static String depotComplete = "보관함으로 이동이 완료되었습니다";
 }

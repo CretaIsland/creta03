@@ -181,3 +181,47 @@ void showSliderDialog({
     },
   );
 }
+
+void showSliderDialog11({
+  required BuildContext context,
+  required String title,
+  required int divisions,
+  required double min,
+  required double max,
+  String valueSuffix = '',
+  required Stream<double> stream,
+  required ValueChanged<double> onChanged,
+}) {
+  showDialog<void>(
+    context: context,
+    builder: (context) {
+      return StreamBuilder<double>(
+        stream: stream,
+        builder: (context, snapshot) {
+          return Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: SizedBox(
+              height: 160.0,
+              child: Column(
+                children: [
+                  Slider(
+                    divisions: divisions,
+                    min: min,
+                    max: max,
+                    value: snapshot.data ?? 1.00,
+                    activeColor: CretaColor.bufferedColor,
+                    onChanged: onChanged,
+                  ),
+                  Text('${snapshot.data}$valueSuffix',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}

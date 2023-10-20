@@ -21,7 +21,7 @@ class CretaRadioButton extends StatefulWidget {
     required this.defaultTitle,
     this.spacebetween = 30,
     this.direction = Axis.vertical,
-    this.padding = const EdgeInsets.all(10.0),
+    this.padding = const EdgeInsets.all(20.0),
   });
 
   @override

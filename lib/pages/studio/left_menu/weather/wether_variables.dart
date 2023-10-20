@@ -26,27 +26,19 @@ class WeatherVariables {
   static String getInfoText(WeatherInfoType infoType) {
     switch (infoType) {
       case WeatherInfoType.cityname:
-        // return '${WeatherVariables.temperature}°C';
-        return CurrentWeatherClass.cityName;
-      // return '${WeatherValues.values[WeatherInstance.cityName]}';
+        return WeatherLiveData.cityName;
       case WeatherInfoType.temperature:
-        // return '${WeatherVariables.temperature}°C';
-        return '${CurrentWeatherClass.temp.toInt()} ºC';
+        return '${WeatherLiveData.temp.toInt()} ºC';
       case WeatherInfoType.humidity:
-        // return '${WeatherVariables.humidity}%';
-        return '${CurrentWeatherClass.hum.toInt()} %';
+        return '${WeatherLiveData.hum.toInt()} %';
       case WeatherInfoType.wind:
-        return '${CurrentWeatherClass.wind.toInt()} m/s';
-      // return WeatherVariables.wind;
+        return '${WeatherLiveData.wind.toInt()} m/s';
       case WeatherInfoType.pressure:
-        // return '${WeatherVariables.pressure}hPa';
-        return '${CurrentWeatherClass.press.toInt()} hPa';
-      // return ' ${WeatherValues.values[WeatherInstance.pressure].toInt()} hPa';
+        return '${WeatherLiveData.press.toInt()} hPa';
       case WeatherInfoType.uv:
         return '${WeatherVariables.uv}';
       case WeatherInfoType.visibility:
-        return '${CurrentWeatherClass.vis.toInt() / 1000} Km';
-      // return '${WeatherVariables.visibility}Km';
+        return '${WeatherLiveData.vis.toInt() / 1000} Km';
       case WeatherInfoType.microDust:
         return WeatherVariables.microDust.name;
       case WeatherInfoType.superMicroDust:

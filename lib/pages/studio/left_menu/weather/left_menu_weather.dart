@@ -115,7 +115,7 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                 ],
               ),
             ),
-            const CurrentWeatherClass(),
+            const WeatherLiveData(),
             Padding(
               padding: const EdgeInsets.only(top: 24.0, left: 24.0),
               child: Text('날씨 스티커', style: widget.dataStyle),
@@ -317,7 +317,6 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
     retval.name = name;
     retval.remoteUrl = '$name $text';
     retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
-    retval.remoteUrl = text;
     retval.fontSize.set(48, noUndo: true, save: false);
     retval.fontSizeType.set(FontSizeType.small, noUndo: true, save: false);
     //retval.playTime.set(-1, noUndo: true, save: false);

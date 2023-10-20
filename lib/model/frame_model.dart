@@ -2,6 +2,7 @@
 
 // import 'package:hycop/common/util/util.dart';
 
+import 'package:creta03/design_system/creta_color.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
@@ -210,7 +211,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     frameType = FrameType.none;
     subType = -1;
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
-    subColor = UndoAble<Color>(Colors.black, mid, 'subColor');
+    subColor = UndoAble<Color>(CretaColor.primary, mid, 'subColor');
     subSize = UndoAble<double>(30, mid, 'subSize');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');
@@ -255,7 +256,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     isOverlay = UndoAble<bool>(false, mid, 'isOverlay');
     bgColor1 = UndoAble<Color>(Colors.white, mid, 'bgColor1');
     borderColor = UndoAble<Color>(Colors.black, mid, 'borderColor');
-    subColor = UndoAble<Color>(Colors.black, mid, 'subColor');
+    subColor = UndoAble<Color>(CretaColor.primary, mid, 'subColor');
     subSize = UndoAble<double>(30, mid, 'subSize');
     borderWidth = UndoAble<double>(0, mid, 'borderWidth');
     borderType = UndoAble<int>(0, mid, 'borderType');

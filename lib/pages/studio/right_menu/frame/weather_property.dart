@@ -30,7 +30,7 @@ class WeatherProperty extends StatefulWidget {
 
 class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
   int _prevValue = -1;
-  bool _isIconOptionOpened = false;
+  bool _isIconOptionOpened = true;
 
   final Map<String, dynamic> _type1ValueMap = {
     WeatherType.heavyRainy.name: WeatherType.heavyRainy.index,
@@ -161,14 +161,14 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
             ),
           ),
           if (widget.frameModel.subType != 99)
-            if (widget.frameModel.frameType == FrameType.weather1 &&
+            if (widget.frameModel.frameType == FrameType.weather1 ||
                 widget.frameModel.frameType == FrameType.weather2)
               Padding(
                 padding: const EdgeInsets.only(top: 12.0),
                 child: Text(CretaStudioLang.offLineWeather, style: titleStyle),
               ),
           if (widget.frameModel.subType != 99)
-            if (widget.frameModel.frameType == FrameType.weather1 &&
+            if (widget.frameModel.frameType == FrameType.weather1 ||
                 widget.frameModel.frameType == FrameType.weather2)
               CretaRadioButton(
                 valueMap: _getValueMap(),
@@ -183,9 +183,18 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
                   });
                 },
               ),
-          if (widget.frameModel.subType != 99) propertyDivider(),
-          if (widget.frameModel.subType != 99) _iconOptions(),
-          if (widget.frameModel.subType != 99) propertyDivider(),
+          if (widget.frameModel.subType != 99)
+            if (widget.frameModel.frameType != FrameType.weather1 &&
+                widget.frameModel.frameType != FrameType.weather2)
+              propertyDivider(),
+          if (widget.frameModel.subType != 99)
+            if (widget.frameModel.frameType != FrameType.weather1 &&
+                widget.frameModel.frameType != FrameType.weather2)
+              _iconOptions(),
+          if (widget.frameModel.subType != 99)
+            if (widget.frameModel.frameType != FrameType.weather1 &&
+                widget.frameModel.frameType != FrameType.weather2)
+              propertyDivider(),
           if (widget.frameModel.frameType == FrameType.weatherSticker4) _iconSetting(),
         ],
       ),
@@ -312,7 +321,7 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
       },
       onDelete: () {
         setState(() {
-          widget.frameModel.subColor.set(Colors.black);
+          widget.frameModel.subColor.set(CretaColor.primary);
         });
         widget.frameManager.notify();
       },

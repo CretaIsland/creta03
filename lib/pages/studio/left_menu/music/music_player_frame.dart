@@ -3,6 +3,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/model/contents_model.dart';
+import 'package:creta03/pages/studio/left_menu/music/control_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -17,7 +18,6 @@ import '../../right_menu/property_mixin.dart';
 import '../../studio_constant.dart';
 import '../../studio_variables.dart';
 import 'creta_mini_music_visualizer.dart';
-import 'music_common.dart';
 
 class MusicPlayerFrame extends StatefulWidget {
   final ContentsManager contentsManager;
@@ -401,33 +401,33 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                             //     }
                             //   },
                             // ),
-                            StreamBuilder<LoopMode>(
-                              stream: _audioPlayer.loopModeStream,
-                              builder: (context, snapshot) {
-                                final loopMode = snapshot.data ?? LoopMode.all;
-                                var icons = [
-                                  // Icon(Icons.repeat,
-                                  //     color: Colors.black87.withOpacity(0.5),
-                                  //     size: 24.0 * scaleVal),
-                                  Icon(Icons.repeat, color: Colors.black87, size: 24.0 * scaleVal),
-                                  Icon(Icons.repeat_one,
-                                      color: Colors.black87, size: 24.0 * scaleVal),
-                                ];
-                                const cycleModes = [
-                                  //LoopMode.off,
-                                  LoopMode.all,
-                                  LoopMode.one,
-                                ];
-                                final index = cycleModes.indexOf(loopMode);
-                                return IconButton(
-                                  icon: icons[index],
-                                  onPressed: () {
-                                    _audioPlayer.setLoopMode(cycleModes[
-                                        (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
-                                  },
-                                );
-                              },
-                            ),
+                            // StreamBuilder<LoopMode>(
+                            //   stream: _audioPlayer.loopModeStream,
+                            //   builder: (context, snapshot) {
+                            //     final loopMode = snapshot.data ?? LoopMode.all;
+                            //     var icons = [
+                            //       // Icon(Icons.repeat,
+                            //       //     color: Colors.black87.withOpacity(0.5),
+                            //       //     size: 24.0 * scaleVal),
+                            //       Icon(Icons.repeat, color: Colors.black87, size: 24.0 * scaleVal),
+                            //       Icon(Icons.repeat_one,
+                            //           color: Colors.black87, size: 24.0 * scaleVal),
+                            //     ];
+                            //     const cycleModes = [
+                            //       //LoopMode.off,
+                            //       LoopMode.all,
+                            //       LoopMode.one,
+                            //     ];
+                            //     final index = cycleModes.indexOf(loopMode);
+                            //     return IconButton(
+                            //       icon: icons[index],
+                            //       onPressed: () {
+                            //         _audioPlayer.setLoopMode(cycleModes[
+                            //             (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+                            //       },
+                            //     );
+                            //   },
+                            // ),
                           ],
                         ),
                       ],
@@ -467,6 +467,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                 });
               },
               scaleVal: scaleVal,
+              toggleValue: _isMusicPlaying,
             ),
             SizedBox(height: 4.0 * scaleVal),
             Expanded(
@@ -651,6 +652,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                   _isMusicPlaying = !_isMusicPlaying;
                 });
               },
+              toggleValue: _isMusicPlaying,
               scaleVal: scaleVal),
         ],
       ),
@@ -785,256 +787,6 @@ class PositionData {
   final Duration position;
   final Duration bufferedPosition;
   final Duration duration;
-}
-
-class ControlButtons extends StatelessWidget {
-  final ContentsManager contentsManager;
-  final ConcatenatingAudioSource playlist;
-  final void Function() passOnPressed;
-  final double scaleVal;
-
-  const ControlButtons({
-    super.key,
-    required this.audioPlayer,
-    required this.contentsManager,
-    required this.playlist,
-    required this.passOnPressed,
-    required this.scaleVal,
-  });
-
-  final AudioPlayer audioPlayer;
-
-  String findPrevousTag() {
-    int index = 0;
-    String currentMid = contentsManager.getSelectedMid();
-    for (var ele in playlist.children) {
-      if (ele is ProgressiveAudioSource) {
-        ProgressiveAudioSource source = ele;
-        if (source.tag.id.toString() == currentMid) {
-          if (index == 0) {
-            AudioSource src = playlist.children[playlist.length - 1];
-            if (src is ProgressiveAudioSource) {
-              return src.tag.id.toString();
-            }
-          }
-          AudioSource src = playlist.children[index - 1];
-          if (src is ProgressiveAudioSource) {
-            return src.tag.id.toString();
-          }
-        }
-        index++;
-      }
-    }
-    return '';
-  }
-
-  void prevMusic() {
-    audioPlayer.seekToPrevious();
-    String prevTargetMid = findPrevousTag();
-    if (prevTargetMid.isNotEmpty) {
-      contentsManager.setSelectedMid(prevTargetMid);
-      BookMainPage.containeeNotifier!.notify();
-    }
-  }
-
-  String findNextTag() {
-    int index = 0;
-    String currentMid = contentsManager.getSelectedMid();
-    for (var ele in playlist.children) {
-      if (ele is ProgressiveAudioSource) {
-        ProgressiveAudioSource source = ele;
-        if (source.tag.id.toString() == currentMid) {
-          if (index == playlist.length) {
-            AudioSource src = playlist.children[0];
-            if (src is ProgressiveAudioSource) {
-              return src.tag.id.toString();
-            }
-          }
-          AudioSource src = playlist.children[index + 1];
-          if (src is ProgressiveAudioSource) {
-            return src.tag.id.toString();
-          }
-        }
-        index++;
-      }
-    }
-    return '';
-  }
-
-  void nextMusic() {
-    audioPlayer.seekToNext();
-    String nextTargetMid = findNextTag();
-    if (nextTargetMid.isNotEmpty) {
-      contentsManager.setSelectedMid(nextTargetMid);
-      BookMainPage.containeeNotifier!.notify();
-    }
-  }
-
-  void fromBeginning() {
-    audioPlayer.seek(Duration.zero);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final iconSize = 51.0 * scaleVal;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Opens volumn slider dialog
-        Flexible(
-          child: StreamBuilder<double>(
-            stream: audioPlayer.volumeStream,
-            builder: ((context, snapshot) {
-              double volumeValue = snapshot.data ?? 0.0;
-              var icons = [
-                Icon(Icons.volume_off, size: iconSize / 2.0),
-                Icon(Icons.volume_down, size: iconSize / 2.0),
-                Icon(Icons.volume_up, size: iconSize / 2.0),
-              ];
-              int index = 0;
-              if (volumeValue > 0.0 && volumeValue <= 0.5) {
-                index = 1;
-              } else if (volumeValue > 0.5) {
-                index = 2;
-              }
-              return IconButton(
-                icon: icons[index],
-                onPressed: () {
-                  contentsManager.frameModel.mute.value == true
-                      ? contentsManager.frameModel.mute.set(false)
-                      : showSliderDialog(
-                          context: context,
-                          title: "볼륨 조절",
-                          divisions: 10,
-                          min: 0.0,
-                          max: 1.0,
-                          stream: audioPlayer.volumeStream,
-                          onChanged: (value) {
-                            audioPlayer.setVolume(value);
-                            contentsManager.frameModel.volume.set(value * 100);
-                            if (value > 0) {
-                              contentsManager.frameModel.mute.set(false);
-                            }
-                          });
-                },
-              );
-            }),
-          ),
-        ),
-        Flexible(
-          child: StreamBuilder<SequenceState?>(
-            stream: audioPlayer.sequenceStateStream,
-            builder: (context, snapshot) => IconButton(
-              icon: Icon(Icons.skip_previous, size: iconSize / 2.0),
-              onPressed: audioPlayer.hasPrevious ? prevMusic : fromBeginning,
-            ),
-          ),
-        ),
-        StreamBuilder<PlayerState>(
-          stream: audioPlayer.playerStateStream,
-          builder: (context, snapshot) {
-            final playState = snapshot.data;
-            final processingState = playState?.processingState;
-            final playing = playState?.playing;
-            if (processingState == ProcessingState.loading ||
-                processingState == ProcessingState.buffering) {
-              return Container(
-                margin: EdgeInsets.all(8.0 * scaleVal),
-                width: iconSize,
-                height: iconSize,
-                child: const CircularProgressIndicator(),
-              );
-            } else if (!(playing ?? false)) {
-              return IconButton(
-                onPressed: () {
-                  audioPlayer.play();
-                  passOnPressed();
-                },
-                iconSize: iconSize,
-                color: Colors.black87,
-                icon: const Icon(Icons.play_arrow_rounded),
-              );
-            } else if (processingState != ProcessingState.completed) {
-              return IconButton(
-                onPressed: () {
-                  audioPlayer.pause();
-                  passOnPressed();
-                },
-                iconSize: iconSize,
-                color: Colors.black87,
-                icon: const Icon(Icons.pause_rounded),
-              );
-            }
-            return Icon(
-              Icons.play_arrow_rounded,
-              size: iconSize,
-              color: Colors.black87,
-            );
-          },
-        ),
-        Flexible(
-          child: StreamBuilder<SequenceState?>(
-            stream: audioPlayer.sequenceStateStream,
-            builder: (context, snapshot) => IconButton(
-              icon: Icon(Icons.skip_next, size: iconSize / 2.0),
-              onPressed: audioPlayer.hasNext ? nextMusic : fromBeginning,
-            ),
-          ),
-        ),
-        Flexible(
-          child: StreamBuilder<LoopMode>(
-            stream: audioPlayer.loopModeStream,
-            builder: (context, snapshot) {
-              final loopMode = snapshot.data ?? LoopMode.off;
-              var icons = [
-                Icon(Icons.repeat, color: Colors.black87.withOpacity(0.5), size: 24.0 * scaleVal),
-                Icon(Icons.repeat, color: CretaColor.secondary, size: 24.0 * scaleVal),
-                Icon(Icons.repeat_one, color: CretaColor.secondary, size: 24.0 * scaleVal),
-              ];
-              const cycleModes = [
-                LoopMode.off,
-                LoopMode.all,
-                LoopMode.one,
-              ];
-              final index = cycleModes.indexOf(loopMode);
-              return IconButton(
-                icon: icons[index],
-                onPressed: () {
-                  audioPlayer.setLoopMode(
-                      cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
-                },
-              );
-            },
-          ),
-        ),
-        // Flexible(
-        //   child: StreamBuilder<double>(
-        //     stream: audioPlayer.speedStream,
-        //     builder: (context, snapshot) {
-        //       // double speedValue = snapshot.data ?? 1.000;
-        //       return IconButton(
-        //         icon: Icon(Icons.speed, size: iconSize / 2.0),
-        //         // style: const TextStyle(fontWeight: FontWeight.bold)),
-        //         onPressed: () {
-        //           showSliderDialog(
-        //             context: context,
-        //             title: "재생 속도",
-        //             divisions: 4,
-        //             min: 0.5,
-        //             max: 1.5,
-        //             valueSuffix: 'x',
-        //             stream: audioPlayer.speedStream,
-        //             onChanged: audioPlayer.setSpeed,
-        //           );
-        //         },
-        //       );
-        //     },
-        //   ),
-        // ),
-      ],
-    );
-  }
 }
 
 class ControlButtonsSmallSize extends StatelessWidget {

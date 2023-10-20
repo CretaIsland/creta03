@@ -85,3 +85,7 @@ copy src_modify\video_player.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\vi
 
 #skpark modify 23/10/19
 copy src_modify\just_audio.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\just_audio-0.9.35\lib\just_audio.dart"
+
+#mdang modify 23/10/20
+copy src_modify\radio_button.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\group_radio_button-1.3.0\lib\src\radio_button.dart"
+copy src_modify\radio_group.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\group_radio_button-1.3.0\lib\src\radio_group.dart"
