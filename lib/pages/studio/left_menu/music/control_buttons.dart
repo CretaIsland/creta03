@@ -239,15 +239,14 @@ class _ControlButtonsState extends State<ControlButtons> {
           child: StreamBuilder<LoopMode>(
             stream: widget.audioPlayer.loopModeStream,
             builder: (context, snapshot) {
-              final loopMode = snapshot.data ?? LoopMode.off;
+              final loopMode = snapshot.data ?? LoopMode.all;
               var icons = [
                 Icon(Icons.repeat,
                     color: Colors.black87.withOpacity(0.5), size: 24.0 * widget.scaleVal),
                 Icon(Icons.repeat, color: CretaColor.secondary, size: 24.0 * widget.scaleVal),
                 Icon(Icons.repeat_one, color: CretaColor.secondary, size: 24.0 * widget.scaleVal),
               ];
-              const cycleModes = [
-                LoopMode.off,
+              List<LoopMode> cycleModes = [
                 LoopMode.all,
                 LoopMode.one,
               ];
