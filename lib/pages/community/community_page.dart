@@ -1374,7 +1374,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                 caption: '전체화면 재생 주소 복사',
                                 onPressed: () {
                                   String url = Uri.base.origin;
-                                  url += '${AppRoutes.studioBookPreviewPage}?${CommunityRightBookPane.bookId}';
+                                  url += '${AppRoutes.studioBookPreviewPage}?${CommunityRightBookPane.bookId}&mode=preview';
                                   Clipboard.setData(ClipboardData(text: url));
                                 },
                               ),
