@@ -1429,12 +1429,12 @@ class _BookMainPageState extends State<BookMainPage> {
     final key = event.logicalKey;
     //logger.info('key pressed $key');
     if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
-      print('shift pressed');
+      //print('shift pressed');
       StudioVariables.isShiftPressed = true;
     } else if (event is RawKeyUpEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
       StudioVariables.isShiftPressed = false;
     } else if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.controlLeft) {
-      print('ctrl pressed');
+      //print('ctrl pressed');
       StudioVariables.isCtrlPressed = true;
     } else if (event is RawKeyUpEvent && event.logicalKey == LogicalKeyboardKey.controlLeft) {
       StudioVariables.isCtrlPressed = false;
@@ -1451,17 +1451,17 @@ class _BookMainPageState extends State<BookMainPage> {
         logger.info('tab pressed');
       }
       if (event.isKeyPressed(LogicalKeyboardKey.pageDown)) {
-        print("pageDown pressed");
+        //print("pageDown pressed");
         BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
         BookMainPage.pageManagerHolder?.gotoNext();
       }
       if (event.isKeyPressed(LogicalKeyboardKey.pageUp)) {
-        print("pageUp pressed");
+        //print("pageUp pressed");
         BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
         BookMainPage.pageManagerHolder?.gotoPrev();
       }
       if (event.isKeyPressed(LogicalKeyboardKey.insert)) {
-        print("insert pressed = play"); // playButton
+        //print("insert pressed = play"); // playButton
         StudioVariables.globalToggleAutoPlay(save: true);
         BookTopMenu.invalidate();
       }
@@ -1471,11 +1471,11 @@ class _BookMainPageState extends State<BookMainPage> {
       if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
           keys.contains(LogicalKeyboardKey.controlRight))) {
         if (keys.contains(LogicalKeyboardKey.keyM)) {
-          print("ctrl+M pressed = mute"); // muteButton
+          //print("ctrl+M pressed = mute"); // muteButton
           StudioVariables.globalToggleMute(save: true);
           BookTopMenu.invalidate();
         } else if (keys.contains(LogicalKeyboardKey.keyZ)) {
-          print('Ctrl+Z pressed');
+          //print('Ctrl+Z pressed');
           // undo
         } else if (keys.contains(LogicalKeyboardKey.keyY)) {
           logger.info('Ctrl+Y pressed');
