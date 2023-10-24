@@ -6,7 +6,6 @@ import 'dart:html' as html;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import '../common/creta_utils.dart';
 import '../design_system/component/tree/flutter_treeview.dart' as tree;
 import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
@@ -905,6 +904,7 @@ class ContentsManager extends CretaManager {
         //     '---------uploaded successfully-------${contentsModel.name} with remoteUrl ${contentsModel.remoteUrl}-');
       }
       // 콘텐츠 객체를 DB에 Creta 한다.
+      print('createNextContents (contents=${contentsModel.mid})');
       await contentsManager.createNextContents(contentsModel, doNotify: false);
     }
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
@@ -921,20 +921,19 @@ class ContentsManager extends CretaManager {
   static Future<void> _imageProcess(FrameManager? frameManager, ContentsManager contentsManager,
       ContentsModel contentsModel, FrameModel frameModel, PageModel pageModel,
       {required bool isResizeFrame}) async {
-    ui.Image? image;
-    Uint8List? blob;
-    if (contentsModel.file != null) {
-      final reader = html.FileReader();
-      reader.readAsArrayBuffer(contentsModel.file!);
-      await reader.onLoad.first;
-      blob = reader.result as Uint8List;
-      image = await decodeImageFromList(blob);
-    } else if (contentsModel.remoteUrl != null) {
-      image = await CretaUtils.loadImageFromUrl(contentsModel.remoteUrl!);
-    } else {
-      logger.severe('contents.file and remoteUrl both null');
-      return;
-    }
+    if (contentsModel.file == null) return;
+
+    final reader = html.FileReader();
+    reader.readAsArrayBuffer(contentsModel.file!);
+    await reader.onLoad.first;
+    Uint8List blob = reader.result as Uint8List;
+    ui.Image image = await decodeImageFromList(blob);
+    // } else if (contentsModel.remoteUrl != null) {
+    //   image = await CretaUtils.loadImageFromUrl(contentsModel.remoteUrl!);
+    // } else {
+    //   logger.severe('contents.file and remoteUrl both null');
+    //   return;
+
     // 그림의 가로 세로 규격을 알아낸다.
     double imageWidth = image.width.toDouble();
     double imageHeight = image.height.toDouble();
@@ -973,9 +972,7 @@ class ContentsManager extends CretaManager {
     }
 
     // 업로드는  async 로 진행한다.
-    if (contentsModel.file != null &&
-        blob != null &&
-        (contentsModel.remoteUrl == null || contentsModel.remoteUrl!.isEmpty)) {
+    if (contentsModel.remoteUrl == null || contentsModel.remoteUrl!.isEmpty) {
       // upload 되어 있지 않으므로 업로드한다.
       StudioSnippet.uploadFile(contentsModel, contentsManager, blob);
     }

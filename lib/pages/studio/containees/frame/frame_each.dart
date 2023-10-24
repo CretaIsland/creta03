@@ -5,6 +5,7 @@ import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
 import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
+import 'package:hycop/hycop.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -67,10 +68,10 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   //final bool _isHover = false;
   bool _isShowBorder = false;
   // ignore: prefer_final_fields
-  bool _dragOnMove = false;
 
   //OffsetEventController? _linkSendEvent;
   FrameEachEventController? _linkReceiveEvent;
+  late GlobalObjectKey<ContentsMainState> contentsMainKey;
   //bool _isLinkEnter = false;
 
   @override
@@ -89,6 +90,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     // _linkSendEvent = sendEvent;
     final FrameEachEventController linkReceiveEvent = Get.find(tag: 'to-FrameEach');
     _linkReceiveEvent = linkReceiveEvent;
+    contentsMainKey = GlobalObjectKey<ContentsMainState>(
+        'ContentsMain${widget.pageModel.mid}/${widget.model.mid}');
   }
 
   Future<bool> initChildren() async {
@@ -120,6 +123,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     }
     //print('frame initChildren(${_contentsManager!.getAvailLength()})');
     return true;
+  }
+
+  void invalidateContentsMain() {
+    // 프레임에서 콘텐츠 영역만 invalidate 를 시킨다.
+    contentsMainKey.currentState?.invalidate();
   }
 
   @override
@@ -191,25 +199,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     // );
 
     Widget dropTarget = Center(
-      child: _isDropAble(widget.model)
+      child: widget.model.isDropAble()
           ? DragTarget<DepotModel>(
               // 보관함에서 끌어다 넣기
               builder: (context, candidateData, rejectedData) {
                 //print('drop depotModel length = ${candidateData.length}');
-
-                if (_dragOnMove) {
-                  return Stack(
-                    children: [
-                      _frameBody1(),
-                      Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        color: Colors.white.withOpacity(0.5),
-                      ),
-                    ],
-                  );
-                }
-
                 return DropZoneWidget(
                   // 파일에서 끌어다 넣기
                   bookMid: widget.model.realTimeKey,
@@ -221,31 +215,32 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
                 );
               },
               onMove: (data) {
-                //print('onMove');
-                // if (_dragOnMove == false) {
-                //   setState(() {
-                //     _dragOnMove = true;
-                //   });
-                // }
+                print('onMove');
+                if (widget.model.dragOnMove == false) {
+                  widget.model.dragOnMove = true;
+                  invalidateContentsMain();
+                }
               },
               onLeave: (data) {
-                //print('onLeave');
-                // if (_dragOnMove == true) {
-                //   setState(() {
-                //     _dragOnMove = false;
-                //   });
-                // }
+                print('onLeave');
+                if (widget.model.dragOnMove == true) {
+                  widget.model.dragOnMove = false;
+                  invalidateContentsMain();
+                }
               },
 
               onAccept: (data) async {
-                //print('drop depotModel =${data.contentsMid}');
+                print('drop depotModel =${data.contentsMid}');
                 DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
-                ContentsModel? model = await depotManager?.getContentsInfo(
-                    contentsMid: data.contentsMid, contentsManager: null);
-                if (model != null && model.remoteUrl != null) {
-                  //print(model.remoteUrl);
-                  _onDropFrame(widget.model.mid, [model]);
+                if (depotManager != null) {
+                  ContentsModel? newModel =
+                      await depotManager.copyContents(data, frameId: widget.model.mid);
+                  if (newModel != null) {
+                    _onDropFrame(widget.model.mid, [newModel]);
+                  }
                 }
+                widget.model.dragOnMove = false;
+                invalidateContentsMain();
               },
               onWillAccept: (data) {
                 return widget.model.frameType == FrameType.none;
@@ -362,89 +357,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   //   );
   // }
 
-  bool _isDropAble(FrameModel model) {
-    if (LinkParams.isLinkNewMode) {
-      return false;
-    }
-    if (model.frameType == FrameType.text) {
-      return false;
-    }
-    if (model.frameType == FrameType.weather1) {
-      return false;
-    }
-    if (model.frameType == FrameType.weather2) {
-      return false;
-    }
-    if (model.frameType == FrameType.weatherSticker4) {
-      return false;
-    }
-    if (model.frameType == FrameType.weatherSticker1) {
-      return false;
-    }
-    if (model.frameType == FrameType.weatherSticker2) {
-      return false;
-    }
-    if (model.frameType == FrameType.weatherSticker3) {
-      return false;
-    }
-    if (model.frameType == FrameType.analogWatch) {
-      return false;
-    }
-    if (model.frameType == FrameType.digitalWatch) {
-      return false;
-    }
-    if (model.frameType == FrameType.stopWatch) {
-      return false;
-    }
-    if (model.frameType == FrameType.dateTimeFormat) {
-      return false;
-    }
-    if (model.frameType == FrameType.countDownTimer) {
-      return false;
-    }
-    if (model.frameType == FrameType.sticker) {
-      return false;
-    }
-    if (model.frameType == FrameType.showcaseTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.footballTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.activityTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.successTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.deliveryTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.weatherTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.monthHorizTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.appHorizTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.deliveryHorizTimeline) {
-      return false;
-    }
-    if (model.frameType == FrameType.camera) {
-      return false;
-    }
-    if (model.frameType == FrameType.map) {
-      return false;
-    }
-    return true;
-  }
-
   Future<void> _onDropFrame(String frameId, List<ContentsModel> contentsModelList) async {
     // 콘텐츠 매니저를 생성한다.
     FrameModel? frameModel = frameManager!.getModel(frameId) as FrameModel?;
     if (frameModel == null) {
+      logger.severe('target frameModel is not founded');
       return;
     }
 
@@ -604,8 +521,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         child: ClipRect(
           clipBehavior: Clip.hardEdge,
           child: ContentsMain(
-            key: GlobalObjectKey<ContentsMainState>(
-                'ContentsMain${widget.pageModel.mid}/${model.mid}'),
+            key: contentsMainKey,
             frameModel: model,
             frameOffset: widget.frameOffset,
             pageModel: widget.pageModel,
@@ -674,7 +590,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     return ClipRect(
       clipBehavior: Clip.hardEdge,
       child: ContentsMain(
-        key: GlobalObjectKey<ContentsMainState>('ContentsMain${widget.pageModel.mid}/${model.mid}'),
+        key: contentsMainKey,
         frameModel: model,
         frameOffset: widget.frameOffset,
         pageModel: widget.pageModel,

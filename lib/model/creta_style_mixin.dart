@@ -24,6 +24,8 @@ mixin CretaStyleMixin {
   late UndoAble<int> duration;
   late UndoAble<bool> isShow;
 
+  bool dragOnMove = false; // 보관함에서, 프레임으로 drag 해서, 마우스 포인터가 frame 내부에 도착했을때,
+
   List<Object?> get propsMixin => [
         width,
         height,

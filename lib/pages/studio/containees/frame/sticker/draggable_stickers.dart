@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/contents_manager.dart';
+import '../../../../../data_io/depot_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
 import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/creta_right_mouse_menu.dart';
@@ -16,9 +17,12 @@ import '../../../../../lang/creta_studio_lang.dart';
 import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
+import '../../../../../model/depot_model.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../../../model/page_model.dart';
 import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
+import '../../../left_menu/depot/depot_display.dart';
 import '../../../left_menu/left_menu_page.dart';
 import '../../../studio_getx_controller.dart';
 import '../../../studio_variables.dart';
@@ -26,6 +30,7 @@ import '../../containee_nofifier.dart';
 import 'draggable_resizable.dart';
 import 'instant_editor.dart';
 import 'mini_menu.dart';
+import 'page_bottom_layer.dart';
 import 'stickerview.dart';
 
 class FrameSelectNotifier extends ChangeNotifier {
@@ -49,6 +54,7 @@ class DraggableStickers extends StatefulWidget {
 
   //List of stickers (elements)
   final BookModel book;
+  final PageModel page;
   final double pageWidth;
   final double pageHeight;
   final FrameManager? frameManager;
@@ -73,6 +79,7 @@ class DraggableStickers extends StatefulWidget {
   const DraggableStickers({
     super.key,
     required this.book,
+    required this.page,
     required this.pageWidth,
     required this.pageHeight,
     required this.frameManager,
@@ -103,6 +110,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   final _initialStickerScale = 5.0;
   FrameEventController? _sendEvent;
   List<Sticker> stickers = [];
+  late GlobalObjectKey<PageBottomLayerState> pageBottomLayerKey;
 
   //bool _isEditorAlreadyExist = false;
 
@@ -121,6 +129,9 @@ class _DraggableStickersState extends State<DraggableStickers> {
     final FrameEventController sendEvent = Get.find(tag: 'frame-property-to-main');
     _sendEvent = sendEvent;
     super.initState();
+
+    pageBottomLayerKey =
+        GlobalObjectKey<PageBottomLayerState>('PageBottomLayerKey${widget.page.mid}');
   }
 
   @override
@@ -136,13 +147,11 @@ class _DraggableStickersState extends State<DraggableStickers> {
       ],
       child: Stack(
         children: [
-          Positioned(
-            left: BookMainPage.pageOffset.dx,
-            top: BookMainPage.pageOffset.dy,
-            child: SizedBox(
-              width: widget.pageWidth,
-              height: widget.pageHeight, // - LayoutConst.miniMenuArea,
-            ),
+          PageBottomLayer(
+            key: pageBottomLayerKey,
+            pageWidth: widget.pageWidth,
+            pageHeight: widget.pageHeight,
+            pageModel: widget.page,
           ),
           _pageDropZone(widget.book.mid),
           for (final sticker in stickers) _drawEachStiker(sticker),
@@ -917,13 +926,47 @@ class _DraggableStickersState extends State<DraggableStickers> {
   // }
 
   Widget _pageDropZone(String bookMid) {
-    return DropZoneWidget(
-      bookMid: bookMid,
-      parentId: '',
-      onDroppedFile: (modelList) {
-        //logger.info('page dropZone contents added ${model.mid}');
-        //model.isDynamicSize.set(true, save: false, noUndo: true);
-        widget.onDropPage(modelList); // 동영상에 맞게 frame size 를 조절하라는 뜻
+    return DragTarget<DepotModel>(
+      // 보관함에서 끌어다 넣기
+      builder: (context, candidateData, rejectedData) {
+        return DropZoneWidget(
+          bookMid: bookMid,
+          parentId: '',
+          onDroppedFile: (modelList) {
+            //logger.info('page dropZone contents added ${model.mid}');
+            //model.isDynamicSize.set(true, save: false, noUndo: true);
+            widget.onDropPage(modelList); // 동영상에 맞게 frame size 를 조절하라는 뜻
+          },
+        );
+      },
+      onMove: (data) {
+        print('onMove');
+        if (widget.page.dragOnMove == false) {
+          widget.page.dragOnMove = true;
+          pageBottomLayerKey.currentState?.invalidate();
+        }
+      },
+      onLeave: (data) {
+        print('onLeave');
+        if (widget.page.dragOnMove == true) {
+          widget.page.dragOnMove = false;
+          pageBottomLayerKey.currentState?.invalidate();
+        }
+      },
+      onAccept: (data) async {
+        print('drop depotModel =${data.contentsMid}');
+        DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
+        if (depotManager != null) {
+          ContentsModel? newModel = await depotManager.copyContents(data);
+          if (newModel != null) {
+            widget.onDropPage([newModel]);
+          }
+        }
+        widget.page.dragOnMove = false;
+        pageBottomLayerKey.currentState?.invalidate();
+      },
+      onWillAccept: (data) {
+        return true;
       },
     );
   }

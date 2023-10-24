@@ -59,28 +59,45 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   FrameType frameType = FrameType.none;
   int subType = -1;
   bool isEditMode = false;
-  // bool get isEditMode => _isEditMode;
+   // bool get isEditMode => _isEditMode;
   // void setEditMode(bool value) {
   //   _isEditMode = value;
   // }
 
   bool isWeatherTYpe() {
-    if (frameType == FrameType.weatherInfo) return true;
-    if (frameType == FrameType.weather1) return true;
-    if (frameType == FrameType.weather2) return true;
-    if (frameType == FrameType.weatherSticker4) return true;
-    if (frameType == FrameType.weatherSticker1) return true;
-    if (frameType == FrameType.weatherSticker2) return true;
-    if (frameType == FrameType.weatherSticker3) return true;
-    return false;
+    switch (frameType) {
+      case FrameType.weatherInfo:
+        return true;
+      case FrameType.weather1:
+        return true;
+      case FrameType.weather2:
+        return true;
+      case FrameType.weatherSticker4:
+        return true;
+      case FrameType.weatherSticker1:
+        return true;
+      case FrameType.weatherSticker2:
+        return true;
+      case FrameType.weatherSticker3:
+        return true;
+      default:
+        return false;
+    }
   }
 
   bool isWatchTYpe() {
-    if (frameType == FrameType.analogWatch) return true;
-    if (frameType == FrameType.digitalWatch) return true;
-    if (frameType == FrameType.stopWatch) return true;
-    if (frameType == FrameType.countDownTimer) return true;
-    return false;
+    switch (frameType) {
+      case FrameType.analogWatch:
+        return true;
+      case FrameType.digitalWatch:
+        return true;
+      case FrameType.stopWatch:
+        return true;
+      case FrameType.countDownTimer:
+        return true;
+      default:
+        return false;
+    }
   }
 
   bool isDateTimeType() {
@@ -88,17 +105,29 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   }
 
   bool isTimelineType() {
-    if (frameType == FrameType.showcaseTimeline) return true;
-    if (frameType == FrameType.footballTimeline) return true;
-    if (frameType == FrameType.activityTimeline) return true;
-    if (frameType == FrameType.successTimeline) return true;
-    if (frameType == FrameType.deliveryTimeline) return true;
-    if (frameType == FrameType.weatherTimeline) return true;
-    if (frameType == FrameType.monthHorizTimeline) return true;
-    if (frameType == FrameType.appHorizTimeline) return true;
-    if (frameType == FrameType.deliveryHorizTimeline) return true;
+    switch (frameType) {
+      case FrameType.showcaseTimeline:
+        return true;
+      case FrameType.footballTimeline:
+        return true;
+      case FrameType.activityTimeline:
+        return true;
+      case FrameType.successTimeline:
+        return true;
+      case FrameType.deliveryTimeline:
+        return true;
+      case FrameType.weatherTimeline:
+        return true;
+      case FrameType.monthHorizTimeline:
+        return true;
+      case FrameType.appHorizTimeline:
+        return true;
+      case FrameType.deliveryHorizTimeline:
+        return true;
 
-    return false;
+      default:
+        return false;
+    }
   }
 
   bool isMusicType() {
@@ -696,5 +725,65 @@ class FrameModel extends CretaModel with CretaStyleMixin {
       return false;
     }
     return isShow.value;
+  }
+
+  bool isDropAble() {
+    if (LinkParams.isLinkNewMode) {
+      return false;
+    }
+    switch (frameType) {
+      case FrameType.text:
+        return false;
+      case FrameType.music:
+        return false;
+      case FrameType.weather1:
+        return false;
+      case FrameType.weather2:
+        return false;
+      case FrameType.weatherSticker4:
+        return false;
+      case FrameType.weatherSticker1:
+        return false;
+      case FrameType.weatherSticker2:
+        return false;
+      case FrameType.weatherSticker3:
+        return false;
+      case FrameType.analogWatch:
+        return false;
+      case FrameType.digitalWatch:
+        return false;
+      case FrameType.stopWatch:
+        return false;
+      case FrameType.dateTimeFormat:
+        return false;
+      case FrameType.countDownTimer:
+        return false;
+      case FrameType.sticker:
+        return false;
+      case FrameType.showcaseTimeline:
+        return false;
+      case FrameType.footballTimeline:
+        return false;
+      case FrameType.activityTimeline:
+        return false;
+      case FrameType.successTimeline:
+        return false;
+      case FrameType.deliveryTimeline:
+        return false;
+      case FrameType.weatherTimeline:
+        return false;
+      case FrameType.monthHorizTimeline:
+        return false;
+      case FrameType.appHorizTimeline:
+        return false;
+      case FrameType.deliveryHorizTimeline:
+        return false;
+      case FrameType.camera:
+        return false;
+      case FrameType.map:
+        return false;
+      default:
+        return true;
+    }
   }
 }

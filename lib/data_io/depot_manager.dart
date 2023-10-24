@@ -263,10 +263,11 @@ class DepotManager extends CretaManager {
   // getContents Detail Info Using contents mid
   Future<ContentsModel?> getContentsInfo(
       {required String contentsMid, required ContentsManager? contentsManager}) async {
-    logger.finest('getContents');
+    logger.finest('getContentsInfo');
     if (contentsManager == null) {
       BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
       if (book == null) {
+        logger.severe('book is null');
         return null;
       }
       contentsManager =
@@ -293,5 +294,33 @@ class DepotManager extends CretaManager {
     } else if (depotOrder == DepotOrderEnum.name) {
       filteredContents.sort((a, b) => a.name.compareTo(b.name));
     }
+  }
+
+  Future<ContentsModel?> copyContents(DepotModel data, {String frameId = ''}) async {
+    BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+    if (book == null) {
+      logger.severe('book is null');
+      return null;
+    }
+    ContentsManager dummyManager = ContentsManager(
+      pageModel: PageModel('', book),
+      frameModel: FrameModel('', book.mid),
+    );
+
+    ContentsModel? model =
+        await getContentsInfo(contentsMid: data.contentsMid, contentsManager: dummyManager);
+    if (model == null || model.remoteUrl == null) {
+      logger.severe('Contents ${data.contentsMid} is not founded');
+      return null;
+    }
+    // model 은 새롭게 생성되어야 하므로, copy 해 주어야 한다.
+    ContentsModel newModel = ContentsModel('', book.mid);
+    newModel.copyFrom(model,
+        newMid: newModel.mid, pMid: frameId); // 아직 프레임이 생성되지 않았으므로 parentMid 를 주지 않는다.
+    mychangeStack.startTrans();
+    newModel.isRemoved.set(false, save: false);
+    newModel.isShow.set(true, save: false);
+    mychangeStack.endTrans();
+    return newModel;
   }
 }

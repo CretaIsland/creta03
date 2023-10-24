@@ -5,6 +5,7 @@ import '../../../../../data_io/frame_manager.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
+import '../../../../../model/page_model.dart';
 import '../../../../../player/music/creta_music_mixin.dart';
 import '../../../studio_variables.dart';
 import 'draggable_resizable.dart';
@@ -40,13 +41,13 @@ class StickerView extends StatefulWidget {
   final double height; // height of the editor view
   final double width; // width of the editor view
   final FrameManager? frameManager;
-  final String pageMid;
+  final PageModel page;
   final BookModel book;
 
   const StickerView({
     super.key,
     required this.book,
-    required this.pageMid,
+    required this.page,
     required this.stickerList,
     required this.onUpdate,
     required this.onFrameDelete,
@@ -142,6 +143,7 @@ class StickerViewState extends State<StickerView> {
             DraggableStickers(
           //DraggableStickers class in which stickerList is passed
           book: widget.book,
+          page: widget.page,
           pageWidth: widget.width,
           pageHeight: widget.height,
           frameManager: widget.frameManager,
