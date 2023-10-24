@@ -940,21 +940,21 @@ class _DraggableStickersState extends State<DraggableStickers> {
         );
       },
       onMove: (data) {
-        print('onMove');
+        //print('onMove');
         if (widget.page.dragOnMove == false) {
           widget.page.dragOnMove = true;
           pageBottomLayerKey.currentState?.invalidate();
         }
       },
       onLeave: (data) {
-        print('onLeave');
+        //print('onLeave');
         if (widget.page.dragOnMove == true) {
           widget.page.dragOnMove = false;
           pageBottomLayerKey.currentState?.invalidate();
         }
       },
       onAccept: (data) async {
-        print('drop depotModel =${data.contentsMid}');
+        //print('drop depotModel =${data.contentsMid}');
         DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
         if (depotManager != null) {
           ContentsModel? newModel = await depotManager.copyContents(data);

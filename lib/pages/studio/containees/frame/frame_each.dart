@@ -215,14 +215,14 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
                 );
               },
               onMove: (data) {
-                print('onMove');
+                //print('onMove');
                 if (widget.model.dragOnMove == false) {
                   widget.model.dragOnMove = true;
                   invalidateContentsMain();
                 }
               },
               onLeave: (data) {
-                print('onLeave');
+                //print('onLeave');
                 if (widget.model.dragOnMove == true) {
                   widget.model.dragOnMove = false;
                   invalidateContentsMain();
@@ -230,7 +230,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
               },
 
               onAccept: (data) async {
-                print('drop depotModel =${data.contentsMid}');
+                //print('drop depotModel =${data.contentsMid}');
                 DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
                 if (depotManager != null) {
                   ContentsModel? newModel =

@@ -530,6 +530,7 @@ abstract class CretaManager extends AbsExModelManager {
   Future<void> createToDB(AbsExModel model) async {
     lock();
     _dbState = DBState.querying;
+    //print('createToDB(${model.mid}, ${model.isRemoved.value})');
     await super.createToDB(model);
     _dbState = DBState.idle;
     unlock();

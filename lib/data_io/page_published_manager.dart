@@ -32,7 +32,9 @@ class PagePublishedManager extends CretaManager {
       if (ele.isRemoved.value == true) {
         continue;
       }
+      //PageModel model = ele as PageModel;
       AbsExModel newOne = await makeCopy(ele, newParentMid);
+      //print('publish page ${newOne.mid}, ${model.name.value}, ${model.isRemoved.value}');
       FrameManager? frameManager = pageManager!.findFrameManager(ele.mid);
       if (frameManager == null) {
         continue;

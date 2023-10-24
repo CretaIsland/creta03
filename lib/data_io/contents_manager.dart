@@ -904,7 +904,7 @@ class ContentsManager extends CretaManager {
         //     '---------uploaded successfully-------${contentsModel.name} with remoteUrl ${contentsModel.remoteUrl}-');
       }
       // 콘텐츠 객체를 DB에 Creta 한다.
-      print('createNextContents (contents=${contentsModel.mid})');
+      //print('createNextContents (contents=${contentsModel.mid})');
       await contentsManager.createNextContents(contentsModel, doNotify: false);
     }
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents, doNoti: true);
