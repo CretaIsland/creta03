@@ -608,6 +608,15 @@ class CretaUtils {
     return regex.hasMatch(email);
   }
 
+  static Size? getSize(GlobalKey key) {
+    RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) {
+      logger.warning('takeAScreenShot box not is founeded');
+      return null;
+    }
+    return box.size;
+  }
+
   static Rect? getArea(GlobalKey key) {
     RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
     if (box == null) {
@@ -616,6 +625,17 @@ class CretaUtils {
     }
     Offset position = box.localToGlobal(Offset.zero);
     return position & box.size;
+  }
+
+  static Offset? getPosition(GlobalKey key) {
+    RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) {
+      logger.warning('takeAScreenShot box not is founeded');
+      return null;
+    }
+    Offset position = box.localToGlobal(Offset.zero);
+    //Offset position = box.globalToLocal(Offset.zero);
+    return position;
   }
 
   static bool isRectContained(Rect outerRect, Rect innerRect) {
@@ -911,19 +931,18 @@ class CretaUtils {
     return SystemMouseCursors.basic;
   }
 
-
   static Future<ui.Image> loadImageFromUrl(String imageUrl) async {
-  // 이미지 URL에서 데이터를 가져옵니다.
-  final response = await http.get(Uri.parse(imageUrl));
+    // 이미지 URL에서 데이터를 가져옵니다.
+    final response = await http.get(Uri.parse(imageUrl));
 
-  if (response.statusCode == 200) {
-    // http 응답이 성공적이면, 바이트 데이터를 dart:ui 의 Image로 변환합니다.
-    final Uint8List uint8list = response.bodyBytes;
-    final ui.Codec codec = await ui.instantiateImageCodec(uint8list);
-    final ui.FrameInfo frameInfo = await codec.getNextFrame();
-    return frameInfo.image;
-  } else {
-    throw Exception('Failed to load image from the internet');
+    if (response.statusCode == 200) {
+      // http 응답이 성공적이면, 바이트 데이터를 dart:ui 의 Image로 변환합니다.
+      final Uint8List uint8list = response.bodyBytes;
+      final ui.Codec codec = await ui.instantiateImageCodec(uint8list);
+      final ui.FrameInfo frameInfo = await codec.getNextFrame();
+      return frameInfo.image;
+    } else {
+      throw Exception('Failed to load image from the internet');
+    }
   }
-}
 }

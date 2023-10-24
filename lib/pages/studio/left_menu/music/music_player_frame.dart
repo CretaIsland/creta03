@@ -10,6 +10,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:rxdart/rxdart.dart';
+import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/frame_model.dart';
@@ -38,10 +39,17 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   late AudioPlayer _audioPlayer; // play local audio file
 
   String _selectedSize = '';
-
   bool _isPlaylistOpened = false;
-
   bool _isMusicPlaying = true;
+
+  late GlobalObjectKey<MusicControlBtnState> volumeButtonKey;
+  Offset? _volumePosition;
+
+  double iconBTNSize = StudioConst.musicIconSize;
+
+  void invalidate() {
+    setState(() {});
+  }
 
   void setSelectedSize(String selectedValue) {
     _selectedSize = selectedValue;
@@ -185,7 +193,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       index++;
     }
     if (_selectedSize.isEmpty) {
-      logger.severe('Selected size is not specified ${widget.size} ');
+      logger.info('Selected size is not specified ${widget.size} ');
       _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
     }
 
@@ -254,7 +262,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   String _findCurrentTag(int ind) {
     if (ind < 0 || _playlist.children.length <= ind) {
-      logger.severe('invalid index $ind');
+      logger.info('invalid index $ind');
       return '';
     }
     AudioSource? ele = _playlist.children[ind];
@@ -285,21 +293,45 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint('-------------------------------------------${StudioVariables.applyScale}');
-    List<String> size = CretaStudioLang.playerSize.values.toList();
     double frameScale = StudioVariables.applyScale / 0.7025000000000001;
+    double iconSize = iconBTNSize * StudioVariables.applyScale;
+    volumeButtonKey = GlobalObjectKey<MusicControlBtnState>(
+        'volumeButtonKey${widget.contentsManager.frameModel.mid}');
+
+    //Size? volumeBtSize = CretaUtils.getSize(volumeButtonKey);
+    //if (volumeBtSize != null) {
+    //print('volumeBtSize = $volumeBtSize');
+    _volumePosition = CretaUtils.getPosition(volumeButtonKey);
+    //_volumePosition = Offset(rect.left, rect.top);
+    if (_volumePosition != null) {
+      double offsetX = widget.contentsManager.frameModel.posX.value * StudioVariables.applyScale +
+          BookMainPage.pageOffset.dx +
+          iconSize +
+          2;
+      double offsetY = widget.contentsManager.frameModel.posY.value * StudioVariables.applyScale +
+          BookMainPage.pageOffset.dy +
+          iconSize +
+          6 +
+          170 -
+          iconSize / 2;
+      _volumePosition = _volumePosition! - Offset(offsetX, offsetY);
+    } else {
+      logger.fine('Volume Icon Button Position is null');
+    }
+    List<String> sizeStrList = CretaStudioLang.playerSize.values.toList();
+
     // logger.info('Size of Music app: $_selectedSize------------------');
     if (StudioVariables.applyScale <= 0.45) {
       return const Icon(Icons.queue_music_outlined);
     }
-    if (_selectedSize == size[0]) {
+    if (_selectedSize == sizeStrList[0]) {
       return _musicFullSize(frameScale);
-    } else if (_selectedSize == size[1]) {
+    } else if (_selectedSize == sizeStrList[1]) {
       return _musicMedSize(frameScale);
       // return _musicMedSize(StudioVariables.applyScale / 0.5);
-    } else if (_selectedSize == size[2]) {
+    } else if (_selectedSize == sizeStrList[2]) {
       return _musicSmallSize(frameScale);
-    } else if (_selectedSize == size[3]) {
+    } else if (_selectedSize == sizeStrList[3]) {
       return _musicTinySize(frameScale);
     }
     return const SizedBox.shrink();
@@ -307,194 +339,236 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   Widget _musicFullSize(double scaleVal) {
     return SingleChildScrollView(
-      child: Container(
-        height: _isPlaylistOpened ? 680.0 * scaleVal : 560.0 * scaleVal,
-        padding: EdgeInsets.symmetric(horizontal: 24.0 * scaleVal, vertical: 16.0 * scaleVal),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: _isPlaylistOpened ? 0 : 4,
-              child: StreamBuilder<SequenceState?>(
-                stream: _audioPlayer.sequenceStateStream,
-                builder: (context, snapshot) {
-                  final state = snapshot.data;
-                  if (state?.sequence.isEmpty ?? true) {
-                    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                      SizedBox(
-                        width: 276.0 * scaleVal,
-                        height: 276.0 * scaleVal,
-                        child: Image.asset('no_image.png', fit: BoxFit.cover),
-                      ),
-                      SizedBox(height: 8.0 * scaleVal),
-                      Text('플레이 리스트에 노래를 추가하세요!', style: TextStyle(fontSize: 20 * scaleVal)),
-                    ]);
+      child: Stack(
+        alignment: Alignment.topLeft,
+        children: [
+          Container(
+            height: _isPlaylistOpened ? 680.0 * scaleVal : 560.0 * scaleVal,
+            padding: EdgeInsets.symmetric(horizontal: 24.0 * scaleVal, vertical: 16.0 * scaleVal),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _upperArea(scaleVal), // Image, Title, artist.
+                _progressionBar(scaleVal),
+                _controlButtons(scaleVal),
+                SizedBox(height: 4.0 * scaleVal),
+                _playList(scaleVal),
+              ],
+            ),
+          ),
+          if (_audioPlayer.isVolumeHover == true && _volumePosition != null)
+            _volumeButton(scaleVal),
+        ],
+      ),
+    );
+  }
+
+  Widget _volumeButton(double scaleVal) {
+    return Positioned(
+      top: _volumePosition!.dy * scaleVal,
+      left: _volumePosition!.dx * scaleVal,
+      child: StreamBuilder<double>(
+          stream: _audioPlayer.volumeStream,
+          builder: (context, snapshot) {
+            double volumeValue = snapshot.data ?? 0.0;
+            var icons = [
+              Icon(Icons.volume_off, size: iconBTNSize / 2.0 * scaleVal),
+              Icon(Icons.volume_down, size: iconBTNSize / 2.0 * scaleVal),
+              Icon(Icons.volume_up, size: iconBTNSize / 2.0 * scaleVal),
+            ];
+            int index = 0;
+            if (volumeValue > 0.0 && volumeValue <= 0.5) {
+              index = 1;
+            } else if (volumeValue > 0.5) {
+              index = 2;
+            }
+            return MusicControlBtn(
+              audioPlayer: _audioPlayer,
+              frameId: widget.contentsManager.frameModel.mid,
+              isShowVolume: true,
+              iconSize: iconBTNSize * scaleVal,
+              value: widget.contentsManager.frameModel.volume.value / 100,
+              onHoverChanged: () {
+                setState(() {});
+              },
+              onChanged: (value) {
+                setState(() {
+                  _audioPlayer.setVolume(value);
+                  widget.contentsManager.frameModel.volume.set(value * 100);
+                  if (value > 0) {
+                    widget.contentsManager.frameModel.mute.set(false);
                   }
-                  final metadata = state!.currentSource!.tag as MediaItem;
-                  return Container(
-                    height: 380.0 * scaleVal,
-                    padding: EdgeInsets.symmetric(vertical: 8.0 * scaleVal),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Center(
-                            child: SizedBox(
-                              width: 276.0 * scaleVal,
-                              height: 276.0 * scaleVal,
-                              child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
-                            ),
-                          ),
-                        ),
-                        // SizedBox(height: 6.0 * scaleVal),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Text(metadata.title, style: TextStyle(fontSize: 20.0 * scaleVal)),
-                            Container(
-                              padding: EdgeInsets.only(top: 6.0 * scaleVal),
-                              width: MediaQuery.of(context).size.width * 0.1145 * scaleVal,
-                              child: Text(
-                                metadata.title,
-                                maxLines: 1,
-                                style: TextStyle(fontSize: 20.0 * scaleVal),
-                                textAlign: TextAlign.left,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            // SizedBox(
-                            //   width: 220.0 * scaleVal,
-                            //   height: 28.0 * scaleVal,
-                            //   child: Marquee(
-                            //     text: metadata.title,
-                            //     style: TextStyle(fontSize: 20.0 * scaleVal),
-                            //     // style: Theme.of(context).textTheme.titleLarge ,
-                            //     textScaleFactor: scaleVal,
-                            //     scrollAxis: Axis.horizontal,
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     blankSpace: 120.0 * scaleVal,
-                            //     velocity: 80.0,
-                            //     pauseAfterRound: const Duration(milliseconds: 1000),
-                            //     startPadding: 8.0 * scaleVal,
-                            //     accelerationDuration: const Duration(milliseconds: 150),
-                            //     accelerationCurve: Curves.linear,
-                            //     decelerationDuration: const Duration(milliseconds: 150),
-                            //     decelerationCurve: Curves.easeOut,
-                            //   ),
-                            // ),
-                            _musicVisualization(
-                                size: _selectedSize, contentsId: metadata.id, scaleVal: scaleVal),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(metadata.artist!, style: TextStyle(fontSize: 14.0 * scaleVal)),
-                            // IconButton(
-                            //   icon: const Icon(Icons.remove_circle_outline_sharp),
-                            //   iconSize: 24.0,
-                            //   onPressed: () {
-                            //     final playerState = snapshot.data;
-                            //     if (playerState != null) {
-                            //       final playerIndex = playerState.currentIndex;
-                            //       removeMusic(playerIndex);
-                            //     }
-                            //   },
-                            // ),
-                            // StreamBuilder<LoopMode>(
-                            //   stream: _audioPlayer.loopModeStream,
-                            //   builder: (context, snapshot) {
-                            //     final loopMode = snapshot.data ?? LoopMode.all;
-                            //     var icons = [
-                            //       // Icon(Icons.repeat,
-                            //       //     color: Colors.black87.withOpacity(0.5),
-                            //       //     size: 24.0 * scaleVal),
-                            //       Icon(Icons.repeat, color: Colors.black87, size: 24.0 * scaleVal),
-                            //       Icon(Icons.repeat_one,
-                            //           color: Colors.black87, size: 24.0 * scaleVal),
-                            //     ];
-                            //     const cycleModes = [
-                            //       //LoopMode.off,
-                            //       LoopMode.all,
-                            //       LoopMode.one,
-                            //     ];
-                            //     final index = cycleModes.indexOf(loopMode);
-                            //     return IconButton(
-                            //       icon: icons[index],
-                            //       onPressed: () {
-                            //         _audioPlayer.setLoopMode(cycleModes[
-                            //             (cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
-                            //       },
-                            //     );
-                            //   },
-                            // ),
-                          ],
-                        ),
-                      ],
-                    ),
+                });
+              },
+              child: IconButton(
+                // icon: Icon(Icons.volume_up, size: iconBTNSize.0 * scaleVal / 2.0),
+                icon: icons[index],
+                onPressed: () {
+                  setState(
+                    () {
+                      if (volumeValue > 0) {
+                        _audioPlayer.setVolume(0.0);
+                      } else {
+                        _audioPlayer.setVolume(0.5);
+                      }
+                    },
                   );
                 },
               ),
-            ),
-            // SizedBox(height: 4.0 * scaleVal),
-            StreamBuilder<PositionData>(
-              stream: _positionDataStream,
-              builder: (context, snapshot) {
-                final positionData = snapshot.data;
-                return ProgressBar(
-                  barHeight: 4.0 * scaleVal,
-                  baseBarColor: CretaColor.bufferedColor.withOpacity(0.24),
-                  bufferedBarColor: CretaColor.bufferedColor,
-                  progressBarColor: Colors.black87,
-                  thumbRadius: 6.0 * scaleVal,
-                  thumbColor: Colors.black87,
-                  timeLabelTextStyle: TextStyle(
-                      color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 14 * scaleVal),
-                  progress: positionData?.position ?? Duration.zero,
-                  buffered: positionData?.bufferedPosition ?? Duration.zero,
-                  total: positionData?.duration ?? Duration.zero,
-                  onSeek: _audioPlayer.seek,
-                );
-              },
-            ),
-            ControlButtons(
-              audioPlayer: _audioPlayer,
-              contentsManager: widget.contentsManager,
-              playlist: _playlist,
-              passOnPressed: () {
-                setState(() {
-                  _isMusicPlaying = !_isMusicPlaying;
-                });
-              },
-              scaleVal: scaleVal,
-              toggleValue: _isMusicPlaying,
-            ),
-            SizedBox(height: 4.0 * scaleVal),
-            Expanded(
-              flex: _isPlaylistOpened ? 0 : 1,
-              child: propertyCard(
-                isOpen: _isPlaylistOpened,
-                iconSize: 20 * scaleVal,
-                onPressed: () {
-                  setState(() {
-                    _isPlaylistOpened = !_isPlaylistOpened;
-                  });
-                },
-                titleWidget:
-                    Text(CretaStudioLang.showPlayList, style: TextStyle(fontSize: 16.0 * scaleVal)),
-                // trailWidget: Text('${widget.contentsManager.getAvailLength()} ${CretaLang.count}',
-                //     style: dataStyle),
-                onDelete: () {},
-                hasRemoveButton: false,
-                bodyWidget: Padding(
-                  padding: EdgeInsets.only(top: 6.0 * scaleVal),
-                  child: _orderPlaylist(scaleVal),
-                ),
-              ),
-            ),
-          ],
+            );
+          }),
+    );
+  }
+
+  Widget _controlButtons(double scaleVal) {
+    return ControlButtons(
+      volumeButtonKey: volumeButtonKey,
+      audioPlayer: _audioPlayer,
+      contentsManager: widget.contentsManager,
+      playlist: _playlist,
+      onHoverChanged: () {
+        setState(() {});
+      },
+      passOnPressed: () {
+        setState(() {
+          _isMusicPlaying = !_isMusicPlaying;
+        });
+      },
+      scaleVal: scaleVal,
+      toggleValue: _isMusicPlaying,
+    );
+  }
+
+  Widget _playList(double scaleVal) {
+    return Expanded(
+      flex: _isPlaylistOpened ? 0 : 1,
+      child: propertyCard(
+        isOpen: _isPlaylistOpened,
+        iconSize: 20 * scaleVal,
+        onPressed: () {
+          setState(() {
+            _isPlaylistOpened = !_isPlaylistOpened;
+          });
+        },
+        titleWidget:
+            Text(CretaStudioLang.showPlayList, style: TextStyle(fontSize: 16.0 * scaleVal)),
+        // trailWidget: Text('${widget.contentsManager.getAvailLength()} ${CretaLang.count}',
+        //     style: dataStyle),
+        onDelete: () {},
+        hasRemoveButton: false,
+        bodyWidget: Padding(
+          padding: EdgeInsets.only(top: 6.0 * scaleVal),
+          child: _orderPlaylist(scaleVal),
         ),
       ),
+    );
+  }
+
+  Widget _upperArea(double scaleVal) {
+    return Expanded(
+      flex: _isPlaylistOpened ? 0 : 4,
+      child: StreamBuilder<SequenceState?>(
+        stream: _audioPlayer.sequenceStateStream,
+        builder: (context, snapshot) {
+          final state = snapshot.data;
+          if (state?.sequence.isEmpty ?? true) {
+            return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              SizedBox(
+                width: 276.0 * scaleVal,
+                height: 276.0 * scaleVal,
+                child: Image.asset('no_image.png', fit: BoxFit.cover),
+              ),
+              SizedBox(height: 8.0 * scaleVal),
+              Text('플레이 리스트에 노래를 추가하세요!', style: TextStyle(fontSize: 20 * scaleVal)),
+            ]);
+          }
+          final metadata = state!.currentSource!.tag as MediaItem;
+          return Container(
+            height: 380.0 * scaleVal,
+            padding: EdgeInsets.symmetric(vertical: 8.0 * scaleVal),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      width: 276.0 * scaleVal,
+                      height: 276.0 * scaleVal,
+                      child: Image.network(metadata.artUri.toString(), fit: BoxFit.cover),
+                    ),
+                  ),
+                ),
+                // SizedBox(height: 6.0 * scaleVal),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Text(metadata.title, style: TextStyle(fontSize: 20.0 * scaleVal)),
+                    Container(
+                      padding: EdgeInsets.only(top: 6.0 * scaleVal),
+                      width: MediaQuery.of(context).size.width * 0.1145 * scaleVal,
+                      child: Text(
+                        metadata.title,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 20.0 * scaleVal),
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    // SizedBox(
+                    //   width: 220.0 * scaleVal,
+                    //   height: 28.0 * scaleVal,
+                    //   child: Marquee(
+                    //     text: metadata.title,
+                    //     style: TextStyle(fontSize: 20.0 * scaleVal),
+                    //     // style: Theme.of(context).textTheme.titleLarge ,
+                    //     textScaleFactor: scaleVal,
+                    //     scrollAxis: Axis.horizontal,
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     blankSpace: 120.0 * scaleVal,
+                    //     velocity: 80.0,
+                    //     pauseAfterRound: const Duration(milliseconds: 1000),
+                    //     startPadding: 8.0 * scaleVal,
+                    //     accelerationDuration: const Duration(milliseconds: 150),
+                    //     accelerationCurve: Curves.linear,
+                    //     decelerationDuration: const Duration(milliseconds: 150),
+                    //     decelerationCurve: Curves.easeOut,
+                    //   ),
+                    // ),
+                    _musicVisualization(
+                        size: _selectedSize, contentsId: metadata.id, scaleVal: scaleVal),
+                  ],
+                ),
+                Text(metadata.artist!, style: TextStyle(fontSize: 14.0 * scaleVal)),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _progressionBar(double scaleVal) {
+    return StreamBuilder<PositionData>(
+      stream: _positionDataStream,
+      builder: (context, snapshot) {
+        final positionData = snapshot.data;
+        return ProgressBar(
+          barHeight: 4.0 * scaleVal,
+          // baseBarColor: CretaColor.bufferedColor.withOpacity(0.24),
+          baseBarColor: CretaColor.text.shade300,
+          bufferedBarColor: CretaColor.bufferedColor,
+          progressBarColor: Colors.black87,
+          thumbRadius: 6.0 * scaleVal,
+          thumbGlowRadius: 8.0 * scaleVal,
+          thumbColor: Colors.black87,
+          timeLabelTextStyle: TextStyle(
+              color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 14 * scaleVal),
+          progress: positionData?.position ?? Duration.zero,
+          buffered: positionData?.bufferedPosition ?? Duration.zero,
+          total: positionData?.duration ?? Duration.zero,
+          onSeek: _audioPlayer.seek,
+        );
+      },
     );
   }
 

@@ -177,6 +177,8 @@ class StudioConst {
     Size(260, 100),
   ];
 
+  static double musicIconSize = 51.0;
+
   static List<ContentsType> depotsType = [
     ContentsType.none,
     ContentsType.image,

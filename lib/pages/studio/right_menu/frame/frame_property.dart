@@ -273,8 +273,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               int idx = 0;
               for (String val in CretaStudioLang.playerSize.values) {
                 if (value == val) {
-                  GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[widget.model.mid];
-                  musicKey!.currentState!.setSelectedSize(value);
+                  GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+                      BookMainPage.musicKeyMap[widget.model.mid];
+                  if (musicKey != null) {
+                    musicKey.currentState!.setSelectedSize(value);
+                    logger.fine('value $value');
+                  } else {
+                    logger.fine('musicKey is null');
+                  }
                   mychangeStack.startTrans();
                   widget.model.width.set(StudioConst.musicPlayerSize[idx].width);
                   widget.model.height.set(StudioConst.musicPlayerSize[idx].height);
