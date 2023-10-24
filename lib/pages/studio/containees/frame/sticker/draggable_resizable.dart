@@ -120,10 +120,10 @@ class DraggableResizable extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api
-  _DraggableResizableState createState() => _DraggableResizableState();
+  DraggableResizableState createState() => DraggableResizableState();
 }
 
-class _DraggableResizableState extends State<DraggableResizable> {
+class DraggableResizableState extends State<DraggableResizable> {
   late Size _size;
   late Offset _position;
   //late BoxConstraints constraints;
@@ -135,7 +135,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
   @override
   void initState() {
-    logger.finest('_DraggableResizableState.initState()');
+    logger.finest('DraggableResizableState.initState()');
     super.initState();
     _size = widget.size;
     //constraints = const BoxConstraints.expand(width: 1, height: 1);

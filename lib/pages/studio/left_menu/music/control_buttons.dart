@@ -120,8 +120,8 @@ class _ControlButtonsState extends State<ControlButtons> {
               var icons = [
                 // Icon(Icons.repeat,
                 //     color: Colors.black87.withOpacity(0.5), size: 24.0 * widget.scaleVal),
-                Icon(Icons.repeat, color: CretaColor.primary, size: 24.0 * widget.scaleVal),
-                Icon(Icons.repeat_one, color: CretaColor.primary, size: 24.0 * widget.scaleVal),
+                Icon(Icons.repeat, color: Colors.black87, size: 24.0 * widget.scaleVal),
+                Icon(Icons.repeat_one, color: Colors.black87, size: 24.0 * widget.scaleVal),
               ];
               const cycleModes = [
                 // LoopMode.off,
@@ -226,52 +226,53 @@ class _ControlButtonsState extends State<ControlButtons> {
         ),
         Flexible(
           child: StreamBuilder<double>(
-            stream: widget.audioPlayer.volumeStream,
-            builder: ((context, snapshot) {
-              double volumeValue = snapshot.data ?? 0.0;
-              var icons = [
-                Icon(Icons.volume_off, size: iconSize / 2.0),
-                Icon(Icons.volume_down, size: iconSize / 2.0),
-                Icon(Icons.volume_up, size: iconSize / 2.0),
-              ];
-              int index = 0;
-              if (volumeValue > 0.0 && volumeValue <= 0.5) {
-                index = 1;
-              } else if (volumeValue > 0.5) {
-                index = 2;
-              }
-              return MusicControlBtn(
-                key: widget.volumeButtonKey,
-                audioPlayer: widget.audioPlayer,
-                frameId: widget.contentsManager.frameModel.mid,
-                isShowVolume: false,
-                iconSize: iconSize,
-                value: null, //snapshot.data ?? 0.0,
-                onHoverChanged: widget.onHoverChanged,
-                onChanged: (value) {
-                  widget.audioPlayer.setVolume(value);
-                  widget.contentsManager.frameModel.volume.set(value * 100);
-                  if (value > 0) {
-                    widget.contentsManager.frameModel.mute.set(false);
-                  }
-                },
-                child: IconButton(
-                  icon: icons[index],
-                  onPressed: () {
-                    setState(
-                      () {
-                        if (volumeValue > 0) {
-                          widget.audioPlayer.setVolume(0.0);
-                        } else {
-                          widget.audioPlayer.setVolume(0.5);
-                        }
-                      },
-                    );
+              stream: widget.audioPlayer.volumeStream,
+              builder: (context, snapshot) {
+                double volumeValue = snapshot.data ?? 0.0;
+
+                var icons = [
+                  Icon(Icons.volume_off, size: iconSize / 2.0),
+                  Icon(Icons.volume_down, size: iconSize / 2.0),
+                  Icon(Icons.volume_up, size: iconSize / 2.0),
+                ];
+
+                int index = 0;
+                if (volumeValue > 0.0 && volumeValue <= 0.5) {
+                  index = 1;
+                } else if (volumeValue > 0.5) {
+                  index = 2;
+                }
+                return MusicControlBtn(
+                  key: widget.volumeButtonKey,
+                  audioPlayer: widget.audioPlayer,
+                  frameId: widget.contentsManager.frameModel.mid,
+                  isShowVolume: false,
+                  iconSize: iconSize,
+                  value: null, //snapshot.data ?? 0.0,
+                  onHoverChanged: widget.onHoverChanged,
+                  onChanged: (value) {
+                    widget.audioPlayer.setVolume(value);
+                    widget.contentsManager.frameModel.volume.set(value * 100);
+                    if (value > 0) {
+                      widget.contentsManager.frameModel.mute.set(false);
+                    }
                   },
-                ),
-              );
-            }),
-          ),
+                  child: IconButton(
+                    icon: icons[index],
+                    onPressed: () {
+                      setState(
+                        () {
+                          if (volumeValue > 0) {
+                            widget.audioPlayer.setVolume(0.0);
+                          } else {
+                            widget.audioPlayer.setVolume(0.5);
+                          }
+                        },
+                      );
+                    },
+                  ),
+                );
+              }),
         ),
 
         // Flexible(

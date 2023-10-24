@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:creta03/pages/studio/studio_main_menu.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,10 +32,8 @@ import '../../data_io/frame_manager.dart';
 import '../../data_io/page_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
-import '../../design_system/buttons/creta_scale_button.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../design_system/component/autoSizeText/font_size_changing_notifier.dart';
-import '../../design_system/component/creta_icon_toggle_button.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
@@ -51,6 +48,7 @@ import '../../routes.dart';
 import '../login/creta_account_manager.dart';
 import 'book_preview_menu.dart';
 import 'book_publish.dart';
+import 'book_top_menu.dart';
 import 'containees/click_event.dart';
 import 'containees/containee_nofifier.dart';
 import 'containees/page/top_menu_notifier.dart';
@@ -914,140 +912,41 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget _controllers() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: padding * 1.75,
-        ),
-        StudioMainMenu(),
-        SizedBox(width: padding),
-        Visibility(
-          // Scale, Undo
-          visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
-          child: Row(
-            children: [
-              BTN.floating_l(
-                icon: Icons.undo_outlined,
-                onPressed: () {
-                  setState(() {
-                    mychangeStack.undo();
-                  });
-                },
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipUndo,
-              ),
-              SizedBox(width: padding / 2),
-              BTN.floating_l(
-                icon: Icons.redo_outlined,
-                onPressed: () {
-                  setState(() {
-                    mychangeStack.redo();
-                  });
-                },
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipRedo,
-              ),
-              SizedBox(width: padding),
-              BTN.floating_l(
-                icon: Icons.title_outlined,
-                onPressed: () {
-                  setState(() {
-                    // Create Text Box
-                    BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.textCreate);
-                  });
-                },
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipText,
-              ),
-              SizedBox(width: padding / 2),
-              BTN.floating_l(
-                icon: Icons.space_dashboard_outlined,
-                onPressed: () {
-                  setState(() {
-                    // Create Frame Box
-                    BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.frameCreate);
-                  });
-                },
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipFrame,
-              ),
-              SizedBox(width: padding),
-              CretaScaleButton(
-                width: 180,
-                onManualScale: () {
-                  setState(() {
-                    scaleChanged = true;
-                  });
-                },
-                onAutoScale: () {
-                  setState(() {
-                    scaleChanged = true;
-                  });
-                },
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipScale,
-                extended: CretaIconToggleButton(
-                  key: ValueKey('HandToolToggleButton'),
-                  buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-                  toggleValue: StudioVariables.isHandToolMode,
-                  icon1: Icons.transit_enterexit_outlined,
-                  icon2: Icons.pan_tool_outlined,
-                  tooltip: StudioVariables.isHandToolMode
-                      ? CretaStudioLang.tooltipEdit
-                      : CretaStudioLang.tooltipNoneEdit,
-                  onPressed: () {
-                    StudioVariables.isHandToolMode = !StudioVariables.isHandToolMode;
-                    BookMainPage.bookManagerHolder!.notify();
-                  },
-                ),
-              ),
-              SizedBox(width: padding),
-              CretaIconToggleButton(
-                key: ValueKey('MuteToggleButton'),
-                toggleValue: StudioVariables.isMute,
-                icon1: Icons.volume_off_outlined,
-                icon2: Icons.volume_up_outlined,
-                tooltip: CretaStudioLang.tooltipVolume,
-                buttonSize: 20,
-                onPressed: () {
-                  StudioVariables.globalToggleMute();
-                },
-              ),
-              SizedBox(width: padding / 2),
-              CretaIconToggleButton(
-                key: ValueKey('AutoPlayToggleButton ${StudioVariables.isAutoPlay}'),
-                toggleValue: StudioVariables.isAutoPlay,
-                icon1: Icons.pause_outlined,
-                icon2: Icons.play_arrow,
-                tooltip: CretaStudioLang.tooltipPause,
-                buttonSize: StudioVariables.isAutoPlay ? 20 : 30,
-                onPressed: () {
-                  //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent);
-                  StudioVariables.globalToggleAutoPlay();
-                },
-              ),
-              //SizedBox(width: padding),
-//VerticalDivider(),
-              // SizedBox(width: padding / 2),
-              // if (StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false)
-              //   BTN.floating_lc(
-              //     icon: Icon(Icons.radio_button_checked_outlined,
-              //         size: 20, color: CretaColor.primary),
-              //     onPressed: () {
-              //       setState(() {
-              //         StudioVariables.isLinkMode = true;
-              //         _globalToggleAutoPlay(forceValue: false);
-              //       });
-              //     },
-              //     hasShadow: false,
-              //     tooltip: CretaStudioLang.tooltipLink,
-              //   ),
-            ],
-          ),
-        ),
-      ],
+    return BookTopMenu(
+      key: BookTopMenu.topMenuKey,
+      padding: padding,
+      onManualScale: () {
+        setState(() {
+          scaleChanged = true;
+        });
+      },
+      onAutoScale: () {
+        setState(() {
+          scaleChanged = true;
+        });
+      },
+      onUndo: () {
+        setState(() {
+          mychangeStack.undo();
+        });
+      },
+      onRedo: () {
+        setState(() {
+          mychangeStack.redo();
+        });
+      },
+      onTextCreate: () {
+        setState(() {
+          // Create Text Box
+          BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.textCreate);
+        });
+      },
+      onFrameCreate: () {
+        setState(() {
+          // Create Frame Box
+          BookMainPage.topMenuNotifier?.set(ClickToCreateEnum.frameCreate);
+        });
+      },
     );
   }
 
@@ -1530,14 +1429,18 @@ class _BookMainPageState extends State<BookMainPage> {
     final key = event.logicalKey;
     //logger.info('key pressed $key');
     if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
+      //print('shift pressed');
       StudioVariables.isShiftPressed = true;
     } else if (event is RawKeyUpEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
       StudioVariables.isShiftPressed = false;
     } else if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.controlLeft) {
+      //print('ctrl pressed');
       StudioVariables.isCtrlPressed = true;
     } else if (event is RawKeyUpEvent && event.logicalKey == LogicalKeyboardKey.controlLeft) {
       StudioVariables.isCtrlPressed = false;
-    } else if (event is RawKeyDownEvent) {
+    }
+
+    if (event is RawKeyDownEvent) {
       if (keys.contains(key)) return;
       // textField 의 focus bug 때문에, delete  key 를 사용할 수 없다.
       // if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
@@ -1548,18 +1451,31 @@ class _BookMainPageState extends State<BookMainPage> {
         logger.info('tab pressed');
       }
       if (event.isKeyPressed(LogicalKeyboardKey.pageDown)) {
-        logger.info("pageDown pressed");
+        //print("pageDown pressed");
+        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+        BookMainPage.pageManagerHolder?.gotoNext();
       }
       if (event.isKeyPressed(LogicalKeyboardKey.pageUp)) {
-        logger.info("pageUp pressed");
+        //print("pageUp pressed");
+        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+        BookMainPage.pageManagerHolder?.gotoPrev();
+      }
+      if (event.isKeyPressed(LogicalKeyboardKey.insert)) {
+        //print("insert pressed = play"); // playButton
+        StudioVariables.globalToggleAutoPlay(save: true);
+        BookTopMenu.invalidate();
       }
       keys.add(key);
       // Ctrl Key Area
 
       if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
           keys.contains(LogicalKeyboardKey.controlRight))) {
-        if (keys.contains(LogicalKeyboardKey.keyZ)) {
-          logger.info('Ctrl+Z pressed');
+        if (keys.contains(LogicalKeyboardKey.keyM)) {
+          //print("ctrl+M pressed = mute"); // muteButton
+          StudioVariables.globalToggleMute(save: true);
+          BookTopMenu.invalidate();
+        } else if (keys.contains(LogicalKeyboardKey.keyZ)) {
+          //print('Ctrl+Z pressed');
           // undo
         } else if (keys.contains(LogicalKeyboardKey.keyY)) {
           logger.info('Ctrl+Y pressed');
@@ -1567,67 +1483,79 @@ class _BookMainPageState extends State<BookMainPage> {
         } else if (keys.contains(LogicalKeyboardKey.keyC)) {
           // copy
           logger.info('Ctrl+C pressed');
-          if (BookMainPage.pageManagerHolder == null) return;
-          FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
-          if (frameModel != null) {
-            FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-            StudioVariables.clipFrame(frameModel, frameManager!);
-          } else {
-            PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-            if (pageModel != null) {
-              StudioVariables.clipPage(pageModel, BookMainPage.pageManagerHolder!);
-            }
-          }
+          _copy();
         } else if (keys.contains(LogicalKeyboardKey.keyX)) {
           logger.info('Ctrl+X pressed');
           // Crop
-          if (BookMainPage.pageManagerHolder == null) return;
-          FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
-          if (frameModel != null) {
-            FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-            frameModel.isRemoved.set(true);
-            StudioVariables.clipFrame(frameModel, frameManager!);
-          } else {
-            PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-            if (pageModel != null) {
-              pageModel.isRemoved.set(true);
-              StudioVariables.clipPage(pageModel, BookMainPage.pageManagerHolder!);
-            }
-          }
-          BookMainPage.pageManagerHolder!.notify();
+          _crop();
         } else if (keys.contains(LogicalKeyboardKey.keyV)) {
           logger.info('Ctrl+V pressed');
-          if (BookMainPage.pageManagerHolder == null) return;
-          // Paste
-          if (StudioVariables.clipBoard is PageModel?) {
-            PageModel? page = StudioVariables.clipBoard as PageModel?;
-            PageManager? srcManager = StudioVariables.clipBoardManager as PageManager?;
-            if (page != null && srcManager != null) {
-              BookMainPage.pageManagerHolder?.copyPage(page, srcPageManager: srcManager);
-            }
-          } else if (StudioVariables.clipBoard is FrameModel?) {
-            FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-            if (frameManager == null) {
-              return;
-            }
-            PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-            if (pageModel == null) {
-              return;
-            }
-            FrameModel? frame = StudioVariables.clipBoard as FrameModel?;
-            FrameManager? srcManager = StudioVariables.clipBoardManager as FrameManager?;
-            if (frame != null && srcManager != null) {
-              frameManager.copyFrame(frame,
-                  parentMid: pageModel.mid,
-                  srcFrameManager: srcManager,
-                  samePage: pageModel.mid == frame.parentMid.value);
-            }
-          }
+          _paste();
         }
       }
     } else {
       keys.remove(key);
     }
+  }
+
+  void _copy() {
+    if (BookMainPage.pageManagerHolder == null) return;
+    FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
+    if (frameModel != null) {
+      FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+      StudioVariables.clipFrame(frameModel, frameManager!);
+    } else {
+      PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+      if (pageModel != null) {
+        StudioVariables.clipPage(pageModel, BookMainPage.pageManagerHolder!);
+      }
+    }
+  }
+
+  void _paste() {
+    if (BookMainPage.pageManagerHolder == null) return;
+    // Paste
+    if (StudioVariables.clipBoard is PageModel?) {
+      PageModel? page = StudioVariables.clipBoard as PageModel?;
+      PageManager? srcManager = StudioVariables.clipBoardManager as PageManager?;
+      if (page != null && srcManager != null) {
+        BookMainPage.pageManagerHolder?.copyPage(page, srcPageManager: srcManager);
+      }
+    } else if (StudioVariables.clipBoard is FrameModel?) {
+      FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+      if (frameManager == null) {
+        return;
+      }
+      PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+      if (pageModel == null) {
+        return;
+      }
+      FrameModel? frame = StudioVariables.clipBoard as FrameModel?;
+      FrameManager? srcManager = StudioVariables.clipBoardManager as FrameManager?;
+      if (frame != null && srcManager != null) {
+        frameManager.copyFrame(frame,
+            parentMid: pageModel.mid,
+            srcFrameManager: srcManager,
+            samePage: pageModel.mid == frame.parentMid.value);
+      }
+    }
+  }
+
+  void _crop() {
+    if (BookMainPage.pageManagerHolder == null) return;
+    FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
+    if (frameModel != null) {
+      FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+      frameModel.isRemoved.set(true);
+      StudioVariables.clipFrame(frameModel, frameManager!);
+    } else {
+      PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+      if (pageModel != null) {
+        pageModel.isRemoved.set(true);
+        StudioVariables.clipPage(pageModel, BookMainPage.pageManagerHolder!);
+      }
+    }
+    BookMainPage.pageManagerHolder!.notify();
   }
 
   Widget _backgroundMusic(FrameModel frameModel) {

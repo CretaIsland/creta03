@@ -70,6 +70,10 @@ class ContentsMainState extends State<ContentsMain> {
     super.dispose();
   }
 
+  void invalidate() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     //print('ContentsMain');
@@ -139,7 +143,13 @@ class ContentsMainState extends State<ContentsMain> {
                             logger.fine('onFrameShowUnshow');
                             widget.frameManager.notify();
                           },
-                        )
+                        ),
+                      if (widget.frameModel.dragOnMove == true)
+                        Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          color: Colors.black.withOpacity(0.25),
+                        ),
                     ],
                   );
                 }
