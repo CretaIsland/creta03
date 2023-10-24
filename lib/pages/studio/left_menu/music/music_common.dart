@@ -182,46 +182,34 @@ void showSliderDialog({
   );
 }
 
-void showSliderDialog11({
+void showVolumeSlider({
   required BuildContext context,
-  required String title,
-  required int divisions,
-  required double min,
-  required double max,
+  // required int divisions,
+  // required double min,
+  // required double max,
   String valueSuffix = '',
   required Stream<double> stream,
   required ValueChanged<double> onChanged,
 }) {
-  showDialog<void>(
-    context: context,
-    builder: (context) {
-      return StreamBuilder<double>(
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: StreamBuilder<double>(
         stream: stream,
         builder: (context, snapshot) {
-          return Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              height: 160.0,
-              child: Column(
-                children: [
-                  Slider(
-                    divisions: divisions,
-                    min: min,
-                    max: max,
-                    value: snapshot.data ?? 1.00,
-                    activeColor: CretaColor.bufferedColor,
-                    onChanged: onChanged,
-                  ),
-                  Text('${snapshot.data}$valueSuffix',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
-                ],
-              ),
+          return Container(
+            color: Colors.amber,
+            height: 80.0,
+            child: Slider(
+              // divisions: divisions,
+              // min: min,
+              // max: max,
+              value: snapshot.data ?? 1.00,
+              activeColor: CretaColor.bufferedColor,
+              onChanged: onChanged,
             ),
           );
         },
-      );
-    },
+      ),
+    ),
   );
 }

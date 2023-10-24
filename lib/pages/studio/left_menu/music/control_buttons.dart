@@ -2,14 +2,18 @@ import 'package:creta03/data_io/contents_manager.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import 'package:just_audio/just_audio.dart';
 
 class ControlButtons extends StatefulWidget {
+  final GlobalObjectKey<MusicControlBtnState>? volumeButtonKey;
   final ContentsManager contentsManager;
   final ConcatenatingAudioSource playlist;
   final void Function() passOnPressed;
+  final Function? onHoverChanged;
   final bool toggleValue;
   final double scaleVal;
+  final AudioPlayer audioPlayer;
 
   const ControlButtons({
     super.key,
@@ -17,17 +21,19 @@ class ControlButtons extends StatefulWidget {
     required this.contentsManager,
     required this.playlist,
     required this.passOnPressed,
+    this.onHoverChanged,
     required this.toggleValue,
     required this.scaleVal,
+    this.volumeButtonKey,
   });
-
-  final AudioPlayer audioPlayer;
 
   @override
   State<ControlButtons> createState() => _ControlButtonsState();
 }
 
 class _ControlButtonsState extends State<ControlButtons> {
+  bool isShowVolume = false;
+
   String findPrevousTag() {
     int index = 0;
     String currentMid = widget.contentsManager.getSelectedMid();
@@ -105,55 +111,36 @@ class _ControlButtonsState extends State<ControlButtons> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Opens volumn slider dialog
         Flexible(
-          child: StreamBuilder<double>(
-            stream: widget.audioPlayer.volumeStream,
-            builder: ((context, snapshot) {
-              double volumeValue = snapshot.data ?? 0.0;
-              var icons = [
-                Icon(Icons.volume_off, size: iconSize / 2.0),
-                Icon(Icons.volume_down, size: iconSize / 2.0),
-                Icon(Icons.volume_up, size: iconSize / 2.0),
-              ];
-              int index = 0;
-              if (volumeValue > 0.0 && volumeValue <= 0.5) {
-                index = 1;
-              } else if (volumeValue > 0.5) {
-                index = 2;
-              }
+          child: StreamBuilder<LoopMode>(
+            stream: widget.audioPlayer.loopModeStream,
+            builder: (context, snapshot) {
+              final loopMode = snapshot.data ?? LoopMode.all;
 
+              var icons = [
+                // Icon(Icons.repeat,
+                //     color: Colors.black87.withOpacity(0.5), size: 24.0 * widget.scaleVal),
+                Icon(Icons.repeat, color: Colors.black87, size: 24.0 * widget.scaleVal),
+                Icon(Icons.repeat_one, color: Colors.black87, size: 24.0 * widget.scaleVal),
+              ];
+              const cycleModes = [
+                // LoopMode.off,
+                LoopMode.all,
+                LoopMode.one,
+              ];
+              int index = cycleModes.indexOf(loopMode);
+              if (index < 0) index = 0;
               return MusicControlBtn(
                 iconSize: iconSize,
                 child: IconButton(
                   icon: icons[index],
                   onPressed: () {
-                    setState(() {
-                      if (volumeValue > 0) {
-                        widget.audioPlayer.setVolume(0.0);
-                      } else {
-                        widget.audioPlayer.setVolume(0.5);
-                      }
-                    });
-                    // showSliderDialog(
-                    //   context: context,
-                    //   title: "볼륨 조절",
-                    //   divisions: 10,
-                    //   min: 0.0,
-                    //   max: 1.0,
-                    //   stream: widget.audioPlayer.volumeStream,
-                    //   onChanged: (value) {
-                    //     widget.audioPlayer.setVolume(value);
-                    //     widget.contentsManager.frameModel.volume.set(value * 100);
-                    //     if (value > 0) {
-                    //       widget.contentsManager.frameModel.mute.set(false);
-                    //     }
-                    //   },
-                    // );
+                    widget.audioPlayer.setLoopMode(
+                        cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
                   },
                 ),
               );
-            }),
+            },
           ),
         ),
         Flexible(
@@ -200,6 +187,8 @@ class _ControlButtonsState extends State<ControlButtons> {
             } else if (processingState != ProcessingState.completed) {
               return MusicControlBtn(
                 iconSize: iconSize,
+                value: null,
+                onChanged: null,
                 child: IconButton(
                   onPressed: () {
                     widget.audioPlayer.pause();
@@ -236,34 +225,56 @@ class _ControlButtonsState extends State<ControlButtons> {
           ),
         ),
         Flexible(
-          child: StreamBuilder<LoopMode>(
-            stream: widget.audioPlayer.loopModeStream,
-            builder: (context, snapshot) {
-              final loopMode = snapshot.data ?? LoopMode.all;
-              var icons = [
-                Icon(Icons.repeat,
-                    color: Colors.black87.withOpacity(0.5), size: 24.0 * widget.scaleVal),
-                Icon(Icons.repeat, color: CretaColor.secondary, size: 24.0 * widget.scaleVal),
-                Icon(Icons.repeat_one, color: CretaColor.secondary, size: 24.0 * widget.scaleVal),
-              ];
-              List<LoopMode> cycleModes = [
-                LoopMode.all,
-                LoopMode.one,
-              ];
-              final index = cycleModes.indexOf(loopMode);
-              return MusicControlBtn(
-                iconSize: iconSize,
-                child: IconButton(
-                  icon: icons[index],
-                  onPressed: () {
-                    widget.audioPlayer.setLoopMode(
-                        cycleModes[(cycleModes.indexOf(loopMode) + 1) % cycleModes.length]);
+          child: StreamBuilder<double>(
+              stream: widget.audioPlayer.volumeStream,
+              builder: (context, snapshot) {
+                double volumeValue = snapshot.data ?? 0.0;
+
+                var icons = [
+                  Icon(Icons.volume_off, size: iconSize / 2.0),
+                  Icon(Icons.volume_down, size: iconSize / 2.0),
+                  Icon(Icons.volume_up, size: iconSize / 2.0),
+                ];
+
+                int index = 0;
+                if (volumeValue > 0.0 && volumeValue <= 0.5) {
+                  index = 1;
+                } else if (volumeValue > 0.5) {
+                  index = 2;
+                }
+                return MusicControlBtn(
+                  key: widget.volumeButtonKey,
+                  audioPlayer: widget.audioPlayer,
+                  frameId: widget.contentsManager.frameModel.mid,
+                  isShowVolume: false,
+                  iconSize: iconSize,
+                  value: null, //snapshot.data ?? 0.0,
+                  onHoverChanged: widget.onHoverChanged,
+                  onChanged: (value) {
+                    widget.audioPlayer.setVolume(value);
+                    widget.contentsManager.frameModel.volume.set(value * 100);
+                    if (value > 0) {
+                      widget.contentsManager.frameModel.mute.set(false);
+                    }
                   },
-                ),
-              );
-            },
-          ),
+                  child: IconButton(
+                    icon: icons[index],
+                    onPressed: () {
+                      setState(
+                        () {
+                          if (volumeValue > 0) {
+                            widget.audioPlayer.setVolume(0.0);
+                          } else {
+                            widget.audioPlayer.setVolume(0.5);
+                          }
+                        },
+                      );
+                    },
+                  ),
+                );
+              }),
         ),
+
         // Flexible(
         //   child: StreamBuilder<double>(
         //     stream: audioPlayer.speedStream,
@@ -293,21 +304,34 @@ class _ControlButtonsState extends State<ControlButtons> {
   }
 }
 
+// ignore: must_be_immutable
 class MusicControlBtn extends StatefulWidget {
   final Widget child;
   final double iconSize;
+  final AudioPlayer? audioPlayer;
+  bool isShowVolume;
+  final double? value;
+  final ValueChanged<double>? onChanged;
+  final Function? onHoverChanged;
+  final String? frameId;
 
-  const MusicControlBtn({
+  MusicControlBtn({
     super.key,
+    this.value,
+    this.onChanged,
+    this.onHoverChanged,
+    this.isShowVolume = false,
     required this.child,
     required this.iconSize,
+    this.audioPlayer,
+    this.frameId,
   });
 
   @override
-  State<MusicControlBtn> createState() => _MusicControlBtnState();
+  State<MusicControlBtn> createState() => MusicControlBtnState();
 }
 
-class _MusicControlBtnState extends State<MusicControlBtn> {
+class MusicControlBtnState extends State<MusicControlBtn> {
   bool _ishover = false;
 
   @override
@@ -316,11 +340,28 @@ class _MusicControlBtnState extends State<MusicControlBtn> {
       onExit: (value) {
         setState(() {
           _ishover = false;
+          //widget.isShowVolume = false;
+          if (widget.audioPlayer != null) widget.audioPlayer!.isVolumeHover = _ishover;
+          //BookMainPage.musicKeyMap[widget.frameId]?.currentState?.invalidate();
+          widget.onHoverChanged?.call();
         });
       },
       onEnter: (value) {
         setState(() {
           _ishover = true;
+          //widget.isShowVolume = true;
+          if (widget.audioPlayer != null) {
+            widget.audioPlayer!.isVolumeHover = _ishover;
+          } else {
+            logger.fine('audioPlayer is null');
+          }
+          widget.onHoverChanged?.call();
+          // if (BookMainPage.musicKeyMap[widget.frameId] == null) {
+          // } else {
+          //   if (BookMainPage.musicKeyMap[widget.frameId]?.currentState == null) {
+          //   }
+          //   BookMainPage.musicKeyMap[widget.frameId]?.currentState?.invalidate();
+          // }
         });
       },
       child: Stack(
@@ -335,6 +376,37 @@ class _MusicControlBtnState extends State<MusicControlBtn> {
             ),
           ),
           widget.child,
+          if (widget.isShowVolume && widget.value != null)
+            Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: CretaColor.text.shade200,
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  height: 120.0,
+                  width: 28.0,
+                  child: SliderTheme(
+                    data: const SliderThemeData(
+                      trackHeight: 0.5,
+                      activeTrackColor: CretaColor.primary,
+                      inactiveTrackColor: Colors.grey,
+                      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6.0),
+                    ),
+                    child: RotatedBox(
+                      quarterTurns: 3, // rotate 90deg
+                      child: Slider(
+                          min: 0,
+                          max: 1,
+                          value: widget.value!,
+                          onChanged: widget.onChanged! // Reverse the value back
+                          ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 180.0),
+              ],
+            ),
         ],
       ),
     );
