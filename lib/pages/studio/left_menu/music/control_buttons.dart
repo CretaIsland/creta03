@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../studio_constant.dart';
 class ControlButtons extends StatefulWidget {
   final GlobalObjectKey<MusicControlBtnState>? volumeButtonKey;
   final ContentsManager contentsManager;
@@ -14,6 +15,7 @@ class ControlButtons extends StatefulWidget {
   final bool toggleValue;
   final double scaleVal;
   final AudioPlayer audioPlayer;
+  final bool isSmallSize;
 
   const ControlButtons({
     super.key,
@@ -25,6 +27,7 @@ class ControlButtons extends StatefulWidget {
     required this.toggleValue,
     required this.scaleVal,
     this.volumeButtonKey,
+    this.isSmallSize = false,
   });
 
   @override
@@ -106,13 +109,13 @@ class _ControlButtonsState extends State<ControlButtons> {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = 51.0 * widget.scaleVal;
+    final iconSize = widget.isSmallSize ? 24.0 : StudioConst.musicIconSize * widget.scaleVal;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Flexible(
-          child: StreamBuilder<LoopMode>(
+        if (!widget.isSmallSize)
+          StreamBuilder<LoopMode>(
             stream: widget.audioPlayer.loopModeStream,
             builder: (context, snapshot) {
               final loopMode = snapshot.data ?? LoopMode.all;
@@ -142,20 +145,17 @@ class _ControlButtonsState extends State<ControlButtons> {
               );
             },
           ),
-        ),
-        Flexible(
-          child: StreamBuilder<SequenceState?>(
-            stream: widget.audioPlayer.sequenceStateStream,
-            builder: (context, snapshot) {
-              return MusicControlBtn(
-                iconSize: iconSize,
-                child: IconButton(
-                  icon: Icon(Icons.skip_previous, size: iconSize / 2.0),
-                  onPressed: widget.audioPlayer.hasPrevious ? prevMusic : fromBeginning,
-                ),
-              );
-            },
-          ),
+        StreamBuilder<SequenceState?>(
+          stream: widget.audioPlayer.sequenceStateStream,
+          builder: (context, snapshot) {
+            return MusicControlBtn(
+              iconSize: iconSize,
+              child: IconButton(
+                icon: Icon(Icons.skip_previous, size: iconSize / 2.0),
+                onPressed: widget.audioPlayer.hasPrevious ? prevMusic : fromBeginning,
+              ),
+            );
+          },
         ),
         StreamBuilder<PlayerState>(
           stream: widget.audioPlayer.playerStateStream,
@@ -210,22 +210,20 @@ class _ControlButtonsState extends State<ControlButtons> {
             );
           },
         ),
-        Flexible(
-          child: StreamBuilder<SequenceState?>(
-            stream: widget.audioPlayer.sequenceStateStream,
-            builder: (context, snapshot) {
-              return MusicControlBtn(
-                iconSize: iconSize,
-                child: IconButton(
-                  icon: Icon(Icons.skip_next, size: iconSize / 2.0),
-                  onPressed: widget.audioPlayer.hasNext ? nextMusic : fromBeginning,
-                ),
-              );
-            },
-          ),
+        StreamBuilder<SequenceState?>(
+          stream: widget.audioPlayer.sequenceStateStream,
+          builder: (context, snapshot) {
+            return MusicControlBtn(
+              iconSize: iconSize,
+              child: IconButton(
+                icon: Icon(Icons.skip_next, size: iconSize / 2.0),
+                onPressed: widget.audioPlayer.hasNext ? nextMusic : fromBeginning,
+              ),
+            );
+          },
         ),
-        Flexible(
-          child: StreamBuilder<double>(
+        if (!widget.isSmallSize)
+          StreamBuilder<double>(
               stream: widget.audioPlayer.volumeStream,
               builder: (context, snapshot) {
                 double volumeValue = snapshot.data ?? 0.0;
@@ -273,7 +271,6 @@ class _ControlButtonsState extends State<ControlButtons> {
                   ),
                 );
               }),
-        ),
 
         // Flexible(
         //   child: StreamBuilder<double>(

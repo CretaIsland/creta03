@@ -173,8 +173,8 @@ class StudioConst {
   static List<Size> musicPlayerSize = [
     Size(480, 800),
     Size(480, 320),
-    Size(460, 142),
-    Size(260, 100),
+    Size(460, 148),
+    Size(266, 84),
   ];
 
   static double musicIconSize = 51.0;
