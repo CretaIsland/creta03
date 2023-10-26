@@ -178,10 +178,13 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
 
               if (contentsCount > 0) {
                 if (widget.frameModel.frameType == FrameType.music) {
-                  GlobalObjectKey<MusicPlayerFrameState> musicKey =
-                      GlobalObjectKey<MusicPlayerFrameState>(
-                          'Music${widget.pageModel.mid}/${widget.frameModel.mid}');
-                  BookMainPage.musicKeyMap[widget.frameModel.mid] = musicKey;
+                  GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+                      BookMainPage.musicKeyMap[widget.frameModel.mid];
+                  if (musicKey == null) {
+                    musicKey = GlobalObjectKey<MusicPlayerFrameState>(
+                        'Music${widget.pageModel.mid}/${widget.frameModel.mid}');
+                    BookMainPage.musicKeyMap[widget.frameModel.mid] = musicKey;
+                  }
                   //print(model.remoteUrl!);
 
                   String selectedSize = '';

@@ -1,5 +1,6 @@
 library mini_music_visualizer;
 
+import "package:creta03/pages/studio/studio_constant.dart";
 import "package:flutter/material.dart";
 
 import "../../../../model/contents_model.dart";
@@ -9,12 +10,11 @@ class MyVisualizer {
     required BuildContext context,
     Color? color,
     ContentsModel? model,
-    
     required double width,
     required double height,
     required bool isPlaying,
     required String contentsId,
-    required String size,
+    required MusicPlayerSizeEnum size,
     required bool isTrailer,
     required double scaleVal,
   }) {

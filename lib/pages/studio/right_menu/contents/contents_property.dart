@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
 
+import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -54,6 +55,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   //static bool _isTextFontColorOpen = false;
   static bool _textAIOpen = false;
   static bool _isTextBorderOpen = false;
+  static bool _isMusicAudioControl = false;
   static bool _isTextAni = false;
 
   // static bool _isImageFilterOpen = false;
@@ -142,9 +144,103 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       if (widget.model.isText() && widget.model.textType == TextType.normal) _textAI(),
       if (widget.model.isText() && widget.model.textType == TextType.normal)
         propertyDivider(height: 28),
+      if (widget.model.isMusic()) _musicAudioControl(),
+      propertyDivider(height: 28),
       _hashTag(),
     ]);
     //});
+  }
+
+  Widget _musicAudioControl() {
+    return Padding(
+      padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
+      child: propertyCard(
+        isOpen: _isMusicAudioControl,
+        onPressed: () {
+          setState(() {
+            _isMusicAudioControl = !_isMusicAudioControl;
+          });
+        },
+        titleWidget: Text(CretaStudioLang.musicAudioControl, style: CretaFont.titleSmall),
+        trailWidget: Container(),
+        hasRemoveButton: false,
+        onDelete: () {},
+        bodyWidget: _musicAudioSettingBody(),
+      ),
+    );
+  }
+
+  Widget _musicAudioSettingBody() {
+    return Column(
+      children: [
+        _musicVolSlider(),
+        _musicMutedBody(),
+      ],
+    );
+  }
+
+  Widget _musicMutedBody() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: propertyLine(
+        name: CretaStudioLang.musicMutedControl,
+        widget: _musicMutedToggle(),
+      ),
+    );
+  }
+
+  Widget _musicMutedToggle() {
+    // bool isMusicMuted = widget.model.mute.value;
+    bool isMusicMuted = _contentsManager!.frameModel.mute.value;
+    return CretaToggleButton(
+      key: GlobalObjectKey('_musicMutedToggle$isMusicMuted${widget.model.mid}'),
+      width: 54 * 0.75,
+      height: 28 * 0.75,
+      defaultValue: isMusicMuted,
+      onSelected: (value) {
+        isMusicMuted = value;
+        // if (widget.model.mute.value == true) {
+        if (_contentsManager!.frameModel.mute.value == true) {
+          StudioVariables.isAutoPlay = true;
+        }
+        widget.frameManager.notify();
+        _linkSendEvent!.sendEvent(Offset(1, 1));
+        setState(() {});
+      },
+    );
+  }
+
+  Widget _musicVolSlider() {
+    double minVol = 0.0;
+    double maxVol = 100.0;
+    double musicVol = widget.model.volume.value;
+
+    if (musicVol < minVol) {
+      musicVol = minVol;
+    } else if (musicVol > maxVol) {
+      musicVol = maxVol;
+    }
+
+    return propertyLine(
+      name: CretaStudioLang.musicVol,
+      widget: CretaExSlider(
+        valueType: SliderValueType.normal,
+        value: musicVol,
+        textType: CretaTextFieldType.number,
+        min: minVol,
+        max: maxVol,
+        onChanngeComplete: (val) {
+          widget.model.volume.set(val);
+          _contentsManager?.notify();
+          widget.frameManager.notify();
+        },
+        onChannged: (val) {
+          widget.model.volume.set(val);
+          _contentsManager?.notify();
+          widget.frameManager.notify();
+        },
+      ),
+    );
   }
 
   Widget _textFontColor() {
@@ -154,7 +250,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         title: CretaLang.fontColor,
         color1: widget.model.fontColor.value,
         color2: widget.model.fontColor.value,
-        opacity: widget.model.opacity.value, 
+        opacity: widget.model.opacity.value,
         gradationType: GradationType.none,
         cardOpenPressed: () {
           setState(() {});

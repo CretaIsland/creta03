@@ -628,7 +628,11 @@ class CretaUtils {
   }
 
   static Offset? getPosition(GlobalKey key) {
-    RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
+    if (key.currentContext == null) {
+      logger.warning('takeAScreenShot box not is founeded');
+      return null;
+    }
+    RenderBox? box = key.currentContext!.findRenderObject() as RenderBox?;
     if (box == null) {
       logger.warning('takeAScreenShot box not is founeded');
       return null;

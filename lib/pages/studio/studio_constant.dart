@@ -20,6 +20,13 @@ enum LeftMenuEnum {
   None,
 }
 
+enum MusicPlayerSizeEnum {
+  Big,
+  Medium,
+  Small,
+  Tiny,
+}
+
 class LayoutConst {
   //
   static const double maxPageCount = 99;
@@ -176,6 +183,19 @@ class StudioConst {
     Size(460, 148),
     Size(266, 84),
   ];
+
+  static Map<MusicPlayerSizeEnum, String> sizeEnumMap = {
+    MusicPlayerSizeEnum.Big: 'Big',
+    MusicPlayerSizeEnum.Medium: 'Medium',
+    MusicPlayerSizeEnum.Small: 'Small',
+    MusicPlayerSizeEnum.Tiny: 'Tiny',
+  };
+  static Map<String, MusicPlayerSizeEnum> sizeStringMap = {
+    'Big': MusicPlayerSizeEnum.Big,
+    'Medium': MusicPlayerSizeEnum.Medium,
+    'Small': MusicPlayerSizeEnum.Small,
+    'Tiny': MusicPlayerSizeEnum.Tiny,
+  };
 
   static double musicIconSize = 51.0;
 
