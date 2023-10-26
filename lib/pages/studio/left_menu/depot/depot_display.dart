@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 import '../../../../design_system/component/custom_image.dart';
 import '../../../../design_system/component/snippet.dart';
+import '../../../../lang/creta_lang.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/team_model.dart';
 import '../../studio_variables.dart';
@@ -134,6 +135,14 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
           //future: depotManager.getContentInfoList(contentsType: widget.contentsType),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.data == null || snapshot.data!.isEmpty) {
+                return Container(
+                  padding: EdgeInsets.symmetric(vertical: verticalPadding),
+                  height: 352.0,
+                  alignment: Alignment.center,
+                  child: const Text(CretaLang.nodatafounded),
+                );
+              }
               _localManager.sort();
               return SingleChildScrollView(
                 child: Container(

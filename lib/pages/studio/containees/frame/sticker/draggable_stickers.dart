@@ -147,6 +147,15 @@ class _DraggableStickersState extends State<DraggableStickers> {
       ],
       child: Stack(
         children: [
+          // Positioned(
+          //   left: BookMainPage.pageOffset.dx,
+          //   top: BookMainPage.pageOffset.dy,
+          //   child: SizedBox(
+          //     //color: Colors.transparent,
+          //     width: widget.pageWidth,
+          //     height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+          //   ),
+          // ),
           PageBottomLayer(
             key: pageBottomLayerKey,
             pageWidth: widget.pageWidth,
@@ -718,13 +727,14 @@ class _DraggableStickersState extends State<DraggableStickers> {
       if (selectedSticker == null) {
         return const SizedBox.shrink();
       }
-      FrameModel? frameModel = widget.frameManager!.getModel(selectedSticker.id) as FrameModel?;
 
       FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
       if (frameManager == null) {
+        logger.warning('Selected frameManager is null');
         return const SizedBox.shrink();
       }
 
+      FrameModel? frameModel = frameManager.getModel(selectedSticker.id) as FrameModel?;
       if (frameModel == null) {
         logger.warning('Selected frameModel is null');
         return const SizedBox.shrink();
@@ -732,6 +742,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
       ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
       if (contentsManager == null) {
+        logger.warning('Selected ConterntsManager is null');
         return const SizedBox.shrink();
       }
       // if (_isContents) {

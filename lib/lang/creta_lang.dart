@@ -134,4 +134,7 @@ class CretaLang {
 
   static const String confirm = '확인';
   static const String cancel = '취소';
+  static const String nodatafounded = '자료가 없습니다';
+
+
 }

@@ -642,15 +642,14 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
   void _putInDepot(CretaModel? model, String key, String? teamId) {
     if (model == null) return;
     if (model is ContentsModel) {
-      ContentsManager.insertDepot(
-          model, null, false, teamId); // notify 를 안해도 된다. 보관함이 열려있지 않기 때문이다.
+      ContentsManager.insertDepot([model], false, teamId); // notify 를 안해도 된다. 보관함이 열려있지 않기 때문이다.
     }
     if (model is FrameModel) {
       List<Node<dynamic>>? children = LeftMenuPage.findChildren(key);
       if (children != null) {
         for (var node in children) {
           if (node.data is ContentsModel) {
-            ContentsManager.insertDepot(node.data, null, false, teamId);
+            ContentsManager.insertDepot([node.data], false, teamId);
           }
         }
       }
@@ -663,7 +662,7 @@ class _TreeNodeState extends State<TreeNode> with SingleTickerProviderStateMixin
           if (grandChildren != null) {
             for (var node in grandChildren) {
               if (node.data is ContentsModel) {
-                ContentsManager.insertDepot(node.data, null, false, teamId);
+                ContentsManager.insertDepot([node.data], false, teamId);
               }
             }
           }

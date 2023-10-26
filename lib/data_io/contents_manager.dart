@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
 import '../lang/creta_lang.dart';
 import '../model/app_enums.dart';
+import '../model/book_model.dart';
 import '../model/contents_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
@@ -39,6 +40,18 @@ class ContentsManager extends CretaManager {
   final FrameModel frameModel;
 
   ContentsEventController? sendEvent;
+
+  static ContentsManager? _dummyManager;
+  static ContentsManager? get dummyManager {
+    if (_dummyManager != null) return _dummyManager;
+
+    BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+    if (book != null) {
+      _dummyManager =
+          ContentsManager(pageModel: PageModel('', book), frameModel: FrameModel('', book.mid));
+    }
+    return _dummyManager;
+  }
 
   ContentsManager(
       {required this.pageModel, required this.frameModel, String tableName = 'creta_contents'})
@@ -1226,50 +1239,63 @@ class ContentsManager extends CretaManager {
 
   Future<void> putInDepot(ContentsModel? selectedModel, String? teamId) async {
     if (selectedModel == null) {
-      ContentsManager.insertDepot(null, modelList, true, teamId);
+      ContentsManager.insertDepot(modelList, true, teamId);
     } else {
-      ContentsManager.insertDepot(selectedModel, null, true, teamId);
+      ContentsManager.insertDepot([selectedModel], true, teamId);
     }
   }
 
-  static Future<void> insertDepot(ContentsModel? selectedModel, List<AbsExModel>? targetList,
-      bool notify, String? teamId) async {
+  static Future<void> insertDepot(
+      /*ContentsModel? selectedModel,*/
+      List<AbsExModel>? targetList,
+      bool notify,
+      String? teamId) async {
     DepotManager? depotManager = DepotDisplay.getMyTeamManager(teamId);
     if (depotManager == null) {
       return;
     }
 
     if (targetList != null) {
-      int count = 0;
-      for (var ele in targetList) {
-        ContentsModel model = ele as ContentsModel;
-        if (model.isRemoved.value == true) {
-          continue;
+      if (ContentsManager.dummyManager != null) {
+        int count = 0;
+        for (var ele in targetList) {
+          ContentsModel model = ele as ContentsModel;
+          if (model.isRemoved.value == true) {
+            continue;
+          }
+          if (model.thumbnail == null || model.thumbnail!.isEmpty) {
+            continue;
+          }
+          if (model.contentsType != ContentsType.image &&
+              model.contentsType != ContentsType.video) {
+            continue;
+          }
+
+          // 여기서 CotentsModel 을  copy 해야한다.
+          ContentsModel newModel = ContentsModel('', model.realTimeKey);
+          newModel.copyFrom(model, newMid: newModel.mid, pMid: teamId);
+          await ContentsManager.dummyManager!.createToDB(newModel);
+
+          if (await depotManager.createNextDepot(newModel.mid, newModel.contentsType, teamId) !=
+              null) {
+            depotManager.filteredContents.insert(0, newModel);
+            count++;
+          }
         }
-        if (model.thumbnail == null || model.thumbnail!.isEmpty) {
-          continue;
-        }
-        if (model.contentsType != ContentsType.image && model.contentsType != ContentsType.video) {
-          continue;
-        }
-        if (await depotManager.createNextDepot(model.mid, model.contentsType, teamId) != null) {
-          depotManager.filteredContents.insert(0, model);
-          count++;
-        }
-      }
-      if (notify && count > 0) {
-        depotManager.notify();
-      }
-    }
-    if (selectedModel != null) {
-      if (await depotManager.createNextDepot(
-              selectedModel.mid, selectedModel.contentsType, teamId) !=
-          null) {
-        depotManager.filteredContents.insert(0, selectedModel);
-        if (notify) {
+        if (notify && count > 0) {
           depotManager.notify();
         }
       }
     }
+    // if (selectedModel != null) {
+    //   if (await depotManager.createNextDepot(
+    //           selectedModel.mid, selectedModel.contentsType, teamId) !=
+    //       null) {
+    //     depotManager.filteredContents.insert(0, selectedModel);
+    //     if (notify) {
+    //       depotManager.notify();
+    //     }
+    //   }
+    // }
   }
 }

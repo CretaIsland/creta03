@@ -56,6 +56,8 @@ class DepotManager extends CretaManager {
     }
     if (target != null) {
       filteredContents.remove(target);
+      target.isRemoved.set(true, save: false);
+      ContentsManager.dummyManager?.setToDB(target);
     }
   }
 
@@ -228,24 +230,22 @@ class DepotManager extends CretaManager {
       return [];
     }
     // List<ContentsModel> contentsInfoList = [];
-    ContentsManager dummyManager =
-        ContentsManager(pageModel: PageModel('', book), frameModel: FrameModel('', book.mid));
-
     Set<String> contentsMidSet = {};
-
+    print('getDepoList= ${modelList.length}');
     filteredContents.clear();
     for (var ele in modelList) {
       String contentsMid = (ele as DepotModel).contentsMid;
+      print('getDepot = ${ele.mid}, $contentsMid');
       // find contents manager for each contentsMid
       if (contentsMidSet.add(contentsMid)) {
-        ContentsModel? model =
-            await getContentsInfo(contentsMid: contentsMid, contentsManager: dummyManager);
+        ContentsModel? model = await getContentsInfo(
+            contentsMid: contentsMid, contentsManager: ContentsManager.dummyManager);
         if (model != null) {
           filteredContents.add(model);
         }
       }
     }
-    if (depotOrder == DepotOrderEnum.name) {
+    if (depotOrder == DepotOrderEnum.name && filteredContents.isNotEmpty) {
       filteredContents.sort((a, b) => a.name.compareTo(b.name));
     }
 
@@ -273,10 +273,8 @@ class DepotManager extends CretaManager {
       contentsManager =
           ContentsManager(pageModel: PageModel('', book), frameModel: FrameModel('', book.mid));
     }
-
-    ContentsModel contentsModel = await contentsManager.getFromDB(contentsMid) as ContentsModel;
-
-    return contentsModel;
+    ContentsModel? retval = await contentsManager.getFromDB(contentsMid) as ContentsModel?;
+    return retval;
   }
 
   DepotModel? getModelByContentsMid(String mid) {

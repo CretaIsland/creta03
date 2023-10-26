@@ -99,6 +99,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     frameManager = widget.frameManager;
     if (frameManager == null) {
       logger.severe('frame manager is null');
+      return false;
     }
     //print('pageModel=${widget.pageModel.mid}');
     //print('model.par=${widget.model.parentMid.value}');

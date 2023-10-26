@@ -248,9 +248,11 @@ class _BookMainPageState extends State<BookMainPage> {
     if (mid.isNotEmpty) {
       logger.info("1) --_BookMainPageState-----------------------------------------");
       BookMainPage.bookManagerHolder!.getFromDB(mid).then((value) async {
-        BookMainPage.bookManagerHolder!.addRealTimeListen(mid);
-        if (BookMainPage.bookManagerHolder!.getLength() > 0) {
-          initChildren(BookMainPage.bookManagerHolder!.onlyOne() as BookModel);
+        if (value != null) {
+          BookMainPage.bookManagerHolder!.addRealTimeListen(mid);
+          if (BookMainPage.bookManagerHolder!.getLength() > 0) {
+            initChildren(BookMainPage.bookManagerHolder!.onlyOne() as BookModel);
+          }
         }
         return value;
       });

@@ -13,15 +13,15 @@ const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestor
 admin.initializeApp();
 const database = admin.database();
 
-exports.deltaChanged = functions.database.ref('/hycop_delta/{id}/delta')
-    .onWrite((change, context) => {
-        var old_delta = change.before.val();
-        var new_delta = change.after.val();
-        var mid = context.params.id;
-        database.ref('/creta_log/text').set('skpark changed =' + mid);
-        functions.logger.log('skpark changed =' + mid);
-        return null;
-});
+// exports.deltaChanged = functions.database.ref('/hycop_delta/{id}/delta')
+//     .onWrite((change, context) => {
+//         var old_delta = change.before.val();
+//         var new_delta = change.after.val();
+//         var mid = context.params.id;
+//         database.ref('/creta_log/text').set('skpark changed =' + mid);
+//         functions.logger.log('skpark changed =' + mid);
+//         return null;
+// });
 
 exports.removeDelta_schedule = functions.pubsub.schedule('* * * * *').onRun((context) => {
     return _removeDelta();
@@ -83,9 +83,31 @@ function _formatDate() {
     // return `${formattedDate} ${formattedTime}`;
 }
 
-exports.cleanBin_schedule = functions.pubsub.schedule('every 24 hours').onRun((context) => {
+exports.cleanBin_schedule = functions.runWith({ timeoutSeconds: 300 }).pubsub.schedule('every 24 hours').onRun((context) => {
     _cleanBin('creta_book');
-    return _cleanBin('creta_page');
+    _cleanBin('creta_book_published');
+    _cleanBin('creta_channel');
+    _cleanBin('creta_comment');
+    _cleanBin('creta_connected_user');
+    _cleanBin('creta_contents_published');
+    _cleanBin('creta_depot');
+    _cleanBin('creta_enterprise');
+    _cleanBin('creta_favorites');
+    _cleanBin('creta_filter');
+    _cleanBin('creta_frame');
+    _cleanBin('creta_frame_published');
+    _cleanBin('creta_page');
+    _cleanBin('creta_page_published');
+    _cleanBin('creta_playlist');
+    _cleanBin('creta_subscription');
+    _cleanBin('creta_team');
+    _cleanBin('creta_user_property');
+    return _cleanBin('creta_watch_history');
+   
+});
+
+exports.cleanBin_contents_schedule = functions.runWith({ timeoutSeconds: 300 }).pubsub.schedule('every 24 hours').onRun((context) => {
+    return _cleanBin('creta_contents');
 });
 
 exports.cleanBin_req = functions.https.onRequest(async (req, res) => {
@@ -98,20 +120,68 @@ exports.cleanBin = functions.https.onCall((data) => {
     return _cleanBin(data);
 });
 
+function _getDaysAgoAsString() {
+    const daysAgo = new Date();
+    daysAgo.setDate(daysAgo.getDate() - 2);
+    
+    const YYYY = daysAgo.getFullYear();
+    const MM = String(daysAgo.getMonth() + 1).padStart(2, '0');  // January is 0!
+    const DD = String(daysAgo.getDate()).padStart(2, '0');
+    const HH = String(daysAgo.getHours()).padStart(2, '0');
+    const MI = String(daysAgo.getMinutes()).padStart(2, '0');
+    const SS = String(daysAgo.getSeconds()).padStart(2, '0');
+    const SSS = String(daysAgo.getMilliseconds()).padStart(3, '0');
+    
+    return `${YYYY}-${MM}-${DD} ${HH}:${MI}:${SS}.${SSS}`;
+}
+
 async function  _cleanBin(collectionId) {
-    functions.logger.info('skpark _deleteRecycleBin invoked');
+    functions.logger.info('skpark _deleteRecycleBin invoked ' + collectionId);
     // let now = new Date();
     // now.setDate(now.getDate() - 3);
     // let yesterday = now.toISOString().replace(/T/, ' ').replace(/\..+/, '.000Z');
 
+    const daysAgoString = _getDaysAgoAsString();
+
     const db = getFirestore();
-    const querySnapshot = await db.collection(collectionId).where('isRemoved' , '=', true).get();
+    const querySnapshot = await db.collection(collectionId)
+    .where('isRemoved' , '=', true)
+    .where('updateTime', '<=', daysAgoString)
+    .get();
+    
     var retval = '';
-    var counter = 0;
-    querySnapshot.forEach((doc) => {
-        functions.logger.info(doc.id, ' => ', doc.data());
-        doc.ref.delete();
+
+    const commitBatch = async (batch, count) => {
+        await batch.commit();
+        totalDeleted += count;
+        functions.logger.info(`Deleted ${count} documents in this batch.`);
+        return db.batch();  // Create and return a new batch for the next set of deletions.
+    };
+    
+    let batch = db.batch();
+    let counter = 0;
+    let totalDeleted = 0;
+    
+    for (const doc of querySnapshot.docs) {
+        batch.delete(doc.ref);
         counter++;
-    });
-    return '{result: deleteRecycleBin(' + counter + ' deleted)';
+    
+        if (counter >= 500) {
+            batch = await commitBatch(batch, counter);
+            counter = 0;
+        }
+    }
+    
+    if (counter > 0) {  // If there are remaining documents in the batch, commit them.
+        await commitBatch(batch, counter);
+        totalDeleted += counter;
+    }
+
+    // querySnapshot.forEach((doc) => {
+    //     //functions.logger.info(doc.id, ' => ', doc.data());
+    //     doc.ref.delete();
+    //     counter++;
+    // });
+    functions.logger.info('{result: '+ collectionId + ' (' + totalDeleted + ') deleted');
+    return '{result: '+ collectionId + ' (' + totalDeleted + ') deleted';
 }

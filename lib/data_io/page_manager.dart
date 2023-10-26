@@ -177,11 +177,11 @@ class PageManager extends CretaManager {
       return null;
     }
     FrameModel? frameModel = frameManager.getSelected() as FrameModel?;
-    if (frameModel != null &&
-        frameModel.isOverlay.value == true &&
-        frameModel.parentMid.value == pageModel.mid) {
+    if (frameModel != null && frameModel.isOverlay.value == true
+        //&& frameModel.parentMid.value == pageModel.mid
+        ) {
       // overlay 의 경우이다.
-      //print('this is overlay case');
+      logger.warning('this is overlay case');
       frameManager = frameManagerMap[frameModel.parentMid.value];
     }
 

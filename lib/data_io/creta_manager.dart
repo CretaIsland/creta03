@@ -349,14 +349,16 @@ abstract class CretaManager extends AbsExModelManager {
   }
 
   @override
-  Future<AbsExModel> getFromDB(String mid) async {
+  Future<AbsExModel?> getFromDB(String mid) async {
     logger.finest('my getFromDB($mid)');
     lock();
     _dbState = DBState.querying;
-    AbsExModel retval = await super.getFromDB(mid);
+    AbsExModel? retval = await super.getFromDB(mid);
     _dbState = DBState.idle;
     modelList.clear();
-    modelList.add(retval);
+    if (retval != null) {
+      modelList.add(retval);
+    }
     unlock();
     //reOrdering();
     return retval;
