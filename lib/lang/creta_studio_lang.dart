@@ -429,10 +429,10 @@ class CretaStudioLang {
   };
 
   static Map<String, String> playerSize = {
-    '큰': 'big',
-    '중간': 'medium',
-    '작은': 'small',
-    '미니': 'tiny',
+    '큰': 'Big',
+    '중간': 'Medium',
+    '작은': 'Small',
+    '미니': 'Tiny',
   };
 
   static String shape = "모양";
@@ -471,6 +471,7 @@ class CretaStudioLang {
   static String imageFilter = '이미지 필터';
   static String imageControl = '이미지 조정';
   static String linkControl = '링크 편집';
+  static String musicMutedControl = '음소거';
   static String musicPlayerSize = '뮤직 사미즈 기능';
 
   static const List<String> imageFilterTypeList = [
@@ -611,6 +612,8 @@ class CretaStudioLang {
   static String fontName = "폰트";
   static String fontSize = "폰트크기";
   static String iconSize = "아이콘크기";
+  static String musicAudioControl = "소리 조정";
+  static String musicVol = "소리 크기";
 
   static String depotComplete = "보관함으로 이동이 완료되었습니다";
 }

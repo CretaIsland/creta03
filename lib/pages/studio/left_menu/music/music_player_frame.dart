@@ -38,7 +38,7 @@ class MusicPlayerFrame extends StatefulWidget {
 class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   late AudioPlayer _audioPlayer; // play local audio file
 
-  String _selectedSize = '';
+  // String _selectedSize = '';
   bool _isPlaylistOpened = false;
   bool _isMusicPlaying = false;
 
@@ -51,9 +51,15 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     setState(() {});
   }
 
-  void setSelectedSize(String selectedValue) {
-    _selectedSize = selectedValue;
-  }
+  // void setSelectedSize(String selectedValue) {
+  //   _selectedSize = selectedValue;
+  // }
+
+  // MusicPlayerSizeEnum _selectedSize = MusicPlayerSizeEnum.Big;
+
+  // void setSelectedSize(String selectedValue) {
+  //   _selectedSize = sizeEnumMap[selectedValue] ?? MusicPlayerSizeEnum.Big;
+  // }
 
   void addMusic(ContentsModel model) async {
     Random random = Random();
@@ -187,15 +193,15 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     Size frameSize = Size(frameModel.width.value, frameModel.height.value);
     for (Size ele in StudioConst.musicPlayerSize) {
       if (frameSize == ele) {
-        _selectedSize = CretaStudioLang.playerSize.values.toList()[index];
+        frameModel.musicPlayerSizeType = MusicPlayerSizeEnum.values[index];
         break;
       }
       index++;
     }
-    if (_selectedSize.isEmpty) {
-      logger.info('Selected size is not specified ${widget.size} ');
-      _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
-    }
+    // if (_selectedSize.isEmpty) {
+    //   logger.info('Selected size is not specified ${widget.size} ');
+    //   _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
+    // }
 
     if (frameModel.mute.value) {
       _audioPlayer.setVolume(frameModel.volume.value / 100);
@@ -204,6 +210,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     _init();
     afterBuild();
     initMixin();
+    volumeButtonKey = GlobalObjectKey<MusicControlBtnState>(
+        'volumeButtonKey${widget.contentsManager.frameModel.mid}');
   }
 
   Future<void> _init() async {
@@ -295,45 +303,58 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   Widget build(BuildContext context) {
     double frameScale = StudioVariables.applyScale / 0.7025000000000001;
     double iconSize = iconBTNSize * StudioVariables.applyScale;
-    volumeButtonKey = GlobalObjectKey<MusicControlBtnState>(
-        'volumeButtonKey${widget.contentsManager.frameModel.mid}');
+    double dampX = 0;
+    double dampY = 0;
+    FrameModel frameModel = widget.contentsManager.frameModel;
 
+    if (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Big) {
+      dampX = -1;
+      dampY = 8;
+    } else {
+      dampX = 23;
+      dampY = 32;
+    }
     //Size? volumeBtSize = CretaUtils.getSize(volumeButtonKey);
     //if (volumeBtSize != null) {
     //print('volumeBtSize = $volumeBtSize');
-    _volumePosition = CretaUtils.getPosition(volumeButtonKey);
-    //_volumePosition = Offset(rect.left, rect.top);
-    if (_volumePosition != null) {
-      double offsetX = widget.contentsManager.frameModel.posX.value * StudioVariables.applyScale +
-          BookMainPage.pageOffset.dx +
-          iconSize +
-          2;
-      double offsetY = widget.contentsManager.frameModel.posY.value * StudioVariables.applyScale +
-          BookMainPage.pageOffset.dy +
-          iconSize +
-          6 +
-          170 -
-          iconSize / 2;
-      _volumePosition = _volumePosition! - Offset(offsetX, offsetY);
-    } else {
-      logger.fine('Volume Icon Button Position is null');
+    if (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Big ||
+        frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Medium) {
+      _volumePosition = CretaUtils.getPosition(volumeButtonKey);
+      //_volumePosition = Offset(rect.left, rect.top);
+      if (_volumePosition != null) {
+        double offsetX = frameModel.posX.value * StudioVariables.applyScale +
+            BookMainPage.pageOffset.dx +
+            iconSize +
+            dampX;
+        double offsetY = frameModel.posY.value * StudioVariables.applyScale +
+            BookMainPage.pageOffset.dy +
+            iconSize / 2 +
+            dampY +
+            170;
+        _volumePosition = _volumePosition! - Offset(offsetX, offsetY);
+        // print('_volumePosition $_volumePosition');
+      } else {
+        logger.fine('Volume Icon Button Position is null');
+      }
     }
-    List<String> sizeStrList = CretaStudioLang.playerSize.values.toList();
+    // List<String> sizeStrList = CretaStudioLang.playerSize.values.toList();
 
     // logger.info('Size of Music app: $_selectedSize------------------');
     if (StudioVariables.applyScale <= 0.45) {
       return const Icon(Icons.queue_music_outlined);
     }
-    if (_selectedSize == sizeStrList[0]) {
-      return _musicFullSize(frameScale);
-    } else if (_selectedSize == sizeStrList[1]) {
-      return _musicMedSize(frameScale);
-    } else if (_selectedSize == sizeStrList[2]) {
-      return _musicSmallSize(frameScale);
-    } else if (_selectedSize == sizeStrList[3]) {
-      return _musicTinySize(frameScale);
+    switch (frameModel.musicPlayerSizeType) {
+      case MusicPlayerSizeEnum.Big:
+        return _musicFullSize(frameScale);
+      case MusicPlayerSizeEnum.Medium:
+        return _musicMedSize(frameScale);
+      case MusicPlayerSizeEnum.Small:
+        return _musicSmallSize(frameScale);
+      case MusicPlayerSizeEnum.Tiny:
+        return _musicTinySize(frameScale);
+      default:
+        return _musicFullSize(frameScale);
     }
-    return const SizedBox.shrink();
   }
 
   Widget _musicFullSize(double scaleVal) {
@@ -349,7 +370,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
               children: [
                 _upperArea(scaleVal), // Image, Title, artist.
                 _progressionBar(scaleVal: scaleVal),
-                _controlButtons(scaleVal: scaleVal),
+                _controlButtons(scaleVal),
                 SizedBox(height: 4.0 * scaleVal),
                 _playList(scaleVal),
               ],
@@ -363,6 +384,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   }
 
   Widget _volumeButton(double scaleVal) {
+    FrameModel frameModel = widget.contentsManager.frameModel;
     return Positioned(
       top: _volumePosition!.dy * scaleVal,
       left: _volumePosition!.dx * scaleVal,
@@ -386,6 +408,21 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
               frameId: widget.contentsManager.frameModel.mid,
               isShowVolume: true,
               iconSize: iconBTNSize * scaleVal,
+              sliderHeight: (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Big)
+                  ? 120
+                  : (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Medium)
+                      ? 100
+                      : null,
+              sliderWidth: (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Big)
+                  ? 26.0
+                  : (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Medium)
+                      ? 22.0
+                      : null,
+              spaceY: (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Big)
+                  ? 180
+                  : (frameModel.musicPlayerSizeType == MusicPlayerSizeEnum.Medium)
+                      ? 160.0
+                      : null,
               value: widget.contentsManager.frameModel.volume.value / 100,
               onHoverChanged: () {
                 setState(() {});
@@ -419,11 +456,10 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     );
   }
 
-  Widget _controlButtons({required double scaleVal, bool isSmallSize = false}) {
+  Widget _controlButtons(double scaleVal) {
     return ControlButtons(
       volumeButtonKey: volumeButtonKey,
       audioPlayer: _audioPlayer,
-      isSmallSize: isSmallSize,
       contentsManager: widget.contentsManager,
       playlist: _playlist,
       onHoverChanged: () {
@@ -541,7 +577,9 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                     //   ),
                     // ),
                     _musicVisualization(
-                        size: _selectedSize, contentsId: metadata.id, scaleVal: scaleVal),
+                        size: widget.contentsManager.frameModel.musicPlayerSizeType,
+                        contentsId: metadata.id,
+                        scaleVal: scaleVal),
                   ],
                 ),
                 Text(metadata.artist!, style: TextStyle(fontSize: 14.0 * scaleVal)),
@@ -646,7 +684,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   Widget _musicVisualization(
       {required String contentsId,
       bool isTrailer = false,
-      required String size,
+      required MusicPlayerSizeEnum size,
       required double scaleVal}) {
     return MyVisualizer.playVisualizer(
       context: context,
@@ -662,21 +700,22 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   }
 
   Widget _musicMedSize(double scaleVal) {
-    return Stack(
-      alignment: Alignment.topLeft,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0 * scaleVal),
-          child: Column(
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24.0 * scaleVal),
+      child: Stack(
+        children: [
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _medSizeUpperArea(scaleVal),
               _progressionBar(scaleVal: scaleVal),
-              _controlButtons(scaleVal: scaleVal),
+              _controlButtons(scaleVal),
             ],
           ),
-        ),
-      ],
+          if (_audioPlayer.isVolumeHover == true && _volumePosition != null)
+            _volumeButton(scaleVal),
+        ],
+      ),
     );
   }
 
@@ -708,7 +747,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _musicVisualization(
-                      size: _selectedSize,
+                      size: widget.contentsManager.frameModel.musicPlayerSizeType,
                       contentsId: metadata.id,
                       scaleVal: scaleVal,
                     ),
@@ -799,7 +838,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                 child: _progressionBar(scaleVal: scaleVal, isSmallSize: true),
               ),
             ),
-            _controlButtons(scaleVal: scaleVal, isSmallSize: true),
+            _controlButtons(scaleVal),
           ],
         );
       },
@@ -814,7 +853,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
           width: double.infinity,
           height: double.infinity,
         ),
-        _controlButtons(scaleVal: scaleVal, isSmallSize: true),
+        _controlButtons(scaleVal),
       ],
     );
   }

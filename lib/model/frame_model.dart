@@ -55,11 +55,26 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<ShapeType> shape;
   //late UndoAble<bool> shadowIn;
   late UndoAble<String> eventSend;
+
+  // Belows are not saved in db.
   double prevOrder = -1;
   FrameType frameType = FrameType.none;
   int subType = -1;
   bool isEditMode = false;
-   // bool get isEditMode => _isEditMode;
+  MusicPlayerSizeEnum musicPlayerSizeType = MusicPlayerSizeEnum.Big;
+
+  bool isMusicSmallOrTiny() {
+    switch (musicPlayerSizeType) {
+      case MusicPlayerSizeEnum.Small:
+        return true;
+      case MusicPlayerSizeEnum.Tiny:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  // bool get isEditMode => _isEditMode;
   // void setEditMode(bool value) {
   //   _isEditMode = value;
   // }
@@ -734,8 +749,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     switch (frameType) {
       case FrameType.text:
         return false;
-      case FrameType.music:
-        return false;
+      // case FrameType.music:
+      //   return false;
       case FrameType.weather1:
         return false;
       case FrameType.weather2:

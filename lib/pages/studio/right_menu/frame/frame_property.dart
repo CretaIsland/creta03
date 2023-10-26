@@ -29,7 +29,6 @@ import '../../../../model/book_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
-import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../property_mixin.dart';
@@ -247,17 +246,32 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         });
   }
 
+  // String _getCurrentSizeString() {
+  //   int index = 0;
+  //   Size frameSize = Size(widget.model.width.value, widget.model.height.value);
+  //   for (Size ele in StudioConst.musicPlayerSize) {
+  //     if (frameSize == ele) {
+  //       return CretaStudioLang.playerSize.values.toList()[index];
+  //     }
+  //     index++;
+  //   }
+  //   logger.severe('wrong size $frameSize');
+  //   return CretaStudioLang.playerSize.values.toList()[0];
+  // }
+
   String _getCurrentSizeString() {
     int index = 0;
     Size frameSize = Size(widget.model.width.value, widget.model.height.value);
+    MusicPlayerSizeEnum currentSize = MusicPlayerSizeEnum.Big;
     for (Size ele in StudioConst.musicPlayerSize) {
       if (frameSize == ele) {
-        return CretaStudioLang.playerSize.values.toList()[index];
+        currentSize = MusicPlayerSizeEnum.values[index];
+        return StudioConst.sizeEnumMap[currentSize]!;
       }
       index++;
     }
-    logger.severe('wrong size $frameSize');
-    return CretaStudioLang.playerSize.values.toList()[0];
+    logger.fine('wrong size $frameSize');
+    return StudioConst.sizeEnumMap[MusicPlayerSizeEnum.Big]!;
   }
 
   Widget _musicPlayerSize() {
@@ -271,20 +285,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             defaultString: _getCurrentSizeString(),
             onEditComplete: (value) {
               int idx = 0;
+              widget.model.musicPlayerSizeType = StudioConst.sizeStringMap[value]!;
               for (String val in CretaStudioLang.playerSize.values) {
                 if (value == val) {
-                  GlobalObjectKey<MusicPlayerFrameState>? musicKey =
-                      BookMainPage.musicKeyMap[widget.model.mid];
-                  if (musicKey != null) {
-                    musicKey.currentState!.setSelectedSize(value);
-                    logger.fine('value $value');
-                  } else {
-                    logger.fine('musicKey is null');
-                  }
                   mychangeStack.startTrans();
                   widget.model.width.set(StudioConst.musicPlayerSize[idx].width);
                   widget.model.height.set(StudioConst.musicPlayerSize[idx].height);
                   mychangeStack.endTrans();
+                  break;
                 }
                 idx++;
               }
