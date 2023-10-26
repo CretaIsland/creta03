@@ -231,11 +231,11 @@ class DepotManager extends CretaManager {
     }
     // List<ContentsModel> contentsInfoList = [];
     Set<String> contentsMidSet = {};
-    print('getDepoList= ${modelList.length}');
+    //print('getDepoList= ${modelList.length}');
     filteredContents.clear();
     for (var ele in modelList) {
       String contentsMid = (ele as DepotModel).contentsMid;
-      print('getDepot = ${ele.mid}, $contentsMid');
+      //print('getDepot = ${ele.mid}, $contentsMid');
       // find contents manager for each contentsMid
       if (contentsMidSet.add(contentsMid)) {
         ContentsModel? model = await getContentsInfo(
