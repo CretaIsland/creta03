@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:creta03/design_system/creta_color.dart';
@@ -150,6 +151,11 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   void resumedMusic(ContentsModel model) {
     _audioPlayer.setVolume(widget.contentsManager.frameModel.volume.value / 100);
     widget.contentsManager.frameModel.mute.set(false);
+  }
+
+  void adjustVol(ContentsModel model, double val) {
+    _audioPlayer.setVolume(widget.contentsManager.frameModel.volume.value / 100);
+    widget.contentsManager.frameModel.volume.set(val);
   }
 
   void playedMusic(ContentsModel model) {
@@ -431,9 +437,9 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                 setState(() {
                   _audioPlayer.setVolume(value);
                   widget.contentsManager.frameModel.volume.set(value * 100);
-                  if (value > 0) {
-                    widget.contentsManager.frameModel.mute.set(false);
-                  }
+                  // if (value > 0) {
+                  //   widget.contentsManager.frameModel.mute.set(false);
+                  // }
                 });
               },
               child: IconButton(
@@ -445,7 +451,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                       if (volumeValue > 0) {
                         _audioPlayer.setVolume(0.0);
                       } else {
-                        _audioPlayer.setVolume(0.5);
+                        _audioPlayer
+                            .setVolume(widget.contentsManager.frameModel.volume.value / 100);
                       }
                     },
                   );

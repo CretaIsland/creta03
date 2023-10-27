@@ -78,7 +78,7 @@ class _ControlButtonsState extends State<ControlButtons> {
       if (ele is ProgressiveAudioSource) {
         ProgressiveAudioSource source = ele;
         if (source.tag.id.toString() == currentMid) {
-          if (index == widget.playlist.length) {
+          if (index == widget.playlist.length - 1) {
             AudioSource src = widget.playlist.children[0];
             if (src is ProgressiveAudioSource) {
               return src.tag.id.toString();
@@ -130,7 +130,7 @@ class _ControlButtonsState extends State<ControlButtons> {
     return StreamBuilder<LoopMode>(
       stream: widget.audioPlayer.loopModeStream,
       builder: (context, snapshot) {
-        final loopMode = snapshot.data ?? LoopMode.all;
+        final loopMode = snapshot.data ?? LoopMode.off;
 
         var icons = [
           // Icon(Icons.repeat,
@@ -286,7 +286,8 @@ class _ControlButtonsState extends State<ControlButtons> {
                   if (volumeValue > 0) {
                     widget.audioPlayer.setVolume(0.0);
                   } else {
-                    widget.audioPlayer.setVolume(0.5);
+                    widget.audioPlayer
+                        .setVolume(widget.contentsManager.frameModel.volume.value / 100);
                   }
                 },
               );
