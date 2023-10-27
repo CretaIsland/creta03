@@ -156,11 +156,12 @@ class _LoginDialogState extends State<LoginDialog> {
       String errMsg;
       if (error is HycopException) {
         HycopException ex = error;
-        errMsg = ex.message;
+        logger.severe(ex.message);
+        errMsg = '로그인에 실패하였습니다. 가입된 정보를 확인해보세요.';
       } else {
         errMsg = 'Unknown DB Error !!!';
+        logger.severe(errMsg);
       }
-      logger.severe(errMsg);
       showSnackBar(widget.context, errMsg);
       //widget.onErrorReport?.call(errMsg);
     });
@@ -219,9 +220,11 @@ class _LoginDialogState extends State<LoginDialog> {
       String errMsg;
       if (error is HycopException) {
         HycopException ex = error;
-        errMsg = ex.message;
+        logger.severe(ex.message);
+        errMsg = '구글 계정으로 로그인에 실패하였습니다. 관리자에 문의하세요.';
       } else {
         errMsg = 'Unknown DB Error !!!';
+        logger.severe(errMsg);
       }
       showSnackBar(widget.context, errMsg);
       //widget.onErrorReport?.call(errMsg);
@@ -234,8 +237,8 @@ class _LoginDialogState extends State<LoginDialog> {
     logger.finest('isExistAccount');
     AccountManager.isExistAccount(email).then((value) {
       if (value) {
-        showSnackBar(widget.context, '이미 가입된 이메일입니다');
-        //widget.onErrorReport?.call('이미 가입된 이메일입니다');
+        showSnackBar(widget.context, '이미 가입된 이메일입니다.');
+        //widget.onErrorReport?.call('이미 가입된 이메일입니다.');
         return;
       }
       Map<String, dynamic> userData = {};
@@ -275,9 +278,11 @@ class _LoginDialogState extends State<LoginDialog> {
         String errMsg;
         if (error is HycopException) {
           HycopException ex = error;
-          errMsg = ex.message;
+          logger.severe(ex.message);
+          errMsg = '계정 생성중 에러가 발생하였습니다. 관리자에 문의하세요.';
         } else {
           errMsg = 'Unknown DB Error !!!';
+          logger.severe(errMsg);
         }
         showSnackBar(widget.getBuildContext.call(), errMsg);
         //widget.onErrorReport?.call(errMsg);
@@ -286,9 +291,11 @@ class _LoginDialogState extends State<LoginDialog> {
       String errMsg;
       if (error is HycopException) {
         HycopException ex = error;
-        errMsg = ex.message;
+        logger.severe(ex.message);
+        errMsg = '계정을 확인할 수 없습니다. 관리자에 문의하세요.';
       } else {
         errMsg = 'Unknown DB Error !!!';
+        logger.severe(errMsg);
       }
       showSnackBar(widget.getBuildContext.call(), errMsg);
       //widget.onErrorReport?.call(errMsg);
@@ -313,9 +320,11 @@ class _LoginDialogState extends State<LoginDialog> {
       String errMsg;
       if (error is HycopException) {
         HycopException ex = error;
-        errMsg = ex.message;
+        logger.severe(ex.message);
+        errMsg = '비밀번호를 초기화할 수 없습니다. 관리자에 문의하세요.';
       } else {
         errMsg = 'Unknown DB Error !!!';
+        logger.severe(errMsg);
       }
       showSnackBar(widget.getBuildContext.call(), errMsg);
       //widget.onErrorReport?.call(errMsg);
