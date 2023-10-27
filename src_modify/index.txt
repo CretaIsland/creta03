@@ -1,41 +1,119 @@
-# cretor query
-creta_book	bookType 오름차순 creator 오름차순 isRemoved 오름차순 likeCount 내림차순 updateTime 내림차순 
-creta_book	bookType 오름차순 creator 오름차순 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
-creta_book	creator 오름차순 isRemoved 오름차순 updateTime 내림차순 	
-creta_book	creator 오름차순 isRemoved 오름차순 likeCount 내림차순 updateTime 내림차순 	
-creta_book	bookType 오름차순 creator 오름차순 isRemoved 오름차순 updateTime 내림차순 
-creta_book	bookType 오름차순 creator 오름차순 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
-creta_book	creator 오름차순 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
-creta_book	creator 오름차순 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
+creta_book	bookType ASC creator ASC isRemoved ASC likeCount DESC updateTime DESC __name__ DESC
+creta_subscription	isRemoved ASC updateTime ASC __name__ ASC
+creta_book	bookType ASC creator ASC isRemoved ASC name ASC updateTime DESC __name__ DESC
+creta_book_published	mid ASC updateTime DESC __name__ DESC
+creta_comment	isRemoved ASC updateTime ASC __name__ ASC
+hycop_users	email ASC password ASC name DESC __name__ DESC
+creta_watch_history	isRemoved ASC updateTime ASC __name__ ASC
+creta_book_published	shares array isRemoved ASC lastUpdateTime DESC updateTime DESC __name__ DESC
+creta_book	bookType ASC shares array isRemoved ASC viewCount DESC updateTime DESC __name__ DESC
+creta_playlist	isRemoved ASC lastUpdateTime DESC updateTime DESC __name__ DESC
+creta_favorites	isRemoved ASC updateTime ASC __name__ ASC
+creta_book	bookType ASC shares array isRemoved ASC likeCount DESC updateTime DESC __name__ DESC
+creta_team	isRemoved ASC updateTime ASC __name__ ASC
+creta_book	shares array isRemoved ASC updateTime DESC __name__ DESC
+creta_contents	isRemoved ASC updateTime ASC __name__ ASC
+creta_book_published	shares array bookType ASC isRemoved ASC viewCount DESC updateTime DESC __name__ DESC
+creta_contents_published	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_team	teamMembers array isRemoved ASC updateTime DESC __name__ DESC
+creta_depot	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_book_published	shares array bookType ASC isRemoved ASC name ASC updateTime DESC __name__ DESC
+creta_playlist	isRemoved ASC name ASC updateTime DESC __name__ DESC
+creta_frame	isRemoved ASC updateTime ASC __name__ ASC
+creta_connected_user	isRemoved ASC updateTime ASC __name__ ASC
+creta_depot	isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+creta_playlist	isRemoved ASC userId ASC lastUpdateTime DESC updateTime DESC __name__ DESC
+hycop_frame	isRemoved ASC updateTime DESC __name__ DESC
+creta_frame	frameType ASC isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+creta_frame_published	isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+hycop_users	email ASC name DESC __name__ DESC
+creta_playlist	isRemoved ASC updateTime DESC __name__ DESC
+creta_book	creator ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_book	creator ASC isRemoved ASC likeCount DESC updateTime DESC __name__ DESC
+creta_book	isRemoved ASC updateTime ASC __name__ ASC
+creta_favorites	bookId ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_book_published	shares array isRemoved ASC updateTime DESC __name__ DESC
+hycop_user	email ASC password ASC name DESC __name__ DESC
+creta_frame	isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+hycop_book	creator ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_channel	mid array updateTime DESC __name__ DESC
+creta_team	isRemoved ASC name ASC parentMid ASC updateTime DESC __name__ DESC
+creta_book	bookType ASC creator ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_book	isRemoved ASC updateTime DESC __name__ DESC
+creta_channel	isRemoved ASC userId ASC updateTime DESC __name__ DESC
+creta_subscription	channelId ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_depot	contentsType ASC isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+creta_page	isRemoved ASC updateTime ASC __name__ ASC
+creta_book_published	isRemoved ASC updateTime DESC __name__ DESC
+creta_channel	mid ASC updateTime DESC __name__ DESC
+creta_frame	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_depot	contentsType ASC isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_user_property	email ASC isRemoved ASC order ASC updateTime DESC __name__ DESC
+creta_playlist	isRemoved ASC userId ASC name ASC updateTime DESC __name__ DESC
+creta_book	shares array isRemoved ASC name ASC updateTime DESC __name__ DESC
+creta_book_published	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_book	bookType ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_enterprise	isRemoved ASC name ASC order ASC updateTime DESC __name__ DESC
+creta_playlist	isRemoved ASC viewCount DESC updateTime DESC __name__ DESC
+creta_favorites	isRemoved ASC userId ASC lastUpdateTime DESC updateTime DESC __name__ DESC
+creta_user_property	isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+creta_playlist	userId ASC updateTime DESC __name__ DESC
+creta_page	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_book	bookType ASC shares array isRemoved ASC updateTime DESC __name__ DESC
+creta_playlist	isRemoved ASC mid ASC updateTime DESC __name__ DESC
+creta_enterprise	isRemoved ASC updateTime ASC __name__ ASC
+creta_book_published	bookType ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_playlist	isRemoved ASC likeCount DESC updateTime DESC __name__ DESC
+creta_playlist	channelId ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_watch_history	isRemoved ASC userId ASC watchTime DESC updateTime DESC __name__ DESC
+creta_user_property	email ASC updateTime DESC __name__ DESC
+creta_page_published	isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+creta_link	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_comment	bookId ASC isRemoved ASC parentId ASC createTime ASC updateTime DESC __name__ DESC
+creta_book_published	channels array updateTime DESC __name__ DESC
+creta_book_published	isRemoved ASC mid ASC updateTime DESC __name__ DESC
+creta_book	bookType ASC creator ASC isRemoved ASC viewCount DESC updateTime DESC __name__ DESC
+creta_book_published	isRemoved ASC sourceMid ASC updateTime DESC __name__ DESC
+creta_book_published	isRemoved ASC updateTime ASC __name__ ASC
+creta_book	creator ASC isRemoved ASC name ASC updateTime DESC __name__ DESC
+creta_book_published	shares array isRemoved ASC viewCount DESC updateTime DESC __name__ DESC
+creta_favorites	isRemoved ASC userId ASC favoriteTime DESC updateTime DESC __name__ DESC
+creta_subscription	channelId ASC isRemoved ASC subscriptionChannelId ASC updateTime DESC __name__ DESC
+creta_playlist	shares array isRemoved ASC updateTime DESC __name__ DESC
+creta_playlist	channelId ASC isRemoved ASC lastUpdateTime DESC updateTime DESC __name__ DESC
+creta_user_property	isRemoved ASC updateTime ASC __name__ ASC
+creta_contents	isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+creta_user_property	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_depot	isRemoved ASC updateTime ASC __name__ ASC
+creta_book_published	shares array isRemoved ASC likeCount DESC updateTime DESC __name__ DESC
+creta_page_published	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_team	mid array isRemoved ASC updateTime DESC __name__ DESC
+creta_watch_history	isRemoved ASC userId ASC lastUpdateTime DESC updateTime DESC __name__ DESC
+creta_frame_published	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_depot	contentsMid ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_subscription	isRemoved ASC lastPublishTime DESC updateTime DESC __name__ DESC
+creta_connected_user	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_book_published	shares array isRemoved ASC name ASC updateTime DESC __name__ DESC
+creta_page	isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+creta_comment	bookId ASC isRemoved ASC parentId ASC createTime DESC updateTime DESC __name__ DESC
+creta_user_property2	parentMid ASC isRemoved ASC __name__ ASC
+creta_filter	isRemoved ASC parentMid ASC updateTime DESC __name__ DESC
+creta_channel	isRemoved ASC mid ASC updateTime DESC __name__ DESC
+creta_frame_published	isRemoved ASC updateTime ASC __name__ ASC
+creta_user_property	email ASC isRemoved ASC updateTime DESC __name__ DESC
+creta_contents_published	isRemoved ASC parentMid ASC order ASC updateTime DESC __name__ DESC
+creta_favorites	isRemoved ASC mid ASC updateTime DESC __name__ DESC
+creta_favorites	bookId ASC isRemoved ASC userId ASC updateTime DESC __name__ DESC
+creta_channel	isRemoved ASC updateTime ASC __name__ ASC
+creta_filter	isRemoved ASC updateTime ASC __name__ ASC
+creta_book	creator ASC isRemoved ASC viewCount DESC updateTime DESC __name__ DESC
+creta_page_published	isRemoved ASC updateTime ASC __name__ ASC
+creta_team	isRemoved ASC mid ASC updateTime DESC __name__ DESC
+creta_playlist	mid ASC updateTime DESC __name__ DESC
+creta_book	shares array isRemoved ASC viewCount DESC updateTime DESC __name__ DESC
+creta_book	bookType ASC shares array isRemoved ASC name ASC updateTime DESC __name__ DESC
+creta_contents_published	isRemoved ASC updateTime ASC __name__ ASC
+creta_book	shares array isRemoved ASC likeCount DESC updateTime DESC __name__ DESC
+creta_book_published	shares array bookType ASC isRemoved ASC likeCount DESC updateTime DESC __name__ DESC
+creta_playlist	isRemoved ASC updateTime ASC __name__ ASC
 
-#shares query
-creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 likeCount 내림차순 updateTime 내림차순 
-creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
-#creta_book	shares 배열 isRemoved 오름차순 updateTime 내림차순 	
-creta_book	shares 배열 isRemoved 오름차순 likeCount 내림차순 updateTime 내림차순 	
-creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 updateTime 내림차순 
-creta_book	bookType 오름차순 shares 배열 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
-creta_book	shares 배열 isRemoved 오름차순 name 오름차순 updateTime 내림차순 	
-creta_book	shares 배열 isRemoved 오름차순 viewCount 내림차순 updateTime 내림차순 	
-
-creta_page	isRemoved 오름차순 parentMid 오름차순 order 오름차순 updateTime 내림차순
-
-creta_frame	isRemoved 오름차순 parentMid 오름차순 order 오름차순 updateTime 내림차순
-creta_frame	frameType 오름차순 isRemoved 오름차순 parentMid 오름차순 order 오름차순 updateTime
-creta_frame	isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순
-
-creta_user_property	isRemoved 오름차순 parentMid 오름차순 order 오름차순 updateTime 내림차순
-creta_user_property	email 오름차순 isRemoved 오름차순
-
-creta_contents	isRemoved 오름차순 parentMid 오름차순 order 오름차순 updateTime 내림차순 __name__ 내림차순
-creta_team	isRemoved 오름차순 mid 오름차순 updateTime 내림차순 __name__ 내림차순
-
-creta_book_published	isRemoved 오름차순 sourceMid 오름차순 updateTime 내림차순
-creta_page	isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순 __name__ 내림차순
-creta_link	isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순 __name__ 내림차순
-
-creta_connected_user	isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순 __name__ 내림차순
-
-creta_page_published isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순
-creta_frame_published isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순
-creta_contents_published isRemoved 오름차순 parentMid 오름차순 updateTime 내림차순

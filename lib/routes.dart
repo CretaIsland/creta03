@@ -14,6 +14,7 @@ import 'design_system/demo_page/button_demo_page.dart';
 import 'design_system/demo_page/menu_demo_page.dart';
 import 'design_system/demo_page/text_field_demo_page.dart';
 //import 'pages/login_page.dart';
+import 'developer/gen_collections_page.dart';
 import 'pages/intro_page.dart';
 import 'pages/studio/book_grid_page.dart';
 import 'pages/studio/book_main_page.dart';
@@ -98,6 +99,7 @@ abstract class AppRoutes {
   static const String watchHistory = '/community/watchHistory';
   static const String favorites = '/community/favorites';
   static const String colorPickerDemo = '/colorPickerDemoPage';
+  static const String genCollections = '/genCollectionPage';
 
   static const String myPageDashBoard = '/mypage/dashboard';
   static const String myPageInfo = '/mypage/info';
@@ -292,6 +294,9 @@ final routesLoggedOut = RouteMap(
         : const Redirect(AppRoutes.intro),
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
+        ),
+        AppRoutes.genCollections: (_) => TransitionPage(
+          child: GenCollectionsPage(),
         ),
     AppRoutes.myPageDashBoard: (_) => (AccountManager.currentLoginUser.isLoginedUser)
         ? TransitionPage(

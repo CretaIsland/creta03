@@ -672,12 +672,19 @@ class Snippet {
         //   },
         // ),
         SpeedDialChild(
-          label: 'Studio Book List',
+          label: 'gen collections',
           child: Icon(Icons.list_alt_outlined),
           onTap: () {
-            Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+            Routemaster.of(context).push(AppRoutes.genCollections);
           },
         ),
+        // SpeedDialChild(
+        //   label: 'Studio Book List',
+        //   child: Icon(Icons.list_alt_outlined),
+        //   onTap: () {
+        //     Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+        //   },
+        // ),
         SpeedDialChild(
           label: 'Community Home',
           child: Icon(Icons.explore),

@@ -1,0 +1,122 @@
+{
+    "projectId": "62d79f0b36f4029ce40f",
+    "projectName": "creta01",
+    "functions": [
+        {
+            "$id": "removeDelta",
+            "name": "removeDelta",
+            "runtime": "python-3.9",
+            "path": "functions/removeDelta",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "setDBTest",
+            "name": "setDBTest",
+            "runtime": "python-3.9",
+            "path": "functions/setDBTest",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "getDBTest",
+            "name": "getDBTest",
+            "runtime": "python-3.9",
+            "path": "functions/getDBTest",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "myTest",
+            "name": "myTest",
+            "runtime": "python-3.9",
+            "path": "functions/myTest",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "getDiskUsage",
+            "name": "getDiskUsage",
+            "runtime": "node-16.0",
+            "path": "functions/getDiskUsage",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "setDiskUsage",
+            "name": "setDiskUsage",
+            "runtime": "node-16.0",
+            "path": "functions/setDiskUsage",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "setDiskUsage_schedule",
+            "name": "setDiskUsage_schedule",
+            "runtime": "node-16.0",
+            "path": "functions/setDiskUsage_schedule",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "env_test",
+            "name": "env_test",
+            "runtime": "node-16.0",
+            "path": "functions/env_test",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}
