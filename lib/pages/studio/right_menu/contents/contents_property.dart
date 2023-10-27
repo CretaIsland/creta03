@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
 
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
+import 'package:creta03/pages/studio/left_menu/music/music_player_frame.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -128,10 +129,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       //       left: horizontalPadding, right: horizontalPadding - (isAuthor() ? 16 : 0)),
       //   child: _copyRight(),
       // ),
-      propertyDivider(height: 28),
-      if (!widget.model.isText()) _linkControl(),
-      if (!widget.model.isText()) propertyDivider(height: 28),
-      if (!widget.model.isText()) _imageControl(),
+      if (!widget.model.isMusic()) propertyDivider(height: 28),
+      if (!widget.model.isText() && !widget.model.isMusic()) _linkControl(),
+      if (!widget.model.isText() && !widget.model.isMusic()) propertyDivider(height: 28),
+      if (!widget.model.isText() && !widget.model.isMusic()) _imageControl(),
       if (widget.model.isText()) _textFontColor(),
       propertyDivider(height: 28),
       if (widget.model.isImage()) _imageFilter(),
@@ -152,6 +153,13 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   }
 
   Widget _musicAudioControl() {
+    String musicMuted;
+    if (_contentsManager!.frameModel.mute.value == true) {
+      musicMuted = 'muted';
+    } else {
+      musicMuted = 'unmuted';
+    }
+    String trails = '${_contentsManager!.frameModel.volume.value.floor()}, $musicMuted';
     return Padding(
       padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
       child: propertyCard(
@@ -162,7 +170,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           });
         },
         titleWidget: Text(CretaStudioLang.musicAudioControl, style: CretaFont.titleSmall),
-        trailWidget: Container(),
+        trailWidget: Text(trails, style: CretaFont.bodySmall),
         hasRemoveButton: false,
         onDelete: () {},
         bodyWidget: _musicAudioSettingBody(),
@@ -190,7 +198,6 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   }
 
   Widget _musicMutedToggle() {
-    // bool isMusicMuted = widget.model.mute.value;
     bool isMusicMuted = _contentsManager!.frameModel.mute.value;
     return CretaToggleButton(
       key: GlobalObjectKey('_musicMutedToggle$isMusicMuted${widget.model.mid}'),
@@ -199,13 +206,20 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       defaultValue: isMusicMuted,
       onSelected: (value) {
         isMusicMuted = value;
-        // if (widget.model.mute.value == true) {
-        if (_contentsManager!.frameModel.mute.value == true) {
-          StudioVariables.isAutoPlay = true;
+        GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+            BookMainPage.musicKeyMap[widget.model.parentMid.value];
+        if (musicKey != null) {
+          if (_contentsManager!.frameModel.mute.value == false) {
+            musicKey.currentState?.mutedMusic(widget.model);
+          } else {
+            musicKey.currentState?.resumedMusic(widget.model);
+          }
+        } else {
+          logger.severe('musicKey is null');
         }
         widget.frameManager.notify();
-        _linkSendEvent!.sendEvent(Offset(1, 1));
         setState(() {});
+        // }
       },
     );
   }
@@ -213,14 +227,13 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   Widget _musicVolSlider() {
     double minVol = 0.0;
     double maxVol = 100.0;
-    double musicVol = widget.model.volume.value;
+    double musicVol = _contentsManager!.frameModel.volume.value;
 
     if (musicVol < minVol) {
       musicVol = minVol;
     } else if (musicVol > maxVol) {
       musicVol = maxVol;
     }
-
     return propertyLine(
       name: CretaStudioLang.musicVol,
       widget: CretaExSlider(
@@ -230,13 +243,24 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         min: minVol,
         max: maxVol,
         onChanngeComplete: (val) {
-          widget.model.volume.set(val);
-          _contentsManager?.notify();
+          GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+              BookMainPage.musicKeyMap[widget.model.parentMid.value];
+          if (musicKey != null) {
+            musicKey.currentState?.adjustVol(widget.model, val);
+          } else {
+            logger.severe('musicKey is null');
+          }
           widget.frameManager.notify();
         },
         onChannged: (val) {
-          widget.model.volume.set(val);
-          _contentsManager?.notify();
+          GlobalObjectKey<MusicPlayerFrameState>? musicKey =
+              BookMainPage.musicKeyMap[widget.model.parentMid.value];
+          if (musicKey != null) {
+            musicKey.currentState?.adjustVol(widget.model, val);
+          } else {
+            logger.severe('musicKey is null');
+          }
+          // _contentsManager!.frameModel.volume.set(val);
           widget.frameManager.notify();
         },
       ),
