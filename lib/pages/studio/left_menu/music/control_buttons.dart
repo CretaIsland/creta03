@@ -130,7 +130,7 @@ class _ControlButtonsState extends State<ControlButtons> {
     return StreamBuilder<LoopMode>(
       stream: widget.audioPlayer.loopModeStream,
       builder: (context, snapshot) {
-        final loopMode = snapshot.data ?? LoopMode.off;
+        final loopMode = snapshot.data ?? LoopMode.all;
 
         var icons = [
           // Icon(Icons.repeat,
