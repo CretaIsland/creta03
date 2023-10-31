@@ -87,7 +87,6 @@ class DevConst {
         'viewCount': 'DESC',
         'updateTime': 'DESC'
       },
-      {'shares': 'array', 'isRemoved': 'ASC', 'lastUpdateTime': 'DESC', 'updateTime': 'DESC'},
       {'shares': 'array', 'isRemoved': 'ASC', 'likeCount': 'DESC', 'updateTime': 'DESC'},
       {'shares': 'array', 'isRemoved': 'ASC', 'name': 'ASC', 'updateTime': 'DESC'},
       {'shares': 'array', 'isRemoved': 'ASC', 'updateTime': 'DESC'},
@@ -153,7 +152,6 @@ class DevConst {
       {'bookId': 'ASC', 'isRemoved': 'ASC', 'userId': 'ASC', 'updateTime': 'DESC'},
       {'isRemoved': 'ASC', 'mid': 'ASC', 'updateTime': 'DESC'},
       {'isRemoved': 'ASC', 'updateTime': 'ASC'},
-      {'isRemoved': 'ASC', 'userId': 'ASC', 'favoriteTime': 'DESC', 'updateTime': 'DESC'},
       {'isRemoved': 'ASC', 'userId': 'ASC', 'lastUpdateTime': 'DESC', 'updateTime': 'DESC'},
     ],
     'creta_filter': [
@@ -194,17 +192,11 @@ class DevConst {
       {'channelId': 'ASC', 'isRemoved': 'ASC', 'lastUpdateTime': 'DESC', 'updateTime': 'DESC'},
       {'channelId': 'ASC', 'isRemoved': 'ASC', 'updateTime': 'DESC'},
       {'isRemoved': 'ASC', 'lastUpdateTime': 'DESC', 'updateTime': 'DESC'},
-      {'isRemoved': 'ASC', 'likeCount': 'DESC', 'updateTime': 'DESC'},
       {'isRemoved': 'ASC', 'mid': 'ASC', 'updateTime': 'DESC'},
       {'isRemoved': 'ASC', 'name': 'ASC', 'updateTime': 'DESC'},
       {'isRemoved': 'ASC', 'updateTime': 'ASC'},
       {'isRemoved': 'ASC', 'updateTime': 'DESC'},
-      {'isRemoved': 'ASC', 'userId': 'ASC', 'lastUpdateTime': 'DESC', 'updateTime': 'DESC'},
-      {'isRemoved': 'ASC', 'userId': 'ASC', 'name': 'ASC', 'updateTime': 'DESC'},
-      {'isRemoved': 'ASC', 'viewCount': 'DESC', 'updateTime': 'DESC'},
       {'mid': 'ASC', 'updateTime': 'DESC'},
-      {'shares': 'array', 'isRemoved': 'ASC', 'updateTime': 'DESC'},
-      {'userId': 'ASC', 'updateTime': 'DESC'},
     ],
     'creta_subscription': [
       {
@@ -214,7 +206,6 @@ class DevConst {
         'updateTime': 'DESC'
       },
       {'channelId': 'ASC', 'isRemoved': 'ASC', 'updateTime': 'DESC'},
-      {'isRemoved': 'ASC', 'lastPublishTime': 'DESC', 'updateTime': 'DESC'},
       {'isRemoved': 'ASC', 'updateTime': 'ASC'},
     ],
     'creta_team': [
@@ -234,8 +225,6 @@ class DevConst {
     ],
     'creta_watch_history': [
       {'isRemoved': 'ASC', 'updateTime': 'ASC'},
-      {'isRemoved': 'ASC', 'userId': 'ASC', 'lastUpdateTime': 'DESC', 'updateTime': 'DESC'},
-      {'isRemoved': 'ASC', 'userId': 'ASC', 'watchTime': 'DESC', 'updateTime': 'DESC'},
     ]
   };
 }

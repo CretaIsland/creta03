@@ -117,7 +117,7 @@ class CretaBookItemState extends State<CretaBookItem> {
   }
 
   void _doPopupMenuCopy() {
-    logger.finest('복사하기(${widget.cretaBookData.name})');
+    logger.finest('사본만들기(${widget.cretaBookData.name})');
   }
 
   @override
@@ -146,7 +146,7 @@ class CretaBookItemState extends State<CretaBookItem> {
         onPressed: _doPopupMenuDownload,
       ),
       CretaMenuItem(
-        caption: '복사하기',
+        caption: '사본만들기',
         onPressed: _doPopupMenuCopy,
       ),
     ];
@@ -373,10 +373,10 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 275),
       vsync: this,
     );
-    _animation = Tween(begin: 1.0, end: 1.2)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
-    padding = Tween(begin: 0.0, end: -25.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    _animation = Tween(begin: 1.0, end: 1.2).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    padding = Tween(begin: 0.0, end: -25.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
     _controller.addListener(() {
       setState(() {});
     });
@@ -420,8 +420,8 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
             borderRadius: BorderRadius.circular(20.0),
           ),
           clipBehavior: Clip.hardEdge,
-          transform: Matrix4(
-              _animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0, padding.value, padding.value, 0, 1),
+          transform: Matrix4(_animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0,
+              padding.value, padding.value, 0, 1),
           child: Image.network(
             widget.image,
             fit: BoxFit.cover,
@@ -470,7 +470,10 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _openPopupMenu() {
     CretaPopupMenu.showMenu(
-            context: context, globalKey: widget.key as GlobalKey, popupMenu: _popupMenuList, initFunc: setPopmenuOpen)
+            context: context,
+            globalKey: widget.key as GlobalKey,
+            popupMenu: _popupMenuList,
+            initFunc: setPopmenuOpen)
         .then((value) {
       logger.finest('팝업메뉴 닫기');
       setState(() {
@@ -543,7 +546,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         onPressed: _doPopupMenuRemove,
       ),
       CretaMenuItem(
-        caption: '복사하기',
+        caption: '사본만들기',
         onPressed: _doPopupMenuCopy,
       ),
     ];
@@ -614,7 +617,8 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime), style: CretaFont.buttonSmall),
+          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime),
+              style: CretaFont.buttonSmall),
           Text('likeCount=${widget.bookModel.likeCount}', style: CretaFont.buttonSmall),
           Text('viewCount=${widget.bookModel.viewCount}', style: CretaFont.buttonSmall),
         ],
@@ -625,7 +629,8 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   @override
   Widget build(BuildContext context) {
     String bookLinkUrl = '${AppRoutes.communityBook}?${widget.bookModel.mid}';
-    String channelLinkUrl = (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
+    String channelLinkUrl =
+        (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
     return MouseRegion(
       onEnter: (value) {
         setState(() {

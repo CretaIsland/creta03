@@ -9,6 +9,17 @@ import 'package:routemaster/routemaster.dart';
 //import '../pages/studio/book_main_page.dart';
 import '../model/book_model.dart';
 import '../model/channel_model.dart';
+import '../model/comment_model.dart';
+import '../model/connected_user_model.dart';
+import '../model/contents_model.dart';
+import '../model/depot_model.dart';
+import '../model/favorites_model.dart';
+import '../model/filter_model.dart';
+import '../model/frame_model.dart';
+import '../model/link_model.dart';
+import '../model/page_model.dart';
+import '../model/playlist_model.dart';
+import '../model/subscription_model.dart';
 import '../routes.dart';
 import 'dev_const.dart';
 
@@ -65,8 +76,8 @@ void saveLogToFile(String logData) {
 
 String projectId = '65362b549aa9f85f813d';
 String projectName = 'hycop-example';
-String databaseId = 'testDB';
-String databaseName = 'testDB';
+String databaseId = '653b10ed3629614bbd48';
+String databaseName = 'hycopTestDB';
 
 String genJson() {
   String header = '''
@@ -95,7 +106,45 @@ String genJson() {
 String genInfo() {
   String retval = eachCollection(BookModel(''), 'creta_book');
   retval += ",\n";
-  retval += eachCollection(ChannelModel(''), 'creta_channel');
+  retval += eachCollection(BookModel(''), 'creta_book_published');
+  retval += ",\n";
+  // retval += eachCollection(ChannelModel(''), 'creta_channel');
+  // retval += ",\n";
+  retval += eachCollection(CommentModel(''), 'creta_comment');
+  retval += ",\n";
+  retval += eachCollection(ConnectedUserModel.withBook(''), 'creta_connected_user');
+  retval += ",\n";
+  retval += eachCollection(ContentsModel('', ''), 'creta_contents');
+  retval += ",\n";
+  retval += eachCollection(ContentsModel('', ''), 'creta_contents_published');
+  retval += ",\n";
+  retval += eachCollection(DepotModel('', ''), 'creta_depot');
+  retval += ",\n";
+  // retval += eachCollection(ChannelModel(''), 'creta_enterprise');
+  // retval += ",\n";
+  retval += eachCollection(FavoritesModel(''), 'creta_favorites');
+  retval += ",\n";
+  retval += eachCollection(FilterModel(''), 'creta_filter');
+  retval += ",\n";
+  retval += eachCollection(FrameModel('', ''), 'creta_frame');
+  retval += ",\n";
+  retval += eachCollection(FrameModel('', ''), 'creta_frame_published');
+  retval += ",\n";
+  retval += eachCollection(LinkModel('', ''), 'creta_link');
+  retval += ",\n";
+  retval += eachCollection(PageModel('', BookModel('')), 'creta_page');
+  retval += ",\n";
+  retval += eachCollection(PageModel('', BookModel('')), 'creta_page_published');
+  retval += ",\n";
+  retval += eachCollection(PlaylistModel(''), 'creta_playlist');
+  retval += ",\n";
+  retval += eachCollection(SubscriptionModel(''), 'creta_subscription');
+  retval += ",\n";
+  // retval += eachCollection(ChannelModel(''), 'creta_team');
+  // retval += ",\n";
+  // retval += eachCollection(ChannelModel(''), 'creta_user_property');
+  // retval += ",\n";
+  retval += eachCollection(ChannelModel(''), 'creta_watch_history');
   return retval;
 }
 
@@ -135,6 +184,9 @@ String eachCollection(AbsExModel model, String collectionId) {
       if (ele.key.contains('Type') == true) {
         type = 'integer';
       }
+      if (ele.key.contains('Types') == true) {
+        type = 'integer';
+      }
       if (ele.key.contains('Enum') == true) {
         type = 'integer';
       }
@@ -154,6 +206,36 @@ String eachCollection(AbsExModel model, String collectionId) {
         type = 'integer';
       }
       if (ele.key == 'duration') {
+        type = 'integer';
+      }
+      if (ele.key == 'bytes') {
+        type = 'integer';
+      }
+      if (ele.key == 'filter') {
+        type = 'integer';
+      }
+      if (ele.key == 'fit') {
+        type = 'integer';
+      }
+      if (ele.key == 'musicPlayerSize') {
+        type = 'integer';
+      }
+      if (ele.key == 'fontWeight') {
+        type = 'integer';
+      }
+      if (ele.key == 'align') {
+        type = 'integer';
+      }
+      if (ele.key == 'valign') {
+        type = 'integer';
+      }
+      if (ele.key == 'effect') {
+        type = 'integer';
+      }
+      if (ele.key == 'borderCap') {
+        type = 'integer';
+      }
+      if (ele.key == 'shape') {
         type = 'integer';
       }
     } else if (ele.value is int) {
