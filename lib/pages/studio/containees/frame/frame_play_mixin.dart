@@ -157,8 +157,7 @@ mixin FramePlayMixin {
     }
     if (model.frameType == FrameType.weatherSticker1 ||
         model.frameType == FrameType.weatherSticker2 ||
-        model.frameType == FrameType.weatherSticker3 ||
-        model.frameType == FrameType.weatherSticker4) {
+        model.frameType == FrameType.weatherSticker3) {
       WeatherStickerType stickerType = WeatherStickerType.cloudy;
       if (model.subType >= 0 && model.subType <= WeatherType.dusty.index) {
         stickerType = WeatherStickerType.values[model.subType];

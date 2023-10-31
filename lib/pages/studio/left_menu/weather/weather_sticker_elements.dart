@@ -1,3 +1,4 @@
+import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/design_system/creta_color.dart';
 import 'package:creta03/model/app_enums.dart';
 import 'package:creta03/model/frame_model.dart';
@@ -34,13 +35,16 @@ class WeatherStickerElements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget weatherIcon = _selectedIcon(context, 'wi-day-cloudy');
+    // if (frameModel != null && frameModel!.frameType == FrameType.weatherSticker1) {
+    //   weatherIcon = _getWeatherImage(context, weatherType, IconColor.black, IconStyle.A);
+    // }
     if (frameModel != null && frameModel!.frameType == FrameType.weatherSticker1) {
-      weatherIcon = _getWeatherImage(context, weatherType, IconColor.black, IconStyle.A);
+      weatherIcon = _getWeatherImageSvg(context, weatherType);
+      // } else if (frameModel != null && frameModel!.frameType == FrameType.weatherSticker2) {
+      //   weatherIcon = _getWeatherImage(context, weatherType, IconColor.white, IconStyle.A);
     } else if (frameModel != null && frameModel!.frameType == FrameType.weatherSticker2) {
-      weatherIcon = _getWeatherImage(context, weatherType, IconColor.white, IconStyle.A);
-    } else if (frameModel != null && frameModel!.frameType == FrameType.weatherSticker3) {
       weatherIcon = _getWeatherImage(context, weatherType, IconColor.color, IconStyle.B);
-    } else if (frameModel != null && frameModel!.frameType == FrameType.weatherSticker4) {
+    } else if (frameModel != null && frameModel!.frameType == FrameType.weatherSticker3) {
       String selectedIconName = _getSelectedIconName(weatherType);
       weatherIcon = _selectedIcon(context, selectedIconName);
     }
@@ -89,7 +93,7 @@ class WeatherStickerElements extends StatelessWidget {
 
     return BoxedIcon(
       icon,
-      size: frameModel != null ? frameModel!.subSize.value : 50.0,
+      size: frameModel != null ? frameModel!.subSize.value : 55.0,
       color: frameModel != null ? frameModel!.subColor.value : CretaColor.primary,
     );
   }
@@ -134,6 +138,55 @@ class WeatherStickerElements extends StatelessWidget {
       default:
         return Image.asset('$basePath/흐린후갬_${iconStyleStr}_$iconColorStr.png');
     }
+  }
+
+  Widget _getWeatherImageSvg(BuildContext context, WeatherStickerType weatherType) {
+    // const basePath = 'assets/weather_sticker/weather_icon_vector)';
+
+    switch (weatherType) {
+      case WeatherStickerType.heavyRainy:
+        return _weatherIconSvg('흐려져비');
+      case WeatherStickerType.heavySnow:
+        return _weatherIconSvg('흐려져눈');
+      case WeatherStickerType.middleSnow:
+        return _weatherIconSvg('소낙눈');
+      case WeatherStickerType.thunder:
+        return _weatherIconSvg('흐려져뇌우');
+      case WeatherStickerType.lightRainy:
+        return _weatherIconSvg('비');
+      case WeatherStickerType.lightSnow:
+        return _weatherIconSvg('눈');
+      case WeatherStickerType.sunnyNight:
+        return _weatherIconSvg('흐림');
+      case WeatherStickerType.sunny:
+        return _weatherIconSvg('맑음');
+      case WeatherStickerType.cloudy:
+        return _weatherIconSvg('흐린후갬');
+      case WeatherStickerType.cloudyNight:
+        return _weatherIconSvg('흐려짐');
+      case WeatherStickerType.middleRainy:
+        return _weatherIconSvg('흐려져비');
+      case WeatherStickerType.overcast:
+        return _weatherIconSvg('구름조금');
+      case WeatherStickerType.hazy:
+        return _weatherIconSvg('눈후갬');
+      case WeatherStickerType.foggy:
+        return _weatherIconSvg('흐려짐');
+      case WeatherStickerType.dusty:
+        return _weatherIconSvg('안개');
+      default:
+        return _weatherIconSvg('흐린후갬');
+    }
+  }
+
+  Widget _weatherIconSvg(String weatherType) {
+    const basePath = 'assets/weather_sticker/weather_icon_vector';
+
+    return Snippet.SvgIcon(
+      iconImageFile: '$basePath/$weatherType.svg',
+      iconSize: frameModel!.subSize.value * 10.0,
+      iconColor: frameModel!.subColor.value,
+    );
   }
 }
 

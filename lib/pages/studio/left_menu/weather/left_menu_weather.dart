@@ -127,8 +127,8 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                 runSpacing: 6.0,
                 children: [
                   LeftMenuEleButton(
-                    width: 70.0,
-                    height: 70.0,
+                    width: 90.0,
+                    height: 90.0,
                     onPressed: () async {
                       await _createWeatherStickers(FrameType.weatherSticker1);
                       BookMainPage.pageManagerHolder!.notify();
@@ -140,25 +140,29 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                       ),
                     ),
                   ),
+                  // LeftMenuEleButton(
+                  //   width: 70.0,
+                  //   height: 70.0,
+                  //   onPressed: () async {
+                  //     await _createWeatherStickers(FrameType.weatherSticker2);
+                  //     BookMainPage.pageManagerHolder!.notify();
+                  //   },
+                  //   child: WeatherStickerBase(
+                  //     weatherStickerWidget: Container(
+                  //       color: CretaColor.text[200],
+                  //       // child: Image.asset('assets/weather_sticker/흐린후갬_A_white.png'),
+                  //       child: Snippet.SvgIcon(
+                  //           iconImageFile: 'assets/weather_sticker/구름많음.svg',
+                  //           iconSize: 50.0,
+                  //           iconColor: Colors.amber),
+                  //     ),
+                  //   ),
+                  // ),
                   LeftMenuEleButton(
-                    width: 70.0,
-                    height: 70.0,
+                    width: 90.0,
+                    height: 90.0,
                     onPressed: () async {
                       await _createWeatherStickers(FrameType.weatherSticker2);
-                      BookMainPage.pageManagerHolder!.notify();
-                    },
-                    child: WeatherStickerBase(
-                      weatherStickerWidget: Container(
-                        color: CretaColor.text[200],
-                        child: Image.asset('assets/weather_sticker/흐린후갬_A_white.png'),
-                      ),
-                    ),
-                  ),
-                  LeftMenuEleButton(
-                    width: 70.0,
-                    height: 70.0,
-                    onPressed: () async {
-                      await _createWeatherStickers(FrameType.weatherSticker3);
                       BookMainPage.pageManagerHolder!.notify();
                     },
                     child: WeatherStickerBase(
@@ -169,10 +173,10 @@ class _LeftMenuWeatherState extends State<LeftMenuWeather> {
                     ),
                   ),
                   LeftMenuEleButton(
-                    width: 70.0,
-                    height: 70.0,
+                    width: 90.0,
+                    height: 90.0,
                     onPressed: () async {
-                      await _createWeatherStickers(FrameType.weatherSticker4);
+                      await _createWeatherStickers(FrameType.weatherSticker3);
                       BookMainPage.pageManagerHolder!.notify();
                     },
                     child: Container(

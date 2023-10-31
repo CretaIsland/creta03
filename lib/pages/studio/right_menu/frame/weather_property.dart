@@ -80,8 +80,7 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
     if (widget.frameModel.frameType == FrameType.weather2) return _type2ValueMap;
     if (widget.frameModel.frameType == FrameType.weatherSticker1 ||
         widget.frameModel.frameType == FrameType.weatherSticker2 ||
-        widget.frameModel.frameType == FrameType.weatherSticker3 ||
-        widget.frameModel.frameType == FrameType.weatherSticker4) return _stickerTypeValueMap;
+        widget.frameModel.frameType == FrameType.weatherSticker3) return _stickerTypeValueMap;
     return {};
   }
 
@@ -195,7 +194,10 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
             if (widget.frameModel.frameType != FrameType.weather1 &&
                 widget.frameModel.frameType != FrameType.weather2)
               propertyDivider(),
-          if (widget.frameModel.frameType == FrameType.weatherSticker4) _iconSetting(),
+          // if (widget.frameModel.frameType == FrameType.weatherSticker4) _iconSetting(),
+          if (widget.frameModel.frameType != FrameType.weather1 &&
+              widget.frameModel.frameType != FrameType.weather2)
+            _iconSetting(),
         ],
       ),
     );
@@ -253,10 +255,8 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
                 height: 80,
                 child: Container(
                   color: widget.frameModel.frameType == FrameType.weatherSticker2
-                      ? CretaColor.text[200]
-                      : widget.frameModel.frameType == FrameType.weatherSticker3
-                          ? CretaColor.text[700]
-                          : Colors.transparent,
+                      ? CretaColor.text[700]
+                      : Colors.transparent,
                   child: WeatherStickerElements(
                     weatherType: WeatherStickerType.values[value],
                     frameModel: widget.frameModel,
@@ -274,8 +274,8 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
   Widget _iconSetting() {
     return Column(
       children: [
-        _iconSize(),
-        propertyDivider(),
+        if (widget.frameModel.frameType == FrameType.weatherSticker3) _iconSize(),
+        if (widget.frameModel.frameType == FrameType.weatherSticker3) propertyDivider(),
         _iconColor(),
       ],
     );

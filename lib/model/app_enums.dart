@@ -43,7 +43,6 @@ enum FrameType {
   weatherSticker1,
   weatherSticker2,
   weatherSticker3,
-  weatherSticker4,
   music,
   analogWatch,
   digitalWatch,

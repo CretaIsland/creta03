@@ -87,8 +87,6 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         return true;
       case FrameType.weather2:
         return true;
-      case FrameType.weatherSticker4:
-        return true;
       case FrameType.weatherSticker1:
         return true;
       case FrameType.weatherSticker2:
@@ -754,8 +752,6 @@ class FrameModel extends CretaModel with CretaStyleMixin {
       case FrameType.weather1:
         return false;
       case FrameType.weather2:
-        return false;
-      case FrameType.weatherSticker4:
         return false;
       case FrameType.weatherSticker1:
         return false;

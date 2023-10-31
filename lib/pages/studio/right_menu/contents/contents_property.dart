@@ -146,7 +146,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       if (widget.model.isText() && widget.model.textType == TextType.normal)
         propertyDivider(height: 28),
       if (widget.model.isMusic()) _musicAudioControl(),
-      propertyDivider(height: 28),
+      if (!widget.model.isText()) propertyDivider(height: 28),
       _hashTag(),
     ]);
     //});
@@ -155,11 +155,11 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   Widget _musicAudioControl() {
     String musicMuted;
     if (_contentsManager!.frameModel.mute.value == true) {
-      musicMuted = 'muted';
+      musicMuted = '음소거'; //muted
     } else {
-      musicMuted = 'unmuted';
+      musicMuted = '음소거 해제'; //unmuted
     }
-    String trails = '${_contentsManager!.frameModel.volume.value.floor()}, $musicMuted';
+    String trails = '${_contentsManager!.frameModel.volume.value.round()}, $musicMuted';
     return Padding(
       padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
       child: propertyCard(
