@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:translator/translator.dart';
+import 'package:translator_plus/translator_plus.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
 import 'package:uuid/uuid.dart';
