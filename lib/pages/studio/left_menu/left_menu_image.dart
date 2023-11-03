@@ -9,7 +9,7 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/config.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:translator/translator.dart';
+import 'package:translator_plus/translator_plus.dart';
 // import 'package:universal_html/html.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/component/creta_property_card.dart';

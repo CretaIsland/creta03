@@ -162,7 +162,8 @@ class CretaAccountManager {
         'parentMid', QueryValue(value: currentLoginUser.userId));
     userPropertyManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     await userPropertyManagerHolder.queryByAddedContitions();
-    _loginUserProperty = userPropertyManagerHolder.onlyOne() as UserPropertyModel;
+    AbsExModel? model = userPropertyManagerHolder.onlyOne();
+    _loginUserProperty = (model == null) ? null : model as UserPropertyModel;
     return (_loginUserProperty != null);
   }
 
