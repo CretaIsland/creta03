@@ -416,7 +416,6 @@ abstract class CretaManager extends AbsExModelManager {
       if (_lastSortedObjectList != null) {
         logger.finest('_lastSortedObjectList = ${_lastSortedObjectList.toString()}');
       }
-
       List resultList = await HycopFactory.dataBase!.queryPage(
         collectionId,
         where: query,
@@ -1119,7 +1118,7 @@ abstract class CretaManager extends AbsExModelManager {
   String _keyOnWheneIn = '';
   List<String>? _listValueOnWheneIn;
   String _keyOnContainsAny = '';
-  List<String>? _listValueOnContainsAny;
+  List<String>? _listValueOnContainsAny; //skpark
 
   void clearConditions() {
     _whereCaluse = {};

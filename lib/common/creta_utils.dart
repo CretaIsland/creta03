@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:html' as html;
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -90,6 +92,13 @@ class CretaUtils {
     return retval;
   }
 
+  static String getTimeStrSecondsAgo(int sec) {
+    final currentTime = DateTime.now();
+    DateTime retval = currentTime.subtract(Duration(seconds: sec));
+    //print('10 secs before = ${retval.toString()}');
+    return CretaUtils.getDateTimeString(retval);
+  }
+
   static List<String> jsonStringToList(String value) {
     if (value.isEmpty) {
       return [];
@@ -163,7 +172,7 @@ class CretaUtils {
   }
 
   static String getDateTimeString(DateTime dt,
-      {String deli1 = '/', String deli2 = ' ', String deli3 = ':', String deli4 = '.'}) {
+      {String deli1 = '-', String deli2 = ' ', String deli3 = ':', String deli4 = '.'}) {
     String name = '${dt.year}';
     name += deli1;
     name += '${dt.month}'.padLeft(2, '0');
@@ -948,5 +957,14 @@ class CretaUtils {
     } else {
       throw Exception('Failed to load image from the internet');
     }
+  }
+
+  static void saveLogToFile(String logData, String outFileName, {String folder = "download"}) {
+    final blob = html.Blob([logData]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    html.AnchorElement(href: url)
+      ..setAttribute(folder, outFileName)
+      ..click();
+    html.Url.revokeObjectUrl(url);
   }
 }

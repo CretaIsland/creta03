@@ -145,7 +145,7 @@ class BookManager extends CretaManager {
   Future<List<AbsExModel>> sharedData(String userId, {int? limit}) async {
     logger.finest('sharedData');
     Map<String, QueryValue> query = {};
-    List<String> queryVal = [
+    List<String> users = [
       '<${PermissionType.reader.name}>$userId',
       '<${PermissionType.writer.name}>$userId',
       '<${PermissionType.owner.name}>$userId',
@@ -154,22 +154,27 @@ class BookManager extends CretaManager {
     TeamModel? myTeam = CretaAccountManager.getCurrentTeam;
     if (myTeam != null) {
       String myTeamId = myTeam.name;
-      queryVal.add('<${PermissionType.reader.name}>$myTeamId');
-      queryVal.add('<${PermissionType.writer.name}>$myTeamId');
-      queryVal.add('<${PermissionType.owner.name}>$myTeamId');
+      users.add('<${PermissionType.reader.name}>$myTeamId');
+      users.add('<${PermissionType.writer.name}>$myTeamId');
+      users.add('<${PermissionType.owner.name}>$myTeamId');
     }
 
-    query['shares'] = QueryValue(value: queryVal, operType: OperType.arrayContainsAny);
-    //query['creator'] = QueryValue(value: userId, operType: OperType.isNotEqualTo);
-    query['isRemoved'] = QueryValue(value: false);
-    final retval = await queryFromDB(query, limit: limit);
-    // 자기것은 빼고 나온다
-    for (var ele in retval) {
-      BookModel book = ele as BookModel;
-      if (book.creator == userId) {
-        remove(book);
+    modelList.clear();
+
+    for (var user in users) {
+      query['shares'] = QueryValue(value: user, operType: OperType.arrayContainsAny);
+      //query['creator'] = QueryValue(value: userId, operType: OperType.isNotEqualTo);
+      query['isRemoved'] = QueryValue(value: false);
+      final retval = await queryFromDB(query, limit: limit, isNew: false);
+      // 자기것은 빼고 나온다
+      for (var ele in retval) {
+        BookModel book = ele as BookModel;
+        if (book.creator == userId) {
+          remove(book);
+        }
       }
     }
+
     return modelList;
   }
 
@@ -271,7 +276,7 @@ class BookManager extends CretaManager {
     }
     nodes.add(Node<CretaModel>(
       key: model.mid,
-      keyType: ContaineeEnum.Book,      
+      keyType: ContaineeEnum.Book,
       label: 'CretaBook ${model.name.value}',
       data: model,
       expanded: model.expanded,

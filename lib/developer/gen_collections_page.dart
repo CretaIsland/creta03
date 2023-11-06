@@ -44,7 +44,7 @@ class _GenCollectionsPageState extends State<GenCollectionsPage> {
                 onPressed: () {
                   // print('Generate Collection Json');
                   String jsonStr = genJson();
-                  saveLogToFile(jsonStr);
+                  saveLogToFile(jsonStr, "log.json");
                 },
               ),
               IconButton(
@@ -65,11 +65,11 @@ class _GenCollectionsPageState extends State<GenCollectionsPage> {
   }
 }
 
-void saveLogToFile(String logData) {
+void saveLogToFile(String logData, String outFileName, {String folder  = "download"}) {
   final blob = html.Blob([logData]);
   final url = html.Url.createObjectUrlFromBlob(blob);
   html.AnchorElement(href: url)
-    ..setAttribute("download", "log.json")
+    ..setAttribute(folder, outFileName)
     ..click();
   html.Url.revokeObjectUrl(url);
 }
