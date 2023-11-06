@@ -15,19 +15,45 @@ class _GoogleMapClassState extends State<GoogleMapClass> {
   late GoogleMapController mapController;
   late Future<Position> currentPosition;
 
-  LatLng currentLatLng = const LatLng(37.5101, 126.8788);
+  LatLng? currentLatLng;
+  // LatLng currentLatLng = const LatLng(37.5101, 126.8788);
+
+  Set<Marker> markers = <Marker>{};
+  bool disableCameraMove = false;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
   void _onCameraMove(CameraPosition position) {
-    currentLatLng = position.target;
+    if (currentLatLng != null) currentLatLng = position.target;
+  }
+
+  void _onMapTapped(LatLng latLng) {
+    setState(() {
+      markers.add(
+        Marker(
+          // markerId: const MarkerId("user_marker"),
+          markerId: MarkerId(latLng.toString()),
+          position: latLng,
+          onTap: () {
+            setState(() {
+              markers.removeWhere(
+                (marker) {
+                  return marker.markerId == MarkerId(latLng.toString());
+                },
+              );
+            });
+          },
+        ),
+      );
+    });
   }
 
   @override
   void initState() {
     super.initState();
+    _onCameraMove;
     currentPosition = Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.low, forceAndroidLocationManager: true)
         .then((position) {
@@ -50,29 +76,41 @@ class _GoogleMapClassState extends State<GoogleMapClass> {
         } else {
           final position = snapshot.data;
           final LatLng currentLatLng = LatLng(position!.latitude, position.longitude);
-          return GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: currentLatLng, // Use the obtained LatLng
-              zoom: 15.0,
-            ),
-            markers: {
-              Marker(
-                markerId: const MarkerId("current"),
-                position: currentLatLng,
-                draggable: true,
-                onDragEnd: (value) {},
-              ),
-              const Marker(
-                markerId: MarkerId("Seoul"),
-                position: LatLng(37.5519, 126.9918),
-                infoWindow: InfoWindow(
-                  title: "Seoul",
-                  snippet: "Capital of South Korea",
-                ), // InfoWindow
-              ),
+          return GestureDetector(
+            onVerticalDragUpdate: (details) {
+              if (disableCameraMove) {
+                return;
+              }
             },
-            onCameraMove: _onCameraMove,
+            onHorizontalDragUpdate: (details) {
+              return;
+            },
+            child: GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: currentLatLng, // Use the obtained LatLng
+                zoom: 15.0,
+              ),
+              markers: markers,
+              // {
+              //   Marker(
+              //     markerId: const MarkerId("current"),
+              //     position: currentLatLng,
+              //     draggable: true,
+              //     onDragEnd: (value) {},
+              //   ),
+              //   const Marker(
+              //     markerId: MarkerId("Seoul"),
+              //     position: LatLng(37.5519, 126.9918),
+              //     infoWindow: InfoWindow(
+              //       title: "Seoul",
+              //       snippet: "Capital of South Korea",
+              //     ), // InfoWindow
+              //   ),
+              // },
+              onTap: _onMapTapped,
+              onCameraMove: _onCameraMove,
+            ),
           );
         }
       },

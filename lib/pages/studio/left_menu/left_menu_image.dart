@@ -112,8 +112,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     //   ..click();
 
     http
-        .post(
-            Uri.parse("${CretaAccountManager.getEnterprise!.mediaApiUrl}/downloadAiImg"),
+        .post(Uri.parse("${CretaAccountManager.getEnterprise!.mediaApiUrl}/downloadAiImg"),
             headers: {"Content-type": "application/json"},
             body: jsonEncode(
                 {"userId": myConfig!.serverConfig!.storageConnInfo.bucketId, "imgUrl": urlImage}))

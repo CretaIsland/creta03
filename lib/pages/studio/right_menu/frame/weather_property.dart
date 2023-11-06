@@ -196,7 +196,8 @@ class _WeatherPropertyState extends State<WeatherProperty> with PropertyMixin {
               propertyDivider(),
           // if (widget.frameModel.frameType == FrameType.weatherSticker4) _iconSetting(),
           if (widget.frameModel.frameType != FrameType.weather1 &&
-              widget.frameModel.frameType != FrameType.weather2)
+              widget.frameModel.frameType != FrameType.weather2 &&
+              widget.frameModel.frameType != FrameType.weatherSticker2)
             _iconSetting(),
         ],
       ),

@@ -11,6 +11,7 @@ class CretaMapWidget extends StatefulWidget {
 
 class _MyWidgetState extends State<CretaMapWidget> {
   bool _isHover = false;
+  bool disableCameraMove = false;
 
   @override
   Widget build(BuildContext context) {

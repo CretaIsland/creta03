@@ -131,7 +131,7 @@ dependencies:
   marquee: ^2.2.3
   flutter_media_metadata: ^1.0.0+1
   geolocator: ^10.0.0
-  google_maps_flutter_web: ^0.5.3
+  google_maps_flutter_web: ^0.5.4+2
   google_maps_flutter: ^2.4.0
   html_editor_enhanced: 2.5.1
   flutter_html: ^3.0.0-beta.2
