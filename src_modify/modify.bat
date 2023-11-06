@@ -92,3 +92,6 @@ copy src_modify\radio_group.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\gro
 
 #skpark modify 23/10/24
 copy src_modify\just_audio.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\just_audio-0.9.35\lib\just_audio.dart"
+
+#mdang modify 23/11/06
+copy src_modify\google_maps_controller.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\google_maps_flutter_web-0.5.4+2\lib\src\google_maps_controller.dart"
