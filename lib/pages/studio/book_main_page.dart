@@ -380,7 +380,7 @@ class _BookMainPageState extends State<BookMainPage> {
     if (model.backgroundMusicFrame.value.isNotEmpty) {
       BookMainPage.backGroundMusic = await CretaManager.getModelFromDB(
         model.backgroundMusicFrame.value,
-        "creta_frame",
+        (widget.isPublishedMode ?? false) ? "creta_frame_published" : "creta_frame",
         FrameModel('', model.mid),
       ) as FrameModel?;
     }
