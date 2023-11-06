@@ -159,8 +159,8 @@ class FrameManager extends CretaManager {
       ShapeType? shape}) async {
     logger.info('createNextFrame()');
     FrameModel defaultFrame = FrameModel.makeSample(safeLastOrder() + 1, pageModel.mid, bookModel);
-    defaultFrame.width.set(size.width, save: false, noUndo: true);
-    defaultFrame.height.set(size.height, save: false, noUndo: true);
+    defaultFrame.width.set(size.width.roundToDouble(), save: false, noUndo: true);
+    defaultFrame.height.set(size.height.roundToDouble(), save: false, noUndo: true);
     if (pos != null) {
       defaultFrame.posX.set(pos.dx, save: false, noUndo: true);
       defaultFrame.posY.set(pos.dy, save: false, noUndo: true);
@@ -414,12 +414,14 @@ class FrameManager extends CretaManager {
       frameModel.posY.set(0, save: false, noUndo: !undo);
     }
 
-    frameModel.width.set(contentsWidth, save: false, noUndo: !undo);
-    frameModel.height.set(contentsHeight, save: false, noUndo: !undo);
+    frameModel.width
+        .set(contentsWidth.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
+    frameModel.height
+        .set(contentsHeight.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
 
     logger.info(
         'resizeFrame($ratio, $invalidate) w=$contentsWidth, h=$contentsHeight, dx=$dx, dy=$dy --------------------');
-    await setToDB(frameModel);
+    await setToDB(frameModel, dontRealTime: true);
 
     if (invalidate) {
       notify();

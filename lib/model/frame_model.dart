@@ -417,49 +417,49 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
-    name.set(map["name"] ?? '', save: false, noUndo: true);
-    bgUrl.set(map["bgUrl"] ?? '', save: false, noUndo: true);
-    overlayExclude.set(map["overlayExclude"] ?? '', save: false, noUndo: true);
+    name.setDD(map["name"] ?? '', save: false, noUndo: true);
+    bgUrl.setDD(map["bgUrl"] ?? '', save: false, noUndo: true);
+    overlayExclude.setDD(map["overlayExclude"] ?? '', save: false, noUndo: true);
 
     double x = map["posX"] ?? 0;
     double y = map["posY"] ?? 0;
 
-    posX.set(x < 0 ? 0 : x, save: false, noUndo: true);
-    posY.set(y < 0 ? 0 : y, save: false, noUndo: true);
+    posX.setDD(x < 0 ? 0 : x, save: false, noUndo: true);
+    posY.setDD(y < 0 ? 0 : y, save: false, noUndo: true);
 
-    angle.set((map["angle"] ?? 0), save: false, noUndo: true);
-    isInsideRotate.set((map["isInsideRotate"] ?? true), save: false, noUndo: true);
+    angle.setDD((map["angle"] ?? 0), save: false, noUndo: true);
+    isInsideRotate.setDD((map["isInsideRotate"] ?? true), save: false, noUndo: true);
 
-    radius.set((map["radius"] ?? 0), save: false, noUndo: true);
-    radiusLeftTop.set((map["radiusLeftTop"] ?? 0), save: false, noUndo: true);
-    radiusRightTop.set((map["radiusRightTop"] ?? 0), save: false, noUndo: true);
-    radiusRightBottom.set((map["radiusRightBottom"] ?? 0), save: false, noUndo: true);
-    radiusLeftBottom.set((map["radiusLeftBottom"] ?? 0), save: false, noUndo: true);
-    //isAutoFit.set((map["isAutoFit"] ?? false), save: false, noUndo: true);  // DB 에 쓰지 않는다.
-    isMain.set((map["isMain"] ?? false), save: false, noUndo: true);
-    isOverlay.set((map["isOverlay"] ?? false), save: false, noUndo: true);
+    radius.setDD((map["radius"] ?? 0), save: false, noUndo: true);
+    radiusLeftTop.setDD((map["radiusLeftTop"] ?? 0), save: false, noUndo: true);
+    radiusRightTop.setDD((map["radiusRightTop"] ?? 0), save: false, noUndo: true);
+    radiusRightBottom.setDD((map["radiusRightBottom"] ?? 0), save: false, noUndo: true);
+    radiusLeftBottom.setDD((map["radiusLeftBottom"] ?? 0), save: false, noUndo: true);
+    //isAutoFit.setDD((map["isAutoFit"] ?? false), save: false, noUndo: true);  // DB 에 쓰지 않는다.
+    isMain.setDD((map["isMain"] ?? false), save: false, noUndo: true);
+    isOverlay.setDD((map["isOverlay"] ?? false), save: false, noUndo: true);
 
-    borderColor.set(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
-    subColor.set(CretaUtils.string2Color(map["subColor"])!, save: false, noUndo: true);
-    subSize.set((map["subSize"] ?? 0), save: false, noUndo: true);
-    borderWidth.set((map["borderWidth"] ?? 0), save: false, noUndo: true);
-    borderType.set((map["borderType"] ?? 0), save: false, noUndo: true);
-    borderCap.set(BorderCapType.fromInt(map["borderCap"] ?? 0), save: false, noUndo: true);
-    nextContentTypes.set(NextContentTypes.fromInt(map["nextContentTypes"] ?? 0),
+    borderColor.setDD(CretaUtils.string2Color(map["borderColor"])!, save: false, noUndo: true);
+    subColor.setDD(CretaUtils.string2Color(map["subColor"])!, save: false, noUndo: true);
+    subSize.setDD((map["subSize"] ?? 0), save: false, noUndo: true);
+    borderWidth.setDD((map["borderWidth"] ?? 0), save: false, noUndo: true);
+    borderType.setDD((map["borderType"] ?? 0), save: false, noUndo: true);
+    borderCap.setDD(BorderCapType.fromInt(map["borderCap"] ?? 0), save: false, noUndo: true);
+    nextContentTypes.setDD(NextContentTypes.fromInt(map["nextContentTypes"] ?? 0),
         save: false, noUndo: true);
-    shadowColor.set(CretaUtils.string2Color(map["shadowColor"]) ?? Colors.black,
+    shadowColor.setDD(CretaUtils.string2Color(map["shadowColor"]) ?? Colors.black,
         save: false, noUndo: true);
-    shadowOpacity.set((map["shadowOpacity"] ?? 0.0), save: false, noUndo: true);
-    shadowSpread.set((map["shadowSpread"] ?? 0), save: false, noUndo: true);
-    shadowBlur.set((map["shadowBlur"] ?? 0), save: false, noUndo: true);
-    shadowDirection.set((map["shadowDirection"] ?? 90), save: false, noUndo: true);
-    shadowOffset.set((map["shadowOffset"] ?? 0), save: false, noUndo: true);
-    volume.set((map["volume"] ?? 0), save: false, noUndo: true);
-    mute.set((map["mute"] ?? false), save: false, noUndo: true);
-    shape.set(ShapeType.fromInt(map["shape"] ?? 0), save: false, noUndo: true);
-    eventSend.set(map["eventSend"] ?? '', save: false, noUndo: true);
+    shadowOpacity.setDD((map["shadowOpacity"] ?? 0.0), save: false, noUndo: true);
+    shadowSpread.setDD((map["shadowSpread"] ?? 0), save: false, noUndo: true);
+    shadowBlur.setDD((map["shadowBlur"] ?? 0), save: false, noUndo: true);
+    shadowDirection.setDD((map["shadowDirection"] ?? 90), save: false, noUndo: true);
+    shadowOffset.setDD((map["shadowOffset"] ?? 0), save: false, noUndo: true);
+    volume.setDD((map["volume"] ?? 0), save: false, noUndo: true);
+    mute.setDD((map["mute"] ?? false), save: false, noUndo: true);
+    shape.setDD(ShapeType.fromInt(map["shape"] ?? 0), save: false, noUndo: true);
+    eventSend.setDD(map["eventSend"] ?? '', save: false, noUndo: true);
 
-    //shadowIn.set((map["shadowIn"] ?? false), save: false, noUndo: true);
+    //shadowIn.setDD((map["shadowIn"] ?? false), save: false, noUndo: true);
 
     frameType = FrameType.fromInt(map["frameType"] ?? 0);
     subType = map["subType"] ?? -1;

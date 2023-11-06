@@ -442,10 +442,12 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         );
         //print('AutoSizeType.autoFrameSize after  $frameHeight --> $newFrameHeight ($uri)');
         //model.width.set(frameWidth / StudioVariables.applyScale, noUndo: true);
-        model.height.set(newFrameHeight / StudioVariables.applyScale, noUndo: true);
+        model.height.set((newFrameHeight / StudioVariables.applyScale).roundToDouble(),
+            noUndo: true, dontRealTime: true);
         frameHeight = newFrameHeight;
         if (contentsModel.isAutoFrameSize()) {
-          model.width.set(newFrameWidth / StudioVariables.applyScale, noUndo: true);
+          model.width.set((newFrameWidth / StudioVariables.applyScale).roundToDouble(),
+              noUndo: true, dontRealTime: true);
           frameWidth = newFrameWidth;
         }
         // 바뀐값으로 frameHeight 값을 다시 바꾸어 놓아야 한다.
@@ -506,10 +508,10 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       model.angle.set(update.angle * (180 / pi), save: false);
       model.posX.set(pos.dx, save: false);
       model.posY.set(pos.dy, save: false);
-      model.width.set(update.size.width / applyScale, save: false);
+      model.width.set((update.size.width / applyScale).roundToDouble(), save: false);
 
       //print('setItem...................................');
-      model.height.set(update.size.height / applyScale, save: false);
+      model.height.set((update.size.height / applyScale).roundToDouble(), save: false);
       //model.save();
 
       //logger.finest('after save widthxheight = ${model.width.value}x${model.height.value}');

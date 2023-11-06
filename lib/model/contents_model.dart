@@ -493,49 +493,49 @@ class ContentsModel extends CretaModel {
     textType = TextType.fromInt(map["textType"] ?? 0);
     remoteUrl = map["remoteUrl"] ?? '';
     thumbnail = map["thumbnail"] ?? '';
-    subList.set(map["subList"] ?? '', save: false, noUndo: true);
-    playTime.set(map["playTime"] ?? 15000, save: false, noUndo: true);
-    videoPlayTime.set(map["videoPlayTime"] ?? 15000, save: false, noUndo: true);
-    mute.set(map["mute"] ?? false, save: false, noUndo: true);
-    isShow.set(map["isShow"] ?? true, save: false, noUndo: true);
-    volume.set(map["volume"] ?? 50, save: false, noUndo: true);
-    aspectRatio.set(map["aspectRatio"] ?? 1, save: false, noUndo: true);
-    width.set(map["width"] ?? 600, save: false, noUndo: true);
-    height.set(map["height"] ?? 400, save: false, noUndo: true);
-    copyRight.set(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
-    filter.set(ImageFilterType.fromInt(map["filter"] ?? 1), save: false, noUndo: true);
-    fit.set(ContentsFitType.fromInt(map["fit"] ?? 1), save: false, noUndo: true);
-    //isDynamicSize.set(map["isDynamicSize"] ?? false, save: false, noUndo: true);
+    subList.setDD(map["subList"] ?? '', save: false, noUndo: true);
+    playTime.setDD(map["playTime"] ?? 15000, save: false, noUndo: true);
+    videoPlayTime.setDD(map["videoPlayTime"] ?? 15000, save: false, noUndo: true);
+    mute.setDD(map["mute"] ?? false, save: false, noUndo: true);
+    isShow.setDD(map["isShow"] ?? true, save: false, noUndo: true);
+    volume.setDD(map["volume"] ?? 50, save: false, noUndo: true);
+    aspectRatio.setDD(map["aspectRatio"] ?? 1, save: false, noUndo: true);
+    width.setDD(map["width"] ?? 600, save: false, noUndo: true);
+    height.setDD(map["height"] ?? 400, save: false, noUndo: true);
+    copyRight.setDD(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
+    filter.setDD(ImageFilterType.fromInt(map["filter"] ?? 1), save: false, noUndo: true);
+    fit.setDD(ContentsFitType.fromInt(map["fit"] ?? 1), save: false, noUndo: true);
+    //isDynamicSize.setDD(map["isDynamicSize"] ?? false, save: false, noUndo: true);
     lastModifiedTime = map["lastModifiedTime"] ?? '';
     prevPlayTime = map["prevPlayTime"] ?? '';
-    font.set(map["font"] ?? CretaFont.fontFamily, save: false, noUndo: true);
-    fontWeight.set(map["fontWeight"] ?? 400, save: false, noUndo: true);
-    isBold.set(map["isBold"] ?? false, save: false, noUndo: true);
-    autoSizeType.set(AutoSizeType.fromInt(map["autoSizeType"] ?? 3), save: false, noUndo: true);
-    glassFill.set(map["glassFill"] ?? 0, save: false, noUndo: true);
-    opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
-    fontSize.set(map["fontSize"] ?? StudioConst.defaultFontSize, save: false, noUndo: true);
-    fontSizeType.set(FontSizeType.fromInt(map["fontSizeType"] ?? 5), save: false, noUndo: true);
-    fontColor.set(CretaUtils.string2Color(map["fontColor"])!, save: false, noUndo: true);
-    shadowColor.set(CretaUtils.string2Color(map["shadowColor"])!, save: false, noUndo: true);
-    shadowBlur.set(map["shadowBlur"] ?? 0, save: false, noUndo: true);
-    shadowIntensity.set(map["shadowIntensity"] ?? 0.5, save: false, noUndo: true);
-    outLineWidth.set(map["outLineWidth"] ?? 0, save: false, noUndo: true);
-    outLineColor.set(CretaUtils.string2Color(map["outLineColor"])!, save: false, noUndo: true);
-    isItalic.set(map["isItalic"] ?? false, save: false, noUndo: true);
-    isUnderline.set(map["isUnderline"] ?? false, save: false, noUndo: true);
-    isStrike.set(map["isStrike"] ?? false, save: false, noUndo: true);
-    //line.set(TextLineType.fromInt(map["line"] ?? 0), save: false, noUndo: true);
-    letterSpacing.set(map["letterSpacing"] ?? 0.0, save: false, noUndo: true);
-    lineHeight.set(map["lineHeight"] ?? 10, save: false, noUndo: true);
-    scaleFactor.set(map["scaleFactor"] ?? 100, save: false, noUndo: true);
-    align.set(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
-    valign.set((map["valign"] ?? 0), save: false, noUndo: true);
-    aniType.set(TextAniType.fromInt(map["aniType"] ?? 0), save: false, noUndo: true);
-    imageAniType.set(ImageAniType.fromInt(map["imageAniType"] ?? 0), save: false, noUndo: true);
-    anyDuration.set(map["anyDuration"] ?? 0, save: false, noUndo: true);
-    isTTS.set(map["isTTS"] ?? false, save: false, noUndo: true);
-    lang.set(map["lang"] ?? 'ko', save: false, noUndo: true);
+    font.setDD(map["font"] ?? CretaFont.fontFamily, save: false, noUndo: true);
+    fontWeight.setDD(map["fontWeight"] ?? 400, save: false, noUndo: true);
+    isBold.setDD(map["isBold"] ?? false, save: false, noUndo: true);
+    autoSizeType.setDD(AutoSizeType.fromInt(map["autoSizeType"] ?? 3), save: false, noUndo: true);
+    glassFill.setDD(map["glassFill"] ?? 0, save: false, noUndo: true);
+    opacity.setDD(map["opacity"] ?? 1, save: false, noUndo: true);
+    fontSize.setDD(map["fontSize"] ?? StudioConst.defaultFontSize, save: false, noUndo: true);
+    fontSizeType.setDD(FontSizeType.fromInt(map["fontSizeType"] ?? 5), save: false, noUndo: true);
+    fontColor.setDD(CretaUtils.string2Color(map["fontColor"])!, save: false, noUndo: true);
+    shadowColor.setDD(CretaUtils.string2Color(map["shadowColor"])!, save: false, noUndo: true);
+    shadowBlur.setDD(map["shadowBlur"] ?? 0, save: false, noUndo: true);
+    shadowIntensity.setDD(map["shadowIntensity"] ?? 0.5, save: false, noUndo: true);
+    outLineWidth.setDD(map["outLineWidth"] ?? 0, save: false, noUndo: true);
+    outLineColor.setDD(CretaUtils.string2Color(map["outLineColor"])!, save: false, noUndo: true);
+    isItalic.setDD(map["isItalic"] ?? false, save: false, noUndo: true);
+    isUnderline.setDD(map["isUnderline"] ?? false, save: false, noUndo: true);
+    isStrike.setDD(map["isStrike"] ?? false, save: false, noUndo: true);
+    //line.setDD(TextLineType.fromInt(map["line"] ?? 0), save: false, noUndo: true);
+    letterSpacing.setDD(map["letterSpacing"] ?? 0.0, save: false, noUndo: true);
+    lineHeight.setDD(map["lineHeight"] ?? 10, save: false, noUndo: true);
+    scaleFactor.setDD(map["scaleFactor"] ?? 100, save: false, noUndo: true);
+    align.setDD(intToTextAlign(map["align"] ?? 2), save: false, noUndo: true);
+    valign.setDD((map["valign"] ?? 0), save: false, noUndo: true);
+    aniType.setDD(TextAniType.fromInt(map["aniType"] ?? 0), save: false, noUndo: true);
+    imageAniType.setDD(ImageAniType.fromInt(map["imageAniType"] ?? 0), save: false, noUndo: true);
+    anyDuration.setDD(map["anyDuration"] ?? 0, save: false, noUndo: true);
+    isTTS.setDD(map["isTTS"] ?? false, save: false, noUndo: true);
+    lang.setDD(map["lang"] ?? 'ko', save: false, noUndo: true);
   }
 
   @override
@@ -744,7 +744,7 @@ class ContentsModel extends CretaModel {
     double newFontSize = value / applyScale;
 
     //print('updateByAutoSize $value, $newFontSize');
-    fontSize.set(newFontSize);
+    fontSize.setDD(newFontSize);
     return newFontSize;
   }
 
@@ -791,7 +791,7 @@ class ContentsModel extends CretaModel {
             style: style,
             containerHeight: realSize.height,
             containerWidth: realSize.width,
-            delta: 2.0,  // 델타카 클수록 빠르고, 작을수록 정밀하다.
+            delta: 2.0, // 델타카 클수록 빠르고, 작을수록 정밀하다.
           );
         }
       }

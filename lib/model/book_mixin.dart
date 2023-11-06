@@ -112,16 +112,16 @@ mixin BookMixin {
     double w = map["width"] ?? 10;
     double h = map["height"] ?? 10;
 
-    width.set(w == 0 ? 10 : w, save: false, noUndo: true);
-    height.set(h == 0 ? 10 : h, save: false, noUndo: true);
+    width.setDD(w == 0 ? 10 : w, save: false, noUndo: true);
+    height.setDD(h == 0 ? 10 : h, save: false, noUndo: true);
 
     // bgColor1.set(CretaUtils.string2Color(map["bgColor1"])!, save: false, noUndo: true);
     // bgColor2.set(CretaUtils.string2Color(map["bgColor2"])!, save: false, noUndo: true);
     // opacity.set(map["opacity"] ?? 1, save: false, noUndo: true);
     // gradationType.set(GradationType.fromInt(map["gradationType"] ?? 0), save: false, noUndo: true);
     // textureType.set(TextureType.fromInt(map["textureType"] ?? 0), save: false, noUndo: true);
-    transitionEffect.set(map["transitionEffect"] ?? 0, save: false, noUndo: true);
-    isFixedRatio.set(map["isFixedRatio"] ?? false, save: false, noUndo: true);
+    transitionEffect.setDD(map["transitionEffect"] ?? 0, save: false, noUndo: true);
+    isFixedRatio.setDD(map["isFixedRatio"] ?? false, save: false, noUndo: true);
     // effect.set(EffectType.fromInt(map["effect"] ?? 0), save: false, noUndo: true);
     // eventReceive.set(map["eventReceive"] ?? '', save: false, noUndo: true);
     // showWhenEventReceived.set(map["showWhenEventReceived"] ?? false, save: false, noUndo: true);

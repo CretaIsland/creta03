@@ -240,23 +240,23 @@ class BookModel extends CretaModel with BookMixin {
   @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
-    name.set(map["name"] ?? '', save: false, noUndo: true);
+    name.setDD(map["name"] ?? '', save: false, noUndo: true);
     creator = map["creator"] ?? '';
     creatorName = map["creatorName"] ?? '';
-    isSilent.set(map["isSilent"] ?? false, save: false, noUndo: true);
-    isAutoPlay.set(map["isAutoPlay"] ?? true, save: false, noUndo: true);
-    isAutoThumbnail.set(map["isAutoThumbnail"] ?? true, save: false, noUndo: true);
-    isAllowReply.set(map["isAllowReply"] ?? true, save: false, noUndo: true);
-    isReadOnly.set(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
-    bookType.set(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
-    pageSizeType.set(map["pageSizeType"] ?? 0, save: false, noUndo: true);
-    copyRight.set(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
-    description.set(map["description"] ?? '', save: false, noUndo: true);
-    filter.set(map["filter"] ?? '', save: false, noUndo: true);
-    thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
-    backgroundMusicFrame.set(map["backgroundMusicFrame"] ?? '', save: false, noUndo: true);
-    thumbnailType.set(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);
-    thumbnailAspectRatio.set((map["thumbnailAspectRatio"] ?? 1), save: false, noUndo: true);
+    isSilent.setDD(map["isSilent"] ?? false, save: false, noUndo: true);
+    isAutoPlay.setDD(map["isAutoPlay"] ?? true, save: false, noUndo: true);
+    isAutoThumbnail.setDD(map["isAutoThumbnail"] ?? true, save: false, noUndo: true);
+    isAllowReply.setDD(map["isAllowReply"] ?? true, save: false, noUndo: true);
+    isReadOnly.setDD(map["isReadOnly"] ?? (map["readOnly"] ?? false), save: false, noUndo: true);
+    bookType.setDD(BookType.fromInt(map["bookType"] ?? 0), save: false, noUndo: true);
+    pageSizeType.setDD(map["pageSizeType"] ?? 0, save: false, noUndo: true);
+    copyRight.setDD(CopyRightType.fromInt(map["copyRight"] ?? 1), save: false, noUndo: true);
+    description.setDD(map["description"] ?? '', save: false, noUndo: true);
+    filter.setDD(map["filter"] ?? '', save: false, noUndo: true);
+    thumbnailUrl.setDD(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
+    backgroundMusicFrame.setDD(map["backgroundMusicFrame"] ?? '', save: false, noUndo: true);
+    thumbnailType.setDD(ContentsType.fromInt(map["thumbnailType"] ?? 1), save: false, noUndo: true);
+    thumbnailAspectRatio.setDD((map["thumbnailAspectRatio"] ?? 1), save: false, noUndo: true);
     owners = CretaUtils.jsonStringToList(map["owners"] ?? '');
     if (owners.isEmpty) {
       owners.add(creator);
