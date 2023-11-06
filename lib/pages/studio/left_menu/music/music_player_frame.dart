@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
@@ -229,9 +230,9 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     });
     try {
       await _audioPlayer.setAudioSource(_playlist);
-      if (StudioVariables.isAutoPlay == true) {
-        _audioPlayer.play();
-      }
+      // if (StudioVariables.isAutoPlay == true) {
+      //   _audioPlayer.play();
+      // }
     } catch (e, stackTrace) {
       // Catch load errors: 404, invalid url ...
       logger.fine("Error loading playlist: $e");
@@ -243,6 +244,11 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       widget.contentsManager.orderMapIterator((ele) {
         if (ele.isRemoved.value == true) return null;
+        if (StudioVariables.isAutoPlay == true) {
+          Timer.periodic(const Duration(seconds: 1), (timer) {
+            _audioPlayer.play();
+          });
+        }
 
         ContentsModel model = ele as ContentsModel;
         if (model.isShow.value == false) return null;

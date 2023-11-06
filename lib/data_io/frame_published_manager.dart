@@ -1,3 +1,4 @@
+import 'package:creta03/data_io/book_published_manager.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 
@@ -31,6 +32,9 @@ class FramePublishedManager extends CretaManager {
         continue;
       }
       AbsExModel newOne = await makeCopy(ele, newParentMid);
+      if (ele.mid == BookPublishedManager.srcBackgroundMusicFrame) {
+        BookPublishedManager.newbBackgroundMusicFrame = newOne.mid;
+      }
       ContentsManager contentsManager = frameManager!.findContentsManager(ele as FrameModel);
       // if (contentsManager == null) {
       //   continue;

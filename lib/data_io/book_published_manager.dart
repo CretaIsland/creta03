@@ -17,6 +17,9 @@ class BookPublishedManager extends CretaManager {
     saveManagerHolder?.registerManager('book_published', this);
   }
 
+  static String srcBackgroundMusicFrame = '';
+  static String newbBackgroundMusicFrame = '';
+
   @override
   AbsExModel newModel(String mid) => BookModel(mid);
 
@@ -202,10 +205,14 @@ class BookPublishedManager extends CretaManager {
     src.publishMid = published.mid;
     src.save();
 
+    srcBackgroundMusicFrame = src.backgroundMusicFrame.value;
+    newbBackgroundMusicFrame = '';
     PagePublishedManager publishedManager = PagePublishedManager(pageManager, src);
     if (isNew) {
       await createToDB(published);
       await publishedManager.makeCopyAll(published.mid);
+      published.backgroundMusicFrame.set(newbBackgroundMusicFrame);
+      await setToDB(published);
       logger.info('published created ${published.mid}, source=${published.sourceMid}');
     } else {
       published.setUpdateTime();
@@ -215,6 +222,8 @@ class BookPublishedManager extends CretaManager {
       //print('delete old children');
       // 자식은 모두 새로 만든다.
       int count = await publishedManager.makeCopyAll(published.mid);
+      published.backgroundMusicFrame.set(newbBackgroundMusicFrame);
+      await setToDB(published);
       logger.info('published updated ${published.mid}, source=${published.sourceMid} $count');
     }
     onComplete?.call(isNew);
