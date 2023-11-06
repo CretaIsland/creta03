@@ -1,19 +1,11 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
-import 'package:hycop/hycop/account/account_manager.dart';
-import 'package:hycop/hycop/enum/model_enums.dart';
+import 'package:hycop/hycop.dart';
 import 'package:deep_collection/deep_collection.dart';
-import 'package:hycop/hycop/utils/hycop_utils.dart';
 //import 'package:sortedmap/sortedmap.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/hycop/utils/hycop_exceptions.dart';
-import 'package:hycop/hycop/database/abs_database.dart';
 //import 'package:sortedmap/sortedmap.dart';
-import 'package:hycop/hycop/hycop_factory.dart';
 import 'package:mutex/mutex.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model.dart';
-import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model_manager.dart';
 
 import '../design_system/component/snippet.dart';
 import '../design_system/menu/creta_popup_menu.dart';
@@ -1126,20 +1118,37 @@ abstract class CretaManager extends AbsExModelManager {
   Map<String, OrderDirection> _orderBy = {};
   String _keyOnWheneIn = '';
   List<String>? _listValueOnWheneIn;
+  String _keyOnContainsAny = '';
+  List<String>? _listValueOnContainsAny;
 
   void clearConditions() {
     _whereCaluse = {};
     _orderBy = {};
     _keyOnWheneIn = '';
+    _keyOnContainsAny = '';
     _listValueOnWheneIn = null;
   }
 
   void addWhereClause(String key, QueryValue queryValue) {
     if (queryValue.operType == OperType.whereIn && queryValue.value is List<String>) {
       List<String> stringList = queryValue.value as List<String>;
-      if (stringList.length > 10) {
+      if (stringList.length > 10 || HycopFactory.serverType == ServerType.appwrite) {
         _keyOnWheneIn = key;
         _listValueOnWheneIn = stringList;
+        return;
+      }
+    }
+    //skpark add , appwrite case
+    if (HycopFactory.serverType == ServerType.appwrite) {
+      if (queryValue.operType == OperType.arrayContainsAny && queryValue.value is List<String>) {
+        //print('--value = ${queryValue.value.toString()}-----------------------------');
+        _keyOnContainsAny = key;
+        List<String> replacedList = [];
+        for (String ele in queryValue.value) {
+          String replaced = '"$ele"';
+          replacedList.add(replaced);
+        }
+        _listValueOnContainsAny = replacedList;
         return;
       }
     }
@@ -1241,6 +1250,31 @@ abstract class CretaManager extends AbsExModelManager {
       _dbState = DBState.idle;
       unlock();
       clearConditions();
+      return modelList;
+    }
+    //skpark appwrite case for arrayContainsAny,
+    if (_listValueOnContainsAny != null) {
+      // arrayContainsAny query
+      modelList.clear();
+      lock();
+      _dbState = DBState.querying;
+      for (var value in _listValueOnContainsAny!) {
+        Map<String, QueryValue> newCond = {..._whereCaluse};
+        newCond[_keyOnContainsAny] = QueryValue(value: value, operType: OperType.arrayContainsAny);
+        await queryFromDB(
+          newCond,
+          orderBy: _orderBy,
+          isNew: false,
+          useLocking: false,
+        );
+        // for (var ele in modelList) {
+        //   print('---------------model is founded(${ele.mid})');
+        // }
+      }
+      _dbState = DBState.idle;
+      unlock();
+      clearConditions();
+
       return modelList;
     }
     // normal query

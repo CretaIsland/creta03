@@ -95,3 +95,9 @@ copy src_modify\just_audio.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\just
 
 #mdang modify 23/11/06
 copy src_modify\google_maps_controller.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\google_maps_flutter_web-0.5.4+2\lib\src\google_maps_controller.dart"
+
+#seventhstone modify 23/11/03
+copy src_modify\appwrite_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\appwrite-11.0.0\pubspec.yaml"
+copy src_modify\dart_appwrite_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\dart_appwrite-10.0.0\pubspec.yaml"
+copy src_modify\image_network_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\image_network-2.5.4+1\pubspec.yaml"
+copy src_modify\webviewimage_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\webviewimage-0.0.4\pubspec.yaml"

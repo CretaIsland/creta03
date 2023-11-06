@@ -39,6 +39,8 @@ import '../../../model/book_model.dart';
 import '../../../model/watch_history_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../model/channel_model.dart';
+import '../login/creta_account_manager.dart';
+import '../../model/app_enums.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;
@@ -373,10 +375,10 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 275),
       vsync: this,
     );
-    _animation = Tween(begin: 1.0, end: 1.2).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
-    padding = Tween(begin: 0.0, end: -25.0).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    _animation = Tween(begin: 1.0, end: 1.2)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    padding = Tween(begin: 0.0, end: -25.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
     _controller.addListener(() {
       setState(() {});
     });
@@ -420,8 +422,8 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
             borderRadius: BorderRadius.circular(20.0),
           ),
           clipBehavior: Clip.hardEdge,
-          transform: Matrix4(_animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0,
-              padding.value, padding.value, 0, 1),
+          transform: Matrix4(
+              _animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0, padding.value, padding.value, 0, 1),
           child: Image.network(
             widget.image,
             fit: BoxFit.cover,
@@ -470,10 +472,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _openPopupMenu() {
     CretaPopupMenu.showMenu(
-            context: context,
-            globalKey: widget.key as GlobalKey,
-            popupMenu: _popupMenuList,
-            initFunc: setPopmenuOpen)
+            context: context, globalKey: widget.key as GlobalKey, popupMenu: _popupMenuList, initFunc: setPopmenuOpen)
         .then((value) {
       logger.finest('팝업메뉴 닫기');
       setState(() {
@@ -482,9 +481,9 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
     });
   }
 
-  void _editItem() {
-    logger.finest('편집하기(${widget.bookModel.name})');
-  }
+  // void _editItem() {
+  //   logger.finest('편집하기(${widget.bookModel.name})');
+  // }
 
   void _doPopupMenuPlay() {
     logger.finest('재생하기(${widget.bookModel.name})');
@@ -492,6 +491,8 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _doPopupMenuEdit() {
     logger.finest('편집하기(${widget.bookModel.name})');
+    String url = '${AppRoutes.studioBookMainPage}?${widget.bookModel.sourceMid}';
+    AppRoutes.launchTab(url);
   }
 
   void _doPopupMenuAddToPlayList() {
@@ -520,15 +521,21 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   void initState() {
     super.initState();
 
+    String currentLoginedUserId = CretaAccountManager.getUserProperty?.getMid ?? 'null@null.null';
+    String owner = '<${PermissionType.owner.name}>$currentLoginedUserId';
+    String writer = '<${PermissionType.writer.name}>$currentLoginedUserId';
+
     _popupMenuList = [
       CretaMenuItem(
         caption: '재생하기',
         onPressed: _doPopupMenuPlay,
       ),
-      CretaMenuItem(
-        caption: '편집하기',
-        onPressed: _doPopupMenuEdit,
-      ),
+      if (widget.bookModel.shares.contains(owner) || widget.bookModel.shares.contains(writer))
+        CretaMenuItem(
+          caption: '편집하기',
+          onPressed: () {},//_doPopupMenuEdit,
+          linkUrl: '${AppRoutes.studioBookMainPage}?${widget.bookModel.sourceMid}',
+        ),
       CretaMenuItem(
         caption: '재생목록에 추가',
         onPressed: _doPopupMenuAddToPlayList,
@@ -572,7 +579,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
               width: 91,
               icon: Icons.edit_outlined,
               text: '편집하기',
-              onPressed: () => _editItem(),
+              onPressed: () => _doPopupMenuEdit(),
               alwaysShowIcon: true,
               textStyle: CretaFont.buttonSmall.copyWith(color: CretaColor.text[100]),
             ),
@@ -617,8 +624,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime),
-              style: CretaFont.buttonSmall),
+          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime), style: CretaFont.buttonSmall),
           Text('likeCount=${widget.bookModel.likeCount}', style: CretaFont.buttonSmall),
           Text('viewCount=${widget.bookModel.viewCount}', style: CretaFont.buttonSmall),
         ],
@@ -629,8 +635,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   @override
   Widget build(BuildContext context) {
     String bookLinkUrl = '${AppRoutes.communityBook}?${widget.bookModel.mid}';
-    String channelLinkUrl =
-        (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
+    String channelLinkUrl = (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
     return MouseRegion(
       onEnter: (value) {
         setState(() {
@@ -686,7 +691,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                           decoration: (_mouseOver || _popmenuOpen) ? Snippet.shadowDeco() : null,
                         ),
                         // 편집하기, 추가, 메뉴 버튼 (반투명 배경)
-                        ..._getOverlayMenu(),
+                        if (widget.bookModel.isRemoved.value == false) ..._getOverlayMenu(),
                         // 디버그 정보
                         (kDebugMode) ? _getDebugInfo() : SizedBox.shrink(),
                       ],

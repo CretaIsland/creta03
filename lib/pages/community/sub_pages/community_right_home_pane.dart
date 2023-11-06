@@ -110,7 +110,8 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   final Map<String, String> _teamIdMap = {};
   final Map<String, TeamModel> _teamMap = {}; // <TeamModel.mid, TeamModel>
   final Map<String, String> _userIdMap = {};
-  final Map<String, UserPropertyModel> _userPropertyMap = {}; // <UserPropertyModel.email, UserPropertyModel>
+  final Map<String, UserPropertyModel> _userPropertyMap =
+      {}; // <UserPropertyModel.email, UserPropertyModel>
   //bool _onceDBGetComplete = false;
   late Future<bool> _dbGetComplete;
   //Future<bool>? _dbGetComplete;
@@ -155,6 +156,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   }
 
   void _getBooksFromDB(List<AbsExModel> modelList) {
+    //print('_getBooksFromDB()');
     bookPublishedManagerHolder.addCretaFilters(
       bookType: widget.filterBookType,
       bookSort: widget.filterBookSort,
@@ -195,6 +197,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   }
 
   void _getUserPropertyFromDB(List<AbsExModel> modelList) {
+    //print('_getUserPropertyFromDB()');
     userPropertyManagerHolder.queryFromIdMap(_userIdMap);
   }
 
@@ -240,7 +243,8 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB');
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    playlistManagerHolder.addWhereClause('channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
+    playlistManagerHolder.addWhereClause(
+        'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
@@ -279,7 +283,8 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   void _addToFavorites(String bookId, bool isFavorites) async {
     if (isFavorites) {
       // already in favorites => remove favorites from DB
-      await favoritesManagerHolder.removeFavoritesFromDB(bookId, AccountManager.currentLoginUser.email);
+      await favoritesManagerHolder.removeFavoritesFromDB(
+          bookId, AccountManager.currentLoginUser.email);
       setState(() {
         _favoritesBookIdMap[bookId] = false;
       });
@@ -357,8 +362,8 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   //int saveIdx = 0;
 
   Widget _getItemPane() {
-    final int columnCount =
-        CretaUtils.getItemColumnCount(widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
+    final int columnCount = CretaUtils.getItemColumnCount(
+        widget.cretaLayoutRect.childWidth, _itemMinWidth, _rightViewItemGapX);
 
     double itemWidth = -1;
     double itemHeight = -1;
@@ -386,7 +391,8 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
         ),
         itemBuilder: (BuildContext context, int index) {
           BookModel bookModel = _cretaBooksList[index];
-          ChannelModel? chModel = bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
+          ChannelModel? chModel =
+              bookModel.channels.isEmpty ? null : _channelMap[bookModel.channels[0]];
           //if (kDebugMode) print('${bookModel.getMid} is Favorites=${_favoritesBookIdMap[bookModel.getMid]}');
           return (itemWidth >= 0 && itemHeight >= 0)
               ? CretaBookUIItem(
