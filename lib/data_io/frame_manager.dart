@@ -791,4 +791,27 @@ class FrameManager extends CretaManager {
     bModel.order.set(aOrder);
     mychangeStack.endTrans();
   }
+
+  String toJson() {
+    if (getAvailLength() == 0) {
+      return ',\n\t\t"frames" : []\n';
+    }
+    int frameCount = 0;
+    String jsonStr = '';
+    jsonStr += ',\n\t\t"frames" : [\n';
+    orderMapIterator((val) {
+      FrameModel frame = val as FrameModel;
+      String frameStr = frame.toJson(tab: '\t\t');
+      if (frameCount > 0) {
+        jsonStr += ',\n';
+      }
+      ContentsManager? contentsManager = findContentsManager(frame);
+      frameStr += contentsManager.toJson();
+      jsonStr += '\t\t{\n$frameStr\n\t\t}';
+      frameCount++;
+      return null;
+    });
+    jsonStr += '\n\t\t]\n';
+    return jsonStr;
+  }
 }

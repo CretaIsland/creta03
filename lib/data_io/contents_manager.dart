@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
 
+import 'package:creta03/data_io/book_manager.dart';
 import 'package:flutter/material.dart';
 import '../design_system/component/tree/flutter_treeview.dart' as tree;
 import 'package:get/get.dart';
@@ -1297,5 +1298,36 @@ class ContentsManager extends CretaManager {
     //     }
     //   }
     // }
+  }
+
+  String toJson() {
+    if (getAvailLength() == 0) {
+      return ',\n\t\t\t"contents" : []\n';
+    }
+    int contentCount = 0;
+    String jsonStr = '';
+    jsonStr += ',\n\t\t\t"contents" : [\n';
+    orderMapIterator((val) {
+      ContentsModel content = val as ContentsModel;
+
+      String uri = content.getURI();
+      if (uri.isNotEmpty && uri.contains("http")) {
+        BookManager.contentsSet.add(uri);
+      }
+
+      String contentStr = content.toJson(tab: '\t\t\t');
+      if (contentCount > 0) {
+        jsonStr += ',\n';
+      }
+      LinkManager? linkManager = findLinkManager(content.mid);
+      if (linkManager != null) {
+        contentStr += linkManager.toJson();
+      }
+      jsonStr += '\t\t\t{\n$contentStr\n\t\t\t}';
+      contentCount++;
+      return null;
+    });
+    jsonStr += '\n\t\t\t]\n';
+    return jsonStr;
   }
 }

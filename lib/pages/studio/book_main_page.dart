@@ -34,6 +34,7 @@ import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../design_system/component/autoSizeText/font_size_changing_notifier.dart';
+import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
@@ -1107,7 +1108,28 @@ class _BookMainPageState extends State<BookMainPage> {
           SizedBox(width: padding),
           BTN.floating_l(
             icon: Icons.file_download_outlined,
-            onPressed: () {},
+            onPressed: () {
+              logger.info('donwload in studio');
+              CretaPopup.yesNoDialog(
+                context: context,
+                title: "Download Options",
+                icon: Icons.file_download_outlined,
+                question: CretaStudioLang.downloadConfirm,
+                noBtText: CretaStudioLang.noBtDnText,
+                yesBtText: CretaStudioLang.yesBtDnText,
+                yesIsDefault: false,
+                onNo: () {
+                  BookMainPage.bookManagerHolder?.download(
+                    BookMainPage.pageManagerHolder,
+                  );
+                },
+                onYes: () {
+                  BookMainPage.bookManagerHolder?.download(
+                    BookMainPage.pageManagerHolder,
+                  );
+                },
+              );
+            },
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipDownload,
           ),

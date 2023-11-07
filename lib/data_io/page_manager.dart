@@ -631,4 +631,29 @@ class PageManager extends CretaManager {
     }
     return nodes;
   }
+
+  String toJson() {
+     if (getAvailLength() == 0) {
+      return ',\n\t"pages" : []\n';
+    }
+    String jsonStr = '';
+    int pageCount = 0;
+    jsonStr += ',\n\t"pages" : [\n';
+    orderMapIterator((val) {
+      PageModel page = val as PageModel;
+      String pageStr = page.toJson(tab: '\t');
+      if (pageCount > 0) {
+        jsonStr += ',\n';
+      }
+      FrameManager? frameManager = findFrameManager(page.mid);
+      if (frameManager != null) {
+        pageStr += frameManager.toJson();
+      }
+      jsonStr += '\t{\n$pageStr\n\t}';
+      pageCount++;
+      return null;
+    });
+    jsonStr += '\n\t]\n';
+    return jsonStr;
+  }
 }

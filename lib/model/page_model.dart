@@ -101,12 +101,12 @@ class PageModel extends CretaModel with CretaStyleMixin {
   @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
-    name.set(map["name"] ?? '', save: false, noUndo: true);
+    name.setDD(map["name"] ?? '', save: false, noUndo: true);
 
-    isCircle.set(map["isCircle"] ?? false, save: false, noUndo: true);
-    shortCut.set(map["shortCut"] ?? '', save: false, noUndo: true);
-    description.set(map["description"] ?? '', save: false, noUndo: true);
-    thumbnailUrl.set(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
+    isCircle.setDD(map["isCircle"] ?? false, save: false, noUndo: true);
+    shortCut.setDD(map["shortCut"] ?? '', save: false, noUndo: true);
+    description.setDD(map["description"] ?? '', save: false, noUndo: true);
+    thumbnailUrl.setDD(map["thumbnailUrl"] ?? '', save: false, noUndo: true);
     super.fromMapMixin(map);
 
     setRealTimeKey(parentMid.value);

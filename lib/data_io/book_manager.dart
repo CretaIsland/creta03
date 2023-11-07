@@ -19,6 +19,9 @@ import 'creta_manager.dart';
 import 'page_manager.dart';
 
 class BookManager extends CretaManager {
+  // contents 들의 url 모음, 다운로드 버튼을 눌렀을 때 생성된다.
+  static Set<String> contentsSet = {};
+
   BookManager({String tableName = 'creta_book'}) : super(tableName, null) {
     saveManagerHolder?.registerManager('book', this);
   }
@@ -285,5 +288,43 @@ class BookManager extends CretaManager {
     ));
 
     return nodes;
+  }
+
+  String? toJson(PageManager? pageManager, BookModel book) {
+    String bookStr = book.toJson();
+    BookManager.contentsSet.clear();
+    if (pageManager != null) {
+      bookStr += pageManager.toJson();
+    }
+    if (BookManager.contentsSet.isEmpty) {
+      bookStr += '\n\t,"contentsUrl": []';
+    } else {
+      bookStr += '\n\t,"contentsUrl": [';
+      int count = 0;
+      for (var ele in BookManager.contentsSet) {
+        if (count > 0) {
+          bookStr += ",";
+        }
+        bookStr += '\n\t\t"$ele"';
+        count++;
+      }
+      bookStr += '\n\t]';
+    }
+    return bookStr;
+  }
+
+  String? download(PageManager? pageManager) {
+    BookModel? book = onlyOne() as BookModel?;
+    if (book == null) {
+      return null;
+    }
+    String? jsonStr = toJson(pageManager, book);
+    if (jsonStr == null) {
+      return null;
+    }
+    String retval = '{\n$jsonStr\n}';
+    //print(retval);
+    CretaUtils.saveLogToFile(retval, "${book.mid}.json");
+    return retval;
   }
 }

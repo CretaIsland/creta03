@@ -106,4 +106,22 @@ class CretaModel extends AbsExModel {
     }
     return val;
   }
+
+  String toJson({String tab = ''}) {
+    Map<String, dynamic> data = toMap();
+    String retval = '';
+    int lineCount = 0;
+    for (var entry in data.entries) {
+      if (lineCount > 0) {
+        retval += ',\n';
+      }
+      String value = entry.value.toString().replaceAll('"', '\\"').replaceAll('\n', ' ');
+      // .replaceAll(']', '\\]')
+      // .replaceAll('{', '\\{')
+      // .replaceAll('}', '\\}');
+      retval += '$tab\t"${entry.key}":"$value"';
+      lineCount++;
+    }
+    return retval;
+  }
 }

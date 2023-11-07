@@ -70,7 +70,9 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       CretaMenuItem(
         // 다운로드 한다.
         caption: CretaLang.download,
-        onPressed: () {},
+        onPressed: () {
+          logger.info('download CretaBook !!! in list');
+        },
         disabled: true,
       ),
       CretaMenuItem(

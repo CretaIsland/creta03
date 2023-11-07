@@ -946,7 +946,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           //});
         },
         onChannged: (val) {
-          model.fontSize.set(val);
+          model.fontSize.set(val.roundToDouble());
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {

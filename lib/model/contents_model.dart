@@ -744,7 +744,7 @@ class ContentsModel extends CretaModel {
     double newFontSize = value / applyScale;
 
     //print('updateByAutoSize $value, $newFontSize');
-    fontSize.setDD(newFontSize);
+    fontSize.setDD(newFontSize.roundToDouble());
     return newFontSize;
   }
 
@@ -958,7 +958,7 @@ class ContentsModel extends CretaModel {
       this.fontWeight.set(StudioConst.fontWeightStr2Int[fontWeight]!, save: false);
     }
     if (fontSize != null) {
-      this.fontSize.set(fontSize / StudioVariables.applyScale, save: false);
+      this.fontSize.set((fontSize / StudioVariables.applyScale).roundToDouble(), save: false);
     }
     this.fontSizeType.set(fontSizeType, save: false);
     if (fontColor != null) {
