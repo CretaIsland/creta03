@@ -1112,21 +1112,17 @@ class _BookMainPageState extends State<BookMainPage> {
               logger.info('donwload in studio');
               CretaPopup.yesNoDialog(
                 context: context,
-                title: "Download Options",
+                title: CretaStudioLang.export,
                 icon: Icons.file_download_outlined,
                 question: CretaStudioLang.downloadConfirm,
                 noBtText: CretaStudioLang.noBtDnText,
                 yesBtText: CretaStudioLang.yesBtDnText,
                 yesIsDefault: false,
                 onNo: () {
-                  BookMainPage.bookManagerHolder?.download(
-                    BookMainPage.pageManagerHolder,
-                  );
+                  BookMainPage.bookManagerHolder?.download(BookMainPage.pageManagerHolder, false);
                 },
                 onYes: () {
-                  BookMainPage.bookManagerHolder?.download(
-                    BookMainPage.pageManagerHolder,
-                  );
+                  BookMainPage.bookManagerHolder?.download(BookMainPage.pageManagerHolder, true);
                 },
               );
             },

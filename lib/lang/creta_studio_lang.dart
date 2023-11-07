@@ -622,4 +622,5 @@ class CretaStudioLang {
   온라인 상태에서는 크레타북만 받아도 재생할 수 있습니다. )''';
   static String noBtDnText = "아니오.크레타북만 다운로드 하겠습니다";
   static String yesBtDnText = "네. 콘텐츠 파일까지다운로드 하겠습니다";
+  static String export = "크레타 북 내보내기(Export)";
 }

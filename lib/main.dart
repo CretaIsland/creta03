@@ -22,7 +22,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
   Logger.root.level = Level.INFO;
-  HycopFactory.serverType = ServerType.appwrite;
+  HycopFactory.serverType = ServerType.firebase;
   await HycopFactory.initAll();
   await CretaAccountManager.initUserProperty();
 
