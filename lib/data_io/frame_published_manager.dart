@@ -32,8 +32,11 @@ class FramePublishedManager extends CretaManager {
         continue;
       }
       AbsExModel newOne = await makeCopy(ele, newParentMid);
-      if (ele.mid == BookPublishedManager.srcBackgroundMusicFrame) {
-        BookPublishedManager.newbBackgroundMusicFrame = newOne.mid;
+      //if (ele.mid == BookPublishedManager.srcBackgroundMusicFrame) {
+      if (frameManager != null) {
+        if (ele.mid == frameManager!.bookModel.backgroundMusicFrame.value) {
+          BookPublishedManager.newbBackgroundMusicFrame = newOne.mid;
+        }
       }
       ContentsManager contentsManager = frameManager!.findContentsManager(ele as FrameModel);
       // if (contentsManager == null) {

@@ -230,7 +230,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     });
     try {
       await _audioPlayer.setAudioSource(_playlist);
-      // if (StudioVariables.isAutoPlay == true) {
+      // if (StudioVariables.isAutoPlay == true) { // 자동재생 안됨
       //   _audioPlayer.play();
       // }
     } catch (e, stackTrace) {
@@ -245,7 +245,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       widget.contentsManager.orderMapIterator((ele) {
         if (ele.isRemoved.value == true) return null;
         if (StudioVariables.isAutoPlay == true) {
-          Timer.periodic(const Duration(seconds: 1), (timer) {
+          Timer.periodic(const Duration(seconds: 1), (timer) { // 딜레이 없이는 자동재생 안됨
+            timer.cancel();
             _audioPlayer.play();
           });
         }
