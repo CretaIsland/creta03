@@ -84,9 +84,9 @@ class _EditBannerImgPopUpState extends State<EditBannerImgPopUp> {
                 Uint8List cropImgBytes = CretaUtils.cropImage(widget.bannerImgBytes, Offset(0, _position.dy + 20), 5, const Size(865, 375));
 
                 // 업로드
-                HycopFactory.storage!.uploadFile(widget.selectedImg.name, widget.selectedImg.mimeType!, cropImgBytes, folderName: "banner/").then((fileModel) {
+                HycopFactory.storage!.uploadFile(widget.selectedImg.name, widget.selectedImg.mimeType!, cropImgBytes, fileUsage: "banner/").then((fileModel) {
                   if(fileModel != null) {
-                    CretaAccountManager.getChannel!.bannerImg = fileModel.fileView;
+                    CretaAccountManager.getChannel!.bannerImg = fileModel.url;
                     CretaAccountManager.setChannelBannerImg(CretaAccountManager.getChannel!);
                     Navigator.of(context).pop();
                   }

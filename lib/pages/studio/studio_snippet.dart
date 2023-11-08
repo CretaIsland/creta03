@@ -203,7 +203,7 @@ class StudioSnippet {
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
       //await contentsManager.setToDB(reModel);
 
-      model.remoteUrl = fileModel.fileView;
+      model.remoteUrl = fileModel.url;
       model.thumbnail = fileModel.thumbnailUrl;
 
       logger.info('uploaded url = ${model.url}');

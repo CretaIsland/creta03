@@ -23,7 +23,7 @@ class WindowScreenshot {
             '${bookId}_thumbnail.png', screenshotBytes.mimeType, screenshotBytes.contentAsBytes(),
             makeThumbnail: false);
         if (result != null) {
-          return result.fileView;
+          return result.url;
         }
       }
     } catch (error) {
