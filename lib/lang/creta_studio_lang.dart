@@ -617,10 +617,10 @@ class CretaStudioLang {
 
   static String depotComplete = "보관함으로 이동이 완료되었습니다";
 
-  static String downloadConfirm = '''콘텐츠 파일까지 모두 포함하여 다운로드하시겠습니까 ?
-( 권장하지 않습니다. 시간이 오래 걸릴 수 있습니다. 
-  온라인 상태에서는 크레타북만 받아도 재생할 수 있습니다. )''';
-  static String noBtDnText = "아니오.크레타북만 다운로드 하겠습니다";
-  static String yesBtDnText = "네. 콘텐츠 파일까지다운로드 하겠습니다";
+  static String downloadConfirm = '''이 작업은 시간이 오래 걸릴 수 있습니다.
+정말로 다운로드 하시겠습니까?''';
+  static String noBtDnText = "아니오";
+  static String yesBtDnText = "네";
   static String export = "크레타 북 내보내기(Export)";
+  static String zipRequestFailed = "파일 다운로드 요청이 실패했습니다";
 }

@@ -237,7 +237,7 @@ class ContentsManager extends CretaManager {
         return null;
       }
       //print('${model.name}, ${model.thumbnail}');
-      if (model.thumbnail == null || model.thumbnail!.isEmpty) {
+      if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
         if (model.isImage()) {
           if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
             return model.remoteUrl!;
@@ -248,7 +248,7 @@ class ContentsManager extends CretaManager {
         }
         return null;
       }
-      return model.thumbnail!;
+      return model.thumbnailUrl!;
     }).toList();
     for (String? ele in list) {
       if (ele != null) {
@@ -261,10 +261,10 @@ class ContentsManager extends CretaManager {
       if (model.isRemoved.value == true) {
         continue;
       }
-      if (model.thumbnail == null || model.thumbnail!.isEmpty) {
+      if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
         continue;
       }
-      return model.thumbnail;
+      return model.thumbnailUrl;
     }
 
     return null;
@@ -1264,7 +1264,7 @@ class ContentsManager extends CretaManager {
           if (model.isRemoved.value == true) {
             continue;
           }
-          if (model.thumbnail == null || model.thumbnail!.isEmpty) {
+          if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
             continue;
           }
           if (model.contentsType != ContentsType.image &&

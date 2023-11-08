@@ -1117,12 +1117,12 @@ class _BookMainPageState extends State<BookMainPage> {
                 question: CretaStudioLang.downloadConfirm,
                 noBtText: CretaStudioLang.noBtDnText,
                 yesBtText: CretaStudioLang.yesBtDnText,
-                yesIsDefault: false,
+                yesIsDefault: true,
                 onNo: () {
-                  BookMainPage.bookManagerHolder?.download(BookMainPage.pageManagerHolder, false);
+                  //BookMainPage.bookManagerHolder?.download(BookMainPage.pageManagerHolder, false);
                 },
                 onYes: () {
-                  BookMainPage.bookManagerHolder?.download(BookMainPage.pageManagerHolder, true);
+                  BookMainPage.bookManagerHolder?.download(context, BookMainPage.pageManagerHolder, true);
                 },
               );
             },

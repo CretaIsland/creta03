@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:creta03/model/user_property_model.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hycop/hycop.dart';
 import '../common/creta_utils.dart';
@@ -315,7 +316,7 @@ class BookManager extends CretaManager {
     return bookStr;
   }
 
-  Future<bool> download(PageManager? pageManager, bool shouldDownload) async {
+  Future<bool> download(BuildContext context, PageManager? pageManager, bool shouldDownload) async {
     BookModel? book = onlyOne() as BookModel?;
     if (book == null) {
       return false;
@@ -348,18 +349,30 @@ class BookManager extends CretaManager {
         // 서버로부터의 응답 처리
         if (response.statusCode == 200) {
           // 성공적으로 데이터를 보내고 URL을 받았다고 가정
-          Map<String, dynamic> responseBody = json.decode(response.body);
-          String receivedUrl = responseBody['zipUrl']; // API 응답에서 URL 추출
-          logger.info('Received URL: $receivedUrl');
+          //Map<String, dynamic> responseBody = json.decode(response.body);
+          //String receivedUrl = responseBody['zipUrl']; // API 응답에서 URL 추출
+          logger.info('zipRequest succeed');
+
+          
+
+
+
+
         } else {
           // 에러 처리
           logger.severe('$url Failed to send data');
           logger.severe('Status code: ${response.statusCode}');
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, '${CretaStudioLang.zipRequestFailed}(${response.statusCode})');
+          return false;
         }
       } catch (e) {
         // 예외 처리
         logger.severe('$url Failed to send data');
         logger.severe('An error occurred: $e');
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($e)');
+        return false;
       }
     }
     return true;

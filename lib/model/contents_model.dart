@@ -107,7 +107,7 @@ class ContentsModel extends CretaModel {
   late String mime;
   html.File? file;
   String? remoteUrl;
-  String? thumbnail;
+  String? thumbnailUrl;
   ContentsType contentsType = ContentsType.none;
   TextType textType = TextType.normal;
   String lastModifiedTime = "";
@@ -167,7 +167,7 @@ class ContentsModel extends CretaModel {
         mime,
         file,
         remoteUrl,
-        thumbnail,
+        thumbnailUrl,
         contentsType,
         textType,
         lastModifiedTime,
@@ -219,7 +219,7 @@ class ContentsModel extends CretaModel {
       : super(pmid: '', type: ExModelType.contents, parent: parent, realTimeKey: bookMid) {
     genType();
     remoteUrl = '';
-    thumbnail = '';
+    thumbnailUrl = '';
     _initValues();
     printIt();
   }
@@ -232,7 +232,7 @@ class ContentsModel extends CretaModel {
     mime = '';
     file = null;
     remoteUrl = '';
-    thumbnail = '';
+    thumbnailUrl = '';
     contentsType = ContentsType.none;
     textType = TextType.normal;
 
@@ -252,7 +252,7 @@ class ContentsModel extends CretaModel {
     mime = '';
     file = null;
     remoteUrl = '';
-    thumbnail = '';
+    thumbnailUrl = '';
     contentsType = ContentsType.none;
     textType = TextType.normal;
 
@@ -316,7 +316,7 @@ class ContentsModel extends CretaModel {
     mime = srcContents.mime;
     file = srcContents.file;
     // remoteUrl = srcContents.remoteUrl;
-    // thumbnail = srcContents.thumbnail;
+    // thumbnailUrl = srcContents.thumbnailUrl;
     contentsType = srcContents.contentsType;
     textType = srcContents.textType;
 
@@ -334,7 +334,7 @@ class ContentsModel extends CretaModel {
     fit = UndoAble<ContentsFitType>(srcContents.fit.value, mid, 'fit');
 
     if (srcContents.remoteUrl != null) remoteUrl = srcContents.remoteUrl;
-    if (srcContents.thumbnail != null) thumbnail = srcContents.thumbnail;
+    if (srcContents.thumbnailUrl != null) thumbnailUrl = srcContents.thumbnailUrl;
     lastModifiedTime = DateTime.now().toString();
 
     font = UndoAble<String>(srcContents.font.value, mid, 'font');
@@ -382,7 +382,7 @@ class ContentsModel extends CretaModel {
     mime = srcContents.mime;
     file = srcContents.file;
     // remoteUrl = srcContents.remoteUrl;
-    // thumbnail = srcContents.thumbnail;
+    // thumbnailUrl = srcContents.thumbnailUrl;
     contentsType = srcContents.contentsType;
     textType = srcContents.textType;
 
@@ -402,8 +402,8 @@ class ContentsModel extends CretaModel {
     if (srcContents.remoteUrl != null && srcContents.remoteUrl!.isNotEmpty) {
       remoteUrl = srcContents.remoteUrl;
     }
-    if (srcContents.thumbnail != null && srcContents.thumbnail!.isNotEmpty) {
-      thumbnail = srcContents.thumbnail;
+    if (srcContents.thumbnailUrl != null && srcContents.thumbnailUrl!.isNotEmpty) {
+      thumbnailUrl = srcContents.thumbnailUrl;
     }
 
     contentsType = srcContents.contentsType;
@@ -492,7 +492,7 @@ class ContentsModel extends CretaModel {
     contentsType = ContentsType.fromInt(map["contentsType"] ?? 0);
     textType = TextType.fromInt(map["textType"] ?? 0);
     remoteUrl = map["remoteUrl"] ?? '';
-    thumbnail = map["thumbnail"] ?? '';
+    thumbnailUrl = map["thumbnailUrl"] ?? '';
     subList.setDD(map["subList"] ?? '', save: false, noUndo: true);
     playTime.setDD(map["playTime"] ?? 15000, save: false, noUndo: true);
     videoPlayTime.setDD(map["videoPlayTime"] ?? 15000, save: false, noUndo: true);
@@ -564,7 +564,7 @@ class ContentsModel extends CretaModel {
         "prevPlayTime": prevPlayTime,
         "lastModifiedTime": (file != null) ? file!.lastModifiedDate.toString() : '',
         "remoteUrl": remoteUrl ?? '',
-        "thumbnail": thumbnail ?? '',
+        "thumbnailUrl": thumbnailUrl ?? '',
         "font": font.value,
         "fontWeight": fontWeight.value,
         "isBold": isBold.value,

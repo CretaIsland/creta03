@@ -204,7 +204,7 @@ class StudioSnippet {
       //await contentsManager.setToDB(reModel);
 
       model.remoteUrl = fileModel.url;
-      model.thumbnail = fileModel.thumbnailUrl;
+      model.thumbnailUrl = fileModel.thumbnailUrl;
 
       logger.info('uploaded url = ${model.url}');
       logger.info('uploaded fileName = ${model.name}');
@@ -216,7 +216,7 @@ class StudioSnippet {
       logger.severe('upload failed ${model.file!.name}');
     }
     logger.info('send event to property');
-    logger.info('uploaded thumbnail = ${model.thumbnail}');
+    logger.info('uploaded thumbnailUrl = ${model.thumbnailUrl}');
     contentsManager.sendEvent?.sendEvent(model);
   }
 
