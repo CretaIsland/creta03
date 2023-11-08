@@ -102,7 +102,7 @@ class ContentsMainState extends State<ContentsMain> {
       int contentsCount = contentsManager.getShowLength();
       //print('Consumer<ContentsManager> ContentsMain = $contentsCount');
       return Consumer<CretaPlayTimer>(builder: (context, playTimer, child) {
-        logger.info('Consumer<CretaPlayTimer>');
+        logger.fine('Consumer<CretaPlayTimer>');
         return StreamBuilder<AbsExModel>(
             stream: _receiveEvent!.eventStream.stream,
             builder: (context, snapshot) {
@@ -113,14 +113,14 @@ class ContentsMainState extends State<ContentsMain> {
                 contentsManager.updateModel(model);
                 logger.info('model updated ${model.name}, ${model.url}');
               }
-              logger.info('StreamBuilder<AbsExModel> $contentsCount');
+              logger.fine('StreamBuilder<AbsExModel> $contentsCount');
               if (contentsCount == 0) {
                 logger.info('current model is null');
                 return SizedBox.shrink();
               }
               ContentsModel? model = playTimer.getCurrentModel();
               if (model != null && isURINotNull(model)) {
-                logger.info('event received =======================${model.name}=');
+                logger.fine('event received =======================${model.name}=');
                 LinkManager? linkManager = contentsManager.findLinkManager(model.mid);
                 if (linkManager != null) {
                   //if (linkManager != null && linkManager.getAvailLength() > 0) {
