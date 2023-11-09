@@ -5,7 +5,7 @@ import 'package:hycop/hycop.dart';
 // ignore: must_be_immutable
 class TeamModel extends CretaModel {
   late String name;
-  late String profileImg;
+  late String profileImgUrl;
   late String channelBannerImg;
   late bool isPublicProfile;
 
@@ -21,7 +21,7 @@ class TeamModel extends CretaModel {
   List<Object?> get props => [
         ...super.props,
         name,
-        profileImg,
+        profileImgUrl,
         channelBannerImg,
         isPublicProfile,
         owner,
@@ -34,7 +34,7 @@ class TeamModel extends CretaModel {
 
   TeamModel(String pmid) : super(pmid: pmid, type: ExModelType.team, parent: '') {
     name = '';
-    profileImg = '';
+    profileImgUrl = '';
     channelBannerImg = '';
     isPublicProfile = true;
     owner = '';
@@ -48,7 +48,7 @@ class TeamModel extends CretaModel {
   TeamModel.withName({
     required this.name,
     required this.owner,
-    this.profileImg = '',
+    this.profileImgUrl = '',
     this.channelBannerImg = '',
     this.isPublicProfile = true,
     this.managers = const [],
@@ -67,7 +67,7 @@ class TeamModel extends CretaModel {
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name = map['name'] ?? '';
-    profileImg = map['profileImg'] ?? '';
+    profileImgUrl = map['profileImgUrl'] ?? '';
     channelBannerImg = map['channelBannerImg'] ?? '';
     isPublicProfile = map['isPublicProfile'] ?? true;
     owner = map['owner'] ?? '';
@@ -83,7 +83,7 @@ class TeamModel extends CretaModel {
     return super.toMap()
       ..addEntries({
         'name': name,
-        'profileImg': profileImg,
+        'profileImgUrl': profileImgUrl,
         'channelBannerImg': channelBannerImg,
         'isPublicProfile': isPublicProfile,
         'owner': owner,

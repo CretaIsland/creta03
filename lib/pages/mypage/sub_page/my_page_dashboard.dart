@@ -46,12 +46,12 @@ class _MyPageDashBoardState extends State<MyPageDashBoard> {
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(100.0),
         color: widget.replaceColor,
-        image: userPropertyManager.userPropertyModel!.profileImg == '' ? null : DecorationImage(
-          image: NetworkImage(userPropertyManager.userPropertyModel!.profileImg),
+        image: userPropertyManager.userPropertyModel!.profileImgUrl == '' ? null : DecorationImage(
+          image: NetworkImage(userPropertyManager.userPropertyModel!.profileImgUrl),
           fit: BoxFit.cover,
         ),
       ),
-      child: userPropertyManager.userPropertyModel!.profileImg == '' ? Center(
+      child: userPropertyManager.userPropertyModel!.profileImgUrl == '' ? Center(
         child: Text(
           userPropertyManager.userPropertyModel!.nickname.substring(0, 1),
           style: const TextStyle(

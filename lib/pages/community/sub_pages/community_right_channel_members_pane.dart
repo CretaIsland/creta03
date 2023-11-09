@@ -322,7 +322,7 @@ class _CommunityRightChannelMembersPaneState extends State<CommunityRightChannel
                 child: SizedBox(
                   child: Column(
                     children: [
-                      userPropertyManagerHolder.imageCircle(userModel.profileImg, userModel.nickname, radius: 84/2),
+                      userPropertyManagerHolder.imageCircle(userModel.profileImgUrl, userModel.nickname, radius: 84/2),
                       SizedBox(height: 20),
                       Text(
                         chModel.name,

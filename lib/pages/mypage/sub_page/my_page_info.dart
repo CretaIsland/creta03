@@ -83,7 +83,7 @@ class _MyPageInfoState extends State<MyPageInfo> {
                     child: BTN.line_blue_t_m(
                       text: '기본 이미지로 변경', 
                       onPressed: () {
-                        userPropertyManager.userPropertyModel!.profileImg = '';
+                        userPropertyManager.userPropertyModel!.profileImgUrl = '';
                         userPropertyManager.notify();
                       }
                     ),
@@ -199,12 +199,12 @@ class _MyPageInfoState extends State<MyPageInfo> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.grey.shade200),
         color: widget.replaceColor,
-        image: userPropertyManager.userPropertyModel!.profileImg == '' ? null : DecorationImage(
-          image: NetworkImage(userPropertyManager.userPropertyModel!.profileImg),
+        image: userPropertyManager.userPropertyModel!.profileImgUrl == '' ? null : DecorationImage(
+          image: NetworkImage(userPropertyManager.userPropertyModel!.profileImgUrl),
           fit: BoxFit.cover,
         )
       ),
-      child: userPropertyManager.userPropertyModel!.profileImg == '' ? Center(
+      child: userPropertyManager.userPropertyModel!.profileImgUrl == '' ? Center(
         child: Text(
           userPropertyManager.userPropertyModel!.nickname.substring(0, 1),
           style: const TextStyle(

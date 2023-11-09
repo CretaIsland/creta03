@@ -86,7 +86,7 @@ class _EditBannerImgPopUpState extends State<EditBannerImgPopUp> {
                 // 업로드
                 HycopFactory.storage!.uploadFile(widget.selectedImg.name, widget.selectedImg.mimeType!, cropImgBytes, fileUsage: "banner").then((fileModel) {
                   if(fileModel != null) {
-                    CretaAccountManager.getChannel!.bannerImg = fileModel.url;
+                    CretaAccountManager.getChannel!.bannerImgUrl = fileModel.url;
                     CretaAccountManager.setChannelBannerImg(CretaAccountManager.getChannel!);
                     Navigator.of(context).pop();
                   }
