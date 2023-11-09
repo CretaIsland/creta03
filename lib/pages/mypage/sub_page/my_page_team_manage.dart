@@ -113,7 +113,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                   if(_pickedFile != null) {
                     Uint8List fileBytes = await _pickedFile!.readAsBytes();
                     if(fileBytes.isNotEmpty) {
-                      HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, fileBytes, fileUsage: "profile/").then((fileModel) {
+                      HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, fileBytes, fileUsage: "profile").then((fileModel) {
                         if(fileModel != null) {
                           teamManager.currentTeam!.profileImg = fileModel.url;
                           teamManager.setToDB(teamManager.currentTeam!);
@@ -269,7 +269,7 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
               text: '완료', 
               width: 55,
               onPressed: () {
-                HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, bannerImgBytes, fileUsage: "banner/").then((fileModel) {
+                HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, bannerImgBytes, fileUsage: "banner").then((fileModel) {
                   if(fileModel != null) {
                     teamManager.currentTeam!.channelBannerImg = fileModel.url;
                     teamManager.setToDB(teamManager.currentTeam!);
