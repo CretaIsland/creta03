@@ -9,6 +9,7 @@ import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
 import '../../model/book_model.dart';
 import '../../routes.dart';
+import 'book_grid_page.dart';
 import 'book_main_page.dart';
 import 'containees/containee_nofifier.dart';
 import 'left_menu/left_menu_page.dart';
@@ -66,7 +67,11 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         caption: CretaLang.open,
         onPressed: () {
           //Routemaster.of(context).pop();
-          Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+          if (BookGridPage.lastGridMenu != null) {
+            Routemaster.of(context).push(BookGridPage.lastGridMenu!);
+          } else {
+            Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+          }
         },
       ),
       CretaMenuItem(

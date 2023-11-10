@@ -36,6 +36,8 @@ enum SelectedPage {
 
 // ignore: must_be_immutable
 class BookGridPage extends StatefulWidget {
+  static String? lastGridMenu;
+
   final VoidCallback? openDrawer;
   final SelectedPage selectedPage;
 
@@ -120,6 +122,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         caption: CretaStudioLang.myCretaBook,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+          BookGridPage.lastGridMenu = AppRoutes.studioBookSharedPage;
         },
         selected: widget.selectedPage == SelectedPage.myPage,
         iconData: Icons.import_contacts_outlined,
@@ -131,6 +134,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         onPressed: () {
           Routemaster.of(context).pop();
           Routemaster.of(context).push(AppRoutes.studioBookSharedPage);
+          BookGridPage.lastGridMenu = AppRoutes.studioBookSharedPage;
         },
         selected: widget.selectedPage == SelectedPage.sharedPage,
         iconData: Icons.share_outlined,
@@ -141,6 +145,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
         caption: CretaStudioLang.teamCretaBook,
         onPressed: () {
           Routemaster.of(context).push(AppRoutes.studioBookTeamPage);
+          BookGridPage.lastGridMenu = AppRoutes.studioBookSharedPage;
         },
         selected: widget.selectedPage == SelectedPage.teamPage,
         iconData: Icons.group_outlined,
@@ -149,7 +154,10 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       ),
       CretaMenuItem(
         caption: CretaStudioLang.trashCan,
-        onPressed: () {},
+        onPressed: () {
+          //Routemaster.of(context).push(AppRoutes.studioBookTrashCanPage);
+          //BookGridPage.lastGridMenu = AppRoutes.studioBookTrashCanPage;
+        },
         selected: widget.selectedPage == SelectedPage.trashCanPage,
         iconData: Icons.delete_outline,
         isIconText: true,
@@ -193,6 +201,8 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
 
   @override
   Widget build(BuildContext context) {
+    double windowWidth = MediaQuery.of(context).size.width;
+    logger.info('`````````````````````````window width = $windowWidth');
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<BookManager>.value(
@@ -203,9 +213,10 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           title: Snippet.logo('studio'),
           additionals: SizedBox(
             height: 36,
-            width: 130,
+            width: windowWidth > 535 ? 130 : 60,
             child: BTN.fill_gray_it_l(
-              text: CretaStudioLang.newBook,
+              width: windowWidth > 535 ? 106 : 36,
+              text: windowWidth > 535 ? CretaStudioLang.newBook : '',
               onPressed: () {
                 Routemaster.of(context).push(AppRoutes.studioBookMainPage);
               },
@@ -288,10 +299,19 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     double itemWidth = -1;
     double itemHeight = -1;
 
+    logger.info('width===========================${rightPaneRect.childWidth}');
+
     int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
         LayoutConst.bookThumbSize.width;
-    if (columnCount == 0) columnCount = 1;
-
+    if (columnCount <= 1) {
+      if (rightPaneRect.childWidth > 280) {
+        columnCount = 2;
+      } else if (rightPaneRect.childWidth > 154) {
+        columnCount = 1;
+      } else {
+        return SizedBox.shrink();
+      }
+    }
     bool isValidIndex(int index) {
       return index > 0 && index - 1 < bookManager.getLength();
     }

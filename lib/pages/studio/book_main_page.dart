@@ -849,7 +849,8 @@ class _BookMainPageState extends State<BookMainPage> {
     if (padding < 2) {
       padding = 2;
     }
-
+    logger
+        .info('StudioVariables.displayWidth======================${StudioVariables.displayWidth}');
     logger.fine(
         "height=${StudioVariables.virtualHeight}, width=${StudioVariables.virtualWidth}, scale=${StudioVariables.fitScale}}");
   }

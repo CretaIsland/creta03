@@ -571,7 +571,8 @@ class ContentsModel extends CretaModel {
         "autoSizeType": autoSizeType.value.index,
         "glassFill": glassFill.value,
         "opacity": opacity.value,
-        "fontSize": fontSize.value,
+        if (autoSizeType.value != AutoSizeType.autoFontSize)
+          "fontSize": fontSize.value, // autoFontSize 인 경우, fontSize save  가 의미가 없다.
         "fontSizeType": fontSizeType.value.index,
         "fontColor": fontColor.value.toString(),
         "shadowColor": shadowColor.value.toString(),
