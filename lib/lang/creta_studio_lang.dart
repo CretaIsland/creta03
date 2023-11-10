@@ -309,6 +309,7 @@ class CretaStudioLang {
   static const String contentFlipEffect = "콘텐츠 넘김 효과";
 
   static const String iconOption = "아이콘 선택";
+  static const String googleMapSavedList = "저장돤 목록";
 
   static List<String> animationTypes = [
     "없음",

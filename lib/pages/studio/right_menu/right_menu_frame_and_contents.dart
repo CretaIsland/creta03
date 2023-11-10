@@ -16,6 +16,7 @@ import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 import '../containees/containee_nofifier.dart';
 import '../containees/frame/sticker/mini_menu.dart';
+import '../left_menu/google_map/google_map_saved_list.dart';
 import '../left_menu/left_menu_page.dart';
 import '../studio_constant.dart';
 import 'contents/contents_ordered_list.dart';
@@ -179,6 +180,8 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     if (contentsManager == null || contentsManager.getAvailLength() == 0) {
       if (frame.isWeatherTYpe()) {
         return WeatherProperty(frameModel: frame, frameManager: frameManager);
+      } else if (frame.isMapType()) {
+        return GoogleMapSavedList();
       }
       return SizedBox.shrink();
     }
