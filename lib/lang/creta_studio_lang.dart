@@ -624,4 +624,7 @@ class CretaStudioLang {
   static String yesBtDnText = "네";
   static String export = "크레타 북 내보내기(Export)";
   static String zipRequestFailed = "파일 다운로드 요청이 실패했습니다";
+  static String zipCompleteFailed = "파일 압축 요청이 실패했습니다";
+  static String zipStarting = "요청하신 파일의 압축작업을 진행하고 있습니다";
+  static String fileDownloading = "요청하신 파일의 다운로드가 시작되었습니다";
 }
