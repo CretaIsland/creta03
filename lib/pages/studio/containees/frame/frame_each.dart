@@ -184,7 +184,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameDropZone() {
-    logger.info('_frameDropZone...');
+    logger.fine('_frameDropZone...');
 
     _isShowBorder = showBorder(widget.model, widget.pageModel, _contentsManager!, true);
     // Widget frameBody = Stack(
@@ -300,9 +300,9 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     if (_contentsManager == null) {
       return const SizedBox.shrink();
     }
-    logger.info('_frameBody2 ${widget.model.name.value}');
-    logger.info('_frameBody2 ${widget.model.isShow.value}');
-    logger.info('_frameBody2 ${widget.model.mid}');
+    logger.fine('_frameBody2 ${widget.model.name.value}');
+    logger.fine('_frameBody2 ${widget.model.isShow.value}');
+    logger.fine('_frameBody2 ${widget.model.mid}');
     return StreamBuilder<bool>(
         stream: _linkReceiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
@@ -476,7 +476,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   // }
 
   Widget _frameBox(FrameModel model, bool useColor) {
-    logger.info('_frameBox');
+    logger.fine('_frameBox');
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,

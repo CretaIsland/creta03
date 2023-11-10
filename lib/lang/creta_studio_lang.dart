@@ -617,4 +617,12 @@ class CretaStudioLang {
   static String musicVol = "소리 크기";
 
   static String depotComplete = "보관함으로 이동이 완료되었습니다";
+
+  static String downloadConfirm = '''이 작업은 시간이 오래 걸릴 수 있습니다.
+정말로 다운로드 하시겠습니까?''';
+  static String noBtDnTextDeloper = "json파일만 받기";
+  static String noBtDnText = "아니오";
+  static String yesBtDnText = "네";
+  static String export = "크레타 북 내보내기(Export)";
+  static String zipRequestFailed = "파일 다운로드 요청이 실패했습니다";
 }

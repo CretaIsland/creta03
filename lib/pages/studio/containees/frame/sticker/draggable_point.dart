@@ -42,7 +42,7 @@ class DraggablePointState extends State<DraggablePoint> {
 
   @override
   Widget build(BuildContext context) {
-    logger.info('DraggablePoint');
+    logger.fine('DraggablePoint');
     return StudioVariables.isHandToolMode == false &&
             //StudioVariables.isNotLinkState &&
             StudioVariables.isPreview == false

@@ -48,10 +48,12 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         // 사본을 만든다.
         caption: CretaLang.makeCopy,
         onPressed: () {
-          BookMainPage.bookManagerHolder!
-              .makeCopy(BookMainPage.bookManagerHolder!.onlyOne() as BookModel, null)
-              .then((newOne) {
-            BookMainPage.pageManagerHolder!.makeCopyAll(newOne.mid).then((value) {
+          BookModel? model = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+          if (model == null) {
+            return;
+          }
+          BookMainPage.bookManagerHolder!.makeCopy(model.mid, model, null).then((newOne) {
+            BookMainPage.pageManagerHolder!.copyBook(newOne.mid, newOne.mid).then((value) {
               String url = '${AppRoutes.studioBookMainPage}?${newOne.mid}';
               AppRoutes.launchTab(url);
               return null;
@@ -70,7 +72,9 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
       CretaMenuItem(
         // 다운로드 한다.
         caption: CretaLang.download,
-        onPressed: () {},
+        onPressed: () {
+          logger.info('download CretaBook !!! in list');
+        },
         disabled: true,
       ),
       CretaMenuItem(

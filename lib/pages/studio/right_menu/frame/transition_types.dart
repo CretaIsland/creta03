@@ -180,7 +180,7 @@ class _TransitionTypesState extends State<TransitionTypes> with ExampleBoxStateM
 
   String _imageName(ContentsModel contentsModel) {
     if (contentsModel.isImage()) return contentsModel.getURI();
-    if (contentsModel.thumbnail == null) return '';
-    return contentsModel.thumbnail!;
+    if (contentsModel.thumbnailUrl == null) return '';
+    return contentsModel.thumbnailUrl!;
   }
 }

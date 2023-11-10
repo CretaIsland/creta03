@@ -795,7 +795,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       );
     }
     String profileImg = _currentChannelModel?.profileImg ?? '';
-    String channelBannerImg = _currentChannelModel?.bannerImg ?? '';
+    String channelBannerImg = _currentChannelModel?.bannerImgUrl ?? '';
     Widget? bannerImage;
     if (_currentChannelModel == null) {
       bannerImage = SizedBox.shrink();
@@ -1905,7 +1905,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       child: Stack(
         children: [
           mainPage(
-            bannerKey: GlobalObjectKey('${_communityChannelType.name}|${_currentChannelModel?.bannerImg ?? ' '}'),
+            bannerKey: GlobalObjectKey('${_communityChannelType.name}|${_currentChannelModel?.bannerImgUrl ?? ' '}'),
             context,
             gotoButtonPressed: () {
               Routemaster.of(context).push(AppRoutes.studioBookGridPage);

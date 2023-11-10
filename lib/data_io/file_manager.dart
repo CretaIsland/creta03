@@ -19,18 +19,15 @@ class FileManager extends ChangeNotifier {
     debugPrint("----Start obtaining image list----");
     imgFileList = [];
 
-    final res = (await HycopFactory.storage!.getFileInfoList());
-    for (var element in res) {
-      if (element.fileType == ContentsType.image) {
-        imgFileList.add(FileModel(
-            fileId: element.fileId,
-            fileName: element.fileName,
-            fileView: element.fileView,
+    final res = (await HycopFactory.storage!.getFileList(search: "content/image/"));
+    for (var element in res!) {
+      imgFileList.add(FileModel(
+            id: element.id,
+            name: element.name,
+            url: element.url,
             thumbnailUrl: element.thumbnailUrl,
-            fileMd5: element.fileMd5,
-            fileSize: element.fileSize,
-            fileType: element.fileType));
-      }
+            size: element.size,
+            contentType: element.contentType));
     }
 
     debugPrint("----Done----");
@@ -41,18 +38,15 @@ class FileManager extends ChangeNotifier {
     debugPrint("----Start obtaining video list----");
     videoFileList = [];
 
-    final res = await HycopFactory.storage!.getFileInfoList();
-    for (var element in res) {
-      if (element.fileType == ContentsType.video) {
-        videoFileList.add(FileModel(
-            fileId: element.fileId,
-            fileName: element.fileName,
-            fileView: element.fileView,
+    final res = await HycopFactory.storage!.getFileList(search: "content/video/");
+    for (var element in res!) {
+      imgFileList.add(FileModel(
+            id: element.id,
+            name: element.name,
+            url: element.url,
             thumbnailUrl: element.thumbnailUrl,
-            fileMd5: element.fileMd5,
-            fileSize: element.fileSize,
-            fileType: element.fileType));
-      }
+            size: element.size,
+            contentType: element.contentType));
     }
     debugPrint("----Done----");
     notifyListeners();
@@ -61,18 +55,15 @@ class FileManager extends ChangeNotifier {
   Future<void> getEtcFileList() async {
     etcFileList = [];
 
-    final res = await HycopFactory.storage!.getFileInfoList();
-    for (var element in res) {
-      if (element.fileType != ContentsType.image && element.fileType != ContentsType.video) {
-        etcFileList.add(FileModel(
-            fileId: element.fileId,
-            fileName: element.fileName,
-            fileView: element.fileView,
+    final res = await HycopFactory.storage!.getFileList(search: "content/etc/");
+    for (var element in res!) {
+      imgFileList.add(FileModel(
+            id: element.id,
+            name: element.name,
+            url: element.url,
             thumbnailUrl: element.thumbnailUrl,
-            fileMd5: element.fileMd5,
-            fileSize: element.fileSize,
-            fileType: element.fileType));
-      }
+            size: element.size,
+            contentType: element.contentType));
     }
     notifyListeners();
   }
@@ -96,13 +87,13 @@ class FileManager extends ChangeNotifier {
     await HycopFactory.storage!.deleteFile(fileId);
     switch (contentsType) {
       case ContentsType.image:
-        imgFileList.removeWhere((element) => element.fileId == fileId);
+        imgFileList.removeWhere((element) => element.id == fileId);
         break;
       case ContentsType.video:
-        videoFileList.removeWhere((element) => element.fileId == fileId);
+        videoFileList.removeWhere((element) => element.id == fileId);
         break;
       default:
-        etcFileList.removeWhere((element) => element.fileId == fileId);
+        etcFileList.removeWhere((element) => element.id == fileId);
         break;
     }
     notifyListeners();

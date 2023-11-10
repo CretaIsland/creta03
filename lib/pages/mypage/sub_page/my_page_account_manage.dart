@@ -216,15 +216,15 @@ class _MyPageAccountManageState extends State<MyPageAccountManage> {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(20.0),
-        image: CretaAccountManager.getChannel!.bannerImg == '' ? null : DecorationImage(
-          image: Image.network(CretaAccountManager.getChannel!.bannerImg).image,
+        image: CretaAccountManager.getChannel!.bannerImgUrl == '' ? null : DecorationImage(
+          image: Image.network(CretaAccountManager.getChannel!.bannerImgUrl).image,
           fit: BoxFit.cover
         )
       ),
       child: Center(
         child: Stack(
           children: [
-            CretaAccountManager.getChannel!.bannerImg != '' ? const SizedBox() : 
+            CretaAccountManager.getChannel!.bannerImgUrl != '' ? const SizedBox() : 
               Center(
                 child: Text(
                   '선택된 배경 이미지가 없습니다.',

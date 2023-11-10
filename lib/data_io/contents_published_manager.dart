@@ -21,14 +21,14 @@ class ContentsPublishedManager extends CretaManager {
   AbsExModel newModel(String mid) => ContentsModel(mid, '');
 
   @override
-  Future<int> makeCopyAll(String? newParentMid) async {
+  Future<int> copyBook(String newBookMid, String? newParentMid) async {
     lock();
     int counter = 0;
     for (var ele in contentsManager!.modelList) {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      await makeCopy(ele, newParentMid);
+      await makeCopy(newBookMid, ele, newParentMid);
       counter++;
     }
     unlock();

@@ -247,7 +247,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
       }
       return BTN.line_blue_wmi_m(
           leftWidget: CretaAccountManager.userPropertyManagerHolder
-              .imageCircle(e.profileImg, e.nickname, radius: 24),
+              .imageCircle(e.profileImgUrl, e.nickname, radius: 24),
           icon: Icons.add_outlined,
           text: e.nickname,
           width: 140,
@@ -266,7 +266,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
     return CretaAccountManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget:
-          CretaAccountManager.userPropertyManagerHolder.imageCircle(e.profileImg, e.name, radius: 24),
+          CretaAccountManager.userPropertyManagerHolder.imageCircle(e.profileImgUrl, e.name, radius: 24),
           icon: Icons.add_outlined,
           text: '${e.name} ${CretaLang.team}',
           width: 180,

@@ -139,4 +139,25 @@ class LinkManager extends CretaManager {
       await createToDB(newModel);
     }
   }
+
+  String toJson() {
+    if (getAvailLength() == 0) {
+      return ',\n\t\t\t\t"links" : []\n';
+    }
+    int linkCount = 0;
+    String jsonStr = '';
+    jsonStr += ',\n\t\t\t\t"links" : [\n';
+    orderMapIterator((val) {
+      LinkModel link = val as LinkModel;
+      String linkStr = link.toJson(tab: '\t\t\t\t');
+      if (linkCount > 0) {
+        jsonStr += ',\n';
+      }
+      jsonStr += '\t\t\t\t{\n$linkStr\n\t\t\t\t}';
+      linkCount++;
+      return null;
+    });
+    jsonStr += '\n\t\t\t\t]\n';
+    return jsonStr;
+  }
 }

@@ -237,7 +237,7 @@ class ConnectedUserManager extends CretaManager {
     }
 
     ConnectedUserModel connectedUser = ConnectedUserModel(
-        bookMid: bookId, name: user.nickname, email: email, imageUrl: user.profileImg);
+        bookMid: bookId, name: user.nickname, email: email, imageUrl: user.profileImgUrl);
 
     modelList.add(connectedUser);
     notify();

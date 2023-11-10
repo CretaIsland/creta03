@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:creta03/model/user_property_model.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:hycop/hycop.dart';
 import '../common/creta_utils.dart';
 import '../design_system/component/tree/src/models/node.dart';
@@ -19,6 +22,9 @@ import 'creta_manager.dart';
 import 'page_manager.dart';
 
 class BookManager extends CretaManager {
+  // contents 들의 url 모음, 다운로드 버튼을 눌렀을 때 생성된다.
+  static Set<String> contentsSet = {};
+
   BookManager({String tableName = 'creta_book'}) : super(tableName, null) {
     saveManagerHolder?.registerManager('book', this);
   }
@@ -230,7 +236,7 @@ class BookManager extends CretaManager {
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
 
   @override
-  Future<AbsExModel> makeCopy(AbsExModel src, String? newParentMid) async {
+  Future<AbsExModel> makeCopy(String newBookMid, AbsExModel src, String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
 
     BookModel newOne = BookModel('');
@@ -240,6 +246,7 @@ class BookManager extends CretaManager {
     newOne.name.set('${srcModel.name.value}${CretaLang.copyOf}');
     newOne.sourceMid = "";
     newOne.publishMid = "";
+    newOne.setRealTimeKey(newBookMid);
     if (CretaAccountManager.getUserProperty != null) {
       newOne.creator = CretaAccountManager.getUserProperty!.email;
     }
@@ -285,5 +292,86 @@ class BookManager extends CretaManager {
     ));
 
     return nodes;
+  }
+
+  String? toJson(PageManager? pageManager, BookModel book) {
+    String bookStr = book.toJson();
+    BookManager.contentsSet.clear();
+    if (pageManager != null) {
+      bookStr += pageManager.toJson();
+    }
+    if (BookManager.contentsSet.isEmpty) {
+      bookStr += '\n\t,"contentsUrl": []';
+    } else {
+      bookStr += '\n\t,"contentsUrl": [';
+      int count = 0;
+      for (var ele in BookManager.contentsSet) {
+        if (count > 0) {
+          bookStr += ",";
+        }
+        bookStr += '\n\t\t"$ele"';
+        count++;
+      }
+      bookStr += '\n\t]';
+    }
+    return bookStr;
+  }
+
+  Future<bool> download(BuildContext context, PageManager? pageManager, bool shouldDownload) async {
+    BookModel? book = onlyOne() as BookModel?;
+    if (book == null) {
+      return false;
+    }
+    String? jsonStr = toJson(pageManager, book);
+    if (jsonStr == null) {
+      return false;
+    }
+    String retval = '{\n$jsonStr\n}';
+
+    if (shouldDownload) {
+      //base64 encoding 필요
+      String encodedJson = base64Encode(utf8.encode(retval));
+
+      String apiServer = 'https://yourapi.com/';
+      String url = '${apiServer}zipRequest';
+
+      try {
+        // HTTP POST 요청 수행
+        http.Response response = await http.post(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            // 추가적인 헤더를 설정할 수 있습니다.
+          },
+          body: encodedJson, // Base64 인코딩된 JSON 데이터
+        );
+
+        // 서버로부터의 응답 처리
+        if (response.statusCode == 200) {
+          // 성공적으로 데이터를 보내고 URL을 받았다고 가정
+          //Map<String, dynamic> responseBody = json.decode(response.body);
+          //String receivedUrl = responseBody['zipUrl']; // API 응답에서 URL 추출
+          logger.info('zipRequest succeed');
+        } else {
+          // 에러 처리
+          logger.severe('$url Failed to send data');
+          logger.severe('Status code: ${response.statusCode}');
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, '${CretaStudioLang.zipRequestFailed}(${response.statusCode})');
+          return false;
+        }
+      } catch (e) {
+        // 예외 처리
+        logger.severe('$url Failed to send data');
+        logger.severe('An error occurred: $e');
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($e)');
+        return false;
+      }
+    } else {
+      // 개발자 모드에서는 json 만 받아 볼 수 있다.
+      CretaUtils.saveLogToFile(retval, "${book.mid}.json");
+    }
+    return true;
   }
 }

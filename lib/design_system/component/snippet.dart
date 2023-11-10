@@ -498,7 +498,7 @@ class Snippet {
                     icon: Icons.arrow_drop_down_outlined,
                     // image: NetworkImage(
                     //     'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif'),
-                    image: NetworkImage(CretaAccountManager.getUserProperty!.profileImg),
+                    image: NetworkImage(CretaAccountManager.getUserProperty!.profileImgUrl),
                     onPressed: () {
                       _popupAccountMenu(
                           GlobalObjectKey('CretaAppBarOfStudio.BTN.fill_gray_iti_l'), context,

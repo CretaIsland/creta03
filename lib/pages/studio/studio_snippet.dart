@@ -203,8 +203,8 @@ class StudioSnippet {
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
       //await contentsManager.setToDB(reModel);
 
-      model.remoteUrl = fileModel.fileView;
-      model.thumbnail = fileModel.thumbnailUrl;
+      model.remoteUrl = fileModel.url;
+      model.thumbnailUrl = fileModel.thumbnailUrl;
 
       logger.info('uploaded url = ${model.url}');
       logger.info('uploaded fileName = ${model.name}');
@@ -216,7 +216,7 @@ class StudioSnippet {
       logger.severe('upload failed ${model.file!.name}');
     }
     logger.info('send event to property');
-    logger.info('uploaded thumbnail = ${model.thumbnail}');
+    logger.info('uploaded thumbnailUrl = ${model.thumbnailUrl}');
     contentsManager.sendEvent?.sendEvent(model);
   }
 

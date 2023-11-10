@@ -87,15 +87,15 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
         border: Border.all(color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(20.0),
         color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-        image: teamManager.currentTeam!.profileImg == '' ? null : DecorationImage(
-          image: Image.network(teamManager.currentTeam!.profileImg).image,
+        image: teamManager.currentTeam!.profileImgUrl == '' ? null : DecorationImage(
+          image: Image.network(teamManager.currentTeam!.profileImgUrl).image,
           fit: BoxFit.cover
         )
       ),
       child: Center(
         child: Stack(
           children: [
-            teamManager.currentTeam!.profileImg != '' ? const SizedBox() : 
+            teamManager.currentTeam!.profileImgUrl != '' ? const SizedBox() : 
               Text(
                 teamManager.currentTeam!.name.substring(0, 1),
                 style: const TextStyle(
@@ -113,9 +113,9 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                   if(_pickedFile != null) {
                     Uint8List fileBytes = await _pickedFile!.readAsBytes();
                     if(fileBytes.isNotEmpty) {
-                      HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, fileBytes, folderName: "profile/").then((fileModel) {
+                      HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, fileBytes, fileUsage: "profile").then((fileModel) {
                         if(fileModel != null) {
-                          teamManager.currentTeam!.profileImg = fileModel.fileView;
+                          teamManager.currentTeam!.profileImgUrl = fileModel.url;
                           teamManager.setToDB(teamManager.currentTeam!);
                           teamManager.notify();
                         }
@@ -193,10 +193,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
           height: 24.0,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.0),
-            color: memberData.profileImg == '' ?  Colors.primaries[Random().nextInt(Colors.primaries.length)] : null,
-            image: memberData.profileImg != '' ? DecorationImage(image: Image.network(memberData.profileImg).image, fit: BoxFit.cover) : null
+            color: memberData.profileImgUrl == '' ?  Colors.primaries[Random().nextInt(Colors.primaries.length)] : null,
+            image: memberData.profileImgUrl != '' ? DecorationImage(image: Image.network(memberData.profileImgUrl).image, fit: BoxFit.cover) : null
           ),
-          child: memberData.profileImg != '' ? null : Center(
+          child: memberData.profileImgUrl != '' ? null : Center(
             child: Text(
               memberData.nickname.toString().substring(0, 1),
               style: const TextStyle(
@@ -269,9 +269,9 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
               text: '완료', 
               width: 55,
               onPressed: () {
-                HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, bannerImgBytes, folderName: "banner/").then((fileModel) {
+                HycopFactory.storage!.uploadFile(_pickedFile!.name, _pickedFile!.mimeType!, bannerImgBytes, fileUsage: "banner").then((fileModel) {
                   if(fileModel != null) {
-                    teamManager.currentTeam!.channelBannerImg = fileModel.fileView;
+                    teamManager.currentTeam!.channelBannerImg = fileModel.url;
                     teamManager.setToDB(teamManager.currentTeam!);
                     teamManager.notify();
                     Navigator.of(context).pop();
@@ -360,10 +360,10 @@ class _MyPageTeamManageState extends State<MyPageTeamManage> {
                                       height: 16,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8),
-                                        color: member.profileImg == '' ? Colors.primaries[Random().nextInt(Colors.primaries.length)] : Colors.white,
-                                        image: member.profileImg != '' ? DecorationImage(image: Image.network(member.profileImg).image, fit: BoxFit.cover ) : null
+                                        color: member.profileImgUrl == '' ? Colors.primaries[Random().nextInt(Colors.primaries.length)] : Colors.white,
+                                        image: member.profileImgUrl != '' ? DecorationImage(image: Image.network(member.profileImgUrl).image, fit: BoxFit.cover ) : null
                                       ),
-                                      child: member.profileImg =='' ? Center(
+                                      child: member.profileImgUrl =='' ? Center(
                                         child: Text(
                                           member.nickname.substring(0, 1),
                                           style: const TextStyle(

@@ -76,9 +76,9 @@ class RemoteStream extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-                          image: snapshot.data!.profileImg != "" ? DecorationImage(image: Image.network(snapshot.data!.profileImg).image, fit: BoxFit.cover) : null
+                          image: snapshot.data!.profileImgUrl != "" ? DecorationImage(image: Image.network(snapshot.data!.profileImgUrl).image, fit: BoxFit.cover) : null
                         ),
-                        child:  snapshot.data!.profileImg != "" ? const SizedBox.shrink() : Center(child: Text(peer.displayName.substring(0, 1), style: userNameStyle)),
+                        child:  snapshot.data!.profileImgUrl != "" ? const SizedBox.shrink() : Center(child: Text(peer.displayName.substring(0, 1), style: userNameStyle)),
                       ),
                     ),
                     Padding(

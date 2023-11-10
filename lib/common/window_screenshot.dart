@@ -21,9 +21,9 @@ class WindowScreenshot {
         UriData screenshotBytes = Uri.parse(screenshot).data!;
         FileModel? result = await HycopFactory.storage!.uploadFile(
             '${bookId}_thumbnail.png', screenshotBytes.mimeType, screenshotBytes.contentAsBytes(),
-            makeThumbnail: false);
+            makeThumbnail: false, fileUsage: 'bookThumbnail');
         if (result != null) {
-          return result.fileView;
+          return result.url;
         }
       }
     } catch (error) {

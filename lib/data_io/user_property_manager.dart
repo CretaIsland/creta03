@@ -97,7 +97,7 @@ class UserPropertyManager extends CretaManager {
       phoneNumber: AccountManager.currentLoginUser.phone,
       cretaGrade: CretaGradeType.none,
       ratePlan: RatePlanType.none,
-      profileImg: AccountManager.currentLoginUser.imagefile,
+      profileImgUrl: AccountManager.currentLoginUser.imagefile,
       // channelBannerImg: '',
       country: CountryType.none,
       language: LanguageType.none,
@@ -321,7 +321,7 @@ class UserPropertyManager extends CretaManager {
     UserPropertyModel user = UserPropertyModel('');
     user.nickname = team == null ? CretaLang.entire : team.name;
     user.email = team == null ? 'public' : team.mid;
-    if (team != null) user.profileImg = team.profileImg;
+    if (team != null) user.profileImgUrl = team.profileImgUrl;
     return user;
   }
 
@@ -339,7 +339,7 @@ class UserPropertyManager extends CretaManager {
 
   Widget profileImageBox({UserPropertyModel? model, Color? color, double radius = 200}) {
     model ??= CretaAccountManager.getUserProperty;
-    return imageCircle(model!.profileImg, model.nickname, radius: radius, color: color);
+    return imageCircle(model!.profileImgUrl, model.nickname, radius: radius, color: color);
   }
 
   Widget imageCircle(String img, String name, {Color? color, double radius = 200}) {

@@ -247,7 +247,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
 
     //('orderedList=${model.name}, ${model.isRemoved.value}');
 
-    String? uri = model.thumbnail;
+    String? uri = model.thumbnailUrl;
     if (uri == null || uri.isEmpty) {
       if (model.isImage()) {
         uri = model.getURI();
@@ -604,8 +604,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         ),
       ),
       if ((model.isImage() || model.isVideo()) &&
-          model.thumbnail != null &&
-          model.thumbnail!.isNotEmpty)
+          model.thumbnailUrl != null &&
+          model.thumbnailUrl!.isNotEmpty)
         propertyLine(
           // useThisThumbnail
           topPadding: 10,
@@ -613,14 +613,14 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           widget: CretaToggleButton(
             width: 54 * 0.75,
             height: 28 * 0.75,
-            defaultValue: model.thumbnail != null &&
+            defaultValue: model.thumbnailUrl != null &&
                 widget.book!.thumbnailUrl.value.isNotEmpty &&
-                widget.book!.thumbnailUrl.value == model.thumbnail!,
+                widget.book!.thumbnailUrl.value == model.thumbnailUrl!,
             onSelected: (value) {
               if (value == true) {
-                widget.book!.thumbnailUrl.set(model!.thumbnail!, noUndo: true);
+                widget.book!.thumbnailUrl.set(model!.thumbnailUrl!, noUndo: true);
               } else {
-                if (widget.book!.thumbnailUrl.value == model!.thumbnail!) {
+                if (widget.book!.thumbnailUrl.value == model!.thumbnailUrl!) {
                   widget.book!.thumbnailUrl.set('', noUndo: true);
                 }
               }
@@ -946,7 +946,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           //});
         },
         onChannged: (val) {
-          model.fontSize.set(val);
+          model.fontSize.set(val.roundToDouble());
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {

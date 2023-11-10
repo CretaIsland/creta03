@@ -225,7 +225,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               } else {
                 //print('No music contents here');
               }
-              logger.info('Music thumbnail has NO content');
+              logger.info('Music thumbnailUrl has NO content');
               return SizedBox.shrink();
             });
       }
@@ -236,7 +236,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
             if (snapshot.data != null && snapshot.data is ContentsModel) {
               ContentsModel model = snapshot.data!;
               contentsManager.updateModel(model);
-              logger.info('model updated ${model.name}, ${model.thumbnail}');
+              logger.info('model updated ${model.name}, ${model.thumbnailUrl}');
             }
             if (contentsCount > 0) {
               String? thumbnailUrl = contentsManager.getThumbnail();

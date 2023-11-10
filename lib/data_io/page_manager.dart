@@ -452,7 +452,7 @@ class PageManager extends CretaManager {
   }
 
   @override
-  Future<int> makeCopyAll(String? newParentMid) async {
+  Future<int> copyBook(String newBookMid,String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     lock();
     int counter = 0;
@@ -460,9 +460,9 @@ class PageManager extends CretaManager {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      AbsExModel newOne = await makeCopy(ele, newParentMid);
+      AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
       FrameManager? frameManager = findFrameManager(ele.mid);
-      await frameManager?.makeCopyAll(newOne.mid);
+      await frameManager?.copyBook(newBookMid,newOne.mid);
       counter++;
     }
     unlock();
@@ -630,5 +630,30 @@ class PageManager extends CretaManager {
       pageNo++;
     }
     return nodes;
+  }
+
+  String toJson() {
+     if (getAvailLength() == 0) {
+      return ',\n\t"pages" : []\n';
+    }
+    String jsonStr = '';
+    int pageCount = 0;
+    jsonStr += ',\n\t"pages" : [\n';
+    orderMapIterator((val) {
+      PageModel page = val as PageModel;
+      String pageStr = page.toJson(tab: '\t');
+      if (pageCount > 0) {
+        jsonStr += ',\n';
+      }
+      FrameManager? frameManager = findFrameManager(page.mid);
+      if (frameManager != null) {
+        pageStr += frameManager.toJson();
+      }
+      jsonStr += '\t{\n$pageStr\n\t}';
+      pageCount++;
+      return null;
+    });
+    jsonStr += '\n\t]\n';
+    return jsonStr;
   }
 }

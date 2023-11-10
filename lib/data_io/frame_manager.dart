@@ -505,7 +505,7 @@ class FrameManager extends CretaManager {
   }
 
   @override
-  Future<int> makeCopyAll(String? newParentMid) async {
+  Future<int> copyBook(String newBookMid,String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     lock();
     int counter = 0;
@@ -513,9 +513,9 @@ class FrameManager extends CretaManager {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      AbsExModel newOne = await makeCopy(ele, newParentMid);
+      AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
       ContentsManager contentsManager = findContentsManager(ele as FrameModel);
-      await contentsManager.makeCopyAll(newOne.mid);
+      await contentsManager.copyBook(newBookMid,newOne.mid);
       counter++;
     }
     unlock();
@@ -790,5 +790,28 @@ class FrameManager extends CretaManager {
     aModel.order.set(bOrder);
     bModel.order.set(aOrder);
     mychangeStack.endTrans();
+  }
+
+  String toJson() {
+    if (getAvailLength() == 0) {
+      return ',\n\t\t"frames" : []\n';
+    }
+    int frameCount = 0;
+    String jsonStr = '';
+    jsonStr += ',\n\t\t"frames" : [\n';
+    orderMapIterator((val) {
+      FrameModel frame = val as FrameModel;
+      String frameStr = frame.toJson(tab: '\t\t');
+      if (frameCount > 0) {
+        jsonStr += ',\n';
+      }
+      ContentsManager? contentsManager = findContentsManager(frame);
+      frameStr += contentsManager.toJson();
+      jsonStr += '\t\t{\n$frameStr\n\t\t}';
+      frameCount++;
+      return null;
+    });
+    jsonStr += '\n\t\t]\n';
+    return jsonStr;
   }
 }

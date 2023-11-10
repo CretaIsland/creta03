@@ -122,10 +122,10 @@ class _LocalStreamState extends State<LocalStream> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-                          image: CretaAccountManager.getUserProperty!.profileImg != "" ?
-                            DecorationImage(image: Image.network(CretaAccountManager.getUserProperty!.profileImg).image, fit: BoxFit.cover) : null
+                          image: CretaAccountManager.getUserProperty!.profileImgUrl != "" ?
+                            DecorationImage(image: Image.network(CretaAccountManager.getUserProperty!.profileImgUrl).image, fit: BoxFit.cover) : null
                         ),
-                        child: CretaAccountManager.getUserProperty!.profileImg != "" ? const SizedBox.shrink() :
+                        child: CretaAccountManager.getUserProperty!.profileImgUrl != "" ? const SizedBox.shrink() :
                           Center(child: Text(CretaAccountManager.getUserProperty!.nickname.substring(0, 1), style: userNameStyle)),
                       ),
                     ),

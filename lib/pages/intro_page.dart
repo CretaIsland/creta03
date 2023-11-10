@@ -20,6 +20,9 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   late VideoPlayerController controller;
   final List<String> cretaVersionList = [
+    "0.4.05",
+    "0.4.04",
+    "0.4.03",
     "0.4.02",
     "0.4.01",
     "0.4.0",
@@ -40,8 +43,8 @@ class _IntroPageState extends State<IntroPage> {
     "0.3.13",
     "0.3.12",
   ];
-  final String hycopVersion = "0.3.17";
-  final String buildNumber = "20231106-21";
+  final String hycopVersion = "0.3.23";
+  final String buildNumber = "20231110-10(appwrite)";
 
   @override
   void initState() {

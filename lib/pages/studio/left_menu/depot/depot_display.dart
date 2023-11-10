@@ -160,7 +160,7 @@ class _DepotDisplayClassState extends State<DepotDisplay> {
                     itemBuilder: (BuildContext context, int index) {
                       ContentsModel contents = _localManager.filteredContents[index];
                       DepotModel? depot = manager.getModelByContentsMid(contents.mid);
-                      String? depotUrl = contents.thumbnail;
+                      String? depotUrl = contents.thumbnailUrl;
                       bool isSelected = DepotDisplay.ctrlSelectedSet.contains(depot) ||
                           DepotDisplay.shiftSelectedSet.contains(depot);
                       return Column(mainAxisAlignment: MainAxisAlignment.center, children: [

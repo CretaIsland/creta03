@@ -24,23 +24,26 @@ class FramePublishedManager extends CretaManager {
   AbsExModel newModel(String mid) => FrameModel(mid, '');
 
   @override
-  Future<int> makeCopyAll(String? newParentMid) async {
+  Future<int> copyBook(String newBookMid,String? newParentMid) async {
     lock();
     int counter = 0;
     for (var ele in frameManager!.modelList) {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      AbsExModel newOne = await makeCopy(ele, newParentMid);
-      if (ele.mid == BookPublishedManager.srcBackgroundMusicFrame) {
-        BookPublishedManager.newbBackgroundMusicFrame = newOne.mid;
+      AbsExModel newOne = await makeCopy(newBookMid,ele, newParentMid);
+      //if (ele.mid == BookPublishedManager.srcBackgroundMusicFrame) {
+      if (frameManager != null) {
+        if (ele.mid == frameManager!.bookModel.backgroundMusicFrame.value) {
+          BookPublishedManager.newbBackgroundMusicFrame = newOne.mid;
+        }
       }
       ContentsManager contentsManager = frameManager!.findContentsManager(ele as FrameModel);
       // if (contentsManager == null) {
       //   continue;
       // }
       ContentsPublishedManager publishedManager = ContentsPublishedManager(contentsManager);
-      await publishedManager.makeCopyAll(newOne.mid);
+      await publishedManager.copyBook(newBookMid, newOne.mid);
       counter++;
     }
     unlock();
