@@ -660,7 +660,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     return CretaAccountManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget: CretaAccountManager.userPropertyManagerHolder
-              .imageCircle(e.profileImg, e.name, radius: 24),
+              .imageCircle(e.profileImgUrl, e.name, radius: 24),
           icon: Icons.add_outlined,
           text: '${e.name} ${CretaLang.team}',
           width: 180,
@@ -915,7 +915,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     return CretaAccountManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
           leftWidget: CretaAccountManager.userPropertyManagerHolder
-              .imageCircle(e.profileImg, e.name, radius: 24),
+              .imageCircle(e.profileImgUrl, e.name, radius: 24),
           icon: Icons.add_outlined,
           text: '${e.name} ${CretaLang.team}',
           width: 180,
@@ -986,7 +986,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       //     radius: 28,
                       //     color: userModel.email == 'public' ? CretaColor.primary : null),
                       CretaAccountManager.userPropertyManagerHolder.imageCircle(
-                        teamModel?.profileImg ?? CretaAccountManager.getUserProperty!.profileImg,
+                        teamModel?.profileImgUrl ?? CretaAccountManager.getUserProperty!.profileImgUrl,
                         teamModel?.name ?? CretaAccountManager.getUserProperty!.nickname,
                         radius: 28,
                       ),

@@ -15,7 +15,7 @@ class UserPropertyModel extends CretaModel {
   late CretaGradeType cretaGrade;
   late RatePlanType ratePlan;
 
-  late String profileImg;
+  late String profileImgUrl;
   // late String channelBannerImg;
 
   late CountryType country;
@@ -62,7 +62,7 @@ class UserPropertyModel extends CretaModel {
         email,
         nickname,
         phoneNumber,
-        profileImg,
+        profileImgUrl,
         // channelBannerImg,
         freeSpace,
         bookCount,
@@ -97,7 +97,7 @@ class UserPropertyModel extends CretaModel {
     phoneNumber = '';
     cretaGrade = CretaGradeType.none;
     ratePlan = RatePlanType.none;
-    profileImg = '';
+    profileImgUrl = '';
     // channelBannerImg = '';
     country = CountryType.none;
     language = LanguageType.none;
@@ -136,7 +136,7 @@ class UserPropertyModel extends CretaModel {
     this.phoneNumber = '',
     this.cretaGrade = CretaGradeType.none,
     this.ratePlan = RatePlanType.none,
-    this.profileImg = '',
+    this.profileImgUrl = '',
     // this.channelBannerImg = '',
     this.country = CountryType.none,
     this.language = LanguageType.none,
@@ -178,7 +178,7 @@ class UserPropertyModel extends CretaModel {
     phoneNumber = map['phoneNumber'] ?? '';
     cretaGrade = CretaGradeType.fromInt(map['cretaGrade'] ?? 0);
     ratePlan = RatePlanType.fromInt(map['ratePlan'] ?? 0);
-    profileImg = map['profileImg'] ?? '';
+    profileImgUrl = map['profileImgUrl'] ?? '';
     // channelBannerImg = map['channelBannerImg'] ?? '';
     country = CountryType.fromInt(map['country'] ?? 0);
     language = LanguageType.fromInt(map['language'] ?? 0);
@@ -222,7 +222,7 @@ class UserPropertyModel extends CretaModel {
         'phoneNumber': phoneNumber,
         'cretaGrade': cretaGrade.index,
         'ratePlan': ratePlan.index,
-        'profileImg': profileImg,
+        'profileImgUrl': profileImgUrl,
         // 'channelBannerImg': channelBannerImg,
         'country': country.index,
         'language': language.index,

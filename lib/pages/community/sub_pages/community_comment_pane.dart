@@ -124,7 +124,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       comment: '',
     );
     model.barType = barType;
-    model.profileImg = CretaAccountManager.getUserProperty?.profileImg ??
+    model.profileImg = CretaAccountManager.getUserProperty?.profileImgUrl ??
         'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif';
     return model;
   }
@@ -140,7 +140,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       }
       UserPropertyModel? userProperty = _userPropertyMap[data.userId];
       data.name = userProperty?.nickname ?? '';
-      data.profileImg = userProperty?.profileImg ?? '';
+      data.profileImg = userProperty?.profileImgUrl ?? '';
       returnCommentList.add(data);
       rootMap[data.getMid] = data;
       data.replyList.clear();
@@ -153,7 +153,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
       }
       UserPropertyModel? userProperty = _userPropertyMap[data.userId];
       data.name = userProperty?.nickname ?? '';
-      data.profileImg = userProperty?.profileImg ?? '';
+      data.profileImg = userProperty?.profileImgUrl ?? '';
       CommentModel? parentData = rootMap[data.parentId];
       parentData?.replyList.add(data);
       parentData?.hasNoReply = false;
@@ -311,7 +311,7 @@ class _CommunityCommentPaneState extends State<CommunityCommentPane> {
                     hasAni: false,
                     width: 40,
                     height: 40,
-                    image: CretaAccountManager.getUserProperty?.profileImg ??
+                    image: CretaAccountManager.getUserProperty?.profileImgUrl ??
                         'https://docs.flutter.dev/assets/images/dash/dash-fainting.gif',
                   ),
                 ),
