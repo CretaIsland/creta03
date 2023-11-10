@@ -236,7 +236,7 @@ class BookManager extends CretaManager {
   String prefix() => CretaManager.modelPrefix(ExModelType.book);
 
   @override
-  Future<AbsExModel> makeCopy(AbsExModel src, String? newParentMid) async {
+  Future<AbsExModel> makeCopy(String newBookMid, AbsExModel src, String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
 
     BookModel newOne = BookModel('');
@@ -246,6 +246,7 @@ class BookManager extends CretaManager {
     newOne.name.set('${srcModel.name.value}${CretaLang.copyOf}');
     newOne.sourceMid = "";
     newOne.publishMid = "";
+    newOne.setRealTimeKey(newBookMid);
     if (CretaAccountManager.getUserProperty != null) {
       newOne.creator = CretaAccountManager.getUserProperty!.email;
     }
@@ -326,7 +327,6 @@ class BookManager extends CretaManager {
       return false;
     }
     String retval = '{\n$jsonStr\n}';
-    CretaUtils.saveLogToFile(retval, "${book.mid}.json");
 
     if (shouldDownload) {
       //base64 encoding 필요
@@ -352,12 +352,6 @@ class BookManager extends CretaManager {
           //Map<String, dynamic> responseBody = json.decode(response.body);
           //String receivedUrl = responseBody['zipUrl']; // API 응답에서 URL 추출
           logger.info('zipRequest succeed');
-
-          
-
-
-
-
         } else {
           // 에러 처리
           logger.severe('$url Failed to send data');
@@ -374,6 +368,9 @@ class BookManager extends CretaManager {
         showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($e)');
         return false;
       }
+    } else {
+      // 개발자 모드에서는 json 만 받아 볼 수 있다.
+      CretaUtils.saveLogToFile(retval, "${book.mid}.json");
     }
     return true;
   }

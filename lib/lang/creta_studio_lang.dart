@@ -619,6 +619,7 @@ class CretaStudioLang {
 
   static String downloadConfirm = '''이 작업은 시간이 오래 걸릴 수 있습니다.
 정말로 다운로드 하시겠습니까?''';
+  static String noBtDnTextDeloper = "json파일만 받기";
   static String noBtDnText = "아니오";
   static String yesBtDnText = "네";
   static String export = "크레타 북 내보내기(Export)";

@@ -25,7 +25,7 @@ class PagePublishedManager extends CretaManager {
   AbsExModel newModel(String mid) => PageModel(mid, bookModel!);
 
   @override
-  Future<int> makeCopyAll(String? newParentMid) async {
+  Future<int> copyBook(String newBookMid, String? newParentMid) async {
     lock();
     int counter = 0;
     for (var ele in pageManager!.modelList) {
@@ -33,14 +33,14 @@ class PagePublishedManager extends CretaManager {
         continue;
       }
       //PageModel model = ele as PageModel;
-      AbsExModel newOne = await makeCopy(ele, newParentMid);
+      AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
       //print('publish page ${newOne.mid}, ${model.name.value}, ${model.isRemoved.value}');
       FrameManager? frameManager = pageManager!.findFrameManager(ele.mid);
       if (frameManager == null) {
         continue;
       }
       FramePublishedManager publishedManager = FramePublishedManager(frameManager);
-      await publishedManager.makeCopyAll(newOne.mid);
+      await publishedManager.copyBook(newBookMid, newOne.mid);
       counter++;
     }
     unlock();

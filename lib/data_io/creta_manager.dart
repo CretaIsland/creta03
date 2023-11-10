@@ -1045,18 +1045,19 @@ abstract class CretaManager extends AbsExModelManager {
     reOrdering();
   }
 
-  Future<AbsExModel> makeCopy(AbsExModel src, String? newParentMid) async {
+  Future<AbsExModel> makeCopy(String newBookMid, AbsExModel src, String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     AbsExModel newOne = newModel('');
     // creat_book_published data 를 만든다.
     newOne.copyFrom(src, newMid: newOne.mid, pMid: newParentMid ?? newOne.parentMid.value);
+    newOne.setRealTimeKey(newBookMid);
     //print('makeCopy : newMid=${newOne.mid}, parent=$newParentMid');
 
     await createToDB(newOne);
     return newOne;
   }
 
-  Future<int> makeCopyAll(String? newParentMid) async {
+  Future<int> copyBook(String newBookMid, String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     lock();
     int counter = 0;
@@ -1064,7 +1065,7 @@ abstract class CretaManager extends AbsExModelManager {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      await makeCopy(ele, newParentMid);
+      await makeCopy(newBookMid, ele, newParentMid);
       counter++;
     }
     unlock();

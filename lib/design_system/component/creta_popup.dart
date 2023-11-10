@@ -80,19 +80,32 @@ class CretaPopup {
           return AlertDialog(
             titlePadding: const EdgeInsets.all(0), // Remove default padding
             title: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 10,
+              padding: const EdgeInsets.fromLTRB(
+                20,
+                10,
+                5,
+                10,
               ), // Add custom padding
               color: CretaColor.primary, // Background color for the title
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Icon(icon, color: Colors.white), // The icon in front of the title
-                  const SizedBox(width: 10), // Space between icon and title
-                  Text(
-                    title,
-                    style: CretaFont.titleELarge.copyWith(color: Colors.white),
+                  Row(
+                    children: [
+                      Icon(icon, color: Colors.white), // The icon in front of the title
+                      const SizedBox(width: 10), // Space between icon and title
+                      Text(
+                        title,
+                        style: CretaFont.titleELarge.copyWith(color: Colors.white),
+                      ),
+                    ],
                   ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(); // Dismiss dialog
+                    },
+                    icon: const Icon(Icons.close_outlined),
+                  )
                 ],
               ),
             ),

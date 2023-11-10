@@ -101,3 +101,6 @@ copy src_modify\appwrite_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.de
 copy src_modify\dart_appwrite_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\dart_appwrite-10.0.0\pubspec.yaml"
 copy src_modify\image_network_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\image_network-2.5.4+1\pubspec.yaml"
 copy src_modify\webviewimage_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\webviewimage-0.0.4\pubspec.yaml"
+
+#skpark modify 23/11/10
+copy src_modify\realTime_mixin.daxt $env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\appwrite-11.0.0\lib\src\realTime_mixin.dart

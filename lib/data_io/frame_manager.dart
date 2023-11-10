@@ -505,7 +505,7 @@ class FrameManager extends CretaManager {
   }
 
   @override
-  Future<int> makeCopyAll(String? newParentMid) async {
+  Future<int> copyBook(String newBookMid,String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     lock();
     int counter = 0;
@@ -513,9 +513,9 @@ class FrameManager extends CretaManager {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      AbsExModel newOne = await makeCopy(ele, newParentMid);
+      AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
       ContentsManager contentsManager = findContentsManager(ele as FrameModel);
-      await contentsManager.makeCopyAll(newOne.mid);
+      await contentsManager.copyBook(newBookMid,newOne.mid);
       counter++;
     }
     unlock();
