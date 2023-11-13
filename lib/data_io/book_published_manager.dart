@@ -182,6 +182,8 @@ class BookPublishedManager extends CretaManager {
 
   Future<bool> publish({
     required BookModel src,
+    required List<String> readers,
+    required List<String> writers,
     required PageManager pageManager,
     void Function(bool)? onComplete,
   }) async {
@@ -212,10 +214,14 @@ class BookPublishedManager extends CretaManager {
       await createToDB(published);
       await publishedManager.copyBook(published.mid, published.mid);
       published.backgroundMusicFrame.set(newbBackgroundMusicFrame, save: false);
+      published.readers = [...readers];
+      published.writers = [...writers];
+      published.shares = published.getShares(published.owners, writers, readers);
       await setToDB(published);
       logger.info('published created ${published.mid}, source=${published.sourceMid}');
     } else {
       published.setUpdateTime();
+
       await setToDB(published);
       // 예전 자식은 모두 지우고
       await publishedManager.removeChild(published.mid);
@@ -223,6 +229,9 @@ class BookPublishedManager extends CretaManager {
       // 자식은 모두 새로 만든다.
       int count = await publishedManager.copyBook(published.mid, published.mid);
       published.backgroundMusicFrame.set(newbBackgroundMusicFrame, save: false);
+      published.readers = [...readers];
+      published.writers = [...writers];
+      published.shares = published.getShares(published.owners, writers, readers);
       await setToDB(published);
       logger.info('published updated ${published.mid}, source=${published.sourceMid} $count');
     }

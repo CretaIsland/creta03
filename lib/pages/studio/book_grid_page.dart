@@ -202,7 +202,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   @override
   Widget build(BuildContext context) {
     double windowWidth = MediaQuery.of(context).size.width;
-    logger.info('`````````````````````````window width = $windowWidth');
+    //logger.info('`````````````````````````window width = $windowWidth');
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<BookManager>.value(
@@ -299,7 +299,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     double itemWidth = -1;
     double itemHeight = -1;
 
-    logger.info('width===========================${rightPaneRect.childWidth}');
+    //logger.info('width===========================${rightPaneRect.childWidth}');
 
     int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
         LayoutConst.bookThumbSize.width;

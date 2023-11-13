@@ -337,7 +337,7 @@ class BookManager extends CretaManager {
     //base64 encoding 필요
     String encodedJson = base64Encode(utf8.encode(retval));
 
-    String apiServer = 'https://yourapi.com/';
+    String apiServer = 'https://devcreta.com:444/';
     String url = '${apiServer}zipRequest';
 
     try {

@@ -90,6 +90,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
     _imageDetail = ImageDetail();
     _imageValueNotifier = ImageValueNotifier(_imageDetail);
 
+
     _imageStream = NetworkImage(widget.image).resolve(const ImageConfiguration());
     _imageStream.addListener(ImageStreamListener(
       (info, value) {

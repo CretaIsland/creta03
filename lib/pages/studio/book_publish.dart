@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 
 import 'package:creta03/model/user_property_model.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 import 'package:progress_bar_steppers/steppers.dart';
@@ -33,8 +36,23 @@ import 'studio_snippet.dart';
 
 class BookPublishDialog extends StatefulWidget {
   final BookModel? model;
+  final int currentStep;
+  final String title;
+  final Function? onNext;
+  final Function? onPrev;
+  final String nextBtTitle;
+  final String prevBtTitle;
 
-  const BookPublishDialog({super.key, required this.model});
+  const BookPublishDialog({
+    super.key,
+    required this.model,
+    this.currentStep = 1,
+    this.title = CretaStudioLang.publishSettings,
+    this.onNext,
+    this.onPrev,
+    this.nextBtTitle = CretaLang.next,
+    this.prevBtTitle = CretaLang.prev,
+  });
 
   @override
   State<BookPublishDialog> createState() => _BookPublishDialogState();
@@ -43,7 +61,7 @@ class BookPublishDialog extends StatefulWidget {
 class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixin {
   //, SingleTickerProviderStateMixin {
   final TextEditingController scopeController = TextEditingController();
-  var currentStep = 1;
+  int currentStep = 1;
   var totalSteps = 0;
   late List<StepperData> stepsData;
   late List<Widget> stepsWidget;
@@ -73,6 +91,12 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   String _modifier = '';
   String _publishResultStr = CretaStudioLang.publishFailed;
 
+  List<String> _owners = [];
+  List<String> _readers = [];
+  List<String> _writers = [];
+
+  //final bool _isInvite = false;
+
   // late AnimationController animationController;
   // late Animation<double> animation;
 
@@ -93,9 +117,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
     dataStyle = CretaFont.bodySmall;
 
+    _owners = [...widget.model!.owners];
+    _readers = [...widget.model!.readers];
+    _writers = [...widget.model!.writers];
+
     _resetList();
 
     _onceDBGetComplete1 = _initData();
+    currentStep = widget.currentStep;
 
     // LoginPage.channelManagerHolder!
     //     .getChannelFromList(widget.model!.channels)
@@ -135,8 +164,22 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     return true;
   }
 
+  Map<String, PermissionType> getSharesAsMap() {
+    Map<String, PermissionType> retval = {};
+    for (var val in _owners) {
+      retval[val] = PermissionType.owner;
+    }
+    for (var val in _writers) {
+      retval[val] = PermissionType.writer;
+    }
+    for (var val in _readers) {
+      retval[val] = PermissionType.reader;
+    }
+    return retval;
+  }
+
   void _resetList() {
-    Map<String, PermissionType> shares = widget.model!.getSharesAsMap();
+    Map<String, PermissionType> shares = getSharesAsMap();
     emailList = shares.keys.toList();
     permitionList = shares.values.toList();
   }
@@ -202,7 +245,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              CretaStudioLang.publishSettings,
+                              widget.title,
                               style: CretaFont.titleMedium,
                             ),
                             BTN.fill_gray_i_m(
@@ -251,23 +294,25 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                             if (currentStep > 1 && currentStep < 4)
                               BTN.line_blue_t_m(
                                 width: 24,
-                                text: CretaLang.prev,
-                                onPressed: () {
-                                  setState(() {
-                                    _prevStep();
-                                  });
-                                },
+                                text: widget.prevBtTitle,
+                                onPressed: widget.onPrev ??
+                                    () {
+                                      setState(() {
+                                        _prevStep();
+                                      });
+                                    },
                               ),
                             const SizedBox(width: 8),
                             if (currentStep < 4)
                               BTN.fill_blue_t_m(
                                 width: 55,
-                                text: CretaLang.next,
-                                onPressed: () {
-                                  setState(() {
-                                    _nextStep();
-                                  });
-                                },
+                                text: widget.nextBtTitle,
+                                onPressed: widget.onNext ??
+                                    () {
+                                      setState(() {
+                                        _nextStep();
+                                      });
+                                    },
                               ),
                             if (currentStep == 4)
                               SizedBox(
@@ -478,11 +523,16 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   Future<bool> _publish() async {
+    logger.info('_readers=$_readers');
+    logger.info('_writers=$_writers');
+
     BookPublishedManager bookPublishedManagerHolder = BookPublishedManager();
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     widget.model!.channels = publishingChannelIdList;
     return bookPublishedManagerHolder.publish(
       src: widget.model!,
+      readers: _readers,
+      writers: _writers,
       pageManager: BookMainPage.pageManagerHolder!,
       onComplete: (isNew) {
         ChannelManager channelManagerHolder = ChannelManager();
@@ -565,12 +615,12 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
               hintText: '',
               controller: scopeController,
               onEditComplete: (val) {
-                _addUser(scopeController.text).then((value) {
-                  if (value) {
-                    setState(() {});
-                  }
-                  return value;
-                });
+                // _addUser(scopeController.text).then((value) {
+                //   if (value) {
+                //     setState(() {});
+                //   }
+                //   return value;
+                // });
               }),
           BTN.line_blue_t_m(
               text: CretaLang.invite,
@@ -586,6 +636,67 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       )
     ];
   }
+
+  // Widget _inviteDialog() {
+  //   return Center(
+  //     child: Container(
+  //       width: width - 20,
+  //       height: height - 300, // Add custom padding
+  //       decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(16),
+  //         border: Border.all(width: 1, color: CretaColor.text[200]!),
+  //       ),
+  //       child: Column(
+  //         children: [
+  //           SizedBox(
+  //             width: width - 40,
+  //             height: height - 500,
+  //             child: Center(
+  //               child: Text(
+  //                 CretaStudioLang.isSendEmail,
+  //                 style: CretaFont.bodyMedium,
+  //               ),
+  //             ),
+  //           ),
+  //           const Divider(indent: 20),
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.end,
+  //             children: [
+  //               TextButton(
+  //                 style: TextButton.styleFrom(
+  //                   backgroundColor: CretaColor.primary.withOpacity(0.15),
+  //                   shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(5)), // Rounded corners
+  //                 ),
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop(); // Dismiss dialog
+  //                 },
+  //                 child: Text(CretaLang.cancel, style: CretaFont.buttonMedium),
+  //               ),
+  //               TextButton(
+  //                 style: TextButton.styleFrom(
+  //                   backgroundColor: CretaColor.primary.withOpacity(0.15),
+  //                   shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(5)), // Rounded corners
+  //                 ),
+  //                 onPressed: () async {
+  //                   await _invite(
+  //                     scopeController.text,
+  //                     widget.model!.mid,
+  //                     widget.model!.name.value,
+  //                     AccountManager.currentLoginUser.name,
+  //                   );
+  //                   Navigator.of(context).pop(); // Dismiss dialog
+  //                 },
+  //                 child: Text(CretaLang.confirm, style: CretaFont.buttonMedium),
+  //               ),
+  //             ],
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Future<bool> _addUser(String email) async {
     // email 이거나, 팀명이다.
@@ -603,8 +714,23 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         return true;
       }
       // 여기서, 초대를 해야 한다.
-      // ignore: use_build_context_synchronously
-      showSnackBar(context, CretaStudioLang.noExitEmail, duration: const Duration(seconds: 3));
+      bool succeed = await _invite(
+        scopeController.text,
+        widget.model!.mid,
+        widget.model!.name.value,
+        AccountManager.currentLoginUser.name,
+      );
+      if (succeed) {
+        UserPropertyModel user = UserPropertyModel('');
+        user.email = scopeController.text;
+        user.nickname = scopeController.text;
+        setState(() {
+          _addReaders(email);
+          userModelList.add(user);
+          _resetList();
+        });
+        return true;
+      }
       return false;
     }
     // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
@@ -618,7 +744,6 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
       return true;
     }
     // 해당하는 Team 명이 없다. 이메일등을 넣도록 경고한다.
-    // ignore: use_build_context_synchronously
     showSnackBar(context, CretaStudioLang.wrongEmail, duration: const Duration(seconds: 3));
     return false;
   }
@@ -679,34 +804,34 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   bool _addReaders(String id) {
-    if (widget.model!.owners.contains(id) == false) {
-      widget.model!.readers.add(id);
+    if (_owners.contains(id) == false) {
+      _readers.add(id);
     }
-    widget.model!.owners.remove(id);
-    widget.model!.writers.remove(id);
-    widget.model!.save();
+    _owners.remove(id);
+    _writers.remove(id);
+    //widget.model!.save();
     return true;
   }
 
   bool _addWriters(String id) {
-    if (widget.model!.writers.contains(id) == false) {
-      widget.model!.writers.add(id);
+    if (_writers.contains(id) == false) {
+      _writers.add(id);
     }
-    widget.model!.owners.remove(id);
-    widget.model!.readers.remove(id);
-    widget.model!.save();
+    _owners.remove(id);
+    _readers.remove(id);
+    //widget.model!.save();
     return true;
   }
 
-  bool _addOwners(String id) {
-    if (widget.model!.owners.contains(id) == false) {
-      widget.model!.owners.add(id);
-    }
-    widget.model!.writers.remove(id);
-    widget.model!.readers.remove(id);
-    widget.model!.save();
-    return true;
-  }
+  // bool _addOwners(String id) {
+  //   if (_owners.contains(id) == false) {
+  //     _owners.add(id);
+  //   }
+  //   _writers.remove(id);
+  //   _readers.remove(id);
+  //   widget.model!.save();
+  //   return true;
+  // }
 
   List<Widget> _publishTo() {
     return [
@@ -738,7 +863,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                 bool isNotCreator = (email != widget.model!.creator);
                 UserPropertyModel? userModel = _findModel(email);
                 return Container(
-                  padding: const EdgeInsets.only(left: 0, bottom: 6, right: 12.0),
+                  padding: const EdgeInsets.only(left: 0, bottom: 6, right: 4.0),
                   height: 30,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -768,20 +893,18 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       ),
                       if (isNotCreator)
                         Container(
-                          width: 96,
+                          width: 104,
                           alignment: Alignment.centerLeft,
                           child: CretaDropDownButton(
                               selectedColor: CretaColor.text[700]!,
                               textStyle: CretaFont.bodyESmall,
-                              width: 87,
+                              width: 106,
                               height: 28,
                               itemHeight: 28,
-                              dropDownMenuItemList: StudioSnippet.getPermitionListItem(
+                              dropDownMenuItemList: StudioSnippet.getPublishPermitionListItem(
                                   defaultValue: permitionList[index],
                                   onChanged: (val) {
-                                    if (val == PermissionType.owner) {
-                                      _addOwners(email);
-                                    } else if (val == PermissionType.writer) {
+                                    if (val == PermissionType.writer) {
                                       _addWriters(email);
                                     } else if (val == PermissionType.reader) {
                                       _addReaders(email);
@@ -798,13 +921,13 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                               onPressed: () {
                                 if (permitionList[index] == PermissionType.owner) {
                                   // deleteFrom owners
-                                  widget.model!.owners.remove(email);
+                                  _owners.remove(email);
                                 } else if (permitionList[index] == PermissionType.writer) {
                                   // deleteFrom writers
-                                  widget.model!.writers.remove(email);
+                                  _writers.remove(email);
                                 } else if (permitionList[index] == PermissionType.reader) {
                                   // deleteFrom readers
-                                  widget.model!.readers.remove(email);
+                                  _readers.remove(email);
                                 }
                                 for (var ele in userModelList) {
                                   if (ele.email == email) {
@@ -814,7 +937,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                                 }
 
                                 setState(() {
-                                  widget.model!.save();
+                                  //widget.model!.save();
                                   _resetList();
                                 });
                               },
@@ -986,7 +1109,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       //     radius: 28,
                       //     color: userModel.email == 'public' ? CretaColor.primary : null),
                       CretaAccountManager.userPropertyManagerHolder.imageCircle(
-                        teamModel?.profileImgUrl ?? CretaAccountManager.getUserProperty!.profileImgUrl,
+                        teamModel?.profileImgUrl ??
+                            CretaAccountManager.getUserProperty!.profileImgUrl,
                         teamModel?.name ?? CretaAccountManager.getUserProperty!.nickname,
                         radius: 28,
                       ),
@@ -1060,5 +1184,32 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         ],
       ),
     );
+  }
+
+  Future<bool> _invite(String email, String bookMid, String bookName, String userName) async {
+    String was = 'https://devcreta.com';
+    String url = '$was:444/sendEmail';
+    String msg =
+        '$userName${CretaStudioLang.pressLinkToJoinCreta1}$was${AppRoutes.studioBookMainPage}/$bookMid'; //내용
+
+    Map<String, dynamic> body = {
+      "to": '"$email"', // 수신인
+      "cc": [], // 참조
+      "bcc": [], // 숨은참조
+      "subject": '"$userName${CretaStudioLang.cretaInviteYou}"', //제목
+      "message": '"$msg"', //내용
+    };
+
+    Response? res = await CretaUtils.post(url, body, onError: (code) {
+      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+    }, onException: (e) {
+      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+    });
+
+    if (res != null) {
+      showSnackBar(context, CretaStudioLang.inviteEmailSucceed);
+      return true;
+    }
+    return false;
   }
 }
