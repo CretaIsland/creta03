@@ -234,6 +234,8 @@ flutter:
     - assets/weather_sticker/weather_icon_vector/
     # - assets/weather_sticker/구름많음.svg
 
+    - assets/social/
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
