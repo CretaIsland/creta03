@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
+import 'package:creta03/pages/studio/left_menu/google_map/google_map_contents.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -16,7 +17,6 @@ import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 import '../containees/containee_nofifier.dart';
 import '../containees/frame/sticker/mini_menu.dart';
-import '../left_menu/google_map/google_map_saved_list.dart';
 import '../left_menu/left_menu_page.dart';
 import '../studio_constant.dart';
 import 'contents/contents_ordered_list.dart';
@@ -181,7 +181,8 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
       if (frame.isWeatherTYpe()) {
         return WeatherProperty(frameModel: frame, frameManager: frameManager);
       } else if (frame.isMapType()) {
-        return GoogleMapSavedList();
+        // return GoogleMapSavedList();
+        return GoogleMapContents();
       }
       return SizedBox.shrink();
     }

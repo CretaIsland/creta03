@@ -37,25 +37,25 @@ class _GoogleMapClassState extends State<GoogleMapClass> {
     if (currentLatLng != null) currentLatLng = position.target;
   }
 
-  // void _onMapTapped(LatLng latLng) {
-  //   setState(() {
-  //     markers.add(
-  //       Marker(
-  //         markerId: MarkerId(latLng.toString()),
-  //         position: latLng,
-  //         onTap: () {
-  //           setState(() {
-  //             markers.removeWhere(
-  //               (marker) {
-  //                 return marker.markerId == MarkerId(latLng.toString());
-  //               },
-  //             );
-  //           });
-  //         },
-  //       ),
-  //     );
-  //   });
-  // }
+  void _onMapTapped(LatLng latLng) {
+    setState(() {
+      markers.add(
+        Marker(
+          markerId: MarkerId(latLng.toString()),
+          position: latLng,
+          onTap: () {
+            setState(() {
+              markers.removeWhere(
+                (marker) {
+                  return marker.markerId == MarkerId(latLng.toString());
+                },
+              );
+            });
+          },
+        ),
+      );
+    });
+  }
 
   Future<String> getAddressFromLatLng(LatLng latLng, String apiKey) async {
     final lat = latLng.latitude;
@@ -76,60 +76,60 @@ class _GoogleMapClassState extends State<GoogleMapClass> {
     }
   }
 
-  void _onMapTapped(LatLng latLng) async {
-    Marker? tappedMarker;
-    String address = await getAddressFromLatLng(latLng, apiKey);
-    MarkerId markerId = MarkerId(latLng.toString());
+  // void _onMapTapped(LatLng latLng) async {
+  //   Marker? tappedMarker;
+  //   String address = await getAddressFromLatLng(latLng, apiKey);
+  //   MarkerId markerId = MarkerId(latLng.toString());
 
-    setState(() {
-      tappedMarker = Marker(
-        markerId: markerId,
-        position: latLng,
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: ((context) {
-              return AlertDialog(
-                title: const Text("Marker Options"),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("Address: $address"),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            print("Save to List: $address");
-                            addressProvider.addAdress(address);
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("Save to List"),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            print("Remove ${latLng.toString()}");
-                            markers.remove(tappedMarker!);
-                            // markers.removeWhere((element) {
-                            //   return element.markerId == markerId;
-                            // });
-                            addressProvider.removeAdress(address);
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("Remove"),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            }),
-          );
-        },
-      );
-      markers.add(tappedMarker!);
-    });
-  }
+  //   setState(() {
+  //     tappedMarker = Marker(
+  //       markerId: markerId,
+  //       position: latLng,
+  //       onTap: () {
+  //         showDialog(
+  //           context: context,
+  //           builder: ((context) {
+  //             return AlertDialog(
+  //               title: const Text("Marker Options"),
+  //               content: Column(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   Text("Address: $address"),
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       ElevatedButton(
+  //                         onPressed: () {
+  //                           print("Save to List: $address");
+  //                           addressProvider.addAdress(address);
+  //                           Navigator.of(context).pop();
+  //                         },
+  //                         child: const Text("Save to List"),
+  //                       ),
+  //                       ElevatedButton(
+  //                         onPressed: () {
+  //                           print("Remove ${latLng.toString()}");
+  //                           markers.remove(tappedMarker!);
+  //                           // markers.removeWhere((element) {
+  //                           //   return element.markerId == markerId;
+  //                           // });
+  //                           addressProvider.removeAdress(address);
+  //                           Navigator.of(context).pop();
+  //                         },
+  //                         child: const Text("Remove"),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             );
+  //           }),
+  //         );
+  //       },
+  //     );
+  //     markers.add(tappedMarker!);
+  //   });
+  // }
 
   @override
   void initState() {

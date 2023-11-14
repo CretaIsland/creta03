@@ -217,6 +217,14 @@ flutter:
     - assets/medSize_music_app.png
     - assets/smallSize_music_app.png
     - assets/miniSize_music_app.png
+    - assets/music-big.png
+    - assets/music-med.png
+    - assets/music-small.png
+    - assets/music-tiny.png
+    - assets/music-visualizer.gif
+    - assets/music-visual-big.png
+    - assets/music-visual-med.png
+    - assets/music-visual-small.png
 
     - assets/google_map_thumbnail.png
 

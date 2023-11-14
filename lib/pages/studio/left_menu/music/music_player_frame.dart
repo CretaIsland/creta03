@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:math';
+// import 'dart:math';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
@@ -48,6 +48,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   Offset? _volumePosition;
 
   double iconBTNSize = StudioConst.musicIconSize;
+  String urlVisual =
+      'https://firebasestorage.googleapis.com/v0/b/hycop-example.appspot.com/o/creta_default%2Fmusic-visualizer.gif?alt=media&token=23265dfd-6d3d-4791-b05c-1fc7da1ee978';
 
   void invalidate() {
     setState(() {});
@@ -64,9 +66,9 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   // }
 
   void addMusic(ContentsModel model) async {
-    Random random = Random();
-    int randomNumber = random.nextInt(100);
-    String url = 'https://picsum.photos/200/?random=$randomNumber';
+    // Random random = Random();
+    // int randomNumber = random.nextInt(100);
+    // String url = 'https://picsum.photos/200/?random=$randomNumber';
 
     if (_audioPlayer.playing) {
       _audioPlayer.stop();
@@ -79,7 +81,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
           id: model.mid,
           title: model.name,
           artist: 'Unknown artist',
-          artUri: Uri.parse(url),
+          artUri: Uri.parse(urlVisual),
+          // artUri: Uri.parse(url),
         ),
       ),
     );
@@ -92,9 +95,9 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   }
 
   void unhiddenMusic(ContentsModel model, int idx) {
-    Random random = Random();
-    int randomNumber = random.nextInt(100);
-    String url = 'https://picsum.photos/200/?random=$randomNumber';
+    // Random random = Random();
+    // int randomNumber = random.nextInt(100);
+    // String url = 'https://picsum.photos/200/?random=$randomNumber';
 
     _playlist.insert(
       idx,
@@ -104,7 +107,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
           id: model.mid,
           title: model.name,
           artist: 'Unknown artist',
-          artUri: Uri.parse(url),
+          // artUri: Uri.parse(url),
+          artUri: Uri.parse(urlVisual),
         ),
       ),
     );
@@ -245,7 +249,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       widget.contentsManager.orderMapIterator((ele) {
         if (ele.isRemoved.value == true) return null;
         if (StudioVariables.isAutoPlay == true) {
-          Timer.periodic(const Duration(seconds: 1), (timer) { // 딜레이 없이는 자동재생 안됨
+          Timer.periodic(const Duration(seconds: 1), (timer) {
+            // 딜레이 없이는 자동재생 안됨
             timer.cancel();
             _audioPlayer.play();
           });
