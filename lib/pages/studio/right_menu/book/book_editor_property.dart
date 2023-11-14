@@ -2,7 +2,7 @@
 
 import 'package:creta03/lang/creta_lang.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
@@ -21,10 +21,13 @@ import '../../../login/creta_account_manager.dart';
 import '../../studio_snippet.dart';
 import '../property_mixin.dart';
 
+// 권한 프로퍼티 부분임.  클래스 이름을 잘못지은거임.
 class BookEditorProperty extends StatefulWidget {
   final BookModel model;
   final Function() parentNotify;
-  const BookEditorProperty({super.key, required this.model, required this.parentNotify});
+  final bool isDialog;
+  const BookEditorProperty(
+      {super.key, required this.model, required this.parentNotify, this.isDialog = false});
 
   @override
   State<BookEditorProperty> createState() => _BookEditorPropertyState();
@@ -92,6 +95,31 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                 ..._defaultScope(),
                 ..._invitedPeople(),
                 ..._invitedPeople(isTeam: true),
+                if (widget.isDialog)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // BTN.line_blue_t_m(
+                        //   width: 24,
+                        //   text: CretaLang.cancel,
+                        //   onPressed: () {
+                        //     Navigator.of(context).pop();
+                        //   },
+                        // ),
+                        // const SizedBox(width: 8),
+                        BTN.fill_blue_t_m(
+                          width: 55,
+                          text: CretaLang.confirm,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                    ),
+                  )
               ],
             ),
           );
@@ -100,10 +128,35 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
 
   List<Widget> _scope() {
     return [
-      Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Text(CretaLang.invite, style: CretaFont.titleSmall),
-      ),
+      if (widget.isDialog)
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                CretaLang.invite,
+                style: CretaFont.titleMedium,
+              ),
+              if (widget.isDialog)
+                BTN.fill_gray_i_m(
+                    icon: Icons.close_outlined,
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+            ],
+          ),
+        ),
+      if (widget.isDialog)
+        const Divider(
+          height: 22,
+          indent: 0,
+        ),
+      if (widget.isDialog == false)
+        Padding(
+          padding: EdgeInsets.only(bottom: 12, top: widget.isDialog ? 12 : 0),
+          child: Text(CretaLang.invite, style: CretaFont.titleSmall),
+        ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -115,12 +168,12 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
               hintText: '',
               controller: scopeController,
               onEditComplete: (val) {
-                _addUser(scopeController.text).then((value) {
-                  if (value) {
-                    setState(() {});
-                  }
-                  return value;
-                });
+                // _addUser(scopeController.text).then((value) {
+                //   if (value) {
+                //     setState(() {});
+                //   }
+                //   return value;
+                // });
               }),
           BTN.line_blue_t_m(
               text: CretaLang.invite,
@@ -129,6 +182,13 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                   if (value) {
                     setState(() {});
                   }
+                  CretaUtils.inviteBook(
+                    context,
+                    scopeController.text,
+                    widget.model.mid,
+                    widget.model.name.value,
+                    AccountManager.currentLoginUser.name,
+                  );
                   return value;
                 });
               })
@@ -138,9 +198,37 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
   }
 
   void _resetList() {
+    // Map<String, PermissionType> shares = widget.model.getSharesAsMap();
+
+    emailList.clear();
+    permitionList.clear();
     Map<String, PermissionType> shares = widget.model.getSharesAsMap();
-    emailList = shares.keys.toList();
-    permitionList = shares.values.toList();
+    // creator 를 항상 제일 앞에 놓는다.
+    for (var ele in shares.entries) {
+      if (ele.key == widget.model.creator) {
+        emailList.add(ele.key);
+        permitionList.add(ele.value);
+      }
+    }
+    shares.remove(widget.model.creator);
+
+    for (var ele in shares.entries) {
+      if (ele.value == PermissionType.owner) {
+        emailList.add(ele.key);
+        permitionList.add(ele.value);
+      }
+    }
+    // owner 를 먼저 email list 에 넣기 위애 이와 같이 for 문을 두번도는 것임.
+    for (var ele in shares.entries) {
+      if (ele.value != PermissionType.owner) {
+        emailList.add(ele.key);
+        permitionList.add(ele.value);
+      }
+    }
+    logger.info('emailList=$emailList');
+
+    // emailList = shares.keys.toList();
+    // permitionList = shares.values.toList();
   }
 
   UserPropertyModel? _findModel(String email) {
@@ -187,7 +275,8 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
     bool isEmail = CretaUtils.isValidEmail(email);
     if (isEmail) {
       // 헤당 유저가 회원인지 찾는다.
-      UserPropertyModel? user = await CretaAccountManager.userPropertyManagerHolder.emailToModel(email);
+      UserPropertyModel? user =
+          await CretaAccountManager.userPropertyManagerHolder.emailToModel(email);
       if (user != null) {
         setState(() {
           _addWriters(email);
@@ -196,10 +285,19 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
         });
         return true;
       }
+
+      UserPropertyModel newBee = UserPropertyModel('');
+      newBee.email = scopeController.text;
+      newBee.nickname = scopeController.text;
+      setState(() {
+        _addReaders(email);
+        userModelMap[newBee.email] = newBee;
+        _resetList();
+      });
       // 여기서, 초대를 해야 한다.
       // ignore: use_build_context_synchronously
-      showSnackBar(context, CretaStudioLang.noExitEmail, duration: const Duration(seconds: 3));
-      return false;
+      //showSnackBar(context, CretaStudioLang.noExitEmail, duration: const Duration(seconds: 3));
+      return true;
     }
     // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
     TeamModel? team = await CretaAccountManager.findTeamModelByName(email, 'creta');
@@ -265,8 +363,8 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
   List<Widget> _myTeams() {
     return CretaAccountManager.getTeamList.map((e) {
       return BTN.line_blue_wmi_m(
-          leftWidget:
-          CretaAccountManager.userPropertyManagerHolder.imageCircle(e.profileImgUrl, e.name, radius: 24),
+          leftWidget: CretaAccountManager.userPropertyManagerHolder
+              .imageCircle(e.profileImgUrl, e.name, radius: 24),
           icon: Icons.add_outlined,
           text: '${e.name} ${CretaLang.team}',
           width: 180,
@@ -274,7 +372,8 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
           onPressed: () {
             setState(() {
               _addWriters(e.mid);
-              UserPropertyModel user = CretaAccountManager.userPropertyManagerHolder.makeDummyModel(e);
+              UserPropertyModel user =
+                  CretaAccountManager.userPropertyManagerHolder.makeDummyModel(e);
               userModelMap[user.email] = user;
               _resetList();
             });
@@ -303,7 +402,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
       ),
       Container(
         width: 333,
-        height: isTeam ? 175 : 225,
+        height: isTeam ? 160 : 175,
         //padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           border: Border.all(
@@ -336,7 +435,9 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                       CretaAccountManager.userPropertyManagerHolder.profileImageBox(
                         model: userModel,
                         radius: 28,
-                        color: email == 'public' ? CretaColor.primary : null,
+                        color: email == 'public'
+                            ? CretaColor.primary
+                            : Colors.primaries[index % Colors.primaries.length],
                       ),
                       //const Icon(Icons.account_circle_outlined),
                       SizedBox(

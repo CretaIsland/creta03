@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_web_libraries_in_flutter
+// ignore_for_file: avoid_web_libraries_in_flutter, use_build_context_synchronously
 
 import 'dart:convert';
 import 'dart:math';
@@ -14,10 +14,12 @@ import 'package:image/image.dart' as img;
 
 import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
+import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
+import '../routes.dart';
 
 class ShadowData {
   final double spread;
@@ -1002,21 +1004,46 @@ class CretaUtils {
         // 에러 처리
         logger.severe('$url Failed to send data');
         logger.severe('Status code: ${response.statusCode}');
-        // ignore: use_build_context_synchronously
         onError?.call('${response.statusCode}');
         return null;
       }
 
       logger.info('pos $url succeed');
-      // ignore: use_build_context_synchronously
       return response;
     } catch (e) {
       // 예외 처리
       logger.severe('$url Failed to send data');
       logger.severe('An error occurred: $e');
-      // ignore: use_build_context_synchronously
       onException?.call('$e');
       return null;
     }
+  }
+
+  static Future<bool> inviteBook(
+      BuildContext context, String email, String bookMid, String bookName, String userName) async {
+    String was = 'https://devcreta.com';
+    String url = '$was:444/sendEmail';
+    String msg =
+        '$userName${CretaStudioLang.pressLinkToJoinCreta1}$was${AppRoutes.communityBook}?$bookMid'; //내용
+
+    Map<String, dynamic> body = {
+      "to": ['"$email"'], // 수신인
+      "cc": [], // 참조
+      "bcc": [], // 숨은참조
+      "subject": '"$userName${CretaStudioLang.cretaInviteYou}"', //제목
+      "message": '"$msg"', //내용
+    };
+
+    Response? res = await CretaUtils.post(url, body, onError: (code) {
+      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+    }, onException: (e) {
+      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+    });
+
+    if (res != null) {
+      showSnackBar(context, CretaStudioLang.inviteEmailSucceed);
+      return true;
+    }
+    return false;
   }
 }

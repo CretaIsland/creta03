@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:creta03/model/user_property_model.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop.dart';
 import 'package:progress_bar_steppers/steppers.dart';
@@ -95,6 +94,11 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   List<String> _readers = [];
   List<String> _writers = [];
 
+  BookPublishedManager bookPublishedManagerHolder = BookPublishedManager();
+  BookModel? alreadyPublishedBook;
+
+  final Set<String> _invitees = {};
+
   //final bool _isInvite = false;
 
   // late AnimationController animationController;
@@ -116,12 +120,6 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
 
     titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
     dataStyle = CretaFont.bodySmall;
-
-    _owners = [...widget.model!.owners];
-    _readers = [...widget.model!.readers];
-    _writers = [...widget.model!.writers];
-
-    _resetList();
 
     _onceDBGetComplete1 = _initData();
     currentStep = widget.currentStep;
@@ -159,8 +157,28 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   Future<bool> _initData() async {
+    alreadyPublishedBook = await bookPublishedManagerHolder.findPublished(widget.model!.mid);
+
+    if (alreadyPublishedBook != null) {
+      logger.info('published already exist');
+      _owners = [...alreadyPublishedBook!.owners];
+      _readers = [...alreadyPublishedBook!.readers];
+      _writers = [...alreadyPublishedBook!.writers];
+    } else {
+      _owners = [...widget.model!.owners];
+      _readers = [...widget.model!.readers];
+      _writers = [...widget.model!.writers];
+    }
+
+    _resetList();
+
     userModelList =
         await CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList);
+
+    logger.info('_readers=$_readers');
+    logger.info('_writers=$_writers');
+    logger.info('emailList=$emailList');
+
     return true;
   }
 
@@ -179,9 +197,32 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   void _resetList() {
+    emailList.clear();
+    permitionList.clear();
     Map<String, PermissionType> shares = getSharesAsMap();
-    emailList = shares.keys.toList();
-    permitionList = shares.values.toList();
+    // creator 를 항상 제일 앞에 놓는다.
+    for (var ele in shares.entries) {
+      if (ele.key == widget.model!.creator) {
+        emailList.add(ele.key);
+        permitionList.add(ele.value);
+      }
+    }
+    shares.remove(widget.model!.creator);
+
+    for (var ele in shares.entries) {
+      if (ele.value == PermissionType.owner) {
+        emailList.add(ele.key);
+        permitionList.add(ele.value);
+      }
+    }
+    // owner 를 먼저 email list 에 넣기 위애 이와 같이 for 문을 두번도는 것임.
+    for (var ele in shares.entries) {
+      if (ele.value != PermissionType.owner) {
+        emailList.add(ele.key);
+        permitionList.add(ele.value);
+      }
+    }
+    logger.info('emailList=$emailList');
   }
 
   // Future<bool> _waitDBJob() async {
@@ -526,15 +567,15 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     logger.info('_readers=$_readers');
     logger.info('_writers=$_writers');
 
-    BookPublishedManager bookPublishedManagerHolder = BookPublishedManager();
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     widget.model!.channels = publishingChannelIdList;
     return bookPublishedManagerHolder.publish(
       src: widget.model!,
+      alreadyPublishedOne: alreadyPublishedBook,
       readers: _readers,
       writers: _writers,
       pageManager: BookMainPage.pageManagerHolder!,
-      onComplete: (isNew) {
+      onComplete: (isNew, published) {
         ChannelManager channelManagerHolder = ChannelManager();
         channelManagerHolder.updateToDB(
           CretaAccountManager.getUserProperty!.channelId,
@@ -542,6 +583,15 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         );
         _modifier = isNew ? CretaStudioLang.newely : CretaStudioLang.update;
         _publishResultStr = CretaStudioLang.publishComplete;
+        for (var email in _invitees) {
+          CretaUtils.inviteBook(
+            context,
+            email,
+            published.mid,
+            published.name.value,
+            AccountManager.currentLoginUser.name,
+          );
+        }
         //_onceDBPublishComplete = true;
       },
     );
@@ -713,25 +763,26 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         });
         return true;
       }
-      // 여기서, 초대를 해야 한다.
-      bool succeed = await _invite(
-        scopeController.text,
-        widget.model!.mid,
-        widget.model!.name.value,
-        AccountManager.currentLoginUser.name,
-      );
-      if (succeed) {
-        UserPropertyModel user = UserPropertyModel('');
-        user.email = scopeController.text;
-        user.nickname = scopeController.text;
-        setState(() {
-          _addReaders(email);
-          userModelList.add(user);
-          _resetList();
-        });
-        return true;
-      }
-      return false;
+      // 여기서, 초대를 해야 한다.  단,  실제 메일을 보내는 것은 발행이 끝나고, 해야 한다.
+      _invitees.add(scopeController.text);
+      // bool succeed = await _invite(
+      //   scopeController.text,
+      //   widget.model!.mid,
+      //   widget.model!.name.value,
+      //   AccountManager.currentLoginUser.name,
+      // );
+      //if (succeed) {
+      UserPropertyModel newBee = UserPropertyModel('');
+      newBee.email = scopeController.text;
+      newBee.nickname = scopeController.text;
+      setState(() {
+        _addReaders(email);
+        userModelList.add(newBee);
+        _resetList();
+      });
+      return true;
+      //}
+      //return false;
     }
     // 팀명인지 확인한다. 현재 enterpriseId 가 없으므로 creta 으로 검색한다
     TeamModel? team = await CretaAccountManager.findTeamModelByName(email, 'creta');
@@ -871,15 +922,27 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                       CretaAccountManager.userPropertyManagerHolder.profileImageBox(
                           model: userModel,
                           radius: 28,
-                          color: email == 'public' ? CretaColor.primary : null),
+                          color: email == 'public'
+                              ? CretaColor.primary
+                              : Colors.primaries[index % Colors.primaries.length]),
                       //const Icon(Icons.account_circle_outlined),
                       SizedBox(
                         //color: Colors.amber,
                         width: isNotCreator ? 120 : 120 + 96 + 24,
                         child: Tooltip(
-                          message: userModel != null ? userModel.email : '',
+                          message: userModel != null
+                              ? userModel.phoneNumber == 'team'
+                                  ? userModel.nickname
+                                  : userModel.email
+                              : '',
                           child: Text(
-                            _nameWrap(userModel, email, isNotCreator, false),
+                            _nameWrap(
+                                userModel,
+                                ((userModel != null && userModel.phoneNumber == 'team')
+                                    ? userModel.nickname
+                                    : email),
+                                isNotCreator,
+                                false),
                             style: isNotCreator
                                 ? CretaFont.bodySmall
                                 : CretaFont.bodySmall.copyWith(
@@ -935,6 +998,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                                     break;
                                   }
                                 }
+                                _invitees.remove(email);
 
                                 setState(() {
                                   //widget.model!.save();
@@ -1186,30 +1250,30 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     );
   }
 
-  Future<bool> _invite(String email, String bookMid, String bookName, String userName) async {
-    String was = 'https://devcreta.com';
-    String url = '$was:444/sendEmail';
-    String msg =
-        '$userName${CretaStudioLang.pressLinkToJoinCreta1}$was${AppRoutes.studioBookMainPage}/$bookMid'; //내용
+  // Future<bool> _invite(String email, String bookMid, String bookName, String userName) async {
+  //   String was = 'https://devcreta.com';
+  //   String url = '$was:444/sendEmail';
+  //   String msg =
+  //       '$userName${CretaStudioLang.pressLinkToJoinCreta1}$was${AppRoutes.communityBook}?$bookMid'; //내용
 
-    Map<String, dynamic> body = {
-      "to": '"$email"', // 수신인
-      "cc": [], // 참조
-      "bcc": [], // 숨은참조
-      "subject": '"$userName${CretaStudioLang.cretaInviteYou}"', //제목
-      "message": '"$msg"', //내용
-    };
+  //   Map<String, dynamic> body = {
+  //     "to": ['"$email"'], // 수신인
+  //     "cc": [], // 참조
+  //     "bcc": [], // 숨은참조
+  //     "subject": '"$userName${CretaStudioLang.cretaInviteYou}"', //제목
+  //     "message": '"$msg"', //내용
+  //   };
 
-    Response? res = await CretaUtils.post(url, body, onError: (code) {
-      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
-    }, onException: (e) {
-      showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
-    });
+  //   Response? res = await CretaUtils.post(url, body, onError: (code) {
+  //     showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($code)');
+  //   }, onException: (e) {
+  //     showSnackBar(context, '${CretaStudioLang.inviteEmailFailed}($e)');
+  //   });
 
-    if (res != null) {
-      showSnackBar(context, CretaStudioLang.inviteEmailSucceed);
-      return true;
-    }
-    return false;
-  }
+  //   if (res != null) {
+  //     showSnackBar(context, CretaStudioLang.inviteEmailSucceed);
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

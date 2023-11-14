@@ -142,7 +142,8 @@ class UserPropertyManager extends CretaManager {
     UserPropertyModel? createModel,
     bool? agreeUsingMarketing,
   }) async {
-    UserPropertyModel userModel = createModel ?? makeCurrentNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
+    UserPropertyModel userModel =
+        createModel ?? makeCurrentNewUserProperty(agreeUsingMarketing: agreeUsingMarketing);
 
     try {
       await createToDB(userModel);
@@ -319,6 +320,7 @@ class UserPropertyManager extends CretaManager {
 
   UserPropertyModel makeDummyModel(TeamModel? team) {
     UserPropertyModel user = UserPropertyModel('');
+    user.phoneNumber = 'team';
     user.nickname = team == null ? CretaLang.entire : team.name;
     user.email = team == null ? 'public' : team.mid;
     if (team != null) user.profileImgUrl = team.profileImgUrl;

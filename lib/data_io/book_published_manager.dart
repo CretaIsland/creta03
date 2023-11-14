@@ -182,24 +182,25 @@ class BookPublishedManager extends CretaManager {
 
   Future<bool> publish({
     required BookModel src,
+    required BookModel? alreadyPublishedOne,
     required List<String> readers,
     required List<String> writers,
     required PageManager pageManager,
-    void Function(bool)? onComplete,
+    void Function(bool, BookModel)? onComplete,
   }) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     bool isNew = false;
 
-    BookModel? oldOne = await findPublished(src.mid);
+    //BookModel? oldOne = await findPublished(src.mid);
     BookModel? published;
-    if (oldOne == null) {
+    if (alreadyPublishedOne == null) {
       // 신규 생성이다.
       isNew = true;
       published = BookModel('');
       published.copyFrom(src, newMid: published.mid, pMid: published.parentMid.value);
     } else {
       // 이미 있다.
-      published = oldOne;
+      published = alreadyPublishedOne;
       published.copyFrom(src, newMid: published.mid, pMid: published.parentMid.value);
     }
 
@@ -235,7 +236,7 @@ class BookPublishedManager extends CretaManager {
       await setToDB(published);
       logger.info('published updated ${published.mid}, source=${published.sourceMid} $count');
     }
-    onComplete?.call(isNew);
+    onComplete?.call(isNew, published);
 
     return true;
   }

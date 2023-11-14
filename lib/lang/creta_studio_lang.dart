@@ -630,6 +630,6 @@ class CretaStudioLang {
   static String zipStarting = "요청하신 파일의 압축작업을 진행하고 있습니다";
   static String fileDownloading = "요청하신 파일의 다운로드가 시작되었습니다";
   static String cretaInviteYou = "님이 당신을 크레타에 초대하였습니다";
-  static String pressLinkToJoinCreta1 = "님이 당신을 크레타에 초대하였습니다. 옆의 링크를 눌러 크레타에 참여해 보세요. ";
+  static String pressLinkToJoinCreta1 = "님이 당신을 크레타에 초대하였습니다. 아래의 링크를 눌러 크레타에 참여해 보세요. ";
   static String isSendEmail = "아직 가입되지 않은 이메일입니다. 초대 이메일을 보내시겠습니까?";
 }

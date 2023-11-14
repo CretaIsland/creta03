@@ -35,6 +35,11 @@ class _MyColorIndicatorState extends State<MyColorIndicator> {
   ui.Image? _gridImage;
 
   @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.color == Colors.transparent) {
       return _transparentCase();
@@ -64,6 +69,12 @@ class _MyColorIndicatorState extends State<MyColorIndicator> {
             context: context,
             dialogPickerColor: widget.color,
             onColorChanged: widget.onColorChanged,
+            onExit: () {
+              Navigator.of(
+                MyColorPicker.colorPickerKey.currentState!.context,
+                rootNavigator: true,
+              ).pop();
+            },
           );
         },
       ),
@@ -95,6 +106,12 @@ class _MyColorIndicatorState extends State<MyColorIndicator> {
                     context: context,
                     dialogPickerColor: widget.color,
                     onColorChanged: widget.onColorChanged,
+                    onExit: () {
+                      Navigator.of(
+                        MyColorPicker.colorPickerKey.currentState!.context,
+                        rootNavigator: true,
+                      ).pop();
+                    },
                   );
                 },
                 child: RawImage(

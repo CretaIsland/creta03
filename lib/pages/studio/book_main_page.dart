@@ -39,7 +39,6 @@ import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
-import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/contents_model.dart';
@@ -58,6 +57,7 @@ import 'left_menu/depot/depot_display.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
 import 'left_menu/music/music_player_frame.dart';
+import 'right_menu/book/book_editor_property.dart';
 import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
@@ -1103,20 +1103,33 @@ class _BookMainPageState extends State<BookMainPage> {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return BookPublishDialog(
-                      key: GlobalKey(),
-                      model: _bookModel,
-                      currentStep: 2,
-                      title: CretaStudioLang.tooltipInvite,
-                      prevBtTitle: CretaLang.cancel,
-                      nextBtTitle: CretaLang.confirm,
-                      onPrev: () {
-                        Navigator.of(context).pop();
-                      },
-                      onNext: () {
-                        Navigator.of(context).pop();
-                      },
+                    return Dialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        width: LayoutConst.rightMenuWidth,
+                        child: BookEditorProperty(
+                            isDialog : true,
+                            model: _bookModel!,
+                            parentNotify: () {
+                              setState(() {});
+                            }),
+                      ),
                     );
+                    // return BookPublishDialog(
+                    //   key: GlobalKey(),
+                    //   model: _bookModel,
+                    //   currentStep: 2,
+                    //   title: CretaStudioLang.tooltipInvite,
+                    //   prevBtTitle: CretaLang.cancel,
+                    //   nextBtTitle: CretaLang.confirm,
+                    //   onPrev: () {
+                    //     Navigator.of(context).pop();
+                    //   },
+                    //   onNext: () {
+                    //     Navigator.of(context).pop();
+                    //   },
+                    // );
                   });
             },
             hasShadow: false,

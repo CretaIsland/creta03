@@ -104,3 +104,6 @@ copy src_modify\webviewimage_pubspec.yaxl "$env:LOCALAPPDATA\Pub\Cache\hosted\pu
 
 #skpark modify 23/11/10
 copy src_modify\realTime_mixin.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\appwrite-11.0.0\lib\src\realTime_mixin.dart"
+
+#skpark modify 23/11/14
+copy src_modify\color_picker.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\flex_color_picker-3.3.0\lib\src\color_picker.dart"

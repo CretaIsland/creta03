@@ -24,12 +24,17 @@ class MyColorPicker {
     ColorTools.createPrimarySwatch(blueBlues): 'Blue blues',
   };
 
+  static GlobalObjectKey colorPickerKey = const GlobalObjectKey('colorPicker');
+
   static Future<bool> colorPickerDialog({
     required BuildContext context,
     required Color dialogPickerColor,
     required void Function(Color color) onColorChanged,
+    required void Function() onExit,
   }) async {
     return ColorPicker(
+      key: colorPickerKey,
+      onExit: onExit,
       //enableOpacity: true,
       color: dialogPickerColor,
       onColorChanged: onColorChanged, //(Color color) => setState(() => dialogPickerColor = color),
