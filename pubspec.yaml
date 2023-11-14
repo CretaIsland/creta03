@@ -145,6 +145,7 @@ dependencies:
   image: ^4.1.3
   just_the_tooltip: ^0.0.12
   flutter_svg: ^2.0.8
+  google_geocoding_api: ^1.4.1
   gap: ^3.0.1
 
 
@@ -217,6 +218,14 @@ flutter:
     - assets/medSize_music_app.png
     - assets/smallSize_music_app.png
     - assets/miniSize_music_app.png
+    - assets/music-big.png
+    - assets/music-med.png
+    - assets/music-small.png
+    - assets/music-tiny.png
+    - assets/music-visualizer.gif
+    - assets/music-visual-big.png
+    - assets/music-visual-med.png
+    - assets/music-visual-small.png
 
     - assets/google_map_thumbnail.png
 
@@ -225,6 +234,8 @@ flutter:
     - assets/weather_sticker/weather_icon_vector/
     # - assets/weather_sticker/구름많음.svg
 
+    - assets/social/
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

@@ -202,22 +202,26 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                   if (selectedSize == size[0]) {
                     return Container(
                       alignment: Alignment.center,
-                      child: Image.asset('bigSize_music_app.png'),
+                      // child: Image.asset('bigSize_music_app.png'),
+                      child: Image.asset('music-visual-big.png'),
                     );
                   } else if (selectedSize == size[1]) {
                     return Container(
                       alignment: Alignment.center,
-                      child: Image.asset('medSize_music_app.png'),
+                      // child: Image.asset('medSize_music_app.png'),
+                      child: Image.asset('music-visual-med.png'),
                     );
                   } else if (selectedSize == size[2]) {
                     return Container(
                       alignment: Alignment.center,
-                      child: Image.asset('smallSize_music_app.png'),
+                      // child: Image.asset('smallSize_music_app.png'),
+                      child: Image.asset('music-visual-small.png'),
                     );
                   } else if (selectedSize == size[3]) {
                     return Container(
                       alignment: Alignment.center,
-                      child: Image.asset('miniSize_music_app.png'),
+                      // child: Image.asset('miniSize_music_app.png'),
+                      child: Image.asset('music-tiny.png'),
                     );
                   }
                   return const SizedBox.shrink();
