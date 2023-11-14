@@ -27,7 +27,7 @@ import 'pages/community/sub_pages/community_right_playlist_detail_pane.dart';
 //import 'pages/login/creta_account_manager.dart';
 
 abstract class AppRoutes {
-  static Future<bool> launchTab(String url, {bool isHttps = false}) async {
+  static Future<bool> launchTab(String url, {bool isHttps = false, bool isFullUrl = false}) async {
     String base = '';
     String path = '';
     try {
@@ -43,7 +43,7 @@ abstract class AppRoutes {
       base += "$host:$port";
       path = "creta03_v1";
     }
-    final String finalUrl = '$base$path$url';
+    final String finalUrl = isFullUrl ? url : '$base$path$url';
     //print('-----------------------$finalUrl');
     Uri uri = Uri.parse(finalUrl);
     logger.finest('$finalUrl clicked');

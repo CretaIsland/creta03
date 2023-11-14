@@ -1336,10 +1336,10 @@ class BTN {
       captionStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]!),
       bgColor: Colors.white,
       bgHoverColor: CretaColor.primary[100]!,
-      bgHoverSelectedColor: CretaColor.primary[300]!,
-      bgSelectedColor: CretaColor.primary[400]!,
+      bgHoverSelectedColor: CretaColor.primary[100]!,//CretaColor.primary[300]!,
+      bgSelectedColor: Colors.white,//CretaColor.primary[400]!,
       fgColor: CretaColor.primary[400]!,
-      fgSelectedColor: Colors.white,
+      fgSelectedColor: CretaColor.primary[400]!,//Colors.white,
       borderColor: CretaColor.primary[400]!,
       borderSelectedColor: CretaColor.primary[400]!,
     );

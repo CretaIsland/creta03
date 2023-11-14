@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
+import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
@@ -41,6 +43,7 @@ import '../../../model/user_property_model.dart';
 import '../../../model/channel_model.dart';
 import '../login/creta_account_manager.dart';
 import '../../model/app_enums.dart';
+import '../../../design_system/dialog/creta_dialog.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;
@@ -435,6 +438,21 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
 }
 
 //////////////////////////////////////////////////////////////////////
+class SNSShareItem {
+  const SNSShareItem({
+    required this.title,
+    required this.onPressed,
+    required this.image,
+    this.width = 32,
+    this.height = 32,
+  });
+  final String title;
+  final Function() onPressed;
+  final ImageProvider? image;
+  final double width;
+  final double height;
+}
+
 class CretaBookUIItem extends StatefulWidget {
   const CretaBookUIItem({
     required super.key,
@@ -469,6 +487,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   bool _popmenuOpen = false;
 
   late List<CretaMenuItem> _popupMenuList;
+  late List<SNSShareItem> _shareItemList;
 
   void _openPopupMenu() {
     CretaPopupMenu.showMenu(
@@ -485,9 +504,9 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   //   logger.finest('편집하기(${widget.bookModel.name})');
   // }
 
-  void _doPopupMenuPlay() {
-    logger.finest('재생하기(${widget.bookModel.name})');
-  }
+  // void _doPopupMenuPlay() {
+  //   logger.finest('재생하기(${widget.bookModel.name})');
+  // }
 
   void _doPopupMenuEdit() {
     logger.finest('편집하기(${widget.bookModel.name})');
@@ -502,6 +521,113 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _doPopupMenuShare() {
     logger.finest('공유하기(${widget.bookModel.name})');
+    String bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
+    showDialog(
+      context: context,
+      builder: (context) => CretaDialog(
+        width: 364.0,
+        height: 304.0,
+        title: '공유하기',
+        crossAxisAlign: CrossAxisAlignment.center,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16 - 1, 0, 0),
+              child: Text(
+                '링크 공유',
+                style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 13, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CretaTextField(
+                    textFieldKey: GlobalObjectKey('CretaBookUIItem._doPopupMenuShare.CretaTextField'),
+                    width: 244,
+                    height: 30,
+                    value: bookLinkUrl,
+                    hintText: '',
+                    onEditComplete: (value) {},
+                  ),
+                  SizedBox(width: 11),
+                  BTN.line_blue_t_m(
+                    text: '복사하기',
+                    width: 45,
+                    height: 32,
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: bookLinkUrl));
+                      showSnackBar(
+                        context,
+                        '링크 공유 주소가 클립보드로 복사되었습니다',
+                        duration: const Duration(seconds: 2),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 19, 0, 0),
+              child: Text(
+                'SNS에 공유',
+                style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 20, 0, 36),
+              child: Wrap(
+                spacing: 20,
+                children: _shareItemList
+                    .map(
+                      (item) => SizedBox(
+                        width: item.width,
+                        height: item.height,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            shape: CircleBorder(),
+                            padding: EdgeInsets.all(0),
+                            backgroundColor: Colors.transparent, // <-- Button color
+                            //foregroundColor: Colors.red, // <-- Splash color
+                          ),
+                          onPressed: item.onPressed,
+                          child: item.image == null
+                              ? Text(
+                                  item.title.substring(0, 2),
+                                  style: CretaFont.titleSmall,
+                                )
+                              : Image(
+                                  width: item.width,
+                                  height: item.height,
+                                  image: item.image!,
+                                ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+            Container(
+              width: 364,
+              height: 2.0,
+              color: CretaColor.text[100], //Colors.grey.shade200,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(297, 12 - 1, 0, 0),
+              child: BTN.fill_blue_t_m(
+                text: '완료',
+                width: 55,
+                height: 32,
+                onPressed: () {},
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _doPopupMenuDownload() {
@@ -521,21 +647,17 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   void initState() {
     super.initState();
 
-    String currentLoginedUserId = CretaAccountManager.getUserProperty?.getMid ?? 'null@null.null';
-    String owner = '<${PermissionType.owner.name}>$currentLoginedUserId';
-    String writer = '<${PermissionType.writer.name}>$currentLoginedUserId';
-
     _popupMenuList = [
-      CretaMenuItem(
-        caption: '재생하기',
-        onPressed: _doPopupMenuPlay,
-      ),
-      if (widget.bookModel.shares.contains(owner) || widget.bookModel.shares.contains(writer))
-        CretaMenuItem(
-          caption: '편집하기',
-          onPressed: () {},//_doPopupMenuEdit,
-          linkUrl: '${AppRoutes.studioBookMainPage}?${widget.bookModel.sourceMid}',
-        ),
+      // CretaMenuItem(
+      //   caption: '재생하기',
+      //   onPressed: _doPopupMenuPlay,
+      // ),
+      // if (widget.bookModel.shares.contains(owner) || widget.bookModel.shares.contains(writer))
+      //   CretaMenuItem(
+      //     caption: '편집하기',
+      //     onPressed: () {},//_doPopupMenuEdit,
+      //     linkUrl: '${AppRoutes.studioBookMainPage}?${widget.bookModel.sourceMid}',
+      //   ),
       CretaMenuItem(
         caption: '재생목록에 추가',
         onPressed: _doPopupMenuAddToPlayList,
@@ -557,6 +679,101 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         onPressed: _doPopupMenuCopy,
       ),
     ];
+
+    _shareItemList = [
+      SNSShareItem(
+        title: '카카오스토리',
+        onPressed: () {
+          String bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
+          String encodeText = Uri.encodeComponent(widget.bookModel.name.value);
+          String encodeUrl = Uri.encodeComponent(bookLinkUrl);
+          String tabUrl = 'https://story.kakao.com/share?text=$encodeText&url=$encodeUrl';
+          AppRoutes.launchTab(tabUrl, isFullUrl: true);
+        },
+        image: AssetImage('assets/social/kakaotalk.png'),
+      ),
+      SNSShareItem(
+        title: '페이스북',
+        onPressed: () {
+          String bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
+          String encodeUrl = Uri.encodeComponent(bookLinkUrl);
+          String tabUrl = 'https://www.facebook.com/sharer/sharer.php?u=$encodeUrl';
+          AppRoutes.launchTab(tabUrl, isFullUrl: true);
+        },
+        image: AssetImage('assets/social/facebook.png'),
+      ),
+      SNSShareItem(
+        title: '트위터',
+        onPressed: () {
+          String bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
+          String encodeText = Uri.encodeComponent(widget.bookModel.name.value);
+          String encodeUrl = Uri.encodeComponent(bookLinkUrl);
+          String tabUrl = 'https://twitter.com/share?url=$encodeUrl&text=$encodeText';
+          AppRoutes.launchTab(tabUrl, isFullUrl: true);
+        },
+        image: AssetImage('assets/social/twitter.png'),
+      ),
+      // SNSShareItem(
+      //   title: '인스타그램',
+      //   onPressed: () {},
+      //   image: AssetImage('assets/social/instagram.png'),
+      // ),
+      // SNSShareItem(
+      //   title: '유튜브',
+      //   onPressed: () {},
+      //   image: AssetImage('assets/social/youtube.png'),
+      // ),
+      // SNSShareItem(
+      //   title: '틱톡',
+      //   onPressed: () {},
+      //   image: AssetImage('assets/social/tiktok.png'),
+      // ),
+/*
+messenger(facebook) (개발자계정 가입필요)
+ttps://www.facebook.com/dialog/send?app_id=102628213125203&display=popup&link=(URL)&redirect_uri=(URL)
+
+reddit
+https://reddit.com/submit?url=(URL)&title=(TITLE)
+
+vk
+http://vkontakte.ru/share.php?url=(URL)
+
+ok
+https://connect.ok.ru/offer?url=(URL)&title=(TITLE)
+
+pinterest
+https://pinterest.com/pin/create/button/?url=(URL)&description=(TITLE)&is_video=true&media=(THUMBNAIL_URL)
+
+blogger
+http://www.blogger.com/blog-this.g?n=(TITLE)&source=youtube&b=%3Ciframe%20width%3D%22480%22%20height%3D%22270%22%20src%3D%22https%3A//youtube.com/embed/FJfwehhzIhw%3Fsi%3DQB_JsxX9sEI_lMbX%22%20frameborder%3D%220%22%20allow%3D%22accelerometer%3B%20autoplay%3B%20clipboard-write%3B%20encrypted-media%3B%20gyroscope%3B%20picture-in-picture%3B%20web-share%22%20allowfullscreen%3E%3C/iframe%3E&eurl=(THUMBNAIL_URL)
+
+tumblr
+https://www.tumblr.com/share/video?embed=(URL)&caption=(TITLE)
+
+linkedin
+https://www.linkedin.com/sharing/share-offsite/?url=(URL)
+
+skyrock
+http://skyrock.com/m/blog/share-widget.php?idp=10&idm=(YOUTUBE_CONTENTS_ID)&title=(TITLE)
+
+mix
+https://mix.com/add?url=(URL)
+
+goo
+http://blog.goo.ne.jp/portal_login/blogparts/?key=(YOUTUBE_CONTENTS_ID)&title=(TITLE)&type=youtube
+
+line
+https://social-plugins.line.me/lineit/share?url=(URL)
+
+band
+https://band.us/plugin/share?body=%EC%9D%B4%EA%B1%B0%20%EC%A2%80%20%EA%B4%9C%EC%B0%AE%EC%9D%80%20%EB%93%AF.%20%5B%EB%89%B4%EC%97%90%EC%9D%B4%EC%BB%A4%5D%20%EC%B6%A9%EC%A0%84%EC%8B%9D%20%EC%86%90%EB%82%9C%EB%A1%9C%20%EB%AF%B8%EB%8B%88%20%ED%9C%B4%EB%8C%80%EC%9A%A9%20%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC%2010000mAh%20HW-100%0Ahttp%3A%2F%2Fwww.compuzone.co.kr%2Fproduct%2Fproduct_detail.htm%3FProductNo%3D1082443
+https://band.us/plugin/share?body=(Text of Title&Url)
+
+카카오톡 (기업계정 가입필요)
+https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436d443c705bc1a84&ka=sdk%2F1.22.0%20os%2Fjavascript%20lang%2Fko-KR%20device%2FWin32%20origin%2Fhttps%253A%252F%252Fwww.compuzone.co.kr&validation_action=default&validation_params=%7B%22link_ver%22%3A%224.0%22%2C%22template_object%22%3A%7B%22object_type%22%3A%22commerce%22%2C%22button_title%22%3A%22%22%2C%22content%22%3A%7B%22title%22%3A%22%5B%EB%89%B4%EC%97%90%EC%9D%B4%EC%BB%A4%5D%20%EC%B6%A9%EC%A0%84%EC%8B%9D%20%EC%86%90%EB%82%9C%EB%A1%9C%20%EB%AF%B8%EB%8B%88%20%ED%9C%B4%EB%8C%80%EC%9A%A9%20%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC%2010000mAh%20HW-100%22%2C%22image_url%22%3A%22%22%2C%22link%22%3A%7B%22web_url%22%3A%22http%3A%2F%2Fwww.compuzone.co.kr%2Fproduct%2Fproduct_detail.htm%3FProductNo%3D1082443%22%2C%22mobile_web_url%22%3A%22http%3A%2F%2Fm.compuzone.co.kr%2Fproduct%2Fproduct_detail.htm%3FProductNo%3D1082443%22%7D%7D%2C%22commerce%22%3A%7B%22regular_price%22%3A34900%7D%7D%7D
+
+*/
+    ];
   }
 
   void setPopmenuOpen() {
@@ -568,6 +785,10 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       return [];
     }
 
+    String currentLoginedUserId = CretaAccountManager.getUserProperty?.getMid ?? 'null@null.null';
+    String owner = '<${PermissionType.owner.name}>$currentLoginedUserId';
+    String writer = '<${PermissionType.writer.name}>$currentLoginedUserId';
+
     return [
       Container(
         width: widget.width,
@@ -575,14 +796,15 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
         child: Row(
           children: [
-            BTN.opacity_gray_it_s(
-              width: 91,
-              icon: Icons.edit_outlined,
-              text: '편집하기',
-              onPressed: () => _doPopupMenuEdit(),
-              alwaysShowIcon: true,
-              textStyle: CretaFont.buttonSmall.copyWith(color: CretaColor.text[100]),
-            ),
+            if (widget.bookModel.shares.contains(owner) || widget.bookModel.shares.contains(writer))
+              BTN.opacity_gray_it_s(
+                width: 91,
+                icon: Icons.edit_outlined,
+                text: '편집하기',
+                onPressed: () => _doPopupMenuEdit(),
+                alwaysShowIcon: true,
+                textStyle: CretaFont.buttonSmall.copyWith(color: CretaColor.text[100]),
+              ),
             Expanded(child: Container()),
             BTN.opacity_gray_i_s(
               icon: widget.isFavorites ? Icons.favorite : Icons.favorite_border,
@@ -591,12 +813,12 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                 widget.addToFavorites?.call(widget.bookModel.mid, widget.isFavorites);
               },
             ),
-            SizedBox(width: 4),
-            BTN.opacity_gray_i_s(
-              icon: Icons.content_copy_rounded,
-              iconColor: CretaColor.text[100],
-              onPressed: () {},
-            ),
+            // SizedBox(width: 4),
+            // BTN.opacity_gray_i_s(
+            //   icon: Icons.content_copy_rounded,
+            //   iconColor: CretaColor.text[100],
+            //   onPressed: () {},
+            // ),
             SizedBox(width: 4),
             BTN.opacity_gray_i_s(
               icon: Icons.menu,
