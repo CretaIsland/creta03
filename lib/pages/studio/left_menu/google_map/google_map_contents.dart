@@ -5,6 +5,7 @@ import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/browser_client.dart';
+import 'package:hycop/common/util/logger.dart';
 
 class GoogleMapContents extends StatefulWidget {
   const GoogleMapContents({super.key});
@@ -22,12 +23,12 @@ class _GoogleMapContentsState extends State<GoogleMapContents> {
   Future<void> _handleSearchResultTap(String selectedResult) async {
     try {
       String addressDetails = await _getAddressDetails(selectedResult);
-      print('Selected result: $selectedResult\nAddress details: $addressDetails');
+      logger.fine('Selected result: $selectedResult\nAddress details: $addressDetails');
     } catch (error) {
       if (error is http.ClientException) {
-        print('HTTP Client Exception!!!!!!!!!!!!!: $error');
+        logger.warning('HTTP Client Exception!!!!!!!!!!!!!: $error');
       } else {
-        print('Error in _handleSearchResultTap: $error');
+        logger.warning('Error in _handleSearchResultTap: $error');
       }
     }
   }
@@ -47,7 +48,7 @@ class _GoogleMapContentsState extends State<GoogleMapContents> {
         final jsonResult = json.decode(response.body);
         if (jsonResult['status'] == 'OK') {
           final results = jsonResult['candidates'];
-          print('search result is $results-------------');
+          logger.fine('search result is $results-------------');
           return results['formatted_address'][0];
         } else if (jsonResult['status'] == 'ZERO_RESULTS') {
           return 'No address details found for $query';
@@ -55,13 +56,13 @@ class _GoogleMapContentsState extends State<GoogleMapContents> {
           return 'Error: ${jsonResult['status']} - ${jsonResult['error_message']}';
         }
       } else {
-        print('Error 1: ${response.statusCode}');
-        print('Response: ${response.body}');
+        logger.warning('Error 1: ${response.statusCode}');
+        logger.warning('Response: ${response.body}');
         return 'Error fetching address details (HTTP ${response.statusCode})';
       }
     } catch (error) {
-      print('API URL: $apiUrl');
-      print('Error 2: $error');
+      logger.warning('API URL: $apiUrl');
+      logger.warning('Error 2: $error');
       return 'Error fetching address details: $error';
     }
   }

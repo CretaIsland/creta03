@@ -2,6 +2,7 @@ import 'package:creta03/design_system/creta_font.dart';
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/pages/studio/right_menu/property_mixin.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
@@ -52,7 +53,7 @@ class _GoogleMapSavedListState extends State<GoogleMapSavedList> with PropertyMi
         return ListView.builder(
           itemCount: adddressManager.selectedAddress.length,
           itemBuilder: (context, index) {
-            print('adddressManager.selectedAddress ${adddressManager.selectedAddress}');
+            logger.fine('adddressManager.selectedAddress ${adddressManager.selectedAddress}');
             return ListTile(
               title: Text(
                 adddressManager.selectedAddress.isNotEmpty
