@@ -278,7 +278,6 @@ class BookGridItemState extends State<BookGridItem> {
                                   context: context,
                                   builder: (context) {
                                     return CretaAlertDialog(
-                                      
                                       content: Text(
                                         CretaLang.deleteConfirm,
                                         style: CretaFont.titleMedium,
@@ -377,20 +376,25 @@ class BookGridItemState extends State<BookGridItem> {
     int randomNumber = random.nextInt(1000);
     int duration = widget.index == 0 ? 500 : 500 + randomNumber;
     String url = widget.bookModel!.thumbnailUrl.value;
-    //logger.info('${widget.bookModel!.name.value} = <$url>');
     if (url.isEmpty) {
       url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
     }
-    return SizedBox(
-        width: aWidth,
-        height: aHeight - LayoutConst.bookDescriptionHeight,
-        child: CustomImage(
-            key: UniqueKey(),
-            hasMouseOverEffect: true,
-            duration: duration,
-            width: aWidth,
-            height: aHeight,
-            image: url));
+    logger.info('_thumnailArea ${widget.bookModel!.name.value} = <$url>');
+    try {
+      return SizedBox(
+          width: aWidth,
+          height: aHeight - LayoutConst.bookDescriptionHeight,
+          child: CustomImage(
+              key: UniqueKey(),
+              hasMouseOverEffect: true,
+              duration: duration,
+              width: aWidth,
+              height: aHeight,
+              image: url));
+    } catch (err) {
+      logger.warning('CustomeImage failed $err');
+      return SizedBox.shrink();
+    }
   }
 
   Widget _bottomArea() {

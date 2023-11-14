@@ -39,6 +39,7 @@ import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
+import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/contents_model.dart';
@@ -849,7 +850,8 @@ class _BookMainPageState extends State<BookMainPage> {
     if (padding < 2) {
       padding = 2;
     }
-
+    logger
+        .info('StudioVariables.displayWidth======================${StudioVariables.displayWidth}');
     logger.fine(
         "height=${StudioVariables.virtualHeight}, width=${StudioVariables.virtualWidth}, scale=${StudioVariables.fitScale}}");
   }
@@ -1098,9 +1100,24 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.person_add_outlined,
             onPressed: () {
-              //setState(() {
-              //StudioVariables.allowMutilUser = !StudioVariables.allowMutilUser;
-              //});
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BookPublishDialog(
+                      key: GlobalKey(),
+                      model: _bookModel,
+                      currentStep: 2,
+                      title: CretaStudioLang.tooltipInvite,
+                      prevBtTitle: CretaLang.cancel,
+                      nextBtTitle: CretaLang.confirm,
+                      onPrev: () {
+                        Navigator.of(context).pop();
+                      },
+                      onNext: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  });
             },
             hasShadow: false,
             tooltip: CretaStudioLang.tooltipInvite,

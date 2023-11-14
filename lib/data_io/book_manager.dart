@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -24,6 +25,7 @@ import 'page_manager.dart';
 class BookManager extends CretaManager {
   // contents 들의 url 모음, 다운로드 버튼을 눌렀을 때 생성된다.
   static Set<String> contentsSet = {};
+  Timer? _downloadReceivetimer;
 
   BookManager({String tableName = 'creta_book'}) : super(tableName, null) {
     saveManagerHolder?.registerManager('book', this);
@@ -328,12 +330,56 @@ class BookManager extends CretaManager {
     }
     String retval = '{\n$jsonStr\n}';
 
-    if (shouldDownload) {
-      //base64 encoding 필요
-      String encodedJson = base64Encode(utf8.encode(retval));
+    if (shouldDownload == false) {
+      CretaUtils.saveLogToFile(retval, "${book.mid}.json");
+    }
 
-      String apiServer = 'https://yourapi.com/';
-      String url = '${apiServer}zipRequest';
+    //base64 encoding 필요
+    String encodedJson = base64Encode(utf8.encode(retval));
+
+    String apiServer = 'https://devcreta.com:444/';
+    String url = '${apiServer}zipRequest';
+
+    try {
+      // HTTP POST 요청 수행
+      http.Response response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          // 추가적인 헤더를 설정할 수 있습니다.
+        },
+        body: encodedJson, // Base64 인코딩된 JSON 데이터
+      );
+      if (response.statusCode != 200) {
+        // 에러 처리
+        logger.severe('$url Failed to send data');
+        logger.severe('Status code: ${response.statusCode}');
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, '${CretaStudioLang.zipRequestFailed}(${response.statusCode})');
+        return false;
+      }
+
+      logger.info('zipRequest succeed');
+      // ignore: use_build_context_synchronously
+      _waitDownload(apiServer, book.mid, context);
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, '${CretaStudioLang.zipStarting}(${response.statusCode})');
+    } catch (e) {
+      // 예외 처리
+      logger.severe('$url Failed to send data');
+      logger.severe('An error occurred: $e');
+      // ignore: use_build_context_synchronously
+      showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($e)');
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<void> _waitDownload(String apiServer, String bookMid, BuildContext context) async {
+    _downloadReceivetimer?.cancel();
+    _downloadReceivetimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      String url = '${apiServer}zipComplete';
 
       try {
         // HTTP POST 요청 수행
@@ -343,35 +389,37 @@ class BookManager extends CretaManager {
             'Content-Type': 'application/json',
             // 추가적인 헤더를 설정할 수 있습니다.
           },
-          body: encodedJson, // Base64 인코딩된 JSON 데이터
+          body: bookMid,
         );
 
-        // 서버로부터의 응답 처리
-        if (response.statusCode == 200) {
-          // 성공적으로 데이터를 보내고 URL을 받았다고 가정
-          //Map<String, dynamic> responseBody = json.decode(response.body);
-          //String receivedUrl = responseBody['zipUrl']; // API 응답에서 URL 추출
-          logger.info('zipRequest succeed');
-        } else {
+        if (response.statusCode != 200) {
           // 에러 처리
           logger.severe('$url Failed to send data');
           logger.severe('Status code: ${response.statusCode}');
           // ignore: use_build_context_synchronously
-          showSnackBar(context, '${CretaStudioLang.zipRequestFailed}(${response.statusCode})');
-          return false;
+          showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}(${response.statusCode})');
+          return;
+        }
+
+        Map<String, dynamic> responseBody2 = json.decode(response.body);
+        String? fileId = responseBody2['fileId']; // API 응답에서 URL 추출
+
+        if (fileId != null && fileId.isNotEmpty) {
+          _downloadReceivetimer?.cancel();
+          //HycopFactory.storage!.downloadFile(fileId).then((bool succeed) {
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, '${CretaStudioLang.fileDownloading}(${response.statusCode})');
+          //});
+          return;
         }
       } catch (e) {
         // 예외 처리
         logger.severe('$url Failed to send data');
         logger.severe('An error occurred: $e');
         // ignore: use_build_context_synchronously
-        showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($e)');
-        return false;
+        showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}($e)');
+        return;
       }
-    } else {
-      // 개발자 모드에서는 json 만 받아 볼 수 있다.
-      CretaUtils.saveLogToFile(retval, "${book.mid}.json");
-    }
-    return true;
+    });
   }
 }

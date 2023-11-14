@@ -37,7 +37,7 @@ dependencies:
   flutter_riverpod: ^1.0.4
   flutter_speed_dial: ^6.1.0+1
   routemaster: ^1.0.1
-  hycop: ^0.3.23
+  hycop: ^0.3.27
   outline_search_bar: ^2.3.0
   custom_radio_grouped_button: 2.2.1
   # elegant_radio_button_group: ^0.0.1
@@ -146,6 +146,7 @@ dependencies:
   just_the_tooltip: ^0.0.12
   flutter_svg: ^2.0.8
   google_geocoding_api: ^1.4.1
+  gap: ^3.0.1
 
 
 dev_dependencies:

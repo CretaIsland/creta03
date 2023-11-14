@@ -8,6 +8,7 @@ import 'dart:html' as html;
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:image/image.dart' as img;
 
@@ -966,5 +967,56 @@ class CretaUtils {
       ..setAttribute(folder, outFileName)
       ..click();
     html.Url.revokeObjectUrl(url);
+  }
+
+  static Future<Response?> post(
+    String url,
+    Map<String, dynamic> body, {
+    void Function(String code)? onError,
+    void Function(String code)? onException,
+  }) async {
+    String jsonString = '{\n';
+    int count = 0;
+    for (var ele in body.entries) {
+      if (count > 0) {
+        jsonString += ',\n';
+      }
+      jsonString += '"${ele.key}": ${ele.value}';
+      count++;
+    }
+    jsonString += '\n}';
+
+    logger.info(jsonString);
+
+    try {
+      // HTTP POST 요청 수행
+      http.Response response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          // 추가적인 헤더를 설정할 수 있습니다.
+        },
+        body: jsonString,
+      );
+      if (response.statusCode != 200) {
+        // 에러 처리
+        logger.severe('$url Failed to send data');
+        logger.severe('Status code: ${response.statusCode}');
+        // ignore: use_build_context_synchronously
+        onError?.call('${response.statusCode}');
+        return null;
+      }
+
+      logger.info('pos $url succeed');
+      // ignore: use_build_context_synchronously
+      return response;
+    } catch (e) {
+      // 예외 처리
+      logger.severe('$url Failed to send data');
+      logger.severe('An error occurred: $e');
+      // ignore: use_build_context_synchronously
+      onException?.call('$e');
+      return null;
+    }
   }
 }

@@ -55,83 +55,90 @@ class BookTopMenuState extends State<BookTopMenu> {
         SizedBox(width: widget.padding),
         Visibility(
           // Scale, Undo
-          visible: StudioVariables.workHeight > 1 && StudioVariables.workWidth > 800 ? true : false,
+          visible: StudioVariables.workHeight > 1 ? true : false,
           child: Row(
             children: [
-              BTN.floating_l(
-                icon: Icons.undo_outlined,
-                onPressed: widget.onUndo,
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipUndo,
-              ),
-              SizedBox(width: widget.padding / 2),
-              BTN.floating_l(
-                icon: Icons.redo_outlined,
-                onPressed: widget.onRedo,
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipRedo,
-              ),
-              SizedBox(width: widget.padding),
-              BTN.floating_l(
-                icon: Icons.title_outlined,
-                onPressed: widget.onTextCreate,
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipText,
-              ),
-              SizedBox(width: widget.padding / 2),
-              BTN.floating_l(
-                icon: Icons.space_dashboard_outlined,
-                onPressed: widget.onFrameCreate,
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipFrame,
-              ),
-              SizedBox(width: widget.padding),
-              CretaScaleButton(
-                width: 180,
-                onManualScale: widget.onManualScale,
-                onAutoScale: widget.onAutoScale,
-                hasShadow: false,
-                tooltip: CretaStudioLang.tooltipScale,
-                extended: CretaIconToggleButton(
-                  key: const ValueKey('HandToolToggleButton'),
-                  buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-                  toggleValue: StudioVariables.isHandToolMode,
-                  icon1: Icons.transit_enterexit_outlined,
-                  icon2: Icons.pan_tool_outlined,
-                  tooltip: StudioVariables.isHandToolMode
-                      ? CretaStudioLang.tooltipEdit
-                      : CretaStudioLang.tooltipNoneEdit,
+              if (StudioVariables.displayWidth > 300)
+                BTN.floating_l(
+                  icon: Icons.undo_outlined,
+                  onPressed: widget.onUndo,
+                  hasShadow: false,
+                  tooltip: CretaStudioLang.tooltipUndo,
+                ),
+              if (StudioVariables.displayWidth > 300) SizedBox(width: widget.padding / 2),
+              if (StudioVariables.displayWidth > 300)
+                BTN.floating_l(
+                  icon: Icons.redo_outlined,
+                  onPressed: widget.onRedo,
+                  hasShadow: false,
+                  tooltip: CretaStudioLang.tooltipRedo,
+                ),
+              if (StudioVariables.displayWidth > 550) SizedBox(width: widget.padding),
+              if (StudioVariables.displayWidth > 550)
+                BTN.floating_l(
+                  icon: Icons.title_outlined,
+                  onPressed: widget.onTextCreate,
+                  hasShadow: false,
+                  tooltip: CretaStudioLang.tooltipText,
+                ),
+              if (StudioVariables.displayWidth > 550) SizedBox(width: widget.padding / 2),
+              if (StudioVariables.displayWidth > 550)
+                BTN.floating_l(
+                  icon: Icons.space_dashboard_outlined,
+                  onPressed: widget.onFrameCreate,
+                  hasShadow: false,
+                  tooltip: CretaStudioLang.tooltipFrame,
+                ),
+              if (StudioVariables.displayWidth > 1000) SizedBox(width: widget.padding),
+              if (StudioVariables.displayWidth > 1000)
+                CretaScaleButton(
+                  width: 180,
+                  onManualScale: widget.onManualScale,
+                  onAutoScale: widget.onAutoScale,
+                  hasShadow: false,
+                  tooltip: CretaStudioLang.tooltipScale,
+                  extended: CretaIconToggleButton(
+                    key: const ValueKey('HandToolToggleButton'),
+                    buttonStyle: ToggleButtonStyle.fill_gray_i_m,
+                    toggleValue: StudioVariables.isHandToolMode,
+                    icon1: Icons.transit_enterexit_outlined,
+                    icon2: Icons.pan_tool_outlined,
+                    tooltip: StudioVariables.isHandToolMode
+                        ? CretaStudioLang.tooltipEdit
+                        : CretaStudioLang.tooltipNoneEdit,
+                    onPressed: () {
+                      StudioVariables.isHandToolMode = !StudioVariables.isHandToolMode;
+                      BookMainPage.bookManagerHolder!.notify();
+                    },
+                  ),
+                ),
+              if (StudioVariables.displayWidth > 1080) SizedBox(width: widget.padding),
+              if (StudioVariables.displayWidth > 1080)
+                CretaIconToggleButton(
+                  key: ValueKey('MuteToggleButton ${StudioVariables.isMute}'),
+                  toggleValue: StudioVariables.isMute,
+                  icon1: Icons.volume_off_outlined,
+                  icon2: Icons.volume_up_outlined,
+                  tooltip: CretaStudioLang.tooltipVolume,
+                  buttonSize: 20,
                   onPressed: () {
-                    StudioVariables.isHandToolMode = !StudioVariables.isHandToolMode;
-                    BookMainPage.bookManagerHolder!.notify();
+                    StudioVariables.globalToggleMute();
                   },
                 ),
-              ),
-              SizedBox(width: widget.padding),
-              CretaIconToggleButton(
-                key: ValueKey('MuteToggleButton ${StudioVariables.isMute}'),
-                toggleValue: StudioVariables.isMute,
-                icon1: Icons.volume_off_outlined,
-                icon2: Icons.volume_up_outlined,
-                tooltip: CretaStudioLang.tooltipVolume,
-                buttonSize: 20,
-                onPressed: () {
-                  StudioVariables.globalToggleMute();
-                },
-              ),
-              SizedBox(width: widget.padding / 2),
-              CretaIconToggleButton(
-                key: ValueKey('AutoPlayToggleButton ${StudioVariables.isAutoPlay}'),
-                toggleValue: StudioVariables.isAutoPlay,
-                icon1: Icons.pause_outlined,
-                icon2: Icons.play_arrow,
-                tooltip: CretaStudioLang.tooltipPause,
-                buttonSize: StudioVariables.isAutoPlay ? 20 : 30,
-                onPressed: () {
-                  //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent);
-                  StudioVariables.globalToggleAutoPlay();
-                },
-              ),
+              if (StudioVariables.displayWidth > 1190) SizedBox(width: widget.padding / 2),
+              if (StudioVariables.displayWidth > 1190)
+                CretaIconToggleButton(
+                  key: ValueKey('AutoPlayToggleButton ${StudioVariables.isAutoPlay}'),
+                  toggleValue: StudioVariables.isAutoPlay,
+                  icon1: Icons.pause_outlined,
+                  icon2: Icons.play_arrow,
+                  tooltip: CretaStudioLang.tooltipPause,
+                  buttonSize: StudioVariables.isAutoPlay ? 20 : 30,
+                  onPressed: () {
+                    //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent);
+                    StudioVariables.globalToggleAutoPlay();
+                  },
+                ),
               //SizedBox(width: widget.padding),
 //VerticalDivider(),
               // SizedBox(width: widget.padding / 2),

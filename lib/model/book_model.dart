@@ -148,7 +148,7 @@ class BookModel extends CretaModel with BookMixin {
     readers = [...readerList];
     writers = [...writerList];
     //shares = [...ownerList, ...writerList, ...readerList];
-    shares = _getShares(ownerList, writerList, readerList);
+    shares = getShares(ownerList, writerList, readerList);
     if (publishMid != null) this.publishMid = publishMid;
     if (sourceMid != null) this.sourceMid = sourceMid;
     if (hashtags != null) this.hashtags = [...hashtags];
@@ -190,7 +190,7 @@ class BookModel extends CretaModel with BookMixin {
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];
     //shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
-    shares = _getShares(srcBook.owners, srcBook.writers, srcBook.readers);
+    shares = getShares(srcBook.owners, srcBook.writers, srcBook.readers);
     publishMid = srcBook.publishMid;
     sourceMid = srcBook.sourceMid;
     hashtags = [...srcBook.hashtags];
@@ -227,7 +227,7 @@ class BookModel extends CretaModel with BookMixin {
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];
     //shares = [...srcBook.owners, ...srcBook.writers, ...srcBook.readers];
-    shares = _getShares(srcBook.owners, srcBook.writers, srcBook.readers);
+    shares = getShares(srcBook.owners, srcBook.writers, srcBook.readers);
     publishMid = srcBook.publishMid;
     sourceMid = srcBook.sourceMid;
     hashtags = [...srcBook.hashtags];
@@ -263,7 +263,7 @@ class BookModel extends CretaModel with BookMixin {
     }
     readers = CretaUtils.jsonStringToList((map["readers"] ?? ''));
     writers = CretaUtils.jsonStringToList((map["writers"] ?? ''));
-    shares = _getShares(owners, writers, readers);
+    shares = getShares(owners, writers, readers);
     publishMid = map["publishMid"] ?? '';
     sourceMid = map["sourceMid"] ?? '';
     //hashtags = map["hashtags"] ?? [];
@@ -282,7 +282,7 @@ class BookModel extends CretaModel with BookMixin {
   @override
   Map<String, dynamic> toMap() {
     //shares = [...owners, ...writers, ...readers];
-    shares = _getShares(owners, writers, readers);
+    shares = getShares(owners, writers, readers);
     if (owners.isEmpty) {
       owners.add(creator);
     }
@@ -344,7 +344,7 @@ class BookModel extends CretaModel with BookMixin {
     return Size(size.width / width.value, size.height / height.value);
   }
 
-  List<String> _getShares(
+  List<String> getShares(
       List<String> ownerList, List<String> writerList, List<String> readerList) {
     List<String> valueList = [];
     for (var val in ownerList) {
