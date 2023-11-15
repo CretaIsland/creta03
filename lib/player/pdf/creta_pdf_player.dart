@@ -30,7 +30,7 @@ class CretaPdfPlayer extends CretaAbsPlayer {
 
   @override
   void stop() {
-    //logger.info("pdf player stop,${model!.name}");
+    //logger.fine("pdf player stop,${model!.name}");
     //widget.wcontroller!.dispose();
     super.stop();
     model!.setPlayState(PlayState.stop);

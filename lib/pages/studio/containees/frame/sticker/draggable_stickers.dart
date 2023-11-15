@@ -278,7 +278,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       //   BookMainPage.containeeNotifier!.setFrameClick(true);
       // },
       onComplete: () {
-        logger.info('onComplete : from DraggableResizable...');
+        logger.fine('onComplete : from DraggableResizable...');
         //setState(() {
         widget.onComplete.call(sticker.id);
         //});
@@ -456,8 +456,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
   }
 
   void _showRightMouseMenu(TapDownDetails details, FrameModel frameModel, Sticker sticker) {
-    logger.info('right mouse button clicked ${details.globalPosition}');
-    logger.info('right mouse button clicked ${details.localPosition}');
+    logger.fine('right mouse button clicked ${details.globalPosition}');
+    logger.fine('right mouse button clicked ${details.localPosition}');
 
     bool isFullScreen = frameModel.isFullScreenTest(widget.book);
 
@@ -496,7 +496,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         CretaMenuItem(
             caption: isFullScreen ? CretaStudioLang.realSize : CretaStudioLang.maxSize,
             onPressed: () {
-              logger.info('${CretaStudioLang.maxSize} menu clicked');
+              logger.fine('${CretaStudioLang.maxSize} menu clicked');
               setState(() {
                 frameModel.toggleFullscreen(isFullScreen, widget.book);
                 _sendEvent!.sendEvent(frameModel);
@@ -567,7 +567,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   ? CretaStudioLang.foregroundMusic
                   : CretaStudioLang.backgroundMusic,
               onPressed: () {
-                logger.info('${CretaStudioLang.backgroundMusic} menu clicked');
+                logger.fine('${CretaStudioLang.backgroundMusic} menu clicked');
                 setState(() {
                   frameModel.toggeleBackgoundMusic(
                       !frameModel.isBackgroundMusic(), widget.frameManager!, widget.book);
@@ -581,7 +581,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   ? CretaStudioLang.noOverlayFrame
                   : CretaStudioLang.overlayFrame,
               onPressed: () {
-                logger.info('${CretaStudioLang.overlayFrame} menu clicked');
+                logger.fine('${CretaStudioLang.overlayFrame} menu clicked');
                 setState(() {
                   frameModel.toggeleOverlay(!frameModel.isOverlay.value, widget.frameManager!);
                   //_sendEvent!.sendEvent(frameModel);
@@ -720,7 +720,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   Widget _drawMiniMenu() {
     //return Consumer<ContaineeNotifier>(builder: (context, notifier, child) {
     return Consumer<MiniMenuNotifier>(builder: (context, notifier, child) {
-      logger.info(
+      logger.fine(
           'Consumer<MiniMenuNotifier> _drawMiniMenu(${BookMainPage.miniMenuNotifier!.isShow})------------------------------------------');
 
       Sticker? selectedSticker = _getSelectedSticker();
@@ -824,11 +824,11 @@ class _DraggableStickersState extends State<DraggableStickers> {
         // onFrameRotate: () {
         //   double reverse = 180 / pi;
         //   double before = (selectedSticker.angle * reverse).roundToDouble();
-        //   logger.info('onFrameRotate  before $before');
+        //   logger.fine('onFrameRotate  before $before');
         //   int turns = (before / 15).round() + 1;
         //   double after = ((turns * 15.0) % 360).roundToDouble();
         //   selectedSticker.angle = after / reverse;
-        //   logger.info('onFrameRotate  after $after');
+        //   logger.fine('onFrameRotate  after $after');
         //   widget.onFrameRotate.call(selectedSticker.id, after);
         //   setState(() {});
         // },
@@ -944,7 +944,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           bookMid: bookMid,
           parentId: '',
           onDroppedFile: (modelList) {
-            //logger.info('page dropZone contents added ${model.mid}');
+            //logger.fine('page dropZone contents added ${model.mid}');
             //model.isDynamicSize.set(true, save: false, noUndo: true);
             widget.onDropPage(modelList); // 동영상에 맞게 frame size 를 조절하라는 뜻
           },
@@ -986,7 +986,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   //   return DropZoneWidget(
   //     parentId: '',
   //     onDroppedFile: (model) {
-  //       logger.info('frame dropzone contents added ${model.mid}');
+  //       logger.fine('frame dropzone contents added ${model.mid}');
   //       //model.isDynamicSize.set(true, save: false, noUndo: true);
   //       widget.onDropFrame(sticker.id, model); // 동영상에 맞게 frame size 를 조절하라는 뜻
   //     },

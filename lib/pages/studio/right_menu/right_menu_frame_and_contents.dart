@@ -45,7 +45,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   @override
   void initState() {
     //_scrollController.addListener(_scrollListener);
-    logger.info('_RightMenuFrameAndContentsState.initState');
+    logger.fine('_RightMenuFrameAndContentsState.initState');
     //_scrollController = ScrollController(initialScrollOffset: 0.0);
     //_selectedTab = widget.selectedTap;
     super.initState();
@@ -78,7 +78,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
   }
 
   Widget _tabBar() {
-    logger.info('selectedTab = $_selectedTab--------------------------------');
+    logger.fine('selectedTab = $_selectedTab--------------------------------');
 
     return Container(
       height: LayoutConst.innerMenuBarHeight,
@@ -200,8 +200,8 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
       return SizedBox.shrink();
     }
     //print('44444444444444444444444444444444');
-    //logger.info('ContentsProperty ${contents.mid}-----------------');
-    //logger.info('ContentsProperty ${contents.font.value}----------');
+    //logger.fine('ContentsProperty ${contents.mid}-----------------');
+    //logger.fine('ContentsProperty ${contents.font.value}----------');
     return Column(
       children: [
         ContentsOrderedList(

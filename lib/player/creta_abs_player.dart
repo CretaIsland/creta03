@@ -110,7 +110,7 @@ abstract class CretaAbsPlayer extends ChangeNotifier {
         outerWidth = srcRatio * outerHeight;
       }
     }
-    logger.info(
+    logger.fine(
         'getOuterSize  autoFit=${acc.frameModel.isAutoFit.value},w=$outerWidth,h=$outerHeight');
     return Size(outerWidth, outerHeight);
   }

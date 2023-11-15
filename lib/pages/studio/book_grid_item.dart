@@ -283,7 +283,7 @@ class BookGridItemState extends State<BookGridItem> {
                                         style: CretaFont.titleMedium,
                                       ),
                                       onPressedOK: () async {
-                                        logger.info('onPressedOK(${widget.bookModel!.name.value})');
+                                        logger.fine('onPressedOK(${widget.bookModel!.name.value})');
 
                                         _removeItem(widget.bookModel).then((value) {
                                           if (value == null) return null;
@@ -292,7 +292,7 @@ class BookGridItemState extends State<BookGridItem> {
                                                 .reGet(AccountManager.currentLoginUser.email,
                                                     onModelFiltered: () {
                                               widget.bookManager.notify();
-                                              logger.info('removeItem complete');
+                                              logger.fine('removeItem complete');
                                               return value;
                                             });
                                           }
@@ -379,7 +379,7 @@ class BookGridItemState extends State<BookGridItem> {
     if (url.isEmpty) {
       url = 'https://picsum.photos/200/?random=$defaultThumbnailNumber';
     }
-    logger.info('_thumnailArea ${widget.bookModel!.name.value} = <$url>');
+    logger.fine('_thumnailArea ${widget.bookModel!.name.value} = <$url>');
     try {
       return SizedBox(
           width: aWidth,

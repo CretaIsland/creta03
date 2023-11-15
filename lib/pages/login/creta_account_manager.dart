@@ -284,7 +284,7 @@ class CretaAccountManager {
       }
       return _loginTeamList.length;
     } catch (error) {
-      logger.info('something wrong in teamManager >> $error');
+      logger.fine('something wrong in teamManager >> $error');
       return 0;
     }
   }
@@ -309,7 +309,7 @@ class CretaAccountManager {
       }
       return teamMemberList;
     } catch (error) {
-      logger.info('something wrong in teamManager >> $error');
+      logger.fine('something wrong in teamManager >> $error');
       return [];
     }
   }

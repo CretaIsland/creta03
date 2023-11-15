@@ -196,27 +196,27 @@ class StudioSnippet {
       // reModel.remoteUrl = fileModel.fileView;
       // reModel.thumbnail = fileModel.thumbnailUrl;
       // reModel.url = initUrl;
-      // logger.info('uploaded url = ${reModel.url}');
-      // logger.info('uploaded fileName = ${reModel.name}');
-      // logger.info('uploaded remoteUrl = ${reModel.remoteUrl!}');
-      // logger.info('uploaded aspectRatio = ${reModel.aspectRatio.value}');
+      // logger.fine('uploaded url = ${reModel.url}');
+      // logger.fine('uploaded fileName = ${reModel.name}');
+      // logger.fine('uploaded remoteUrl = ${reModel.remoteUrl!}');
+      // logger.fine('uploaded aspectRatio = ${reModel.aspectRatio.value}');
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
       //await contentsManager.setToDB(reModel);
 
       model.remoteUrl = fileModel.url;
       model.thumbnailUrl = fileModel.thumbnailUrl;
 
-      logger.info('uploaded url = ${model.url}');
-      logger.info('uploaded fileName = ${model.name}');
-      logger.info('uploaded remoteUrl = ${model.remoteUrl!}');
-      logger.info('uploaded aspectRatio = ${model.aspectRatio.value}');
+      logger.fine('uploaded url = ${model.url}');
+      logger.fine('uploaded fileName = ${model.name}');
+      logger.fine('uploaded remoteUrl = ${model.remoteUrl!}');
+      logger.fine('uploaded aspectRatio = ${model.aspectRatio.value}');
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
       await contentsManager.setToDB(model);
     } else {
       logger.severe('upload failed ${model.file!.name}');
     }
-    logger.info('send event to property');
-    logger.info('uploaded thumbnailUrl = ${model.thumbnailUrl}');
+    logger.fine('send event to property');
+    logger.fine('uploaded thumbnailUrl = ${model.thumbnailUrl}');
     contentsManager.sendEvent?.sendEvent(model);
   }
 
@@ -297,7 +297,7 @@ class StudioSnippet {
     return CretaLang.fontStringList.map(
       (fontStr) {
         String font = CretaUtils.getFontFamily(fontStr);
-        logger.info('font=$font');
+        logger.fine('font=$font');
         return CretaMenuItem(
             caption: fontStr,
             fontFamily: font,

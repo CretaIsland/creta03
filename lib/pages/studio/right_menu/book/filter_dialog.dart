@@ -121,8 +121,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                               _isNew = isChecked;
                               if (isChecked) {
                                 _newName = '';
-                                _filter = FilterModel(
-                                    CretaAccountManager.currentLoginUser.email);
+                                _filter = FilterModel(CretaAccountManager.currentLoginUser.email);
                               }
                             });
                           },
@@ -298,7 +297,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                     //                 style: CretaFont.titleMedium,
                     //               ),
                     //               onPressedOK: () async {
-                    //                 logger.info('onPressedOK()');
+                    //                 logger.fine('onPressedOK()');
                     //                 BookMainPage.filterManagerHolder!.delete(filter: _filter!);
                     //                 Navigator.of(context).pop();
                     //               },

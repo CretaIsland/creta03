@@ -56,10 +56,10 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
               //onDrop: uploadedFile,
               onDropMultiple: (list) async {
                 if (list == null) return;
-                logger.info('onDropMultiple -------------- ${list.length}');
+                logger.fine('onDropMultiple -------------- ${list.length}');
                 List<ContentsModel> contentsList = [];
                 for (var event in list.reversed) {
-                  logger.info('onDropMultiple -------------- ${event.name}');
+                  logger.fine('onDropMultiple -------------- ${event.name}');
                   contentsList.add(await uploadedFile(event, widget.bookMid));
                 }
                 widget.onDroppedFile(contentsList);
@@ -88,11 +88,11 @@ class DropZoneWidgetState extends State<DropZoneWidget> {
     final url = await controller.createFileUrl(event);
     //final blob = await controller.getFileData(event);
 
-    logger.info('Name : $name');
-    logger.info('Mime: $mime');
+    logger.fine('Name : $name');
+    logger.fine('Mime: $mime');
 
-    logger.info('Size : ${byte / (1024 * 1024)}');
-    logger.info('URL: $url');
+    logger.fine('Size : ${byte / (1024 * 1024)}');
+    logger.fine('URL: $url');
 
     // update the data model with recent file uploaded
     final droppedFile = ContentsModel.withFile(widget.parentId, bookMid,

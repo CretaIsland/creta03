@@ -57,11 +57,11 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
     return StreamBuilder<Offset>(
         stream: _linkReceiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
-          //logger.info('_drawLinkCursor1 ($offset)');
+          //logger.fine('_drawLinkCursor1 ($offset)');
           if (snapshot.data != null && snapshot.data is Offset) {
             offset = snapshot.data!;
           }
-          //logger.info('cursor postion ($offset)');
+          //logger.fine('cursor postion ($offset)');
           if (offset == Offset.zero) {
             return const SizedBox.shrink();
           }
@@ -72,14 +72,14 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
   Widget _drawLinkCursor(Offset position) {
     const double iconSize = 24;
 
-    //logger.info('_drawLinkCursor (${widget.pageOffset})');
+    //logger.fine('_drawLinkCursor (${widget.pageOffset})');
     // if (widget.pageOffset == Offset.zero || position == Offset.zero) {
     //   return const SizedBox.shrink();
     // }
 
     // double posX = offset.dx - iconSize / 2;
     // double posY = offset.dy - iconSize / 2;
-    //logger.info("pageOffset.dx=${widget.pageOffset.dx}, frameOffset.dx=${widget.frameOffset.dx}");
+    //logger.fine("pageOffset.dx=${widget.pageOffset.dx}, frameOffset.dx=${widget.frameOffset.dx}");
 
     // double posX = position.dx -
     //     iconSize / 2 -
@@ -95,7 +95,7 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
     double posX = position.dx - iconSize / 2;
     double posY = position.dy - iconSize / 2;
 
-    logger.info('_drawLinkCursor ($posX, $posY)');
+    logger.fine('_drawLinkCursor ($posX, $posY)');
 
     if (posX < 0 || posY < 0) {
       return const SizedBox.shrink();
@@ -106,7 +106,7 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
       top: posY,
       child: GestureDetector(
         onLongPressDown: (details) async {
-          logger.info(
+          logger.fine(
               'linkCursor clicked here ${details.globalPosition.dx}, ${details.globalPosition.dy}');
 
           ContentsModel? contentsModel = widget.contentsManager.getCurrentModel();
@@ -119,7 +119,7 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
 
           LinkParams.isLinkNewMode = false;
           //StudioVariables.isLinkEditMode = true;
-          logger.info(
+          logger.fine(
               'OnLinkCursor linkNew=${LinkParams.isLinkNewMode}, linkEdit=${contentsModel.isLinkEditMode}');
           BookMainPage.bookManagerHolder!.notify();
 

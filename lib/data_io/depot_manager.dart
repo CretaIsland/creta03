@@ -94,7 +94,7 @@ class DepotManager extends CretaManager {
     String? teamId, {
     bool doNotify = true,
   }) async {
-    logger.info('createNextDepot()');
+    logger.fine('createNextDepot()');
 
     model.order.set(getMaxModelOrder() + 1, save: false, noUndo: true);
     await createToDB(model);
@@ -120,7 +120,7 @@ class DepotManager extends CretaManager {
     await setToDB(model);
     insert(model, postion: getLength(), doNotify: doNotify);
 
-    logger.info(
+    logger.fine(
         '_redoCreateNextDepot complete ${model.contentsMid},${model.order.value},${model.isFavorite}');
     return model;
   }
@@ -132,7 +132,7 @@ class DepotManager extends CretaManager {
       notify();
     }
 
-    logger.info(
+    logger.fine(
         '_undoCreateNextDepot complete ${oldModel.contentsMid},${oldModel.order.value},${oldModel.isFavorite}');
     await setToDB(oldModel);
     return oldModel;
@@ -179,7 +179,7 @@ class DepotManager extends CretaManager {
       }
 
       contentsCount = modelList.length;
-      logger.info('contentsCount ${modelList.length}, contentsType: $contentsType');
+      logger.fine('contentsCount ${modelList.length}, contentsType: $contentsType');
       _onceDBGetComplete = true;
     } catch (e) {
       logger.finest('something wrong $e');

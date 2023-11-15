@@ -149,7 +149,7 @@ class PageManager extends CretaManager {
     frameManager.addRealTimeListen(pageMid);
     await frameManager.getFrames();
     frameManager.reOrdering();
-    logger.info('frameManager init complete');
+    logger.fine('frameManager init complete');
     //frameManager.setSelected(0);  처음에 프레임에 선택되어 있지 않다.
   }
 
@@ -236,7 +236,7 @@ class PageManager extends CretaManager {
   }
 
   bool gotoFirst() {
-    logger.info('gotoFirst');
+    logger.fine('gotoFirst');
     String? mid = getFirstMid();
     if (mid != null) {
       //if (selectedMid != mid) {
@@ -257,7 +257,7 @@ class PageManager extends CretaManager {
   }
 
   bool gotoPrev() {
-    logger.info('gotoPrev');
+    logger.fine('gotoPrev');
     String? mid = getPrevMid();
     if (mid != null) {
       setSelectedMid(mid);
@@ -300,7 +300,7 @@ class PageManager extends CretaManager {
 
   String? _getNextMid(double selectedOrder, bool startToFirst) {
     bool matched = startToFirst;
-    logger.info('selectedOrder=$selectedOrder');
+    logger.fine('selectedOrder=$selectedOrder');
     // if (selectedOrder < 0) {
     //   return null;
     // }
@@ -355,7 +355,7 @@ class PageManager extends CretaManager {
     // if (selectedOrder < 0) {
     //   return null;
     // }
-    logger.info('selectedOrder=$selectedOrder');
+    logger.fine('selectedOrder=$selectedOrder');
     Iterable<double> keys = orderKeys().toList().reversed;
     for (double ele in keys) {
       if (matched == true) {
@@ -452,7 +452,7 @@ class PageManager extends CretaManager {
   }
 
   @override
-  Future<int> copyBook(String newBookMid,String? newParentMid) async {
+  Future<int> copyBook(String newBookMid, String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     lock();
     int counter = 0;
@@ -462,7 +462,7 @@ class PageManager extends CretaManager {
       }
       AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
       FrameManager? frameManager = findFrameManager(ele.mid);
-      await frameManager?.copyBook(newBookMid,newOne.mid);
+      await frameManager?.copyBook(newBookMid, newOne.mid);
       counter++;
     }
     unlock();
@@ -482,7 +482,7 @@ class PageManager extends CretaManager {
   }
 
   void removeLink(String mid) {
-    logger.info('removeLink---------------FrameManager');
+    logger.fine('removeLink---------------FrameManager');
     for (var manager in frameManagerMap.values) {
       manager?.removeLink(mid);
     }
@@ -633,7 +633,7 @@ class PageManager extends CretaManager {
   }
 
   String toJson() {
-     if (getAvailLength() == 0) {
+    if (getAvailLength() == 0) {
       return ',\n\t"pages" : []\n';
     }
     String jsonStr = '';

@@ -41,7 +41,7 @@ abstract class LastClickable extends StatefulWidget {
 //     if (_textField == null) {
 //       return;
 //     }
-//     logger.info('clickedOutSide');
+//     logger.fine('clickedOutSide');
 //     Rect? boxRect = _textField!.getBoxRect();
 //     if (boxRect == null) {
 //       return;
@@ -449,7 +449,7 @@ class CretaTextFieldState extends State<CretaTextField> {
             }
           }
           // if (event.logicalKey == LogicalKeyboardKey.enter) {
-          //   logger.info('enter key pressed');
+          //   logger.fine('enter key pressed');
           //   _controller.value = TextEditingValue(
           //       text: '${_controller.text}\n',
           //       selection: TextSelection.fromPosition(
@@ -628,7 +628,7 @@ class CretaTextFieldState extends State<CretaTextField> {
                 } else {
                   _lineCount = newLineNo;
                 }
-                logger.info('line count chaged');
+                logger.fine('line count chaged');
                 setState(() {});
               }
             }
@@ -653,14 +653,14 @@ class CretaTextFieldState extends State<CretaTextField> {
           widget.onChanged?.call(value);
         },
         onTap: () {
-          logger.info('onTapped');
+          logger.fine('onTapped');
           //setLastClicked();
           //setState(() {
           _clicked = true;
           //});
         },
         // onTapOutside: (event) {
-        //   logger.info('onTappOutside');
+        //   logger.fine('onTappOutside');
         //   widget.onEditComplete(_searchValue);
         // },
       ),

@@ -33,7 +33,7 @@ class LinkManager extends CretaManager {
       await queryFromDB(query);
       reOrdering();
     } catch (error) {
-      logger.info('something wrong in LinkManager >> $error');
+      logger.fine('something wrong in LinkManager >> $error');
       return 0;
     }
     endTransaction();
@@ -50,7 +50,7 @@ class LinkManager extends CretaManager {
     bool doNotify = true,
     required void Function(bool, ContentsModel, Offset) onComplete,
   }) async {
-    logger.info('createNext()');
+    logger.fine('createNext()');
     LinkModel link = LinkModel('', contentsModel.realTimeKey);
     link.parentMid.set(contentsModel.mid, save: false, noUndo: true);
     link.posX = posX;
@@ -91,7 +91,7 @@ class LinkManager extends CretaManager {
     required LinkModel link,
     bool doNotify = true,
   }) async {
-    logger.info('update()');
+    logger.fine('update()');
     await setToDB(link);
     updateModel(link);
     selectedMid = link.mid;
@@ -104,7 +104,7 @@ class LinkManager extends CretaManager {
     required LinkModel link,
     bool doNotify = true,
   }) async {
-    logger.info('update()');
+    logger.fine('update()');
     link.isRemoved.set(true, save: false);
     await setToDB(link);
     updateModel(link);
@@ -118,10 +118,10 @@ class LinkManager extends CretaManager {
   void removeLink(String frameOrPageMid) {
     for (var ele in modelList) {
       LinkModel model = ele as LinkModel;
-      logger.info('${model.connectedMid} ?? $frameOrPageMid');
+      logger.fine('${model.connectedMid} ?? $frameOrPageMid');
 
       if (model.connectedMid == frameOrPageMid) {
-        logger.info('${model.mid} deleted--------------------$frameOrPageMid');
+        logger.fine('${model.mid} deleted--------------------$frameOrPageMid');
         model.isRemoved.set(true);
       }
     }
@@ -135,7 +135,7 @@ class LinkManager extends CretaManager {
       LinkModel newModel = LinkModel('', bookMid);
       newModel.copyFrom(org, newMid: newModel.mid, pMid: contentsMid);
       newModel.order.set(order++, save: false, noUndo: true);
-      logger.info('create new Link ${newModel.mid}');
+      logger.fine('create new Link ${newModel.mid}');
       await createToDB(newModel);
     }
   }

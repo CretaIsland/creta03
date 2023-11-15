@@ -88,10 +88,10 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // final RenderBox? box = widget.frameMainKey.currentContext?.findRenderObject() as RenderBox?;
       // if (box != null) {
-      //   logger.info('box.size=${box.size}');
+      //   logger.fine('box.size=${box.size}');
       //   Offset pageOffset = box.localToGlobal(Offset.zero);
       //   frameManager?.setPageOffset(pageOffset);
-      //   logger.info('box.position=$pageOffset');
+      //   logger.fine('box.position=$pageOffset');
       // }
       //frameManager?.setFrameMainKey(widget.frameMainKey);
     });
@@ -125,7 +125,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
   Widget showFrame() {
     //FrameModel? model = frameManager!.getSelected() as FrameModel?;
-    //logger.info('showFrame $applyScale  ${StudioVariables.applyScale}');
+    //logger.fine('showFrame $applyScale  ${StudioVariables.applyScale}');
     //print('showFrame----------------------------------');
     return StickerView(
       //key: ValueKey('StickerView-${widget.pageModel.mid}'),
@@ -173,19 +173,19 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         }
       },
       // onFrameRotate: (mid, angle) {
-      //   logger.info('FrameMain.onFrameRotate 1');
+      //   logger.fine('FrameMain.onFrameRotate 1');
       //   FrameModel? frame = frameManager?.getSelected() as FrameModel?;
       //   if (frame == null) {
       //     return;
       //   }
       //   frame.angle.set(angle);
-      //   logger.info('FrameMain.onFrameRotate 2');
+      //   logger.fine('FrameMain.onFrameRotate 2');
       //   _sendEvent?.sendEvent(frame);
 
       //   //setState(() {});
       // },
       // onFrameLink: (mid) {
-      //   logger.info('FrameMain.onFrameLink  ${LinkParams.isLinkNewMode}');
+      //   logger.fine('FrameMain.onFrameLink  ${LinkParams.isLinkNewMode}');
       //   BookMainPage.bookManagerHolder!.notify();
       //   //setState(() {});
       // },
@@ -321,7 +321,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         //});
       },
       onDropPage: (modelList) async {
-        logger.info('onDropPage(${modelList.length})');
+        logger.fine('onDropPage(${modelList.length})');
         await createNewFrameAndContents(modelList, widget.pageModel);
       },
 
@@ -569,7 +569,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   //         if (snapshot.data != null && snapshot.data is Offset) {
   //           offset = snapshot.data!;
   //         }
-  //         //logger.info('_drawLinkCursor ($offset)');
+  //         //logger.fine('_drawLinkCursor ($offset)');
   //         if (StudioVariables.isLinkMode == false || offset == Offset.zero) {
   //           return const SizedBox.shrink();
   //         }
@@ -579,7 +579,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   //         double posX = offset.dx - iconSize / 2 - _pageOffset.dx;
   //         double posY = offset.dy - iconSize / 2 - _pageOffset.dy;
 
-  //         //logger.info('_drawLinkCursor ($posX, $posY)');
+  //         //logger.fine('_drawLinkCursor ($posX, $posY)');
 
   //         if (posX < 0 || posY < 0) {
   //           return const SizedBox.shrink();

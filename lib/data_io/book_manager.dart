@@ -253,12 +253,12 @@ class BookManager extends CretaManager {
       newOne.creator = CretaAccountManager.getUserProperty!.email;
     }
     await createToDB(newOne);
-    logger.info('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
+    logger.fine('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
     return newOne;
   }
 
   Future<void> removeBook(BookModel thisOne, PageManager pageManager) async {
-    logger.info('removeBook()');
+    logger.fine('removeBook()');
     pageManager.removeAll();
     thisOne.isRemoved.set(true, save: false, noUndo: true);
     await setToDB(thisOne);
@@ -359,7 +359,7 @@ class BookManager extends CretaManager {
         return false;
       }
 
-      logger.info('zipRequest succeed');
+      logger.fine('zipRequest succeed');
       // ignore: use_build_context_synchronously
       _waitDownload(apiServer, book.mid, context);
       // ignore: use_build_context_synchronously

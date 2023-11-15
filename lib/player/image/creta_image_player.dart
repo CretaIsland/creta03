@@ -32,7 +32,7 @@ class CretaImagePlayer extends CretaAbsPlayer {
 
   @override
   void stop() {
-    //logger.info("image player stop,${model!.name}");
+    //logger.fine("image player stop,${model!.name}");
     //widget.wcontroller!.dispose();
     super.stop();
     model!.setPlayState(PlayState.stop);

@@ -123,7 +123,7 @@ class StickerViewState extends State<StickerView> {
 
   @override
   Widget build(BuildContext context) {
-    logger.info('StickerViewState build');
+    logger.fine('StickerViewState build');
 
     stickerList = widget.stickerList;
     if (stickerList != null) {

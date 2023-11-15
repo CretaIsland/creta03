@@ -39,7 +39,7 @@ class FilterManager extends CretaManager {
       await queryFromDB(query);
       reOrdering();
     } catch (error) {
-      logger.info('something wrong in FilterManager >> $error');
+      logger.fine('something wrong in FilterManager >> $error');
       return 0;
     }
     endTransaction();
@@ -51,7 +51,7 @@ class FilterManager extends CretaManager {
     bool doNotify = true,
     void Function(bool, String)? onComplete,
   }) async {
-    logger.info('createNext()');
+    logger.fine('createNext()');
     // FilterModel filter = FilterModel('');
     // filter.parentMid.set(userEmail, save: false, noUndo: true);
     // filter.name = name;
@@ -90,7 +90,7 @@ class FilterManager extends CretaManager {
     required FilterModel filter,
     bool doNotify = true,
   }) async {
-    logger.info('update()');
+    logger.fine('update()');
     await setToDB(filter);
     updateModel(filter);
     selectedMid = filter.mid;
@@ -103,7 +103,7 @@ class FilterManager extends CretaManager {
     required FilterModel filter,
     bool doNotify = true,
   }) async {
-    logger.info('delete()');
+    logger.fine('delete()');
     filter.isRemoved.set(true, save: false);
     await setToDB(filter);
     updateModel(filter);

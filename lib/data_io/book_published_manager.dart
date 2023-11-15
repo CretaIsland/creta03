@@ -169,7 +169,7 @@ class BookPublishedManager extends CretaManager {
   // }
 
   Future<BookModel?> findPublished(String sourceMid) async {
-    logger.info('findPublished');
+    logger.fine('findPublished');
     Map<String, QueryValue> query = {};
     query['sourceMid'] = QueryValue(value: sourceMid);
     query['isRemoved'] = QueryValue(value: false);
@@ -219,7 +219,7 @@ class BookPublishedManager extends CretaManager {
       published.writers = [...writers];
       published.shares = published.getShares(published.owners, writers, readers);
       await setToDB(published);
-      logger.info('published created ${published.mid}, source=${published.sourceMid}');
+      logger.fine('published created ${published.mid}, source=${published.sourceMid}');
     } else {
       published.setUpdateTime();
 
@@ -234,7 +234,7 @@ class BookPublishedManager extends CretaManager {
       published.writers = [...writers];
       published.shares = published.getShares(published.owners, writers, readers);
       await setToDB(published);
-      logger.info('published updated ${published.mid}, source=${published.sourceMid} $count');
+      logger.fine('published updated ${published.mid}, source=${published.sourceMid} $count');
     }
     onComplete?.call(isNew, published);
 

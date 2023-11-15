@@ -41,9 +41,9 @@ class FrameManager extends CretaManager {
   //   if (_pageOffset != Offset.zero) return _pageOffset;
   //   final RenderBox? box = _frameMainKey!.currentContext?.findRenderObject() as RenderBox?;
   //   if (box != null) {
-  //     logger.info('box.size=${box.size}');
+  //     logger.fine('box.size=${box.size}');
   //     _pageOffset = box.localToGlobal(Offset.zero);
-  //     logger.info('box.position=$_pageOffset');
+  //     logger.fine('box.position=$_pageOffset');
   //     return _pageOffset;
   //   }
   //   return Offset.zero;
@@ -157,7 +157,7 @@ class FrameManager extends CretaManager {
       FrameType? type,
       int? subType,
       ShapeType? shape}) async {
-    logger.info('createNextFrame()');
+    logger.fine('createNextFrame()');
     FrameModel defaultFrame = FrameModel.makeSample(safeLastOrder() + 1, pageModel.mid, bookModel);
     defaultFrame.width.set(size.width.roundToDouble(), save: false, noUndo: true);
     defaultFrame.height.set(size.height.roundToDouble(), save: false, noUndo: true);
@@ -198,7 +198,7 @@ class FrameManager extends CretaManager {
   }
 
   Future<FrameModel> _createNextFrame(FrameModel defaultFrame, bool doNotify) async {
-    logger.info('createNextFrame()');
+    logger.fine('createNextFrame()');
 
     await createToDB(defaultFrame);
     insert(defaultFrame, postion: getLength(), doNotify: doNotify);
@@ -207,7 +207,7 @@ class FrameManager extends CretaManager {
   }
 
   Future<FrameModel> _redoCreateNextFrame(FrameModel defaultFrame, bool doNotify) async {
-    logger.info('_redoCreateNextFrame()');
+    logger.fine('_redoCreateNextFrame()');
 
     defaultFrame.isRemoved.set(false, noUndo: true, save: false);
     await setToDB(defaultFrame);
@@ -217,7 +217,7 @@ class FrameManager extends CretaManager {
   }
 
   Future<FrameModel> _undoCreateNextFrame(FrameModel old, bool doNotify) async {
-    logger.info('_undoCreateNextFrame()');
+    logger.fine('_undoCreateNextFrame()');
     old.isRemoved.set(true, noUndo: true, save: false);
     remove(old);
     if (selectedMid == old.mid) {
@@ -261,7 +261,7 @@ class FrameManager extends CretaManager {
       FrameModel newModel = FrameModel('', bookMid);
       newModel.copyFrom(org, newMid: newModel.mid, pMid: pageMid);
       newModel.order.set(order++, save: false, noUndo: true);
-      logger.info('create new FrameModel ${newModel.name},${newModel.mid}');
+      logger.fine('create new FrameModel ${newModel.name},${newModel.mid}');
 
       ContentsManager contentsManager = findContentsManager(org);
       await contentsManager.copyContents(newModel.mid, bookMid, samePage: samePage);
@@ -380,8 +380,8 @@ class FrameManager extends CretaManager {
 
     double dx = frameModel.posX.value;
     double dy = frameModel.posY.value;
-    //logger.info('resizeFrame()===============================');
-    //logger.info(
+    //logger.fine('resizeFrame()===============================');
+    //logger.fine(
     //   'resizeFrame($ratio, $invalidate) pageWidth=$pageWidth, pageHeight=$pageHeight, imageW=$contentsWidth, imageH=$contentsHeight, dx=$dx, dy=$dy --------------------');
 
     // if (contentsWidth <= pageWidth && contentsHeight <= pageHeight) {
@@ -419,7 +419,7 @@ class FrameManager extends CretaManager {
     frameModel.height
         .set(contentsHeight.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
 
-    logger.info(
+    logger.fine(
         'resizeFrame($ratio, $invalidate) w=$contentsWidth, h=$contentsHeight, dx=$dx, dy=$dy --------------------');
     await setToDB(frameModel, dontRealTime: true);
 
@@ -433,7 +433,7 @@ class FrameManager extends CretaManager {
     if (contentsModel == null) {
       return;
     }
-    logger.info('resizeFrame2 ${contentsModel.name}');
+    logger.fine('resizeFrame2 ${contentsModel.name}');
     await resizeFrame(frameModel, contentsModel.aspectRatio.value, contentsModel.width.value,
         contentsModel.height.value,
         invalidate: invalidate, initPosition: false, undo: true);
@@ -441,28 +441,28 @@ class FrameManager extends CretaManager {
 
   Future<void> setSoundOff() async {
     for (var manager in contentsManagerMap.values) {
-      logger.info('frameManager.setSoundOff()********');
+      logger.fine('frameManager.setSoundOff()********');
       await manager.setSoundOff();
     }
   }
 
   Future<void> resumeSound() async {
     for (var manager in contentsManagerMap.values) {
-      logger.info('frameManager.resumeSound()********');
+      logger.fine('frameManager.resumeSound()********');
       await manager.resumeSound();
     }
   }
 
   Future<void> pause() async {
     for (var manager in contentsManagerMap.values) {
-      logger.info('frameManager.pause()********');
+      logger.fine('frameManager.pause()********');
       await manager.pause();
     }
   }
 
   Future<void> resume() async {
     for (var manager in contentsManagerMap.values) {
-      logger.info('frameManager.resume()********');
+      logger.fine('frameManager.resume()********');
       await manager.resume();
     }
   }
@@ -475,7 +475,7 @@ class FrameManager extends CretaManager {
   }
 
   void removeLink(String mid) {
-    logger.info('removeLink---------------FrameManager');
+    logger.fine('removeLink---------------FrameManager');
     for (var manager in contentsManagerMap.values) {
       manager.removeLink(mid);
     }
@@ -490,11 +490,11 @@ class FrameManager extends CretaManager {
       //print('findOrInitContentsManager');
       ContentsManager contentsManager = findContentsManager(frameModel);
       // if (contentsManager == null) {
-      //   logger.info('new ContentsManager created (${frameModel.mid})');
+      //   logger.fine('new ContentsManager created (${frameModel.mid})');
       //   contentsManager = newContentsManager(frameModel);
       //   contentsManager.clearAll();
       // } else {
-      //   logger.info('old ContentsManager used (${frameModel.mid})');
+      //   logger.fine('old ContentsManager used (${frameModel.mid})');
       // }
       await contentsManager.initContentsManager(frameModel.mid);
     }
@@ -505,7 +505,7 @@ class FrameManager extends CretaManager {
   }
 
   @override
-  Future<int> copyBook(String newBookMid,String? newParentMid) async {
+  Future<int> copyBook(String newBookMid, String? newParentMid) async {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     lock();
     int counter = 0;
@@ -515,7 +515,7 @@ class FrameManager extends CretaManager {
       }
       AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
       ContentsManager contentsManager = findContentsManager(ele as FrameModel);
-      await contentsManager.copyBook(newBookMid,newOne.mid);
+      await contentsManager.copyBook(newBookMid, newOne.mid);
       counter++;
     }
     unlock();
@@ -532,7 +532,7 @@ class FrameManager extends CretaManager {
       }
       bool founded = CretaUtils.isMousePointerOnWidget(stickerKey, pos);
       if (founded) {
-        logger.info('pointer is on widget order ${frame.order.value}');
+        logger.fine('pointer is on widget order ${frame.order.value}');
         retval = frame;
         return frame;
       }
@@ -781,7 +781,7 @@ class FrameManager extends CretaManager {
       logger.warning('$bMid does not exist in modelList');
       return;
     }
-    logger.info('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
+    logger.fine('Frame $hint :   ${aModel.order.value} <--> ${bModel.order.value}');
 
     double aOrder = aModel.order.value;
     double bOrder = bModel.order.value;

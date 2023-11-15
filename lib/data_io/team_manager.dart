@@ -51,7 +51,7 @@ class TeamManager extends CretaManager {
     try {
       await createToDB(teamModel);
     } catch (error) {
-      logger.info('createTeam error >> $error');
+      logger.fine('createTeam error >> $error');
       return false;
     }
     return true;
@@ -70,7 +70,7 @@ class TeamManager extends CretaManager {
   //     }
   //     return teamCount;
   //   } catch (error) {
-  //     logger.info('something wrong in teamManager >> $error');
+  //     logger.fine('something wrong in teamManager >> $error');
   //     return teamCount;
   //   }
   // }
@@ -93,7 +93,7 @@ class TeamManager extends CretaManager {
   //       }
   //     }
   //   } catch (error) {
-  //     logger.info('something wrong in teamManager >> $error');
+  //     logger.fine('something wrong in teamManager >> $error');
   //     return 0;
   //   }
   //
@@ -120,7 +120,7 @@ class TeamManager extends CretaManager {
   //     }
   //     return teamMemberList;
   //   } catch (error) {
-  //     logger.info('something wrong in teamManager >> $error');
+  //     logger.fine('something wrong in teamManager >> $error');
   //     return [];
   //   }
   // }
@@ -238,5 +238,4 @@ class TeamManager extends CretaManager {
   void changePermission(String targetEmail, int presentPermission, int newPermission) {
     CretaAccountManager.changePermission(targetEmail, presentPermission, newPermission);
   }
-
 }

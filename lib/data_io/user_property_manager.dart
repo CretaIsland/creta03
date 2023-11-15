@@ -290,7 +290,7 @@ class UserPropertyManager extends CretaManager {
         return onlyOne() as UserPropertyModel;
       }
     } catch (error) {
-      logger.info('something wrong in userPropertyManager >> $error');
+      logger.fine('something wrong in userPropertyManager >> $error');
       return null;
     }
     endTransaction();

@@ -44,7 +44,7 @@ class ConnectedUserManager extends CretaManager {
   //     await queryFromDB(query);
   //     reOrdering();
   //   } catch (error) {
-  //     logger.info('something wrong in ConnectedUserManager >> $error');
+  //     logger.fine('something wrong in ConnectedUserManager >> $error');
   //     return 0;
   //   }
   //   endTransaction();
@@ -58,7 +58,7 @@ class ConnectedUserManager extends CretaManager {
   //   bool doNotify = true,
   //   void Function(bool, String)? onComplete,
   // }) async {
-  //   logger.info('createNext()');
+  //   logger.fine('createNext()');
 
   //   if (bookMid == null) return null;
 
@@ -100,7 +100,7 @@ class ConnectedUserManager extends CretaManager {
   // }) async {
   //   if (bookMid == null) return null;
 
-  //   //logger.info('update()');
+  //   //logger.fine('update()');
   //   await setToDB(connectedUser);
   //   updateModel(connectedUser);
   //   selectedMid = connectedUser.mid;
@@ -113,7 +113,7 @@ class ConnectedUserManager extends CretaManager {
   //   required ConnectedUserModel connectedUser,
   //   bool doNotify = true,
   // }) async {
-  //   logger.info('delete()');
+  //   logger.fine('delete()');
   //   connectedUser.isRemoved.set(true, save: false);
   //   await setToDB(connectedUser);
   //   updateModel(connectedUser);

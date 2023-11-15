@@ -187,7 +187,7 @@ class _BookMainPageState extends State<BookMainPage> {
     _hideMouseTimer();
 
     super.initState();
-    logger.info("---_BookMainPageState-----------------------------------------");
+    logger.fine("---_BookMainPageState-----------------------------------------");
 
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
@@ -248,7 +248,7 @@ class _BookMainPageState extends State<BookMainPage> {
     }
 
     if (mid.isNotEmpty) {
-      logger.info("1) --_BookMainPageState-----------------------------------------");
+      logger.fine("1) --_BookMainPageState-----------------------------------------");
       BookMainPage.bookManagerHolder!.getFromDB(mid).then((value) async {
         if (value != null) {
           BookMainPage.bookManagerHolder!.addRealTimeListen(mid);
@@ -259,7 +259,7 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     } else {
-      logger.info("2) --_BookMainPageState-----------------------------------------");
+      logger.fine("2) --_BookMainPageState-----------------------------------------");
       BookModel sampleBook = BookMainPage.bookManagerHolder!.createSample();
       mid = sampleBook.mid;
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
@@ -304,7 +304,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     DepotDisplay.initDepotTeamManagers();
 
-    logger.info("end ---_BookMainPageState-----------------------------------------");
+    logger.fine("end ---_BookMainPageState-----------------------------------------");
 // //for webRTC
 //     mediaDeviceDataHolder = MediaDeviceData();
 //     peersDataHolder = PeersData();
@@ -323,7 +323,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      logger.info("BookMainPage ---_BookMainPageState-----------------------------------------");
+      logger.fine("BookMainPage ---_BookMainPageState-----------------------------------------");
       while (_onceDBGetComplete == false) {
         await Future.delayed(Duration(seconds: 1));
       }
@@ -347,13 +347,13 @@ class _BookMainPageState extends State<BookMainPage> {
     BookMainPage.filterManagerHolder?.setBook(model);
     BookMainPage.connectedUserHolder?.setBook(model.mid);
 
-    logger.info("3) --_BookMainPageState-----------------------------------------");
+    logger.fine("3) --_BookMainPageState-----------------------------------------");
 
     // Get Pages
     await BookMainPage.pageManagerHolder!.initPage(model);
-    logger.info("4) --_BookMainPageState-----------------------------------------");
+    logger.fine("4) --_BookMainPageState-----------------------------------------");
     await BookMainPage.pageManagerHolder!.findOrInitAllFrameManager(model);
-    logger.info("5) --_BookMainPageState-----------------------------------------");
+    logger.fine("5) --_BookMainPageState-----------------------------------------");
 
     // Get Template Frames
     // BookMainPage.polygonFrameManagerHolder!.clearAll();
@@ -680,7 +680,7 @@ class _BookMainPageState extends State<BookMainPage> {
     //   consumerFunc: consumerFunc,
     // );
 
-    logger.info('wait _onceDBGetComplete');
+    logger.fine('wait _onceDBGetComplete');
 
     var retval = FutureBuilder<bool>(
         future: _waitDBJob(),
@@ -713,7 +713,7 @@ class _BookMainPageState extends State<BookMainPage> {
     while (_onceDBGetComplete == false) {
       await Future.delayed(Duration(microseconds: 500));
     }
-    logger.info('_onceDBGetComplete=$_onceDBGetComplete wait end');
+    logger.fine('_onceDBGetComplete=$_onceDBGetComplete wait end');
     return _onceDBGetComplete;
   }
 
@@ -1109,7 +1109,7 @@ class _BookMainPageState extends State<BookMainPage> {
                         padding: EdgeInsets.all(20),
                         width: LayoutConst.rightMenuWidth,
                         child: BookEditorProperty(
-                            isDialog : true,
+                            isDialog: true,
                             model: _bookModel!,
                             parentNotify: () {
                               setState(() {});
@@ -1139,7 +1139,7 @@ class _BookMainPageState extends State<BookMainPage> {
           BTN.floating_l(
             icon: Icons.file_download_outlined,
             onPressed: () {
-              logger.info('donwload in studio');
+              logger.fine('donwload in studio');
               CretaPopup.yesNoDialog(
                 context: context,
                 title: "${CretaStudioLang.export}      ",
@@ -1398,7 +1398,7 @@ class _BookMainPageState extends State<BookMainPage> {
     }
     pageModel.width.set(_bookModel!.width.value, save: false, noUndo: true);
     pageModel.height.set(_bookModel!.height.value, save: false, noUndo: true);
-    logger.info('PageMain Invoked ***** ${pageModel.width.value}');
+    logger.fine('PageMain Invoked ***** ${pageModel.width.value}');
 
     return PageMain(
       pageKey: GlobalObjectKey('PageKey${pageModel.mid}'),
@@ -1411,11 +1411,11 @@ class _BookMainPageState extends State<BookMainPage> {
 
   // ignore: unused_element
   Widget _drawPrevPage(BuildContext context, PageManager pageManager) {
-    logger.info('_drawPrevPage Invoked ***** ${LinkParams.invokerMid}');
+    logger.fine('_drawPrevPage Invoked ***** ${LinkParams.invokerMid}');
     if (LinkParams.invokerMid == null) {
       return const SizedBox.shrink();
     }
-    logger.info('_drawPrevPage Invoked *****');
+    logger.fine('_drawPrevPage Invoked *****');
 
     return Center(
       child: Container(
@@ -1436,7 +1436,7 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   void _showLeftMenu(LeftMenuEnum idx) {
-    logger.info("showLeftMenu ${idx.name}");
+    logger.fine("showLeftMenu ${idx.name}");
     // setState(() {
     //   // if (BookMainPage.selectedStick == idx) {
     //   //   BookMainPage.selectedStick = LeftMenuEnum.None;
@@ -1483,7 +1483,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   void _keyEventHandler(RawKeyEvent event) {
     final key = event.logicalKey;
-    //logger.info('key pressed $key');
+    //logger.fine('key pressed $key');
     if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
       //print('shift pressed');
       StudioVariables.isShiftPressed = true;
@@ -1500,11 +1500,11 @@ class _BookMainPageState extends State<BookMainPage> {
       if (keys.contains(key)) return;
       // textField 의 focus bug 때문에, delete  key 를 사용할 수 없다.
       // if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
-      //   logger.info('delete pressed');
+      //   logger.fine('delete pressed');
       //   accManagerHolder!.removeACC(context);
       // }
       if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
-        logger.info('tab pressed');
+        logger.fine('tab pressed');
       }
       if (event.isKeyPressed(LogicalKeyboardKey.pageDown)) {
         //print("pageDown pressed");
@@ -1534,18 +1534,18 @@ class _BookMainPageState extends State<BookMainPage> {
           //print('Ctrl+Z pressed');
           // undo
         } else if (keys.contains(LogicalKeyboardKey.keyY)) {
-          logger.info('Ctrl+Y pressed');
+          logger.fine('Ctrl+Y pressed');
           // redo
         } else if (keys.contains(LogicalKeyboardKey.keyC)) {
           // copy
-          logger.info('Ctrl+C pressed');
+          logger.fine('Ctrl+C pressed');
           _copy();
         } else if (keys.contains(LogicalKeyboardKey.keyX)) {
-          logger.info('Ctrl+X pressed');
+          logger.fine('Ctrl+X pressed');
           // Crop
           _crop();
         } else if (keys.contains(LogicalKeyboardKey.keyV)) {
-          logger.info('Ctrl+V pressed');
+          logger.fine('Ctrl+V pressed');
           _paste();
         }
       }

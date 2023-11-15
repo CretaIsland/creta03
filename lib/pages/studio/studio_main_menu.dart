@@ -78,7 +78,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         // 다운로드 한다.
         caption: CretaLang.download,
         onPressed: () {
-          logger.info('download CretaBook !!! in list');
+          logger.fine('download CretaBook !!! in list');
         },
         disabled: true,
       ),
@@ -123,7 +123,7 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
                     style: CretaFont.titleMedium,
                   ),
                   onPressedOK: () async {
-                    logger.info('onPressedOK()');
+                    logger.fine('onPressedOK()');
                     String name = thisOne.name.value;
                     await BookMainPage.bookManagerHolder!
                         .removeBook(thisOne, BookMainPage.pageManagerHolder!);

@@ -988,7 +988,7 @@ class CretaUtils {
     }
     jsonString += '\n}';
 
-    logger.info(jsonString);
+    logger.fine(jsonString);
 
     try {
       // HTTP POST 요청 수행
@@ -1008,7 +1008,7 @@ class CretaUtils {
         return null;
       }
 
-      logger.info('pos $url succeed');
+      logger.fine('pos $url succeed');
       return response;
     } catch (e) {
       // 예외 처리

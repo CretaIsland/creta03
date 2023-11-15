@@ -234,7 +234,7 @@ class _RightMenuState
       //   ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
       //   ContentsModel? contents = frameManager.getCurrentModel(frame.mid);
       //   if (contents != null) {
-      //     logger.info('ContentsProperty ${contents.mid}');
+      //     logger.fine('ContentsProperty ${contents.mid}');
       //     return Column(
       //       children: [
       //         if (contentsManager != null)

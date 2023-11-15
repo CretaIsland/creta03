@@ -109,7 +109,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     super.initState();
     horizontalPadding = 16;
     hashTagWrapper.hashTagList = CretaUtils.jsonStringToList(widget.model!.hashTag.value);
-    logger.info('hashTagList=${hashTagWrapper.hashTagList}');
+    logger.fine('hashTagList=${hashTagWrapper.hashTagList}');
     stepsData = [
       StepperData(label: CretaStudioLang.publishSteps[0]),
       StepperData(label: CretaStudioLang.publishSteps[1]),
@@ -139,7 +139,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     //           .then((value) {
     //         channelUserModelList = [...value];
     //         for (var ele in channelUserModelList) {
-    //           logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
+    //           logger.fine('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
     //         }
     //         _onceDBGetComplete2 = true;
     //         return value;
@@ -160,7 +160,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     alreadyPublishedBook = await bookPublishedManagerHolder.findPublished(widget.model!.mid);
 
     if (alreadyPublishedBook != null) {
-      logger.info('published already exist');
+      logger.fine('published already exist');
       _owners = [...alreadyPublishedBook!.owners];
       _readers = [...alreadyPublishedBook!.readers];
       _writers = [...alreadyPublishedBook!.writers];
@@ -175,9 +175,9 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
     userModelList =
         await CretaAccountManager.userPropertyManagerHolder.getUserPropertyFromEmail(emailList);
 
-    logger.info('_readers=$_readers');
-    logger.info('_writers=$_writers');
-    logger.info('emailList=$emailList');
+    logger.fine('_readers=$_readers');
+    logger.fine('_writers=$_writers');
+    logger.fine('emailList=$emailList');
 
     return true;
   }
@@ -222,14 +222,14 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
         permitionList.add(ele.value);
       }
     }
-    logger.info('emailList=$emailList');
+    logger.fine('emailList=$emailList');
   }
 
   // Future<bool> _waitDBJob() async {
   //   while (_onceDBGetComplete1 == false /*|| _onceDBGetComplete2 == false*/) {
   //     await Future.delayed(const Duration(microseconds: 500));
   //   }
-  //   logger.info('_onceDBGetComplete=$_onceDBGetComplete1 wait end');
+  //   logger.fine('_onceDBGetComplete=$_onceDBGetComplete1 wait end');
   //   return _onceDBGetComplete1;
   // }
 
@@ -564,8 +564,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   Future<bool> _publish() async {
-    logger.info('_readers=$_readers');
-    logger.info('_writers=$_writers');
+    logger.fine('_readers=$_readers');
+    logger.fine('_writers=$_writers');
 
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     widget.model!.channels = publishingChannelIdList;
@@ -1022,7 +1022,7 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   String _nameWrap(UserPropertyModel? model, String email, bool isNotCreator, bool isChannel) {
     String name = email;
     if (model != null) {
-      logger.info('===============>>>_nameWrap(${model.nickname}, email, isNotCreator)');
+      logger.fine('===============>>>_nameWrap(${model.nickname}, email, isNotCreator)');
       name = model.nickname;
     }
     if (isNotCreator) {

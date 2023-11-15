@@ -161,7 +161,7 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
           buttonColor: CretaButtonColor.secondary,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onContentsEdit");
+            logger.fine("MinuMenu onContentsEdit");
             widget.onContentsEdit.call();
           }),
     ];

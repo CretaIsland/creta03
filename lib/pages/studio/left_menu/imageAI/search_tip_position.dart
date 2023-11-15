@@ -83,7 +83,7 @@ class _SearchTipPositionState extends State<SearchTipPosition> {
                     child: BTN.floating_l(
                       icon: _activePage == 0 ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
                       onPressed: () {
-                        // logger.info('----------swipe page------------');
+                        // logger.fine('----------swipe page------------');
                         if (_activePage == 0) {
                           _changePage(_activePage + 1);
                         } else if (_activePage > 0) {
@@ -128,7 +128,7 @@ class _SearchTipPositionState extends State<SearchTipPosition> {
           itemBuilder: (context, int tipIndex) {
             return InkWell(
               onTap: () {
-                logger.info(
+                logger.fine(
                     "-----Example search text '${CretaStudioLang.detailTipMessage1[tipIndex]}' -------");
                 LeftMenuImage.textController.text = _activePage == 0
                     ? CretaStudioLang.detailTipMessage1[tipIndex]

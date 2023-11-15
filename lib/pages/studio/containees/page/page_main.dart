@@ -103,9 +103,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // final RenderBox? box = widget.pageKey.currentContext?.findRenderObject() as RenderBox?;
       // if (box != null) {
-      //   logger.info('box.size=${box.size}');
+      //   logger.fine('box.size=${box.size}');
       //   Offset pageOffset = box.localToGlobal(Offset.zero);
-      //   logger.info('box.position=$pageOffset');
+      //   logger.fine('box.position=$pageOffset');
       // }
       if (LinkParams.connectedClass == 'page') {
         LinkParams.connectedMid = '';
@@ -199,8 +199,8 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     if (StudioVariables.isPreview) {
       return;
     }
-    logger.info('right mouse button clicked ${details.globalPosition}');
-    logger.info('right mouse button clicked ${details.localPosition}');
+    logger.fine('right mouse button clicked ${details.globalPosition}');
+    logger.fine('right mouse button clicked ${details.localPosition}');
     CretaRightMouseMenu.showMenu(
       title: 'pageRightMouseMenu',
       context: context,
@@ -317,7 +317,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       }
     }
 
-    logger.info(
+    logger.fine(
         'Gest3 : onLongPressDown ${details.localPosition}in PageMain ${BookMainPage.containeeNotifier!.isFrameClick}');
     if (BookMainPage.containeeNotifier!.isFrameClick == true) {
       BookMainPage.containeeNotifier!.setFrameClick(false);
@@ -364,7 +364,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       LinkParams.isLinkNewMode = false;
       LinkParams.connectedClass = '';
       LinkParams.connectedMid = '';
-      logger.info('BookMainPage.bookManagerHolder!.notify()');
+      logger.fine('BookMainPage.bookManagerHolder!.notify()');
       BookMainPage.bookManagerHolder!.notify();
     } else {
       //print('BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);');
@@ -388,7 +388,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
 
   Widget _waitFrame() {
     if (_onceDBGetComplete && frameManager!.initFrameComplete) {
-      logger.info('already _onceDBGetComplete page main');
+      logger.fine('already _onceDBGetComplete page main');
       return _consumerFunc();
     }
     //var retval = CretaModelSnippet.waitData(
@@ -473,9 +473,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     //         if (snapshot.data! is FrameModel) {
     //           FrameModel model = snapshot.data! as FrameModel;
     //           manager.updateModel(model);
-    //           logger.info('_drawLinks _receiveEventFromProperty-----${model.posY.value}');
+    //           logger.fine('_drawLinks _receiveEventFromProperty-----${model.posY.value}');
     //         } else {
-    //           logger.info('_receiveEventFromProperty-----Unknown Model');
+    //           logger.fine('_receiveEventFromProperty-----Unknown Model');
     //         }
     //       }
     //       return Stack(
@@ -492,7 +492,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
   }
 
   List<Widget> _drawLines(FrameManager manager) {
-    logger.info('_drawLines()--------------------------------------------');
+    logger.fine('_drawLines()--------------------------------------------');
     List<LinkModel> linkList = [];
     manager.listIterator((frameModel) {
       ContentsManager contentsManager = manager.findContentsManager(frameModel as FrameModel);
@@ -510,7 +510,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       if (linkManager.length() == 0) {
         return SizedBox.shrink();
       }
-      logger.info(
+      logger.fine(
           '_drawLines()-${linkManager.length()}-----${contentsModel.name}--------------------------------------');
 
       linkList = [
@@ -534,7 +534,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     if (model.showLinkLine == false) {
       return const SizedBox.shrink();
     }
-    logger.info('_drawEachLine()--------------------------------------------');
+    logger.fine('_drawEachLine()--------------------------------------------');
 
     final GlobalKey? stickerKey = model.stickerKey;
     final GlobalObjectKey? iconKey = model.iconKey;

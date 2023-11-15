@@ -59,7 +59,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
             //           ? Icons.play_arrow
             //           : Icons.pause_outlined,
             //       onPressed: () {
-            //         logger.info('play Button pressed');
+            //         logger.fine('play Button pressed');
             //         setState(() {
             //           widget.playTimer?.togglePause();
             //         });
@@ -71,7 +71,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
             //         icon: Icons.skip_previous,
             //         onPressed: () async {
             //           if (widget.playTimer != null && widget.playTimer!.isPrevButtonBusy == false) {
-            //             logger.info('prev Button pressed');
+            //             logger.fine('prev Button pressed');
             //             await widget.playTimer?.releasePause();
             //             await widget.playTimer?.prev();
             //             setState(() {});
@@ -85,12 +85,12 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
             //         icon: Icons.skip_next,
             //         onPressed: () async {
             //           if (widget.playTimer != null && widget.playTimer!.isNextButtonBusy == false) {
-            //             logger.info('next Button pressed');
+            //             logger.fine('next Button pressed');
             //             await widget.playTimer?.releasePause();
             //             await widget.playTimer?.next();
             //             setState(() {});
             //           } else {
-            //             logger.info('next Button is busy');
+            //             logger.fine('next Button is busy');
             //           }
             //         }),
             //   ),

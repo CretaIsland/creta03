@@ -505,7 +505,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                     text: CretaStudioLang.autoFitContents,
                     onPressed: () async {
                       if (_frameManager == null) {
-                        logger.info('frameManager is null');
+                        logger.fine('frameManager is null');
                         return;
                       }
                       mychangeStack.startTrans();
@@ -536,7 +536,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               //             widget.model.isFixedRatio.set(value);
               //           });
               //           if (_frameManager == null) {
-              //             logger.info('frameManager is null');
+              //             logger.fine('frameManager is null');
               //           }
               //           _frameManager?.resizeFrame2(widget.model);
               //         } else {
@@ -726,7 +726,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             onEditComplete: ((value) {
                               widget.model.radiusLeftTop.set(value);
                               _sendEvent!.sendEvent(widget.model);
-                              logger.info('onEditComplete applied=$value');
+                              logger.fine('onEditComplete applied=$value');
                             }),
                             onSelected: (name, value, nvMap) {},
                           ),
@@ -738,7 +738,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             onEditComplete: ((value) {
                               widget.model.radiusLeftBottom.set(value);
                               _sendEvent!.sendEvent(widget.model);
-                              logger.info('onEditComplete applied=$value');
+                              logger.fine('onEditComplete applied=$value');
                             }),
                             onSelected: (name, value, nvMap) {},
                           ),
@@ -797,7 +797,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             onEditComplete: ((value) {
                               widget.model.radiusRightTop.set(value);
                               _sendEvent!.sendEvent(widget.model);
-                              logger.info('onEditComplete applied=$value');
+                              logger.fine('onEditComplete applied=$value');
                             }),
                             onSelected: (name, value, nvMap) {},
                           ),
@@ -809,7 +809,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             onEditComplete: ((value) {
                               widget.model.radiusRightBottom.set(value);
                               _sendEvent!.sendEvent(widget.model);
-                              logger.info('onEditComplete applied=$value');
+                              logger.fine('onEditComplete applied=$value');
                             }),
                             onSelected: (name, value, nvMap) {},
                           ),
@@ -842,7 +842,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       value: cornerValue.value.round().toString(),
       hintText: '',
       onEditComplete: ((value) {
-        logger.info('onEditComplete org=$value');
+        logger.fine('onEditComplete org=$value');
         double newValue = int.parse(value).toDouble();
         // if (cornerValue.value == newValue) {
         //   return;
@@ -2036,7 +2036,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
   void _setOverlay(bool value) {
     if (_frameManager == null) {
-      logger.info('frameManager is null');
+      logger.fine('frameManager is null');
       return;
     }
     setState(() {

@@ -108,14 +108,14 @@ class CretaPlayTimer extends ChangeNotifier {
 
   void start() {
     if (_timer == null) {
-      //logger.info("==========================timer start================");
+      //logger.fine("==========================timer start================");
       _timer = Timer.periodic(Duration(milliseconds: _timeGap), _timerExpired);
       _initComplete = true;
     }
   }
 
   void stop() {
-    //logger.info("==========================timer stop================");
+    //logger.fine("==========================timer stop================");
     _timer?.cancel();
     _initComplete = false;
     _timer = null;
@@ -264,7 +264,7 @@ class CretaPlayTimer extends ChangeNotifier {
 
   Future<void> prev() async {
     setIsPrevButtonBusy(true);
-    logger.info('prev button pressed');
+    logger.fine('prev button pressed');
     await _lock.synchronized(() async {
       if (isInit()) {
         //if (contentsManager.getAvailLength() > 1) {
@@ -287,7 +287,7 @@ class CretaPlayTimer extends ChangeNotifier {
         //if (contentsManager.getAvailLength() > 1) {
         await pause();
         await rewind();
-        //logger.info('${_currentModel!.name} is paused');
+        //logger.fine('${_currentModel!.name} is paused');
         //}
         _next();
       }
@@ -298,7 +298,7 @@ class CretaPlayTimer extends ChangeNotifier {
     _currentPlaySec = 0.0;
     // if (contentsManager.getAvailLength() == 1) {
     //   if (_currentModel != null) {
-    //     logger.info('only one movie file');
+    //     logger.fine('only one movie file');
     //     _currentModel!.forceToChange = true;
     //   }
     // }
@@ -338,12 +338,12 @@ class CretaPlayTimer extends ChangeNotifier {
       _currentPlayer = player;
       return player;
     }
-    logger.info('***************************player newly created ***********');
+    logger.fine('***************************player newly created ***********');
     player = _createPlayer(key, model);
     _currentPlayer = player;
     contentsManager.setPlayer(key, player);
     player.init();
-    logger.info('player is newly created');
+    logger.fine('player is newly created');
     return player;
   }
 
@@ -459,13 +459,13 @@ class CretaPlayTimer extends ChangeNotifier {
           return;
         }
         if (contentsManager.iamBusy) {
-          logger.info('i am busy');
+          logger.fine('i am busy');
           return;
         }
 
         // if (BookMainPage.pageManagerHolder!.isSelected(contentsManager.pageModel.mid) == false) {
         //   // 현재 보여지고 있는 페이지가 아니라면 타이머는 쉰다.
-        //   // logger.info(
+        //   // logger.fine(
         //   //     '${contentsManager.pageModel.mid} is not ${BookMainPage.pageManagerHolder!.getSelectedMid()}');
         //   return;
         // }
@@ -484,7 +484,7 @@ class CretaPlayTimer extends ChangeNotifier {
         // 아무것도 돌고 있지 않다면,
         if (_currentOrder < 0) {
           _currentOrder = contentsManager.lastOrder(); //가장 마지막이 가장 먼저 돌아야 하므로.
-          //logger.info('currentOrder=$_currentOrder');
+          //logger.fine('currentOrder=$_currentOrder');
           if (_currentOrder < 0) {
             return; // 돌릴게 없다.
           }
@@ -551,7 +551,7 @@ class CretaPlayTimer extends ChangeNotifier {
           // }
           if (_currentModel != null && _currentModel!.playState == PlayState.end) {
             _currentModel!.setPlayState(PlayState.none);
-            logger.info('before next, currentOrder=$_currentOrder');
+            logger.fine('before next, currentOrder=$_currentOrder');
             // 비디오가 마무리 작업을 할 시간을 준다.
             if (_completeWaitTime != Duration.zero) {
               await Future.delayed(_completeWaitTime);
@@ -559,7 +559,7 @@ class CretaPlayTimer extends ChangeNotifier {
             }
             _next();
 
-            logger.info('after next, currentOrder=$_currentOrder');
+            logger.fine('after next, currentOrder=$_currentOrder');
           }
           return;
         }

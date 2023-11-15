@@ -59,7 +59,7 @@ class _LeftMenuStorageState extends State<LeftMenuStorage> {
 
   @override
   void initState() {
-    logger.info('_LeftMenuStorageState.initState');
+    logger.fine('_LeftMenuStorageState.initState');
     super.initState();
     // _selectedTab = CretaStudioLang.storageMenuTabBar.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;

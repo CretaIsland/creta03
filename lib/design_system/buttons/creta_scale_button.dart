@@ -164,7 +164,7 @@ class _CretaScaleButtonState extends State<CretaScaleButton> {
                     ? StudioVariables.scale * 100
                     : scalePlot[scalePlot.length - 1];
                 double min = scalePlot[0];
-                logger.info('sacele = $valStr');
+                logger.fine('sacele = $valStr');
                 double val = 100;
                 try {
                   val = int.parse(valStr).toDouble();

@@ -78,7 +78,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   void dispose() {
     super.dispose();
     _playTimer?.stop();
-    //logger.info('==========================FrameEach dispose================');
+    //logger.fine('==========================FrameEach dispose================');
   }
 
   @override
@@ -95,7 +95,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Future<bool> initChildren() async {
-    //logger.info('==========================FrameEach initialized================');
+    //logger.fine('==========================FrameEach initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
       logger.severe('frame manager is null');
@@ -106,11 +106,11 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
     //print('model.isO=${widget.model.isOverlay.value}');
     _contentsManager = frameManager!.findContentsManager(widget.model);
     // if (_contentsManager == null) {
-    //   //logger.info('new ContentsManager created (${widget.model.mid})');
+    //   //logger.fine('new ContentsManager created (${widget.model.mid})');
     //   _contentsManager = frameManager!.newContentsManager(widget.model);
     //   _contentsManager!.clearAll();
     // } else {
-    //   //logger.info('old ContentsManager used (${widget.model.mid})');
+    //   //logger.fine('old ContentsManager used (${widget.model.mid})');
     // }
     if (_playTimer == null) {
       _playTimer = CretaPlayTimer(_contentsManager!, widget.frameManager);
@@ -254,7 +254,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   Widget _frameBody1() {
-    //logger.info('================angle=${widget.model.angle.value}');
+    //logger.fine('================angle=${widget.model.angle.value}');
 
     if (widget.model.shouldInsideRotate()) {
       return Transform(
@@ -270,24 +270,24 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
   }
 
   // Widget _frameBody2() {
-  //   logger.info('frameBody2----------${LinkParams.isLinkNewMode}---------');
+  //   logger.fine('frameBody2----------${LinkParams.isLinkNewMode}---------');
   //   if (LinkParams.isLinkNewMode == true) {
   //     return MouseRegion(
   //       cursor: SystemMouseCursors.none,
   //       onEnter: (event) {
   //         setState(() {
-  //           logger.info('_isLinkEnter');
+  //           logger.fine('_isLinkEnter');
   //           _isLinkEnter = true;
   //         });
   //       },
   //       onExit: (event) {
-  //         logger.info('_isLinkExit');
+  //         logger.fine('_isLinkExit');
   //         setState(() {
   //           _isLinkEnter = false;
   //         });
   //       },
   //       onHover: (event) {
-  //         logger.info('sendEvent ${event.position}');
+  //         logger.fine('sendEvent ${event.position}');
   //         _linkSendEvent?.sendEvent(event.position);
   //       },
   //       child: _frameBody3(),
@@ -307,7 +307,7 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
         stream: _linkReceiveEvent!.eventStream.stream,
         builder: (context, snapshot) {
           if (snapshot.data != null && snapshot.data is bool) {
-            logger.info('_frameBody3 _linkReceiveEvent (AutoPlay=$snapshot.data)');
+            logger.fine('_frameBody3 _linkReceiveEvent (AutoPlay=$snapshot.data)');
           }
           //return _applyAnimate(widget.model);
 
