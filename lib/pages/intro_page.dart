@@ -3,6 +3,7 @@
 import 'package:creta03/pages/release_note_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:hycop/hycop.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:hycop/hycop.dart';
 
@@ -41,7 +42,7 @@ class _IntroPageState extends State<IntroPage> {
     "0.3.18",
   ];
   final String hycopVersion = "0.3.28";
-  final String buildNumber = "20231116-19(firebase)";
+  final String buildNumber = "20231115-19(${HycopFactory.serverType})";
 
   @override
   void initState() {
