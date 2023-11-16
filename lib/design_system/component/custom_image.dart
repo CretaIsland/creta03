@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 
 import 'snippet.dart';
 
@@ -83,15 +84,21 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
         duration: Duration(milliseconds: widget.duration),
       );
 
-      _animation =
-          SizeTween(begin: Size(widget.width * 2.5, widget.height * 2.5), end: Size(widget.width, widget.height))
-              .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+      _animation = SizeTween(
+              begin: Size(widget.width * 2.5, widget.height * 2.5),
+              end: Size(widget.width, widget.height))
+          .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     }
     _imageDetail = ImageDetail();
+
     _imageValueNotifier = ImageValueNotifier(_imageDetail);
 
+    try {
+      _imageStream = NetworkImage(widget.image).resolve(const ImageConfiguration());
+    } catch (err) {
+      logger.warning('NetworkImage(${widget.image}) resolve error = $err');
+    }
 
-    _imageStream = NetworkImage(widget.image).resolve(const ImageConfiguration());
     _imageStream.addListener(ImageStreamListener(
       (info, value) {
         _imageInfo = info;
@@ -108,7 +115,8 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
         _imageValueNotifier.changeErrorState(true);
       },
     ));
-    if (widget.useDefaultErrorImage) {
+
+    if (widget.useDefaultErrorImage || widget.imageOnError == null) {
       imageOnError = _error();
     } else {
       imageOnError = widget.imageOnError;
@@ -140,10 +148,10 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
       valueListenable: _imageValueNotifier,
       builder: ((context, value, child) {
         return (value.isError && imageOnError != null)
-          ? Center(child: imageOnError)
-          : !value.isLoaded
-            ? Center(child: Snippet.showWaitSign())
-            : Center(child: _show());
+            ? Center(child: imageOnError)
+            : !value.isLoaded
+                ? Center(child: Snippet.showWaitSign())
+                : Center(child: _show());
       }),
     );
   }
@@ -164,8 +172,7 @@ class _CustomImageState extends State<CustomImage> with SingleTickerProviderStat
       return AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
-          return 
-          OverflowBox(
+          return OverflowBox(
             minHeight: widget.height,
             maxHeight: widget.height * 2.5,
             minWidth: widget.width,

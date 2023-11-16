@@ -299,10 +299,17 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     double itemWidth = -1;
     double itemHeight = -1;
 
-    //logger.fine('width===========================${rightPaneRect.childWidth}');
+    print('rightPaneRect.childWidth=${rightPaneRect.childWidth}');
+    print('LayoutConst.cretaPaddingPixel=${LayoutConst.cretaPaddingPixel}');
+    print('LayoutConst.bookThumbSize.width=${LayoutConst.bookThumbSize.width}');
+    // int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
+    //     LayoutConst.bookThumbSize.width;
+    int columnCount = ((rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) /
+            LayoutConst.bookThumbSize.width)
+        .round();
 
-    int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
-        LayoutConst.bookThumbSize.width;
+    print('columnCount=$columnCount');
+
     if (columnCount <= 1) {
       if (rightPaneRect.childWidth > 280) {
         columnCount = 2;

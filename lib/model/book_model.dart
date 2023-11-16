@@ -3,9 +3,11 @@
 //import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:hycop/hycop/account/account_manager.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 import '../common/creta_utils.dart';
 import '../pages/studio/studio_constant.dart';
@@ -344,8 +346,7 @@ class BookModel extends CretaModel with BookMixin {
     return Size(size.width / width.value, size.height / height.value);
   }
 
-  List<String> getShares(
-      List<String> ownerList, List<String> writerList, List<String> readerList) {
+  List<String> getShares(List<String> ownerList, List<String> writerList, List<String> readerList) {
     List<String> valueList = [];
     for (var val in ownerList) {
       String name = '<${PermissionType.owner.name}>$val';
@@ -377,5 +378,10 @@ class BookModel extends CretaModel with BookMixin {
       retval[val] = PermissionType.reader;
     }
     return retval;
+  }
+
+  bool hasWritePermition() {
+    String loginUser = AccountManager.currentLoginUser.email;
+    return owners.contains(loginUser) || writers.contains(loginUser);
   }
 }
