@@ -42,7 +42,7 @@ class _IntroPageState extends State<IntroPage> {
     "0.3.18",
   ];
   final String hycopVersion = "0.3.28";
-  final String buildNumber = "20231115-19(${HycopFactory.serverType})";
+  final String buildNumber = "20231116-19(${HycopFactory.serverType})";
 
   @override
   void initState() {
