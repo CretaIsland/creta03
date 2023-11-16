@@ -238,8 +238,8 @@ class BookGridItemState extends State<BookGridItem> {
     String url = '${AppRoutes.studioBookMainPage}?${widget.bookModel!.mid}';
     double controllAreaHeight = aHeight - LayoutConst.bookDescriptionHeight;
 
-    print('bookItemHeight = $aHeight');
-    print('controllAreaHeight = $controllAreaHeight');
+    //print('bookItemHeight = $aHeight');
+    //print('controllAreaHeight = $controllAreaHeight');
 
     if (mouseOver) {
       return Link(
