@@ -93,6 +93,7 @@ class CretaTextField extends LastClickable {
   final Iterable<String>? autofillHints;
   final TextStyle? style;
   final bool autofocus;
+  final bool readOnly;
 
   CretaTextField({
     required this.textFieldKey,
@@ -122,6 +123,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -152,6 +154,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.double({
@@ -182,6 +185,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -212,6 +216,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -242,6 +247,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -272,6 +278,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -302,6 +309,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -332,6 +340,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   @override
@@ -591,6 +600,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         minLines: lines,
         //maxLines: 1,
         autofocus: widget.autofocus,
+        readOnly: widget.readOnly,
         //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
         autofillHints: widget.autofillHints,
         decoration: _basicDecoBox(),
