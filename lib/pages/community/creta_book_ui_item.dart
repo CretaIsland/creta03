@@ -44,7 +44,7 @@ import '../../../model/channel_model.dart';
 import '../login/creta_account_manager.dart';
 import '../../model/app_enums.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
-import '../../design_system/component/snippet.dart';
+//import '../../design_system/component/snippet.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;
@@ -379,10 +379,10 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 275),
       vsync: this,
     );
-    _animation = Tween(begin: 1.0, end: 1.2)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
-    padding = Tween(begin: 0.0, end: -25.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    _animation = Tween(begin: 1.0, end: 1.2).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    padding = Tween(begin: 0.0, end: -25.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
     _controller.addListener(() {
       setState(() {});
     });
@@ -426,8 +426,8 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
             borderRadius: BorderRadius.circular(20.0),
           ),
           clipBehavior: Clip.hardEdge,
-          transform: Matrix4(
-              _animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0, padding.value, padding.value, 0, 1),
+          transform: Matrix4(_animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0,
+              padding.value, padding.value, 0, 1),
           child: Image.network(
             widget.image,
             fit: BoxFit.cover,
@@ -498,7 +498,10 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _openPopupMenu() {
     CretaPopupMenu.showMenu(
-            context: context, globalKey: widget.key as GlobalKey, popupMenu: _popupMenuList, initFunc: setPopmenuOpen)
+            context: context,
+            globalKey: widget.key as GlobalKey,
+            popupMenu: _popupMenuList,
+            initFunc: setPopmenuOpen)
         .then((value) {
       logger.finest('팝업메뉴 닫기');
       setState(() {
@@ -552,7 +555,8 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CretaTextField(
-                    textFieldKey: GlobalObjectKey('CretaBookUIItem._doPopupMenuShare.CretaTextField'),
+                    textFieldKey:
+                        GlobalObjectKey('CretaBookUIItem._doPopupMenuShare.CretaTextField'),
                     width: 364 - 120 + 28,
                     height: 30,
                     value: bookLinkUrl,
@@ -933,7 +937,8 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime), style: CretaFont.buttonSmall),
+          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime),
+              style: CretaFont.buttonSmall),
           Text('likeCount=${widget.bookModel.likeCount}', style: CretaFont.buttonSmall),
           Text('viewCount=${widget.bookModel.viewCount}', style: CretaFont.buttonSmall),
         ],
@@ -944,7 +949,8 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
   @override
   Widget build(BuildContext context) {
     String bookLinkUrl = '${AppRoutes.communityBook}?${widget.bookModel.mid}';
-    String channelLinkUrl = (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
+    String channelLinkUrl =
+        (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
     return MouseRegion(
       onEnter: (value) {
         setState(() {
