@@ -340,7 +340,7 @@ class BookManager extends CretaManager {
     String encodedJson = base64Encode(utf8.encode(retval));
 
     Map<String, dynamic> body = {
-      "bucketId": '"${AccountManager.currentLoginUser.email}"',
+      "bucketId": '"${myConfig!.serverConfig!.storageConnInfo.bucketId}"',
       "encodeJson": '"$encodedJson"',
       "cloudType": '"${HycopFactory.toServerTypeString()}"',
     };
@@ -373,7 +373,7 @@ class BookManager extends CretaManager {
       String url = '$apiServer/downloadZipCheck';
 
       Map<String, dynamic> body = {
-        "bucketId": '"${AccountManager.currentLoginUser.email}"',
+        "bucketId": '"${myConfig!.serverConfig!.storageConnInfo.bucketId}"',
         "bookId": '"$bookMid"',
         "cloudType": '"${HycopFactory.toServerTypeString()}"',
       }; // 'appwrite' or 'firebase'
