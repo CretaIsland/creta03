@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/design_system/dialog/creta_dialog.dart';
 import 'package:creta03/design_system/menu/creta_drop_down.dart';
+import 'package:creta03/pages/login/creta_account_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hycop/hycop.dart';
@@ -77,7 +78,7 @@ class _ReleaseNoteDialogState extends State<ReleaseNoteDialog> {
   Future<void> getReleaseData(List<String> version) async {
     try {
       http.Response response = await http.post(
-        Uri.parse("https://devcreta.com:444/getReleaseInfo"),
+        Uri.parse("${CretaAccountManager.getEnterprise!.mediaApiUrl}/getReleaseInfo"),
         headers: {"Content-type": "application/json"},
         body: jsonEncode({"version": version}),
       );
