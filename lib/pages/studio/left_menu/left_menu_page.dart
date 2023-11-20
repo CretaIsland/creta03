@@ -96,7 +96,7 @@ class LeftMenuPage extends StatefulWidget {
       // ];
       return;
     }
-    logger.info('pageManagerHolder is inited');
+    logger.fine('pageManagerHolder is inited');
     LeftMenuPage._nodes.clear();
     LeftMenuPage._nodes = pageManager.toNodes(selectedModel);
     _initNodeKeys(LeftMenuPage._nodes);
@@ -204,7 +204,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   @override
   void dispose() {
     //_scrollController.stop();
-    logger.info('left_menu_page disposed..........................');
+    logger.fine('left_menu_page disposed..........................');
     LeftMenuPage._nodes.clear();
     _stopScreenshotTimer();
     super.dispose();
@@ -444,7 +444,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                       iconColor: CretaColor.primary,
                       buttonColor: CretaButtonColor.primary,
                       onPressed: () {
-                        logger.info("page header onPageLink");
+                        logger.fine("page header onPageLink");
                         //BookMainPage.containeeNotifier!.setFrameClick(true);
                         //BookMainPage.containeeNotifier!.set(ContaineeEnum.Page);
                         setState(() {
@@ -486,7 +486,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   iconImageFile: "assets/delete.svg",
                   onPressed: () {
                     // Delete Page
-                    logger.info('remove page');
+                    logger.fine('remove page');
                     _removePage(model);
                     //mychangeStack.startTrans();
                     // model.isRemoved.set(true);
@@ -613,8 +613,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         if (StudioVariables.isPreview) {
           return;
         }
-        logger.info('right mouse button clicked ${details.globalPosition}');
-        logger.info('right mouse button clicked ${details.localPosition}');
+        logger.fine('right mouse button clicked ${details.globalPosition}');
+        logger.fine('right mouse button clicked ${details.localPosition}');
         CretaRightMouseMenu.showMenu(
           title: 'leftRightMouseMenu',
           context: context,
@@ -749,7 +749,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     // if (pageModel.thumbnailUrl.value.isNotEmpty &&
     //     pageModel.thumbnailUrl.value.substring(0, 'https://picsum.photos/'.length) !=
     //         'https://picsum.photos/') {
-    //   logger.info('pageThumnail exist ${pageModel.thumbnailUrl.value}');
+    //   logger.fine('pageThumnail exist ${pageModel.thumbnailUrl.value}');
 
     //   if (pageModel.isShow.value) {
     //     if (_firstPage > pageIndex) {
@@ -766,7 +766,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     //       height: height,
     //       image: pageModel.thumbnailUrl.value);
     // }
-    //logger.info('pageThumnail not exist');
+    //logger.fine('pageThumnail not exist');
 
     GlobalObjectKey? thumbKey = _pageManager!.thumbKeyMap[pageModel.mid];
     if (thumbKey == null) {
@@ -795,8 +795,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         if (StudioVariables.isPreview) {
           return;
         }
-        logger.info('right mouse button clicked ${details.globalPosition}');
-        logger.info('right mouse button clicked ${details.localPosition}');
+        logger.fine('right mouse button clicked ${details.globalPosition}');
+        logger.fine('right mouse button clicked ${details.localPosition}');
         CretaRightMouseMenu.showMenu(
           title: 'leftAddRightMouseMenu',
           context: context,
@@ -880,7 +880,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   Widget _emptyCard() {
     // double bodyHeight = cardHeight - headerHeight;
     // double bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
-    logger.info('emptyCard($bodyHeight,$bodyWidth)');
+    logger.fine('emptyCard($bodyHeight,$bodyWidth)');
     return SizedBox(
       key: UniqueKey(),
       height: _bodyHeight + 20,
@@ -968,7 +968,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   void _startScreenshotTimer() {
-    logger.info('_startScreenshotTimer----------------------------------');
+    logger.fine('_startScreenshotTimer----------------------------------');
     _screenshotTimer ??= Timer.periodic(Duration(seconds: 60), (t) {
       if (widget.isFolded) {
         return;
@@ -990,7 +990,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       if (_thumbArea != null) {
         if (CretaUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
-          logger.info('start first _takeAScreenShot()');
+          logger.fine('start first _takeAScreenShot()');
           _takeAScreenShot(_thumbArea!);
           //BookMainPage.bookManagerHolder!.notify();
           return;
@@ -1006,7 +1006,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       if (_thumbArea != null) {
         if (CretaUtils.isRectContained(pageViewArea, _thumbArea!)) {
           // 이미 화면에 완전히 보인다.
-          logger.info('start selected _takeAScreenShot()');
+          logger.fine('start selected _takeAScreenShot()');
           _takeAScreenShot(_thumbArea!);
           //BookMainPage.bookManagerHolder!.notify();
           return;
@@ -1021,7 +1021,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
 
   void _takeAScreenShot(Rect area) {
     BookMainPage.thumbnailChanged = false;
-    logger.info('start _takeAScreenShot(${area.left},${area.top},${area.width},${area.height} )');
+    logger.fine('start _takeAScreenShot(${area.left},${area.top},${area.width},${area.height} )');
     BookModel? bookModel = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
     if (bookModel == null) {
       logger.warning('book model is null');
@@ -1038,7 +1038,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       if (value.isNotEmpty) {
         bookModel.thumbnailUrl.set(value, noUndo: true, save: false);
         bookModel.thumbnailType.set(ContentsType.image, noUndo: true, save: false);
-        logger.info('book Thumbnail saved !!! ${bookModel.mid}, $value');
+        logger.fine('book Thumbnail saved !!! ${bookModel.mid}, $value');
         // 재귀적으로 계속 변경이 일어난 것으로 보고 계속 호출되는 것을 막기 위해, DB 에 직접 쓴다.
         BookMainPage.bookManagerHolder?.setToDB(bookModel);
       }

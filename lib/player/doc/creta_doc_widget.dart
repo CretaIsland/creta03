@@ -108,7 +108,7 @@ class CretaDocPlayerWidgetState extends State<CretaDocWidget> with CretaDocMixin
           if (snapshot.data != null && snapshot.data! is ContentsModel) {
             ContentsModel model = snapshot.data! as ContentsModel;
             player.acc.updateModel(model);
-            logger.info('model updated ${model.name}, ${model.font.value}');
+            logger.fine('model updated ${model.name}, ${model.font.value}');
             //print('++++++++++++++++++++++++++++++++++++++++++${model.height.value}');
           }
           logger.fine('Text StreamBuilder<AbsExModel>');

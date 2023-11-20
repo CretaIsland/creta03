@@ -3,6 +3,7 @@
 import 'package:creta03/pages/release_note_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:hycop/hycop.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:hycop/hycop.dart';
 
@@ -20,6 +21,8 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   late VideoPlayerController controller;
   final List<String> cretaVersionList = [
+    "0.4.09",
+    "0.4.08",
     "0.4.07",
     "0.4.06",
     "0.4.05",
@@ -39,8 +42,8 @@ class _IntroPageState extends State<IntroPage> {
     "0.3.19",
     "0.3.18",
   ];
-  final String hycopVersion = "0.3.28";
-  final String buildNumber = "20231114-19(appwrite)";
+  final String hycopVersion = "0.3.29";
+  final String buildNumber = "20231117-12(${HycopFactory.toServerTypeString()})";
 
   @override
   void initState() {

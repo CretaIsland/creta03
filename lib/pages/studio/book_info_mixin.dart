@@ -73,7 +73,7 @@ mixin BookInfoMixin {
   //   required void Function(int) onDeleted,
   //   double top = 24,
   // }) {
-  //   logger.info('...hashTagList=$hashTagList');
+  //   logger.fine('...hashTagList=$hashTagList');
   //   return [
   //     Padding(
   //       padding: EdgeInsets.only(top: top, bottom: 12),

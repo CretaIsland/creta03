@@ -9,6 +9,7 @@ import 'dart:html' as html;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:http/browser_client.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:image/image.dart' as img;
 
@@ -16,6 +17,7 @@ import '../design_system/menu/creta_popup_menu.dart';
 import '../lang/creta_lang.dart';
 import '../lang/creta_studio_lang.dart';
 import '../model/app_enums.dart';
+import '../pages/login/creta_account_manager.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
@@ -988,11 +990,15 @@ class CretaUtils {
     }
     jsonString += '\n}';
 
-    logger.info(jsonString);
+    //print(jsonString);
 
     try {
+      http.Client client = http.Client();
+      if (client is BrowserClient) {
+        client.withCredentials = true;
+      }
       // HTTP POST 요청 수행
-      http.Response response = await http.post(
+      http.Response response = await client.post(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
@@ -1008,7 +1014,7 @@ class CretaUtils {
         return null;
       }
 
-      logger.info('pos $url succeed');
+      logger.fine('pos $url succeed');
       return response;
     } catch (e) {
       // 예외 처리
@@ -1021,17 +1027,16 @@ class CretaUtils {
 
   static Future<bool> inviteBook(
       BuildContext context, String email, String bookMid, String bookName, String userName) async {
-    String was = 'https://devcreta.com';
-    String url = '$was:444/sendEmail';
-    String msg =
-        '$userName${CretaStudioLang.pressLinkToJoinCreta1}$was${AppRoutes.communityBook}?$bookMid'; //내용
-
+    String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
+    String option = '''{
+        "invitationUserName": "$userName",        
+        "cretaBookName": "$bookName",        
+        "cretaBookLink": "$url/${AppRoutes.communityBook}?$bookMid"        
+    }''';
     Map<String, dynamic> body = {
-      "to": ['"$email"'], // 수신인
-      "cc": [], // 참조
-      "bcc": [], // 숨은참조
-      "subject": '"$userName${CretaStudioLang.cretaInviteYou}"', //제목
-      "message": '"$msg"', //내용
+      "receiverEmail": ['"$email"'], // 수신인
+      "emailType": '"invite"',
+      "emailOption": option,
     };
 
     Response? res = await CretaUtils.post(url, body, onError: (code) {

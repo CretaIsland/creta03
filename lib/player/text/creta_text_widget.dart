@@ -86,7 +86,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> with CretaTextMi
           if (snapshot.data != null && snapshot.data! is ContentsModel) {
             ContentsModel model = snapshot.data! as ContentsModel;
             player.acc.updateModel(model);
-            logger.info('model updated ${model.name}, ${model.font.value}');
+            logger.fine('model updated ${model.name}, ${model.font.value}');
           }
           logger.fine('Text StreamBuilder<AbsExModel>');
 

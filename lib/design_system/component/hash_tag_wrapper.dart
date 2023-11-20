@@ -25,7 +25,7 @@ class HashTagWrapper {
     double top = 24,
   }) {
     hashTagList = CretaUtils.jsonStringToList(model.hashTag.value);
-    logger.info('...hashTagList=$hashTagList');
+    logger.fine('...hashTagList=$hashTagList');
     return [
       Padding(
         padding: EdgeInsets.only(top: top, bottom: 12),

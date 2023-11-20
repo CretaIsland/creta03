@@ -51,7 +51,7 @@ class ContentsMainState extends State<ContentsMain> {
 
   @override
   void initState() {
-    logger.info('ContentsMain initState');
+    logger.fine('ContentsMain initState');
 
     _onceDBGetComplete = true;
     super.initState();
@@ -87,7 +87,7 @@ class ContentsMainState extends State<ContentsMain> {
       consumerFunc: _consumerFunc,
     );
     _onceDBGetComplete = true;
-    logger.info('first_onceDBGetComplete contents');
+    logger.fine('first_onceDBGetComplete contents');
     return retval;
   }
 
@@ -111,11 +111,11 @@ class ContentsMainState extends State<ContentsMain> {
               if (snapshot.data != null && snapshot.data is ContentsModel) {
                 ContentsModel model = snapshot.data! as ContentsModel;
                 contentsManager.updateModel(model);
-                logger.info('model updated ${model.name}, ${model.url}');
+                logger.fine('model updated ${model.name}, ${model.url}');
               }
               logger.fine('StreamBuilder<AbsExModel> $contentsCount');
               if (contentsCount == 0) {
-                logger.info('current model is null');
+                logger.fine('current model is null');
                 return SizedBox.shrink();
               }
               ContentsModel? model = playTimer.getCurrentModel();

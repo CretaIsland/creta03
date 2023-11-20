@@ -35,7 +35,7 @@ class _PlayButtonState extends State<PlayButton> {
   void initState() {
     super.initState();
 
-    //logger.info('PlayButton initState');
+    //logger.fine('PlayButton initState');
 
     _width = widget.frameModel.width.value / 2 * widget.applyScale;
     if (_width < 28 * 3) {
@@ -101,7 +101,7 @@ class _PlayButtonState extends State<PlayButton> {
               onPressed: () async {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 if (widget.playTimer.isPrevButtonBusy == false) {
-                  logger.info('prev Button pressed');
+                  logger.fine('prev Button pressed');
                   await widget.playTimer.releasePause();
                   await widget.playTimer.prev();
                   setState(() {});
@@ -112,7 +112,7 @@ class _PlayButtonState extends State<PlayButton> {
               icon: widget.playTimer.isPause() ? Icons.play_arrow : Icons.pause_outlined,
               onPressed: () {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
-                logger.info('play Button pressed');
+                logger.fine('play Button pressed');
                 setState(() {
                   widget.playTimer.togglePause();
                 });
@@ -123,12 +123,12 @@ class _PlayButtonState extends State<PlayButton> {
               onPressed: () async {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 if (widget.playTimer.isNextButtonBusy == false) {
-                  logger.info('next Button pressed');
+                  logger.fine('next Button pressed');
                   await widget.playTimer.releasePause();
                   await widget.playTimer.next();
                   setState(() {});
                 } else {
-                  logger.info('next Button is busy');
+                  logger.fine('next Button is busy');
                 }
               }),
         ],

@@ -167,7 +167,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             parentId: '',
             onDroppedFile: (modelList) {
               String frameId = _frameModel.mid;
-              logger.info(' dropzone contents added to $frameId');
+              logger.fine(' dropzone contents added to $frameId');
               ContentsManager.createContents(
                 widget.frameManager,
                 modelList,
@@ -201,7 +201,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                   final ContentsModel pushedOne = items[newIndex] as ContentsModel;
                   ContentsModel movedOne = items[oldIndex] as ContentsModel;
 
-                  logger.info(
+                  logger.fine(
                       '${pushedOne.name}, ${pushedOne.order.value} ,<=> ${movedOne.name}, ${movedOne.order.value} ');
                   widget.contentsManager.pushReverseOrder(movedOne.mid, pushedOne.mid, "playList",
                       onComplete: () {
@@ -269,14 +269,14 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               GestureDetector(
                 onLongPressDown: (detail) {
                   if (_selectedIndex != index && model.isShow.value == true) {
-                    logger.info('ContentsOrderedList $_selectedIndex $index');
+                    logger.fine('ContentsOrderedList $_selectedIndex $index');
                     widget.contentsManager.playTimer?.releasePause();
                     widget.contentsManager.goto(model.order.value).then((v) {
                       widget.contentsManager.setSelectedMid(model.mid);
                     });
                     setState(() {
                       _selectedIndex = index;
-                      logger.info('ContentsOrderedList $_selectedIndex $index');
+                      logger.fine('ContentsOrderedList $_selectedIndex $index');
                       widget.contentsManager.selectMusic(model, index);
                     });
                   }
@@ -646,7 +646,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               textStyle: titleStyle,
               initValue: (model.playTime.value / 1000).round(),
               onValueChnaged: (duration) {
-                logger.info('save : ${model.mid}');
+                logger.fine('save : ${model.mid}');
                 model.playTime.set(duration.inSeconds * 1000.0);
               },
             ),
@@ -692,7 +692,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   //             textStyle: titleStyle,
   //             initValue: (model.playTime.value / 1000).round(),
   //             onValueChnaged: (duration) {
-  //               logger.info('save : ${model.mid}');
+  //               logger.fine('save : ${model.mid}');
   //               model.playTime.set(duration.inSeconds * 1000.0);
   //             },
   //           ),

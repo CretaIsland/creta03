@@ -35,7 +35,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
 
   @override
   Future<void> play({bool byManual = false}) async {
-    //logger.info('text play');
+    //logger.fine('text play');
     model!.setPlayState(PlayState.start);
     if (byManual) {
       model!.setManualState(PlayState.start);
@@ -57,7 +57,7 @@ class CretaTextPlayer extends CretaAbsPlayer {
 
   @override
   void stop() {
-    logger.info("text player stop,${model!.name}");
+    logger.fine("text player stop,${model!.name}");
     //widget.wcontroller!.dispose();
     super.stop();
     model!.setPlayState(PlayState.stop);

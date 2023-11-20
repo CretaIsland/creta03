@@ -105,7 +105,7 @@ class ContentsManager extends CretaManager {
       addRealTimeListen(frameMid);
       reOrdering();
     }
-    logger.info('$frameMid=initChildren(${getAvailLength()})');
+    logger.fine('$frameMid=initChildren(${getAvailLength()})');
   }
 
   ContentsModel? getCurrentModel() {
@@ -149,7 +149,7 @@ class ContentsManager extends CretaManager {
 
     if (playTimer != null) {
       if (playTimer!.isInit()) {
-        //logger.info('prev exist =============================================');
+        //logger.fine('prev exist =============================================');
         await playTimer?.rewind();
         await playTimer?.pause();
       }
@@ -157,7 +157,7 @@ class ContentsManager extends CretaManager {
     } else {
       reOrdering();
     }
-    logger.info('_createNextContents complete ${model.name},${model.order.value},${model.url}');
+    logger.fine('_createNextContents complete ${model.name},${model.order.value},${model.url}');
     return model;
   }
 
@@ -168,7 +168,7 @@ class ContentsManager extends CretaManager {
 
     if (playTimer != null) {
       if (playTimer!.isInit()) {
-        //logger.info('prev exist =============================================');
+        //logger.fine('prev exist =============================================');
         await playTimer?.rewind();
         await playTimer?.pause();
       }
@@ -176,7 +176,7 @@ class ContentsManager extends CretaManager {
     } else {
       reOrdering();
     }
-    logger.info('_redoCreateNextContents complete ${model.name},${model.order.value},${model.url}');
+    logger.fine('_redoCreateNextContents complete ${model.name},${model.order.value},${model.url}');
     return model;
   }
 
@@ -189,7 +189,7 @@ class ContentsManager extends CretaManager {
 
     if (playTimer != null) {
       if (playTimer!.isInit()) {
-        //logger.info('prev exist =============================================');
+        //logger.fine('prev exist =============================================');
         await playTimer?.rewind();
         await playTimer?.pause();
       }
@@ -197,7 +197,7 @@ class ContentsManager extends CretaManager {
     } else {
       reOrdering();
     }
-    logger.info('_undoCreateNextContents complete ${model.name},${model.order.value},${model.url}');
+    logger.fine('_undoCreateNextContents complete ${model.name},${model.order.value},${model.url}');
     await setToDB(model);
     return model;
   }
@@ -438,7 +438,7 @@ class ContentsManager extends CretaManager {
   }
 
   void removeLink(String frameOrPageMid) {
-    logger.info('removeLink---------------ContentsManager   ${linkManagerMap.length}');
+    logger.fine('removeLink---------------ContentsManager   ${linkManagerMap.length}');
     for (var linkManager in linkManagerMap.values) {
       linkManager.removeLink(frameOrPageMid);
     }
@@ -451,11 +451,11 @@ class ContentsManager extends CretaManager {
         CretaVideoPlayer video = player as CretaVideoPlayer;
         if (video.wcontroller != null) {
           if (mid.isEmpty) {
-            logger.info('contents.setSoundOff()********');
+            logger.fine('contents.setSoundOff()********');
             await video.wcontroller!.setVolume(0.0);
           } else {
             if (mid == player.model!.mid) {
-              logger.info('contents.setSoundOff($mid)********');
+              logger.fine('contents.setSoundOff($mid)********');
               await video.wcontroller!.setVolume(0.0);
             }
           }
@@ -480,11 +480,11 @@ class ContentsManager extends CretaManager {
         CretaVideoPlayer video = player as CretaVideoPlayer;
         if (video.wcontroller != null && player.model!.mute.value == false) {
           if (mid.isEmpty) {
-            logger.info('contents.setSoundOff()********');
+            logger.fine('contents.setSoundOff()********');
             await video.wcontroller!.setVolume(video.model!.volume.value);
           } else {
             if (mid == player.model!.mid) {
-              logger.info('contents.setSoundOff($mid)********');
+              logger.fine('contents.setSoundOff($mid)********');
               await video.wcontroller!.setVolume(video.model!.volume.value);
             }
           }
@@ -512,9 +512,9 @@ class ContentsManager extends CretaManager {
               video.isInit() &&
               playTimer != null &&
               playTimer!.isCurrentModel(player.model!.mid)) {
-            logger.info('contents.pause');
+            logger.fine('contents.pause');
             await video.wcontroller!.pause();
-            logger.info('contents.pause end');
+            logger.fine('contents.pause end');
           }
         }
         if (player.model!.isImage()) {
@@ -543,7 +543,7 @@ class ContentsManager extends CretaManager {
               video.isInit() &&
               playTimer != null &&
               playTimer!.isCurrentModel(player.model!.mid)) {
-            logger.info('contents.resume');
+            logger.fine('contents.resume');
             await video.wcontroller!.play();
           }
         }
@@ -625,7 +625,7 @@ class ContentsManager extends CretaManager {
     int counter = 0;
     int len = getAvailLength();
     double input = currentOrder;
-    //logger.info('nextOrder currentOrder=$input, $len');
+    //logger.fine('nextOrder currentOrder=$input, $len');
     while (counter < len) {
       double order = _nextOrder(input);
       if (order < 0) {
@@ -634,7 +634,7 @@ class ContentsManager extends CretaManager {
       }
       ContentsModel? model = getNthOrder(order) as ContentsModel?;
       if (isVisible(model!) == true) {
-        //logger.info('return Order=$order');
+        //logger.fine('return Order=$order');
         return order;
       }
       counter++;
@@ -689,7 +689,7 @@ class ContentsManager extends CretaManager {
     int counter = 0;
     int len = getAvailLength();
     double input = currentOrder;
-    //logger.info('prevOrder currentOrder=$input, $len');
+    //logger.fine('prevOrder currentOrder=$input, $len');
     while (counter < len) {
       double order = _prevOrder(input);
       if (order < 0) {
@@ -698,7 +698,7 @@ class ContentsManager extends CretaManager {
       }
       ContentsModel? model = getNthOrder(order) as ContentsModel?;
       if (isVisible(model!) == true) {
-        //logger.info('return Order=$order');
+        //logger.fine('return Order=$order');
         return order;
       }
       counter++;
@@ -786,7 +786,7 @@ class ContentsManager extends CretaManager {
       logger.warning('$aPushedMid does not exist in modelList');
       return;
     }
-    logger.info('Frame $hint :   ${aMoved.order.value} <--> ${aPushed.order.value}');
+    logger.fine('Frame $hint :   ${aMoved.order.value} <--> ${aPushed.order.value}');
 
     double aMovedOrder = aMoved.order.value;
     double aPushedOrder = aPushed.order.value;
@@ -972,7 +972,7 @@ class ContentsManager extends CretaManager {
     contentsModel.aspectRatio
         .set(contentsModel.height.value / contentsModel.width.value, save: false, noUndo: true);
 
-    logger.info('contentsSize, ${contentsModel.width.value} x ${contentsModel.height.value}');
+    logger.fine('contentsSize, ${contentsModel.width.value} x ${contentsModel.height.value}');
 
     if (isResizeFrame) {
 // 그림의 규격에 따라 프레임 사이즈를 수정해 준다
@@ -1003,7 +1003,7 @@ class ContentsManager extends CretaManager {
       //bool uploadComplete = false;
       html.FileReader fileReader = html.FileReader();
       fileReader.onLoadEnd.listen((event) async {
-        logger.info('upload waiting ...............${contentsModel.name}');
+        logger.fine('upload waiting ...............${contentsModel.name}');
         StudioSnippet.uploadFile(
           contentsModel,
           contentsManager,
@@ -1011,7 +1011,7 @@ class ContentsManager extends CretaManager {
         );
         fileReader = html.FileReader(); // file reader 초기화
         //uploadComplete = true;
-        logger.info('upload complete');
+        logger.fine('upload complete');
       });
 
       // while (uploadComplete) {
@@ -1040,7 +1040,7 @@ class ContentsManager extends CretaManager {
     //bool uploadComplete = false;
     html.FileReader fileReader = html.FileReader();
     fileReader.onLoadEnd.listen((event) async {
-      logger.info('upload waiting ...............${contentsModel.name}');
+      logger.fine('upload waiting ...............${contentsModel.name}');
       StudioSnippet.uploadFile(
         contentsModel,
         contentsManager,
@@ -1052,7 +1052,7 @@ class ContentsManager extends CretaManager {
       //
       fileReader = html.FileReader(); // file reader 초기화
       //uploadComplete = true;
-      logger.info('upload complete ${contentsModel.remoteUrl!}');
+      logger.fine('upload complete ${contentsModel.remoteUrl!}');
     });
 
     // while (uploadComplete) {
@@ -1071,7 +1071,7 @@ class ContentsManager extends CretaManager {
     int counter = 0;
     //startTransaction();
     reOrdering();
-    logger.info('_getAllLinks---------------${getAvailLength()}----------------------------');
+    logger.fine('_getAllLinks---------------${getAvailLength()}----------------------------');
     orderMapIterator(
       (model) {
         LinkManager linkManager = newLinkManager(model.mid);
@@ -1084,7 +1084,7 @@ class ContentsManager extends CretaManager {
   }
 
   LinkManager newLinkManager(String contentsId) {
-    logger.info('newLinkManager()*******$contentsId');
+    logger.fine('newLinkManager()*******$contentsId');
 
     LinkManager? retval = linkManagerMap[contentsId];
     if (retval == null) {
@@ -1115,7 +1115,7 @@ class ContentsManager extends CretaManager {
       ContentsModel newModel = ContentsModel('', bookMid);
       newModel.copyFrom(org, newMid: newModel.mid, pMid: frameMid);
       newModel.order.set(order++, save: false, noUndo: true);
-      logger.info('create new Contents ${newModel.name},${newModel.mid} ');
+      logger.fine('create new Contents ${newModel.name},${newModel.mid} ');
       if (samePage) {
         // 링크는 same page 에서만 copy 된다.
         LinkManager? linkManager = linkManagerMap[org.mid];

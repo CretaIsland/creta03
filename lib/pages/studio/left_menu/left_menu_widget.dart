@@ -51,7 +51,7 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
 
   @override
   void initState() {
-    logger.info('_LeftMenuWidgetState.initState');
+    logger.fine('_LeftMenuWidgetState.initState');
     super.initState();
     initMixin();
     _selectedType = _getCurrentTypes();

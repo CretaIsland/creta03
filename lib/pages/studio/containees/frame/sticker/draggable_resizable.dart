@@ -574,19 +574,19 @@ class DraggableResizableState extends State<DraggableResizable> {
 
     // if (moveDirection.dx < 0) {
     //   if (updatedSize.width < LayoutConst.minFrameSize) {
-    //     logger.info('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
+    //     logger.fine('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
     //     return false;
     //   }
     // }
     // if (moveDirection.dy < 0) {
     //   if (updatedSize.height < LayoutConst.minFrameSize) {
-    //     logger.info('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
+    //     logger.fine('mininumSize constraint  ${updatedSize.width}, ${updatedSize.height}');
     //     return false;
     //   }
     // }
     // if (moveDirection.dx > 0) {
     //   if (pos.dx + updatedSize.width + offset > widget.pageWidth) {
-    //     logger.info(
+    //     logger.fine(
     //         'maxinumSize constraint  ${updatedSize.width}, ${updatedSize.height}, pos.dx=${pos.dx}, offset=$offset');
     //     return false;
     //   }
@@ -594,7 +594,7 @@ class DraggableResizableState extends State<DraggableResizable> {
 
     // if (moveDirection.dy < 0) {
     //   if (pos.dy + updatedSize.height + offset > widget.pageHeight) {
-    //     logger.info(
+    //     logger.fine(
     //         'maxinumSize constraint  ${updatedSize.width}, ${updatedSize.height} pos.dy=${pos.dy}, offset=$offset');
     //     return false;
     //   }
@@ -641,26 +641,26 @@ class DraggableResizableState extends State<DraggableResizable> {
     // double offset = LayoutConst.stikerOffset / 2;
     // if (move.dx <= 0) {
     //   if (pos.dx + offset < 0) {
-    //     logger.info('1.postion constraint  ${move.dx},pos.dx=${pos.dx}, offset=$offset');
+    //     logger.fine('1.postion constraint  ${move.dx},pos.dx=${pos.dx}, offset=$offset');
     //     return false;
     //   }
     // }
     // if (move.dy <= 0) {
     //   if (pos.dy + offset < 0) {
-    //     logger.info('2.postion constraint ${move.dy}, pos.dy=${pos.dy}, offset=$offset');
+    //     logger.fine('2.postion constraint ${move.dy}, pos.dy=${pos.dy}, offset=$offset');
     //     return false;
     //   }
     // }
 
     // if (move.dx >= 0) {
     //   if (updatedSize.width + pos.dx + offset > widget.pageWidth) {
-    //     logger.info('3.postion constraint  ${updatedSize.width},pos.dx=${pos.dx}, offset=$offset');
+    //     logger.fine('3.postion constraint  ${updatedSize.width},pos.dx=${pos.dx}, offset=$offset');
     //     return false;
     //   }
     // }
     // if (move.dy >= 0) {
     //   if (updatedSize.height + pos.dy + offset > widget.pageHeight) {
-    //     logger.info('4.postion constraint ${updatedSize.height}, pos.dy=${pos.dy}, offset=$offset');
+    //     logger.fine('4.postion constraint ${updatedSize.height}, pos.dy=${pos.dy}, offset=$offset');
     //     return false;
     //   }
     // }

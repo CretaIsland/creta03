@@ -453,7 +453,7 @@ class ContentsModel extends CretaModel {
   PlayState get manualState => _manualState;
 
   void setPlayState(PlayState s) {
-    //logger.info('setPlayState=$s');
+    //logger.fine('setPlayState=$s');
     _prevState = playState;
     _playState = s;
     _manualState = playState;
@@ -627,10 +627,10 @@ class ContentsModel extends CretaModel {
       //   logger.finest('instagram type');
       //   contentsType = ContentsType.instagram;
     } else if (mime.endsWith('pdf')) {
-      logger.info('pdf type');
+      logger.fine('pdf type');
       contentsType = ContentsType.pdf;
     } else if (mime.startsWith('audio')) {
-      logger.info('music type');
+      logger.fine('music type');
       contentsType = ContentsType.music;
     } else {
       logger.finest('ERROR: unknown type');
@@ -683,7 +683,7 @@ class ContentsModel extends CretaModel {
   }
 
   void printIt() {
-    logger.info('------------1-------name=[$name],mime=[$mime],bytes=[$bytes],url=[$url]');
+    logger.fine('------------1-------name=[$name],mime=[$mime],bytes=[$bytes],url=[$url]');
   }
 
   bool isAutoFrameHeight() {

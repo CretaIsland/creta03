@@ -41,7 +41,7 @@ abstract class LastClickable extends StatefulWidget {
 //     if (_textField == null) {
 //       return;
 //     }
-//     logger.info('clickedOutSide');
+//     logger.fine('clickedOutSide');
 //     Rect? boxRect = _textField!.getBoxRect();
 //     if (boxRect == null) {
 //       return;
@@ -93,6 +93,7 @@ class CretaTextField extends LastClickable {
   final Iterable<String>? autofillHints;
   final TextStyle? style;
   final bool autofocus;
+  final bool readOnly;
 
   CretaTextField({
     required this.textFieldKey,
@@ -122,6 +123,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.xshortNumber({
@@ -152,6 +154,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.double({
@@ -182,6 +185,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.shortNumber({
@@ -212,6 +216,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.colorText({
@@ -242,6 +247,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.short({
@@ -272,6 +278,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.long({
@@ -302,6 +309,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   CretaTextField.small({
@@ -332,6 +340,7 @@ class CretaTextField extends LastClickable {
     this.autofillHints = const <String>[],
     this.style,
     this.autofocus = false,
+    this.readOnly = false,
   }) : super(key: textFieldKey);
 
   @override
@@ -449,7 +458,7 @@ class CretaTextFieldState extends State<CretaTextField> {
             }
           }
           // if (event.logicalKey == LogicalKeyboardKey.enter) {
-          //   logger.info('enter key pressed');
+          //   logger.fine('enter key pressed');
           //   _controller.value = TextEditingValue(
           //       text: '${_controller.text}\n',
           //       selection: TextSelection.fromPosition(
@@ -591,6 +600,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         minLines: lines,
         //maxLines: 1,
         autofocus: widget.autofocus,
+        readOnly: widget.readOnly,
         //decoration: isNumeric() ? _numberDecoBox() : _basicDecoBox(),
         autofillHints: widget.autofillHints,
         decoration: _basicDecoBox(),
@@ -628,7 +638,7 @@ class CretaTextFieldState extends State<CretaTextField> {
                 } else {
                   _lineCount = newLineNo;
                 }
-                logger.info('line count chaged');
+                logger.fine('line count chaged');
                 setState(() {});
               }
             }
@@ -653,14 +663,14 @@ class CretaTextFieldState extends State<CretaTextField> {
           widget.onChanged?.call(value);
         },
         onTap: () {
-          logger.info('onTapped');
+          logger.fine('onTapped');
           //setLastClicked();
           //setState(() {
           _clicked = true;
           //});
         },
         // onTapOutside: (event) {
-        //   logger.info('onTappOutside');
+        //   logger.fine('onTappOutside');
         //   widget.onEditComplete(_searchValue);
         // },
       ),

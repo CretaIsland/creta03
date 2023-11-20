@@ -427,7 +427,7 @@ abstract class CretaManager extends AbsExModelManager {
             : _lastSortedObjectList, //[DateTime.parse('2022-08-04 12:00:01.000')], //firebase only
       );
       if (resultList.isEmpty) {
-        logger.info('no data founded...');
+        logger.fine('no data founded...');
         _lastFetchedCount = 0;
         if (_lastSortedObjectList != null) {
           _lastSortedObjectList!.clear();
@@ -947,7 +947,7 @@ abstract class CretaManager extends AbsExModelManager {
     if (className != 'frame' && className != 'contents') {
       DraggableStickers.frameSelectNotifier?.set("");
     }
-    logger.info('selected1=$selectedMid, prev=$prevSelectedMid');
+    logger.fine('selected1=$selectedMid, prev=$prevSelectedMid');
   }
 
   Future<void> setSelectedMid(String mid, {bool doNotify = true}) async {
@@ -992,7 +992,7 @@ abstract class CretaManager extends AbsExModelManager {
     }
     for (var ele in modelList) {
       if (ele.mid == selectedMid) {
-        logger.info('selected mid=$selectedMid, order=${ele.order.value}');
+        logger.fine('selected mid=$selectedMid, order=${ele.order.value}');
         return ele.order.value;
       }
     }
@@ -1015,7 +1015,7 @@ abstract class CretaManager extends AbsExModelManager {
       CretaModel model = ele as CretaModel;
       if (model.mid == newModel.mid) {
         model.updateFrom(newModel);
-        logger.info('updateModel ${newModel.mid}');
+        logger.fine('updateModel ${newModel.mid}');
         //print('updateModel ${newModel.mid}');
         retval = true;
         break;
@@ -1039,7 +1039,7 @@ abstract class CretaManager extends AbsExModelManager {
       );
 
       //await setToDB(model);
-      logger.info('${model.mid} removed');
+      logger.fine('${model.mid} removed');
       await removeChild(model.mid);
     }
     reOrdering();
@@ -1101,13 +1101,13 @@ abstract class CretaManager extends AbsExModelManager {
   //           return const Center(child: Text('data fetch error(WaitDatum)'));
   //         }
   //         if (snapshot.hasData == false) {
-  //           logger.info("wait data ...(WaitData)");
+  //           logger.fine("wait data ...(WaitData)");
   //           return Center(
   //             child: Snippet.showWaitSign(),
   //           );
   //         }
   //         if (snapshot.connectionState == ConnectionState.done) {
-  //           logger.info("founded ${snapshot.data!}");
+  //           logger.fine("founded ${snapshot.data!}");
   //           return child;
   //         }
   //         return const SizedBox.shrink();

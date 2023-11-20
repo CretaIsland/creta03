@@ -540,8 +540,8 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         //       widget.model.fontWeight.set(400); // 폰트가 변경되면, weight 도 초기화
         //       widget.model.font.set(val);
 
-        //       logger.info('save ${widget.model.mid}-----------------');
-        //       logger.info('save ${widget.model.font.value}----------');
+        //       logger.fine('save ${widget.model.mid}-----------------');
+        //       logger.fine('save ${widget.model.font.value}----------');
         //       _sendEvent!.sendEvent(widget.model);
         //     }
         //   },
@@ -643,7 +643,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               textStyle: titleStyle,
               initValue: (model.playTime.value / 1000).round(),
               onValueChnaged: (duration) {
-                logger.info('save : ${model.mid}');
+                logger.fine('save : ${model.mid}');
                 model.playTime.set(duration.inSeconds * 1000.0);
               },
             ),
@@ -796,13 +796,13 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             onChannged: (value) {
               // widget.model.opacity.set(value);
               // //widget.model.save();
-              // logger.info('opacity=${widget.model.opacity.value}');
+              // logger.fine('opacity=${widget.model.opacity.value}');
               // _sendEvent!.sendEvent(widget.model);
             },
             onChanngeComplete: (value) {
               widget.model.opacity.set(value);
               //widget.model.save();
-              logger.info('opacity=${widget.model.opacity.value}');
+              logger.fine('opacity=${widget.model.opacity.value}');
               _sendEvent!.sendEvent(widget.model);
             },
             postfix: '%',
@@ -985,7 +985,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               isLinkEditMode = snapshot.data!;
             }
           }
-          logger.info('_linkControl ($isLinkEditMode)');
+          logger.fine('_linkControl ($isLinkEditMode)');
           // if (offset == Offset.zero) {
           //   return const SizedBox.shrink();
           // }
@@ -1021,7 +1021,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   }
 
   Widget _linkToggle(bool isLinkEditMode) {
-    logger.info('_linkToggle ($isLinkEditMode)');
+    logger.fine('_linkToggle ($isLinkEditMode)');
     return CretaToggleButton(
       key: GlobalObjectKey('_linkToggle$isLinkEditMode${widget.model.mid}'),
       width: 54 * 0.75,

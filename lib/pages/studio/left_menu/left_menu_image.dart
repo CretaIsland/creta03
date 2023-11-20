@@ -95,7 +95,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
     Api.generateImageAI(text, numImg).then((values) {
       setState(() {
         imgUrl = [...values];
-        logger.info("------Generated image is '$text' ---------");
+        logger.fine("------Generated image is '$text' ---------");
         _state = imgUrl.isNotEmpty ? AIState.succeed : AIState.fail;
       });
     });
@@ -150,7 +150,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   @override
   void initState() {
-    logger.info('_LeftMenuImageState.initState');
+    logger.fine('_LeftMenuImageState.initState');
     _selectedTab = CretaStudioLang.imageMenuTabBar.values.first;
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     originalText = '';
@@ -279,7 +279,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                 hintText: '플레이스홀더',
                 onEditComplete: (value) {
                   originalText = value;
-                  logger.info('onEditComplete value = $value');
+                  logger.fine('onEditComplete value = $value');
                 }),
           ),
           imageAIDisplay(),
@@ -320,7 +320,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
       onPressed: () {
         setState(() {
           _isStyleOpened = !_isStyleOpened;
-          logger.info('------ Style open state: $_isStyleOpened---------');
+          logger.fine('------ Style open state: $_isStyleOpened---------');
         });
       },
       titleWidget: Text(CretaStudioLang.imageStyle, style: CretaFont.titleSmall),
@@ -395,7 +395,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                                   .info('----------Deselect generated image $imageIndex----------');
                               selectedAIImage = -1;
                             } else {
-                              logger.info('----------Select generated image $imageIndex----------');
+                              logger.fine('----------Select generated image $imageIndex----------');
                               selectedAIImage = imageIndex;
                             }
                           });
@@ -582,7 +582,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    logger.info('-------- Select image $totalIndex in $title--------');
+                    logger.fine('-------- Select image $totalIndex in $title--------');
                     selectedImage = totalIndex;
                   });
                 },
@@ -632,7 +632,7 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
                   return GestureDetector(
                     onTapDown: (_) {
                       setState(() {
-                        logger.info('---------Select image $index---------');
+                        logger.fine('---------Select image $index---------');
                         selectedImage = index;
                       });
                     },

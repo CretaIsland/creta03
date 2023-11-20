@@ -35,9 +35,9 @@ class Api {
             // print(imageData);
           }
         }
-        logger.info('------ AI image URLs are ready!!! ------');
+        logger.fine('------ AI image URLs are ready!!! ------');
       } else {
-        logger.info('------ Cannot find Image URL ------');
+        logger.fine('------ Cannot find Image URL ------');
       }
     } else {
       logger.warning("Fail to fetch image: ${res.statusCode}");

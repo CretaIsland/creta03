@@ -106,12 +106,12 @@ class _CrossScrollBarState extends State<CrossScrollBar> {
         //     ? MouseRegion(
         //         cursor: SystemMouseCursors.none,
         //         onHover: (event) {
-        //           //logger.info('sendEvent ${event.position}');
+        //           //logger.fine('sendEvent ${event.position}');
         //           _sendEvent?.sendEvent(event.position);
         //         },
         //         child: GestureDetector(
         //           onLongPressDown: (details) {
-        //             logger.info(
+        //             logger.fine(
         //                 'linkCursor clicked here ${details.globalPosition.dx}, ${details.globalPosition.dy}');
 
         //             StudioVariables.isLinkMode = false;

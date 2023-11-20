@@ -75,7 +75,7 @@ mixin FramePlayMixin {
     }
     frameModel ??= await frameManager!.createNextFrame(doNotify: false);
     // 코텐츠를 play 하고 DB 에 Create 하고 업로드까지 한다.
-    logger.info('frameCreated(${frameModel.mid}');
+    logger.fine('frameCreated(${frameModel.mid}');
     ContentsManager? manager =
         await ContentsManager.createContents(frameManager, modelList, frameModel, pageModel);
 

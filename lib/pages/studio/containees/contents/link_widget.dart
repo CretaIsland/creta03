@@ -93,7 +93,7 @@ class _LinkWidgetState extends State<LinkWidget> {
             if (snapshot.data != null && snapshot.data is Offset) {
               _position = snapshot.data!;
             }
-            //logger.info('_linkReceiveEvent ($_position) ${LinkParams.isLinkNewMode}');
+            //logger.fine('_linkReceiveEvent ($_position) ${LinkParams.isLinkNewMode}');
             return Consumer<LinkManager>(builder: (context, linkManager, child) {
               // LinkManager? linkManager =
               //     widget.contentsManager.findLinkManager(widget.contentsModel.mid);
@@ -127,7 +127,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                     if (LinkParams.isLinkNewMode &&
                         StudioVariables.isPreview == false &&
                         hasContents) {
-                      //logger.info('sendEvent ${event.localPosition}');
+                      //logger.fine('sendEvent ${event.localPosition}');
                       _linkSendEvent?.sendEvent(event.localPosition);
                     }
                   },
@@ -247,7 +247,7 @@ class _LinkWidgetState extends State<LinkWidget> {
   }
 
   bool _showPlayButton() {
-    //logger.info('_showPlayButton(${LinkParams.isLinkNewMode})');
+    //logger.fine('_showPlayButton(${LinkParams.isLinkNewMode})');
     if (!_isHover) return false;
     if (!_isPlayAble()) return false;
     if (LinkParams.isLinkNewMode) return false;
@@ -264,7 +264,7 @@ class _LinkWidgetState extends State<LinkWidget> {
   }
 
   bool _showVisibleButton() {
-    //logger.info('_showPlayButton(${LinkParams.isLinkNewMode})');
+    //logger.fine('_showPlayButton(${LinkParams.isLinkNewMode})');
     if (!_isHover) return false;
     //if (!_isPlayAble()) return false;
     if (LinkParams.isLinkNewMode) return false;
@@ -281,7 +281,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     if (len == 0) {
       return [];
     }
-    //logger.info('^^^^^^^^^^^^^^^^^^drawEachLink----$len');
+    //logger.fine('^^^^^^^^^^^^^^^^^^drawEachLink----$len');
     return linkManager
         .orderMapIterator((model) => _drawEachLink(model as LinkModel, linkManager))
         .toList();
@@ -296,7 +296,7 @@ class _LinkWidgetState extends State<LinkWidget> {
       return const SizedBox.shrink();
     }
     _position = Offset(posX, posY);
-    //logger.info('^^^^^^^^^^^^^^^^^^_position----$posX, $posY,,,');
+    //logger.fine('^^^^^^^^^^^^^^^^^^_position----$posX, $posY,,,');
     _linkCount++;
     return Positioned(
       left: _position.dx,
@@ -352,7 +352,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     }
     return GestureDetector(
       onTapUp: (d) {
-        logger.info('link button pressed ${model.connectedMid},${model.connectedClass}');
+        logger.fine('link button pressed ${model.connectedMid},${model.connectedClass}');
         logger
             .info('link button pressed ${widget.frameModel.mid},${widget.frameModel.isShow.value}');
         BookMainPage.containeeNotifier!.setFrameClick(true);
@@ -423,7 +423,7 @@ class _LinkWidgetState extends State<LinkWidget> {
             model.showLinkLine = childModel.isShow.value;
             childModel.save();
             //_lineDrawSendEvent?.sendEvent(isShow);
-            logger.info(
+            logger.fine(
                 'link button pressed ${widget.frameModel.mid},${widget.frameModel.isShow.value}');
             widget.frameManager.notify();
             //_linkManager?.notify();
@@ -487,7 +487,7 @@ class _LinkWidgetState extends State<LinkWidget> {
       child: GestureDetector(
         child: const Icon(Icons.close, size: iconSize, color: Colors.white),
         onLongPressDown: (detail) {
-          logger.info('delete button pressed ${model.mid}');
+          logger.fine('delete button pressed ${model.mid}');
           linkManager.delete(link: model);
         },
       ),

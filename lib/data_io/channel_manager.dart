@@ -12,7 +12,6 @@ import '../model/channel_model.dart';
 import 'creta_manager.dart';
 
 class ChannelManager extends CretaManager {
-
   //ChannelModel? channelModel;
 
   ChannelManager() : super('creta_channel', null) {
@@ -85,7 +84,7 @@ class ChannelManager extends CretaManager {
     try {
       await createToDB(channelModel);
     } catch (error) {
-      logger.info('createTeam error >> $error');
+      logger.fine('createTeam error >> $error');
       return false;
     }
     return true;
@@ -120,7 +119,7 @@ class ChannelManager extends CretaManager {
         query['mid'] = QueryValue(value: channelId);
         query['isRemoved'] = QueryValue(value: false);
         await queryFromDB(query);
-        for(var model in modelList) {
+        for (var model in modelList) {
           channelList.add(model as ChannelModel);
         }
       }

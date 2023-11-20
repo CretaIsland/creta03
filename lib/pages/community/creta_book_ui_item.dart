@@ -44,6 +44,7 @@ import '../../../model/channel_model.dart';
 import '../login/creta_account_manager.dart';
 import '../../model/app_enums.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
+//import '../../design_system/component/snippet.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;
@@ -378,10 +379,10 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 275),
       vsync: this,
     );
-    _animation = Tween(begin: 1.0, end: 1.2)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
-    padding = Tween(begin: 0.0, end: -25.0)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    _animation = Tween(begin: 1.0, end: 1.2).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    padding = Tween(begin: 0.0, end: -25.0).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
     _controller.addListener(() {
       setState(() {});
     });
@@ -425,8 +426,8 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
             borderRadius: BorderRadius.circular(20.0),
           ),
           clipBehavior: Clip.hardEdge,
-          transform: Matrix4(
-              _animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0, padding.value, padding.value, 0, 1),
+          transform: Matrix4(_animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0,
+              padding.value, padding.value, 0, 1),
           child: Image.network(
             widget.image,
             fit: BoxFit.cover,
@@ -489,9 +490,18 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   late List<CretaMenuItem> _popupMenuList;
   late List<SNSShareItem> _shareItemList;
 
+  late String bookLinkUrl;
+  late String encodeTitle;
+  late String encodeLinkUrl;
+
+  final ScrollController scrollController = ScrollController();
+
   void _openPopupMenu() {
     CretaPopupMenu.showMenu(
-            context: context, globalKey: widget.key as GlobalKey, popupMenu: _popupMenuList, initFunc: setPopmenuOpen)
+            context: context,
+            globalKey: widget.key as GlobalKey,
+            popupMenu: _popupMenuList,
+            initFunc: setPopmenuOpen)
         .then((value) {
       logger.finest('팝업메뉴 닫기');
       setState(() {
@@ -525,7 +535,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
     showDialog(
       context: context,
       builder: (context) => CretaDialog(
-        width: 364.0,
+        width: 364.0 + 28,
         height: 304.0,
         title: '공유하기',
         crossAxisAlign: CrossAxisAlignment.center,
@@ -545,11 +555,13 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CretaTextField(
-                    textFieldKey: GlobalObjectKey('CretaBookUIItem._doPopupMenuShare.CretaTextField'),
-                    width: 244,
+                    textFieldKey:
+                        GlobalObjectKey('CretaBookUIItem._doPopupMenuShare.CretaTextField'),
+                    width: 364 - 120 + 28,
                     height: 30,
                     value: bookLinkUrl,
                     hintText: '',
+                    readOnly: true,
                     onEditComplete: (value) {},
                   ),
                   SizedBox(width: 11),
@@ -576,52 +588,106 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                 style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 0, 36),
-              child: Wrap(
-                spacing: 20,
-                children: _shareItemList
-                    .map(
-                      (item) => SizedBox(
-                        width: item.width,
-                        height: item.height,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            shape: CircleBorder(),
-                            padding: EdgeInsets.all(0),
-                            backgroundColor: Colors.transparent, // <-- Button color
-                            //foregroundColor: Colors.red, // <-- Splash color
-                          ),
-                          onPressed: item.onPressed,
-                          child: item.image == null
-                              ? Text(
-                                  item.title.substring(0, 2),
-                                  style: CretaFont.titleSmall,
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 17, 0, 31),
+              width: 364 + 28,
+              height: 40,
+              child: Row(
+                children: [
+                  // InkWell(
+                  //   customBorder: const CircleBorder(),
+                  //   onTap: () {
+                  //     scrollController.animateTo(
+                  //       0,
+                  //       duration: const Duration(milliseconds: 200),
+                  //       curve: Curves.easeInOut,
+                  //     );
+                  //   },
+                  //   child: Icon(Icons.arrow_left_sharp, size: 24),
+                  // ),
+                  SizedBox(width: 24),
+                  SizedBox(
+                    width: 364 - 24 - 24 + 28,
+                    height: 32,
+                    child: Scrollbar(
+                      thickness: 0,
+                      thumbVisibility: false,
+                      controller: scrollController,
+                      child: ListView.builder(
+                        itemCount: 1,
+                        controller: scrollController,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Wrap(
+                            spacing: 20,
+                            direction: Axis.horizontal,
+                            children: _shareItemList
+                                .map(
+                                  (item) => SizedBox(
+                                    width: item.width,
+                                    height: item.height,
+                                    child: Snippet.TooltipWrapper(
+                                      fgColor: Colors.white,
+                                      bgColor: Colors.grey[700]!,
+                                      tooltip: item.title,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0,
+                                          shape: CircleBorder(),
+                                          padding: EdgeInsets.all(0),
+                                          backgroundColor: Colors.transparent, // <-- Button color
+                                          //foregroundColor: Colors.red, // <-- Splash color
+                                        ),
+                                        onPressed: item.onPressed,
+                                        child: item.image == null
+                                            ? Text(
+                                                item.title.substring(0, 2),
+                                                style: CretaFont.titleSmall,
+                                              )
+                                            : Image(
+                                                width: item.width,
+                                                height: item.height,
+                                                image: item.image!,
+                                              ),
+                                      ),
+                                    ),
+                                  ),
                                 )
-                              : Image(
-                                  width: item.width,
-                                  height: item.height,
-                                  image: item.image!,
-                                ),
-                        ),
+                                .toList(),
+                          );
+                        },
                       ),
-                    )
-                    .toList(),
+                    ),
+                  ),
+                  // InkWell(
+                  //   customBorder: const CircleBorder(),
+                  //   onTap: () {
+                  //     scrollController.animateTo(
+                  //       scrollController.position.maxScrollExtent,
+                  //       duration: const Duration(milliseconds: 200),
+                  //       curve: Curves.easeInOut,
+                  //     );
+                  //   },
+                  //   child: Icon(Icons.arrow_right_sharp, size: 24),
+                  // ),
+                  SizedBox(width: 24),
+                ],
               ),
             ),
             Container(
-              width: 364,
+              width: 364 + 28,
               height: 2.0,
               color: CretaColor.text[100], //Colors.grey.shade200,
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(297, 12 - 1, 0, 0),
+              padding: const EdgeInsets.fromLTRB(364 - 67 + 28, 12 - 1, 0, 0),
               child: BTN.fill_blue_t_m(
                 text: '완료',
                 width: 55,
                 height: 32,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
             ),
           ],
@@ -680,97 +746,122 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
       ),
     ];
 
+    bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
+    encodeTitle = Uri.encodeComponent(widget.bookModel.name.value);
+    encodeLinkUrl = Uri.encodeComponent(bookLinkUrl);
+
     _shareItemList = [
-      SNSShareItem(
-        title: '카카오스토리',
-        onPressed: () {
-          String bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
-          String encodeText = Uri.encodeComponent(widget.bookModel.name.value);
-          String encodeUrl = Uri.encodeComponent(bookLinkUrl);
-          String tabUrl = 'https://story.kakao.com/share?text=$encodeText&url=$encodeUrl';
-          AppRoutes.launchTab(tabUrl, isFullUrl: true);
-        },
-        image: AssetImage('assets/social/kakaotalk.png'),
-      ),
       SNSShareItem(
         title: '페이스북',
         onPressed: () {
-          String bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
-          String encodeUrl = Uri.encodeComponent(bookLinkUrl);
-          String tabUrl = 'https://www.facebook.com/sharer/sharer.php?u=$encodeUrl';
+          String tabUrl = 'https://www.facebook.com/sharer/sharer.php?u=$encodeLinkUrl';
           AppRoutes.launchTab(tabUrl, isFullUrl: true);
         },
         image: AssetImage('assets/social/facebook.png'),
       ),
+      // SNSShareItem( // 2023-11-15일자로 공유서비스 종료됨 https://devtalk.kakao.com/t/api-notice-end-of-support-for-the-kakaostory-api/129857
+      //   title: '카카오스토리',
+      //   onPressed: () {
+      //     String tabUrl = 'https://story.kakao.com/share?text=$encodeTitle&url=$encodeLinkUrl';
+      //     AppRoutes.launchTab(tabUrl, isFullUrl: true);
+      //   },
+      //   image: AssetImage('assets/social/kakaostory.png'),
+      // ),
       SNSShareItem(
         title: '트위터',
         onPressed: () {
-          String bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
-          String encodeText = Uri.encodeComponent(widget.bookModel.name.value);
-          String encodeUrl = Uri.encodeComponent(bookLinkUrl);
-          String tabUrl = 'https://twitter.com/share?url=$encodeUrl&text=$encodeText';
+          String tabUrl = 'https://twitter.com/share?url=$encodeLinkUrl&text=$encodeTitle';
           AppRoutes.launchTab(tabUrl, isFullUrl: true);
         },
         image: AssetImage('assets/social/twitter.png'),
       ),
-      // SNSShareItem(
-      //   title: '인스타그램',
-      //   onPressed: () {},
-      //   image: AssetImage('assets/social/instagram.png'),
-      // ),
-      // SNSShareItem(
-      //   title: '유튜브',
-      //   onPressed: () {},
-      //   image: AssetImage('assets/social/youtube.png'),
-      // ),
-      // SNSShareItem(
-      //   title: '틱톡',
-      //   onPressed: () {},
-      //   image: AssetImage('assets/social/tiktok.png'),
-      // ),
-/*
-messenger(facebook) (개발자계정 가입필요)
-ttps://www.facebook.com/dialog/send?app_id=102628213125203&display=popup&link=(URL)&redirect_uri=(URL)
+      SNSShareItem(
+        title: '레딧',
+        onPressed: () {
+          String tabUrl = 'https://reddit.com/submit?url=$encodeLinkUrl&title=$encodeTitle';
+          AppRoutes.launchTab(tabUrl, isFullUrl: true);
+        },
+        image: AssetImage('assets/social/reddit.png'),
+      ),
+      SNSShareItem(
+        title: '핀터레스트',
+        onPressed: () {
+          String encodeThumbUrl = Uri.encodeComponent(widget.bookModel.thumbnailUrl.value);
+          String tabUrl =
+              'https://pinterest.com/pin/create/button/?url=$encodeLinkUrl&description=$encodeTitle&is_video=false&media=$encodeThumbUrl';
+          AppRoutes.launchTab(tabUrl, isFullUrl: true);
+        },
+        image: AssetImage('assets/social/pinterest.png'),
+      ),
+      SNSShareItem(
+        title: '링크드인',
+        onPressed: () {
+          String tabUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=$encodeLinkUrl';
+          AppRoutes.launchTab(tabUrl, isFullUrl: true);
+        },
+        image: AssetImage('assets/social/linkedin.png'),
+      ),
+      SNSShareItem(
+        title: '라인',
+        onPressed: () {
+          String tabUrl = 'https://social-plugins.line.me/lineit/share?url=$encodeLinkUrl';
+          AppRoutes.launchTab(tabUrl, isFullUrl: true);
+        },
+        image: AssetImage('assets/social/line.png'),
+      ),
+      SNSShareItem(
+        title: '카카오톡',
+        onPressed: () {
+          //String tabUrl = 'https://sharer.kakao.com/talk/friends/picker/easylink?app_key=(APP_KEY))&......';
+          //AppRoutes.launchTab(tabUrl, isFullUrl: true);
+          showSnackBar(context, '아직 지원하지 않습니다');
+        },
+        image: AssetImage('assets/social/kakaotalk.png'),
+      ),
 
+/*
 reddit
 https://reddit.com/submit?url=(URL)&title=(TITLE)
-
-vk
-http://vkontakte.ru/share.php?url=(URL)
-
-ok
-https://connect.ok.ru/offer?url=(URL)&title=(TITLE)
 
 pinterest
 https://pinterest.com/pin/create/button/?url=(URL)&description=(TITLE)&is_video=true&media=(THUMBNAIL_URL)
 
-blogger
-http://www.blogger.com/blog-this.g?n=(TITLE)&source=youtube&b=%3Ciframe%20width%3D%22480%22%20height%3D%22270%22%20src%3D%22https%3A//youtube.com/embed/FJfwehhzIhw%3Fsi%3DQB_JsxX9sEI_lMbX%22%20frameborder%3D%220%22%20allow%3D%22accelerometer%3B%20autoplay%3B%20clipboard-write%3B%20encrypted-media%3B%20gyroscope%3B%20picture-in-picture%3B%20web-share%22%20allowfullscreen%3E%3C/iframe%3E&eurl=(THUMBNAIL_URL)
-
-tumblr
-https://www.tumblr.com/share/video?embed=(URL)&caption=(TITLE)
-
 linkedin
 https://www.linkedin.com/sharing/share-offsite/?url=(URL)
-
-skyrock
-http://skyrock.com/m/blog/share-widget.php?idp=10&idm=(YOUTUBE_CONTENTS_ID)&title=(TITLE)
-
-mix
-https://mix.com/add?url=(URL)
-
-goo
-http://blog.goo.ne.jp/portal_login/blogparts/?key=(YOUTUBE_CONTENTS_ID)&title=(TITLE)&type=youtube
 
 line
 https://social-plugins.line.me/lineit/share?url=(URL)
 
-band
-https://band.us/plugin/share?body=%EC%9D%B4%EA%B1%B0%20%EC%A2%80%20%EA%B4%9C%EC%B0%AE%EC%9D%80%20%EB%93%AF.%20%5B%EB%89%B4%EC%97%90%EC%9D%B4%EC%BB%A4%5D%20%EC%B6%A9%EC%A0%84%EC%8B%9D%20%EC%86%90%EB%82%9C%EB%A1%9C%20%EB%AF%B8%EB%8B%88%20%ED%9C%B4%EB%8C%80%EC%9A%A9%20%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC%2010000mAh%20HW-100%0Ahttp%3A%2F%2Fwww.compuzone.co.kr%2Fproduct%2Fproduct_detail.htm%3FProductNo%3D1082443
-https://band.us/plugin/share?body=(Text of Title&Url)
-
 카카오톡 (기업계정 가입필요)
 https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436d443c705bc1a84&ka=sdk%2F1.22.0%20os%2Fjavascript%20lang%2Fko-KR%20device%2FWin32%20origin%2Fhttps%253A%252F%252Fwww.compuzone.co.kr&validation_action=default&validation_params=%7B%22link_ver%22%3A%224.0%22%2C%22template_object%22%3A%7B%22object_type%22%3A%22commerce%22%2C%22button_title%22%3A%22%22%2C%22content%22%3A%7B%22title%22%3A%22%5B%EB%89%B4%EC%97%90%EC%9D%B4%EC%BB%A4%5D%20%EC%B6%A9%EC%A0%84%EC%8B%9D%20%EC%86%90%EB%82%9C%EB%A1%9C%20%EB%AF%B8%EB%8B%88%20%ED%9C%B4%EB%8C%80%EC%9A%A9%20%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC%2010000mAh%20HW-100%22%2C%22image_url%22%3A%22%22%2C%22link%22%3A%7B%22web_url%22%3A%22http%3A%2F%2Fwww.compuzone.co.kr%2Fproduct%2Fproduct_detail.htm%3FProductNo%3D1082443%22%2C%22mobile_web_url%22%3A%22http%3A%2F%2Fm.compuzone.co.kr%2Fproduct%2Fproduct_detail.htm%3FProductNo%3D1082443%22%7D%7D%2C%22commerce%22%3A%7B%22regular_price%22%3A34900%7D%7D%7D
+
+      messenger(facebook) (개발자계정 가입필요)
+      ttps://www.facebook.com/dialog/send?app_id=102628213125203&display=popup&link=(URL)&redirect_uri=(URL)
+
+      vk
+      http://vkontakte.ru/share.php?url=(URL)
+
+      ok
+      https://connect.ok.ru/offer?url=(URL)&title=(TITLE)
+
+      blogger
+      http://www.blogger.com/blog-this.g?n=(TITLE)&source=youtube&b=%3Ciframe%20width%3D%22480%22%20height%3D%22270%22%20src%3D%22https%3A//youtube.com/embed/FJfwehhzIhw%3Fsi%3DQB_JsxX9sEI_lMbX%22%20frameborder%3D%220%22%20allow%3D%22accelerometer%3B%20autoplay%3B%20clipboard-write%3B%20encrypted-media%3B%20gyroscope%3B%20picture-in-picture%3B%20web-share%22%20allowfullscreen%3E%3C/iframe%3E&eurl=(THUMBNAIL_URL)
+
+      tumblr
+      https://www.tumblr.com/share/video?embed=(URL)&caption=(TITLE)
+
+      skyrock
+      http://skyrock.com/m/blog/share-widget.php?idp=10&idm=(YOUTUBE_CONTENTS_ID)&title=(TITLE)
+
+      mix
+      https://mix.com/add?url=(URL)
+
+      goo
+      http://blog.goo.ne.jp/portal_login/blogparts/?key=(YOUTUBE_CONTENTS_ID)&title=(TITLE)&type=youtube
+
+      band
+      https://band.us/plugin/share?body=%EC%9D%B4%EA%B1%B0%20%EC%A2%80%20%EA%B4%9C%EC%B0%AE%EC%9D%80%20%EB%93%AF.%20%5B%EB%89%B4%EC%97%90%EC%9D%B4%EC%BB%A4%5D%20%EC%B6%A9%EC%A0%84%EC%8B%9D%20%EC%86%90%EB%82%9C%EB%A1%9C%20%EB%AF%B8%EB%8B%88%20%ED%9C%B4%EB%8C%80%EC%9A%A9%20%EB%B3%B4%EC%A1%B0%EB%B0%B0%ED%84%B0%EB%A6%AC%2010000mAh%20HW-100%0Ahttp%3A%2F%2Fwww.compuzone.co.kr%2Fproduct%2Fproduct_detail.htm%3FProductNo%3D1082443
+      https://band.us/plugin/share?body=(Text of Title&Url)
 
 */
     ];
@@ -846,7 +937,8 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime), style: CretaFont.buttonSmall),
+          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime),
+              style: CretaFont.buttonSmall),
           Text('likeCount=${widget.bookModel.likeCount}', style: CretaFont.buttonSmall),
           Text('viewCount=${widget.bookModel.viewCount}', style: CretaFont.buttonSmall),
         ],
@@ -857,7 +949,8 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
   @override
   Widget build(BuildContext context) {
     String bookLinkUrl = '${AppRoutes.communityBook}?${widget.bookModel.mid}';
-    String channelLinkUrl = (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
+    String channelLinkUrl =
+        (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
     return MouseRegion(
       onEnter: (value) {
         setState(() {

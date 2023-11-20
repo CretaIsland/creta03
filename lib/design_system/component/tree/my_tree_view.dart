@@ -140,7 +140,7 @@ class MyTreeViewState extends State<MyTreeView> {
   //     // ];
   //     return;
   //   }
-  //   logger.info('pageManagerHolder is inited');
+  //   logger.fine('pageManagerHolder is inited');
   //   _nodes.clear();
   //   _nodes = widget.pageManager.toNodes(selectedModel);
   // }
@@ -188,7 +188,7 @@ class MyTreeViewState extends State<MyTreeView> {
 
     //print('nodes length = ${LeftMenuPage.nodes.length}');
 
-    //logger.info('_getSelectedNode=$_selectedNode', level: 5);
+    //logger.fine('_getSelectedNode=$_selectedNode', level: 5);
     tree.TreeViewTheme treeViewTheme = tree.TreeViewTheme(
       expanderTheme: tree.ExpanderThemeData(
         // 꼭지점 테마임.
@@ -256,7 +256,7 @@ class MyTreeViewState extends State<MyTreeView> {
         //});
       },
       onNodeDoubleTap: (key) {
-        logger.info('onNodeDoubleTap');
+        logger.fine('onNodeDoubleTap');
       },
       nodeBuilder: (BuildContext context, tree.Node<dynamic> node) {
         // 한 Row에서 딱 Text Label 과 버튼 Area 아 있는 부분의 모양을 결정한다.
@@ -310,7 +310,7 @@ class MyTreeViewState extends State<MyTreeView> {
         return;
       }
 
-      logger.info('key=$key');
+      logger.fine('key=$key');
       String pageMid = key.substring(0, 5 + 36);
       // _selectPage
       widget.pageManager.setSelectedMid(pageMid);
@@ -433,7 +433,7 @@ class MyTreeViewState extends State<MyTreeView> {
   //         icon: Icons.delete,
   //         onPressed: () {
   //           // Delete Page
-  //           logger.info('remove page');
+  //           logger.fine('remove page');
   //           if (model.type == ExModelType.page) {
   //             widget.removePage(model as PageModel);
   //             return;
@@ -478,7 +478,7 @@ class MyTreeViewState extends State<MyTreeView> {
       icon: Icons.delete,
       onPressed: () {
         // Delete Page
-        logger.info('remove page');
+        logger.fine('remove page');
         if (model.type == ExModelType.page) {
           widget.removePage(model as PageModel);
           return;

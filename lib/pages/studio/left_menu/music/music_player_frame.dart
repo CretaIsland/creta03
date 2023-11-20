@@ -129,7 +129,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   }
 
   void removeMusic(ContentsModel model) {
-    logger.info('====RemoveMusic(${model.name})====');
+    logger.fine('====RemoveMusic(${model.name})====');
     int index = findIndex(model);
     if (index >= 0) {
       _playlist.removeAt(index);
@@ -137,7 +137,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
   }
 
   void reorderPlaylist(ContentsModel model, int oldIndex, int newIndex) async {
-    logger.info('====Reorder song at #$oldIndex to #$newIndex====');
+    logger.fine('====Reorder song at #$oldIndex to #$newIndex====');
     await _playlist.move(oldIndex, newIndex);
 
     if (newIndex == 0) _audioPlayer.seek(Duration.zero, index: newIndex);
@@ -210,7 +210,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
       index++;
     }
     // if (_selectedSize.isEmpty) {
-    //   logger.info('Selected size is not specified ${widget.size} ');
+    //   logger.fine('Selected size is not specified ${widget.size} ');
     //   _selectedSize = CretaStudioLang.playerSize.values.toList()[0];
     // }
 
@@ -288,7 +288,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   String _findCurrentTag(int ind) {
     if (ind < 0 || _playlist.children.length <= ind) {
-      logger.info('invalid index $ind');
+      logger.fine('invalid index $ind');
       return '';
     }
     AudioSource? ele = _playlist.children[ind];
@@ -357,7 +357,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     }
     // List<String> sizeStrList = CretaStudioLang.playerSize.values.toList();
 
-    // logger.info('Size of Music app: $_selectedSize------------------');
+    // logger.fine('Size of Music app: $_selectedSize------------------');
     if (StudioVariables.applyScale <= 0.45) {
       return const Icon(Icons.queue_music_outlined);
     }

@@ -52,7 +52,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
         userModelMap[ele.email] = ele;
       }
       for (var ele in userModelMap.values) {
-        logger.info('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
+        logger.fine('=======>>>>>>>>>>>> user_property ${ele.nickname}, ${ele.email} founded');
       }
       _onceDBGetComplete1 = true;
       return value;
@@ -63,7 +63,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
     while (_onceDBGetComplete1 == false) {
       await Future.delayed(const Duration(microseconds: 500));
     }
-    logger.info('_onceDBGetComplete=$_onceDBGetComplete1 wait end');
+    logger.fine('_onceDBGetComplete=$_onceDBGetComplete1 wait end');
     return _onceDBGetComplete1;
   }
 
@@ -225,7 +225,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
         permitionList.add(ele.value);
       }
     }
-    logger.info('emailList=$emailList');
+    logger.fine('emailList=$emailList');
 
     // emailList = shares.keys.toList();
     // permitionList = shares.values.toList();
@@ -384,7 +384,7 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
   String _nameWrap(UserPropertyModel? model, String email, bool isNotCreator, bool isChannel) {
     String name = email;
     if (model != null) {
-      logger.info('===============>>>_nameWrap(${model.nickname}, email, isNotCreator)');
+      logger.fine('===============>>>_nameWrap(${model.nickname}, email, isNotCreator)');
       name = model.nickname;
     }
     if (isNotCreator) {

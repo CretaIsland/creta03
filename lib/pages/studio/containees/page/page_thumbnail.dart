@@ -86,13 +86,13 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (_frameManager == null) {
-      logger.info('framManger newly creation start---------------------');
+      logger.fine('framManger newly creation start---------------------');
       _frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
       );
       await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!, widget.pageModel.mid);
-      logger.info('framManger newly creation end---------------------');
+      logger.fine('framManger newly creation end---------------------');
     }
 
     _onceDBGetComplete = true;
@@ -182,7 +182,7 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
 
   Widget _waitFrame() {
     if (_onceDBGetComplete && _frameManager!.initFrameComplete) {
-      logger.info('already _onceDBGetComplete page thumbnailr');
+      logger.fine('already _onceDBGetComplete page thumbnailr');
       return _consumerFunc();
     }
     //var retval = CretaModelSnippet.waitData(
@@ -244,14 +244,14 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
           builder: (context, snapshot) {
             if (snapshot.data != null) {
               if (snapshot.data! is FrameModel) {
-                logger.info('_receiveEventFromMain-----------------------------------FrameModel');
+                logger.fine('_receiveEventFromMain-----------------------------------FrameModel');
                 FrameModel model = snapshot.data! as FrameModel;
                 frameManager.updateModel(model);
                 if (_buildComplete) {
                   widget.changeEventReceived.call(model.parentMid.value);
                 }
               } else {
-                logger.info('_receiveEventFromMain-----Unknown Model');
+                logger.fine('_receiveEventFromMain-----Unknown Model');
               }
             }
             return StreamBuilder<AbsExModel>(
@@ -259,12 +259,12 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                 builder: (context, snapshot) {
                   if (snapshot.data != null) {
                     if (snapshot.data! is FrameModel) {
-                      logger.info('_receiveEventFromProperty-----FrameModel');
+                      logger.fine('_receiveEventFromProperty-----FrameModel');
                       FrameModel model = snapshot.data! as FrameModel;
                       frameManager.updateModel(model);
                       widget.changeEventReceived.call(model.parentMid.value);
                     } else {
-                      logger.info('_receiveEventFromProperty-----Unknown Model');
+                      logger.fine('_receiveEventFromProperty-----Unknown Model');
                     }
                   }
                   BookMainPage.thumbnailChanged = true;
@@ -274,11 +274,12 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       FrameModel frameModel = model as FrameModel;
 
                       //if (_frameManager!.isVisible(model) == false) {
-                      if (model.isVisible(widget.pageModel.mid) == false  && model.isBackgroundMusic() == false) {
+                      if (model.isVisible(widget.pageModel.mid) == false &&
+                          model.isBackgroundMusic() == false) {
                         return SizedBox.shrink();
                       }
 
-                      //logger.info('frameManager.orderMapIterator-------${frameModel.name.value}');
+                      //logger.fine('frameManager.orderMapIterator-------${frameModel.name.value}');
                       double frameWidth =
                           (model.width.value /* + model.shadowSpread.value */) * applyScale;
                       double frameHeight =

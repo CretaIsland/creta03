@@ -1,10 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
 import 'package:creta03/model/user_property_model.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:hycop/hycop.dart';
 import '../common/creta_utils.dart';
 import '../design_system/component/tree/src/models/node.dart';
@@ -253,12 +255,12 @@ class BookManager extends CretaManager {
       newOne.creator = CretaAccountManager.getUserProperty!.email;
     }
     await createToDB(newOne);
-    logger.info('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
+    logger.fine('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
     return newOne;
   }
 
   Future<void> removeBook(BookModel thisOne, PageManager pageManager) async {
-    logger.info('removeBook()');
+    logger.fine('removeBook()');
     pageManager.removeAll();
     thisOne.isRemoved.set(true, save: false, noUndo: true);
     await setToDB(thisOne);
@@ -337,89 +339,74 @@ class BookManager extends CretaManager {
     //base64 encoding 필요
     String encodedJson = base64Encode(utf8.encode(retval));
 
-    String apiServer = 'https://devcreta.com:444/';
-    String url = '${apiServer}zipRequest';
+    Map<String, dynamic> body = {
+      "bucketId": '"${myConfig!.serverConfig!.storageConnInfo.bucketId}"',
+      "encodeJson": '"$encodedJson"',
+      "cloudType": '"${HycopFactory.toServerTypeString()}"',
+    };
 
-    try {
-      // HTTP POST 요청 수행
-      http.Response response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          // 추가적인 헤더를 설정할 수 있습니다.
-        },
-        body: encodedJson, // Base64 인코딩된 JSON 데이터
-      );
-      if (response.statusCode != 200) {
-        // 에러 처리
-        logger.severe('$url Failed to send data');
-        logger.severe('Status code: ${response.statusCode}');
-        // ignore: use_build_context_synchronously
-        showSnackBar(context, '${CretaStudioLang.zipRequestFailed}(${response.statusCode})');
-        return false;
-      }
+    String apiServer = CretaAccountManager.getEnterprise!.mediaApiUrl;
+    //'https://devcreta.com:444/';
+    String url = '$apiServer/downloadZip';
 
-      logger.info('zipRequest succeed');
-      // ignore: use_build_context_synchronously
-      _waitDownload(apiServer, book.mid, context);
-      // ignore: use_build_context_synchronously
-      showSnackBar(context, '${CretaStudioLang.zipStarting}(${response.statusCode})');
-    } catch (e) {
-      // 예외 처리
-      logger.severe('$url Failed to send data');
-      logger.severe('An error occurred: $e');
-      // ignore: use_build_context_synchronously
+   
+
+    Response? res = await CretaUtils.post(url, body, onError: (code) {
+      showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($code)');
+    }, onException: (e) {
       showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($e)');
+    });
+
+    if (res == null) {
       return false;
     }
 
+    logger.fine('zipRequest succeed');
+    _waitDownload(apiServer, book.mid, context);
+    showSnackBar(context, '${CretaStudioLang.zipStarting}(${res.statusCode})');
     return true;
   }
 
   Future<void> _waitDownload(String apiServer, String bookMid, BuildContext context) async {
     _downloadReceivetimer?.cancel();
     _downloadReceivetimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      String url = '${apiServer}zipComplete';
+      String url = '$apiServer/downloadZipCheck';
 
-      try {
-        // HTTP POST 요청 수행
-        http.Response response = await http.post(
-          Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-            // 추가적인 헤더를 설정할 수 있습니다.
-          },
-          body: bookMid,
-        );
+      Map<String, dynamic> body = {
+        "bucketId": '"${myConfig!.serverConfig!.storageConnInfo.bucketId}"',
+        "bookId": '"$bookMid"',
+        "cloudType": '"${HycopFactory.toServerTypeString()}"',
+      }; // 'appwrite' or 'firebase'
 
-        if (response.statusCode != 200) {
-          // 에러 처리
-          logger.severe('$url Failed to send data');
-          logger.severe('Status code: ${response.statusCode}');
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}(${response.statusCode})');
-          return;
-        }
-
-        Map<String, dynamic> responseBody2 = json.decode(response.body);
-        String? fileId = responseBody2['fileId']; // API 응답에서 URL 추출
-
-        if (fileId != null && fileId.isNotEmpty) {
-          _downloadReceivetimer?.cancel();
-          //HycopFactory.storage!.downloadFile(fileId).then((bool succeed) {
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, '${CretaStudioLang.fileDownloading}(${response.statusCode})');
-          //});
-          return;
-        }
-      } catch (e) {
-        // 예외 처리
-        logger.severe('$url Failed to send data');
-        logger.severe('An error occurred: $e');
-        // ignore: use_build_context_synchronously
+      Response? res = await CretaUtils.post(url, body, onError: (code) {
+        showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}($code)');
+      }, onException: (e) {
         showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}($e)');
+      });
+
+      if (res == null) {
         return;
       }
+
+      Map<String, dynamic> responseBody = json.decode(res.body);
+      String? status = responseBody['status']; // API 응답에서 URL 추출
+      String? fileId = responseBody['fileId']; // API 응답에서 URL 추출
+
+      if (status == null || status != 'success') {
+        showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}(status=$status)');
+        return;
+      }
+      if (fileId == null || fileId.isNotEmpty) {
+        showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}($fileId is null)');
+        return;
+      }
+      _downloadReceivetimer?.cancel();
+      HycopFactory.storage!.downloadFile(fileId, bookMid).then((bool succeed) {
+        //HycopFactory.storage!.downloadFile(zipUrl, bookMid).then((bool succeed) {
+        showSnackBar(context, '${CretaStudioLang.fileDownloading}(${res.statusCode})');
+        //});
+        return;
+      });
     });
   }
 }

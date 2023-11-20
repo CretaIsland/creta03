@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 
 class ChangePwdPopUp {
-
   static String _nowPassword = '';
   static String _newPassword = '';
   static String _checkNewPassword = '';
@@ -22,62 +21,60 @@ class ChangePwdPopUp {
         children: [
           const SizedBox(height: 28.0),
           CretaTextField(
-              textFieldKey: GlobalKey(),
-              value: '',
-              hintText: '현재 비밀번호', 
-              width: 294.0,
-              height: 30.0,
-              onChanged: (value) => _nowPassword = value,
-              onEditComplete: (String value) => _nowPassword = value,
-            ),
-            const SizedBox(height: 20.0),
-            CretaTextField(
-              textFieldKey: GlobalKey(),
-              value: '', 
-              hintText: '새 비밀번호', 
-              width: 294.0,
-              height: 30.0,
-              onChanged: (value) => _newPassword = value,
-              onEditComplete: (String value) => _newPassword = value,
-            ),
-            const SizedBox(height: 20.0),
-            CretaTextField(
-              textFieldKey: GlobalKey(),
-              value: '', 
-              hintText: '새 비밀번호 확인', 
-              width: 294.0,
-              height: 30.0,
-              onChanged: (value) => _checkNewPassword = value,
-              onEditComplete: (String value) => _checkNewPassword = value,
-            ),
-            const SizedBox(height: 24.0),
-            BTN.fill_blue_t_m(
-              text: CretaMyPageLang.passwordChangeBTN, 
+            textFieldKey: GlobalKey(),
+            value: '',
+            hintText: '현재 비밀번호',
+            width: 294.0,
+            height: 30.0,
+            onChanged: (value) => _nowPassword = value,
+            onEditComplete: (String value) => _nowPassword = value,
+          ),
+          const SizedBox(height: 20.0),
+          CretaTextField(
+            textFieldKey: GlobalKey(),
+            value: '',
+            hintText: '새 비밀번호',
+            width: 294.0,
+            height: 30.0,
+            onChanged: (value) => _newPassword = value,
+            onEditComplete: (String value) => _newPassword = value,
+          ),
+          const SizedBox(height: 20.0),
+          CretaTextField(
+            textFieldKey: GlobalKey(),
+            value: '',
+            hintText: '새 비밀번호 확인',
+            width: 294.0,
+            height: 30.0,
+            onChanged: (value) => _checkNewPassword = value,
+            onEditComplete: (String value) => _checkNewPassword = value,
+          ),
+          const SizedBox(height: 24.0),
+          BTN.fill_blue_t_m(
+              text: CretaMyPageLang.passwordChangeBTN,
               width: 294.0,
               height: 32.0,
               onPressed: () {
-                if(_nowPassword.isEmpty || _newPassword.isEmpty || _checkNewPassword.isEmpty) {
-                  logger.info('empty textfield');
+                if (_nowPassword.isEmpty || _newPassword.isEmpty || _checkNewPassword.isEmpty) {
+                  logger.fine('empty textfield');
                   return;
                 }
-                if(_newPassword != _checkNewPassword) {
-                  logger.info('not match new password');
+                if (_newPassword != _checkNewPassword) {
+                  logger.fine('not match new password');
                   return;
                 }
-                if(_newPassword == _checkNewPassword) {
-                  HycopFactory.account!.updateAccountPassword(_newPassword, _nowPassword).onError((error, stackTrace) {
-                    if(error.toString().contains('no exist')) {
-                     logger.info('wrong password');
+                if (_newPassword == _checkNewPassword) {
+                  HycopFactory.account!
+                      .updateAccountPassword(_newPassword, _nowPassword)
+                      .onError((error, stackTrace) {
+                    if (error.toString().contains('no exist')) {
+                      logger.fine('wrong password');
                     }
                   }).then((value) => Navigator.of(context).pop());
                 }
-              }
-            )
+              })
         ],
       ),
     );
   }
-
-  
-
 }

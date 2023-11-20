@@ -60,7 +60,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   @override
   void dispose() {
     super.dispose();
-    //logger.info('FrameThumbnail dispose================');
+    //logger.fine('FrameThumbnail dispose================');
   }
 
   @override
@@ -70,7 +70,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Future<bool> initChildren() async {
-    //logger.info('FrameThumbnail initialized================');
+    //logger.fine('FrameThumbnail initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
       logger.severe('frame manager is null');
@@ -90,7 +90,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
     //     _contentsManager!.clearAll();
     //   }
     // } else {
-    //   //logger.info('old ContentsManager used (${widget.model.mid})');
+    //   //logger.fine('old ContentsManager used (${widget.model.mid})');
     // }
 
     //if (_contentsManager!.onceDBGetComplete == false) {
@@ -244,7 +244,7 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   }
 
   Widget _frameBox(FrameModel model, bool useColor) {
-    //logger.info('_frameBox');
+    //logger.fine('_frameBox');
     if (model.isWeatherTYpe()) {
       return weatherFrame(model: model, width: widget.width, height: widget.height);
     }

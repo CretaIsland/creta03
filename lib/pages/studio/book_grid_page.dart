@@ -108,7 +108,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       if (CretaAccountManager.getCurrentTeam == null) {
         logger.warning('CurrentTeam is null}');
       } else {
-        logger.info('CurrentTeam=${CretaAccountManager.getCurrentTeam!.name}');
+        logger.fine('CurrentTeam=${CretaAccountManager.getCurrentTeam!.name}');
         bookManagerHolder!.teamData().then((value) {
           if (value.isNotEmpty) {
             bookManagerHolder!.addRealTimeListen(value.first.mid);
@@ -202,7 +202,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
   @override
   Widget build(BuildContext context) {
     double windowWidth = MediaQuery.of(context).size.width;
-    //logger.info('`````````````````````````window width = $windowWidth');
+    //logger.fine('`````````````````````````window width = $windowWidth');
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<BookManager>.value(
@@ -290,7 +290,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
       ) {
     logger.finest('consumerFunc');
     return Consumer<BookManager>(builder: (context, bookManager, child) {
-      logger.info('Consumer  ${bookManager.getLength() + 1}');
+      logger.fine('Consumer  ${bookManager.getLength() + 1}');
       return _gridViewer(bookManager);
     });
   }
@@ -299,10 +299,17 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     double itemWidth = -1;
     double itemHeight = -1;
 
-    //logger.info('width===========================${rightPaneRect.childWidth}');
+    //print('rightPaneRect.childWidth=${rightPaneRect.childWidth}');
+    //print('LayoutConst.cretaPaddingPixel=${LayoutConst.cretaPaddingPixel}');
+    //print('LayoutConst.bookThumbSize.width=${LayoutConst.bookThumbSize.width}');
+    // int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
+    //     LayoutConst.bookThumbSize.width;
+    int columnCount = ((rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) /
+            LayoutConst.bookThumbSize.width)
+        .round();
 
-    int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
-        LayoutConst.bookThumbSize.width;
+    //print('columnCount=$columnCount');
+
     if (columnCount <= 1) {
       if (rightPaneRect.childWidth > 280) {
         columnCount = 2;
@@ -349,7 +356,7 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
           logger.warning('removed BookModel.name = ${model.name.value}');
           return Container();
         }
-        //logger.info('BookModel.name = ${model.name.value}');
+        //logger.fine('BookModel.name = ${model.name.value}');
       }
 
       //if (isValidIndex(index)) {

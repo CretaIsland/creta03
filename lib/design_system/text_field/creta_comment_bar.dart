@@ -140,7 +140,7 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
             onSubmitted: ((value) {
               _editingValue = value;
               if (kDebugMode) print('onSubmitted=$_editingValue');
-              //logger.info('search $_searchValue');
+              //logger.fine('search $_searchValue');
               //widget.onSearch(_searchValue);
             }),
             onTapOutside: (event) {
@@ -333,8 +333,9 @@ class _CretaCommentBarState extends State<CretaCommentBar> {
                   onPressed: () {
                     widget.onClickedShowReply?.call(widget.data);
                   },
-                  tailIconData:
-                      widget.data.showReplyList ? Icons.arrow_drop_up_outlined : Icons.arrow_drop_down_outlined,
+                  tailIconData: widget.data.showReplyList
+                      ? Icons.arrow_drop_up_outlined
+                      : Icons.arrow_drop_down_outlined,
                   sidePadding: CretaButtonSidePadding.fromLR(8, 8),
                 ),
         ],

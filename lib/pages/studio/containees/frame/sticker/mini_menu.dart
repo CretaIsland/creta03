@@ -281,7 +281,7 @@ class MiniMenuState extends State<MiniMenu> {
       //     buttonColor: CretaButtonColor.primary,
       //     onPressed: () {
       //       BookMainPage.containeeNotifier!.setFrameClick(true);
-      //       logger.info("MinuMenu onFrameRotate");
+      //       logger.fine("MinuMenu onFrameRotate");
       //       widget.onFrameRotate.call();
       //     }),
       BTN.fill_blue_i_menu(
@@ -292,7 +292,7 @@ class MiniMenuState extends State<MiniMenu> {
           iconColor: CretaColor.primary,
           buttonColor: CretaButtonColor.primary,
           onPressed: () {
-            logger.info("MinuMenu onFrameLink");
+            logger.fine("MinuMenu onFrameLink");
             BookMainPage.containeeNotifier!.setFrameClick(true);
             setState(() {
               LinkParams.isLinkNewMode = !LinkParams.isLinkNewMode;
@@ -462,7 +462,7 @@ class MiniMenuState extends State<MiniMenu> {
           buttonColor: CretaButtonColor.secondary,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
-            logger.info("MinuMenu onContentsEdit");
+            logger.fine("MinuMenu onContentsEdit");
             widget.onContentsEdit.call();
           }),
       if (MiniMenu.showFrame)

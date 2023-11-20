@@ -60,7 +60,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
 
   @override
   void initState() {
-    logger.info('ContentsThumbnail initState');
+    logger.fine('ContentsThumbnail initState');
     super.initState();
 
     final ContentsEventController receiveEvent = Get.find(tag: 'contents-property-to-main');
@@ -79,10 +79,10 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
   @override
   Widget build(BuildContext context) {
     if (widget.contentsManager.onceDBGetComplete) {
-      //logger.info('already onceDBGetComplete');
+      //logger.fine('already onceDBGetComplete');
       return _consumerFunc();
     }
-    logger.info('wait onceDBGetComplete');
+    logger.fine('wait onceDBGetComplete');
     var retval = CretaModelSnippet.waitDatum(
       managerList: [widget.contentsManager],
       consumerFunc: _consumerFunc,
@@ -108,7 +108,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                 contentsManager.updateModel(model);
                 logger.fine('model updated ${model.name}, ${model.url}');
               }
-              //logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
+              //logger.fine('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
 
               if (contentsCount > 0) {
                 if (widget.frameModel.isTextType()) {
@@ -158,7 +158,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                   }
                 }
               }
-              logger.info('there is no contents');
+              logger.fine('there is no contents');
               return SizedBox.shrink();
             });
       } else if (widget.frameModel.isMusicType()) {
@@ -174,7 +174,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                 contentsManager.updateModel(model);
                 logger.fine('model updated ${model.name}, ${model.url}');
               }
-              //logger.info('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
+              //logger.fine('ContentsThumbnail StreamBuilder<AbsExModel> $contentsCount');
 
               if (contentsCount > 0) {
                 if (widget.frameModel.frameType == FrameType.music) {
@@ -229,7 +229,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               } else {
                 //print('No music contents here');
               }
-              logger.info('Music thumbnailUrl has NO content');
+              logger.fine('Music thumbnailUrl has NO content');
               return SizedBox.shrink();
             });
       }
@@ -240,7 +240,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
             if (snapshot.data != null && snapshot.data is ContentsModel) {
               ContentsModel model = snapshot.data!;
               contentsManager.updateModel(model);
-              logger.info('model updated ${model.name}, ${model.thumbnailUrl}');
+              logger.fine('model updated ${model.name}, ${model.thumbnailUrl}');
             }
             if (contentsCount > 0) {
               String? thumbnailUrl = contentsManager.getThumbnail();
@@ -258,7 +258,7 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                 );
               }
             }
-            logger.info('there is no contents');
+            logger.fine('there is no contents');
             return SizedBox.shrink();
           });
 
