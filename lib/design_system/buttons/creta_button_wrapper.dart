@@ -58,6 +58,7 @@ class BTN {
     double buttonSize = 28,
     Color? iconColor,
     Color? bgColor,
+    double? iconSize = 12,
   }) {
     return CretaButton(
       tooltip: tooltip,
@@ -72,7 +73,7 @@ class BTN {
         backgroundColor: bgColor ?? Colors.transparent,
         child: Icon(
           icon,
-          size: 12,
+          size: iconSize,
           color: iconColor ?? CretaColor.text[700]!,
         ),
       ),
@@ -256,6 +257,7 @@ class BTN {
       Color? tooltipBg,
       double buttonSize = 32,
       double iconSize = 18,
+      CretaButtonColor buttonColor = CretaButtonColor.white,
       Color? iconColor}) {
     return CretaButton(
       tooltip: tooltip,
@@ -264,7 +266,7 @@ class BTN {
       width: buttonSize,
       height: buttonSize,
       buttonType: CretaButtonType.child,
-      buttonColor: CretaButtonColor.white,
+      buttonColor: buttonColor,
       onPressed: onPressed,
       child: CircleAvatar(
         radius: iconSize,
@@ -1336,10 +1338,10 @@ class BTN {
       captionStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]!),
       bgColor: Colors.white,
       bgHoverColor: CretaColor.primary[100]!,
-      bgHoverSelectedColor: CretaColor.primary[100]!,//CretaColor.primary[300]!,
-      bgSelectedColor: Colors.white,//CretaColor.primary[400]!,
+      bgHoverSelectedColor: CretaColor.primary[100]!, //CretaColor.primary[300]!,
+      bgSelectedColor: Colors.white, //CretaColor.primary[400]!,
       fgColor: CretaColor.primary[400]!,
-      fgSelectedColor: CretaColor.primary[400]!,//Colors.white,
+      fgSelectedColor: CretaColor.primary[400]!, //Colors.white,
       borderColor: CretaColor.primary[400]!,
       borderSelectedColor: CretaColor.primary[400]!,
     );

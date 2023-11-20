@@ -1,3 +1,5 @@
+//import 'dart:ui';
+
 import 'package:creta03/pages/studio/book_main_page.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_treeview/flutter_treeview.dart';
@@ -52,11 +54,63 @@ class FrameManager extends CretaManager {
   //   _pageOffset = offset;
   // }
 
-  //Map<String, ValueKey> frameKeyMap = {};
+  //Map<String, ValueKey> stickerKeyMap = {};
 
   // ignore: prefer_final_fields
-  Map<String, GlobalKey<StickerState>> _frameKeyMap = {};
-  Map<String, GlobalKey<StickerState>> get frameKeyMap => _frameKeyMap;
+  Map<String, GlobalKey<StickerState>> _stickerKeyMap = {};
+  //Map<String, GlobalKey<StickerState>> get stickerKeyMap => _stickerKeyMap;
+
+  String stickerKeyMangler(String pageMid, String frameMid) {
+    return '$pageMid/$frameMid';
+  }
+
+  GlobalKey<StickerState> stickerKeyGen(String pageMid, String frameMid) {
+    String keyStr = stickerKeyMangler(pageMid, frameMid);
+    GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
+    if (stickerKey != null) {
+      return stickerKey;
+    }
+    GlobalObjectKey<StickerState> key = GlobalObjectKey<StickerState>(keyStr);
+    _stickerKeyMap[keyStr] = key;
+    return key;
+  }
+
+  GlobalKey<StickerState>? findStickerKey(String pageMid, String frameMid) {
+    String keyStr = stickerKeyMangler(pageMid, frameMid);
+    return _stickerKeyMap[keyStr];
+  }
+
+  bool refreshFrame(String mid) {
+    String keyStr = stickerKeyMangler(pageModel.mid, mid);
+    GlobalKey<StickerState>? frameKey = _stickerKeyMap[keyStr];
+    if (frameKey == null) return false;
+    frameKey.currentState!.refresh();
+    return true;
+  }
+
+  // final Map<String, GlobalKey<DraggableResizableState>> _draggerbleKeyMap = {};
+  // Map<String, GlobalKey<DraggableResizableState>> get draggerbleKeyMap => _draggerbleKeyMap;
+  // String draggerbleKeyMangler(String pageMid, String frameMid) {
+  //   return 'DraggableResizable$pageMid/$frameMid';
+  // }
+
+  // GlobalObjectKey<DraggableResizableState> draggerbleKeyGen(String pageMid, String frameMid) {
+  //   String keyStr = draggerbleKeyMangler(pageMid, frameMid);
+  //   GlobalObjectKey<DraggableResizableState> key = GlobalObjectKey<DraggableResizableState>(keyStr);
+  //   draggerbleKeyMap[keyStr] = key;
+  //   return key;
+  // }
+
+  // bool draggerbleInvalidate(String pageMid, String frameMid) {
+  //   String keyStr = draggerbleKeyMangler(pageMid, frameMid);
+  //   GlobalKey<DraggableResizableState>? key = draggerbleKeyMap[keyStr];
+  //   if (key == null) {
+  //     return false;
+  //   }
+  //   key.currentState?.invalidate();
+  //   return true;
+  // }
+
   Map<String, ContentsManager> contentsManagerMap = {};
 
   bool _initFrameComplete = false;
@@ -526,7 +580,7 @@ class FrameManager extends CretaManager {
     FrameModel? retval;
     reverseMapIterator((model) {
       FrameModel frame = model as FrameModel;
-      GlobalKey? stickerKey = frameKeyMap['${pageModel.mid}/${frame.mid}'];
+      GlobalKey? stickerKey = _stickerKeyMap['${pageModel.mid}/${frame.mid}'];
       if (stickerKey == null) {
         return null;
       }
@@ -601,11 +655,6 @@ class FrameManager extends CretaManager {
   //   return true;
   // }
 
-  void refreshFrame(String mid) {
-    GlobalKey<StickerState>? frameKey = frameKeyMap['${pageModel.mid}/$mid'];
-    if (frameKey == null) return;
-    frameKey.currentState!.refresh();
-  }
   //bool isMain() {}
 
   List<Node> toNodes(PageModel page) {
@@ -636,8 +685,9 @@ class FrameManager extends CretaManager {
 
   bool clickedInsideSelectedFrame(Offset position) {
     if (DraggableStickers.frameSelectNotifier == null) return false;
+    if (DraggableStickers.frameSelectNotifier!.selectedAssetId == null) return false;
     GlobalKey? key =
-        frameKeyMap['${pageModel.mid}/${DraggableStickers.frameSelectNotifier!.selectedAssetId}'];
+        findStickerKey(pageModel.mid, DraggableStickers.frameSelectNotifier!.selectedAssetId!);
     if (key == null) {
       //print(' key is null , ${DraggableStickers.frameSelectNotifier!.selectedAssetId}');
       return false;

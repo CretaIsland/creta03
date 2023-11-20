@@ -331,7 +331,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         key: LeftMenuPage.treeViewKey,
         //nodes: LeftMenuPage._nodes,
         pageManager: _pageManager!,
-        removePage: _removePage,
+        removePage: _pageManager!.removePage,
         removeFrame: _removeFrame,
         removeContents: _removeContents,
         showUnshow: (model, index) {
@@ -487,7 +487,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                   onPressed: () {
                     // Delete Page
                     logger.fine('remove page');
-                    _removePage(model);
+                    _pageManager!.removePage(model);
                     //mychangeStack.startTrans();
                     // model.isRemoved.set(true);
                     // _pageManager!.removeChild(model.mid).then((value) {
@@ -525,30 +525,30 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     // }
   }
 
-  void _removePage(PageModel model) {
-    mychangeStack.startTrans();
-    model.isRemoved.set(
-      true,
-      doComplete: (val) {
-        if (_pageManager!.isSelected(model.mid)) {
-          if (!_pageManager!.gotoNext()) {
-            !_pageManager!.gotoPrev();
-          }
-        }
-      },
-    );
-    _pageManager!.removeChild(model.mid).then((value) {
-      //mychangeStack.endTrans();
-      if (_pageManager!.isSelected(model.mid)) {
-        if (!_pageManager!.gotoNext()) {
-          !_pageManager!.gotoPrev();
-        }
-      }
-      _pageManager!.notify();
-      LeftMenuPage.treeInvalidate();
-      return;
-    });
-  }
+  // void _removePage(PageModel model) {
+  //   mychangeStack.startTrans();
+  //   model.isRemoved.set(
+  //     true,
+  //     doComplete: (val) {
+  //       if (_pageManager!.isSelected(model.mid)) {
+  //         if (!_pageManager!.gotoNext()) {
+  //           !_pageManager!.gotoPrev();
+  //         }
+  //       }
+  //     },
+  //   );
+  //   _pageManager!.removeChild(model.mid).then((value) {
+  //     //mychangeStack.endTrans();
+  //     if (_pageManager!.isSelected(model.mid)) {
+  //       if (!_pageManager!.gotoNext()) {
+  //         !_pageManager!.gotoPrev();
+  //       }
+  //     }
+  //     _pageManager!.notify();
+  //     LeftMenuPage.treeInvalidate();
+  //     return;
+  //   });
+  // }
 
   Future<void> _removeFrame(FrameModel frame) async {
     mychangeStack.startTrans();
@@ -927,20 +927,11 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       return;
     }
 
-    bool matched = false;
-    int pageIndex = -1;
-    List<CretaModel> orderList = _pageManager!.copyOrderMap();
-    for (var ele in orderList) {
-      PageModel page = ele as PageModel;
-      pageIndex++;
-      if (page.mid == pageMid) {
-        matched = true;
-        break;
-      }
-    }
-    if (matched == false) {
+    int pageIndex = _pageManager!.getPageIndex(pageMid);
+    if (pageIndex < 0) {
       return;
     }
+
     ScrollDirection scrollDirection = _scrollController.position.userScrollDirection;
     if (scrollDirection != ScrollDirection.idle) {
       return;

@@ -10,12 +10,14 @@ import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
+import '../lang/creta_lang.dart';
 import '../model/book_model.dart';
 import '../model/creta_model.dart';
 import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
+import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_variables.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
@@ -576,6 +578,7 @@ class PageManager extends CretaManager {
     }
     newModel.order.set(nextOrderVal, save: false, noUndo: true);
     newModel.isRemoved.set(false, save: false, noUndo: true);
+    newModel.name.set('${src.name.value}${CretaLang.copyOf}', save: false, noUndo: true);
 
     logger.fine('create new page ${newModel.mid}');
 
@@ -655,5 +658,44 @@ class PageManager extends CretaManager {
     });
     jsonStr += '\n\t]\n';
     return jsonStr;
+  }
+
+  void removePage(PageModel model) {
+    mychangeStack.startTrans();
+    model.isRemoved.set(
+      true,
+      doComplete: (val) {
+        if (isSelected(model.mid)) {
+          if (gotoNext()) {
+            gotoPrev();
+          }
+        }
+      },
+    );
+    removeChild(model.mid).then((value) {
+      //mychangeStack.endTrans();
+      if (isSelected(model.mid)) {
+        if (gotoNext()) {
+          gotoPrev();
+        }
+      }
+      notify();
+      LeftMenuPage.treeInvalidate();
+      return;
+    });
+  }
+
+  int getPageIndex(String pageMid) {
+    int pageIndex = -1;
+
+    late Iterable<CretaModel> values = orderValues();
+
+    for (CretaModel ele in values) {
+      pageIndex++;
+      if (ele.mid == pageMid) {
+        break;
+      }
+    }
+    return pageIndex;
   }
 }

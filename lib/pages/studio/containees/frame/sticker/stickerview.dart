@@ -215,6 +215,7 @@ class Sticker extends StatefulWidget {
 
 class StickerState extends State<Sticker> with CretaMusicMixin {
   void refresh() {
+    print('sticker refresh !!!');
     setState(() {});
   }
 
@@ -222,18 +223,18 @@ class StickerState extends State<Sticker> with CretaMusicMixin {
   Widget build(BuildContext context) {
     bool isVisible = widget.model.isVisible(widget.pageMid);
 
-    Widget retval = Visibility(
-      visible: isVisible,
-      child: widget.child != null ? widget.child! : Container(),
-    );
-
     if (widget.model.isBackgroundMusic() &&
         isVisible == false &&
         StudioVariables.isPreview == false) {
+      print('showBGM');
       return showBGM(StudioVariables.applyScale);
     }
 
-    return retval;
+    print('build sticker ($isVisible)');
+    return RepaintBoundary(
+      child:
+          Visibility(visible: isVisible, child: widget.child != null ? widget.child! : Container()),
+    );
   }
 
   // bool _isVisible(FrameModel model) {

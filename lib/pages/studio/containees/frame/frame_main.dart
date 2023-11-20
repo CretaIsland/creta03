@@ -368,7 +368,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
   List<Sticker> _getStickerList() {
     //print('getStickerList()');
-    //frameManager!.frameKeyMap.clear();
+    //frameManager!.stickerKeyMap.clear();
 
     frameManager!.eliminateOverlay();
     frameManager!.mergeOverlay();
@@ -410,11 +410,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     GlobalKey<StickerState>? stickerKey;
     if (widget.isPrevious == false) {
-      stickerKey = frameManager!.frameKeyMap['${widget.pageModel.mid}/${model.mid}'];
-      if (stickerKey == null) {
-        stickerKey = GlobalKey<StickerState>();
-        frameManager!.frameKeyMap['${widget.pageModel.mid}/${model.mid}'] = stickerKey;
-      }
+      stickerKey = frameManager!.stickerKeyGen(widget.pageModel.mid, model.mid);
     } else {
       stickerKey = GlobalKey<StickerState>();
     }

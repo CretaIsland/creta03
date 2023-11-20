@@ -55,10 +55,10 @@ class FrameEach extends StatefulWidget {
   });
 
   @override
-  State<FrameEach> createState() => _FrameEachState();
+  State<FrameEach> createState() => FrameEachState();
 }
 
-class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixin {
+class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixin {
   double applyScale = 1;
 
   ContentsManager? _contentsManager;
@@ -133,6 +133,8 @@ class _FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMix
 
   @override
   Widget build(BuildContext context) {
+    print('build FrameEach');
+
     applyScale = widget.applyScale;
     if (_playTimer == null) {
       logger.severe('_playTimer is null');

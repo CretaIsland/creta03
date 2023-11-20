@@ -180,15 +180,16 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
               color: LayoutConst.studioBGColor,
               //color: Colors.amber,
               child: Center(
-                  child: StudioVariables.isHandToolMode == false
-                      ? GestureDetector(
-                          behavior: HitTestBehavior.deferToChild,
-                          onLongPressDown: _pageClicked,
-                          onTapUp: (details) {},
-                          onSecondaryTapDown: _showRightMouseMenu,
-                          child: _animatedPage(),
-                        )
-                      : _animatedPage()),
+                child: StudioVariables.isHandToolMode == false
+                    ? GestureDetector(
+                        behavior: HitTestBehavior.deferToChild,
+                        onLongPressDown: _pageClicked,
+                        onTapUp: (details) {},
+                        onSecondaryTapDown: _showRightMouseMenu,
+                        child: _animatedPage(),
+                      )
+                    : _animatedPage(),
+              ),
             ),
             //),
           );
@@ -298,9 +299,54 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
           // height: widget.pageHeight,
           child: _waitFrame(),
         ),
+        //_pageController(),
       ],
     );
   }
+
+  // ignore: unused_element
+  // Widget _pageController() {
+  //   return Align(
+  //     alignment: Alignment.center,
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Center(
+  //           // StudioConst.pageControlHeight = 32.0
+  //           child: Padding(
+  //             padding: const EdgeInsets.only(bottom: 8.0),
+  //             child: BTN.fill_gray_i_s(
+  //               bgColor: LayoutConst.studioBGColor,
+  //               onPressed: () {
+  //                 BookMainPage.pageManagerHolder?.gotoPrev();
+  //               },
+  //               icon: Icons.keyboard_arrow_up_outlined,
+  //             ),
+  //           ),
+  //         ),
+  //         IgnorePointer(
+  //           child: Container(
+  //             color: Colors.transparent,
+  //             width: widget.pageWidth,
+  //             height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+  //           ),
+  //         ),
+  //         Center(
+  //           child: Padding(
+  //             padding: const EdgeInsets.only(top: 8.0),
+  //             child: BTN.fill_gray_i_s(
+  //               bgColor: LayoutConst.studioBGColor,
+  //               onPressed: () {
+  //                 BookMainPage.pageManagerHolder?.gotoNext();
+  //               },
+  //               icon: Icons.keyboard_arrow_down_outlined,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Future<void> _pageClicked(LongPressDownDetails details) async {
     //print('_pageClicked');
@@ -427,13 +473,11 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
 
   Widget _pageEffect() {
     if (widget.pageModel.effect.value != EffectType.none) {
-      return Stack(
-        alignment: Alignment.center,
-        children: [
-          effectWidget(widget.pageModel),
-          _drawFrames(),
-        ],
-      );
+      return Stack(alignment: Alignment.center, children: [
+        effectWidget(widget.pageModel),
+        _drawFrames(),
+        //_pageController(),
+      ]);
     }
     return _drawFrames();
   }
@@ -517,7 +561,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
         ...linkList,
         ...linkManager.orderMapIterator((ele) {
           LinkModel model = ele as LinkModel;
-          model.stickerKey = manager.frameKeyMap['${widget.pageModel.mid}/${model.connectedMid}'];
+          model.stickerKey = manager.findStickerKey(widget.pageModel.mid, model.connectedMid);
           return model;
         }).toList()
       ];

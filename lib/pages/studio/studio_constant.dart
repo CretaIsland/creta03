@@ -123,6 +123,7 @@ class StudioConst {
   static const double minFontSize = stepGranularity * 5;
   static const double defaultTextPadding = 14.0;
   static const double defaultFontSize = 64.0;
+  static const double pageControlHeight = 32.0;
 
   static List<List<Size>> signageResolution = [
     [],

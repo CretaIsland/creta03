@@ -109,6 +109,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     );
   }
 
+  void _invalidateFrame() {
+    // if (!_frameManager!.refreshFrame(widget.model.mid)) {
+    //   // key 를 찾지못한 경우만, sendEvent 를 한다.
+    //   _sendEvent!.sendEvent(widget.model);
+    // }
+    _sendEvent!.sendEvent(widget.model);
+  }
+
   @override
   void initState() {
     logger.finest('_FramePropertyState.initState');
@@ -990,7 +998,6 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //                 ),
   //               );
   // }
-
   void _sizeChanged(
     String value,
     UndoAble<double> targetAttr,
@@ -1033,12 +1040,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           widget.model.opacity.set(value);
           logger.finest('opacity1=${widget.model.opacity.value}');
           //});
-          _sendEvent!.sendEvent(widget.model);
+
+          //_sendEvent!.sendEvent(widget.model);
+          _invalidateFrame();
         },
         onOpacityDrag: (value) {
-          widget.model.opacity.set(value);
-          logger.finest('opacity1=${widget.model.opacity.value}');
-          _sendEvent!.sendEvent(widget.model);
+          // widget.model.opacity.set(value, save: false);
+          // logger.finest('opacity1=${widget.model.opacity.value}');
+          //_sendEvent!.sendEvent(widget.model);
         },
         onColor1Changed: (val) {
           setState(() {

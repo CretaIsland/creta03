@@ -1400,6 +1400,7 @@ class _BookMainPageState extends State<BookMainPage> {
     pageModel.height.set(_bookModel!.height.value, save: false, noUndo: true);
     logger.fine('PageMain Invoked ***** ${pageModel.width.value}');
 
+    // pageMain은  페이지 영역뿐만 아니고, 페이지 외부 여백까지 모두 덮어쓰고 있다.
     return PageMain(
       pageKey: GlobalObjectKey('PageKey${pageModel.mid}'),
       bookModel: _bookModel!,

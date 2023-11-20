@@ -299,14 +299,17 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
     double itemWidth = -1;
     double itemHeight = -1;
 
-    //print('rightPaneRect.childWidth=${rightPaneRect.childWidth}');
-    //print('LayoutConst.cretaPaddingPixel=${LayoutConst.cretaPaddingPixel}');
-    //print('LayoutConst.bookThumbSize.width=${LayoutConst.bookThumbSize.width}');
+    // print('rightPaneRect.childWidth=${rightPaneRect.childWidth}');
+    // print('LayoutConst.cretaPaddingPixel=${LayoutConst.cretaPaddingPixel}');
+    // print('LayoutConst.bookThumbSize.width=${LayoutConst.bookThumbSize.width}');
     // int columnCount = (rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) ~/
     //     LayoutConst.bookThumbSize.width;
+
     int columnCount = ((rightPaneRect.childWidth - LayoutConst.cretaPaddingPixel * 2) /
-            LayoutConst.bookThumbSize.width)
-        .round();
+            (itemWidth > 0
+                ? min(itemWidth, LayoutConst.bookThumbSize.width)
+                : LayoutConst.bookThumbSize.width))
+        .ceil();
 
     //print('columnCount=$columnCount');
 
@@ -398,7 +401,14 @@ class _BookGridPageState extends State<BookGridPage> with CretaBasicLayoutMixin 
                   builder: (BuildContext context, BoxConstraints constraints) {
                     itemWidth = constraints.maxWidth;
                     itemHeight = constraints.maxHeight;
-                    //logger.finest('first data, $itemWidth, $itemHeight');
+                    // double ratio = itemWidth / 267; //LayoutConst.bookThumbSize.width;
+                    // // 너무 커지는 것을 막기위해.
+                    // if (ratio > 1) {
+                    //   itemWidth = 267; //LayoutConst.bookThumbSize.width;
+                    //   itemHeight = itemHeight / ratio;
+                    // }
+
+                    //print('first data, $itemWidth, $itemHeight');
                     return bookGridItem(index);
                   },
                 );

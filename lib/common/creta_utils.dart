@@ -990,6 +990,8 @@ class CretaUtils {
     }
     jsonString += '\n}';
 
+    //String encodedJson = base64Encode(utf8.encode(jsonString));
+
     //print(jsonString);
 
     try {
@@ -1004,7 +1006,7 @@ class CretaUtils {
           'Content-Type': 'application/json',
           // 추가적인 헤더를 설정할 수 있습니다.
         },
-        body: jsonString,
+        body: jsonString, //encodedJson, //jsonString,
       );
       if (response.statusCode != 200) {
         // 에러 처리

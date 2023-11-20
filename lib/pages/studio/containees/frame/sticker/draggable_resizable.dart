@@ -603,6 +603,7 @@ class DraggableResizableState extends State<DraggableResizable> {
     return _moveValidCheck(updatedSize, pos, details);
   }
 
+  // 자석기능
   Offset _applyMagnet(Size updatedSize, Offset pos, Offset move) {
     double leftLimit = BookMainPage.pageOffset.dx - (LayoutConst.stikerOffset / 2);
     double rightLimit = leftLimit + widget.pageWidth;
@@ -611,7 +612,8 @@ class DraggableResizableState extends State<DraggableResizable> {
     double rightGap = rightLimit - (pos.dx + updatedSize.width);
     //print('leftGap=$leftGap,rightGap=$rightGap, ');
 
-    double topLimit = BookMainPage.pageOffset.dy - (LayoutConst.stikerOffset / 2);
+    double topLimit = BookMainPage.pageOffset.dy -
+        (LayoutConst.stikerOffset / 2); // + StudioConst.pageControlHeight;
     double bottomLimit = topLimit + widget.pageHeight;
     //print('topLimit=$topLimit, bottomLimit=$bottomLimit');
     double topGap = pos.dy - topLimit;

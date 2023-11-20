@@ -9,8 +9,12 @@ import 'package:hycop/common/util/logger.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/depot_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
+import '../../../../../design_system/buttons/creta_button.dart';
+import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../../../../design_system/component/creta_right_mouse_menu.dart';
+import '../../../../../design_system/creta_color.dart';
+import '../../../../../design_system/creta_font.dart';
 import '../../../../../design_system/drag_and_drop/drop_zone_widget.dart';
 import '../../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../../lang/creta_studio_lang.dart';
@@ -24,6 +28,7 @@ import '../../../../login/creta_account_manager.dart';
 import '../../../book_main_page.dart';
 import '../../../left_menu/depot/depot_display.dart';
 import '../../../left_menu/left_menu_page.dart';
+import '../../../studio_constant.dart';
 import '../../../studio_getx_controller.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
@@ -163,8 +168,100 @@ class _DraggableStickersState extends State<DraggableStickers> {
             pageModel: widget.page,
           ),
           _pageDropZone(widget.book.mid),
+          _pageController(),
           for (final sticker in stickers) _drawEachStiker(sticker),
           _drawMiniMenu(),
+        ],
+      ),
+    );
+  }
+
+  // 페이지 footer , header 부분
+  Widget _pageController() {
+    int pageIndex = BookMainPage.pageManagerHolder!.getPageIndex(widget.page.mid);
+    return Align(
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: widget.pageWidth,
+            height: 36,
+            padding: const EdgeInsets.only(bottom: 8.0),
+            // StudioConst.pageControlHeight = 32.0
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 360 * StudioVariables.applyScale,
+                  child: Text(
+                      'P ${(pageIndex + 1).toString().padLeft(2, '0')} | ${widget.page.name.value}',
+                      overflow: TextOverflow.ellipsis,
+                      style: CretaFont.titleSmall),
+                ),
+                BTN.fill_gray_i_s(
+                  iconSize: 16,
+                  bgColor: LayoutConst.studioBGColor,
+                  onPressed: () {
+                    BookMainPage.pageManagerHolder?.gotoPrev();
+                  },
+                  icon: Icons.keyboard_arrow_up_outlined,
+                ),
+                SizedBox(
+                  width: 360 * StudioVariables.applyScale,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      BTN.fill_gray_i_s(
+                          iconSize: 16,
+                          bgColor: LayoutConst.studioBGColor,
+                          tooltip: CretaStudioLang.copy,
+                          tooltipBg: CretaColor.text[700]!,
+                          icon: Icons.content_copy_outlined,
+                          onPressed: () {
+                            BookMainPage.pageManagerHolder?.copyPage(widget.page);
+                            setState(() {});
+                          }),
+                      BTN.fill_gray_image_m(
+                        iconSize: 16,
+                        buttonColor: CretaButtonColor.transparent,
+                        tooltip: CretaStudioLang.tooltipDelete,
+                        tooltipBg: CretaColor.text[700]!,
+                        iconImageFile: "assets/delete.svg",
+                        onPressed: () {
+                          // Delete Page
+                          logger.fine('remove page');
+                          BookMainPage.pageManagerHolder?.removePage(widget.page);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          RepaintBoundary(
+            child: IgnorePointer(
+              child: Container(
+                color: Colors.transparent,
+                width: widget.pageWidth,
+                height: widget.pageHeight,
+              ),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: BTN.fill_gray_i_s(
+                iconSize: 16,
+                bgColor: LayoutConst.studioBGColor,
+                onPressed: () {
+                  BookMainPage.pageManagerHolder?.gotoNext();
+                },
+                icon: Icons.keyboard_arrow_down_outlined,
+              ),
+            ),
+          ),
         ],
       ),
     );

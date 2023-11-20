@@ -107,3 +107,6 @@ copy src_modify\realTime_mixin.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\
 
 #skpark modify 23/11/14
 copy src_modify\color_picker.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\flex_color_picker-3.3.0\lib\src\color_picker.dart"
+
+#skpark modify 23/11/20
+copy src_modify\scroll_loop_auto_scroll.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\scroll_loop_auto_scroll-0.0.5\lib\scroll_loop_auto_scroll.dart"
