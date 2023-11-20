@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/config.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:translator_plus/translator_plus.dart';
-// import 'package:universal_html/html.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/component/creta_property_card.dart';
 import '../../../design_system/component/custom_image.dart';
@@ -24,6 +23,7 @@ import 'imageAI/api_services.dart';
 import 'imageAI/search_tip_position.dart';
 import 'imageAI/style_selected.dart';
 import 'imageAI/tip_toggle.dart';
+import 'image_giphy/left_menu_giphy.dart';
 
 class LeftMenuImage extends StatefulWidget {
   static final TextEditingController textController = TextEditingController();
@@ -165,39 +165,40 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
 
   Widget _menuBar() {
     return Container(
-        height: LayoutConst.innerMenuBarHeight, // heihgt: 36
-        width: LayoutConst.rightMenuWidth, // width: 380
-        color: CretaColor.text[100],
-        alignment: Alignment.centerLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 100.0),
-          child: CustomRadioButton(
-            radioButtonValue: (value) {
-              setState(() {
-                _selectedTab = value;
-              });
-            },
-            width: 95,
-            autoWidth: true,
-            height: 24,
-            buttonTextStyle: ButtonTextStyle(
-              selectedColor: CretaColor.primary,
-              unSelectedColor: CretaColor.text[700]!,
-              textStyle: CretaFont.buttonMedium,
-            ),
-            selectedColor: Colors.white,
-            unSelectedColor: CretaColor.text[100]!,
-            defaultSelected: _selectedTab,
-            buttonLables: CretaStudioLang.imageMenuTabBar.keys.toList(),
-            buttonValues: CretaStudioLang.imageMenuTabBar.values.toList(),
-            selectedBorderColor: Colors.transparent,
-            unSelectedBorderColor: Colors.transparent,
-            elevation: 0,
-            enableButtonWrap: true,
-            enableShape: true,
-            shapeRadius: 60,
+      height: LayoutConst.innerMenuBarHeight, // heihgt: 36
+      width: LayoutConst.rightMenuWidth, // width: 380
+      color: CretaColor.text[100],
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 20.0),
+        child: CustomRadioButton(
+          radioButtonValue: (value) {
+            setState(() {
+              _selectedTab = value;
+            });
+          },
+          width: 95,
+          autoWidth: true,
+          height: 28,
+          buttonTextStyle: ButtonTextStyle(
+            selectedColor: CretaColor.primary,
+            unSelectedColor: CretaColor.text[700]!,
+            textStyle: CretaFont.buttonMedium,
           ),
-        ));
+          selectedColor: Colors.white,
+          unSelectedColor: CretaColor.text[100]!,
+          defaultSelected: _selectedTab,
+          buttonLables: CretaStudioLang.imageMenuTabBar.keys.toList(),
+          buttonValues: CretaStudioLang.imageMenuTabBar.values.toList(),
+          selectedBorderColor: Colors.transparent,
+          unSelectedBorderColor: Colors.transparent,
+          elevation: 0,
+          enableButtonWrap: false,
+          enableShape: true,
+          shapeRadius: 60,
+        ),
+      ),
+    );
   }
 
   Widget _imageView() {
@@ -285,6 +286,11 @@ class _LeftMenuImageState extends State<LeftMenuImage> {
         ],
       );
     }
+
+    if (_selectedTab == menu[3]) {
+      return const LeftMenuGiphy();
+    }
+
     return const SizedBox.shrink();
   }
 

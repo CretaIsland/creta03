@@ -568,6 +568,9 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     if (model.isStickerType()) {
       return stickerFrame(model);
     }
+    if (model.isAnimationType()) {
+      return giphyFrame(model, widget.width, widget.height);
+    }
     if (model.isTimelineType()) {
       return timelineFrame(model);
     }

@@ -7,6 +7,7 @@ class EnterpriseModel extends CretaModel {
   late String description;
   late String openAiKey;
   late String openWeatherApiKey;
+  late String giphyApiKey;
   late String socketUrl;
   late String mediaApiUrl;
   late String webrtcUrl;
@@ -16,14 +17,24 @@ class EnterpriseModel extends CretaModel {
     description = '';
     openAiKey = '';
     openWeatherApiKey = '';
+    giphyApiKey = '';
     socketUrl = '';
     mediaApiUrl = '';
     webrtcUrl = '';
   }
 
   @override
-  List<Object?> get props =>
-      [...super.props, name, description, openAiKey, openWeatherApiKey, socketUrl, mediaApiUrl, webrtcUrl];
+  List<Object?> get props => [
+        ...super.props,
+        name,
+        description,
+        openAiKey,
+        openWeatherApiKey,
+        giphyApiKey,
+        socketUrl,
+        mediaApiUrl,
+        webrtcUrl
+      ];
 
   EnterpriseModel.withName(
       {required this.name,
@@ -31,6 +42,7 @@ class EnterpriseModel extends CretaModel {
       this.description = '',
       this.openAiKey = '',
       this.openWeatherApiKey = '',
+      this.giphyApiKey = '',
       this.socketUrl = '',
       this.mediaApiUrl = '',
       this.webrtcUrl = ''})
@@ -44,6 +56,7 @@ class EnterpriseModel extends CretaModel {
     description = map['description'] ?? '';
     openAiKey = map['openAiKey'] ?? '';
     openWeatherApiKey = map['openWeatherApiKey'] ?? '';
+    giphyApiKey = map['giphyApiKey'] ?? '';
     socketUrl = map['socketUrl'] ?? '';
     mediaApiUrl = map['mediaApiUrl'] ?? '';
     webrtcUrl = map['webrtcUrl'] ?? '';
@@ -57,6 +70,7 @@ class EnterpriseModel extends CretaModel {
         'description': description,
         'openAiKey': openAiKey,
         'openWeatherApiKey': openWeatherApiKey,
+        'giphyApiKey': giphyApiKey,
         'socketUrl': socketUrl,
         'mediaApiUrl': mediaApiUrl,
         'webrtcUrl': webrtcUrl

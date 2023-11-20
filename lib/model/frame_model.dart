@@ -143,6 +143,10 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     }
   }
 
+  bool isAnimationType() {
+    return (frameType == FrameType.animation);
+  }
+
   bool isMusicType() {
     return (frameType == FrameType.music);
   }

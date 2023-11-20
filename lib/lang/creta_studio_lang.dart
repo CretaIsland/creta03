@@ -75,11 +75,11 @@ class CretaStudioLang {
     '특수 문자': 'special_char',
   };
 
-  // ---- Added by Mai 230530 ---- //
   static Map<String, String> imageMenuTabBar = {
     '이미지': 'image',
     '가져오기': 'upload_image',
     'AI 생성': 'AI_generated_image',
+    'GIPHY의 GIF': 'GIPHY_image',
   };
 
   static Map<String, String> storageTypes = {
