@@ -110,11 +110,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   }
 
   void _invalidateFrame() {
-    // if (!_frameManager!.refreshFrame(widget.model.mid)) {
-    //   // key 를 찾지못한 경우만, sendEvent 를 한다.
-    //   _sendEvent!.sendEvent(widget.model);
-    // }
-    _sendEvent!.sendEvent(widget.model);
+    if (!_frameManager!.refreshFrame(widget.model.mid)) {
+      // key 를 찾지못한 경우만, sendEvent 를 한다.
+      _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
+    }
+    //_invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
   }
 
   @override
@@ -304,7 +304,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 }
                 idx++;
               }
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame();
+              //_sendEvent!.sendEvent(widget.model);
             },
             width: 55,
             height: 24,
@@ -478,7 +479,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       setState(() {
                         widget.model.toggleFullscreen(_isFullScreen, _bookModel!);
                         logger.finest('sendEvent');
-                        _sendEvent!.sendEvent(widget.model);
+                        _invalidateFrame();
+                        //_sendEvent!.sendEvent(widget.model);
                       });
                     }),
               ],
@@ -588,7 +590,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                           }
                           widget.model.angle.set(newValue);
                           //BookMainPage.bookManagerHolder!.notify();
-                          _sendEvent!.sendEvent(widget.model);
+                          //_sendEvent!.sendEvent(widget.model);
+                          _invalidateFrame();
                           logger.finest('onEditComplete ${widget.model.angle.value}');
                         }),
                         minNumber: 0,
@@ -623,7 +626,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         widget.model.angle.set(angle);
                       });
                       logger.finest('sendEvent');
-                      _sendEvent!.sendEvent(widget.model);
+                      //_sendEvent!.sendEvent(widget.model);
+                      _invalidateFrame();
                     }),
                 BTN.fill_gray_i_m(
                     tooltip: CretaStudioLang.angleTooltip,
@@ -637,7 +641,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       });
 
                       logger.finest('sendEvent');
-                      _sendEvent!.sendEvent(widget.model);
+                      //_sendEvent!.sendEvent(widget.model);
+                      _invalidateFrame();
                     }),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -696,7 +701,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                           mychangeStack.endTrans();
                         });
                         //BookMainPage.bookManagerHolder!.notify();
-                        _sendEvent!.sendEvent(widget.model);
+                        //_sendEvent!.sendEvent(widget.model);
+                        _invalidateFrame();
                         logger.finest('onEditComplete ${widget.model.radius.value}');
                       }),
                       minNumber: 0,
@@ -733,7 +739,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             cornerValue: widget.model.radiusLeftTop,
                             onEditComplete: ((value) {
                               widget.model.radiusLeftTop.set(value);
-                              _sendEvent!.sendEvent(widget.model);
+                              _invalidateFrame();
                               logger.fine('onEditComplete applied=$value');
                             }),
                             onSelected: (name, value, nvMap) {},
@@ -745,7 +751,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             cornerValue: widget.model.radiusLeftBottom,
                             onEditComplete: ((value) {
                               widget.model.radiusLeftBottom.set(value);
-                              _sendEvent!.sendEvent(widget.model);
+                              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
                               logger.fine('onEditComplete applied=$value');
                             }),
                             onSelected: (name, value, nvMap) {},
@@ -804,7 +810,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             cornerValue: widget.model.radiusRightTop,
                             onEditComplete: ((value) {
                               widget.model.radiusRightTop.set(value);
-                              _sendEvent!.sendEvent(widget.model);
+                              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
                               logger.fine('onEditComplete applied=$value');
                             }),
                             onSelected: (name, value, nvMap) {},
@@ -816,7 +822,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                             cornerValue: widget.model.radiusRightBottom,
                             onEditComplete: ((value) {
                               widget.model.radiusRightBottom.set(value);
-                              _sendEvent!.sendEvent(widget.model);
+                              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
                               logger.fine('onEditComplete applied=$value');
                             }),
                             onSelected: (name, value, nvMap) {},
@@ -881,7 +887,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //           }
     //           cornerValue.set(newValue);
     //           //BookMainPage.bookManagerHolder!.notify();
-    //           _sendEvent!.sendEvent(widget.model);
+    //           _invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
     //           logger.finest('onEditComplete ${cornerValue.value}');
     //           onEditComplete.call(value);
     //         }),
@@ -894,7 +900,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //             openFlag.value = value;
     //             cornerValue.set(0);
     //             //BookMainPage.bookManagerHolder!.notify();
-    //             _sendEvent!.sendEvent(widget.model);
+    //             _invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
     //             logger.finest('onEditComplete ${cornerValue.value}');
     //           } else {
     //             setState(() {
@@ -919,7 +925,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //           openFlag.value = value;
     //           cornerValue.set(0);
     //           //BookMainPage.bookManagerHolder!.notify();
-    //           _sendEvent!.sendEvent(widget.model);
+    //           _invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
     //           logger.finest('onEditComplete ${cornerValue.value}');
     //         } else {
     //           setState(() {
@@ -948,7 +954,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     //         }
     //         cornerValue.set(newValue);
     //         //BookMainPage.bookManagerHolder!.notify();
-    //         _sendEvent!.sendEvent(widget.model);
+    //         _invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
     //         logger.finest('onEditComplete ${cornerValue.value}');
     //         onEditComplete.call(value);
     //       }),
@@ -989,7 +995,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   //                         }
   //                         widget.model.radiusLeftTop.set(newValue);
   //                         //BookMainPage.bookManagerHolder!.notify();
-  //                         _sendEvent!.sendEvent(widget.model);
+  //                         _invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
   //                         logger.finest('onEditComplete ${widget.model.radiusLeftTop.value}');
   //                       }),
   //                       minNumber: 0,
@@ -1019,7 +1025,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     }
 
     //BookMainPage.bookManagerHolder!.notify();
-    _sendEvent!.sendEvent(widget.model);
+    _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
     logger.finest('onEditComplete ${targetAttr.value}');
   }
 
@@ -1053,7 +1059,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {
             widget.model.bgColor1.set(val);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
         onColorIndicatorClicked: () {
           PropertyMixin.isColorOpen = true;
@@ -1063,7 +1069,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {
             widget.model.bgColor1.set(Colors.transparent);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
       ),
     );
@@ -1093,7 +1099,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {
             widget.model.nextContentTypes.set(NextContentTypes.none);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
         bodyWidget: _nextContentTypes(),
       ),
@@ -1118,7 +1124,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               selectedType: _isTypeSelected(i, widget.model.nextContentTypes.value),
               onTypeSelected: () {
                 setState(() {});
-                _sendEvent!.sendEvent(widget.model);
+                _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
               },
             )
         ],
@@ -1150,13 +1156,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               widget.model.gradationType.set(type);
             }
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
         onColor2Changed: (Color val) {
           setState(() {
             widget.model.bgColor2.set(val);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
         onColorIndicatorClicked: () {
           setState(() {
@@ -1168,7 +1174,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             widget.model.gradationType.set(GradationType.none);
             widget.model.bgColor2.set(Colors.transparent);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
       ),
     );
@@ -1186,14 +1192,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {
             widget.model.textureType.set(val);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
           //BookMainPage.bookManagerHolder?.notify();
         },
         onDelete: () {
           setState(() {
             widget.model.textureType.set(TextureType.none);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
       ),
     );
@@ -1232,7 +1238,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {
             widget.model.transitionEffect.set(0);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
         bodyWidget: _transitionBody(),
       ),
@@ -1255,7 +1261,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 selected: _isSelect(i),
                 onSelected: () {
                   setState(() {});
-                  _sendEvent!.sendEvent(widget.model);
+                  _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
                   //BookMainPage.bookManagerHolder!.notify();
                 }),
           // AniExampleBox(model: widget.model, name: CretaStudioLang.flip, aniType: AnimationType.flip),
@@ -1290,7 +1296,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 1.0,
                 onColorChanged: (color) {
                   widget.model.borderColor.set(color);
-                  _sendEvent!.sendEvent(widget.model);
+                  _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
                 },
                 onClicked: () {
                   setState(() {
@@ -1303,7 +1309,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {
             widget.model.borderWidth.set(0);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
         bodyWidget: _borderBody(
             color1: widget.model.borderColor.value,
@@ -1311,7 +1317,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             onBorderWidthChanged: (value) {
               widget.model.borderWidth.set(value);
               logger.finest('borderWidth=${widget.model.borderWidth.value}');
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             onBorderWidthChangeComplete: (value) {
               setState(() {});
@@ -1320,7 +1326,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               setState(() {
                 widget.model.borderColor.set(color);
               });
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             // onPositionChanged: (value) {
             //   int idx = 1;
@@ -1330,7 +1336,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             //     }
             //     idx++;
             //   }
-            //   _sendEvent!.sendEvent(widget.model);
+            //   _invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
             // },
             onPositionChanged: (value) {
               int idx = 1;
@@ -1340,7 +1346,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 }
                 idx++;
               }
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             onStyleChanged: (value) {
               if (value == null || value == 0) {
@@ -1348,7 +1354,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               } else {
                 widget.model.borderType.set(value);
               }
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             }),
       ),
     );
@@ -1505,7 +1511,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             widget.model.shadowColor.set(Colors.transparent);
             mychangeStack.endTrans();
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
         bodyWidget: _shodowBody(
             shadowColor: widget.model.shadowColor.value,
@@ -1518,32 +1524,32 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               setState(() {
                 widget.model.shadowColor.set(color);
               });
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             onOpacityChanged: (value) {
               widget.model.shadowOpacity.set(value);
               logger.finest('shadowOpacity=${widget.model.shadowOpacity.value}');
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             onSpreadChanged: (value) {
               widget.model.shadowSpread.set(value);
               logger.finest('shadowSpread=${widget.model.shadowSpread.value}');
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             onBlurChanged: (value) {
               widget.model.shadowBlur.set(value);
               logger.finest('shadowBlur=${widget.model.shadowBlur.value}');
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             onDirectionChanged: (value) {
               widget.model.shadowDirection.set(value);
               logger.finest('shadowDirection=${widget.model.shadowDirection.value}');
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             onOffsetChanged: (value) {
               widget.model.shadowOffset.set(value);
               logger.finest('shadowOffset=${widget.model.shadowOffset.value}');
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             },
             onShadowSampleSelected: (spread, blur, direction, distance, opactiy) {
               logger.fine('spread=$spread, blur=$blur, direction=$direction, distance=$distance,');
@@ -1557,7 +1563,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 widget.model.save();
                 mychangeStack.endTrans();
               });
-              _sendEvent!.sendEvent(widget.model);
+              _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
             }
 
             // onOpacityChangeComplete: (value) {
@@ -1847,14 +1853,14 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           setState(() {
             widget.model.shape.set(ShapeType.none);
           });
-          _sendEvent!.sendEvent(widget.model);
+          _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },
         bodyWidget: _shapeListView(
           onShapeTapPressed: (value) {
             setState(() {
               widget.model.shape.set(value);
             });
-            _sendEvent!.sendEvent(widget.model);
+            _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
           },
         ),
       ),

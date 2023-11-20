@@ -349,8 +349,6 @@ class BookManager extends CretaManager {
     //'https://devcreta.com:444/';
     String url = '$apiServer/downloadZip';
 
-   
-
     Response? res = await CretaUtils.post(url, body, onError: (code) {
       showSnackBar(context, '${CretaStudioLang.zipRequestFailed}($code)');
     }, onException: (e) {
@@ -387,6 +385,7 @@ class BookManager extends CretaManager {
       if (res == null) {
         return;
       }
+      _downloadReceivetimer?.cancel();
 
       Map<String, dynamic> responseBody = json.decode(res.body);
       String? status = responseBody['status']; // API 응답에서 URL 추출
@@ -396,12 +395,14 @@ class BookManager extends CretaManager {
         showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}(status=$status)');
         return;
       }
-      if (fileId == null || fileId.isNotEmpty) {
+      if (fileId == null || fileId.isEmpty) {
         showSnackBar(context, '${CretaStudioLang.zipCompleteFailed}($fileId is null)');
         return;
       }
-      _downloadReceivetimer?.cancel();
-      HycopFactory.storage!.downloadFile(fileId, bookMid).then((bool succeed) {
+
+      //print('fileId = $fileId');
+
+      HycopFactory.storage!.downloadFile(fileId, '$bookMid.zip').then((bool succeed) {
         //HycopFactory.storage!.downloadFile(zipUrl, bookMid).then((bool succeed) {
         showSnackBar(context, '${CretaStudioLang.fileDownloading}(${res.statusCode})');
         //});

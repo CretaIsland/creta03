@@ -1029,11 +1029,14 @@ class CretaUtils {
 
   static Future<bool> inviteBook(
       BuildContext context, String email, String bookMid, String bookName, String userName) async {
+    String base = Uri.base.origin;
+    //print('---------------base=$base');
+
     String url = '${CretaAccountManager.getEnterprise!.mediaApiUrl}/sendEmail';
     String option = '''{
         "invitationUserName": "$userName",        
         "cretaBookName": "$bookName",        
-        "cretaBookLink": "$url/${AppRoutes.communityBook}?$bookMid"        
+        "cretaBookLink": "$base${AppRoutes.communityBook}?$bookMid"        
     }''';
     Map<String, dynamic> body = {
       "receiverEmail": ['"$email"'], // 수신인

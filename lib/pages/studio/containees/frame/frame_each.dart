@@ -44,7 +44,7 @@ class FrameEach extends StatefulWidget {
   final double height;
   final Offset frameOffset;
   const FrameEach({
-    super.key,
+    Key? key,
     required this.frameManager,
     required this.pageModel,
     required this.model,
@@ -52,7 +52,7 @@ class FrameEach extends StatefulWidget {
     required this.width,
     required this.height,
     required this.frameOffset,
-  });
+  }) : super(key: key);
 
   @override
   State<FrameEach> createState() => FrameEachState();
@@ -126,6 +126,11 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     return true;
   }
 
+  void invalidate() {
+    // 프레임에서 콘텐츠 영역만 invalidate 를 시킨다.
+    setState(() {});
+  }
+
   void invalidateContentsMain() {
     // 프레임에서 콘텐츠 영역만 invalidate 를 시킨다.
     contentsMainKey.currentState?.invalidate();
@@ -133,7 +138,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
 
   @override
   Widget build(BuildContext context) {
-    print('build FrameEach');
+    //print('build FrameEach');
 
     applyScale = widget.applyScale;
     if (_playTimer == null) {

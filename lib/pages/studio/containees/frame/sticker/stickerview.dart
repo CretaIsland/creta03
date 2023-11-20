@@ -8,6 +8,7 @@ import '../../../../../model/frame_model.dart';
 import '../../../../../model/page_model.dart';
 import '../../../../../player/music/creta_music_mixin.dart';
 import '../../../studio_variables.dart';
+import '../frame_each.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
 
@@ -194,10 +195,12 @@ class Sticker extends StatefulWidget {
   final FrameModel model;
   final String pageMid;
   final bool isOverlay;
+  final GlobalKey<FrameEachState> frameKey;
 
   Sticker({
     Key? key,
     //required this.id,
+    required this.frameKey,
     required this.position,
     required this.angle,
     required this.size,
@@ -215,8 +218,9 @@ class Sticker extends StatefulWidget {
 
 class StickerState extends State<Sticker> with CretaMusicMixin {
   void refresh() {
-    print('sticker refresh !!!');
+    //print('sticker refresh !!!');
     setState(() {});
+    widget.frameKey.currentState?.invalidate();
   }
 
   @override
@@ -226,15 +230,12 @@ class StickerState extends State<Sticker> with CretaMusicMixin {
     if (widget.model.isBackgroundMusic() &&
         isVisible == false &&
         StudioVariables.isPreview == false) {
-      print('showBGM');
+      //print('showBGM');
       return showBGM(StudioVariables.applyScale);
     }
 
-    print('build sticker ($isVisible)');
-    return RepaintBoundary(
-      child:
-          Visibility(visible: isVisible, child: widget.child != null ? widget.child! : Container()),
-    );
+    //print('build sticker ($isVisible)');
+    return Visibility(visible: isVisible, child: widget.child ?? Container());
   }
 
   // bool _isVisible(FrameModel model) {

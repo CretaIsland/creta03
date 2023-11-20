@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../buttons/creta_slider.dart';
+import '../buttons/creta_checkbox.dart';
+import '../buttons/creta_ex_slider.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
-import '../text_field/creta_text_field.dart';
 
 enum SliderValueType {
   normal,
@@ -49,61 +49,74 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
 
   @override
   Widget build(BuildContext context) {
-    return _propertyLine2(
+    return propertyLine(
       name: widget.name,
-      widget1: SizedBox(
-        height: 22,
-        width: 168,
-        child: CretaSlider(
-          key: GlobalKey(),
-          min: widget.min,
-          max: widget.max,
-          value: _makeValue(_value, widget.valueType),
-          onDragComplete: (val) {
-            setState(() {
-              logger.finest('CretaSlider value=$val');
-              _value = _reverseValue(val, widget.valueType);
-            });
-            widget.onChanngeComplete?.call(_value);
-          },
-          onDragging: (val) {
-            // DateTime now = DateTime.now();
-            // if (_lastUpdateTime.difference(now).inMilliseconds.abs() >= 100) {
-            //   print('2222222222222222222222222222222222222222222222222');
-            //   _value = _reverseValue(val, widget.valueType);
-            //   widget.onChannged.call(_value);
-            //   _onChangedInvoked = true;
-            //   _lastUpdateTime = now;
-            // } else {
-            //   _onChangedInvoked = false;
-            // }
-          },
-        ),
-      ),
-      widget2: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CretaTextField.xshortNumber(
-            defaultBorder: Border.all(color: CretaColor.text[100]!),
-            width: 40,
-            limit: 3,
-            textFieldKey: GlobalKey(),
-            value: _makeValueString(_value, widget.valueType),
-            hintText: '',
-            onEditComplete: ((value) {
-              setState(() {
-                _value = _reverseValue(int.parse(value).toDouble(), widget.valueType);
-                widget.onChannged(_value);
-              });
-            }),
-          ),
-          if (widget.postfix != null) Text(widget.postfix!, style: CretaFont.bodySmall),
-          // const Padding(padding: EdgeInsets.only(right: 12))
-        ],
+      widget: CretaExSlider(
+        min: widget.min,
+        max: widget.max,
+        value: _value,
+        valueType: widget.valueType,
+        onChannged: widget.onChannged,
+        onChanngeComplete: widget.onChanngeComplete,
+        postfix: widget.postfix,
       ),
     );
+    // return _propertyLine2(
+    //   name: widget.name,
+    //   widget1: SizedBox(
+    //     height: 22,
+    //     width: 168,
+    //     child: CretaSlider(
+    //       key: GlobalKey(),
+    //       min: widget.min,
+    //       max: widget.max,
+    //       value: _makeValue(_value, widget.valueType),
+    //       onDragComplete: (val) {
+    //         setState(() {
+    //           logger.finest('CretaSlider value=$val');
+    //           _value = _reverseValue(val, widget.valueType);
+    //         });
+    //         widget.onChanngeComplete?.call(_value);
+    //       },
+    //       onDragging: (val) {
+    //         // DateTime now = DateTime.now();
+    //         // if (_lastUpdateTime.difference(now).inMilliseconds.abs() >= 100) {
+    //         //   print('2222222222222222222222222222222222222222222222222');
+    //         //   _value = _reverseValue(val, widget.valueType);
+    //         //   widget.onChannged.call(_value);
+    //         //   _onChangedInvoked = true;
+    //         //   _lastUpdateTime = now;
+    //         // } else {
+    //         //   _onChangedInvoked = false;
+    //         // }
+    //       },
+    //     ),
+    //   ),
+    //   widget2: Row(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     children: [
+    //       CretaTextField.xshortNumber(
+    //         defaultBorder: Border.all(color: CretaColor.text[100]!),
+    //         width: 40,
+    //         limit: 3,
+    //         textFieldKey: GlobalKey(),
+    //         value: _makeValueString(_value, widget.valueType),
+    //         hintText: '',
+    //         onEditComplete: ((value) {
+    //           setState(() {
+    //             _value = _reverseValue(int.parse(value).toDouble(), widget.valueType);
+    //             widget.onChannged(_value);
+    //           });
+    //         }),
+    //       ),
+    //       if (widget.postfix != null) Text(widget.postfix!, style: CretaFont.bodySmall),
+    //       // const Padding(padding: EdgeInsets.only(right: 12))
+    //     ],
+    //   ),
+    // );
   }
 
+  // ignore: unused_element
   String _makeValueString(double value, SliderValueType aType) {
     logger.finest('_makeValueString($value)');
     switch (aType) {
@@ -116,6 +129,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
     }
   }
 
+  // ignore: unused_element
   double _makeValue(double value, SliderValueType aType) {
     logger.finest('_makeValue($value)');
     switch (aType) {
@@ -128,6 +142,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
     }
   }
 
+  // ignore: unused_element
   double _reverseValue(double value, SliderValueType aType) {
     logger.finest('_reverseValue($value)');
     switch (aType) {
@@ -140,6 +155,7 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
     }
   }
 
+  // ignore: unused_element
   Widget _propertyLine2({
     required String name,
     required Widget widget1,
@@ -158,6 +174,33 @@ class _CretaPropertySliderState extends State<CretaPropertySlider> {
           //const SizedBox(width: 20),
           SizedBox(width: widget1Width, child: widget1),
           SizedBox(width: widget2Width, child: widget2),
+        ],
+      ),
+    );
+  }
+
+  Widget propertyLine({
+    required String name,
+    required Widget widget,
+    double topPadding = 20.0,
+    bool hasCheckBox = false,
+    bool isSelected = false,
+    void Function(String, bool, Map<String, bool>)? onCheck,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(top: topPadding),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          hasCheckBox
+              ? CretaCheckbox(
+                  valueMap: {
+                    name: isSelected,
+                  },
+                  onSelected: onCheck ?? (name, isChecked, valueMap) {},
+                )
+              : Text(name, style: titleStyle),
+          widget,
         ],
       ),
     );

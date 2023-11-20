@@ -82,9 +82,9 @@ class FrameManager extends CretaManager {
 
   bool refreshFrame(String mid) {
     String keyStr = stickerKeyMangler(pageModel.mid, mid);
-    GlobalKey<StickerState>? frameKey = _stickerKeyMap[keyStr];
-    if (frameKey == null) return false;
-    frameKey.currentState!.refresh();
+    GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
+    if (stickerKey == null) return false;
+    stickerKey.currentState!.refresh();
     return true;
   }
 

@@ -451,7 +451,12 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       }
     }
 
+    String frameKeyStr =
+        'FrameEach${frameManager!.stickerKeyMangler(widget.pageModel.mid, model.mid)}';
+    GlobalKey<FrameEachState> frameKey = GlobalObjectKey<FrameEachState>(frameKeyStr);
+
     Widget eachFrame = FrameEach(
+      key: frameKey,
       model: model,
       pageModel: widget.pageModel,
       frameManager: frameManager!,
@@ -463,6 +468,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
 
     return Sticker(
       key: stickerKey,
+      frameKey: frameKey,
       isOverlay: model.isOverlay.value,
       model: model,
       pageMid: widget.pageModel.mid,
