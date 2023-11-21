@@ -1036,12 +1036,14 @@ abstract class CretaManager extends AbsExModelManager {
         //save: false,
         doComplete: (val) => reOrdering(),
         undoComplete: (val) => reOrdering(),
+        dontRealTime: true, //  child 를 지울때는 realTime 을 하지 않는다.  엄마가 없기 때문에 할 필요가 없다.
       );
 
       //await setToDB(model);
       logger.fine('${model.mid} removed');
       await removeChild(model.mid);
     }
+    //print('removeAll end');
     reOrdering();
   }
 

@@ -77,7 +77,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     super.initState();
     final PageEventController receiveEvent = Get.find(tag: 'page-property-to-main');
     _receiveEvent = receiveEvent;
-    //final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main');
+    //final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main unused');
     //_receiveEventFromProperty = receiveEventFromProperty;
     //final BoolEventController lineDrawReceiveEvent = Get.find(tag: 'draw-link');
     //_lineDrawReceiveEvent = lineDrawReceiveEvent;

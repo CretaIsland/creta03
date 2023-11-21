@@ -35,7 +35,7 @@ class CretaTextPlayerWidgetState extends State<CretaTextWidget> with CretaTextMi
     final ContentsEventController receiveEvent = Get.find(tag: 'text-property-to-textplayer');
     _receiveEvent = receiveEvent;
     //applyScale = StudioVariables.applyScale;
-    // final FrameEventController regiSendEvent = Get.find(tag: 'frame-property-to-main');
+    // final FrameEventController regiSendEvent = Get.find(tag: 'frame-property-to-main ..unused');
     // sendEvent = regiSendEvent;
   }
 

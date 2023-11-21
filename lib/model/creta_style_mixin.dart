@@ -87,6 +87,10 @@ mixin CretaStyleMixin {
 
     bgColor1 = UndoAble<Color>(src.bgColor1.value, mid, 'bgColor1');
     bgColor2 = UndoAble<Color>(src.bgColor2.value, mid, 'bgColor2');
+
+    //print('src.bgColor1 = ${src.bgColor1.value}');
+    //print('bgColor1 = ${bgColor1.value}');
+
     opacity = UndoAble<double>(src.opacity.value, mid, 'opacity');
     gradationType = UndoAble<GradationType>(src.gradationType.value, mid, 'gradationType');
     textureType = UndoAble<TextureType>(src.textureType.value, mid, 'textureType');

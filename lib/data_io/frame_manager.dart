@@ -18,6 +18,7 @@ import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_preview_menu.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
+import '../pages/studio/containees/frame/frame_thumbnail.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
@@ -57,7 +58,28 @@ class FrameManager extends CretaManager {
   //Map<String, ValueKey> stickerKeyMap = {};
 
   // ignore: prefer_final_fields
-  Map<String, GlobalKey<StickerState>> _stickerKeyMap = {};
+  Map<String, GlobalKey<FrameThumbnailState>> _frameThumbnailKeyMap = {};
+  String frameThumbnailKeyMangler(String pageMid, String frameMid) {
+    return 'FrameThumbnail$pageMid/$frameMid';
+  }
+
+  GlobalKey<FrameThumbnailState> frameThumbnailKeyGen(String pageMid, String frameMid) {
+    String keyStr = frameThumbnailKeyMangler(pageMid, frameMid);
+    GlobalKey<FrameThumbnailState>? frameThumbnailKey = _frameThumbnailKeyMap[keyStr];
+    if (frameThumbnailKey != null) {
+      return frameThumbnailKey;
+    }
+    GlobalObjectKey<FrameThumbnailState> key = GlobalObjectKey<FrameThumbnailState>(keyStr);
+    _frameThumbnailKeyMap[keyStr] = key;
+    return key;
+  }
+
+  GlobalKey<FrameThumbnailState>? findFrameThumbnailKey(String pageMid, String frameMid) {
+    String keyStr = frameThumbnailKeyMangler(pageMid, frameMid);
+    return _frameThumbnailKeyMap[keyStr];
+  }
+
+  final Map<String, GlobalKey<StickerState>> _stickerKeyMap = {};
   //Map<String, GlobalKey<StickerState>> get stickerKeyMap => _stickerKeyMap;
 
   String stickerKeyMangler(String pageMid, String frameMid) {
@@ -84,7 +106,12 @@ class FrameManager extends CretaManager {
     String keyStr = stickerKeyMangler(pageModel.mid, mid);
     GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
     if (stickerKey == null) return false;
-    stickerKey.currentState!.refresh();
+    stickerKey.currentState?.refresh();
+
+    GlobalKey<FrameThumbnailState>? frameThumbnailKey = findFrameThumbnailKey(pageModel.mid, mid);
+    if (frameThumbnailKey != null) {
+      frameThumbnailKey.currentState?.invalidate();
+    }
     return true;
   }
 
@@ -284,7 +311,6 @@ class FrameManager extends CretaManager {
   Future<FrameModel> copyFrame(FrameModel src,
       {String? parentMid, FrameManager? srcFrameManager, bool samePage = true}) async {
     //print('copyFrame**************--------------------------');
-
     FrameModel newModel = FrameModel('', bookModel.mid);
     newModel.copyFrom(src, newMid: newModel.mid, pMid: parentMid);
 
@@ -313,6 +339,7 @@ class FrameManager extends CretaManager {
       FrameModel org = ele as FrameModel;
       if (org.isRemoved.value == true) continue;
       FrameModel newModel = FrameModel('', bookMid);
+      //print('copy Frames');
       newModel.copyFrom(org, newMid: newModel.mid, pMid: pageMid);
       newModel.order.set(order++, save: false, noUndo: true);
       logger.fine('create new FrameModel ${newModel.name},${newModel.mid}');

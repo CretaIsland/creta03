@@ -274,24 +274,28 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
                       FrameModel frameModel = model as FrameModel;
 
                       //if (_frameManager!.isVisible(model) == false) {
-                      if (model.isVisible(widget.pageModel.mid) == false &&
-                          model.isBackgroundMusic() == false) {
+                      if (frameModel.isVisible(widget.pageModel.mid) == false &&
+                          frameModel.isBackgroundMusic() == false) {
                         return SizedBox.shrink();
                       }
 
                       //logger.fine('frameManager.orderMapIterator-------${frameModel.name.value}');
                       double frameWidth =
-                          (model.width.value /* + model.shadowSpread.value */) * applyScale;
+                          (frameModel.width.value /* + model.shadowSpread.value */) * applyScale;
                       double frameHeight =
-                          (model.height.value /* + model.shadowSpread.value */) * applyScale;
+                          (frameModel.height.value /* + model.shadowSpread.value */) * applyScale;
                       // isOverlay   가 있기 때문에, page mid 도 키로 쓰지 않으면 중복된다.
+                      GlobalKey<FrameThumbnailState> key =
+                          _frameManager!.frameThumbnailKeyGen(widget.pageModel.mid, frameModel.mid);
+
+                      //print('frameModel.bgColor1.value =  ${frameModel.bgColor1.value}');
+
                       Widget frameBox = SizedBox(
                         width: frameWidth,
                         height: frameHeight,
                         child: FrameThumbnail(
-                          key: GlobalObjectKey(
-                              'FrameThumbnail${widget.pageModel.mid}/${frameModel.mid}'),
-                          model: model,
+                          key: key,
+                          model: frameModel,
                           pageModel: widget.pageModel,
                           frameManager: _frameManager!,
                           applyScale: applyScale,

@@ -112,7 +112,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   void _invalidateFrame() {
     if (!_frameManager!.refreshFrame(widget.model.mid)) {
       // key 를 찾지못한 경우만, sendEvent 를 한다.
-      _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
+      _sendEvent!.sendEvent(widget.model);
     }
     //_invalidateFrame();  // _sendEvent!.sendEvent(widget.model);;
   }
@@ -1058,6 +1058,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         onColor1Changed: (val) {
           setState(() {
             widget.model.bgColor1.set(val);
+            //print('model.bgColor1 = ${widget.model.bgColor1.value}');
           });
           _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
         },

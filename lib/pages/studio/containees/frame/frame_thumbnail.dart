@@ -44,10 +44,10 @@ class FrameThumbnail extends StatefulWidget {
   });
 
   @override
-  State<FrameThumbnail> createState() => _FrameThumbnailState();
+  State<FrameThumbnail> createState() => FrameThumbnailState();
 }
 
-class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
+class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, FramePlayMixin {
   double applyScale = 1;
   bool _isShowBorder = false;
 
@@ -61,6 +61,10 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
   void dispose() {
     super.dispose();
     //logger.fine('FrameThumbnail dispose================');
+  }
+
+  void invalidate() {
+    setState(() {});
   }
 
   @override
@@ -326,38 +330,41 @@ class _FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fr
       );
     }
 
-    if (_contentsManager!.length() == 0) {
-      // print('No contents in this frame');
-      return const SizedBox.shrink();
-    }
+    // if (_contentsManager!.length() == 0) {
+    //   // print('No contents in this frame');
+    //   return const SizedBox.shrink();
+    // }
 
     return _childThumbnail(model, useColor);
   }
 
   Widget _childThumbnail(FrameModel model, bool useColor) {
+    //print('_childThumbnail(${model.bgColor1.value}, $useColor)');
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,
       width: double.infinity,
       height: double.infinity,
-      child: ClipRect(
-        clipBehavior: Clip.hardEdge,
-        child: ContentsThumbnail(
-          key: GlobalObjectKey<ContentsThumbnailState>(
-              'ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
-          frameModel: model,
-          pageModel: widget.pageModel,
-          frameManager: frameManager!,
-          contentsManager: _contentsManager!,
-          width: widget.width,
-          height: widget.height,
-          applyScale: applyScale,
-        ),
-        // child: Image.asset(
-        //   'assets/creta_default.png',
-        //   fit: BoxFit.cover,
-        // ),
-      ),
+      child: _contentsManager!.length() > 0
+          ? ClipRect(
+              clipBehavior: Clip.hardEdge,
+              child: ContentsThumbnail(
+                key: GlobalObjectKey<ContentsThumbnailState>(
+                    'ContentsThumbnail${widget.pageModel.mid}/${model.mid}'),
+                frameModel: model,
+                pageModel: widget.pageModel,
+                frameManager: frameManager!,
+                contentsManager: _contentsManager!,
+                width: widget.width,
+                height: widget.height,
+                applyScale: applyScale,
+              ),
+              // child: Image.asset(
+              //   'assets/creta_default.png',
+              //   fit: BoxFit.cover,
+              // ),
+            )
+          : const SizedBox.shrink(),
     );
   }
 

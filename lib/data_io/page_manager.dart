@@ -213,7 +213,8 @@ class PageManager extends CretaManager {
     defaultPage.isRemoved.set(false, noUndo: true, save: false);
     await createToDB(defaultPage);
     insert(defaultPage, postion: getLength());
-    selectedMid = defaultPage.mid;
+    //selectedMid = defaultPage.mid;
+    setSelectedMid(defaultPage.mid);
     return defaultPage;
   }
 
@@ -222,7 +223,8 @@ class PageManager extends CretaManager {
     defaultPage.isRemoved.set(false, noUndo: true, save: false);
     await setToDB(defaultPage);
     insert(defaultPage, postion: getLength());
-    selectedMid = defaultPage.mid;
+    //selectedMid = defaultPage.mid;
+    setSelectedMid(defaultPage.mid);
     return defaultPage;
   }
 
@@ -576,10 +578,10 @@ class PageManager extends CretaManager {
     } else {
       nextOrderVal = (nextOrderVal + srcOrder) / 2;
     }
-    newModel.order.set(nextOrderVal, save: false, noUndo: true);
-    newModel.isRemoved.set(false, save: false, noUndo: true);
-    newModel.name.set('${src.name.value}${CretaLang.copyOf}', save: false, noUndo: true);
 
+    newModel.order.set(nextOrderVal, save: false, noUndo: false);
+    //newModel.isRemoved.set(false, save: false, noUndo: true);
+    newModel.name.set('${src.name.value}${CretaLang.copyOf}', save: false, noUndo: false);
     logger.fine('create new page ${newModel.mid}');
 
     if (srcPageManager != null) {
@@ -590,9 +592,22 @@ class PageManager extends CretaManager {
       await frameManager?.copyFrames(newModel.mid, bookModel!.mid);
     }
 
-    await createToDB(newModel);
-    insert(newModel, postion: getLength());
-    selectedMid = newModel.mid;
+    await _createNextPage(newModel);
+    MyChange<PageModel> c = MyChange<PageModel>(
+      newModel,
+      execute: () async {},
+      redo: () async {
+        await _redoCreateNextPage(newModel);
+      },
+      undo: (PageModel old) async {
+        await _undoCreateNextPage(old);
+      },
+    );
+    mychangeStack.add(c);
+
+    // await createToDB(newModel);
+    // insert(newModel, postion: getLength());
+    // selectedMid = newModel.mid;
 
     return newModel;
   }
@@ -665,6 +680,7 @@ class PageManager extends CretaManager {
     model.isRemoved.set(
       true,
       doComplete: (val) {
+        //print('removePage doComplete');
         if (isSelected(model.mid)) {
           if (gotoNext()) {
             gotoPrev();
@@ -673,12 +689,13 @@ class PageManager extends CretaManager {
       },
     );
     removeChild(model.mid).then((value) {
-      //mychangeStack.endTrans();
+      mychangeStack.endTrans();
       if (isSelected(model.mid)) {
         if (gotoNext()) {
           gotoPrev();
         }
       }
+      //print('removePage');
       notify();
       LeftMenuPage.treeInvalidate();
       return;
