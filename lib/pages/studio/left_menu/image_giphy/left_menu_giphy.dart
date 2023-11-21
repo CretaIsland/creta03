@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/design_system/text_field/creta_search_bar.dart';
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/pages/studio/left_menu/image_giphy/giphy_service.dart';
@@ -12,20 +13,21 @@ import '../../../../data_io/frame_manager.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
+import '../../containees/frame/frame_play_mixin.dart';
 import '../../studio_constant.dart';
+import '../left_template_mixin.dart';
 import 'giphy_selected.dart';
 
 class LeftMenuGiphy extends StatefulWidget {
-  static late String selectedGif;
+  static String selectedGif = '';
   const LeftMenuGiphy({super.key});
 
   @override
   State<LeftMenuGiphy> createState() => _LeftMenuGiphyState();
 }
 
-class _LeftMenuGiphyState extends State<LeftMenuGiphy> {
+class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, FramePlayMixin {
   final double verticalPadding = 18;
-  final double horizontalPadding = 24;
   final TextEditingController _searchController = TextEditingController();
   List<dynamic> _gifs = [];
 
@@ -33,14 +35,34 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> {
   late double bodyWidth;
   GoogleTranslator translator = GoogleTranslator();
 
+  late String _selectedGifUrl;
+  double x = 150; // frame x-coordinator
+  double y = 150; // frame y-coordinator
+
+  int _visibleGifCount = 15;
+  // final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
-    logger.info('_LeftMenuImageState.initState');
+    super.initState();
+    logger.info('_LeftMenuGIPHYState.initState');
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     searchText = 'morning';
+    _selectedGifUrl = LeftMenuGiphy.selectedGif;
     _searchGifs(searchText);
-    LeftMenuGiphy.selectedGif = '';
-    super.initState();
+  }
+
+  void _loadMoreItems() {
+    const pageSize = 15;
+    int newVisibleGifCount = _visibleGifCount + pageSize;
+
+    if (newVisibleGifCount > _gifs.length) {
+      newVisibleGifCount = _gifs.length;
+    }
+
+    setState(() {
+      _visibleGifCount = newVisibleGifCount;
+    });
   }
 
   @override
@@ -85,44 +107,57 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> {
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
-                itemCount: _gifs.length,
+                itemCount: _visibleGifCount,
                 itemBuilder: (context, index) {
-                  return _getElement(_gifs[index]);
+                  if (index < _gifs.length) {
+                    return _getElement(_gifs[index]);
+                  } else {
+                    return Center(child: Snippet.showWaitSign());
+                  }
                 },
               ),
             ),
+            const SizedBox(height: 20.0),
+            if (_visibleGifCount < _gifs.length)
+              ElevatedButton(
+                onPressed: _loadMoreItems,
+                child: const Text('더보기'),
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _getElement(
-    String selectedGif,
-  ) {
+  Widget _getElement(String getGif) {
+    _selectedGifUrl = getGif;
     return GiphySelectedWidget(
-      gifUrl: selectedGif,
+      gifUrl: _selectedGifUrl,
       width: 90.0,
       height: 90.0,
       onPressed: _onPressedCreateSelectedGif,
     );
   }
 
-  void _onPressedCreateSelectedGif(String selectedGif) async {
-    await _createGiphyFrame(selectedGif);
-    LeftMenuGiphy.selectedGif = selectedGif;
+  void _onPressedCreateSelectedGif(String selectedUrl) async {
+    setState(() {
+      LeftMenuGiphy.selectedGif = selectedUrl;
+    });
+    await _createGiphyFrame(selectedUrl);
     BookMainPage.pageManagerHolder!.notify();
   }
 
   Future<void> _createGiphyFrame(String selectedGif) async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
+    int frameCounter = 1;
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
     double width = pageModel.width.value * 0.2;
     double height = pageModel.height.value * 0.3;
-    double x = (pageModel.width.value - width) / 2;
-    double y = (pageModel.height.value - height) / 2;
+
+    x += frameCounter * 40.0;
+    y += frameCounter * 40.0;
 
     FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
     if (frameManager == null) {
@@ -137,6 +172,8 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> {
       bgColor1: Colors.transparent,
       type: FrameType.animation,
     );
+
     mychangeStack.endTrans();
+    frameCounter++;
   }
 }
