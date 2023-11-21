@@ -295,6 +295,7 @@ mixin FramePlayMixin {
 
   Widget giphyFrame(FrameModel model, double width, double height) {
     String selectedGif = LeftMenuGiphy.selectedGif;
+    print('LeftMenuGiphy.selectedGif ${LeftMenuGiphy.selectedGif}');
     return GiphySelectedWidget(
       gifUrl: selectedGif,
       width: width,
