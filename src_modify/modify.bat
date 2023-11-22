@@ -110,3 +110,6 @@ copy src_modify\color_picker.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\fl
 
 #skpark modify 23/11/20
 copy src_modify\scroll_loop_auto_scroll.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\scroll_loop_auto_scroll-0.0.5\lib\scroll_loop_auto_scroll.dart"
+
+#nr.han modify 23/11/22
+copy src_modify\client_browser.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\appwrite-11.0.0\lib\src\client_browser.dart"
