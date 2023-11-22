@@ -2,8 +2,7 @@
 
 //import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/absModel/abs_ex_model.dart';
+import 'package:hycop/hycop.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../data_io/creta_manager.dart';
@@ -124,4 +123,8 @@ class CretaModel extends AbsExModel {
     }
     return retval;
   }
+}
+
+class DummyModel extends CretaModel {
+  DummyModel({super.pmid = '', super.type = ExModelType.none, super.parent = ''});
 }

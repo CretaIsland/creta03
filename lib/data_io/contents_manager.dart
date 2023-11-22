@@ -1256,38 +1256,97 @@ class ContentsManager extends CretaManager {
       return;
     }
 
-    if (targetList != null) {
-      if (ContentsManager.dummyManager != null) {
-        int count = 0;
-        for (var ele in targetList) {
-          ContentsModel model = ele as ContentsModel;
-          if (model.isRemoved.value == true) {
-            continue;
-          }
-          if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
-            continue;
-          }
-          if (model.contentsType != ContentsType.image &&
-              model.contentsType != ContentsType.video) {
-            continue;
-          }
+    if (targetList == null) {
+      return;
+    }
+    if (ContentsManager.dummyManager == null) {
+      return;
+    }
+    mychangeStack.startTrans();
 
-          // 여기서 CotentsModel 을  copy 해야한다.
-          ContentsModel newModel = ContentsModel('', model.realTimeKey);
-          newModel.copyFrom(model, newMid: newModel.mid, pMid: teamId);
+    int count = 0;
+    for (var ele in targetList) {
+      ContentsModel model = ele as ContentsModel;
+      if (model.isRemoved.value == true) {
+        continue;
+      }
+      if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
+        continue;
+      }
+      if (model.contentsType != ContentsType.image && model.contentsType != ContentsType.video) {
+        continue;
+      }
+      // 여기서 CotentsModel 을  copy 해야한다.
+      // ContentsModel newModel = ContentsModel('', model.realTimeKey);
+      // newModel.copyFrom(model, newMid: newModel.mid, pMid: teamId);
+      // await ContentsManager.dummyManager!.createToDB(newModel);
+      ContentsModel newModel = ContentsModel('', model.realTimeKey);
+      newModel.copyFrom(model, newMid: newModel.mid, pMid: teamId);
+      MyChange<ContentsModel> c = MyChange<ContentsModel>(
+        newModel,
+        execute: () async {
+          newModel.isRemoved.set(false, noUndo: true, save: false);
           await ContentsManager.dummyManager!.createToDB(newModel);
+          return newModel;
+        },
+        redo: () async {
+          newModel.isRemoved.set(false, noUndo: true, save: false);
+          await ContentsManager.dummyManager!.setToDB(newModel);
+          return newModel;
+        },
+        undo: (ContentsModel old) async {
+          old.isRemoved.set(true, noUndo: true, save: false);
+          ContentsManager.dummyManager!.remove(old);
+          await ContentsManager.dummyManager!.setToDB(old);
+          return old;
+        },
+      );
+      mychangeStack.add(c);
 
-          if (await depotManager.createNextDepot(newModel.mid, newModel.contentsType, teamId) !=
-              null) {
+      if (await depotManager.createNextDepot(newModel.mid, newModel.contentsType, teamId) != null) {
+        MyChange<ContentsModel> c = MyChange<ContentsModel>(
+          newModel,
+          execute: () async {
             depotManager.filteredContents.insert(0, newModel);
             count++;
-          }
-        }
-        if (notify && count > 0) {
-          depotManager.notify();
-        }
+            return newModel;
+          },
+          redo: () async {
+            depotManager.filteredContents.insert(0, newModel);
+            count++;
+            return newModel;
+          },
+          undo: (ContentsModel old) async {
+            depotManager.filteredContents.remove(old);
+            depotManager.notify();
+            count--;
+            return old;
+          },
+        );
+        mychangeStack.add(c);
       }
     }
+    if (notify && count > 0) {
+      DummyModel dummyModel = DummyModel();
+      MyChange<DummyModel> c = MyChange<DummyModel>(
+        dummyModel,
+        execute: () async {
+          depotManager.notify();
+          return dummyModel;
+        },
+        redo: () async {
+          depotManager.notify();
+          return dummyModel;
+        },
+        undo: (DummyModel old) async {
+          // undo transaction 은 역순이므로, 여기서 notify 해봐야 소용없다.
+          return old;
+        },
+      );
+      mychangeStack.add(c);
+    }
+    mychangeStack.endTrans();
+
     // if (selectedModel != null) {
     //   if (await depotManager.createNextDepot(
     //           selectedModel.mid, selectedModel.contentsType, teamId) !=
