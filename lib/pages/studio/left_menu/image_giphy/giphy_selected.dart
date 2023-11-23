@@ -24,73 +24,78 @@ class GiphySelectedWidget extends StatefulWidget {
 class _GiphySelectedWidgetState extends State<GiphySelectedWidget> {
   bool _isHover = false;
   bool _isClicked = false;
-  String? selectedGif;
 
   @override
   void initState() {
-    selectedGif = widget.gifUrl;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.onPressed == null ? _noActionCase() : _hasActionCase();
-  }
-
-  Widget _main() {
-    return CustomImage(
-      width: widget.width,
-      height: widget.height,
-      image: selectedGif!,
-    );
-  }
-
-  Widget _hasActionCase() {
-    return MouseRegion(
-      onExit: (value) {
-        setState(() {
-          _isHover = false;
-          _isClicked = false;
-        });
-      },
-      onEnter: (value) {
-        setState(() {
-          _isHover = true;
-        });
-      },
-      child: GestureDetector(
-        onLongPressDown: (d) {
-          setState(() {
-            _isClicked = true;
-          });
-          widget.onPressed?.call(selectedGif!);
-        },
-        child: Container(
-          width: _isClicked ? widget.width + 4 : widget.width,
-          height: _isClicked ? widget.height + 4 : widget.height,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: _isHover ? CretaColor.primary : CretaColor.text[400]!,
-              width: _isHover ? 4 : 1,
-            ),
-            color: Colors.transparent,
-          ),
-          child: Center(
-            child: _main(),
-          ),
+    Widget gifBox = Container(
+      width: _isClicked ? widget.width + 4 : widget.width,
+      height: _isClicked ? widget.height + 4 : widget.height,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: _isHover ? CretaColor.primary : CretaColor.text[400]!,
+          width: _isHover ? 4 : 1,
+        ),
+        color: Colors.transparent,
+      ),
+      child: Center(
+        child: CustomImage(
+          width: widget.width,
+          height: widget.height,
+          image: widget.gifUrl,
         ),
       ),
     );
-  }
 
-  Widget _noActionCase() {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
+    if (widget.onPressed == null) {
+      return gifBox;
+    }
+
+    Widget emptyBox = Container(
+      width: 90,
+      height: 90,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: _isClicked ? CretaColor.primary : Colors.transparent,
+          width: _isClicked ? 3 : 1,
+        ),
       ),
-      width: widget.width,
-      height: widget.height,
-      child: Center(child: _main()),
+    );
+
+    return InkWell(
+      onHover: (isHover) {
+        setState(() {
+          _isHover = isHover;
+          if (isHover == true) {
+            _isClicked = isHover;
+          }
+        });
+      },
+      onTapDown: (details) {
+        setState(() {
+          _isClicked = true;
+        });
+        //widget.onPressed?.call(widget.gifUrl);
+      },
+      onDoubleTap: () {
+        //setState(() {
+        _isClicked = true;
+        //});
+        widget.onPressed?.call(widget.gifUrl);
+      },
+      onSecondaryTapDown: (details) {},
+      child: Draggable(
+        data: widget.gifUrl,
+        onDragCompleted: () {},
+        feedback: emptyBox,
+        childWhenDragging: emptyBox,
+        child: gifBox,
+      ),
+      //),
     );
   }
 }
