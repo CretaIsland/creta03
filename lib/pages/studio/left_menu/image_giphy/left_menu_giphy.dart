@@ -91,62 +91,62 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<dynamic>>(
-        future: _searchGifs(searchText),
-        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-          if (snapshot.hasError) {
-            //error가 발생하게 될 경우 반환하게 되는 부분
-            logger.severe("data fetch error(WaitDatum)");
-            return const Center(child: Text('data fetch error(WaitDatum)'));
-          }
-          if (snapshot.hasData == false) {
-            logger.finest("wait data ...(WaitData)");
-            return Center(
-              child: Snippet.showWaitSign(),
-            );
-          }
-          if (snapshot.connectionState != ConnectionState.done) {
-            logger.finest("founded ${snapshot.data!}");
-            return const SizedBox.shrink();
-          }
-          _gifs = snapshot.data!;
-          int gifCount = _gifs.length;
-          return SizedBox(
-            height: StudioVariables.workHeight - 148.0,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _textQuery(),
-                  const SizedBox(height: 20.0),
-                  Expanded(
-                    child: GridView.builder(
-                      key: UniqueKey(), // widget rebuilt entirely when the key changed.
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                      ),
-                      itemCount: gifCount > _visibleGifCount ? _visibleGifCount : gifCount,
-                      itemBuilder: (context, index) {
-                        return _getElement(_gifs[index], index);
-                      },
+    return SizedBox(
+      height: StudioVariables.workHeight - 148.0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _textQuery(),
+            const SizedBox(height: 20.0),
+            Expanded(
+              child: FutureBuilder<List<dynamic>>(
+                future: _searchGifs(searchText),
+                builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                  if (snapshot.hasError) {
+                    //error가 발생하게 될 경우 반환하게 되는 부분
+                    logger.severe("data fetch error(WaitDatum)");
+                    return const Center(child: Text('키워드를입력해주세요!'));
+                  }
+                  if (snapshot.hasData == false) {
+                    logger.finest("wait data ...(WaitData)");
+                    return Center(
+                      child: Snippet.showWaitSign(),
+                    );
+                  }
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    logger.finest("founded ${snapshot.data!}");
+                    return const SizedBox.shrink();
+                  }
+                  _gifs = snapshot.data!;
+                  int gifCount = _gifs.length;
+                  return GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
                     ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  if (_visibleGifCount < _gifs.length)
-                    BTN.line_blue_t_m(
-                      text: CretaStudioLang.viewMore,
-                      onPressed: _loadMoreItems,
-                    ),
-                  const SizedBox(height: 16.0),
-                  Image.asset('giphy_official_logo.png'),
-                ],
+                    itemCount: gifCount > _visibleGifCount ? _visibleGifCount : gifCount,
+                    itemBuilder: (context, index) {
+                      return _getElement(_gifs[index], index);
+                    },
+                  );
+                },
               ),
             ),
-          );
-        });
+            const SizedBox(height: 16.0),
+            if (_visibleGifCount < 50)
+              BTN.line_blue_t_m(
+                text: CretaStudioLang.viewMore,
+                onPressed: _loadMoreItems,
+              ),
+            const SizedBox(height: 16.0),
+            Image.asset('giphy_official_logo.png'),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _getElement(String getGif, int index) {
