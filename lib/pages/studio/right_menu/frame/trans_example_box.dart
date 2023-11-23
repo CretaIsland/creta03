@@ -4,6 +4,7 @@ import 'package:creta03/design_system/component/example_box_mixin.dart';
 import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:flutter/material.dart';
 import '../../../../data_io/frame_manager.dart';
+//import '../../../../design_system/dialog/creta_alert_dialog.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/frame_model.dart';
 
@@ -59,33 +60,36 @@ class _TransExampleBoxState extends State<TransExampleBox> with ExampleBoxStateM
     setState(() {});
   }
 
-  void showAnnouceDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          content: const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text('캐러셀 디스플레이를 적용하려면 최소 3개의 이미지가 있어야 합니다.'),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0))),
-                child: const Text('확인'),
-              ),
-            )
-          ],
-        );
-      },
-    );
-  }
+  // void showAnnouceDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return CretaAlertDialog(
+  //         //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+  //         content: const Padding(
+  //           padding: EdgeInsets.all(16.0),
+  //           child: Text('캐러셀 디스플레이를 적용하려면 최소 3개의 이미지가 있어야 합니다.'),
+  //         ),
+  //         onPressedOK: () {
+  //           Navigator.of(context).pop();
+  //         },
+  //         // actions: [
+  //         //   Padding(
+  //         //     padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
+  //         //     child: ElevatedButton(
+  //         //       onPressed: () {
+  //         //         Navigator.of(context).pop();
+  //         //       },
+  //         //       style: ElevatedButton.styleFrom(
+  //         //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0))),
+  //         //       child: const Text('확인'),
+  //         //     ),
+  //         //   )
+  //         // ],
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

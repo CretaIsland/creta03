@@ -168,7 +168,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             pageModel: widget.page,
           ),
           _pageDropZone(widget.book.mid),
-          _pageController(),
+          if (StudioVariables.isPreview == false) _pageController(),
           for (final sticker in stickers) _drawEachStiker(sticker),
           _drawMiniMenu(),
         ],

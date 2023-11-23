@@ -5,7 +5,8 @@ import 'package:hycop/hycop.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../design_system/buttons/creta_checkbox.dart';
 import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
+//import '../../../../design_system/creta_font.dart';
+import '../../../../design_system/dialog/creta_dialog.dart';
 import '../../../../design_system/text_field/creta_text_field.dart';
 import '../../../../lang/creta_lang.dart';
 import '../../../../lang/creta_studio_lang.dart';
@@ -69,66 +70,78 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
   @override
   Widget build(BuildContext context) {
     _setName();
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: SafeArea(
-        child: Container(
-          width: widget.width,
-          height: widget.height,
-          padding: const EdgeInsets.all(20),
+    return CretaDialog(
+      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      title: CretaStudioLang.editFilterDialog,
+      width: widget.width,
+      height: widget.height,
+      crossAxisAlign: CrossAxisAlignment.start,
+      content: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 30,
+            right: 30,
+            bottom: 8,
+          ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                children: [
-                  Padding(
-                    // 타이틀
-                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          CretaStudioLang.editFilterDialog,
-                          style: CretaFont.titleMedium,
-                        ),
-                        BTN.fill_gray_i_m(
-                            icon: Icons.close_outlined,
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            }),
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    height: 22,
-                    indent: 0,
-                  ),
-                ],
-              ),
+              // Column(
+              //   children: [
+              //     Padding(
+              //       // 타이틀
+              //       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Text(
+              //             CretaStudioLang.editFilterDialog,
+              //             style: CretaFont.titleMedium,
+              //           ),
+              //           BTN.fill_gray_i_m(
+              //               icon: Icons.close_outlined,
+              //               onPressed: () {
+              //                 Navigator.of(context).pop();
+              //               }),
+              //         ],
+              //       ),
+              //     ),
+              //     const Divider(
+              //       height: 22,
+              //       indent: 0,
+              //     ),
+              //   ],
+              // ),
               SizedBox(
-                height: widget.height - 200,
+                height: widget.height - 110,
                 child: SingleChildScrollView(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (widget.isNew)
-                        CretaCheckbox(
-                          //enable: !widget.isNew,
-                          valueMap: {
-                            CretaStudioLang.newfilter: _isNew,
-                          },
-                          onSelected: (name, isChecked, valueMap) {
-                            setState(() {
-                              _isNew = isChecked;
-                              if (isChecked) {
-                                _newName = '';
-                                _filter = FilterModel(CretaAccountManager.currentLoginUser.email);
-                              }
-                            });
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: CretaCheckbox(
+                            //enable: !widget.isNew,
+                            valueMap: {
+                              CretaStudioLang.newfilter: _isNew,
+                            },
+                            onSelected: (name, isChecked, valueMap) {
+                              setState(() {
+                                _isNew = isChecked;
+                                if (isChecked) {
+                                  _newName = '';
+                                  _filter = FilterModel(CretaAccountManager.currentLoginUser.email);
+                                }
+                              });
+                            },
+                          ),
                         ),
                       Padding(
                           // 필터 이름
-                          padding: const EdgeInsets.only(top: 12, left: 30, right: 30, bottom: 6),
+                          padding: const EdgeInsets.only(top: 6, bottom: 6),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -155,14 +168,17 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                               ])),
                       Padding(
                         // excludes
-                        padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
+                        padding: const EdgeInsets.only(top: 6),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              CretaStudioLang.excludeTag,
-                              style: titleStyle,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                CretaStudioLang.excludeTag,
+                                style: titleStyle,
+                              ),
                             ),
                             SizedBox(
                               width: 210,
@@ -231,13 +247,13 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
               ),
               Container(
                 // 저장과 취소, 삭제 버튼
-                padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
+                padding: const EdgeInsets.only(top: 12),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    BTN.fill_blue_t_m(
-                      width: 55,
+                    BTN.line_red_t_m(
+                      //width: 55,
                       text: _isNew ? CretaLang.create : CretaLang.save,
                       onPressed: () async {
                         if (_filter!.excludes.isEmpty) {
@@ -280,7 +296,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                       },
                     ),
                     const SizedBox(
-                      width: 20,
+                      width: 8,
                     ),
                     // if (!_isNew)
                     //   BTN.fill_blue_t_m(
@@ -305,8 +321,8 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                     //           });
                     //     },
                     //   ),
-                    BTN.fill_blue_t_m(
-                      width: 55,
+                    BTN.line_red_t_m(
+                      //width: 55,
                       text: CretaLang.close,
                       onPressed: () {
                         setState(() {

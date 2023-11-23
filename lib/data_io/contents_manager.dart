@@ -366,7 +366,7 @@ class ContentsManager extends CretaManager {
     iamBusy = true;
     ContentsModel? model = getSelected() as ContentsModel?;
     if (model == null) {
-      showSnackBar(context, CretaLang.contentsNotDeleted, duration: _snackBarDuration);
+      showSnackBar(context, CretaLang.contentsNotSeleted, duration: _snackBarDuration);
       await Future.delayed(_snackBarDuration);
       iamBusy = false;
       return;
@@ -377,7 +377,7 @@ class ContentsManager extends CretaManager {
       iamBusy = false;
       return;
     }
-    showSnackBar(context, CretaLang.contentsNotDeleted, duration: _snackBarDuration);
+    showSnackBar(context, CretaLang.contentsNotSeleted, duration: _snackBarDuration);
     await Future.delayed(_snackBarDuration);
     iamBusy = false;
     return;

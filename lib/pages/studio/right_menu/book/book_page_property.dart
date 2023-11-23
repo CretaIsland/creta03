@@ -633,8 +633,8 @@ class _BookPagePropertyState extends State<BookPageProperty> with PropertyMixin 
                     context: context,
                     builder: (BuildContext context) {
                       return FilterDialog(
-                        width: 500,
-                        height: 500,
+                        width: 414,
+                        height: 372,
                         model: widget.model,
                         isNew: widget.model.filter.value.isEmpty,
                         onComplete: (val) {
