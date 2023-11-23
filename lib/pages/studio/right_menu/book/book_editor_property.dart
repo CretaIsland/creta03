@@ -95,31 +95,31 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
                 ..._defaultScope(),
                 ..._invitedPeople(),
                 ..._invitedPeople(isTeam: true),
-                if (widget.isDialog)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        // BTN.line_blue_t_m(
-                        //   width: 24,
-                        //   text: CretaLang.cancel,
-                        //   onPressed: () {
-                        //     Navigator.of(context).pop();
-                        //   },
-                        // ),
-                        // const SizedBox(width: 8),
-                        BTN.fill_blue_t_m(
-                          width: 55,
-                          text: CretaLang.confirm,
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                    ),
-                  )
+                // if (widget.isDialog)
+                //   Padding(
+                //     padding: const EdgeInsets.only(top: 20),
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.end,
+                //       children: [
+                //         // BTN.line_blue_t_m(
+                //         //   width: 24,
+                //         //   text: CretaLang.cancel,
+                //         //   onPressed: () {
+                //         //     Navigator.of(context).pop();
+                //         //   },
+                //         // ),
+                //         // const SizedBox(width: 8),
+                //         BTN.fill_blue_t_m(
+                //           width: 55,
+                //           text: CretaLang.confirm,
+                //           onPressed: () {
+                //             Navigator.of(context).pop();
+                //           },
+                //         ),
+                //         const SizedBox(width: 8),
+                //       ],
+                //     ),
+                //   )
               ],
             ),
           );
@@ -128,30 +128,30 @@ class _BookEditorPropertyState extends State<BookEditorProperty> with PropertyMi
 
   List<Widget> _scope() {
     return [
-      if (widget.isDialog)
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                CretaLang.invite,
-                style: CretaFont.titleMedium,
-              ),
-              if (widget.isDialog)
-                BTN.fill_gray_i_m(
-                    icon: Icons.close_outlined,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
-            ],
-          ),
-        ),
-      if (widget.isDialog)
-        const Divider(
-          height: 22,
-          indent: 0,
-        ),
+      // if (widget.isDialog)
+      //   Padding(
+      //     padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      //     child: Row(
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         Text(
+      //           CretaLang.invite,
+      //           style: CretaFont.titleMedium,
+      //         ),
+      //         if (widget.isDialog)
+      //           BTN.fill_gray_i_m(
+      //               icon: Icons.close_outlined,
+      //               onPressed: () {
+      //                 Navigator.of(context).pop();
+      //               }),
+      //       ],
+      //     ),
+      //   ),
+      // if (widget.isDialog)
+      //   const Divider(
+      //     height: 22,
+      //     indent: 0,
+      //   ),
       if (widget.isDialog == false)
         Padding(
           padding: EdgeInsets.only(bottom: 12, top: widget.isDialog ? 12 : 0),

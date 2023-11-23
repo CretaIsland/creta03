@@ -39,6 +39,7 @@ class LeftMenuPage extends StatefulWidget {
   static GlobalObjectKey<MyTreeViewState> treeViewKey =
       GlobalObjectKey<MyTreeViewState>('treeViewKey');
   static bool _flipToTree = true;
+  static bool get flipToTree => _flipToTree;
   static List<Node> _nodes = [];
   static final Map<String, ContaineeEnum> _nodeKeys = {};
   static final Map<String, CretaModel> _nodeModels = {};
@@ -287,6 +288,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                         LeftMenuPage._flipToTree = !LeftMenuPage._flipToTree;
                       },
                     );
+                    BookMainPage.leftMenuNotifier?.notify();
                   })),
             ),
         ],
@@ -724,7 +726,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                       ? Container(
                           height: pageHeight,
                           width: pageWidth,
-                          color: Colors.black.withOpacity(0.25))
+                          color: Colors.white.withOpacity(0.75))
                       : Container(),
                 ],
               ),

@@ -333,8 +333,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             if (currentStep > 1 && currentStep < 4)
-                              BTN.line_blue_t_m(
-                                width: 24,
+                              BTN.line_red_t_m(
+                                //width: 24,
                                 text: widget.prevBtTitle,
                                 onPressed: widget.onPrev ??
                                     () {
@@ -345,8 +345,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
                               ),
                             const SizedBox(width: 8),
                             if (currentStep < 4)
-                              BTN.fill_blue_t_m(
-                                width: 55,
+                              BTN.line_red_t_m(
+                                //width: 55,
                                 text: widget.nextBtTitle,
                                 onPressed: widget.onNext ??
                                     () {

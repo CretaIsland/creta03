@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
 
+import '../../../common/creta_utils.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../book_main_page.dart';
@@ -123,7 +124,7 @@ class _LeftMenuState
                           iconSize: 14,
                           onPressed: () async {},
                         ),
-                      if (_isButtonSelected(LeftMenuEnum.Page))
+                      if (_isButtonSelected(LeftMenuEnum.Page) && LeftMenuPage.flipToTree == true)
                         BTN.fill_gray_i_m(
                           tooltip: isCollapsed ? CretaStudioLang.open : CretaStudioLang.collapsed,
                           tooltipBg: CretaColor.text[700]!,
@@ -161,7 +162,13 @@ class _LeftMenuState
                 top: 76,
                 left: 0,
                 width: _leftMenuWidth, // ----- added on 230518 ------
-                child: eachWidget(BookMainPage.leftMenuNotifier!.selectedStick),
+                child: _isNotImpl(BookMainPage.leftMenuNotifier!.selectedStick) == true
+                    ? CretaUtils.underConstruction(
+                        width: _leftMenuWidth,
+                        height: _maxHeight,
+                        padding: EdgeInsets.only(bottom: 250),
+                      )
+                    : eachWidget(BookMainPage.leftMenuNotifier!.selectedStick),
               )
             ],
             //),
@@ -174,6 +181,35 @@ class _LeftMenuState
         );
       });
     });
+  }
+
+  bool _isNotImpl(LeftMenuEnum selected) {
+    switch (selected) {
+      case LeftMenuEnum.Template:
+        return true;
+      case LeftMenuEnum.Page:
+        return false;
+      case LeftMenuEnum.Frame:
+        return true;
+      case LeftMenuEnum.Storage:
+        return false;
+      case LeftMenuEnum.Image:
+        return false;
+      case LeftMenuEnum.Video:
+        return true;
+      case LeftMenuEnum.Text:
+        return false;
+      case LeftMenuEnum.Figure:
+        return true;
+      case LeftMenuEnum.Widget:
+        return false;
+      case LeftMenuEnum.Camera:
+        return false;
+      case LeftMenuEnum.Comment:
+        return true;
+      default:
+        return true;
+    }
   }
 
   Widget eachWidget(LeftMenuEnum selected) {

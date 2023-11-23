@@ -42,12 +42,16 @@ class CretaAlertDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: backgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 3,
-          sigmaY: 3,
-        ),
-        child: SizedBox(
+      child:
+      
+      //  BackdropFilter(
+      //   filter: ImageFilter.blur(
+      //     sigmaX: 3,
+      //     sigmaY: 3,
+      //   ),
+      //   child: 
+        
+        SizedBox(
           width: width,
           height: height,
           child: Column(
@@ -143,7 +147,7 @@ class CretaAlertDialog extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      //),
     );
   }
 

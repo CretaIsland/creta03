@@ -311,6 +311,8 @@ class BookGridItemState extends State<BookGridItem> {
                                     context: context,
                                     builder: (context) {
                                       return CretaAlertDialog(
+                                        height: 200,
+                                        title: CretaLang.deleteConfirmTitle,
                                         content: Text(
                                           CretaLang.deleteConfirm,
                                           style: CretaFont.titleMedium,

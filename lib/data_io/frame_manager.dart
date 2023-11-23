@@ -283,7 +283,8 @@ class FrameManager extends CretaManager {
     defaultFrame.isRemoved.set(false, save: false, noUndo: true);
     await createToDB(defaultFrame);
     insert(defaultFrame, postion: getLength(), doNotify: doNotify);
-    selectedMid = defaultFrame.mid;
+    //selectedMid = defaultFrame.mid;
+    setSelectedMid(defaultFrame.mid);
     return defaultFrame;
   }
 
@@ -293,18 +294,20 @@ class FrameManager extends CretaManager {
     defaultFrame.isRemoved.set(false, noUndo: true, save: false);
     await setToDB(defaultFrame);
     insert(defaultFrame, postion: getLength(), doNotify: doNotify);
-    selectedMid = defaultFrame.mid;
+    //selectedMid = defaultFrame.mid;
+    setSelectedMid(defaultFrame.mid);
     return defaultFrame;
   }
 
   Future<FrameModel> _undoCreateNextFrame(FrameModel old, bool doNotify) async {
     logger.fine('_undoCreateNextFrame()');
     old.isRemoved.set(true, noUndo: true, save: false);
-    remove(old);
     if (selectedMid == old.mid) {
       selectedMid = prevSelectedMid;
     }
+    remove(old);
     await setToDB(old);
+    notify();
     return old;
   }
 

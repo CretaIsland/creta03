@@ -227,6 +227,7 @@ flutter:
     - assets/music-visual-big.png
     - assets/music-visual-med.png
     - assets/music-visual-small.png
+    - assets/underConstruction.gif
 
     - assets/google_map_thumbnail.png
 

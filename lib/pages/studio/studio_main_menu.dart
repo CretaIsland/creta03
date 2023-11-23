@@ -118,6 +118,8 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
                 BookModel? thisOne = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
                 if (thisOne == null) return const SizedBox.square();
                 return CretaAlertDialog(
+                  height: 200,
+                  title: CretaLang.deleteConfirmTitle,
                   content: Text(
                     CretaLang.deleteConfirm,
                     style: CretaFont.titleMedium,

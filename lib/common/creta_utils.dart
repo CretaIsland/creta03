@@ -1056,4 +1056,24 @@ class CretaUtils {
     }
     return false;
   }
+
+  static Widget underConstruction(
+      {required double width, required double height, EdgeInsetsGeometry? padding}) {
+    return
+        // Positioned.fill(
+        //   child:
+        Container(
+      color: Colors.white.withOpacity(0.8),
+      padding: padding ?? const EdgeInsets.all(10),
+      width: width,
+      height: height,
+      child: Center(
+        child: Image(
+          image: const AssetImage('assets/underConstruction.gif'),
+          height: min(width, height) - 50,
+        ),
+      ),
+      //),
+    );
+  }
 }

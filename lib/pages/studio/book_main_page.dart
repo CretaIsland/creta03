@@ -39,6 +39,9 @@ import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
+import '../../design_system/dialog/creta_alert_dialog.dart';
+import '../../design_system/dialog/creta_dialog.dart';
+import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
 import '../../model/contents_model.dart';
@@ -1103,18 +1106,32 @@ class _BookMainPageState extends State<BookMainPage> {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return Dialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                      child: Container(
-                        padding: EdgeInsets.all(20),
-                        width: LayoutConst.rightMenuWidth,
-                        child: BookEditorProperty(
-                            isDialog: true,
-                            model: _bookModel!,
-                            parentNotify: () {
-                              setState(() {});
-                            }),
-                      ),
+                    return CretaAlertDialog(
+                      title: CretaLang.invite,
+                      width: LayoutConst.rightMenuWidth,
+                      height: 687,
+                      padding: EdgeInsets.only(left: 20, right: 20),
+                      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                      //child: Container(
+                      content: BookEditorProperty(
+                          isDialog: true,
+                          model: _bookModel!,
+                          parentNotify: () {
+                            setState(() {});
+                          }),
+                      onPressedOK: () {
+                        Navigator.of(context).pop();
+                      },
+                      // content: Container(
+                      //   padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                      //   width: LayoutConst.rightMenuWidth,
+                      //   child: BookEditorProperty(
+                      //       isDialog: true,
+                      //       model: _bookModel!,
+                      //       parentNotify: () {
+                      //         setState(() {});
+                      //       }),
+                      // ),
                     );
                     // return BookPublishDialog(
                     //   key: GlobalKey(),

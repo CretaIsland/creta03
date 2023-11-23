@@ -231,16 +231,16 @@ class PageManager extends CretaManager {
   Future<PageModel> _undoCreateNextPage(PageModel old) async {
     //PageModel defaultPage = PageModel.makeSample(safeLastOrder() + 1, bookModel!.mid);
     old.isRemoved.set(true, noUndo: true, save: false);
-    remove(old);
     if (selectedMid == old.mid) {
-      gotoFirst();
+      gotoPrev();
     }
+    // 반드시 gotoPrev 하고 나서 remove 해야 함.
+    remove(old);
     await setToDB(old);
     return old;
   }
 
   bool gotoFirst() {
-    logger.fine('gotoFirst');
     String? mid = getFirstMid();
     if (mid != null) {
       //if (selectedMid != mid) {
@@ -261,7 +261,6 @@ class PageManager extends CretaManager {
   }
 
   bool gotoPrev() {
-    logger.fine('gotoPrev');
     String? mid = getPrevMid();
     if (mid != null) {
       setSelectedMid(mid);
@@ -349,17 +348,15 @@ class PageManager extends CretaManager {
     if (retval != null) {
       return retval;
     }
-    // 처음부터 다시 시작한다.
     return _getPrevMid(-1, true);
   }
 
   String? _getPrevMid(double selectedOrder, bool startToFirst) {
     bool matched = startToFirst;
-    double selectedOrder = getSelectedOrder();
+    //double selectedOrder = getSelectedOrder();
     // if (selectedOrder < 0) {
     //   return null;
     // }
-    logger.fine('selectedOrder=$selectedOrder');
     Iterable<double> keys = orderKeys().toList().reversed;
     for (double ele in keys) {
       if (matched == true) {
@@ -374,7 +371,7 @@ class PageManager extends CretaManager {
         if (pageModel.isShow.value == false) {
           continue;
         }
-        return getNthMid(ele);
+        return pageModel.mid;
       }
       if (selectedOrder > 0 && ele == selectedOrder) {
         matched = true;

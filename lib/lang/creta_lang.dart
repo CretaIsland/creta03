@@ -91,6 +91,7 @@ class CretaLang {
     "끝",
   ];
 
+  static const String deleteConfirmTitle = '삭제 확인';
   static const String deleteConfirm = '정말로 삭제하시겠습니까 ?';
   static const String contentsDeleted = ' 콘텐츠가 삭제되었습니다';
   static const String bookDeleted = ' 삭제되었습니다';
