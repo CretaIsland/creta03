@@ -293,16 +293,6 @@ mixin FramePlayMixin {
     );
   }
 
-  Widget giphyFrame(FrameModel model, double width, double height) {
-    String selectedGif = LeftMenuGiphy.selectedGif;
-    print('LeftMenuGiphy.selectedGif ${LeftMenuGiphy.selectedGif}');
-    return GiphySelectedWidget(
-      gifUrl: selectedGif,
-      width: width,
-      height: height,
-    );
-  }
-
   DateTimeFormat getDateTimeVal(int subType) {
     if (subType == DateTimeFormat.date.index) return DateTimeFormat.date;
     if (subType == DateTimeFormat.day.index) return DateTimeFormat.day;
@@ -335,6 +325,19 @@ mixin FramePlayMixin {
       frameManager: frameManager,
       frameMid: frameMid,
       child: child,
+    );
+  }
+
+  Widget giphyFrame(
+    FrameModel frameModel,
+    double width,
+    double height,
+  ) {
+    String selectedGif = LeftMenuGiphy.selectedGif;
+    return GiphySelectedWidget(
+      gifUrl: selectedGif,
+      width: width,
+      height: height,
     );
   }
 

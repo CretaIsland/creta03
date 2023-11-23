@@ -614,6 +614,9 @@ class ContentsModel extends CretaModel {
       // } else if (mime.endsWith('sheet')) {
       //   logger.finest('sheet type');
       //   contentsType = ContentsType.sheet;
+    } else if (mime.startsWith('gif')) {
+      logger.finest('giphy type');
+      contentsType = ContentsType.giphy;
     } else if (mime.startsWith('text')) {
       logger.finest('text type');
       contentsType = ContentsType.text;
@@ -640,6 +643,10 @@ class ContentsModel extends CretaModel {
 
   bool isVideo() {
     return (contentsType == ContentsType.video);
+  }
+
+  bool isGiphy() {
+    return (contentsType == ContentsType.giphy);
   }
 
   bool isImage() {
