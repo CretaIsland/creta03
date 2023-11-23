@@ -33,8 +33,6 @@ import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/clock/stop_watch.dart';
 import '../../left_menu/google_map/creta_map_widget.dart';
-import '../../left_menu/image_giphy/giphy_selected.dart';
-import '../../left_menu/image_giphy/left_menu_giphy.dart';
 import '../../left_menu/timeline/horizontal_timeline.dart';
 import '../../left_menu/timeline/showcase_timeline.dart';
 import '../../left_menu/timeline/football_timeline.dart';
@@ -325,19 +323,6 @@ mixin FramePlayMixin {
       frameManager: frameManager,
       frameMid: frameMid,
       child: child,
-    );
-  }
-
-  Widget giphyFrame(
-    FrameModel frameModel,
-    double width,
-    double height,
-  ) {
-    String selectedGif = LeftMenuGiphy.selectedGif;
-    return GiphySelectedWidget(
-      gifUrl: selectedGif,
-      width: width,
-      height: height,
     );
   }
 
