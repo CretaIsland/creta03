@@ -8,9 +8,14 @@ import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:translator_plus/translator_plus.dart';
+import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
+import '../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../model/app_enums.dart';
+import '../../../../model/contents_model.dart';
+import '../../../../model/frame_model.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../containees/frame/frame_play_mixin.dart';
@@ -19,7 +24,6 @@ import '../left_template_mixin.dart';
 import 'giphy_selected.dart';
 
 class LeftMenuGiphy extends StatefulWidget {
-  static String selectedGif = '';
   const LeftMenuGiphy({super.key});
 
   @override
@@ -35,12 +39,10 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   late double bodyWidth;
   GoogleTranslator translator = GoogleTranslator();
 
-  late String _selectedGifUrl;
   double x = 150; // frame x-coordinator
   double y = 150; // frame y-coordinator
 
   int _visibleGifCount = 15;
-  // final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -48,8 +50,6 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
     logger.info('_LeftMenuGIPHYState.initState');
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     searchText = 'morning';
-    _selectedGifUrl = LeftMenuGiphy.selectedGif;
-    _searchGifs(searchText);
   }
 
   void _loadMoreItems() {
@@ -71,20 +71,20 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
     super.dispose();
   }
 
-  Future<void> _searchGifs(String query) async {
+  Future<List<dynamic>> _searchGifs(String query) async {
     Translation translation = await translator.translate(query, from: 'auto', to: 'en');
-    List gifs = await GiphyService.searchGifs(translation.text);
-    setState(() {
-      _gifs = gifs;
-    });
+    return await GiphyService.searchGifs(translation.text);
   }
 
   Widget _textQuery() {
     return CretaSearchBar(
       width: bodyWidth,
       hintText: CretaStudioLang.queryHintText,
-      onSearch: (value) {
-        _searchGifs(value);
+      onSearch: (value) async {
+        setState(() {
+          searchText = value;
+        });
+        await _searchGifs(searchText);
       },
     );
   }
@@ -92,7 +92,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: StudioVariables.workHeight - 160.0,
+      height: StudioVariables.workHeight - 148.0,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -101,38 +101,57 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
             _textQuery(),
             const SizedBox(height: 20.0),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: _visibleGifCount,
-                itemBuilder: (context, index) {
-                  if (index < _gifs.length) {
-                    return _getElement(_gifs[index]);
-                  } else {
-                    return Center(child: Snippet.showWaitSign());
+              child: FutureBuilder<List<dynamic>>(
+                future: _searchGifs(searchText),
+                builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+                  if (snapshot.hasError) {
+                    //error가 발생하게 될 경우 반환하게 되는 부분
+                    logger.severe("data fetch error(WaitDatum)");
+                    return const Center(child: Text('키워드를입력해주세요!'));
                   }
+                  if (snapshot.hasData == false) {
+                    logger.finest("wait data ...(WaitData)");
+                    return Center(
+                      child: Snippet.showWaitSign(),
+                    );
+                  }
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    logger.finest("founded ${snapshot.data!}");
+                    return const SizedBox.shrink();
+                  }
+                  _gifs = snapshot.data!;
+                  int gifCount = _gifs.length;
+                  return GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemCount: gifCount > _visibleGifCount ? _visibleGifCount : gifCount,
+                    itemBuilder: (context, index) {
+                      return _getElement(_gifs[index], index);
+                    },
+                  );
                 },
               ),
             ),
-            const SizedBox(height: 20.0),
-            if (_visibleGifCount < _gifs.length)
-              ElevatedButton(
+            const SizedBox(height: 16.0),
+            if (_visibleGifCount < 50)
+              BTN.line_blue_t_m(
+                text: CretaStudioLang.viewMore,
                 onPressed: _loadMoreItems,
-                child: const Text('더보기'),
               ),
+            const SizedBox(height: 16.0),
+            Image.asset('giphy_official_logo.png'),
           ],
         ),
       ),
     );
   }
 
-  Widget _getElement(String getGif) {
-    _selectedGifUrl = getGif;
+  Widget _getElement(String getGif, int index) {
     return GiphySelectedWidget(
-      gifUrl: _selectedGifUrl,
+      gifUrl: getGif,
       width: 90.0,
       height: 90.0,
       onPressed: _onPressedCreateSelectedGif,
@@ -140,9 +159,6 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   }
 
   void _onPressedCreateSelectedGif(String selectedUrl) async {
-    setState(() {
-      LeftMenuGiphy.selectedGif = selectedUrl;
-    });
     await _createGiphyFrame(selectedUrl);
     BookMainPage.pageManagerHolder!.notify();
   }
@@ -165,15 +181,31 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
     }
 
     mychangeStack.startTrans();
-    await frameManager.createNextFrame(
+    FrameModel frameModel = await frameManager.createNextFrame(
       doNotify: false,
       size: Size(width, height),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
-      type: FrameType.animation,
     );
 
-    mychangeStack.endTrans();
+    ContentsModel model = await _giphyContent(
+      selectedGif,
+      frameModel.mid,
+      frameModel.realTimeKey,
+    );
+    await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
+
     frameCounter++;
+    mychangeStack.endTrans();
+  }
+
+  Future<ContentsModel> _giphyContent(String url, String frameMid, String bookMid) async {
+    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
+
+    retval.contentsType = ContentsType.image;
+    retval.name = 'name.gif';
+    retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
+    retval.remoteUrl = url;
+    return retval;
   }
 }

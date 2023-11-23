@@ -357,6 +357,7 @@ class CretaStudioLang {
   static const String timer = '시계';
   static const String sticker = '스티커';
   static const String effects = '효과';
+  static const String viewMore = '더보기';
 
   static const String genAIerrorMsg = '서버가 혼잡하여 현재 이용할 수 없습니다. \n잠시 후에 다시 시도해주세요. \n불편을 드려 죄송합니다.';
 

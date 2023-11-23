@@ -642,6 +642,10 @@ class ContentsModel extends CretaModel {
     return (contentsType == ContentsType.video);
   }
 
+  // bool isGiphy() {
+  //   return (contentsType == ContentsType.giphy);
+  // }
+
   bool isImage() {
     return (contentsType == ContentsType.image);
   }

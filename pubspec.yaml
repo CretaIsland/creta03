@@ -237,6 +237,7 @@ flutter:
     # - assets/weather_sticker/구름많음.svg
 
     - assets/social/
+    - assets/giphy_official_logo.png
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
