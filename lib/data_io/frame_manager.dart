@@ -280,7 +280,7 @@ class FrameManager extends CretaManager {
 
   Future<FrameModel> _createNextFrame(FrameModel defaultFrame, bool doNotify) async {
     logger.fine('createNextFrame()');
-
+    defaultFrame.isRemoved.set(false, save: false, noUndo: true);
     await createToDB(defaultFrame);
     insert(defaultFrame, postion: getLength(), doNotify: doNotify);
     selectedMid = defaultFrame.mid;
@@ -292,7 +292,7 @@ class FrameManager extends CretaManager {
 
     defaultFrame.isRemoved.set(false, noUndo: true, save: false);
     await setToDB(defaultFrame);
-    insert(defaultFrame, postion: getLength(), doNotify: true);
+    insert(defaultFrame, postion: getLength(), doNotify: doNotify);
     selectedMid = defaultFrame.mid;
     return defaultFrame;
   }
@@ -317,7 +317,7 @@ class FrameManager extends CretaManager {
     newModel.posX.set(src.posX.value + 20, save: false, noUndo: true);
     newModel.posY.set(src.posY.value + 20, save: false, noUndo: true);
     newModel.order.set(safeLastOrder() + 1, save: false, noUndo: true);
-    newModel.isRemoved.set(false, save: false, noUndo: true);
+    //newModel.isRemoved.set(false, save: false, noUndo: true);
 
     if (srcFrameManager != null && samePage == false) {
       ContentsManager contentsManager = srcFrameManager.findContentsManager(src);
@@ -326,9 +326,22 @@ class FrameManager extends CretaManager {
       ContentsManager? contentsManager = findContentsManager(src);
       await contentsManager.copyContents(newModel.mid, bookModel.mid);
     }
-    await createToDB(newModel);
-    insert(newModel, postion: getLength());
-    selectedMid = newModel.mid;
+
+    await _createNextFrame(newModel, true);
+    MyChange<FrameModel> c = MyChange<FrameModel>(
+      newModel,
+      execute: () async {},
+      redo: () async {
+        await _redoCreateNextFrame(newModel, true);
+      },
+      undo: (FrameModel old) async {
+        await _undoCreateNextFrame(old, true);
+      },
+    );
+    mychangeStack.add(c);
+    // await createToDB(newModel);
+    // insert(newModel, postion: getLength());
+    // selectedMid = newModel.mid;
 
     return newModel;
   }
