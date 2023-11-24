@@ -1549,21 +1549,24 @@ class _BookMainPageState extends State<BookMainPage> {
           StudioVariables.globalToggleMute(save: true);
           BookTopMenu.invalidate();
         } else if (keys.contains(LogicalKeyboardKey.keyZ)) {
-          //print('Ctrl+Z pressed');
+          setState(() {
+            mychangeStack.undo();
+          });
           // undo
         } else if (keys.contains(LogicalKeyboardKey.keyY)) {
-          logger.fine('Ctrl+Y pressed');
-          // redo
+          setState(() {
+            mychangeStack.redo();
+          });
         } else if (keys.contains(LogicalKeyboardKey.keyC)) {
           // copy
-          logger.fine('Ctrl+C pressed');
+          logger.info('Ctrl+C pressed');
           _copy();
         } else if (keys.contains(LogicalKeyboardKey.keyX)) {
-          logger.fine('Ctrl+X pressed');
+          logger.info('Ctrl+X pressed');
           // Crop
           _crop();
         } else if (keys.contains(LogicalKeyboardKey.keyV)) {
-          logger.fine('Ctrl+V pressed');
+          logger.info('Ctrl+V pressed');
           _paste();
         }
       }

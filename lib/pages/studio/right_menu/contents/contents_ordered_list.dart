@@ -34,6 +34,7 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../book_main_page.dart';
+import '../../containees/containee_nofifier.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
@@ -121,19 +122,29 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         titleWidget: Text(
             (model != null && model.isText()) ? CretaLang.text : CretaStudioLang.playList,
             style: CretaFont.titleSmall),
-        trailWidget: (model != null && model.isText())
-            ? Text(
-                '${CretaUtils.getFontName(model.font.value)},${model.fontSize.value.ceil()}',
-                textAlign: TextAlign.right,
-                style: CretaFont.titleSmall.copyWith(
-                  overflow: TextOverflow.fade,
-                  //color: model.fontColor.value.withOpacity(model.opacity.value),
-                  color: Colors.black,
-                  fontFamily: model.font.value,
-                  fontWeight: StudioConst.fontWeight2Type[model.fontWeight.value],
-                ),
-              )
-            : Text('$itemCount ${CretaLang.count}', style: dataStyle),
+        trailWidget: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            (model != null && model.isText())
+                ? Text(
+                    '${CretaUtils.getFontName(model.font.value)},${model.fontSize.value.ceil()}',
+                    textAlign: TextAlign.right,
+                    style: CretaFont.titleSmall.copyWith(
+                      overflow: TextOverflow.fade,
+                      //color: model.fontColor.value.withOpacity(model.opacity.value),
+                      color: Colors.black,
+                      fontFamily: model.font.value,
+                      fontWeight: StudioConst.fontWeight2Type[model.fontWeight.value],
+                    ),
+                  )
+                : Text('$itemCount ${CretaLang.count}', style: dataStyle),
+            if (model != null && !model.isMusic())
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: _buttons(model, -1, items),
+              ),
+          ],
+        ),
         showTrail: true,
         hasRemoveButton: false,
         onDelete: () {},
@@ -376,140 +387,136 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     );
   }
 
+  void _allMute(bool mute, List<CretaModel> items) {
+    mychangeStack.startTrans();
+    for (var ele in items) {
+      ContentsModel model = ele as ContentsModel;
+      model.mute.set(mute);
+      if (model.mute.value == true) {
+        widget.contentsManager.setSoundOff(mid: model.mid);
+      } else {
+        widget.contentsManager.resumeSound(mid: model.mid);
+      }
+    }
+    setState(() {});
+    mychangeStack.endTrans();
+  }
+
+  // void _allRemove(List<CretaModel> items) {
+  //   mychangeStack.startTrans();
+  //   for (var ele in items) {
+  //     ContentsModel model = ele as ContentsModel;
+  //     widget.contentsManager.removeContents(context, model);
+  //   }
+
+  //   items.clear();
+  //   widget.contentsManager.reOrdering();
+  //   setState(() {});
+  //   BookMainPage.containeeNotifier!.setFrameClick(true);
+  //   BookMainPage.containeeNotifier!.set(ContaineeEnum.Frame);
+  //   LeftMenuPage.treeInvalidate();
+  //   mychangeStack.endTrans();
+  // }
+
+  bool _isAllMute(List<CretaModel> items) {
+    for (var ele in items) {
+      ContentsModel model = ele as ContentsModel;
+      if (model.mute.value == false) return false;
+    }
+    return true;
+  }
+
   Widget _buttons(ContentsModel model, int index, List<CretaModel> items) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (!model.isMusic())
-          CretaIconToggleButton(
-            buttonSize: lineHeight,
-            toggleValue: model.mute.value == true,
-            icon1: Icons.volume_off,
-            icon2: Icons.volume_up,
-            buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-            iconColor: model.isShow.value == true ? CretaColor.text[700]! : CretaColor.text[300]!,
-            //tooltip: CretaLang.mute,
-            onPressed: () {
-              if (model.isShow.value == false) return;
+    if (index >= 0) {
+      print('$index: ${model.mute.value} ');
+    }
+    bool isAllMute = _isAllMute(items);
+    return RepaintBoundary(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (index >= 0)
+            CretaIconToggleButton(
+              doToggle: false,
+              buttonSize: lineHeight,
+              toggleValue: model.isShow.value,
+              icon1: Icons.visibility_outlined,
+              icon2: Icons.visibility_off_outlined,
+              buttonStyle: ToggleButtonStyle.fill_gray_i_m,
+              //tooltip: CretaStudioLang.showUnshow,
+              onPressed: () {
+                if (index < 0) {
+                  return;
+                }
+                model.isShow.set(!model.isShow.value);
+                widget.contentsManager.reOrdering();
+                int len = widget.contentsManager.getShowLength();
+                LeftMenuPage.treeInvalidate();
+                // 돌릴게 없을때,
+                if (len == 0) {
+                  //widget.contentsManager.clearCurrentModel();
+                  setState(() {});
+                  widget.contentsManager.notify();
+                  return;
+                }
+                widget.contentsManager.afterShowUnshow(model, index, invalidate);
 
-              model.mute.set(!model.mute.value);
-              if (model.mute.value == true) {
-                widget.contentsManager.setSoundOff(mid: model.mid);
-              } else {
-                widget.contentsManager.resumeSound(mid: model.mid);
-              }
-            },
-          ),
-        CretaIconToggleButton(
-          doToggle: false,
-          buttonSize: lineHeight,
-          toggleValue: model.isShow.value,
-          icon1: Icons.visibility_outlined,
-          icon2: Icons.visibility_off_outlined,
-          buttonStyle: ToggleButtonStyle.fill_gray_i_m,
-          //tooltip: CretaStudioLang.showUnshow,
-          onPressed: () {
-            // bool doNotify = false;
-            // int len = widget.contentsManager.getShowLength();
-            // if (model.isShow.value == false) {
-            //   // true 로 간다는 뜻이다.
-            //   if (len == 0) {
-            //     // 0 --> 1 로 되려고 하고 있다.
-            //     doNotify = true;
-            //   } else if (len == 1) {
-            //     // 1--> 2 로 되겨고 한다.
-            //     //widget.contentsManager.notify();
-            //     widget.contentsManager.setLoopingAll(false);
-            //   }
-            // } else {
-            //   // false 로 간다는 뜻이다.
-            //   if (len == 1) {
-            //     // 1 --> 0 로 되려고 하고 있다.
-            //     doNotify = true;
-            //   } else if (len == 2) {
-            //     // 2 --> 1 로 되려고 하고 있다.
-            //     //widget.contentsManager.notify();
-            //     widget.contentsManager.setLooping(true);
-            //   }
-            // }
-            model.isShow.set(!model.isShow.value);
-            widget.contentsManager.reOrdering();
-            int len = widget.contentsManager.getShowLength();
-            LeftMenuPage.treeInvalidate();
-            // 돌릴게 없을때,
-            if (len == 0) {
-              //widget.contentsManager.clearCurrentModel();
-              setState(() {});
-              widget.contentsManager.notify();
-              return;
-            }
-            widget.contentsManager.afterShowUnshow(model, index, invalidate);
+                setState(() {});
+                widget.contentsManager.notify();
+              },
+            ),
+          if (index >= 0)
+            BTN.fill_gray_image_m(
+              buttonSize: lineHeight,
+              iconSize: 12,
+              //tooltip: CretaStudioLang.tooltipDelete,
+              //tooltipBg: CretaColor.text[700]!,
+              iconImageFile: "assets/delete.svg",
+              onPressed: () {
+                setState(() {
+                  items.removeAt(index);
+                });
+                widget.contentsManager.removeContents(context, model).then((value) {
+                  if (value == true) {
+                    widget.contentsManager.removeMusic(model);
+                    showSnackBar(context, model.name + CretaLang.contentsDeleted);
+                  }
+                });
+                // if (widget.contentsManager.getShowLength() == 1) {
+                //   원래 둘이었는데 하나가 되었다.
+                //   widget.contentsManager.notify();
+                // }
+              },
+            ),
+          if (!model.isMusic())
+            CretaIconToggleButton(
+              doToggle: false,
+              buttonSize: lineHeight,
+              toggleValue: index < 0 ? isAllMute : model.mute.value,
+              icon1: Icons.volume_off,
+              icon2: Icons.volume_up,
+              buttonStyle: ToggleButtonStyle.fill_gray_i_m,
+              iconColor: model.isShow.value == true ? CretaColor.text[700]! : CretaColor.text[300]!,
+              //tooltip: CretaLang.mute,
+              onPressed: () {
+                if (index < 0) {
+                  // 전체를 한번에  mute
+                  _allMute(!isAllMute, items);
+                  return;
+                }
 
-            // ContentsModel? current = widget.contentsManager.getCurrentModel();
-            // if (model.isShow.value == false) {
-            //   widget.contentsManager.unshowMusic(model);
-            //   if (current != null && current.mid == model.mid) {
-            //     // 현재 방송중인 것을 unshow 하려고 한다.
-            //     if (len > 0) {
-            //       widget.contentsManager.gotoNext();
-            //       setState(() {});
-            //       return;
-            //     }
-            //   }
-            // } else {
-            //   widget.contentsManager.showMusic(model, index);
-            //   // show 했는데, current 가 null 이다.
-            //   if (current == null && widget.contentsManager.isEmptySelected()) {
-            //     if (len > 0) {
-            //       widget.contentsManager.setSelectedMid(model.mid);
-            //       widget.contentsManager.gotoNext();
-            //       setState(() {});
-            //       return;
-            //     }
-            //   }
-            // }
-
-            //if(current != null && current.mid == model.mid || len <= 2) {
-            setState(() {});
-            widget.contentsManager.notify();
-
-            //}
-            // if (doNotify) {
-            //   widget.contentsManager.notify();
-            // }
-          },
-        ),
-        BTN.fill_gray_image_m(
-          buttonSize: lineHeight,
-          iconSize: 12,
-          //tooltip: CretaStudioLang.tooltipDelete,
-          //tooltipBg: CretaColor.text[700]!,
-          iconImageFile: "assets/delete.svg",
-          onPressed: () {
-            // int showLen = widget.contentsManager.getShowLength();
-            // int availLen = widget.contentsManager.getAvailLength();
-            // if (model.isShow.value == true && showLen == 1 && showLen < availLen) {
-            //   logger.warning('It is last one!! can not be unshowed');
-            //   showSnackBar(context, CretaStudioLang.contentsCannotBeUnshowd);
-            //   setState(() {});
-            //   return;
-            // }
-            setState(() {
-              items.removeAt(index);
-            });
-            widget.contentsManager.removeContents(context, model).then((value) {
-              if (value == true) {
-                widget.contentsManager.removeMusic(model);
-                showSnackBar(context, model.name + CretaLang.contentsDeleted);
-              }
-            });
-            // if (widget.contentsManager.getShowLength() == 1) {
-            //   원래 둘이었는데 하나가 되었다.
-            //   widget.contentsManager.notify();
-            // }
-          },
-        ),
-      ],
+                if (model.isShow.value == false) return;
+                model.mute.set(!model.mute.value);
+                if (model.mute.value == true) {
+                  widget.contentsManager.setSoundOff(mid: model.mid);
+                } else {
+                  widget.contentsManager.resumeSound(mid: model.mid);
+                }
+                setState(() {});
+              },
+            ),
+        ],
+      ),
     );
   }
 

@@ -230,44 +230,67 @@ class ContentsManager extends CretaManager {
     return modelList.length;
   }
 
-  String? getThumbnail() {
-    List<String?> list = valueList().map((value) {
+  (String, String) getThumbnail() {
+    for (var value in valueList()) {
       ContentsModel model = value as ContentsModel;
       if (isVisible(model) == false) {
-        return null;
+        continue;
       }
-      //print('${model.name}, ${model.thumbnail}');
-      if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
-        if (model.isImage()) {
-          if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
-            return model.remoteUrl!;
-          }
-          if (model.url.isNotEmpty) {
-            return model.url;
-          }
-        }
-        return null;
-      }
-      return model.thumbnailUrl!;
-    }).toList();
-    for (String? ele in list) {
-      if (ele != null) {
-        return ele;
-      }
-    }
-
-    for (var ele in modelList) {
-      ContentsModel model = ele as ContentsModel;
       if (model.isRemoved.value == true) {
         continue;
       }
       if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
+        if (model.isImage()) {
+          if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
+            return (model.name, model.remoteUrl!);
+          }
+          if (model.url.isNotEmpty) {
+            return (model.name, model.url);
+          }
+        }
         continue;
       }
-      return model.thumbnailUrl;
+      return (model.name, model.thumbnailUrl!);
     }
+    return ('', '');
 
-    return null;
+    // List<String?> list = valueList().map((value) {
+    //   ContentsModel model = value as ContentsModel;
+    //   if (isVisible(model) == false) {
+    //     return null;
+    //   }
+    //   print('${model.name}, ${model.thumbnailUrl}');
+    //   if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
+    //     if (model.isImage()) {
+    //       if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
+    //         return model.remoteUrl!;
+    //       }
+    //       if (model.url.isNotEmpty) {
+    //         return model.url;
+    //       }
+    //     }
+    //     return null;
+    //   }
+    //   return model.thumbnailUrl!;
+    // }).toList();
+    // for (String? ele in list) {
+    //   if (ele != null) {
+    //     return ele;
+    //   }
+    // }
+
+    // for (var ele in modelList) {
+    //   ContentsModel model = ele as ContentsModel;
+    //   if (model.isRemoved.value == true) {
+    //     continue;
+    //   }
+    //   if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
+    //     continue;
+    //   }
+    //   return model.thumbnailUrl;
+    // }
+
+    // return null;
   }
 
   ContentsModel? getFirstModel() {

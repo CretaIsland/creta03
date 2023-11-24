@@ -52,6 +52,7 @@ class _CretaIconToggleButtonState extends State<CretaIconToggleButton> {
     if (widget.doToggle == false) {
       _toggleValue = widget.toggleValue;
     }
+    print('${widget.tooltip}=$_toggleValue');
     switch (widget.buttonStyle) {
       case ToggleButtonStyle.fill_gray_i_s:
         return BTN.fill_gray_i_s(

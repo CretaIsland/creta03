@@ -52,12 +52,18 @@ class CretaVideoPlayer extends CretaAbsPlayer {
         model!.videoPlayTime
             .set(wcontroller!.value.duration.inMilliseconds.toDouble(), noUndo: true, save: false);
         wcontroller!.setLooping(false);
+        wcontroller!.seekTo(Duration.zero); //skpark 2023.11.24 제일앞으로 보낸다.
+
         wcontroller!.onAfterVideoEvent = (event, position, duration) {
           if (event.eventType == VideoEventType.completed) {
             // bufferingEnd and completed 가 시간이 다 되서 종료한 것임.
             logger
                 .info('video play completed(${model!.name},postion=$position, duration=$duration)');
             model!.setPlayState(PlayState.end);
+            //skpark 2023.11.24 제일앞으로 보낸다.
+            // 아래 문장을 하지 않으면, complete 가 계속오게 되는데,  이게 전에는 안그랬는데,
+            // 갑자기 계속 오기 시작한다.
+            wcontroller!.seekTo(Duration.zero);
             onAfterEvent?.call(position, duration);
           }
           prevEvent = event.eventType;
@@ -191,14 +197,14 @@ class CretaVideoPlayer extends CretaAbsPlayer {
   //   });
   // }
 
-  Future<bool> waitInit() async {
+  Future<bool> waitInitVideo() async {
     if (_isInitAlreadyDone) {
       if (wcontroller!.value.isInitialized == false) {
         logger.severe('!!!!!!!! Already initialize but, initialize is false !!!!!!!!');
         await wcontroller!.dispose();
-        logger.severe('!!!!!!!! init again start !!!!!!!!');
+        logger.severe('!!!!!!!! init again start, name=${model!.name}');
         await init();
-        logger.severe('!!!!!!!! init again end !!!!!!!!');
+        logger.severe('!!!!!!!! init again end, state = ${model!.playState}');
       } else {
         await playVideo();
         return true;
@@ -225,7 +231,7 @@ class CretaVideoPlayer extends CretaAbsPlayer {
         model!.isState(PlayState.start) == false &&
         acc.playTimer!.isCurrentModel(model!.mid) &&
         model!.isPauseTimer == false) {
-      logger.fine('video state = ${model!.playState}');
+      logger.info('playVideo video ${model!.name} state = ${model!.playState}');
       await play(); //awat를 못한다....이거 문제임...
     }
     buttonIdle();

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 
-import '../../design_system/creta_font.dart';
-import '../../design_system/dialog/creta_alert_dialog.dart';
+import '../../design_system/component/creta_popup.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
 import '../../lang/creta_studio_lang.dart';
@@ -112,32 +111,56 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         // 삭제한다.
         caption: CretaLang.delete,
         onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                BookModel? thisOne = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
-                if (thisOne == null) return const SizedBox.square();
-                return CretaAlertDialog(
-                  height: 200,
-                  title: CretaLang.deleteConfirmTitle,
-                  content: Text(
-                    CretaLang.deleteConfirm,
-                    style: CretaFont.titleMedium,
-                  ),
-                  onPressedOK: () async {
-                    logger.fine('onPressedOK()');
-                    String name = thisOne.name.value;
-                    await BookMainPage.bookManagerHolder!
-                        .removeBook(thisOne, BookMainPage.pageManagerHolder!);
-                    // ignore: use_build_context_synchronously
-                    showSnackBar(context, '$name${CretaLang.bookDeleted}');
-                    // ignore: use_build_context_synchronously
-                    Routemaster.of(context).push(AppRoutes.studioBookGridPage);
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pop();
-                  },
-                );
-              });
+          BookModel? thisOne = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+          if (thisOne == null) return;
+          CretaPopup.yesNoDialog(
+            context: context,
+            title: CretaLang.deleteConfirmTitle,
+            icon: Icons.file_download_outlined,
+            question: CretaLang.deleteConfirm,
+            noBtText: CretaStudioLang.noBtDnText,
+            yesBtText: CretaStudioLang.yesBtDnText,
+            yesIsDefault: true,
+            onNo: () {},
+            onYes: () async {
+              logger.fine('onPressedOK()');
+              String name = thisOne.name.value;
+              await BookMainPage.bookManagerHolder!
+                  .removeBook(thisOne, BookMainPage.pageManagerHolder!);
+              // ignore: use_build_context_synchronously
+              showSnackBar(context, '$name${CretaLang.bookDeleted}');
+              // ignore: use_build_context_synchronously
+              Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+              // ignore: use_build_context_synchronously
+            },
+          );
+
+          // showDialog(
+          //     context: context,
+          //     builder: (context) {
+          //       BookModel? thisOne = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+          //       if (thisOne == null) return const SizedBox.square();
+          //       return CretaAlertDialog(
+          //         height: 200,
+          //         title: CretaLang.deleteConfirmTitle,
+          //         content: Text(
+          //           CretaLang.deleteConfirm,
+          //           style: CretaFont.titleMedium,
+          //         ),
+          //         onPressedOK: () async {
+          //           logger.fine('onPressedOK()');
+          //           String name = thisOne.name.value;
+          //           await BookMainPage.bookManagerHolder!
+          //               .removeBook(thisOne, BookMainPage.pageManagerHolder!);
+          //           // ignore: use_build_context_synchronously
+          //           showSnackBar(context, '$name${CretaLang.bookDeleted}');
+          //           // ignore: use_build_context_synchronously
+          //           Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+          //           // ignore: use_build_context_synchronously
+          //           Navigator.of(context).pop();
+          //         },
+          //       );
+          //     });
         },
       ),
     ];

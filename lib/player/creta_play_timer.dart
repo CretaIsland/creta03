@@ -234,10 +234,12 @@ class CretaPlayTimer extends ChangeNotifier {
     if (_currentModel != null &&
         (_currentModel!.mid != _prevModel!.mid || _forceToChange == true)) {
       logger.fine('CurrentModel changed from ${_prevModel!.name}');
-      _forceToChange = false;
-      if (contentsManager.getAvailLength() > 1 || _currentModel!.mid != _prevModel!.mid) {
+      if (_forceToChange == true || //skpark 2023.11.24 1개 밖에 없을때, 반복이 안되서리...
+          contentsManager.getAvailLength() > 1 ||
+          _currentModel!.mid != _prevModel!.mid) {
         notify();
       }
+      _forceToChange = false;
       if (_currentModel!.mid != _prevModel!.mid) {
         notifyToProperty();
 

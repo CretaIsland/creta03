@@ -240,11 +240,16 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
             if (snapshot.data != null && snapshot.data is ContentsModel) {
               ContentsModel model = snapshot.data!;
               contentsManager.updateModel(model);
-              logger.fine('model updated ${model.name}, ${model.thumbnailUrl}');
+              logger.info(
+                  "'contents-property-to-main' event received , model updated ${model.name}, thumbnail=${model.thumbnailUrl}, ${model.thumbnailUrl}");
             }
             if (contentsCount > 0) {
-              String? thumbnailUrl = contentsManager.getThumbnail();
-              if (thumbnailUrl != null) {
+              late String thumbnailUrl;
+              late String name;
+              (name, thumbnailUrl) = contentsManager.getThumbnail();
+              if (thumbnailUrl.isNotEmpty) {
+                logger.info("---------------name=$name");
+                logger.info("thumbnail=$thumbnailUrl");
                 return Container(
                   key: GlobalObjectKey(
                       'CustomImage${widget.pageModel.mid}/${widget.frameModel.mid}$thumbnailUrl'),
@@ -256,6 +261,8 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                     image: NetworkImage(thumbnailUrl),
                   )),
                 );
+              } else {
+                logger.warning('noThumbnail !!!');
               }
             }
             logger.fine('there is no contents');

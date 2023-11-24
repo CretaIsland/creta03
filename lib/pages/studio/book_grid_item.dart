@@ -14,11 +14,11 @@ import '../../common/creta_utils.dart';
 import '../../data_io/book_manager.dart';
 import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_elibated_button.dart';
+import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
-import '../../design_system/dialog/creta_alert_dialog.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
@@ -306,41 +306,73 @@ class BookGridItemState extends State<BookGridItem> {
                               icon: Icons.delete_outline,
                               onPressed: () {
                                 logger.finest('delete pressed');
+                                CretaPopup.yesNoDialog(
+                                  context: context,
+                                  title: CretaLang.deleteConfirmTitle,
+                                  icon: Icons.file_download_outlined,
+                                  question: CretaLang.deleteConfirm,
+                                  noBtText: CretaStudioLang.noBtDnText,
+                                  yesBtText: CretaStudioLang.yesBtDnText,
+                                  yesIsDefault: true,
+                                  onNo: () {
+                                    //Navigator.of(context).pop();
+                                  },
+                                  onYes: () {
+                                    logger.fine('onPressedOK(${widget.bookModel!.name.value})');
 
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return CretaAlertDialog(
-                                        height: 200,
-                                        title: CretaLang.deleteConfirmTitle,
-                                        content: Text(
-                                          CretaLang.deleteConfirm,
-                                          style: CretaFont.titleMedium,
-                                        ),
-                                        onPressedOK: () async {
-                                          logger
-                                              .fine('onPressedOK(${widget.bookModel!.name.value})');
+                                    _removeItem(widget.bookModel).then((value) {
+                                      if (value == null) return null;
+                                      if (widget.bookManager.isShort(offset: 1)) {
+                                        widget.bookManager
+                                            .reGet(AccountManager.currentLoginUser.email,
+                                                onModelFiltered: () {
+                                          widget.bookManager.notify();
+                                          logger.fine('removeItem complete');
+                                          return value;
+                                        });
+                                      }
+                                      // ignore: use_build_context_synchronously
 
-                                          _removeItem(widget.bookModel).then((value) {
-                                            if (value == null) return null;
-                                            if (widget.bookManager.isShort(offset: 1)) {
-                                              widget.bookManager
-                                                  .reGet(AccountManager.currentLoginUser.email,
-                                                      onModelFiltered: () {
-                                                widget.bookManager.notify();
-                                                logger.fine('removeItem complete');
-                                                return value;
-                                              });
-                                            }
-                                            // ignore: use_build_context_synchronously
-
-                                            return value;
-                                          });
-                                          // ignore: use_build_context_synchronously
-                                          Navigator.of(context).pop();
-                                        },
-                                      );
+                                      return value;
                                     });
+                                    // ignore: use_build_context_synchronously
+                                    //Navigator.of(context).pop();
+                                  },
+                                );
+                                // showDialog(
+                                //     context: context,
+                                //     builder: (context) {
+                                //       return CretaAlertDialog(
+                                //         height: 200,
+                                //         title: CretaLang.deleteConfirmTitle,
+                                //         content: Text(
+                                //           CretaLang.deleteConfirm,
+                                //           style: CretaFont.titleMedium,
+                                //         ),
+                                //         onPressedOK: () async {
+                                //           logger
+                                //               .fine('onPressedOK(${widget.bookModel!.name.value})');
+
+                                //           _removeItem(widget.bookModel).then((value) {
+                                //             if (value == null) return null;
+                                //             if (widget.bookManager.isShort(offset: 1)) {
+                                //               widget.bookManager
+                                //                   .reGet(AccountManager.currentLoginUser.email,
+                                //                       onModelFiltered: () {
+                                //                 widget.bookManager.notify();
+                                //                 logger.fine('removeItem complete');
+                                //                 return value;
+                                //               });
+                                //             }
+                                //             // ignore: use_build_context_synchronously
+
+                                //             return value;
+                                //           });
+                                //           // ignore: use_build_context_synchronously
+                                //           Navigator.of(context).pop();
+                                //         },
+                                //       );
+                                //     });
                               },
                               tooltip: CretaStudioLang.tooltipDelete,
                             ),

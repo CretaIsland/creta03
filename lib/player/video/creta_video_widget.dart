@@ -42,7 +42,7 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
     final CretaVideoPlayer player = widget.player as CretaVideoPlayer;
 
     return FutureBuilder(
-        future: player.waitInit(),
+        future: player.waitInitVideo(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.hasData == false) {
             //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.

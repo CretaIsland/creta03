@@ -230,6 +230,19 @@ class FrameManager extends CretaManager {
     reOrdering();
   }
 
+  bool hasMainFrame() {
+    for (var ele in modelList) {
+      FrameModel model = ele as FrameModel;
+      if (model.isRemoved.value == true) {
+        continue;
+      }
+      if (model.isMain.value == true) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Future<FrameModel> createNextFrame(
       {bool doNotify = true,
       Size size = LayoutConst.defaultFrameSize,
@@ -257,6 +270,12 @@ class FrameManager extends CretaManager {
     }
     if (shape != null) {
       defaultFrame.shape.set(shape, save: false, noUndo: true);
+    }
+
+    if (!hasMainFrame()) {
+      // skpark 2023.11.24
+      // 만약,  mainFrame 이 없으면, 새로 만들어진 Frame 이 자동으로 메인프레임이 된다.
+      defaultFrame.isMain.set(true, save: false, noUndo: true);
     }
 
     await _createNextFrame(defaultFrame, doNotify);

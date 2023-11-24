@@ -206,17 +206,17 @@ class StudioSnippet {
       model.remoteUrl = fileModel.url;
       model.thumbnailUrl = fileModel.thumbnailUrl;
 
-      logger.fine('uploaded url = ${model.url}');
-      logger.fine('uploaded fileName = ${model.name}');
-      logger.fine('uploaded remoteUrl = ${model.remoteUrl!}');
-      logger.fine('uploaded aspectRatio = ${model.aspectRatio.value}');
+      logger.info('uploaded url = ${model.url}');
+      logger.info('uploaded fileName = ${model.name}');
+      logger.info('uploaded remoteUrl = ${model.remoteUrl!}');
+      logger.info('uploaded aspectRatio = ${model.aspectRatio.value}');
       //model.save(); //<-- save 는 지연되므로 setToDB 를 바로 호출하는 것이 바람직하다.
       await contentsManager.setToDB(model);
     } else {
       logger.severe('upload failed ${model.file!.name}');
     }
-    logger.fine('send event to property');
-    logger.fine('uploaded thumbnailUrl = ${model.thumbnailUrl}');
+    logger.info('send event to property');
+    logger.info('uploaded thumbnailUrl = ${model.thumbnailUrl}');
     contentsManager.sendEvent?.sendEvent(model);
   }
 
