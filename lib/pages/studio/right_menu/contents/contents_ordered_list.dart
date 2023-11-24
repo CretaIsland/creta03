@@ -34,7 +34,6 @@ import '../../../../model/contents_model.dart';
 import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
 import '../../book_main_page.dart';
-import '../../containees/containee_nofifier.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../left_menu/music/music_player_frame.dart';
 import '../../studio_constant.dart';
@@ -427,9 +426,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   }
 
   Widget _buttons(ContentsModel model, int index, List<CretaModel> items) {
-    if (index >= 0) {
-      print('$index: ${model.mute.value} ');
-    }
+    
     bool isAllMute = _isAllMute(items);
     return RepaintBoundary(
       child: Row(
