@@ -9,6 +9,7 @@ import '../../lang/creta_studio_lang.dart';
 import '../creta_chip.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
+import '../text_field/creta_text_field.dart';
 
 class HashTagWrapper {
   HashTagWrapper();
@@ -26,6 +27,12 @@ class HashTagWrapper {
   }) {
     hashTagList = CretaUtils.jsonStringToList(model.hashTag.value);
     logger.fine('...hashTagList=$hashTagList');
+
+    GlobalObjectKey key = GlobalObjectKey('hashTagTagEditor${model.mid}');
+    FocusNode focusNode = FocusNode();
+    //print('add focusNode hashTag');
+    //CretaTextField.focusNodeMap[key] = focusNode;
+
     return [
       Padding(
         padding: EdgeInsets.only(top: top, bottom: 12),
@@ -34,6 +41,8 @@ class HashTagWrapper {
             : const SizedBox.shrink(),
       ),
       TagEditor(
+        key: key,
+        focusNode: focusNode,
         textFieldHeight: 36,
         minTextFieldWidth: minTextFieldWidth,
         tagSpacing: 0,
@@ -88,6 +97,10 @@ class HashTagWrapper {
               },
             ),
           );
+        },
+        disposer: () {
+          logger.info('disposer called');
+          CretaTextField.mainFocusNode?.requestFocus();
         },
       )
     ];

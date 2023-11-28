@@ -10,6 +10,7 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:hycop/hycop/database/abs_database.dart';
 import '../common/creta_utils.dart';
+import '../lang/creta_lang.dart';
 import '../model/app_enums.dart';
 import '../model/book_model.dart';
 import '../model/contents_model.dart';
@@ -925,5 +926,22 @@ class FrameManager extends CretaManager {
     });
     jsonStr += '\n\t\t]\n';
     return jsonStr;
+  }
+
+  Future<bool> removeSelected(BuildContext context) async {
+    FrameModel? model = getSelected() as FrameModel?;
+    if (model == null) {
+      showSnackBar(context, CretaLang.frameNotSelected, duration: StudioConst.snackBarDuration);
+      await Future.delayed(StudioConst.snackBarDuration);
+      return false;
+    }
+
+    mychangeStack.startTrans();
+    model.isRemoved.set(true);
+    await removeChild(model.mid);
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
+    BookMainPage.pageManagerHolder!.notify();
+    mychangeStack.endTrans();
+    return true;
   }
 }

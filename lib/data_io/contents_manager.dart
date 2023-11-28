@@ -79,7 +79,6 @@ class ContentsManager extends CretaManager {
   void setPlayer(String key, CretaAbsPlayer player) => _playerMap[key] = player;
   Map<String, LinkManager> linkManagerMap = {};
 
-  final Duration _snackBarDuration = const Duration(seconds: 3);
   bool iamBusy = false;
   FrameManager? _frameManager;
   void setFrameManager(FrameManager? manager) => _frameManager = manager;
@@ -385,25 +384,25 @@ class ContentsManager extends CretaManager {
     return Size(width, height);
   }
 
-  Future<void> removeSelected(BuildContext context) async {
+  Future<bool> removeSelected(BuildContext context) async {
     iamBusy = true;
     ContentsModel? model = getSelected() as ContentsModel?;
     if (model == null) {
-      showSnackBar(context, CretaLang.contentsNotSeleted, duration: _snackBarDuration);
-      await Future.delayed(_snackBarDuration);
+      showSnackBar(context, CretaLang.contentsNotSeleted, duration: StudioConst.snackBarDuration);
+      await Future.delayed(StudioConst.snackBarDuration);
       iamBusy = false;
-      return;
+      return false;
     }
 
     if (playTimer != null && playTimer!.isInit()) {
       await _removeContents(context, model);
       iamBusy = false;
-      return;
+      return true;
     }
-    showSnackBar(context, CretaLang.contentsNotSeleted, duration: _snackBarDuration);
-    await Future.delayed(_snackBarDuration);
+    showSnackBar(context, CretaLang.contentsNotDeleted, duration: StudioConst.snackBarDuration);
+    await Future.delayed(StudioConst.snackBarDuration);
     iamBusy = false;
-    return;
+    return false;
   }
 
   Future<bool> removeContents(BuildContext context, ContentsModel model) async {

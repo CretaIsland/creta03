@@ -12,9 +12,6 @@
 #skpark modify 3/6
 copy src_modify\r_dotted_line_border.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\r_dotted_line_border-0.1.1\lib\r_dotted_line_border.dart"
 
-#skpark modify 3/16
-copy src_modify\tag_editor.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\material_tag_editor-0.1.2\lib\tag_editor.dart"
-
 #skpark modify 4/24
 copy src_modify\adaptive_scrollbar.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\adaptive_scrollbar-2.1.2\lib\adaptive_scrollbar.dart"
 
@@ -113,3 +110,6 @@ copy src_modify\scroll_loop_auto_scroll.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted
 
 #nr.han modify 23/11/22
 copy src_modify\client_browser.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\appwrite-11.0.0\lib\src\client_browser.dart"
+
+#skpark modify 23/11/28
+copy src_modify\tag_editor.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\material_tag_editor-0.1.2\lib\tag_editor.dart"

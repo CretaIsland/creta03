@@ -1,5 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
+import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
@@ -58,6 +59,8 @@ class _InstantEditorState extends State<InstantEditor> {
   double _padding = 0;
   final double borderWidth = 2;
 
+  FocusNode? _focusNode;
+
   // TextPainter _getTextPainter(String text) {
   //   return TextPainter(
   //     text: TextSpan(text: text, style: _style),
@@ -107,6 +110,9 @@ class _InstantEditorState extends State<InstantEditor> {
   @override
   void dispose() {
     super.dispose();
+    _focusNode?.unfocus();
+    CretaTextField.mainFocusNode?.requestFocus();
+
     _textController.dispose();
   }
 
@@ -370,16 +376,15 @@ class _InstantEditorState extends State<InstantEditor> {
 
     bool autofocus =
         BookMainPage.topMenuNotifier!.requestFocus; // textCreate 의 경우, 자동으로 포커스가 발생해야 한다.
-    FocusNode? focusNode;
     if (autofocus) {
-      focusNode = FocusNode();
+      _focusNode = FocusNode();
       BookMainPage.topMenuNotifier!.releaseFocus(); // 처음 한번만 autofocus 가 되야 하므로 해지해준다.
     }
 
     return AutoSizeTextField(
       //return TextField(
       autofocus: autofocus,
-      focusNode: focusNode,
+      focusNode: _focusNode,
       enabled: widget.enabled,
       initialHeight: initialHeight,
       useAutoSize: useAutoSize,
@@ -442,6 +447,9 @@ class _InstantEditorState extends State<InstantEditor> {
         //BookMainPage.containeeNotifier!.setFrameClick(true);
         DraggableStickers.frameSelectNotifier?.set(widget.frameModel.mid);
         widget.onTap?.call(widget.frameModel.mid); //frameMain onTap
+
+        _focusNode?.unfocus();
+        CretaTextField.mainFocusNode?.requestFocus();
       },
       onChanged: (value) {
         //print('onChanged');

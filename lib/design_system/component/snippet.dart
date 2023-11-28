@@ -109,6 +109,12 @@ class Snippet {
             ? GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onLongPressDown: ((details) {
+                  // 텍스트 필드가 한번 mouse click focus 를 가져가고 나면, 이후에는
+                  //  RawKeyboardListener 로 이벤트가 오지 않는 것을 막기 위해
+                  //FocusScope.of(context).unfocus();
+                  //CretaTextField.unfocus();
+                  //FocusScope.of(context).unfocus();
+                  //
                   if (details.localPosition.dy < LayoutConst.topMenuBarHeight) return;
 
                   Size leftMenuSize = CretaUtils.getSizeByKey(BookMainPage.leftMenuKey);

@@ -97,6 +97,8 @@ class CretaLang {
   static const String bookDeleted = ' 삭제되었습니다';
   static const String contentsNotDeleted = ' 콘텐츠가 삭제되지 않았습니다. 잠시 후에 다시 시도하십시오';
   static const String contentsNotSeleted = ' 삭제할 콘텐츠가 선택되지않았습니다.';
+  static const String frameNotSelected = ' 삭제할 프레임이 선택되지않았습니다.';
+  static const String pageNotSelected = ' 삭제할 페이지가 선택되지않았습니다.';
 
   static const String count = "개";
 

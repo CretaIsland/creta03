@@ -40,7 +40,10 @@ class TagEditor extends StatefulWidget {
     this.keyboardAppearance,
     this.textFieldHeight = 30,
     this.reverseOrder = false,
+    this.disposer, //skpark
   }) : super(key: key);
+
+  final void Function()? disposer; //skpark
 
   /// The number of tags currently shown.
   final int length;
@@ -131,6 +134,14 @@ class _TagsEditorState extends State<TagEditor> {
     super.initState();
     _textFieldController = (widget.controller ?? TextEditingController());
     _focusNode = (widget.focusNode ?? FocusNode())..addListener(_onFocusChanged);
+  }
+
+  //skpark add dispose to unfocus
+  @override
+  void dispose() {
+    _focusNode.unfocus();
+    widget.disposer?.call(); //skpark
+    super.dispose();
   }
 
   void _onFocusChanged() {
@@ -278,6 +289,10 @@ class _TagsEditorState extends State<TagEditor> {
             onChanged: _onTextFieldChange,
             onSubmitted: _onSubmitted,
             inputFormatters: widget.inputFormatters,
+            onTapOutside: ((event) {
+              _focusNode.unfocus();
+              widget.disposer?.call();
+            }),
           ),
         ),
       ),
@@ -308,6 +323,10 @@ class _TagsEditorState extends State<TagEditor> {
         onChanged: _onTextFieldChange,
         onSubmitted: _onSubmitted,
         inputFormatters: widget.inputFormatters,
+        onTapOutside: ((event) {
+          _focusNode.unfocus();
+          widget.disposer?.call(); //skpark
+        }),
       ),
     );
 

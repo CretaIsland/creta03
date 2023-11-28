@@ -183,6 +183,7 @@ class _FilterDialogState extends State<FilterDialog> with PropertyMixin {
                             SizedBox(
                               width: 210,
                               child: tagWidget(
+                                mid: widget.model.mid,
                                 controller: _excludeController,
                                 hashTagList: _filter!.excludes,
                                 onTagChanged: (newValue) {

@@ -18,6 +18,7 @@ import '../../../design_system/component/example_box_mixin.dart';
 import '../../../design_system/component/hash_tag_wrapper.dart';
 import '../../../design_system/creta_color.dart';
 import '../../../design_system/creta_font.dart';
+import '../../../design_system/text_field/creta_text_field.dart';
 import '../../../lang/creta_studio_lang.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/creta_model.dart';
@@ -688,13 +689,21 @@ mixin PropertyMixin {
   }
 
   Widget tagWidget({
+    required String mid,
     required List<String> hashTagList,
     required void Function(String) onTagChanged,
     required void Function(String) onSubmitted,
     required void Function(int) onDeleted,
     TextEditingController? controller,
   }) {
+    GlobalObjectKey key = GlobalObjectKey('tagWidgetTagEditor$mid');
+    FocusNode focusNode = FocusNode();
+    // print('add focusNode tagWidget');
+    // CretaTextField.focusNodeMap[key] = focusNode;
+
     return TagEditor(
+      key: key,
+      focusNode: focusNode,
       controller: controller,
       reverseOrder: true,
       textFieldHeight: 36,
@@ -728,6 +737,9 @@ mixin PropertyMixin {
           ),
           child: ChipWidget(index: index, label: hashTagList[index], onDeleted: onDeleted),
         );
+      },
+      disposer: () {
+        CretaTextField.mainFocusNode?.requestFocus();
       },
     );
   }
@@ -795,6 +807,7 @@ mixin PropertyMixin {
                 SizedBox(
                   width: 210,
                   child: tagWidget(
+                    mid: cretaModel.mid,
                     hashTagList: hashTagList,
                     onTagChanged: (newValue) {
                       hashTagList.add(newValue);

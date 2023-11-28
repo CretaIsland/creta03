@@ -261,7 +261,7 @@ class AutoSizeTextFormField extends StatefulWidget {
   /// If not set, select all and paste will default to be enabled. Copy and cut
   /// will be disabled if [obscureText] is true. If [readOnly] is true,
   /// paste and cut will be disabled regardless.
- 
+
   final ToolbarOptions toolbarOptions;
 
   /// {@macro flutter.widgets.editableText.showCursor}
@@ -552,6 +552,9 @@ class AutoSizeTextFormFieldState extends State<AutoSizeTextFormField> {
   @override
   void initState() {
     super.initState();
+
+    // print('init autoSizeFormField');
+    // CretaTextField.focusNodeMap[widget.textFieldKey!] = widget.focusNode!;
 
     widget.controller!.addListener(() {
       if (mounted) {

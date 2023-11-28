@@ -584,6 +584,11 @@ class AutoSizeTextFieldState extends State<AutoSizeTextField> {
         setState(() {});
       }
     });
+
+    // if (widget.focusNode != null) {
+    //   print('add AutoSizeTextField');
+    //   CretaTextField.focusNodeMap[widget.textFieldKey!] = widget.focusNode!;
+    // }
   }
 
   Widget _buildTextField(double fontSize, TextStyle style, int? maxLines) {

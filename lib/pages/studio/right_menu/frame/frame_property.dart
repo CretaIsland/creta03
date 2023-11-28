@@ -350,6 +350,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       value: widget.model.posX.value.round().toString(),
                       hintText: '',
                       onEditComplete: ((value) {
+                        logger.info('onEditComplete');
                         widget.model.posX.set(int.parse(value).toDouble());
                         _sendEvent?.sendEvent(widget.model);
                       }),
@@ -417,6 +418,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                               value: widget.model.width.value.round().toString(),
                               hintText: '',
                               onEditComplete: ((value) {
+                                logger.info('onEditComplete');
                                 _sizeChanged(value, widget.model.width, widget.model.height);
                               }),
                               minNumber: LayoutConst.minFrameSize.toDouble(),
@@ -479,8 +481,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                       setState(() {
                         widget.model.toggleFullscreen(_isFullScreen, _bookModel!);
                         logger.finest('sendEvent');
-                        _invalidateFrame();
-                        //_sendEvent!.sendEvent(widget.model);
+                        //_invalidateFrame();
+                        _sendEvent!.sendEvent(widget.model);
                       });
                     }),
               ],
@@ -1025,7 +1027,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
     }
 
     //BookMainPage.bookManagerHolder!.notify();
-    _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
+    _sendEvent!.sendEvent(widget.model);
     logger.finest('onEditComplete ${targetAttr.value}');
   }
 

@@ -95,6 +95,8 @@ class CretaTextField extends LastClickable {
   final bool autofocus;
   final bool readOnly;
 
+  static FocusNode? mainFocusNode;
+
   CretaTextField({
     required this.textFieldKey,
     required this.value,
@@ -404,11 +406,22 @@ class CretaTextFieldState extends State<CretaTextField> {
     }
     if (widget.selectAtInit) {
       _focusNode = FocusNode(
-        // onKey: (node, event) {
-        //   logger.finest('onKey(${event.physicalKey})');
-        //   return KeyEventResult.ignored;
-        // },
+        onKey: (node, event) {
+          // Delete key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해
+          switch (event.logicalKey) {
+            case LogicalKeyboardKey.delete:
+            case LogicalKeyboardKey.arrowRight:
+            case LogicalKeyboardKey.arrowLeft:
+            case LogicalKeyboardKey.pageDown:
+            case LogicalKeyboardKey.pageUp:
+            case LogicalKeyboardKey.insert:
+              return KeyEventResult.skipRemainingHandlers;
+          }
+          return KeyEventResult.ignored;
+        },
         onKeyEvent: (node, event) {
+          logger.info('CretaTextField onKeyEvent : ${event.logicalKey.debugName}');
+
           if (widget.textType == CretaTextFieldType.number) {
             if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
               logger.finest('onKeyEvent(${event.logicalKey.debugName})');
@@ -467,25 +480,39 @@ class CretaTextFieldState extends State<CretaTextField> {
 
           //   return KeyEventResult.handled;
           // }
-
           return KeyEventResult.ignored;
         },
       );
-      _focusNode!.addListener(() {
-        if (_focusNode!.hasFocus) {
-          _controller.selection =
-              TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
-        } else {
-          logger.finest('focus out');
-        }
-      });
+      _focusNode!.addListener(_listener);
+    } else {
+      _focusNode = FocusNode(
+        onKey: (node, event) {
+          if (event.logicalKey == LogicalKeyboardKey.delete) {
+            // Delete key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해
+            return KeyEventResult.skipRemainingHandlers;
+          }
+          //   logger.finest('onKey(${event.physicalKey})');
+          return KeyEventResult.ignored;
+        },
+      );
     }
     super.initState();
+  }
+
+  void _listener() {
+    if (_focusNode!.hasFocus) {
+      _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+    }
   }
 
   @override
   void dispose() {
     //_controller.clear();
+    logger.info('textfield dispose');
+    _focusNode?.removeListener(_listener);
+    _focusNode?.unfocus();
+    CretaTextField.mainFocusNode?.requestFocus(); // bookMain 이 포커스를 가져가도록 해줘야 한다.
+
     super.dispose();
     _timer?.cancel();
   }
@@ -568,14 +595,15 @@ class CretaTextFieldState extends State<CretaTextField> {
       child: CupertinoTextField(
         onTapOutside: (event) {
           if (_clicked) {
-            //print('----------onTapOutSide');
+            logger.info('----------onTapOutSide');
             _onSubmitted(_controller.text);
             //setState(() {});
             _clicked = false;
           } else {
             widget.onTapOutside?.call(event);
           }
-          //print('----------onTapOutSide _clicked is false');
+          _focusNode?.unfocus();
+          CretaTextField.mainFocusNode?.requestFocus(); // bookMain 이 포커스를 가져가도록 해줘야 한다.
         },
         obscureText: (widget.textType == CretaTextFieldType.password),
         cursorColor: CretaColor.primary,
@@ -669,10 +697,6 @@ class CretaTextFieldState extends State<CretaTextField> {
           _clicked = true;
           //});
         },
-        // onTapOutside: (event) {
-        //   logger.fine('onTappOutside');
-        //   widget.onEditComplete(_searchValue);
-        // },
       ),
     );
   }
@@ -692,7 +716,8 @@ class CretaTextFieldState extends State<CretaTextField> {
       }
     }
     preprocess(value);
-    logger.finest('onSubmitted $_searchValue');
+    logger.info('onSubmitted $_searchValue');
+    //_focusNode?.unfocus();
     widget.onEditComplete(_searchValue);
   }
 

@@ -18,6 +18,7 @@ import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
+import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 import 'creta_manager.dart';
 import 'frame_manager.dart';
@@ -711,5 +712,22 @@ class PageManager extends CretaManager {
       }
     }
     return pageIndex;
+  }
+
+  Future<bool> removeSelected(BuildContext context) async {
+    PageModel? model = getSelected() as PageModel?;
+    if (model == null) {
+      showSnackBar(context, CretaLang.pageNotSelected, duration: StudioConst.snackBarDuration);
+      await Future.delayed(StudioConst.snackBarDuration);
+      return false;
+    }
+
+    mychangeStack.startTrans();
+    model.isRemoved.set(true);
+    await removeChild(model.mid);
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: true);
+    BookMainPage.pageManagerHolder!.notify();
+    mychangeStack.endTrans();
+    return true;
   }
 }

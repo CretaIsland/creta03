@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps, depend_on_referenced_packages
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps, depend_on_referenced_packages, use_build_context_synchronously
 
 //import 'dart:ui';
 
@@ -41,6 +41,7 @@ import '../../design_system/creta_color.dart';
 import '../../design_system/creta_font.dart';
 import '../../design_system/dialog/creta_alert_dialog.dart';
 //import '../../design_system/dialog/creta_dialog.dart';
+import '../../design_system/text_field/creta_text_field.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
@@ -307,6 +308,15 @@ class _BookMainPageState extends State<BookMainPage> {
 
     DepotDisplay.initDepotTeamManagers();
 
+    CretaTextField.mainFocusNode = FocusNode(
+      onKeyEvent: (node, event) {
+        if (node.hasFocus) {
+          _focusNodeEventHandler(event);
+        }
+        return KeyEventResult.ignored;
+      },
+    );
+
     logger.fine("end ---_BookMainPageState-----------------------------------------");
 // //for webRTC
 //     mediaDeviceDataHolder = MediaDeviceData();
@@ -550,8 +560,18 @@ class _BookMainPageState extends State<BookMainPage> {
         ChangeNotifierProvider<MouseTracer>.value(value: mouseTracerHolder!)
       ],
       child: RawKeyboardListener(
+        //  키보드 이벤트 도착 순서 :   _keyEventHandler,  onKeyEvent,  and TextField
         autofocus: true,
-        focusNode: FocusNode(),
+        focusNode: CretaTextField.mainFocusNode!,
+        // FocusNode(
+        //   onKeyEvent: (node, event) {
+        //     print(',,,,,');
+        //     if (node.hasFocus) {
+        //       _focusNodeEventHandler(event);
+        //     }
+        //     return KeyEventResult.ignored;
+        //   },
+        // ),
         onKey: _keyEventHandler,
         child: StudioVariables.isPreview
             ? Scaffold(
@@ -621,6 +641,139 @@ class _BookMainPageState extends State<BookMainPage> {
               ),
       ),
     );
+  }
+
+  // ignore: unused_element
+  void _focusNodeEventHandler(KeyEvent event) {
+    logger.info('main focusNode ${event.logicalKey.debugName} pressed');
+    switch (event.logicalKey) {
+      case LogicalKeyboardKey.delete:
+        _deleteSelectedModel();
+        return;
+      case LogicalKeyboardKey.arrowRight:
+        return;
+      case LogicalKeyboardKey.arrowLeft:
+        return;
+      case LogicalKeyboardKey.pageDown:
+        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+        BookMainPage.pageManagerHolder?.gotoNext();
+        return;
+      case LogicalKeyboardKey.pageUp:
+        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+        BookMainPage.pageManagerHolder?.gotoPrev();
+        return;
+      case LogicalKeyboardKey.insert:
+        StudioVariables.globalToggleAutoPlay(save: true);
+        BookTopMenu.invalidate();
+        return;
+      default:
+        return;
+    }
+  }
+
+  void _keyEventHandler(RawKeyEvent event) {
+    // if (event is RawKeyUpEvent) {
+    //   if (_singleButtonEvent(event.logicalKey) == true) {
+    //     return;
+    //   }
+    // }
+    _combiButtonEvent(event);
+  }
+
+  // ignore: unused_element
+  bool _singleButtonEvent(LogicalKeyboardKey logicalKey) {
+    bool retval = __singleButtonEvent(logicalKey);
+    if (retval == true) {
+      logger.info('main _singleButtonEvent ${logicalKey.debugName} pressed');
+    }
+    return retval;
+  }
+
+  // unused
+  bool __singleButtonEvent(LogicalKeyboardKey logicalKey) {
+    switch (logicalKey) {
+      case LogicalKeyboardKey.delete:
+        _deleteSelectedModel();
+        return true;
+      case LogicalKeyboardKey.arrowRight:
+        return true;
+      case LogicalKeyboardKey.arrowLeft:
+        return true;
+      case LogicalKeyboardKey.pageDown:
+        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+        BookMainPage.pageManagerHolder?.gotoNext();
+        return true;
+      case LogicalKeyboardKey.pageUp:
+        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+        BookMainPage.pageManagerHolder?.gotoPrev();
+        return true;
+      case LogicalKeyboardKey.insert:
+        StudioVariables.globalToggleAutoPlay(save: true);
+        BookTopMenu.invalidate();
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  void _combiButtonEvent(RawKeyEvent event) {
+    final key = event.logicalKey;
+    bool? isPressed;
+    if (event is RawKeyDownEvent) {
+      logger.info('combination Key Pressed  ${key.debugName}');
+      isPressed = true;
+    } else if (event is RawKeyUpEvent) {
+      logger.info('combination Key Released  ${key.debugName}');
+      isPressed = false;
+    }
+    if (isPressed != null) {
+      switch (event.logicalKey) {
+        case LogicalKeyboardKey.shiftLeft:
+        case LogicalKeyboardKey.shiftRight:
+          StudioVariables.isShiftPressed = isPressed;
+          break;
+        case LogicalKeyboardKey.controlLeft:
+        case LogicalKeyboardKey.controlRight:
+          StudioVariables.isCtrlPressed = isPressed;
+          break;
+      }
+    }
+
+    if (event is RawKeyDownEvent) {
+      if (keys.contains(key)) return;
+      keys.add(key);
+      // Ctrl Key Area
+      if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
+          keys.contains(LogicalKeyboardKey.controlRight))) {
+        if (keys.contains(LogicalKeyboardKey.keyM)) {
+          //print("ctrl+M pressed = mute"); // muteButton
+          StudioVariables.globalToggleMute(save: true);
+          BookTopMenu.invalidate();
+        } else if (keys.contains(LogicalKeyboardKey.keyZ)) {
+          setState(() {
+            mychangeStack.undo();
+          });
+          // undo
+        } else if (keys.contains(LogicalKeyboardKey.keyY)) {
+          setState(() {
+            mychangeStack.redo();
+          });
+        } else if (keys.contains(LogicalKeyboardKey.keyC)) {
+          // copy
+          logger.info('Ctrl+C pressed');
+          _copy();
+        } else if (keys.contains(LogicalKeyboardKey.keyX)) {
+          logger.info('Ctrl+X pressed');
+          // Crop
+          _crop();
+        } else if (keys.contains(LogicalKeyboardKey.keyV)) {
+          logger.info('Ctrl+V pressed');
+          _paste();
+        }
+      }
+    } else {
+      keys.remove(key);
+    }
   }
 
   Widget mouseArea() {
@@ -1499,82 +1652,6 @@ class _BookMainPageState extends State<BookMainPage> {
   //   _connectedUserTimer = null;
   // }
 
-  void _keyEventHandler(RawKeyEvent event) {
-    final key = event.logicalKey;
-    //logger.fine('key pressed $key');
-    if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
-      //print('shift pressed');
-      StudioVariables.isShiftPressed = true;
-    } else if (event is RawKeyUpEvent && event.logicalKey == LogicalKeyboardKey.shiftLeft) {
-      StudioVariables.isShiftPressed = false;
-    } else if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.controlLeft) {
-      //print('ctrl pressed');
-      StudioVariables.isCtrlPressed = true;
-    } else if (event is RawKeyUpEvent && event.logicalKey == LogicalKeyboardKey.controlLeft) {
-      StudioVariables.isCtrlPressed = false;
-    }
-
-    if (event is RawKeyDownEvent) {
-      if (keys.contains(key)) return;
-      // textField 의 focus bug 때문에, delete  key 를 사용할 수 없다.
-      // if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
-      //   logger.fine('delete pressed');
-      //   accManagerHolder!.removeACC(context);
-      // }
-      if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
-        logger.fine('tab pressed');
-      }
-      if (event.isKeyPressed(LogicalKeyboardKey.pageDown)) {
-        //print("pageDown pressed");
-        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
-        BookMainPage.pageManagerHolder?.gotoNext();
-      }
-      if (event.isKeyPressed(LogicalKeyboardKey.pageUp)) {
-        //print("pageUp pressed");
-        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
-        BookMainPage.pageManagerHolder?.gotoPrev();
-      }
-      if (event.isKeyPressed(LogicalKeyboardKey.insert)) {
-        //print("insert pressed = play"); // playButton
-        StudioVariables.globalToggleAutoPlay(save: true);
-        BookTopMenu.invalidate();
-      }
-      keys.add(key);
-      // Ctrl Key Area
-
-      if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
-          keys.contains(LogicalKeyboardKey.controlRight))) {
-        if (keys.contains(LogicalKeyboardKey.keyM)) {
-          //print("ctrl+M pressed = mute"); // muteButton
-          StudioVariables.globalToggleMute(save: true);
-          BookTopMenu.invalidate();
-        } else if (keys.contains(LogicalKeyboardKey.keyZ)) {
-          setState(() {
-            mychangeStack.undo();
-          });
-          // undo
-        } else if (keys.contains(LogicalKeyboardKey.keyY)) {
-          setState(() {
-            mychangeStack.redo();
-          });
-        } else if (keys.contains(LogicalKeyboardKey.keyC)) {
-          // copy
-          logger.info('Ctrl+C pressed');
-          _copy();
-        } else if (keys.contains(LogicalKeyboardKey.keyX)) {
-          logger.info('Ctrl+X pressed');
-          // Crop
-          _crop();
-        } else if (keys.contains(LogicalKeyboardKey.keyV)) {
-          logger.info('Ctrl+V pressed');
-          _paste();
-        }
-      }
-    } else {
-      keys.remove(key);
-    }
-  }
-
   void _copy() {
     if (BookMainPage.pageManagerHolder == null) return;
     FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
@@ -1660,5 +1737,26 @@ class _BookMainPageState extends State<BookMainPage> {
       );
     }
     return SizedBox.shrink();
+  }
+
+  Future<void> _deleteSelectedModel() async {
+    if (BookMainPage.pageManagerHolder == null) return;
+    FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
+    if (frameModel != null) {
+      FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+      if (frameManager != null && frameManager.getAvailLength() > 0) {
+        ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
+        if (contentsManager != null && contentsManager.getAvailLength() > 0) {
+          if (await contentsManager.removeSelected(context) == true) {
+            frameManager.notify();
+            return;
+          }
+        }
+        if (await frameManager.removeSelected(context) == true) {
+          return;
+        }
+      }
+    }
+    await BookMainPage.pageManagerHolder!.removeSelected(context);
   }
 }

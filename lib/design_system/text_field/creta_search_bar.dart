@@ -50,7 +50,13 @@ class _CretaSearchBarState extends State<CretaSearchBar> {
         _controller.selection = TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
       }
     });
-    Timer.periodic(const Duration(microseconds: 100), (timer) { timer.cancel(); _focusNode!.unfocus(); });
+    // GlobalKey<State<StatefulWidget>> dummyKey = GlobalObjectKey('dummy');
+    // CretaTextField.focusNodeMap[dummyKey] = _focusNode!;
+
+    Timer.periodic(const Duration(microseconds: 100), (timer) {
+      timer.cancel();
+      _focusNode!.unfocus();
+    });
     super.initState();
   }
 

@@ -125,6 +125,8 @@ class StudioConst {
   static const double defaultFontSize = 64.0;
   static const double pageControlHeight = 32.0;
 
+  static const Duration snackBarDuration = Duration(seconds: 3);
+
   static List<List<Size>> signageResolution = [
     [],
     [
