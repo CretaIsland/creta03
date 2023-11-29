@@ -6,7 +6,10 @@ import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta03/model/creta_model.dart';
 
 import '../model/contents_model.dart';
+import '../model/frame_model.dart';
 import '../model/link_model.dart';
+import 'frame_manager.dart';
+import 'page_manager.dart';
 
 class LinkManager extends CretaManager {
   final String bookMid;
@@ -19,6 +22,31 @@ class LinkManager extends CretaManager {
     LinkModel retval = newModel(src.mid) as LinkModel;
     src.copyTo(retval);
     return retval;
+  }
+
+  @override
+  Future<int> copyBook(String newBookMid, String? newParentMid) async {
+    lock();
+    int counter = 0;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      LinkModel oldOne = ele as LinkModel;
+      LinkModel newOne = await makeCopy(newBookMid, oldOne, newParentMid) as LinkModel;
+      if (newOne.connectedClass == 'page') {
+        newOne.connectedMid = PageManager.oldNewMap[oldOne.connectedMid] ?? '';
+      } else if (newOne.connectedClass == 'frame') {
+        FrameModel? frame = FrameManager.findNew(oldOne.connectedMid);
+        if (frame != null) {
+          newOne.connectedMid = frame.mid;
+        } else {
+          newOne.connectedMid = '';
+        }
+      }
+    }
+    unlock();
+    return counter;
   }
 
   @override

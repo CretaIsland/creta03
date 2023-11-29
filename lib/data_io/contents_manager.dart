@@ -72,6 +72,24 @@ class ContentsManager extends CretaManager {
     return retval;
   }
 
+  @override
+  Future<int> copyBook(String newBookMid, String? newParentMid) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    lock();
+    int counter = 0;
+    for (var ele in modelList) {
+      if (ele.isRemoved.value == true) {
+        continue;
+      }
+      AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
+      LinkManager? linkManager = findLinkManager(ele.mid);
+      await linkManager?.copyBook(newBookMid, newOne.mid);
+      counter++;
+    }
+    unlock();
+    return counter;
+  }
+
   bool _onceDBGetComplete = false;
   bool get onceDBGetComplete => _onceDBGetComplete;
   final Map<String, CretaAbsPlayer> _playerMap = {};
@@ -592,6 +610,10 @@ class ContentsManager extends CretaManager {
 
   Future<void> gotoNext() async {
     await playTimer?.next();
+  }
+
+  Future<void> gotoPrev() async {
+    await playTimer?.prev();
   }
 
   List<CretaModel> valueList() {

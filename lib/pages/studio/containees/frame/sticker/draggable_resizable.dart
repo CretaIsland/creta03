@@ -1,12 +1,15 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:animated_switcher_plus/animated_switcher_plus.dart';
 
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../design_system/creta_color.dart';
+import '../../../../../lang/creta_studio_lang.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
@@ -132,6 +135,14 @@ class DraggableResizableState extends State<DraggableResizable> {
   // late double _baseAngle;
 
   bool get isTouchInputSupported => true;
+  bool _mainSymbolSwitch = true;
+  Timer? _mainSymbolSwitchTimer;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _mainSymbolSwitchTimer?.cancel();
+  }
 
   @override
   void initState() {
@@ -143,6 +154,11 @@ class DraggableResizableState extends State<DraggableResizable> {
     _position = widget.position;
     // _baseAngle = 0;
     // _angleDelta = 0;
+    _mainSymbolSwitchTimer = Timer.periodic(Duration(seconds: 2), (Timer t) {
+      setState(() {
+        _mainSymbolSwitch = !_mainSymbolSwitch;
+      });
+    });
   }
 
   @override
@@ -413,18 +429,47 @@ class DraggableResizableState extends State<DraggableResizable> {
           left: LayoutConst.stikerOffset / 2 + 4,
           top: LayoutConst.stikerOffset / 2 + 4,
           child: SizedBox(
-            width: 24,
-            height: 24,
-            child: CircleAvatar(
-              backgroundColor: Colors.white.withOpacity(0.5),
-              //radius: 16,
-              child: Icon(
-                Icons.auto_stories_outlined,
-                size: 16,
-                color: CretaColor.primary,
+            width: 18,
+            height: 18,
+            child:
+                // CircleAvatar(
+                //   backgroundColor: Colors.white.withOpacity(0.5),
+                //   //radius: 16,
+                //   child:
+                Tooltip(
+              message: CretaStudioLang.mainFrameExTooltip,
+              child: AnimatedSwitcherPlus.translationLeft(
+                duration: const Duration(milliseconds: 1000),
+                child: Container(
+                  key: ValueKey("_mainSymbolSwitch$_mainSymbolSwitch"),
+                  //padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                      //color: _mainSymbolSwitch ? Colors.blue.shade50 : Colors.red.shade50,
+                      color: Colors.transparent,
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      image: DecorationImage(
+                        image: AssetImage(
+                            (_mainSymbolSwitch ? 'assets/expiredTime.png' : 'assets/nextPage.png')),
+                        fit: BoxFit.cover,
+                      )),
+                  // child: Center(
+                  //   child: Icon(
+                  //     _mainSymbolSwitch ? Icons.auto_stories_outlined : Icons.update_outlined,
+                  //     size: 16,
+                  //     color: CretaColor.primary,
+                  //   ),
+                  // ),
+                ),
               ),
             ),
+
+            // Icon(
+            //   Icons.auto_stories_outlined,
+            //   size: 16,
+            //   color: CretaColor.primary,
+            // ),
           ),
+          //),
         );
         final overlaySymbol = Positioned(
           left: LayoutConst.stikerOffset / 2 + 4 + (widget.isMain == true ? 24 : 0),

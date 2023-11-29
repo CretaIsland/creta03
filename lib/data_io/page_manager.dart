@@ -31,6 +31,8 @@ class PageManager extends CretaManager {
   Map<String, GlobalObjectKey> thumbKeyMap = {};
   final bool isPublishedMode;
 
+  static Map<String, String> oldNewMap = {}; // linkCopy 시에 필요하다.
+
   PageManager({
     String tableName = 'creta_page',
     this.isPublishedMode = false,
@@ -458,15 +460,20 @@ class PageManager extends CretaManager {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     lock();
     int counter = 0;
+    oldNewMap.clear();
     for (var ele in modelList) {
       if (ele.isRemoved.value == true) {
         continue;
       }
       AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
-      FrameManager? frameManager = findFrameManager(ele.mid);
-      await frameManager?.copyBook(newBookMid, newOne.mid);
+      oldNewMap[ele.mid] = newOne.mid;
+    }
+    for(var entry in oldNewMap.entries) {
+      FrameManager? frameManager = findFrameManager(entry.key);
+      await frameManager?.copyBook(newBookMid, entry.value);
       counter++;
     }
+    oldNewMap.clear();
     unlock();
     return counter;
   }

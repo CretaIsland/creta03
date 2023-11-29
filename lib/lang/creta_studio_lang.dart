@@ -635,4 +635,5 @@ class CretaStudioLang {
   static String pressLinkToJoinCreta1 = "님이 당신을 크레타에 초대하였습니다. 아래의 링크를 눌러 크레타에 참여해 보세요. ";
   static String isSendEmail = "아직 가입되지 않은 이메일입니다. 초대 이메일을 보내시겠습니까?";
   //static String carouselWarning = '캐러셀 디스플레이를 적용하려면 최소 3개의 이미지가 있어야 합니다.';
+  static String mainFrameExTooltip = '메인 프레임 입니다. 이 프레임의 콘텐츠가 끝나면 자동으로 다음페이지로 넘어갑니다.';
 }

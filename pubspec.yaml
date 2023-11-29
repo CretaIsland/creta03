@@ -148,6 +148,7 @@ dependencies:
   google_geocoding_api: ^1.4.1
   gap: ^3.0.1
   enough_giphy_flutter: ^0.4.1
+  animated_switcher_plus: ^1.1.0
 
 
 dev_dependencies:
@@ -185,6 +186,8 @@ flutter:
     - assets/delete.svg
     - assets/delete_content.svg
     - assets/delete_frame.svg
+    - assets/expiredTime.png
+    - assets/nextPage.png
 
     - assets/no_image.png
     - assets/ai_tip_image.png

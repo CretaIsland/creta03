@@ -12,6 +12,9 @@ import 'page_manager.dart';
 class PagePublishedManager extends CretaManager {
   final PageManager? pageManager;
   final BookModel? bookModel;
+
+  static Map<String, String> oldNewMap = {}; // linkCopy 시에 필요하다.
+
   PagePublishedManager(this.pageManager, this.bookModel) : super('creta_page_published', null);
 
   @override
@@ -34,15 +37,19 @@ class PagePublishedManager extends CretaManager {
       }
       //PageModel model = ele as PageModel;
       AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
+      oldNewMap[ele.mid] = newOne.mid;
+    }
+    for (var entry in oldNewMap.entries) {
       //print('publish page ${newOne.mid}, ${model.name.value}, ${model.isRemoved.value}');
-      FrameManager? frameManager = pageManager!.findFrameManager(ele.mid);
+      FrameManager? frameManager = pageManager!.findFrameManager(entry.key);
       if (frameManager == null) {
         continue;
       }
       FramePublishedManager publishedManager = FramePublishedManager(frameManager);
-      await publishedManager.copyBook(newBookMid, newOne.mid);
+      await publishedManager.copyBook(newBookMid, entry.value);
       counter++;
     }
+    oldNewMap.clear(); // LinkCopy 가 끝났으므로 지운다.
     unlock();
     return counter;
   }

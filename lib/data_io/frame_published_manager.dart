@@ -13,6 +13,16 @@ class FramePublishedManager extends CretaManager {
   final FrameManager? frameManager;
   FramePublishedManager(this.frameManager) : super('creta_frame_published', null);
 
+  static Map<FrameModel, FrameModel> oldNewMap = {}; // linkCopy 시에 필요하다.
+  static FrameModel? findNew(String oldMid) {
+    for (var ele in oldNewMap.entries) {
+      if (ele.key.mid == oldMid) {
+        return ele.value;
+      }
+    }
+    return null;
+  }
+
   @override
   CretaModel cloneModel(CretaModel src) {
     FrameModel retval = newModel(src.mid) as FrameModel;
@@ -24,28 +34,34 @@ class FramePublishedManager extends CretaManager {
   AbsExModel newModel(String mid) => FrameModel(mid, '');
 
   @override
-  Future<int> copyBook(String newBookMid,String? newParentMid) async {
+  Future<int> copyBook(String newBookMid, String? newParentMid) async {
     lock();
     int counter = 0;
+    oldNewMap.clear(); // LinkCopy 가 끝났으므로 지운다.
     for (var ele in frameManager!.modelList) {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      AbsExModel newOne = await makeCopy(newBookMid,ele, newParentMid);
+      AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
+      oldNewMap[ele as FrameModel] = newOne as FrameModel;
+
       //if (ele.mid == BookPublishedManager.srcBackgroundMusicFrame) {
       if (frameManager != null) {
         if (ele.mid == frameManager!.bookModel.backgroundMusicFrame.value) {
           BookPublishedManager.newbBackgroundMusicFrame = newOne.mid;
         }
       }
-      ContentsManager contentsManager = frameManager!.findContentsManager(ele as FrameModel);
+    }
+    for (var entry in oldNewMap.entries) {
+      ContentsManager contentsManager = frameManager!.findContentsManager(entry.key);
       // if (contentsManager == null) {
       //   continue;
       // }
       ContentsPublishedManager publishedManager = ContentsPublishedManager(contentsManager);
-      await publishedManager.copyBook(newBookMid, newOne.mid);
+      await publishedManager.copyBook(newBookMid, entry.value.mid);
       counter++;
     }
+    oldNewMap.clear(); // LinkCopy 가 끝났으므로 지운다.
     unlock();
     return counter;
   }

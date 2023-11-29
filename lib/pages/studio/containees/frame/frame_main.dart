@@ -62,6 +62,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
   FrameEventController? _sendEvent;
   FrameEachEventController? _showOrderSendEvent;
 
+  String _mainFrameCandiator = ''; // frame 중에 콘텐츠가 있으면서, order 가 가장 높은것.  즉, mainFrame 의 1번 후보자.
+
   //final Offset _pageOffset = Offset.zero;
 
   @override
@@ -374,6 +376,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     frameManager!.mergeOverlay();
 
     frameManager!.reOrdering();
+    _mainFrameCandiator = frameManager!.getMainFrameCandidator();
 
     return frameManager!.orderMapIterator((e) {
       //_randomIndex += 10;
@@ -384,6 +387,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         _receiveEvent,
         null,
       );
+
       return _createSticker(model);
     });
   }
@@ -466,6 +470,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       frameOffset: Offset(posX, posY),
     );
 
+    bool isMain = (model.isMain.value || _mainFrameCandiator == model.mid);
+
     return Sticker(
       key: stickerKey,
       frameKey: frameKey,
@@ -477,7 +483,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       angle: model.angle.value * (pi / 180),
       size: Size(frameWidth, frameHeight),
       borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
-      isMain: model.isMain.value,
+      isMain: isMain,
       //child: Visibility(
       //visible: _isVisible(model), child: _applyAnimate(model)), //skpark Visibility 는 나중에 빼야함.
       //visible: _isVisible(model),
@@ -552,6 +558,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       }
     }
     if (isMain == true) {
+      _mainFrameCandiator = '';
       for (var item in frameManager!.modelList) {
         FrameModel model = item as FrameModel;
         if (item.mid != mid) {

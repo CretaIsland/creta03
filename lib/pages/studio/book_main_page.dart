@@ -645,29 +645,33 @@ class _BookMainPageState extends State<BookMainPage> {
 
   // ignore: unused_element
   void _focusNodeEventHandler(KeyEvent event) {
-    logger.info('main focusNode ${event.logicalKey.debugName} pressed');
-    switch (event.logicalKey) {
-      case LogicalKeyboardKey.delete:
-        _deleteSelectedModel();
-        return;
-      case LogicalKeyboardKey.arrowRight:
-        return;
-      case LogicalKeyboardKey.arrowLeft:
-        return;
-      case LogicalKeyboardKey.pageDown:
-        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
-        BookMainPage.pageManagerHolder?.gotoNext();
-        return;
-      case LogicalKeyboardKey.pageUp:
-        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
-        BookMainPage.pageManagerHolder?.gotoPrev();
-        return;
-      case LogicalKeyboardKey.insert:
-        StudioVariables.globalToggleAutoPlay(save: true);
-        BookTopMenu.invalidate();
-        return;
-      default:
-        return;
+    if (event is KeyDownEvent) {
+      logger.info('main focusNode ${event.logicalKey.debugName} pressed');
+      switch (event.logicalKey) {
+        case LogicalKeyboardKey.delete:
+          _deleteSelectedModel();
+          return;
+        case LogicalKeyboardKey.arrowRight:
+          _nextContents(false);
+          return;
+        case LogicalKeyboardKey.arrowLeft:
+          _nextContents(true);
+          return;
+        case LogicalKeyboardKey.pageDown:
+          BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+          BookMainPage.pageManagerHolder?.gotoNext();
+          return;
+        case LogicalKeyboardKey.pageUp:
+          BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+          BookMainPage.pageManagerHolder?.gotoPrev();
+          return;
+        case LogicalKeyboardKey.insert:
+          StudioVariables.globalToggleAutoPlay(save: true);
+          BookTopMenu.invalidate();
+          return;
+        default:
+          return;
+      }
     }
   }
 
@@ -1758,5 +1762,28 @@ class _BookMainPageState extends State<BookMainPage> {
       }
     }
     await BookMainPage.pageManagerHolder!.removeSelected(context);
+  }
+
+  Future<void> _nextContents(bool backWard) async {
+    if (BookMainPage.pageManagerHolder == null) return;
+    FrameModel? frameModel = BookMainPage.pageManagerHolder!.getSelectedFrame();
+    if (frameModel == null) {
+      return;
+    }
+    FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    if (frameManager == null || frameManager.getAvailLength() == 0) {
+      return;
+    }
+    ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
+    if (contentsManager == null || contentsManager.getAvailLength() == 0) {
+      return;
+    }
+
+    if (backWard == true) {
+      contentsManager.gotoPrev();
+    } else {
+      contentsManager.gotoNext();
+    }
+    contentsManager.notify();
   }
 }

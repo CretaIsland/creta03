@@ -34,6 +34,16 @@ class FrameManager extends CretaManager {
   final PageModel pageModel;
   final BookModel bookModel;
 
+  static Map<FrameModel, FrameModel> oldNewMap = {}; // linkCopy 시에 필요하다.
+  static FrameModel? findNew(String oldMid) {
+    for (var ele in oldNewMap.entries) {
+      if (ele.key.mid == oldMid) {
+        return ele.value;
+      }
+    }
+    return null;
+  }
+
   // GlobalKey? _frameMainKey;
   // void setFrameMainKey(GlobalKey key) {
   //   _frameMainKey = key;
@@ -242,6 +252,19 @@ class FrameManager extends CretaManager {
       }
     }
     return false;
+  }
+
+  String getMainFrameCandidator() {
+    String retval = '';
+    if (hasMainFrame() == false) {
+      for (var ele in orderValues()) {
+        ContentsManager? contentsManager = getContentsManager(ele.mid);
+        if (contentsManager != null && contentsManager.getAvailLength() > 0) {
+          retval = ele.mid;
+        }
+      }
+    }
+    return retval;
   }
 
   Future<FrameModel> createNextFrame(
@@ -626,15 +649,20 @@ class FrameManager extends CretaManager {
     // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
     lock();
     int counter = 0;
+    oldNewMap.clear();
     for (var ele in modelList) {
       if (ele.isRemoved.value == true) {
         continue;
       }
       AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
-      ContentsManager contentsManager = findContentsManager(ele as FrameModel);
-      await contentsManager.copyBook(newBookMid, newOne.mid);
+      oldNewMap[ele as FrameModel] = newOne as FrameModel;
+    }
+    for (var entry in oldNewMap.entries) {
+      ContentsManager contentsManager = findContentsManager(entry.key);
+      await contentsManager.copyBook(newBookMid, entry.value.mid);
       counter++;
     }
+    oldNewMap.clear();
     unlock();
     return counter;
   }
