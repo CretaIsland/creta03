@@ -737,4 +737,36 @@ class PageManager extends CretaManager {
     mychangeStack.endTrans();
     return true;
   }
+
+  Future<bool> makeClone(
+    BookModel parentBook, {
+    bool cloneToPublishedBook = false,
+  }) async {
+    Map<String, String> parentPageIdMap = {};
+    for (var page in modelList) {
+      AbsExModel newModel = await makeCopy(parentBook.mid, page, parentBook.mid);
+      logger.info('clone is created ($collectionId.${newModel.mid}) from (source:${page.mid})');
+      parentPageIdMap[page.mid] = newModel.mid;
+      logger.info('page: (${page.mid}) => (${newModel.mid})');
+    }
+    final BookModel dummyBook = BookModel('');
+    final PageModel dummyPage = PageModel('', dummyBook);
+    final FrameManager copyFrameManagerHolder = cloneToPublishedBook
+        ? FrameManager(
+            bookModel: dummyBook, pageModel: dummyPage, tableName: 'creta_frame_published', isPublishedMode: true)
+        : FrameManager(bookModel: dummyBook, pageModel: dummyPage, isPublishedMode: true);
+    //frameManagerMap.forEach((key, value) { }); ==> forEach는 await 처리가 불가능
+    for (MapEntry entry in frameManagerMap.entries) {
+      if (entry.value != null) {
+        copyFrameManagerHolder.modelList = [...entry.value.modelList];
+        copyFrameManagerHolder.contentsManagerMap = Map.from(entry.value.contentsManagerMap);
+        await copyFrameManagerHolder.makeClone(
+          parentBook,
+          parentPageIdMap,
+          cloneToPublishedBook: cloneToPublishedBook,
+        );
+      }
+    }
+    return true;
+  }
 }

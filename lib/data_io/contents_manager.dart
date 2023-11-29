@@ -39,6 +39,7 @@ import 'link_manager.dart';
 class ContentsManager extends CretaManager {
   final PageModel pageModel;
   final FrameModel frameModel;
+  final bool isPublishedMode;
 
   ContentsEventController? sendEvent;
 
@@ -55,7 +56,7 @@ class ContentsManager extends CretaManager {
   }
 
   ContentsManager(
-      {required this.pageModel, required this.frameModel, String tableName = 'creta_contents'})
+      {required this.pageModel, required this.frameModel, String tableName = 'creta_contents', this.isPublishedMode = false})
       : super(tableName, frameModel.mid) {
     saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
     final ContentsEventController sendEventVar = Get.find(tag: 'contents-property-to-main');
@@ -1432,5 +1433,15 @@ class ContentsManager extends CretaManager {
     });
     jsonStr += '\n\t\t\t]\n';
     return jsonStr;
+  }
+
+  Future<bool> makeClone(BookModel parentBook, Map<String, String> parentFrameIdMap) async {
+    for(var contents in modelList) {
+      String parentFrameMid = parentFrameIdMap[contents.parentMid.value] ?? '';
+      logger.severe('find: (${contents.parentMid.value}) => ($parentFrameMid)');
+      AbsExModel newModel = await makeCopy(parentBook.mid, contents, parentFrameMid);
+      logger.severe('clone is created ($collectionId.${newModel.mid}) from (source:${contents.mid})');
+    }
+    return true;
   }
 }
