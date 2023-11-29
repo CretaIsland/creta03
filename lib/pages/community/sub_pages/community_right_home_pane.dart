@@ -168,15 +168,20 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   }
 
   void _resultBooksFromDB(List<AbsExModel> modelList) {
+    Map<String, BookModel> bookMap = {}; // appwrite에서 중복처리가 될때까지 사용
     for (var model in modelList) {
       BookModel bookModel = model as BookModel;
       if (kDebugMode) print('_resultBooksFromDB(${bookModel.getMid})');
-      _cretaBooksList.add(bookModel);
+      //_cretaBooksList.add(bookModel);
+      bookMap.putIfAbsent(bookModel.getMid, () => bookModel);
       _userIdMap[bookModel.creator] = bookModel.creator;
       for (var channelId in bookModel.channels) {
         _channelIdMap[channelId] = channelId;
       }
     }
+    bookMap.forEach((key, value) {
+      _cretaBooksList.add(value);
+    });
   }
 
   void _getChannelsFromDB(List<AbsExModel> modelList) {

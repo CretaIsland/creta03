@@ -38,6 +38,8 @@ import 'package:url_launcher/link.dart';
 //import '../../../design_system/buttons/creta_button.dart';
 //import '../../../design_system/component/snippet.dart';
 import '../../../model/book_model.dart';
+//import '../../../model/page_model.dart';
+//import '../../../model/frame_model.dart';
 import '../../../model/watch_history_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../model/channel_model.dart';
@@ -45,6 +47,8 @@ import '../login/creta_account_manager.dart';
 import '../../model/app_enums.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
 //import '../../design_system/component/snippet.dart';
+import '../../data_io/page_manager.dart';
+import '../../data_io/book_manager.dart';
 
 // const double _rightViewTopPane = 40;
 // const double _rightViewLeftPane = 40;
@@ -556,7 +560,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
                 children: [
                   CretaTextField(
                     textFieldKey:
-                        GlobalObjectKey('CretaBookUIItem._doPopupMenuShare.CretaTextField'),
+                        GlobalObjectKey('${widget.bookModel.mid}.CretaBookUIItem._doPopupMenuShare.CretaTextField'),
                     width: 364 - 120 + 28,
                     height: 30,
                     value: bookLinkUrl,
@@ -705,8 +709,28 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
     widget.onRemoveBook?.call(widget.bookModel.mid);
   }
 
-  void _doPopupMenuCopy() {
+  void _doPopupMenuCopy() async {
     logger.finest('복사하기(${widget.bookModel.name})');
+
+    final PageManager srcPageManagerHolder = PageManager(tableName: 'creta_page_published', isPublishedMode: true);
+    await srcPageManagerHolder.initPage(widget.bookModel);
+    await srcPageManagerHolder.findOrInitAllFrameManager(widget.bookModel);
+
+    final BookManager copyBookManagerHolder = BookManager();
+    copyBookManagerHolder.makeClone(
+      widget.bookModel,
+      srcPageManagerHolder,
+      cloneToPublishedBook : false,
+    ).then((newBook) {
+      if (newBook == null) {
+        showSnackBar(context, '사본 생성에 실패하였습니다.');
+      }
+      else {
+        showSnackBar(context, '${newBook.name.value}이 생성되었습니다.');
+      }
+    }).catchError((error, stackTrace) {
+      showSnackBar(context, '사본 생성에 실패하였습니다.');
+    });
   }
 
   @override

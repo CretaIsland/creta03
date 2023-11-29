@@ -31,6 +31,12 @@ class FramePublishedManager extends CretaManager {
       if (ele.isRemoved.value == true) {
         continue;
       }
+      if (ele is FrameModel) {
+        if (ele.isOverlay.value == true && ele.parentMid.value != frameManager?.pageModel.mid) {
+          // parentMid(page)가 다른 page에서 overlay-frame은 복사하지 않는다
+          continue;
+        }
+      }
       AbsExModel newOne = await makeCopy(newBookMid,ele, newParentMid);
       //if (ele.mid == BookPublishedManager.srcBackgroundMusicFrame) {
       if (frameManager != null) {

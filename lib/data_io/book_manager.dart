@@ -23,6 +23,8 @@ import '../pages/login/creta_account_manager.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
 import 'creta_manager.dart';
 import 'page_manager.dart';
+//import 'frame_manager.dart';
+//import 'contents_manager.dart';
 
 class BookManager extends CretaManager {
   // contents 들의 url 모음, 다운로드 버튼을 눌렀을 때 생성된다.
@@ -409,5 +411,49 @@ class BookManager extends CretaManager {
         return;
       });
     });
+  }
+
+  Future<BookModel?> makeClone(
+      BookModel srcBook,
+      PageManager srcPageManager, {
+        bool cloneToPublishedBook = false,
+        // required PageManager? pageManager,
+        // required FrameManager? frameManager,
+        // required ContentsManager? contentsManager,
+      }) async {
+    // make book-clone
+    BookModel? newBook;
+    try {
+      // make clone of Book
+      newBook = BookModel('');
+      newBook.copyFrom(srcBook, newMid: newBook.mid);
+      newBook.parentMid.set(newBook.mid);
+      newBook.name.set('${srcBook.name.value}${CretaLang.copyOf}');
+      newBook.sourceMid = "";
+      newBook.publishMid = "";
+      if (CretaAccountManager.getUserProperty != null) {
+        newBook.creator = CretaAccountManager.getUserProperty!.email;
+        newBook.owners = [CretaAccountManager.getUserProperty!.email];
+      }
+      // make clone of Pages
+      final PageManager pageManager = cloneToPublishedBook
+          ? PageManager(tableName: 'creta_page_published', isPublishedMode: true)
+          : PageManager(isPublishedMode: true);
+      pageManager.setBook(newBook);
+      pageManager.modelList = [...srcPageManager.modelList];
+      pageManager.frameManagerMap = Map.from(srcPageManager.frameManagerMap);//{...srcPageManager.frameManagerMap};
+      await pageManager.makeClone(
+        newBook,
+        cloneToPublishedBook: cloneToPublishedBook,
+        //frameManager: frameManager,
+        //contentsManager: contentsManager,
+      );
+      await createToDB(newBook);
+      logger.info('clone is created (${newBook.mid}) from (source:${srcBook.mid}');
+    } catch (e) {
+      logger.severe('book-clone is failed (source:${srcBook.mid})');
+      newBook = null;
+    }
+    return newBook;
   }
 }

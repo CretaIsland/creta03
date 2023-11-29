@@ -427,6 +427,7 @@ class FrameManager extends CretaManager {
       pageModel: pageModel,
       frameModel: frameModel,
       tableName: isPublishedMode ? 'creta_contents_published' : 'creta_contents',
+      isPublishedMode: isPublishedMode,
     );
 
     contentsManagerMap[frameModel.mid] = retval;
@@ -942,6 +943,37 @@ class FrameManager extends CretaManager {
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
     BookMainPage.pageManagerHolder!.notify();
     mychangeStack.endTrans();
+    return true;
+  }
+  
+  Future<bool> makeClone(
+      BookModel parentBook,
+      Map<String, String> parentPageIdMap, {
+        bool cloneToPublishedBook = false,
+      }) async {
+    Map<String, String> parentFrameIdMap = {};
+    for (var frame in modelList) {
+      String parentPageMid = parentPageIdMap[frame.parentMid.value] ?? '';
+      logger.info('find: (${frame.parentMid.value}) => ($parentPageMid)');
+      AbsExModel newModel = await makeCopy(parentBook.mid, frame, parentPageMid);
+      if (parentBook.backgroundMusicFrame.value == frame.mid) {
+        parentBook.backgroundMusicFrame.set(newModel.mid, save: false);
+      }
+      logger.info('clone is created ($collectionId.${newModel.mid}) from (source:${frame.mid})');
+      parentFrameIdMap[frame.mid] = newModel.mid;
+      logger.info('frame: (${frame.mid}) => (${newModel.mid})');
+    }
+    final BookModel dummyBook = BookModel('');
+    final PageModel dummyPage = PageModel('', dummyBook);
+    final FrameModel dummyFrame = FrameModel('', '');
+    final ContentsManager copyContentsManagerHolder = cloneToPublishedBook
+        ? ContentsManager(pageModel: dummyPage, frameModel: dummyFrame, tableName: 'creta_contents_published')
+        : ContentsManager(pageModel: dummyPage, frameModel: dummyFrame);
+    //contentsManagerMap.forEach((key, value) { }); ==> forEach는 await 처리가 불가능
+    for (MapEntry entry in contentsManagerMap.entries) {
+      copyContentsManagerHolder.modelList = [...entry.value.modelList];
+      await copyContentsManagerHolder.makeClone(parentBook, parentFrameIdMap);
+    }
     return true;
   }
 }
