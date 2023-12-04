@@ -19,7 +19,7 @@ class PlaylistModel extends CretaModel {
   //String userId = '';
   String channelId = '';
   bool isPublic = true;
-  DateTime lastUpdateTime = DateTime.now(); // 추후에 updateTime 으로 대체
+  //DateTime lastUpdateTime = DateTime.now(); // 추후에 updateTime 으로 대체
   List<String> bookIdList = [];
 
   @override
@@ -29,7 +29,7 @@ class PlaylistModel extends CretaModel {
         //userId,
         channelId,
         isPublic,
-        lastUpdateTime,
+        //lastUpdateTime,
         bookIdList,
       ];
   PlaylistModel(String pmid) : super(pmid: pmid, type: ExModelType.playlist, parent: '');
@@ -39,7 +39,7 @@ class PlaylistModel extends CretaModel {
     //required this.userId,
     required this.channelId,
     required this.isPublic,
-    required this.lastUpdateTime,
+    //required this.lastUpdateTime,
     List<String>? bookIdList,
   }) : super(pmid: '', type: ExModelType.playlist, parent: '') {
     if (bookIdList != null) this.bookIdList = [...bookIdList];
@@ -53,7 +53,7 @@ class PlaylistModel extends CretaModel {
     //userId = srcPlaylist.userId;
     channelId = srcPlaylist.channelId;
     isPublic = srcPlaylist.isPublic;
-    lastUpdateTime = srcPlaylist.lastUpdateTime;
+    //lastUpdateTime = srcPlaylist.lastUpdateTime;
     bookIdList = [...srcPlaylist.bookIdList];
     logger.finest('PlaylistCopied($mid)');
   }
@@ -65,7 +65,7 @@ class PlaylistModel extends CretaModel {
     //userId = map["userId"] ?? '';
     channelId = map["channelId"] ?? '';
     isPublic = map["isPublic"] ?? false;
-    lastUpdateTime = convertValue(map["lastUpdateTime"]); // Timestamp(in Firebase) => DateTime(in Flutter)
+    //lastUpdateTime = convertValue(map["lastUpdateTime"]); // Timestamp(in Firebase) => DateTime(in Flutter)
     bookIdList = CretaUtils.jsonStringToList((map["bookIdList"] ?? ''));
   }
 
@@ -77,7 +77,7 @@ class PlaylistModel extends CretaModel {
         //"userId": userId,
         "channelId": channelId,
         "isPublic": isPublic,
-        "lastUpdateTime": lastUpdateTime,
+        //"lastUpdateTime": lastUpdateTime,
         "bookIdList": CretaUtils.listToString(bookIdList),
       }.entries);
   }

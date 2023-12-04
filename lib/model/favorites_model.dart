@@ -2,7 +2,7 @@
 
 //import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/common/undo/undo.dart';
@@ -18,21 +18,21 @@ import 'creta_model.dart';
 class FavoritesModel extends CretaModel {
   String userId = '';
   String bookId = '';
-  DateTime lastUpdateTime = DateTime.now();
+  //DateTime lastUpdateTime = DateTime.now();
 
   @override
   List<Object?> get props => [
         ...super.props,
         userId,
         bookId,
-        lastUpdateTime,
+        //lastUpdateTime,
       ];
   FavoritesModel(String pmid) : super(pmid: pmid, type: ExModelType.favorites, parent: '');
 
   FavoritesModel.withName({
     required this.userId,
     required this.bookId,
-    required this.lastUpdateTime,
+    //required this.lastUpdateTime,
   }) : super(pmid: '', type: ExModelType.favorites, parent: '');
 
   @override
@@ -41,7 +41,7 @@ class FavoritesModel extends CretaModel {
     FavoritesModel srcFavorite = src as FavoritesModel;
     userId = srcFavorite.userId;
     bookId = srcFavorite.bookId;
-    lastUpdateTime = srcFavorite.lastUpdateTime;
+    //lastUpdateTime = srcFavorite.lastUpdateTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
@@ -51,24 +51,24 @@ class FavoritesModel extends CretaModel {
     FavoritesModel srcFavorite = src as FavoritesModel;
     userId = srcFavorite.userId;
     bookId = srcFavorite.bookId;
-    lastUpdateTime = srcFavorite.lastUpdateTime;
+    //lastUpdateTime = srcFavorite.lastUpdateTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
-  DateTime _convert(dynamic val) {
-    if (val is Timestamp) {
-      Timestamp ts = val;
-      return ts.toDate();
-    }
-    return DateTime.now();
-  }
+  // DateTime _convert(dynamic val) {
+  //   if (val is Timestamp) {
+  //     Timestamp ts = val;
+  //     return ts.toDate();
+  //   }
+  //   return DateTime.now();
+  // }
 
   @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     userId = map["userId"] ?? '';
     bookId = map["bookId"] ?? '';
-    lastUpdateTime = _convert(map["lastUpdateTime"]);
+    //lastUpdateTime = _convert(map["lastUpdateTime"]);
   }
 
   @override
@@ -77,7 +77,7 @@ class FavoritesModel extends CretaModel {
       ..addEntries({
         "userId": userId,
         "bookId": bookId,
-        "lastUpdateTime": lastUpdateTime,
+        //"lastUpdateTime": lastUpdateTime,
       }.entries);
   }
 }

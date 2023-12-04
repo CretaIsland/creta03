@@ -25,6 +25,7 @@ import '../../design_system/component/snippet.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
 import '../../lang/creta_lang.dart';
+import '../../data_io/book_manager.dart';
 import '../../data_io/subscription_manager.dart';
 import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
@@ -1345,7 +1346,25 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         icon: Icons.copy_rounded,
                         text: '복제하기',
                         subText: '123',
-                        onPressed: () {},
+                        onPressed: () {
+                          if (_currentBookModel != null) {
+                            final BookManager copyBookManagerHolder = BookManager();
+                            copyBookManagerHolder.makeClone(
+                              _currentBookModel!,
+                              srcIsPublishedBook: true,
+                              cloneToPublishedBook : false,
+                            ).then((newBook) {
+                              if (newBook == null) {
+                                showSnackBar(context, '사본 생성에 실패하였습니다.');
+                              }
+                              else {
+                                showSnackBar(context, '${newBook.name.value}이 생성되었습니다.');
+                              }
+                            }).catchError((error, stackTrace) {
+                              showSnackBar(context, '사본 생성에 실패하였습니다.');
+                            });
+                          }
+                        },
                         buttonColor: CretaButtonColor.skyTitle,
                         textColor: Colors.white,
                         subTextColor: CretaColor.primary[200],
@@ -1522,7 +1541,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         ),
                         SizedBox(width: 28),
                         Text(
-                          '최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.lastUpdateTime)}',
+                          //'최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.lastUpdateTime)}',
+                          '최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.updateTime)}',
                           style: CretaFont.buttonMedium,
                         ),
                         Expanded(child: Container()),

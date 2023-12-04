@@ -414,16 +414,20 @@ class BookManager extends CretaManager {
   }
 
   Future<BookModel?> makeClone(
-      BookModel srcBook,
-      PageManager srcPageManager, {
+      BookModel srcBook, {
+        bool srcIsPublishedBook = true,
         bool cloneToPublishedBook = false,
-        // required PageManager? pageManager,
-        // required FrameManager? frameManager,
-        // required ContentsManager? contentsManager,
       }) async {
     // make book-clone
     BookModel? newBook;
     try {
+      // page loading
+      final PageManager srcPageManagerHolder = PageManager(
+        tableName: srcIsPublishedBook ? 'creta_page_published' : 'creta_page',
+        isPublishedMode: true,
+      );
+      await srcPageManagerHolder.initPage(srcBook);
+      await srcPageManagerHolder.findOrInitAllFrameManager(srcBook);
       // make clone of Book
       newBook = BookModel('');
       newBook.copyFrom(srcBook, newMid: newBook.mid);
@@ -440,13 +444,11 @@ class BookManager extends CretaManager {
           ? PageManager(tableName: 'creta_page_published', isPublishedMode: true)
           : PageManager(isPublishedMode: true);
       pageManager.setBook(newBook);
-      pageManager.modelList = [...srcPageManager.modelList];
-      pageManager.frameManagerMap = Map.from(srcPageManager.frameManagerMap);//{...srcPageManager.frameManagerMap};
+      pageManager.modelList = [...srcPageManagerHolder.modelList];
+      pageManager.frameManagerMap = Map.from(srcPageManagerHolder.frameManagerMap);
       await pageManager.makeClone(
         newBook,
         cloneToPublishedBook: cloneToPublishedBook,
-        //frameManager: frameManager,
-        //contentsManager: contentsManager,
       );
       await createToDB(newBook);
       logger.info('clone is created (${newBook.mid}) from (source:${srcBook.mid}');

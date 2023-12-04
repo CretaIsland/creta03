@@ -139,7 +139,7 @@ class FavoritesManager extends CretaManager {
     FavoritesModel favModel = FavoritesModel.withName(
       userId: userId,
       bookId: bookId,
-      lastUpdateTime: DateTime.now(),
+      //lastUpdateTime: DateTime.now(),
     );
     createToDB(favModel);
     await isGetListFromDBComplete().catchError((error, stackTrace) =>

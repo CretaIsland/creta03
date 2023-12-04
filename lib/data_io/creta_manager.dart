@@ -1169,7 +1169,7 @@ abstract class CretaManager extends AbsExModelManager {
     final String searchKeyword = '',
     final bool isRemoved = false,
     String? userId, // default value is {AccountManager.currentLoginUser.userId}
-    String sortTimeName = 'lastUpdateTime',
+    String sortTimeName = 'updateTime',
   }) {
     // make query
     addWhereClause('isRemoved', QueryValue(value: isRemoved));

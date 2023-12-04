@@ -47,7 +47,7 @@ import '../login/creta_account_manager.dart';
 import '../../model/app_enums.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
 //import '../../design_system/component/snippet.dart';
-import '../../data_io/page_manager.dart';
+//import '../../data_io/page_manager.dart';
 import '../../data_io/book_manager.dart';
 
 // const double _rightViewTopPane = 40;
@@ -711,15 +711,10 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _doPopupMenuCopy() async {
     logger.finest('복사하기(${widget.bookModel.name})');
-
-    final PageManager srcPageManagerHolder = PageManager(tableName: 'creta_page_published', isPublishedMode: true);
-    await srcPageManagerHolder.initPage(widget.bookModel);
-    await srcPageManagerHolder.findOrInitAllFrameManager(widget.bookModel);
-
     final BookManager copyBookManagerHolder = BookManager();
     copyBookManagerHolder.makeClone(
       widget.bookModel,
-      srcPageManagerHolder,
+      srcIsPublishedBook: true,
       cloneToPublishedBook : false,
     ).then((newBook) {
       if (newBook == null) {

@@ -2,7 +2,7 @@
 
 //import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 //import 'package:hycop/common/undo/undo.dart';
@@ -19,7 +19,7 @@ import 'book_model.dart';
 class WatchHistoryModel extends CretaModel {
   String userId = '';
   String bookId = '';
-  DateTime lastUpdateTime = DateTime.now(); // 추후에 createTime 으로 대체
+  //DateTime lastUpdateTime = DateTime.now(); // 추후에 createTime 으로 대체
 
   // do not save to DB !!!
   BookModel? bookModel;
@@ -29,14 +29,14 @@ class WatchHistoryModel extends CretaModel {
         ...super.props,
         userId,
         bookId,
-        lastUpdateTime,
+        //lastUpdateTime,
       ];
   WatchHistoryModel(String pmid) : super(pmid: pmid, type: ExModelType.watchHistory, parent: '');
 
   WatchHistoryModel.withName({
     required this.userId,
     required this.bookId,
-    required this.lastUpdateTime,
+    //required this.lastUpdateTime,
   }) : super(pmid: '', type: ExModelType.watchHistory, parent: '');
 
   @override
@@ -45,7 +45,7 @@ class WatchHistoryModel extends CretaModel {
     WatchHistoryModel srcWatchHistory = src as WatchHistoryModel;
     userId = srcWatchHistory.userId;
     bookId = srcWatchHistory.bookId;
-    lastUpdateTime = srcWatchHistory.lastUpdateTime;
+    //lastUpdateTime = srcWatchHistory.lastUpdateTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
@@ -55,24 +55,24 @@ class WatchHistoryModel extends CretaModel {
     WatchHistoryModel srcWatchHistory = src as WatchHistoryModel;
     userId = srcWatchHistory.userId;
     bookId = srcWatchHistory.bookId;
-    lastUpdateTime = srcWatchHistory.lastUpdateTime;
+    //lastUpdateTime = srcWatchHistory.lastUpdateTime;
     logger.finest('WatchHistoryCopied($mid)');
   }
 
-  DateTime _convert(dynamic val) {
-    if (val is Timestamp) {
-      Timestamp ts = val;
-      return ts.toDate();
-    }
-    return DateTime.now();
-  }
+  // DateTime _convert(dynamic val) {
+  //   if (val is Timestamp) {
+  //     Timestamp ts = val;
+  //     return ts.toDate();
+  //   }
+  //   return DateTime.now();
+  // }
 
   @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     userId = map["userId"] ?? '';
     bookId = map["bookId"] ?? '';
-    lastUpdateTime = _convert(map["lastUpdateTime"]);
+    //lastUpdateTime = _convert(map["lastUpdateTime"]);
   }
 
   @override
@@ -81,7 +81,7 @@ class WatchHistoryModel extends CretaModel {
       ..addEntries({
         "userId": userId,
         "bookId": bookId,
-        "lastUpdateTime": lastUpdateTime,
+        //"lastUpdateTime": lastUpdateTime,
       }.entries);
   }
 }

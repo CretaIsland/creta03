@@ -60,7 +60,7 @@ class PlaylistManager extends CretaManager {
       //userId: userId,
       channelId: channelId,
       isPublic: isPublic,
-      lastUpdateTime: DateTime.now(),
+      //lastUpdateTime: DateTime.now(),
       bookIdList: bookIdList,
     );
     createToDB(plModel);

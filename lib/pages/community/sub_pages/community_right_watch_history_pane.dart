@@ -382,7 +382,8 @@ class _CommunityRightWatchHistoryPaneState extends State<CommunityRightWatchHist
         final bookModel = model as BookModel;
         if (bookModel.getMid == whModel.bookId) {
           whModel.bookModel = bookModel;
-          final String lastUpdateTime = DateFormat('yyyy.MM.dd').format(whModel.lastUpdateTime);
+          //final String lastUpdateTime = DateFormat('yyyy.MM.dd').format(whModel.lastUpdateTime);
+          final String lastUpdateTime = DateFormat('yyyy.MM.dd').format(whModel.updateTime);
           _cretaBookDataMap.putIfAbsent(lastUpdateTime, () => []).add(whModel);
           break;
         }
