@@ -32,21 +32,41 @@ class LinkManager extends CretaManager {
       if (ele.isRemoved.value == true) {
         continue;
       }
-      LinkModel oldOne = ele as LinkModel;
-      LinkModel newOne = await makeCopy(newBookMid, oldOne, newParentMid) as LinkModel;
-      if (newOne.connectedClass == 'page') {
-        newOne.connectedMid = PageManager.oldNewMap[oldOne.connectedMid] ?? '';
-      } else if (newOne.connectedClass == 'frame') {
-        FrameModel? frame = FrameManager.findNew(oldOne.connectedMid);
-        if (frame != null) {
-          newOne.connectedMid = frame.mid;
-        } else {
-          newOne.connectedMid = '';
-        }
-      }
+      await makeCopy(newBookMid, ele, newParentMid) as LinkModel;
     }
     unlock();
     return counter;
+  }
+
+  @override
+  Future<AbsExModel> makeCopy(String newBookMid, AbsExModel src, String? newParentMid) async {
+    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
+    LinkModel newOne = newModel('') as LinkModel;
+
+    // creat_book_published data 를 만든다.
+    newOne.copyFrom(src, newMid: newOne.mid, pMid: newParentMid ?? newOne.parentMid.value);
+    newOne.setRealTimeKey(newBookMid);
+    //print('makeCopy : newMid=${newOne.mid}, parent=$newParentMid');
+
+    LinkModel oldOne = src as LinkModel;
+
+    //print('connectedClass = ${newOne.connectedClass}, ${oldOne.connectedClass}');
+
+    if (oldOne.connectedClass == 'page') {
+      newOne.connectedMid = PageManager.oldNewMap[oldOne.connectedMid] ?? '';
+      //print('page link connectedMid = ${oldOne.connectedMid} --> ${newOne.connectedMid}');
+    } else if (oldOne.connectedClass == 'frame') {
+      FrameModel? frame = FrameManager.findNew(oldOne.connectedMid);
+      if (frame != null) {
+        newOne.connectedMid = frame.mid;
+      } else {
+        newOne.connectedMid = '';
+      }
+      //print('frame link connectedMid = ${oldOne.connectedMid} --> ${newOne.connectedMid}');
+    }
+
+    await createToDB(newOne);
+    return newOne;
   }
 
   @override

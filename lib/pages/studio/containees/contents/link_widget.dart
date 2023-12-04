@@ -296,7 +296,7 @@ class _LinkWidgetState extends State<LinkWidget> {
       return const SizedBox.shrink();
     }
     _position = Offset(posX, posY);
-    //logger.fine('^^^^^^^^^^^^^^^^^^_position----$posX, $posY,,,');
+    logger.info('--------------------drawEachLink--------------------------');
     _linkCount++;
     return Positioned(
       left: _position.dx,
@@ -369,6 +369,8 @@ class _LinkWidgetState extends State<LinkWidget> {
           PageModel? pageModel =
               BookMainPage.pageManagerHolder!.getModel(model.connectedMid) as PageModel?;
           if (pageModel != null) {
+            //print('connected = ${model.connectedMid} founded');
+
             bool isShow = true;
             pageModel.isTempVisible = isShow;
             if (isShow == true) {
@@ -388,6 +390,8 @@ class _LinkWidgetState extends State<LinkWidget> {
 
             BookPreviewMenu.previewMenuPressed = true;
             BookMainPage.pageManagerHolder?.setSelectedMid(model.connectedMid);
+          } else {
+            logger.severe('connected = ${model.connectedMid} not founded');
           }
         } else if (model.connectedClass == 'frame') {
           // show frame
@@ -398,6 +402,7 @@ class _LinkWidgetState extends State<LinkWidget> {
             // print('childMid=${childModel.mid}');
             // print('frameMid=${widget.frameModel.mid}');
             // print('PageMid=${widget.frameModel.parentMid.value}');
+            //print('connected = ${model.connectedMid} founded');
 
             childModel.isShow.set(!childModel.isShow.value, save: false, noUndo: true);
             if (childModel.isShow.value == true) {
@@ -427,6 +432,8 @@ class _LinkWidgetState extends State<LinkWidget> {
                 'link button pressed ${widget.frameModel.mid},${widget.frameModel.isShow.value}');
             widget.frameManager.notify();
             //_linkManager?.notify();
+          } else {
+            logger.severe('connected = ${model.connectedMid} not founded');
           }
         }
         return;

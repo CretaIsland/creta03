@@ -28,7 +28,7 @@ class HashTagWrapper {
     hashTagList = CretaUtils.jsonStringToList(model.hashTag.value);
     logger.fine('...hashTagList=$hashTagList');
 
-    GlobalObjectKey key = GlobalObjectKey('hashTagTagEditor${model.mid}');
+    //GlobalObjectKey key = GlobalObjectKey('hashTagTagEditor${model.mid}');
     FocusNode focusNode = FocusNode();
     //print('add focusNode hashTag');
     //CretaTextField.focusNodeMap[key] = focusNode;
@@ -41,7 +41,7 @@ class HashTagWrapper {
             : const SizedBox.shrink(),
       ),
       TagEditor(
-        key: key,
+        //key: key,
         focusNode: focusNode,
         textFieldHeight: 36,
         minTextFieldWidth: minTextFieldWidth,
