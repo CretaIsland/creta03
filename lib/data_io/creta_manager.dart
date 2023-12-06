@@ -1204,6 +1204,7 @@ abstract class CretaManager extends AbsExModelManager {
     if (searchKeyword.isNotEmpty) {
       // Elasticsearch 될때까지 막아둠
       //query['name'] = QueryValue(value: widget.filterSearchKeyword, operType: OperType.like ??? );
+      addWhereClause('name', QueryValue(value: searchKeyword, operType: OperType.textSearch));
     }
     // sort order
     if (bookSort != null) {

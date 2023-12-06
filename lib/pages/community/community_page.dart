@@ -86,6 +86,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   BookSort _filterBookSort = BookSort.updateTime;
   PermissionType _filterPermissionType = PermissionType.none;
   String _filterSearchKeyword = '';
+  DateTime _filterSearchKeywordTime = DateTime.now();
 
   void _scrollChangedCallback(bool bannerSizeChanged) {
     setState(() {
@@ -1628,29 +1629,30 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     return null;
   }
 
-  Function(String)? _getSearchFunction() {
+  void _getSearchFunction(String value) {
     switch (widget.subPageUrl) {
       case AppRoutes.subscriptionList:
-        return (value) {};
+        return;
       case AppRoutes.watchHistory:
-        return (value) {};
+        return;
       case AppRoutes.favorites:
-        return (value) {};
+        return;
       case AppRoutes.playlist:
-        return (value) {};
+        return;
       case AppRoutes.communityHome:
-        return (value) {
           setState(() {
             _filterSearchKeyword = value;
+            _filterSearchKeywordTime = DateTime.now();
             setScrollOffset(0);
           });
-        };
+          return;
+
       case AppRoutes.channel:
         switch (_communityChannelType) {
           case CommunityChannelType.books:
-            return (value) {};
+            return;
           case CommunityChannelType.playlists:
-            return (value) {};
+            return;
           default:
             break;
         }
@@ -1658,7 +1660,6 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       default:
         break;
     }
-    return null;
   }
 
   GlobalObjectKey _getRightPaneKey() {
@@ -1666,10 +1667,10 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     if (widget.subPageUrl == AppRoutes.channel) {
       //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
       key =
-          '${Uri.base.query}|${_currentChannelModel?.getMid ?? ''}|${_communityChannelType.name}|${_subscriptionModelList?.length ?? -1}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
+          '${Uri.base.query}|${_currentChannelModel?.getMid ?? ''}|${_communityChannelType.name}|${_subscriptionModelList?.length ?? -1}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
     } else {
       key =
-          '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}';
+          '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
     }
     if (kDebugMode) print('_getRightPaneKey = $key');
     return GlobalObjectKey(key);
@@ -1935,7 +1936,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             bannerTitle: 'title',
             bannerDescription: 'description',
             listOfListFilter: _getLeftDropdownMenuOnBanner(),
-            onSearch: _getSearchFunction(),
+            onSearch: _getSearchFunction,
             mainWidget: _getRightPane, //(gridArea),
             listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
             titlePane: _titlePane,
