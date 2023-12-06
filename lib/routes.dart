@@ -24,6 +24,7 @@ import 'pages/community/community_page.dart';
 import 'pages/community/sub_pages/community_right_book_pane.dart';
 import 'pages/community/sub_pages/community_right_channel_pane.dart';
 import 'pages/community/sub_pages/community_right_playlist_detail_pane.dart';
+import 'pages/studio/studio_variables.dart';
 //import 'pages/login/creta_account_manager.dart';
 
 abstract class AppRoutes {
@@ -148,39 +149,53 @@ final routesLoggedOut = RouteMap(
     AppRoutes.studioBookMainPage: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
         //skpark test code
-        // if (BookMainPage.selectedMid.isEmpty) {
-        //   BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+        // if (StudioVariables.selectedBookMid.isEmpty) {
+        //   StudioVariables.selectedBookMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
         // }
-        logger.finest('selectedMid=${BookMainPage.selectedMid}');
+        logger.info('routeData fullpath=${routeData.fullPath}');
+        logger.info('routeData path=${routeData.path}');
+        logger.info('routeData parameters=${routeData.queryParameters.toString()}');
+
+        if (StudioVariables.selectedBookMid.isEmpty) {
+          logger.severe('selectedMid is empty');
+          String? uid = routeData.queryParameters['book'];
+          if (uid != null) {
+            StudioVariables.selectedBookMid = 'book=$uid';
+          } else {
+            logger.severe('StudioVariables.selectedBookMid and routeData is null !!!!');
+          }
+        }
+
         return TransitionPage(
-            child: BookMainPage(bookKey: GlobalObjectKey('Book${BookMainPage.selectedMid}')));
+            child:
+                BookMainPage(bookKey: GlobalObjectKey('Book${StudioVariables.selectedBookMid}')));
       } else {
         return const Redirect(AppRoutes.intro);
       }
     },
     AppRoutes.studioBookPreviewPage: (routeData) {
       //if (AccountManager.currentLoginUser.isLoginedUser) { // 로그인없이도 프리뷰는 재생 (2023-10-13 seventhstone)
-        //skpark test code
-        // if (BookMainPage.selectedMid.isEmpty) {
-        //   BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
-        // }
-        logger.finest('selectedMid=${BookMainPage.selectedMid}');
+      //skpark test code
+      // if (StudioVariables.selectedBookMid.isEmpty) {
+      //   StudioVariables.selectedBookMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+      // }
+      logger.finest('selectedMid=${StudioVariables.selectedBookMid}');
 
-        Map<String, String> paramMap = routeData.queryParameters;
-        String mode = paramMap['mode'] ?? '';
-        bool? isPublishedMode;
-        if (mode.compareTo('preview') == 0) {
-          isPublishedMode = true;
-        }
+      Map<String, String> paramMap = routeData.queryParameters;
+      String mode = paramMap['mode'] ?? '';
+      bool? isPublishedMode;
+      if (mode.compareTo('preview') == 0) {
+        isPublishedMode = true;
+      }
 
-        return TransitionPage(
-          child: BookMainPage(
-            //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
-            bookKey: GlobalKey(),
-            isPreviewX: true,
-            isPublishedMode: isPublishedMode,
-          ),
-        );
+      return TransitionPage(
+        child: BookMainPage(
+          bookKey: GlobalObjectKey('BookPreivew${StudioVariables.selectedBookMid}'),
+          //bookKey: GlobalKey(),
+          isPreviewX: true,
+          isPublishedMode: isPublishedMode,
+        ),
+      );
       // } else {
       //   return const Redirect(AppRoutes.intro);
       // }
@@ -295,7 +310,7 @@ final routesLoggedOut = RouteMap(
     AppRoutes.colorPickerDemo: (_) => TransitionPage(
           child: ColorPickerDemo(),
         ),
-        AppRoutes.genCollections: (_) => TransitionPage(
+    AppRoutes.genCollections: (_) => TransitionPage(
           child: GenCollectionsPage(),
         ),
     AppRoutes.myPageDashBoard: (_) => (AccountManager.currentLoginUser.isLoginedUser)

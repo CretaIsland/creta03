@@ -44,7 +44,7 @@ class FramePublishedManager extends CretaManager {
       }
       if (ele is FrameModel) {
         if (ele.isOverlay.value == true && ele.parentMid.value != frameManager?.pageModel.mid) {
-          // parentMid(page)가 다른 page에서 overlay-frame은 복사하지 않는다
+          // parentMid(page)가 다른 page에서 overlay-frame은 복사하지 않는다  sevenstone
           continue;
         }
       }

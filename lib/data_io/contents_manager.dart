@@ -56,7 +56,10 @@ class ContentsManager extends CretaManager {
   }
 
   ContentsManager(
-      {required this.pageModel, required this.frameModel, String tableName = 'creta_contents', this.isPublishedMode = false})
+      {required this.pageModel,
+      required this.frameModel,
+      String tableName = 'creta_contents',
+      this.isPublishedMode = false})
       : super(tableName, frameModel.mid) {
     saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
     final ContentsEventController sendEventVar = Get.find(tag: 'contents-property-to-main');
@@ -320,7 +323,7 @@ class ContentsManager extends CretaManager {
       return model;
     }
     // 여기까지 오면 없다는 뜻이다.  isShow 라도 리턴해본다.
-    logger.severe('getFirstModel failed no model founded');
+    logger.warning('getFirstModel failed no model founded');
     for (var ele in modelList) {
       ContentsModel model = ele as ContentsModel;
       if (model.isRemoved.value == true) {
@@ -592,7 +595,7 @@ class ContentsManager extends CretaManager {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {
-          debugPrint('--------------playMusic ${player.model!.name}');
+          //debugPrint('--------------playMusic ${player.model!.name}');
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.playedMusic(player.model!);
@@ -1436,11 +1439,12 @@ class ContentsManager extends CretaManager {
   }
 
   Future<bool> makeClone(BookModel parentBook, Map<String, String> parentFrameIdMap) async {
-    for(var contents in modelList) {
+    for (var contents in modelList) {
       String parentFrameMid = parentFrameIdMap[contents.parentMid.value] ?? '';
       logger.severe('find: (${contents.parentMid.value}) => ($parentFrameMid)');
       AbsExModel newModel = await makeCopy(parentBook.mid, contents, parentFrameMid);
-      logger.severe('clone is created ($collectionId.${newModel.mid}) from (source:${contents.mid})');
+      logger
+          .severe('clone is created ($collectionId.${newModel.mid}) from (source:${contents.mid})');
     }
     return true;
   }

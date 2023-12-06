@@ -55,9 +55,10 @@ class ContentsPublishedManager extends CretaManager {
 
       ele.isRemoved.set(true, save: false, noUndo: true);
       await setToDB(ele as CretaModel);
-      // ContentsPublishedManager childManager = ContentsPublishedManager(null);
-      // childManager.removeChild(ele.parentMid.value);
-      // 여기서 Link 도 훗날 지워줘야 한다.
+
+      // link 도 지원준다.
+      LinkPublishedManager childManager = LinkPublishedManager(null);
+      childManager.removeChild(ele.parentMid.value);
     }
     modelList.clear();
   }

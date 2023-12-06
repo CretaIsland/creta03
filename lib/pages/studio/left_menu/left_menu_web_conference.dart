@@ -11,8 +11,8 @@ import 'package:hycop/hycop/webrtc/peers/peers_data.dart';
 import 'package:hycop/hycop/webrtc/producers/producers_data.dart';
 import 'package:hycop/hycop/webrtc/webrtc_client.dart';
 
-import '../book_main_page.dart';
 import '../../login/creta_account_manager.dart';
+import '../studio_variables.dart';
 
 class LeftMenuWebConference extends StatefulWidget {
   final double maxHeight;
@@ -46,7 +46,7 @@ class _LeftMenuWebConferenceState extends State<LeftMenuWebConference> with Left
     producerDataHolder = ProducerData();
     await mediaDeviceDataHolder!.loadMediaDevice();
     webRTCClient = WebRTCClient(
-      roomId: BookMainPage.selectedMid,
+      roomId: StudioVariables.selectedBookMid,
       peerId: AccountManager.currentLoginUser.email,
       serverUrl: CretaAccountManager.getEnterprise!.webrtcUrl,
       peerName: CretaAccountManager.getUserProperty!.nickname

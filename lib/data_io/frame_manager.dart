@@ -25,6 +25,7 @@ import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
+import 'book_manager.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
 
@@ -258,6 +259,12 @@ class FrameManager extends CretaManager {
     String retval = '';
     if (hasMainFrame() == false) {
       for (var ele in orderValues()) {
+        if (parentMid != null && ele.parentMid.value != parentMid!) {
+          continue; // overlay 는 빠져야 한다.
+        }
+        if (BookMainPage.musicKeyMap[ele.mid] != null) {
+          continue; // 백그라운드 뮤직도 빠져야 한다.
+        }
         ContentsManager? contentsManager = getContentsManager(ele.mid);
         if (contentsManager != null && contentsManager.getAvailLength() > 0) {
           retval = ele.mid;
@@ -612,7 +619,7 @@ class FrameManager extends CretaManager {
   Future<void> removeChild(String parentMid) async {
     ContentsManager? contentsManager = getContentsManager(parentMid);
     await contentsManager?.removeAll();
-    removeLink(parentMid); // 이 Frame 에 연결된 link 를 모두 지운다.
+    //removeLink(parentMid); // 이 Frame 에 연결된 link 를 모두 지운다. // removeAll 에서 하고 있다.
   }
 
   void removeLink(String mid) {
@@ -655,8 +662,18 @@ class FrameManager extends CretaManager {
       if (ele.isRemoved.value == true) {
         continue;
       }
+      if (ele is FrameModel) {
+        if (ele.isOverlay.value == true && ele.parentMid.value != pageModel.mid) {
+          // parentMid(page)가 다른 page에서 overlay-frame은 복사하지 않는다
+          continue;
+        }
+      }
       AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
       oldNewMap[ele as FrameModel] = newOne as FrameModel;
+      if (ele.mid == bookModel.backgroundMusicFrame.value) {
+        // 백그라운드 뮤직을 복사히기 위해, 임시로 넣어둔다.
+        BookManager.newbBackgroundMusicFrame = newOne.mid;
+      }
     }
     for (var entry in oldNewMap.entries) {
       ContentsManager contentsManager = findContentsManager(entry.key);
@@ -729,6 +746,12 @@ class FrameManager extends CretaManager {
     if (!StudioVariables.isAutoPlay || !StudioVariables.isPreview) {
       return;
     }
+    // ignore: unused_local_variable
+    BookModel? book = BookMainPage.bookManagerHolder!.onlyOne() as BookModel?;
+    if (book != null && book.isAutoPlay.value == false) {
+      return;
+    }
+
     FrameModel? main = getMainFrame();
     if (main == null) {
       return;
@@ -973,12 +996,12 @@ class FrameManager extends CretaManager {
     mychangeStack.endTrans();
     return true;
   }
-  
+
   Future<bool> makeClone(
-      BookModel parentBook,
-      Map<String, String> parentPageIdMap, {
-        bool cloneToPublishedBook = false,
-      }) async {
+    BookModel parentBook,
+    Map<String, String> parentPageIdMap, {
+    bool cloneToPublishedBook = false,
+  }) async {
     Map<String, String> parentFrameIdMap = {};
     for (var frame in modelList) {
       String parentPageMid = parentPageIdMap[frame.parentMid.value] ?? '';
@@ -995,7 +1018,8 @@ class FrameManager extends CretaManager {
     final PageModel dummyPage = PageModel('', dummyBook);
     final FrameModel dummyFrame = FrameModel('', '');
     final ContentsManager copyContentsManagerHolder = cloneToPublishedBook
-        ? ContentsManager(pageModel: dummyPage, frameModel: dummyFrame, tableName: 'creta_contents_published')
+        ? ContentsManager(
+            pageModel: dummyPage, frameModel: dummyFrame, tableName: 'creta_contents_published')
         : ContentsManager(pageModel: dummyPage, frameModel: dummyFrame);
     //contentsManagerMap.forEach((key, value) { }); ==> forEach는 await 처리가 불가능
     for (MapEntry entry in contentsManagerMap.entries) {

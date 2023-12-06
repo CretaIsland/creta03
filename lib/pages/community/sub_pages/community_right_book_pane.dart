@@ -128,9 +128,9 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       CommunityRightBookPane.bookId = (pos > 0) ? query.substring(0, pos) : query;
     }
 
-    BookMainPage.selectedMid = CommunityRightBookPane.bookId;
-    if (BookMainPage.selectedMid.isEmpty) {
-      BookMainPage.selectedMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
+    StudioVariables.selectedBookMid = CommunityRightBookPane.bookId;
+    if (StudioVariables.selectedBookMid.isEmpty) {
+      StudioVariables.selectedBookMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
     }
 
     bookKeyParent = GlobalObjectKey('_CommunityRightBookPaneState.${CommunityRightBookPane.bookId}.parent');
@@ -471,7 +471,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           width: size.width,
           height: size.height,
           child: BookMainPage(
-            //bookKey: GlobalObjectKey('BookPreivew${BookMainPage.selectedMid}'),
+            //bookKey: GlobalObjectKey('BookPreivew${StudioVariables.selectedBookMid}'),
             bookKey: bookKey,
             isPreviewX: true,
             size: size,

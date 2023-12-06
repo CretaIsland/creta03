@@ -64,7 +64,7 @@ class PageManager extends CretaManager {
   }
 
   void clearFrameManager() {
-    logger.severe('clearFrameManager');
+    logger.info('clearFrameManager');
     for (FrameManager? ele in frameManagerMap.values) {
       ele?.removeRealTimeListen();
     }

@@ -16,6 +16,7 @@ enum ClickToCreateEnum {
 }
 
 class StudioVariables {
+  static String selectedBookMid = ''; // selected book mid
   static double topMenuBarHeight = LayoutConst.topMenuBarHeight;
   static double menuStickWidth = LayoutConst.menuStickWidth;
   static double appbarHeight = CretaConstant.appbarHeight;

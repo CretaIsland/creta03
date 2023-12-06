@@ -24,9 +24,9 @@ import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../routes.dart';
 import 'book_grid_page.dart';
-import 'book_main_page.dart';
 import 'sample_data.dart';
 import 'studio_constant.dart';
+import 'studio_variables.dart';
 
 class BookGridItem extends StatefulWidget {
   final int index;
@@ -217,15 +217,15 @@ class BookGridItemState extends State<BookGridItem> {
         route = AppRoutes.studioBookPreviewPage;
       }
     }
-    BookMainPage.selectedMid = widget.bookModel!.mid;
-    Routemaster.of(context).push('$route?${BookMainPage.selectedMid}');
+    StudioVariables.selectedBookMid = widget.bookModel!.mid;
+    Routemaster.of(context).push('$route?${StudioVariables.selectedBookMid}');
     //studioBookPreviewPage
   }
 
   void playBook() {
     //Get.offAllNamed("${AppRoutes.studioBookMainPage}?${CretaManager.bookPrefix}${widget.bookModel!.name.value}");
-    BookMainPage.selectedMid = widget.bookModel!.mid;
-    Routemaster.of(context).push('${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}');
+    StudioVariables.selectedBookMid = widget.bookModel!.mid;
+    Routemaster.of(context).push('${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}');
     //
   }
 

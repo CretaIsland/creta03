@@ -651,14 +651,46 @@ class FrameModel extends CretaModel with CretaStyleMixin {
       }
       order.set(maxOrder + 1);
       isOverlay.set(value);
-      BookMainPage.addOverlay(this);
+      //BookMainPage.addOverlay(this);
+      MyChange<FrameModel> c = MyChange<FrameModel>(
+        this,
+        execute: () async {
+          BookMainPage.addOverlay(this);
+          BookMainPage.pageManagerHolder!.notify();
+        },
+        redo: () async {
+          BookMainPage.addOverlay(this);
+          BookMainPage.pageManagerHolder!.notify();
+        },
+        undo: (FrameModel old) async {
+          BookMainPage.removeOverlay(mid);
+          BookMainPage.pageManagerHolder!.notify();
+        },
+      );
+      mychangeStack.add(c);
     } else {
       // order 도 내려야 한다.  order 를 구한다음.  isOveraly 를 풀어야 한다.
       // 이때  order 는 overlay 를 포함하지 않는다.  local maxOrder
       double maxOrder = frameManager.getMaxOrder();
       order.set(maxOrder + 1);
       isOverlay.set(value);
-      BookMainPage.removeOverlay(mid);
+      //BookMainPage.removeOverlay(mid);
+      MyChange<FrameModel> c = MyChange<FrameModel>(
+        this,
+        execute: () async {
+          BookMainPage.removeOverlay(mid);
+          BookMainPage.pageManagerHolder!.notify();
+        },
+        redo: () async {
+          BookMainPage.removeOverlay(mid);
+          BookMainPage.pageManagerHolder!.notify();
+        },
+        undo: (FrameModel old) async {
+          BookMainPage.addOverlay(this);
+          BookMainPage.pageManagerHolder!.notify();
+        },
+      );
+      mychangeStack.add(c);
     }
     mychangeStack.endTrans();
   }

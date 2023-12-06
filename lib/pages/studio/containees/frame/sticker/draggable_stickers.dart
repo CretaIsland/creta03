@@ -682,7 +682,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                 setState(() {
                   frameModel.toggeleOverlay(!frameModel.isOverlay.value, widget.frameManager!);
                   //_sendEvent!.sendEvent(frameModel);
-                  BookMainPage.pageManagerHolder!.notify();
+                  //BookMainPage.pageManagerHolder!.notify();
                 });
               }),
         if (StudioVariables.isPreview == false &&

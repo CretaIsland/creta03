@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 
+import '../../data_io/book_manager.dart';
 import '../../design_system/component/creta_popup.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
 import '../../lang/creta_lang.dart';
@@ -52,9 +53,17 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
           if (model == null) {
             return;
           }
+          BookManager.newbBackgroundMusicFrame = '';
           BookMainPage.bookManagerHolder!.makeCopy(model.mid, model, null).then((newOne) {
             BookMainPage.pageManagerHolder!.copyBook(newOne.mid, newOne.mid).then((value) {
               String url = '${AppRoutes.studioBookMainPage}?${newOne.mid}';
+              if (BookManager.newbBackgroundMusicFrame.isNotEmpty) {
+                //  백그라운드 뮤직을 복사한다.
+                (newOne as BookModel)
+                    .backgroundMusicFrame
+                    .set(BookManager.newbBackgroundMusicFrame, save: false);
+                BookMainPage.bookManagerHolder!.setToDB(newOne);
+              }
               AppRoutes.launchTab(url);
               return null;
             });

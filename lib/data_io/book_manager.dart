@@ -29,6 +29,9 @@ import 'page_manager.dart';
 class BookManager extends CretaManager {
   // contents 들의 url 모음, 다운로드 버튼을 눌렀을 때 생성된다.
   static Set<String> contentsSet = {};
+
+  static String newbBackgroundMusicFrame = '';
+
   Timer? _downloadReceivetimer;
 
   BookManager({String tableName = 'creta_book'}) : super(tableName, null) {
@@ -414,10 +417,10 @@ class BookManager extends CretaManager {
   }
 
   Future<BookModel?> makeClone(
-      BookModel srcBook, {
-        bool srcIsPublishedBook = true,
-        bool cloneToPublishedBook = false,
-      }) async {
+    BookModel srcBook, {
+    bool srcIsPublishedBook = true,
+    bool cloneToPublishedBook = false,
+  }) async {
     // make book-clone
     BookModel? newBook;
     try {

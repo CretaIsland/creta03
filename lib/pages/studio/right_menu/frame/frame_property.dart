@@ -2061,7 +2061,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       widget.model.toggeleOverlay(value, _frameManager!);
     });
     _sendEvent?.sendEvent(widget.model);
-    BookMainPage.pageManagerHolder!.notify();
+    //BookMainPage.pageManagerHolder!.notify();
   }
 
 /*

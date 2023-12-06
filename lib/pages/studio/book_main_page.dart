@@ -71,7 +71,6 @@ import 'studio_variables.dart';
 
 // ignore: must_be_immutable
 class BookMainPage extends StatefulWidget {
-  static String selectedMid = '';
   //static bool onceBookInfoOpened = false;
   static BookManager? bookManagerHolder;
   static PageManager? pageManagerHolder;
@@ -181,17 +180,24 @@ class _BookMainPageState extends State<BookMainPage> {
 
   List<LogicalKeyboardKey> keys = [];
 
+  bool _fromPriviewToMain = false; // 돌아가기 버튼을 누르면 True  가 됨.
+
   //Timer? _connectedUserTimer;
 
   //OffsetEventController? _linkSendEvent;
   //FrameEachEventController? _autoPlaySendEvent;
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
 
   @override
   void initState() {
-    _hideMouseTimer();
+    _staticValuseDispose(); //static value 를 정리해준다.
+    logger.info("---initState _BookMainPageState-------------------");
 
+    _hideMouseTimer();
     super.initState();
-    logger.fine("---_BookMainPageState-----------------------------------------");
 
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
     // _linkSendEvent = linkSendEvent;
@@ -214,7 +220,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
     // 같은 페이지에서 객체만 바뀌면 static value 들은 그대로 남아있게 되므로
     // static value 도 초기화해준다.
-    //BookMainPage.selectedMid = '';
+    //StudioVariables.selectedBookMid = '';
     //BookMainPage.onceBookInfoOpened = false;
 
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Book, doNoti: false);
@@ -240,15 +246,15 @@ class _BookMainPageState extends State<BookMainPage> {
     String url = Uri.base.origin;
     String query = Uri.base.query;
 
-    logger.finest("url=$url-------------------------------");
-    logger.finest("query=$query-------------------------------");
+    logger.info("url=$url-------------------------------");
+    logger.info("query=$query-------------------------------");
 
     int pos = query.indexOf('&');
     String mid = pos > 0 ? query.substring(0, pos) : query;
-    logger.finest("mid=$mid-------------------------------");
+    logger.info("mid=$mid-------------------------------");
 
     if (mid.isEmpty) {
-      mid = BookMainPage.selectedMid;
+      mid = StudioVariables.selectedBookMid;
     }
 
     if (mid.isNotEmpty) {
@@ -263,7 +269,7 @@ class _BookMainPageState extends State<BookMainPage> {
         return value;
       });
     } else {
-      logger.fine("2) --_BookMainPageState-----------------------------------------");
+      logger.severe("2) mid is empty ");
       BookModel sampleBook = BookMainPage.bookManagerHolder!.createSample();
       mid = sampleBook.mid;
       BookMainPage.bookManagerHolder!.saveSample(sampleBook).then((value) async {
@@ -285,21 +291,23 @@ class _BookMainPageState extends State<BookMainPage> {
 
     if ((widget.isPublishedMode ?? false) == false) {
       client.initialize(CretaAccountManager.getEnterprise!.socketUrl);
-      client.connectServer(BookMainPage.selectedMid);
+      client.connectServer(StudioVariables.selectedBookMid);
     }
 
     mouseTracerHolder!.addListener(() {
       switch (mouseTracerHolder!.flag) {
         case 'connectUser':
-          for(var target in mouseTracerHolder!.targetUsers) {
-            BookMainPage.connectedUserHolder!.connectNoti(BookMainPage.selectedMid, target["userName"]!, target["userId"]!);
+          for (var target in mouseTracerHolder!.targetUsers) {
+            BookMainPage.connectedUserHolder!.connectNoti(
+                StudioVariables.selectedBookMid, target["userName"]!, target["userId"]!);
           }
           mouseTracerHolder!.flag = '';
           mouseTracerHolder!.targetUsers.clear();
           break;
         case 'disconnectUser':
-          for(var target in mouseTracerHolder!.targetUsers) {
-            BookMainPage.connectedUserHolder!.disconnectNoti(BookMainPage.selectedMid, target["userName"]!, target["userId"]!);
+          for (var target in mouseTracerHolder!.targetUsers) {
+            BookMainPage.connectedUserHolder!.disconnectNoti(
+                StudioVariables.selectedBookMid, target["userName"]!, target["userId"]!);
           }
           mouseTracerHolder!.flag = '';
           mouseTracerHolder!.targetUsers.clear();
@@ -320,14 +328,14 @@ class _BookMainPageState extends State<BookMainPage> {
       },
     );
 
-    logger.fine("end ---_BookMainPageState-----------------------------------------");
+    logger.info("end ---_BookMainPageState-----------------------------------------");
 // //for webRTC
 //     mediaDeviceDataHolder = MediaDeviceData();
 //     peersDataHolder = PeersData();
 //     producerDataHolder = ProducerData();
 //     mediaDeviceDataHolder!.loadMediaDevice().then((value) {
 //       webRTCClient = WebRTCClient(
-//           roomId: BookMainPage.selectedMid,
+//           roomId: StudioVariables.selectedBookMid,
 //           peerId: AccountManager.currentLoginUser.email,
 //           //serverUrl: "wss://devcreta.com:447",
 //           serverUrl: LoginPage.enterpriseHolder!.enterpriseModel!.webrtcUrl,
@@ -339,7 +347,7 @@ class _BookMainPageState extends State<BookMainPage> {
 
   Future<void> afterBuild() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      logger.fine("BookMainPage ---_BookMainPageState-----------------------------------------");
+      logger.info("BookMainPage ---afterBuild-----------------------------------------");
       while (_onceDBGetComplete == false) {
         await Future.delayed(Duration(seconds: 1));
       }
@@ -349,6 +357,7 @@ class _BookMainPageState extends State<BookMainPage> {
         //_takeAScreenShot();
         if (StudioVariables.isAutoPlay) {}
       } else {}
+      _fromPriviewToMain = false;
     });
   }
 
@@ -471,17 +480,18 @@ class _BookMainPageState extends State<BookMainPage> {
       //_mouseMovetimer?.cancel();
       _mouseMovetimer = Timer.periodic(Duration(seconds: 1), (t) {
         // 3초 동안 마우스 움직임이 없으면 커서를 숨김
-        //print('runTimer');
         if (StudioVariables.isPreview == true) {
           if (_lastMouseMoveTime != null) {
             if (StudioVariables.hideMouse == false &&
                 DateTime.now().difference(_lastMouseMoveTime!).inSeconds >= 3) {
-              //print('3 second passed');
-              setState(() {
-                StudioVariables.hideMouse = true;
-                _sendMouseEvent?.sendEvent(Offset.zero);
-              });
-
+              logger.info('3 second passed');
+              if (_fromPriviewToMain == false) {
+                // 페이지가 넘어가는 중에, setState 가 동작하면 안된다.
+                setState(() {
+                  StudioVariables.hideMouse = true;
+                  _sendMouseEvent?.sendEvent(Offset.zero);
+                });
+              }
               _mouseMoveCount = 0;
             }
           } else {
@@ -492,15 +502,31 @@ class _BookMainPageState extends State<BookMainPage> {
           }
         }
       });
+    } else {
+      StudioVariables.hideMouse = false;
     }
   }
 
   @override
   void dispose() {
-    logger.severe('BookMainPage.dispose');
+    logger.info('BookMainPage.dispose');
     _mouseMovetimer?.cancel();
     //_stopConnectedUserTimer();
+    if (_fromPriviewToMain == false) {
+      _staticValuseDispose();
+    }
 
+    if ((widget.isPublishedMode ?? false) == false) {
+      client.disconnect(notify: false);
+    }
+    if (webRTCClient != null) {
+      webRTCClient!.close();
+    }
+    super.dispose();
+    logger.info('BookMainPage.dispose end');
+  }
+
+  void _staticValuseDispose() {
     BookMainPage.bookManagerHolder?.removeRealTimeListen();
     BookMainPage.pageManagerHolder?.removeRealTimeListen();
     BookMainPage.connectedUserHolder?.removeRealTimeListen();
@@ -514,14 +540,9 @@ class _BookMainPageState extends State<BookMainPage> {
     //verticalScroll?.dispose();
     //horizontalScroll?.dispose();
 
+    logger.info("---_staticValuseDispose end-------------------");
+
     HycopFactory.realtime!.stop();
-    if ((widget.isPublishedMode ?? false) == false) {
-      client.disconnect();
-    }
-    if (webRTCClient != null) {
-      webRTCClient!.close();
-    }
-    super.dispose();
   }
 
   @override
@@ -629,7 +650,8 @@ class _BookMainPageState extends State<BookMainPage> {
                         if (lastEventTime
                             .add(Duration(milliseconds: 100))
                             .isBefore(DateTime.now())) {
-                          client.changeCursorPosition(pointerEvent.position.dx / screenWidthPercentage,
+                          client.changeCursorPosition(
+                              pointerEvent.position.dx / screenWidthPercentage,
                               (pointerEvent.position.dy - 50) / screenHeightPrecentage);
                           lastEventTime = DateTime.now();
                         }
@@ -880,7 +902,7 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget consumerFunc() {
     logger.finest('consumerFunc');
     return Consumer<BookManager>(
-        key: ValueKey('consumerFunc+${BookMainPage.selectedMid}'),
+        key: ValueKey('consumerFunc+${StudioVariables.selectedBookMid}'),
         builder: (context, bookManager, child) {
           //print('Consumer  ${bookManager.onlyOne()!.mid}');
           String receivedMid = bookManager.onlyOne()!.mid;
@@ -902,7 +924,7 @@ class _BookMainPageState extends State<BookMainPage> {
       return Container();
     }
     return MultiProvider(
-      key: ValueKey('MultiProvider ${BookMainPage.selectedMid}'),
+      key: ValueKey('MultiProvider ${StudioVariables.selectedBookMid}'),
       providers: [
         ChangeNotifierProvider<PageManager>.value(
           value: BookMainPage.pageManagerHolder!,
@@ -1356,14 +1378,17 @@ class _BookMainPageState extends State<BookMainPage> {
               //StudioVariables.isLinkEditMode = false;
               //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
               StudioVariables.globalToggleAutoPlay(forceValue: true, save: true);
+              // 미리보기
+              _fromPriviewToMain = true;
+
               if (kReleaseMode) {
-                // String url = '${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}';
+                // String url = '${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}';
                 // AppRoutes.launchTab(url);
                 Routemaster.of(context)
-                    .push('${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}');
+                    .push('${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}');
               } else {
                 Routemaster.of(context)
-                    .push('${AppRoutes.studioBookPreviewPage}?${BookMainPage.selectedMid}');
+                    .push('${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}');
               }
             },
             hasShadow: false,
@@ -1459,7 +1484,16 @@ class _BookMainPageState extends State<BookMainPage> {
   }
 
   Widget noneScrollBox(bool isPageExist) {
-    return Container(
+    return
+
+        // WillPopScope(
+        //   onWillPop: () async {
+        //     //showSnackBar(context, CretaLang.cantGoBack);
+        //     return false; // 뒤로가기 금지
+        //   },
+        //   child:
+
+        Container(
       width: StudioVariables.workWidth, //scrollWidth,
       height: StudioVariables.workHeight,
       color: LayoutConst.studioBGColor,
@@ -1491,9 +1525,20 @@ class _BookMainPageState extends State<BookMainPage> {
             if (StudioVariables.hideMouse == false)
               BookPreviewMenu(
                 goBackProcess: () {
-                  setState(() {
-                    StudioVariables.isPreview = false;
-                  });
+                  //setState(() {
+                  StudioVariables.isPreview = false;
+                  //});
+                  // 돌아기기
+                  _fromPriviewToMain = true;
+                  if (kReleaseMode) {
+                    // String url = '${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}';
+                    // AppRoutes.launchTab(url);
+                    Routemaster.of(context)
+                        .push('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
+                  } else {
+                    Routemaster.of(context)
+                        .push('${AppRoutes.studioBookMainPage}?${StudioVariables.selectedBookMid}');
+                  }
                 },
                 muteFunction: () {
                   StudioVariables.globalToggleMute(save: false);
@@ -1521,6 +1566,7 @@ class _BookMainPageState extends State<BookMainPage> {
           ],
         );
       }),
+      //),
     );
   }
 
