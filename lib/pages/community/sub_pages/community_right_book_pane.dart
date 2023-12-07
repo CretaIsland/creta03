@@ -209,7 +209,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   }
 
   void _getChannelsFromDB(List<AbsExModel> modelList) {
-    if (kDebugMode) print('start _getBooksFromDB()');
+    if (kDebugMode) print('start _getChannelsFromDB()');
     if (_currentBookModel == null) {
       // no book-data ==> skip
       channelManagerHolder.setState(DBState.idle);

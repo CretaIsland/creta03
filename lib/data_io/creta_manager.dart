@@ -1166,7 +1166,8 @@ abstract class CretaManager extends AbsExModelManager {
     final BookSort? bookSort,
     final OrderDirection? sortOrderDirection,
     final PermissionType? permissionType,
-    final String searchKeyword = '',
+    final String searchKeyword = '', // searchKeyword, hashtag 둘중 하나만 사용
+    final String hashtag = '', // searchKeyword, hashtag 둘중 하나만 사용
     final bool isRemoved = false,
     String? userId, // default value is {AccountManager.currentLoginUser.userId}
     String sortTimeName = 'updateTime',
@@ -1205,6 +1206,10 @@ abstract class CretaManager extends AbsExModelManager {
       // Elasticsearch 될때까지 막아둠
       //query['name'] = QueryValue(value: widget.filterSearchKeyword, operType: OperType.like ??? );
       addWhereClause('name', QueryValue(value: searchKeyword, operType: OperType.textSearch));
+    } else if (hashtag.isNotEmpty) {
+      // Elasticsearch 될때까지 막아둠
+      //query['name'] = QueryValue(value: widget.filterSearchKeyword, operType: OperType.like ??? );
+      addWhereClause('hashTag', QueryValue(value: hashtag, operType: OperType.textSearch));
     }
     // sort order
     if (bookSort != null) {

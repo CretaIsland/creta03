@@ -102,6 +102,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager dummyManagerHolder;
   final List<BookModel> _cretaBooksList = [];
+  final Map<String, BookModel> _cretaBooksMap = {}; // <Book.mid, BookModel>
   final Map<String, bool> _favoritesBookIdMap = {}; // <Book.mid, isFavorites>
   final List<PlaylistModel> _playlistModelList = [];
   final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
@@ -131,6 +132,7 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
     CretaManager.startQueries(
       joinList: [
         QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(bookPublishedManagerHolder, _getBooksFromDBofHashtag, _resultBooksFromDBofHashtag),
         QuerySet(channelManagerHolder, _getChannelsFromDB, _resultChannelsFromDB),
         QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
         QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
@@ -168,18 +170,50 @@ class _CommunityRightHomePaneState extends State<CommunityRightHomePane> {
   }
 
   void _resultBooksFromDB(List<AbsExModel> modelList) {
-    Map<String, BookModel> bookMap = {}; // appwrite에서 중복처리가 될때까지 사용
+    //Map<String, BookModel> bookMap = {}; // appwrite에서 중복처리가 될때까지 사용
     for (var model in modelList) {
       BookModel bookModel = model as BookModel;
       if (kDebugMode) print('_resultBooksFromDB(${bookModel.getMid})');
       //_cretaBooksList.add(bookModel);
-      bookMap.putIfAbsent(bookModel.getMid, () => bookModel);
+      _cretaBooksMap.putIfAbsent(bookModel.getMid, () => bookModel);
       _userIdMap[bookModel.creator] = bookModel.creator;
       for (var channelId in bookModel.channels) {
-        _channelIdMap[channelId] = channelId;
+        //_channelIdMap[channelId] = channelId;
+        _channelIdMap.putIfAbsent(channelId, () => channelId);
       }
     }
-    bookMap.forEach((key, value) {
+    // _cretaBooksMap.forEach((key, value) {
+    //   _cretaBooksList.add(value);
+    // });
+  }
+
+  void _getBooksFromDBofHashtag(List<AbsExModel> modelList) {
+    //print('_getBooksFromDB()');
+    bookPublishedManagerHolder.addCretaFilters(
+      bookType: widget.filterBookType,
+      bookSort: widget.filterBookSort,
+      permissionType: widget.filterPermissionType,
+      //searchKeyword: widget.filterSearchKeyword,
+      hashtag: widget.filterSearchKeyword,
+      sortTimeName: 'updateTime',
+    );
+    bookPublishedManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultBooksFromDBofHashtag(List<AbsExModel> modelList) {
+    //Map<String, BookModel> bookMap = {}; // appwrite에서 중복처리가 될때까지 사용
+    for (var model in modelList) {
+      BookModel bookModel = model as BookModel;
+      if (kDebugMode) print('_resultBooksFromDB(${bookModel.getMid})');
+      //_cretaBooksList.add(bookModel);
+      _cretaBooksMap.putIfAbsent(bookModel.getMid, () => bookModel);
+      _userIdMap[bookModel.creator] = bookModel.creator;
+      for (var channelId in bookModel.channels) {
+        //_channelIdMap[channelId] = channelId;
+        _channelIdMap.putIfAbsent(channelId, () => channelId);
+      }
+    }
+    _cretaBooksMap.forEach((key, value) {
       _cretaBooksList.add(value);
     });
   }
