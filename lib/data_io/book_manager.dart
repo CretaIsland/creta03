@@ -252,7 +252,11 @@ class BookManager extends CretaManager {
     BookModel srcModel = src as BookModel;
     // creat_book_published data 를 만든다.
     newOne.copyFrom(srcModel, newMid: newOne.mid, pMid: newParentMid ?? newOne.parentMid.value);
-    newOne.name.set('${srcModel.name.value}${CretaLang.copyOf}');
+
+    // 여기서 newName 이 이미 있는지를 검색해야 한다.
+    String newName = await makeCopyName('${srcModel.name.value}${CretaLang.copyOf}');
+
+    newOne.name.set(newName);
     newOne.sourceMid = "";
     newOne.publishMid = "";
     newOne.setRealTimeKey(newBookMid);

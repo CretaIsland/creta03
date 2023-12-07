@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/browser_client.dart';
-import 'package:hycop/common/util/logger.dart';
+import 'package:hycop/hycop.dart';
 import 'package:image/image.dart' as img;
 
 import '../design_system/menu/creta_popup_menu.dart';
@@ -97,12 +97,12 @@ class CretaUtils {
     return retval;
   }
 
-  static String getTimeStrSecondsAgo(int sec) {
-    final currentTime = DateTime.now();
-    DateTime retval = currentTime.subtract(Duration(seconds: sec));
-    //print('10 secs before = ${retval.toString()}');
-    return CretaUtils.getDateTimeString(retval);
-  }
+  // static String getTimeStrSecondsAgo(int sec) {
+  //   final currentTime = DateTime.now();
+  //   DateTime retval = currentTime.subtract(Duration(seconds: sec));
+  //   //print('10 secs before = ${retval.toString()}');
+  //   return CretaUtils.getDateTimeString(retval);
+  // }
 
   static List<String> jsonStringToList(String value) {
     if (value.isEmpty) {
@@ -176,23 +176,27 @@ class CretaUtils {
     return name;
   }
 
-  static String getDateTimeString(DateTime dt,
-      {String deli1 = '-', String deli2 = ' ', String deli3 = ':', String deli4 = '.'}) {
-    String name = '${dt.year}';
-    name += deli1;
-    name += '${dt.month}'.padLeft(2, '0');
-    name += deli1;
-    name += '${dt.day}'.padLeft(2, '0');
-    name += deli2;
-    name += '${dt.hour}'.padLeft(2, '0');
-    name += deli3;
-    name += '${dt.minute}'.padLeft(2, '0');
-    name += deli3;
-    name += '${dt.second}'.padLeft(2, '0');
-    name += deli4;
-    name += '${dt.millisecond}'.padLeft(3, '0');
-    return name;
+  static String getDateTimeString(DateTime dt) {
+    return HycopUtils.dateTimeToDB(dt);
   }
+
+  // static String getDateTimeDString2(DateTime dt,
+  //     {String deli1 = '-', String deli2 = ' ', String deli3 = ':', String deli4 = '.'}) {
+  //   String name = '${dt.year}';
+  //   name += deli1;
+  //   name += '${dt.month}'.padLeft(2, '0');
+  //   name += deli1;
+  //   name += '${dt.day}'.padLeft(2, '0');
+  //   name += deli2;
+  //   name += '${dt.hour}'.padLeft(2, '0');
+  //   name += deli3;
+  //   name += '${dt.minute}'.padLeft(2, '0');
+  //   name += deli3;
+  //   name += '${dt.second}'.padLeft(2, '0');
+  //   name += deli4;
+  //   name += '${dt.millisecond}'.padLeft(3, '0');
+  //   return name;
+  // }
 
   static Color? string2Color(String? colorStr, {String defaultValue = 'Color(0xFFFFFFFF)'}) {
     if (defaultValue.isEmpty) {
