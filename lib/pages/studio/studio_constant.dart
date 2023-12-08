@@ -193,6 +193,7 @@ class StudioConst {
     MusicPlayerSizeEnum.Small: 'Small',
     MusicPlayerSizeEnum.Tiny: 'Tiny',
   };
+
   static Map<String, MusicPlayerSizeEnum> sizeStringMap = {
     'Big': MusicPlayerSizeEnum.Big,
     'Medium': MusicPlayerSizeEnum.Medium,

@@ -357,8 +357,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     }
     // List<String> sizeStrList = CretaStudioLang.playerSize.values.toList();
 
-    // logger.fine('Size of Music app: $_selectedSize------------------');
-    if (StudioVariables.applyScale <= 0.45) {
+    if (StudioVariables.applyScale < 0.45) {
       return const Icon(Icons.queue_music_outlined);
     }
     switch (frameModel.musicPlayerSizeType) {
@@ -382,7 +381,8 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
         children: [
           Container(
             height: _isPlaylistOpened ? 680.0 * scaleVal : 560.0 * scaleVal,
-            padding: EdgeInsets.symmetric(horizontal: 24.0 * scaleVal, vertical: 16.0 * scaleVal),
+            // padding: EdgeInsets.symmetric(horizontal: 24.0 * scaleVal, vertical: 16.0 * scaleVal),
+            padding: EdgeInsets.symmetric(horizontal: 8.0 * scaleVal, vertical: 16.0 * scaleVal),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -720,7 +720,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   Widget _musicMedSize(double scaleVal) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24.0 * scaleVal),
+      padding: EdgeInsets.symmetric(horizontal: 8.0 * scaleVal),
       child: Stack(
         children: [
           Column(
@@ -794,7 +794,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   Widget _musicSmallSize(double scaleVal) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.0 * scaleVal, horizontal: 16.0 * scaleVal),
+      padding: EdgeInsets.symmetric(vertical: 4.0 * scaleVal, horizontal: 8.0 * scaleVal),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

@@ -32,7 +32,6 @@ class LeftMenuGiphy extends StatefulWidget {
 
 class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, FramePlayMixin {
   final double verticalPadding = 18;
-  final TextEditingController _searchController = TextEditingController();
   List<dynamic> _gifs = [];
 
   late String searchText;
@@ -67,7 +66,6 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
 
   @override
   void dispose() {
-    _searchController.dispose();
     super.dispose();
   }
 
@@ -121,26 +119,39 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
                   }
                   _gifs = snapshot.data!;
                   int gifCount = _gifs.length;
-                  return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                    ),
-                    itemCount: gifCount > _visibleGifCount ? _visibleGifCount : gifCount,
-                    itemBuilder: (context, index) {
-                      return _getElement(_gifs[index], index);
-                    },
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 536,
+                        child: GridView.builder(
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                          ),
+                          itemCount: gifCount > _visibleGifCount ? _visibleGifCount : gifCount,
+                          itemBuilder: (context, index) {
+                            return _getElement(_gifs[index], index);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      if (_visibleGifCount < gifCount)
+                        BTN.line_blue_t_m(
+                          text: CretaStudioLang.viewMore,
+                          onPressed: _loadMoreItems,
+                        ),
+                    ],
                   );
                 },
               ),
             ),
-            const SizedBox(height: 16.0),
-            if (_visibleGifCount < 50)
-              BTN.line_blue_t_m(
-                text: CretaStudioLang.viewMore,
-                onPressed: _loadMoreItems,
-              ),
+            // const SizedBox(height: 16.0),
+            // if (_visibleGifCount < 50)
+            //   BTN.line_blue_t_m(
+            //     text: CretaStudioLang.viewMore,
+            //     onPressed: _loadMoreItems,
+            //   ),
             const SizedBox(height: 16.0),
             Image.asset('giphy_official_logo.png'),
           ],
