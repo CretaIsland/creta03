@@ -86,7 +86,7 @@ class ContentsManager extends CretaManager {
         continue;
       }
       AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
-      LinkManager? linkManager = findLinkManager(ele.mid);
+      LinkManager? linkManager = findLinkManager(ele.mid, createIfNotExist: false);
       await linkManager?.copyBook(newBookMid, newOne.mid);
       counter++;
     }
@@ -479,6 +479,15 @@ class ContentsManager extends CretaManager {
     if (retval != null) {
       retval.removeAll();
     }
+  }
+
+  @override
+  Future<void> removeAll() async {
+    playTimer?.stop();
+    if (BookMainPage.backGroundMusic != null) {
+      FrameManager.stopBackgroundMusic(BookMainPage.backGroundMusic!);
+    }
+    super.removeAll();
   }
 
   void removeLink(String frameOrPageMid) {
@@ -1145,14 +1154,15 @@ class ContentsManager extends CretaManager {
     return retval;
   }
 
-  LinkManager? findLinkManager(String contentsId) {
+  LinkManager? findLinkManager(String contentsId, {bool createIfNotExist = true}) {
     LinkManager? retval = linkManagerMap[contentsId];
     logger.fine('findLinkManager()*******');
-    if (retval == null) {
+    if (retval == null && createIfNotExist == true) {
       retval = LinkManager(contentsId, frameModel.realTimeKey);
       linkManagerMap[contentsId] = retval;
+      return linkManagerMap[contentsId];
     }
-    return linkManagerMap[contentsId];
+    return retval;
   }
 
   Future<void> copyContents(String frameMid, String bookMid, {bool samePage = true}) async {

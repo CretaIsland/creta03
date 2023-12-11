@@ -317,7 +317,8 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
             logger.fine('_frameBody3 _linkReceiveEvent (AutoPlay=$snapshot.data)');
           }
           //return _applyAnimate(widget.model);
-
+          int orderIndex = frameManager!.getOrderIndex(widget.model.order.value);
+          //print('newOrder=${widget.model.order.value}, $orderIndex');
           return Stack(
             alignment: Alignment.center,
             children: [
@@ -331,9 +332,11 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
               (LinkParams.isLinkNewMode == false && StudioVariables.isPreview == false)
                   ? IgnorePointer(
                       child: OnFrameMenu(
-                        key: GlobalObjectKey(
-                            'OnFrameMenu${widget.pageModel.mid}/${widget.model.mid}'),
+                        // key: GlobalObjectKey(
+                        //     //'OnFrameMenu${widget.pageModel.mid}/${widget.model.mid}/${DraggableStickers.isFrontBackHover}'),
+                        //     'OnFrameMenu${widget.pageModel.mid}/${widget.model.mid}'),
                         playTimer: _playTimer,
+                        orderIndex: orderIndex,
                         model: widget.model,
                       ),
                     )
@@ -398,6 +401,8 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       _isShowBorder ? _dottedShapeBox(model) : _shapeBox(model),
       animations,
       model.mid,
+      duration: Duration(milliseconds: model.aniDuration.value),
+      delay: Duration(milliseconds: model.aniDelay.value),
     );
   }
 

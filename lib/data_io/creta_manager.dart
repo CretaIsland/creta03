@@ -397,7 +397,7 @@ abstract class CretaManager extends AbsExModelManager {
       limit = CretaManager.maxPageLimit;
     }
     _lastLimit = limit;
-    logger.finest('my queryFromDB($collectionId, ${query.toString()}, $isNew, $limit)');
+    logger.fine('my queryFromDB($collectionId, ${query.toString()}, $isNew, $limit)');
 
     Map<String, OrderDirection> copyOrderBy = {};
     if (orderBy == null || orderBy.isEmpty) {
@@ -894,6 +894,18 @@ abstract class CretaManager extends AbsExModelManager {
         break;
       }
       retval++;
+    }
+    return retval;
+  }
+
+  // 해당 order가 몇번째에 있는지를 알려준다.
+  int getOrderIndex(double order) {
+    int retval = 0;
+    for (var ele in _orderMap.deepSortByKey().keys) {
+      retval++;
+      if (ele == order) {
+        break;
+      }
     }
     return retval;
   }

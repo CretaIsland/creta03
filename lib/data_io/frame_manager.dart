@@ -23,8 +23,10 @@ import '../pages/studio/containees/frame/frame_thumbnail.dart';
 import '../pages/studio/containees/frame/sticker/draggable_stickers.dart';
 import '../pages/studio/containees/frame/sticker/stickerview.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
+import '../pages/studio/left_menu/music/music_player_frame.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
+import '../player/creta_play_timer.dart';
 import 'book_manager.dart';
 import 'contents_manager.dart';
 import 'creta_manager.dart';
@@ -43,6 +45,57 @@ class FrameManager extends CretaManager {
       }
     }
     return null;
+  }
+
+  static Widget backgroundMusic(FrameModel frameModel) {
+    FrameManager? frameManager =
+        BookMainPage.pageManagerHolder!.frameManagerMap[frameModel.parentMid.value];
+    if (frameManager == null) {
+      return const SizedBox.shrink();
+    }
+    ContentsManager contentsManager = frameManager.findContentsManager(frameModel);
+    ContentsModel? model = contentsManager.getFirstModel();
+    if (model != null) {
+      if (contentsManager.playTimer != null) {
+        //print('bg music played !!!!');
+        return Opacity(
+          opacity: 0.5,
+          child: contentsManager.playTimer!.createWidget(model),
+        );
+      }
+      //print('bg music created and played !!!!');
+      CretaPlayTimer playTimer = CretaPlayTimer(contentsManager, frameManager);
+      contentsManager.setPlayerHandler(playTimer);
+      return Opacity(
+        opacity: 0.5,
+        child: contentsManager.playTimer!.createWidget(model),
+      );
+    }
+    return const SizedBox.shrink();
+  }
+
+  static void stopBackgroundMusic(FrameModel frameModel) {
+    for (var musicKey in BookMainPage.musicKeyMap.values) {
+      GlobalObjectKey<MusicPlayerFrameState> player = musicKey;
+      player.currentState!.stopMusic();
+    }
+
+    // FrameManager? frameManager =
+    //     BookMainPage.pageManagerHolder!.frameManagerMap[frameModel.parentMid.value];
+    // if (frameManager == null) {
+    //   return;
+    // }
+    // ContentsManager contentsManager = frameManager.findContentsManager(frameModel);
+    // ContentsModel? model = contentsManager.getFirstModel();
+    // if (model == null) {
+    //   return;
+    // }
+    // if (contentsManager.playTimer == null) {
+    //   return;
+    // }
+    // print('background music stop');
+    // contentsManager.playTimer?.stop();
+    // return;
   }
 
   // GlobalKey? _frameMainKey;

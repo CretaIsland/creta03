@@ -155,9 +155,11 @@ class DraggableResizableState extends State<DraggableResizable> {
     // _baseAngle = 0;
     // _angleDelta = 0;
     _mainSymbolSwitchTimer = Timer.periodic(Duration(seconds: 2), (Timer t) {
-      setState(() {
-        _mainSymbolSwitch = !_mainSymbolSwitch;
-      });
+      if (widget.isMain && StudioVariables.isPreview == false) {
+        setState(() {
+          _mainSymbolSwitch = !_mainSymbolSwitch;
+        });
+      }
     });
   }
 

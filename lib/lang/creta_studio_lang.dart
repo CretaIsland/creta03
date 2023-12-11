@@ -396,6 +396,7 @@ class CretaStudioLang {
 
   static const String ani = '애니메이션';
   static const String speed = '속도';
+  static const String delay = '딜레이';
   static const String border = '테두리';
   static const String shadow = '그림자';
   static const String borderWidth = '두께';

@@ -137,7 +137,7 @@ enum AnimationType {
   fadeIn(1),
   flip(2),
   shake(4),
-  shimmer(8),
+  blurXY(8),
   scaleXY(16),
   end(999999);
 
@@ -149,7 +149,7 @@ enum AnimationType {
   static List<AnimationType> toAniListFromInt(int val) {
     List<AnimationType> retval = [];
     for (int i = 1; i < end.index; i++) {
-      if (val & AnimationType.values[i].value == AnimationType.values[i].value) {
+      if ((val & AnimationType.values[i].value) == AnimationType.values[i].value) {
         retval.add(AnimationType.values[i]);
       }
     }

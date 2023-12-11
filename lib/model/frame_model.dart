@@ -55,6 +55,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   late UndoAble<ShapeType> shape;
   //late UndoAble<bool> shadowIn;
   late UndoAble<String> eventSend;
+  late UndoAble<int> aniDuration;
+  late UndoAble<int> aniDelay;
 
   // Belows are not saved in db.
   double prevOrder = -1;
@@ -230,6 +232,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         shadowDirection,
         shadowOffset,
         volume,
+        aniDuration,
+        aniDelay,
         mute,
         shape,
         eventSend,
@@ -270,6 +274,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(90, mid, 'shadowDirection');
     shadowOffset = UndoAble<double>(0, mid, 'shadowOffset');
     volume = UndoAble<double>(50, mid, 'volume');
+    aniDuration = UndoAble<int>(2000, mid, 'aniDuration');
+    aniDelay = UndoAble<int>(1000, mid, 'aniDelay');
     mute = UndoAble<bool>(false, mid, 'mute');
     shape = UndoAble<ShapeType>(ShapeType.none, mid, 'shape');
     eventSend = UndoAble<String>('', mid, 'eventSend');
@@ -315,6 +321,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(90, mid, 'shadowDirection');
     shadowOffset = UndoAble<double>(0, mid, 'shadowOffset');
     volume = UndoAble<double>(50, mid, 'volume');
+    aniDuration = UndoAble<int>(2000, mid, 'aniDuration');
+    aniDelay = UndoAble<int>(1000, mid, 'aniDelay');
     mute = UndoAble<bool>(false, mid, 'mute');
     shape = UndoAble<ShapeType>(ShapeType.none, mid, 'shape');
     eventSend = UndoAble<String>('', mid, 'eventSend');
@@ -360,6 +368,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection = UndoAble<double>(srcFrame.shadowDirection.value, mid, 'shadowDirection');
     shadowOffset = UndoAble<double>(srcFrame.shadowOffset.value, mid, 'shadowOffset');
     volume = UndoAble<double>(srcFrame.volume.value, mid, 'volume');
+    aniDuration = UndoAble<int>(srcFrame.aniDuration.value, mid, 'aniDuration');
+    aniDelay = UndoAble<int>(srcFrame.aniDelay.value, mid, 'aniDelay');
     mute = UndoAble<bool>(srcFrame.mute.value, mid, 'mute');
     shape = UndoAble<ShapeType>(srcFrame.shape.value, mid, 'shape');
     eventSend = UndoAble<String>(srcFrame.eventSend.value, mid, 'eventSend');
@@ -406,6 +416,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowDirection.init(srcFrame.shadowDirection.value);
     shadowOffset.init(srcFrame.shadowOffset.value);
     volume.init(srcFrame.volume.value);
+    aniDuration.init(srcFrame.aniDuration.value);
+    aniDelay.init(srcFrame.aniDelay.value);
     mute.init(srcFrame.mute.value);
     shape.init(srcFrame.shape.value);
     eventSend.init(srcFrame.eventSend.value);
@@ -458,7 +470,9 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     shadowBlur.setDD((map["shadowBlur"] ?? 0), save: false, noUndo: true);
     shadowDirection.setDD((map["shadowDirection"] ?? 90), save: false, noUndo: true);
     shadowOffset.setDD((map["shadowOffset"] ?? 0), save: false, noUndo: true);
-    volume.setDD((map["volume"] ?? 0), save: false, noUndo: true);
+    volume.setDD((map["volume"] ?? 50), save: false, noUndo: true);
+    aniDuration.setDD((map["aniDuration"] ?? 2000), save: false, noUndo: true);
+    aniDelay.setDD((map["aniDelay"] ?? 1000), save: false, noUndo: true);
     mute.setDD((map["mute"] ?? false), save: false, noUndo: true);
     shape.setDD(ShapeType.fromInt(map["shape"] ?? 0), save: false, noUndo: true);
     eventSend.setDD(map["eventSend"] ?? '', save: false, noUndo: true);
@@ -505,6 +519,8 @@ class FrameModel extends CretaModel with CretaStyleMixin {
         "shadowDirection": shadowDirection.value,
         "shadowOffset": shadowOffset.value,
         "volume": volume.value,
+        "aniDuration": aniDuration.value,
+        "aniDelay": aniDelay.value,
         "mute": mute.value,
         "shape": shape.value.index,
         "eventSend": eventSend.value,

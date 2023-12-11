@@ -17,6 +17,7 @@ import '../../../left_menu/left_menu_page.dart';
 import '../../../studio_constant.dart';
 import '../../../studio_variables.dart';
 import '../../containee_nofifier.dart';
+import 'draggable_stickers.dart';
 import 'stickerview.dart';
 
 class MiniMenu extends StatefulWidget {
@@ -83,6 +84,13 @@ class MiniMenuState extends State<MiniMenu> {
   //OffsetEventController? _linkSendEvent;
 
   late bool isFirstTime;
+
+  @override
+  void dispose() {
+    //print('MiniMenuState.dispose');
+    DraggableStickers.isFrontBackHover = false;
+    super.dispose();
+  }
 
   @override
   void initState() {

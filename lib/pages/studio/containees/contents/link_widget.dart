@@ -23,6 +23,7 @@ import '../../book_preview_menu.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
 import '../frame/on_link_cursor.dart';
+import '../frame/sticker/draggable_stickers.dart';
 import 'play_buttons.dart';
 
 class LinkWidget extends StatefulWidget {
@@ -260,6 +261,7 @@ class _LinkWidgetState extends State<LinkWidget> {
     //   }
     // }
     //if (widget.contentsModel.contentsType == ContentsType.document) return false;
+    DraggableStickers.isFrontBackHover = false;
     return true;
   }
 

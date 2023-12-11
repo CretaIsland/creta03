@@ -45,10 +45,8 @@ import '../../design_system/text_field/creta_text_field.dart';
 import '../../lang/creta_lang.dart';
 import '../../model/book_model.dart';
 import '../../design_system/component/cross_scrollbar.dart';
-import '../../model/contents_model.dart';
 import '../../model/frame_model.dart';
 import '../../model/page_model.dart';
-import '../../player/creta_play_timer.dart';
 import '../../routes.dart';
 import '../login/creta_account_manager.dart';
 import 'book_preview_menu.dart';
@@ -510,6 +508,11 @@ class _BookMainPageState extends State<BookMainPage> {
   @override
   void dispose() {
     logger.info('BookMainPage.dispose');
+
+    if (BookMainPage.backGroundMusic != null) {
+      FrameManager.stopBackgroundMusic(BookMainPage.backGroundMusic!);
+    }
+
     _mouseMovetimer?.cancel();
     //_stopConnectedUserTimer();
     if (_fromPriviewToMain == false) {
@@ -932,7 +935,8 @@ class _BookMainPageState extends State<BookMainPage> {
       ],
       child: Stack(
         children: [
-          if (BookMainPage.backGroundMusic != null) _backgroundMusic(BookMainPage.backGroundMusic!),
+          if (BookMainPage.backGroundMusic != null)
+            FrameManager.backgroundMusic(BookMainPage.backGroundMusic!),
           Column(
             children: [
               SizedBox(height: StudioVariables.topMenuBarHeight),
@@ -1760,33 +1764,6 @@ class _BookMainPageState extends State<BookMainPage> {
       }
     }
     BookMainPage.pageManagerHolder!.notify();
-  }
-
-  Widget _backgroundMusic(FrameModel frameModel) {
-    FrameManager? frameManager =
-        BookMainPage.pageManagerHolder!.frameManagerMap[frameModel.parentMid.value];
-    if (frameManager == null) {
-      return SizedBox.shrink();
-    }
-    ContentsManager contentsManager = frameManager.findContentsManager(frameModel);
-    ContentsModel? model = contentsManager.getFirstModel();
-    if (model != null) {
-      if (contentsManager.playTimer != null) {
-        //print('bg music played !!!!');
-        return Opacity(
-          opacity: 0.5,
-          child: contentsManager.playTimer!.createWidget(model),
-        );
-      }
-      //print('bg music created and played !!!!');
-      CretaPlayTimer playTimer = CretaPlayTimer(contentsManager, frameManager);
-      contentsManager.setPlayerHandler(playTimer);
-      return Opacity(
-        opacity: 0.5,
-        child: contentsManager.playTimer!.createWidget(model),
-      );
-    }
-    return SizedBox.shrink();
   }
 
   Future<void> _deleteSelectedModel() async {

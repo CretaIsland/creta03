@@ -12,6 +12,7 @@ import 'package:r_dotted_line_border/r_dotted_line_border.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/buttons/creta_ex_slider.dart';
 import '../../../../design_system/buttons/creta_tab_button.dart';
 import '../../../../design_system/buttons/creta_toggle_button.dart';
 import '../../../../design_system/component/colorPicker/shadow_indicator.dart';
@@ -1209,7 +1210,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   }
 
   Widget _pageTransition() {
-    logger.finest('pageTransition=${widget.model.transitionEffect.value}');
+    logger.severe('pageTransition=${widget.model.transitionEffect.value}');
     List<AnimationType> animations =
         AnimationType.toAniListFromInt(widget.model.transitionEffect.value);
     String trails = '';
@@ -1231,10 +1232,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
         },
         titleWidget: Text(CretaStudioLang.transitionFrame, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-        trailWidget: Text(
-          trails,
-          textAlign: TextAlign.right,
-          style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+        trailWidget: SizedBox(
+          width: 160,
+          child: Text(
+            trails,
+            textAlign: TextAlign.right,
+            style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
+          ),
         ),
         hasRemoveButton: widget.model.transitionEffect.value != 0,
         onDelete: () {
@@ -1251,26 +1255,73 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   Widget _transitionBody() {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 16,
+      child: Column(
         children: [
-          for (int i = 1; i < AnimationType.end.index; i++)
-            AniExampleBox(
-                key: ValueKey('frame=${AnimationType.values[i].name}+${_isSelect(i)}'),
-                model: widget.model,
-                name: CretaStudioLang.animationTypes[i],
-                aniType: AnimationType.values[i],
-                selected: _isSelect(i),
-                onSelected: () {
-                  setState(() {});
-                  _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
-                  //BookMainPage.bookManagerHolder!.notify();
-                }),
-          // AniExampleBox(model: widget.model, name: CretaStudioLang.flip, aniType: AnimationType.flip),
-          // AniExampleBox(model: widget.model, name: CretaStudioLang.shake, aniType: AnimationType.shake),
-          // AniExampleBox(model: widget.model, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: [
+              for (int i = 1; i < AnimationType.end.index; i++)
+                AniExampleBox(
+                    key: ValueKey('frame=${AnimationType.values[i].name}+${_isSelect(i)}'),
+                    model: widget.model,
+                    name: CretaStudioLang.animationTypes[i],
+                    aniType: AnimationType.values[i],
+                    selected: _isSelect(i),
+                    onSelected: () {
+                      setState(() {});
+                      _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
+                      //BookMainPage.bookManagerHolder!.notify();
+                    }),
+              // AniExampleBox(model: widget.model, name: CretaStudioLang.flip, aniType: AnimationType.flip),
+              // AniExampleBox(model: widget.model, name: CretaStudioLang.shake, aniType: AnimationType.shake),
+              // AniExampleBox(model: widget.model, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
+            ],
+          ),
+          _speed(),
+          _delay(),
         ],
+      ),
+    );
+  }
+
+  // 속도 슬라이더 바
+  Widget _speed() {
+    return propertyLine(
+      name: CretaStudioLang.speed,
+      widget: CretaExSlider(
+        valueType: SliderValueType.normal,
+        value: widget.model.aniDuration.value.toDouble(),
+        onChanngeComplete: (val) {
+          //setState(() {
+          widget.model.aniDuration.set(val.round());
+          //});
+          _frameManager?.notify();
+          //_sendEvent!.sendEvent(widget.model);
+        },
+        onChannged: (val) {},
+        min: 0,
+        max: 5000,
+      ),
+    );
+  } // delay 슬라이더 바
+
+  Widget _delay() {
+    return propertyLine(
+      name: CretaStudioLang.delay,
+      widget: CretaExSlider(
+        valueType: SliderValueType.normal,
+        value: widget.model.aniDelay.value.toDouble(),
+        onChanngeComplete: (val) {
+          //setState(() {
+          widget.model.aniDelay.set(val.round());
+          //});
+          _frameManager?.notify();
+          //_sendEvent!.sendEvent(widget.model);
+        },
+        onChannged: (val) {},
+        min: 0,
+        max: 5000,
       ),
     );
   }
@@ -2269,7 +2320,9 @@ class _AniExampleBoxState extends State<AniExampleBox> with ExampleBoxStateMixin
 
   void onSelected() {
     setState(() {
-      widget.model.transitionEffect.set(widget.model.transitionEffect.value | widget.aniType.value);
+      // 여러개를 동시 적용하던것에서, 그냥 하나만 적용하는 것을 바꿈.
+      //widget.model.transitionEffect.set(widget.model.transitionEffect.value | widget.aniType.value);
+      widget.model.transitionEffect.set(widget.aniType.value);
     });
     widget.onSelected.call();
   }
@@ -2313,8 +2366,8 @@ class _AniExampleBoxState extends State<AniExampleBox> with ExampleBoxStateMixin
         return isAni() ? _aniBox().flip() : normalBox(widget.name);
       case AnimationType.shake:
         return isAni() ? _aniBox().shake() : normalBox(widget.name);
-      case AnimationType.shimmer:
-        return isAni() ? _aniBox().shimmer() : normalBox(widget.name);
+      case AnimationType.blurXY:
+        return isAni() ? _aniBox().blurXY() : normalBox(widget.name);
       case AnimationType.scaleXY:
         return isAni() ? _aniBox().scaleXY() : normalBox(widget.name);
       default:

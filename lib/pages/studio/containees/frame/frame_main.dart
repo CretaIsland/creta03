@@ -320,6 +320,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         //setState(() {
         DraggableStickers.isFrontBackHover = hover;
         _showOrderSendEvent!.sendEvent(true);
+        //print('onFrontBackHover = ${DraggableStickers.isFrontBackHover}');
         //});
       },
       onDropPage: (modelList) async {
@@ -562,7 +563,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       for (var item in frameManager!.modelList) {
         FrameModel model = item as FrameModel;
         if (item.mid != mid) {
-          model.isMain.set(false);  // 다른것들을 메인에서 해제
+          model.isMain.set(false); // 다른것들을 메인에서 해제
         }
       }
     }

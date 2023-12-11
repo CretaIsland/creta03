@@ -19,30 +19,37 @@ mixin ContaineeMixin {
   Animate getAnimation(
     Widget target,
     List<AnimationType> animations,
-    String mid,
-  ) {
-    Animate ani = target.animate();
+    String mid, {
+    Duration? duration,
+    Duration? delay,
+  }) {
+    duration ??= 2000.ms;
+    delay ??= 1000.ms;
+
+    Animate ani = target.animate(
+      onPlay: (controller) => controller.repeat(), //repeat
+    );
     for (var ele in animations) {
       if (ele == AnimationType.fadeIn) {
         logger.finest('fadeIn');
-        ani = ani.fadeIn().then();
+        ani = ani.fadeIn(duration: duration, delay: delay).then();
       }
       if (ele == AnimationType.flip) {
         logger.finest('flip');
-        ani = ani.flip().then();
+        ani = ani.flip(duration: duration, delay: delay).then();
       }
       if (ele == AnimationType.shake) {
         logger.finest('shake');
-        ani = ani.shake().then();
+        ani = ani.shake(duration: duration, delay: delay).then();
       }
-      if (ele == AnimationType.shimmer) {
-        logger.finest('shimmer');
-        ani = ani.shimmer().then();
+      if (ele == AnimationType.blurXY) {
+        logger.finest('blurXY');
+        ani = ani.blurXY(duration: duration, delay: delay).then();
       }
       if (ele == AnimationType.scaleXY) {
         logger.finest('scaleXY');
         if (LinkParams.connectedClass == 'page' || mid != LinkParams.connectedMid) {
-          ani = ani.scaleXY().then();
+          ani = ani.scaleXY(duration: duration, delay: delay).then();
         }
       }
       //  else if (LinkParams.connectedClass == 'page') {

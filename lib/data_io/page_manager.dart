@@ -257,6 +257,7 @@ class PageManager extends CretaManager {
   bool gotoNext() {
     String? mid = getNextMid();
     if (mid != null) {
+      //DraggableStickers.isFrontBackHover = false;
       setSelectedMid(mid);
       return true;
     }
@@ -266,6 +267,7 @@ class PageManager extends CretaManager {
   bool gotoPrev() {
     String? mid = getPrevMid();
     if (mid != null) {
+      //DraggableStickers.isFrontBackHover = false;
       setSelectedMid(mid);
       return true;
     }
@@ -468,7 +470,7 @@ class PageManager extends CretaManager {
       AbsExModel newOne = await makeCopy(newBookMid, ele, newParentMid);
       oldNewMap[ele.mid] = newOne.mid;
     }
-    for(var entry in oldNewMap.entries) {
+    for (var entry in oldNewMap.entries) {
       FrameManager? frameManager = findFrameManager(entry.key);
       await frameManager?.copyBook(newBookMid, entry.value);
       counter++;
@@ -753,7 +755,10 @@ class PageManager extends CretaManager {
     final PageModel dummyPage = PageModel('', dummyBook);
     final FrameManager copyFrameManagerHolder = cloneToPublishedBook
         ? FrameManager(
-            bookModel: dummyBook, pageModel: dummyPage, tableName: 'creta_frame_published', isPublishedMode: true)
+            bookModel: dummyBook,
+            pageModel: dummyPage,
+            tableName: 'creta_frame_published',
+            isPublishedMode: true)
         : FrameManager(bookModel: dummyBook, pageModel: dummyPage, isPublishedMode: true);
     //frameManagerMap.forEach((key, value) { }); ==> forEach는 await 처리가 불가능
     for (MapEntry entry in frameManagerMap.entries) {

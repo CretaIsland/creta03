@@ -177,6 +177,12 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     _audioPlayer.pause();
   }
 
+  void stopMusic() {
+    //print('stopMusic()');
+    _audioPlayer.stop();
+    _audioPlayer.dispose();
+  }
+
   final _playlist = ConcatenatingAudioSource(
     children: [],
     // AudioSource.uri(
@@ -272,6 +278,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   @override
   void dispose() {
+    //print('MusicPlayerFrame.dispose');
     _audioPlayer.stop();
     _audioPlayer.dispose();
     super.dispose();

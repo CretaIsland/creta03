@@ -12,8 +12,10 @@ import 'sticker/draggable_stickers.dart';
 class OnFrameMenu extends StatefulWidget {
   final CretaPlayTimer? playTimer;
   final FrameModel model;
+  final int orderIndex;
 
-  const OnFrameMenu({super.key, required this.playTimer, required this.model});
+  const OnFrameMenu(
+      {super.key, required this.playTimer, required this.orderIndex, required this.model});
 
   @override
   State<OnFrameMenu> createState() => _OnFrameMenuState();
@@ -21,6 +23,15 @@ class OnFrameMenu extends StatefulWidget {
 
 class _OnFrameMenuState extends State<OnFrameMenu> {
   //bool _isHover = false;
+
+  @override
+  void didUpdateWidget(OnFrameMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.orderIndex != widget.orderIndex) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StudioVariables.isHandToolMode == false
@@ -44,6 +55,7 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
 
   Widget _buttonArea() {
     //final int contentsCount = widget.playTimer!.contentsManager.getShowLength();
+
     return Container(
         width: double.infinity,
         height: double.infinity,
@@ -103,13 +115,15 @@ class _OnFrameMenuState extends State<OnFrameMenu> {
             // _drawOrder, DrawOrder drawOrder
             if (DraggableStickers.isFrontBackHover)
               Text(
-                '${widget.model.order.value}',
+                '${widget.orderIndex}',
+                //'${widget.model.order.value}',
                 //'${widget.model.order.value} : $contentsCount',
                 style: CretaFont.titleELarge.copyWith(color: Colors.white),
               ),
             if (DraggableStickers.isFrontBackHover)
               Text(
-                '${widget.model.order.value}',
+                '${widget.orderIndex}',
+                //'${widget.model.order.value}',
                 //'${widget.model.order.value} : $contentsCount',
                 style: CretaFont.titleLarge,
               ),
