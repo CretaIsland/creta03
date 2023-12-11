@@ -183,7 +183,7 @@ class StudioConst {
   static List<Size> musicPlayerSize = [
     Size(480, 800),
     Size(480, 320),
-    Size(460, 148),
+    Size(460, 184),
     Size(266, 84),
   ];
 
@@ -201,7 +201,7 @@ class StudioConst {
     'Tiny': MusicPlayerSizeEnum.Tiny,
   };
 
-  static double musicIconSize = 51.0;
+  static double musicIconSize = 48.0;
 
   static List<ContentsType> depotsType = [
     ContentsType.none,

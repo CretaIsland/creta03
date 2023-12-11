@@ -506,7 +506,7 @@ class ContentsManager extends CretaManager {
         }
       }
       if (player.model != null && player.model!.isMusic()) {
-        debugPrint('--------------setMusicSoundOff ${player.model!.name}');
+        logger.info('setMusicSoundOff ${player.model!.name}');
         GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
         if (musicKey != null) {
           musicKey.currentState?.mutedMusic(player.model!);
@@ -535,7 +535,7 @@ class ContentsManager extends CretaManager {
         }
       }
       if (player.model != null && player.model!.isMusic()) {
-        debugPrint('--------------resumeMusicSound ${player.model!.name}');
+        logger.info('resumeMusicSound ${player.model!.name}');
         GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
         if (musicKey != null) {
           musicKey.currentState?.resumedMusic(player.model!);
@@ -565,7 +565,7 @@ class ContentsManager extends CretaManager {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {
-          debugPrint('--------------pauseMusic ${player.model!.name}');
+          logger.info('--------------pauseMusic ${player.model!.name}');
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.pausedMusic(player.model!);
@@ -595,7 +595,6 @@ class ContentsManager extends CretaManager {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {
-          //debugPrint('--------------playMusic ${player.model!.name}');
           GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[frameId];
           if (musicKey != null) {
             musicKey.currentState?.playedMusic(player.model!);
@@ -947,23 +946,19 @@ class ContentsManager extends CretaManager {
           // onUploadComplete: onUploadComplete,
           onUploadComplete: (currentModel) {
             if (currentModel.isMusic()) {
-              debugPrint(
-                  '-----------Dropping song named ${currentModel.name} with remoteUrl ${currentModel.remoteUrl}');
+              logger.info(
+                  'Dropping song named ${currentModel.name} with remoteUrl ${currentModel.remoteUrl}');
 
               String mid = contentsManager.frameModel.mid;
-              // debugPrint('--1-- frameModel.mid ${frameModel.mid}-----');
               GlobalObjectKey<MusicPlayerFrameState>? musicKey = BookMainPage.musicKeyMap[mid];
-              // debugPrint('--2-- musicKey $musicKey-----');
               if (musicKey != null) {
                 musicKey.currentState?.addMusic(currentModel);
               } else {
-                debugPrint('musicKey is INVALID');
+                logger.info('musicKey is INVALID');
               }
             }
           },
         );
-        // debugPrint(
-        //     '---------uploaded successfully-------${contentsModel.name} with remoteUrl ${contentsModel.remoteUrl}-');
       }
       // 콘텐츠 객체를 DB에 Creta 한다.
       //print('createNextContents (contents=${contentsModel.mid})');

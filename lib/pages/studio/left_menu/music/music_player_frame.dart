@@ -357,7 +357,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
     }
     // List<String> sizeStrList = CretaStudioLang.playerSize.values.toList();
 
-    if (StudioVariables.applyScale < 0.45) {
+    if (StudioVariables.applyScale <= 0.34) {
       return const Icon(Icons.queue_music_outlined);
     }
     switch (frameModel.musicPlayerSizeType) {
@@ -382,7 +382,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
           Container(
             height: _isPlaylistOpened ? 680.0 * scaleVal : 560.0 * scaleVal,
             // padding: EdgeInsets.symmetric(horizontal: 24.0 * scaleVal, vertical: 16.0 * scaleVal),
-            padding: EdgeInsets.symmetric(horizontal: 8.0 * scaleVal, vertical: 16.0 * scaleVal),
+            padding: EdgeInsets.symmetric(horizontal: 16.0 * scaleVal, vertical: 16.0 * scaleVal),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -455,7 +455,6 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
                 });
               },
               child: IconButton(
-                // icon: Icon(Icons.volume_up, size: iconBTNSize.0 * scaleVal / 2.0),
                 icon: icons[index],
                 onPressed: () {
                   setState(
@@ -720,7 +719,7 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
 
   Widget _musicMedSize(double scaleVal) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0 * scaleVal),
+      padding: EdgeInsets.symmetric(horizontal: 16.0 * scaleVal),
       child: Stack(
         children: [
           Column(
@@ -837,11 +836,10 @@ class MusicPlayerFrameState extends State<MusicPlayerFrame> with PropertyMixin {
         final metadata = state!.currentSource!.tag as MediaItem;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.only(top: 8.0 * scaleVal),
+              padding: EdgeInsets.only(top: 6.0 * scaleVal),
               child: Text(
                 metadata.title,
                 maxLines: 1,
