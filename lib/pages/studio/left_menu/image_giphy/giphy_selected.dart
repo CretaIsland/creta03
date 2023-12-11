@@ -79,12 +79,9 @@ class _GiphySelectedWidgetState extends State<GiphySelectedWidget> {
         setState(() {
           _isClicked = true;
         });
-        //widget.onPressed?.call(widget.gifUrl);
       },
       onDoubleTap: () {
-        //setState(() {
         _isClicked = true;
-        //});
         widget.onPressed?.call(widget.gifUrl);
       },
       onSecondaryTapDown: (details) {},

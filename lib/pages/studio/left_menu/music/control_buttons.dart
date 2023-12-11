@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../../../design_system/component/snippet.dart';
 import '../../studio_constant.dart';
 
 class ControlButtons extends StatefulWidget {
@@ -118,9 +119,9 @@ class _ControlButtonsState extends State<ControlButtons> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (!isSmallOrTiny) _loopButton(iconSize),
-        _skipPrevious(iconSize),
-        _playPauseButton(iconSize),
-        _skipNext(iconSize),
+        Expanded(child: _skipPrevious(iconSize)),
+        Expanded(child: _playPauseButton(iconSize)),
+        Expanded(child: _skipNext(iconSize)),
         if (!isSmallOrTiny) _volumeButton(iconSize),
       ],
     );
@@ -184,38 +185,60 @@ class _ControlButtonsState extends State<ControlButtons> {
         if (processingState == ProcessingState.loading ||
             processingState == ProcessingState.buffering) {
           return Container(
-            margin: EdgeInsets.all(8.0 * widget.scaleVal),
+            margin: EdgeInsets.all(6.0 * widget.scaleVal),
             width: iconSize,
             height: iconSize,
-            child: const CircularProgressIndicator(),
+            child: Snippet.showWaitSign(),
           );
         } else if (!(playing ?? false)) {
           return MusicControlBtn(
             iconSize: iconSize,
-            child: IconButton(
-              onPressed: () {
+            child: InkWell(
+              onTap: () {
                 widget.audioPlayer.play();
                 widget.passOnPressed();
               },
-              iconSize: iconSize,
-              color: Colors.black87,
-              icon: const Icon(Icons.play_arrow_rounded),
+              child: Icon(
+                Icons.play_arrow_rounded,
+                size: iconSize,
+                color: Colors.black87,
+              ),
             ),
+            // child: IconButton(
+            //   onPressed: () {
+            //     widget.audioPlayer.play();
+            //     widget.passOnPressed();
+            //   },
+            //   iconSize: iconSize,
+            //   color: Colors.black87,
+            //   icon: const Icon(Icons.play_arrow_rounded),
+            // ),
           );
         } else if (processingState != ProcessingState.completed) {
           return MusicControlBtn(
             iconSize: iconSize,
             value: null,
             onChanged: null,
-            child: IconButton(
-              onPressed: () {
+            child: InkWell(
+              onTap: () {
                 widget.audioPlayer.pause();
                 widget.passOnPressed();
               },
-              iconSize: iconSize,
-              color: Colors.black87,
-              icon: const Icon(Icons.pause_rounded),
+              child: Icon(
+                Icons.pause_rounded,
+                size: iconSize,
+                color: Colors.black87,
+              ),
             ),
+            // child: IconButton(
+            //   onPressed: () {
+            //     widget.audioPlayer.pause();
+            //     widget.passOnPressed();
+            //   },
+            //   iconSize: iconSize,
+            //   color: Colors.black87,
+            //   icon: const Icon(Icons.pause_rounded),
+            // ),
           );
         }
         return MusicControlBtn(
@@ -346,28 +369,19 @@ class MusicControlBtnState extends State<MusicControlBtn> {
       onExit: (value) {
         setState(() {
           _ishover = false;
-          //widget.isShowVolume = false;
           if (widget.audioPlayer != null) widget.audioPlayer!.isVolumeHover = _ishover;
-          //BookMainPage.musicKeyMap[widget.frameId]?.currentState?.invalidate();
           widget.onHoverChanged?.call();
         });
       },
       onEnter: (value) {
         setState(() {
           _ishover = true;
-          //widget.isShowVolume = true;
           if (widget.audioPlayer != null) {
             widget.audioPlayer!.isVolumeHover = _ishover;
           } else {
             logger.fine('audioPlayer is null');
           }
           widget.onHoverChanged?.call();
-          // if (BookMainPage.musicKeyMap[widget.frameId] == null) {
-          // } else {
-          //   if (BookMainPage.musicKeyMap[widget.frameId]?.currentState == null) {
-          //   }
-          //   BookMainPage.musicKeyMap[widget.frameId]?.currentState?.invalidate();
-          // }
         });
       },
       child: Stack(

@@ -32,7 +32,6 @@ class LeftMenuGiphy extends StatefulWidget {
 
 class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, FramePlayMixin {
   final double verticalPadding = 18;
-  final TextEditingController _searchController = TextEditingController();
   List<dynamic> _gifs = [];
 
   late String searchText;
@@ -44,15 +43,24 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
 
   int _visibleGifCount = 15;
 
+  late ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
     logger.info('_LeftMenuGIPHYState.initState');
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     searchText = 'morning';
+    _scrollController = ScrollController();
   }
 
-  void _loadMoreItems() {
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _loadMoreItems() async {
     const pageSize = 15;
     int newVisibleGifCount = _visibleGifCount + pageSize;
 
@@ -63,12 +71,6 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
     setState(() {
       _visibleGifCount = newVisibleGifCount;
     });
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 
   Future<List<dynamic>> _searchGifs(String query) async {
@@ -82,6 +84,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
       hintText: CretaStudioLang.queryHintText,
       onSearch: (value) async {
         setState(() {
+          _visibleGifCount = 15;
           searchText = value;
         });
         await _searchGifs(searchText);
@@ -121,31 +124,49 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
                   }
                   _gifs = snapshot.data!;
                   int gifCount = _gifs.length;
-                  return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
+                  return SizedBox(
+                    height: 536.0,
+                    child: Scrollbar(
+                      thickness: 6.0,
+                      controller: _scrollController,
+                      child: _buildGridView(gifCount),
                     ),
-                    itemCount: gifCount > _visibleGifCount ? _visibleGifCount : gifCount,
-                    itemBuilder: (context, index) {
-                      return _getElement(_gifs[index], index);
-                    },
                   );
                 },
               ),
             ),
             const SizedBox(height: 16.0),
-            if (_visibleGifCount < 50)
-              BTN.line_blue_t_m(
-                text: CretaStudioLang.viewMore,
-                onPressed: _loadMoreItems,
-              ),
+            if (_visibleGifCount < 50) _buildLoadMoreButton(),
             const SizedBox(height: 16.0),
             Image.asset('giphy_official_logo.png'),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildGridView(int gifCount) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 12.0),
+      child: GridView.builder(
+        controller: _scrollController,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+        ),
+        itemCount: gifCount > _visibleGifCount ? _visibleGifCount : gifCount,
+        itemBuilder: (context, index) {
+          return _getElement(_gifs[index], index);
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoadMoreButton() {
+    return BTN.line_blue_t_m(
+      text: CretaStudioLang.viewMore,
+      onPressed: _loadMoreItems,
     );
   }
 

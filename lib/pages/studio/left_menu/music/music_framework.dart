@@ -5,6 +5,7 @@ import 'package:creta03/pages/studio/left_menu/music/music_base.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/undo/undo.dart';
+import 'package:hycop/common/util/logger.dart';
 import 'package:hycop/hycop/enum/model_enums.dart';
 
 import '../../../../data_io/frame_manager.dart';
@@ -150,7 +151,7 @@ class _MusicFrameworkState extends State<MusicFramework> with LeftTemplateMixin,
     ContentsModel model = await _musicPlayer(frameModel.mid, frameModel.realTimeKey);
 
     // debugPrint('_MusicContent(${model.contentsType})-----------------------------');
-    debugPrint('--------width: $width, heigh: $height');
+    logger.info('--------width: $width, heigh: $height');
     await createNewFrameAndContents(
       [model],
       pageModel,

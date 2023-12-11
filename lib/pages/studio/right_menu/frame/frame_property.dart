@@ -305,8 +305,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 }
                 idx++;
               }
-              _invalidateFrame();
-              //_sendEvent!.sendEvent(widget.model);
+              // _invalidateFrame();
+              _sendEvent!.sendEvent(widget.model);
             },
             width: 55,
             height: 24,
