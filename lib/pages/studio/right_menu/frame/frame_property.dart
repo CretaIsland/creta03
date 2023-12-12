@@ -1280,6 +1280,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
           ),
           _speed(),
           _delay(),
+          _repeat(),
+          _reverse(),
         ],
       ),
     );
@@ -1287,41 +1289,147 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
 
   // 속도 슬라이더 바
   Widget _speed() {
+    double duration = widget.model.aniDuration.value.toDouble() / 100.0;
+    if (duration > 100) duration = 100;
     return propertyLine(
       name: CretaStudioLang.speed,
       widget: CretaExSlider(
-        valueType: SliderValueType.normal,
-        value: widget.model.aniDuration.value.toDouble(),
-        onChanngeComplete: (val) {
-          //setState(() {
-          widget.model.aniDuration.set(val.round());
-          //});
-          _frameManager?.notify();
-          //_sendEvent!.sendEvent(widget.model);
-        },
-        onChannged: (val) {},
-        min: 0,
-        max: 5000,
-      ),
+          valueType: SliderValueType.normal,
+          value: duration,
+          onChanngeComplete: (val) {
+            //setState(() {
+            widget.model.aniDuration.set(val.round() * 100);
+            //});
+            //_frameManager?.notify();
+            //_sendEvent!.sendEvent(widget.model);
+            _invalidateFrame();
+          },
+          onChannged: (val) {},
+          min: 0,
+          max: 100),
     );
   } // delay 슬라이더 바
 
   Widget _delay() {
+    double delay = widget.model.aniDelay.value.toDouble() / 100;
+    if (delay > 100) delay = 100;
     return propertyLine(
       name: CretaStudioLang.delay,
       widget: CretaExSlider(
         valueType: SliderValueType.normal,
-        value: widget.model.aniDelay.value.toDouble(),
+        value: delay,
         onChanngeComplete: (val) {
           //setState(() {
-          widget.model.aniDelay.set(val.round());
+          widget.model.aniDelay.set(val.round() * 100);
           //});
-          _frameManager?.notify();
+          //_frameManager?.notify();
           //_sendEvent!.sendEvent(widget.model);
+          _invalidateFrame();
         },
         onChannged: (val) {},
         min: 0,
-        max: 5000,
+        max: 100,
+      ),
+    );
+  }
+
+  // 무한반복 Toggle Button
+  Widget _repeat() {
+    int oldRepeatCount = widget.model.aniRepeat.value;
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 6, /*left: 30, right: 24*/
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        // mainAxisAlignment: (widget.model.aniRepeat.value != 0)
+        //     ? MainAxisAlignment.spaceBetween
+        //     : MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 160,
+            child: propertyLine(
+              name: CretaStudioLang.repeatOrOnce,
+              widget: CretaToggleButton(
+                width: 54 * 0.75,
+                height: 28 * 0.75,
+                defaultValue: (widget.model.aniRepeat.value == 0),
+                onSelected: (value) {
+                  widget.model.aniRepeat.set(value == true
+                      ? 0
+                      : oldRepeatCount == 0
+                          ? 1
+                          : oldRepeatCount);
+                  //_sendEvent?.sendEvent(widget.model);
+                  //_frameManager?.notify();
+                  _invalidateFrame();
+                  setState(() {});
+                },
+              ),
+            ),
+          ),
+          if (widget.model.aniRepeat.value != 0)
+            Padding(
+              padding: const EdgeInsets.only(left: 40.0),
+              child: SizedBox(
+                width: 120,
+                child: propertyLine(
+                  name: CretaStudioLang.repeatCount,
+                  widget: CretaTextField.shortNumber(
+                    width: 50,
+                    defaultBorder: Border.all(color: CretaColor.text[100]!),
+                    textFieldKey: GlobalKey(),
+                    value: widget.model.aniRepeat.value.toString(),
+                    hintText: '',
+                    onEditComplete: ((value) {
+                      widget.model.aniRepeat.set(int.parse(value));
+                      //_sendEvent?.sendEvent(widget.model);
+                      //_frameManager?.notify();
+                      //setState(() {});
+                      _invalidateFrame();
+                      setState(() {});
+                    }),
+                    minNumber: 0,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // 리버스 Toggle Button
+  Widget _reverse() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 6, /*left: 30, right: 24*/
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        // mainAxisAlignment: (widget.model.aniRepeat.value != 0)
+        //     ? MainAxisAlignment.spaceBetween
+        //     : MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 160,
+            child: propertyLine(
+              name: CretaStudioLang.reverseMove,
+              widget: CretaToggleButton(
+                width: 54 * 0.75,
+                height: 28 * 0.75,
+                defaultValue: widget.model.aniReverse.value,
+                onSelected: (value) {
+                  widget.model.aniReverse.set(value);
+                  //_sendEvent?.sendEvent(widget.model);
+                  //_frameManager?.notify();
+                  _invalidateFrame();
+                  setState(() {});
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1495,6 +1603,26 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 height: 32,
               ),
             ],
+          ),
+        ),
+
+        // Glowing 효과
+        Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: propertyLine(
+            topPadding: 10,
+            name: CretaStudioLang.glowingBorder,
+            widget: CretaExSlider(
+              valueType: SliderValueType.normal,
+              value: widget.model.glowSize.value.toDouble(),
+              onChanngeComplete: (val) {
+                widget.model.glowSize.set(val.round());
+                _invalidateFrame();
+              },
+              onChannged: (val) {},
+              min: 10,
+              max: 70,
+            ),
           ),
         ),
       ],
@@ -2370,6 +2498,12 @@ class _AniExampleBoxState extends State<AniExampleBox> with ExampleBoxStateMixin
         return isAni() ? _aniBox().blurXY() : normalBox(widget.name);
       case AnimationType.scaleXY:
         return isAni() ? _aniBox().scaleXY() : normalBox(widget.name);
+      case AnimationType.rotate:
+        return isAni() ? _aniBox().rotate() : normalBox(widget.name);
+      case AnimationType.slideX:
+        return isAni() ? _aniBox().slideX() : normalBox(widget.name);
+      case AnimationType.slideY:
+        return isAni() ? _aniBox().slideY() : normalBox(widget.name);
       default:
         return noAnimation(widget.name, onNormalSelected: onNormalSelected);
     }

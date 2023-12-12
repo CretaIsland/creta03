@@ -450,12 +450,15 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     if (animations.isEmpty) {
       return _isShowBorder ? _dottedShapeBox(model) : _shapeBox(model);
     }
+
     return getAnimation(
       _isShowBorder ? _dottedShapeBox(model) : _shapeBox(model),
       animations,
       model.mid,
       duration: Duration(milliseconds: model.aniDuration.value),
       delay: Duration(milliseconds: model.aniDelay.value),
+      repeat: model.aniRepeat.value,
+      reverse: model.aniReverse.value,
     );
   }
 
@@ -490,6 +493,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       radiusRightTop: model.getRealradiusRightTop(applyScale),
       borderCap: model.borderCap.value,
       applyScale: applyScale,
+      glowSize: model.glowSize.value,
     );
   }
 
@@ -541,7 +545,6 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
   // }
 
   Widget _frameBox(FrameModel model, bool useColor) {
-    logger.fine('_frameBox');
     return Container(
       key: ValueKey('Container${model.mid}'),
       decoration: useColor ? _frameDeco(model) : null,

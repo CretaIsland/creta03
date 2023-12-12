@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
 
-import 'package:creta03/data_io/book_manager.dart';
 import 'package:flutter/material.dart';
 import '../design_system/component/tree/flutter_treeview.dart' as tree;
 import 'package:get/get.dart';
@@ -33,6 +32,7 @@ import '../player/video/creta_video_player.dart';
 import 'creta_manager.dart';
 //import 'depot_manager.dart';
 import 'depot_manager.dart';
+import 'book_manager.dart';
 import 'frame_manager.dart';
 import 'link_manager.dart';
 
@@ -55,12 +55,12 @@ class ContentsManager extends CretaManager {
     return _dummyManager;
   }
 
-  ContentsManager(
-      {required this.pageModel,
-      required this.frameModel,
-      String tableName = 'creta_contents',
-      this.isPublishedMode = false})
-      : super(tableName, frameModel.mid) {
+  ContentsManager({
+    required this.pageModel,
+    required this.frameModel,
+    String tableName = 'creta_contents',
+    this.isPublishedMode = false,
+  }) : super(tableName, frameModel.mid) {
     saveManagerHolder?.registerManager('contents', this, postfix: frameModel.mid);
     final ContentsEventController sendEventVar = Get.find(tag: 'contents-property-to-main');
     sendEvent = sendEventVar;
@@ -1124,13 +1124,18 @@ class ContentsManager extends CretaManager {
     //startTransaction();
     reOrdering();
     logger.fine('_getAllLinks---------------${getAvailLength()}----------------------------');
-    orderMapIterator(
-      (model) {
-        LinkManager linkManager = newLinkManager(model.mid);
-        linkManager.getLink(contentsId: model.mid);
-        counter++;
-      },
-    );
+    // orderMapIterator(
+    //   (model) {
+    //     LinkManager linkManager = newLinkManager(model.mid);
+    //     linkManager.getLink(contentsId: model.mid);
+    //     counter++;
+    //   },
+    // );
+    for (var model in modelList) {
+      LinkManager linkManager = newLinkManager(model.mid);
+      await linkManager.getLink(contentsId: model.mid);
+      counter++;
+    }
     //endTransaction();
     return counter;
   }
@@ -1143,6 +1148,8 @@ class ContentsManager extends CretaManager {
       retval = LinkManager(
         contentsId,
         frameModel.realTimeKey,
+        tableName: isPublishedMode ? 'creta_link_published' : 'creta_link',
+        isPublishedMode: isPublishedMode,
       );
       linkManagerMap[contentsId] = retval;
     }
@@ -1153,7 +1160,12 @@ class ContentsManager extends CretaManager {
     LinkManager? retval = linkManagerMap[contentsId];
     logger.fine('findLinkManager()*******');
     if (retval == null && createIfNotExist == true) {
-      retval = LinkManager(contentsId, frameModel.realTimeKey);
+      retval = LinkManager(
+        contentsId,
+        frameModel.realTimeKey,
+        tableName: isPublishedMode ? 'creta_link_published' : 'creta_link',
+        isPublishedMode: isPublishedMode,
+      );
       linkManagerMap[contentsId] = retval;
       return linkManagerMap[contentsId];
     }
@@ -1443,13 +1455,26 @@ class ContentsManager extends CretaManager {
     return jsonStr;
   }
 
-  Future<bool> makeClone(BookModel parentBook, Map<String, String> parentFrameIdMap) async {
+  Future<bool> makeClone(
+    BookModel newBook, {
+      bool cloneToPublishedBook = false,
+  }) async {
     for (var contents in modelList) {
-      String parentFrameMid = parentFrameIdMap[contents.parentMid.value] ?? '';
+      String parentFrameMid = BookManager.cloneFrameIdMap[contents.parentMid.value] ?? '';
       logger.severe('find: (${contents.parentMid.value}) => ($parentFrameMid)');
-      AbsExModel newModel = await makeCopy(parentBook.mid, contents, parentFrameMid);
+      AbsExModel newModel = await makeCopy(newBook.mid, contents, parentFrameMid);
       logger
           .severe('clone is created ($collectionId.${newModel.mid}) from (source:${contents.mid})');
+      BookManager.cloneContentsIdMap[contents.mid] = newModel.mid;
+    }
+    // make Link
+    final LinkManager copyLinkManagerHolder = cloneToPublishedBook
+        ? LinkManager('', '', tableName: 'creta_link_published')
+        : LinkManager('', '');
+    //contentsManagerMap.forEach((key, value) { }); ==> forEach는 await 처리가 불가능
+    for (MapEntry entry in linkManagerMap.entries) {
+      copyLinkManagerHolder.modelList = [...entry.value.modelList];
+      await copyLinkManagerHolder.makeClone(newBook, cloneToPublishedBook: cloneToPublishedBook);
     }
     return true;
   }

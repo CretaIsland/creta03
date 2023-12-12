@@ -5,15 +5,23 @@ import 'package:hycop/hycop.dart';
 import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta03/model/creta_model.dart';
 
+import '../model/book_model.dart';
 import '../model/contents_model.dart';
 import '../model/frame_model.dart';
 import '../model/link_model.dart';
+import 'book_manager.dart';
 import 'frame_manager.dart';
 import 'page_manager.dart';
 
 class LinkManager extends CretaManager {
   final String bookMid;
-  LinkManager(String contentsMid, this.bookMid) : super('creta_link', contentsMid) {
+  final bool isPublishedMode;
+  LinkManager(
+    String contentsMid,
+    this.bookMid, {
+      String tableName = 'creta_link',
+      this.isPublishedMode = false,
+  }) : super(tableName, contentsMid) {
     saveManagerHolder?.registerManager('link', this, postfix: contentsMid);
   }
 
@@ -207,5 +215,20 @@ class LinkManager extends CretaManager {
     });
     jsonStr += '\n\t\t\t\t]\n';
     return jsonStr;
+  }
+
+  Future<bool> makeClone(
+      BookModel newBook, {
+        bool cloneToPublishedBook = false,
+      }) async {
+    for (var link in modelList) {
+      String parentContentsMid = BookManager.cloneContentsIdMap[link.parentMid.value] ?? '';
+      logger.severe('find: (${link.parentMid.value}) => ($parentContentsMid)');
+      AbsExModel newModel = await makeCopy(newBook.mid, link, parentContentsMid);
+      logger
+          .severe('clone is created ($collectionId.${newModel.mid}) from (source:${link.mid})');
+      BookManager.cloneLinkIdMap[link.mid] = newModel.mid;
+    }
+    return true;
   }
 }

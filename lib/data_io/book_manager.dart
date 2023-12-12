@@ -246,7 +246,6 @@ class BookManager extends CretaManager {
 
   @override
   Future<AbsExModel> makeCopy(String newBookMid, AbsExModel src, String? newParentMid) async {
-    // 이미, publish 되어 있다면, 해당 mid 를 가져와야 한다.
 
     BookModel newOne = BookModel('');
     BookModel srcModel = src as BookModel;
@@ -420,6 +419,11 @@ class BookManager extends CretaManager {
     });
   }
 
+  static final Map<String, String> cloneBookIdMap = {}; // <old, new>
+  static final Map<String, String> clonePageIdMap = {}; // <old, new>
+  static final Map<String, String> cloneFrameIdMap = {}; // <old, new>
+  static final Map<String, String> cloneContentsIdMap = {}; // <old, new>
+  static final Map<String, String> cloneLinkIdMap = {}; // <old, new>
   Future<BookModel?> makeClone(
     BookModel srcBook, {
     bool srcIsPublishedBook = true,
@@ -428,6 +432,12 @@ class BookManager extends CretaManager {
     // make book-clone
     BookModel? newBook;
     try {
+      // init id-map
+      cloneBookIdMap.clear();
+      clonePageIdMap.clear();
+      cloneFrameIdMap.clear();
+      cloneContentsIdMap.clear();
+      cloneLinkIdMap.clear();
       // page loading
       final PageManager srcPageManagerHolder = PageManager(
         tableName: srcIsPublishedBook ? 'creta_page_published' : 'creta_page',
@@ -437,6 +447,7 @@ class BookManager extends CretaManager {
       await srcPageManagerHolder.findOrInitAllFrameManager(srcBook);
       // make clone of Book
       newBook = BookModel('');
+      cloneBookIdMap[srcBook.mid] = newBook.mid;
       newBook.copyFrom(srcBook, newMid: newBook.mid);
       newBook.parentMid.set(newBook.mid);
       newBook.name.set('${srcBook.name.value}${CretaLang.copyOf}');

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import '../../../model/app_enums.dart';
@@ -31,6 +32,7 @@ extension ShapeWidget<T extends Widget> on T {
     required double radiusRightBottom,
     required double radiusRightTop,
     required BorderCapType borderCap,
+    int glowSize = 0,
     double strokeWidth = 0,
     Color strokeColor = Colors.transparent,
     required double applyScale,
@@ -78,19 +80,29 @@ extension ShapeWidget<T extends Widget> on T {
                     width: width, // - shadowSpread,
                     height: height, // - shadowSpread,
                     child: IgnorePointer(
-                      child: _getOutlineWidget(
-                        mid: mid,
+                      child: _glowEffect(
+                        glowSize: glowSize,
                         shapeType: shapeType,
                         strokeWidth: strokeWidth,
-                        strokeColor: strokeColor,
-                        borderCap: borderCap,
-                        width: width, // - shadowSpread,
-                        height: height, // - shadowSpread,
                         radiusLeftBottom: radiusLeftBottom,
                         radiusLeftTop: radiusLeftTop,
                         radiusRightBottom: radiusRightBottom,
                         radiusRightTop: radiusRightTop,
-                        applyScale: applyScale,
+                        strokeColor: strokeColor,
+                        child: _getOutlineWidget(
+                          mid: mid,
+                          shapeType: shapeType,
+                          strokeWidth: strokeWidth,
+                          strokeColor: strokeColor,
+                          borderCap: borderCap,
+                          width: width, // - shadowSpread,
+                          height: height, // - shadowSpread,
+                          radiusLeftBottom: radiusLeftBottom,
+                          radiusLeftTop: radiusLeftTop,
+                          radiusRightBottom: radiusRightBottom,
+                          radiusRightTop: radiusRightTop,
+                          applyScale: applyScale,
+                        ),
                       ),
                     ),
                   )
@@ -107,6 +119,64 @@ extension ShapeWidget<T extends Widget> on T {
         ),
       );
     });
+  }
+
+  Widget _glowEffect({
+    required int glowSize,
+    required ShapeType shapeType,
+    required double strokeWidth,
+    required double radiusLeftBottom,
+    required double radiusLeftTop,
+    required double radiusRightBottom,
+    required double radiusRightTop,
+    required Color strokeColor,
+    required Widget child,
+  }) {
+    if (glowSize == 0) {
+      return child;
+    }
+    // if (shapeType != ShapeType.none &&
+    //     shapeType != ShapeType.rectangle &&
+    //     shapeType != ShapeType.circle) {
+    //   return child;
+    // }
+    // return AnimatedGradientBorder(
+    //   // borderSize: strokeWidth,
+    //   // glowSize: glowSize.toDouble(),
+    //   borderSize: 2,
+    //   glowSize: 10,
+    //   stretchAlongAxis: true,
+    //   gradientColors: [
+    //     Colors.transparent,
+    //     Colors.transparent,
+    //     Colors.transparent,
+    //     Colors.transparent,
+    //     Colors.transparent,
+    //     Colors.purple.shade50,
+    //     strokeColor
+    //   ],
+    //   //borderRadius: BorderRadius.all(Radius.circular(999)),
+    //   borderRadius: BorderRadius.only(
+    //     topLeft: Radius.circular(radiusLeftTop),
+    //     topRight: Radius.circular(radiusRightTop),
+    //     bottomLeft: Radius.circular(radiusLeftBottom),
+    //     bottomRight: Radius.circular(radiusRightBottom),
+    //   ),      child: child,    );
+
+    return AvatarGlow(
+      glowRadiusFactor: glowSize / 100.0,
+      glowShape: BoxShape.circle,
+      glowColor: strokeColor,
+      glowBorderRadius: (shapeType == ShapeType.rectangle)
+          ? BorderRadius.only(
+              topLeft: Radius.circular(radiusLeftTop),
+              topRight: Radius.circular(radiusRightTop),
+              bottomLeft: Radius.circular(radiusLeftBottom),
+              bottomRight: Radius.circular(radiusRightBottom),
+            )
+          : null,
+      child: child,
+    );
   }
 
   Widget _getBaseWidget({
