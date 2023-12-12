@@ -3,7 +3,6 @@
 import 'package:floating_bubbles/floating_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:hycop/common/util/logger.dart';
 import 'package:parallax_rain/parallax_rain.dart';
 import 'package:snowfall/snowfall/snowfall_widget.dart';
 import 'package:starsview/config/MeteoriteConfig.dart';
@@ -22,34 +21,47 @@ mixin ContaineeMixin {
     String mid, {
     Duration? duration,
     Duration? delay,
+    int repeat = 0,
+    bool reverse = false,
   }) {
     duration ??= 2000.ms;
-    delay ??= 1000.ms;
+    delay ??= 50.ms;
 
     Animate ani = target.animate(
-      onPlay: (controller) => controller.repeat(), //repeat
+      key: GlobalKey(),
+      onPlay: (controller) {
+        if (repeat == 0) {
+          controller.repeat(reverse: reverse);
+        } else {
+          controller.loop(count: repeat);
+        }
+      }, //repeat
     );
     for (var ele in animations) {
       if (ele == AnimationType.fadeIn) {
-        logger.finest('fadeIn');
-        ani = ani.fadeIn(duration: duration, delay: delay).then();
+        ani = ani.fadeIn(duration: duration, delay: delay); //.then();
       }
       if (ele == AnimationType.flip) {
-        logger.finest('flip');
-        ani = ani.flip(duration: duration, delay: delay).then();
+        ani = ani.flip(duration: duration, delay: delay); //.then();
       }
       if (ele == AnimationType.shake) {
-        logger.finest('shake');
-        ani = ani.shake(duration: duration, delay: delay).then();
+        ani = ani.shake(duration: duration, delay: delay); //.then();
       }
       if (ele == AnimationType.blurXY) {
-        logger.finest('blurXY');
-        ani = ani.blurXY(duration: duration, delay: delay).then();
+        ani = ani.blurXY(duration: duration, delay: delay); //.then();
+      }
+      if (ele == AnimationType.rotate) {
+        ani = ani.rotate(duration: duration, delay: delay); //.then();
+      }
+      if (ele == AnimationType.slideX) {
+        ani = ani.slideX(duration: duration, delay: delay); //.then();
+      }
+      if (ele == AnimationType.slideY) {
+        ani = ani.slideY(duration: duration, delay: delay); //.then();
       }
       if (ele == AnimationType.scaleXY) {
-        logger.finest('scaleXY');
         if (LinkParams.connectedClass == 'page' || mid != LinkParams.connectedMid) {
-          ani = ani.scaleXY(duration: duration, delay: delay).then();
+          ani = ani.scaleXY(duration: duration, delay: delay); //.then();
         }
       }
       //  else if (LinkParams.connectedClass == 'page') {

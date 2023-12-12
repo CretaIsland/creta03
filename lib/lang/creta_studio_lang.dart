@@ -316,8 +316,11 @@ class CretaStudioLang {
     "페이드 인",
     "플립",
     "흔들기",
-    "반짝이기",
+    "흐려지기",
     "커지기",
+    "회전",
+    "좌우로 움직이기",
+    "상하로 움직이기",
   ];
 
   static List<String> nextContentTypes = [
@@ -400,6 +403,7 @@ class CretaStudioLang {
   static const String border = '테두리';
   static const String shadow = '그림자';
   static const String borderWidth = '두께';
+  static const String glowingBorder = '글로우 효과';
   static const String offset = '방향거리';
   static const String direction = '방향각도';
   static const String spread = '크기';
@@ -445,6 +449,9 @@ class CretaStudioLang {
   static String showWhenEventReceived = "이벤트를 받았을 때만 나타남";
   static String durationType = "닫힘 조건";
   static String durationSpecifiedTime = "다음 시간 후 닫힘";
+  static String repeatOrOnce = "무한반복";
+  static String repeatCount = "반복횟수";
+  static String reverseMove = "반대로움직이기";
 
   static Map<String, String> durationTypeList = {
     '닫지 않음': 'forever',
