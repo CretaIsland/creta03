@@ -21,6 +21,7 @@ import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
 import 'creta_manager.dart';
+import 'book_manager.dart';
 import 'frame_manager.dart';
 
 //PageManager? pageManagerHolder;
@@ -741,14 +742,13 @@ class PageManager extends CretaManager {
   }
 
   Future<bool> makeClone(
-    BookModel parentBook, {
+    BookModel newBook, {
     bool cloneToPublishedBook = false,
   }) async {
-    Map<String, String> parentPageIdMap = {};
     for (var page in modelList) {
-      AbsExModel newModel = await makeCopy(parentBook.mid, page, parentBook.mid);
+      AbsExModel newModel = await makeCopy(newBook.mid, page, newBook.mid);
       logger.info('clone is created ($collectionId.${newModel.mid}) from (source:${page.mid})');
-      parentPageIdMap[page.mid] = newModel.mid;
+      BookManager.clonePageIdMap[page.mid] = newModel.mid;
       logger.info('page: (${page.mid}) => (${newModel.mid})');
     }
     final BookModel dummyBook = BookModel('');
@@ -766,8 +766,7 @@ class PageManager extends CretaManager {
         copyFrameManagerHolder.modelList = [...entry.value.modelList];
         copyFrameManagerHolder.contentsManagerMap = Map.from(entry.value.contentsManagerMap);
         await copyFrameManagerHolder.makeClone(
-          parentBook,
-          parentPageIdMap,
+          newBook,
           cloneToPublishedBook: cloneToPublishedBook,
         );
       }

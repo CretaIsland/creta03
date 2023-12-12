@@ -1051,20 +1051,18 @@ class FrameManager extends CretaManager {
   }
 
   Future<bool> makeClone(
-    BookModel parentBook,
-    Map<String, String> parentPageIdMap, {
-    bool cloneToPublishedBook = false,
+    BookModel newBook, {
+      bool cloneToPublishedBook = false,
   }) async {
-    Map<String, String> parentFrameIdMap = {};
     for (var frame in modelList) {
-      String parentPageMid = parentPageIdMap[frame.parentMid.value] ?? '';
+      String parentPageMid = BookManager.clonePageIdMap[frame.parentMid.value] ?? '';
       logger.info('find: (${frame.parentMid.value}) => ($parentPageMid)');
-      AbsExModel newModel = await makeCopy(parentBook.mid, frame, parentPageMid);
-      if (parentBook.backgroundMusicFrame.value == frame.mid) {
-        parentBook.backgroundMusicFrame.set(newModel.mid, save: false);
+      AbsExModel newModel = await makeCopy(newBook.mid, frame, parentPageMid);
+      if (newBook.backgroundMusicFrame.value == frame.mid) {
+        newBook.backgroundMusicFrame.set(newModel.mid, save: false);
       }
       logger.info('clone is created ($collectionId.${newModel.mid}) from (source:${frame.mid})');
-      parentFrameIdMap[frame.mid] = newModel.mid;
+      BookManager.cloneFrameIdMap[frame.mid] = newModel.mid;
       logger.info('frame: (${frame.mid}) => (${newModel.mid})');
     }
     final BookModel dummyBook = BookModel('');
@@ -1077,7 +1075,8 @@ class FrameManager extends CretaManager {
     //contentsManagerMap.forEach((key, value) { }); ==> forEach는 await 처리가 불가능
     for (MapEntry entry in contentsManagerMap.entries) {
       copyContentsManagerHolder.modelList = [...entry.value.modelList];
-      await copyContentsManagerHolder.makeClone(parentBook, parentFrameIdMap);
+      copyContentsManagerHolder.linkManagerMap = Map.from(entry.value.linkManagerMap);
+      await copyContentsManagerHolder.makeClone(newBook, cloneToPublishedBook: cloneToPublishedBook);
     }
     return true;
   }
