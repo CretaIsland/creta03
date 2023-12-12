@@ -1,19 +1,23 @@
 import 'package:creta03/design_system/component/custom_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dropzone/flutter_dropzone.dart';
 
 import '../../../../design_system/creta_color.dart';
+import '../../../../model/contents_model.dart';
 
 class GiphySelectedWidget extends StatefulWidget {
   final String gifUrl;
   final double width;
   final double height;
   final void Function(String)? onPressed;
+  final DropzoneViewController? controller;
 
   const GiphySelectedWidget({
     super.key,
     required this.gifUrl,
     required this.width,
     required this.height,
+    this.controller,
     this.onPressed,
   });
 
@@ -66,6 +70,7 @@ class _GiphySelectedWidgetState extends State<GiphySelectedWidget> {
       ),
     );
 
+    ContentsModel? contentsModel = ContentsModel.withFrame(parent: '', bookMid: '');
     return InkWell(
       onHover: (isHover) {
         setState(() {
@@ -76,6 +81,7 @@ class _GiphySelectedWidgetState extends State<GiphySelectedWidget> {
         });
       },
       onTapDown: (details) {
+        // print('widget.gifUrl ${widget.gifUrl}');
         setState(() {
           _isClicked = true;
         });
@@ -86,7 +92,10 @@ class _GiphySelectedWidgetState extends State<GiphySelectedWidget> {
       },
       onSecondaryTapDown: (details) {},
       child: Draggable(
-        data: widget.gifUrl,
+        data: contentsModel,
+        onDragStarted: () {
+          print('widget.gifUrl ${widget.gifUrl}');
+        },
         onDragCompleted: () {},
         feedback: emptyBox,
         childWhenDragging: emptyBox,

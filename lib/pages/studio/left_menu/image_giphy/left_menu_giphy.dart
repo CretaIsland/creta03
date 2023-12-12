@@ -41,9 +41,9 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   double x = 150; // frame x-coordinator
   double y = 150; // frame y-coordinator
 
-  int _visibleGifCount = 15;
+  var _visibleGifCount = 15;
 
-  late ScrollController _scrollController;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -51,7 +51,13 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
     logger.info('_LeftMenuGIPHYState.initState');
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     searchText = 'morning';
-    _scrollController = ScrollController();
+    _gifs.length = 14;
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    //     if (_visibleGifCount < _gifs.length) _loadMoreItems();
+    //     print(' _visibleGifCount $_visibleGifCount; _gifs.length ${_gifs.length}');
+    //   }
+    // });
   }
 
   @override
@@ -60,18 +66,27 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
     super.dispose();
   }
 
-  void _loadMoreItems() async {
-    const pageSize = 15;
-    int newVisibleGifCount = _visibleGifCount + pageSize;
+  // void _loadMoreItems() {
+  //   const currentMax = 15;
+  //   int newVisibleGifCount = _visibleGifCount + currentMax;
 
-    if (newVisibleGifCount > _gifs.length) {
-      newVisibleGifCount = _gifs.length;
-    }
+  //   if (newVisibleGifCount > _gifs.length) {
+  //     newVisibleGifCount = _gifs.length;
+  //   }
+  //   _visibleGifCount = newVisibleGifCount;
 
-    setState(() {
-      _visibleGifCount = newVisibleGifCount;
-    });
-  }
+  //   setState(() {});
+  // }
+
+  // void _addMoreItems() {
+  //   for (int i = _visibleGifCount; i < _visibleGifCount + 14; i++) {
+  //     if (_visibleGifCount > _gifs.length) {
+  //       _visibleGifCount = _gifs.length;
+  //     }
+  //   }
+  //   _visibleGifCount = _visibleGifCount + 14;
+  //   setState(() {});
+  // }
 
   Future<List<dynamic>> _searchGifs(String query) async {
     Translation translation = await translator.translate(query, from: 'auto', to: 'en');
@@ -155,7 +170,8 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,
         ),
-        itemCount: gifCount > _visibleGifCount ? _visibleGifCount : gifCount,
+        // itemCount: gifCount > _visibleGifCount + 1 ? _visibleGifCount + 1 : gifCount,
+        itemCount: gifCount,
         itemBuilder: (context, index) {
           return _getElement(_gifs[index], index);
         },
@@ -166,7 +182,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   Widget _buildLoadMoreButton() {
     return BTN.line_blue_t_m(
       text: CretaStudioLang.viewMore,
-      onPressed: _loadMoreItems,
+      onPressed: () {},
     );
   }
 
