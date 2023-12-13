@@ -209,52 +209,6 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
 
     Widget dropTarget = Center(
       child: widget.model.isDropAble()
-          // ? DragTarget<DepotModel>(
-          //     // 보관함에서 끌어다 넣기
-          //     builder: (context, candidateData, rejectedData) {
-          //       //print('drop depotModel length = ${candidateData.length}');
-          //       return DropZoneWidget(
-          //         // 파일에서 끌어다 넣기
-          //         bookMid: widget.model.realTimeKey,
-          //         parentId: '',
-          //         onDroppedFile: (modelList) {
-          //           _onDropFrame(widget.model.mid, modelList);
-          //         },
-          //         child: _frameBody1(),
-          //       );
-          //     },
-          //     onMove: (data) {
-          //       //print('onMove');
-          //       if (widget.model.dragOnMove == false) {
-          //         widget.model.dragOnMove = true;
-          //         invalidateContentsMain();
-          //       }
-          //     },
-          //     onLeave: (data) {
-          //       //print('onLeave');
-          //       if (widget.model.dragOnMove == true) {
-          //         widget.model.dragOnMove = false;
-          //         invalidateContentsMain();
-          //       }
-          //     },
-
-          //     onAccept: (data) async {
-          //       //print('drop depotModel =${data.contentsMid}');
-          //       DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
-          //       if (depotManager != null) {
-          //         ContentsModel? newModel =
-          //             await depotManager.copyContents(data, frameId: widget.model.mid);
-          //         if (newModel != null) {
-          //           _onDropFrame(widget.model.mid, [newModel]);
-          //         }
-          //       }
-          //       widget.model.dragOnMove = false;
-          //       invalidateContentsMain();
-          //     },
-          //     onWillAccept: (data) {
-          //       return widget.model.frameType == FrameType.none;
-          //     },
-          //   )
           ? DragTarget<CretaModel>(
               // 보관함에서 끌어다 넣기
               builder: (context, candidateData, rejectedData) {
@@ -283,7 +237,6 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
                   invalidateContentsMain();
                 }
               },
-
               onAccept: (data) async {
                 if (data is DepotModel) {
                   //print('drop depotModel =${data.contentsMid}');
@@ -298,9 +251,8 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
                   widget.model.dragOnMove = false;
                   invalidateContentsMain();
                 } else if (data is ContentsModel) {
-                  print('drop gif =$data-----------');
-
-                  _onDropFrame(widget.model.mid, []);
+                  //print('drop gifModel =${data}');
+                  _onDropFrame(widget.model.mid, [data]);
                 }
               },
               onWillAccept: (data) {

@@ -21,6 +21,7 @@ import '../../../../../lang/creta_studio_lang.dart';
 import '../../../../../model/app_enums.dart';
 import '../../../../../model/book_model.dart';
 import '../../../../../model/contents_model.dart';
+import '../../../../../model/creta_model.dart';
 import '../../../../../model/depot_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../../../model/page_model.dart';
@@ -1034,7 +1035,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   // }
 
   Widget _pageDropZone(String bookMid) {
-    return DragTarget<DepotModel>(
+    return DragTarget<CretaModel>(
       // 보관함에서 끌어다 넣기
       builder: (context, candidateData, rejectedData) {
         return DropZoneWidget(
@@ -1063,15 +1064,30 @@ class _DraggableStickersState extends State<DraggableStickers> {
       },
       onAccept: (data) async {
         //print('drop depotModel =${data.contentsMid}');
-        DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
-        if (depotManager != null) {
-          ContentsModel? newModel = await depotManager.copyContents(data);
-          if (newModel != null) {
-            widget.onDropPage([newModel]);
+        // DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
+        // if (depotManager != null) {
+        //   ContentsModel? newModel = await depotManager.copyContents(data);
+        //   if (newModel != null) {
+        //     widget.onDropPage([newModel]);
+        //   }
+        // }
+        // widget.page.dragOnMove = false;
+        // pageBottomLayerKey.currentState?.invalidate();
+        if (data is DepotModel) {
+          //print('drop depotModel =${data.contentsMid}');
+          DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
+          if (depotManager != null) {
+            ContentsModel? newModel = await depotManager.copyContents(data);
+            if (newModel != null) {
+              widget.onDropPage([newModel]);
+            }
           }
+          widget.page.dragOnMove = false;
+          pageBottomLayerKey.currentState?.invalidate();
+        } else if (data is ContentsModel) {
+          //print('drop gifModel =${data}');
+          widget.onDropPage([data]);
         }
-        widget.page.dragOnMove = false;
-        pageBottomLayerKey.currentState?.invalidate();
       },
       onWillAccept: (data) {
         return true;

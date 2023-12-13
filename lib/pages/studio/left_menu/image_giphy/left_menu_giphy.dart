@@ -1,23 +1,13 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:creta03/design_system/component/snippet.dart';
 import 'package:creta03/design_system/text_field/creta_search_bar.dart';
 import 'package:creta03/lang/creta_studio_lang.dart';
 import 'package:creta03/pages/studio/left_menu/image_giphy/giphy_service.dart';
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
-import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/common/util/logger.dart';
-import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:translator_plus/translator_plus.dart';
-import '../../../../data_io/contents_manager.dart';
-import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
-import '../../../../model/app_enums.dart';
-import '../../../../model/contents_model.dart';
-import '../../../../model/frame_model.dart';
-import '../../../../model/page_model.dart';
-import '../../book_main_page.dart';
 import '../../containees/frame/frame_play_mixin.dart';
 import '../../studio_constant.dart';
 import '../left_template_mixin.dart';
@@ -38,10 +28,10 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   late double bodyWidth;
   GoogleTranslator translator = GoogleTranslator();
 
-  double x = 150; // frame x-coordinator
-  double y = 150; // frame y-coordinator
+  // double x = 150; // frame x-coordinator
+  // double y = 150; // frame y-coordinator
 
-  var _visibleGifCount = 15;
+  var _visibleGifCount = 14;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -51,13 +41,11 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
     logger.info('_LeftMenuGIPHYState.initState');
     bodyWidth = LayoutConst.leftMenuWidth - horizontalPadding * 2;
     searchText = 'morning';
-    _gifs.length = 14;
-    // _scrollController.addListener(() {
-    //   if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-    //     if (_visibleGifCount < _gifs.length) _loadMoreItems();
-    //     print(' _visibleGifCount $_visibleGifCount; _gifs.length ${_gifs.length}');
-    //   }
-    // });
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        if (_visibleGifCount < _gifs.length) _loadMoreItems();
+      }
+    });
   }
 
   @override
@@ -66,17 +54,17 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
     super.dispose();
   }
 
-  // void _loadMoreItems() {
-  //   const currentMax = 15;
-  //   int newVisibleGifCount = _visibleGifCount + currentMax;
+  void _loadMoreItems() {
+    const currentMax = 14;
+    int newVisibleGifCount = _visibleGifCount + currentMax;
 
-  //   if (newVisibleGifCount > _gifs.length) {
-  //     newVisibleGifCount = _gifs.length;
-  //   }
-  //   _visibleGifCount = newVisibleGifCount;
+    if (newVisibleGifCount > _gifs.length) {
+      newVisibleGifCount = _gifs.length;
+    }
+    _visibleGifCount = newVisibleGifCount;
 
-  //   setState(() {});
-  // }
+    setState(() {});
+  }
 
   // void _addMoreItems() {
   //   for (int i = _visibleGifCount; i < _visibleGifCount + 14; i++) {
@@ -99,7 +87,6 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
       hintText: CretaStudioLang.queryHintText,
       onSearch: (value) async {
         setState(() {
-          _visibleGifCount = 15;
           searchText = value;
         });
         await _searchGifs(searchText);
@@ -110,7 +97,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: StudioVariables.workHeight - 148.0,
+      height: StudioVariables.workHeight - 156.0,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -120,38 +107,35 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
             const SizedBox(height: 20.0),
             Expanded(
               child: FutureBuilder<List<dynamic>>(
+                initialData: const [],
                 future: _searchGifs(searchText),
                 builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-                  if (snapshot.hasError) {
-                    //error가 발생하게 될 경우 반환하게 되는 부분
-                    logger.severe("data fetch error(WaitDatum)");
-                    return const Center(child: Text('키워드를입력해주세요!'));
-                  }
-                  if (snapshot.hasData == false) {
-                    logger.finest("wait data ...(WaitData)");
-                    return Center(
-                      child: Snippet.showWaitSign(),
-                    );
-                  }
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    logger.finest("founded ${snapshot.data!}");
-                    return const SizedBox.shrink();
-                  }
+                  // if (snapshot.hasError) {
+                  //   logger.severe("data fetch error(WaitDatum)");
+                  //   return const Center(child: Text('키워드를입력해주세요!'));
+                  // }
+                  // if (snapshot.hasData == false) {
+                  //   logger.finest("wait data ...(WaitData)");
+                  //   return Center(
+                  //     child: Snippet.showWaitSign(),
+                  //   );
+                  // }
+                  // if (snapshot.connectionState != ConnectionState.done) {
+                  //   logger.finest("founded ${snapshot.data!}");
+                  //   return const SizedBox.shrink();
+                  // }
                   _gifs = snapshot.data!;
                   int gifCount = _gifs.length;
-                  return SizedBox(
-                    height: 536.0,
-                    child: Scrollbar(
-                      thickness: 6.0,
-                      controller: _scrollController,
-                      child: _buildGridView(gifCount),
-                    ),
+                  return Scrollbar(
+                    thickness: 6.0,
+                    controller: _scrollController,
+                    child: _buildGridView(gifCount),
                   );
                 },
               ),
             ),
-            const SizedBox(height: 16.0),
-            if (_visibleGifCount < 50) _buildLoadMoreButton(),
+            // const SizedBox(height: 16.0),
+            // if (_visibleGifCount < 50) _buildLoadMoreButton(),
             const SizedBox(height: 16.0),
             Image.asset('giphy_official_logo.png'),
           ],
@@ -163,18 +147,26 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   Widget _buildGridView(int gifCount) {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
-      child: GridView.builder(
-        controller: _scrollController,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        // itemCount: gifCount > _visibleGifCount + 1 ? _visibleGifCount + 1 : gifCount,
-        itemCount: gifCount,
-        itemBuilder: (context, index) {
-          return _getElement(_gifs[index], index);
-        },
+      child: Column(
+        children: [
+          SizedBox(
+            height: 528.0,
+            child: GridView.builder(
+              controller: _scrollController,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: gifCount > _visibleGifCount + 1 ? _visibleGifCount + 1 : gifCount,
+              itemBuilder: (context, index) {
+                return _getElement(_gifs[index], index);
+              },
+            ),
+          ),
+          const SizedBox(height: 16.0),
+          if (_visibleGifCount < gifCount) _buildLoadMoreButton(),
+        ],
       ),
     );
   }
@@ -182,7 +174,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   Widget _buildLoadMoreButton() {
     return BTN.line_blue_t_m(
       text: CretaStudioLang.viewMore,
-      onPressed: () {},
+      onPressed: _loadMoreItems,
     );
   }
 
@@ -191,58 +183,57 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
       gifUrl: getGif,
       width: 90.0,
       height: 90.0,
-      onPressed: _onPressedCreateSelectedGif,
+      // onPressed: _onPressedCreateSelectedGif,
     );
   }
 
-  void _onPressedCreateSelectedGif(String selectedUrl) async {
-    await _createGiphyFrame(selectedUrl);
-    BookMainPage.pageManagerHolder!.notify();
-  }
+  // void _onPressedCreateSelectedGif(String selectedUrl) async {
+  //   await _createGiphyFrame(selectedUrl);
+  //   BookMainPage.pageManagerHolder!.notify();
+  // }
 
-  Future<void> _createGiphyFrame(String selectedGif) async {
-    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
-    if (pageModel == null) return;
-    int frameCounter = 1;
+  // Future<void> _createGiphyFrame(String selectedGif) async {
+  //   PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+  //   if (pageModel == null) return;
+  //   int frameCounter = 1;
 
-    //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
-    double width = pageModel.width.value * 0.2;
-    double height = pageModel.height.value * 0.3;
+  //   double width = pageModel.width.value * 0.2;
+  //   double height = pageModel.height.value * 0.3;
 
-    x += frameCounter * 40.0;
-    y += frameCounter * 40.0;
+  //   x += frameCounter * 40.0;
+  //   y += frameCounter * 40.0;
 
-    FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
-    if (frameManager == null) {
-      return;
-    }
+  //   FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+  //   if (frameManager == null) {
+  //     return;
+  //   }
 
-    mychangeStack.startTrans();
-    FrameModel frameModel = await frameManager.createNextFrame(
-      doNotify: false,
-      size: Size(width, height),
-      pos: Offset(x, y),
-      bgColor1: Colors.transparent,
-    );
+  //   mychangeStack.startTrans();
+  //   FrameModel frameModel = await frameManager.createNextFrame(
+  //     doNotify: false,
+  //     size: Size(width, height),
+  //     pos: Offset(x, y),
+  //     bgColor1: Colors.transparent,
+  //   );
 
-    ContentsModel model = await _giphyContent(
-      selectedGif,
-      frameModel.mid,
-      frameModel.realTimeKey,
-    );
-    await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
+  //   ContentsModel model = await _giphyContent(
+  //     selectedGif,
+  //     frameModel.mid,
+  //     frameModel.realTimeKey,
+  //   );
+  //   await ContentsManager.createContents(frameManager, [model], frameModel, pageModel);
 
-    frameCounter++;
-    mychangeStack.endTrans();
-  }
+  //   frameCounter++;
+  //   mychangeStack.endTrans();
+  // }
 
-  Future<ContentsModel> _giphyContent(String url, String frameMid, String bookMid) async {
-    ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
+  // Future<ContentsModel> _giphyContent(String url, String frameMid, String bookMid) async {
+  //   ContentsModel retval = ContentsModel.withFrame(parent: frameMid, bookMid: bookMid);
 
-    retval.contentsType = ContentsType.image;
-    retval.name = 'name.gif';
-    retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
-    retval.remoteUrl = url;
-    return retval;
-  }
+  //   retval.contentsType = ContentsType.image;
+  //   retval.name = 'name.gif';
+  //   retval.autoSizeType.set(AutoSizeType.autoFrameSize, save: false);
+  //   retval.remoteUrl = url;
+  //   return retval;
+  // }
 }
