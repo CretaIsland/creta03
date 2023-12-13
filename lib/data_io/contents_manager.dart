@@ -1457,7 +1457,7 @@ class ContentsManager extends CretaManager {
 
   Future<bool> makeClone(
     BookModel newBook, {
-      bool cloneToPublishedBook = false,
+    bool cloneToPublishedBook = false,
   }) async {
     for (var contents in modelList) {
       String parentFrameMid = BookManager.cloneFrameIdMap[contents.parentMid.value] ?? '';

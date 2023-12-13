@@ -1,20 +1,24 @@
 import 'package:creta03/design_system/component/custom_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/hycop.dart';
 
+import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_color.dart';
+import '../../../../model/contents_model.dart';
+import '../../book_main_page.dart';
 
 class GiphySelectedWidget extends StatefulWidget {
   final String gifUrl;
   final double width;
   final double height;
-  final void Function(String)? onPressed;
+  // final void Function(String)? onPressed;
 
   const GiphySelectedWidget({
     super.key,
     required this.gifUrl,
     required this.width,
     required this.height,
-    this.onPressed,
+    // this.onPressed,
   });
 
   @override
@@ -51,20 +55,40 @@ class _GiphySelectedWidgetState extends State<GiphySelectedWidget> {
       ),
     );
 
-    if (widget.onPressed == null) {
-      return gifBox;
-    }
+    // if (widget.onPressed == null) {
+    //   return gifBox;
+    // }
 
-    Widget emptyBox = Container(
+    Widget boxWhenDrag = SizedBox(
       width: 90,
       height: 90,
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: _isClicked ? CretaColor.primary : Colors.transparent,
-          width: _isClicked ? 3 : 1,
+      child: Center(
+        child: Stack(
+          children: [
+            CustomImage(
+              width: widget.width,
+              height: widget.height,
+              image: widget.gifUrl,
+            ),
+            Container(
+              color: Colors.transparent,
+              width: _isClicked ? 3 : 1,
+            ),
+          ],
         ),
       ),
     );
+
+    FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+
+    ContentsModel giphyContent(String url, String bookMid) {
+      ContentsModel retval = ContentsModel.withFrame(parent: '', bookMid: bookMid);
+
+      retval.contentsType = ContentsType.image;
+      retval.name = 'name.gif';
+      retval.remoteUrl = url;
+      return retval;
+    }
 
     return InkWell(
       onHover: (isHover) {
@@ -82,14 +106,12 @@ class _GiphySelectedWidgetState extends State<GiphySelectedWidget> {
       },
       onDoubleTap: () {
         _isClicked = true;
-        widget.onPressed?.call(widget.gifUrl);
+        // widget.onPressed?.call(widget.gifUrl);
       },
       onSecondaryTapDown: (details) {},
       child: Draggable(
-        data: widget.gifUrl,
-        onDragCompleted: () {},
-        feedback: emptyBox,
-        childWhenDragging: emptyBox,
+        data: giphyContent(widget.gifUrl, frameManager!.bookModel.mid),
+        feedback: boxWhenDrag,
         child: gifBox,
       ),
       //),

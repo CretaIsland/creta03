@@ -56,7 +56,8 @@ class _DepotSelectedState extends State<DepotSelected> {
       onSecondaryTapDown: (details) {
         onRightMouseButton.call(details, widget.depot, widget.depotManager, context);
       },
-      child: Draggable(   // Draggable 과 DragTarget 은 한쌍이다.  DragTarget 은 FrameEach Widget 에 있다.
+      child: Draggable(
+        // Draggable 과 DragTarget 은 한쌍이다.  DragTarget 은 FrameEach Widget 에 있다.
         data: widget.depot,
         feedback: Container(
           width: widget.width,

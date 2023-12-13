@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, avoid_web_libraries_in_flutter
 
 import 'package:creta03/design_system/component/shape/creta_clipper.dart';
+import 'package:creta03/model/creta_model.dart';
 import 'package:creta03/pages/studio/containees/frame/camera_frame.dart';
 import 'package:creta03/pages/studio/right_menu/frame/transition_types.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -208,7 +209,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
 
     Widget dropTarget = Center(
       child: widget.model.isDropAble()
-          ? DragTarget<DepotModel>(
+          ? DragTarget<CretaModel>(
               // 보관함에서 끌어다 넣기
               builder: (context, candidateData, rejectedData) {
                 //print('drop depotModel length = ${candidateData.length}');
@@ -236,19 +237,23 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
                   invalidateContentsMain();
                 }
               },
-
               onAccept: (data) async {
-                //print('drop depotModel =${data.contentsMid}');
-                DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
-                if (depotManager != null) {
-                  ContentsModel? newModel =
-                      await depotManager.copyContents(data, frameId: widget.model.mid);
-                  if (newModel != null) {
-                    _onDropFrame(widget.model.mid, [newModel]);
+                if (data is DepotModel) {
+                  //print('drop depotModel =${data.contentsMid}');
+                  DepotManager? depotManager = DepotDisplay.getMyTeamManager(null);
+                  if (depotManager != null) {
+                    ContentsModel? newModel =
+                        await depotManager.copyContents(data, frameId: widget.model.mid);
+                    if (newModel != null) {
+                      _onDropFrame(widget.model.mid, [newModel]);
+                    }
                   }
+                  widget.model.dragOnMove = false;
+                  invalidateContentsMain();
+                } else if (data is ContentsModel) {
+                  //print('drop gifModel =${data}');
+                  _onDropFrame(widget.model.mid, [data]);
                 }
-                widget.model.dragOnMove = false;
-                invalidateContentsMain();
               },
               onWillAccept: (data) {
                 return widget.model.frameType == FrameType.none;
