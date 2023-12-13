@@ -1480,6 +1480,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
               widget.model.borderWidth.set(value);
               logger.finest('borderWidth=${widget.model.borderWidth.value}');
               _invalidateFrame(); // _sendEvent!.sendEvent(widget.model);;
+              setState(() {});
             },
             onBorderWidthChangeComplete: (value) {
               setState(() {});
@@ -1605,26 +1606,26 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             ],
           ),
         ),
-
-        // Glowing 효과
-        Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: propertyLine(
-            topPadding: 10,
-            name: CretaStudioLang.glowingBorder,
-            widget: CretaExSlider(
-              valueType: SliderValueType.normal,
-              value: widget.model.glowSize.value.toDouble(),
-              onChanngeComplete: (val) {
-                widget.model.glowSize.set(val.round());
-                _invalidateFrame();
-              },
-              onChannged: (val) {},
-              min: 10,
-              max: 70,
+        if (widget.model.borderWidth.value > 0)
+          // Glowing 효과
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: propertyLine(
+              topPadding: 10,
+              name: CretaStudioLang.glowingBorder,
+              widget: CretaExSlider(
+                valueType: SliderValueType.normal,
+                value: widget.model.glowSize.value.toDouble(),
+                onChanngeComplete: (val) {
+                  widget.model.glowSize.set(val.round());
+                  _invalidateFrame();
+                },
+                onChannged: (val) {},
+                min: 0,
+                max: 70,
+              ),
             ),
           ),
-        ),
       ],
     );
   }

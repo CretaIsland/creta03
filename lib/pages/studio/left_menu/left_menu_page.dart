@@ -961,7 +961,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
   }
 
   void _startScreenshotTimer() {
-    logger.fine('_startScreenshotTimer----------------------------------');
+    logger.finer('_startScreenshotTimer----------------------------------');
     _screenshotTimer ??= Timer.periodic(Duration(seconds: 60), (t) {
       if (widget.isFolded) {
         return;
@@ -1023,6 +1023,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
     if (bookModel.isAutoThumbnail.value == false) {
       return;
     }
+
     WindowScreenshot.uploadScreenshot(
       bookId: bookModel.mid,
       offset: area.topLeft,

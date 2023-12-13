@@ -225,7 +225,8 @@ class BookGridItemState extends State<BookGridItem> {
   void playBook() {
     //Get.offAllNamed("${AppRoutes.studioBookMainPage}?${CretaManager.bookPrefix}${widget.bookModel!.name.value}");
     StudioVariables.selectedBookMid = widget.bookModel!.mid;
-    Routemaster.of(context).push('${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}');
+    Routemaster.of(context)
+        .push('${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}');
     //
   }
 
@@ -405,33 +406,17 @@ class BookGridItemState extends State<BookGridItem> {
                       ],
                     ),
                     if (aHeight > 186)
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          //  if (aHeight > 186) Padding(
-                          //   padding: const EdgeInsets.only(left: 8),
-                          //   child: Text(
-                          //     widget.bookModel!.name.value,
-                          //     overflow: TextOverflow.fade,
-                          //     style: CretaFont.bodySmall.copyWith(color: Colors.white),
-                          //   ),
-                          // ),
-
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0, left: 8),
-                            child: Text(
-                              widget.bookModel!.description.value,
-                              // [
-                              //   ...widget.bookModel!.owners,
-                              //   ...widget.bookModel!.writers,
-                              //   ...widget.bookModel!.readers
-                              // ].toString(),
-                              overflow: TextOverflow.fade,
-                              style: CretaFont.bodyESmall.copyWith(color: Colors.white),
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0, left: 8),
+                        child: Container(
+                          color: Colors.transparent,
+                          height: 16,
+                          child: Text(
+                            widget.bookModel!.description.value,
+                            overflow: TextOverflow.ellipsis,
+                            style: CretaFont.bodyESmall.copyWith(color: Colors.white),
                           ),
-                        ],
+                        ),
                       ),
                   ],
                 ),

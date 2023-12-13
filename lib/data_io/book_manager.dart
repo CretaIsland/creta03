@@ -246,7 +246,6 @@ class BookManager extends CretaManager {
 
   @override
   Future<AbsExModel> makeCopy(String newBookMid, AbsExModel src, String? newParentMid) async {
-
     BookModel newOne = BookModel('');
     BookModel srcModel = src as BookModel;
     // creat_book_published data 를 만든다.
@@ -254,6 +253,11 @@ class BookManager extends CretaManager {
 
     // 여기서 newName 이 이미 있는지를 검색해야 한다.
     String newName = await makeCopyName('${srcModel.name.value}${CretaLang.copyOf}');
+
+    // FileModel? res = (await HycopFactory.storage!.copyFile(srcModel.thumbnailUrl.value));
+    // if (res != null) {
+    //   newOne.thumbnailUrl.set(res.url);
+    // }
 
     newOne.name.set(newName);
     newOne.sourceMid = "";
@@ -264,6 +268,7 @@ class BookManager extends CretaManager {
     }
     await createToDB(newOne);
     logger.fine('newBook created ${newOne.mid}, source=${newOne.sourceMid}');
+
     return newOne;
   }
 

@@ -283,7 +283,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     aniDuration = UndoAble<int>(2000, mid, 'aniDuration');
     aniDelay = UndoAble<int>(50, mid, 'aniDelay');
     aniRepeat = UndoAble<int>(0, mid, 'aniRepeat');
-    glowSize = UndoAble<int>(30, mid, 'glowSize');
+    glowSize = UndoAble<int>(0, mid, 'glowSize');
     aniReverse = UndoAble<bool>(false, mid, 'aniReverse');
     mute = UndoAble<bool>(false, mid, 'mute');
     shape = UndoAble<ShapeType>(ShapeType.none, mid, 'shape');
@@ -333,7 +333,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     aniDuration = UndoAble<int>(2000, mid, 'aniDuration');
     aniDelay = UndoAble<int>(50, mid, 'aniDelay');
     aniRepeat = UndoAble<int>(0, mid, 'aniRepeat');
-    glowSize = UndoAble<int>(30, mid, 'glowSize');
+    glowSize = UndoAble<int>(0, mid, 'glowSize');
     aniReverse = UndoAble<bool>(false, mid, 'aniReverse');
     mute = UndoAble<bool>(false, mid, 'mute');
     shape = UndoAble<ShapeType>(ShapeType.none, mid, 'shape');
@@ -492,7 +492,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     aniDuration.setDD((map["aniDuration"] ?? 2000), save: false, noUndo: true);
     aniDelay.setDD((map["aniDelay"] ?? 50), save: false, noUndo: true);
     aniRepeat.setDD((map["aniRepeat"] ?? 0), save: false, noUndo: true);
-    glowSize.setDD((map["glowSize"] ?? 30), save: false, noUndo: true);
+    glowSize.setDD((map["glowSize"] ?? 0), save: false, noUndo: true);
     aniReverse.setDD((map["aniReverse"] ?? false), save: false, noUndo: true);
     mute.setDD((map["mute"] ?? false), save: false, noUndo: true);
     shape.setDD(ShapeType.fromInt(map["shape"] ?? 0), save: false, noUndo: true);
