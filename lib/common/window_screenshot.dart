@@ -6,8 +6,8 @@ import 'package:hycop/hycop.dart';
 import 'dart:js_interop';
 
 @JS()
-//external dynamic jsScreenshot(double x, double y, double width, double height);
-external String jsScreenshot(double x, double y, double width, double height); // => for flutter-3.16.x
+external dynamic jsScreenshot(double x, double y, double width, double height);
+//external String jsScreenshot(double x, double y, double width, double height); // => for flutter-3.16.x
 
 class WindowScreenshot {
   // return screenshot image url
