@@ -426,7 +426,7 @@ mixin FramePlayMixin {
     }
     double height = (fontSize / StudioVariables.applyScale) +
         (StudioConst.defaultTextPadding * 2); // 모델상의 크기다. 실제 크기가 아니다.
-    double width = height;
+    double width = height * 7;
     //print('localPostion= ${details.localPosition}, width= $width');
 
     Offset pos = CretaUtils.positionInPage(details /*.localPosition*/, null);
@@ -451,7 +451,7 @@ mixin FramePlayMixin {
       frameModel.mid,
       frameModel.realTimeKey,
       name: 'Text',
-      remoteUrl: '',
+      remoteUrl: 'Sample Text',
     );
     model.setTextStyle(style);
     if (extraStyle != null) {

@@ -1,20 +1,19 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
-import 'package:animated_switcher_plus/animated_switcher_plus.dart';
 
 import 'package:hycop/common/util/logger.dart';
 import '../../../../../design_system/creta_color.dart';
-import '../../../../../lang/creta_studio_lang.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
 import 'draggable_point.dart';
+import 'main_symbol.dart';
 import 'seleted_box.dart';
+import 'stickerview.dart';
 //import 'floating_action_icon.dart';
 
 /// {@template drag_update}
@@ -52,21 +51,22 @@ class DraggableResizable extends StatefulWidget {
   /// {@macro draggable_resizable}
   DraggableResizable({
     Key? key,
-    required this.mid,
-    required this.pageMid,
-    required this.child,
-    required this.size,
+    required this.sticker,
+    // required this.mid,
+    // required this.pageMid,
+    // required this.angle,
+    // required this.isMain,
+    // required this.borderWidth,
+    // required this.frameSize,
     required this.position,
-    required this.angle,
-    required this.isMain,
     required this.frameModel,
     required this.pageWidth,
     required this.pageHeight,
-    required this.borderWidth,
     required this.onComplete,
     required this.onScaleStart,
     //BoxConstraints? constraints,
     required this.onResizeButtonTap,
+    required this.child,
     this.onUpdate,
     //this.onTap,
     this.onLayerTapped,
@@ -102,13 +102,15 @@ class DraggableResizable extends StatefulWidget {
   //final bool canTransform;
 
   /// The child's original size.
-  final String mid;
-  final String pageMid;
-  final Size size;
+  final Sticker sticker;
+  // final String mid;
+  // final String pageMid;
+  // final Size frameSize;
+  // final double angle;
+  // final double borderWidth;
+  // final bool isMain;
+
   final Offset position;
-  final double angle;
-  final double borderWidth;
-  final bool isMain;
 
   /// The child's constraints.
   /// Defaults to [BoxConstraints.loose(Size.infinite)].
@@ -135,32 +137,49 @@ class DraggableResizableState extends State<DraggableResizable> {
   // late double _baseAngle;
 
   bool get isTouchInputSupported => true;
-  bool _mainSymbolSwitch = true;
-  Timer? _mainSymbolSwitchTimer;
+  // bool _mainSymbolSwitch = true;
+  // Timer? _mainSymbolSwitchTimer;
+
+  void invalidate() {
+    _size = widget.sticker.frameSize;
+    setState(() {});
+  }
+
+  // @override
+  // void didUpdateWidget(DraggableResizable oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+
+  //   if (widget.sticker.frameSize != oldWidget.sticker.frameSize) {
+  //     print('didUpdateWidget of DraggableResizable');
+  //     setState(() {
+  //       _size = widget.sticker.frameSize;
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
     super.dispose();
-    _mainSymbolSwitchTimer?.cancel();
+    //_mainSymbolSwitchTimer?.cancel();
   }
 
   @override
   void initState() {
     logger.finest('DraggableResizableState.initState()');
     super.initState();
-    _size = widget.size;
+    _size = widget.sticker.frameSize;
     //constraints = const BoxConstraints.expand(width: 1, height: 1);
-    _angle = widget.angle;
+    _angle = widget.sticker.angle;
     _position = widget.position;
     // _baseAngle = 0;
     // _angleDelta = 0;
-    _mainSymbolSwitchTimer = Timer.periodic(Duration(seconds: 2), (Timer t) {
-      if (widget.isMain && StudioVariables.isPreview == false) {
-        setState(() {
-          _mainSymbolSwitch = !_mainSymbolSwitch;
-        });
-      }
-    });
+    // _mainSymbolSwitchTimer = Timer.periodic(Duration(seconds: 2), (Timer t) {
+    //   if (widget.sticker.isMain && StudioVariables.isPreview == false) {
+    //     setState(() {
+    //       _mainSymbolSwitch = !_mainSymbolSwitch;
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -196,7 +215,7 @@ class DraggableResizableState extends State<DraggableResizable> {
                 angle: _angle,
                 hint: hint,
               ),
-              widget.mid,
+              widget.sticker.id,
             );
           }
         }
@@ -427,54 +446,54 @@ class DraggableResizableState extends State<DraggableResizable> {
         //       )),
         // );
 
-        final mainSymbol = Positioned(
-          left: LayoutConst.stikerOffset / 2 + 4,
-          top: LayoutConst.stikerOffset / 2 + 4,
-          child: SizedBox(
-            width: 18,
-            height: 18,
-            child:
-                // CircleAvatar(
-                //   backgroundColor: Colors.white.withOpacity(0.5),
-                //   //radius: 16,
-                //   child:
-                Tooltip(
-              message: CretaStudioLang.mainFrameExTooltip,
-              child: AnimatedSwitcherPlus.translationLeft(
-                duration: const Duration(milliseconds: 1000),
-                child: Container(
-                  key: ValueKey("_mainSymbolSwitch$_mainSymbolSwitch"),
-                  //padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                      //color: _mainSymbolSwitch ? Colors.blue.shade50 : Colors.red.shade50,
-                      color: Colors.transparent,
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      image: DecorationImage(
-                        image: AssetImage(
-                            (_mainSymbolSwitch ? 'assets/expiredTime.png' : 'assets/nextPage.png')),
-                        fit: BoxFit.cover,
-                      )),
-                  // child: Center(
-                  //   child: Icon(
-                  //     _mainSymbolSwitch ? Icons.auto_stories_outlined : Icons.update_outlined,
-                  //     size: 16,
-                  //     color: CretaColor.primary,
-                  //   ),
-                  // ),
-                ),
-              ),
-            ),
+        // final mainSymbol = Positioned(
+        //   left: LayoutConst.stikerOffset / 2 + 4,
+        //   top: LayoutConst.stikerOffset / 2 + 4,
+        //   child: SizedBox(
+        //     width: 18,
+        //     height: 18,
+        //     child:
+        //         // CircleAvatar(
+        //         //   backgroundColor: Colors.white.withOpacity(0.5),
+        //         //   //radius: 16,
+        //         //   child:
+        //         Tooltip(
+        //       message: CretaStudioLang.mainFrameExTooltip,
+        //       child: AnimatedSwitcherPlus.translationLeft(
+        //         duration: const Duration(milliseconds: 1000),
+        //         child: Container(
+        //           key: ValueKey("_mainSymbolSwitch$_mainSymbolSwitch"),
+        //           //padding: const EdgeInsets.all(4),
+        //           decoration: BoxDecoration(
+        //               //color: _mainSymbolSwitch ? Colors.blue.shade50 : Colors.red.shade50,
+        //               color: Colors.transparent,
+        //               borderRadius: const BorderRadius.all(Radius.circular(5)),
+        //               image: DecorationImage(
+        //                 image: AssetImage(
+        //                     (_mainSymbolSwitch ? 'assets/expiredTime.png' : 'assets/nextPage.png')),
+        //                 fit: BoxFit.cover,
+        //               )),
+        //           // child: Center(
+        //           //   child: Icon(
+        //           //     _mainSymbolSwitch ? Icons.auto_stories_outlined : Icons.update_outlined,
+        //           //     size: 16,
+        //           //     color: CretaColor.primary,
+        //           //   ),
+        //           // ),
+        //         ),
+        //       ),
+        //     ),
 
-            // Icon(
-            //   Icons.auto_stories_outlined,
-            //   size: 16,
-            //   color: CretaColor.primary,
-            // ),
-          ),
-          //),
-        );
+        //     // Icon(
+        //     //   Icons.auto_stories_outlined,
+        //     //   size: 16,
+        //     //   color: CretaColor.primary,
+        //     // ),
+        //   ),
+        //   //),
+        // );
         final overlaySymbol = Positioned(
-          left: LayoutConst.stikerOffset / 2 + 4 + (widget.isMain == true ? 24 : 0),
+          left: LayoutConst.stikerOffset / 2 + 4 + (widget.sticker.isMain == true ? 24 : 0),
           top: LayoutConst.stikerOffset / 2 + 4,
           child: SizedBox(
             width: 24,
@@ -486,7 +505,7 @@ class DraggableResizableState extends State<DraggableResizable> {
                 angle: math.pi / 6, // 180/4 = 30도로 회전
                 child: Icon(
                   Icons.push_pin_outlined,
-                  color: widget.pageMid != widget.frameModel!.parentMid.value
+                  color: widget.sticker.pageMid != widget.frameModel!.parentMid.value
                       ? CretaColor.stateNormal
                       : CretaColor.stateCritical,
                   size: 16,
@@ -507,7 +526,7 @@ class DraggableResizableState extends State<DraggableResizable> {
 
         Widget dragablePoint = DraggablePoint(
           //mode: PositionMode.local,
-          key: Key('draggableResizable_child_draggablePoint-${widget.mid}'),
+          key: Key('draggableResizable_child_draggablePoint-${widget.sticker.id}'),
           onComplete: () {
             widget.onComplete();
           },
@@ -534,8 +553,8 @@ class DraggableResizableState extends State<DraggableResizable> {
           onScale: (s) {
             logger.fine('onScale($s)');
             final updatedSize = Size(
-              widget.size.width * s,
-              widget.size.height * s,
+              widget.sticker.frameSize.width * s,
+              widget.sticker.frameSize.height * s,
             );
 
             //if (!widget.constraints.isSatisfiedBy(updatedSize)) return;
@@ -565,11 +584,11 @@ class DraggableResizableState extends State<DraggableResizable> {
               decoratedChild,
               if (!StudioVariables.isPreview)
                 SelectedBox(
-                  key: GlobalObjectKey('SelectedBox-${widget.pageMid}/$widget.mid}'),
+                  key: GlobalObjectKey('SelectedBox-${widget.sticker.pageMid}/$widget.mid}'),
                   isResiable: widget.isResiable,
                   isVerticalResiable: widget.isVerticalResiable,
                   isHorizontalResiable: widget.isHorizontalResiable,
-                  mid: widget.mid,
+                  mid: widget.sticker.id,
                   normalizedHeight: normalizedHeight,
                   normalizedWidth: normalizedWidth,
                   resizePointerOffset: resizePointerOffset,
@@ -586,7 +605,8 @@ class DraggableResizableState extends State<DraggableResizable> {
                   onComplete: widget.onComplete,
                   frameModel: widget.frameModel,
                 ),
-              if (widget.isMain && StudioVariables.isPreview == false) mainSymbol,
+              if (widget.sticker.isMain && StudioVariables.isPreview == false)
+                MainSymbol(sticker: widget.sticker),
               if (widget.frameModel!.isOverlay.value && StudioVariables.isPreview == false)
                 overlaySymbol,
             ],

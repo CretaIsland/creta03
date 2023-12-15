@@ -113,7 +113,7 @@ class DraggableStickers extends StatefulWidget {
 
 class _DraggableStickersState extends State<DraggableStickers> {
   // initial scale of sticker
-  final _initialStickerScale = 5.0;
+  //final _initialStickerScale = 5.0;
   FrameEventController? _sendEvent;
   List<Sticker> stickers = [];
   late GlobalObjectKey<PageBottomLayerState> pageBottomLayerKey;
@@ -283,28 +283,36 @@ class _DraggableStickersState extends State<DraggableStickers> {
         }
         if (contentsModel.isText()) {
           if (frameModel.isEditMode) {
+            GlobalObjectKey<InstantEditorState> editorKey = GlobalObjectKey<InstantEditorState>(
+                'InstantEditor${sticker.pageMid}/${frameModel.mid}');
+            sticker.instantEditorKey = editorKey;
             //print('editor selected');
             return Stack(
               children: [
                 _dragableResizable(sticker, frameModel, isVerticalResiable, isHorizontalResiable),
                 InstantEditor(
-                  key: GlobalObjectKey('InstantEditor${sticker.pageMid}/${frameModel.mid}'),
-                  frameModel: frameModel,
-                  frameManager: widget.frameManager,
-                  onTap: widget.onTap,
-                  onEditComplete: () {
-                    setState(
-                      () {
-                        //_isEditorAlreadyExist = false;
-                        frameModel.isEditMode = false;
-                      },
-                    );
-                    widget.frameManager?.notify();
-                    //print('Editor Complete');
-                    LeftMenuPage.initTreeNodes();
-                    LeftMenuPage.treeInvalidate();
-                  },
-                ),
+                    key: editorKey,
+                    frameModel: frameModel,
+                    frameManager: widget.frameManager,
+                    onTap: widget.onTap,
+                    onEditComplete: () {
+                      setState(
+                        () {
+                          //_isEditorAlreadyExist = false;
+                          frameModel.isEditMode = false;
+                        },
+                      );
+                      //widget.frameManager?.notify();
+                      //sticker.frameSize = newSize;
+                      widget.frameManager?.refreshFrame(frameModel.mid, deep: true);
+                      LeftMenuPage.initTreeNodes();
+                      LeftMenuPage.treeInvalidate();
+                    },
+                    onChanged: (newSize) {
+                      // AutoSizeText 로 인한 size변경을 전파하기 위해
+                      sticker.frameSize = newSize;
+                      widget.frameManager?.refreshFrame(frameModel.mid, deep: true);
+                    }),
               ],
             );
             // } else if (contentsModel.isNoAutoSize()) {
@@ -336,25 +344,31 @@ class _DraggableStickersState extends State<DraggableStickers> {
     double posX = frameModel.getRealPosX();
     double posY = frameModel.getRealPosY();
 
+    GlobalObjectKey<DraggableResizableState> draggableResizableKey =
+        GlobalObjectKey<DraggableResizableState>(
+            'DraggableResizable${sticker.pageMid}/${frameModel.mid}');
+
+    sticker.dragableResiableKey = draggableResizableKey;
+
     return DraggableResizable(
-      key: GlobalKey(),
+      key: draggableResizableKey,
       isVerticalResiable: isVerticalResiable,
       isHorizontalResiable: isHorizontalResiable,
-      pageMid: sticker.pageMid,
-      mid: sticker.id,
-      angle: sticker.angle,
+      sticker: sticker,
+      // mid: sticker.id,
+      // pageMid: sticker.pageMid,
+      // angle: sticker.angle,
+      // borderWidth: sticker.borderWidth,
+      // isMain: sticker.isMain,
+      // frameSize: sticker.isText == true
+      //     ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
+      //     : sticker.frameSize,
       //position: sticker.position + BookMainPage.pageOffset,
       position: Offset(posX, posY),
-      borderWidth: sticker.borderWidth,
-      isMain: sticker.isMain,
       frameModel: frameModel,
       pageWidth: widget.pageWidth,
       pageHeight: widget.pageHeight, // - LayoutConst.miniMenuArea,
       // Size of the sticker
-      size: sticker.isText == true
-          ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
-          //: Size(64 * _initialStickerScale, 64 * _initialStickerScale),
-          : sticker.size,
 
       //canTransform: DraggableStickers.selectedAssetId == sticker.id ? true : false,
       onResizeButtonTap: widget.onResizeButtonTap,
@@ -365,7 +379,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
             "oldposition=${sticker.position.toString()}, new=${update.position.toString()}");
 
         sticker.angle = update.angle;
-        sticker.size = update.size;
+        sticker.frameSize = update.size;
         sticker.position = update.position;
         widget.onUpdate.call(update, mid);
         logger.finest("saved");
@@ -482,14 +496,16 @@ class _DraggableStickersState extends State<DraggableStickers> {
               child: SizedBox(
                 width: double.infinity,
                 height: double.infinity,
-                child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+                //child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+                child: sticker,
               ),
               //),
             )
           : SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+              //child: sticker.isText == true ? FittedBox(child: sticker) : sticker,
+              child: sticker,
             ),
       //),
     );

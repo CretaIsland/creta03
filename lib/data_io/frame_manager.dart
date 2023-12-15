@@ -167,11 +167,11 @@ class FrameManager extends CretaManager {
     return _stickerKeyMap[keyStr];
   }
 
-  bool refreshFrame(String mid) {
+  bool refreshFrame(String mid, {bool deep = false}) {
     String keyStr = stickerKeyMangler(pageModel.mid, mid);
     GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
     if (stickerKey == null) return false;
-    stickerKey.currentState?.refresh();
+    stickerKey.currentState?.refresh(deep: deep);
 
     GlobalKey<FrameThumbnailState>? frameThumbnailKey = findFrameThumbnailKey(pageModel.mid, mid);
     if (frameThumbnailKey != null) {
@@ -1052,7 +1052,7 @@ class FrameManager extends CretaManager {
 
   Future<bool> makeClone(
     BookModel newBook, {
-      bool cloneToPublishedBook = false,
+    bool cloneToPublishedBook = false,
   }) async {
     for (var frame in modelList) {
       String parentPageMid = BookManager.clonePageIdMap[frame.parentMid.value] ?? '';
@@ -1076,7 +1076,8 @@ class FrameManager extends CretaManager {
     for (MapEntry entry in contentsManagerMap.entries) {
       copyContentsManagerHolder.modelList = [...entry.value.modelList];
       copyContentsManagerHolder.linkManagerMap = Map.from(entry.value.linkManagerMap);
-      await copyContentsManagerHolder.makeClone(newBook, cloneToPublishedBook: cloneToPublishedBook);
+      await copyContentsManagerHolder.makeClone(newBook,
+          cloneToPublishedBook: cloneToPublishedBook);
     }
     return true;
   }

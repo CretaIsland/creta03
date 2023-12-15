@@ -75,7 +75,7 @@ class CretaTextField extends LastClickable {
   Size? widgetSize;
   final GlobalKey<CretaTextFieldState> textFieldKey;
   final CretaTextFieldType textType;
-  final bool selectAtInit;
+  final bool isSpecialKeyHandle;
   final int limit;
   final double? minNumber;
   final double? maxNumber;
@@ -110,7 +110,7 @@ class CretaTextField extends LastClickable {
     this.radius = 18,
     this.textType = CretaTextFieldType.text,
     this.limit = 255,
-    this.selectAtInit = false,
+    this.isSpecialKeyHandle = false,
     this.maxNumber,
     this.minNumber,
     this.align = TextAlign.start,
@@ -141,7 +141,7 @@ class CretaTextField extends LastClickable {
     this.radius = 3,
     this.textType = CretaTextFieldType.number,
     this.limit = 3,
-    this.selectAtInit = true,
+    this.isSpecialKeyHandle = true,
     this.maxNumber,
     this.minNumber,
     this.align = TextAlign.end,
@@ -172,7 +172,7 @@ class CretaTextField extends LastClickable {
     this.radius = 3,
     this.textType = CretaTextFieldType.double,
     this.limit = 3,
-    this.selectAtInit = true,
+    this.isSpecialKeyHandle = true,
     this.maxNumber,
     this.minNumber,
     this.align = TextAlign.end,
@@ -203,7 +203,7 @@ class CretaTextField extends LastClickable {
     this.radius = 3,
     this.textType = CretaTextFieldType.number,
     this.limit = 4,
-    this.selectAtInit = true,
+    this.isSpecialKeyHandle = true,
     this.maxNumber,
     this.minNumber,
     this.align = TextAlign.end,
@@ -234,7 +234,7 @@ class CretaTextField extends LastClickable {
     this.radius = 3,
     this.textType = CretaTextFieldType.color,
     this.limit = 7,
-    this.selectAtInit = true,
+    this.isSpecialKeyHandle = true,
     this.maxNumber,
     this.minNumber,
     this.align = TextAlign.end,
@@ -265,7 +265,7 @@ class CretaTextField extends LastClickable {
     this.radius = 18,
     this.textType = CretaTextFieldType.text,
     this.limit = 255,
-    this.selectAtInit = false,
+    this.isSpecialKeyHandle = false,
     this.maxNumber,
     this.minNumber,
     this.align = TextAlign.start,
@@ -296,7 +296,7 @@ class CretaTextField extends LastClickable {
     this.radius = 5,
     this.textType = CretaTextFieldType.longText,
     this.limit = 1023,
-    this.selectAtInit = false,
+    this.isSpecialKeyHandle = false,
     this.maxNumber,
     this.minNumber,
     this.align = TextAlign.start,
@@ -327,7 +327,7 @@ class CretaTextField extends LastClickable {
     this.radius = 18,
     this.textType = CretaTextFieldType.text,
     this.limit = 255,
-    this.selectAtInit = false,
+    this.isSpecialKeyHandle = false,
     this.maxNumber,
     this.minNumber,
     this.align = TextAlign.start,
@@ -404,98 +404,95 @@ class CretaTextFieldState extends State<CretaTextField> {
       if (_lineCount > 10) _lineCount = 10;
       if (_lineCount < 1) _lineCount = 1;
     }
-    if (widget.selectAtInit) {
-      _focusNode = FocusNode(
-        onKey: (node, event) {
-          // Delete key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해
-          switch (event.logicalKey) {
-            case LogicalKeyboardKey.delete:
-            case LogicalKeyboardKey.arrowRight:
-            case LogicalKeyboardKey.arrowLeft:
-            case LogicalKeyboardKey.pageDown:
-            case LogicalKeyboardKey.pageUp:
-            case LogicalKeyboardKey.insert:
-              return KeyEventResult.skipRemainingHandlers;
-          }
-          return KeyEventResult.ignored;
-        },
-        onKeyEvent: (node, event) {
-          logger.info('CretaTextField onKeyEvent : ${event.logicalKey.debugName}');
 
+    _focusNode = FocusNode(
+      onKey: (node, event) {
+        if (node.hasFocus == false) {
+          // 자기가 focus 가 없으면, 굳이 뭘 할 필요가 없기 때문에 이코드를 넣어준다.
+          return KeyEventResult.ignored;
+        }
+        logger.severe(
+            '(${widget.isSpecialKeyHandle}):CretaTextField onKey : ${event.logicalKey.debugName}');
+        // key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해 skipRemainingHandlers 를 쓴다.
+        return KeyEventResult.skipRemainingHandlers;
+
+        // // Delete key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해
+        // switch (event.logicalKey) {
+        //   case LogicalKeyboardKey.delete:
+        //   case LogicalKeyboardKey.arrowRight:
+        //   case LogicalKeyboardKey.arrowLeft:
+        //   case LogicalKeyboardKey.pageDown:
+        //   case LogicalKeyboardKey.pageUp:
+        //   case LogicalKeyboardKey.insert:
+        //   case LogicalKeyboardKey.controlLeft:
+        //   case LogicalKeyboardKey.controlRight:
+        //   case LogicalKeyboardKey.shiftLeft:
+        //   case LogicalKeyboardKey.shiftRight:
+        //     return KeyEventResult.skipRemainingHandlers;
+        // }
+        //return KeyEventResult.skipRemainingHandlers;
+        //return KeyEventResult.ignored;
+      },
+      onKeyEvent: (node, event) {
+        if (node.hasFocus == false) {
+          // 자기가 focus 가 없으면, 굳이 뭘 할 필요가 없기 때문에 이코드를 넣어준다.
+          return KeyEventResult.ignored;
+        }
+        logger.severe(
+            '(${widget.isSpecialKeyHandle}):CretaTextField onKeyEvent : ${event.logicalKey.debugName}');
+
+        if (widget.isSpecialKeyHandle == false) {
+          // isSpecialKeyHandle 란  arrowUpKey 등 특수키를 처리하는  textField 말한다.
+          return KeyEventResult.skipRemainingHandlers;
+        }
+
+        if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+          logger.finest('onKeyEvent(${event.logicalKey.debugName})');
           if (widget.textType == CretaTextFieldType.number) {
-            if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-              logger.finest('onKeyEvent(${event.logicalKey.debugName})');
-              int number = int.parse(_controller.text);
-              if (widget.maxNumber == null || number < widget.maxNumber!.round()) {
-                number++;
-                setState(() {
-                  _controller.text = '$number';
-                });
-              }
-              return KeyEventResult.handled;
+            int number = int.parse(_controller.text);
+            if (widget.maxNumber == null || number < widget.maxNumber!.round()) {
+              number++;
+              setState(() {
+                _controller.text = '$number';
+              });
             }
-            if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-              logger.finest('onKeyEvent(${event.logicalKey.debugName})');
-              int number = int.parse(_controller.text);
-              if (widget.maxNumber == null || number > widget.minNumber!.round()) {
-                number--;
-                setState(() {
-                  _controller.text = '$number';
-                });
-              }
-              return KeyEventResult.handled;
+          } else if (widget.textType == CretaTextFieldType.double) {
+            double number = double.parse(_controller.text);
+            if (widget.maxNumber == null || number < widget.maxNumber!) {
+              number = number + 0.1;
+              setState(() {
+                _controller.text = '$number';
+              });
+            }
+          }
+          return KeyEventResult.handled;
+        }
+        if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+          logger.finest('onKeyEvent(${event.logicalKey.debugName})');
+          if (widget.textType == CretaTextFieldType.number) {
+            int number = int.parse(_controller.text);
+            if (widget.maxNumber == null || number > widget.minNumber!.round()) {
+              number--;
+              setState(() {
+                _controller.text = '$number';
+              });
             }
           }
           if (widget.textType == CretaTextFieldType.double) {
-            if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-              logger.finest('onKeyEvent(${event.logicalKey.debugName})');
-              double number = double.parse(_controller.text);
-              if (widget.maxNumber == null || number < widget.maxNumber!) {
-                number = number + 0.1;
-                setState(() {
-                  _controller.text = '$number';
-                });
-              }
-              return KeyEventResult.handled;
-            }
-            if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-              logger.finest('onKeyEvent(${event.logicalKey.debugName})');
-              double number = double.parse(_controller.text);
-              if (widget.maxNumber == null || number > widget.minNumber!) {
-                number = number - 0.1;
-                setState(() {
-                  _controller.text = '$number';
-                });
-              }
-              return KeyEventResult.handled;
+            double number = double.parse(_controller.text);
+            if (widget.maxNumber == null || number > widget.minNumber!) {
+              number = number - 0.1;
+              setState(() {
+                _controller.text = '$number';
+              });
             }
           }
-          // if (event.logicalKey == LogicalKeyboardKey.enter) {
-          //   logger.fine('enter key pressed');
-          //   _controller.value = TextEditingValue(
-          //       text: '${_controller.text}\n',
-          //       selection: TextSelection.fromPosition(
-          //         TextPosition(offset: _controller.text.length + 1),
-          //       ));
-
-          //   return KeyEventResult.handled;
-          // }
-          return KeyEventResult.ignored;
-        },
-      );
-      _focusNode!.addListener(_listener);
-    } else {
-      _focusNode = FocusNode(
-        onKey: (node, event) {
-          if (event.logicalKey == LogicalKeyboardKey.delete) {
-            // Delete key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해
-            return KeyEventResult.skipRemainingHandlers;
-          }
-          //   logger.finest('onKey(${event.physicalKey})');
-          return KeyEventResult.ignored;
-        },
-      );
-    }
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+    );
+    _focusNode!.addListener(_listener);
     super.initState();
   }
 
@@ -619,7 +616,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         textAlignVertical: widget.alignVertical,
         // 클리어 버튼을 사용하면, 한글이 깨지므로 사용할 수 없다.
         // clearButtonMode: _clicked
-        //     ? widget.selectAtInit == false
+        //     ? widget.isSpecialKeyHandle == false
         //         ? OverlayVisibilityMode.editing
         //         : OverlayVisibilityMode.never
         //     : OverlayVisibilityMode.never,

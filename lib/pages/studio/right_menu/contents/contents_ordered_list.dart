@@ -426,7 +426,6 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
   }
 
   Widget _buttons(ContentsModel model, int index, List<CretaModel> items) {
-    
     bool isAllMute = _isAllMute(items);
     return RepaintBoundary(
       child: Row(
@@ -770,8 +769,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             textFieldKey: key,
             value: model.remoteUrl ?? '',
             hintText: model.name,
-            selectAtInit: true,
-            autoComplete: true,
+            isSpecialKeyHandle: false,
+            autoComplete: false,
             autoHeight: true,
             height: 17, // autoHeight 가 true 이므로 line heiht 로 작동한다.
             keyboardType: TextInputType.multiline,
@@ -786,7 +785,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
             },
             onChanged: (value) {
               model.remoteUrl = value;
-              widget.contentsManager.notify();
+              //widget.contentsManager.notify();
             },
           ),
         if (model.isText()) _textAlign(model),

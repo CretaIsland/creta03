@@ -22,6 +22,7 @@ class InstantEditor extends StatefulWidget {
   final FrameModel frameModel;
   final Function onEditComplete;
   final void Function(String)? onTap;
+  final void Function(Size)? onChanged;
   final bool readOnly;
   final bool enabled;
   //final bool isThumbnail;
@@ -31,16 +32,17 @@ class InstantEditor extends StatefulWidget {
     required this.frameManager,
     required this.frameModel,
     required this.onEditComplete,
+    this.onChanged,
     this.onTap,
     this.readOnly = false,
     this.enabled = true,
     //required this.isThumbnail,
   });
   @override
-  State<InstantEditor> createState() => _InstantEditorState();
+  State<InstantEditor> createState() => InstantEditorState();
 }
 
-class _InstantEditorState extends State<InstantEditor> {
+class InstantEditorState extends State<InstantEditor> {
   // initial scale of sticker
 
   final TextEditingController _textController = TextEditingController();
@@ -107,6 +109,10 @@ class _InstantEditorState extends State<InstantEditor> {
   //   _realSize = Size(newWidth, newHeight);
   // }
 
+  void invalidate() {
+    setState(() {});
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -128,6 +134,16 @@ class _InstantEditorState extends State<InstantEditor> {
 
     //_padding = StudioConst.defaultTextPadding * StudioVariables.applyScale - (borderWidth * 2);
     _padding = StudioConst.defaultTextPadding * StudioVariables.applyScale;
+
+    _focusNode = FocusNode(
+      onKeyEvent: (node, event) {
+        //logger.severe('autoText focusNode ${event.logicalKey.debugName} pressed');
+        if (node.hasFocus) {
+          return KeyEventResult.skipRemainingHandlers;
+        }
+        return KeyEventResult.ignored;
+      },
+    );
 
     // _contentsManager = widget.frameManager!.getContentsManager(widget.frameModel.mid);
     // if (_contentsManager != null) {
@@ -268,8 +284,6 @@ class _InstantEditorState extends State<InstantEditor> {
         widget.frameModel.height.value * StudioVariables.applyScale);
     _realSize ??= _frameSize;
     //_textLineCount ??= CretaUtils.countAs(uri, '\n') + 1;
-    //print('_textLineCount=$_textLineCount------------------------------------------');
-
     return _editText(model, uri, style);
   }
 
@@ -377,7 +391,6 @@ class _InstantEditorState extends State<InstantEditor> {
     bool autofocus =
         BookMainPage.topMenuNotifier!.requestFocus; // textCreate 의 경우, 자동으로 포커스가 발생해야 한다.
     if (autofocus) {
-      _focusNode = FocusNode();
       BookMainPage.topMenuNotifier!.releaseFocus(); // 처음 한번만 autofocus 가 되야 하므로 해지해준다.
     }
 
@@ -433,13 +446,11 @@ class _InstantEditorState extends State<InstantEditor> {
       controller: _textController,
       onEditingComplete: () {
         _saveChanges(model);
-        //print('onEditingComplete');
       },
       onTap: () {
         //print('onTap');
       },
       onTapOutside: (event) {
-        //print('onTapOutside.........');
         _saveChanges(model);
         if (model.isAutoFontSize()) {
           CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true);
@@ -452,7 +463,6 @@ class _InstantEditorState extends State<InstantEditor> {
         CretaTextField.mainFocusNode?.requestFocus();
       },
       onChanged: (value) {
-        //print('onChanged');
         // int newlineCount = CretaUtils.countAs(value, '\n') + 1;
         // if (newlineCount != _textLineCount) {
         model.cursorPos = _textController.selection.baseOffset;
@@ -471,7 +481,9 @@ class _InstantEditorState extends State<InstantEditor> {
             widget.frameModel.height
                 .set(_realSize!.height / StudioVariables.applyScale, save: false, noUndo: true);
             //});
-            widget.frameManager?.notify();
+            //widget.frameManager?.notify();
+            widget.onChanged?.call(_realSize!);
+            //widget.frameManager?.refreshFrame(widget.frameModel.mid, deep: true);
           }
         } else if (model.isAutoFontSize()) {
           // 폰트가 늘어나거나 줄어든다. 프레임은 변하지 않는다.

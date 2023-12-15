@@ -112,21 +112,21 @@ class MiniMenuState extends State<MiniMenu> {
     // } else {
     //   stickerOffset = widget.sticker.position;
     // }
-    // double centerX = stickerOffset.dx + (widget.sticker.size.width + LayoutConst.stikerOffset) / 2;
+    // double centerX = stickerOffset.dx + (widget.sticker.frameSize.width + LayoutConst.stikerOffset) / 2;
 
     // double left = centerX - LayoutConst.miniMenuWidth / 2;
     // double top = stickerOffset.dy +
-    //     widget.sticker.size.height +
+    //     widget.sticker.frameSize.height +
     //     LayoutConst.miniMenuGap +
     //     LayoutConst.dragHandle;
 
     double posX = widget.frameModel.getRealPosX();
     double posY = widget.frameModel.getRealPosY();
 
-    double centerX = posX + (widget.sticker.size.width + LayoutConst.stikerOffset) / 2;
+    double centerX = posX + (widget.sticker.frameSize.width + LayoutConst.stikerOffset) / 2;
     double left = centerX - LayoutConst.miniMenuWidth / 2;
     double top =
-        posY + widget.sticker.size.height + LayoutConst.miniMenuGap + LayoutConst.dragHandle;
+        posY + widget.sticker.frameSize.height + LayoutConst.miniMenuGap + LayoutConst.dragHandle;
 
     // if (top + LayoutConst.miniMenuHeight > widget.pageHeight) {
     //   // 화면의 영역을 벗어나면 어쩔 것인가...
