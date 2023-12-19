@@ -1,3 +1,4 @@
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 // ignore: depend_on_referenced_packages
@@ -104,7 +105,9 @@ class _PlayButtonState extends State<PlayButton> {
                   logger.fine('prev Button pressed');
                   await widget.playTimer.releasePause();
                   await widget.playTimer.prev();
-                  setState(() {});
+                  setState(() {
+                    StudioVariables.stopNextContents = false;
+                  });
                 }
               }),
           BTN.fill_i_s(
@@ -114,6 +117,7 @@ class _PlayButtonState extends State<PlayButton> {
                 BookMainPage.containeeNotifier!.setFrameClick(true);
                 logger.fine('play Button pressed');
                 setState(() {
+                  StudioVariables.stopNextContents = false;
                   widget.playTimer.togglePause();
                 });
               }),
@@ -126,7 +130,9 @@ class _PlayButtonState extends State<PlayButton> {
                   logger.fine('next Button pressed');
                   await widget.playTimer.releasePause();
                   await widget.playTimer.next();
-                  setState(() {});
+                  setState(() {
+                    StudioVariables.stopNextContents = false;
+                  });
                 } else {
                   logger.fine('next Button is busy');
                 }

@@ -484,6 +484,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         logger.finest('sendEvent');
                         //_invalidateFrame();
                         _sendEvent!.sendEvent(widget.model);
+                        //_frameManager?.refreshFrame(widget.model.mid, deep: true);
                       });
                     }),
               ],
@@ -522,13 +523,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                         return;
                       }
                       mychangeStack.startTrans();
-                      setState(() {
-                        widget.model.isAutoFit.set(true, save: false);
-                        widget.model.isFixedRatio.set(true);
-                      });
-                      await _frameManager?.resizeFrame2(widget.model);
+                      widget.model.isAutoFit.set(true, save: false);
+                      widget.model.isFixedRatio.set(true, save: false);
+                      await _frameManager?.resizeFrame2(widget.model, invalidate: true);
                       mychangeStack.endTrans();
-                      _sendEvent?.sendEvent(widget.model);
+                      //_frameManager?.refreshFrame(widget.model.mid, deep: true);
+                      //_sendEvent?.sendEvent(widget.model);
+                      setState(() {});
                     },
                   ),
                 ],

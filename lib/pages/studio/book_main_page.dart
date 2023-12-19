@@ -329,6 +329,11 @@ class _BookMainPageState extends State<BookMainPage> {
       },
     );
 
+    if (StudioVariables.isPreview == false) {
+      StudioVariables.stopNextContents = false;
+      StudioVariables.stopPaging = false;
+    }
+
     logger.info("end ---_BookMainPageState-----------------------------------------");
 // //for webRTC
 //     mediaDeviceDataHolder = MediaDeviceData();
@@ -691,7 +696,7 @@ class _BookMainPageState extends State<BookMainPage> {
             StudioVariables.globalToggleAutoPlay(save: true);
             BookTopMenu.invalidate();
           } else {
-            StudioVariables.stopPaging = !StudioVariables.stopPaging;
+            StudioVariables.stopNextContents = !StudioVariables.stopNextContents;
             BookTopMenu.invalidate();
           }
           return;
@@ -1584,6 +1589,9 @@ class _BookMainPageState extends State<BookMainPage> {
                   //});
                   // 돌아기기
                   _fromPriviewToMain = true;
+                  StudioVariables.stopPaging = false;
+                  StudioVariables.stopNextContents = false;
+
                   if (kReleaseMode) {
                     // String url = '${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}';
                     // AppRoutes.launchTab(url);
@@ -1609,10 +1617,14 @@ class _BookMainPageState extends State<BookMainPage> {
                 },
                 gotoNext: () {
                   BookPreviewMenu.previewMenuPressed = true;
+                  StudioVariables.stopPaging = false;
+                  StudioVariables.stopNextContents = false;
                   pageManager.gotoNext();
                 },
                 gotoPrev: () {
                   BookPreviewMenu.previewMenuPressed = true;
+                  StudioVariables.stopPaging = false;
+                  StudioVariables.stopNextContents = false;
                   pageManager.gotoPrev();
                 },
                 pageNo: pageNo,

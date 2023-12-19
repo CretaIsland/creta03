@@ -78,8 +78,8 @@ class _BookPreviewMenuState extends State<BookPreviewMenu> {
                         const SizedBox(width: 15),
                         CretaTrasparentButton(
                           toggleValue: StudioVariables.stopPaging, //StudioVariables.isAutoPlay,
-                          icon1: Icons.pause_outlined,
-                          icon2: Icons.play_arrow_outlined,
+                          icon1: Icons.push_pin_outlined,
+                          icon2: Icons.repeat_outlined,
                           onPressed: widget.playFunction,
                           iconSize: 20,
                         ),

@@ -221,13 +221,13 @@ class Sticker extends StatefulWidget {
 
 class StickerState extends State<Sticker> with CretaMusicMixin {
   void refresh({bool deep = false}) {
-    setState(() {});
-    widget.frameKey.currentState?.invalidate();
-
-    if (deep) {
-      widget.dragableResiableKey?.currentState?.invalidate();
-      widget.instantEditorKey?.currentState?.invalidate();
-    }
+    setState(() {
+      widget.frameKey.currentState?.invalidate();
+      if (deep) {
+        widget.dragableResiableKey?.currentState?.invalidate();
+        widget.instantEditorKey?.currentState?.invalidate();
+      }
+    });
   }
 
   @override

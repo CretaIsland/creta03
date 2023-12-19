@@ -161,6 +161,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                         ),
                       if (_showVisibleButton()) _drawVisibleButton(),
                       if (_showVisibleButton()) _drawMaximizeButton(),
+                      if (_showVisibleButton()) _drawStopNextContents(),
                     ],
                   ),
                 ),
@@ -215,6 +216,33 @@ class _LinkWidgetState extends State<LinkWidget> {
                 widget.frameModel.changeOrderByIsShow(widget.frameManager);
                 //widget.frameModel.isTempVisible = widget.frameModel.isShow.value;
                 widget.onFrameShowUnshow.call();
+              }),
+        ));
+  }
+
+  Widget _drawStopNextContents() {
+    double buttonSize = 20;
+    double margin = 20;
+    double posX = (widget.frameModel.width.value - 3 * (buttonSize + margin)) * widget.applyScale;
+    double posY = margin / 2 * widget.applyScale;
+
+    return Positioned(
+        left: posX,
+        top: posY,
+        child: SizedBox(
+          width: buttonSize,
+          height: buttonSize,
+          child: BTN.fill_i_s(
+              useTapUp: true,
+              icon: StudioVariables.stopNextContents == true
+                  ? Icons.push_pin_outlined
+                  : Icons.repeat_outlined,
+              onPressed: () {
+                setState(
+                  () {
+                    StudioVariables.stopNextContents = !StudioVariables.stopNextContents;
+                  },
+                );
               }),
         ));
   }

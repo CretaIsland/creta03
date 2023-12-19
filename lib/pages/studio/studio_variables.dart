@@ -52,6 +52,7 @@ class StudioVariables {
   static bool isReadOnly = false;
   static bool isAutoPlay = true;
   static bool stopPaging = false;
+  static bool stopNextContents = false;
   static bool useMagnet = true;
   static double magnetMargin = 3;
 
@@ -159,7 +160,7 @@ class StudioVariables {
     //linkSendEvent?.sendEvent(const Offset(1, 1));
     //autoPlaySendEvent?.sendEvent(StudioVariables.isAutoPlay);
 
-    if (StudioVariables.stopPaging == true) {
+    if (StudioVariables.isPreview && StudioVariables.stopPaging == true) {
       //프리뷰모드에서는 동영상 플레이가 정지하는 것이 아니고, 다음페이지로 넘어가지 않는 것이다.
       return;
     }

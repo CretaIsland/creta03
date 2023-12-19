@@ -517,6 +517,11 @@ class CretaPlayTimer extends ChangeNotifier {
           }
         }
 
+        if (StudioVariables.isPreview && StudioVariables.stopNextContents) {
+          // 사용자가 멈춤 버튼을 눌렀다.
+          return;
+        }
+
         if (_currentModel != null && _currentModel!.isImage() || _currentModel!.isText()) {
           double playTime = _currentModel!.playTime.value;
           if (0 > playTime) {

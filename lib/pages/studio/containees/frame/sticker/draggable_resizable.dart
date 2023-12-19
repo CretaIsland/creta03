@@ -145,17 +145,17 @@ class DraggableResizableState extends State<DraggableResizable> {
     setState(() {});
   }
 
-  // @override
-  // void didUpdateWidget(DraggableResizable oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
+  @override
+  void didUpdateWidget(DraggableResizable oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-  //   if (widget.sticker.frameSize != oldWidget.sticker.frameSize) {
-  //     print('didUpdateWidget of DraggableResizable');
-  //     setState(() {
-  //       _size = widget.sticker.frameSize;
-  //     });
-  //   }
-  // }
+    if (widget.sticker.frameSize != oldWidget.sticker.frameSize) {
+      //print('didUpdateWidget of DraggableResizable');
+      setState(() {
+        _size = widget.sticker.frameSize;
+      });
+    }
+  }
 
   @override
   void dispose() {
