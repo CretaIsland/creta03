@@ -371,52 +371,53 @@ class _CommunityRightSubscriptionPaneState extends State<CommunityRightSubscript
     }
   }
 
-  void _newPlaylistDone(String name, bool isPublic, String bookId) async {
-    //if (kDebugMode) print('_newPlaylistDone($name, $isPublic, $bookId)');
-    PlaylistModel newPlaylist = await playlistManagerHolder.createNewPlaylist(
-      name: name,
-      userId: AccountManager.currentLoginUser.email,
-      channelId: 'test_channel_id',
-      isPublic: isPublic,
-      bookIdList: [bookId],
-    );
-    //
-    // success messagebox
-    //
-    _playlistModelList.add(newPlaylist);
-  }
+  // void _newPlaylistDone(String name, bool isPublic, String bookId) async {
+  //   //if (kDebugMode) print('_newPlaylistDone($name, $isPublic, $bookId)');
+  //   PlaylistModel newPlaylist = await playlistManagerHolder.createNewPlaylist(
+  //     name: name,
+  //     userId: AccountManager.currentLoginUser.email,
+  //     channelId: 'test_channel_id',
+  //     isPublic: isPublic,
+  //     bookIdList: [bookId],
+  //   );
+  //   //
+  //   // success messagebox
+  //   //
+  //   _playlistModelList.add(newPlaylist);
+  // }
+  //
+  // void _newPlaylist(BuildContext context, String bookId) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => PlaylistManager.newPlaylistPopUp(
+  //       context: context,
+  //       bookId: bookId,
+  //       onNewPlaylistDone: _newPlaylistDone,
+  //     ),
+  //   );
+  // }
+  //
+  // void _playlistSelectDone(String playlistMid, String bookId) async {
+  //   //if (kDebugMode) print('_playlistSelectDone($playlistMid, $bookId)');
+  //   await playlistManagerHolder.addBookToPlaylist(playlistMid, bookId);
+  //   //
+  //   // success messagebox
+  //   //
+  // }
 
-  void _newPlaylist(String bookId) {
-    showDialog(
-      context: context,
-      builder: (context) => PlaylistManager.newPlaylistPopUp(
-        context: context,
-        bookId: bookId,
-        onNewPlaylistDone: _newPlaylistDone,
-      ),
-    );
-  }
-
-  void _playlistSelectDone(String playlistMid, String bookId) async {
-    //if (kDebugMode) print('_playlistSelectDone($playlistMid, $bookId)');
-    await playlistManagerHolder.addBookToPlaylist(playlistMid, bookId);
-    //
-    // success messagebox
-    //
-  }
-
-  void _addToPlaylist(String bookId) async {
-    showDialog(
-      context: context,
-      builder: (context) => PlaylistManager.playlistSelectPopUp(
-        context: context,
-        bookId: bookId,
-        playlistModelList: _playlistModelList,
-        bookModelMap: _playlistsBooksMap,
-        onNewPlaylist: _newPlaylist,
-        onSelectDone: _playlistSelectDone,
-      ),
-    );
+  void _addToPlaylist(BookModel bookModel) async {
+    // showDialog(
+    //   context: context,
+    //   builder: (context) => PlaylistManager.playlistSelectPopUp(
+    //     context: context,
+    //     bookModel: bookModel,
+    //     playlistModelList: _playlistModelList,
+    //     bookModelMap: _playlistsBooksMap,
+    //     onNewPlaylist: _newPlaylist,
+    //     onSelectDone: _playlistSelectDone,
+    //   ),
+    // );
+    playlistManagerHolder.addToPlaylist(context, bookModel, _playlistsBooksMap);
   }
 
   void _onRemoveBook(String bookId) async {

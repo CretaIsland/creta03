@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:ui';
+import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/model/subscription_model.dart';
 import 'package:flutter/rendering.dart';
 import 'package:universal_html/html.dart';
@@ -48,6 +49,7 @@ import 'community_comment_pane.dart';
 import '../../../data_io/watch_history_manager.dart';
 import '../../studio/book_main_page.dart';
 import '../../studio/studio_variables.dart';
+import '../../../model/app_enums.dart';
 import '../../../model/book_model.dart';
 import '../../../model/channel_model.dart';
 import '../../../model/contents_model.dart';
@@ -55,6 +57,7 @@ import '../../../model/team_model.dart';
 import '../../../model/frame_model.dart';
 import '../../../model/page_model.dart';
 import '../../../model/user_property_model.dart';
+import '../../../model/playlist_model.dart';
 import '../../../data_io/creta_manager.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/channel_manager.dart';
@@ -64,6 +67,7 @@ import '../../../data_io/subscription_manager.dart';
 import '../../../data_io/team_manager.dart';
 import '../../../data_io/user_property_manager.dart';
 import '../../../data_io/contents_manager.dart';
+import '../../../data_io/enterprise_manager.dart';
 
 class CommunityRightBookPane extends StatefulWidget {
   const CommunityRightBookPane({
@@ -74,7 +78,7 @@ class CommunityRightBookPane extends StatefulWidget {
   });
   final CretaLayoutRect cretaLayoutRect;
   final ScrollController scrollController;
-  final Function(BookModel, UserPropertyModel, bool)? onUpdateBookModel;
+  final Function(BookModel, UserPropertyModel, bool, Function)? onUpdateBookModel;
 
   static String bookId = '';
   static FavoritesManager? favoritesManagerHolder;
@@ -86,7 +90,7 @@ class CommunityRightBookPane extends StatefulWidget {
 class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   late List<CretaBookData> _cretaRelatedBookList;
   final List<ContentsModel> _usingContentsList = [];
-  late List<String> _hashtagValueList;
+  List<String> _hashtagValueList = [];
   bool _hashtagEditMode = false;
   final TextEditingController _hashtagController = TextEditingController();
   bool _usingContentsFullView = false;
@@ -96,9 +100,10 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager watchHistoryManagerHolder;
   //late FavoritesManager favoritesManagerHolder;
+  late PlaylistManager playlistManagerHolder;
   late SubscriptionManager subscriptionManagerHolder;
   late ContentsManager contentsManagerHolder;
-  late PlaylistManager dummyManagerHolder;
+  late EnterpriseManager dummyManagerHolder;
   //bool _onceDBGetComplete = false;
   BookModel? _currentBookModel;
   final List<ChannelModel> _channelList = [];
@@ -109,10 +114,13 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   final Map<String, UserPropertyModel> _userPropertyMap = {};
   final Map<String, String> _teamIdMap = {};
   final Map<String, TeamModel> _teamMap = {};
+  final List<PlaylistModel> _playlistModelList = [];
+  final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
   bool _bookIsInFavorites = false;
   late GlobalKey bookKey;
   late GlobalKey bookKeyParent;
   final CrossCommonJob _crossCommonJob = CrossCommonJob();
+  bool _isEditableBook = false;
 
   @override
   void initState() {
@@ -139,10 +147,11 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     bookPublishedManagerHolder = BookPublishedManager();
     channelManagerHolder = ChannelManager();
     CommunityRightBookPane.favoritesManagerHolder = FavoritesManager();
+    playlistManagerHolder = PlaylistManager();
     teamManagerHolder = TeamManager();
     userPropertyManagerHolder = UserPropertyManager();
-    dummyManagerHolder = PlaylistManager();
     subscriptionManagerHolder = SubscriptionManager();
+    dummyManagerHolder = EnterpriseManager();
 
     final BookModel dummyBook = BookModel('');
     final PageModel dummyPage = PageModel('', dummyBook);
@@ -160,6 +169,8 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
         QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
         QuerySet(CommunityRightBookPane.favoritesManagerHolder!, _getFavoritesFromDB, _resultFavoritesFromDB),
+        QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
+        QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
         QuerySet(subscriptionManagerHolder, _getSubscriptionFromDB, _resultSubscriptionFromDB),
         QuerySet(contentsManagerHolder, _getContentsFromDB, _resultContentsFromDB),
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
@@ -170,8 +181,6 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     );
 
     _cretaRelatedBookList = CommunitySampleData.getCretaBookList();
-
-    _hashtagValueList = ['#크레타북', '#추천', '#인기', '#해시태그', '#목록입니다', '#스페이싱', '#스페이싱', '#스페이싱', '#스페이싱'];
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
@@ -206,6 +215,11 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     }
     _currentBookModel = modelList[0] as BookModel; // 오직 1개만 있다고 가정
     _userIdMap[_currentBookModel!.creator] = _currentBookModel!.creator;
+    _hashtagValueList = CretaUtils.jsonStringToList(_currentBookModel!.hashTag.value);
+
+    String currentLoginedUserId = CretaAccountManager.getUserProperty?.getMid ?? 'null@null.null';
+    String owner = '<${PermissionType.owner.name}>$currentLoginedUserId';
+    _isEditableBook = _currentBookModel!.shares.contains(owner);
   }
 
   void _getChannelsFromDB(List<AbsExModel> modelList) {
@@ -291,6 +305,40 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     }
   }
 
+  void _getPlaylistsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getPlaylistsFromDB');
+    playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    playlistManagerHolder.addWhereClause(
+        'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
+    playlistManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultPlaylistsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_playlistModelList.modelList.length=${modelList.length}');
+    for (var plModel in modelList) {
+      _playlistModelList.add(plModel as PlaylistModel);
+    }
+  }
+
+  void _getPlaylistsBooksFromDB(List<AbsExModel> modelList) {
+    final List<String> bookIdList = [];
+    for (var model in modelList) {
+      PlaylistModel plModel = model as PlaylistModel;
+      if (plModel.bookIdList.isNotEmpty) {
+        bookIdList.add(plModel.bookIdList[0]);
+      }
+    }
+    bookPublishedManagerHolder.queryFromIdList(bookIdList);
+  }
+
+  void _resultPlaylistsBooksFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      BookModel bModel = model as BookModel;
+      //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.getKeyId})');
+      _playlistsBooksMap[bModel.getMid] = bModel;
+    }
+  }
+
   void _getSubscriptionFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getSubscriptionFromDB(${modelList.length})');
     if (_currentBookModel == null || _channelModel == null) {
@@ -344,13 +392,19 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       // creator
       UserPropertyModel? creatorUserModel = _userPropertyMap[_currentBookModel!.creator];
       if (creatorUserModel != null) {
-        widget.onUpdateBookModel?.call(_currentBookModel!, creatorUserModel, _bookIsInFavorites);
+        widget.onUpdateBookModel?.call(_currentBookModel!, creatorUserModel, _bookIsInFavorites, addToPlaylist);
         setState(() {
           _controller.text = _currentBookModel?.description.value ?? '';
         });
       }
     }
     dummyManagerHolder.setState(DBState.idle);
+  }
+
+  void addToPlaylist() async {
+    if (_currentBookModel != null) {
+      playlistManagerHolder.addToPlaylist(context, _currentBookModel!, _playlistsBooksMap);
+    }
   }
 
   Widget _getHashtagWidget(String hashtag) {
@@ -378,6 +432,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           setState(() {
             //_hashtagValueList = _hashtagValueList.where((item) => item != hashtag).toList();
             _hashtagValueList.remove(hashtag);
+            _currentBookModel?.hashTag.set(CretaUtils.listToString(_hashtagValueList));
           });
         }
       },
@@ -764,7 +819,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                         },
                       ),
                 if (kDebugMode) SizedBox(width: 8),
-                _clickedDescriptionEditButton
+                (_clickedDescriptionEditButton || !_isEditableBook)
                     ? Container()
                     : BTN.fill_gray_200_i_s(
                         icon: Icons.edit_outlined,
@@ -1169,14 +1224,16 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                       style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
                     ),
                     Expanded(child: Container()),
-                    BTN.fill_gray_200_i_s(
-                      icon: _hashtagEditMode ? Icons.check_outlined : Icons.edit_outlined,
-                      onPressed: () {
-                        setState(() {
-                          _hashtagEditMode = !_hashtagEditMode;
-                        });
-                      },
-                    ),
+                    (!_isEditableBook)
+                        ? Container()
+                        : BTN.fill_gray_200_i_s(
+                            icon: _hashtagEditMode ? Icons.check_outlined : Icons.edit_outlined,
+                            onPressed: () {
+                              setState(() {
+                                _hashtagEditMode = !_hashtagEditMode;
+                              });
+                            },
+                          ),
                   ],
                 ),
                 // gap-space
@@ -1215,6 +1272,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
                             setState(() {
                               _hashtagController.text = '';
                               _hashtagValueList.add(value);
+                              _currentBookModel?.hashTag.set(CretaUtils.listToString(_hashtagValueList));
                             });
                           }
                         },

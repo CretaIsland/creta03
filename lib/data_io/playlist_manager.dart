@@ -1,5 +1,6 @@
 import 'package:creta03/design_system/buttons/creta_toggle_button.dart';
 import 'package:creta03/pages/login/creta_account_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hycop/hycop.dart';
 //import '../common/creta_utils.dart';
@@ -93,8 +94,9 @@ class PlaylistManager extends CretaManager {
   static bool _isPublic = true;
   static Widget newPlaylistPopUp({
     required BuildContext context,
-    required String bookId,
-    required Function(String, bool, String) onNewPlaylistDone,
+    required BookModel bookModel,
+    required Map<String, BookModel> bookModelMap,
+    required Function(String, bool, BookModel, Map<String, BookModel>) onNewPlaylistDone,
   }) {
     final TextEditingController textController = TextEditingController();
     _isPublic = true;
@@ -176,7 +178,7 @@ class PlaylistManager extends CretaManager {
                   height: 32,
                   onPressed: () {
                     Navigator.of(context).pop();
-                    onNewPlaylistDone(textController.text, _isPublic, bookId);
+                    onNewPlaylistDone(textController.text, _isPublic, bookModel, bookModelMap);
                   },
                 ),
               ],
@@ -190,10 +192,10 @@ class PlaylistManager extends CretaManager {
   static String _selectedPlaylistId = '';
   static Widget playlistSelectPopUp({
     required BuildContext context,
-    required String bookId,
-    required List<PlaylistModel> playlistModelList,
+    required BookModel bookModel,
+    required List<AbsExModel> playlistModelList,
     required Map<String, BookModel> bookModelMap,
-    required Function(String) onNewPlaylist,
+    required Function(BuildContext, BookModel, Map<String, BookModel>) onNewPlaylist,
     required Function(String, String) onSelectDone,
     Map<String, ChannelModel>? channelMap,
   }) {
@@ -253,7 +255,7 @@ class PlaylistManager extends CretaManager {
                   width: 92,
                   onPressed: () {
                     Navigator.of(context).pop();
-                    onNewPlaylist(bookId);
+                    onNewPlaylist(context, bookModel, bookModelMap);
                   },
                 ),
                 const SizedBox(width: 8),
@@ -263,12 +265,62 @@ class PlaylistManager extends CretaManager {
                     height: 32,
                     onPressed: () {
                       Navigator.of(context).pop();
-                      onSelectDone(_selectedPlaylistId, bookId);
+                      onSelectDone(_selectedPlaylistId, bookModel.getMid);
                     }),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _newPlaylistDone(String name, bool isPublic, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) async {
+    if (kDebugMode) print('_newPlaylistDone($name, $isPublic, ${bookModel.getMid})');
+    PlaylistModel newPlaylist = await createNewPlaylist(
+      name: name,
+      userId: CretaAccountManager.getUserProperty!.getMid,//AccountManager.currentLoginUser.email,
+      channelId: CretaAccountManager.getChannel!.getMid,//'test_channel_id',
+      isPublic: isPublic,
+      bookIdList: [bookModel.getMid],
+    );
+    //
+    // success messagebox
+    //
+    modelList.add(newPlaylist);
+    playlistsBooksMap.putIfAbsent(bookModel.getMid, () => bookModel);
+  }
+
+  void _newPlaylist(BuildContext context, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) {
+    showDialog(
+      context: context,
+      builder: (context) => PlaylistManager.newPlaylistPopUp(
+        context: context,
+        bookModel: bookModel,
+        bookModelMap: playlistsBooksMap,
+        onNewPlaylistDone: _newPlaylistDone,
+      ),
+    );
+  }
+
+  void _playlistSelectDone(String playlistMid, String bookId) async {
+    if (kDebugMode) print('_playlistSelectDone($playlistMid, $bookId)');
+    await addBookToPlaylist(playlistMid, bookId);
+    //
+    // success messagebox
+    //
+  }
+
+  void addToPlaylist(BuildContext context, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) async {
+    showDialog(
+      context: context,
+      builder: (context) => PlaylistManager.playlistSelectPopUp(
+        context: context,
+        bookModel: bookModel,
+        playlistModelList: modelList,
+        bookModelMap: playlistsBooksMap,
+        onNewPlaylist: _newPlaylist,
+        onSelectDone: _playlistSelectDone,
       ),
     );
   }
@@ -286,7 +338,7 @@ class PlaylistListControl extends StatefulWidget {
     this.channelMap,
   });
   final Size size;
-  final List<PlaylistModel> playlist;
+  final List<AbsExModel> playlist;
   final Function(String) selectCallback;
   final Map<String, BookModel> bookModelMap;
   final Map<String, ChannelModel>? channelMap;
@@ -336,10 +388,11 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
               children: [
                 const SizedBox(height: 10),
                 ...widget.playlist.expand((element) {
-                  String channelName = widget.channelMap?[element.channelId]?.name ?? CretaAccountManager.getUserProperty!.nickname;
+                  PlaylistModel plModel = element as PlaylistModel;
+                  String channelName = widget.channelMap?[plModel.channelId]?.name ?? CretaAccountManager.getUserProperty!.nickname;
                   String bookThumbnailUrl = '';
-                  if (element.bookIdList.isNotEmpty) {
-                    BookModel? model = widget.bookModelMap[element.bookIdList[0]];
+                  if (plModel.bookIdList.isNotEmpty) {
+                    BookModel? model = widget.bookModelMap[plModel.bookIdList[0]];
                     bookThumbnailUrl = model?.thumbnailUrl.value ?? '';
                   }
                   return [
@@ -348,25 +401,25 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                       onHover: (value) {
                         if (value) {
                           setState(() {
-                            _hoverPlaylistId = element.mid;
+                            _hoverPlaylistId = plModel.mid;
                           });
                         }
                       },
                       onTap: () {
                         setState(() {
-                          _selectedPlaylistId = element.mid;
+                          _selectedPlaylistId = plModel.mid;
                           widget.selectCallback.call(_selectedPlaylistId);
                         });
                       },
                       child: Container(
-                        color: (_hoverPlaylistId == element.mid) ? CretaColor.text[100] : null,
+                        color: (_hoverPlaylistId == plModel.mid) ? CretaColor.text[100] : null,
                         child: Container(
                           width: widget.size.width - 32,
                           height: 60,
                           margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(6),
-                            color: (_selectedPlaylistId == element.mid) ? CretaColor.text[200] : null,
+                            color: (_selectedPlaylistId == plModel.mid) ? CretaColor.text[200] : null,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
@@ -380,11 +433,11 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        element.name,
+                                        plModel.name,
                                         style: CretaFont.titleSmall.copyWith(color: CretaColor.text[700]),
                                       ),
                                       Text(
-                                        channelName,//element.userId,
+                                        channelName,
                                         style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[500]),
                                       ),
                                     ],
@@ -406,7 +459,7 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                                                 hasAni: false,
                                                 image: bookThumbnailUrl,
                                               ),
-                                        (_hoverPlaylistId == element.mid)
+                                        (_hoverPlaylistId == plModel.mid)
                                             ? Opacity(
                                                 opacity: 0.4,
                                                 child: Container(
@@ -416,7 +469,7 @@ class _PlaylistListControlState extends State<PlaylistListControl> {
                                                 ),
                                               )
                                             : const SizedBox.shrink(),
-                                        (_hoverPlaylistId == element.mid)
+                                        (_hoverPlaylistId == plModel.mid)
                                             ? SizedBox(
                                                 width: 74,
                                                 height: 44,
