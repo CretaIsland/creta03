@@ -9,6 +9,7 @@ import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
+import 'package:url_launcher/link.dart';
 import '../../routes.dart';
 //import '../../pages/login_page.dart';
 import '../../pages/login/creta_account_manager.dart';
@@ -81,6 +82,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   List<SubscriptionModel>? _subscriptionModelList;
   SubscriptionModel? _selectedSubscriptionModel;
   bool _bookIsFavorites = false;
+  Function? _addToPlaylist;
 
   BookType _filterBookType = BookType.none;
   BookSort _filterBookSort = BookSort.updateTime;
@@ -1094,7 +1096,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
           SizedBox(
             width: size.width,
             height: size.height,
-            child : bannerImage,
+            child: bannerImage,
             // child: (_currentChannelModel == null)
             //     ? SizedBox.shrink()
             //     : channelBannerImg.isEmpty
@@ -1263,7 +1265,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   Widget _getCommunityBookTitlePane(Size size) {
-    final GlobalKey menuButtonKey = GlobalObjectKey('_getCommunityBookTitlePane.BTN.fill_gray_i_l.CretaPopupMenu.showMenu');
+    final GlobalKey menuButtonKey =
+        GlobalObjectKey('_getCommunityBookTitlePane.BTN.fill_gray_i_l.CretaPopupMenu.showMenu');
+    final String channelLinkUrl = '${AppRoutes.channel}?${_userPropertyModelOfBookModel?.channelId}';
     return Container(
       width: size.width - LayoutConst.cretaScrollbarWidth,
       height: 140, //size.height,
@@ -1288,28 +1292,30 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                       children: [
                         Expanded(
                           child: Text(
-                            _currentBookModel!.name.value, //'[아이유의 팔레트??] 내 마음속 영원히 맑은 하늘 (With god) Ep.17',
+                            _currentBookModel!.name.value,
                             overflow: TextOverflow.ellipsis,
                             style: CretaFont.titleELarge.copyWith(color: Colors.white),
                           ),
                         ),
                         SizedBox(width: 20),
-                        BTN.fill_gray_it_m(
-                          text: _userPropertyModelOfBookModel?.nickname ?? '',
-                          icon: Icons.account_circle,
-                          onPressed: () {
-                            if (_userPropertyModelOfBookModel != null) {
-                              String channelLinkUrl =
-                                  '${AppRoutes.channel}?${_userPropertyModelOfBookModel!.channelId}';
-                              Routemaster.of(context).push(channelLinkUrl);
-                            }
-                          },
-                          width: null,
-                          buttonColor: CretaButtonColor.transparent,
-                          textColor: Colors.white,
-                          textStyle: CretaFont.bodyMedium.copyWith(color: Colors.white),
-                          alwaysShowIcon: true,
-                        ),
+                        Link(
+                            uri: Uri.parse(channelLinkUrl),
+                            builder: (context, function) {
+                              return BTN.fill_gray_it_m(
+                                text: _userPropertyModelOfBookModel?.nickname ?? '',
+                                icon: Icons.account_circle,
+                                onPressed: () {
+                                  if (_userPropertyModelOfBookModel != null) {
+                                    Routemaster.of(context).push(channelLinkUrl);
+                                  }
+                                },
+                                width: null,
+                                buttonColor: CretaButtonColor.transparent,
+                                textColor: Colors.white,
+                                textStyle: CretaFont.bodyMedium.copyWith(color: Colors.white),
+                                alwaysShowIcon: true,
+                              );
+                            }),
                         SizedBox(width: 20),
                         Text(
                           CretaUtils.dateToDurationString(_currentBookModel!.updateTime),
@@ -1350,15 +1356,16 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         onPressed: () {
                           if (_currentBookModel != null) {
                             final BookManager copyBookManagerHolder = BookManager();
-                            copyBookManagerHolder.makeClone(
+                            copyBookManagerHolder
+                                .makeClone(
                               _currentBookModel!,
                               srcIsPublishedBook: true,
-                              cloneToPublishedBook : false,
-                            ).then((newBook) {
+                              cloneToPublishedBook: false,
+                            )
+                                .then((newBook) {
                               if (newBook == null) {
                                 showSnackBar(context, '사본 생성에 실패하였습니다.');
-                              }
-                              else {
+                              } else {
                                 showSnackBar(context, '${newBook.name.value}이 생성되었습니다.');
                               }
                             }).catchError((error, stackTrace) {
@@ -1383,9 +1390,21 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             xOffset: -100,
                             width: 160,
                             popupMenu: [
-                              CretaMenuItem(caption: '재생하기', onPressed: () {}),
-                              CretaMenuItem(caption: '편집하기', onPressed: () {}),
-                              CretaMenuItem(caption: '재생목록에 추가', onPressed: () {}),
+                              //CretaMenuItem(caption: '재생하기', onPressed: () {}),
+                              CretaMenuItem(
+                                caption: '편집하기',
+                                onPressed: () {
+                                  String url = '${AppRoutes.studioBookMainPage}?${_currentBookModel?.sourceMid}';
+                                  //Routemaster.of(context).push(url);
+                                  AppRoutes.launchTab(url);
+                                },
+                              ),
+                              CretaMenuItem(
+                                caption: '재생목록에 추가',
+                                onPressed: () {
+                                  _addToPlaylist?.call();
+                                },
+                              ),
                               CretaMenuItem(caption: '공유하기', onPressed: () {}),
                               CretaMenuItem(caption: '다운로드', onPressed: () {}),
                               CretaMenuItem(caption: '삭제하기', onPressed: () {}),
@@ -1394,7 +1413,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                                 caption: '전체화면 재생 주소 복사',
                                 onPressed: () {
                                   String url = Uri.base.origin;
-                                  url += '${AppRoutes.studioBookPreviewPage}?${CommunityRightBookPane.bookId}&mode=preview';
+                                  url +=
+                                      '${AppRoutes.studioBookPreviewPage}?${CommunityRightBookPane.bookId}&mode=preview';
                                   Clipboard.setData(ClipboardData(text: url));
                                 },
                               ),
@@ -1640,12 +1660,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       case AppRoutes.playlist:
         return;
       case AppRoutes.communityHome:
-          setState(() {
-            _filterSearchKeyword = value;
-            _filterSearchKeywordTime = DateTime.now();
-            setScrollOffset(0);
-          });
-          return;
+        setState(() {
+          _filterSearchKeyword = value;
+          _filterSearchKeywordTime = DateTime.now();
+          setScrollOffset(0);
+        });
+        return;
 
       case AppRoutes.channel:
         switch (_communityChannelType) {
@@ -1682,11 +1702,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     });
   }
 
-  void _onUpdateBookModel(BookModel bookModel, UserPropertyModel userPropertyModel, bool isFavorites) {
+  void _onUpdateBookModel(BookModel bookModel, UserPropertyModel userPropertyModel, bool isFavorites, Function addToPlaylist) {
     setState(() {
       _currentBookModel = bookModel;
       _userPropertyModelOfBookModel = userPropertyModel;
       _bookIsFavorites = isFavorites;
+      _addToPlaylist = addToPlaylist;
     });
   }
 
