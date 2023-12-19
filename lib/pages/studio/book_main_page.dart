@@ -687,8 +687,13 @@ class _BookMainPageState extends State<BookMainPage> {
           BookMainPage.pageManagerHolder?.gotoPrev();
           return;
         case LogicalKeyboardKey.insert:
-          StudioVariables.globalToggleAutoPlay(save: true);
-          BookTopMenu.invalidate();
+          if (StudioVariables.isPreview == false) {
+            StudioVariables.globalToggleAutoPlay(save: true);
+            BookTopMenu.invalidate();
+          } else {
+            StudioVariables.stopPaging = !StudioVariables.stopPaging;
+            BookTopMenu.invalidate();
+          }
           return;
         default:
           return;
@@ -1594,7 +1599,10 @@ class _BookMainPageState extends State<BookMainPage> {
                 },
                 playFunction: () {
                   //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
-                  StudioVariables.globalToggleAutoPlay(save: false);
+                  setState(() {
+                    StudioVariables.stopPaging = !StudioVariables.stopPaging;
+                  });
+                  //StudioVariables.globalToggleAutoPlay(save: false);
                   // if (StudioVariables.isAutoPlay && StudioVariables.isPreview) {
                   //   _startConnectedUserTimer();
                   // }

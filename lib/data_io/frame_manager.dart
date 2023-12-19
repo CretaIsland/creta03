@@ -796,7 +796,12 @@ class FrameManager extends CretaManager {
   }
 
   void nextPageListener(FrameModel frameModel) {
-    if (!StudioVariables.isAutoPlay || !StudioVariables.isPreview) {
+    // isAutoPlay = false 이면 자동으로 넘어가지 않는다.
+    if (StudioVariables.isAutoPlay == false) {
+      return;
+    }
+    // 프리뷰 모드에서만 자동으로 넘어간다.
+    if (StudioVariables.isPreview == false) {
       return;
     }
     // ignore: unused_local_variable
