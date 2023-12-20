@@ -58,7 +58,7 @@ class DraggableResizable extends StatefulWidget {
     // required this.isMain,
     // required this.borderWidth,
     // required this.frameSize,
-    required this.position,
+    required this.realPosition,
     required this.frameModel,
     required this.pageWidth,
     required this.pageHeight,
@@ -110,7 +110,7 @@ class DraggableResizable extends StatefulWidget {
   // final double borderWidth;
   // final bool isMain;
 
-  final Offset position;
+  final Offset realPosition;
 
   /// The child's constraints.
   /// Defaults to [BoxConstraints.loose(Size.infinite)].
@@ -141,18 +141,39 @@ class DraggableResizableState extends State<DraggableResizable> {
   // Timer? _mainSymbolSwitchTimer;
 
   void invalidate() {
-    _size = widget.sticker.frameSize;
-    setState(() {});
+    setState(() {
+      _size = widget.sticker.frameSize;
+      _position = widget.realPosition;
+      _angle = widget.sticker.angle;
+    });
   }
 
   @override
   void didUpdateWidget(DraggableResizable oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    bool sizeChanged = false;
+    bool posiChanged = false;
+    bool anglChanged = false;
+
     if (widget.sticker.frameSize != oldWidget.sticker.frameSize) {
-      //print('didUpdateWidget of DraggableResizable');
+      print('didUpdateWidget of DraggableResizable 1');
+      sizeChanged = true;
+    }
+    if (widget.realPosition != oldWidget.realPosition) {
+      print('didUpdateWidget of DraggableResizable 2');
+      posiChanged = true;
+    }
+    if (widget.sticker.angle != oldWidget.sticker.angle) {
+      print('didUpdateWidget of DraggableResizable 3');
+      anglChanged = true;
+    }
+
+    if (sizeChanged || posiChanged || anglChanged) {
       setState(() {
         _size = widget.sticker.frameSize;
+        _angle = widget.sticker.angle;
+        _position = widget.realPosition;
       });
     }
   }
@@ -165,12 +186,12 @@ class DraggableResizableState extends State<DraggableResizable> {
 
   @override
   void initState() {
-    logger.finest('DraggableResizableState.initState()');
+    print('DraggableResizableState.initState()');
     super.initState();
     _size = widget.sticker.frameSize;
     //constraints = const BoxConstraints.expand(width: 1, height: 1);
     _angle = widget.sticker.angle;
-    _position = widget.position;
+    _position = widget.realPosition;
     // _baseAngle = 0;
     // _angleDelta = 0;
     // _mainSymbolSwitchTimer = Timer.periodic(Duration(seconds: 2), (Timer t) {
@@ -188,7 +209,7 @@ class DraggableResizableState extends State<DraggableResizable> {
     //bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
     double whRatio = (_size.height / _size.width);
 
-    //print('DraggableResizable');
+    print('DraggableResizable build');
 
     return LayoutBuilder(
       builder: (context, constraints) {

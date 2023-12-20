@@ -364,7 +364,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
       //     ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
       //     : sticker.frameSize,
       //position: sticker.position + BookMainPage.pageOffset,
-      position: Offset(posX, posY),
+      realPosition: Offset(posX, posY),
       frameModel: frameModel,
       pageWidth: widget.pageWidth,
       pageHeight: widget.pageHeight, // - LayoutConst.miniMenuArea,
