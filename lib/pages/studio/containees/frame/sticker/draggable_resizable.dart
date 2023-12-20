@@ -157,15 +157,15 @@ class DraggableResizableState extends State<DraggableResizable> {
     bool anglChanged = false;
 
     if (widget.sticker.frameSize != oldWidget.sticker.frameSize) {
-      print('didUpdateWidget of DraggableResizable 1');
+      //print('didUpdateWidget of DraggableResizable 1');
       sizeChanged = true;
     }
     if (widget.realPosition != oldWidget.realPosition) {
-      print('didUpdateWidget of DraggableResizable 2');
+      //print('didUpdateWidget of DraggableResizable 2');
       posiChanged = true;
     }
     if (widget.sticker.angle != oldWidget.sticker.angle) {
-      print('didUpdateWidget of DraggableResizable 3');
+      //print('didUpdateWidget of DraggableResizable 3');
       anglChanged = true;
     }
 
@@ -186,7 +186,7 @@ class DraggableResizableState extends State<DraggableResizable> {
 
   @override
   void initState() {
-    print('DraggableResizableState.initState()');
+    //print('DraggableResizableState.initState()');
     super.initState();
     _size = widget.sticker.frameSize;
     //constraints = const BoxConstraints.expand(width: 1, height: 1);
@@ -209,7 +209,7 @@ class DraggableResizableState extends State<DraggableResizable> {
     //bool isAutoFit = (widget.frameModel != null && widget.frameModel!.isAutoFit.value);
     double whRatio = (_size.height / _size.width);
 
-    print('DraggableResizable build');
+    //print('DraggableResizable build');
 
     return LayoutBuilder(
       builder: (context, constraints) {

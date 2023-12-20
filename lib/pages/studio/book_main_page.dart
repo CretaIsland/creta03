@@ -321,7 +321,7 @@ class _BookMainPageState extends State<BookMainPage> {
       onKeyEvent: (node, event) {
         // TextField 의 focusNode 가 onKeyEvent 를 정의하고 있지 않은 경우에만 여기로 도착한다.
         // 만약 정의하고 있으면 그 정의로 도착하고 여기로 도착하지 않게 된다.
-        logger.severe('${node.hasFocus}:focusNodeEventHandler  ${event.logicalKey.debugName}');
+        logger.info('${node.hasFocus}:focusNodeEventHandler  ${event.logicalKey.debugName}');
         if (node.hasFocus) {
           _focusNodeEventHandler(node, event);
         }
