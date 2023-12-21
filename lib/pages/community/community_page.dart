@@ -1332,16 +1332,17 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                   SizedBox(width: 12),
                   Row(
                     children: [
-                      BTN.fill_gray_i_l(
-                        icon: Icons.edit_outlined,
-                        onPressed: () {},
-                        buttonColor: CretaButtonColor.blueAndWhiteTitle,
-                        iconColor: Colors.white,
-                      ),
-                      SizedBox(width: 12),
+                      if (_currentBookModel!.isEditable)
+                        BTN.fill_gray_i_l(
+                          icon: Icons.edit_outlined,
+                          onPressed: () {},
+                          buttonColor: CretaButtonColor.blueAndWhiteTitle,
+                          iconColor: Colors.white,
+                        ),
+                      if (_currentBookModel!.isEditable) SizedBox(width: 12),
                       BTN.fill_gray_it_l(
                         icon: _bookIsFavorites ? Icons.favorite_outlined : Icons.favorite_border_outlined,
-                        text: '123',
+                        text: '${_currentBookModel!.likeCount}',
                         onPressed: _toggleBookToFavorites,
                         buttonColor: CretaButtonColor.transparent,
                         textColor: Colors.white,
@@ -1349,37 +1350,38 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                         sidePadding: CretaButtonSidePadding.fromLR(8, 8),
                       ),
                       SizedBox(width: 13),
-                      BTN.fill_gray_itt_l(
-                        icon: Icons.copy_rounded,
-                        text: '복제하기',
-                        subText: '123',
-                        onPressed: () {
-                          if (_currentBookModel != null) {
-                            final BookManager copyBookManagerHolder = BookManager();
-                            copyBookManagerHolder
-                                .makeClone(
-                              _currentBookModel!,
-                              srcIsPublishedBook: true,
-                              cloneToPublishedBook: false,
-                            )
-                                .then((newBook) {
-                              if (newBook == null) {
+                      if (_currentBookModel!.isCopyable)
+                        BTN.fill_gray_itt_l(
+                          icon: Icons.copy_rounded,
+                          text: '사본만들기',
+                          subText: '${_currentBookModel!.copyCount}',
+                          onPressed: () {
+                            if (_currentBookModel != null) {
+                              final BookManager copyBookManagerHolder = BookManager();
+                              copyBookManagerHolder
+                                  .makeClone(
+                                _currentBookModel!,
+                                srcIsPublishedBook: true,
+                                cloneToPublishedBook: false,
+                              )
+                                  .then((newBook) {
+                                if (newBook == null) {
+                                  showSnackBar(context, '사본 생성에 실패하였습니다.');
+                                } else {
+                                  showSnackBar(context, '${newBook.name.value}이 생성되었습니다.');
+                                }
+                              }).catchError((error, stackTrace) {
                                 showSnackBar(context, '사본 생성에 실패하였습니다.');
-                              } else {
-                                showSnackBar(context, '${newBook.name.value}이 생성되었습니다.');
-                              }
-                            }).catchError((error, stackTrace) {
-                              showSnackBar(context, '사본 생성에 실패하였습니다.');
-                            });
-                          }
-                        },
-                        buttonColor: CretaButtonColor.skyTitle,
-                        textColor: Colors.white,
-                        subTextColor: CretaColor.primary[200],
-                        width: null,
-                        sidePadding: CretaButtonSidePadding.fromLR(8, 0),
-                      ),
-                      SizedBox(width: 12),
+                              });
+                            }
+                          },
+                          buttonColor: CretaButtonColor.skyTitle,
+                          textColor: Colors.white,
+                          subTextColor: CretaColor.primary[200],
+                          width: null,
+                          sidePadding: CretaButtonSidePadding.fromLR(8, 0),
+                        ),
+                      if (_currentBookModel!.isCopyable) SizedBox(width: 12),
                       BTN.fill_gray_i_l(
                         key: menuButtonKey,
                         icon: Icons.menu_outlined,
@@ -1391,14 +1393,15 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                             width: 160,
                             popupMenu: [
                               //CretaMenuItem(caption: '재생하기', onPressed: () {}),
-                              CretaMenuItem(
-                                caption: '편집하기',
-                                onPressed: () {
-                                  String url = '${AppRoutes.studioBookMainPage}?${_currentBookModel?.sourceMid}';
-                                  //Routemaster.of(context).push(url);
-                                  AppRoutes.launchTab(url);
-                                },
-                              ),
+                              if (_currentBookModel!.isEditable)
+                                CretaMenuItem(
+                                  caption: '편집하기',
+                                  onPressed: () {
+                                    String url = '${AppRoutes.studioBookMainPage}?${_currentBookModel?.sourceMid}';
+                                    //Routemaster.of(context).push(url);
+                                    AppRoutes.launchTab(url);
+                                  },
+                                ),
                               CretaMenuItem(
                                 caption: '재생목록에 추가',
                                 onPressed: () {
@@ -1407,8 +1410,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
                               ),
                               CretaMenuItem(caption: '공유하기', onPressed: () {}),
                               CretaMenuItem(caption: '다운로드', onPressed: () {}),
-                              CretaMenuItem(caption: '삭제하기', onPressed: () {}),
-                              CretaMenuItem(caption: '복사하기', onPressed: () {}),
+                              if (_currentBookModel!.isEditable) CretaMenuItem(caption: '삭제하기', onPressed: () {}),
+                              if (_currentBookModel!.isCopyable) CretaMenuItem(caption: '사본만들기', onPressed: () {}),
                               CretaMenuItem(
                                 caption: '전체화면 재생 주소 복사',
                                 onPressed: () {
@@ -1702,7 +1705,12 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
     });
   }
 
-  void _onUpdateBookModel(BookModel bookModel, UserPropertyModel userPropertyModel, bool isFavorites, Function addToPlaylist) {
+  void _onUpdateBookModel(
+    BookModel bookModel,
+    UserPropertyModel userPropertyModel,
+    bool isFavorites,
+    Function addToPlaylist,
+  ) {
     setState(() {
       _currentBookModel = bookModel;
       _userPropertyModelOfBookModel = userPropertyModel;

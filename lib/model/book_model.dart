@@ -36,6 +36,7 @@ class BookModel extends CretaModel with BookMixin {
   late UndoAble<double> thumbnailAspectRatio;
   int viewCount = 0;
   int likeCount = 0;
+  int copyCount = 0;
   List<String> owners = [];
   List<String> readers = [];
   List<String> writers = [];
@@ -46,6 +47,12 @@ class BookModel extends CretaModel with BookMixin {
   List<String> channels = [];
 
   Size realSize = Size(LayoutConst.minPageSize, LayoutConst.minPageSize);
+
+  bool _isEditable = false; // not saved attributes
+  bool _isCopyable = false; // not saved attributes
+
+  get isEditable => _isEditable;
+  get isCopyable => _isCopyable;
 
   @override
   List<Object?> get props => [
@@ -69,6 +76,7 @@ class BookModel extends CretaModel with BookMixin {
         thumbnailAspectRatio,
         viewCount,
         likeCount,
+        copyCount,
         owners,
         readers,
         writers,
@@ -79,6 +87,7 @@ class BookModel extends CretaModel with BookMixin {
         channels,
         ...super.propsMixin,
       ];
+
   BookModel(String pmid) : super(pmid: pmid, type: ExModelType.book, parent: '') {
     name = UndoAble<String>('', mid, 'name');
     thumbnailUrl = UndoAble<String>('', mid, 'thumbnailUrl');
@@ -95,6 +104,7 @@ class BookModel extends CretaModel with BookMixin {
     isReadOnly = UndoAble<bool>(false, mid, 'isReadOnly');
     viewCount = 0;
     likeCount = 0;
+    copyCount = 0;
     owners = [];
     readers = [];
     writers = [];
@@ -115,8 +125,9 @@ class BookModel extends CretaModel with BookMixin {
     required this.creatorName,
     required String imageUrl,
     double imageRatio = 1080 / 1920,
-    int likeNo = 0,
-    int viewNo = 0,
+    this.likeCount = 0,
+    this.viewCount = 0,
+    this.copyCount = 0,
     BookType bookTypeVal = BookType.presentaion,
     CopyRightType copyRightVal = CopyRightType.free,
     List<String> ownerList = const [],
@@ -142,8 +153,6 @@ class BookModel extends CretaModel with BookMixin {
     pageSizeType = UndoAble<int>(0, mid, 'pageSizeType');
     copyRight = UndoAble<CopyRightType>(copyRightVal, mid, 'copyRight');
     isReadOnly = UndoAble<bool>(false, mid, 'isReadOnly');
-    viewCount = likeNo;
-    likeCount = viewNo;
     description = UndoAble<String>("You could do it simple and plain", mid, 'description');
     filter = UndoAble<String>('', mid, 'filter');
     owners = [...ownerList];
@@ -161,8 +170,10 @@ class BookModel extends CretaModel with BookMixin {
     super.makeSampleMixin(mid);
     parentMid.set(mid, noUndo: true, save: false);
     setRealTimeKey(mid);
+    checkPermition();
     logger.finest('owners=${owners.toString()}');
   }
+
   @override
   void copyFrom(AbsExModel src, {String? newMid, String? pMid}) {
     super.copyFrom(src, newMid: newMid, pMid: pMid);
@@ -188,6 +199,7 @@ class BookModel extends CretaModel with BookMixin {
     filter = UndoAble<String>(srcBook.filter.value, mid, 'filter');
     viewCount = srcBook.viewCount;
     likeCount = srcBook.likeCount;
+    copyCount = srcBook.copyCount;
     owners = [...srcBook.owners];
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];
@@ -199,6 +211,7 @@ class BookModel extends CretaModel with BookMixin {
     channels = [...srcBook.channels];
 
     super.copyFromMixin(mid, srcBook);
+    checkPermition();
     logger.finest('BookCopied($mid)');
   }
 
@@ -225,6 +238,7 @@ class BookModel extends CretaModel with BookMixin {
     filter.init(srcBook.filter.value);
     viewCount = srcBook.viewCount;
     likeCount = srcBook.likeCount;
+    copyCount = srcBook.copyCount;
     owners = [...srcBook.owners];
     readers = [...srcBook.readers];
     writers = [...srcBook.writers];
@@ -236,6 +250,7 @@ class BookModel extends CretaModel with BookMixin {
     channels = [...srcBook.channels];
 
     super.updateFromMixin(srcBook);
+    checkPermition();
     logger.finest('BookCopied($mid)');
   }
 
@@ -276,9 +291,11 @@ class BookModel extends CretaModel with BookMixin {
     // }
     viewCount = (map["viewCount"] ?? 0);
     likeCount = (map["likeCount"] ?? 0);
+    copyCount = (map["copyCount"] ?? 0);
 
     super.fromMapMixin(map);
     setRealTimeKey(mid);
+    checkPermition();
   }
 
   @override
@@ -312,6 +329,7 @@ class BookModel extends CretaModel with BookMixin {
         "thumbnailAspectRatio": thumbnailAspectRatio.value,
         "viewCount": viewCount,
         "likeCount": likeCount,
+        "copyCount": copyCount,
         "owners": CretaUtils.listToString(owners),
         "readers": CretaUtils.listToString(readers),
         "writers": CretaUtils.listToString(writers),
@@ -383,5 +401,13 @@ class BookModel extends CretaModel with BookMixin {
   bool hasWritePermition() {
     String loginUser = AccountManager.currentLoginUser.email;
     return owners.contains(loginUser) || writers.contains(loginUser);
+  }
+
+  void checkPermition() {
+    String loginUser = AccountManager.currentLoginUser.email;
+    _isEditable = owners.contains(loginUser);
+    String publicCopyable = '<${PermissionType.writer.name}>public';
+    String privateCopyable = '<${PermissionType.writer.name}>$loginUser';
+    _isCopyable = writers.contains(publicCopyable) | writers.contains(privateCopyable) | _isEditable;
   }
 }

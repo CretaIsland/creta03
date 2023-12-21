@@ -43,8 +43,8 @@ import '../../../model/book_model.dart';
 import '../../../model/watch_history_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../model/channel_model.dart';
-import '../login/creta_account_manager.dart';
-import '../../model/app_enums.dart';
+//import '../login/creta_account_manager.dart';
+//import '../../model/app_enums.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../data_io/page_manager.dart';
@@ -491,10 +491,6 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   bool _mouseOver = false;
   bool _popmenuOpen = false;
 
-  late String _currentLoginedUserId;
-  late String _ownerString;
-  late String _writerString;
-
   late List<CretaMenuItem> _popupMenuList;
   late List<SNSShareItem> _shareItemList;
 
@@ -737,10 +733,6 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   void initState() {
     super.initState();
 
-    _currentLoginedUserId = CretaAccountManager.getUserProperty?.getMid ?? 'null@null.null';
-    _ownerString = '<${PermissionType.owner.name}>$_currentLoginedUserId';
-    _writerString = '<${PermissionType.writer.name}>$_currentLoginedUserId';
-
     _popupMenuList = [
       // CretaMenuItem(
       //   caption: '재생하기',
@@ -764,15 +756,16 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         caption: '다운로드',
         onPressed: _doPopupMenuDownload,
       ),
-      if (widget.bookModel.shares.contains(_ownerString))
+      if (widget.bookModel.isEditable)
         CretaMenuItem(
           caption: '삭제하기',
           onPressed: _doPopupMenuRemove,
         ),
-      CretaMenuItem(
-        caption: '사본만들기',
-        onPressed: _doPopupMenuCopy,
-      ),
+      if (widget.bookModel.isCopyable)
+        CretaMenuItem(
+          caption: '사본만들기',
+          onPressed: _doPopupMenuCopy,
+        ),
     ];
 
     bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
@@ -912,7 +905,7 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
         padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
         child: Row(
           children: [
-            if (widget.bookModel.shares.contains(_ownerString) || widget.bookModel.shares.contains(_writerString))
+            if (widget.bookModel.isEditable)
               BTN.opacity_gray_it_s(
                 width: 91,
                 icon: Icons.edit_outlined,
