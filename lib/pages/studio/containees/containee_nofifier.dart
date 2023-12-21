@@ -8,6 +8,7 @@ enum ContaineeEnum {
   Page,
   Frame,
   Contents,
+  Link,
   End;
 
   static int validCheck(int val) => (val > End.index || val < None.index) ? None.index : val;

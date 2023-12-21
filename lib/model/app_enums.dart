@@ -14,7 +14,7 @@
 
 // ignore_for_file: constant_identifier_names
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../lang/creta_studio_lang.dart';
 
@@ -715,4 +715,78 @@ enum CommunityChannelType {
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static CommunityChannelType fromInt(int? val) =>
       CommunityChannelType.values[validCheck(val ?? none.index)];
+}
+
+enum LinkIconType {
+  none,
+  circle2,
+  circle1,
+  star1,
+  star2,
+  rect1,
+  rect2,
+  triangle1,
+  heart1,
+  heart2,
+  desc,
+  language,
+  play1,
+  play2,
+  fix,
+  chart,
+  warn1,
+  warn2,
+  info1,
+  info2,
+  end;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static LinkIconType fromInt(int? val) => LinkIconType.values[validCheck(val ?? none.index)];
+
+  static IconData toIcon(LinkIconType iconType) {
+    switch (iconType) {
+      case none:
+        return Icons.radio_button_checked_outlined;
+      case circle2:
+        return Icons.radio_button_checked_outlined;
+      case circle1:
+        return Icons.radio_button_unchecked_outlined;
+      case star1:
+        return Icons.star_outlined;
+      case star2:
+        return Icons.grade_outlined;
+      case rect1:
+        return Icons.crop_square_outlined;
+      case rect2:
+        return Icons.stop_circle_outlined;
+      case triangle1:
+        return Icons.change_history_outlined;
+      case heart1:
+        return Icons.favorite_outlined;
+      case heart2:
+        return Icons.favorite_border_outlined;
+      case desc:
+        return Icons.description_outlined;
+      case language:
+        return Icons.language_outlined;
+      case play1:
+        return Icons.play_circle_outlined;
+      case play2:
+        return Icons.smart_display_outlined;
+      case fix:
+        return Icons.auto_fix_high_outlined;
+      case chart:
+        return Icons.bar_chart_outlined;
+      case warn1:
+        return Icons.error_outlined;
+      case warn2:
+        return Icons.warning_amber_outlined;
+      case info1:
+        return Icons.info_outlined;
+      case info2:
+        return Icons.help_outline_outlined;
+      default:
+        return Icons.radio_button_checked_outlined;
+    }
+  }
 }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../data_io/contents_manager.dart';
 import '../../../data_io/frame_manager.dart';
+import '../../../data_io/link_manager.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../design_system/buttons/creta_label_text_editor.dart';
 import '../../../design_system/creta_color.dart';
@@ -12,6 +14,7 @@ import '../../../lang/creta_studio_lang.dart';
 import '../../../model/book_model.dart';
 import '../../../model/contents_model.dart';
 import '../../../model/frame_model.dart';
+import '../../../model/link_model.dart';
 import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 
@@ -221,6 +224,8 @@ class _RightMenuState
       // }
       case ContaineeEnum.Contents:
         return RightMenuFrameAndContents(key: GlobalKey());
+      case ContaineeEnum.Link:
+        return RightMenuFrameAndContents(key: GlobalKey());
       // key: GlobalObjectKey(
       //     'RightMenuFrameAndContents${CretaStudioLang.frameTabBar.values.last}'));
       // return RightMenuFrameAndContents(
@@ -329,6 +334,32 @@ class _RightMenuState
           String title = contents.name;
           if (contents.isText()) {
             title = "TEXT";
+          }
+          return Text(
+            title,
+            textAlign: TextAlign.center,
+            style: CretaFont.titleLarge.copyWith(overflow: TextOverflow.ellipsis),
+          );
+        }
+      case ContaineeEnum.Link:
+        {
+          String title = 'Link';
+          FrameManager? frameManager = BookMainPage.pageManagerHolder?.getSelectedFrameManager();
+          FrameModel? frameModel = BookMainPage.pageManagerHolder?.getSelectedFrame();
+          if (frameModel != null && frameManager != null) {
+            ContentsManager? contentsManager = frameManager.getContentsManager(frameModel.mid);
+            if (contentsManager != null) {
+              ContentsModel? contentsModel = frameManager.getCurrentModel(frameModel.mid);
+              if (contentsModel != null) {
+                LinkManager? linkManager = contentsManager.findLinkManager(contentsModel.mid);
+                if (linkManager != null) {
+                  LinkModel? linkModel = linkManager.getSelected() as LinkModel?;
+                  if (linkModel != null) {
+                    title = '${linkModel.connectedClass} Link';
+                  }
+                }
+              }
+            }
           }
           return Text(
             title,

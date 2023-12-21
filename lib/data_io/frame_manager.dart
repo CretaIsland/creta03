@@ -567,7 +567,10 @@ class FrameManager extends CretaManager {
 
   Future<void> resizeFrame(
       FrameModel frameModel, double ratio, double contentsWidth, double contentsHeight,
-      {bool invalidate = true, bool initPosition = true, bool undo = false}) async {
+      {bool invalidate = true,
+      bool initPosition = true,
+      bool undo = false,
+      bool isFixedRatio = false}) async {
     // 원본에서 ratio = h / w 이다.
     //width 와 height 중 짧은 쪽을 기준으로 해서,
     // 반대편을 ratio 만큼 늘린다.
@@ -619,6 +622,10 @@ class FrameManager extends CretaManager {
         .set(contentsWidth.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
     frameModel.height
         .set(contentsHeight.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
+
+    if (isFixedRatio == true) {
+      frameModel.isFixedRatio.set(true, save: false, noUndo: !undo, dontRealTime: true);
+    }
 
     logger.fine(
         'resizeFrame($ratio, $invalidate) w=$contentsWidth, h=$contentsHeight, dx=$dx, dy=$dy --------------------');

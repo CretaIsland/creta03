@@ -4,6 +4,7 @@ class CretaLang {
   static const String billInfo = '요금제 정보';
   static const String searchBar = '검색어를 입력하세요';
   static const String all = '전체';
+  static const String properties = '속성';
   static const String mute = '소리없음/있음';
   static const String cantGoBack = '뒤로가기를 사용할 수 없습니다. 하단의 back 버튼을 누르세요.';
 

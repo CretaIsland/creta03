@@ -10,8 +10,12 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../../design_system/menu/creta_popup_menu.dart';
+import '../../../../lang/creta_lang.dart';
+import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
@@ -22,6 +26,7 @@ import '../../book_main_page.dart';
 import '../../book_preview_menu.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
+import '../containee_nofifier.dart';
 import '../frame/on_link_cursor.dart';
 import '../frame/sticker/draggable_stickers.dart';
 import 'play_buttons.dart';
@@ -333,8 +338,19 @@ class _LinkWidgetState extends State<LinkWidget> {
       top: _position.dy,
       child: StudioVariables.isPreview ||
               (LinkParams.isLinkNewMode == false && widget.contentsModel.isLinkEditMode == false)
-          ? _mainButton(model)
+          ? GestureDetector(
+              onSecondaryTapDown: (details) {
+                if (StudioVariables.isPreview == true) return;
+                _showRightMouseMenu(
+                    model, linkManager, details.globalPosition.dx, details.globalPosition.dy);
+              },
+              child: _mainButton(model))
           : GestureDetector(
+              onSecondaryTapDown: (details) {
+                if (StudioVariables.isPreview == true) return;
+                _showRightMouseMenu(
+                    model, linkManager, details.globalPosition.dx, details.globalPosition.dy);
+              },
               onScaleStart: (details) {
                 //print('linkWidget onScaleStart ----------------------------------------');
                 _prev = details.localFocalPoint;
@@ -514,6 +530,51 @@ class _LinkWidgetState extends State<LinkWidget> {
     //
     //   },
     // );
+  }
+
+  // 오른쪽 마우스 버튼 액션
+  void _showRightMouseMenu(LinkModel model, LinkManager linkManager, double dx, double dy) {
+    CretaRightMouseMenu.showMenu(
+      title: 'linkRightMouseMenu',
+      context: context,
+      popupMenu: [
+        CretaMenuItem(
+            caption: CretaStudioLang.deleteLink,
+            onPressed: () {
+              linkManager.delete(link: model);
+            }),
+        CretaMenuItem(
+            caption: widget.contentsModel.isLinkEditMode
+                ? CretaStudioLang.linkControlOff
+                : CretaStudioLang.linkControlOn,
+            onPressed: () {
+              widget.contentsModel.isLinkEditMode = !widget.contentsModel.isLinkEditMode;
+              if (widget.contentsModel.isLinkEditMode == true) {
+                StudioVariables.isAutoPlay = true;
+              }
+              _linkSendEvent!.sendEvent(const Offset(1, 1));
+              setState(() {});
+            }),
+        CretaMenuItem(
+            caption: CretaLang.properties,
+            onPressed: () {
+              //  링크 속성 메뉴를 누르면, 현재 Frame 이 seletct 된것으로 간주해야 한다.
+              widget.frameManager.setSelectedMid(widget.frameModel.mid);
+              widget.contentsManager.setSelectedMid(widget.contentsModel.mid);
+              linkManager.setSelectedMid(model.mid);
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.Link, doNoti: true);
+            }),
+      ],
+      itemHeight: 24,
+      x: dx,
+      y: dy,
+      width: 160,
+      //height: menuHeight,
+      //textStyle: CretaFont.bodySmall,
+      iconSize: 12,
+      alwaysShowBorder: true,
+      borderRadius: 8,
+    );
   }
 
   Widget _delButton(LinkModel model, LinkManager linkManager) {

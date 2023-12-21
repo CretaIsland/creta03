@@ -392,6 +392,7 @@ class ContentsManager extends CretaManager {
         size.width,
         size.height,
         invalidate: invalidate,
+        isFixedRatio: true,
       );
     }
     // onDropPage 에서 동영상을 넣었을때, 딱 한번만 resizeFrame 하게 하기 위해,
@@ -1034,6 +1035,7 @@ class ContentsManager extends CretaManager {
         contentsModel.width.value,
         contentsModel.height.value,
         invalidate: true,
+        isFixedRatio: true,
       );
     }
 
