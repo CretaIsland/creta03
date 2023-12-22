@@ -9,8 +9,8 @@ import 'app_enums.dart';
 // ignore: must_be_immutable
 class LinkModel extends CretaModel {
   late String name;
-  late double posX;
-  late double posY;
+  late UndoAble<double> posX;
+  late UndoAble<double> posY;
   late String connectedMid;
   late String connectedClass;
   late UndoAble<Color> bgColor;
@@ -37,21 +37,21 @@ class LinkModel extends CretaModel {
   LinkModel(String pmid, String bookMid)
       : super(pmid: pmid, type: ExModelType.link, parent: '', realTimeKey: bookMid) {
     name = '';
-    posX = 0;
-    posY = 0;
+    posX = UndoAble<double>(24, mid, 'posX');
+    posY = UndoAble<double>(24, mid, 'posY');
     connectedMid = '';
     connectedClass = '';
     bgColor = UndoAble<Color>(CretaColor.secondary, mid, 'bgColor');
-    iconSize = UndoAble<double>(12, mid, 'iconSize');
-    iconData = UndoAble<LinkIconType>(LinkIconType.circle1, mid, 'iconData');
+    iconSize = UndoAble<double>(24, mid, 'iconSize');
+    iconData = UndoAble<LinkIconType>(LinkIconType.circle2, mid, 'iconData');
   }
 
   @override
   void fromMap(Map<String, dynamic> map) {
     super.fromMap(map);
     name = map['name'] ?? '';
-    posX = map['posX'] ?? 0;
-    posY = map['posY'] ?? 0;
+    posX.setDD((map["posX"] ?? 0), save: false, noUndo: true);
+    posY.setDD((map["posY"] ?? 0), save: false, noUndo: true);
     connectedMid = map['connectedMid'] ?? '';
     connectedClass = map['connectedClass'] ?? '';
 
@@ -67,8 +67,8 @@ class LinkModel extends CretaModel {
         'name': name,
         'connectedMid': connectedMid,
         'connectedClass': connectedClass,
-        'posX': posX,
-        'posY': posY,
+        'posX': posX.value,
+        'posY': posY.value,
         "bgColor": bgColor.value.toString(),
         "iconSize": iconSize.value,
         "iconData": iconData.value.index,
@@ -82,8 +82,8 @@ class LinkModel extends CretaModel {
     LinkModel srcLink = src as LinkModel;
 
     name = srcLink.name; // aaa.jpg
-    posX = srcLink.posX;
-    posY = srcLink.posY;
+    posX = UndoAble<double>(srcLink.posX.value, mid, 'posX');
+    posY = UndoAble<double>(srcLink.posY.value, mid, 'posY');
     connectedMid = srcLink.connectedMid;
     connectedClass = srcLink.connectedClass;
     bgColor = UndoAble<Color>(srcLink.bgColor.value, mid, 'bgColor');
@@ -98,8 +98,8 @@ class LinkModel extends CretaModel {
     LinkModel srcLink = src as LinkModel;
 
     name = srcLink.name; // aaa.jpg
-    posX = srcLink.posX;
-    posY = srcLink.posY;
+    posX.init(srcLink.posX.value);
+    posY.init(srcLink.posY.value);
     connectedMid = srcLink.connectedMid;
     connectedClass = srcLink.connectedClass;
 

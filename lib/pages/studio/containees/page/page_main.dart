@@ -109,6 +109,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       // }
       if (LinkParams.connectedClass == 'page') {
         LinkParams.connectedMid = '';
+        LinkParams.connectedName = '';
       }
     });
   }
@@ -410,6 +411,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       LinkParams.isLinkNewMode = false;
       LinkParams.connectedClass = '';
       LinkParams.connectedMid = '';
+      LinkParams.connectedName = '';
       logger.fine('BookMainPage.bookManagerHolder!.notify()');
       BookMainPage.bookManagerHolder!.notify();
     } else {

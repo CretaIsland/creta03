@@ -355,7 +355,7 @@ class _RightMenuState
                 if (linkManager != null) {
                   LinkModel? linkModel = linkManager.getSelected() as LinkModel?;
                   if (linkModel != null) {
-                    title = '${linkModel.connectedClass} Link';
+                    title = '${linkModel.name} Link';
                   }
                 }
               }

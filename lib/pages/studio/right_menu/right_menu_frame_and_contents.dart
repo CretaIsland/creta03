@@ -287,6 +287,9 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
             linkModel.bgColor.set(linkModel.bgColor.value.withOpacity(opacity));
             linkManager.notify();
           },
+          onPosChanged: () {
+            linkManager.notify();
+          },
           onSizeChanged: (size) {
             linkModel.iconSize.set(size);
             linkManager.notify();

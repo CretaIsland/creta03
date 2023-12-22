@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:dotted_border/dotted_border.dart';
 import '../../../common/creta_utils.dart';
 import '../../../common/window_screenshot.dart';
+import '../../../data_io/link_manager.dart';
 import '../../../data_io/page_manager.dart';
 import '../../../design_system/buttons/creta_button.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
@@ -29,6 +30,7 @@ import '../../../model/book_model.dart';
 import '../../../model/contents_model.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/frame_model.dart';
+import '../../../model/link_model.dart';
 import '../../../model/page_model.dart';
 import '../containees/containee_nofifier.dart';
 import '../containees/page/page_thumbnail.dart';
@@ -48,7 +50,7 @@ class LeftMenuPage extends StatefulWidget {
 
   static Future<void> treeInvalidate() async {
     if (LeftMenuPage._flipToTree == false) {
-      //print('-------------treeInvalidate()------------------');
+      print('-------------treeInvalidate()------------------');
       LeftMenuPage.treeViewKey.currentState?.setSelectedNode();
     }
   }
@@ -336,6 +338,7 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
         removePage: _pageManager!.removePage,
         removeFrame: _removeFrame,
         removeContents: _removeContents,
+        removeLink: _removeLink,
         showUnshow: (model, index) {
           BookMainPage.containeeNotifier!.notify();
           if (model is PageModel || model is FrameModel) {
@@ -585,6 +588,33 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
       });
       return null;
     });
+  }
+
+  void _removeLink(LinkModel link) async {
+    String pageMid = _pageManager!.getSelectedMid();
+    FrameManager? frameManager = _pageManager!.findFrameManager(pageMid);
+    if (frameManager == null) {
+      logger.severe('Invalid pageMid $pageMid');
+      return;
+    }
+    String frameModelMid = frameManager.getSelectedMid();
+    ContentsManager? contentsManager = frameManager.findContentsManagerByMid(frameModelMid);
+    if (contentsManager == null) {
+      return;
+    }
+    LinkManager? linkManager = contentsManager.findLinkManager(
+      link.parentMid.value,
+      createIfNotExist: false,
+    );
+    if (linkManager == null) {
+      return;
+    }
+
+    BookMainPage.containeeNotifier!.setFrameClick(true);
+    await linkManager.delete(link: link);
+    linkManager.reOrdering();
+    LeftMenuPage.initTreeNodes();
+    LeftMenuPage.treeInvalidate();
   }
 
   Widget _body(int pageIndex, PageModel model) {

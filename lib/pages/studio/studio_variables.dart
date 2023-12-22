@@ -4,6 +4,8 @@ import 'package:hycop/common/util/logger.dart';
 import '../../common/creta_constant.dart';
 import '../../data_io/creta_manager.dart';
 import '../../model/creta_model.dart';
+import '../../model/frame_model.dart';
+import '../../model/page_model.dart';
 import '../login/creta_account_manager.dart';
 import 'book_main_page.dart';
 import 'containees/containee_nofifier.dart';
@@ -201,6 +203,7 @@ class LinkParams {
   static bool isLinkEditMode = false;
   static String connectedMid = '';
   static String connectedClass = '';
+  static String connectedName = '';
   static Offset? linkPostion;
   static Offset? orgPostion;
   static String? invokerMid;
@@ -215,6 +218,12 @@ class LinkParams {
       }
       LinkParams.connectedMid = model.mid;
       LinkParams.connectedClass = model.type.name;
+
+      if (model is FrameModel) {
+        LinkParams.connectedName = model.name.value;
+      } else if (model is PageModel) {
+        LinkParams.connectedName = model.name.value;
+      }
       // if (StudioVariables.isLinkEditMode == false) {
       //   StudioVariables.isLinkEditMode = true;
       // }
@@ -227,6 +236,7 @@ class LinkParams {
     if (LinkParams.isLinkNewMode == false) {
       LinkParams.connectedMid = '';
       LinkParams.connectedClass = '';
+      LinkParams.connectedName = '';
 
       // if (StudioVariables.isLinkEditMode == false) {
       //   StudioVariables.isLinkEditMode = true;

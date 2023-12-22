@@ -720,10 +720,10 @@ enum CommunityChannelType {
 enum LinkIconType {
   none,
   circle2,
-  circle1,
+  dots,
   star1,
   star2,
-  rect1,
+  //rect1,
   rect2,
   triangle1,
   heart1,
@@ -749,14 +749,14 @@ enum LinkIconType {
         return Icons.radio_button_checked_outlined;
       case circle2:
         return Icons.radio_button_checked_outlined;
-      case circle1:
-        return Icons.radio_button_unchecked_outlined;
+      case dots:
+        return Icons.apps;
       case star1:
         return Icons.star_outlined;
       case star2:
         return Icons.grade_outlined;
-      case rect1:
-        return Icons.crop_square_outlined;
+      // case rect1:
+      //   return Icons.crop_square_outlined;
       case rect2:
         return Icons.stop_circle_outlined;
       case triangle1:

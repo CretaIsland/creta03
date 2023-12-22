@@ -4,23 +4,32 @@ import 'package:hycop/hycop.dart';
 
 import 'package:creta03/data_io/creta_manager.dart';
 import 'package:creta03/model/creta_model.dart';
+import '../design_system/component/tree/flutter_treeview.dart' as tree;
 
 import '../model/book_model.dart';
 import '../model/contents_model.dart';
 import '../model/frame_model.dart';
 import '../model/link_model.dart';
+import '../model/page_model.dart';
+import '../pages/studio/book_main_page.dart';
+import '../pages/studio/containees/containee_nofifier.dart';
+import '../pages/studio/left_menu/left_menu_page.dart';
 import 'book_manager.dart';
 import 'frame_manager.dart';
 import 'page_manager.dart';
 
 class LinkManager extends CretaManager {
   final String bookMid;
+  final PageModel pageModel;
+  final FrameModel frameModel;
   final bool isPublishedMode;
   LinkManager(
     String contentsMid,
-    this.bookMid, {
-      String tableName = 'creta_link',
-      this.isPublishedMode = false,
+    this.bookMid,
+    this.pageModel,
+    this.frameModel, {
+    String tableName = 'creta_link',
+    this.isPublishedMode = false,
   }) : super(tableName, contentsMid) {
     saveManagerHolder?.registerManager('link', this, postfix: contentsMid);
   }
@@ -96,7 +105,7 @@ class LinkManager extends CretaManager {
     return modelList.length;
   }
 
-  Future<LinkModel> createNext({
+  Future<LinkModel> createNextLink({
     required ContentsModel contentsModel,
     required double posX,
     required double posY,
@@ -109,8 +118,8 @@ class LinkManager extends CretaManager {
     logger.fine('createNext()');
     LinkModel link = LinkModel('', contentsModel.realTimeKey);
     link.parentMid.set(contentsModel.mid, save: false, noUndo: true);
-    link.posX = posX;
-    link.posY = posY;
+    link.posX.set(posX, save: false, noUndo: true);
+    link.posY.set(posY, save: false, noUndo: true);
     link.name = name ?? '';
     link.connectedMid = connectedMid ?? '';
     link.connectedClass = connectedClass ?? '';
@@ -118,8 +127,15 @@ class LinkManager extends CretaManager {
 
     await createToDB(link);
     insert(link, postion: getLength(), doNotify: doNotify);
-    selectedMid = link.mid;
-    if (doNotify) notify();
+    //selectedMid = link.mid;
+    //if (doNotify) notify();
+    print('===========================================');
+    reOrdering();
+    setSelectedMid(link.mid, doNotify: doNotify);
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Link, doNoti: true);
+    LeftMenuPage.initTreeNodes();
+    LeftMenuPage.treeInvalidate();
+
     onComplete.call(false, contentsModel, Offset(posX, posY));
 
     MyChange<LinkModel> c = MyChange<LinkModel>(
@@ -218,17 +234,38 @@ class LinkManager extends CretaManager {
   }
 
   Future<bool> makeClone(
-      BookModel newBook, {
-        bool cloneToPublishedBook = false,
-      }) async {
+    BookModel newBook, {
+    bool cloneToPublishedBook = false,
+  }) async {
     for (var link in modelList) {
       String parentContentsMid = BookManager.cloneContentsIdMap[link.parentMid.value] ?? '';
       logger.severe('find: (${link.parentMid.value}) => ($parentContentsMid)');
       AbsExModel newModel = await makeCopy(newBook.mid, link, parentContentsMid);
-      logger
-          .severe('clone is created ($collectionId.${newModel.mid}) from (source:${link.mid})');
+      logger.severe('clone is created ($collectionId.${newModel.mid}) from (source:${link.mid})');
       BookManager.cloneLinkIdMap[link.mid] = newModel.mid;
     }
     return true;
+  }
+
+  List<tree.Node> toNodes() {
+    //print('invoke contentsManager.toNodes()');
+    List<tree.Node> conNodes = [];
+    for (var ele in orderValues()) {
+      LinkModel model = ele as LinkModel;
+      if (model.isRemoved.value == true) {
+        continue;
+      }
+      //print('model.name=${model.name}');
+
+      String name = model.name;
+      conNodes.add(tree.Node<CretaModel>(
+          key: '${pageModel.mid}/${frameModel.mid}/${model.parentMid.value}/${model.mid}',
+          keyType: ContaineeEnum.Link,
+          label: 'link To $name',
+          expanded: model.expanded || isSelected(model.mid),
+          data: model,
+          root: pageModel.mid));
+    }
+    return conNodes;
   }
 }

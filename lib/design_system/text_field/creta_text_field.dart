@@ -411,7 +411,7 @@ class CretaTextFieldState extends State<CretaTextField> {
           // 자기가 focus 가 없으면, 굳이 뭘 할 필요가 없기 때문에 이코드를 넣어준다.
           return KeyEventResult.ignored;
         }
-        logger.severe(
+        logger.info(
             '(${widget.isSpecialKeyHandle}):CretaTextField onKey : ${event.logicalKey.debugName}');
         // key 가 main 의 Raw RawKeyboardListener 에 도착하지 않도록 하기 위해 skipRemainingHandlers 를 쓴다.
         return KeyEventResult.skipRemainingHandlers;
@@ -438,7 +438,7 @@ class CretaTextFieldState extends State<CretaTextField> {
           // 자기가 focus 가 없으면, 굳이 뭘 할 필요가 없기 때문에 이코드를 넣어준다.
           return KeyEventResult.ignored;
         }
-        logger.severe(
+        logger.info(
             '(${widget.isSpecialKeyHandle}):CretaTextField onKeyEvent : ${event.logicalKey.debugName}');
 
         if (widget.isSpecialKeyHandle == false) {

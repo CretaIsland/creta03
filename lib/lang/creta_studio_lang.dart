@@ -487,6 +487,7 @@ class CretaStudioLang {
   static String linkControl = '링크 편집';
   static String linkControlOn = '링크 이동 모드';
   static String linkControlOff = '링크 이동 모드 해제';
+  static String linkClass = '링크 내용';
   static String musicMutedControl = '음소거';
   static String musicPlayerSize = '뮤직 사미즈 기능';
 

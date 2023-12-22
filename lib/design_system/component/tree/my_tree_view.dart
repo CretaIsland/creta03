@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 // ignore: depend_on_referenced_packages
 
 //import 'package:flutter_treeview/flutter_treeview.dart';
+import '../../../data_io/link_manager.dart';
 import '../../../lang/creta_studio_lang.dart';
+import '../../../model/link_model.dart';
 import '../../../pages/studio/book_main_page.dart';
 import '../../../pages/studio/containees/containee_nofifier.dart';
 import '../../../pages/studio/containees/frame/sticker/draggable_stickers.dart';
@@ -34,6 +36,7 @@ class MyTreeView extends StatefulWidget {
   final void Function(PageModel model) removePage;
   final void Function(FrameModel model) removeFrame;
   final void Function(ContentsModel model) removeContents;
+  final void Function(LinkModel model) removeLink;
   final void Function(CretaModel model, int index) showUnshow;
 
   MyTreeView({
@@ -43,6 +46,7 @@ class MyTreeView extends StatefulWidget {
     required this.removePage,
     required this.removeFrame,
     required this.removeContents,
+    required this.removeLink,
     required this.showUnshow,
   }) : super(key: key);
 
@@ -123,7 +127,20 @@ class MyTreeViewState extends State<MyTreeView> {
     if (contentsModel == null) {
       return frameKey;
     }
-    return '$frameKey/${contentsModel.mid}';
+
+    LinkManager? linkManager = contentsManager.findLinkManager(
+      contentsModel.mid,
+      createIfNotExist: false,
+    );
+    if (linkManager == null) {
+      return '$frameKey/${contentsModel.mid}';
+    }
+
+    String linkMid = linkManager.getSelectedMid();
+    if (linkMid.isEmpty) {
+      return '$frameKey/${contentsModel.mid}';
+    }
+    return '$frameKey/${contentsModel.mid}/$linkMid';
   }
 
   // void initNodes() {
@@ -320,13 +337,22 @@ class MyTreeViewState extends State<MyTreeView> {
       if (key.contains('frame=') == false) {
         return;
       }
-      frameMid = key.substring(5 + 36 + 1, 5 + 36 + 1 + 6 + 36);
+      int frameStartPos = 5 + 36 + 1;
+      int frameEndPos = frameStartPos + 6 + 36;
+
+      if (key.length < frameEndPos) {
+        return;
+      }
+
+      print('key.length=${key.length}, frameEndPos=$frameEndPos');
+
+      frameMid = key.substring(frameStartPos, frameEndPos);
       FrameManager? frameManager = widget.pageManager.findFrameManager(pageMid);
       if (frameManager == null) {
         logger.severe('Invalid key $key');
         return;
       }
-      //print('frameMid=$frameMid');
+      print('frameMid=$frameMid');
       FrameModel? frameModel = frameManager.getModel(frameMid) as FrameModel?;
       if (frameModel == null) {
         logger.severe('Invalid MID $frameMid');
@@ -341,18 +367,70 @@ class MyTreeViewState extends State<MyTreeView> {
         _selectFrame(frameModel, frameManager);
         return;
       }
-      String contentsMid = key.substring(5 + 36 + 1 + 6 + 36 + 1, 5 + 36 + 1 + 6 + 36 + 1 + 9 + 36);
+      int contentsStartPos = frameEndPos + 1;
+      int contentsEndPos = contentsStartPos + 9 + 36;
+
+      if (key.length < contentsEndPos) {
+        _selectFrame(frameModel, frameManager);
+        return;
+      }
+      String contentsMid = key.substring(contentsStartPos, contentsEndPos);
+      print('key.length=${key.length}, contentsEndPos=$contentsEndPos');
+
       ContentsModel? contentsModel = contentsManager.getModel(contentsMid) as ContentsModel?;
       if (contentsModel == null) {
         logger.severe('Invalid MID $contentsMid');
+        _selectFrame(frameModel, frameManager);
         return;
       }
-      //print('contentsMid=$contentsMid');
-      _selectContents(
+
+      int linkStartPos = contentsEndPos + 1;
+      int linkEndPos = linkStartPos + 5 + 36;
+      if (key.length < linkEndPos) {
+        _selectContents(
+          frameModel,
+          contentsModel,
+          frameManager,
+          contentsManager,
+          index,
+        );
+        return;
+      }
+
+      String linkMid = key.substring(linkStartPos, linkEndPos);
+      LinkManager? linkManager =
+          contentsManager.findLinkManager(contentsMid, createIfNotExist: false);
+      if (linkManager == null) {
+        _selectContents(
+          frameModel,
+          contentsModel,
+          frameManager,
+          contentsManager,
+          index,
+        );
+        return;
+      }
+
+      LinkModel? linkModel = linkManager.getModel(linkMid) as LinkModel?;
+      if (linkModel == null) {
+        _selectContents(
+          frameModel,
+          contentsModel,
+          frameManager,
+          contentsManager,
+          index,
+        );
+        return;
+      }
+      print('_selectLink !!!');
+
+      _selectLink(
         frameModel,
         contentsModel,
         frameManager,
         contentsManager,
+        linkManager,
+        linkModel,
         index,
       );
     });
@@ -401,6 +479,20 @@ class MyTreeViewState extends State<MyTreeView> {
         contentsManager.selectMusic(contentsModel, index);
       }
     }
+  }
+
+  Future<void> _selectLink(
+    FrameModel frameModel,
+    ContentsModel contentsModel,
+    FrameManager frameManager,
+    ContentsManager contentsManager,
+    LinkManager linkManager,
+    LinkModel linkModel,
+    int index,
+  ) async {
+    _selectContents(frameModel, contentsModel, frameManager, contentsManager, index);
+    linkManager.setSelectedMid(linkModel.mid);
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Link, doNoti: true);
   }
 
   bool _isSelected(tree.Node<dynamic> node) {
@@ -453,6 +545,9 @@ class MyTreeViewState extends State<MyTreeView> {
   // }
 
   Widget _button1(CretaModel model, int index) {
+    if (model is LinkModel) {
+      return SizedBox.shrink();
+    }
     return BTN.fill_blue_i_m(
       fgColor: CretaColor.text[700]!,
       buttonColor: CretaButtonColor.forTree,
@@ -493,6 +588,10 @@ class MyTreeViewState extends State<MyTreeView> {
             ContentsManager? contentsManager = _findContentsManager(model);
             contentsManager?.removeMusic(model);
           }
+          return;
+        }
+        if (model.type == ExModelType.link) {
+          widget.removeLink(model as LinkModel);
           return;
         }
       },

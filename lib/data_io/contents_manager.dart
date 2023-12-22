@@ -1150,6 +1150,8 @@ class ContentsManager extends CretaManager {
       retval = LinkManager(
         contentsId,
         frameModel.realTimeKey,
+        pageModel,
+        frameModel,
         tableName: isPublishedMode ? 'creta_link_published' : 'creta_link',
         isPublishedMode: isPublishedMode,
       );
@@ -1165,6 +1167,8 @@ class ContentsManager extends CretaManager {
       retval = LinkManager(
         contentsId,
         frameModel.realTimeKey,
+        pageModel,
+        frameModel,
         tableName: isPublishedMode ? 'creta_link_published' : 'creta_link',
         isPublishedMode: isPublishedMode,
       );
@@ -1215,11 +1219,17 @@ class ContentsManager extends CretaManager {
         }
       }
 
+      List<tree.Node> linkNodes = [];
+      LinkManager? linkManager = findLinkManager(model.mid, createIfNotExist: false);
+      if (linkManager != null) {
+        linkNodes = linkManager.toNodes();
+      }
       conNodes.add(tree.Node<CretaModel>(
           key: '${pageModel.mid}/${frame.mid}/${model.mid}',
           keyType: ContaineeEnum.Contents,
           label: name,
           expanded: model.expanded || isSelected(model.mid),
+          children: linkNodes,
           data: model,
           root: pageModel.mid));
     }
@@ -1471,8 +1481,8 @@ class ContentsManager extends CretaManager {
     }
     // make Link
     final LinkManager copyLinkManagerHolder = cloneToPublishedBook
-        ? LinkManager('', '', tableName: 'creta_link_published')
-        : LinkManager('', '');
+        ? LinkManager('', '', pageModel, frameModel, tableName: 'creta_link_published')
+        : LinkManager('', '', pageModel, frameModel);
     //contentsManagerMap.forEach((key, value) { }); ==> forEach는 await 처리가 불가능
     for (MapEntry entry in linkManagerMap.entries) {
       copyLinkManagerHolder.modelList = [...entry.value.modelList];
