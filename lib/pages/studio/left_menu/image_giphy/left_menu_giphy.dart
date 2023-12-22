@@ -88,6 +88,7 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
       onSearch: (value) async {
         setState(() {
           searchText = value;
+          _visibleGifCount = 14;
         });
         await _searchGifs(searchText);
       },

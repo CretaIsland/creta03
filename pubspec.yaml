@@ -147,7 +147,7 @@ dependencies:
   flutter_svg: ^2.0.8
   google_geocoding_api: ^1.4.1
   gap: ^3.0.1
-  enough_giphy_flutter: ^0.4.1
+  # enough_giphy_flutter: ^0.4.1
   animated_switcher_plus: ^1.1.0
   glowy_borders: ^1.0.2
   avatar_glow: ^3.0.1

@@ -100,6 +100,17 @@ class CretaStudioLang {
     '효과': 'effect',
     '카메라': 'camera',
     '구글맵': 'map',
+    '뉴스': 'news',
+  };
+
+  static Map<String, String> newsCategories = {
+    '일반': 'general',
+    '사업': 'business',
+    '연예': 'entertainment',
+    '헬스': 'health',
+    '과학': 'science',
+    '스포츠': 'sports',
+    '기술': 'technology',
   };
 
   static List<String> menuStick = [

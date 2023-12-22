@@ -15,6 +15,7 @@ import 'clock/left_menu_clock.dart';
 import 'google_map/left_menu_google_map.dart';
 import 'date_time/left_menu_date.dart';
 import 'left_template_mixin.dart';
+import 'news/left_menu_news.dart';
 import 'weather/left_menu_weather.dart';
 
 class LeftMenuWidget extends StatefulWidget {
@@ -262,6 +263,9 @@ class _LeftMenuWidgetState extends State<LeftMenuWidget> with LeftTemplateMixin 
         titleStyle: titleStyle,
         dataStyle: dataStyle,
       );
+    }
+    if (_selectedType == type[10]) {
+      return const LeftMenuNews();
     }
     return const SizedBox.shrink();
   }
