@@ -129,7 +129,6 @@ class LinkManager extends CretaManager {
     insert(link, postion: getLength(), doNotify: doNotify);
     //selectedMid = link.mid;
     //if (doNotify) notify();
-    print('===========================================');
     reOrdering();
     setSelectedMid(link.mid, doNotify: doNotify);
     BookMainPage.containeeNotifier!.set(ContaineeEnum.Link, doNoti: true);

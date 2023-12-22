@@ -344,15 +344,12 @@ class MyTreeViewState extends State<MyTreeView> {
         return;
       }
 
-      print('key.length=${key.length}, frameEndPos=$frameEndPos');
-
       frameMid = key.substring(frameStartPos, frameEndPos);
       FrameManager? frameManager = widget.pageManager.findFrameManager(pageMid);
       if (frameManager == null) {
         logger.severe('Invalid key $key');
         return;
       }
-      print('frameMid=$frameMid');
       FrameModel? frameModel = frameManager.getModel(frameMid) as FrameModel?;
       if (frameModel == null) {
         logger.severe('Invalid MID $frameMid');
@@ -375,7 +372,6 @@ class MyTreeViewState extends State<MyTreeView> {
         return;
       }
       String contentsMid = key.substring(contentsStartPos, contentsEndPos);
-      print('key.length=${key.length}, contentsEndPos=$contentsEndPos');
 
       ContentsModel? contentsModel = contentsManager.getModel(contentsMid) as ContentsModel?;
       if (contentsModel == null) {
@@ -422,7 +418,6 @@ class MyTreeViewState extends State<MyTreeView> {
         );
         return;
       }
-      print('_selectLink !!!');
 
       _selectLink(
         frameModel,

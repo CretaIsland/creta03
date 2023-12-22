@@ -50,7 +50,6 @@ class LeftMenuPage extends StatefulWidget {
 
   static Future<void> treeInvalidate() async {
     if (LeftMenuPage._flipToTree == false) {
-      print('-------------treeInvalidate()------------------');
       LeftMenuPage.treeViewKey.currentState?.setSelectedNode();
     }
   }
