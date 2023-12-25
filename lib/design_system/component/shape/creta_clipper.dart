@@ -41,6 +41,7 @@ extension ShapeWidget<T extends Widget> on T {
     return LayoutBuilder(builder: (context, constraints) {
       double width = constraints.maxWidth;
       double height = constraints.maxHeight;
+
       return OverflowBox(
         maxHeight: height + shadowSpread,
         maxWidth: width + shadowSpread,

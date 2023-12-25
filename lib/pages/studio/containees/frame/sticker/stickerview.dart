@@ -11,6 +11,7 @@ import '../../../studio_variables.dart';
 import '../frame_each.dart';
 import 'draggable_resizable.dart';
 import 'draggable_stickers.dart';
+import 'instant_editor.dart';
 
 enum ImageQuality { low, medium, high }
 
@@ -182,20 +183,22 @@ class Sticker extends StatefulWidget {
   // you can pass any widget to it as child
   Widget? child;
   // set isText to true if passed Text widget as child
-  bool? isText = false;
+  //bool? isText = false;
   // every sticker must be assigned with unique id
   //final String id;
   String get id => model.mid;
 
   late Offset position;
   late double angle;
-  late Size size;
+  late Size frameSize;
   late double borderWidth;
   late bool isMain;
   final FrameModel model;
   final String pageMid;
   final bool isOverlay;
   final GlobalKey<FrameEachState> frameKey;
+  GlobalKey<InstantEditorState>? instantEditorKey;
+  GlobalKey<DraggableResizableState>? dragableResiableKey;
 
   Sticker({
     Key? key,
@@ -203,13 +206,13 @@ class Sticker extends StatefulWidget {
     required this.frameKey,
     required this.position,
     required this.angle,
-    required this.size,
+    required this.frameSize,
     required this.borderWidth,
     required this.isMain,
     required this.model,
     required this.pageMid,
     required this.isOverlay,
-    this.isText,
+    //this.isText,
     this.child,
   }) : super(key: key);
   @override
@@ -217,10 +220,14 @@ class Sticker extends StatefulWidget {
 }
 
 class StickerState extends State<Sticker> with CretaMusicMixin {
-  void refresh() {
-    //print('sticker refresh !!!');
-    setState(() {});
-    widget.frameKey.currentState?.invalidate();
+  void refresh({bool deep = false}) {
+    setState(() {
+      widget.frameKey.currentState?.invalidate();
+      if (deep) {
+        widget.dragableResiableKey?.currentState?.invalidate();
+        widget.instantEditorKey?.currentState?.invalidate();
+      }
+    });
   }
 
   @override

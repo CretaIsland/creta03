@@ -457,7 +457,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     }
 
     String frameKeyStr =
-        'FrameEach${frameManager!.stickerKeyMangler(widget.pageModel.mid, model.mid)}';
+        'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(widget.pageModel.mid, model.mid)}';
     GlobalKey<FrameEachState> frameKey = GlobalObjectKey<FrameEachState>(frameKeyStr);
 
     Widget eachFrame = FrameEach(
@@ -482,7 +482,7 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       //id: model.mid,
       position: Offset(posX, posY),
       angle: model.angle.value * (pi / 180),
-      size: Size(frameWidth, frameHeight),
+      frameSize: Size(frameWidth, frameHeight),
       borderWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
       isMain: isMain,
       //child: Visibility(

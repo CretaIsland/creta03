@@ -67,6 +67,7 @@ class CretaStudioLang {
   static Map<String, String> frameTabBar = {
     '프레임 설정': 'frameTab',
     '콘텐츠 설정': 'contentsTab',
+    '링크 설정': 'linkTab',
   };
 
   static Map<String, String> textMenuTabBar = {
@@ -264,6 +265,7 @@ class CretaStudioLang {
   static const String infomation = "정보";
   static const String pageSize = "페이지 크기";
   static const String frameSize = "프레임 기본 속성";
+  static const String linkProp = "링크 기본 속성";
   static const String clickEvent = "클릭 이벤트";
   static const String bookBgColor = "전체 배경색";
   static const String pageBgColor = "페이지 배경색";
@@ -280,6 +282,8 @@ class CretaStudioLang {
   static const String width = "너비";
   static const String height = "높이";
   static const String color = "색";
+  static const String linkColor = "아이콘 색";
+  static const String linkIconSize = "아이콘 크기";
   static const String opacity = "투명도";
   static const String angle = "각도";
   static const String radius = "모서리";
@@ -492,6 +496,9 @@ class CretaStudioLang {
   static String imageFilter = '이미지 필터';
   static String imageControl = '이미지 조정';
   static String linkControl = '링크 편집';
+  static String linkControlOn = '링크 이동 모드';
+  static String linkControlOff = '링크 이동 모드 해제';
+  static String linkClass = '링크 내용';
   static String musicMutedControl = '음소거';
   static String musicPlayerSize = '뮤직 사미즈 기능';
 
@@ -655,4 +662,5 @@ class CretaStudioLang {
   static String isSendEmail = "아직 가입되지 않은 이메일입니다. 초대 이메일을 보내시겠습니까?";
   //static String carouselWarning = '캐러셀 디스플레이를 적용하려면 최소 3개의 이미지가 있어야 합니다.';
   static String mainFrameExTooltip = '메인 프레임 입니다. 이 프레임의 콘텐츠가 끝나면 자동으로 다음페이지로 넘어갑니다.';
+  static String deleteLink = '링크 삭제';
 }

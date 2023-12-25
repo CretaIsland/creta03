@@ -23,6 +23,7 @@ class TopMenuTracer extends StatefulWidget {
 class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
   bool _isHover = false;
   Offset? _hoverPos;
+  bool _isBusy = false;
 
   @override
   void initState() {
@@ -55,7 +56,9 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
             });
           }, // <-- 커서모양을 바꾸기 위해
           child: GestureDetector(
-            onLongPressDown: _pageClicked,
+            onLongPressDown: (detail) async {
+              await _pageClicked(detail);
+            },
             child: Container(
               color: Colors.amber.withOpacity(0.1),
               width: StudioVariables.virtualWidth,
@@ -114,6 +117,11 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
   Future<void> _pageClicked(LongPressDownDetails details) async {
     if (_isHover == false) return;
 
+    if (_isBusy == true) {
+      return;
+    }
+    _isBusy = true;
+
     if (BookMainPage.topMenuNotifier!.isTextCreate()) {
       // create text box here
       //print('createTextBox');
@@ -122,6 +130,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
       //await createTextByClick(context, _hoverPos!);
       BookMainPage.topMenuNotifier?.clear(); // 커서의 모양을 되돌린다.
       BookMainPage.containeeNotifier!.setFrameClick(true); //  바탕페이지가 눌리는 것을 막기위해
+      _isBusy = false;
       return;
     } else if (BookMainPage.topMenuNotifier!.isFrameCreate()) {
       // create frame box here
@@ -133,11 +142,15 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
       Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
       frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
         frameManager!.notify();
+        _isBusy = false;
         return null;
       });
 
       BookMainPage.topMenuNotifier?.clear();
+      _isBusy = false;
       return; // 커서의 모양을 되돌린다.
     }
+    _isBusy = false;
+    return;
   }
 }

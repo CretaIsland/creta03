@@ -167,11 +167,11 @@ class FrameManager extends CretaManager {
     return _stickerKeyMap[keyStr];
   }
 
-  bool refreshFrame(String mid) {
+  bool refreshFrame(String mid, {bool deep = false}) {
     String keyStr = stickerKeyMangler(pageModel.mid, mid);
     GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];
     if (stickerKey == null) return false;
-    stickerKey.currentState?.refresh();
+    stickerKey.currentState?.refresh(deep: deep);
 
     GlobalKey<FrameThumbnailState>? frameThumbnailKey = findFrameThumbnailKey(pageModel.mid, mid);
     if (frameThumbnailKey != null) {
@@ -567,7 +567,10 @@ class FrameManager extends CretaManager {
 
   Future<void> resizeFrame(
       FrameModel frameModel, double ratio, double contentsWidth, double contentsHeight,
-      {bool invalidate = true, bool initPosition = true, bool undo = false}) async {
+      {bool invalidate = true,
+      bool initPosition = true,
+      bool undo = false,
+      bool isFixedRatio = false}) async {
     // 원본에서 ratio = h / w 이다.
     //width 와 height 중 짧은 쪽을 기준으로 해서,
     // 반대편을 ratio 만큼 늘린다.
@@ -619,6 +622,10 @@ class FrameManager extends CretaManager {
         .set(contentsWidth.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
     frameModel.height
         .set(contentsHeight.roundToDouble(), save: false, noUndo: !undo, dontRealTime: true);
+
+    if (isFixedRatio == true) {
+      frameModel.isFixedRatio.set(true, save: false, noUndo: !undo, dontRealTime: true);
+    }
 
     logger.fine(
         'resizeFrame($ratio, $invalidate) w=$contentsWidth, h=$contentsHeight, dx=$dx, dy=$dy --------------------');
@@ -796,7 +803,12 @@ class FrameManager extends CretaManager {
   }
 
   void nextPageListener(FrameModel frameModel) {
-    if (!StudioVariables.isAutoPlay || !StudioVariables.isPreview) {
+    // isAutoPlay = false 이면 자동으로 넘어가지 않는다.
+    if (StudioVariables.isAutoPlay == false) {
+      return;
+    }
+    // 프리뷰 모드에서만 자동으로 넘어간다.
+    if (StudioVariables.isPreview == false) {
       return;
     }
     // ignore: unused_local_variable
@@ -1052,7 +1064,7 @@ class FrameManager extends CretaManager {
 
   Future<bool> makeClone(
     BookModel newBook, {
-      bool cloneToPublishedBook = false,
+    bool cloneToPublishedBook = false,
   }) async {
     for (var frame in modelList) {
       String parentPageMid = BookManager.clonePageIdMap[frame.parentMid.value] ?? '';
@@ -1076,7 +1088,8 @@ class FrameManager extends CretaManager {
     for (MapEntry entry in contentsManagerMap.entries) {
       copyContentsManagerHolder.modelList = [...entry.value.modelList];
       copyContentsManagerHolder.linkManagerMap = Map.from(entry.value.linkManagerMap);
-      await copyContentsManagerHolder.makeClone(newBook, cloneToPublishedBook: cloneToPublishedBook);
+      await copyContentsManagerHolder.makeClone(newBook,
+          cloneToPublishedBook: cloneToPublishedBook);
     }
     return true;
   }

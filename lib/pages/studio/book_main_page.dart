@@ -176,7 +176,7 @@ class _BookMainPageState extends State<BookMainPage> {
   late double screenHeightPrecentage;
   late double screenWidth;
 
-  List<LogicalKeyboardKey> keys = [];
+  //List<LogicalKeyboardKey> keys = [];
 
   bool _fromPriviewToMain = false; // 돌아가기 버튼을 누르면 True  가 됨.
 
@@ -319,12 +319,20 @@ class _BookMainPageState extends State<BookMainPage> {
 
     CretaTextField.mainFocusNode = FocusNode(
       onKeyEvent: (node, event) {
+        // TextField 의 focusNode 가 onKeyEvent 를 정의하고 있지 않은 경우에만 여기로 도착한다.
+        // 만약 정의하고 있으면 그 정의로 도착하고 여기로 도착하지 않게 된다.
+        logger.info('${node.hasFocus}:focusNodeEventHandler  ${event.logicalKey.debugName}');
         if (node.hasFocus) {
-          _focusNodeEventHandler(event);
+          _focusNodeEventHandler(node, event);
         }
         return KeyEventResult.ignored;
       },
     );
+
+    if (StudioVariables.isPreview == false) {
+      StudioVariables.stopNextContents = false;
+      StudioVariables.stopPaging = false;
+    }
 
     logger.info("end ---_BookMainPageState-----------------------------------------");
 // //for webRTC
@@ -586,95 +594,85 @@ class _BookMainPageState extends State<BookMainPage> {
         ),
         ChangeNotifierProvider<MouseTracer>.value(value: mouseTracerHolder!)
       ],
-      child: RawKeyboardListener(
-        //  키보드 이벤트 도착 순서 :   _keyEventHandler,  onKeyEvent,  and TextField
-        autofocus: true,
-        focusNode: CretaTextField.mainFocusNode!,
-        // FocusNode(
-        //   onKeyEvent: (node, event) {
-        //     print(',,,,,');
-        //     if (node.hasFocus) {
-        //       _focusNodeEventHandler(event);
-        //     }
-        //     return KeyEventResult.ignored;
-        //   },
-        // ),
-        onKey: _keyEventHandler,
-        child: StudioVariables.isPreview
-            ? Scaffold(
-                body: MouseRegion(
-                    cursor: StudioVariables.hideMouse
-                        ? SystemMouseCursors.none
-                        : SystemMouseCursors.click,
-                    onExit: (event) {
-                      //print('mouse exit');
-                      setState(() {
-                        StudioVariables.hideMouse = true;
-                      });
-                    },
-                    onEnter: (event) {
-                      // 처음 떳을 때이다.
-                      //print('mouse enter');
-                      setState(() {
-                        StudioVariables.hideMouse = true;
-                      });
-                      // // 마우스가 위젯에 진입할 때 커서를 숨김
-                      // StudioVariables.hideMouse = true;
-                      // SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
-                      // _mouseMoveCount = 0;
-                    },
-                    onHover: (pointerEvent) {
-                      _mouseMoveCount++;
-                      _lastMouseMoveTime = DateTime.now();
-                      if (_mouseMoveCount > 30) {
-                        //print('mouse hover');
-                        //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
-                        setState(() {
-                          StudioVariables.hideMouse = false;
-                        });
-                        _mouseMoveCount = 0;
-                      }
-                    },
-                    child: _waitBook()))
-            : Snippet.CretaScaffold(
-                title: Snippet.logo('studio', route: () {
-                  Routemaster.of(context).push(AppRoutes.studioBookGridPage);
-                }),
-                invalidate: () {
-                  setState(() {});
-                },
-                context: context,
-                child: Stack(
-                  children: [
-                    MouseRegion(
-                      onHover: (pointerEvent) {
-                        //if (StudioVariables.allowMutilUser == true) {
-                        if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
-                        if (lastEventTime
-                            .add(Duration(milliseconds: 100))
-                            .isBefore(DateTime.now())) {
-                          client.changeCursorPosition(
-                              pointerEvent.position.dx / screenWidthPercentage,
-                              (pointerEvent.position.dy - 50) / screenHeightPrecentage);
-                          lastEventTime = DateTime.now();
-                        }
-                        //}
-                      },
-                      child: _waitBook(),
-                    ),
-                    //if (StudioVariables.allowMutilUser == true) mouseArea(),
-                    mouseArea(),
-                  ],
-                ),
-              ),
-      ),
+      child: //RawKeyboardListener(
+          //  키보드 이벤트 도착 순서 :   _keyEventHandler,  onKeyEvent,and onKey
+          //autofocus: true,
+          //focusNode: CretaTextField.mainFocusNode!, // _focusNodeEventHandler 가 호출됨.
+          //onKey: _keyEventHandler,
+          //child:
+          _bookMain(lastEventTime),
+      //),
     );
   }
 
-  // ignore: unused_element
-  void _focusNodeEventHandler(KeyEvent event) {
+  Widget _bookMain(DateTime lastEventTime) {
+    return StudioVariables.isPreview
+        ? Scaffold(
+            body: MouseRegion(
+                cursor:
+                    StudioVariables.hideMouse ? SystemMouseCursors.none : SystemMouseCursors.click,
+                onExit: (event) {
+                  //print('mouse exit');
+                  setState(() {
+                    StudioVariables.hideMouse = true;
+                  });
+                },
+                onEnter: (event) {
+                  // 처음 떳을 때이다.
+                  //print('mouse enter');
+                  setState(() {
+                    StudioVariables.hideMouse = true;
+                  });
+                  // // 마우스가 위젯에 진입할 때 커서를 숨김
+                  // StudioVariables.hideMouse = true;
+                  // SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
+                  // _mouseMoveCount = 0;
+                },
+                onHover: (pointerEvent) {
+                  _mouseMoveCount++;
+                  _lastMouseMoveTime = DateTime.now();
+                  if (_mouseMoveCount > 30) {
+                    //print('mouse hover');
+                    //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
+                    setState(() {
+                      StudioVariables.hideMouse = false;
+                    });
+                    _mouseMoveCount = 0;
+                  }
+                },
+                child: _waitBook()))
+        : Snippet.CretaScaffold(
+            title: Snippet.logo('studio', route: () {
+              Routemaster.of(context).push(AppRoutes.studioBookGridPage);
+            }),
+            invalidate: () {
+              setState(() {});
+            },
+            context: context,
+            child: Stack(
+              children: [
+                MouseRegion(
+                  onHover: (pointerEvent) {
+                    //if (StudioVariables.allowMutilUser == true) {
+                    if (mouseTracerHolder!.mouseCursorList.isEmpty) return;
+                    if (lastEventTime.add(Duration(milliseconds: 100)).isBefore(DateTime.now())) {
+                      client.changeCursorPosition(pointerEvent.position.dx / screenWidthPercentage,
+                          (pointerEvent.position.dy - 50) / screenHeightPrecentage);
+                      lastEventTime = DateTime.now();
+                    }
+                    //}
+                  },
+                  child: _waitBook(),
+                ),
+                //if (StudioVariables.allowMutilUser == true) mouseArea(),
+                mouseArea(),
+              ],
+            ),
+          );
+  }
+
+  void _focusNodeEventHandler(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent) {
-      logger.info('main focusNode ${event.logicalKey.debugName} pressed');
       switch (event.logicalKey) {
         case LogicalKeyboardKey.delete:
           _deleteSelectedModel();
@@ -694,58 +692,75 @@ class _BookMainPageState extends State<BookMainPage> {
           BookMainPage.pageManagerHolder?.gotoPrev();
           return;
         case LogicalKeyboardKey.insert:
-          StudioVariables.globalToggleAutoPlay(save: true);
-          BookTopMenu.invalidate();
+          if (StudioVariables.isPreview == false) {
+            StudioVariables.globalToggleAutoPlay(save: true);
+            BookTopMenu.invalidate();
+          } else {
+            StudioVariables.stopNextContents = !StudioVariables.stopNextContents;
+            BookTopMenu.invalidate();
+          }
           return;
         default:
+          return;
+      }
+    }
+
+    if (StudioVariables.isCtrlPressed) {
+      switch (event.logicalKey) {
+        case LogicalKeyboardKey.keyM:
+          //print("ctrl+M pressed = mute"); // muteButton
+          StudioVariables.globalToggleMute(save: true);
+          BookTopMenu.invalidate();
+          return;
+        case LogicalKeyboardKey.keyZ:
+          // undo
+          setState(() {
+            mychangeStack.undo();
+          });
+          return;
+        case LogicalKeyboardKey.keyY:
+          // redo
+          setState(() {
+            mychangeStack.redo();
+          });
+          return;
+        case LogicalKeyboardKey.keyC:
+          // copy
+          logger.info('Ctrl+C pressed');
+          _copy();
+          return;
+        case LogicalKeyboardKey.keyX:
+          logger.info('Ctrl+X pressed');
+          // Crop
+          _crop();
+          return;
+        case LogicalKeyboardKey.keyV:
+          logger.info('Ctrl+V pressed');
+          _paste();
           return;
       }
     }
   }
 
   void _keyEventHandler(RawKeyEvent event) {
+    // 그리고 포커스 이벤트는 기본적으로  여기에 가장 먼저 도착한다.
+    // 이후 focusNode 의 onKeyEvent, onKey 순서로 도착한다.
+    // 이 말인 즉슨, 포커스를 가지고 있던, 없던, 모든 키보드 이벤트가 다 도착한다는 뜻이다.
+    // 그래서 Text Box 에서 먹고 끝나야 하는 Key 까지도 도착하는 것을 막을 수 없다.
+    // 여기에 먼저 도착하기 때문이다.
+    // 그런데 focus 정보가 넘어오지 않기 때문에, 따라서, 여기서는 mainFocusNode.hasFocus 를 사용한다.
+    if (CretaTextField.mainFocusNode == null || CretaTextField.mainFocusNode!.hasFocus == false) {
+      return;
+    }
+
     // if (event is RawKeyUpEvent) {
     //   if (_singleButtonEvent(event.logicalKey) == true) {
     //     return;
     //   }
     // }
+
+    //logger.severe('RawKeyboardListener  ${event.logicalKey.debugName}');
     _combiButtonEvent(event);
-  }
-
-  // ignore: unused_element
-  bool _singleButtonEvent(LogicalKeyboardKey logicalKey) {
-    bool retval = __singleButtonEvent(logicalKey);
-    if (retval == true) {
-      logger.info('main _singleButtonEvent ${logicalKey.debugName} pressed');
-    }
-    return retval;
-  }
-
-  // unused
-  bool __singleButtonEvent(LogicalKeyboardKey logicalKey) {
-    switch (logicalKey) {
-      case LogicalKeyboardKey.delete:
-        _deleteSelectedModel();
-        return true;
-      case LogicalKeyboardKey.arrowRight:
-        return true;
-      case LogicalKeyboardKey.arrowLeft:
-        return true;
-      case LogicalKeyboardKey.pageDown:
-        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
-        BookMainPage.pageManagerHolder?.gotoNext();
-        return true;
-      case LogicalKeyboardKey.pageUp:
-        BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
-        BookMainPage.pageManagerHolder?.gotoPrev();
-        return true;
-      case LogicalKeyboardKey.insert:
-        StudioVariables.globalToggleAutoPlay(save: true);
-        BookTopMenu.invalidate();
-        return true;
-      default:
-        return false;
-    }
   }
 
   void _combiButtonEvent(RawKeyEvent event) {
@@ -771,42 +786,77 @@ class _BookMainPageState extends State<BookMainPage> {
       }
     }
 
-    if (event is RawKeyDownEvent) {
-      if (keys.contains(key)) return;
-      keys.add(key);
-      // Ctrl Key Area
-      if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
-          keys.contains(LogicalKeyboardKey.controlRight))) {
-        if (keys.contains(LogicalKeyboardKey.keyM)) {
-          //print("ctrl+M pressed = mute"); // muteButton
-          StudioVariables.globalToggleMute(save: true);
-          BookTopMenu.invalidate();
-        } else if (keys.contains(LogicalKeyboardKey.keyZ)) {
-          setState(() {
-            mychangeStack.undo();
-          });
-          // undo
-        } else if (keys.contains(LogicalKeyboardKey.keyY)) {
-          setState(() {
-            mychangeStack.redo();
-          });
-        } else if (keys.contains(LogicalKeyboardKey.keyC)) {
-          // copy
-          logger.info('Ctrl+C pressed');
-          _copy();
-        } else if (keys.contains(LogicalKeyboardKey.keyX)) {
-          logger.info('Ctrl+X pressed');
-          // Crop
-          _crop();
-        } else if (keys.contains(LogicalKeyboardKey.keyV)) {
-          logger.info('Ctrl+V pressed');
-          _paste();
-        }
-      }
-    } else {
-      keys.remove(key);
-    }
+    // if (event is RawKeyDownEvent) {
+    //   if (keys.contains(key)) return;
+    //   keys.add(key);
+    //   // Ctrl Key Area
+    //   if ((keys.contains(LogicalKeyboardKey.controlLeft) ||
+    //       keys.contains(LogicalKeyboardKey.controlRight))) {
+    //     if (keys.contains(LogicalKeyboardKey.keyM)) {
+    //       //print("ctrl+M pressed = mute"); // muteButton
+    //       StudioVariables.globalToggleMute(save: true);
+    //       BookTopMenu.invalidate();
+    //     } else if (keys.contains(LogicalKeyboardKey.keyZ)) {
+    //       setState(() {
+    //         mychangeStack.undo();
+    //       });
+    //       // undo
+    //     } else if (keys.contains(LogicalKeyboardKey.keyY)) {
+    //       setState(() {
+    //         mychangeStack.redo();
+    //       });
+    //     } else if (keys.contains(LogicalKeyboardKey.keyC)) {
+    //       // copy
+    //       logger.info('Ctrl+C pressed');
+    //       _copy();
+    //     } else if (keys.contains(LogicalKeyboardKey.keyX)) {
+    //       logger.info('Ctrl+X pressed');
+    //       // Crop
+    //       _crop();
+    //     } else if (keys.contains(LogicalKeyboardKey.keyV)) {
+    //       logger.info('Ctrl+V pressed');
+    //       _paste();
+    //     }
+    //   }
+    // } else {
+    //   keys.remove(key);
+    // }
   }
+  // // ignore: unused_element
+  // bool _singleButtonEvent(LogicalKeyboardKey logicalKey) {
+  //   bool retval = __singleButtonEvent(logicalKey);
+  //   if (retval == true) {
+  //     logger.info('main _singleButtonEvent ${logicalKey.debugName} pressed');
+  //   }
+  //   return retval;
+  // }
+
+  // // unused
+  // bool __singleButtonEvent(LogicalKeyboardKey logicalKey) {
+  //   switch (logicalKey) {
+  //     case LogicalKeyboardKey.delete:
+  //       _deleteSelectedModel();
+  //       return true;
+  //     case LogicalKeyboardKey.arrowRight:
+  //       return true;
+  //     case LogicalKeyboardKey.arrowLeft:
+  //       return true;
+  //     case LogicalKeyboardKey.pageDown:
+  //       BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+  //       BookMainPage.pageManagerHolder?.gotoNext();
+  //       return true;
+  //     case LogicalKeyboardKey.pageUp:
+  //       BookPreviewMenu.previewMenuPressed = StudioVariables.isPreview;
+  //       BookMainPage.pageManagerHolder?.gotoPrev();
+  //       return true;
+  //     case LogicalKeyboardKey.insert:
+  //       StudioVariables.globalToggleAutoPlay(save: true);
+  //       BookTopMenu.invalidate();
+  //       return true;
+  //     default:
+  //       return false;
+  //   }
+  // }
 
   Widget mouseArea() {
     return IgnorePointer(
@@ -1445,10 +1495,15 @@ class _BookMainPageState extends State<BookMainPage> {
     //   );
     // }
 
-    return Center(
-        child: StudioVariables.isPreview
-            ? noneScrollBox(isPageExist)
-            : scrollBox(totalWidth, scrollWidth, marginX, marginY));
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: CretaTextField.mainFocusNode!, // _focusNodeEventHandler 가 호출됨.
+      onKey: _keyEventHandler,
+      child: Center(
+          child: StudioVariables.isPreview
+              ? noneScrollBox(isPageExist)
+              : scrollBox(totalWidth, scrollWidth, marginX, marginY)),
+    );
     //});
   }
 
@@ -1534,6 +1589,9 @@ class _BookMainPageState extends State<BookMainPage> {
                   //});
                   // 돌아기기
                   _fromPriviewToMain = true;
+                  StudioVariables.stopPaging = false;
+                  StudioVariables.stopNextContents = false;
+
                   if (kReleaseMode) {
                     // String url = '${AppRoutes.studioBookPreviewPage}?${StudioVariables.selectedBookMid}';
                     // AppRoutes.launchTab(url);
@@ -1549,17 +1607,24 @@ class _BookMainPageState extends State<BookMainPage> {
                 },
                 playFunction: () {
                   //StudioVariables.globalToggleAutoPlay(_linkSendEvent, _autoPlaySendEvent,
-                  StudioVariables.globalToggleAutoPlay(save: false);
+                  setState(() {
+                    StudioVariables.stopPaging = !StudioVariables.stopPaging;
+                  });
+                  //StudioVariables.globalToggleAutoPlay(save: false);
                   // if (StudioVariables.isAutoPlay && StudioVariables.isPreview) {
                   //   _startConnectedUserTimer();
                   // }
                 },
                 gotoNext: () {
                   BookPreviewMenu.previewMenuPressed = true;
+                  StudioVariables.stopPaging = false;
+                  StudioVariables.stopNextContents = false;
                   pageManager.gotoNext();
                 },
                 gotoPrev: () {
                   BookPreviewMenu.previewMenuPressed = true;
+                  StudioVariables.stopPaging = false;
+                  StudioVariables.stopNextContents = false;
                   pageManager.gotoPrev();
                 },
                 pageNo: pageNo,

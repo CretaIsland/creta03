@@ -43,8 +43,8 @@ import '../../../model/book_model.dart';
 import '../../../model/watch_history_model.dart';
 import '../../../model/user_property_model.dart';
 import '../../../model/channel_model.dart';
-import '../login/creta_account_manager.dart';
-import '../../model/app_enums.dart';
+//import '../login/creta_account_manager.dart';
+//import '../../model/app_enums.dart';
 import '../../../design_system/dialog/creta_dialog.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../data_io/page_manager.dart';
@@ -383,10 +383,10 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 275),
       vsync: this,
     );
-    _animation = Tween(begin: 1.0, end: 1.2).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
-    padding = Tween(begin: 0.0, end: -25.0).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    _animation = Tween(begin: 1.0, end: 1.2)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
+    padding = Tween(begin: 0.0, end: -25.0)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.ease, reverseCurve: Curves.easeIn));
     _controller.addListener(() {
       setState(() {});
     });
@@ -430,8 +430,8 @@ class _HoverImageState extends State<HoverImage> with SingleTickerProviderStateM
             borderRadius: BorderRadius.circular(20.0),
           ),
           clipBehavior: Clip.hardEdge,
-          transform: Matrix4(_animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0,
-              padding.value, padding.value, 0, 1),
+          transform: Matrix4(
+              _animation.value, 0, 0, 0, 0, _animation.value, 0, 0, 0, 0, 1, 0, padding.value, padding.value, 0, 1),
           child: Image.network(
             widget.image,
             fit: BoxFit.cover,
@@ -478,7 +478,7 @@ class CretaBookUIItem extends StatefulWidget {
   final double width;
   final double height;
   final Function(String, bool)? addToFavorites;
-  final Function(String)? addToPlaylist;
+  final Function(BookModel)? addToPlaylist;
   final bool isFavorites;
   final WatchHistoryModel? watchHistoryModel;
   final Function(String)? onRemoveBook;
@@ -502,11 +502,11 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _openPopupMenu() {
     CretaPopupMenu.showMenu(
-            context: context,
-            globalKey: widget.key as GlobalKey,
-            popupMenu: _popupMenuList,
-            initFunc: setPopmenuOpen)
-        .then((value) {
+      context: context,
+      globalKey: widget.key as GlobalKey,
+      popupMenu: _popupMenuList,
+      initFunc: setPopmenuOpen,
+    ).then((value) {
       logger.finest('팝업메뉴 닫기');
       setState(() {
         _popmenuOpen = false;
@@ -530,7 +530,7 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
 
   void _doPopupMenuAddToPlayList() {
     logger.finest('재생목록에 추가(${widget.bookModel.name})');
-    widget.addToPlaylist?.call(widget.bookModel.mid);
+    widget.addToPlaylist?.call(widget.bookModel);
   }
 
   void _doPopupMenuShare() {
@@ -712,15 +712,16 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
   void _doPopupMenuCopy() async {
     logger.finest('복사하기(${widget.bookModel.name})');
     final BookManager copyBookManagerHolder = BookManager();
-    copyBookManagerHolder.makeClone(
+    copyBookManagerHolder
+        .makeClone(
       widget.bookModel,
       srcIsPublishedBook: true,
-      cloneToPublishedBook : false,
-    ).then((newBook) {
+      cloneToPublishedBook: false,
+    )
+        .then((newBook) {
       if (newBook == null) {
         showSnackBar(context, '사본 생성에 실패하였습니다.');
-      }
-      else {
+      } else {
         showSnackBar(context, '${newBook.name.value}이 생성되었습니다.');
       }
     }).catchError((error, stackTrace) {
@@ -755,14 +756,16 @@ class _CretaBookUIItemState extends State<CretaBookUIItem> {
         caption: '다운로드',
         onPressed: _doPopupMenuDownload,
       ),
-      CretaMenuItem(
-        caption: '삭제하기',
-        onPressed: _doPopupMenuRemove,
-      ),
-      CretaMenuItem(
-        caption: '사본만들기',
-        onPressed: _doPopupMenuCopy,
-      ),
+      if (widget.bookModel.isEditable)
+        CretaMenuItem(
+          caption: '삭제하기',
+          onPressed: _doPopupMenuRemove,
+        ),
+      if (widget.bookModel.isCopyable)
+        CretaMenuItem(
+          caption: '사본만들기',
+          onPressed: _doPopupMenuCopy,
+        ),
     ];
 
     bookLinkUrl = '${Uri.base.origin}${AppRoutes.communityBook}?${widget.bookModel.mid}';
@@ -895,10 +898,6 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
       return [];
     }
 
-    String currentLoginedUserId = CretaAccountManager.getUserProperty?.getMid ?? 'null@null.null';
-    String owner = '<${PermissionType.owner.name}>$currentLoginedUserId';
-    String writer = '<${PermissionType.writer.name}>$currentLoginedUserId';
-
     return [
       Container(
         width: widget.width,
@@ -906,7 +905,7 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
         padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
         child: Row(
           children: [
-            if (widget.bookModel.shares.contains(owner) || widget.bookModel.shares.contains(writer))
+            if (widget.bookModel.isEditable)
               BTN.opacity_gray_it_s(
                 width: 91,
                 icon: Icons.edit_outlined,
@@ -956,8 +955,7 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime),
-              style: CretaFont.buttonSmall),
+          Text(CretaUtils.getDateTimeString(widget.bookModel.updateTime), style: CretaFont.buttonSmall),
           Text('likeCount=${widget.bookModel.likeCount}', style: CretaFont.buttonSmall),
           Text('viewCount=${widget.bookModel.viewCount}', style: CretaFont.buttonSmall),
         ],
@@ -968,8 +966,7 @@ https://sharer.kakao.com/talk/friends/picker/easylink?app_key=437a6516bd110eb436
   @override
   Widget build(BuildContext context) {
     String bookLinkUrl = '${AppRoutes.communityBook}?${widget.bookModel.mid}';
-    String channelLinkUrl =
-        (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
+    String channelLinkUrl = (widget.channelModel == null) ? '' : '${AppRoutes.channel}?${widget.channelModel!.mid}';
     return MouseRegion(
       onEnter: (value) {
         setState(() {

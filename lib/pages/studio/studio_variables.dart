@@ -4,6 +4,8 @@ import 'package:hycop/common/util/logger.dart';
 import '../../common/creta_constant.dart';
 import '../../data_io/creta_manager.dart';
 import '../../model/creta_model.dart';
+import '../../model/frame_model.dart';
+import '../../model/page_model.dart';
 import '../login/creta_account_manager.dart';
 import 'book_main_page.dart';
 import 'containees/containee_nofifier.dart';
@@ -51,6 +53,8 @@ class StudioVariables {
   static bool isMute = false;
   static bool isReadOnly = false;
   static bool isAutoPlay = true;
+  static bool stopPaging = false;
+  static bool stopNextContents = false;
   static bool useMagnet = true;
   static double magnetMargin = 3;
 
@@ -158,6 +162,11 @@ class StudioVariables {
     //linkSendEvent?.sendEvent(const Offset(1, 1));
     //autoPlaySendEvent?.sendEvent(StudioVariables.isAutoPlay);
 
+    if (StudioVariables.isPreview && StudioVariables.stopPaging == true) {
+      //프리뷰모드에서는 동영상 플레이가 정지하는 것이 아니고, 다음페이지로 넘어가지 않는 것이다.
+      return;
+    }
+
     if (BookMainPage.pageManagerHolder == null) {
       return;
     }
@@ -194,6 +203,7 @@ class LinkParams {
   static bool isLinkEditMode = false;
   static String connectedMid = '';
   static String connectedClass = '';
+  static String connectedName = '';
   static Offset? linkPostion;
   static Offset? orgPostion;
   static String? invokerMid;
@@ -208,6 +218,12 @@ class LinkParams {
       }
       LinkParams.connectedMid = model.mid;
       LinkParams.connectedClass = model.type.name;
+
+      if (model is FrameModel) {
+        LinkParams.connectedName = model.name.value;
+      } else if (model is PageModel) {
+        LinkParams.connectedName = model.name.value;
+      }
       // if (StudioVariables.isLinkEditMode == false) {
       //   StudioVariables.isLinkEditMode = true;
       // }
@@ -220,6 +236,7 @@ class LinkParams {
     if (LinkParams.isLinkNewMode == false) {
       LinkParams.connectedMid = '';
       LinkParams.connectedClass = '';
+      LinkParams.connectedName = '';
 
       // if (StudioVariables.isLinkEditMode == false) {
       //   StudioVariables.isLinkEditMode = true;

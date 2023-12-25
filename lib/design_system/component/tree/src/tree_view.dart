@@ -110,12 +110,14 @@ class TreeView extends InheritedWidget {
   })  : theme = theme ?? const TreeViewTheme(),
         super(
           key: key,
-          child: _TreeViewData(controller,
-              shrinkWrap: shrinkWrap,
-              primary: primary,
-              physics: physics,
-              button1: button1,
-              button2: button2),
+          child: _TreeViewData(
+            controller,
+            shrinkWrap: shrinkWrap,
+            primary: primary,
+            physics: physics,
+            button1: button1,
+            button2: button2,
+          ),
         );
 
   static TreeView? of(BuildContext context) =>
@@ -123,7 +125,6 @@ class TreeView extends InheritedWidget {
 
   static Set<String> shiftNodeSet = {};
   static Set<String> ctrlNodeSet = {};
-  //final ContaineeEnum _keyType = ContaineeEnum.None;
   bool isMultiSelected(String key) {
     return TreeView.shiftNodeSet.lookup(key) != null || TreeView.ctrlNodeSet.lookup(key) != null;
   }

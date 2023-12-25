@@ -11,8 +11,10 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../../data_io/contents_manager.dart';
 import '../../../data_io/frame_manager.dart';
+import '../../../data_io/link_manager.dart';
 import '../../../model/contents_model.dart';
 import '../../../model/frame_model.dart';
+import '../../../model/link_model.dart';
 import '../../../model/page_model.dart';
 import '../book_main_page.dart';
 import '../containees/containee_nofifier.dart';
@@ -23,6 +25,7 @@ import 'contents/contents_ordered_list.dart';
 import 'contents/contents_property.dart';
 import 'frame/frame_property.dart';
 import 'frame/weather_property.dart';
+import 'link/link_property.dart';
 
 class RightMenuFrameAndContents extends StatefulWidget {
   //final String selectedTap;
@@ -63,6 +66,10 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
       //print('frame=======================================================');
       _selectedTab = CretaStudioLang.frameTabBar.values.first;
     } else if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Contents) {
+      var valuesList = CretaStudioLang.frameTabBar.values.toList();
+      _selectedTab = valuesList[1];
+      //print('contents=======================================================');
+    } else if (BookMainPage.containeeNotifier!.selectedClass == ContaineeEnum.Link) {
       _selectedTab = CretaStudioLang.frameTabBar.values.last;
       //print('contents=======================================================');
     } else {
@@ -86,7 +93,7 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
       color: CretaColor.text[100]!,
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.only(right: 150),
+        padding: const EdgeInsets.only(right: 50),
         child: CustomRadioButton(
           radioButtonValue: (value) {
             List<String> menu = CretaStudioLang.frameTabBar.values.toList();
@@ -96,6 +103,9 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
             } else if (value == menu[1]) {
               MiniMenu.setShowFrame(false);
               BookMainPage.containeeNotifier!.set(ContaineeEnum.Contents);
+            } else if (value == menu[2]) {
+              MiniMenu.setShowFrame(false);
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.Link);
             }
             setState(() {
               _selectedTab = value;
@@ -143,7 +153,14 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
         child: _contentsProperty(),
       );
     }
-
+    if (_selectedTab == menu[2]) {
+      // ignore: sized_box_for_whitespace
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: horizontalPadding),
+        width: LayoutConst.rightMenuWidth,
+        child: _linkProperty(),
+      );
+    }
     return SizedBox.shrink();
   }
 
@@ -208,6 +225,80 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
             book: model, frameManager: frameManager, contentsManager: contentsManager),
         ContentsProperty(
             key: ValueKey(contents.mid), model: contents, frameManager: frameManager, book: model),
+      ],
+    );
+  }
+
+  Widget _linkProperty() {
+    //print('1111111111111111111111111111111111');
+    BookModel? model = BookMainPage.bookManagerHolder?.onlyOne() as BookModel?;
+    FrameModel? frame = BookMainPage.pageManagerHolder!.getSelectedFrame();
+    if (frame == null) {
+      logger.severe('Something wrong, selected Frame is null');
+      return SizedBox.shrink();
+    }
+    // if (frame.isOverlay.value == true) {
+    //   //print('this is overlay frame');
+    // }
+    FrameManager? frameManager =
+        BookMainPage.pageManagerHolder!.findFrameManager(frame.parentMid.value);
+    //FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    if (frameManager == null) {
+      logger.severe('Something wrong, frameManager is null');
+      return SizedBox.shrink();
+    }
+
+    //print('222222222222222222222222222222');
+    ContentsManager? contentsManager = frameManager.getContentsManager(frame.mid);
+    if (contentsManager == null || contentsManager.getAvailLength() == 0) {
+      return SizedBox.shrink();
+    }
+    //print('333333333333333333333333');
+    ContentsModel? contents = contentsManager.getCurrentModel();
+    if (contents == null) {
+      return SizedBox.shrink();
+    }
+    contents = contentsManager.getFirstModel();
+    if (contents == null) {
+      return SizedBox.shrink();
+    }
+    LinkManager? linkManager = contentsManager.findLinkManager(contents.mid);
+    if (linkManager == null) {
+      return SizedBox.shrink();
+    }
+    LinkModel? linkModel = linkManager.getSelected() as LinkModel?;
+    if (linkModel == null) {
+      return SizedBox.shrink();
+    }
+
+    return Column(
+      children: [
+        LinkProperty(
+          key: ValueKey(contents.mid),
+          contentsModel: contents,
+          linkModel: linkModel,
+          frameManager: frameManager,
+          book: model,
+          onColorChanged: (color) {
+            linkModel.bgColor.set(color);
+            linkManager.notify();
+          },
+          onOpacityChanged: (opacity) {
+            linkModel.bgColor.set(linkModel.bgColor.value.withOpacity(opacity));
+            linkManager.notify();
+          },
+          onPosChanged: () {
+            linkManager.notify();
+          },
+          onSizeChanged: (size) {
+            linkModel.iconSize.set(size);
+            linkManager.notify();
+          },
+          onIconDataChanged: (icon) {
+            linkModel.iconData.set(icon);
+            linkManager.notify();
+          },
+        ),
       ],
     );
   }

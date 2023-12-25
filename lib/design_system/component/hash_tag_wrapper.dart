@@ -29,7 +29,14 @@ class HashTagWrapper {
     logger.fine('...hashTagList=$hashTagList');
 
     //GlobalObjectKey key = GlobalObjectKey('hashTagTagEditor${model.mid}');
-    FocusNode focusNode = FocusNode();
+    FocusNode focusNode = FocusNode(
+      onKeyEvent: (node, event) {
+        if (node.hasFocus) {
+          return KeyEventResult.skipRemainingHandlers;
+        }
+        return KeyEventResult.ignored;
+      },
+    );
     //print('add focusNode hashTag');
     //CretaTextField.focusNodeMap[key] = focusNode;
 

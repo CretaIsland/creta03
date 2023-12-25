@@ -152,11 +152,12 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
           // });
           LinkManager linkManager = widget.contentsManager.newLinkManager(contentsModel.mid);
 
-          await linkManager.createNext(
+          await linkManager.createNextLink(
             contentsModel: contentsModel,
             posX: dataX,
             posY: dataY,
             doNotify: false,
+            name: LinkParams.connectedName,
             connectedMid: LinkParams.connectedMid,
             connectedClass: LinkParams.connectedClass,
             onComplete: _showTargetFrame,
@@ -186,5 +187,6 @@ class _OnLinkCursorState extends State<OnLinkCursor> {
     _linkSendEvent!.sendEvent(offset);
     LinkParams.connectedClass = '';
     LinkParams.connectedMid = '';
+    LinkParams.connectedName = '';
   }
 }

@@ -10,8 +10,12 @@ import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../data_io/link_manager.dart';
 import '../../../../design_system/buttons/creta_button_wrapper.dart';
+import '../../../../design_system/component/creta_right_mouse_menu.dart';
 import '../../../../design_system/creta_color.dart';
-import '../../../../design_system/creta_font.dart';
+import '../../../../design_system/menu/creta_popup_menu.dart';
+import '../../../../lang/creta_lang.dart';
+import '../../../../lang/creta_studio_lang.dart';
+import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
@@ -20,8 +24,10 @@ import '../../../../model/page_model.dart';
 import '../../../../player/creta_play_timer.dart';
 import '../../book_main_page.dart';
 import '../../book_preview_menu.dart';
+import '../../left_menu/left_menu_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
+import '../containee_nofifier.dart';
 import '../frame/on_link_cursor.dart';
 import '../frame/sticker/draggable_stickers.dart';
 import 'play_buttons.dart';
@@ -161,6 +167,7 @@ class _LinkWidgetState extends State<LinkWidget> {
                         ),
                       if (_showVisibleButton()) _drawVisibleButton(),
                       if (_showVisibleButton()) _drawMaximizeButton(),
+                      if (_showVisibleButton()) _drawStopNextContents(),
                     ],
                   ),
                 ),
@@ -215,6 +222,33 @@ class _LinkWidgetState extends State<LinkWidget> {
                 widget.frameModel.changeOrderByIsShow(widget.frameManager);
                 //widget.frameModel.isTempVisible = widget.frameModel.isShow.value;
                 widget.onFrameShowUnshow.call();
+              }),
+        ));
+  }
+
+  Widget _drawStopNextContents() {
+    double buttonSize = 20;
+    double margin = 20;
+    double posX = (widget.frameModel.width.value - 3 * (buttonSize + margin)) * widget.applyScale;
+    double posY = margin / 2 * widget.applyScale;
+
+    return Positioned(
+        left: posX,
+        top: posY,
+        child: SizedBox(
+          width: buttonSize,
+          height: buttonSize,
+          child: BTN.fill_i_s(
+              useTapUp: true,
+              icon: StudioVariables.stopNextContents == true
+                  ? Icons.push_pin_outlined
+                  : Icons.repeat_outlined,
+              onPressed: () {
+                setState(
+                  () {
+                    StudioVariables.stopNextContents = !StudioVariables.stopNextContents;
+                  },
+                );
               }),
         ));
   }
@@ -292,8 +326,8 @@ class _LinkWidgetState extends State<LinkWidget> {
   Widget _drawEachLink(LinkModel model, LinkManager linkManager) {
     model.iconKey = GlobalObjectKey('linkIcon${model.mid}');
     const double stickerOffset = LayoutConst.stikerOffset / 2;
-    double posX = (model.posX - stickerOffset) * widget.applyScale;
-    double posY = (model.posY - stickerOffset) * widget.applyScale;
+    double posX = (model.posX.value - stickerOffset) * widget.applyScale;
+    double posY = (model.posY.value - stickerOffset) * widget.applyScale;
     if (posX < 0 || posY < 0) {
       return const SizedBox.shrink();
     }
@@ -305,8 +339,21 @@ class _LinkWidgetState extends State<LinkWidget> {
       top: _position.dy,
       child: StudioVariables.isPreview ||
               (LinkParams.isLinkNewMode == false && widget.contentsModel.isLinkEditMode == false)
-          ? _mainButton(model)
+          ? GestureDetector(
+              onSecondaryTapDown: (details) {
+                if (StudioVariables.isPreview == true) return;
+                linkManager.setSelectedMid(model.mid);
+                _showRightMouseMenu(
+                    model, linkManager, details.globalPosition.dx, details.globalPosition.dy);
+              },
+              child: _mainButton(model))
           : GestureDetector(
+              onSecondaryTapDown: (details) {
+                if (StudioVariables.isPreview == true) return;
+                linkManager.setSelectedMid(model.mid);
+                _showRightMouseMenu(
+                    model, linkManager, details.globalPosition.dx, details.globalPosition.dy);
+              },
               onScaleStart: (details) {
                 //print('linkWidget onScaleStart ----------------------------------------');
                 _prev = details.localFocalPoint;
@@ -322,8 +369,8 @@ class _LinkWidgetState extends State<LinkWidget> {
                 _prev = details.localFocalPoint;
 
                 setState(() {
-                  model.posX += dx;
-                  model.posY += dy;
+                  model.posX.set(model.posX.value + dx);
+                  model.posY.set(model.posY.value + dy);
                 });
               },
               onScaleEnd: (details) {
@@ -346,12 +393,13 @@ class _LinkWidgetState extends State<LinkWidget> {
   }
 
   Widget _mainButton(LinkModel model) {
-    const double iconSize = 24;
-    int index = -1;
-    if (model.connectedClass == 'page') {
-      // 이경우 페이지 번호를 구해야 한다.
-      index = BookMainPage.pageManagerHolder!.getIndex(model.connectedMid);
-    }
+    double iconSize = model.iconSize.value;
+    //int index = -1;
+    // if (model.connectedClass == 'page') {
+    //   // 이경우 페이지 번호를 구해야 한다.
+    //   index = BookMainPage.pageManagerHolder!.getIndex(model.connectedMid);
+    // }
+
     return GestureDetector(
       onTapUp: (d) {
         logger.fine('link button pressed ${model.connectedMid},${model.connectedClass}');
@@ -363,8 +411,8 @@ class _LinkWidgetState extends State<LinkWidget> {
         if (LinkParams.isLinkNewMode == true) return;
 
         const double stickerOffset = LayoutConst.stikerOffset / 2;
-        double posX = (model.posX - stickerOffset) * widget.applyScale;
-        double posY = (model.posY - stickerOffset) * widget.applyScale;
+        double posX = (model.posX.value - stickerOffset) * widget.applyScale;
+        double posY = (model.posY.value - stickerOffset) * widget.applyScale;
 
         if (model.connectedClass == 'page') {
           // show Page
@@ -380,12 +428,14 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.orgPostion = widget.frameOffset;
               LinkParams.connectedMid = model.connectedMid;
               LinkParams.connectedClass = 'page';
+              LinkParams.connectedName = model.name;
               LinkParams.invokerMid = widget.frameManager.pageModel.mid;
             } else {
               LinkParams.linkPostion = null;
               LinkParams.orgPostion = null;
               LinkParams.connectedMid = '';
               LinkParams.connectedClass = '';
+              LinkParams.connectedName = '';
             }
             //_lineDrawSendEvent?.sendEvent(isShow);
             //_linkManager?.notify();
@@ -418,12 +468,14 @@ class _LinkWidgetState extends State<LinkWidget> {
               LinkParams.orgPostion = widget.frameOffset;
               LinkParams.connectedMid = model.connectedMid;
               LinkParams.connectedClass = 'frame';
+              LinkParams.connectedName = model.name;
             } else {
               //print('##################################################');
               LinkParams.linkPostion = null;
               LinkParams.orgPostion = null;
               LinkParams.connectedMid = '';
               LinkParams.connectedClass = '';
+              LinkParams.connectedName = '';
               childModel.changeOrderByIsShow(widget.frameManager);
               widget.frameManager.reOrdering();
             }
@@ -440,41 +492,64 @@ class _LinkWidgetState extends State<LinkWidget> {
         }
         return;
       },
-      child: index < 0 || StudioVariables.isPreview == true
-          ? Container(
-              width: iconSize + 4,
-              height: iconSize + 4,
-              //color: Colors.amber.withOpacity(0.5),
-              alignment: Alignment.topLeft,
-              child: Icon(
-                key: model.iconKey,
-                Icons.radio_button_checked_outlined,
-                size: iconSize,
-                color: _isMove ? CretaColor.primary : CretaColor.secondary,
-              ),
-            )
-          : Stack(
-              alignment: Alignment.centerLeft,
-              children: [
-                Container(
-                  width: iconSize + 6,
-                  height: iconSize,
-                  //color: Colors.amber.withOpacity(0.5),
-                  alignment: Alignment.topLeft,
-                  child: Icon(
-                    key: model.iconKey,
-                    Icons.radio_button_checked_outlined,
-                    size: iconSize,
-                    color: _isMove ? CretaColor.primary : CretaColor.secondary,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 6.0),
-                  child: Text(index > 9 ? '$index' : '0$index',
-                      style: CretaFont.bodyESmall.copyWith(fontSize: 6, color: Colors.white)),
-                ),
-              ],
-            ),
+      child: Consumer<ContaineeNotifier>(builder: (context, manager, child) {
+        return Container(
+          width: iconSize + 4,
+          height: iconSize + 4,
+          decoration: model.mid == _linkManager!.getSelectedMid() &&
+                  widget.frameManager.isSelected(widget.frameModel.mid) // 선택된 것.
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(width: 1, color: CretaColor.text[700]!),
+                )
+              : null,
+          //color: Colors.amber.withOpacity(0.5),
+          alignment: Alignment.center,
+          child: Icon(
+            key: model.iconKey,
+            LinkIconType.toIcon(model.iconData.value), //Icons.radio_button_checked_outlined,
+            size: iconSize,
+            color: _isMove ? CretaColor.primary : model.bgColor.value,
+          ),
+        );
+      }),
+
+      // child: index < 0 || StudioVariables.isPreview == true
+      //     ? Container(
+      //         width: iconSize + 4,
+      //         height: iconSize + 4,
+      //         //color: Colors.amber.withOpacity(0.5),
+      //         alignment: Alignment.topLeft,
+      //         child: Icon(
+      //           key: model.iconKey,
+      //           LinkIconType.toIcon(model.iconData.value), //Icons.radio_button_checked_outlined,
+      //           size: iconSize,
+      //           color: _isMove ? CretaColor.primary : model.bgColor.value,
+      //         ),
+      //       )
+      //     : Stack(
+      //         alignment: Alignment.centerLeft,
+      //         children: [
+      //           Container(
+      //             width: iconSize + 6,
+      //             height: iconSize,
+      //             //color: Colors.amber.withOpacity(0.5),
+      //             alignment: Alignment.topLeft,
+      //             child: Icon(
+      //               key: model.iconKey,
+      //               LinkIconType.toIcon(
+      //                   model.iconData.value), //Icons.radio_button_checked_outlined,
+      //               size: iconSize,
+      //               color: _isMove ? CretaColor.primary : model.bgColor.value,
+      //             ),
+      //           ),
+      //           Padding(
+      //             padding: const EdgeInsets.only(left: 6.0),
+      //             child: Text(index > 9 ? '$index' : '0$index',
+      //                 style: CretaFont.bodyESmall.copyWith(fontSize: 6, color: Colors.white)),
+      //           ),
+      //         ],
+      //       ),
     );
     // return IconButton(
     //   icon: Icon(
@@ -486,6 +561,56 @@ class _LinkWidgetState extends State<LinkWidget> {
     //
     //   },
     // );
+  }
+
+  // 오른쪽 마우스 버튼 액션
+  void _showRightMouseMenu(LinkModel model, LinkManager linkManager, double dx, double dy) {
+    CretaRightMouseMenu.showMenu(
+      title: 'linkRightMouseMenu',
+      context: context,
+      popupMenu: [
+        CretaMenuItem(
+            caption: CretaStudioLang.deleteLink,
+            onPressed: () {
+              linkManager.delete(link: model);
+              LeftMenuPage.initTreeNodes();
+              LeftMenuPage.treeInvalidate();
+            }),
+        CretaMenuItem(
+            caption: widget.contentsModel.isLinkEditMode
+                ? CretaStudioLang.linkControlOff
+                : CretaStudioLang.linkControlOn,
+            onPressed: () {
+              widget.contentsModel.isLinkEditMode = !widget.contentsModel.isLinkEditMode;
+              if (widget.contentsModel.isLinkEditMode == true) {
+                StudioVariables.isAutoPlay = true;
+              }
+              _linkSendEvent!.sendEvent(const Offset(1, 1));
+              setState(() {});
+            }),
+        CretaMenuItem(
+            caption: CretaLang.properties,
+            onPressed: () {
+              //  링크 속성 메뉴를 누르면, 현재 Frame 이 seletct 된것으로 간주해야 한다.
+              widget.frameManager.setSelectedMid(widget.frameModel.mid);
+              widget.contentsManager.setSelectedMid(widget.contentsModel.mid);
+              linkManager.setSelectedMid(model.mid);
+              BookMainPage.containeeNotifier!.set(ContaineeEnum.Link, doNoti: true);
+
+              LeftMenuPage.initTreeNodes();
+              LeftMenuPage.treeInvalidate();
+            }),
+      ],
+      itemHeight: 24,
+      x: dx,
+      y: dy,
+      width: 160,
+      //height: menuHeight,
+      //textStyle: CretaFont.bodySmall,
+      iconSize: 12,
+      alwaysShowBorder: true,
+      borderRadius: 8,
+    );
   }
 
   Widget _delButton(LinkModel model, LinkManager linkManager) {
