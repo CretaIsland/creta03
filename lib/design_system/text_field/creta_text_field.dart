@@ -109,7 +109,7 @@ class CretaTextField extends LastClickable {
     this.maxLines = 1,
     this.radius = 18,
     this.textType = CretaTextFieldType.text,
-    this.limit = 255,
+    this.limit = 128,
     this.isSpecialKeyHandle = false,
     this.maxNumber,
     this.minNumber,
@@ -264,7 +264,7 @@ class CretaTextField extends LastClickable {
     this.maxLines = 1,
     this.radius = 18,
     this.textType = CretaTextFieldType.text,
-    this.limit = 255,
+    this.limit = 128,
     this.isSpecialKeyHandle = false,
     this.maxNumber,
     this.minNumber,
@@ -326,7 +326,7 @@ class CretaTextField extends LastClickable {
     this.maxLines = 1,
     this.radius = 18,
     this.textType = CretaTextFieldType.text,
-    this.limit = 255,
+    this.limit = 128,
     this.isSpecialKeyHandle = false,
     this.maxNumber,
     this.minNumber,
@@ -550,6 +550,11 @@ class CretaTextFieldState extends State<CretaTextField> {
 
   List<TextInputFormatter>? _format(CretaTextFieldType textType) {
     switch (textType) {
+      case CretaTextFieldType.text:
+        return [
+          LengthLimitingTextInputFormatter(widget.limit,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced),
+        ];
       case CretaTextFieldType.number:
         return [
           FilteringTextInputFormatter.digitsOnly,
@@ -621,6 +626,7 @@ class CretaTextFieldState extends State<CretaTextField> {
         //         : OverlayVisibilityMode.never
         //     : OverlayVisibilityMode.never,
         inputFormatters: _format(widget.textType),
+        maxLength: widget.limit,
         maxLines: lines,
         minLines: lines,
         //maxLines: 1,
