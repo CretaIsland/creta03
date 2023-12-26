@@ -91,6 +91,8 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   FrameEventController? _sendEvent;
   FrameEventController? _receiveEvent;
 
+  bool _tagEnabled = true;
+
   Widget _borderStyle(double width, double height, double dottedLength, double dottedSpace) {
     return Container(
       margin: EdgeInsets.only(
@@ -1231,7 +1233,7 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             _isTransitionOpen = !_isTransitionOpen;
           });
         },
-        titleWidget: Text(CretaStudioLang.transitionFrame, style: CretaFont.titleSmall),
+        titleWidget: Text(CretaStudioLang.ani, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: SizedBox(
           width: 160,
@@ -2218,6 +2220,13 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
   }
 
   List<Widget> _tagBody() {
+    String val = widget.model.hashTag.value;
+    int rest = StudioConst.maxTextLimit - 2 - val.length;
+    if (rest <= 0) {
+      logger.warning('len1 overflow $rest');
+      _tagEnabled = false;
+    }
+
     return hashTagWrapper.hashTag(
       hasTitle: false,
       top: 12,
@@ -2225,11 +2234,15 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
       minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
       onTagChanged: (value) {},
       onSubmitted: (value) {
+        _tagEnabled = (value == null) ? false : true;
         BookMainPage.bookManagerHolder!.notify();
       },
       onDeleted: (value) {
         BookMainPage.bookManagerHolder!.notify();
       },
+      limit: StudioConst.maxTextLimit - 2,
+      enabled: _tagEnabled,
+      rest: rest > 0 ? rest - 1 : 0,
     );
   }
 

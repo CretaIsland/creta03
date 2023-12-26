@@ -6,6 +6,7 @@ import 'package:material_tag_editor/tag_editor.dart';
 
 import '../../common/creta_utils.dart';
 import '../../lang/creta_studio_lang.dart';
+import '../../pages/studio/studio_constant.dart';
 import '../creta_chip.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -19,11 +20,14 @@ class HashTagWrapper {
   List<Widget> hashTag({
     required AbsExModel model,
     required double minTextFieldWidth,
-    required void Function(String) onTagChanged,
-    required void Function(String) onSubmitted,
+    required void Function(String?) onTagChanged,
+    required void Function(String?) onSubmitted,
     required void Function(int) onDeleted,
+    required bool enabled,
     bool hasTitle = true,
     double top = 24,
+    int limit = StudioConst.maxTextLimit,
+    int rest = StudioConst.maxTextLimit,
   }) {
     hashTagList = CretaUtils.jsonStringToList(model.hashTag.value);
     logger.fine('...hashTagList=$hashTagList');
@@ -49,6 +53,8 @@ class HashTagWrapper {
       ),
       TagEditor(
         //key: key,
+        // enabled: enabled,
+        //readOnly: !enabled,
         focusNode: focusNode,
         textFieldHeight: 36,
         minTextFieldWidth: minTextFieldWidth,
@@ -59,6 +65,9 @@ class HashTagWrapper {
         hasAddButton: true,
         resetTextOnSubmitted: true,
         inputDecoration: InputDecoration(
+          hintText: enabled
+              ? CretaStudioLang.hashTagHint
+              : '${CretaStudioLang.textOverflow1} $rest ${CretaStudioLang.textOverflow2},',
           iconColor: CretaColor.text[200]!,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
@@ -71,18 +80,26 @@ class HashTagWrapper {
         ),
         inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'[/\\]'))],
         onTagChanged: (newValue) {
-          hashTagList.add(newValue);
           String val = CretaUtils.listToString(hashTagList);
-          logger.finest('hashTag=$val');
-          model.hashTag.set(val);
+          if (val.length + newValue.length >= limit) {
+            logger.warning('len overflow');
+            onTagChanged.call(null);
+            return;
+          }
+          hashTagList.add(newValue);
+          model.hashTag.set(CretaUtils.listToString(hashTagList));
           onTagChanged.call(newValue);
           logger.finest('onTagChanged $newValue input');
         },
         onSubmitted: (outstandingValue) {
-          hashTagList.add(outstandingValue);
           String val = CretaUtils.listToString(hashTagList);
-          logger.finest('hashTag=$val');
-          model.hashTag.set(val);
+          if (val.length + outstandingValue.length >= limit) {
+            logger.warning('len0 overflow');
+            onSubmitted.call(null);
+            return;
+          }
+          hashTagList.add(outstandingValue);
+          model.hashTag.set(CretaUtils.listToString(hashTagList));
           logger.finest('onSubmitted $outstandingValue input');
           onSubmitted.call(outstandingValue);
         },

@@ -1,10 +1,13 @@
 // ignore: implementation_imports
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../design_system/component/snippet.dart';
+import '../../model/contents_model.dart';
 import '../../model/frame_model.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
@@ -61,13 +64,14 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
               player.getSize()!,
               player.acc.frameModel,
               //VideoPlayer(player.wcontroller!, key: GlobalObjectKey('widget-${player.keyString}')),
+              player.model,
               VideoPlayer(player.wcontroller!),
             ),
           );
         });
   }
 
-  Widget getClipRect(Size outSize, FrameModel frameModel, Widget child) {
+  Widget getClipRect(Size outSize, FrameModel frameModel, ContentsModel? model, Widget child) {
     return ClipRRect(
       //clipper: MyContentsClipper(),
       borderRadius: BorderRadius.only(
@@ -80,13 +84,19 @@ class CretaVideoPlayerWidgetState extends State<CretaVideoWidget> {
       child: SizedBox.expand(
           child: FittedBox(
         alignment: Alignment.center,
-        fit: BoxFit.cover,
+        fit: model != null ? model.fit.value.toBoxFit() : BoxFit.cover,
         child: SizedBox(
           //width: realSize.width,
           //height: realSize.height,
           width: outSize.width,
           height: outSize.height,
-          child: child,
+          child: model != null && model.isFlip.value
+              ? Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationY(pi),
+                  child: child,
+                )
+              : child,
         ),
       )),
     );

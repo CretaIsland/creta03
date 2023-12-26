@@ -151,6 +151,7 @@ dependencies:
   animated_switcher_plus: ^1.1.0
   glowy_borders: ^1.0.2
   avatar_glow: ^3.0.1
+  flutter_glow: ^0.3.0
 
 
 dev_dependencies:

@@ -209,7 +209,7 @@ class CretaStudioLang {
   static const String tooltipPause = '작업하는 동안 동영상을 정지하거나 플레이합니다';
   static const String tooltipUndo = '취소';
   static const String tooltipRedo = '복원';
-  static const String tooltipDownload = '다운로드';
+  //static const String tooltipDownload = '다운로드';
   static const String tooltipInvite = '초대하기';
   static const String tooltipPlay = '미리보기';
   static const String tooltipScale = '항상 화면 크기에 알맞게 맞춥니다.';
@@ -308,7 +308,7 @@ class CretaStudioLang {
   static const String fullscreenTooltip = '페이지에 꽉차게 합니다';
 
   static const String transitionPage = "페이지 전환 효과";
-  static const String transitionFrame = "애니메이션";
+  //static const String transitionFrame = "애니메이션";
   static const String effect = "배경효과";
   static const String contentFlipEffect = "콘텐츠 넘김 효과";
 
@@ -402,6 +402,7 @@ class CretaStudioLang {
   static const String foregroundMusic = '백그라운 뮤직으로 고정 해제';
 
   static const String ani = '애니메이션';
+  static const String flip = '좌우 반전';
   static const String speed = '속도';
   static const String delay = '딜레이';
   static const String border = '테두리';
@@ -652,4 +653,8 @@ class CretaStudioLang {
   //static String carouselWarning = '캐러셀 디스플레이를 적용하려면 최소 3개의 이미지가 있어야 합니다.';
   static String mainFrameExTooltip = '메인 프레임 입니다. 이 프레임의 콘텐츠가 끝나면 자동으로 다음페이지로 넘어갑니다.';
   static String deleteLink = '링크 삭제';
+
+  static String textOverflow1 = '텍스트 길이 제한에 걸렸습니다';
+  static String textOverflow2 = '글자 이내로 입력하세요요.';
+  static String hashTagHint = '추가할 해쉬 태그를 입력하고 엔터키를 누르세요.';
 }

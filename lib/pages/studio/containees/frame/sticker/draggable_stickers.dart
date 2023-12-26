@@ -963,6 +963,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
         },
         onContentsFullscreen: () {
           logger.fine('onContentsFullscreen');
+       
         },
         onContentsDelete: () {
           logger.fine('onContentsDelete');

@@ -1,4 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
+import 'dart:math';
+
 import 'package:creta03/player/doc/creta_doc_mixin.dart';
 import 'package:creta03/player/music/creta_music_mixin.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -246,21 +248,32 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
             if (contentsCount > 0) {
               late String thumbnailUrl;
               late String name;
-              (name, thumbnailUrl) = contentsManager.getThumbnail();
+              late BoxFit boxfit;
+              late bool isFlip;
+              (name, thumbnailUrl, boxfit, isFlip) = contentsManager.getThumbnail();
               if (thumbnailUrl.isNotEmpty) {
                 logger.info("---------------name=$name");
                 logger.info("thumbnail=$thumbnailUrl");
-                return Container(
+
+                Widget drawImage = Container(
                   key: GlobalObjectKey(
                       'CustomImage${widget.pageModel.mid}/${widget.frameModel.mid}$thumbnailUrl'),
                   width: widget.width,
                   height: widget.height,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                    fit: BoxFit.cover,
+                    //fit: BoxFit.cover,
+                    fit: boxfit,
                     image: NetworkImage(thumbnailUrl),
                   )),
                 );
+
+                return isFlip
+                    ? Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(pi),
+                        child: drawImage)
+                    : drawImage;
               } else {
                 logger.warning('noThumbnail !!!');
               }

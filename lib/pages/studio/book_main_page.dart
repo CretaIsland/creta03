@@ -34,7 +34,6 @@ import '../../design_system/buttons/creta_button_wrapper.dart';
 import '../../design_system/buttons/creta_label_text_editor.dart';
 import '../../design_system/component/autoSizeText/creta_auto_size_text.dart';
 import '../../design_system/component/autoSizeText/font_size_changing_notifier.dart';
-import '../../design_system/component/creta_popup.dart';
 import '../../design_system/component/custom_image.dart';
 import '../../design_system/component/snippet.dart';
 import '../../design_system/creta_color.dart';
@@ -64,6 +63,7 @@ import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
 import 'studio_getx_controller.dart';
+import 'studio_main_menu.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
 
@@ -1390,30 +1390,31 @@ class _BookMainPageState extends State<BookMainPage> {
             icon: Icons.file_download_outlined,
             onPressed: () {
               logger.fine('donwload in studio');
-              CretaPopup.yesNoDialog(
-                context: context,
-                title: "${CretaStudioLang.export}      ",
-                icon: Icons.file_download_outlined,
-                question: CretaStudioLang.downloadConfirm,
-                noBtText: CretaVariables.isDeveloper
-                    ? CretaStudioLang.noBtDnTextDeloper
-                    : CretaStudioLang.noBtDnText,
-                yesBtText: CretaStudioLang.yesBtDnText,
-                yesIsDefault: true,
-                onNo: () {
-                  if (CretaVariables.isDeveloper) {
-                    BookMainPage.bookManagerHolder
-                        ?.download(context, BookMainPage.pageManagerHolder, false);
-                  }
-                },
-                onYes: () {
-                  BookMainPage.bookManagerHolder
-                      ?.download(context, BookMainPage.pageManagerHolder, true);
-                },
-              );
+              StudioMainMenu.downloadDialog(context);
+              // CretaPopup.yesNoDialog(
+              //   context: context,
+              //   title: "${CretaStudioLang.export}      ",
+              //   icon: Icons.file_download_outlined,
+              //   question: CretaStudioLang.downloadConfirm,
+              //   noBtText: CretaVariables.isDeveloper
+              //       ? CretaStudioLang.noBtDnTextDeloper
+              //       : CretaStudioLang.noBtDnText,
+              //   yesBtText: CretaStudioLang.yesBtDnText,
+              //   yesIsDefault: true,
+              //   onNo: () {
+              //     if (CretaVariables.isDeveloper) {
+              //       BookMainPage.bookManagerHolder
+              //           ?.download(context, BookMainPage.pageManagerHolder, false);
+              //     }
+              //   },
+              //   onYes: () {
+              //     BookMainPage.bookManagerHolder
+              //         ?.download(context, BookMainPage.pageManagerHolder, true);
+              //   },
+              // );
             },
             hasShadow: false,
-            tooltip: CretaStudioLang.tooltipDownload,
+            tooltip: CretaLang.download,
           ),
           SizedBox(width: padding),
           BTN.floating_l(

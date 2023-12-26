@@ -31,6 +31,7 @@ import '../../routes.dart';
 import '../login/creta_account_manager.dart';
 import 'book_info_mixin.dart';
 import 'book_main_page.dart';
+import 'studio_constant.dart';
 import 'studio_snippet.dart';
 
 class BookPublishDialog extends StatefulWidget {
@@ -98,6 +99,8 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   BookModel? alreadyPublishedBook;
 
   final Set<String> _invitees = {};
+
+  bool _tagEnabled = true;
 
   //final bool _isInvite = false;
 
@@ -628,19 +631,34 @@ class _BookPublishDialogState extends State<BookPublishDialog> with BookInfoMixi
   }
 
   List<Widget> _tag() {
+    String val = widget.model!.hashTag.value;
+    int rest = StudioConst.maxTextLimit - 2 - val.length;
+    if (rest <= 0) {
+      logger.warning('len1 overflow $rest');
+      _tagEnabled = false;
+    }
+
     return hashTagWrapper.hashTag(
       top: 0,
       model: widget.model!,
       minTextFieldWidth: width - horizontalPadding * 2,
       onTagChanged: (value) {
-        setState(() {});
+        setState(() {
+          _tagEnabled = (value == null) ? false : true;
+        });
       },
       onSubmitted: (value) {
-        setState(() {});
+        setState(() {
+          _tagEnabled = (value == null) ? false : true;
+        });
       },
       onDeleted: (value) {
         setState(() {});
       },
+            limit: StudioConst.maxTextLimit - 2,
+      enabled: _tagEnabled,
+      rest: rest > 0 ? rest - 1 : 0,
+
     );
   }
 

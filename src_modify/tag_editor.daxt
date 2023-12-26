@@ -133,7 +133,16 @@ class _TagsEditorState extends State<TagEditor> {
   void initState() {
     super.initState();
     _textFieldController = (widget.controller ?? TextEditingController());
-    _focusNode = (widget.focusNode ?? FocusNode())..addListener(_onFocusChanged);
+    _focusNode = (widget.focusNode ??
+        FocusNode(
+          onKeyEvent: (node, event) {
+            if (node.hasFocus) {
+              return KeyEventResult.skipRemainingHandlers;
+            }
+            return KeyEventResult.ignored;
+          },
+        ))
+      ..addListener(_onFocusChanged);
   }
 
   //skpark add dispose to unfocus
@@ -269,7 +278,7 @@ class _TagsEditorState extends State<TagEditor> {
           padding: EdgeInsets.only(top: 4), //skpark
           height: widget.textFieldHeight, //skppark control size
           child: TextField(
-            textAlignVertical: TextAlignVertical.top, //skpark
+            textAlignVertical: TextAlignVertical.bottom, //skpark
             style: widget.textStyle,
             focusNode: _focusNode,
             enabled: widget.enabled,

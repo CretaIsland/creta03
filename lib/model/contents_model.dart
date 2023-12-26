@@ -156,6 +156,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<int> valign; // vertical 정렬
   late UndoAble<double> anyDuration;
   late UndoAble<bool> isTTS;
+  late UndoAble<bool> isFlip;
   late UndoAble<String> lang;
 
   @override
@@ -211,6 +212,7 @@ class ContentsModel extends CretaModel {
         valign,
         anyDuration,
         isTTS,
+        isFlip,
         lang,
       ];
 
@@ -298,6 +300,7 @@ class ContentsModel extends CretaModel {
     valign = UndoAble<int>(0, mid, 'valign');
     anyDuration = UndoAble<double>(0, mid, 'anyDuration');
     isTTS = UndoAble<bool>(false, mid, 'isTTS');
+    isFlip = UndoAble<bool>(false, mid, 'isFlip');
     lang = UndoAble<String>('ko', mid, 'lang');
   }
 
@@ -363,6 +366,7 @@ class ContentsModel extends CretaModel {
     imageAniType = UndoAble<ImageAniType>(srcContents.imageAniType.value, mid, 'imageAniType');
     anyDuration = UndoAble<double>(srcContents.anyDuration.value, mid, 'anyDuration');
     isTTS = UndoAble<bool>(srcContents.isTTS.value, mid, 'isTTS');
+    isFlip = UndoAble<bool>(srcContents.isFlip.value, mid, 'isFlip');
     lang = UndoAble<String>(srcContents.lang.value, mid, 'lang');
 
     _playState = srcContents._playState;
@@ -436,6 +440,7 @@ class ContentsModel extends CretaModel {
     imageAniType.init(srcContents.imageAniType.value);
     anyDuration.init(srcContents.anyDuration.value);
     isTTS.init(srcContents.isTTS.value);
+    isFlip.init(srcContents.isFlip.value);
     lang.init(srcContents.lang.value);
 
     _playState = srcContents._playState;
@@ -535,6 +540,7 @@ class ContentsModel extends CretaModel {
     imageAniType.setDD(ImageAniType.fromInt(map["imageAniType"] ?? 0), save: false, noUndo: true);
     anyDuration.setDD(map["anyDuration"] ?? 0, save: false, noUndo: true);
     isTTS.setDD(map["isTTS"] ?? false, save: false, noUndo: true);
+    isFlip.setDD(map["isFlip"] ?? false, save: false, noUndo: true);
     lang.setDD(map["lang"] ?? 'ko', save: false, noUndo: true);
   }
 
@@ -593,6 +599,7 @@ class ContentsModel extends CretaModel {
         "imageAniType": imageAniType.value.index,
         "anyDuration": anyDuration.value,
         "isTTS": isTTS.value,
+        "isFlip": isFlip.value,
         "lang": lang.value,
       }.entries);
   }
@@ -976,5 +983,35 @@ class ContentsModel extends CretaModel {
       this.lineHeight.set(lineHeight * 10, save: false);
     }
     save();
+  }
+
+  ContentsFitType nextFit() {
+    switch (fit.value) {
+      case ContentsFitType.cover:
+        return ContentsFitType.fill;
+      case ContentsFitType.fill:
+        return ContentsFitType.free;
+      case ContentsFitType.free:
+        return ContentsFitType.cover;
+      default:
+        return ContentsFitType.cover;
+    }
+  }
+
+  IconData fitIcon() {
+    switch (fit.value) {
+      case ContentsFitType.cover:
+        return Icons.photo_size_select_large;
+      case ContentsFitType.fill:
+        return Icons.aspect_ratio;
+      case ContentsFitType.free:
+        return Icons.fit_screen;
+      default:
+        return Icons.photo_size_select_large;
+    }
+  }
+
+  void setNextFit() {
+    fit.set(nextFit());
   }
 }

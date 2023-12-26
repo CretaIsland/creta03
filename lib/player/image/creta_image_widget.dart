@@ -2,6 +2,7 @@
 // ignore_for_file: prefer_final_fields, depend_on_referenced_packages, must_be_immutable
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
@@ -118,7 +119,11 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
             ),
             //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(widget.model!.url))),
             //image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(uri))),
-            image: DecorationImage(fit: BoxFit.fill, image: CachedNetworkImageProvider(uri, cacheKey: uri))),
+
+            image: DecorationImage(
+                fit: player.model!.fit.value.toBoxFit(),
+                image: CachedNetworkImageProvider(uri, cacheKey: uri))),
+        //image: DecorationImage(fit: BoxFit.fill, image: CachedNetworkImageProvider(uri, cacheKey: uri))),
       ),
     );
 
@@ -131,7 +136,13 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
           curve: Curves.easeInOutCubic,
           width: _animateFlag ? size.width : size.width * 1.5,
           height: _animateFlag ? size.height : size.height * 1.5,
-          child: drawImage,
+          child: player.model!.isFlip.value == true
+              ? Transform(
+                alignment: Alignment.center,
+                  transform: Matrix4.rotationY(pi), //  좌우를 반전시킨다.
+                  child: drawImage,
+                )
+              : drawImage,
 
           // child: Stack(
           //   children: [
@@ -164,6 +175,12 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
       );
     }
 
-    return drawImage;
+    return player.model!.isFlip.value == true
+        ? Transform(
+          alignment: Alignment.center,
+            transform: Matrix4.rotationY(pi), //  좌우를 반전시킨다.
+            child: drawImage,
+          )
+        : drawImage;
   }
 }

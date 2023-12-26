@@ -39,6 +39,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   static bool _isTransitionOpen = false;
 
   PageEventController? _sendEvent;
+  bool _tagEnabled = true;
 
   @override
   void initState() {
@@ -373,6 +374,13 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   }
 
   List<Widget> _tagBody() {
+    String val = _model!.hashTag.value;
+    int rest = StudioConst.maxTextLimit - 2 - val.length;
+    if (rest <= 0) {
+      logger.warning('len1 overflow $rest');
+      _tagEnabled = false;
+    }
+
     return hashTagWrapper.hashTag(
       hasTitle: false,
       top: 12,
@@ -380,11 +388,15 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
       onTagChanged: (value) {},
       onSubmitted: (value) {
+        _tagEnabled = (value == null) ? false : true;
         BookMainPage.bookManagerHolder!.notify();
       },
       onDeleted: (value) {
         BookMainPage.bookManagerHolder!.notify();
       },
+      limit: StudioConst.maxTextLimit - 2,
+      enabled: _tagEnabled,
+      rest: rest > 0 ? rest - 1 : 0,
     );
   }
 
