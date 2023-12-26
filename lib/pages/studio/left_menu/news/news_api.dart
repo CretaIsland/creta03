@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 
 import '../../../login/creta_account_manager.dart';
 
-String apiKey = CretaAccountManager.getEnterprise!.newsApiKey;
-// String apiKey = '5e843446a9e24126a5f40ca6bacfd0d2';
+// String apiKey = CretaAccountManager.getEnterprise!.newsApiKey;
+String apiKey = '5e843446a9e24126a5f40ca6bacfd0d2';
 
 class NewsForCategories {
   List<Article> news = [];
