@@ -33,6 +33,7 @@ import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/clock/stop_watch.dart';
 import '../../left_menu/google_map/creta_map_widget.dart';
+import '../../left_menu/news/article_view.dart';
 import '../../left_menu/timeline/horizontal_timeline.dart';
 import '../../left_menu/timeline/showcase_timeline.dart';
 import '../../left_menu/timeline/football_timeline.dart';
@@ -105,6 +106,9 @@ mixin FramePlayMixin {
       return false;
     }
     if (model.isAnimationType()) {
+      return false;
+    }
+    if (model.isNewsType()) {
       return false;
     }
     if (contentsManager.getShowLength() > 0) {
@@ -323,6 +327,25 @@ mixin FramePlayMixin {
       frameManager: frameManager,
       frameMid: frameMid,
       child: child,
+    );
+  }
+
+  String getCategory(int subType) {
+    String currentSelectedType = CretaStudioLang.newsCategories.values.first;
+    List<String> types = CretaStudioLang.newsCategories.values.toList();
+    for (String ele in types) {
+      if (currentSelectedType == ele) {
+        return types[subType];
+      }
+    }
+    return CretaStudioLang.newsCategories.values.toString()[0];
+  }
+
+  Widget newsFrame({
+    required FrameModel frameModel,
+  }) {
+    return ArticleView(
+      selectedCategory: getCategory(frameModel.subType),
     );
   }
 

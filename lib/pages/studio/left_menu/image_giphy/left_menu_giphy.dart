@@ -148,26 +148,32 @@ class _LeftMenuGiphyState extends State<LeftMenuGiphy> with LeftTemplateMixin, F
   Widget _buildGridView(int gifCount) {
     return Padding(
       padding: const EdgeInsets.only(right: 12.0),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 528.0,
-            child: GridView.builder(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Scrollbar(
+              thickness: 6.0,
               controller: _scrollController,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+              child: SizedBox(
+                height: 528.0,
+                child: GridView.builder(
+                  controller: _scrollController,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                  itemCount: gifCount > _visibleGifCount + 1 ? _visibleGifCount + 1 : gifCount,
+                  itemBuilder: (context, index) {
+                    return _getElement(_gifs[index], index);
+                  },
+                ),
               ),
-              itemCount: gifCount > _visibleGifCount + 1 ? _visibleGifCount + 1 : gifCount,
-              itemBuilder: (context, index) {
-                return _getElement(_gifs[index], index);
-              },
             ),
-          ),
-          const SizedBox(height: 16.0),
-          if (_visibleGifCount < gifCount) _buildLoadMoreButton(),
-        ],
+            const SizedBox(height: 16.0),
+            if (_visibleGifCount < gifCount) _buildLoadMoreButton(),
+          ],
+        ),
       ),
     );
   }

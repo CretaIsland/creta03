@@ -1,10 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:creta03/pages/studio/left_menu/left_menu_ele_button.dart';
+import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:creta03/design_system/component/snippet.dart';
-import '../../../../design_system/buttons/creta_tab_button.dart';
-import '../../../../design_system/creta_color.dart';
+import 'package:hycop/common/undo/undo.dart';
+import '../../../../data_io/frame_manager.dart';
 import '../../../../lang/creta_studio_lang.dart';
+import '../../../../model/app_enums.dart';
+import '../../../../model/page_model.dart';
+import '../../book_main_page.dart';
 import 'get_categories.dart';
-import 'news_tile.dart';
 import 'article_model.dart';
 import 'news_api.dart';
 
@@ -40,20 +45,20 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
     return news.news;
   }
 
-  static String _selectedType = CretaStudioLang.newsCategories.values.first;
+  // static String _selectedType = CretaStudioLang.newsCategories.values.first;
 
-  String _getCurrentTypes() {
-    int index = 0;
-    String currentSelectedType = _selectedType;
-    List<String> types = CretaStudioLang.newsCategories.values.toList();
-    for (String ele in types) {
-      if (currentSelectedType == ele) {
-        return types[index];
-      }
-      index++;
-    }
-    return CretaStudioLang.newsCategories.values.toString()[0];
-  }
+  // String _getCurrentTypes() {
+  //   int index = 0;
+  //   String currentSelectedType = _selectedType;
+  //   List<String> types = CretaStudioLang.newsCategories.values.toList();
+  //   for (String ele in types) {
+  //     if (currentSelectedType == ele) {
+  //       return types[index];
+  //     }
+  //     index++;
+  //   }
+  //   return CretaStudioLang.newsCategories.values.toString()[0];
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -61,20 +66,23 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
       future: Future.wait([_categoriesFuture, _newsFuture]),
       builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: Snippet.showWaitSign(),
+          return SizedBox(
+            height: 350.0,
+            child: Center(
+              child: Snippet.showWaitSign(),
+            ),
           );
         } else if (snapshot.hasError) {
           return Center(
             child: Text('Error loading data: ${snapshot.error}'),
           );
         } else {
-          // List<CategoryModel> categories = snapshot.data![0] as List<CategoryModel>;
-          List<Article> newslist = snapshot.data![1] as List<Article>;
+          List<CategoryModel> categories = snapshot.data![0] as List<CategoryModel>;
+          // List<Article> newslist = snapshot.data![1] as List<Article>;
           return Column(
             children: [
-              newsCategories(),
-              newsArticle(newslist),
+              newsCategories(categories),
+              // newsArticle(newslist),
             ],
           );
         }
@@ -83,101 +91,162 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
   }
 
   // Categories
-  // Widget newsCategories(List<CategoryModel> categories) {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20),
-  //     height: 70,
-  //     child: ListView.builder(
-  //       itemCount: categories.length,
-  //       scrollDirection: Axis.horizontal,
-  //       itemBuilder: (context, index) {
-  //         return CategoryCard(
-  //           categoryName: categories[index].categoryName!,
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  Widget newsCategories() {
-    return Padding(
-      padding: EdgeInsets.only(
-        top: verticalPadding,
-        bottom: verticalPadding,
-        right: 2.0,
-      ),
-      child: CretaTabButton(
-        defaultString: _getCurrentTypes(),
-        onEditComplete: (value) {
-          int idx = 0;
-          for (String val in CretaStudioLang.newsCategories.values) {
-            if (value == val) {
-              setState(() {
-                _selectedType = CretaStudioLang.newsCategories.values.toList()[idx];
-                _newsFuture = getNews(value);
-              });
-            }
-            idx++;
-          }
+  Widget newsCategories(List<CategoryModel> categories) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      height: StudioVariables.workHeight - 148,
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          crossAxisCount: 2,
+          childAspectRatio: 2 / 1,
+        ),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          return LeftMenuEleButton(
+            width: 160.0,
+            height: 80.0,
+            onPressed: () async {
+              await _createNews(FrameType.news, categories[index].categoryName!);
+              BookMainPage.pageManagerHolder!.notify();
+            },
+            child: CategoryCard(
+              categoryName: categories[index].categoryName!,
+              imageAssetUrl: categories[index].imageAssetUrl!,
+            ),
+          );
         },
-        autoWidth: true,
-        height: 32,
-        selectedTextColor: Colors.white,
-        unSelectedTextColor: CretaColor.primary,
-        selectedColor: CretaColor.primary,
-        unSelectedColor: Colors.white,
-        unSelectedBorderColor: CretaColor.primary,
-        buttonLables: CretaStudioLang.newsCategories.keys.toList(),
-        buttonValues: CretaStudioLang.newsCategories.values.toList(),
       ),
     );
   }
 
+  // Widget newsCategories() {
+  //   return Padding(
+  //     padding: EdgeInsets.only(
+  //       top: verticalPadding,
+  //       bottom: verticalPadding,
+  //       right: 2.0,
+  //     ),
+  //     child: CretaTabButton(
+  //       defaultString: _getCurrentTypes(),
+  //       onEditComplete: (value) {
+  //         int idx = 0;
+  //         for (String val in CretaStudioLang.newsCategories.values) {
+  //           if (value == val) {
+  //             setState(() {
+  //               _selectedType = CretaStudioLang.newsCategories.values.toList()[idx];
+  //               _newsFuture = getNews(value);
+  //             });
+  //           }
+  //           idx++;
+  //         }
+  //       },
+  //       autoWidth: true,
+  //       height: 32,
+  //       selectedTextColor: Colors.white,
+  //       unSelectedTextColor: CretaColor.primary,
+  //       selectedColor: CretaColor.primary,
+  //       unSelectedColor: Colors.white,
+  //       unSelectedBorderColor: CretaColor.primary,
+  //       buttonLables: CretaStudioLang.newsCategories.keys.toList(),
+  //       buttonValues: CretaStudioLang.newsCategories.values.toList(),
+  //     ),
+  //   );
+  // }
+
   // News Article
-  Widget newsArticle(List<Article> newslist) {
-    return SingleChildScrollView(
-      child: Container(
-        height: 480.0,
-        padding: const EdgeInsets.only(top: 16),
-        child: ListView.builder(
-          itemCount: newslist.length,
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
-          itemBuilder: (context, index) {
-            return NewsTile(
-              imgUrl: newslist[index].urlToImage ?? "",
-              title: newslist[index].title ?? "",
-              desc: newslist[index].description ?? "",
-              content: newslist[index].content ?? "",
-              posturl: newslist[index].articleUrl ?? "",
-            );
-          },
-        ),
-      ),
+  // Widget newsArticle(List<Article> newslist) {
+  //   return SingleChildScrollView(
+  //     child: Container(
+  //       height: 480.0,
+  //       padding: const EdgeInsets.only(top: 16),
+  //       child: ListView.builder(
+  //         itemCount: newslist.length,
+  //         shrinkWrap: true,
+  //         physics: const ClampingScrollPhysics(),
+  //         itemBuilder: (context, index) {
+  //           return NewsTile(
+  //             imgUrl: newslist[index].urlToImage ?? "",
+  //             title: newslist[index].title ?? "",
+  //             desc: newslist[index].description ?? "",
+  //             content: newslist[index].content ?? "",
+  //             posturl: newslist[index].articleUrl ?? "",
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  double x = 80;
+  double y = 160;
+
+  Future<void> _createNews(FrameType frameType, String selectedCategory) async {
+    PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
+    if (pageModel == null) return;
+
+    int frameCounter = 1;
+
+    //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
+    double width = pageModel.width.value * 0.5;
+    double height = pageModel.height.value * 0.5;
+    // double x = (pageModel.width.value - width) / 2;
+    // double y = (pageModel.height.value - height) / 2;
+
+    x += frameCounter * 40.0;
+    y += frameCounter * 40.0;
+
+    FrameManager? frameManager = BookMainPage.pageManagerHolder!.getSelectedFrameManager();
+    if (frameManager == null) {
+      return;
+    }
+
+    // int defaultSubType = -1;
+    int defaultSubType = CretaStudioLang.newsCategories.keys.toList().indexOf(selectedCategory);
+
+    mychangeStack.startTrans();
+    await frameManager.createNextFrame(
+      doNotify: false,
+      size: Size(width, height),
+      pos: Offset(x, y),
+      bgColor1: Colors.transparent,
+      type: frameType,
+      subType: defaultSubType,
     );
+
+    frameCounter++;
+    mychangeStack.endTrans();
   }
 }
 
 class CategoryCard extends StatelessWidget {
   final String? categoryName;
+  final String? imageAssetUrl;
 
-  const CategoryCard({super.key, this.categoryName});
+  const CategoryCard({super.key, this.categoryName, this.imageAssetUrl});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        alignment: Alignment.center,
-        height: 80,
-        width: 80,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.black26),
-        child: Text(
-          categoryName!,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+    return Stack(
+      children: <Widget>[
+        CachedNetworkImage(
+          imageUrl: imageAssetUrl!,
+          height: 80,
+          width: 160,
+          fit: BoxFit.cover,
         ),
-      ),
+        Container(
+          alignment: Alignment.center,
+          height: 80,
+          width: 160,
+          child: Text(
+            categoryName!,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        )
+      ],
     );
   }
 }

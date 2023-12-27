@@ -1,16 +1,14 @@
 import 'dart:convert';
 import 'package:creta03/pages/studio/left_menu/news/article_model.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../login/creta_account_manager.dart';
 
-// String apiKey = CretaAccountManager.getEnterprise!.newsApiKey;
-String apiKey = '5e843446a9e24126a5f40ca6bacfd0d2';
+String apiKey = CretaAccountManager.getEnterprise!.newsApiKey;
 
 class NewsForCategories {
   List<Article> news = [];
   Future<void> getNewsForCategory(String category) async {
-    String baseUrl = "http://newsapi.org/v2/top-headlines?country=in&category=$category";
+    String baseUrl = "http://newsapi.org/v2/top-headlines?country=kr&category=$category";
     var response = await http.get(Uri.parse('$baseUrl&apiKey=$apiKey'));
     var jsonData = jsonDecode(response.body);
 

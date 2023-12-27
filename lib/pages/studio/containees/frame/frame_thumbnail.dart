@@ -322,12 +322,16 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
     }
 
     if (model.isDateTimeType()) {
-      dateTimeFrame(
+      return dateTimeFrame(
         frameModel: model,
         frameManager: widget.frameManager,
         frameMid: model.mid,
         child: _childThumbnail(model, useColor),
       );
+    }
+
+    if (model.isNewsType()) {
+      return newsFrame(frameModel: model);
     }
 
     // if (_contentsManager!.length() == 0) {
