@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:creta03/pages/release_note_popup.dart';
+import 'package:creta03/pages/popup/release_note_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:hycop/hycop.dart';
