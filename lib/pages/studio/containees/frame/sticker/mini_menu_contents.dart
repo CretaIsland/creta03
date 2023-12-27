@@ -6,8 +6,13 @@ import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
+import '../../../../../model/contents_model.dart';
 import '../../../book_main_page.dart';
 import '../../../studio_constant.dart';
+
+//
+// 사용되지 않는 파일임...
+//
 
 class MiniMenuContents extends StatefulWidget {
   final ContentsManager contentsManager;
@@ -66,6 +71,8 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
       top = widget.parentPosition.dy + LayoutConst.miniMenuGap + 2 * LayoutConst.dragHandle;
     }
 
+    ContentsModel? model = widget.contentsManager.getSelected() as ContentsModel?;
+
     return Positioned(
       left: left,
       top: top,
@@ -83,13 +90,13 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _contentsMenu(),
+          children: _contentsMenu(model),
         ),
       ),
     );
   }
 
-  List<Widget> _contentsMenu() {
+  List<Widget> _contentsMenu(ContentsModel? model) {
     return [
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.flipConTooltip,
@@ -130,14 +137,21 @@ class _MiniMenuContentsState extends State<MiniMenuContents> {
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.fullscreenConTooltip,
           tooltipFg: CretaColor.text,
-          icon: Icons.fullscreen_outlined,
+          icon: model != null ? model.fitIcon() : Icons.photo_size_select_large,
           iconColor: CretaColor.secondary,
           buttonColor: CretaButtonColor.secondary,
           decoType: CretaButtonDeco.opacity,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameCopy");
+            if (model == null) {
+              logger.severe('selected contents is null');
+              return;
+            }
+            model.setNextFit();
+            widget.contentsManager.notify();
             widget.onContentsFullscreen.call();
+            setState(() {});
           }),
       if (!widget.contentsManager.iamBusy)
         BTN.fill_blue_i_menu(

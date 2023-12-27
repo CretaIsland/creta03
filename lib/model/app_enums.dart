@@ -220,6 +220,19 @@ enum ContentsFitType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static ContentsFitType fromInt(int? val) => ContentsFitType.values[validCheck(val ?? none.index)];
+
+  BoxFit toBoxFit() {
+    switch (this) {
+      case cover:
+        return BoxFit.cover;
+      case fill:
+        return BoxFit.fill;
+      case free:
+        return BoxFit.contain;
+      default:
+        return BoxFit.fill;
+    }
+  }
 }
 
 // enum BorderPositionType {

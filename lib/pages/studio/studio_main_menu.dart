@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:routemaster/routemaster.dart';
 
+import '../../common/creta_constant.dart';
 import '../../data_io/book_manager.dart';
 import '../../design_system/component/creta_popup.dart';
 import '../../design_system/menu/creta_popup_menu.dart';
@@ -19,6 +20,28 @@ class StudioMainMenu extends StatefulWidget {
 
   @override
   State<StudioMainMenu> createState() => _StudioMainMenuState();
+
+  static void downloadDialog(BuildContext context) {
+    CretaPopup.yesNoDialog(
+      context: context,
+      title: "${CretaStudioLang.export}      ",
+      icon: Icons.file_download_outlined,
+      question: CretaStudioLang.downloadConfirm,
+      noBtText: CretaVariables.isDeveloper
+          ? CretaStudioLang.noBtDnTextDeloper
+          : CretaStudioLang.noBtDnText,
+      yesBtText: CretaStudioLang.yesBtDnText,
+      yesIsDefault: true,
+      onNo: () {
+        if (CretaVariables.isDeveloper) {
+          BookMainPage.bookManagerHolder?.download(context, BookMainPage.pageManagerHolder, false);
+        }
+      },
+      onYes: () {
+        BookMainPage.bookManagerHolder?.download(context, BookMainPage.pageManagerHolder, true);
+      },
+    );
+  }
 }
 
 class _StudioMainMenuState extends State<StudioMainMenu> {
@@ -87,8 +110,8 @@ class _StudioMainMenuState extends State<StudioMainMenu> {
         caption: CretaLang.download,
         onPressed: () {
           logger.fine('download CretaBook !!! in list');
+          StudioMainMenu.downloadDialog(context);
         },
-        disabled: true,
       ),
       CretaMenuItem(
         // 출력한다.

@@ -325,4 +325,6 @@ class StudioConst {
     'NotoSansKR': [100, 300, 400, 500, 700, 900],
     'Macondo': [400],
   };
+
+  static const int maxTextLimit = 128;
 }

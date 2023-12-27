@@ -1,8 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_final_fields
-
+import 'package:provider/provider.dart';
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:creta03/pages/studio/left_menu/music/music_player_frame.dart';
-import 'package:creta03/pages/studio/studio_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop.dart';
@@ -51,7 +50,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   ContentsManager? _contentsManager;
 
   // static bool _isInfoOpen = false;
-  static bool _isLinkControlOpen = false;
+  //static bool _isLinkControlOpen = false;
   static bool _isPlayControlOpen = false;
   //static bool _isTextFontColorOpen = false;
   static bool _textAIOpen = false;
@@ -63,8 +62,10 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
 
   ContentsEventController? _sendEvent;
   //ContentsEventController? _receiveEvent;
-  OffsetEventController? _linkSendEvent;
-  BoolEventController? _linkReceiveEvent;
+  //OffsetEventController? _linkSendEvent;
+  //BoolEventController? _linkReceiveEvent;
+
+  bool _tagEnabled = true;
 
   @override
   void setState(VoidCallback fn) {
@@ -87,11 +88,11 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       _sendEvent = sendEvent;
     }
 
-    final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
-    _linkSendEvent = linkSendEvent;
+    // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
+    // _linkSendEvent = linkSendEvent;
 
-    final BoolEventController linkReceiveEvent = Get.find(tag: 'link-widget-to-property');
-    _linkReceiveEvent = linkReceiveEvent;
+    // final BoolEventController linkReceiveEvent = Get.find(tag: 'link-widget-to-property');
+    // _linkReceiveEvent = linkReceiveEvent;
     //final ContentsEventController receiveEvent = Get.find(tag: 'contents-main-to-property');
     //_receiveEvent = receiveEvent;
 
@@ -110,45 +111,51 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   @override
   Widget build(BuildContext context) {
     //FrameModel frameModel = _contentsManager!.frameModel;
+    bool isNormalText = (widget.model.isText() && widget.model.textType == TextType.normal);
 
-    return Column(children: [
-      // propertyDivider(height: 28),
-      // Padding(
-      //   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.start,
-      //     crossAxisAlignment: CrossAxisAlignment.start,
-      //     children: [
-      //       ..._info(),
-      //     ],
-      //   ),
-      // ),
-      // propertyDivider(height: 28),
-      // Padding(
-      //   padding: EdgeInsets.only(
-      //       left: horizontalPadding, right: horizontalPadding - (isAuthor() ? 16 : 0)),
-      //   child: _copyRight(),
-      // ),
-      if (!widget.model.isMusic()) propertyDivider(height: 28),
-      if (!widget.model.isText() && !widget.model.isMusic()) _linkControl(),
-      if (!widget.model.isText() && !widget.model.isMusic()) propertyDivider(height: 28),
-      if (!widget.model.isText() && !widget.model.isMusic()) _imageControl(),
-      if (widget.model.isText()) _textFontColor(),
-      propertyDivider(height: 28),
-      if (widget.model.isImage()) _imageFilter(),
-      if (widget.model.isText() && widget.model.textType == TextType.normal) _textBorder(),
-      if (widget.model.isText() && widget.model.textType == TextType.normal)
-        propertyDivider(height: 28),
-      if (widget.model.isText() && widget.model.textType == TextType.normal) _textAni(),
-      if (widget.model.isText() && widget.model.textType == TextType.normal)
-        propertyDivider(height: 28),
-      if (widget.model.isText() && widget.model.textType == TextType.normal) _textAI(),
-      if (widget.model.isText() && widget.model.textType == TextType.normal)
-        propertyDivider(height: 28),
-      if (widget.model.isMusic()) _musicAudioControl(),
-      if (!widget.model.isText()) propertyDivider(height: 28),
-      _hashTag(),
-    ]);
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ContentsManager>.value(
+          value: _contentsManager!,
+        ),
+      ],
+      child: Column(children: [
+        // propertyDivider(height: 28),
+        // Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        //   child: Column(
+        //     mainAxisAlignment: MainAxisAlignment.start,
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //       ..._info(),
+        //     ],
+        //   ),
+        // ),
+        // propertyDivider(height: 28),
+        // Padding(
+        //   padding: EdgeInsets.only(
+        //       left: horizontalPadding, right: horizontalPadding - (isAuthor() ? 16 : 0)),
+        //   child: _copyRight(),
+        // ),
+
+        if (!widget.model.isMusic()) propertyDivider(height: 28),
+        // if (!widget.model.isText() && !widget.model.isMusic()) _linkControl(),
+        // if (!widget.model.isText() && !widget.model.isMusic()) propertyDivider(height: 28),
+        if (!widget.model.isText() && !widget.model.isMusic()) _imageControl(),
+        if (widget.model.isText()) _textFontColor(),
+        if (!widget.model.isMusic()) propertyDivider(height: 28),
+        if (widget.model.isImage()) _imageFilter(),
+        if (isNormalText) _textBorder(),
+        if (isNormalText) propertyDivider(height: 28),
+        if (isNormalText) _textAni(),
+        if (isNormalText) propertyDivider(height: 28),
+        if (isNormalText) _textAI(),
+        if (isNormalText) propertyDivider(height: 28),
+        if (widget.model.isMusic()) _musicAudioControl(),
+        if (widget.model.isMusic() || widget.model.isImage()) propertyDivider(height: 28),
+        _hashTag(),
+      ]),
+    );
     //});
   }
 
@@ -807,51 +814,74 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             },
             postfix: '%',
           ),
+          //  피팅 fitting
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(CretaStudioLang.fitting, style: titleStyle),
-                CretaTabButton(
-                  onEditComplete: (value) {
-                    int idx = 1;
-                    for (String val in CretaStudioLang.fitList.values) {
-                      if (value == val) {
-                        widget.model.fit.set(ContentsFitType.values[idx]);
+                Consumer<ContentsManager>(builder: (context, contentsManager, child) {
+                  return CretaTabButton(
+                    key: ValueKey('fit${widget.model.mid}/${widget.model.fit.value}'),
+                    onEditComplete: (value) {
+                      int idx = 1;
+                      for (String val in CretaStudioLang.fitList.values) {
+                        if (value == val) {
+                          widget.model.fit.set(ContentsFitType.values[idx]);
+                          break;
+                        }
+                        idx++;
                       }
-                      idx++;
-                    }
-                    _sendEvent!.sendEvent(widget.model);
-                  },
-                  width: 75,
-                  height: 24,
-                  selectedTextColor: CretaColor.primary,
-                  unSelectedTextColor: CretaColor.text[700]!,
-                  selectedColor: Colors.white,
-                  unSelectedColor: CretaColor.text[100]!,
-                  selectedBorderColor: CretaColor.primary,
-                  defaultString: _getFit(),
-                  buttonLables: CretaStudioLang.fitList.keys.toList(),
-                  buttonValues: CretaStudioLang.fitList.values.toList(),
-                ),
+                      _sendEvent!.sendEvent(widget.model);
+                    },
+                    width: 75,
+                    height: 24,
+                    selectedTextColor: CretaColor.primary,
+                    unSelectedTextColor: CretaColor.text[700]!,
+                    selectedColor: Colors.white,
+                    unSelectedColor: CretaColor.text[100]!,
+                    selectedBorderColor: CretaColor.primary,
+                    defaultString: _getFit(),
+                    buttonLables: CretaStudioLang.fitList.keys.toList(),
+                    buttonValues: CretaStudioLang.fitList.values.toList(),
+                  );
+                }),
               ],
             ),
           ),
           propertyLine(
-            // 이미지 AniType
-            name: CretaStudioLang.ani,
-            widget: CretaToggleButton(
-              width: 54 * 0.75,
-              height: 28 * 0.75,
-              defaultValue: widget.model.imageAniType.value == ImageAniType.move ? true : false,
-              onSelected: (value) {
-                widget.model.imageAniType.set(value ? ImageAniType.move : ImageAniType.none);
-                _sendEvent!.sendEvent(widget.model);
-                setState(() {});
-              },
-            ),
+            // 좌우반전
+            name: CretaStudioLang.flip,
+            widget: Consumer<ContentsManager>(builder: (context, contentsManager, child) {
+              return CretaToggleButton(
+                key: ValueKey('isFlip${widget.model.mid}/${widget.model.isFlip.value}'),
+                width: 54 * 0.75,
+                height: 28 * 0.75,
+                defaultValue: widget.model.isFlip.value,
+                onSelected: (value) {
+                  widget.model.isFlip.set(value);
+                  _sendEvent!.sendEvent(widget.model);
+                  setState(() {});
+                },
+              );
+            }),
           ),
+          if (widget.model.isImage())
+            propertyLine(
+              // 이미지 AniType
+              name: CretaStudioLang.ani,
+              widget: CretaToggleButton(
+                width: 54 * 0.75,
+                height: 28 * 0.75,
+                defaultValue: widget.model.imageAniType.value == ImageAniType.move ? true : false,
+                onSelected: (value) {
+                  widget.model.imageAniType.set(value ? ImageAniType.move : ImageAniType.none);
+                  _sendEvent!.sendEvent(widget.model);
+                  setState(() {});
+                },
+              ),
+            ),
         ],
       ),
     );
@@ -975,68 +1005,68 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     );
   }
 
-  Widget _linkControl() {
-    bool isLinkEditMode = widget.model.isLinkEditMode;
-    return StreamBuilder<bool>(
-        stream: _linkReceiveEvent!.eventStream.stream,
-        builder: (context, snapshot) {
-          if (snapshot.data != null && snapshot.data is bool) {
-            if (snapshot.data != null) {
-              isLinkEditMode = snapshot.data!;
-            }
-          }
-          logger.fine('_linkControl ($isLinkEditMode)');
-          // if (offset == Offset.zero) {
-          //   return const SizedBox.shrink();
-          // }
-          return Padding(
-            padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
-            child: propertyCard(
-              isOpen: _isLinkControlOpen,
-              onPressed: () {
-                setState(() {
-                  _isLinkControlOpen = !_isLinkControlOpen;
-                });
-              },
-              titleWidget: Text(CretaStudioLang.linkControl, style: CretaFont.titleSmall),
-              //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
-              trailWidget: _linkToggle(isLinkEditMode),
-              hasRemoveButton: false,
-              onDelete: () {},
-              bodyWidget: _linkControlBody(isLinkEditMode),
-            ),
-          );
-        });
-  }
+  // Widget _linkControl() {
+  //   bool isLinkEditMode = widget.model.isLinkEditMode;
+  //   return StreamBuilder<bool>(
+  //       stream: _linkReceiveEvent!.eventStream.stream,
+  //       builder: (context, snapshot) {
+  //         if (snapshot.data != null && snapshot.data is bool) {
+  //           if (snapshot.data != null) {
+  //             isLinkEditMode = snapshot.data!;
+  //           }
+  //         }
+  //         logger.fine('_linkControl ($isLinkEditMode)');
+  //         // if (offset == Offset.zero) {
+  //         //   return const SizedBox.shrink();
+  //         // }
+  //         return Padding(
+  //           padding: EdgeInsets.only(left: horizontalPadding, right: horizontalPadding, top: 5),
+  //           child: propertyCard(
+  //             isOpen: _isLinkControlOpen,
+  //             onPressed: () {
+  //               setState(() {
+  //                 _isLinkControlOpen = !_isLinkControlOpen;
+  //               });
+  //             },
+  //             titleWidget: Text(CretaStudioLang.linkControl, style: CretaFont.titleSmall),
+  //             //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
+  //             trailWidget: _linkToggle(isLinkEditMode),
+  //             hasRemoveButton: false,
+  //             onDelete: () {},
+  //             bodyWidget: _linkControlBody(isLinkEditMode),
+  //           ),
+  //         );
+  //       });
+  // }
 
-  Widget _linkControlBody(bool isLinkEditMode) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
-      child: propertyLine(
-        // 링크 편집 모드
-        name: CretaStudioLang.linkControl,
-        widget: _linkToggle(isLinkEditMode),
-      ),
-    );
-  }
+  // Widget _linkControlBody(bool isLinkEditMode) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(top: 16.0),
+  //     child: propertyLine(
+  //       // 링크 편집 모드
+  //       name: CretaStudioLang.linkControl,
+  //       widget: _linkToggle(isLinkEditMode),
+  //     ),
+  //   );
+  // }
 
-  Widget _linkToggle(bool isLinkEditMode) {
-    logger.fine('_linkToggle ($isLinkEditMode)');
-    return CretaToggleButton(
-      key: GlobalObjectKey('_linkToggle$isLinkEditMode${widget.model.mid}'),
-      width: 54 * 0.75,
-      height: 28 * 0.75,
-      defaultValue: isLinkEditMode,
-      onSelected: (value) {
-        widget.model.isLinkEditMode = value;
-        if (widget.model.isLinkEditMode == true) {
-          StudioVariables.isAutoPlay = true;
-        }
-        _linkSendEvent!.sendEvent(Offset(1, 1));
-        setState(() {});
-      },
-    );
-  }
+  // Widget _linkToggle(bool isLinkEditMode) {
+  //   logger.fine('_linkToggle ($isLinkEditMode)');
+  //   return CretaToggleButton(
+  //     key: GlobalObjectKey('_linkToggle$isLinkEditMode${widget.model.mid}'),
+  //     width: 54 * 0.75,
+  //     height: 28 * 0.75,
+  //     defaultValue: isLinkEditMode,
+  //     onSelected: (value) {
+  //       widget.model.isLinkEditMode = value;
+  //       if (widget.model.isLinkEditMode == true) {
+  //         StudioVariables.isAutoPlay = true;
+  //       }
+  //       _linkSendEvent!.sendEvent(Offset(1, 1));
+  //       setState(() {});
+  //     },
+  //   );
+  // }
 
   Widget _hashTag() {
     return Padding(
@@ -1071,6 +1101,12 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
   }
 
   List<Widget> _tagBody() {
+    String val = widget.model.hashTag.value;
+    int rest = StudioConst.maxTextLimit - 2 - val.length;
+    if (rest <= 0) {
+      logger.warning('len1 overflow $rest');
+      _tagEnabled = false;
+    }
     return hashTagWrapper.hashTag(
       hasTitle: false,
       top: 12,
@@ -1078,11 +1114,17 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
       minTextFieldWidth: LayoutConst.rightMenuWidth - horizontalPadding * 2,
       onTagChanged: (value) {},
       onSubmitted: (value) {
+        setState(() {
+          _tagEnabled = (value == null) ? false : true;
+        });
         _hasTagChanged();
       },
       onDeleted: (value) {
         BookMainPage.bookManagerHolder!.notify();
       },
+      limit: StudioConst.maxTextLimit - 2,
+      enabled: _tagEnabled,
+      rest: rest > 0 ? rest - 1 : 0,
     );
   }
 

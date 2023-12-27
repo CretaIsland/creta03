@@ -208,14 +208,13 @@ class _RightMenuFrameAndContentsState extends State<RightMenuFrameAndContents> {
     if (contents == null) {
       // if (frame.isWeatherTYpe()) {
       //   return WeatherProperty(frameModel: frame, frameManager: frameManager);
+      contents = contentsManager.getFirstModel();
+      if (contents == null) {
+        return SizedBox.shrink();
+      }
       // }
-      return SizedBox.shrink();
     }
 
-    contents = contentsManager.getFirstModel();
-    if (contents == null) {
-      return SizedBox.shrink();
-    }
     //print('44444444444444444444444444444444');
     //logger.fine('ContentsProperty ${contents.mid}-----------------');
     //logger.fine('ContentsProperty ${contents.font.value}----------');

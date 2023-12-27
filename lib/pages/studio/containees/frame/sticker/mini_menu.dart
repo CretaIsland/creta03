@@ -11,6 +11,7 @@ import '../../../../../design_system/buttons/creta_button.dart';
 import '../../../../../design_system/buttons/creta_button_wrapper.dart';
 import '../../../../../design_system/creta_color.dart';
 import '../../../../../lang/creta_studio_lang.dart';
+import '../../../../../model/contents_model.dart';
 import '../../../../../model/frame_model.dart';
 import '../../../book_main_page.dart';
 import '../../../left_menu/left_menu_page.dart';
@@ -141,6 +142,11 @@ class MiniMenuState extends State<MiniMenu> {
 
     bool hasContents = widget.contentsManager.hasContents();
 
+    ContentsModel? model;
+    if (hasContents) {
+      model = widget.contentsManager.getSelected() as ContentsModel?;
+    }
+
     return Visibility(
       visible: BookMainPage.miniMenuNotifier!.isShow,
       child: Consumer<ContaineeNotifier>(builder: (context, containeeNotifier, child) {
@@ -154,14 +160,14 @@ class MiniMenuState extends State<MiniMenu> {
             child: MiniMenu.showFrame
                 ? Stack(
                     children: [
-                      if (hasContents) _contentsMenu(),
+                      if (hasContents) _contentsMenu(model),
                       _frameMenu(hasContents),
                     ],
                   )
                 : Stack(
                     children: [
                       _frameMenu(hasContents),
-                      if (hasContents) _contentsMenu(),
+                      if (hasContents) _contentsMenu(model),
                     ],
                   ),
           ),
@@ -358,7 +364,7 @@ class MiniMenuState extends State<MiniMenu> {
     ];
   }
 
-  Widget _contentsMenu() {
+  Widget _contentsMenu(ContentsModel? model) {
     return Align(
       alignment: MiniMenu.showFrame ? Alignment.topRight : Alignment.topLeft,
       child: Container(
@@ -380,13 +386,13 @@ class MiniMenuState extends State<MiniMenu> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _contentsButtons(),
+          children: _contentsButtons(model),
         ),
       ),
     );
   }
 
-  List<Widget> _contentsButtons() {
+  List<Widget> _contentsButtons(ContentsModel? model) {
     return [
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.flipConTooltip,
@@ -398,6 +404,8 @@ class MiniMenuState extends State<MiniMenu> {
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameMain");
+            model!.isFlip.set(!model.isFlip.value);
+            widget.contentsManager.notify();
             widget.onContentsFlip.call();
           }),
       BTN.fill_blue_i_menu(
@@ -427,14 +435,21 @@ class MiniMenuState extends State<MiniMenu> {
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.fullscreenConTooltip,
           tooltipFg: CretaColor.text,
-          icon: Icons.fullscreen_outlined,
+          icon: model != null ? model.fitIcon() : Icons.photo_size_select_large,
           iconColor: CretaColor.secondary,
           buttonColor: CretaButtonColor.secondary,
           decoType: CretaButtonDeco.opacity,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameCopy");
+            if (model == null) {
+              logger.severe('selected contents is null');
+              return;
+            }
+            model.setNextFit();
+            widget.contentsManager.notify();
             widget.onContentsFullscreen.call();
+            setState(() {});
           }),
       if (widget.contentsManager.iamBusy == false)
         BTN.fill_blue_image_menu(

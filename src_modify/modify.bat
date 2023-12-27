@@ -2,7 +2,6 @@
 #cp   C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\firebase_database.dart src_modify\firebase_database.daxt
 #cp   C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\hycop-0.0.6\lib\hycop\database\abs_database.dart src_modify\abs_database.daxt
 
-#copy  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\material_tag_editor-0.1.2\lib\tag_editor.dart src_modify\tag_editor.daxt
 #copy C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\custom_radio_grouped_button-2.2.0\lib\CustomButtons\CustomRadioButton.dart src_modify\CustomRadioButton.daxt
 #copy C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\r_dotted_line_border-0.1.1\lib\r_dotted_line_border.dart  src_modify\r_dotted_line_border.daxt
 #copy  C:\Users\seon\AppData\Local\Pub\Cache\hosted\pub.dev\video_player-2.6.1\lib\video_player.dart src_modify\video_player.daxt
@@ -111,5 +110,5 @@ copy src_modify\scroll_loop_auto_scroll.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted
 #nr.han modify 23/11/22
 copy src_modify\client_browser.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\appwrite-11.0.0\lib\src\client_browser.dart"
 
-#skpark modify 23/11/28
+#skpark modify 23/12/26
 copy src_modify\tag_editor.daxt "$env:LOCALAPPDATA\Pub\Cache\hosted\pub.dev\material_tag_editor-0.1.2\lib\tag_editor.dart"
