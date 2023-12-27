@@ -13,14 +13,7 @@ import '../design_system/creta_font.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
-
-  @override
-  State<IntroPage> createState() => _IntroPageState();
-}
-
-class _IntroPageState extends State<IntroPage> {
-  late VideoPlayerController controller;
-  final List<String> cretaVersionList = [
+  static final List<String> cretaVersionList = [
     "0.4.26",
     "0.4.25",
     "0.4.24",
@@ -34,8 +27,15 @@ class _IntroPageState extends State<IntroPage> {
     "0.4.16",
     "0.4.15",
   ];
-  final String hycopVersion = "0.3.39";
-  final String buildNumber = "20231226-20(${HycopFactory.toServerTypeString()})";
+  static const String hycopVersion = "0.3.39";
+  static final String buildNumber = "20231226-20(${HycopFactory.toServerTypeString()})";
+
+  @override
+  State<IntroPage> createState() => _IntroPageState();
+}
+
+class _IntroPageState extends State<IntroPage> {
+  late VideoPlayerController controller;
 
   @override
   void initState() {
@@ -119,14 +119,14 @@ class _IntroPageState extends State<IntroPage> {
                 child: Center(
                   child: TextButton(
                     child: Text(
-                      "Version ${cretaVersionList.first} (hycop $hycopVersion) - build $buildNumber",
+                      "Version ${IntroPage.cretaVersionList.first} (hycop ${IntroPage.hycopVersion}) - build ${IntroPage.buildNumber}",
                       style: CretaFont.headlineLarge,
                     ),
                     onPressed: () {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return ReleaseNoteDialog(versionList: cretaVersionList);
+                            return ReleaseNoteDialog(versionList: IntroPage.cretaVersionList);
                           });
                     },
                   ),

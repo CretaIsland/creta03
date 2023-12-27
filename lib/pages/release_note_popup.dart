@@ -75,12 +75,12 @@ class _ReleaseNoteDialogState extends State<ReleaseNoteDialog> {
         ));
   }
 
-  Future<void> getReleaseData(List<String> version) async {
+  Future<void> getReleaseData(List<String> versionList) async {
     try {
       http.Response response = await http.post(
         Uri.parse("${CretaAccountManager.getEnterprise!.mediaApiUrl}/getReleaseInfo"),
         headers: {"Content-type": "application/json"},
-        body: jsonEncode({"version": version}),
+        body: jsonEncode({"versionList": versionList}),
       );
       var responseData = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
       releaseData = responseData

@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:creta03/design_system/buttons/creta_button.dart';
+import 'package:creta03/pages/popup/creta_version_popup.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -436,19 +437,26 @@ class Snippet {
           },
         ),
         CretaMenuItem(
-          caption: CretaLang.accountMenu[3], //도움말
-          onPressed: () {},
+          caption: CretaLang.accountMenu[4], // 버전 정보
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return CretaVersionPopUp();
+              });
+          },
         ),
         if (!kReleaseMode)
           CretaMenuItem(
             caption: CretaVariables.isDeveloper
-                ? CretaLang.accountMenu[5]
-                : CretaLang.accountMenu[4], //개발자모드
+                ? CretaLang.accountMenu[6]
+                : CretaLang.accountMenu[5], //개발자모드
             onPressed: () {
               CretaVariables.isDeveloper = !CretaVariables.isDeveloper;
               invalidate?.call();
             },
           ),
+
       ],
       initFunc: () {},
     ).then((value) {
