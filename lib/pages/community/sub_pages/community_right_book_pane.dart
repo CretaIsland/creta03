@@ -3,6 +3,7 @@
 import 'dart:ui';
 import 'package:creta03/common/creta_utils.dart';
 import 'package:creta03/model/subscription_model.dart';
+//import 'package:creta03/pages/community/community_book_page.dart';
 import 'package:flutter/rendering.dart';
 import 'package:universal_html/html.dart';
 import 'package:creta03/design_system/buttons/creta_button.dart';
@@ -81,7 +82,7 @@ class CommunityRightBookPane extends StatefulWidget {
   final Function(BookModel, UserPropertyModel, bool, Function)? onUpdateBookModel;
 
   static String bookId = '';
-  static FavoritesManager? favoritesManagerHolder;
+  static String playlistId = '';
 
   @override
   State<CommunityRightBookPane> createState() => _CommunityRightBookPaneState();
@@ -99,7 +100,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   late TeamManager teamManagerHolder;
   late UserPropertyManager userPropertyManagerHolder;
   late WatchHistoryManager watchHistoryManagerHolder;
-  //late FavoritesManager favoritesManagerHolder;
+  late FavoritesManager favoritesManagerHolder;
   late PlaylistManager playlistManagerHolder;
   late SubscriptionManager subscriptionManagerHolder;
   late ContentsManager contentsManagerHolder;
@@ -121,6 +122,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   late GlobalKey bookKeyParent;
   final CrossCommonJob _crossCommonJob = CrossCommonJob();
   bool _isEditableBook = false;
+  PlaylistModel? _playlistModelOnRightPane;
 
   @override
   void initState() {
@@ -130,10 +132,16 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
     if (CommunityRightBookPane.bookId.isEmpty) {
       //String url = Uri.base.origin;
-      String query = Uri.base.query;
-
-      int pos = query.indexOf('&');
-      CommunityRightBookPane.bookId = (pos > 0) ? query.substring(0, pos) : query;
+      //String query = Uri.base.query;
+      //int pos = query.indexOf('&');
+      //CommunityRightBookPane.bookId = (pos > 0) ? query.substring(0, pos) : query;
+      Uri.base.queryParameters.forEach((key, value) {
+        if (key == 'book') {
+          CommunityRightBookPane.bookId = '$key=$value';
+        } else if (key == 'playlist') {
+          CommunityRightBookPane.playlistId = '$key=$value';
+        }
+      });
     }
 
     StudioVariables.selectedBookMid = CommunityRightBookPane.bookId;
@@ -146,7 +154,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
     bookPublishedManagerHolder = BookPublishedManager();
     channelManagerHolder = ChannelManager();
-    CommunityRightBookPane.favoritesManagerHolder = FavoritesManager();
+    favoritesManagerHolder = FavoritesManager();
     playlistManagerHolder = PlaylistManager();
     teamManagerHolder = TeamManager();
     userPropertyManagerHolder = UserPropertyManager();
@@ -168,8 +176,9 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         QuerySet(channelManagerHolder, _getChannelsFromDB, _resultChannelsFromDB),
         QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
         QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
-        QuerySet(CommunityRightBookPane.favoritesManagerHolder!, _getFavoritesFromDB, _resultFavoritesFromDB),
+        QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
         QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
+        QuerySet(playlistManagerHolder, _getMyPlaylistsFromDB, _resultMyPlaylistsFromDB),
         QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
         QuerySet(subscriptionManagerHolder, _getSubscriptionFromDB, _resultSubscriptionFromDB),
         QuerySet(contentsManagerHolder, _getContentsFromDB, _resultContentsFromDB),
@@ -202,6 +211,11 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _getBooksFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getBooksFromDB()');
+    if (CommunityRightBookPane.bookId.isEmpty) {
+      // no book-data ==> skip
+      bookPublishedManagerHolder.setState(DBState.idle);
+      return;
+    }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightBookPane.bookId));
     bookPublishedManagerHolder.queryByAddedContitions();
@@ -287,11 +301,11 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     if (kDebugMode) print('start _getFavoritesFromDB(${modelList.length})');
     if (_currentBookModel == null) {
       // no book-data ==> skip
-      CommunityRightBookPane.favoritesManagerHolder!.setState(DBState.idle);
+      favoritesManagerHolder.setState(DBState.idle);
       return;
     }
     List<AbsExModel> bookList = [_currentBookModel!];
-    CommunityRightBookPane.favoritesManagerHolder!.queryFavoritesFromBookModelList(bookList);
+    favoritesManagerHolder.queryFavoritesFromBookModelList(bookList);
   }
 
   void _resultFavoritesFromDB(List<AbsExModel> modelList) {
@@ -307,13 +321,32 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   void _getPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_getPlaylistsFromDB');
+    if (CommunityRightBookPane.playlistId.isEmpty) {
+      // no playlist ==> skip
+      playlistManagerHolder.setState(DBState.idle);
+      return;
+    }
+    playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
+    playlistManagerHolder.addWhereClause('mid', QueryValue(value: CommunityRightBookPane.playlistId));
+    playlistManagerHolder.queryByAddedContitions();
+  }
+
+  void _resultPlaylistsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_playlistModelList.modelList.length=${modelList.length}');
+    if (modelList.isNotEmpty) {
+      _playlistModelOnRightPane = modelList[0] as PlaylistModel;
+    }
+  }
+
+  void _getMyPlaylistsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('_getMyPlaylistsFromDB');
     playlistManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
     playlistManagerHolder.addWhereClause(
         'channelId', QueryValue(value: CretaAccountManager.getUserProperty!.channelId));
     playlistManagerHolder.queryByAddedContitions();
   }
 
-  void _resultPlaylistsFromDB(List<AbsExModel> modelList) {
+  void _resultMyPlaylistsFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('_playlistModelList.modelList.length=${modelList.length}');
     for (var plModel in modelList) {
       _playlistModelList.add(plModel as PlaylistModel);
@@ -321,13 +354,16 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   }
 
   void _getPlaylistsBooksFromDB(List<AbsExModel> modelList) {
-    final List<String> bookIdList = [];
+    final Map<String, String> bookIdMap = {};
     for (var model in modelList) {
       PlaylistModel plModel = model as PlaylistModel;
       if (plModel.bookIdList.isNotEmpty) {
-        bookIdList.add(plModel.bookIdList[0]);
+        bookIdMap.putIfAbsent(plModel.bookIdList[0], () => plModel.bookIdList[0]);
       }
     }
+    _playlistModelOnRightPane?.bookIdList.forEach((bookId) => bookIdMap.putIfAbsent(bookId, () => bookId));
+    final List<String> bookIdList = [];
+    bookIdMap.forEach((key, value) => bookIdList.add(key));
     bookPublishedManagerHolder.queryFromIdList(bookIdList);
   }
 
@@ -405,6 +441,10 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     if (_currentBookModel != null) {
       playlistManagerHolder.addToPlaylist(context, _currentBookModel!, _playlistsBooksMap);
     }
+  }
+
+  Widget _getPlaylistWidget() {
+    return Container();
   }
 
   Widget _getHashtagWidget(String hashtag) {
@@ -1199,6 +1239,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       width: _sideAreaRect.width,
       child: Column(
         children: [
+          if (_playlistModelOnRightPane != null) _getPlaylistWidget(),
           // hashtag
           Container(
             //height: 210,

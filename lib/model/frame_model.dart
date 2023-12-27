@@ -168,6 +168,10 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return (frameType == FrameType.map);
   }
 
+  bool isNewsType() {
+    return (frameType == FrameType.news);
+  }
+
   bool isTextType() {
     return (frameType == FrameType.text ||
         frameType == FrameType.digitalWatch ||

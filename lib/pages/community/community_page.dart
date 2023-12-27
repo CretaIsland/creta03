@@ -27,6 +27,7 @@ import '../../design_system/menu/creta_popup_menu.dart';
 //import '../../design_system/text_field/creta_search_bar.dart';
 import '../../lang/creta_lang.dart';
 import '../../data_io/book_manager.dart';
+import '../../data_io/favorites_manager.dart';
 import '../../data_io/subscription_manager.dart';
 import '../../model/app_enums.dart';
 import '../../model/book_model.dart';
@@ -74,6 +75,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   CommunityChannelType _communityChannelType = CommunityChannelType.books;
 
+  late FavoritesManager favoritesManagerHolder;
   PlaylistModel? _currentPlaylistModel;
   BookModel? _currentBookModel;
   ChannelModel? _currentChannelModel;
@@ -106,6 +108,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   void initState() {
     super.initState();
 
+    favoritesManagerHolder = FavoritesManager();
     StudioVariables.isFullscreen = false;
 
     _initLeftMenu();
@@ -1246,7 +1249,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
 
   void _toggleBookToFavorites() async {
     if (_bookIsFavorites) {
-      CommunityRightBookPane.favoritesManagerHolder?.removeFavoritesFromDB(
+      favoritesManagerHolder.removeFavoritesFromDB(
         _currentBookModel!.mid,
         AccountManager.currentLoginUser.email,
       );
@@ -1254,7 +1257,7 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         _bookIsFavorites = false;
       });
     } else {
-      CommunityRightBookPane.favoritesManagerHolder?.addFavoritesToDB(
+      favoritesManagerHolder.addFavoritesToDB(
         _currentBookModel!.mid,
         AccountManager.currentLoginUser.email,
       );

@@ -277,13 +277,23 @@ final routesLoggedOut = RouteMap(
     },
     AppRoutes.communityBook: (routeData) {
       if (AccountManager.currentLoginUser.isLoginedUser) {
-        String url = routeData.fullPath;
-        int pos = url.indexOf('book=');
-        String bookMid = (pos > 0) ? url.substring(pos) : '';
-        CommunityRightBookPane.bookId = bookMid;
+        // String url = routeData.fullPath;
+        // int pos = url.indexOf('book=');
+        // String bookMid = (pos > 0) ? url.substring(pos) : '';
+        // CommunityRightBookPane.bookId = bookMid;
+        CommunityRightBookPane.bookId = '';
+        CommunityRightBookPane.playlistId = '';
+        routeData.queryParameters.forEach((key, value) {
+          if (key == 'book') {
+            CommunityRightBookPane.bookId = '$key=$value';
+          }
+          else if (key == 'playlist') {
+            CommunityRightBookPane.playlistId = '$key=$value';
+          }
+        });
         return TransitionPage(
           child: CommunityPage(
-            key: GlobalObjectKey(bookMid.isNotEmpty ? bookMid : 'NoBookMid'),
+            key: GlobalObjectKey(CommunityRightBookPane.bookId.isNotEmpty ? CommunityRightBookPane.bookId : 'NoBookMid'),
             subPageUrl: AppRoutes.communityBook,
           ),
         );

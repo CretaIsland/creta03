@@ -257,7 +257,6 @@ class PageManager extends CretaManager {
   }
 
   bool gotoNext() {
-    print('gotoNext()');
     String? mid = getNextMid();
     return _movePage(mid);
   }

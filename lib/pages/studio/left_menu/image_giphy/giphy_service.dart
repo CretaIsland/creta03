@@ -14,7 +14,9 @@ class GiphyService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List<dynamic> gifs = data['data'];
-      return gifs.map((gif) => gif['images']['original']['url']).toList();
+      return gifs.map((gif) {
+        return gif['images']['original']['url'];
+      }).toList();
     } else {
       throw Exception('Failed to load GIFs');
     }

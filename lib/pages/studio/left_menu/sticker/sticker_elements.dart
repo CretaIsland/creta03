@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:giphy_get/giphy_get.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
+import '../../../login/creta_account_manager.dart';
 
 class StickerElements extends StatefulWidget {
   final double width;
@@ -40,7 +41,7 @@ class _StickerElementsState extends State<StickerElements> {
   late GiphyClient client = GiphyClient(apiKey: giphyApiKey, randomId: '');
 
   String randomId = '';
-  String giphyApiKey = "GzRfupw1CtmRHpvxH9Y1JLVXv1eUiZ9r";
+  String giphyApiKey = CretaAccountManager.getEnterprise!.giphyApiKey;
 
   @override
   void initState() {

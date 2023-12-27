@@ -262,8 +262,6 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   }
 
   Widget _pageTransition() {
-    print('pageTransition=${_model!.transitionEffect.value}');
-
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: propertyCard(

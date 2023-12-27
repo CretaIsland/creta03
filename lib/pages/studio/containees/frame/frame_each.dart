@@ -598,6 +598,9 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
         frameMid: model.mid,
       );
     }
+    if (model.isNewsType()) {
+      return newsFrame(frameModel: model);
+    }
 
     //print('ClipRect');
     return _childContents(model);
