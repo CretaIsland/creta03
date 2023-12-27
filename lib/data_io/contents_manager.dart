@@ -251,7 +251,7 @@ class ContentsManager extends CretaManager {
     return modelList.length;
   }
 
-  (String, String, BoxFit, bool) getThumbnail() {
+  (String, String, BoxFit, bool, double) getThumbnail() {
     for (var value in valueList()) {
       ContentsModel model = value as ContentsModel;
       if (isVisible(model) == false) {
@@ -263,17 +263,35 @@ class ContentsManager extends CretaManager {
       if (model.thumbnailUrl == null || model.thumbnailUrl!.isEmpty) {
         if (model.isImage()) {
           if (model.remoteUrl != null && model.remoteUrl!.isNotEmpty) {
-            return (model.name, model.remoteUrl!, model.fit.value.toBoxFit(), model.isFlip.value);
+            return (
+              model.name,
+              model.remoteUrl!,
+              model.fit.value.toBoxFit(),
+              model.isFlip.value,
+              model.angle.value,
+            );
           }
           if (model.url.isNotEmpty) {
-            return (model.name, model.url, model.fit.value.toBoxFit(), model.isFlip.value);
+            return (
+              model.name,
+              model.url,
+              model.fit.value.toBoxFit(),
+              model.isFlip.value,
+              model.angle.value,
+            );
           }
         }
         continue;
       }
-      return (model.name, model.thumbnailUrl!, model.fit.value.toBoxFit(), model.isFlip.value);
+      return (
+        model.name,
+        model.thumbnailUrl!,
+        model.fit.value.toBoxFit(),
+        model.isFlip.value,
+        model.angle.value,
+      );
     }
-    return ('', '', BoxFit.cover, false);
+    return ('', '', BoxFit.cover, false, 0.0);
 
     // List<String?> list = valueList().map((value) {
     //   ContentsModel model = value as ContentsModel;

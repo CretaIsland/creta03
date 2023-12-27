@@ -12,6 +12,7 @@ import 'package:hycop/hycop/enum/model_enums.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_color.dart';
@@ -250,7 +251,8 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
               late String name;
               late BoxFit boxfit;
               late bool isFlip;
-              (name, thumbnailUrl, boxfit, isFlip) = contentsManager.getThumbnail();
+              late double angle;
+              (name, thumbnailUrl, boxfit, isFlip, angle) = contentsManager.getThumbnail();
               if (thumbnailUrl.isNotEmpty) {
                 logger.info("---------------name=$name");
                 logger.info("thumbnail=$thumbnailUrl");
@@ -268,12 +270,19 @@ class ContentsThumbnailState extends State<ContentsThumbnail>
                   )),
                 );
 
+                Widget angleImage = angle > 0
+                    ? Transform.rotate(
+                        angle: CretaUtils.degreeToRadian(angle),
+                        child: drawImage,
+                      )
+                    : drawImage;
+
                 return isFlip
                     ? Transform(
                         alignment: Alignment.center,
                         transform: Matrix4.rotationY(pi),
-                        child: drawImage)
-                    : drawImage;
+                        child: angleImage)
+                    : angleImage;
               } else {
                 logger.warning('noThumbnail !!!');
               }

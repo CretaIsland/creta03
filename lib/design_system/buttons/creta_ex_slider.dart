@@ -55,6 +55,15 @@ class _CretaExSliderState extends State<CretaExSlider> {
   }
 
   @override
+  void didUpdateWidget(CretaExSlider oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _value = widget.value;
+      //setState(() {});
+    }
+  }
+
+  @override
   void setState(VoidCallback fn) {
     if (mounted) super.setState(fn);
   }

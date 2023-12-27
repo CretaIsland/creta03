@@ -155,6 +155,7 @@ class ContentsModel extends CretaModel {
   late UndoAble<TextAlign> align; // horizontal 정렬
   late UndoAble<int> valign; // vertical 정렬
   late UndoAble<double> anyDuration;
+  late UndoAble<double> angle;
   late UndoAble<bool> isTTS;
   late UndoAble<bool> isFlip;
   late UndoAble<String> lang;
@@ -211,6 +212,7 @@ class ContentsModel extends CretaModel {
         align,
         valign,
         anyDuration,
+        angle,
         isTTS,
         isFlip,
         lang,
@@ -299,6 +301,7 @@ class ContentsModel extends CretaModel {
     align = UndoAble<TextAlign>(TextAlign.center, mid, 'align');
     valign = UndoAble<int>(0, mid, 'valign');
     anyDuration = UndoAble<double>(0, mid, 'anyDuration');
+    angle = UndoAble<double>(0, mid, 'angle');
     isTTS = UndoAble<bool>(false, mid, 'isTTS');
     isFlip = UndoAble<bool>(false, mid, 'isFlip');
     lang = UndoAble<String>('ko', mid, 'lang');
@@ -365,6 +368,7 @@ class ContentsModel extends CretaModel {
     aniType = UndoAble<TextAniType>(srcContents.aniType.value, mid, 'aniType');
     imageAniType = UndoAble<ImageAniType>(srcContents.imageAniType.value, mid, 'imageAniType');
     anyDuration = UndoAble<double>(srcContents.anyDuration.value, mid, 'anyDuration');
+    angle = UndoAble<double>(srcContents.angle.value, mid, 'angle');
     isTTS = UndoAble<bool>(srcContents.isTTS.value, mid, 'isTTS');
     isFlip = UndoAble<bool>(srcContents.isFlip.value, mid, 'isFlip');
     lang = UndoAble<String>(srcContents.lang.value, mid, 'lang');
@@ -439,6 +443,7 @@ class ContentsModel extends CretaModel {
     aniType.init(srcContents.aniType.value);
     imageAniType.init(srcContents.imageAniType.value);
     anyDuration.init(srcContents.anyDuration.value);
+    angle.init(srcContents.angle.value);
     isTTS.init(srcContents.isTTS.value);
     isFlip.init(srcContents.isFlip.value);
     lang.init(srcContents.lang.value);
@@ -539,6 +544,7 @@ class ContentsModel extends CretaModel {
     aniType.setDD(TextAniType.fromInt(map["aniType"] ?? 0), save: false, noUndo: true);
     imageAniType.setDD(ImageAniType.fromInt(map["imageAniType"] ?? 0), save: false, noUndo: true);
     anyDuration.setDD(map["anyDuration"] ?? 0, save: false, noUndo: true);
+    angle.setDD(map["angle"] ?? 0, save: false, noUndo: true);
     isTTS.setDD(map["isTTS"] ?? false, save: false, noUndo: true);
     isFlip.setDD(map["isFlip"] ?? false, save: false, noUndo: true);
     lang.setDD(map["lang"] ?? 'ko', save: false, noUndo: true);
@@ -598,6 +604,7 @@ class ContentsModel extends CretaModel {
         "aniType": aniType.value.index,
         "imageAniType": imageAniType.value.index,
         "anyDuration": anyDuration.value,
+        "angle": angle.value,
         "isTTS": isTTS.value,
         "isFlip": isFlip.value,
         "lang": lang.value,

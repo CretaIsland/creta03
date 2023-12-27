@@ -12,8 +12,11 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 
 //import '../../../../common/creta_utils.dart';
 //import '../../../../common/creta_utils.dart';
+import '../../../../common/creta_constant.dart';
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/contents_manager.dart';
+import '../../../../design_system/component/creta_popup.dart';
+import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
@@ -125,6 +128,16 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
         });
   }
 
+  Future<void> _deleteFrame(FrameModel model) async {
+    await removeItem(model.mid);
+
+    BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
+    _sendEvent?.sendEvent(model);
+    setState(() {});
+    LeftMenuPage.initTreeNodes();
+    LeftMenuPage.treeInvalidate();
+  }
+
   Widget showFrame() {
     //FrameModel? model = frameManager!.getSelected() as FrameModel?;
     //logger.fine('showFrame $applyScale  ${StudioVariables.applyScale}');
@@ -149,13 +162,28 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       },
       onFrameDelete: (mid) async {
         logger.fine('Frame onFrameDelete $mid');
-        FrameModel? model = await removeItem(mid);
+        FrameModel? model = frameManager!.getModel(mid) as FrameModel?;
         if (model != null) {
-          BookMainPage.containeeNotifier!.set(ContaineeEnum.Page, doNoti: true);
-          _sendEvent?.sendEvent(model);
-          setState(() {});
-          LeftMenuPage.initTreeNodes();
-          LeftMenuPage.treeInvalidate();
+          if (model.isOverlay.value == true) {
+            // ignore: use_build_context_synchronously
+            CretaPopup.yesNoDialog(
+              context: context,
+              title: "${CretaStudioLang.deleteFrameTooltip}      ",
+              icon: Icons.file_download_outlined,
+              question: '${CretaStudioLang.isOverlayFrame} ${CretaStudioLang.deleteConfirm}',
+              noBtText: CretaVariables.isDeveloper
+                  ? CretaStudioLang.noBtDnTextDeloper
+                  : CretaStudioLang.noBtDnText,
+              yesBtText: CretaStudioLang.yesBtDnText,
+              yesIsDefault: true,
+              onNo: () {},
+              onYes: () async {
+                await _deleteFrame(model);
+              },
+            );
+          } else {
+            await _deleteFrame(model);
+          }
         }
       },
       onFrameBack: (aMid, bMid) {
@@ -535,7 +563,20 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
       model.isRemoved.set(true);
       await frameManager!.removeChild(model.mid);
       if (model.isOverlay.value == true) {
-        BookMainPage.removeOverlay(model.mid);
+        model.isOverlay.set(false);
+        MyChange<FrameModel> c = MyChange<FrameModel>(
+          model,
+          execute: () async {
+            BookMainPage.removeOverlay(model.mid);
+          },
+          redo: () async {
+            BookMainPage.removeOverlay(model.mid);
+          },
+          undo: (FrameModel old) async {
+            BookMainPage.addOverlay(model);
+          },
+        );
+        mychangeStack.add(c);
       }
       return model;
     }

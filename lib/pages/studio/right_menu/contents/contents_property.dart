@@ -867,6 +867,31 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
               );
             }),
           ),
+          propertyLine(
+            // 회전 각도
+            name: CretaStudioLang.rotateConTooltip,
+            widget: Consumer<ContentsManager>(builder: (context, contentsManager, child) {
+              return RepaintBoundary(
+                child: CretaExSlider(
+                  //key: ValueKey('angle${widget.model.mid}/${widget.model.angle.value}'),
+                  valueType: SliderValueType.normal,
+                  value: widget.model.angle.value,
+                  min: 0,
+                  max: 360,
+                  onChanngeComplete: (val) {
+                    widget.model.angle.set(val);
+                    _sendEvent!.sendEvent(widget.model);
+                    setState(() {});
+                  },
+                  onChannged: (val) {
+                    widget.model.angle.set(val);
+                    _sendEvent!.sendEvent(widget.model);
+                    setState(() {});
+                  },
+                ),
+              );
+            }),
+          ),
           if (widget.model.isImage())
             propertyLine(
               // 이미지 AniType

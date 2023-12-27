@@ -315,6 +315,14 @@ class CretaStudioLang {
   static const String iconOption = "아이콘 선택";
   static const String googleMapSavedList = "저장돤 목록";
 
+  static List<String> pageTransitionType = [
+    "없음",
+    "서서히 없어지고 나타남", // AnimatedOpacity
+    "점점 작아지고 커지기", // AnimatedScale , ScaleTransition
+    "좌우 슬라이딩", // AnimatedPositioned , SlideTransition
+    "상하 슬라이딩", // AnimatedPositioned ,SlideTransition
+  ];
+
   static List<String> animationTypes = [
     "없음",
     "페이드 인",
@@ -404,6 +412,7 @@ class CretaStudioLang {
   static const String ani = '애니메이션';
   static const String flip = '좌우 반전';
   static const String speed = '속도';
+  static const String transitionSpeed = '진행 시간(초)';
   static const String delay = '딜레이';
   static const String border = '테두리';
   static const String shadow = '그림자';
@@ -657,4 +666,8 @@ class CretaStudioLang {
   static String textOverflow1 = '텍스트 길이 제한에 걸렸습니다';
   static String textOverflow2 = '글자 이내로 입력하세요요.';
   static String hashTagHint = '추가할 해쉬 태그를 입력하고 엔터키를 누르세요.';
+
+  static String notImpl = '아직 구현되지 않았습니다.';
+  static String isOverlayFrame = '이 프레임은 전체 페이지에 고정된 프레임입니다. 삭제하면 모든 페이지에서 이 프레임이 없어집니다';
+  static String deleteConfirm = '정말로 삭제하시겠습니까?';
 }

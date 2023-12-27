@@ -17,6 +17,7 @@ import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
+import '../pages/studio/containees/page/page_main.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
@@ -256,21 +257,28 @@ class PageManager extends CretaManager {
   }
 
   bool gotoNext() {
+    print('gotoNext()');
     String? mid = getNextMid();
-    if (mid != null) {
-      //DraggableStickers.isFrontBackHover = false;
-      setSelectedMid(mid);
-      return true;
-    }
-    return false;
+    return _movePage(mid);
   }
 
   bool gotoPrev() {
     String? mid = getPrevMid();
+    return _movePage(mid);
+  }
+
+  bool _movePage(String? mid) {
     if (mid != null) {
       //DraggableStickers.isFrontBackHover = false;
-      setSelectedMid(mid);
-      return true;
+      PageMainState.transitionIndicator = 0.1;
+      notify();
+      PageModel? model = getModelByMid(mid) as PageModel?;
+      if (model != null && model.transitionEffect.value > 0) {
+        Future.delayed(model.getPageDuration(), () {
+          setSelectedMid(mid);
+        });
+        return true;
+      }
     }
     return false;
   }

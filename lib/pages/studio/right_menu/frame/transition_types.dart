@@ -11,6 +11,7 @@ import '../../../../model/app_enums.dart';
 import '../../../../model/contents_model.dart';
 import '../../../../model/frame_model.dart';
 
+// 콘텐츠 넘김효과,  즉 카로셀등을 구현하기 위한 Widget
 class TransitionTypes extends StatefulWidget {
   final double? width;
   final double? height;

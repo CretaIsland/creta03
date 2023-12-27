@@ -68,6 +68,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
   GradationType gradationType = GradationType.none;
   TextureType textureType = TextureType.none;
   PageEventController? _receiveEvent;
+
+  static double transitionIndicator = 1.0;
+
   //BoolEventController? _lineDrawReceiveEvent;
   //FrameEventController? _receiveEventFromProperty;
 
@@ -111,6 +114,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
         LinkParams.connectedMid = '';
         LinkParams.connectedName = '';
       }
+      setState(() {
+        PageMainState.transitionIndicator = 1.0;
+      });
     });
   }
 
@@ -128,6 +134,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     return Stack(
       children: [
         _build(context),
+        // 커서를 추적하면서,  프레임을 만들거나, 텍스트를 신규하기 위한 위짓.
         TopMenuTracer(
           frameManager: frameManager,
         ),
@@ -187,9 +194,9 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
                         onLongPressDown: _pageClicked,
                         onTapUp: (details) {},
                         onSecondaryTapDown: _showRightMouseMenu,
-                        child: _animatedPage(),
+                        child: _textureBox(), //_animatedPage(),
                       )
-                    : _animatedPage(),
+                    : _textureBox(), //_animatedPage(),
               ),
             ),
             //),
@@ -238,23 +245,23 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     );
   }
 
-  Widget _animatedPage() {
-    List<AnimationType> animations =
-        AnimationType.toAniListFromInt(widget.pageModel.transitionEffect.value);
-    if (animations.isEmpty || BookMainPage.pageManagerHolder!.isSelectedChanged() == false) {
-      return _textureBox();
-    }
-    return getAnimation(
-      _textureBox(),
-      animations,
-      widget.pageModel.mid,
-    );
-  }
+  // Widget _animatedPage() {
+  //   List<AnimationType> animations =
+  //       AnimationType.toAniListFromInt(widget.pageModel.transitionEffect.value);
+  //   if (animations.isEmpty || BookMainPage.pageManagerHolder!.isSelectedChanged() == false) {
+  //     return _textureBox();
+  //   }
+  //   return getAnimation(
+  //     _textureBox(),
+  //     animations,
+  //     widget.pageModel.mid,
+  //   );
+  // }
 
   Widget _textureBox() {
     if (textureType == TextureType.glass) {
       logger.finest('GrassType!!!');
-      return _drawPage(false).asCretaGlass(
+      return _realPageArea(false).asCretaGlass(
         width: StudioVariables.virtualWidth,
         height: StudioVariables.virtualHeight,
         pageWidth: widget.pageWidth,
@@ -266,7 +273,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
         bgColor2: bgColor2,
       );
     }
-    return _drawPage(true);
+    return _realPageArea(true);
   }
 
   // Widget _clickPage(bool useColor) {
@@ -276,14 +283,18 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
   //           behavior: HitTestBehavior.deferToChild,
   //           onLongPressDown: pageClicked,
   //           onTapUp: (details) {},
-  //           child: _drawPage(useColor),
+  //           child: _realPageArea(useColor),
   //         )
-  //       : _drawPage(useColor);
+  //       : _realPageArea(useColor);
   // }
 
-  Widget _drawPage(bool useColor) {
+//
+// 여기사 진짜 Page 부분만을 그리는 부분이다.  !!!!!!!!
+// real Page area
+  Widget _realPageArea(bool useColor) {
     //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
-    return Stack(
+
+    Widget pageWidget = Stack(
       children: [
         Align(
           alignment: Alignment.center,
@@ -303,6 +314,30 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
         //_pageController(),
       ],
     );
+
+    return _pageTransition(pageWidget);
+  }
+
+  Widget _pageTransition(Widget child) {
+    if (widget.pageModel.transitionEffect.value == PageTransitionType.fade.value) {
+      // fade out, fade in
+      return AnimatedOpacity(
+        // // fade out 효과 test 를 위한 코드임.  skpark test code
+        opacity: PageMainState.transitionIndicator,
+        duration: widget.pageModel.getPageDuration(),
+        child: child,
+      );
+    } // fadeIn,fadeOut
+    if (widget.pageModel.transitionEffect.value == PageTransitionType.scale.value) {
+      // fade out, fade in
+      return AnimatedScale(
+        // // fade out 효과 test 를 위한 코드임.  skpark test code
+        scale: PageMainState.transitionIndicator,
+        duration: widget.pageModel.getPageDuration(),
+        child: child,
+      );
+    } // fadeIn,fa
+    return child;
   }
 
   // ignore: unused_element

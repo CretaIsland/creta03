@@ -2,6 +2,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
+import '../../lang/creta_studio_lang.dart';
 import '../component/snippet.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -154,9 +155,10 @@ class BTN {
     CretaButtonDeco decoType = CretaButtonDeco.opacity,
     void Function(bool)? onHover,
     bool noHoverEffect = false,
+    bool enable = true,
   }) {
     return CretaButton(
-      tooltip: tooltip,
+      tooltip: enable ? tooltip : '$tooltip, ${CretaStudioLang.notImpl}',
       tooltipBg: tooltipBg,
       tooltipFg: tooltipFg,
       width: width,
@@ -175,7 +177,7 @@ class BTN {
           child: Icon(
             icon,
             size: iconSize,
-            color: iconColor,
+            color: enable ? iconColor : Colors.grey,
           ),
         ),
       ),

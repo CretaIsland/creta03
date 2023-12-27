@@ -165,4 +165,11 @@ mixin CretaStyleMixin {
       "isShow": isShow.value,
     };
   }
+
+  Duration getPageDuration() {
+    if (duration.value < 1 || duration.value > 10) {
+      return Duration(seconds: 2);
+    }
+    return Duration(seconds: duration.value);
+  }
 }

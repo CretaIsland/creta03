@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../common/creta_utils.dart';
 import '../../model/app_enums.dart';
 import '../../pages/studio/studio_variables.dart';
 import '../creta_abs_media_widget.dart';
@@ -127,6 +128,22 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
       ),
     );
 
+    double angle = player.model!.angle.value;
+    Widget angleImage = angle > 0
+        ? Transform.rotate(
+            angle: CretaUtils.degreeToRadian(angle),
+            child: drawImage,
+          )
+        : drawImage;
+
+    Widget flipImage = player.model!.isFlip.value == true
+        ? Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationY(pi), //  좌우를 반전시킨다.
+            child: angleImage,
+          )
+        : angleImage;
+
     if (player.model!.imageAniType.value == ImageAniType.move) {
       return OverflowBox(
         maxHeight: size.height * 1.5,
@@ -136,13 +153,7 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
           curve: Curves.easeInOutCubic,
           width: _animateFlag ? size.width : size.width * 1.5,
           height: _animateFlag ? size.height : size.height * 1.5,
-          child: player.model!.isFlip.value == true
-              ? Transform(
-                alignment: Alignment.center,
-                  transform: Matrix4.rotationY(pi), //  좌우를 반전시킨다.
-                  child: drawImage,
-                )
-              : drawImage,
+          child: flipImage,
 
           // child: Stack(
           //   children: [
@@ -175,12 +186,6 @@ class CretaImagePlayerWidgetState extends State<CretaImagerWidget>
       );
     }
 
-    return player.model!.isFlip.value == true
-        ? Transform(
-          alignment: Alignment.center,
-            transform: Matrix4.rotationY(pi), //  좌우를 반전시킨다.
-            child: drawImage,
-          )
-        : drawImage;
+    return flipImage;
   }
 }

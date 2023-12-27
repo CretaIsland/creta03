@@ -160,6 +160,22 @@ enum AnimationType {
   }
 }
 
+enum PageTransitionType {
+  none(0),
+  fade(1),
+  scale(2),
+  slidingX(3),
+  slidingY(4),
+  end(999999);
+
+  const PageTransitionType(this.value);
+  final int value;
+
+  static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
+  static PageTransitionType fromInt(int? val) =>
+      PageTransitionType.values[validCheck(val ?? none.index)];
+}
+
 enum NextContentTypes {
   none,
   normalCarousel,

@@ -212,6 +212,7 @@ class MiniMenuState extends State<MiniMenu> {
 
   List<Widget> _frameButtons(bool hasContents) {
     return [
+      // 보이기 안보이기
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.showUnshow,
           tooltipFg: CretaColor.text,
@@ -230,6 +231,7 @@ class MiniMenuState extends State<MiniMenu> {
             LeftMenuPage.treeInvalidate();
             setState(() {});
           }),
+        // 메인 프레임 설정
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.mainFrameTooltip,
           tooltipFg: CretaColor.text,
@@ -242,6 +244,7 @@ class MiniMenuState extends State<MiniMenu> {
             logger.fine("MinuMenu onFrameMain");
             widget.onFrameMain.call();
           }),
+          // 앞으로 가져오기
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.frontFrameTooltip,
           tooltipFg: CretaColor.text,
@@ -258,6 +261,7 @@ class MiniMenuState extends State<MiniMenu> {
             logger.fine("MinuMenu onFrameFront");
             widget.onFrameFront.call();
           }),
+          //뒤로 보내기
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.backFrameTooltip,
           tooltipFg: CretaColor.text,
@@ -274,6 +278,7 @@ class MiniMenuState extends State<MiniMenu> {
             logger.fine("MinuMenu onFrameBack");
             widget.onFrameBack.call();
           }),
+          // 복사하기
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.copyFrameTooltip,
           tooltipFg: CretaColor.text,
@@ -298,6 +303,7 @@ class MiniMenuState extends State<MiniMenu> {
       //       logger.fine("MinuMenu onFrameRotate");
       //       widget.onFrameRotate.call();
       //     }),
+      // 링크하기
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.linkFrameTooltip,
           tooltipFg: CretaColor.text,
@@ -333,6 +339,8 @@ class MiniMenuState extends State<MiniMenu> {
       //       logger.fine("MinuMenu onFrameDelete");
       //       widget.onFrameDelete.call();
       //     }),
+      
+      // 삭제하기
       BTN.fill_blue_image_menu(
           tooltipFg: CretaColor.text,
           tooltip: CretaStudioLang.deleteFrameTooltip,
@@ -345,6 +353,8 @@ class MiniMenuState extends State<MiniMenu> {
             logger.fine("MinuMenu onFrameDelete");
             widget.onFrameDelete.call();
           }),
+
+          
       if (hasContents && MiniMenu.showFrame == false)
         BTN.fill_blue_i_menu(
             tooltipFg: CretaColor.text,
@@ -394,6 +404,7 @@ class MiniMenuState extends State<MiniMenu> {
 
   List<Widget> _contentsButtons(ContentsModel? model) {
     return [
+      // 콘텐츠 반전
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.flipConTooltip,
           tooltipFg: CretaColor.text,
@@ -408,6 +419,7 @@ class MiniMenuState extends State<MiniMenu> {
             widget.contentsManager.notify();
             widget.onContentsFlip.call();
           }),
+      // 콘텐츠 회전
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.rotateConTooltip,
           tooltipFg: CretaColor.text,
@@ -418,8 +430,12 @@ class MiniMenuState extends State<MiniMenu> {
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameFront");
+            double newAngle = (((model!.angle.value / 15).floor() + 1) * 15) % 360;
+            model.angle.set(newAngle);
+            widget.contentsManager.notify();
             widget.onContentsRotate.call();
           }),
+      // 콘텐츠 크롭
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.cropConTooltip,
           tooltipFg: CretaColor.text,
@@ -427,11 +443,13 @@ class MiniMenuState extends State<MiniMenu> {
           iconColor: CretaColor.secondary,
           buttonColor: CretaButtonColor.secondary,
           decoType: CretaButtonDeco.opacity,
+          enable: false,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onFrameBack");
             widget.onContentsCrop.call();
           }),
+      // 콘텐츠 맞춤
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.fullscreenConTooltip,
           tooltipFg: CretaColor.text,
@@ -451,6 +469,7 @@ class MiniMenuState extends State<MiniMenu> {
             widget.onContentsFullscreen.call();
             setState(() {});
           }),
+      // 콘텐츠 삭제
       if (widget.contentsManager.iamBusy == false)
         BTN.fill_blue_image_menu(
             tooltipFg: CretaColor.text,
@@ -476,6 +495,7 @@ class MiniMenuState extends State<MiniMenu> {
       //       logger.fine("MinuMenu onFrameDelete");
       //       widget.onContentsDelete.call();
       //     }),
+      // 콘텐츠 편집
       BTN.fill_blue_i_menu(
           tooltip: CretaStudioLang.editConTooltip,
           tooltipFg: CretaColor.text,
@@ -483,11 +503,13 @@ class MiniMenuState extends State<MiniMenu> {
           icon: Icons.edit_outlined,
           decoType: CretaButtonDeco.opacity,
           buttonColor: CretaButtonColor.secondary,
+          enable: false,
           onPressed: () {
             BookMainPage.containeeNotifier!.setFrameClick(true);
             logger.fine("MinuMenu onContentsEdit");
             widget.onContentsEdit.call();
           }),
+
       if (MiniMenu.showFrame)
         BTN.fill_blue_i_menu(
             tooltipFg: CretaColor.text,

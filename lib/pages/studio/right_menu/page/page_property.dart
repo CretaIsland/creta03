@@ -7,7 +7,10 @@ import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../../../../common/creta_utils.dart';
+import '../../../../design_system/component/creta_proprty_slider.dart';
 import '../../../../design_system/component/example_box_mixin.dart';
+import '../../../../design_system/creta_color.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
@@ -259,16 +262,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   }
 
   Widget _pageTransition() {
-    logger.finest('pageTransition=${_model!.transitionEffect.value}');
-    List<AnimationType> animations = AnimationType.toAniListFromInt(_model!.transitionEffect.value);
-    String trails = '';
-    for (var ele in animations) {
-      logger.finest('anymationTy=[$ele]');
-      if (trails.isNotEmpty) {
-        trails += "+";
-      }
-      trails += CretaStudioLang.animationTypes[ele.index];
-    }
+    print('pageTransition=${_model!.transitionEffect.value}');
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: propertyCard(
@@ -281,7 +276,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         titleWidget: Text(CretaStudioLang.transitionPage, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(
-          trails,
+          CretaStudioLang.pageTransitionType[_model!.transitionEffect.value],
           textAlign: TextAlign.right,
           style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
         ),
@@ -290,7 +285,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
           setState(() {
             _model!.transitionEffect.set(0);
           });
-          BookMainPage.bookManagerHolder!.notify();
+          BookMainPage.pageManagerHolder!.notify();
         },
         bodyWidget: _transitionBody(),
       ),
@@ -300,25 +295,42 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   Widget _transitionBody() {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (int i = 1; i < AnimationType.end.index; i++)
-            AniExampleBox(
-                key: ValueKey(
-                    'page=${AnimationType.values[i].name}+${AnimationType.values[i].value == _model!.transitionEffect.value}'),
-                model: _model!,
-                name: CretaStudioLang.animationTypes[i],
-                aniType: AnimationType.values[i],
-                selected: AnimationType.values[i].value == _model!.transitionEffect.value,
-                onSelected: () {
-                  setState(() {});
-                  BookMainPage.bookManagerHolder!.notify();
+          for (int i = 1; i < PageTransitionType.end.index; i++)
+            TextButton(
+                child: Text(
+                  CretaStudioLang.pageTransitionType[i],
+                  style: _model!.transitionEffect.value == i
+                      ? CretaFont.titleMedium.copyWith(color: CretaColor.primary)
+                      : CretaFont.titleSmall.copyWith(color: CretaColor.text[300]),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _model!.transitionEffect.set(i);
+                  });
+                  BookMainPage.pageManagerHolder!.notify();
                 }),
-          // AniExampleBox(model: _model!, name: CretaStudioLang.flip, aniType: AnimationType.flip),
-          // AniExampleBox(model: _model!, name: CretaStudioLang.shake, aniType: AnimationType.shake),
-          // AniExampleBox(model: _model!, name: CretaStudioLang.shimmer, aniType: AnimationType.shimmer),
+          CretaPropertySlider(
+            // page transition duration
+            key: GlobalKey(),
+            name: CretaStudioLang.transitionSpeed,
+            min: 1,
+            max: 10,
+            value: CretaUtils.validCheckDouble(_model!.duration.value.toDouble(), 1, 10),
+            valueType: SliderValueType.normal,
+            onChannged: (value) {
+              // widget.model.opacity.set(value);
+              // //widget.model.save();
+              // logger.fine('opacity=${widget.model.opacity.value}');
+              // _sendEvent!.sendEvent(widget.model);
+            },
+            onChanngeComplete: (value) {
+              _model!.duration.set(value.round());
+              _sendEvent!.sendEvent(_model!);
+            },
+          ),
         ],
       ),
     );
