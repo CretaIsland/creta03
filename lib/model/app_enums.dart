@@ -175,6 +175,33 @@ enum PageTransitionType {
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static PageTransitionType fromInt(int? val) =>
       PageTransitionType.values[validCheck(val ?? none.index)];
+
+  String getTitle() {
+    for (var item in CretaStudioLang.pageTransitionType.entries) {
+      if (item.value == index) {
+        return item.key;
+      }
+    }
+    return '';
+  }
+
+  static String getTitleFromInt(int idx) {
+    for (var item in CretaStudioLang.pageTransitionType.entries) {
+      if (item.value == idx) {
+        return item.key;
+      }
+    }
+    return '';
+  }
+
+  static String getTitleFromInt2(int idx) {
+    for (var item in CretaStudioLang.pageTransitionType2.entries) {
+      if (item.value == idx) {
+        return item.key;
+      }
+    }
+    return '';
+  }
 }
 
 enum NextContentTypes {

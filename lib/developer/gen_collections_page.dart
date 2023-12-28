@@ -65,7 +65,7 @@ class _GenCollectionsPageState extends State<GenCollectionsPage> {
   }
 }
 
-void saveLogToFile(String logData, String outFileName, {String folder  = "download"}) {
+void saveLogToFile(String logData, String outFileName, {String folder = "download"}) {
   final blob = html.Blob([logData]);
   final url = html.Url.createObjectUrlFromBlob(blob);
   html.AnchorElement(href: url)
@@ -203,6 +203,9 @@ String eachCollection(AbsExModel model, String collectionId) {
         type = 'integer';
       }
       if (ele.key == 'transitionEffect') {
+        type = 'integer';
+      }
+      if (ele.key == 'transitionEffect2') {
         type = 'integer';
       }
       if (ele.key == 'duration') {

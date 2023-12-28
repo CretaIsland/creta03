@@ -326,13 +326,25 @@ class CretaStudioLang {
   static const String iconOption = "아이콘 선택";
   static const String googleMapSavedList = "저장돤 목록";
 
-  static List<String> pageTransitionType = [
-    "없음",
-    "서서히 없어지고 나타남", // AnimatedOpacity
-    "점점 작아지고 커지기", // AnimatedScale , ScaleTransition
-    "좌우 슬라이딩", // AnimatedPositioned , SlideTransition
-    "상하 슬라이딩", // AnimatedPositioned ,SlideTransition
-  ];
+  static const String whenOpenPage = "나타날 때";
+  static const String whenClosePage = "사라질 때";
+
+  // 사라질때,
+  static Map<String, int> pageTransitionType2 = {
+    "없음": 0,
+    "서서히 사라지기": 1, // AnimatedOpacity
+    "점점 작아지기": 2, // AnimatedScale , ScaleTransition
+    "좌우 슬라이딩": 3, // AnimatedPositioned , SlideTransition
+    "상하 슬라이딩": 4, // AnimatedPositioned ,SlideTransition
+  };
+  // 나타날때,
+  static Map<String, int> pageTransitionType = {
+    "없음": 0,
+    "서서히 나타나기": 1, // AnimatedOpacity
+    "점점 커지기": 2, // AnimatedScale , ScaleTransition
+    "좌우 슬라이딩": 3, // AnimatedPositioned , SlideTransition
+    "상하 슬라이딩": 4, // AnimatedPositioned ,SlideTransition
+  };
 
   static List<String> animationTypes = [
     "없음",
