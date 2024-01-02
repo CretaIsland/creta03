@@ -271,13 +271,19 @@ class PageManager extends CretaManager {
       //DraggableStickers.isFrontBackHover = false;
       PageMainState.transitionIndicator = 0.1;
       notify();
-      PageModel? model = getModelByMid(mid) as PageModel?;
-      if (model != null && model.transitionEffect.value > 0) {
-        Future.delayed(model.getPageDuration(), () {
-          setSelectedMid(mid);
-        });
-        return true;
+      if (StudioVariables.isPreview == true) {
+        // 프리뷰 모드에서만, pageTransition 이 동작한다.
+        PageModel? model = getModelByMid(mid) as PageModel?;
+        if (model != null &&
+            (model.transitionEffect.value > 0 || model.transitionEffect2.value > 0)) {
+          Future.delayed(model.getPageDuration(), () {
+            setSelectedMid(mid);
+          });
+          return true;
+        }
       }
+      setSelectedMid(mid);
+      return true;
     }
     return false;
   }

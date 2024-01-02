@@ -318,20 +318,31 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     return _pageTransition(pageWidget);
   }
 
+  bool _isThisTransType(PageTransitionType type) {
+    if (StudioVariables.isPreview == false) {
+      // pageTransition 은 preView mode 에서만 동작한다.
+      return false;
+    }
+
+    // 나타날때,
+    if (PageMainState.transitionIndicator == 1 &&
+        widget.pageModel.transitionEffect.value == type.value) return true;
+    // 사라질때,
+    if (PageMainState.transitionIndicator < 1 &&
+        widget.pageModel.transitionEffect2.value == type.value) return true;
+    return false;
+  }
+
   Widget _pageTransition(Widget child) {
-    if (widget.pageModel.transitionEffect.value == PageTransitionType.fade.value) {
-      // fade out, fade in
+    if (_isThisTransType(PageTransitionType.fade)) {
       return AnimatedOpacity(
-        // // fade out 효과 test 를 위한 코드임.  skpark test code
         opacity: PageMainState.transitionIndicator,
         duration: widget.pageModel.getPageDuration(),
         child: child,
       );
     } // fadeIn,fadeOut
-    if (widget.pageModel.transitionEffect.value == PageTransitionType.scale.value) {
-      // fade out, fade in
+    if (_isThisTransType(PageTransitionType.scale)) {
       return AnimatedScale(
-        // // fade out 효과 test 를 위한 코드임.  skpark test code
         scale: PageMainState.transitionIndicator,
         duration: widget.pageModel.getPageDuration(),
         child: child,

@@ -15,7 +15,8 @@ mixin CretaStyleMixin {
   late UndoAble<double> opacity;
   late UndoAble<GradationType> gradationType;
   late UndoAble<TextureType> textureType;
-  late UndoAble<int> transitionEffect;
+  late UndoAble<int> transitionEffect; // 페이지가 시작할때
+  late UndoAble<int> transitionEffect2; // 페이지가 끝날때
   late UndoAble<bool> isFixedRatio;
   late UndoAble<EffectType> effect;
   late UndoAble<String> eventReceive;
@@ -52,6 +53,7 @@ mixin CretaStyleMixin {
     gradationType = UndoAble<GradationType>(GradationType.none, mid, 'gradationType');
     textureType = UndoAble<TextureType>(TextureType.none, mid, 'textureType');
     transitionEffect = UndoAble<int>(0, mid, 'transitionEffect');
+    transitionEffect2 = UndoAble<int>(0, mid, 'transitionEffect2');
     isFixedRatio = UndoAble<bool>(false, mid, 'isFixedRatio');
     effect = UndoAble<EffectType>(EffectType.none, mid, 'effect');
     eventReceive = UndoAble<String>('', mid, 'eventReceive');
@@ -72,6 +74,7 @@ mixin CretaStyleMixin {
     textureType = UndoAble<TextureType>(TextureType.none, mid, 'textureType');
 
     transitionEffect = UndoAble<int>(0, mid, 'transitionEffect');
+    transitionEffect2 = UndoAble<int>(0, mid, 'transitionEffect2');
     isFixedRatio = UndoAble<bool>(false, mid, 'isFixedRatio');
     effect = UndoAble<EffectType>(EffectType.none, mid, 'effect');
     eventReceive = UndoAble<String>('', mid, 'eventReceive');
@@ -95,6 +98,7 @@ mixin CretaStyleMixin {
     gradationType = UndoAble<GradationType>(src.gradationType.value, mid, 'gradationType');
     textureType = UndoAble<TextureType>(src.textureType.value, mid, 'textureType');
     transitionEffect = UndoAble<int>(src.transitionEffect.value, mid, 'transitionEffect');
+    transitionEffect2 = UndoAble<int>(src.transitionEffect2.value, mid, 'transitionEffect2');
     isFixedRatio = UndoAble<bool>(src.isFixedRatio.value, mid, 'isFixedRatio');
     effect = UndoAble<EffectType>(src.effect.value, mid, 'effect');
     eventReceive = UndoAble<String>(src.eventReceive.value, mid, 'eventReceive');
@@ -114,6 +118,7 @@ mixin CretaStyleMixin {
     gradationType.init(src.gradationType.value);
     textureType.init(src.textureType.value);
     transitionEffect.init(src.transitionEffect.value);
+    transitionEffect2.init(src.transitionEffect2.value);
     isFixedRatio.init(src.isFixedRatio.value);
     effect.init(src.effect.value);
     eventReceive.init(src.eventReceive.value);
@@ -137,6 +142,7 @@ mixin CretaStyleMixin {
         save: false, noUndo: true);
     textureType.setDD(TextureType.fromInt(map["textureType"] ?? 0), save: false, noUndo: true);
     transitionEffect.setDD(map["transitionEffect"] ?? 0, save: false, noUndo: true);
+    transitionEffect2.setDD(map["transitionEffect2"] ?? 0, save: false, noUndo: true);
     isFixedRatio.setDD(map["isFixedRatio"] ?? false, save: false, noUndo: true);
     effect.setDD(EffectType.fromInt(map["effect"] ?? 0), save: false, noUndo: true);
     eventReceive.setDD(map["eventReceive"] ?? '', save: false, noUndo: true);
@@ -156,6 +162,7 @@ mixin CretaStyleMixin {
       "gradationType": gradationType.value.index,
       "textureType": textureType.value.index,
       "transitionEffect": transitionEffect.value,
+      "transitionEffect2": transitionEffect2.value,
       "isFixedRatio": isFixedRatio.value,
       "effect": effect.value.index,
       "eventReceive": eventReceive.value,
@@ -167,7 +174,7 @@ mixin CretaStyleMixin {
   }
 
   Duration getPageDuration() {
-    if (duration.value < 1 || duration.value > 10) {
+    if (duration.value < 1 || duration.value > 5) {
       return Duration(seconds: 2);
     }
     return Duration(seconds: duration.value);

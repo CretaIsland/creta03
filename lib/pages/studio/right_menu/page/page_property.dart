@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/common/util/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+//import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../common/creta_utils.dart';
+import '../../../../design_system/buttons/creta_radio_button.dart';
 import '../../../../design_system/component/creta_proprty_slider.dart';
-import '../../../../design_system/component/example_box_mixin.dart';
-import '../../../../design_system/creta_color.dart';
+//import '../../../../design_system/component/example_box_mixin.dart';
 import '../../../../design_system/creta_font.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
@@ -98,8 +98,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         propertyDivider(),
         _texture(),
         propertyDivider(),
-        _pageTransition(),
-        propertyDivider(),
+        //_pageTransition(),  // 페이지 전환 효과는 일단 막아둔다. 나중에 다시 작업할 예정
+        //propertyDivider(),
         effect(
           _model!.effect.value.name,
           padding: horizontalPadding,
@@ -261,6 +261,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
     );
   }
 
+  // ignore: unused_element
   Widget _pageTransition() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -274,14 +275,15 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         titleWidget: Text(CretaStudioLang.transitionPage, style: CretaFont.titleSmall),
         //trailWidget: isColorOpen ? _gradationButton() : _colorIndicator(),
         trailWidget: Text(
-          CretaStudioLang.pageTransitionType[_model!.transitionEffect.value],
+          PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
           textAlign: TextAlign.right,
           style: CretaFont.titleSmall.copyWith(overflow: TextOverflow.fade),
         ),
-        hasRemoveButton: _model!.transitionEffect.value > 0,
+        hasRemoveButton: _model!.transitionEffect.value > 0 || _model!.transitionEffect2.value > 0,
         onDelete: () {
           setState(() {
             _model!.transitionEffect.set(0);
+            _model!.transitionEffect2.set(0);
           });
           BookMainPage.pageManagerHolder!.notify();
         },
@@ -296,27 +298,70 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (int i = 1; i < PageTransitionType.end.index; i++)
-            TextButton(
-                child: Text(
-                  CretaStudioLang.pageTransitionType[i],
-                  style: _model!.transitionEffect.value == i
-                      ? CretaFont.titleMedium.copyWith(color: CretaColor.primary)
-                      : CretaFont.titleSmall.copyWith(color: CretaColor.text[300]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 160,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      CretaStudioLang.whenOpenPage,
+                      style: CretaFont.titleSmall,
+                    ),
+                    Divider(endIndent: 15),
+                    CretaRadioButton(
+                      onSelected: (title, value) {
+                        setState(() {
+                          _model!.transitionEffect.set(value);
+                        });
+                        BookMainPage.pageManagerHolder!.notify();
+                      },
+                      valueMap: CretaStudioLang.pageTransitionType,
+                      defaultTitle:
+                          PageTransitionType.getTitleFromInt(_model!.transitionEffect.value),
+                      //spacebetween: 10,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
                 ),
-                onPressed: () {
-                  setState(() {
-                    _model!.transitionEffect.set(i);
-                  });
-                  BookMainPage.pageManagerHolder!.notify();
-                }),
+              ),
+              SizedBox(
+                width: 160,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      CretaStudioLang.whenClosePage,
+                      style: CretaFont.titleSmall,
+                    ),
+                    Divider(endIndent: 15),
+                    CretaRadioButton(
+                      onSelected: (title, value) {
+                        setState(() {
+                          _model!.transitionEffect2.set(value);
+                        });
+                        BookMainPage.pageManagerHolder!.notify();
+                      },
+                      valueMap: CretaStudioLang.pageTransitionType2,
+                      defaultTitle:
+                          PageTransitionType.getTitleFromInt2(_model!.transitionEffect2.value),
+                      //spacebetween: 10,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
           CretaPropertySlider(
             // page transition duration
             key: GlobalKey(),
             name: CretaStudioLang.transitionSpeed,
             min: 1,
-            max: 10,
-            value: CretaUtils.validCheckDouble(_model!.duration.value.toDouble(), 1, 10),
+            max: 5,
+            value: CretaUtils.validCheckDouble(_model!.duration.value.toDouble(), 1, 5),
             valueType: SliderValueType.normal,
             onChannged: (value) {
               // widget.model.opacity.set(value);
@@ -457,97 +502,97 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
   // }
 }
 
-class AniExampleBox extends StatefulWidget {
-  final PageModel model;
-  final String name;
-  final AnimationType aniType;
-  final bool selected;
-  final Function onSelected;
-  const AniExampleBox({
-    super.key,
-    required this.name,
-    required this.aniType,
-    required this.model,
-    required this.selected,
-    required this.onSelected,
-  });
+// class AniExampleBox extends StatefulWidget {
+//   final PageModel model;
+//   final String name;
+//   final AnimationType aniType;
+//   final bool selected;
+//   final Function onSelected;
+//   const AniExampleBox({
+//     super.key,
+//     required this.name,
+//     required this.aniType,
+//     required this.model,
+//     required this.selected,
+//     required this.onSelected,
+//   });
 
-  @override
-  State<AniExampleBox> createState() => _AniExampleBoxState();
-}
+//   @override
+//   State<AniExampleBox> createState() => _AniExampleBoxState();
+// }
 
-class _AniExampleBoxState extends State<AniExampleBox> with ExampleBoxStateMixin {
-  @override
-  void initState() {
-    //_isClicked = widget.selected;
-    super.initMixin(widget.selected);
-    super.initState();
-  }
+// class _AniExampleBoxState extends State<AniExampleBox> with ExampleBoxStateMixin {
+//   @override
+//   void initState() {
+//     //_isClicked = widget.selected;
+//     super.initMixin(widget.selected);
+//     super.initState();
+//   }
 
-  void onSelected() {
-    setState(() {
-      if (widget.aniType.value == 0) {
-        widget.model.transitionEffect.set(0);
-      } else {
-        widget.model.transitionEffect.set(widget.aniType.value);
-      }
-    });
-    widget.onSelected.call();
-  }
+//   void onSelected() {
+//     setState(() {
+//       if (widget.aniType.value == 0) {
+//         widget.model.transitionEffect.set(0);
+//       } else {
+//         widget.model.transitionEffect.set(widget.aniType.value);
+//       }
+//     });
+//     widget.onSelected.call();
+//   }
 
-  void onUnselected() {
-    setState(() {
-      widget.model.transitionEffect.set(0);
-    });
-    widget.onSelected.call();
-  }
+//   void onUnselected() {
+//     setState(() {
+//       widget.model.transitionEffect.set(0);
+//     });
+//     widget.onSelected.call();
+//   }
 
-  void onNormalSelected() {
-    setState(() {
-      widget.model.transitionEffect.set(0);
-      logger.finest('pageTrasitionValue = ${widget.model.transitionEffect.value}');
-    });
-    widget.onSelected.call();
-  }
+//   void onNormalSelected() {
+//     setState(() {
+//       widget.model.transitionEffect.set(0);
+//       logger.finest('pageTrasitionValue = ${widget.model.transitionEffect.value}');
+//     });
+//     widget.onSelected.call();
+//   }
 
-  void rebuild() {
-    setState(() {});
-  }
+//   void rebuild() {
+//     setState(() {});
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    //return _selectAnimation();
-    return super.buildMixin(context,
-        setState: rebuild,
-        onSelected: onSelected,
-        onUnselected: onUnselected,
-        selectWidget: selectWidget);
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     //return _selectAnimation();
+//     return super.buildMixin(context,
+//         setState: rebuild,
+//         onSelected: onSelected,
+//         onUnselected: onUnselected,
+//         selectWidget: selectWidget);
+//   }
 
-  Widget selectWidget() {
-    switch (widget.aniType) {
-      case AnimationType.fadeIn:
-        return isAni() ? _aniBox().fadeIn() : normalBox(widget.name);
-      case AnimationType.flip:
-        return isAni() ? _aniBox().flip() : normalBox(widget.name);
-      case AnimationType.shake:
-        return isAni() ? _aniBox().shake() : normalBox(widget.name);
-      case AnimationType.blurXY:
-        return isAni() ? _aniBox().blurXY() : normalBox(widget.name);
-      case AnimationType.scaleXY:
-        return isAni() ? _aniBox().scaleXY() : normalBox(widget.name);
-      default:
-        return noAnimation(widget.name, onNormalSelected: onNormalSelected);
-    }
-  }
+//   Widget selectWidget() {
+//     switch (widget.aniType) {
+//       case AnimationType.fadeIn:
+//         return isAni() ? _aniBox().fadeIn() : normalBox(widget.name);
+//       case AnimationType.flip:
+//         return isAni() ? _aniBox().flip() : normalBox(widget.name);
+//       case AnimationType.shake:
+//         return isAni() ? _aniBox().shake() : normalBox(widget.name);
+//       case AnimationType.blurXY:
+//         return isAni() ? _aniBox().blurXY() : normalBox(widget.name);
+//       case AnimationType.scaleXY:
+//         return isAni() ? _aniBox().scaleXY() : normalBox(widget.name);
+//       default:
+//         return noAnimation(widget.name, onNormalSelected: onNormalSelected);
+//     }
+//   }
 
-  Animate _aniBox() {
-    return normalBox(widget.name).animate(
-        onPlay: (controller) => controller.loop(
-            period: Duration(
-              milliseconds: 1000,
-            ),
-            count: 3,
-            reverse: true));
-  }
-}
+//   Animate _aniBox() {
+//     return normalBox(widget.name).animate(
+//         onPlay: (controller) => controller.loop(
+//             period: Duration(
+//               milliseconds: 1000,
+//             ),
+//             count: 3,
+//             reverse: true));
+//   }
+// }

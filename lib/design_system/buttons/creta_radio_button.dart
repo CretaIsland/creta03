@@ -39,6 +39,14 @@ class _CretaRadioButtonState extends State<CretaRadioButton> {
   }
 
   @override
+  void didUpdateWidget(CretaRadioButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.defaultTitle != widget.defaultTitle) {
+      selectedTitle = widget.defaultTitle;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return
         // MouseRegion(
@@ -58,6 +66,8 @@ class _CretaRadioButtonState extends State<CretaRadioButton> {
             width: MediaQuery.of(context).size.width,
             //height: 250,
             child: RadioGroup<dynamic>.builder(
+              itemPadding: 5.0,
+              iconPadding: 15.0,
               items: widget.valueMap.keys.toList(),
               textStyle: CretaFont.bodySmall.copyWith(color: CretaColor.text[700]!),
               // spacebetween: widget.spacebetween,
@@ -69,9 +79,7 @@ class _CretaRadioButtonState extends State<CretaRadioButton> {
                 });
               },
               itemBuilder: (item) {
-                return RadioButtonBuilder(
-                  item,
-                );
+                return RadioButtonBuilder(item, textPosition: RadioButtonTextPosition.right);
               },
               //customShape: ShapeBorder(),
               groupValue: selectedTitle,
