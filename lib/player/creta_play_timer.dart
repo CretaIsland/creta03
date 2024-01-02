@@ -87,7 +87,7 @@ class CretaPlayTimer extends ChangeNotifier {
           await play();
         }
       }
-      if (_currentModel!.isImage()) {
+      if (_currentModel!.isImage() || _currentModel!.isText()) {
         contentsManager.notify();
       }
     }

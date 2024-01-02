@@ -339,7 +339,7 @@ mixin CretaTextMixin {
               reverseScroll: false,
               duplicateChild: 25,
               enableScrollInput: true,
-              delayAfterScrollInput: const Duration(seconds: 1));
+              delayAfterScrollInput: const Duration(seconds: 10));
         }
       case TextAniType.rotate:
         {

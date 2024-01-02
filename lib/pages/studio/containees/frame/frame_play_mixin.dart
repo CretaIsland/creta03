@@ -423,6 +423,7 @@ mixin FramePlayMixin {
       //fontSize: fontSize / StudioVariables.applyScale,
       fontSize: fontSize,
     );
+    model.playTime.set(-1);
 
     await createNewFrameAndContents(
       [model],
@@ -482,6 +483,7 @@ mixin FramePlayMixin {
     }
     model.autoSizeType.set(AutoSizeType.autoFrameSize); // 가로 세로 모두 늘어나는 모드
     //print('createTextByClieck');
+    model.playTime.set(-1);
 
     await createNewFrameAndContents(
       [model],

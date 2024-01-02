@@ -293,7 +293,6 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
 // real Page area
   Widget _realPageArea(bool useColor) {
     //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
-
     Widget pageWidget = Stack(
       children: [
         Align(

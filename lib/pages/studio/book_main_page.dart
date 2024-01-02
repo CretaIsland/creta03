@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:hycop/common/undo/save_manager.dart';
 import 'package:hycop/common/undo/undo.dart';
 import 'package:hycop/hycop/hycop_factory.dart';
@@ -58,11 +57,11 @@ import 'left_menu/depot/depot_display.dart';
 import 'left_menu/left_menu.dart';
 import 'containees/page/page_main.dart';
 import 'left_menu/music/music_player_frame.dart';
+import 'mouse_hider.dart';
 import 'right_menu/book/book_editor_property.dart';
 import 'right_menu/right_menu.dart';
 import 'stick_menu.dart';
 import 'studio_constant.dart';
-import 'studio_getx_controller.dart';
 import 'studio_main_menu.dart';
 import 'studio_snippet.dart';
 import 'studio_variables.dart';
@@ -194,7 +193,7 @@ class _BookMainPageState extends State<BookMainPage> {
     _staticValuseDispose(); //static value 를 정리해준다.
     logger.info("---initState _BookMainPageState-------------------");
 
-    _hideMouseTimer();
+    //_hideMouseTimer();
     super.initState();
 
     // final OffsetEventController linkSendEvent = Get.find(tag: 'on-link-to-link-widget');
@@ -467,51 +466,51 @@ class _BookMainPageState extends State<BookMainPage> {
   //   return frameCount;
   // }
 
-  // isPreview 모드에서 마우스 커서 안보임 관련 변수들
-  int _mouseMoveCount = 0;
-  DateTime? _lastMouseMoveTime;
-  Timer? _mouseMovetimer;
-  OffsetEventController? _sendMouseEvent;
-  void _hideMouseTimer() {
-    // isPreViewMode = true 인 경우만
-    // 이전 타이머를 취소하고 새 타이머를 시작
+  // // isPreview 모드에서 마우스 커서 안보임 관련 변수들
+  // int _mouseMoveCount = 0;
+  // DateTime? _lastMouseMoveTime;
+  // Timer? _mouseMovetimer;
+  // OffsetEventController? _sendMouseEvent;
+  // void _hideMouseTimer() {
+  //   // isPreViewMode = true 인 경우만
+  //   // 이전 타이머를 취소하고 새 타이머를 시작
 
-    if (StudioVariables.isPreview == true) {
-      final OffsetEventController sendMouseEvent = Get.find(tag: 'on-link-to-link-widget');
-      _sendMouseEvent = sendMouseEvent;
+  //   if (StudioVariables.isPreview == true) {
+  //     final OffsetEventController sendMouseEvent = Get.find(tag: 'on-link-to-link-widget');
+  //     _sendMouseEvent = sendMouseEvent;
 
-      //print('hide mouse 1');
-      //StudioVariables.hideMouse = true;
-      //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
-      //_mouseMovetimer?.cancel();
-      _mouseMovetimer = Timer.periodic(Duration(seconds: 1), (t) {
-        // 3초 동안 마우스 움직임이 없으면 커서를 숨김
-        if (StudioVariables.isPreview == true) {
-          if (_lastMouseMoveTime != null) {
-            if (StudioVariables.hideMouse == false &&
-                DateTime.now().difference(_lastMouseMoveTime!).inSeconds >= 3) {
-              logger.info('3 second passed');
-              if (_fromPriviewToMain == false) {
-                // 페이지가 넘어가는 중에, setState 가 동작하면 안된다.
-                setState(() {
-                  StudioVariables.hideMouse = true;
-                  _sendMouseEvent?.sendEvent(Offset.zero);
-                });
-              }
-              _mouseMoveCount = 0;
-            }
-          } else {
-            // setState(() {
-            //   print('hide mouse 2');
-            //   StudioVariables.hideMouse = true;
-            // });
-          }
-        }
-      });
-    } else {
-      StudioVariables.hideMouse = false;
-    }
-  }
+  //     //print('hide mouse 1');
+  //     //StudioVariables.hideMouse = true;
+  //     //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
+  //     //_mouseMovetimer?.cancel();
+  //     _mouseMovetimer = Timer.periodic(Duration(seconds: 1), (t) {
+  //       // 3초 동안 마우스 움직임이 없으면 커서를 숨김
+  //       if (StudioVariables.isPreview == true) {
+  //         if (_lastMouseMoveTime != null) {
+  //           if (StudioVariables.hideMouse == false &&
+  //               DateTime.now().difference(_lastMouseMoveTime!).inSeconds >= 3) {
+  //             logger.info('3 second passed');
+  //             if (_fromPriviewToMain == false) {
+  //               // 페이지가 넘어가는 중에, setState 가 동작하면 안된다.
+  //               setState(() {
+  //                 StudioVariables.hideMouse = true;
+  //                 _sendMouseEvent?.sendEvent(Offset.zero);
+  //               });
+  //             }
+  //             _mouseMoveCount = 0;
+  //           }
+  //         } else {
+  //           // setState(() {
+  //           //   print('hide mouse 2');
+  //           //   StudioVariables.hideMouse = true;
+  //           // });
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //     StudioVariables.hideMouse = false;
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -521,7 +520,7 @@ class _BookMainPageState extends State<BookMainPage> {
       FrameManager.stopBackgroundMusic(BookMainPage.backGroundMusic!);
     }
 
-    _mouseMovetimer?.cancel();
+    //_mouseMovetimer?.cancel();
     //_stopConnectedUserTimer();
     if (_fromPriviewToMain == false) {
       _staticValuseDispose();
@@ -608,39 +607,42 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget _bookMain(DateTime lastEventTime) {
     return StudioVariables.isPreview
         ? Scaffold(
-            body: MouseRegion(
-                cursor:
-                    StudioVariables.hideMouse ? SystemMouseCursors.none : SystemMouseCursors.click,
-                onExit: (event) {
-                  //print('mouse exit');
-                  setState(() {
-                    StudioVariables.hideMouse = true;
-                  });
-                },
-                onEnter: (event) {
-                  // 처음 떳을 때이다.
-                  //print('mouse enter');
-                  setState(() {
-                    StudioVariables.hideMouse = true;
-                  });
-                  // // 마우스가 위젯에 진입할 때 커서를 숨김
-                  // StudioVariables.hideMouse = true;
-                  // SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
-                  // _mouseMoveCount = 0;
-                },
-                onHover: (pointerEvent) {
-                  _mouseMoveCount++;
-                  _lastMouseMoveTime = DateTime.now();
-                  if (_mouseMoveCount > 30) {
-                    //print('mouse hover');
-                    //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
-                    setState(() {
-                      StudioVariables.hideMouse = false;
-                    });
-                    _mouseMoveCount = 0;
-                  }
-                },
-                child: _waitBook()))
+            body: 
+            // MouseRegion(
+            //     cursor:
+            //         StudioVariables.hideMouse ? SystemMouseCursors.none : SystemMouseCursors.click,
+            //     onExit: (event) {
+            //       //print('mouse exit');
+            //       setState(() {
+            //         StudioVariables.hideMouse = true;
+            //       });
+            //     },
+            //     onEnter: (event) {
+            //       // 처음 떳을 때이다.
+            //       //print('mouse enter');
+            //       setState(() {
+            //         StudioVariables.hideMouse = true;
+            //       });
+            //       // // 마우스가 위젯에 진입할 때 커서를 숨김
+            //       // StudioVariables.hideMouse = true;
+            //       // SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
+            //       // _mouseMoveCount = 0;
+            //     },
+            //     onHover: (pointerEvent) {
+            //       _mouseMoveCount++;
+            //       _lastMouseMoveTime = DateTime.now();
+            //       if (_mouseMoveCount > 30) {
+            //         //print('mouse hover');
+            //         //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
+            //         setState(() {
+            //           StudioVariables.hideMouse = false;
+            //         });
+            //         _mouseMoveCount = 0;
+            //       }
+            //     },
+              MouseHider(fromPriviewToMain: _fromPriviewToMain,
+                child: _waitBook()),
+                )
         : Snippet.CretaScaffold(
             title: Snippet.logo('studio', route: () {
               Routemaster.of(context).push(AppRoutes.studioBookGridPage);
@@ -665,7 +667,7 @@ class _BookMainPageState extends State<BookMainPage> {
                   child: _waitBook(),
                 ),
                 //if (StudioVariables.allowMutilUser == true) mouseArea(),
-                mouseArea(),
+                mouseArea(), // 프레임이나 텍스트를 원하는 위치에 그릴 수 있도록 추적하는 기능
               ],
             ),
           );

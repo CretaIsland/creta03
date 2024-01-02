@@ -91,3 +91,148 @@ flutter_web_plugins:
 # 릴리즈
 flutter pub publish
 "# hycop" 
+
+
+
+# ############################
+# Package Windows 및 Linux 지원 여부 확인 
+# ############################
+W:  Windows. L : Linux 를 각각 지원함을 의미함.
+  WL cupertino_icons: ^1.0.2
+  WL flutter_riverpod: ^1.0.4
+  WL flutter_speed_dial: ^6.1.0+1
+  WL routemaster: ^1.0.1
+  보류 hycop: ^0.3.39
+  WL outline_search_bar: ^2.3.0
+  WL custom_radio_grouped_button: 2.2.1
+  WL group_radio_button: ^1.2.0
+  WL another_xlider: ^1.1.2
+  WL dropdown_button2: ^1.8.9
+  WL url_strategy: ^0.2.0
+  WL flutter_vector_icons: ^2.0.0
+  WL url_launcher: ^6.1.7
+  -------------------------XX cached_network_image: ^3.3.0
+  WL image_network: 2.5.4+1
+  WL http: ^1.1.0
+  WL universal_html: ^2.0.8
+  WL firebase_core_platform_interface: ^5.0.0
+  WL adaptive_scrollbar: 2.1.2
+  WL mutex: ^3.0.1
+  WL loading_animation_widget: ^1.2.0+4
+  WL deep_collection: ^1.0.2
+  WL get: ^4.6.5
+  WL dotted_border: ^2.0.0+3
+  WL material_tag_editor: 0.1.2
+  WL quiver: ^3.2.1
+  WL flex_color_picker: ^3.1.0
+  WL flutter_animate: ^4.0.0
+  WL r_dotted_line_border: 0.1.1
+  WL flutter_inner_shadow: ^0.0.1
+  WL inner_shadow_widget: ^0.0.3
+  WL confetti: ^0.7.0
+  WL snowfall: 0.0.2
+  WL parallax_rain: ^1.1.0
+  WL floating_bubbles: ^2.3.0
+  WL starsview: ^0.0.2
+  -------------------------XX flutter_dropzone: ^3.0.5
+  WL blobs: ^2.0.0
+  -------------------------XX video_player: 2.7.2
+  -------------------------XX youtube_player_iframe: ^4.0.4
+  WL animated_text_kit: ^4.2.2
+  WL scroll_loop_auto_scroll: ^0.0.5
+  WL widget_and_text_animator: ^1.0.9
+  -------------------------XX text_to_speech: ^0.2.3
+  WL image_picker: ^0.8.7
+  WL intl: ^0.18.1
+  WL translator_plus: ^1.0.1
+  WL progress_bar_steppers: ^0.0.2+2
+  WL flutter_sequence_animation: ^4.0.0
+  ------------------------WX cloud_firestore: ^4.3.1
+  WL flutter_keyboard_visibility: ^5.4.1
+  ------------------------WX syncfusion_flutter_pdfviewer: ^23.1.43
+  WL shimmer: ^2.0.0
+  WL circular_reveal_animation: ^2.0.1
+  WL neonpen: 2.0.5
+  WL simple_tooltip: ^1.2.0
+  WL file_picker: ^5.3.1
+  WL flutter_weather_bg_null_safety: 1.0.0
+  WL weather_animation: ^0.0.2
+  -------------------------XX just_audio_background: ^0.0.1-beta.10
+  WL flutter_excel: ^1.0.1
+  WL collection: ^1.17.1
+  -------------------------XX audio_session: ^0.1.16
+  WL audio_video_progress_bar: ^1.0.1
+  WL rxdart: ^0.27.7
+  WL id3_codec: ^1.0.3                      // web 이 안됨
+  WL mediasoup_client_flutter: ^0.8.5    // web 이 안됨.
+  WL protoo_client: ^0.3.3   // web 이 안됨.
+  WL flutter_webrtc: ^0.9.35  // web 이 안됨.
+  WL random_string: ^2.3.1
+  -------------------------XX audio_service: ^0.18.10
+  -------------------------XX just_audio: ^0.9.35
+  WL mini_music_visualizer: ^1.0.2
+  WL marquee: ^2.2.3
+  WL flutter_media_metadata: ^1.0.0+1
+  -------------------------XX geolocator: ^10.0.0
+  -------------------------XX google_maps_flutter_web: ^0.5.4+2
+  -------------------------XX google_maps_flutter: ^2.4.0
+  -------------------------XX html_editor_enhanced: 2.5.1
+  -------------------------XX flutter_html: ^3.0.0-beta.2  // web이 안됨.
+  WL stop_watch_timer: ^3.0.1
+  WL timeline_tile: ^2.0.0
+  WL google_fonts: ^4.0.4
+  WL weather_icons: ^3.0.0
+  WL giphy_get: ^3.5.2
+  WL image: ^4.1.3
+  WL just_the_tooltip: ^0.0.12
+  WL flutter_svg: ^2.0.8
+  WL google_geocoding_api: ^1.4.1
+  WL gap: ^3.0.1
+  WL animated_switcher_plus: ^1.1.0
+  WL glowy_borders: ^1.0.2
+  WL avatar_glow: ^3.0.1
+  WL flutter_glow: ^0.3.0
+
+
+
+########## hycop 의 경우
+
+  WL cupertino_icons: ^1.0.2
+  -------------------------XX cloud_functions: ^4.0.7
+  #device_info_plus: ^3.2.2
+
+  WL logging: ^1.0.2
+  WL flutter_riverpod: ^1.0.4
+  WL synchronized: ^3.0.0
+  WL uuid: ^4.1.0
+  WL equatable: ^2.0.3
+  -------------------------XX firebase_database: ^10.3.3
+  #firebase: ^9.0.2
+  -------------------------WX firebase_core: ^2.21.0
+  ------------------------WX cloud_firestore: ^4.3.1
+  ------------------------XX cloud_firestore_web: ^3.2.1
+  WL appwrite: 11.0.0
+  WL routemaster: ^1.0.1
+  WL provider: ^6.0.1
+  WL font_awesome_flutter: ^10.1.0
+  WL shimmer: ^2.0.0
+  WL random_string: ^2.3.1
+  WL encrypt: ^5.0.1
+  ------------------------WX firebase_storage: ^11.4.1
+  WL dart_appwrite: 10.0.0
+   -------------------------XX md5_file_checksum: ^1.0.3   // Web 도 안됨.
+  WL convert: ^3.0.2
+  WL crypto: ^3.0.2
+  -------------------------XX flutter_dropzone: ^3.0.5
+  WL socket_io_client: ^2.0.0
+  WL http: ^1.1.0
+  -------------------------XX extension_google_sign_in_as_googleapis_auth: ^2.0.7  // --> googleapis_auth 를 써야함.
+  -------------------------XX google_sign_in: ^5.4.2
+  WL flutter_webrtc: ^0.9.35
+  WL firebase_core_platform_interface: ^5.0.0
+  WL mediasoup_client_flutter: ^0.8.5
+  WL protoo_client: ^0.3.3   // web 이 안됨.
+  WL flutter_bloc: ^7.0.1
+  WL collection: ^1.17.0
+
+

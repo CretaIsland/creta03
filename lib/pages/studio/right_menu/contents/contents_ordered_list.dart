@@ -635,9 +635,9 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     ];
   }
 
-  Widget _imageDurationWidget(ContentsModel model) {
+  Widget _imageDurationWidget(ContentsModel model, {double verticalPadding = 6}) {
     return Padding(
-      padding: const EdgeInsets.only(top: 6, bottom: 6),
+      padding: EdgeInsets.symmetric(vertical: verticalPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -788,6 +788,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               //widget.contentsManager.notify();
             },
           ),
+        if (model.isText()) _imageDurationWidget(model, verticalPadding: 12.0),
         if (model.isText()) _textAlign(model),
         //_fontDecoBar(model),
         if (model.isText()) propertyDivider(height: 28),
