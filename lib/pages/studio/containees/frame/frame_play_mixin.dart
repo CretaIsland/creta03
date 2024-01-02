@@ -342,9 +342,14 @@ mixin FramePlayMixin {
   }
 
   Widget newsFrame({
+    required double width,
+    required double height,
     required FrameModel frameModel,
   }) {
     return ArticleView(
+      height: height,
+      width: width,
+      frameModel: frameModel,
       selectedCategory: getCategory(frameModel.subType),
     );
   }

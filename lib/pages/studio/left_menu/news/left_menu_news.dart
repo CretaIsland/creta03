@@ -9,6 +9,7 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/page_model.dart';
 import '../../book_main_page.dart';
+import '../../studio_constant.dart';
 import 'get_categories.dart';
 import 'article_model.dart';
 import 'news_api.dart';
@@ -108,7 +109,7 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
             width: 160.0,
             height: 80.0,
             onPressed: () async {
-              await _createNews(FrameType.news, categories[index].categoryName!);
+              await _createNewsFrame(FrameType.news, categories[index].categoryName!);
               BookMainPage.pageManagerHolder!.notify();
             },
             child: CategoryCard(
@@ -182,17 +183,16 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
   double x = 80;
   double y = 160;
 
-  Future<void> _createNews(FrameType frameType, String selectedCategory) async {
+  Future<void> _createNewsFrame(FrameType frameType, String selectedCategory) async {
     PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
     if (pageModel == null) return;
 
     int frameCounter = 1;
 
     //페이지폭의 50% 로 만든다. 세로는 가로의 1/6 이다.
-    double width = pageModel.width.value * 0.5;
-    double height = pageModel.height.value * 0.5;
-    // double x = (pageModel.width.value - width) / 2;
-    // double y = (pageModel.height.value - height) / 2;
+    Size newsFrameSize = StudioConst.newsFrameSize[0];
+    // double width = pageModel.width.value * 0.35;
+    // double height = pageModel.height.value * 0.6;
 
     x += frameCounter * 40.0;
     y += frameCounter * 40.0;
@@ -208,7 +208,7 @@ class _LeftMenuNewsState extends State<LeftMenuNews> {
     mychangeStack.startTrans();
     await frameManager.createNextFrame(
       doNotify: false,
-      size: Size(width, height),
+      size: newsFrameSize, //Size(widthBig, heightBig),
       pos: Offset(x, y),
       bgColor1: Colors.transparent,
       type: frameType,

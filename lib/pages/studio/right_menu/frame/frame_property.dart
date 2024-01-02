@@ -252,23 +252,11 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
                 bodyWidget: _pageSizeBody(width, height),
               ),
               if (widget.model.isMusicType()) _musicPlayerSize(),
+              if (widget.model.isNewsType()) _newsFrameSize(),
             ],
           );
         });
   }
-
-  // String _getCurrentSizeString() {
-  //   int index = 0;
-  //   Size frameSize = Size(widget.model.width.value, widget.model.height.value);
-  //   for (Size ele in StudioConst.musicPlayerSize) {
-  //     if (frameSize == ele) {
-  //       return CretaStudioLang.playerSize.values.toList()[index];
-  //     }
-  //     index++;
-  //   }
-  //   logger.severe('wrong size $frameSize');
-  //   return CretaStudioLang.playerSize.values.toList()[0];
-  // }
 
   String _getCurrentSizeString() {
     int index = 0;
@@ -319,6 +307,61 @@ class _FramePropertyState extends State<FrameProperty> with PropertyMixin {
             selectedBorderColor: CretaColor.primary,
             buttonLables: CretaStudioLang.playerSize.keys.toList(),
             buttonValues: CretaStudioLang.playerSize.values.toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getCurrentNewsSizeString() {
+    int index = 0;
+    Size frameSize = Size(widget.model.width.value, widget.model.height.value);
+    NewsSizeEnum currentSize = NewsSizeEnum.Big;
+    for (Size ele in StudioConst.newsFrameSize) {
+      if (frameSize == ele) {
+        currentSize = NewsSizeEnum.values[index];
+        return StudioConst.newsSizeEnumMap[currentSize]!;
+      }
+      index++;
+    }
+    logger.fine('wrong size $frameSize');
+    return StudioConst.sizeEnumMap[MusicPlayerSizeEnum.Big]!;
+  }
+
+  Widget _newsFrameSize() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, left: 30, right: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(CretaStudioLang.playersize, style: titleStyle),
+          CretaTabButton(
+            defaultString: _getCurrentNewsSizeString(),
+            onEditComplete: (value) {
+              int idx = 0;
+              widget.model.newsSizeType = StudioConst.newsSizeMap[value]!;
+              for (String val in CretaStudioLang.newsSize.values) {
+                if (value == val) {
+                  mychangeStack.startTrans();
+                  widget.model.width.set(StudioConst.newsFrameSize[idx].width);
+                  widget.model.height.set(StudioConst.newsFrameSize[idx].height);
+                  mychangeStack.endTrans();
+                  break;
+                }
+                idx++;
+              }
+              // _invalidateFrame();
+              _sendEvent!.sendEvent(widget.model);
+            },
+            width: 55,
+            height: 24,
+            selectedTextColor: CretaColor.primary,
+            unSelectedTextColor: CretaColor.text[700]!,
+            selectedColor: Colors.white,
+            unSelectedColor: CretaColor.text[100]!,
+            selectedBorderColor: CretaColor.primary,
+            buttonLables: CretaStudioLang.newsSize.keys.toList(),
+            buttonValues: CretaStudioLang.newsSize.values.toList(),
           ),
         ],
       ),

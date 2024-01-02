@@ -27,6 +27,12 @@ enum MusicPlayerSizeEnum {
   Tiny,
 }
 
+enum NewsSizeEnum {
+  Big,
+  Medium,
+  Small,
+}
+
 class LayoutConst {
   //
   static const double maxPageCount = 99;
@@ -187,6 +193,12 @@ class StudioConst {
     Size(266, 84),
   ];
 
+  static List<Size> newsFrameSize = [
+    Size(680, 630),
+    Size(680, 240),
+    Size(1520, 92),
+  ];
+
   static Map<MusicPlayerSizeEnum, String> sizeEnumMap = {
     MusicPlayerSizeEnum.Big: 'Big',
     MusicPlayerSizeEnum.Medium: 'Medium',
@@ -199,6 +211,18 @@ class StudioConst {
     'Medium': MusicPlayerSizeEnum.Medium,
     'Small': MusicPlayerSizeEnum.Small,
     'Tiny': MusicPlayerSizeEnum.Tiny,
+  };
+
+  static Map<String, NewsSizeEnum> newsSizeMap = {
+    'Big': NewsSizeEnum.Big,
+    'Medium': NewsSizeEnum.Medium,
+    'Small': NewsSizeEnum.Small,
+  };
+
+  static Map<NewsSizeEnum, String> newsSizeEnumMap = {
+    NewsSizeEnum.Big: 'Big',
+    NewsSizeEnum.Medium: 'Medium',
+    NewsSizeEnum.Small: 'Small',
   };
 
   static double musicIconSize = 48.0;
