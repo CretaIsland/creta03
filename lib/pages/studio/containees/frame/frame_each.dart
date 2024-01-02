@@ -568,7 +568,8 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     //   );
     // }
     if (model.nextContentTypes.value != NextContentTypes.none) {
-      return TransitionTypes(   // 콘텐츠 넘김 효과, 카로셀등을 말함.
+      return TransitionTypes(
+        // 콘텐츠 넘김 효과, 카로셀등을 말함.
         key: ValueKey('Frame${model.mid}'),
         width: widget.width,
         height: widget.height,
@@ -599,7 +600,11 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       );
     }
     if (model.isNewsType()) {
-      return newsFrame(frameModel: model);
+      return newsFrame(
+        frameModel: model,
+        width: widget.width,
+        height: widget.height,
+      );
     }
 
     //print('ClipRect');

@@ -479,6 +479,12 @@ class CretaStudioLang {
     '미니': 'Tiny',
   };
 
+  static Map<String, String> newsSize = {
+    '큰': 'Big',
+    '중간': 'Medium',
+    '작은': 'Small',
+  };
+
   static String shape = "모양";
 
   static String eventSend = "발신 이벤트";

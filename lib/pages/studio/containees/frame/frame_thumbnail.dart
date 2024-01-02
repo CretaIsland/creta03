@@ -331,7 +331,11 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
     }
 
     if (model.isNewsType()) {
-      return newsFrame(frameModel: model);
+      return newsFrame(
+        frameModel: model,
+        width: widget.width,
+        height: widget.height,
+      );
     }
 
     // if (_contentsManager!.length() == 0) {

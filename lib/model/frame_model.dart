@@ -67,6 +67,7 @@ class FrameModel extends CretaModel with CretaStyleMixin {
   int subType = -1;
   bool isEditMode = false;
   MusicPlayerSizeEnum musicPlayerSizeType = MusicPlayerSizeEnum.Big;
+  NewsSizeEnum newsSizeType = NewsSizeEnum.Big;
 
   bool isMusicSmallOrTiny() {
     switch (musicPlayerSizeType) {

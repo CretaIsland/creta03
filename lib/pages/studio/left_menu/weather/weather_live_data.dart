@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-//import '../../../login_page.dart';
+import 'package:hycop/hycop.dart';
 import '../../../login/creta_account_manager.dart';
 
 class WeatherLiveData extends StatefulWidget {
@@ -26,14 +26,20 @@ class _WeatherLiveDataState extends State<WeatherLiveData> {
   String domain = "https://api.openweathermap.org/data/2.5/weather?";
   String apiKey = CretaAccountManager.getEnterprise!.openWeatherApiKey;
 
+  late http.Client _client;
+  bool _isDisposed = false;
+
   @override
   void initState() {
     super.initState();
+    _client = http.Client();
     getCurrentLocation();
   }
 
   @override
   void dispose() {
+    _client.close();
+    _isDisposed = true;
     super.dispose();
   }
 
@@ -43,36 +49,37 @@ class _WeatherLiveDataState extends State<WeatherLiveData> {
   }
 
   getCurrentLocation() async {
-    var p = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.low,
-      forceAndroidLocationManager: true,
-    );
-    // ignore: unnecessary_null_comparison
-    if (p != null) {
-      getCurrentCityWeather(p);
-    } else {
-      // ignore: avoid_print
-      print('Data unavailable');
+    try {
+      var p = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.low,
+        forceAndroidLocationManager: true,
+      );
+      if (mounted && !_isDisposed) {
+        getCurrentCityWeather(p);
+      }
+    } catch (e) {
+      logger.severe('Error getting current location: $e');
     }
   }
 
   getCurrentCityWeather(Position position) async {
-    var client = http.Client();
-    var uri = '${domain}lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey';
-    var url = Uri.parse(uri);
-    var response = await client.get(url);
-    if (response.statusCode == 200) {
-      var data = response.body;
-      var decodeData = json.decode(data);
-      // ignore: avoid_print
-      print('flutter-weather: real data: $data');
-      updateUI(decodeData);
-      setState(() {
-        isLoaded = true;
-      });
-    } else {
-      // ignore: avoid_print
-      print(response.statusCode);
+    try {
+      var uri = '${domain}lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey';
+      var url = Uri.parse(uri);
+      var response = await _client.get(url);
+      if (mounted && !_isDisposed && response.statusCode == 200) {
+        var data = response.body;
+        var decodeData = json.decode(data);
+        logger.fine('flutter-weather: real data: $data');
+        updateUI(decodeData);
+        setState(() {
+          isLoaded = true;
+        });
+      } else {
+        logger.info(response.statusCode);
+      }
+    } catch (e) {
+      logger.severe('Error getting current city weather: $e');
     }
   }
 
