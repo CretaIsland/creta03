@@ -98,8 +98,8 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         propertyDivider(),
         _texture(),
         propertyDivider(),
-        _pageTransition(),
-        propertyDivider(),
+        //_pageTransition(),  // 페이지 전환 효과는 일단 막아둔다. 나중에 다시 작업할 예정
+        //propertyDivider(),
         effect(
           _model!.effect.value.name,
           padding: horizontalPadding,
@@ -261,6 +261,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
     );
   }
 
+  // ignore: unused_element
   Widget _pageTransition() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
