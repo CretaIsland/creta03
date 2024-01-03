@@ -402,6 +402,12 @@ enum TextAniType {
   bounce,
   shimmer,
   neon,
+  fadeTransition,
+  rotateTransition,
+  slideTransition,
+  sizeTransition,
+  scaleTransition,
+  randomTransition,
   end;
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;

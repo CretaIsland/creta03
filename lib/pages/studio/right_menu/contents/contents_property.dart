@@ -29,6 +29,7 @@ import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
 import '../../../../model/contents_model.dart';
+import '../../../../player/text/creta_text_switcher.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
@@ -1203,6 +1204,24 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            SizedBox(
+                width: 250, height: 36, child: transitionText(model, TextAniType.randomTransition)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(
+                width: 250, height: 36, child: transitionText(model, TextAniType.fadeTransition)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(
+                width: 250, height: 36, child: transitionText(model, TextAniType.slideTransition)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(
+                width: 250, height: 36, child: transitionText(model, TextAniType.scaleTransition)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(
+                width: 250, height: 36, child: transitionText(model, TextAniType.rotateTransition)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(
+                width: 250, height: 36, child: transitionText(model, TextAniType.sizeTransition)),
+            StudioSnippet.smallDivider(height: 10),
             // 옆으로 흐르는 문자열
             SizedBox(width: 250, height: 36, child: tickerSide(model)),
             StudioSnippet.smallDivider(height: 10),
@@ -1511,6 +1530,32 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         lineZiggleLevel: 1,
         isDoubleLayer: false,
       ),
+    );
+  }
+
+  Widget transitionText(ContentsModel model, TextAniType aniType) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          model.aniType.set(aniType);
+          if (model.anyDuration.value == 0) {
+            model.anyDuration.set(50);
+          }
+        });
+        _sendEvent!.sendEvent(widget.model);
+      },
+      child: CretaTextSwitcher(
+          text: '$aniType\n$aniType',
+          stopDuration: Duration(seconds: 2),
+          switchDuration: Duration(seconds: 1),
+          aniType: aniType,
+          builder: (index, eachLine) {
+            return Text(
+              '$aniType',
+              key: ValueKey<int>(index),
+              style: dataStyle,
+            );
+          }),
     );
   }
 }

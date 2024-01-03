@@ -894,7 +894,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
                 ]),
                 Container(
                   width: double.infinity,
-                  height: 126,
+                  height: 84,
                   color: Colors.white.withOpacity(0.7),
                 ),
               ],

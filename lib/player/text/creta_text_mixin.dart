@@ -16,11 +16,15 @@ import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_getx_controller.dart';
 import '../../pages/studio/studio_variables.dart';
+//import 'creta_scrolled_text.dart';
 import 'creta_text_player.dart';
+import 'creta_text_switcher.dart';
+import 'custom_scroll_controller.dart';
 
 mixin CretaTextMixin {
   double applyScale = 1;
   FrameEventController? sendEvent;
+  static int counter = 0;
 
   Widget playText(
     BuildContext context,
@@ -203,12 +207,13 @@ mixin CretaTextMixin {
   //   );
   // }
 
-  Widget _outLineAndShadowText(
-      ContentsModel? model, String text, TextStyle style, bool isThumbnail) {
+  Widget _outLineAndShadowText(ContentsModel? model, String text, TextStyle style, bool isThumbnail,
+      {Key? key}) {
     //print('_outLineAndShadowText');
 
     Widget realText = model!.isAutoFontSize()
         ? CretaAutoSizeText(
+            key: key,
             text,
             mid: model.mid,
             fontSizeChanged: (value) {
@@ -227,6 +232,7 @@ mixin CretaTextMixin {
             //textScaleFactor: (model.scaleFactor.value / 100) * applyScale
           )
         : Text(
+            key: key,
             text,
             textAlign: model.align.value,
             style: style,
@@ -299,6 +305,69 @@ mixin CretaTextMixin {
     }
 
     switch (model.aniType.value) {
+      case TextAniType.fadeTransition:
+      case TextAniType.sizeTransition:
+      case TextAniType.rotateTransition:
+      case TextAniType.slideTransition:
+      case TextAniType.scaleTransition:
+        {
+          int lines = text.split('\n').length;
+          int stopDuration = (model.anyDuration.value / lines).ceil();
+          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
+          return CretaTextSwitcher(
+              text: text,
+              stopDuration: Duration(seconds: stopDuration),
+              switchDuration: Duration(seconds: switchDuration),
+              aniType: model.aniType.value,
+              builder: (index, eachLine) {
+                return _outLineAndShadowText(
+                  key: ValueKey<int>(index),
+                  model,
+                  eachLine,
+                  style,
+                  isThumbnail,
+                );
+              });
+        }
+      case TextAniType.randomTransition:
+        {
+          int lines = text.split('\n').length;
+          int stopDuration = (model.anyDuration.value / lines).ceil();
+          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
+          TextAniType aniType = TextAniType.fadeTransition;
+          switch (counter % 5) {
+            case 0:
+              aniType = TextAniType.fadeTransition;
+              break;
+            case 1:
+              aniType = TextAniType.sizeTransition;
+              break;
+            case 2:
+              aniType = TextAniType.rotateTransition;
+              break;
+            case 3:
+              aniType = TextAniType.slideTransition;
+              break;
+            case 4:
+              aniType = TextAniType.scaleTransition;
+              break;
+          }
+          return CretaTextSwitcher(
+              text: text,
+              stopDuration: Duration(seconds: stopDuration),
+              switchDuration: Duration(seconds: switchDuration),
+              aniType: aniType,
+              builder: (index, eachLine) {
+                counter++;
+                return _outLineAndShadowText(
+                  key: ValueKey<int>(index),
+                  model,
+                  eachLine,
+                  style,
+                  isThumbnail,
+                );
+              });
+        }
       case TextAniType.tickerSide:
         {
           int duration = textSize * ((101 - model.anyDuration.value) / 10).ceil();
@@ -322,24 +391,44 @@ mixin CretaTextMixin {
         }
       case TextAniType.tickerUpDown:
         {
-          int duration = (textSize * 0.5).ceil() * ((101 - model.anyDuration.value) / 10).ceil();
-          return ScrollLoopAutoScroll(
-              key: ValueKey(key),
-              // ignore: sort_child_properties_last
-              child: _outLineAndShadowText(
-                model,
-                text,
-                style,
-                isThumbnail,
-              ),
-              scrollDirection: Axis.vertical, //required
-              delay: const Duration(seconds: 1),
-              duration: Duration(seconds: duration),
-              gap: 25,
-              reverseScroll: false,
-              duplicateChild: 25,
-              enableScrollInput: true,
-              delayAfterScrollInput: const Duration(seconds: 10));
+          //int duration = (textSize * 0.5).ceil() * ((101 - model.anyDuration.value) / 10).ceil();
+          return CustomScrollController(
+              text: text,
+              realSize: realSize,
+              duration: model.anyDuration.value.ceil(),
+              stopSeconds: 2,
+              textStyle: style,
+              builder: (index, text) {
+                return _outLineAndShadowText(
+                  model,
+                  text,
+                  style,
+                  isThumbnail,
+                );
+              });
+          //return CretaScrolledText(
+          //   key: ValueKey(key),
+          //   // ignore: sort_child_properties_last
+          //   child: _outLineAndShadowText(
+          //     model,
+          //     text,
+          //     style,
+          //     isThumbnail,
+          //   ),
+          //   style: style,
+          //   text: text,
+          //   realSize: realSize,
+          //   stopSeconds: 2,
+          //   scrollDirection: Axis.vertical, //required
+          //   delay: const Duration(seconds: 1),
+          //   duration: Duration(
+          //       seconds: (model.anyDuration.value.ceil() / (text.split('\n').length + 1)).ceil()),
+          //   gap: 25,
+          //   reverseScroll: false,
+          //   duplicateChild: 25,
+          //   enableScrollInput: true,
+          //   delayAfterScrollInput: const Duration(seconds: 1),
+          // );
         }
       case TextAniType.rotate:
         {
