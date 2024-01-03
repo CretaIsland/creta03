@@ -16,7 +16,7 @@ import '../../pages/studio/book_main_page.dart';
 import '../../pages/studio/studio_constant.dart';
 import '../../pages/studio/studio_getx_controller.dart';
 import '../../pages/studio/studio_variables.dart';
-import 'creta_scrolled_text.dart';
+//import 'creta_scrolled_text.dart';
 import 'creta_text_player.dart';
 import 'creta_text_switcher.dart';
 import 'custom_scroll_controller.dart';
@@ -24,6 +24,7 @@ import 'custom_scroll_controller.dart';
 mixin CretaTextMixin {
   double applyScale = 1;
   FrameEventController? sendEvent;
+  static int counter = 0;
 
   Widget playText(
     BuildContext context,
@@ -305,85 +306,9 @@ mixin CretaTextMixin {
 
     switch (model.aniType.value) {
       case TextAniType.fadeTransition:
-        {
-          int lines = text.split('\n').length;
-          int stopDuration = (model.anyDuration.value / lines).ceil();
-          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
-          return CretaTextSwitcher(
-              text: text,
-              stopDuration: Duration(seconds: stopDuration),
-              switchDuration: Duration(seconds: switchDuration),
-              aniType: TextAniType.fadeTransition,
-              builder: (index, eachLine) {
-                return _outLineAndShadowText(
-                  key: ValueKey<int>(index),
-                  model,
-                  eachLine,
-                  style,
-                  isThumbnail,
-                );
-              });
-        }
       case TextAniType.sizeTransition:
-        {
-          int lines = text.split('\n').length;
-          int stopDuration = (model.anyDuration.value / lines).ceil();
-          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
-          return CretaTextSwitcher(
-              text: text,
-              stopDuration: Duration(seconds: stopDuration),
-              switchDuration: Duration(seconds: switchDuration),
-              aniType: TextAniType.sizeTransition,
-              builder: (index, eachLine) {
-                return _outLineAndShadowText(
-                  key: ValueKey<int>(index),
-                  model,
-                  eachLine,
-                  style,
-                  isThumbnail,
-                );
-              });
-        }
       case TextAniType.rotateTransition:
-        {
-          int lines = text.split('\n').length;
-          int stopDuration = (model.anyDuration.value / lines).ceil();
-          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
-          return CretaTextSwitcher(
-              text: text,
-              stopDuration: Duration(seconds: stopDuration),
-              switchDuration: Duration(seconds: switchDuration),
-              aniType: TextAniType.rotateTransition,
-              builder: (index, eachLine) {
-                return _outLineAndShadowText(
-                  key: ValueKey<int>(index),
-                  model,
-                  eachLine,
-                  style,
-                  isThumbnail,
-                );
-              });
-        }
       case TextAniType.slideTransition:
-        {
-          int lines = text.split('\n').length;
-          int stopDuration = (model.anyDuration.value / lines).ceil();
-          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
-          return CretaTextSwitcher(
-              text: text,
-              stopDuration: Duration(seconds: stopDuration),
-              switchDuration: Duration(seconds: switchDuration),
-              aniType: TextAniType.slideTransition,
-              builder: (index, eachLine) {
-                return _outLineAndShadowText(
-                  key: ValueKey<int>(index),
-                  model,
-                  eachLine,
-                  style,
-                  isThumbnail,
-                );
-              });
-        }
       case TextAniType.scaleTransition:
         {
           int lines = text.split('\n').length;
@@ -393,8 +318,47 @@ mixin CretaTextMixin {
               text: text,
               stopDuration: Duration(seconds: stopDuration),
               switchDuration: Duration(seconds: switchDuration),
-              aniType: TextAniType.scaleTransition,
+              aniType: model.aniType.value,
               builder: (index, eachLine) {
+                return _outLineAndShadowText(
+                  key: ValueKey<int>(index),
+                  model,
+                  eachLine,
+                  style,
+                  isThumbnail,
+                );
+              });
+        }
+      case TextAniType.randomTransition:
+        {
+          int lines = text.split('\n').length;
+          int stopDuration = (model.anyDuration.value / lines).ceil();
+          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
+          TextAniType aniType = TextAniType.fadeTransition;
+          switch (counter % 5) {
+            case 0:
+              aniType = TextAniType.fadeTransition;
+              break;
+            case 1:
+              aniType = TextAniType.sizeTransition;
+              break;
+            case 2:
+              aniType = TextAniType.rotateTransition;
+              break;
+            case 3:
+              aniType = TextAniType.slideTransition;
+              break;
+            case 4:
+              aniType = TextAniType.scaleTransition;
+              break;
+          }
+          return CretaTextSwitcher(
+              text: text,
+              stopDuration: Duration(seconds: stopDuration),
+              switchDuration: Duration(seconds: switchDuration),
+              aniType: aniType,
+              builder: (index, eachLine) {
+                counter++;
                 return _outLineAndShadowText(
                   key: ValueKey<int>(index),
                   model,

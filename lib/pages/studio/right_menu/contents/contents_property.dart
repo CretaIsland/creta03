@@ -1205,6 +1205,9 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
+                width: 250, height: 36, child: transitionText(model, TextAniType.randomTransition)),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(
                 width: 250, height: 36, child: transitionText(model, TextAniType.fadeTransition)),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
