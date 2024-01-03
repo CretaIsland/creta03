@@ -1080,4 +1080,15 @@ class CretaUtils {
       //),
     );
   }
+
+  // 비교적 간단히, 텍스트의 사이즈를 구하는 함수이다.
+  static  Size calculateTextSize(String text, TextStyle style, double maxWidth) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: maxWidth);
+
+    return textPainter.size;
+  }
 }
