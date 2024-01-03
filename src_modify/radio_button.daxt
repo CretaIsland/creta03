@@ -11,6 +11,7 @@ class RadioButton<T> extends StatelessWidget {
   final Color? activeColor;
   final Color? fillColor;
   final TextStyle? textStyle;
+  final double padding; //skpark
 
   const RadioButton({
     required this.description,
@@ -21,6 +22,7 @@ class RadioButton<T> extends StatelessWidget {
     this.activeColor,
     this.fillColor,
     this.textStyle,
+    this.padding = 10, //skpark
   });
 
   @override
@@ -44,17 +46,19 @@ class RadioButton<T> extends StatelessWidget {
                     textAlign: TextAlign.right,
                   ),
                 )
-              : Container(
-                  color: Colors.blue,
-                ),
-          Radio<T>(
-            groupValue: groupValue,
-            onChanged: this.onChanged,
-            value: this.value,
-            activeColor: activeColor,
-            fillColor: fillColor != null ? MaterialStateProperty.all(fillColor) : null,
+              : Container(),
+          Padding(
+            padding: this.textPosition == RadioButtonTextPosition.left
+                ? EdgeInsets.only(left: padding)
+                : EdgeInsets.only(right: padding), //skpark
+            child: Radio<T>(
+              groupValue: groupValue,
+              onChanged: this.onChanged,
+              value: this.value,
+              activeColor: activeColor,
+              fillColor: fillColor != null ? MaterialStateProperty.all(fillColor) : null,
+            ),
           ),
-          SizedBox(width: 8.0),
           this.textPosition == RadioButtonTextPosition.right
               ? Expanded(
                   child: Text(
@@ -63,9 +67,7 @@ class RadioButton<T> extends StatelessWidget {
                     textAlign: TextAlign.left,
                   ),
                 )
-              : Container(
-                  color: Colors.amber,
-                ),
+              : Container(),
         ],
       ),
     );

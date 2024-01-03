@@ -22,6 +22,8 @@ class RadioGroup<T> extends StatelessWidget {
   final Color? activeColor;
   final Color? fillColor;
   final TextStyle? textStyle;
+  final double itemPadding; //skpark
+  final double iconPadding; //skpark
 
   const RadioGroup.builder({
     required this.groupValue,
@@ -33,6 +35,8 @@ class RadioGroup<T> extends StatelessWidget {
     this.activeColor,
     this.fillColor,
     this.textStyle,
+    this.itemPadding = 5, //skpark
+    this.iconPadding = 15, //skpark
   });
 
   List<Widget> get _group => this.items.map(
@@ -41,7 +45,7 @@ class RadioGroup<T> extends StatelessWidget {
 
           if (this.direction == Axis.vertical) {
             return Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: EdgeInsets.all(itemPadding), //skpark
               child: RadioButton(
                 description: radioButtonBuilder.description,
                 value: item,
@@ -51,12 +55,14 @@ class RadioGroup<T> extends StatelessWidget {
                 textPosition: radioButtonBuilder.textPosition ?? RadioButtonTextPosition.right,
                 activeColor: activeColor,
                 fillColor: this.fillColor,
+                padding: iconPadding,
               ),
             );
           }
 
           return Expanded(
             child: RadioButton(
+              padding: iconPadding,
               description: radioButtonBuilder.description,
               value: item,
               groupValue: this.groupValue,
