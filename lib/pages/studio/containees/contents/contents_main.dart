@@ -159,6 +159,7 @@ class ContentsMainState extends State<ContentsMain> {
               // ignore: sized_box_for_whitespace
               if (model != null && model.isText() == true) {
                 if (model.isAutoFontSize()) {
+                  logger.info('ContentsMain fontSizeNotifier');
                   CretaAutoSizeText.fontSizeNotifier?.stop(); // rightMenu 에 전달
                 }
               }

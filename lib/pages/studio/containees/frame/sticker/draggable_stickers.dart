@@ -405,6 +405,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
           ContentsModel? contentsModel = widget.frameManager!.getFirstContents(frameModel.mid);
           if (contentsModel != null && contentsModel.isText() && contentsModel.isAutoFontSize()) {
             // 마우스를 끌기 시작하여, fontSize 가 변하기 시작한다는 사실을 알림.
+            logger.info('DraggableResizable fontSizeNotifier');
             CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true); // rightMenu 에 전달
           }
         }
@@ -963,7 +964,6 @@ class _DraggableStickersState extends State<DraggableStickers> {
         },
         onContentsFullscreen: () {
           logger.fine('onContentsFullscreen');
-       
         },
         onContentsDelete: () {
           logger.fine('onContentsDelete');

@@ -631,6 +631,14 @@ class CretaStudioLang {
   static String neon = 'Neon Text';
   static String fade = 'Fade Text';
   static String bounce = 'Bounce Text';
+  static List<String> transition = [
+    '랜덤 전환',
+    '서서히 전환',
+    '미끄러지듯 전환',
+    '작아졌다 커지기 전환',
+    '회전 전환',
+    '안에서 밖으로 전환',
+  ];
 
   static String weather = '날씨 위젯';
   static String clockandWatch = '시계와 스톱워치';

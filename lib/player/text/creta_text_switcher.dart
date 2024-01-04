@@ -27,6 +27,7 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
   int _currentIndex = 0;
   late Timer _timer;
   late List<String> _textLines;
+  static int counter = 0;
 
   @override
   void didUpdateWidget(CretaTextSwitcher oldWidget) {
@@ -50,6 +51,11 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
   }
 
   @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
   void dispose() {
     _timer.cancel();
     super.dispose();
@@ -57,13 +63,15 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
 
   @override
   Widget build(BuildContext context) {
+    TextAniType aniType = _getTextAniType(widget.aniType);
+
     return Center(
       child: AnimatedSwitcher(
-        duration: widget.aniType == TextAniType.rotateTransition
+        duration: aniType == TextAniType.rotateTransition
             ? const Duration(seconds: 1)
             : widget.switchDuration,
         transitionBuilder: (Widget child, Animation<double> animation) {
-          switch (widget.aniType) {
+          switch (aniType) {
             case TextAniType.rotateTransition:
               return RotationTransition(
                 turns: animation,
@@ -104,5 +112,25 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
         // ),
       ),
     );
+  }
+
+  TextAniType _getTextAniType(TextAniType aniType) {
+    if (aniType != TextAniType.randomTransition) {
+      return aniType;
+    }
+    counter++;
+    switch (counter % 5) {
+      case 0:
+        return TextAniType.fadeTransition;
+      case 1:
+        return TextAniType.sizeTransition;
+      case 2:
+        return TextAniType.rotateTransition;
+      case 3:
+        return TextAniType.slideTransition;
+      case 4:
+        return TextAniType.scaleTransition;
+    }
+    return TextAniType.fadeTransition;
   }
 }

@@ -607,42 +607,8 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget _bookMain(DateTime lastEventTime) {
     return StudioVariables.isPreview
         ? Scaffold(
-            body: 
-            // MouseRegion(
-            //     cursor:
-            //         StudioVariables.hideMouse ? SystemMouseCursors.none : SystemMouseCursors.click,
-            //     onExit: (event) {
-            //       //print('mouse exit');
-            //       setState(() {
-            //         StudioVariables.hideMouse = true;
-            //       });
-            //     },
-            //     onEnter: (event) {
-            //       // 처음 떳을 때이다.
-            //       //print('mouse enter');
-            //       setState(() {
-            //         StudioVariables.hideMouse = true;
-            //       });
-            //       // // 마우스가 위젯에 진입할 때 커서를 숨김
-            //       // StudioVariables.hideMouse = true;
-            //       // SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'none');
-            //       // _mouseMoveCount = 0;
-            //     },
-            //     onHover: (pointerEvent) {
-            //       _mouseMoveCount++;
-            //       _lastMouseMoveTime = DateTime.now();
-            //       if (_mouseMoveCount > 30) {
-            //         //print('mouse hover');
-            //         //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
-            //         setState(() {
-            //           StudioVariables.hideMouse = false;
-            //         });
-            //         _mouseMoveCount = 0;
-            //       }
-            //     },
-              MouseHider(fromPriviewToMain: _fromPriviewToMain,
-                child: _waitBook()),
-                )
+            body: MouseHider(fromPriviewToMain: _fromPriviewToMain, child: _waitBook()),
+          )
         : Snippet.CretaScaffold(
             title: Snippet.logo('studio', route: () {
               Routemaster.of(context).push(AppRoutes.studioBookGridPage);

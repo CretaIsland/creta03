@@ -1204,23 +1204,81 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
-                width: 250, height: 36, child: transitionText(model, TextAniType.randomTransition)),
+            // 속도 슬라이더 바
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: propertyLine(
+                name: CretaStudioLang.speed,
+                widget: CretaExSlider(
+                  valueType: SliderValueType.normal,
+                  value: model.anyDuration.value,
+                  onChanngeComplete: (val) {
+                    //setState(() {
+                    model.anyDuration.set(val);
+                    //});
+                    _contentsManager?.notify();
+                    _sendEvent!.sendEvent(widget.model);
+                  },
+                  onChannged: (val) {},
+                  min: 0,
+                  max: 100,
+                ),
+              ),
+            ),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
-                width: 250, height: 36, child: transitionText(model, TextAniType.fadeTransition)),
+                width: 250,
+                height: 36,
+                child: transitionText(
+                  model,
+                  TextAniType.randomTransition,
+                  CretaStudioLang.transition[0],
+                )),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
-                width: 250, height: 36, child: transitionText(model, TextAniType.slideTransition)),
+                width: 250,
+                height: 36,
+                child: transitionText(
+                  model,
+                  TextAniType.fadeTransition,
+                  CretaStudioLang.transition[1],
+                )),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
-                width: 250, height: 36, child: transitionText(model, TextAniType.scaleTransition)),
+                width: 250,
+                height: 36,
+                child: transitionText(
+                  model,
+                  TextAniType.slideTransition,
+                  CretaStudioLang.transition[2],
+                )),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
-                width: 250, height: 36, child: transitionText(model, TextAniType.rotateTransition)),
+                width: 250,
+                height: 36,
+                child: transitionText(
+                  model,
+                  TextAniType.scaleTransition,
+                  CretaStudioLang.transition[3],
+                )),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(
-                width: 250, height: 36, child: transitionText(model, TextAniType.sizeTransition)),
+                width: 250,
+                height: 36,
+                child: transitionText(
+                  model,
+                  TextAniType.rotateTransition,
+                  CretaStudioLang.transition[4],
+                )),
+            StudioSnippet.smallDivider(height: 10),
+            SizedBox(
+                width: 250,
+                height: 36,
+                child: transitionText(
+                  model,
+                  TextAniType.sizeTransition,
+                  CretaStudioLang.transition[5],
+                )),
             StudioSnippet.smallDivider(height: 10),
             // 옆으로 흐르는 문자열
             SizedBox(width: 250, height: 36, child: tickerSide(model)),
@@ -1242,25 +1300,6 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
             SizedBox(width: 250, height: 36, child: wavyText(model)),
             StudioSnippet.smallDivider(height: 10),
             SizedBox(width: 250, height: 36, child: neonText(model)),
-            StudioSnippet.smallDivider(height: 10),
-            // 속도 슬라이더 바
-            propertyLine(
-              name: CretaStudioLang.speed,
-              widget: CretaExSlider(
-                valueType: SliderValueType.normal,
-                value: model.anyDuration.value,
-                onChanngeComplete: (val) {
-                  //setState(() {
-                  model.anyDuration.set(val);
-                  //});
-                  _contentsManager?.notify();
-                  //_sendEvent!.sendEvent(widget.model);
-                },
-                onChannged: (val) {},
-                min: 0,
-                max: 100,
-              ),
-            ),
           ],
         ));
   }
@@ -1533,7 +1572,7 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
     );
   }
 
-  Widget transitionText(ContentsModel model, TextAniType aniType) {
+  Widget transitionText(ContentsModel model, TextAniType aniType, String title) {
     return TextButton(
       onPressed: () {
         setState(() {
@@ -1545,13 +1584,13 @@ class _ContentsPropertyState extends State<ContentsProperty> with PropertyMixin 
         _sendEvent!.sendEvent(widget.model);
       },
       child: CretaTextSwitcher(
-          text: '$aniType\n$aniType',
+          text: '$title \n $title',
           stopDuration: Duration(seconds: 2),
           switchDuration: Duration(seconds: 1),
           aniType: aniType,
           builder: (index, eachLine) {
             return Text(
-              '$aniType',
+              eachLine,
               key: ValueKey<int>(index),
               style: dataStyle,
             );
