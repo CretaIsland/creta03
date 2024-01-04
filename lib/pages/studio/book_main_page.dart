@@ -331,6 +331,7 @@ class _BookMainPageState extends State<BookMainPage> {
     if (StudioVariables.isPreview == false) {
       StudioVariables.stopNextContents = false;
       StudioVariables.stopPaging = false;
+      StudioVariables.hideMouse = false;
     }
 
     logger.info("end ---_BookMainPageState-----------------------------------------");
@@ -514,11 +515,15 @@ class _BookMainPageState extends State<BookMainPage> {
 
   @override
   void dispose() {
-    logger.info('BookMainPage.dispose');
+    logger.severe('BookMainPage.dispose');
 
     if (BookMainPage.backGroundMusic != null) {
       FrameManager.stopBackgroundMusic(BookMainPage.backGroundMusic!);
     }
+
+    // 아직 save  되지 않은 Queue 를 모두 save 한다.
+    saveManagerHolder?.stopTimer();
+    saveManagerHolder?.saveForce(notify: false);
 
     //_mouseMovetimer?.cancel();
     //_stopConnectedUserTimer();
@@ -607,7 +612,13 @@ class _BookMainPageState extends State<BookMainPage> {
   Widget _bookMain(DateTime lastEventTime) {
     return StudioVariables.isPreview
         ? Scaffold(
-            body: MouseHider(fromPriviewToMain: _fromPriviewToMain, child: _waitBook()),
+            body: MouseHider(
+              fromPriviewToMain: _fromPriviewToMain,
+              child: _waitBook(),
+              onMouseHideChanged: () {
+                BookMainPage.pageManagerHolder?.notify();
+              },
+            ),
           )
         : Snippet.CretaScaffold(
             title: Snippet.logo('studio', route: () {
@@ -1387,7 +1398,11 @@ class _BookMainPageState extends State<BookMainPage> {
           SizedBox(width: padding),
           BTN.floating_l(
             icon: Icons.smart_display_outlined,
-            onPressed: () {
+            onPressed: () async {
+              // 가기전에 모든것을 save 한다.
+              saveManagerHolder?.stopTimer();
+              await saveManagerHolder?.saveForce(notify: false);
+
               // PageModel? pageModel = BookMainPage.pageManagerHolder!.getSelected() as PageModel?;
               // if (pageModel == null) {
               //   return;

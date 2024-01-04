@@ -707,4 +707,6 @@ class CretaStudioLang {
   static String notImpl = '아직 구현되지 않았습니다.';
   static String isOverlayFrame = '이 프레임은 전체 페이지에 고정된 프레임입니다. 삭제하면 모든 페이지에서 이 프레임이 없어집니다';
   static String deleteConfirm = '정말로 삭제하시겠습니까?';
+
+  static String gobackToStudio = 'Studio로 돌아가기';
 }
