@@ -470,11 +470,8 @@ class _LeftMenuPageState extends State<LeftMenuPage> {
                     onPressed: () async {
                       //PageModel? page = _pageManager!.getSelected() as PageModel?;
                       //if (page != null) {
-                      print('copy page start');
                       await _pageManager?.copyPage(model);
-                      setState(() {
-                        print('copy page and refresh');
-                      });
+                      setState(() {});
                     }),
                 BTN.fill_gray_i_m(
                   tooltip: CretaStudioLang.showUnshow,

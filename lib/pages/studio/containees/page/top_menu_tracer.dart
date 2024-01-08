@@ -146,9 +146,7 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
       );
       Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
       frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
-        print('notify2');
         _sendEvent?.sendEvent(value);
-
         ///frameManager!.notify();
         _isBusy = false;
         return null;

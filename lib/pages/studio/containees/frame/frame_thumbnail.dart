@@ -75,7 +75,7 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
 
   //bool initChildren() {
   Future<bool> initChildren() async {
-    print('FrameThumbnail initialized================');
+    logger.info('FrameThumbnail initialized================');
     frameManager = widget.frameManager;
     if (frameManager == null) {
       logger.severe('frame manager is null');
@@ -101,7 +101,7 @@ class FrameThumbnailState extends State<FrameThumbnail> with ContaineeMixin, Fra
     //while (_contentsManager!.onceDBGetComplete == false) {
     while (_contentsManager == null) {
       //썸네일에서는 가져오지 말아야 한다. 같은 COntentsManager를 쓰기때문이다.
-      print('frame_thumbnail : wait contentsManager');
+      logger.fine('frame_thumbnail : wait contentsManager');
       // 0.5 초를 쉬어서, FrameMain  에서   contents 를 가져올 시간을 벌어준다.
       await Future.delayed(const Duration(milliseconds: 500));
       _contentsManager = frameManager!.findContentsManager(widget.model);

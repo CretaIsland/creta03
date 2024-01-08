@@ -550,7 +550,7 @@ class FrameManager extends CretaManager {
       retval = findContentsManagerByMid(frameModel.mid);
       if (retval == null) {
         // 여기서 ContentsManagerMap  에 등록된다.
-        print('contentsManager not founded !!! new ContentsManager created');
+        logger.info('contentsManager not founded !!! new ContentsManager created');
         retval = newContentsManager(frameModel);
         retval.clearAll();
       }

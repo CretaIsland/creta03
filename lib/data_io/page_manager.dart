@@ -628,7 +628,6 @@ class PageManager extends CretaManager {
     // await createToDB(newModel);
     // insert(newModel, postion: getLength());
     // selectedMid = newModel.mid;
-    print('copyPage end');
     return newModel;
   }
 
