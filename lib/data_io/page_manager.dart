@@ -17,7 +17,7 @@ import '../model/frame_model.dart';
 import '../model/page_model.dart';
 import '../pages/studio/book_main_page.dart';
 import '../pages/studio/containees/containee_nofifier.dart';
-import '../pages/studio/containees/page/page_main.dart';
+//import '../pages/studio/containees/page/page_main.dart';
 import '../pages/studio/left_menu/left_menu_page.dart';
 import '../pages/studio/studio_constant.dart';
 import '../pages/studio/studio_variables.dart';
@@ -269,18 +269,17 @@ class PageManager extends CretaManager {
   bool _movePage(String? mid) {
     if (mid != null) {
       //DraggableStickers.isFrontBackHover = false;
-      PageMainState.transitionIndicator = 0.1;
       notify();
       if (StudioVariables.isPreview == true) {
         // 프리뷰 모드에서만, pageTransition 이 동작한다.
-        PageModel? model = getModelByMid(mid) as PageModel?;
-        if (model != null &&
-            (model.transitionEffect.value > 0 || model.transitionEffect2.value > 0)) {
-          Future.delayed(model.getPageDuration(), () {
-            setSelectedMid(mid);
-          });
-          return true;
-        }
+        // PageModel? model = getModelByMid(mid) as PageModel?;
+        // if (model != null &&
+        //     (model.transitionEffect.value > 0 || model.transitionEffect2.value > 0)) {
+        //   Future.delayed(model.getPageDuration(), () {
+        //     setSelectedMid(mid);
+        //   });
+        //   return true;
+        // }
       }
       setSelectedMid(mid);
       return true;
@@ -629,7 +628,7 @@ class PageManager extends CretaManager {
     // await createToDB(newModel);
     // insert(newModel, postion: getLength());
     // selectedMid = newModel.mid;
-
+    print('copyPage end');
     return newModel;
   }
 

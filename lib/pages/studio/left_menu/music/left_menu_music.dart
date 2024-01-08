@@ -43,6 +43,7 @@ class _LeftMenuMusicState extends State<LeftMenuMusic> with LeftTemplateMixin, F
 
   @override
   Widget build(BuildContext context) {
+    print('a');
     setFrameManager(null);
     return Padding(
       padding: const EdgeInsets.only(top: 12.0, left: 24.0),

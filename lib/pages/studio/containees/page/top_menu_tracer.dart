@@ -3,12 +3,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../design_system/creta_color.dart';
 import '../../book_main_page.dart';
 import '../../studio_constant.dart';
+import '../../studio_getx_controller.dart';
 import '../../studio_variables.dart';
 import '../frame/frame_play_mixin.dart';
 
@@ -24,11 +26,14 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
   bool _isHover = false;
   Offset? _hoverPos;
   bool _isBusy = false;
+  FrameEventController? _sendEvent;
 
   @override
   void initState() {
     super.initState();
     frameManager = widget.frameManager;
+    final FrameEventController sendEvent = Get.find(tag: 'frame-main-to-property');
+    _sendEvent = sendEvent;
   }
 
   @override
@@ -141,7 +146,10 @@ class _TopMenuTracerState extends State<TopMenuTracer> with FramePlayMixin {
       );
       Offset pos = CretaUtils.positionInPage(details.localPosition - center, null);
       frameManager!.createNextFrame(pos: pos, size: LayoutConst.defaultFrameSize).then((value) {
-        frameManager!.notify();
+        print('notify2');
+        _sendEvent?.sendEvent(value);
+
+        ///frameManager!.notify();
         _isBusy = false;
         return null;
       });

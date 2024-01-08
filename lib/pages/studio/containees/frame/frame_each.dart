@@ -105,7 +105,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     //print('pageModel=${widget.pageModel.mid}');
     //print('model.par=${widget.model.parentMid.value}');
     //print('model.isO=${widget.model.isOverlay.value}');
-    _contentsManager = frameManager!.findContentsManager(widget.model);
+    _contentsManager = frameManager!.findOrCreateContentsManager(widget.model);
     // if (_contentsManager == null) {
     //   //logger.fine('new ContentsManager created (${widget.model.mid})');
     //   _contentsManager = frameManager!.newContentsManager(widget.model);

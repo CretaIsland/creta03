@@ -132,4 +132,9 @@ class PageModel extends CretaModel with CretaStyleMixin {
     logger.finest('page build complete !!!');
     return true;
   }
+
+    bool hasTransitionEffect() {
+    return (transitionEffect.value > 0 || transitionEffect2.value > 0);
+  }
+
 }

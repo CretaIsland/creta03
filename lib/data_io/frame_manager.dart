@@ -53,7 +53,7 @@ class FrameManager extends CretaManager {
     if (frameManager == null) {
       return const SizedBox.shrink();
     }
-    ContentsManager contentsManager = frameManager.findContentsManager(frameModel);
+    ContentsManager contentsManager = frameManager.findOrCreateContentsManager(frameModel);
     ContentsModel? model = contentsManager.getFirstModel();
     if (model != null) {
       if (contentsManager.playTimer != null) {
@@ -387,6 +387,7 @@ class FrameManager extends CretaManager {
     await createToDB(defaultFrame);
     insert(defaultFrame, postion: getLength(), doNotify: doNotify);
     //selectedMid = defaultFrame.mid;
+    reOrdering();
     setSelectedMid(defaultFrame.mid);
     return defaultFrame;
   }
@@ -426,10 +427,10 @@ class FrameManager extends CretaManager {
     //newModel.isRemoved.set(false, save: false, noUndo: true);
 
     if (srcFrameManager != null && samePage == false) {
-      ContentsManager contentsManager = srcFrameManager.findContentsManager(src);
+      ContentsManager contentsManager = srcFrameManager.findOrCreateContentsManager(src);
       await contentsManager.copyContents(newModel.mid, bookModel.mid, samePage: samePage);
     } else {
-      ContentsManager? contentsManager = findContentsManager(src);
+      ContentsManager? contentsManager = findOrCreateContentsManager(src);
       await contentsManager.copyContents(newModel.mid, bookModel.mid);
     }
 
@@ -463,7 +464,7 @@ class FrameManager extends CretaManager {
       newModel.order.set(order++, save: false, noUndo: true);
       logger.fine('create new FrameModel ${newModel.name},${newModel.mid}');
 
-      ContentsManager contentsManager = findContentsManager(org);
+      ContentsManager contentsManager = findOrCreateContentsManager(org);
       await contentsManager.copyContents(newModel.mid, bookMid, samePage: samePage);
 
       await createToDB(newModel);
@@ -525,7 +526,7 @@ class FrameManager extends CretaManager {
     return contentsManagerMap[frameModelMid];
   }
 
-  ContentsManager findContentsManager(FrameModel frameModel) {
+  ContentsManager findOrCreateContentsManager(FrameModel frameModel) {
     ContentsManager? retval;
     if (frameModel.isOverlay.value == true && pageModel.mid != frameModel.parentMid.value) {
       //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
@@ -549,12 +550,40 @@ class FrameManager extends CretaManager {
       retval = findContentsManagerByMid(frameModel.mid);
       if (retval == null) {
         // 여기서 ContentsManagerMap  에 등록된다.
+        print('contentsManager not founded !!! new ContentsManager created');
         retval = newContentsManager(frameModel);
         retval.clearAll();
       }
     }
 
     return retval!;
+  }
+
+  ContentsManager? findContentsManager(FrameModel frameModel) {
+    ContentsManager? retval;
+    if (frameModel.isOverlay.value == true && pageModel.mid != frameModel.parentMid.value) {
+      //  Overlay 이기 때문에,  ContentsManager 가 다른 frameManager 에 있는 것이므로
+      // 해당 프레임을 찾아야 한다.
+      FrameManager? anotherFrameManager =
+          BookMainPage.pageManagerHolder!.findFrameManager(frameModel.parentMid.value);
+      if (anotherFrameManager != null) {
+        //print('anotherFrameManager is founded ${frameModel.parentMid.value}');
+        retval = anotherFrameManager.findContentsManagerByMid(frameModel.mid);
+        if (retval == null) {
+          //print('anotherFrameManager.frameManager not founded ${frameModel.mid}, create here');
+          // 여기서 ContentsManagerMap  에 등록된다.
+          retval = anotherFrameManager.newContentsManager(frameModel);
+          retval.clearAll();
+          return retval;
+        }
+      } else {
+        logger.severe(
+            'something wrong !!!! anotherFrameManager is not founded ${frameModel.parentMid.value}');
+        return retval;
+      }
+    }
+
+    return findContentsManagerByMid(frameModel.mid);
   }
 
   ContentsModel? getCurrentModel(String frameMid) {
@@ -696,7 +725,7 @@ class FrameManager extends CretaManager {
       }
       FrameModel frameModel = ele as FrameModel;
       //print('findOrInitContentsManager');
-      ContentsManager contentsManager = findContentsManager(frameModel);
+      ContentsManager contentsManager = findOrCreateContentsManager(frameModel);
       // if (contentsManager == null) {
       //   logger.fine('new ContentsManager created (${frameModel.mid})');
       //   contentsManager = newContentsManager(frameModel);
@@ -736,7 +765,7 @@ class FrameManager extends CretaManager {
       }
     }
     for (var entry in oldNewMap.entries) {
-      ContentsManager contentsManager = findContentsManager(entry.key);
+      ContentsManager contentsManager = findOrCreateContentsManager(entry.key);
       await contentsManager.copyBook(newBookMid, entry.value.mid);
       counter++;
     }
@@ -846,7 +875,7 @@ class FrameManager extends CretaManager {
         continue;
       }
       List<Node> conNodes = [];
-      ContentsManager contentsManager = findContentsManager(model);
+      ContentsManager contentsManager = findOrCreateContentsManager(model);
       //if (contentsManager != null) {
       conNodes = contentsManager.toNodes(model);
       //}
@@ -1035,7 +1064,7 @@ class FrameManager extends CretaManager {
       if (frameCount > 0) {
         jsonStr += ',\n';
       }
-      ContentsManager? contentsManager = findContentsManager(frame);
+      ContentsManager? contentsManager = findOrCreateContentsManager(frame);
       frameStr += contentsManager.toJson();
       jsonStr += '\t\t{\n$frameStr\n\t\t}';
       frameCount++;
