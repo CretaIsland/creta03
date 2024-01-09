@@ -13,11 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:hycop/hycop.dart';
+import 'package:url_launcher/link.dart';
 //import 'dart:async';
 //import 'package:flutter/gestures.dart';
 //import 'package:hycop/hycop.dart';
 //import 'package:hycop/common/util/logger.dart';
-//import 'package:routemaster/routemaster.dart';
+import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
 import '../../../common/cross_common_job.dart';
 import '../../../design_system/buttons/creta_button_wrapper.dart';
@@ -35,7 +36,7 @@ import '../../../design_system/creta_color.dart';
 //import '../../../pages/login_page.dart';
 import '../../../pages/login/creta_account_manager.dart';
 //import '../../common/cross_common_job.dart';
-//import '../../routes.dart';
+import '../../../routes.dart';
 //import 'sub_pages/community_left_menu_pane.dart';
 //import '../../design_system/component/creta_basic_layout_mixin.dart';
 import '../../../design_system/component/custom_image.dart';
@@ -118,11 +119,19 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   final List<PlaylistModel> _playlistModelList = [];
   final Map<String, BookModel> _playlistsBooksMap = {}; // <Book.mid, Playlists.books>
   bool _bookIsInFavorites = false;
-  late GlobalKey bookKey;
-  late GlobalKey bookKeyParent;
+  //late GlobalKey _fullscreenBookKey;
+  //late GlobalKey _fullscreenParentBookKey;
+  late GlobalKey _bookKey;
+  late GlobalKey _parentBookKey;
   final CrossCommonJob _crossCommonJob = CrossCommonJob();
   bool _isEditableBook = false;
+
   PlaylistModel? _playlistModelOnRightPane;
+  bool _showPlaylist = true;
+  bool _showAllPlaylistItems = false;
+  int _hoverPlaylistIndex = -1;
+  final Map<String, ChannelModel> _playlistChannelMap = {};
+  final ScrollController _playlistScrollController = ScrollController();
 
   @override
   void initState() {
@@ -149,8 +158,10 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       StudioVariables.selectedBookMid = "book=a5948eae-03ae-410f-8efa-f1a3c28e4f05";
     }
 
-    bookKeyParent = GlobalObjectKey('_CommunityRightBookPaneState.${CommunityRightBookPane.bookId}.parent');
-    bookKey = GlobalObjectKey('_CommunityRightBookPaneState.${CommunityRightBookPane.bookId}');
+    //_fullscreenBookKey = GlobalObjectKey('_CommunityRightBookPaneState.fullscreenBookKey.${CommunityRightBookPane.bookId}.parent');
+    //_fullscreenParentBookKey = GlobalObjectKey('_CommunityRightBookPaneState.fullscreenParentBookKey.${CommunityRightBookPane.bookId}.parent');
+    _bookKey = GlobalObjectKey('_CommunityRightBookPaneState.bookKey.${CommunityRightBookPane.bookId}.parent');
+    _parentBookKey = GlobalObjectKey('_CommunityRightBookPaneState.parentBookKey.${CommunityRightBookPane.bookId}.parent');
 
     bookPublishedManagerHolder = BookPublishedManager();
     channelManagerHolder = ChannelManager();
@@ -174,12 +185,13 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
       joinList: [
         QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
         QuerySet(channelManagerHolder, _getChannelsFromDB, _resultChannelsFromDB),
-        QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
-        QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
         QuerySet(favoritesManagerHolder, _getFavoritesFromDB, _resultFavoritesFromDB),
         QuerySet(playlistManagerHolder, _getPlaylistsFromDB, _resultPlaylistsFromDB),
         QuerySet(playlistManagerHolder, _getMyPlaylistsFromDB, _resultMyPlaylistsFromDB),
         QuerySet(bookPublishedManagerHolder, _getPlaylistsBooksFromDB, _resultPlaylistsBooksFromDB),
+        QuerySet(channelManagerHolder, _getPlaylistChannelsFromDB, _resultPlaylistChannelsFromDB),
+        QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
+        QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
         QuerySet(subscriptionManagerHolder, _getSubscriptionFromDB, _resultSubscriptionFromDB),
         QuerySet(contentsManagerHolder, _getContentsFromDB, _resultContentsFromDB),
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
@@ -375,6 +387,40 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     }
   }
 
+  void _getPlaylistChannelsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getPlaylistChannelsFromDB()');
+    if (_playlistModelOnRightPane == null) {
+      // no book-data ==> skip
+      channelManagerHolder.setState(DBState.idle);
+      return;
+    }
+    final Map<String, String> channelIdMap = {};
+    _playlistModelOnRightPane?.bookIdList.forEach((bookId) {
+      BookModel? bookModel = _playlistsBooksMap[bookId];
+      if (bookModel == null) return;
+      channelIdMap.putIfAbsent(bookModel.channels[0], () => bookModel.channels[0]);
+    });
+    final List<String> channelIdList = [];
+    channelIdMap.forEach((key, value) {
+      channelIdList.add(value);
+    });
+    channelManagerHolder.queryFromIdList(channelIdList);
+  }
+
+  void _resultPlaylistChannelsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _resultPlaylistChannelsFromDB(${modelList.length})');
+    for (var model in modelList) {
+      ChannelModel chModel = model as ChannelModel;
+      _playlistChannelMap[chModel.mid] = chModel;
+      if (chModel.userId.isNotEmpty) {
+        _userIdMap[chModel.userId] = chModel.userId;
+      }
+      if (chModel.teamId.isNotEmpty) {
+        _teamIdMap[chModel.teamId] = chModel.teamId;
+      }
+    }
+  }
+
   void _getSubscriptionFromDB(List<AbsExModel> modelList) {
     if (kDebugMode) print('start _getSubscriptionFromDB(${modelList.length})');
     if (_currentBookModel == null || _channelModel == null) {
@@ -433,6 +479,10 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
           _controller.text = _currentBookModel?.description.value ?? '';
         });
       }
+      //
+      _playlistChannelMap.forEach((channelId, channelModel) {
+        channelModel.getModelFromMaps(_userPropertyMap, _teamMap);
+      });
     }
     dummyManagerHolder.setState(DBState.idle);
   }
@@ -443,8 +493,212 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     }
   }
 
-  Widget _getPlaylistWidget() {
-    return Container();
+  List<Widget> _getPlaylists(BuildContext context) {
+    final List<Widget> playlistWidgetList = [];
+    for (int idx = 0; idx < _playlistModelOnRightPane!.bookIdList.length; idx++) {
+      String bookId = _playlistModelOnRightPane!.bookIdList[idx];
+      BookModel? bookModel = _playlistsBooksMap[bookId];
+      if (bookModel == null) return [SizedBox.shrink()];
+      String channelName = _playlistChannelMap[bookModel.channels[0]]?.name ?? '';
+      String linkUrl = '${AppRoutes.communityBook}?$bookId&${_playlistModelOnRightPane?.getMid}';
+      Widget widget = Link(
+        uri: Uri.parse(linkUrl),
+        builder: (linkContext, function) {
+          return InkWell(
+            hoverColor: Colors.transparent,
+            onHover: (value) {
+              if (value) {
+                setState(() {
+                  _hoverPlaylistIndex = idx;
+                });
+              }
+            },
+            onTap: () {
+              Routemaster.of(context).push(linkUrl);
+            },
+            child: Container(
+              color: (idx == _hoverPlaylistIndex)
+                  ? CretaColor.text[200]
+                  : (_currentBookModel?.mid == bookModel.mid)
+                      ? CretaColor.primary[100]
+                      : null,
+              child: SizedBox(
+                width: 306,
+                height: 74,
+                //margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                // decoration: BoxDecoration(
+                //   borderRadius: BorderRadius.circular(6),
+                //   color: (_selectedPlaylistId == bookModel.mid) ? CretaColor.text[200] : null,
+                // ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 90,
+                        height: 50,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Stack(
+                            children: [
+                              (bookModel.thumbnailUrl.value.isEmpty)
+                                  ? const SizedBox(width: 74, height: 44)
+                                  : CustomImage(
+                                      width: 90,
+                                      height: 50,
+                                      hasAni: false,
+                                      image: bookModel.thumbnailUrl.value,
+                                    ),
+                              if (_currentBookModel?.mid == bookModel.mid &&
+                                  idx != _hoverPlaylistIndex)
+                                Opacity(
+                                  opacity: 0.4,
+                                  child: Container(
+                                    width: 90,
+                                    height: 50,
+                                    color: CretaColor.text[900],
+                                  ),
+                                ),
+                              if (_currentBookModel?.mid == bookModel.mid &&
+                                  idx != _hoverPlaylistIndex)
+                                SizedBox(
+                                  width: 90,
+                                  height: 50,
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.play_arrow,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 4, 0, 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: 172 - 4,
+                              child: Text(
+                                bookModel.name.value,
+                                overflow: TextOverflow.ellipsis,
+                                style: CretaFont.bodyMedium.copyWith(color: CretaColor.text[700]),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 172 - 4,
+                              child: Text(
+                                channelName,
+                                overflow: TextOverflow.ellipsis,
+                                style: CretaFont.buttonMedium.copyWith(color: CretaColor.text[400]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+      playlistWidgetList.add(widget);
+    }
+    return playlistWidgetList;
+  }
+
+  Widget _getPlaylistWidget(BuildContext context) {
+    int bookCount = _playlistModelOnRightPane!.bookIdList.length;
+    final bool showScrollbar = (bookCount > 5);
+    double playlistHeight = _showPlaylist ? (showScrollbar && !_showAllPlaylistItems ? 400 : bookCount * 74 + 2) : 0;
+    return Container(
+      width: _sideAreaRect.width,
+      height: _showPlaylist ? 20 + 32 + 20 + playlistHeight + 20 + 2 : 74,
+      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+      margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+      decoration: BoxDecoration(
+        color: CretaColor.text[100],
+        border: Border.all(color: CretaColor.text[100]!),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: SizedBox(
+        width: _sideAreaRect.childWidth,
+        height: 32 + 20 + playlistHeight,
+        child: Column(
+          children: [
+            SizedBox(
+              width: _sideAreaRect.childWidth,
+              height: 32,
+              child: Row(
+                children: [
+                  Text(
+                    _playlistModelOnRightPane!.name,
+                    style: CretaFont.titleLarge.copyWith(color: CretaColor.text[700]),
+                  ),
+                  if (bookCount > 5)
+                    BTN.fill_gray_t_es(
+                      text: _showAllPlaylistItems ? '간략보기' : '전체보기',
+                      width: 61,
+                      buttonColor: CretaButtonColor.gray100light,
+                      textColor: CretaColor.text[400],
+                      onPressed: () => setState(() => (_showAllPlaylistItems = !_showAllPlaylistItems)),
+                    ),
+                  Expanded(child: Container()),
+                  BTN.fill_gray_i_m(
+                    icon: _showPlaylist ? Icons.keyboard_arrow_up_sharp : Icons.keyboard_arrow_down_sharp,
+                    iconSize: 24,
+                    iconColor: CretaColor.text[700],
+                    buttonColor: CretaButtonColor.gray100light,
+                    onPressed: () => setState(() => (_showPlaylist = !_showPlaylist)),
+                  ),
+                ],
+              ),
+            ),
+            if (_showPlaylist) SizedBox(height: 20),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              clipBehavior: Clip.antiAlias,
+              child: MouseRegion(
+                onExit: (value) {
+                  setState(() {
+                    _hoverPlaylistIndex = -1;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(width: 1, color: CretaColor.text[100]! /*Colors.white*/),
+                    color: Colors.white,
+                  ),
+                  width: _sideAreaRect.childWidth,
+                  height: playlistHeight,
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    controller: _playlistScrollController,
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: showScrollbar), // 스크롤바 감추기
+                      child: ListView(
+                        scrollDirection: Axis.vertical,
+                        controller: _playlistScrollController,
+                        children: _getPlaylists(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _getHashtagWidget(String hashtag) {
@@ -481,45 +735,6 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   List<Widget> _getHashtagList() {
     return _hashtagValueList.map((e) => _getHashtagWidget(e)).toList();
-    // return [
-    //   _getHashtagWidget('#크레타북'),
-    //   _getHashtagWidget('#추천'),
-    //   _getHashtagWidget('#인기'),
-    //   _getHashtagWidget('#해시태그'),
-    //   _getHashtagWidget('#목록입니다'),
-    //   _getHashtagWidget('#스페이싱'),
-    //   _getHashtagWidget('#스페이싱'),
-    //   _getHashtagWidget('#스페이싱'),
-    //   _getHashtagWidget('#스페이싱'),
-    //   // BTN.opacity_gray_it_s(
-    //   //   text: '#크레타북',
-    //   //   textStyle: CretaFont.buttonMedium,
-    //   //   //width: null,
-    //   //   onPressed: () {},
-    //   //   width: null,
-    //   // ),
-    //   // BTN.opacity_gray_it_s(
-    //   //   text: '#추천',
-    //   //   textStyle: CretaFont.buttonMedium,
-    //   //   //width: null,
-    //   //   onPressed: () {},
-    //   //   width: null,
-    //   // ),
-    //   // SizedBox(width: 12),
-    //   // BTN.opacity_gray_it_s(
-    //   //   text: '#인기',
-    //   //   textStyle: CretaFont.buttonMedium,
-    //   //   //width: null,
-    //   //   onPressed: () {},
-    //   // ),
-    //   // SizedBox(width: 12),
-    //   // BTN.opacity_gray_it_s(
-    //   //   text: '#해시태그',
-    //   //   textStyle: CretaFont.buttonMedium,
-    //   //   //width: null,
-    //   //   onPressed: () {},
-    //   // ),
-    // ];
   }
 
   void _toggleFullscreen() {
@@ -533,41 +748,15 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     });
   }
 
-  Widget _getBookPreview(Size size) {
+  Widget _getBookPreview(Size size, { GlobalKey? bookKey, GlobalKey? parentKey }) {
     if (_cretaRelatedBookList.isNotEmpty) {
-      // return Container(
-      //   decoration: BoxDecoration(
-      //     // crop
-      //     borderRadius: BorderRadius.circular(20.0),
-      //   ),
-      //   clipBehavior: Clip.antiAlias,
-      //   child: Stack(
-      //     children: [
-      //       ClipRect(
-      //         child: CustomImage(
-      //             key: bookKey,
-      //             duration: 500,
-      //             hasMouseOverEffect: false,
-      //             width: size.width,
-      //             height: size.height,
-      //             image: _cretaRelatedBookList[0].thumbnailUrl),
-      //       ),
-      //       Container(
-      //         width: size.width,
-      //         height: size.height,
-      //         decoration: bookMouseOver ? Snippet.shadowDeco() : null,
-      //       ),
-      //     ],
-      //   ),
-      // );
       return RepaintBoundary(
-        key: bookKeyParent,
+        key: bookKey ?? _parentBookKey,
         child: SizedBox(
           width: size.width,
           height: size.height,
           child: BookMainPage(
-            //bookKey: GlobalObjectKey('BookPreivew${StudioVariables.selectedBookMid}'),
-            bookKey: bookKey,
+            bookKey: parentKey ?? _bookKey,
             isPreviewX: true,
             size: size,
             isPublishedMode: true,
@@ -601,7 +790,7 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
         //margin: EdgeInsets.fromLTRB(80, 0, 0, 0),
         child: Stack(
           children: [
-            _getBookPreview(size),
+            if (!StudioVariables.isFullscreen) _getBookPreview(size),
 /*
             // top-buttons (share, download, add-to-playlist)
             !bookMouseOver
@@ -810,14 +999,12 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
   }
 
   bool _clickedDescriptionEditButton = false;
-  //String _description = ''
-  //    '한강의 사계절을 한강 철교를 중심으로 표현해 보았습니다. 즐겁게 감상하세요.\n보다 자세한 사항은 아래 블로그를 방문해 주세요.\n\n이 콘텐츠의 사용 조건(저작권) : MIT\n이 콘텐츠가 포함하고 있는 원본 저작권 표시 : YG Entertainment, SME, Hive...';
   String _descriptionChanging = '';
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
 
   void takeSnapshot() {
-    RenderRepaintBoundary boundary = bookKeyParent.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    RenderRepaintBoundary boundary = _parentBookKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     boundary.toImage().then((value) {
       value.toByteData(format: ImageByteFormat.png).then((value) {
         Uint8List memImageData = value!.buffer.asUint8List();
@@ -1234,12 +1421,13 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
     );
   }
 
-  Widget _getSidePane() {
+  Widget _getSidePane(BuildContext context) {
     return SizedBox(
+      key: GlobalObjectKey(GlobalObjectKey('_CommunityRightBookPaneState.getSidePane.${CommunityRightBookPane.bookId}')),
       width: _sideAreaRect.width,
       child: Column(
         children: [
-          if (_playlistModelOnRightPane != null) _getPlaylistWidget(),
+          if (_playlistModelOnRightPane != null) _getPlaylistWidget(context),
           // hashtag
           Container(
             //height: 210,
@@ -1351,38 +1539,47 @@ class _CommunityRightBookPaneState extends State<CommunityRightBookPane> {
 
   @override
   Widget build(BuildContext context) {
-    if (StudioVariables.isFullscreen) {
-      double width = MediaQuery.of(context).size.width;
-      double height = MediaQuery.of(context).size.height;
-      return _getBookPreview(Size(width, height));
-    }
+    // if (StudioVariables.isFullscreen) {
+    //   double width = MediaQuery.of(context).size.width;
+    //   double height = MediaQuery.of(context).size.height;
+    //   return _getBookPreview(
+    //     Size(width, height),
+    //     bookKey: _fullscreenBookKey,
+    //     parentKey: _fullscreenParentBookKey,
+    //   );
+    // }
     _resize(context);
-    return Scrollbar(
-      key: _key,
-      thumbVisibility: true,
-      controller: widget.scrollController,
-      child: SingleChildScrollView(
-        controller: widget.scrollController,
-        child: Container(
-          padding: EdgeInsets.fromLTRB(
-            widget.cretaLayoutRect.childLeftPadding,
-            widget.cretaLayoutRect.childTopPadding,
-            widget.cretaLayoutRect.childRightPadding,
-            widget.cretaLayoutRect.childBottomPadding,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // main (book, descriptio, comment, etc...)
-              _getMainPane(),
-              // gap-space
-              if (_sideAreaRect.childWidth > 0) SizedBox(width: 20),
-              // side (playlist, hashtag, related book, etc...)
-              if (_sideAreaRect.childWidth > 0) _getSidePane(),
-            ],
+    return Stack(
+      children: [
+        Scrollbar(
+          key: _key,
+          thumbVisibility: true,
+          controller: widget.scrollController,
+          child: SingleChildScrollView(
+            controller: widget.scrollController,
+            child: Container(
+              padding: EdgeInsets.fromLTRB(
+                widget.cretaLayoutRect.childLeftPadding,
+                widget.cretaLayoutRect.childTopPadding,
+                widget.cretaLayoutRect.childRightPadding,
+                widget.cretaLayoutRect.childBottomPadding,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // main (book, descriptio, comment, etc...)
+                  _getMainPane(),
+                  // gap-space
+                  if (_sideAreaRect.childWidth > 0) SizedBox(width: 20),
+                  // side (playlist, hashtag, related book, etc...)
+                  if (_sideAreaRect.childWidth > 0) _getSidePane(context),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+        if (StudioVariables.isFullscreen) _getBookPreview(MediaQuery.of(context).size),
+      ],
     );
   }
 }

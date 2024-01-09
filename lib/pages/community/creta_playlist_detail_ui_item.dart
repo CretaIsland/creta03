@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 //import 'package:hycop/common/util/logger.dart';
 //import 'package:routemaster/routemaster.dart';
 //import 'package:url_strategy/url_strategy.dart';
-//import '../design_system/buttons/creta_button_wrapper.dart';
+import '../../design_system/buttons/creta_button.dart';
+import '../../design_system/buttons/creta_button_wrapper.dart';
 //import '../../design_system/component/snippet.dart';
 //import '../../design_system/menu/creta_drop_down.dart';
 //import '../../design_system/menu/creta_popup_menu.dart';
@@ -50,11 +51,13 @@ class CretaPlaylistDetailItem extends StatefulWidget {
     required this.width,
     required this.index,
     //required this.height,
+    required this.removeBook,
   });
   final BookModel bookModel;
   final double width;
   final int index;
   //final double height;
+  final Function(int)? removeBook;
 
   @override
   State<CretaPlaylistDetailItem> createState() => _CretaPlaylistDetailItemState();
@@ -108,7 +111,7 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                   child: SizedBox(
                     width: 32,
                     height: 32,
-                    child: Icon(Icons.menu_outlined, size: 16),
+                    child: Icon(Icons.drag_handle_outlined, size: 16),
                   ),
                 ),
               ),
@@ -152,7 +155,7 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
               ),
               SizedBox(width: 20),
               SizedBox(
-                width: widget.width - 212 - 20 - 40 - 40,
+                width: widget.width - 212 - 20 - 30,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,6 +184,12 @@ class _CretaPlaylistDetailItemState extends State<CretaPlaylistDetailItem> {
                     ),
                   ],
                 ),
+              ),
+              BTN.fill_gray_i_m(
+                icon: Icons.close_outlined,
+                iconSize: 16,
+                buttonColor: CretaButtonColor.transparent,
+                onPressed: () { widget.removeBook?.call(widget.index); },
               ),
             ],
           ),

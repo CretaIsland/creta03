@@ -282,6 +282,9 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
     dummyManagerHolder.setState(DBState.idle);
   }
 
+  void _popupMenu(PlaylistModel model) {
+  }
+
   Widget _getItemPane() {
     if (_hasNoChannelModel) {
       return Scrollbar(
@@ -316,6 +319,7 @@ class _CommunityRightChannelPlaylistPaneState extends State<CommunityRightChanne
             playlistModel: plModel,
             width: widget.cretaLayoutRect.childWidth,
             bookMap: _playlistsBooksMap,
+            popupMenu: _popupMenu,
           );
         },
       ),

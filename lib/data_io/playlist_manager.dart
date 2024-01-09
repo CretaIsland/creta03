@@ -74,16 +74,23 @@ class PlaylistManager extends CretaManager {
     // check is_exist
     Map<String, QueryValue> query = {};
     query['isRemoved'] = QueryValue(value: false);
-    query['mid'] = QueryValue(value: playlistMid);
+    //query['mid'] = QueryValue(value: playlistMid);
+    query['channelId'] = QueryValue(value: CretaAccountManager.getUserProperty!.channelId);
     queryFromDB(query);
     List<AbsExModel> list = await isGetListFromDBComplete().catchError((error, stackTrace) =>
         throw HycopUtils.getHycopException(error: error, defaultMessage: 'addBookToPlaylist Failed !!!'));
-    if (list.isEmpty) {
+    PlaylistModel? plModel;
+    for(var model in list) {
+      PlaylistModel pModel = model as PlaylistModel;
+      if (pModel.getMid == playlistMid) {
+        plModel = pModel;
+        break;
+      }
+    }
+    if (plModel == null) {
       // not exist in DB
       return false;
     }
-    // exist in DB => set to DB
-    PlaylistModel plModel = list[0] as PlaylistModel; // 무조건 1개만 있다고 가정
     plModel.bookIdList.add(bookId);
     setToDB(plModel);
     await isGetListFromDBComplete().catchError((error, stackTrace) =>
@@ -97,13 +104,18 @@ class PlaylistManager extends CretaManager {
     required BookModel bookModel,
     required Map<String, BookModel> bookModelMap,
     required Function(String, bool, BookModel, Map<String, BookModel>) onNewPlaylistDone,
+    bool modifyMode = false,
+    String modifyPlaylistId = '',
+    String modifyName = '',
+    bool modifyIsPublic = true,
+    Function(String, String, bool)? onModifyPlaylistDone,
   }) {
     final TextEditingController textController = TextEditingController();
     _isPublic = true;
     return CretaDialog(
       width: 364.0,
       height: 243.0,
-      title: '새 재생목록',
+      title: modifyMode ? '재생목록 수정' : '새 재생목록',
       crossAxisAlign: CrossAxisAlignment.center,
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,7 +142,7 @@ class PlaylistManager extends CretaManager {
                   child: CretaTextField(
                     height: 30,
                     textFieldKey: GlobalKey(),
-                    value: '',
+                    value: modifyMode ? modifyName : '',
                     hintText: '',
                     controller: textController,
                     onEditComplete: (String value) {},
@@ -150,7 +162,7 @@ class PlaylistManager extends CretaManager {
                         onSelected: (value) {
                           _isPublic = value;
                         },
-                        defaultValue: true,
+                        defaultValue: modifyMode ? modifyIsPublic : true,
                       ),
                     ],
                   ),
@@ -178,7 +190,12 @@ class PlaylistManager extends CretaManager {
                   height: 32,
                   onPressed: () {
                     Navigator.of(context).pop();
-                    onNewPlaylistDone(textController.text, _isPublic, bookModel, bookModelMap);
+                    if (modifyMode) {
+                      onModifyPlaylistDone?.call(modifyPlaylistId, textController.text, _isPublic);
+                    }
+                    else {
+                      onNewPlaylistDone(textController.text, _isPublic, bookModel, bookModelMap);
+                    }
                   },
                 ),
               ],
@@ -289,6 +306,34 @@ class PlaylistManager extends CretaManager {
     //
     modelList.add(newPlaylist);
     playlistsBooksMap.putIfAbsent(bookModel.getMid, () => bookModel);
+  }
+
+  void _modifyPlaylistDone(String playlistId, String name, bool isPublic) async {
+    if (kDebugMode) print('_modifyPlaylistDone($playlistId, $name, $isPublic)');
+    for(var model in modelList) {
+      PlaylistModel plModel = model as PlaylistModel;
+      if (plModel.getMid != playlistId) continue;
+      plModel.name = name;
+      plModel.isPublic = isPublic;
+      setToDB(plModel);
+    }
+  }
+
+  void modifyPlaylist(BuildContext context, PlaylistModel playlistModel) {
+    showDialog(
+      context: context,
+      builder: (context) => PlaylistManager.newPlaylistPopUp(
+        context: context,
+        bookModel: BookModel(''),
+        bookModelMap: {},
+        onNewPlaylistDone: _newPlaylistDone,
+        modifyMode: true,
+        modifyPlaylistId: playlistModel.getMid,
+        modifyName: playlistModel.name,
+        modifyIsPublic: playlistModel.isPublic,
+        onModifyPlaylistDone: _modifyPlaylistDone,
+      ),
+    );
   }
 
   void _newPlaylist(BuildContext context, BookModel bookModel, Map<String, BookModel> playlistsBooksMap) {
