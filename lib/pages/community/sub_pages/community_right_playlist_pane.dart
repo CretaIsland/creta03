@@ -35,9 +35,15 @@ import '../creta_playlist_ui_item.dart';
 import '../../../data_io/book_published_manager.dart';
 import '../../../data_io/favorites_manager.dart';
 import '../../../data_io/playlist_manager.dart';
+import '../../../data_io/channel_manager.dart';
+import '../../../data_io/user_property_manager.dart';
+import '../../../data_io/team_manager.dart';
 import '../../../model/app_enums.dart';
 import '../../../model/creta_model.dart';
 import '../../../model/book_model.dart';
+import '../../../model/channel_model.dart';
+import '../../../model/user_property_model.dart';
+import '../../../model/team_model.dart';
 import '../../../model/playlist_model.dart';
 
 //const double _rightViewTopPane = 40;
@@ -78,11 +84,20 @@ class CommunityRightPlaylistPane extends StatefulWidget {
 class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane> {
   final GlobalKey _key = GlobalKey();
 
-  late PlaylistManager playlistManagerHolder;
-  late BookPublishedManager bookPublishedManagerHolder;
-  late FavoritesManager dummyManagerHolder;
+  late final PlaylistManager playlistManagerHolder;
+  late final BookPublishedManager bookPublishedManagerHolder;
+  late final ChannelManager channelManagerHolder;
+  late final TeamManager teamManagerHolder;
+  late final UserPropertyManager userPropertyManagerHolder;
+  late final FavoritesManager dummyManagerHolder;
   final Map<String, BookModel> _cretaBookMap = {};
   final List<PlaylistModel> _playlistModelList = [];
+  final Map<String, ChannelModel> _channelMap = {};
+  final Map<String, String> _userIdMap = {};
+  final Map<String, UserPropertyModel> _userPropertyMap = {};
+  final Map<String, String> _teamIdMap = {};
+  final Map<String, TeamModel> _teamMap = {};
+
   //bool _onceDBGetComplete = false;
   late Future<bool> _dbGetComplete;
 
@@ -92,12 +107,19 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
 
     playlistManagerHolder = PlaylistManager();
     bookPublishedManagerHolder = BookPublishedManager();
+    channelManagerHolder = ChannelManager();
+    teamManagerHolder = TeamManager();
+    userPropertyManagerHolder = UserPropertyManager();
+
     dummyManagerHolder = FavoritesManager();
 
     CretaManager.startQueries(
       joinList: [
         QuerySet(playlistManagerHolder, _getPlaylistFromDB, _resultPlaylistsFromDB),
         QuerySet(bookPublishedManagerHolder, _getBooksFromDB, _resultBooksFromDB),
+        QuerySet(channelManagerHolder, _getChannelsFromDB, _resultChannelsFromDB),
+        QuerySet(userPropertyManagerHolder, _getUserPropertyFromDB, _resultUserPropertyFromDB),
+        QuerySet(teamManagerHolder, _getTeamsFromDB, _resultTeamsFromDB),
         QuerySet(dummyManagerHolder, _dummyCompleteDB, null),
       ],
       completeFunc: () {
@@ -140,19 +162,23 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
       bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
-    List<String> bookAllList = [];
+    final Map<String, String> bookIdMap = {};
     for (var plModel in modelList) {
       PlaylistModel fModel = plModel as PlaylistModel;
       for (var bookId in fModel.bookIdList) {
-        bookAllList.add(bookId);
+        bookIdMap.putIfAbsent(bookId, () => bookId);
       }
     }
-    if (bookAllList.isEmpty) {
+    List<String> bookIdList = [];
+    bookIdMap.forEach((key, value) {
+      bookIdList.add(value);
+    });
+    if (bookIdList.isEmpty) {
       bookPublishedManagerHolder.setState(DBState.idle);
       return;
     }
     bookPublishedManagerHolder.addWhereClause('isRemoved', QueryValue(value: false));
-    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookAllList, operType: OperType.whereIn));
+    bookPublishedManagerHolder.addWhereClause('mid', QueryValue(value: bookIdList, operType: OperType.whereIn));
     bookPublishedManagerHolder.queryByAddedContitions();
   }
 
@@ -164,8 +190,75 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
     }
   }
 
+  void _getChannelsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getPlaylistChannelsFromDB()');
+    if (modelList.isEmpty) {
+      // no book-data ==> skip
+      channelManagerHolder.setState(DBState.idle);
+      return;
+    }
+    final Map<String, String> channelIdMap = {};
+    _cretaBookMap.forEach((bookId, bookModel) {
+      channelIdMap.putIfAbsent(bookModel.channels[0], () => bookModel.channels[0]);
+    });
+    final List<String> channelIdList = [];
+    channelIdMap.forEach((key, value) {
+      channelIdList.add(value);
+    });
+    channelManagerHolder.queryFromIdList(channelIdList);
+  }
+
+  void _resultChannelsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _resultPlaylistChannelsFromDB(${modelList.length})');
+    for (var model in modelList) {
+      ChannelModel chModel = model as ChannelModel;
+      _channelMap[chModel.mid] = chModel;
+      if (chModel.userId.isNotEmpty) {
+        _userIdMap[chModel.userId] = chModel.userId;
+      }
+      if (chModel.teamId.isNotEmpty) {
+        _teamIdMap[chModel.teamId] = chModel.teamId;
+      }
+    }
+  }
+
+  void _getUserPropertyFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getUserPropertyFromDB(${modelList.length})');
+    userPropertyManagerHolder.queryFromIdMap(_userIdMap);
+  }
+
+  void _resultUserPropertyFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      UserPropertyModel userModel = model as UserPropertyModel;
+      //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.getKeyId})');
+      _userPropertyMap[userModel.getMid] = userModel;
+    }
+  }
+
+  void _getTeamsFromDB(List<AbsExModel> modelList) {
+    if (kDebugMode) print('start _getUserPropertyFromDB(${modelList.length})');
+    teamManagerHolder.queryFromIdMap(_teamIdMap);
+  }
+
+  void _resultTeamsFromDB(List<AbsExModel> modelList) {
+    for (var model in modelList) {
+      TeamModel teamModel = model as TeamModel;
+      //if (kDebugMode) print('_resultBooksFromDB(bookId=${bModel.getKeyId})');
+      _teamMap[teamModel.getMid] = teamModel;
+    }
+  }
+
   void _dummyCompleteDB(List<AbsExModel> modelList) {
+    _channelMap.forEach((channelId, channelModel) {
+      channelModel.getModelFromMaps(_userPropertyMap, _teamMap);
+    });
     dummyManagerHolder.setState(DBState.idle);
+  }
+
+  void _popupMenu(PlaylistModel model) {
+    setState(() {
+      playlistManagerHolder.modifyPlaylist(context, model);
+    });
   }
 
   Widget _getItemPane() {
@@ -190,6 +283,7 @@ class _CommunityRightPlaylistPaneState extends State<CommunityRightPlaylistPane>
             playlistModel: plModel,
             width: widget.cretaLayoutRect.childWidth,
             bookMap: _cretaBookMap,
+            popupMenu: _popupMenu,
           );
         },
       ),

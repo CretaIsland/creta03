@@ -246,13 +246,14 @@ class _BookMainPageState extends State<BookMainPage> {
     logger.info("url=$url-------------------------------");
     logger.info("query=$query-------------------------------");
 
-    int pos = query.indexOf('&');
-    String mid = pos > 0 ? query.substring(0, pos) : query;
-    logger.info("mid=$mid-------------------------------");
-
-    if (mid.isEmpty) {
-      mid = StudioVariables.selectedBookMid;
-    }
+    // int pos = query.indexOf('&');
+    // String mid = pos > 0 ? query.substring(0, pos) : query;
+    // logger.info("mid=$mid-------------------------------");
+    //
+    // if (mid.isEmpty) {
+    //   mid = StudioVariables.selectedBookMid;
+    // }
+    String mid = StudioVariables.selectedBookMid;
 
     if (mid.isNotEmpty) {
       logger.fine("1) --_BookMainPageState-----------------------------------------");

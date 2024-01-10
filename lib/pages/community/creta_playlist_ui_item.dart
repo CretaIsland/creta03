@@ -55,11 +55,13 @@ class CretaPlaylistItem extends StatefulWidget {
     required this.width,
     //required this.height,
     required this.bookMap,
+    required this.popupMenu,
   });
   final PlaylistModel playlistModel;
   final double width;
   final Map<String, BookModel> bookMap;
   //final double height;
+  final Function(PlaylistModel) popupMenu;
 
   @override
   CretaPlaylistItemState createState() => CretaPlaylistItemState();
@@ -138,7 +140,12 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               SizedBox(height: 24),
-              BTN.fill_gray_i_m(icon: Icons.menu, onPressed: () {}),
+              BTN.fill_gray_i_m(
+                icon: Icons.menu,
+                onPressed: () {
+                  widget.popupMenu.call(widget.playlistModel);
+                },
+              ),
               SizedBox(height: 23),
               BTN.fill_gray_t_m(
                 text: '전체보기',
@@ -155,7 +162,12 @@ class CretaPlaylistItemState extends State<CretaPlaylistItem> {
                 text: '재생하기',
                 width: 77,
                 height: 32,
-                onPressed: () {},
+                onPressed: () {
+                  if (widget.playlistModel.bookIdList.isNotEmpty) {
+                    String linkUrl = '${AppRoutes.communityBook}?${widget.playlistModel.bookIdList[0]}&${widget.playlistModel.getMid}';
+                    Routemaster.of(context).push(linkUrl);
+                  }
+                },
               ),
             ],
           ),
