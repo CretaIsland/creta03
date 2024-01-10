@@ -255,13 +255,18 @@ class CategoryCard extends StatelessWidget {
           fit: BoxFit.cover,
         ),
         Container(
+          height: 80,
+          width: 160,
+          color: Colors.black54,
+        ),
+        Container(
           alignment: Alignment.center,
           height: 80,
           width: 160,
           child: Text(
             categoryName!,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+            style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
         )
       ],

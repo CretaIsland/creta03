@@ -173,6 +173,10 @@ class FrameModel extends CretaModel with CretaStyleMixin {
     return (frameType == FrameType.news);
   }
 
+  bool isCurrencyXchangeType() {
+    return (frameType == FrameType.currencyXchange);
+  }
+
   bool isTextType() {
     return (frameType == FrameType.text ||
         frameType == FrameType.digitalWatch ||

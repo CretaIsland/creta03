@@ -62,6 +62,7 @@ class EnterpriseManager extends CretaManager {
       String openWeatherApiKey = '',
       String giphyApiKey = '',
       String newsApiKey = '',
+      String currencyXchangeApi = '',
       String socketUrl = '',
       String mediaApiUrl = '',
       String webrtcUrl = ''}) async {
@@ -73,6 +74,7 @@ class EnterpriseManager extends CretaManager {
         openWeatherApiKey: openWeatherApiKey,
         giphyApiKey: giphyApiKey,
         newsApiKey: newsApiKey,
+        currencyXchangeApi: currencyXchangeApi,
         socketUrl: socketUrl,
         mediaApiUrl: mediaApiUrl,
         webrtcUrl: webrtcUrl);
@@ -80,7 +82,6 @@ class EnterpriseManager extends CretaManager {
     await createToDB(enterpriseModel);
     insert(enterpriseModel, postion: getAvailLength());
     selectedMid = enterpriseModel.mid;
-
     return enterpriseModel;
   }
 }

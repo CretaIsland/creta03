@@ -9,6 +9,7 @@ class EnterpriseModel extends CretaModel {
   late String openWeatherApiKey;
   late String giphyApiKey;
   late String newsApiKey;
+  late String currencyXchangeApi;
   late String socketUrl;
   late String mediaApiUrl;
   late String webrtcUrl;
@@ -20,6 +21,7 @@ class EnterpriseModel extends CretaModel {
     openWeatherApiKey = '';
     giphyApiKey = '';
     newsApiKey = '';
+    currencyXchangeApi = '';
     socketUrl = '';
     mediaApiUrl = '';
     webrtcUrl = '';
@@ -34,6 +36,7 @@ class EnterpriseModel extends CretaModel {
         openWeatherApiKey,
         giphyApiKey,
         newsApiKey,
+        currencyXchangeApi,
         socketUrl,
         mediaApiUrl,
         webrtcUrl
@@ -47,6 +50,7 @@ class EnterpriseModel extends CretaModel {
       this.openWeatherApiKey = '',
       this.giphyApiKey = '',
       this.newsApiKey = '',
+      this.currencyXchangeApi = '',
       this.socketUrl = '',
       this.mediaApiUrl = '',
       this.webrtcUrl = ''})
@@ -62,6 +66,7 @@ class EnterpriseModel extends CretaModel {
     openWeatherApiKey = map['openWeatherApiKey'] ?? '';
     giphyApiKey = map['giphyApiKey'] ?? '';
     newsApiKey = map['newsApiKey'] ?? '';
+    currencyXchangeApi = map['currencyXchangeApi'] ?? '';
     socketUrl = map['socketUrl'] ?? '';
     mediaApiUrl = map['mediaApiUrl'] ?? '';
     webrtcUrl = map['webrtcUrl'] ?? '';
@@ -77,6 +82,7 @@ class EnterpriseModel extends CretaModel {
         'openWeatherApiKey': openWeatherApiKey,
         'giphyApiKey': giphyApiKey,
         'newsApiKey': newsApiKey,
+        'currencyXchangeApi': currencyXchangeApi,
         'socketUrl': socketUrl,
         'mediaApiUrl': mediaApiUrl,
         'webrtcUrl': webrtcUrl

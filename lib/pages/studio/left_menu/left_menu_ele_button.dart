@@ -7,6 +7,7 @@ class LeftMenuEleButton extends StatefulWidget {
   final double width;
   final double height;
   final void Function()? onPressed;
+  final void Function()? onDoubleTap;
   final bool hasBorder;
 
   const LeftMenuEleButton({
@@ -15,6 +16,7 @@ class LeftMenuEleButton extends StatefulWidget {
     required this.width,
     required this.height,
     this.onPressed,
+    this.onDoubleTap,
     this.hasBorder = true,
     // this.isMultiSelectedCallback,
   });
@@ -58,6 +60,12 @@ class _LeftMenuEleButtonState extends State<LeftMenuEleButton> {
           setState(() {
             _isClicked = false;
           });
+        },
+        onDoubleTapDown: (d) {
+          setState(() {
+            _isClicked = true;
+          });
+          widget.onDoubleTap?.call();
         },
         child: Container(
           width: _isClicked ? widget.width + 3 : widget.width,
@@ -113,5 +121,3 @@ class TimelineSample extends StatelessWidget {
     );
   }
 }
-
-
