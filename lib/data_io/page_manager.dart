@@ -31,6 +31,28 @@ class PageManager extends CretaManager {
   BookModel? bookModel;
   Map<String, FrameManager?> frameManagerMap = {};
   Map<String, GlobalObjectKey> thumbKeyMap = {};
+  Map<String, GlobalObjectKey> pageKeyMap = {};
+
+  GlobalObjectKey createPageKey(String mid) {
+    String key = 'PageRealMainKey$mid';
+    GlobalObjectKey? retval = pageKeyMap[key];
+    if (retval != null) {
+      return retval;
+    }
+    retval = GlobalObjectKey(key);
+    pageKeyMap[key] = retval;
+    return retval;
+  }
+
+  GlobalObjectKey? findPageKey(String mid) {
+    return pageKeyMap['PageRealMainKey$mid'];
+  }
+
+  PageModel? _prevModel;
+  PageModel? get prevModel => _prevModel;
+  bool _transitForward = true;
+  bool get transitForward => _transitForward;
+
   final bool isPublishedMode;
 
   static Map<String, String> oldNewMap = {}; // linkCopy 시에 필요하다.
@@ -257,11 +279,17 @@ class PageManager extends CretaManager {
   }
 
   bool gotoNext() {
+    _prevModel = getSelected() as PageModel?;
+    _transitForward = true;
+
     String? mid = getNextMid();
     return _movePage(mid);
   }
 
   bool gotoPrev() {
+    _prevModel = getSelected() as PageModel?;
+    _transitForward = false;
+
     String? mid = getPrevMid();
     return _movePage(mid);
   }

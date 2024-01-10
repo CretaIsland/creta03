@@ -1,42 +1,31 @@
 // ignore_for_file: depend_on_referenced_packages, prefer_const_constructors
 
-import 'dart:math';
-
 import 'package:creta03/pages/studio/containees/page/top_menu_tracer.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 //import 'package:glass/glass.dart';
-import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../../../../design_system/component/creta_texture_widget.dart';
-import '../../../../data_io/contents_manager.dart';
+//import '../../../../../design_system/component/creta_texture_widget.dart';
 import '../../../../data_io/frame_manager.dart';
-import '../../../../data_io/link_manager.dart';
 import '../../../../design_system/component/creta_right_mouse_menu.dart';
-import '../../../../design_system/component/polygon_connection_painter.dart';
 import '../../../../design_system/menu/creta_popup_menu.dart';
 import '../../../../lang/creta_studio_lang.dart';
 import '../../../../model/app_enums.dart';
 import '../../../../model/book_model.dart';
-import '../../../../model/contents_model.dart';
-import '../../../../model/creta_model.dart';
 import '../../../../model/frame_model.dart';
-import '../../../../model/link_model.dart';
 import '../../../../model/page_model.dart';
 //import '../../../../player/abs_player.dart';
 import '../../book_main_page.dart';
 import '../../left_menu/left_menu_page.dart';
 import '../../studio_constant.dart';
 import '../../studio_getx_controller.dart';
-import '../../studio_snippet.dart';
 import '../../studio_variables.dart';
-import '../containee_mixin.dart';
 import '../containee_nofifier.dart';
-import '../frame/frame_main.dart';
 import '../frame/frame_play_mixin.dart';
+import 'page_real_main.dart';
 
 class PageMain extends StatefulWidget {
   final GlobalObjectKey pageKey;
@@ -57,10 +46,13 @@ class PageMain extends StatefulWidget {
   State<PageMain> createState() => PageMainState();
 }
 
-class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin {
+class PageMainState extends State<PageMain> with FramePlayMixin {
   //FrameManager? frameManager;  <-- move to FramePlayMixin
 
-  bool _onceDBGetComplete = false;
+  bool _transitionIndicator = false;
+  void setTransitionIdicator(val) {
+    _transitionIndicator = val;
+  }
 
   double opacity = 1;
   Color bgColor1 = Colors.transparent;
@@ -68,28 +60,22 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
   GradationType gradationType = GradationType.none;
   TextureType textureType = TextureType.none;
   PageEventController? _receiveEvent;
+  bool _onceDBGetComplete = false;
 
-  static double transitionIndicator = 1.0;
+  bool _hasTransitionEffect = false;
+  int _transitionEffect = 0;
+  int _transitionEffect2 = 0;
+
+  void invalidate() {
+    setState(() {});
+  }
 
   //BoolEventController? _lineDrawReceiveEvent;
   //FrameEventController? _receiveEventFromProperty;
 
-  @override
-  void initState() {
-    initChildren();
-    super.initState();
-    final PageEventController receiveEvent = Get.find(tag: 'page-property-to-main');
-    _receiveEvent = receiveEvent;
-    //final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main unused');
-    //_receiveEventFromProperty = receiveEventFromProperty;
-    //final BoolEventController lineDrawReceiveEvent = Get.find(tag: 'draw-link');
-    //_lineDrawReceiveEvent = lineDrawReceiveEvent;
-    afterBuild();
-  }
-
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
-    frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
+    //frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (frameManager == null) {
@@ -100,6 +86,35 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
       await BookMainPage.pageManagerHolder!.initFrameManager(frameManager!, widget.pageModel.mid);
     }
     _onceDBGetComplete = true;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initChildren();
+
+    final PageEventController receiveEvent = Get.find(tag: 'page-property-to-main');
+    _receiveEvent = receiveEvent;
+    //final FrameEventController receiveEventFromProperty = Get.find(tag: 'frame-property-to-main unused');
+    //_receiveEventFromProperty = receiveEventFromProperty;
+    //final BoolEventController lineDrawReceiveEvent = Get.find(tag: 'draw-link');
+    //_lineDrawReceiveEvent = lineDrawReceiveEvent;
+    _hasTransitionEffect = widget.pageModel.hasTransitionEffect();
+    _transitionEffect = widget.pageModel.transitionEffect.value;
+    _transitionEffect2 = widget.pageModel.transitionEffect2.value;
+
+    afterBuild();
+  }
+
+  @override
+  void didUpdateWidget(PageMain oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.pageModel.transitionEffect.value != oldWidget.pageModel.transitionEffect.value ||
+        widget.pageModel.transitionEffect2.value != oldWidget.pageModel.transitionEffect2.value) {
+      _hasTransitionEffect = widget.pageModel.hasTransitionEffect();
+      _transitionEffect = widget.pageModel.transitionEffect.value;
+      _transitionEffect2 = widget.pageModel.transitionEffect2.value;
+    }
   }
 
   Future<void> afterBuild() async {
@@ -114,9 +129,11 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
         LinkParams.connectedMid = '';
         LinkParams.connectedName = '';
       }
-      setState(() {
-        PageMainState.transitionIndicator = 1.0;
-      });
+      if (_hasTransitionEffect) {
+        setState(() {
+          _transitionIndicator = true;
+        });
+      }
     });
   }
 
@@ -130,7 +147,7 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
 
   @override
   Widget build(BuildContext context) {
-    //print('pageMain build');
+    //print('pageMain build transitionIndicator=$_transitionIndicator');
     return Stack(
       children: [
         _build(context),
@@ -259,21 +276,78 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
   // }
 
   Widget _textureBox() {
-    if (textureType == TextureType.glass) {
-      logger.finest('GrassType!!!');
-      return _realPageArea(false).asCretaGlass(
-        width: StudioVariables.virtualWidth,
-        height: StudioVariables.virtualHeight,
-        pageWidth: widget.pageWidth,
-        pageHeight: widget.pageHeight,
-        gradient: StudioSnippet.gradient(
-            gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
-        opacity: opacity,
-        bgColor1: bgColor1,
-        bgColor2: bgColor2,
-      );
-    }
-    return _realPageArea(true);
+    bool useColor = textureType != TextureType.glass;
+
+    GlobalObjectKey currentKey =
+        BookMainPage.pageManagerHolder!.createPageKey(widget.pageModel.mid);
+
+    Widget current = PageRealMain(
+      pageKey: currentKey,
+      bookModel: widget.bookModel,
+      pageModel: widget.pageModel,
+      pageWidth: BookMainPage.pageWidth,
+      pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,);
+      useColor: useColor,
+      bgColor1: bgColor1,
+      bgColor2: bgColor2,
+      gradationType: gradationType,
+      opacity: opacity,
+      frameManager: frameManager!,
+      onceDBGetComplete: _onceDBGetComplete,
+    );
+
+    // return current;
+
+    PageModel? pageModel = BookMainPage.pageManagerHolder?.prevModel;
+    pageModel ??= widget.pageModel;
+    GlobalObjectKey previousKey = BookMainPage.pageManagerHolder!.createPageKey(pageModel.mid);
+
+    Widget previous = PageRealMain(
+      pageKey: previousKey,
+      bookModel: widget.bookModel,
+      pageModel: pageModel,
+      pageWidth: BookMainPage.pageWidth,
+      pageHeight: BookMainPage.pageHeight, // + LayoutConst.miniMenuArea,);
+      useColor: useColor,
+      bgColor1: pageModel.bgColor1.value,
+      bgColor2: pageModel.bgColor2.value,
+      gradationType: pageModel.gradationType.value,
+      opacity: pageModel.opacity.value,
+      frameManager: frameManager!,
+      onceDBGetComplete: _onceDBGetComplete,
+    );
+
+    return AnimatedSwitcher(
+      duration: const Duration(seconds: 1),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
+
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: tween.animate(animation),
+          child: child,
+        );
+      },
+      child: BookMainPage.pageManagerHolder!.transitForward ? current : previous,
+    );
+
+    // 당분간 page 에서 texture 는 사용하지 않는다.
+    // if (textureType == TextureType.glass) {
+    //   return _realPageArea(false).asCretaGlass(
+    //     width: StudioVariables.virtualWidth,
+    //     height: StudioVariables.virtualHeight,
+    //     pageWidth: widget.pageWidth,
+    //     pageHeight: widget.pageHeight,
+    //     gradient: StudioSnippet.gradient(
+    //         gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
+    //     opacity: opacity,
+    //     bgColor1: bgColor1,
+    //     bgColor2: bgColor2,
+    //   );
+    // }
   }
 
   // Widget _clickPage(bool useColor) {
@@ -291,64 +365,75 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
 //
 // 여기사 진짜 Page 부분만을 그리는 부분이다.  !!!!!!!!
 // real Page area
-  Widget _realPageArea(bool useColor) {
-    //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
-    Widget pageWidget = Stack(
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-            decoration: useColor ? _pageDeco() : null,
-            width: widget.pageWidth,
-            height: widget.pageHeight, // - LayoutConst.miniMenuArea,
-          ),
-        ),
-        SizedBox(
-          width: StudioVariables.virtualWidth,
-          height: StudioVariables.virtualHeight,
-          // width: widget.pageWidth,
-          // height: widget.pageHeight,
-          child: _waitFrame(),
-        ),
-        //_pageController(),
-      ],
-    );
+  // Widget _realPageArea(bool useColor) {
+  //   //return StudioVariables.isHandToolMode == false && StudioVariables.isLinkMode == false
 
-    return _pageTransition(pageWidget);
-  }
+  //   Widget pageWidget = Stack(
+  //     children: [
+  //       Align(
+  //         alignment: Alignment.center,
+  //         child: Container(
+  //           decoration: useColor ? _pageDeco() : null,
+  //           width: widget.pageWidth,
+  //           height: widget.pageHeight, // - LayoutConst.miniMenuArea,
+  //         ),
+  //       ),
+  //       SizedBox(
+  //         width: StudioVariables.virtualWidth,
+  //         height: StudioVariables.virtualHeight,
+  //         // width: widget.pageWidth,
+  //         // height: widget.pageHeight,
+  //         child: _waitFrame(),
+  //       ),
+  //       //_pageController(),
+  //     ],
+  //   );
 
-  bool _isThisTransType(PageTransitionType type) {
-    if (StudioVariables.isPreview == false) {
-      // pageTransition 은 preView mode 에서만 동작한다.
-      return false;
-    }
+  //   return _pageTransition(pageWidget);
+  // }
 
-    // 나타날때,
-    if (PageMainState.transitionIndicator == 1 &&
-        widget.pageModel.transitionEffect.value == type.value) return true;
-    // 사라질때,
-    if (PageMainState.transitionIndicator < 1 &&
-        widget.pageModel.transitionEffect2.value == type.value) return true;
-    return false;
-  }
+  // bool _isThisTransType(PageTransitionType type) {
+  //   if (StudioVariables.isPreview == false) {
+  //     // pageTransition 은 preView mode 에서만 동작한다.
+  //     return false;
+  //   }
+  //   // if (_transitionEffect == type.value) {
+  //   //   print('show case  ${widget.pageModel.name.value} : $_transitionEffect');
+  //   //   return true;
+  //   // }
+  //   // 나타날때,
+  //   if (_transitionIndicator == true && _transitionEffect == type.value) {
+  //     //print('show case  ${widget.pageModel.name.value} : $_transitionEffect');
+  //     return true;
+  //   }
+  //   // 사라질때,
+  //   if (_transitionEffect2 == type.value &&
+  //       (_transitionIndicator == false || _transitionEffect != _transitionEffect2)) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
-  Widget _pageTransition(Widget child) {
-    if (_isThisTransType(PageTransitionType.fade)) {
-      return AnimatedOpacity(
-        opacity: PageMainState.transitionIndicator,
-        duration: widget.pageModel.getPageDuration(),
-        child: child,
-      );
-    } // fadeIn,fadeOut
-    if (_isThisTransType(PageTransitionType.scale)) {
-      return AnimatedScale(
-        scale: PageMainState.transitionIndicator,
-        duration: widget.pageModel.getPageDuration(),
-        child: child,
-      );
-    } // fadeIn,fa
-    return child;
-  }
+  // Widget _pageTransition(Widget child) {
+  //   if (_isThisTransType(PageTransitionType.fade)) {
+  //     return AnimatedOpacity(
+  //       curve: Curves.easeInOutQuart,
+  //       opacity: _transitionIndicator ? 1.0 : 0.1,
+  //       duration: widget.pageModel.getPageDuration(),
+  //       child: child,
+  //     );
+  //   } // fadeIn,fadeOut
+  //   if (_isThisTransType(PageTransitionType.scale)) {
+  //     //print('scale, $_transitionIndicator');
+  //     return AnimatedScale(
+  //       curve: Curves.easeInOutQuart,
+  //       scale: _transitionIndicator ? 1.0 : 0.1,
+  //       duration: widget.pageModel.getPageDuration(),
+  //       child: child,
+  //     );
+  //   } // fadeIn,fa
+  //   return child;
+  // }
 
   // ignore: unused_element
   // Widget _pageController() {
@@ -466,227 +551,227 @@ class PageMainState extends State<PageMain> with ContaineeMixin, FramePlayMixin 
     }
   }
 
-  BoxDecoration _pageDeco() {
-    Color c1 = opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity);
-    Color c2 = opacity == 1 ? bgColor2 : bgColor2.withOpacity(opacity);
+  // BoxDecoration _pageDeco() {
+  //   Color c1 = opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity);
+  //   Color c2 = opacity == 1 ? bgColor2 : bgColor2.withOpacity(opacity);
 
-    return BoxDecoration(
-      color: c1,
-      boxShadow: StudioSnippet.basicShadow(),
-      gradient: (bgColor1 != Colors.transparent && bgColor2 != Colors.transparent)
-          ? StudioSnippet.gradient(gradationType, c1, c2)
-          : null,
-    );
-  }
+  //   return BoxDecoration(
+  //     color: c1,
+  //     boxShadow: StudioSnippet.basicShadow(),
+  //     gradient: (bgColor1 != Colors.transparent && bgColor2 != Colors.transparent)
+  //         ? StudioSnippet.gradient(gradationType, c1, c2)
+  //         : null,
+  //   );
+  // }
 
-  Widget _waitFrame() {
-    if (_onceDBGetComplete && frameManager!.initFrameComplete) {
-      logger.fine('already _onceDBGetComplete page main');
-      return _consumerFunc();
-    }
-    //var retval = CretaModelSnippet.waitData(
-    var retval = CretaModelSnippet.waitDatum(
-      managerList: [
-        frameManager!,
-      ],
-      //userId: AccountManager.currentLoginUser.email,
-      consumerFunc: _consumerFunc,
-    );
+  // Widget _waitFrame() {
+  //   if (_onceDBGetComplete && frameManager!.initFrameComplete) {
+  //     logger.fine('already _onceDBGetComplete page main');
+  //     return _consumerFunc();
+  //   }
+  //   //var retval = CretaModelSnippet.waitData(
+  //   var retval = CretaModelSnippet.waitDatum(
+  //     managerList: [
+  //       frameManager!,
+  //     ],
+  //     //userId: AccountManager.currentLoginUser.email,
+  //     consumerFunc: _consumerFunc,
+  //   );
 
-    //_onceDBGetComplete = true;
-    logger.finest('first_onceDBGetComplete page');
-    return retval;
-    //return consumerFunc();
-  }
+  //   //_onceDBGetComplete = true;
+  //   logger.finest('first_onceDBGetComplete page');
+  //   return retval;
+  //   //return consumerFunc();
+  // }
 
-  Widget _consumerFunc() {
-    //progressHolder = ProgressNotifier();
+  // Widget _consumerFunc() {
+  //   //progressHolder = ProgressNotifier();
 
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<FrameManager>.value(
-          value: frameManager!,
-        ),
-        // ChangeNotifierProvider<SelectedModel>(
-        //   create: (context) {
-        //     selectedModelHolder = SelectedModel();
-        //     return selectedModelHolder!;
-        //   },
-        // ),
-      ],
-      child: _pageEffect(),
-    );
-  }
+  //   return MultiProvider(
+  //     providers: [
+  //       ChangeNotifierProvider<FrameManager>.value(
+  //         value: frameManager!,
+  //       ),
+  //       // ChangeNotifierProvider<SelectedModel>(
+  //       //   create: (context) {
+  //       //     selectedModelHolder = SelectedModel();
+  //       //     return selectedModelHolder!;
+  //       //   },
+  //       // ),
+  //     ],
+  //     child: _pageEffect(),
+  //   );
+  // }
 
-  Widget _pageEffect() {
-    if (widget.pageModel.effect.value != EffectType.none) {
-      return Stack(alignment: Alignment.center, children: [
-        effectWidget(widget.pageModel),
-        _drawFrames(),
-        //_pageController(),
-      ]);
-    }
-    return _drawFrames();
-  }
+  // Widget _pageEffect() {
+  //   if (widget.pageModel.effect.value != EffectType.none) {
+  //     return Stack(alignment: Alignment.center, children: [
+  //       effectWidget(widget.pageModel),
+  //       _drawFrames(),
+  //       //_pageController(),
+  //     ]);
+  //   }
+  //   return _drawFrames();
+  // }
 
-  Widget _drawFrames() {
-    return Consumer<FrameManager>(builder: (context, manager, child) {
-      //print('_drawFrames'); // if (StudioVariables.isPreview) {
-      //   return Stack(
-      //     children: [
-      //       FrameMain(
-      //         frameMainKey: GlobalKey(),
-      //         pageWidth: widget.pageWidth,
-      //         pageHeight: widget.pageHeight,
-      //         pageModel: widget.pageModel,
-      //         bookModel: widget.bookModel,
-      //       ),
-      //       _drawLinks(manager),
-      //     ],
-      //   );
-      // }
-      return FrameMain(
-        frameMainKey: GlobalObjectKey('FrameMain${widget.pageModel.mid}'),
-        pageWidth: widget.pageWidth,
-        pageHeight: widget.pageHeight,
-        pageModel: widget.pageModel,
-        bookModel: widget.bookModel,
-      );
-    });
-  }
+  // Widget _drawFrames() {
+  //   return Consumer<FrameManager>(builder: (context, manager, child) {
+  //     //print('_drawFrames'); // if (StudioVariables.isPreview) {
+  //     //   return Stack(
+  //     //     children: [
+  //     //       FrameMain(
+  //     //         frameMainKey: GlobalKey(),
+  //     //         pageWidth: widget.pageWidth,
+  //     //         pageHeight: widget.pageHeight,
+  //     //         pageModel: widget.pageModel,
+  //     //         bookModel: widget.bookModel,
+  //     //       ),
+  //     //       _drawLinks(manager),
+  //     //     ],
+  //     //   );
+  //     // }
+  //     return FrameMain(
+  //       frameMainKey: GlobalObjectKey('FrameMain${widget.pageModel.mid}'),
+  //       pageWidth: widget.pageWidth,
+  //       pageHeight: widget.pageHeight,
+  //       pageModel: widget.pageModel,
+  //       bookModel: widget.bookModel,
+  //     );
+  //   });
+  // }
 
-  // ignore: unused_element
-  Widget _drawLinks(FrameManager manager) {
-    // return StreamBuilder<AbsExModel>(
-    //     stream: _receiveEventFromProperty!.eventStream.stream,
-    //     builder: (context, snapshot) {
-    //       if (snapshot.data != null) {
-    //         if (snapshot.data! is FrameModel) {
-    //           FrameModel model = snapshot.data! as FrameModel;
-    //           manager.updateModel(model);
-    //           logger.fine('_drawLinks _receiveEventFromProperty-----${model.posY.value}');
-    //         } else {
-    //           logger.fine('_receiveEventFromProperty-----Unknown Model');
-    //         }
-    //       }
-    //       return Stack(
-    //         children: [
-    //           ..._drawLines(manager),
-    //         ],
-    //       );
-    //     });
-    return Stack(
-      children: [
-        ..._drawLines(manager),
-      ],
-    );
-  }
+  // // ignore: unused_element
+  // Widget _drawLinks(FrameManager manager) {
+  //   // return StreamBuilder<AbsExModel>(
+  //   //     stream: _receiveEventFromProperty!.eventStream.stream,
+  //   //     builder: (context, snapshot) {
+  //   //       if (snapshot.data != null) {
+  //   //         if (snapshot.data! is FrameModel) {
+  //   //           FrameModel model = snapshot.data! as FrameModel;
+  //   //           manager.updateModel(model);
+  //   //           logger.fine('_drawLinks _receiveEventFromProperty-----${model.posY.value}');
+  //   //         } else {
+  //   //           logger.fine('_receiveEventFromProperty-----Unknown Model');
+  //   //         }
+  //   //       }
+  //   //       return Stack(
+  //   //         children: [
+  //   //           ..._drawLines(manager),
+  //   //         ],
+  //   //       );
+  //   //     });
+  //   return Stack(
+  //     children: [
+  //       ..._drawLines(manager),
+  //     ],
+  //   );
+  // }
 
-  List<Widget> _drawLines(FrameManager manager) {
-    logger.fine('_drawLines()--------------------------------------------');
-    List<LinkModel> linkList = [];
-    manager.listIterator((frameModel) {
-      ContentsManager contentsManager = manager.findOrCreateContentsManager(frameModel as FrameModel);
-      // if (contentsManager == null) {
-      //   return null;
-      // }
-      ContentsModel? contentsModel = contentsManager.getCurrentModel();
-      if (contentsModel == null) {
-        return null;
-      }
-      LinkManager? linkManager = contentsManager.findLinkManager(contentsModel.mid);
-      if (linkManager == null) {
-        return SizedBox.shrink();
-      }
-      if (linkManager.length() == 0) {
-        return SizedBox.shrink();
-      }
-      logger.fine(
-          '_drawLines()-${linkManager.length()}-----${contentsModel.name}--------------------------------------');
+  // List<Widget> _drawLines(FrameManager manager) {
+  //   logger.fine('_drawLines()--------------------------------------------');
+  //   List<LinkModel> linkList = [];
+  //   manager.listIterator((frameModel) {
+  //     ContentsManager contentsManager = manager.findOrCreateContentsManager(frameModel as FrameModel);
+  //     // if (contentsManager == null) {
+  //     //   return null;
+  //     // }
+  //     ContentsModel? contentsModel = contentsManager.getCurrentModel();
+  //     if (contentsModel == null) {
+  //       return null;
+  //     }
+  //     LinkManager? linkManager = contentsManager.findLinkManager(contentsModel.mid);
+  //     if (linkManager == null) {
+  //       return SizedBox.shrink();
+  //     }
+  //     if (linkManager.length() == 0) {
+  //       return SizedBox.shrink();
+  //     }
+  //     logger.fine(
+  //         '_drawLines()-${linkManager.length()}-----${contentsModel.name}--------------------------------------');
 
-      linkList = [
-        ...linkList,
-        ...linkManager.orderMapIterator((ele) {
-          LinkModel model = ele as LinkModel;
-          model.stickerKey = manager.findStickerKey(widget.pageModel.mid, model.connectedMid);
-          return model;
-        }).toList()
-      ];
+  //     linkList = [
+  //       ...linkList,
+  //       ...linkManager.orderMapIterator((ele) {
+  //         LinkModel model = ele as LinkModel;
+  //         model.stickerKey = manager.findStickerKey(widget.pageModel.mid, model.connectedMid);
+  //         return model;
+  //       }).toList()
+  //     ];
 
-      return null;
-    });
-    return linkList.map((model) => _drawEachLine(model)).toList();
-  }
+  //     return null;
+  //   });
+  //   return linkList.map((model) => _drawEachLine(model)).toList();
+  // }
 
-  Widget _drawEachLine(LinkModel model) {
-    if (model.connectedClass == 'page') {
-      return const SizedBox.shrink();
-    }
-    if (model.showLinkLine == false) {
-      return const SizedBox.shrink();
-    }
-    logger.fine('_drawEachLine()--------------------------------------------');
+  // Widget _drawEachLine(LinkModel model) {
+  //   if (model.connectedClass == 'page') {
+  //     return const SizedBox.shrink();
+  //   }
+  //   if (model.showLinkLine == false) {
+  //     return const SizedBox.shrink();
+  //   }
+  //   logger.fine('_drawEachLine()--------------------------------------------');
 
-    final GlobalKey? stickerKey = model.stickerKey;
-    final GlobalObjectKey? iconKey = model.iconKey;
-    if (stickerKey == null || iconKey == null) {
-      return const SizedBox.shrink();
-    }
+  //   final GlobalKey? stickerKey = model.stickerKey;
+  //   final GlobalObjectKey? iconKey = model.iconKey;
+  //   if (stickerKey == null || iconKey == null) {
+  //     return const SizedBox.shrink();
+  //   }
 
-    final RenderBox? frame = stickerKey.currentContext?.findRenderObject() as RenderBox?;
-    final RenderBox? icon = iconKey.currentContext?.findRenderObject() as RenderBox?;
-    if (frame == null || icon == null) {
-      return const SizedBox.shrink();
-    }
+  //   final RenderBox? frame = stickerKey.currentContext?.findRenderObject() as RenderBox?;
+  //   final RenderBox? icon = iconKey.currentContext?.findRenderObject() as RenderBox?;
+  //   if (frame == null || icon == null) {
+  //     return const SizedBox.shrink();
+  //   }
 
-    Offset frameOffset = frame.localToGlobal(Offset.zero);
-    frameOffset = frameOffset;
-    final Size frameSize = frame.size;
+  //   Offset frameOffset = frame.localToGlobal(Offset.zero);
+  //   frameOffset = frameOffset;
+  //   final Size frameSize = frame.size;
 
-    final Offset frameTop = Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy);
-    final Offset frameBottom =
-        Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy + frameSize.height);
-    final Offset frameLeft = Offset(frameOffset.dx, frameSize.height / 2 + frameOffset.dy);
-    final Offset frameRight =
-        Offset(frameOffset.dx + frameSize.width, frameSize.height / 2 + frameOffset.dy);
+  //   final Offset frameTop = Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy);
+  //   final Offset frameBottom =
+  //       Offset(frameSize.width / 2 + frameOffset.dx, frameOffset.dy + frameSize.height);
+  //   final Offset frameLeft = Offset(frameOffset.dx, frameSize.height / 2 + frameOffset.dy);
+  //   final Offset frameRight =
+  //       Offset(frameOffset.dx + frameSize.width, frameSize.height / 2 + frameOffset.dy);
 
-    Offset iconOffset = icon.localToGlobal(Offset.zero);
-    iconOffset = iconOffset;
-    final Size iconSize = icon.size;
-    // icon center;
-    final double iconX = iconOffset.dx + iconSize.width / 2; // center
-    final double iconY = iconOffset.dy + iconSize.height / 2;
+  //   Offset iconOffset = icon.localToGlobal(Offset.zero);
+  //   iconOffset = iconOffset;
+  //   final Size iconSize = icon.size;
+  //   // icon center;
+  //   final double iconX = iconOffset.dx + iconSize.width / 2; // center
+  //   final double iconY = iconOffset.dy + iconSize.height / 2;
 
-    final num dist1 = pow((frameTop.dx - iconX), 2) + pow((frameTop.dy - iconY), 2);
-    final num dist2 = pow((frameBottom.dx - iconX), 2) + pow((frameBottom.dy - iconY), 2);
-    final num dist3 = pow((frameLeft.dx - iconX), 2) + pow((frameLeft.dy - iconY), 2);
-    final num dist4 = pow((frameRight.dx - iconX), 2) + pow((frameRight.dy - iconY), 2);
+  //   final num dist1 = pow((frameTop.dx - iconX), 2) + pow((frameTop.dy - iconY), 2);
+  //   final num dist2 = pow((frameBottom.dx - iconX), 2) + pow((frameBottom.dy - iconY), 2);
+  //   final num dist3 = pow((frameLeft.dx - iconX), 2) + pow((frameLeft.dy - iconY), 2);
+  //   final num dist4 = pow((frameRight.dx - iconX), 2) + pow((frameRight.dy - iconY), 2);
 
-    final num smallestDist = min(min(dist1, dist2), min(dist3, dist4));
+  //   final num smallestDist = min(min(dist1, dist2), min(dist3, dist4));
 
-    Offset finalFrameOffset = Offset.zero;
-    if (dist1 == smallestDist) {
-      finalFrameOffset = frameTop;
-    } else if (dist2 == smallestDist) {
-      finalFrameOffset = frameBottom;
-    } else if (dist3 == smallestDist) {
-      finalFrameOffset = frameLeft;
-    } else if (dist4 == smallestDist) {
-      finalFrameOffset = frameRight;
-    }
+  //   Offset finalFrameOffset = Offset.zero;
+  //   if (dist1 == smallestDist) {
+  //     finalFrameOffset = frameTop;
+  //   } else if (dist2 == smallestDist) {
+  //     finalFrameOffset = frameBottom;
+  //   } else if (dist3 == smallestDist) {
+  //     finalFrameOffset = frameLeft;
+  //   } else if (dist4 == smallestDist) {
+  //     finalFrameOffset = frameRight;
+  //   }
 
-    if (finalFrameOffset == Offset.zero) {
-      return const SizedBox.shrink();
-    }
+  //   if (finalFrameOffset == Offset.zero) {
+  //     return const SizedBox.shrink();
+  //   }
 
-    logger
-        .info('Line ------ (${finalFrameOffset.dx},${finalFrameOffset.dy}) <--- ($iconX,$iconY) ');
+  //   logger
+  //       .info('Line ------ (${finalFrameOffset.dx},${finalFrameOffset.dy}) <--- ($iconX,$iconY) ');
 
-    return CustomPaint(
-      painter: PolygonConnectionPainter(
-        startPoint: Offset(iconX, iconY),
-        endPoint: finalFrameOffset,
-      ),
-    );
-  }
+  //   return CustomPaint(
+  //     painter: PolygonConnectionPainter(
+  //       startPoint: Offset(iconX, iconY),
+  //       endPoint: finalFrameOffset,
+  //     ),
+  //   );
+  // }
 }

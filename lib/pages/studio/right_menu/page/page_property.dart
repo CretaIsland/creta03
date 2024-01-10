@@ -96,8 +96,9 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         propertyDivider(),
         _gradation(),
         propertyDivider(),
-        _texture(),
-        propertyDivider(),
+        // 당분간 _texture 는 사용하지 않을 예정.
+        // _texture(),
+        // propertyDivider(),
         //_pageTransition(),  // 페이지 전환 효과는 일단 막아둔다. 나중에 다시 작업할 예정
         //propertyDivider(),
         effect(
@@ -139,7 +140,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
         title: CretaStudioLang.pageBgColor,
         color1: _model!.bgColor1.value,
         color2: _model!.bgColor2.value,
-        //opacity: _model!.opacity.value,
+        opacity: _model!.opacity.value,
         gradationType: _model!.gradationType.value,
         cardOpenPressed: () {
           setState(() {});
@@ -233,6 +234,7 @@ class _PagePropertyState extends State<PageProperty> with PropertyMixin {
     );
   }
 
+  // ignore: unused_element
   Widget _texture() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),

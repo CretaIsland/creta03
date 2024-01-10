@@ -8,7 +8,7 @@ import 'package:hycop/hycop/absModel/abs_ex_model.dart';
 import 'package:provider/provider.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../../../../design_system/component/creta_texture_widget.dart';
+//import '../../../../../design_system/component/creta_texture_widget.dart';
 //import '../../../../common/creta_utils.dart';
 import '../../../../data_io/frame_manager.dart';
 import '../../../../model/app_enums.dart';
@@ -143,19 +143,19 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   }
 
   Widget _textureBox() {
-    if (textureType == TextureType.glass) {
-      logger.finest('GrassType!!!');
+    // if (textureType == TextureType.glass) {
+    //   logger.finest('GrassType!!!');
 
-      return _drawPage(false).asCretaGlass(
-        width: widget.pageWidth,
-        height: widget.pageHeight,
-        gradient: StudioSnippet.gradient(
-            gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
-        opacity: opacity,
-        bgColor1: bgColor1,
-        bgColor2: bgColor2,
-      );
-    }
+    //   return _drawPage(false).asCretaGlass(
+    //     width: widget.pageWidth,
+    //     height: widget.pageHeight,
+    //     gradient: StudioSnippet.gradient(
+    //         gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
+    //     opacity: opacity,
+    //     bgColor1: bgColor1,
+    //     bgColor2: bgColor2,
+    //   );
+    // }
     return _drawPage(true);
   }
 
@@ -172,10 +172,15 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   }
 
   BoxDecoration _pageDeco() {
+    Color c1 = opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity);
+    Color c2 = opacity == 1 ? bgColor2 : bgColor2.withOpacity(opacity);
+
     return BoxDecoration(
-      color: opacity == 1 ? bgColor1 : bgColor1.withOpacity(opacity),
+      color: c1,
       boxShadow: StudioSnippet.basicShadow(),
-      gradient: StudioSnippet.gradient(gradationType, bgColor1, bgColor2),
+      gradient: (bgColor1 != Colors.transparent && bgColor2 != Colors.transparent)
+          ? StudioSnippet.gradient(gradationType, c1, c2)
+          : null,
     );
   }
 
