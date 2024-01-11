@@ -150,7 +150,9 @@ class FrameManager extends CretaManager {
   String stickerKeyMangler(String pageMid, String frameMid) {
     return '$pageMid/$frameMid';
   }
-
+ String frameKeyMangler(String pageMid, String frameMid) {
+    return 'FrameEach$pageMid/$frameMid';
+  }
   GlobalKey<StickerState> stickerKeyGen(String pageMid, String frameMid) {
     String keyStr = stickerKeyMangler(pageMid, frameMid);
     GlobalKey<StickerState>? stickerKey = _stickerKeyMap[keyStr];

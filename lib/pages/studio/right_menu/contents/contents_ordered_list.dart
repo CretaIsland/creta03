@@ -919,7 +919,6 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
       // FontSize  폰트사이즈
       name: CretaStudioLang.fontSize,
       widget: CretaExSlider(
-        delay: 0,
         valueType: SliderValueType.normal,
         value: fontSize,
         textType: CretaTextFieldType.number,
@@ -934,15 +933,17 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               fontSyzeType == FontSizeType.end) {
             if (model.fontSizeType.value != FontSizeType.userDefine) {
               model.fontSizeType.set(FontSizeType.userDefine);
+              _sendEvent!.sendEvent(_frameModel);
             }
           } else {
             if (model.fontSizeType.value != fontSyzeType) {
               model.fontSizeType.set(fontSyzeType);
+              _sendEvent!.sendEvent(_frameModel);
             }
           }
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
-          _sendEvent!.sendEvent(_frameModel);
+
           //} else {
           //  widget.frameManager?.notify();
           //}
@@ -954,6 +955,8 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
           //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
+
+          //widget.frameManager!.refreshFrame(model.mid, deep: true);
           _sendEvent!.sendEvent(_frameModel);
           //} else {
           //  widget.frameManager?.notify();

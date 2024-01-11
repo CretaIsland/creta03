@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:expandable_slider/expandable_slider.dart';
 import 'package:hycop/common/util/logger.dart';
 
-import '../../common/creta_utils.dart';
-import '../component/creta_cupertino_slider.dart';
+//import '../component/creta_cupertino_slider.dart';
 import '../component/creta_proprty_slider.dart';
 import '../creta_color.dart';
 import '../creta_font.dart';
@@ -23,7 +23,6 @@ class CretaExSlider extends StatefulWidget {
   final double textWidth;
   final int textlimit;
   final CretaTextFieldType textType;
-  final int delay;
 
   const CretaExSlider({
     super.key,
@@ -40,7 +39,6 @@ class CretaExSlider extends StatefulWidget {
     this.textWidth = 40,
     this.textlimit = 3,
     this.textType = CretaTextFieldType.number,
-    this.delay = 0,
   });
 
   @override
@@ -50,13 +48,11 @@ class CretaExSlider extends StatefulWidget {
 class _CretaExSliderState extends State<CretaExSlider> {
   //TextStyle titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
   double _value = 0;
-  DateTime? _lastTime;
 
   @override
   void initState() {
     super.initState();
     _value = widget.value;
-    _lastTime = DateTime.now();
   }
 
   @override
@@ -81,33 +77,51 @@ class _CretaExSliderState extends State<CretaExSlider> {
         SizedBox(
           height: widget.height,
           width: widget.sliderWidth,
-          child: CretaCupertinoSlider(
-            //CretaSlider(
-            key: GlobalKey(),
-            min: widget.min,
-            max: widget.max,
-            thumbColor: CretaColor.primary,
+          child: ExpandableSlider.adaptive(
             value: _makeValue(_value, widget.valueType),
-            //onDragComplete: (val) {
             onChangeEnd: (val) {
-              setState(() {
-                logger.finest('CretaSlider value=$val');
-                _value = _reverseValue(val, widget.valueType);
-              });
+              // setState(() {
+              //   logger.finest('CretaSlider value=$val');
+              //   _value = _reverseValue(val, widget.valueType);
+              // });
               widget.onChanngeComplete?.call(_value);
             },
-            //onDragging: (val) {
             onChanged: (val) {
               _value = _reverseValue(val, widget.valueType);
-              if (widget.delay > 0 && CretaUtils.hasTimePassed(_lastTime!, widget.delay)) {
-                widget.onChannged.call(_value);
-                _lastTime = DateTime.now();
-              } else {
-                widget.onChannged.call(_value);
-              }
               setState(() {});
+              widget.onChannged.call(_value);
             },
+            min: widget.min,
+            max: widget.max,
+            estimatedValueStep: 1,
           ),
+          //  CretaCupertinoSlider(
+          //   //CretaSlider(
+          //   key: GlobalKey(),
+          //   min: widget.min,
+          //   max: widget.max,
+          //   thumbColor: CretaColor.primary,
+          //   value: _makeValue(_value, widget.valueType),
+          //   //onDragComplete: (val) {
+          //   onChangeEnd: (val) {
+          //     setState(() {
+          //       logger.finest('CretaSlider value=$val');
+          //       _value = _reverseValue(val, widget.valueType);
+          //     });
+          //     widget.onChanngeComplete?.call(_value);
+          //   },
+          //   //onDragging: (val) {
+          //   onChanged: (val) {
+          //     _value = _reverseValue(val, widget.valueType);
+          //     if (widget.delay > 0 && CretaUtils.hasTimePassed(_lastTime!, widget.delay)) {
+          //       widget.onChannged.call(_value);
+          //       _lastTime = DateTime.now();
+          //     } else {
+          //       widget.onChannged.call(_value);
+          //     }
+          //     setState(() {});
+          //   },
+          // ),
         ),
         RepaintBoundary(
           child: Row(
@@ -166,6 +180,7 @@ class _CretaExSliderState extends State<CretaExSlider> {
     }
   }
 
+  // ignore: unused_element
   double _makeValue(double value, SliderValueType aType) {
     logger.finest('_makeValue($value)');
     switch (aType) {

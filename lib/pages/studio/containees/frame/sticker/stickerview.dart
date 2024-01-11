@@ -224,6 +224,7 @@ class StickerState extends State<Sticker> with CretaMusicMixin {
     setState(() {
       widget.frameKey.currentState?.invalidate();
       if (deep) {
+        widget.frameKey.currentState?.invalidateContentsMain();
         widget.dragableResiableKey?.currentState?.invalidate();
         widget.instantEditorKey?.currentState?.invalidate();
       }

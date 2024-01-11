@@ -154,6 +154,7 @@ dependencies:
   flutter_glow: ^0.3.0
   quoter: ^0.0.1
   carousel_slider: ^4.2.1
+  expandable_slider: ^2.0.0
   
 
 dev_dependencies:

@@ -64,6 +64,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
 
   ContentsManager? _contentsManager;
   CretaPlayTimer? _playTimer;
+  late double _width;
 
   Future<bool>? _isInitialized;
   //final bool _isHover = false;
@@ -83,6 +84,14 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
   }
 
   @override
+  void didUpdateWidget(FrameEach oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_width != oldWidget.width) {
+      _width = _width;
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     _isInitialized = initChildren();
@@ -93,6 +102,8 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     _linkReceiveEvent = linkReceiveEvent;
     contentsMainKey = GlobalObjectKey<ContentsMainState>(
         'ContentsMain${widget.pageModel.mid}/${widget.model.mid}');
+
+    _width = widget.width;
   }
 
   Future<bool> initChildren() async {
@@ -140,6 +151,8 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
   @override
   Widget build(BuildContext context) {
     //print('build FrameEach');
+
+    _width = widget.width;
 
     applyScale = widget.applyScale;
     if (_playTimer == null) {
@@ -435,7 +448,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       shadowSpread: model.shadowSpread.value * applyScale,
       shadowOpacity: model.isNoShadow() ? 0 : model.shadowOpacity.value,
       shadowColor: model.isNoShadow() ? Colors.transparent : model.shadowColor.value,
-      // width: widget.width,
+      // width: _width,
       // height: widget.height,
       strokeWidth: (model.borderWidth.value * applyScale).ceilToDouble(),
       strokeColor: model.borderColor.value,
@@ -459,7 +472,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       GradationType gradationType = model.gradationType.value;
       return _frameBox(model, false).asCretaGlass(
         height: widget.height,
-        width: widget.width,
+        width: _width,
         gradient: StudioSnippet.gradient(
             gradationType, bgColor1.withOpacity(opacity), bgColor2.withOpacity(opacity / 2)),
         opacity: opacity,
@@ -525,7 +538,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     // }
 
     if (model.isWeatherTYpe()) {
-      return weatherFrame(model: model, width: widget.width, height: widget.height);
+      return weatherFrame(model: model, width: _width, height: widget.height);
     }
     if (model.isWatchTYpe()) {
       return watchFrame(
@@ -534,7 +547,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
         context: context,
         applyScale: StudioVariables.applyScale,
         isThumbnail: false,
-        width: widget.width,
+        width: _width,
         height: widget.height,
         timeChanged: () {
           setState(() {});
@@ -571,7 +584,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
       return TransitionTypes(
         // 콘텐츠 넘김 효과, 카로셀등을 말함.
         key: ValueKey('Frame${model.mid}'),
-        width: widget.width,
+        width: _width,
         height: widget.height,
         frameManager: frameManager!,
         model: model,
@@ -602,7 +615,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     if (model.isNewsType()) {
       return newsFrame(
         frameModel: model,
-        width: widget.width,
+        width: _width,
         height: widget.height,
       );
     }
@@ -610,7 +623,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     if (model.isCurrencyXchangeType()) {
       return currencyXchangeFrame(
         frameModel: model,
-        width: widget.width,
+        width: _width,
         height: widget.height,
       );
     }
@@ -618,7 +631,7 @@ class FrameEachState extends State<FrameEach> with ContaineeMixin, FramePlayMixi
     if (model.isQuoteType()) {
       return dailyQuoteFrame(
         frameModel: model,
-        width: widget.width,
+        width: _width,
         height: widget.height,
       );
     }

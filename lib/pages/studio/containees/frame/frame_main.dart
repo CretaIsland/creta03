@@ -54,10 +54,10 @@ class FrameMain extends StatefulWidget {
   }) : super(key: frameMainKey);
 
   @override
-  State<FrameMain> createState() => _FrameMainState();
+  State<FrameMain> createState() => FrameMainState();
 }
 
-class _FrameMainState extends State<FrameMain> with FramePlayMixin {
+class FrameMainState extends State<FrameMain> with FramePlayMixin {
   //int _randomIndex = 0;
   double applyScale = 1;
   // ignore: unused_field
@@ -485,7 +485,8 @@ class _FrameMainState extends State<FrameMain> with FramePlayMixin {
     }
 
     String frameKeyStr =
-        'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(widget.pageModel.mid, model.mid)}';
+        //'FrameEach${model.width.value}${frameManager!.stickerKeyMangler(widget.pageModel.mid, model.mid)}';
+        frameManager!.frameKeyMangler(widget.pageModel.mid, model.mid);
     GlobalKey<FrameEachState> frameKey = GlobalObjectKey<FrameEachState>(frameKeyStr);
 
     Widget eachFrame = FrameEach(
