@@ -481,8 +481,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         _titlePane = _getTitlePane;
         setUsingBannerScrollBar(
           scrollChangedCallback: _scrollChangedCallback,
-          bannerMinHeight: 160,
-          bannerMaxHeight: 160,
+          bannerMinHeight: 140,
+          bannerMaxHeight: 140,
         );
         _rightTabMenuList = [];
         break;
@@ -1498,6 +1498,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
   }
 
   Widget _getTitlePane(Size size) {
+    final String playDetailLinkUrl = ((_currentPlaylistModel?.bookIdList ?? []).isEmpty)
+        ? ''
+        : '${AppRoutes.communityBook}?${_currentPlaylistModel!.bookIdList[0]}&${_currentPlaylistModel!.getMid}';
     switch (widget.subPageUrl) {
       case AppRoutes.channel:
         return _getChannelTitlePane(size);
@@ -1531,59 +1534,77 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         );
       case AppRoutes.playlistDetail:
         return Container(
-          width: size.width,
-          height: size.height,
-          //color: Colors.red,
-          padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: (_currentPlaylistModel == null)
-                ? []
-                : [
-                    Row(
-                      children: [
-                        Text(
-                          _currentPlaylistModel!.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 22,
-                            color: Colors.grey[800],
-                            fontFamily: 'Pretendard',
+          width: size.width - LayoutConst.cretaScrollbarWidth,
+          height: 140, //size.height,
+          padding: EdgeInsets.fromLTRB(40, 40, 40 - LayoutConst.cretaScrollbarWidth, 20),
+          color: Colors.white,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(7.6),
+              boxShadow: StudioSnippet.fullShadow(),
+            ),
+            clipBehavior: Clip.antiAlias,
+            padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: (_currentPlaylistModel == null)
+                  ? []
+                  : [
+                      Row(
+                        children: [
+                          Text(
+                            _currentPlaylistModel!.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22,
+                              color: Colors.grey[800],
+                              fontFamily: 'Pretendard',
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 8),
-                        Icon(
-                          Icons.lock_outline,
-                          size: 16,
-                        ),
-                        SizedBox(width: 28),
-                        Text(
-                          AccountManager.currentLoginUser.name,
-                          style: CretaFont.buttonMedium,
-                        ),
-                        SizedBox(width: 28),
-                        Text(
-                          '영상 ${_currentPlaylistModel!.bookIdList.length}개',
-                          style: CretaFont.buttonMedium,
-                        ),
-                        SizedBox(width: 28),
-                        Text(
-                          //'최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.lastUpdateTime)}',
-                          '최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.updateTime)}',
-                          style: CretaFont.buttonMedium,
-                        ),
-                        Expanded(child: Container()),
-                        BTN.fill_blue_t_m(
-                          text: '재생하기',
-                          width: null,
-                          onPressed: () {},
-                          textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
-                        ),
-                        SizedBox(width: 6),
-                        BTN.fill_gray_i_m(icon: Icons.menu, onPressed: () {}),
-                      ],
-                    ),
-                  ],
+                          SizedBox(width: 8),
+                          Icon(
+                            Icons.lock_outline,
+                            size: 16,
+                          ),
+                          SizedBox(width: 28),
+                          Text(
+                            AccountManager.currentLoginUser.name,
+                            style: CretaFont.buttonMedium,
+                          ),
+                          SizedBox(width: 28),
+                          Text(
+                            '영상 ${_currentPlaylistModel!.bookIdList.length}개',
+                            style: CretaFont.buttonMedium,
+                          ),
+                          SizedBox(width: 28),
+                          Text(
+                            //'최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.lastUpdateTime)}',
+                            '최근 업데이트 ${CretaUtils.dateToDurationString(_currentPlaylistModel!.updateTime)}',
+                            style: CretaFont.buttonMedium,
+                          ),
+                          Expanded(child: Container()),
+                          Link(
+                            uri: Uri.parse(playDetailLinkUrl),
+                            builder: (context, function) {
+                              return BTN.fill_blue_t_m(
+                                width: null,
+                                text: '재생하기',
+                                textStyle: CretaFont.buttonLarge.copyWith(color: Colors.white),
+                                onPressed: () {
+                                  if (playDetailLinkUrl.isNotEmpty) {
+                                    Routemaster.of(context).push(playDetailLinkUrl);
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                          SizedBox(width: 6),
+                          BTN.fill_gray_i_m(icon: Icons.menu, onPressed: () {}),
+                        ],
+                      ),
+                    ],
+            ),
           ),
         );
       case AppRoutes.communityBook:
@@ -1665,6 +1686,8 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
         return;
       case AppRoutes.playlist:
         return;
+      case AppRoutes.playlistDetail:
+        return;
       case AppRoutes.communityHome:
         setState(() {
           _filterSearchKeyword = value;
@@ -1694,6 +1717,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
       //'${widget.subPageUrl}-$_selectedSubscriptionUserId-${_filterBookType.name}-${_filterBookSort.name}-${_filterPermissionType.name}';
       key =
           '${Uri.base.query}|${_currentChannelModel?.getMid ?? ''}|${_communityChannelType.name}|${_subscriptionModelList?.length ?? -1}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
+    } else if (widget.subPageUrl == AppRoutes.communityBook) {
+      key =
+          '${CommunityRightBookPane.bookId}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
     } else {
       key =
           '${Uri.base.query}|${_subscriptionModelList?.length ?? -1}|${_selectedSubscriptionModel?.subscriptionChannelId ?? ''}|${_filterBookType.name}|${_filterBookSort.name}|${_filterPermissionType.name}|$_filterSearchKeyword|${_filterSearchKeywordTime.toIso8601String()}';
@@ -1972,7 +1998,9 @@ class _CommunityPageState extends State<CommunityPage> with CretaBasicLayoutMixi
             mainWidget: _getRightPane, //(gridArea),
             listOfListFilterOnRight: _getRightDropdownMenuOnBanner(),
             titlePane: _titlePane,
-            bannerPane: (widget.subPageUrl == AppRoutes.communityBook) ? _titlePane : null,
+            bannerPane: (widget.subPageUrl == AppRoutes.communityBook || widget.subPageUrl == AppRoutes.playlistDetail)
+                ? _titlePane
+                : null,
             leftPaddingOnFilter: (widget.subPageUrl == AppRoutes.subscriptionList) ? 306 : null,
             leftMarginOnRightPane: 0,
             topMarginOnRightPane: 3,

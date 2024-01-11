@@ -2,6 +2,7 @@
 
 import 'package:creta03/design_system/text_field/creta_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import '../../../../../common/creta_utils.dart';
 import '../../../../../data_io/contents_manager.dart';
 import '../../../../../data_io/frame_manager.dart';
@@ -453,6 +454,7 @@ class InstantEditorState extends State<InstantEditor> {
       onTapOutside: (event) {
         _saveChanges(model);
         if (model.isAutoFontSize()) {
+          logger.info('InstantEditor fontSizeNotifier');
           CretaAutoSizeText.fontSizeNotifier?.start(doNotify: true);
         } // rightMenu 에 전달
         //BookMainPage.containeeNotifier!.setFrameClick(true);

@@ -83,16 +83,15 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
   Future<void> initChildren() async {
     //saveManagerHolder!.addBookChildren('frame=');
     _frameManager = BookMainPage.pageManagerHolder!.findFrameManager(widget.pageModel.mid);
+    logger.fine('thumbnail initChilren frameManager=${widget.pageModel.mid}');
     // frame 을 init 하는 것은, bookMain 에서 하는 것으로 바뀌었다.
     // 여기서 frameManager 는 사실상 null 일수 가 없다. ( 신규로 frame 을 만드는 경우를 빼고)
     if (_frameManager == null) {
-      logger.fine('framManger newly creation start---------------------');
       _frameManager = BookMainPage.pageManagerHolder!.newFrameManager(
         widget.bookModel,
         widget.pageModel,
       );
       await BookMainPage.pageManagerHolder!.initFrameManager(_frameManager!, widget.pageModel.mid);
-      logger.fine('framManger newly creation end---------------------');
     }
 
     _onceDBGetComplete = true;
@@ -237,7 +236,6 @@ class PageThumbnailState extends State<PageThumbnail> with ContaineeMixin {
       // print('widget.pageWidth = ${widget.pageWidth}');
       // print('widget.pageModel.width=${widget.pageModel.width.value}');
       // print('StudioVariables.applyScale=${StudioVariables.applyScale}');
-      // print('applyScale=$applyScale');
 
       return StreamBuilder<AbsExModel>(
           stream: _receiveEventFromMain!.eventStream.stream,

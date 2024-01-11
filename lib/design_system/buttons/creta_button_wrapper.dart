@@ -224,17 +224,20 @@ class BTN {
     );
   }
 
-  static CretaButton fill_gray_i_m(
-      {required IconData icon,
-      required Function onPressed,
-      double buttonSize = 32,
-      String? tooltip,
-      Color? tooltipFg,
-      Color? tooltipBg,
-      double iconSize = 16,
-      Color? iconColor,
-      CretaButtonColor buttonColor = CretaButtonColor.white}) {
+  static CretaButton fill_gray_i_m({
+    required IconData icon,
+    required Function onPressed,
+    double buttonSize = 32,
+    String? tooltip,
+    Color? tooltipFg,
+    Color? tooltipBg,
+    double iconSize = 16,
+    Color? iconColor,
+    CretaButtonColor buttonColor = CretaButtonColor.white,
+    Key? key,
+  }) {
     return CretaButton(
+      key: key,
       tooltip: tooltip,
       tooltipFg: tooltipFg,
       tooltipBg: tooltipBg,
@@ -1338,6 +1341,30 @@ class BTN {
       onPressed: onPressed,
       caption: text,
       captionStyle: CretaFont.buttonMedium.copyWith(color: CretaColor.primary[400]!),
+      bgColor: Colors.white,
+      bgHoverColor: CretaColor.primary[100]!,
+      bgHoverSelectedColor: CretaColor.primary[100]!, //CretaColor.primary[300]!,
+      bgSelectedColor: Colors.white, //CretaColor.primary[400]!,
+      fgColor: CretaColor.primary[400]!,
+      fgSelectedColor: CretaColor.primary[400]!, //Colors.white,
+      borderColor: CretaColor.primary[400]!,
+      borderSelectedColor: CretaColor.primary[400]!,
+    );
+  }
+
+  static CretaElevatedButton line_blue_t_el({
+    required String text,
+    required Function onPressed,
+    double? width= 179,
+    double height = 56
+  }) {
+    return CretaElevatedButton(
+      width: width,
+      height: height,
+      radius: height / 2 - 1,
+      onPressed: onPressed,
+      caption: text,
+      captionStyle: CretaFont.titleLarge.copyWith(color: CretaColor.primary[400]!),
       bgColor: Colors.white,
       bgHoverColor: CretaColor.primary[100]!,
       bgHoverSelectedColor: CretaColor.primary[100]!, //CretaColor.primary[300]!,

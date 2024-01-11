@@ -8,6 +8,7 @@ class CretaTrasparentButton extends StatefulWidget {
   final bool doToggle;
   final bool toggleValue;
   final Color iconColor;
+  final String? tooltip;
 
   const CretaTrasparentButton({
     super.key,
@@ -18,6 +19,7 @@ class CretaTrasparentButton extends StatefulWidget {
     this.doToggle = true,
     required this.toggleValue,
     this.iconColor = Colors.white,
+    this.tooltip,
   });
 
   @override
@@ -40,6 +42,10 @@ class _CretaTrasparentButtonState extends State<CretaTrasparentButton> {
     if (widget.doToggle == false) {
       _toggleValue = widget.toggleValue;
     }
+
+    Widget iconWidget = Icon(_toggleValue == true ? widget.icon1 : widget.icon2,
+        color: _isHover ? widget.iconColor : widget.iconColor.withOpacity(0.75));
+
     return SizedBox(
       width: _isClick ? widget.iconSize : widget.iconSize * 1.2,
       height: _isClick ? widget.iconSize : widget.iconSize * 1.2,
@@ -71,8 +77,9 @@ class _CretaTrasparentButtonState extends State<CretaTrasparentButton> {
               });
             },
             child: Center(
-              child: Icon(_toggleValue == true ? widget.icon1 : widget.icon2,
-                  color: _isHover ? widget.iconColor : widget.iconColor.withOpacity(0.75)),
+              child: widget.tooltip != null
+                  ? Tooltip(message: widget.tooltip, child: iconWidget)
+                  : iconWidget,
             ),
           ),
         ),

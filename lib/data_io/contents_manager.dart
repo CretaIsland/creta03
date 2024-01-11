@@ -931,7 +931,7 @@ class ContentsManager extends CretaManager {
     void Function(ContentsModel)? onUploadComplete,
   }) async {
     // 콘텐츠 매니저를 생성한다.
-    ContentsManager contentsManager = frameManager!.findContentsManager(frameModel);
+    ContentsManager contentsManager = frameManager!.findOrCreateContentsManager(frameModel);
     //contentsManager ??= frameManager.newContentsManager(frameModel);
 
     //int counter = contentsModelList.length;

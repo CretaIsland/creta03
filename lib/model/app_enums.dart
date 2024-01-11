@@ -414,6 +414,16 @@ enum TextAniType {
 
   static int validCheck(int val) => (val > end.index || val < none.index) ? none.index : val;
   static TextAniType fromInt(int? val) => TextAniType.values[validCheck(val ?? none.index)];
+
+  bool isTransition() {
+    if (this == fadeTransition) return true;
+    if (this == rotateTransition) return true;
+    if (this == slideTransition) return true;
+    if (this == sizeTransition) return true;
+    if (this == scaleTransition) return true;
+    if (this == randomTransition) return true;
+    return false;
+  }
 }
 
 // enum TextLineType {

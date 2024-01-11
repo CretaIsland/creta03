@@ -14,6 +14,7 @@ import '../design_system/creta_font.dart';
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
   static final List<String> cretaVersionList = [
+    "0.5.01",
     "0.5.00",
     "0.4.27",
     "0.4.26",
@@ -29,8 +30,8 @@ class IntroPage extends StatefulWidget {
     "0.4.16",
     "0.4.15",
   ];
-  static const String hycopVersion = "0.3.39";
-  static final String buildNumber = "20240102-18(${HycopFactory.toServerTypeString()})";
+  static const String hycopVersion = "0.4.11";
+  static final String buildNumber = "20240104-21(${HycopFactory.toServerTypeString()})";
 
   @override
   State<IntroPage> createState() => _IntroPageState();

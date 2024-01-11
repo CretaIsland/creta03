@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:hycop/common/util/logger.dart';
 import 'package:neonpen/neonpen.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
 import 'package:uuid/uuid.dart';
@@ -24,7 +25,6 @@ import 'custom_scroll_controller.dart';
 mixin CretaTextMixin {
   double applyScale = 1;
   FrameEventController? sendEvent;
-  static int counter = 0;
 
   Widget playText(
     BuildContext context,
@@ -184,12 +184,12 @@ mixin CretaTextMixin {
         model,
         text,
         shadowStyle ?? style,
-        _outLineAndShadowText(
-          model,
-          text,
-          shadowStyle ?? style,
-          isThumbnail,
-        ),
+        // _outLineAndShadowText(
+        //   model,
+        //   text,
+        //   shadowStyle ?? style,
+        //   isThumbnail,
+        // ),
         realSize,
         fontSize,
         isThumbnail,
@@ -208,7 +208,7 @@ mixin CretaTextMixin {
   // }
 
   Widget _outLineAndShadowText(ContentsModel? model, String text, TextStyle style, bool isThumbnail,
-      {Key? key}) {
+      {Key? key, bool sendEvent = true}) {
     //print('_outLineAndShadowText');
 
     Widget realText = model!.isAutoFontSize()
@@ -217,8 +217,8 @@ mixin CretaTextMixin {
             text,
             mid: model.mid,
             fontSizeChanged: (value) {
-              //print('fontSize changed !!! , isThumbnail=$isThumbnail');
-              if (isThumbnail == false) {
+              if (isThumbnail == false && sendEvent == true) {
+                logger.info('fontSize changed !!! , isThumbnail=$isThumbnail');
                 //print('fontSize changed !!!');
                 model.updateByAutoSize(value, applyScale);
                 CretaAutoSizeText.fontSizeNotifier?.stop(); // rightMenu 에 전달
@@ -242,7 +242,8 @@ mixin CretaTextMixin {
     // 새도우의 경우.
     // 아직 구현안함.
 
-    if (model.outLineWidth.value > 0) {
+    // transition 은 아웃라인이 안된다...
+    if (model.outLineWidth.value > 0 && model.aniType.value.isTransition() == false) {
       // 아웃라인의 경우.
       TextStyle outlineStyle = model.addOutLineStyle(style, applyScale: applyScale);
 
@@ -278,7 +279,7 @@ mixin CretaTextMixin {
     ContentsModel? model,
     String text,
     TextStyle style,
-    Widget? textWidget,
+    //Widget? textWidget,
     Size realSize,
     double fontSize,
     bool isThumbnail,
@@ -289,7 +290,8 @@ mixin CretaTextMixin {
 
     String key = const Uuid().v4();
     if (model!.aniType.value != TextAniType.tickerSide &&
-        model.aniType.value != TextAniType.tickerUpDown) {
+        model.aniType.value != TextAniType.tickerUpDown &&
+        model.aniType.value.isTransition() == false) {
       if (model.outLineWidth.value > 0) {
         style = style.copyWith(
           foreground: Paint()
@@ -311,6 +313,35 @@ mixin CretaTextMixin {
       case TextAniType.slideTransition:
       case TextAniType.scaleTransition:
         {
+          String input = text;
+          int lines = text.split('\n').length;
+          if (lines < 1) {
+            input = 'Sample Text\nSample Text';
+          } else if (lines < 2) {
+            input = '$text\n$text';
+          }
+          lines = input.split('\n').length;
+          double duration = (model.anyDuration.value / (lines + 1));
+          int stopDuration = duration.ceil();
+          int switchDuration = (duration / 4).ceil();
+          return CretaTextSwitcher(
+              text: input,
+              stopDuration: Duration(seconds: stopDuration),
+              switchDuration: Duration(seconds: switchDuration),
+              aniType: model.aniType.value,
+              builder: (index, eachLine) {
+                return _outLineAndShadowText(
+                  key: ValueKey<int>(index),
+                  model,
+                  eachLine,
+                  style,
+                  isThumbnail,
+                  sendEvent: false,
+                );
+              });
+        }
+      case TextAniType.randomTransition:
+        {
           int lines = text.split('\n').length;
           int stopDuration = (model.anyDuration.value / lines).ceil();
           int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
@@ -326,45 +357,7 @@ mixin CretaTextMixin {
                   eachLine,
                   style,
                   isThumbnail,
-                );
-              });
-        }
-      case TextAniType.randomTransition:
-        {
-          int lines = text.split('\n').length;
-          int stopDuration = (model.anyDuration.value / lines).ceil();
-          int switchDuration = (model.anyDuration.value / (lines * 4)).ceil();
-          TextAniType aniType = TextAniType.fadeTransition;
-          switch (counter % 5) {
-            case 0:
-              aniType = TextAniType.fadeTransition;
-              break;
-            case 1:
-              aniType = TextAniType.sizeTransition;
-              break;
-            case 2:
-              aniType = TextAniType.rotateTransition;
-              break;
-            case 3:
-              aniType = TextAniType.slideTransition;
-              break;
-            case 4:
-              aniType = TextAniType.scaleTransition;
-              break;
-          }
-          return CretaTextSwitcher(
-              text: text,
-              stopDuration: Duration(seconds: stopDuration),
-              switchDuration: Duration(seconds: switchDuration),
-              aniType: aniType,
-              builder: (index, eachLine) {
-                counter++;
-                return _outLineAndShadowText(
-                  key: ValueKey<int>(index),
-                  model,
-                  eachLine,
-                  style,
-                  isThumbnail,
+                  sendEvent: false,
                 );
               });
         }
@@ -379,6 +372,7 @@ mixin CretaTextMixin {
                 text.replaceAll('\n', ' '),
                 style,
                 isThumbnail,
+                sendEvent: false,
               ),
               scrollDirection: Axis.horizontal,
               delay: const Duration(seconds: 1),
@@ -404,6 +398,7 @@ mixin CretaTextMixin {
                   text,
                   style,
                   isThumbnail,
+                  sendEvent: false,
                 );
               });
           //return CretaScrolledText(

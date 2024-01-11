@@ -10,11 +10,13 @@ import 'studio_variables.dart';
 class MouseHider extends StatefulWidget {
   final Widget child;
   final bool fromPriviewToMain;
+  final void Function() onMouseHideChanged;
 
   const MouseHider({
     super.key,
     required this.child,
     required this.fromPriviewToMain,
+    required this.onMouseHideChanged,
   });
 
   @override
@@ -76,9 +78,13 @@ class MouseHiderState extends State<MouseHider> {
           if (_mouseMoveCount > 30) {
             //print('mouse hover');
             //SystemChannels.mouseCursor.invokeMethod('mouseCursor', 'auto');
-            setState(() {
-              StudioVariables.hideMouse = false;
-            });
+            if (StudioVariables.hideMouse == true) {
+              //true일 경우만 한다.
+              setState(() {
+                StudioVariables.hideMouse = false;
+              });
+              widget.onMouseHideChanged.call();
+            }
             _mouseMoveCount = 0;
           }
         },

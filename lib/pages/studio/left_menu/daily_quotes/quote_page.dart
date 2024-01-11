@@ -55,7 +55,7 @@ class _QuotePageState extends State<QuotePage> {
             width: widget.width!,
             height: widget.height!,
             image: url,
-            boxFit: BoxFit.cover,
+            boxFit: BoxFit.fill,
           ),
           Container(
             color: Colors.black38,

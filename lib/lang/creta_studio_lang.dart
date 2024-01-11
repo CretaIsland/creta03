@@ -633,6 +633,14 @@ class CretaStudioLang {
   static String neon = 'Neon Text';
   static String fade = 'Fade Text';
   static String bounce = 'Bounce Text';
+  static List<String> transition = [
+    '랜덤 전환',
+    '서서히 전환',
+    '미끄러지듯 전환',
+    '작아졌다 커지기 전환',
+    '회전 전환',
+    '안에서 밖으로 전환',
+  ];
 
   static String weather = '날씨 위젯';
   static String clockandWatch = '시계와 스톱워치';
@@ -704,4 +712,6 @@ class CretaStudioLang {
   static String notImpl = '아직 구현되지 않았습니다.';
   static String isOverlayFrame = '이 프레임은 전체 페이지에 고정된 프레임입니다. 삭제하면 모든 페이지에서 이 프레임이 없어집니다';
   static String deleteConfirm = '정말로 삭제하시겠습니까?';
+
+  static String gobackToStudio = 'Studio로 돌아가기';
 }

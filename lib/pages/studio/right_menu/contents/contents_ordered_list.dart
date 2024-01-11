@@ -915,7 +915,6 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
     if (fontSize < minFontSize) {
       fontSize = minFontSize;
     }
-
     return propertyLine(
       // FontSize  폰트사이즈
       name: CretaStudioLang.fontSize,
