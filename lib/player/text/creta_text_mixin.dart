@@ -25,6 +25,7 @@ import 'custom_scroll_controller.dart';
 mixin CretaTextMixin {
   double applyScale = 1;
   FrameEventController? sendEvent;
+  int _currentIndex = 0;
 
   Widget playText(
     BuildContext context,
@@ -179,7 +180,9 @@ mixin CretaTextMixin {
       ]);
     }
 
-    if (model.aniType.value != TextAniType.none && isThumbnail == false) {
+    if (model.aniType.value != TextAniType.none &&
+        isThumbnail == false &&
+        StudioVariables.isAutoPlay == true) {
       return _animationText(
         model,
         text,
@@ -194,6 +197,11 @@ mixin CretaTextMixin {
         fontSize,
         isThumbnail,
       );
+    }
+    if (model.aniType.value.isTransition()) {
+      List<String> lines = text.split('\n');
+      if (_currentIndex >= lines.length) _currentIndex = 0;
+      return _outLineAndShadowText(model, lines[_currentIndex], shadowStyle ?? style, isThumbnail);
     }
     return _outLineAndShadowText(model, text, shadowStyle ?? style, isThumbnail);
   }
@@ -287,7 +295,6 @@ mixin CretaTextMixin {
     int textSize = CretaUtils.getStringSize(text);
     // duration 이 50 이면 실제로는 5초 정도에  문자열을 다 흘려보내다.
     // 따라서 문자열의 길이에  anyDuration / 10  정도의 값을 곱해본다.
-
     String key = const Uuid().v4();
     if (model!.aniType.value != TextAniType.tickerSide &&
         model.aniType.value != TextAniType.tickerUpDown &&
@@ -314,22 +321,25 @@ mixin CretaTextMixin {
       case TextAniType.scaleTransition:
         {
           String input = text;
-          int lines = text.split('\n').length;
-          if (lines < 1) {
+          int linesLen = text.split('\n').length;
+          if (linesLen < 1) {
             input = 'Sample Text\nSample Text';
-          } else if (lines < 2) {
+          } else if (linesLen < 2) {
             input = '$text\n$text';
           }
-          lines = input.split('\n').length;
-          double duration = (model.anyDuration.value / (lines + 1));
+          List<String> lines = input.split('\n');
+          linesLen = lines.length;
+          double duration = (model.anyDuration.value / (linesLen + 1));
           int stopDuration = duration.ceil();
           int switchDuration = (duration / 4).ceil();
+
           return CretaTextSwitcher(
               text: input,
               stopDuration: Duration(seconds: stopDuration),
               switchDuration: Duration(seconds: switchDuration),
               aniType: model.aniType.value,
               builder: (index, eachLine) {
+                _currentIndex = index;
                 return _outLineAndShadowText(
                   key: ValueKey<int>(index),
                   model,

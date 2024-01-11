@@ -49,6 +49,7 @@ class PageMain extends StatefulWidget {
 class PageMainState extends State<PageMain> with FramePlayMixin {
   //FrameManager? frameManager;  <-- move to FramePlayMixin
 
+  // ignore: unused_field
   bool _transitionIndicator = false;
   void setTransitionIdicator(val) {
     _transitionIndicator = val;
@@ -63,7 +64,9 @@ class PageMainState extends State<PageMain> with FramePlayMixin {
   bool _onceDBGetComplete = false;
 
   bool _hasTransitionEffect = false;
+  // ignore: unused_field
   int _transitionEffect = 0;
+  // ignore: unused_field
   int _transitionEffect2 = 0;
 
   void invalidate() {

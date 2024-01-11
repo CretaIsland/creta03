@@ -240,7 +240,8 @@ class PageRealMainState extends State<PageRealMain> with ContaineeMixin {
     logger.fine('_drawLines()--------------------------------------------');
     List<LinkModel> linkList = [];
     manager.listIterator((frameModel) {
-      ContentsManager contentsManager = manager.findOrCreateContentsManager(frameModel as FrameModel);
+      ContentsManager contentsManager =
+          manager.findOrCreateContentsManager(frameModel as FrameModel);
       // if (contentsManager == null) {
       //   return null;
       // }

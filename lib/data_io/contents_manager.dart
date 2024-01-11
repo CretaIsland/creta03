@@ -589,7 +589,7 @@ class ContentsManager extends CretaManager {
             logger.fine('contents.pause end');
           }
         }
-        if (player.model!.isImage()) {
+        if (player.model!.isImage() || player.model!.aniType.value != TextAniType.none) {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {
@@ -619,7 +619,7 @@ class ContentsManager extends CretaManager {
             await video.wcontroller!.play();
           }
         }
-        if (player.model!.isImage()) {
+        if (player.model!.isImage() || player.model!.aniType.value != TextAniType.none) {
           notify();
         }
         if (player.model != null && player.model!.isMusic()) {

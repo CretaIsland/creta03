@@ -28,6 +28,7 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
   late Timer _timer;
   late List<String> _textLines;
   static int counter = 0;
+  //final bool _isHover = false;
 
   @override
   void didUpdateWidget(CretaTextSwitcher oldWidget) {
@@ -65,52 +66,64 @@ class TextSwitcherWidgetState extends State<CretaTextSwitcher> {
   Widget build(BuildContext context) {
     TextAniType aniType = _getTextAniType(widget.aniType);
 
-    return Center(
-      child: AnimatedSwitcher(
-        duration: aniType == TextAniType.rotateTransition
-            ? const Duration(seconds: 1)
-            : widget.switchDuration,
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          switch (aniType) {
-            case TextAniType.rotateTransition:
-              return RotationTransition(
-                turns: animation,
-                alignment: Alignment.topCenter,
-                child: child,
-              );
-            case TextAniType.slideTransition:
-              const begin = Offset(0.0, 1.0);
-              const end = Offset.zero;
-              const curve = Curves.easeInOut;
+    return
+        // MouseRegion(
+        //   onHover: (event) {
+        //     setState(() {
+        //       _isHover = true;
+        //     });
+        //   },
+        //   onExit: (event) {
+        //     setState(() {
+        //       _isHover = false;
+        //     });
+        //   },
+        //   child: _isHover
+        //       ?
+        AnimatedSwitcher(
+      duration: aniType == TextAniType.rotateTransition
+          ? const Duration(seconds: 1)
+          : widget.switchDuration,
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        switch (aniType) {
+          case TextAniType.rotateTransition:
+            return RotationTransition(
+              turns: animation,
+              alignment: Alignment.topCenter,
+              child: child,
+            );
+          case TextAniType.slideTransition:
+            const begin = Offset(0.0, 1.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOut;
 
-              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-              return SlideTransition(
-                position: tween.animate(animation),
-                child: child,
-              );
-            case TextAniType.sizeTransition:
-              return SizeTransition(
-                sizeFactor: animation,
-                axis: Axis.horizontal,
-                child: child,
-              );
-            case TextAniType.scaleTransition:
-              return ScaleTransition(
-                scale: animation,
-                child: child,
-              );
-            default:
-              return FadeTransition(opacity: animation, child: child);
-          }
-        },
-        child: widget.builder.call(_currentIndex, _textLines[_currentIndex]),
-        // Text(
-        //   _textLines[_currentIndex],
-        //   key: ValueKey<int>(_currentIndex),
-        //   style: widget.textStyle,
-        // ),
-      ),
+            return SlideTransition(
+              position: tween.animate(animation),
+              child: child,
+            );
+          case TextAniType.sizeTransition:
+            return SizeTransition(
+              sizeFactor: animation,
+              axis: Axis.horizontal,
+              child: child,
+            );
+          case TextAniType.scaleTransition:
+            return ScaleTransition(
+              scale: animation,
+              child: child,
+            );
+          default:
+            return FadeTransition(opacity: animation, child: child);
+        }
+      },
+      child: widget.builder.call(_currentIndex, _textLines[_currentIndex]),
+      // Text(
+      //   _textLines[_currentIndex],
+      //   key: ValueKey<int>(_currentIndex),
+      //   style: widget.textStyle,
+      // ),
     );
   }
 
