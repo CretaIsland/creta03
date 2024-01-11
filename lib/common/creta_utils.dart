@@ -97,6 +97,14 @@ class CretaUtils {
     return retval;
   }
 
+  static bool hasTimePassed(DateTime baseTime, int milliseconds) {
+    Duration duration = DateTime.now().difference(baseTime);
+    if (duration.inMilliseconds > milliseconds) {
+      return true;
+    }
+    return false;
+  }
+
   // static String getTimeStrSecondsAgo(int sec) {
   //   final currentTime = DateTime.now();
   //   DateTime retval = currentTime.subtract(Duration(seconds: sec));
@@ -1082,7 +1090,7 @@ class CretaUtils {
   }
 
   // 비교적 간단히, 텍스트의 사이즈를 구하는 함수이다.
-  static  Size calculateTextSize(String text, TextStyle style, double maxWidth) {
+  static Size calculateTextSize(String text, TextStyle style, double maxWidth) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,

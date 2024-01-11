@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hycop/common/util/logger.dart';
 
+import '../../common/creta_utils.dart';
 import '../component/creta_cupertino_slider.dart';
 import '../component/creta_proprty_slider.dart';
 import '../creta_color.dart';
@@ -22,6 +23,7 @@ class CretaExSlider extends StatefulWidget {
   final double textWidth;
   final int textlimit;
   final CretaTextFieldType textType;
+  final int delay;
 
   const CretaExSlider({
     super.key,
@@ -38,6 +40,7 @@ class CretaExSlider extends StatefulWidget {
     this.textWidth = 40,
     this.textlimit = 3,
     this.textType = CretaTextFieldType.number,
+    this.delay = 0,
   });
 
   @override
@@ -47,11 +50,13 @@ class CretaExSlider extends StatefulWidget {
 class _CretaExSliderState extends State<CretaExSlider> {
   //TextStyle titleStyle = CretaFont.bodySmall.copyWith(color: CretaColor.text[400]!);
   double _value = 0;
+  DateTime? _lastTime;
 
   @override
   void initState() {
     super.initState();
     _value = widget.value;
+    _lastTime = DateTime.now();
   }
 
   @override
@@ -94,7 +99,12 @@ class _CretaExSliderState extends State<CretaExSlider> {
             //onDragging: (val) {
             onChanged: (val) {
               _value = _reverseValue(val, widget.valueType);
-              widget.onChannged.call(_value);
+              if (widget.delay > 0 && CretaUtils.hasTimePassed(_lastTime!, widget.delay)) {
+                widget.onChannged.call(_value);
+                _lastTime = DateTime.now();
+              } else {
+                widget.onChannged.call(_value);
+              }
               setState(() {});
             },
           ),

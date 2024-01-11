@@ -919,6 +919,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
       // FontSize  폰트사이즈
       name: CretaStudioLang.fontSize,
       widget: CretaExSlider(
+        delay: 0,
         valueType: SliderValueType.normal,
         value: fontSize,
         textType: CretaTextFieldType.number,
@@ -939,7 +940,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
               model.fontSizeType.set(fontSyzeType);
             }
           }
-          widget.contentsManager.notify();
+          //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           _sendEvent!.sendEvent(_frameModel);
           //} else {
@@ -951,7 +952,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         onChannged: (val) {
           model.fontSize.set(val.roundToDouble());
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
-          widget.contentsManager.notify();
+          //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           _sendEvent!.sendEvent(_frameModel);
           //} else {
@@ -983,7 +984,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         onChannged: (val) {
           model.letterSpacing.set(val);
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
-          widget.contentsManager.notify();
+          //widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           _sendEvent!.sendEvent(_frameModel);
           //} else {
@@ -1015,7 +1016,7 @@ class _ContentsOrderedListState extends State<ContentsOrderedList> with Property
         onChannged: (val) {
           model.lineHeight.set(val);
           ContentsModel.setLastTextStyle(model.makeTextStyle(context), model);
-          widget.contentsManager.notify();
+          // widget.contentsManager.notify();
           //if (model.textType == TextType.clock) {
           //print('ddddddddddddddddddddd');
           _sendEvent!.sendEvent(_frameModel);
